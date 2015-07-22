@@ -29,15 +29,14 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,8 +149,8 @@ public class CSVPlot implements IPlot {
 
 				// Force the loading thread to report unhandled exceptions to
 				// this thread's exception handler.
-				loadingThread.setUncaughtExceptionHandler(Thread
-						.currentThread().getUncaughtExceptionHandler());
+				loadingThread.setUncaughtExceptionHandler(
+						Thread.currentThread().getUncaughtExceptionHandler());
 
 				// Start the thread
 				loadingThread.start();
@@ -205,7 +204,7 @@ public class CSVPlot implements IPlot {
 
 		} catch (IOException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		if (!lines.isEmpty()) {
@@ -234,8 +233,8 @@ public class CSVPlot implements IPlot {
 			// allowed
 			// series. Populate the list with the series names, which should be
 			// "y-variable vs. x-variable".
-			List<String> plotTypes = new ArrayList<String>(nVariables
-					* nVariables);
+			List<String> plotTypes = new ArrayList<String>(
+					nVariables * nVariables);
 			for (int y = 0; y < nVariables; y++) {
 				String variableY = variables[y];
 				for (int x = 0; x < nVariables; x++) {
@@ -454,37 +453,26 @@ public class CSVPlot implements IPlot {
 			// Set the plot title based on the file name.
 			int lastSeparator = source.getPath().lastIndexOf("/");
 
-			String plotTitle = (lastSeparator > -1 ? source.getPath()
-					.substring(lastSeparator + 1) : source.getPath());
+			String plotTitle = (lastSeparator > -1
+					? source.getPath().substring(lastSeparator + 1)
+					: source.getPath());
 			// Set the title for the new plot provider
 			plotProvider.setPlotTitle(plotTitle);
 
 			// Create the plot inside the parent Composite.
 			editor.createPartControl(parent);
 
-			// Get the child Composite used to render the
-			Composite canvas = editor.getPlotCanvas();
-
-			// Get the context Menu for the parent Composite, or create a new
-			// one if the parent lacks a context Menu.
-			Menu menu = parent.getMenu();
-			if (menu == null) {
-				MenuManager menuManager = new MenuManager();
-				menu = menuManager.createContextMenu(canvas);
-			}
-
 			// Create the ActionTrees for adding and removing series on the fly.
 			addSeriesTree = new ActionTree("Add Series");
 			removeSeriesTree = new ActionTree("Remove Series");
-			final Separator separator = new Separator();
-			final ActionTree clearAction = new ActionTree(new Action(
-					"Clear Plot") {
-				@Override
-				public void run() {
-					clear();
-					refresh();
-				}
-			});
+			final ActionTree clearAction = new ActionTree(
+					new Action("Clear Plot") {
+						@Override
+						public void run() {
+							clear();
+							refresh();
+						}
+					});
 
 			// Fill out the add series tree. This tree will never need to be
 			// updated.
@@ -512,35 +500,41 @@ public class CSVPlot implements IPlot {
 				}
 			}
 
-			// When the Menu is about to be shown, add the add/remove series
-			// actions to it.
-			menu.addMenuListener(new MenuListener() {
-				@Override
-				public void menuHidden(MenuEvent e) {
-					// Nothing to do.
-				}
+			// Set up a MenuManager based on the plot actions.
+			final MenuManager menuManager = new MenuManager();
+			menuManager.add(addSeriesTree.getContributionItem());
+			menuManager.add(removeSeriesTree.getContributionItem());
+			menuManager.add(clearAction.getContributionItem());
 
-				@Override
-				public void menuShown(MenuEvent e) {
+			// Get the current context Menu from the parent of the plot.
+			Menu contextMenu = parent.getMenu();
+			// If it exists, it should be using a MenuManager. However, we
+			// cannot add new actions to the MenuManager (there is no way to get
+			// it), so we must add a MenuListener to add additional items when
+			// the menu opens.
+			if (contextMenu != null) {
+				contextMenu.addMenuListener(new MenuListener() {
+					@Override
+					public void menuHidden(MenuEvent e) {
+						// Nothing to do.
+					}
 
-					// Rebuild the menu.
-					Menu menu = (Menu) e.widget;
-					if (parent.getMenu() == null) {
-						for (MenuItem item : menu.getItems()) {
-							item.dispose();
+					@Override
+					public void menuShown(MenuEvent e) {
+						Menu menu = (Menu) e.widget;
+						// Add all items from the MenuManager.
+						for (IContributionItem item : menuManager.getItems()) {
+							item.fill(menu, -1);
 						}
 					}
-					addSeriesTree.getContributionItem().fill(menu, -1);
-					removeSeriesTree.getContributionItem().fill(menu, -1);
-					separator.fill(menu, -1);
-					clearAction.getContributionItem().fill(menu, -1);
-
-				}
-			});
+				});
+			} else {
+				contextMenu = menuManager.createContextMenu(parent);
+			}
 
 			// Set the context Menu for the main plot canvas. The slider can
 			// have its own menu set later.
-			editor.getPlotCanvas().setMenu(menu);
+			editor.getPlotCanvas().setMenu(contextMenu);
 
 			return;
 		}
@@ -640,6 +634,7 @@ public class CSVPlot implements IPlot {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IPlot#redraw()
 	 */
 	@Override
@@ -655,7 +650,7 @@ public class CSVPlot implements IPlot {
 					try {
 						draw(currentCategory, currentPlotType, comp);
 					} catch (Exception e) {
-						logger.error(getClass().getName() + " Exception!",e);
+						logger.error(getClass().getName() + " Exception!", e);
 					}
 				}
 			});

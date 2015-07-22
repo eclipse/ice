@@ -17,15 +17,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -41,10 +44,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.ToolBar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A {@code PlotGridComposite} is designed to display a grid of drawn
@@ -56,12 +58,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class PlotGridComposite extends Composite {
-
-	/**
-	 * Logger for handling event messages and other information.
-	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(PlotGridComposite.class);
 
 	/**
 	 * The {@code ToolBar} that contains widgets to update the grid layout and
@@ -195,12 +191,11 @@ public class PlotGridComposite extends Composite {
 							// be cleared.
 							closeButton
 									.addDisposeListener(new DisposeListener() {
-										@Override
-										public void widgetDisposed(
-												DisposeEvent e) {
-											closeButton = null;
-										}
-									});
+								@Override
+								public void widgetDisposed(DisposeEvent e) {
+									closeButton = null;
+								}
+							});
 						}
 						// Set the reference to the most recently entered plot.
 						lastPlot = plot;
@@ -258,8 +253,8 @@ public class PlotGridComposite extends Composite {
 
 		// Create and adapt the ToolBar first so that the default styles will be
 		// passed down to the widgets created by the ToolBarManager.
-		ToolBar toolBar = new ToolBar(parent, SWT.WRAP | SWT.FLAT
-				| SWT.HORIZONTAL);
+		ToolBar toolBar = new ToolBar(parent,
+				SWT.WRAP | SWT.FLAT | SWT.HORIZONTAL);
 		toolBar.setBackground(parent.getBackground());
 		ToolBarManager toolBarManager = new ToolBarManager(toolBar);
 
@@ -270,7 +265,8 @@ public class PlotGridComposite extends Composite {
 
 		// Add a Spinner for setting the grid rows to the ToolBarManager (this
 		// requires a JFace ControlContribution).
-		SpinnerContribution rowSpinner = new SpinnerContribution("rows.spinner");
+		SpinnerContribution rowSpinner = new SpinnerContribution(
+				"rows.spinner");
 		rowSpinner.setMinimum(1);
 		rowSpinner.setMaximum(4);
 		rowSpinner.setSelection(rows);
@@ -392,7 +388,8 @@ public class PlotGridComposite extends Composite {
 
 				// Set the layout data for the new drawn plot. It should grab
 				// all available space in the gridComposite's layout.
-				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
+						true);
 				drawnPlot.setLayoutData(gridData);
 
 				// Since a new plot was added, refresh the grid layout.
@@ -666,7 +663,6 @@ public class PlotGridComposite extends Composite {
 		 * @return The JFace {@code MenuManager} for the context {@code Menu}.
 		 */
 		private MenuManager createContextMenu() {
-			MenuManager contextMenuManager = new MenuManager();
 
 			// Create an action to remove the moused-over or clicked plot
 			// rendering.
@@ -677,56 +673,34 @@ public class PlotGridComposite extends Composite {
 				}
 			};
 
-			// Create the root ActionTree for setting the plot category and
-			// type.
-			final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
-			try {
-				// Add an ActionTree for each category, and then add ActionTree
-				// leaf nodes for each type.
-				Map<String, String[]> plotTypes = plot.getPlotTypes();
-				for (Entry<String, String[]> entry : plotTypes.entrySet()) {
-					String category = entry.getKey();
-					String[] types = entry.getValue();
+			final List<IContributionItem> actions = new ArrayList<IContributionItem>();
+			actions.add(new ActionContributionItem(removeAction));
 
-					if (category != null && types != null && types.length > 0) {
-						// Create the category ActionTree.
-						ActionTree categoryTree = new ActionTree(category);
-						plotTypeTree.add(categoryTree);
+			// Create the context menu. To force this menu to dynamically fill,
+			// we must repopulate the Menu when shown.
+			final MenuManager menuManager = new MenuManager();
+			Menu contextMenu = menuManager.createContextMenu(this);
+			menuManager.setRemoveAllWhenShown(true);
+			contextMenu.addMenuListener(new MenuListener() {
+				@Override
+				public void menuHidden(MenuEvent e) {
+					// Nothing to do.
+				}
 
-						// Add all types to the category ActionTree. Each Action
-						// should try to set the plot category and type of the
-						// drawn
-						// plot.
-						final String categoryRef = category;
-						for (String type : types) {
-							final String typeRef = type;
-							categoryTree.add(new ActionTree(new Action(type) {
-								@Override
-								public void run() {
-									try {
-										draw(categoryRef, typeRef);
-									} catch (Exception e) {
-										logger.error(getClass().getName() + " Exception!",e);
-									}
-								}
-							}));
-						}
+				@Override
+				public void menuShown(MenuEvent e) {
+					Menu menu = (Menu) e.widget;
+					// Add all items from the MenuManager.
+					for (IContributionItem item : actions) {
+						item.fill(menu, -1);
 					}
 				}
-			} catch (Exception e) {
-				// Print out the error message (from getPlotTypes()).
-				logger.error(getClass().getName() + " Exception! ", e);
-			}
-
-			// Add the items to the context menu.
-			contextMenuManager.add(removeAction);
-			contextMenuManager.add(new Separator());
-			contextMenuManager.add(plotTypeTree.getContributionItem());
+			});
 
 			// Set the context Menu for the plot Composite.
-			setMenu(contextMenuManager.createContextMenu(this));
+			setMenu(contextMenu);
 
-			return contextMenuManager;
+			return menuManager;
 		}
 
 		/**
