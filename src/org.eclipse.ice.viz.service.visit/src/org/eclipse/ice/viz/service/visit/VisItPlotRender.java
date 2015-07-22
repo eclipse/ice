@@ -23,6 +23,8 @@ import org.eclipse.ice.viz.service.visit.connections.VisItConnection;
 import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -86,22 +88,6 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 	 * The widget used to adjust the current timestep.
 	 */
 	private TimeSliderComposite timeSlider;
-
-	/**
-	 * The currently timestep rendered by the VisIt widget.
-	 */
-	private int renderedTimestep = 0;
-	/**
-	 * The current timestep as reported by the {@link #timeSlider} on the UI
-	 * thread.
-	 */
-	private final AtomicInteger widgetTimestep = new AtomicInteger();
-	/**
-	 * An ExecutorService for launching worker threads. Only one thread is
-	 * processed at a time in the order in which they are added.
-	 */
-	private final ExecutorService executorService = Executors
-			.newSingleThreadExecutor();
 
 	/**
 	 * The plot {@code Composite} that renders the files through the VisIt
@@ -183,58 +169,8 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		new VisItMouseManager(canvas);
 
 		// Add a time slider widget.
-		timeSlider = new TimeSliderComposite(container, SWT.NONE);
+		timeSlider = createTimeSlider(container);
 		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		timeSlider.setBackground(parent.getBackground());
-		// Add a listener to trigger an update to the current timestep.
-		timeSlider.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Record the current timestep from the TimeSliderComposite.
-				widgetTimestep.set(timeSlider.getTimestep());
-
-				// Launch a worker thread to update the timestep for the VisIt
-				// widget.
-				executorService.submit(new Runnable() {
-					@Override
-					public void run() {
-
-						// FIXME We need a way to move to a specific timestep
-						// rather than cycling through them.
-
-						ViewerMethods methods = widget.getViewerMethods();
-
-						// Send next or previous timestep requests to the VisIt
-						// widget until it matches the current timestep in the
-						// TimeSliderComposite.
-						int targetStep;
-						while (renderedTimestep != (targetStep = widgetTimestep
-								.get())) {
-							if (renderedTimestep < targetStep) {
-								methods.animationNextState();
-								renderedTimestep++;
-							} else {
-								methods.animationPreviousState();
-								renderedTimestep--;
-							}
-						}
-						return;
-					}
-				});
-				return;
-			}
-		});
-
-		// TODO We need to figure out how to get the actual times from the VisIt
-		// client API. We are currently using the timestep indices.
-		// Get the available timesteps.
-		ViewerMethods viewerMethods = widget.getViewerMethods();
-		int timestepCount = viewerMethods.timeSliderGetNStates();
-		List<Double> times = new ArrayList<Double>(timestepCount);
-		for (double i = 0.0; i < timestepCount; i++) {
-			times.add(i);
-		}
-		timeSlider.setTimes(times);
 
 		// Set the context Menu for the VisIt canvas.
 		canvas.setMenu(getContextMenu());
@@ -415,4 +351,91 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		return representation;
 	}
 
+	/**
+	 * Creates a time slider widget in the parent {@code Composite}.
+	 * 
+	 * @param parent
+	 *            The parent {@code Composite} that will contain the widget.
+	 * @return The created widget.
+	 */
+	private TimeSliderComposite createTimeSlider(Composite parent) {
+
+		// The widget that will be created.
+		final TimeSliderComposite timeSlider;
+
+		// The associated connection web client.
+		final VisItSwtConnection widget = plot.getVisItConnection().getWidget();
+
+		// The currently rendered timestep and the slider's timestep.
+		final AtomicInteger renderedTimestep = new AtomicInteger();
+		final AtomicInteger widgetTimestep = new AtomicInteger();
+		// A worker thread for updating the canvas.
+		final ExecutorService executorService = Executors
+				.newSingleThreadExecutor();
+
+		// Add a time slider widget.
+		timeSlider = new TimeSliderComposite(parent, SWT.NONE);
+		timeSlider.setBackground(parent.getBackground());
+
+		// Create a task that can be used to update the canvas when the timestep
+		// changes.
+		final Runnable updateCanvasTask = new Runnable() {
+			@Override
+			public void run() {
+
+				// FIXME We need a way to move to a specific timestep
+				// rather than cycling through them.
+
+				ViewerMethods methods = widget.getViewerMethods();
+
+				// Send next or previous timestep requests to the VisIt
+				// widget until it matches the current timestep in the
+				// TimeSliderComposite.
+				int currentStep = renderedTimestep.get();
+				int targetStep;
+				while (currentStep != (targetStep = widgetTimestep.get())) {
+					if (currentStep < targetStep) {
+						methods.animationNextState();
+						currentStep++;
+					} else {
+						methods.animationPreviousState();
+						currentStep--;
+					}
+				}
+				renderedTimestep.set(currentStep);
+				return;
+			}
+		};
+
+		// When the time slider is disposed, shut down the worker thread.
+		timeSlider.addDisposeListener(new DisposeListener() {
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				executorService.shutdown();
+			}
+		});
+
+		// When the selection changes, trigger an update to the canvas.
+		timeSlider.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Record the current timestep from the TimeSliderComposite.
+				widgetTimestep.set(timeSlider.getTimestep());
+				executorService.submit(updateCanvasTask);
+			}
+		});
+
+		// TODO We need to figure out how to get the actual times from the VisIt
+		// client API. We are currently using the timestep indices.
+		// Get the available timesteps.
+		ViewerMethods viewerMethods = widget.getViewerMethods();
+		int timestepCount = viewerMethods.timeSliderGetNStates();
+		List<Double> times = new ArrayList<Double>(timestepCount);
+		for (double i = 0.0; i < timestepCount; i++) {
+			times.add(i);
+		}
+		timeSlider.setTimes(times);
+
+		return timeSlider;
+	}
 }

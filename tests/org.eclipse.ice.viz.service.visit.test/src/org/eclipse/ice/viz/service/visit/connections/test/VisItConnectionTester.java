@@ -43,8 +43,7 @@ public class VisItConnectionTester {
 	}
 
 	/**
-	 * Checks the default connection properties for VisIt connections. This does
-	 * not include VisIt-specific properties.
+	 * Checks the default connection properties for VisIt connections.
 	 */
 	@Test
 	public void checkDefaultProperties() {
