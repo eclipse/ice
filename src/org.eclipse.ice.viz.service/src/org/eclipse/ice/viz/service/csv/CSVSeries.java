@@ -9,6 +9,7 @@
  *   Initial API and implementation and/or initial documentation
  *   - Kasper Gammeltoft
  *******************************************************************************/
+
 package org.eclipse.ice.viz.service.csv;
 
 import org.eclipse.ice.viz.service.ISeries;
@@ -141,6 +142,10 @@ public class CSVSeries extends TransformedList<Double, Double>
 	@Override
 	public ISeries getParentSeries() {
 		return parent;
+	}
+
+	public void setParentSeries(ISeries parent) {
+		this.parent = parent;
 	}
 
 	@Override
@@ -277,6 +282,7 @@ public class CSVSeries extends TransformedList<Double, Double>
 		hash = 31 * hash + (parent == null ? 0 : parent.hashCode());
 		hash = 31 * hash + (style == null ? 0 : style.hashCode());
 		hash = 31 * hash + (unit == null ? 0 : unit.hashCode());
+		hash = 31 * hash + (int) time;
 
 		return hash;
 	}

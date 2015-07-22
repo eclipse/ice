@@ -243,6 +243,7 @@ public class CSVPlotEditor extends EditorPart {
 			// Updates the trace for the parent, so that
 			seriesMap.get(series.getParentSeries()).remove(series);
 			// TODO- Refresh the plot that had this error series on it!
+
 		}
 
 		// Remove the trace as well if it is being plotted on the graph

@@ -15,6 +15,7 @@ Import-Package: ca.odell.glazedlists,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.csv,
  org.eclipse.ice.viz.service.internal,
+ org.eclipse.ice.viz.service.styles,
  org.eclipse.swt.widgets,
  org.eclipse.ui.ide
 Require-Bundle: org.junit,

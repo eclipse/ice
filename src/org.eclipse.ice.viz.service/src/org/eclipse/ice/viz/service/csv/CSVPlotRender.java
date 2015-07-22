@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Kasper Gammeltoft
+ *   Kasper Gammeltoft, Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.MenuItem;
  * the plot to the plot provider, which is used by the editor to draw the plot.
  * Each plot render should be unique to a specific composite that it is being
  * drawn on and the CSVPlot object that is being plotted. This plot render is
- * also responsible for constructing a conxtext menu that allows for the user to
+ * also responsible for constructing a context menu that allows for the user to
  * add and remove plots. The plots that are initially drawn on the editor are
  * those that are enabled on the plot when this plot render is constructed.
  * 

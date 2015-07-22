@@ -78,8 +78,9 @@ public abstract class AbstractSeriesStyle implements ISeriesStyle {
 		if (propertyExists) {
 			// If the current value is null, then any value is good. Otherwise,
 			// see if the new value is an instance of the current value
-			valueIsGood = properties.get(propertyType) == null || (value
-					.getClass().isInstance(properties.get(propertyType)));
+			valueIsGood = properties.get(propertyType) == null || value == null
+					|| (value.getClass()
+							.isInstance(properties.get(propertyType)));
 
 			// Set the property
 			if (valueIsGood) {
