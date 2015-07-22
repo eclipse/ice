@@ -12,8 +12,10 @@
 package org.eclipse.ice.viz.service.paraview.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
@@ -133,8 +135,8 @@ public class ParaViewVizServiceTester {
 		// Passing in an unsupported URI should throw an
 		// IllegalArgumentException.
 		try {
-			vizService.createPlot(TestUtils
-					.createURI("this-is-a-bad-extension"));
+			vizService
+					.createPlot(TestUtils.createURI("this-is-a-bad-extension"));
 			fail("ParaViewVizServiceTester error: "
 					+ "No exception thrown for unsupported extension.");
 		} catch (IllegalArgumentException e) {
@@ -164,7 +166,8 @@ public class ParaViewVizServiceTester {
 		// Create a fake factory that has a few supported extensions.
 		IParaViewProxyFactory factory = new IParaViewProxyFactory() {
 			@Override
-			public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder) {
+			public boolean unregisterProxyBuilder(
+					IParaViewProxyBuilder builder) {
 				return false;
 			}
 
@@ -183,7 +186,6 @@ public class ParaViewVizServiceTester {
 			public Set<String> getExtensions() {
 				return supportedExtensions;
 			}
-
 		};
 
 		// Initially, the factory is null.
@@ -191,16 +193,8 @@ public class ParaViewVizServiceTester {
 		// Test all extensions. Currently, none of them are supported, as the
 		// factory has not been set.
 		for (String extension : supportedExtensions) {
-			try {
-				vizService.createPlot(TestUtils.createURI(extension));
-				fail("ParaViewVizServiceTester error: "
-						+ "No exception thrown for unsupported extension.");
-			} catch (IllegalArgumentException e) {
-				// Exception thrown as expected.
-			} catch (Exception e) {
-				fail("ParaViewVizServiceTester error: "
-						+ "Wrong exception type thrown for unsupported extension.");
-			}
+			assertFalse(fakeVizService.findSupportedExtensions()
+					.contains(extension));
 		}
 
 		// Set the proxy factory for the viz service.
@@ -209,16 +203,8 @@ public class ParaViewVizServiceTester {
 		assertSame(factory, fakeVizService.getProxyFactory());
 		// Test all (now supported) extensions.
 		for (String extension : supportedExtensions) {
-			try {
-				vizService.createPlot(TestUtils.createURI(extension));
-			} catch (IllegalArgumentException e) {
-				fail("ParaViewVizServiceTester error: "
-						+ "Exception thrown for supported extension.");
-			} catch (Exception e) {
-				// It's okay as long as the exception is not about the supported
-				// extension.
-				// TODO There may be a way to get around this...
-			}
+			assertTrue(fakeVizService.findSupportedExtensions()
+					.contains(extension));
 		}
 
 		// Unset the factory from the viz service.
@@ -227,16 +213,8 @@ public class ParaViewVizServiceTester {
 		assertNull(fakeVizService.getProxyFactory());
 		// Test all extensions. Currently, none of them are supported.
 		for (String extension : supportedExtensions) {
-			try {
-				vizService.createPlot(TestUtils.createURI(extension));
-				fail("ParaViewVizServiceTester error: "
-						+ "No exception thrown for unsupported extension.");
-			} catch (IllegalArgumentException e) {
-				// Exception thrown as expected.
-			} catch (Exception e) {
-				fail("ParaViewVizServiceTester error: "
-						+ "Wrong exception type thrown for unsupported extension.");
-			}
+			assertFalse(fakeVizService.findSupportedExtensions()
+					.contains(extension));
 		}
 
 		return;
@@ -274,6 +252,14 @@ public class ParaViewVizServiceTester {
 		@Override
 		protected IParaViewProxyFactory getProxyFactory() {
 			return super.getProxyFactory();
+		}
+
+		/*
+		 * Exposes the super class' method.
+		 */
+		@Override
+		protected Set<String> findSupportedExtensions() {
+			return super.findSupportedExtensions();
 		}
 	}
 }

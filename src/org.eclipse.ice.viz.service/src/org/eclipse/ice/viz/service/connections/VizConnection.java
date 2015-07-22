@@ -11,10 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -743,30 +741,17 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 			notificationExecutorService.submit(new Runnable() {
 				@Override
 				public void run() {
-					List<Future<?>> notifications;
-					notifications = new ArrayList<Future<?>>(listeners.size());
+					// FIXME Ideally, we would use a thread pool for this.
+					// However, using Executors.newCachedThreadPool() seems to
+					// break the tests sporadically.
 
-					// Delegate each notification to a worker thread pool.
-					ExecutorService workers = Executors.newCachedThreadPool();
-					for (final IVizConnectionListener<T> listener : listeners) {
-						notifications.add(workers.submit(new Runnable() {
-							@Override
-							public void run() {
-								listener.connectionStateChanged(connRef,
-										stateRef, msgRef);
-							}
-						}));
-					}
-					// Shut down the worker thread pool used for this
-					// notification.
-					workers.shutdown();
-
-					// Wait for all notification requests to be completed.
-					for (Future<?> notification : notifications) {
+					// Notify all listeners on this thread.
+					for (IVizConnectionListener<T> listener : listeners) {
 						try {
-							notification.get();
-						} catch (InterruptedException | ExecutionException e) {
-							e.printStackTrace();
+							listener.connectionStateChanged(connRef, stateRef,
+									msgRef);
+						} catch (Exception e) {
+							// FIXME Log a warning.
 						}
 					}
 
