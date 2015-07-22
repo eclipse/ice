@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class provides the standard implementation of the
  * {@link IParaViewProxyFactory}.
@@ -34,6 +37,12 @@ import java.util.TreeSet;
  *
  */
 public class ParaViewProxyFactory implements IParaViewProxyFactory {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ParaViewProxyFactory.class);
 
 	/**
 	 * The map of builders, keyed on supported extensions. We use a list for
@@ -89,7 +98,7 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 
 		// Print out debug output.
 		if (registered) {
-			System.out.println("ParaViewProxyFactory message: " + "\""
+			logger.info("ParaViewProxyFactory message: " + "\""
 					+ builder.getName() + "\" registered.");
 		}
 
@@ -127,7 +136,7 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 
 		// Print out debug output.
 		if (unregistered) {
-			System.out.println("ParaViewProxyFactory message: " + "\""
+			logger.info("ParaViewProxyFactory message: " + "\""
 					+ builder.getName() + "\" unregistered.");
 		}
 
@@ -138,8 +147,8 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
-	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
-			IllegalArgumentException {
+	public IParaViewProxy createProxy(URI uri)
+			throws NullPointerException, IllegalArgumentException {
 		// Check for a null URI.
 		if (uri == null) {
 			throw new NullPointerException("ParaViewProxyFactory error: "

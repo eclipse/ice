@@ -22,6 +22,8 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -80,6 +82,12 @@ import com.google.gson.JsonPrimitive;
  *
  */
 public abstract class ProxyProperty {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ProxyProperty.class);
 
 	/**
 	 * The associated connection.
@@ -582,11 +590,11 @@ public abstract class ProxyProperty {
 			// Get the response.
 			updated = response.get("success").getAsBoolean();
 			if (!updated) {
-				System.out.println(
+				logger.debug(
 						"Failed to change the property \"" + name + "\": ");
 				JsonArray array = response.get("errorList").getAsJsonArray();
 				for (int i = 0; i < array.size(); i++) {
-					System.out.println(array.get(i));
+					logger.debug(array.get(i).toString());
 				}
 			}
 		} catch (InterruptedException | ExecutionException e) {

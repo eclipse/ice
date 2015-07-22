@@ -41,6 +41,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a plot editor. It takes as input a FileInput containing
@@ -55,6 +57,13 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 
 public class PlotEditor extends EditorPart {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(PlotEditor.class);
+
 	/**
 	 * Plot editor ID for external reference.
 	 */
@@ -129,9 +138,8 @@ public class PlotEditor extends EditorPart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 * .Composite)
+	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.
+	 * widgets .Composite)
 	 */
 	@Override
 	public void createPartControl(final Composite parent) {
@@ -169,8 +177,8 @@ public class PlotEditor extends EditorPart {
 					inputArray.add(new PlotEditorInput(plot));
 					serviceNames.add(fullServiceNames[i]);
 				} catch (Exception e) {
-					System.out
-							.println("Problem creating plot with visualization service "
+					logger.info("PlotEditor message: " +
+							"Problem creating plot with visualization service "
 									+ fullServiceNames[i] + ".");
 				}
 
@@ -181,18 +189,16 @@ public class PlotEditor extends EditorPart {
 		// If all available services failed to create a plot, give the user an
 		// error message.
 		if (serviceNames.isEmpty()) {
-			System.out
-					.println("All available visualizaiton services failed to render a plot.");
+			logger.info("PlotEditor message: " +
+					"All available visualizaiton services failed to render a plot.");
 			Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
 					"No visualization service could render the file.", null);
-			ErrorDialog
-					.openError(
-							Display.getCurrent().getActiveShell(),
-							"Visualization Failed",
-							"All visualization services failed to render a plot. \n"
-									+ "If you are using an external rendering program, "
-									+ "make sure it is connected to ICE.",
-							status);
+			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
+					"Visualization Failed",
+					"All visualization services failed to render a plot. \n"
+							+ "If you are using an external rendering program, "
+							+ "make sure it is connected to ICE.",
+					status);
 			return;
 		}
 
@@ -267,14 +273,15 @@ public class PlotEditor extends EditorPart {
 	 *            A reference to the Editor calling the function
 	 */
 	public void setUpEditor(final Composite body,
-			final PlotEditorInput selectedService, final IEditorPart thisEditor) {
+			final PlotEditorInput selectedService,
+			final IEditorPart thisEditor) {
 		// Temporary holder for plot types available from the selected
 		// service
 		Map<String, String[]> selectedServiceTypesTemp = null;
 		try {
 			selectedServiceTypesTemp = selectedService.getPlot().getPlotTypes();
 		} catch (Exception e2) {
-			System.out.println("Error reading plot types.");
+			logger.info("PlotEditor message: " + "Error reading plot types.");
 		}
 
 		// While loading is not yet complete, wait and periodically
@@ -286,7 +293,8 @@ public class PlotEditor extends EditorPart {
 				selectedServiceTypesTemp = selectedService.getPlot()
 						.getPlotTypes();
 			} catch (Exception e1) {
-				System.out.println("Error reading plot types.");
+				logger.info(
+						"PlotEditor message: " + "Error reading plot types.");
 			}
 		}
 
@@ -351,9 +359,8 @@ public class PlotEditor extends EditorPart {
 	private void createUI(ToolBarManager barManager, Composite body,
 			Set<String> selectedCategorySet,
 			Map<String, String[]> selectedServiceTypes,
-			final PlotEditorInput selectedService,
-			final IEditorPart thisEditor, final String selectedCategory,
-			final String selectedPlotType) {
+			final PlotEditorInput selectedService, final IEditorPart thisEditor,
+			final String selectedCategory, final String selectedPlotType) {
 		// Finish setting up the editor window
 		ToolBar bar = barManager.createControl(body);
 		final Composite plotComposite = new Composite(body, SWT.NONE);
@@ -387,7 +394,8 @@ public class PlotEditor extends EditorPart {
 							selectedService.getPlot().draw(category, type,
 									plotComposite);
 						} catch (Exception e) {
-							System.out.println("Error while drawing plot.");
+							logger.info("PlotEditor message: "
+									+ "Error while drawing plot.");
 						}
 					}
 
@@ -402,8 +410,8 @@ public class PlotEditor extends EditorPart {
 		Action close = new Action("Close") {
 			@Override
 			public void run() {
-				thisEditor.getEditorSite().getPage()
-						.closeEditor(thisEditor, false);
+				thisEditor.getEditorSite().getPage().closeEditor(thisEditor,
+						false);
 			}
 		};
 
@@ -429,7 +437,7 @@ public class PlotEditor extends EditorPart {
 			selectedService.getPlot().draw(selectedCategory, selectedPlotType,
 					plotComposite);
 		} catch (Exception e) {
-			System.out.println("Error drawing plot.");
+			logger.info("PlotEditor message: " + "Error drawing plot.");
 		}
 
 		body.layout();

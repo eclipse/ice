@@ -339,20 +339,14 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 						String name = entry.getKey();
 						String value = entry.getValue();
 
-						try {
-							// Fetch the property first. This may throw an
-							// exception if the property is invalid.
-							ProxyProperty property = propertyMap.get(name);
-							// Attempt to set the value. This may throw an
-							// exception if the value is invalid or the property
-							// is read-only.
-							if (property != null && property.setValue(value)) {
-								// If the value changed, increment the count.
-								count++;
-							}
-						} catch (NullPointerException | IllegalArgumentException
-								| UnsupportedOperationException e) {
-							System.err.println(e.getMessage());
+						// Fetch the property first. This may throw an exception
+						// if the property is invalid.
+						ProxyProperty property = propertyMap.get(name);
+						// Attempt to set the value. This may throw an exception
+						// if the value is invalid or the property is read-only.
+						if (property != null && property.setValue(value)) {
+							// If the value changed, increment the count.
+							count++;
 						}
 					}
 				}

@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChang
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a basic implementation of {@link IVizConnectionManager},
@@ -39,6 +41,12 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public abstract class VizConnectionManager<T>
 		implements IVizConnectionManager<T> {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(VizConnectionManager.class);
 
 	/**
 	 * The listener that handles adding, updating, and removing viz connections
@@ -182,9 +190,9 @@ public abstract class VizConnectionManager<T>
 	 *            come straight from the {@link #preferenceStore}.
 	 */
 	private void addConnection(String name, String preferences) {
-		System.out.println("VizConnectionManager message: "
-				+ "Adding connection \"" + name
-				+ "\" using the preference string \"" + preferences + "\".");
+		logger.debug("VizConnectionManager message: " + "Adding connection \""
+				+ name + "\" using the preference string \"" + preferences
+				+ "\".");
 
 		VizConnection<T> connection = createConnection(name, preferences);
 
@@ -232,8 +240,8 @@ public abstract class VizConnectionManager<T>
 	 *            The name of the connection to remove.
 	 */
 	private void removeConnection(String name) {
-		System.out.println("VizConnectionManager message: "
-				+ "Removing connection \"" + name + "\".");
+		logger.debug("VizConnectionManager message: " + "Removing connection \""
+				+ name + "\".");
 
 		// Remove the associated connection from the map of connections by name.
 		VizConnection<T> connection = connectionsByName.remove(name);
@@ -261,9 +269,9 @@ public abstract class VizConnectionManager<T>
 	 *            should come straight from the {@link #preferenceStore}.
 	 */
 	private void updateConnection(String name, String preferences) {
-		System.out.println("VizConnectionManager message: "
-				+ "Updating connection \"" + name
-				+ "\" using the preference string \"" + preferences + "\".");
+		logger.debug("VizConnectionManager message: " + "Updating connection \""
+				+ name + "\" using the preference string \"" + preferences
+				+ "\".");
 
 		final VizConnection<T> connection = connectionsByName.get(name);
 
