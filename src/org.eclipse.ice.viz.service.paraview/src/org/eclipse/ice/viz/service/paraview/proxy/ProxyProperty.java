@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
+import org.eclipse.ice.viz.service.connections.ConnectionState;
+import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
@@ -80,9 +82,9 @@ import com.google.gson.JsonPrimitive;
 public abstract class ProxyProperty {
 
 	/**
-	 * The associated proxy wrapper.
+	 * The associated connection.
 	 */
-	protected AbstractParaViewProxy proxy;
+	private IVizConnection<IParaViewWebClient> connection;
 
 	/**
 	 * The name of the property. This corresponds to the "name" value in the
@@ -175,7 +177,7 @@ public abstract class ProxyProperty {
 	 *            respectively.
 	 */
 	public ProxyProperty(String name, int index, PropertyType type) {
-		proxy = null;
+		connection = null;
 
 		this.name = name;
 		this.index = index;
@@ -189,20 +191,23 @@ public abstract class ProxyProperty {
 	}
 
 	/**
-	 * Sets the proxy wrapper used for this property. This synchronizes this
-	 * data structure with the underlying proxy "ui" and "properties" arrays.
+	 * Sets the connection used for this property. This synchronizes this data
+	 * structure with the "ui" and "properties" arrays for the remote proxy
+	 * object with the ID specified by {@link #getProxyId()}.
 	 * 
-	 * @param proxy
-	 *            The new abstract proxy wrapper.
-	 * @return True if the proxy changed, false otherwise.
+	 * @param connection
+	 *            The new connection. If {@code null} or not connected, the
+	 *            property's data will be cleared.
+	 * @return True if the connection changed, false otherwise.
 	 */
-	public boolean setProxy(AbstractParaViewProxy proxy) {
+	public boolean setConnection(
+			IVizConnection<IParaViewWebClient> connection) {
 		boolean changed = false;
 
-		if (proxy != this.proxy) {
+		if (connection != this.connection) {
 			changed = true;
 
-			this.proxy = proxy;
+			this.connection = connection;
 
 			// Reset everything.
 			propertyName = null;
@@ -210,8 +215,9 @@ public abstract class ProxyProperty {
 			values.clear();
 			value = null;
 
-			if (proxy != null) {
-				IParaViewWebClient client = proxy.getConnection().getWidget();
+			if (connection != null
+					&& connection.getState() == ConnectionState.Connected) {
+				IParaViewWebClient client = connection.getWidget();
 
 				// Find the name of the property in the "properties" object.
 				propertyName = findPropertyName(client);
@@ -224,6 +230,7 @@ public abstract class ProxyProperty {
 					values.addAll(findValues(client));
 				}
 			}
+
 		}
 
 		return changed;
@@ -250,7 +257,7 @@ public abstract class ProxyProperty {
 		List<String> allowedValues = null;
 
 		// Get the proxy object (file, view, or rep JsonObject).
-		JsonObject proxyObj = proxy.getProxyObject(getProxyId());
+		JsonObject proxyObj = getProxyObject();
 		try {
 			// Get the corresponding entry in the "ui" JsonArray.
 			JsonArray ui = proxyObj.get("ui").getAsJsonArray();
@@ -282,7 +289,7 @@ public abstract class ProxyProperty {
 		String name = null;
 
 		// Get the proxy object (file, view, or rep JsonObject).
-		JsonObject proxyObj = proxy.getProxyObject(getProxyId());
+		JsonObject proxyObj = getProxyObject();
 		try {
 			// Get the corresponding entry in the "properties" JsonArray.
 			JsonArray properties = proxyObj.get("properties").getAsJsonArray();
@@ -310,7 +317,7 @@ public abstract class ProxyProperty {
 		String value = null;
 
 		// Get the proxy object (file, view, or rep JsonObject).
-		JsonObject proxyObj = proxy.getProxyObject(getProxyId());
+		JsonObject proxyObj = getProxyObject();
 		try {
 			// Get the corresponding entry in the "properties" JsonArray.
 			JsonArray properties = proxyObj.get("properties").getAsJsonArray();
@@ -338,7 +345,7 @@ public abstract class ProxyProperty {
 		List<String> values = null;
 
 		// Get the proxy object (file, view, or rep JsonObject).
-		JsonObject proxyObj = proxy.getProxyObject(getProxyId());
+		JsonObject proxyObj = getProxyObject();
 		try {
 			// Get the corresponding entry in the "properties" JsonArray.
 			JsonArray properties = proxyObj.get("properties").getAsJsonArray();
@@ -455,27 +462,20 @@ public abstract class ProxyProperty {
 	/**
 	 * Sets the selected values for the property. Duplicates and bad values are
 	 * ignored.
+	 * <p>
+	 * <b>Note:</b> This method only applies to properties of the type
+	 * {@link PropertyType#DISCRETE_MULTI}.
+	 * </p>
 	 * 
 	 * @param values
 	 *            The new selected values. May be an empty list.
-	 * @return True if the property changed.
-	 * @throws NullPointerException
-	 *             If the specified list is {@code null}.
-	 * @throws UnsupportedOperationException
-	 *             If the property type is not
-	 *             {@link PropertyType#DISCRETE_MULTI}, in which case multiple
-	 *             selections are not supported.
+	 * @return True if the property changed, false otherwise.
 	 */
 	public boolean setValues(List<String> values)
 			throws NullPointerException, UnsupportedOperationException {
 		// Check the type of property and the parameter.
-		if (type != PropertyType.DISCRETE_MULTI) {
-			throw new UnsupportedOperationException("ParaViewProxy error: "
-					+ "The property \"" + name
-					+ "\" does not allow multiple values to be selected.");
-		} else if (values == null) {
-			throw new NullPointerException("ParaViewProxy error: "
-					+ "Null list of selected values is not allowed.");
+		if (values == null || type != PropertyType.DISCRETE_MULTI) {
+			return false;
 		}
 
 		boolean changed = false;
@@ -553,7 +553,7 @@ public abstract class ProxyProperty {
 		 *      values if the widget type is "list-n"  
 		 */
 
-		IParaViewWebClient widget = proxy.getConnection().getWidget();
+		IParaViewWebClient widget = connection.getWidget();
 
 		// Set up the basic arguments for "id" and "name".
 		JsonArray updatedProperties = new JsonArray();
@@ -599,4 +599,23 @@ public abstract class ProxyProperty {
 		return updated;
 	}
 
+	/**
+	 * Gets the proxy object from the client whose ID matches the value returned
+	 * by {@link #getProxyId()}.
+	 * 
+	 * @return The proxy JsonObject, or {@code null} if it could not be queried
+	 *         from the {@link #connection}.
+	 */
+	protected JsonObject getProxyObject() {
+		JsonObject object = null;
+		JsonArray args = new JsonArray();
+		args.add(new JsonPrimitive(getProxyId()));
+		try {
+			object = connection.getWidget().call("pv.proxy.manager.get", args)
+					.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
 }

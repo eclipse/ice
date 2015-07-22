@@ -27,7 +27,7 @@ import java.util.concurrent.Future;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 
-import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.ice.viz.service.paraview.proxy.test.FakeProxyFeature;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
@@ -143,11 +143,29 @@ public class FakeParaViewWebClient implements IParaViewWebClient {
 					// Add the property to the "properties" array.
 					object = new JsonObject();
 					object.addProperty("name", property.propertyName);
-					object.addProperty("value", property.initialValue);
+					// The value for a discrete-multi property needs to be a
+					// JsonArray.
+					if (property
+							.getPropertyType() == PropertyType.DISCRETE_MULTI) {
+						array = new JsonArray();
+						array.add(new JsonPrimitive(property.initialValue));
+						object.add("value", array);
+					} else {
+						object.addProperty("value", property.initialValue);
+					}
 					propertiesArray.add(object);
 				}
 				
 				return proxyObject;
+			}
+		});
+		
+		responseMap.put("pv.proxy.manager.update", new Callable<JsonObject>() {
+			@Override
+			public JsonObject call() throws Exception {
+				JsonObject object = new JsonObject();
+				object.addProperty("success", true);
+				return object;
 			}
 		});
 	}

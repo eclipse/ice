@@ -195,7 +195,7 @@ public interface IParaViewProxy {
 	 * 
 	 * @param timestep
 	 *            The new timestep index.
-	 * @return True when the operation has completed.
+	 * @return True if the timestep changed, false otherwise.
 	 */
 	public Future<Boolean> setTimestep(int timestep);
 

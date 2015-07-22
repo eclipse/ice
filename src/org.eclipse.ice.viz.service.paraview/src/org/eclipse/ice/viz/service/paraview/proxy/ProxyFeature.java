@@ -19,7 +19,7 @@ package org.eclipse.ice.viz.service.paraview.proxy;
  * @author Jordan Deyton
  *
  */
-public class ProxyFeature extends ProxyProperty {
+public abstract class ProxyFeature extends ProxyProperty {
 
 	/**
 	 * True if the view can be colored by the feature, false otherwise (in which
@@ -122,14 +122,6 @@ public class ProxyFeature extends ProxyProperty {
 		colorByMode = (mode != null ? mode : ColorByMode.SOLID);
 		colorByLocation = (location != null ? location
 				: ColorByLocation.POINTS);
-	}
-
-	/*
-	 * Implements an abstract method from ProxyProperty.
-	 */
-	@Override
-	protected int getProxyId() {
-		return proxy != null ? proxy.getFileId() : -1;
 	}
 
 }

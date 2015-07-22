@@ -15,50 +15,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty;
+import org.eclipse.ice.viz.service.paraview.test.FakeParaViewWebClient;
 
+/**
+ * This class provides a fake that can be used to test both
+ * {@link ProxyProperty}s and {@link ProxyFeature}s. These should be passed to a
+ * {@link FakeParaViewWebClient} so that, when queried, it can populate a
+ * response based on each added fake property.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class FakeProxyFeature extends ProxyFeature {
 
-	public final List<String> allowedValues;
-	public final String initialValue;
-	public final String propertyName;
+	public final List<String> allowedValues = new ArrayList<String>();
+	public String initialValue;
+	public String propertyName;
 
-	public FakeProxyFeature(String name, int index, String propertyName,
-			String initialValue, String... allowedValues) {
-		super(name, index, PropertyType.DISCRETE, null, null);
+	public FakeProxyFeature(String name, int index) {
+		super(name, index);
+	}
 
-		this.allowedValues = new ArrayList<String>(allowedValues.length);
-		for (String value : allowedValues) {
-			this.allowedValues.add(value);
+	public FakeProxyFeature(String name, int index, PropertyType type) {
+		super(name, index, type, null, null);
+	}
+
+	public FakeProxyFeature(String name, int index, PropertyType type,
+			ColorByMode mode, ColorByLocation location) {
+		super(name, index, type, mode, location);
+	}
+
+	/**
+	 * Sets the allowed values. These can be read by a
+	 * {@link FakeParaViewWebClient} when generating a response to a query.
+	 * 
+	 * @param values
+	 *            The allowed values.
+	 */
+	public void setAllowedValues(String... values) {
+		allowedValues.clear();
+		for (String value : values) {
+			allowedValues.add(value);
 		}
-		this.initialValue = initialValue;
-		this.propertyName = propertyName;
+	}
+
+	/**
+	 * Exposes the property type for testing purposes.
+	 * 
+	 * @return The property type set at construction.
+	 */
+	public PropertyType getPropertyType() {
+		return type;
 	}
 
 	@Override
-	protected List<String> findAllowedValues(IParaViewWebClient client) {
-		return allowedValues;
-	}
-
-	@Override
-	protected String findPropertyName(IParaViewWebClient client) {
-		return propertyName;
-	}
-
-	@Override
-	protected String findValue(IParaViewWebClient client) {
-		return initialValue;
-	}
-
-	@Override
-	protected List<String> findValues(IParaViewWebClient client) {
-		List<String> values = new ArrayList<String>();
-		values.add(initialValue);
-		return values;
-	}
-
-	@Override
-	protected boolean applyChanges() {
-		return true;
+	protected int getProxyId() {
+		return 0;
 	}
 }

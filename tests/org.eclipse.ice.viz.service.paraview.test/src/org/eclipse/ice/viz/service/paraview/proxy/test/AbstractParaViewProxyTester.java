@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.paraview.proxy.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -27,11 +28,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
+import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.ice.viz.service.paraview.test.FakeParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.test.TestUtils;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
@@ -72,7 +74,7 @@ public class AbstractParaViewProxyTester {
 	/**
 	 * The connection that should be used by the proxy.
 	 */
-	private ParaViewConnection connection;
+	private IVizConnection<IParaViewWebClient> connection;
 
 	/**
 	 * Initializes the {@link #proxy}, {@link #fakeProxy}, and {@link #testURI}.
@@ -89,25 +91,45 @@ public class AbstractParaViewProxyTester {
 
 		// Add some features.
 		// Add a "europe" feature with the initial value of "london".
-		fakeFeature = new FakeProxyFeature("europe", 2, "eu", "london",
-				"berlin", "madrid", "paris", "london", "zagreb");
+		fakeFeature = new FakeProxyFeature("europe", 2, PropertyType.DISCRETE);
+		fakeFeature.propertyName = "eu";
+		fakeFeature.initialValue = "london";
+		fakeFeature.setAllowedValues("berlin", "madrid", "paris", "london",
+				"zagreb");
 		fakeProxy.features.add(fakeFeature);
 		// Add a "north america" feature with the initial value of "havanna".
-		fakeFeature = new FakeProxyFeature("north america", 3, "na", "havanna",
-				"ottawa", "mexico city", "havanna", "san salvador");
+		fakeFeature = new FakeProxyFeature("north america", 3,
+				PropertyType.DISCRETE);
+		fakeFeature.propertyName = "na";
+		fakeFeature.initialValue = "havanna";
+		fakeFeature.setAllowedValues("ottawa", "mexico city", "havanna",
+				"san salvador");
 		fakeProxy.features.add(fakeFeature);
 		// Add some properties.
-		fakeFeature = new FakeProxyFeature("south america", 4, "sa", "caracas",
-				"bogota", "brasilia", "caracas", "buenos aires");
+		fakeFeature = new FakeProxyFeature("south america", 4,
+				PropertyType.DISCRETE);
+		fakeFeature.propertyName = "sa";
+		fakeFeature.initialValue = "caracas";
+		fakeFeature.setAllowedValues("bogota", "brasilia", "caracas",
+				"buenos aires");
 		fakeProxy.properties.add(fakeFeature);
-		fakeFeature = new FakeProxyFeature("africa", 5, "af", "johannesburg",
-				"johannesburg", "cairo", "abuja", "djibouti");
+		fakeFeature = new FakeProxyFeature("africa", 5, PropertyType.DISCRETE);
+		fakeFeature.propertyName = "af";
+		fakeFeature.initialValue = "johannesburg";
+		fakeFeature.setAllowedValues("johannesburg", "cairo", "abuja",
+				"djibouti");
 		fakeProxy.properties.add(fakeFeature);
-		fakeFeature = new FakeProxyFeature("asia", 6, "as", "tokyo",
-				"ulaanbaatar", "beijing", "tokyo", "seoul", "new delhi");
+		fakeFeature = new FakeProxyFeature("asia", 6, PropertyType.DISCRETE);
+		fakeFeature.propertyName = "as";
+		fakeFeature.initialValue = "tokyo";
+		fakeFeature.setAllowedValues("ulaanbaatar", "beijing", "tokyo", "seoul",
+				"new delhi");
 		fakeProxy.properties.add(fakeFeature);
-		fakeFeature = new FakeProxyFeature("australia", 7, "au", "canberra",
-				"canberra");
+		fakeFeature = new FakeProxyFeature("australia", 7,
+				PropertyType.DISCRETE);
+		fakeFeature.propertyName = "au";
+		fakeFeature.initialValue = "canberra";
+		fakeFeature.setAllowedValues("canberra");
 		fakeProxy.properties.add(fakeFeature);
 
 		// Set up the fake client.
@@ -121,7 +143,7 @@ public class AbstractParaViewProxyTester {
 		}
 
 		// Establish a valid ParaView connection that is connected.
-		connection = new ParaViewConnection() {
+		connection = new VizConnection<IParaViewWebClient>() {
 			@Override
 			protected IParaViewWebClient connectToWidget() {
 				// Point the connection to localhost.
@@ -130,9 +152,14 @@ public class AbstractParaViewProxyTester {
 				fakeClient.connect("localhost");
 				return fakeClient;
 			}
+
+			@Override
+			protected boolean disconnectFromWidget(IParaViewWebClient widget) {
+				return true;
+			}
 		};
 		try {
-			connection.connect().get();
+			((VizConnection<?>) connection).connect().get();
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
@@ -168,6 +195,10 @@ public class AbstractParaViewProxyTester {
 		return;
 	}
 
+	/**
+	 * Checks that the feature categories are set properly before and after the
+	 * proxy's connection is set.
+	 */
 	@Test
 	public void checkGetFeatureCategories() {
 		// Check the default value is an empty collection.
@@ -198,6 +229,10 @@ public class AbstractParaViewProxyTester {
 		return;
 	}
 
+	/**
+	 * Checks that the features are set properly before and after the proxy's
+	 * connection is set.
+	 */
 	@Test
 	public void checkGetFeatures() {
 		// Check the default value is null since there are no features.
@@ -232,6 +267,10 @@ public class AbstractParaViewProxyTester {
 		return;
 	}
 
+	/**
+	 * Checks that the map of current property values is set properly before and
+	 * after the proxy's connection is set.
+	 */
 	@Test
 	public void checkGetProperties() {
 		// Check the default value is an empty collection.
@@ -267,6 +306,10 @@ public class AbstractParaViewProxyTester {
 		return;
 	}
 
+	/**
+	 * Checks that each property is set properly before and after the proxy's
+	 * connection is set.
+	 */
 	@Test
 	public void checkGetProperty() {
 		// Check the default value is null since there are no properties.
@@ -297,6 +340,10 @@ public class AbstractParaViewProxyTester {
 		return;
 	}
 
+	/**
+	 * Checks that each property's allowed values are set properly before and
+	 * after the proxy's connection is set.
+	 */
 	@Test
 	public void checkGetPropertyAllowedValues() {
 		// Check the default value is null since there are no properties.
@@ -337,7 +384,8 @@ public class AbstractParaViewProxyTester {
 	}
 
 	/**
-	 * Checks the file, representation, and view IDs.
+	 * Checks that the file, representation, and view IDs are set properly
+	 * before and after the proxy's connection is set.
 	 * 
 	 * @see IParaViewProxy#getFileId()
 	 * @see IParaViewProxy#getRepresentationId()
@@ -367,6 +415,10 @@ public class AbstractParaViewProxyTester {
 		return;
 	}
 
+	/**
+	 * Checks that the timesteps are set properly before and after the proxy's
+	 * connection is set.
+	 */
 	@Test
 	public void checkGetTimesteps() {
 		// Set the times reported by the fake ParaView web client.
@@ -399,85 +451,116 @@ public class AbstractParaViewProxyTester {
 		assertEquals(testURI, proxy.getURI());
 	}
 
+	/**
+	 * Checks that the proxy correctly fails to open invalid connections but
+	 * successfully opens valid, connected connections. Its return value should
+	 * reflect the success of the operation.
+	 */
 	@Test
 	public void checkOpen() {
-		boolean futureValue;
 
 		IVizConnection<IParaViewWebClient> nullConnection = null;
-		IVizConnection<IParaViewWebClient> disconnection = new ParaViewConnection();
+		// Create a disconnected connection.
+		IVizConnection<IParaViewWebClient> disconnection = new VizConnection<IParaViewWebClient>() {
+			@Override
+			protected IParaViewWebClient connectToWidget() {
+				return null;
+			}
 
-		// Attempting to open with an invalid connection should return false.
-		futureValue = true;
-		try {
-			futureValue = proxy.open(nullConnection).get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		assertFalse(futureValue);
+			@Override
+			protected boolean disconnectFromWidget(IParaViewWebClient widget) {
+				return false;
+			}
+		};
 
-		// Attempting to open with a valid connection that is not connected
-		// should return false.
-		futureValue = true;
 		try {
-			futureValue = proxy.open(disconnection).get();
+			// Attempting to open with a bad connection should return false.
+			assertFalse(proxy.open(nullConnection).get());
+			assertFalse(proxy.open(disconnection).get());
+			assertTrue(proxy.open(connection).get());
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception while setting the connection.");
 		}
-		assertFalse(futureValue);
 
-		// Attempting to open with a valid connection that is connected should
-		// return true.
-		futureValue = false;
-		try {
-			futureValue = proxy.open(connection).get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		assertTrue(futureValue);
-		
 		return;
 	}
 
+	/**
+	 * Checks the set feature operation on the proxy as well as its return
+	 * value.
+	 */
 	@Test
 	public void checkSetFeature() {
-		boolean futureValue;
 
 		String feature = "europe";
 		String value = "madrid";
-		String invalidProperty = "world";
+		String invalidFeature = "world";
 		String invalidValue = "pacific";
+		String nullString = null;
 
 		// Attempting to set a valid property should return false because no
 		// properties are configured.
-		futureValue = true;
 		try {
-			futureValue = proxy.setFeature(feature, value).get();
+			assertFalse(proxy.setFeature(feature, value).get());
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting features.");
 		}
-		assertFalse(futureValue);
 
+		// Set the connection.
+		try {
+			proxy.open(connection).get();
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Failed to set the connection.");
+		}
+
+		// Setting a valid feature the first time should return true, but
+		// afterwards setting the same feature should return false.
+		try {
+			assertTrue(proxy.setFeature(feature, value).get());
+			assertFalse(proxy.setFeature(feature, value).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting features.");
+		}
+
+		// Attempting to set an invalid feature always false.
+		try {
+			assertFalse(proxy.setFeature(invalidFeature, invalidValue).get());
+			assertFalse(proxy.setFeature(feature, invalidValue).get());
+			assertFalse(proxy.setFeature(nullString, nullString).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting invalid features.");
+		}
+
+		return;
 	}
 
+	/**
+	 * Checks the property set operation for the proxy and the return value of
+	 * the operation.
+	 */
 	@Test
 	public void checkSetProperty() {
-		boolean futureValue;
 
 		String property = "africa";
 		String value = "abuja";
 		String invalidProperty = "world";
 		String invalidValue = "pacific";
+		String nullString = null;
 
 		// Attempting to set a valid property should return false because no
 		// properties are configured.
-		futureValue = true;
 		try {
-			futureValue = proxy.setProperty(property, value).get();
+			assertFalse(proxy.setProperty(property, value).get());
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting a property.");
 		}
-		assertFalse(futureValue);
-		
+
 		// Set the connection.
 		try {
 			proxy.open(connection).get();
@@ -485,34 +568,63 @@ public class AbstractParaViewProxyTester {
 			fail("AbstractParaViewProxyTester error: "
 					+ "Failed to set the connection.");
 		}
-		
-		// TODO
-		
+
+		// Check the initial values of the property.
+		assertNotEquals("abuja", proxy.getProperty("africa"));
+
+		// Setting a valid property the first time should return true, but
+		// afterwards setting the same property to the same value should return
+		// false.
+		try {
+			assertTrue(proxy.setProperty(property, value).get());
+			assertFalse(proxy.setProperty(property, value).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting a property.");
+		}
+
+		// Check the value of the property after the change.
+		assertEquals("abuja", proxy.getProperty("africa"));
+
+		// Attempting to set an invalid property always false.
+		try {
+			assertFalse(proxy.setProperty(invalidProperty, invalidValue).get());
+			assertFalse(proxy.setProperty(property, invalidValue).get());
+			assertFalse(proxy.setProperty(nullString, nullString).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting an invalid property.");
+		}
+
 		return;
 	}
 
+	/**
+	 * Checks the bulk property set operation for the proxy and the return value
+	 * of the operation.
+	 */
 	@Test
 	public void checkSetProperties() {
-		int futureValue;
 		Map<String, String> properties;
 
 		// Configure some properties that can be set.
 		properties = new HashMap<String, String>();
-		properties.put("africa", "abuja");
-		properties.put("world", null);
-		properties.put("asia", "seoul");
-		properties.put("australia", "sydney");
+		properties.put("africa", "abuja"); // valid value
+		properties.put("world", null); // invalid name and value
+		properties.put("asia", "seoul"); // valid value
+		properties.put("australia", "sydney"); // invalid value
+		properties.put("south america", "caracas"); // same value
+		int expectedUpdateCount = 2;
 
 		// Attempting to set the properties with no properties configured should
 		// return 0 (for 0 properties changed).
-		futureValue = -1;
 		try {
-			futureValue = proxy.setProperties(properties).get();
+			assertEquals(0, (int) proxy.setProperties(properties).get());
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting properties.");
 		}
-		assertEquals(0, futureValue);
-		
+
 		// Set the connection.
 		try {
 			proxy.open(connection).get();
@@ -520,26 +632,63 @@ public class AbstractParaViewProxyTester {
 			fail("AbstractParaViewProxyTester error: "
 					+ "Failed to set the connection.");
 		}
-		
-		// TODO
-		
+
+		// Check the initial values of the properties.
+		assertNotEquals("abuja", proxy.getProperty("africa"));
+		assertNotEquals("seoul", proxy.getProperty("asia"));
+		assertNotEquals("sydney", proxy.getProperty("australia"));
+		assertEquals("caracas", proxy.getProperty("south america"));
+
+		// Attempting to set the properties should return the expected update
+		// count the first time, but 0 the second time because all of the
+		// properties have been set.
+		try {
+			assertEquals(expectedUpdateCount,
+					(int) proxy.setProperties(properties).get());
+			assertEquals(0, (int) proxy.setProperties(properties).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting properties.");
+		}
+
+		// Check the values of the properties now that they have been set.
+		assertEquals("abuja", proxy.getProperty("africa")); // changed
+		assertEquals("seoul", proxy.getProperty("asia")); // changed
+		assertNotEquals("sydney", proxy.getProperty("australia")); // invalid...
+		assertEquals("caracas", proxy.getProperty("south america"));
+
+		// Attempting to set the properties with a null or empty map should just
+		// return 0.
+		try {
+			assertEquals(0, (int) proxy
+					.setProperties(new HashMap<String, String>(0)).get());
+			assertEquals(0, (int) proxy.setProperties(null).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting invalid properties.");
+		}
+
 		return;
 	}
 
+	/**
+	 * Checks that the timestep for the proxy can be set and the return value of
+	 * the operation.
+	 */
 	@Test
 	public void checkSetTimestep() {
-		boolean futureValue;
+		// Set the times reported by the fake ParaView web client.
+		fakeClient.setTimes(1.0, 2.0);
 
 		// Attempting to set the timestep with no connection should return
 		// false.
-		futureValue = true;
 		try {
-			futureValue = proxy.setTimestep(1).get();
+			assertFalse(proxy.setTimestep(1).get());
 		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting the timestep.");
 		}
-		assertFalse(futureValue);
-		
+
 		// Set the connection.
 		try {
 			proxy.open(connection).get();
@@ -547,9 +696,27 @@ public class AbstractParaViewProxyTester {
 			fail("AbstractParaViewProxyTester error: "
 					+ "Failed to set the connection.");
 		}
-		
-		// TODO
-		
+
+		// Setting a valid timestep the first time should return true. The
+		// second time it should also return true, as the timestep is currently
+		// set to that value.
+		try {
+			assertTrue(proxy.setTimestep(1).get());
+			assertFalse(proxy.setTimestep(1).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting the timestep.");
+		}
+
+		// Attempting to set an invalid property always false.
+		try {
+			assertFalse(proxy.setTimestep(-1).get());
+			assertFalse(proxy.setTimestep(2).get());
+		} catch (InterruptedException | ExecutionException e) {
+			fail("AbstractParaViewProxyTester error: "
+					+ "Exception thrown while setting an invalid timestep.");
+		}
+
 		return;
 	}
 

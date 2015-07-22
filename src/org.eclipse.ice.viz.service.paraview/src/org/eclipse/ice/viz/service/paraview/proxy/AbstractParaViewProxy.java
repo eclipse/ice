@@ -413,7 +413,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 		return requestExecutor.submit(new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
-				boolean changed = true;
+				boolean changed = false;
 				if (!times.isEmpty()) {
 					// FIXME We need a way to just go straight to the desired
 					// time.
@@ -425,6 +425,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 							setTimestep("prev");
 							timestep--;
 						}
+						changed = true;
 					}
 
 					// If we scale by the current time, then we need to refresh
@@ -432,8 +433,6 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 					if (!scaleByAllTimes) {
 						rescale();
 					}
-				} else {
-					changed = false;
 				}
 
 				return changed;
@@ -492,7 +491,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 				// Reset the features.
 				featureMap.clear();
 				for (ProxyFeature featureInfo : findFeatures()) {
-					if (featureInfo.setProxy(this)) {
+					if (featureInfo.setConnection(connection)) {
 						featureMap.put(featureInfo.name, featureInfo);
 					}
 				}
@@ -500,7 +499,7 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 				// Reset the properties.
 				propertyMap.clear();
 				for (ProxyProperty propertyInfo : findProperties()) {
-					if (propertyInfo.setProxy(this)) {
+					if (propertyInfo.setConnection(connection)) {
 						propertyMap.put(propertyInfo.name, propertyInfo);
 					}
 				}
