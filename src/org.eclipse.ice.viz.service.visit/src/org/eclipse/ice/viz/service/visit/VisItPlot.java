@@ -41,11 +41,6 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	// TODO We should manage the window IDs here.
 
 	/**
-	 * A map of the available plot types for this plot to render
-	 */
-	private Map<String, String[]> plotTypes;
-
-	/**
 	 * A map of allowed representations, keyed on the category. Instead of
 	 * passing the category and type to the VisIt widget, a representation and
 	 * type are passed. The first value in each list is considered the default.

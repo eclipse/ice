@@ -417,18 +417,20 @@ public abstract class MultiPlot implements IPlot {
 		// Get the list of new plot types from the sub-class implementation.
 		List<ISeries> newSeries = getSeries(file);
 
-		// If empty, throw an IllegalArgumentException.
-		if (newSeries.isEmpty()) {
-			throw new IllegalArgumentException(
-					"IPlot error: " + "No plots available in file.");
-		}
+		// If there are new series, replace the current series with the ones
+		// specified
+		if (newSeries.size() > 0) {
 
-		// Clear any cached meta data and rebuild the cache of plot types.
-		clearCache();
-		if (series.get(IPlot.DEFAULT_CATEGORY) == null) {
-			series.put(IPlot.DEFAULT_CATEGORY, new ArrayList<ISeries>());
+			// Clear any cached meta data and rebuild the cache of plot types.
+			clearCache();
+			if (series.get(IPlot.DEFAULT_CATEGORY) == null) {
+				series.put(IPlot.DEFAULT_CATEGORY, new ArrayList<ISeries>());
+			}
+			// Reset the series for this plot to the new series
+			series.get(IPlot.DEFAULT_CATEGORY).clear();
+			series.get(IPlot.DEFAULT_CATEGORY).addAll(newSeries);
+
 		}
-		series.get(IPlot.DEFAULT_CATEGORY).addAll(newSeries);
 
 		// Update the reference to the data source.
 		source = file;
