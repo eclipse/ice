@@ -15,8 +15,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
@@ -113,9 +115,8 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#beforeAllTests
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#
+	 * beforeAllTests ()
 	 */
 	@Override
 	public void beforeAllTests() {
@@ -149,9 +150,8 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#beforeEachTest
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#
+	 * beforeEachTest ()
 	 */
 	@Override
 	public void beforeEachTest() {
@@ -627,38 +627,13 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 			return plot;
 		}
 
-		// ---- Methods not required for these tests. ---- //
+		/*
+		 * Implements a method from IVizService.
+		 */
 		@Override
 		public String getVersion() {
 			return null;
 		}
-
-		@Override
-		public boolean hasConnectionProperties() {
-			return false;
-		}
-
-		@Override
-		public Map<String, String> getConnectionProperties() {
-			return null;
-		}
-
-		@Override
-		public void setConnectionProperties(Map<String, String> props) {
-			return;
-		}
-
-		@Override
-		public boolean connect() {
-			return false;
-		}
-
-		@Override
-		public boolean disconnect() {
-			return false;
-		}
-		// ----------------------------------------------- //
-
 	}
 
 	/**
@@ -669,19 +644,22 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	 */
 	private class FakeCSVVizService extends AbstractFakeVizService {
 
-		/**
-		 * Creates a viz service that handles the "csv" extension.
-		 */
-		public FakeCSVVizService() {
-			supportedExtensions.add("csv");
-		}
-
 		/*
 		 * Return a name unique to this service.
 		 */
 		@Override
 		public String getName() {
 			return "Fake CSV Viz Service";
+		}
+
+		/*
+		 * Implements an abstract method from AbstractVizService.
+		 */
+		@Override
+		protected Set<String> findSupportedExtensions() {
+			Set<String> extensions = new HashSet<String>(1);
+			extensions.add("csv");
+			return extensions;
 		}
 	}
 
@@ -692,12 +670,6 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	 *
 	 */
 	private class FakeTXTVizService extends AbstractFakeVizService {
-		/**
-		 * Creates a viz service that handles the "txt" extension.
-		 */
-		public FakeTXTVizService() {
-			supportedExtensions.add("txt");
-		}
 
 		/*
 		 * Return a name unique to this service.
@@ -705,6 +677,16 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 		@Override
 		public String getName() {
 			return "Fake Text File Viz Service";
+		}
+
+		/*
+		 * Implements an abstract method from AbstractVizService.
+		 */
+		@Override
+		protected Set<String> findSupportedExtensions() {
+			Set<String> extensions = new HashSet<String>(1);
+			extensions.add("txt");
+			return extensions;
 		}
 	}
 }
