@@ -28,15 +28,15 @@ public class ICETransformation extends ICEObject{
 	}
 
 	public double[] getScale() {
-		return transformation.getSkew();
+		return transformation.getScale();
 	}
 
 	public double[] getRotation() {
-		return transformation.getSkew();
+		return transformation.getRotation();
 	}
 
 	public double[] getTranslation() {
-		return transformation.getSkew();
+		return transformation.getTranslation();
 	}
 
 	public void setSkew(double newX, double newY, double newZ) {

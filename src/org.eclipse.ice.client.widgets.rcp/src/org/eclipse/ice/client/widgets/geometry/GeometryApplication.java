@@ -386,7 +386,7 @@ public class GeometryApplication extends SimpleApplication implements
 					}
 
 					// Attach the Node to a parent
-
+					System.out.println("Attached shape " + complexShapeNode.getName() + " to root node.");
 					this.node.attachChild(complexShapeNode);
 				}
 			}
@@ -409,6 +409,7 @@ public class GeometryApplication extends SimpleApplication implements
 				} else {
 					return;
 				}
+				System.out.println("Mesh type: " + shapeType.ordinal());
 				// Create geometry and store the reference to the shape data
 				// structure
 				Geometry geom = new Geometry(shape.getName(), mesh);
@@ -442,9 +443,11 @@ public class GeometryApplication extends SimpleApplication implements
 
 				// But it does.
 				geom.setQueueBucket(Bucket.Transparent);
-
+				
 				// Attach the Geometry to a parent
+//				System.out.println("Attached gemetry " + geom.getName() + " to node " + node.getName());
 				this.node.attachChild(geom);
+
 
 				return;
 			}

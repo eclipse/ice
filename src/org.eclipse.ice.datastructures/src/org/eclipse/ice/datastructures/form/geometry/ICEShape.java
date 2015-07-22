@@ -145,9 +145,10 @@ public class ICEShape extends ICEObject implements Component  {
 	
 	public void addShape(ICEShape newShape){
 		if (isComplex()){
-			notifyListeners();
 			((ComplexShape) shape).addShape(newShape.getShape());
+			newShape.setParent(this);
 			children.add(newShape);
+			notifyListeners();
 		}
 	}
 	
