@@ -295,17 +295,17 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 		// working as expected. For now, just return 1. A bug ticket has been
 		// filed.
 		int windowId = 1;
-		if (getState() == ConnectionState.Connected) {
-			// The order of the returned list is not guaranteed. Throw it into
-			// an ordered set and get the lowest positive ID not in the set.
-			Set<Integer> ids = new HashSet<Integer>(getWidget().getWindowIds());
-			// Find the first integer not in the set.
-			while (ids.contains(windowId)) {
-				windowId++;
-			}
-		} else {
-			windowId = -1;
-		}
+//		if (getState() == ConnectionState.Connected) {
+//			// The order of the returned list is not guaranteed. Throw it into
+//			// an ordered set and get the lowest positive ID not in the set.
+//			Set<Integer> ids = new HashSet<Integer>(getWidget().getWindowIds());
+//			// Find the first integer not in the set.
+//			while (ids.contains(windowId)) {
+//				windowId++;
+//			}
+//		} else {
+//			windowId = -1;
+//		}
 		return windowId;
 	}
 }
