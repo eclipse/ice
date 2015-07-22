@@ -34,7 +34,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Kasper Gammeltoft
  *
  */
-public class ReflectivityPropertySection extends AbstractPropertySection {
+public class ReflectivityDataPropertySection extends AbstractPropertySection {
 
 	/**
 	 * The data component that will hold the values for the user's input
@@ -55,7 +55,7 @@ public class ReflectivityPropertySection extends AbstractPropertySection {
 	/**
 	 * The constructor
 	 */
-	public ReflectivityPropertySection() {
+	public ReflectivityDataPropertySection() {
 		super();
 
 		return;

@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.ice.client.widgets.ElementSourceDialog;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Material;
@@ -92,8 +91,6 @@ public class ReflectivityPage extends ICEResourcePage
 	 */
 	private DataComponent data;
 
-	private Component[] selection;
-
 	/**
 	 * The sash form that is the base composite for the editor in this page
 	 */
@@ -129,7 +126,7 @@ public class ReflectivityPage extends ICEResourcePage
 		final FormToolkit formToolkit = managedForm.getToolkit();
 
 		// Set a GridLayout with a single column. Remove the default margins.
-		GridLayout layout = new GridLayout(1, true);
+		GridLayout layout = new GridLayout(1, false);
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
 		scrolledForm.getBody().setLayout(layout);
@@ -511,37 +508,45 @@ public class ReflectivityPage extends ICEResourcePage
 	 */
 	@Override
 	public ISelection getSelection() {
+		// Create the new selection- currently only (and always) contains just
+		// the data component to be displayed in the properties view
 		return new IStructuredSelection() {
 
 			@Override
 			public boolean isEmpty() {
+				// It is never empty- always has data component
 				return false;
 			}
 
 			@Override
 			public Object getFirstElement() {
+				// Get the data
 				return data;
 			}
 
 			@Override
 			public Iterator iterator() {
+				// Create an iterator over a list containing just the data
 				List<DataComponent> list = new ArrayList<DataComponent>();
 				list.add(data);
 				return list.iterator();
 			}
 
 			@Override
+			// Always 1 for now
 			public int size() {
 				return 1;
 			}
 
 			@Override
 			public Object[] toArray() {
+				// An array containing the data component
 				return new DataComponent[] { data };
 			}
 
 			@Override
 			public List toList() {
+				// A list containing the data component
 				List<DataComponent> list = new ArrayList<DataComponent>();
 				list.add(data);
 				return list;

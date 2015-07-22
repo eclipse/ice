@@ -7,20 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -47,7 +34,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
  *
  */
 public class ReflectivityTabDescriptorProvider
-		implements ITabDescriptorProvider, IComponentVisitor {
+		implements ITabDescriptorProvider {
 
 	/**
 	 * The tab descriptors. Should only hold the one tab for now with the
@@ -64,6 +51,7 @@ public class ReflectivityTabDescriptorProvider
 	 * The constructor
 	 */
 	public ReflectivityTabDescriptorProvider() {
+		// Local declarations
 		component = null;
 		descriptors = new ITabDescriptor[1];
 	}
@@ -135,8 +123,8 @@ public class ReflectivityTabDescriptorProvider
 
 				@Override
 				public ISection getSectionClass() {
-					ReflectivityPropertySection section;
-					section = new ReflectivityPropertySection();
+					ReflectivityDataPropertySection section;
+					section = new ReflectivityDataPropertySection();
 					section.setDataComponent(component);
 					return section;
 				}
@@ -163,77 +151,6 @@ public class ReflectivityTabDescriptorProvider
 		}
 
 		return descriptors;
-	}
-
-	@Override
-	public void visit(DataComponent component) {
-		this.component = component;
-	}
-
-	@Override
-	public void visit(ResourceComponent component) {
-		return;
-
-	}
-
-	@Override
-	public void visit(TableComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(MatrixComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(IShape component) {
-		return;
-	}
-
-	@Override
-	public void visit(GeometryComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(MasterDetailsComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(TreeComposite component) {
-		return;
-	}
-
-	@Override
-	public void visit(AdaptiveTreeComposite component) {
-		return;
-	}
-
-	@Override
-	public void visit(IReactorComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(TimeDataComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(MeshComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(EMFComponent component) {
-		return;
-	}
-
-	@Override
-	public void visit(ListComponent<?> component) {
-		return;
 	}
 
 }

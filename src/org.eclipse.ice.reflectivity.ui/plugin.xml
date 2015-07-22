@@ -6,8 +6,8 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.eclipse.ice.reflectivity.ui.ReflectivityPerspective"
-            id="org.eclipse.ice.reflectivity.ui.ReflectivityPerspective"
-            name="name">
+            id="org.eclipse.ice.reflectivity.ReflectivityPerspective"
+            name="Reflectivity">
       </perspective>
    </extension>
    <!-- Editor -->
@@ -29,6 +29,36 @@
          <propertyCategory
                category="Reflectivity"></propertyCategory>
       </propertyContributor>
+   </extension>
+   <!--Layout for the Reflectivity Perspective-->
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ice.reflectivity.ReflectivityPerspective">
+            <view
+            	closeable="false"
+            	id="org.eclipse.ice.client.common.ItemViewer"
+            	ratio="0.25f"
+            	relationship="left"
+            	relative="org.eclipse.ui.editorss"
+            	visible="true">
+            </view>
+            <view
+            	closeable="false"
+            	id="org.eclipse.ice.client.widgets.ICEResourceView"
+            	minimized="false"
+            	relationship="stack"
+            	relative="org.eclipse.ice.client.common.ItemViewer"
+            	visible="true">
+            </view>
+            <view
+            	closeable="false"
+            	id="org.eclipse.ui.views.PropertySheet"
+            	relationship="bottom"
+            	relative="org.eclipse.ui.editorss"
+            	visible="true">
+            </view>         	
+      </perspectiveExtension>
    </extension>
    
    
