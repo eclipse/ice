@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.form.geometry;
+package org.eclipse.ice.viz.service.geometry;
 
 import java.util.ArrayList;
 
@@ -19,10 +19,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 
 /**
  * <p>
@@ -34,7 +30,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
  */
 @XmlSeeAlso({ PrimitiveShape.class, ComplexShape.class })
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class AbstractShape extends ICEObject implements IShape {
+public abstract class AbstractShape extends VizObject implements IShape {
 	/**
 	 * <p>
 	 * Stores the list of keys for the property list
@@ -95,7 +91,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 		values = new ArrayList<String>();
 
 		// Create listeners list
-		listeners = new ArrayList<IUpdateableListener>();
+		listeners = new ArrayList<IVizUpdateableListener>();
 
 	}
 
@@ -400,15 +396,8 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *            The visitor querying the type of the object
 	 *            </p>
 	 */
-	@Override
-	public void accept(IComponentVisitor visitor) {
-
-		// Call the visitor's visit operation
-		// This is okay to do so in the AbstractClass because it is only
-		// required that the visit() call reveals its type as an IShape
-
-		visitor.visit(this);
-
+	public void accept(IShapeVisitor visitor) {
+		
 	}
 
 	/**
@@ -455,7 +444,7 @@ public abstract class AbstractShape extends ICEObject implements IShape {
 	 *            The parent of the IShape
 	 *            </p>
 	 */
-	protected void setParent(IShape parent) {
+	public void setParent(IShape parent) {
 		this.parent = parent;
 	}
 }

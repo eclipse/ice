@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
 import org.eclipse.jface.databinding.swt.IWidgetValueProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
@@ -65,7 +65,7 @@ public class TransformationView extends ViewPart {
 	 * </p>
 	 * 
 	 */
-	private IShape currentShape;
+	private ICEShape currentShape;
 
 	/**
 	 * Defines whether degrees or radians are used for rotation angles
@@ -228,19 +228,19 @@ public class TransformationView extends ViewPart {
 	 * 
 	 * @param shape
 	 */
-	public void setShape(IShape shape) {
+	public void setShape(ICEShape shape) {
 
 		this.currentShape = shape;
 
 		// Define a transformation for getting values
 
-		Transformation transformation;
+		ICETransformation transformation;
 
 		if (shape == null) {
 			// Make a new transformation to set the default values of the
 			// spinners
 
-			transformation = new Transformation();
+			transformation = new ICETransformation();
 		} else {
 			transformation = shape.getTransformation();
 		}
@@ -325,7 +325,7 @@ public class TransformationView extends ViewPart {
 
 				// Reset the Transformation to the new parameters
 
-				Transformation transformation = new Transformation();
+				ICETransformation transformation = new ICETransformation();
 				transformation.setSize(size);
 				transformation.setScale(scaleX, scaleY, scaleZ);
 				transformation.setRotation(rotationX, rotationY, rotationZ);

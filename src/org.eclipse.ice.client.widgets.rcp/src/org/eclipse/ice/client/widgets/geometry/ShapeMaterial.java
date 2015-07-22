@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry;
 
-import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -70,7 +70,7 @@ public class ShapeMaterial {
 	 *            The shape associated with this ShapeRenderProperties instance
 	 *            </p>
 	 */
-	public ShapeMaterial(AssetManager assetManager, IShape shape) {
+	public ShapeMaterial(AssetManager assetManager, ICEShape shape) {
 
 		// Set the assetManager used for this shape and material
 		this.assetManager = assetManager;
@@ -83,7 +83,7 @@ public class ShapeMaterial {
 		while (shape != null) {
 			applyShape(shape);
 			// Get the shape's parent
-			shape = shape.getParent();
+			shape = shape.getShapeParent();
 		}
 
 		return;
@@ -155,7 +155,7 @@ public class ShapeMaterial {
 	 *            The shape to apply (either a child or its ancestors)
 	 *            </p>
 	 */
-	private void applyShape(IShape shape) {
+	private void applyShape(ICEShape shape) {
 
 		// Extract the shape properties
 

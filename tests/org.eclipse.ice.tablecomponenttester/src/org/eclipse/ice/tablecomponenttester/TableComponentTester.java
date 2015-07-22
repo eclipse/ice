@@ -38,6 +38,7 @@ import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -238,7 +239,7 @@ public class TableComponentTester extends Item {
 		// ===========================================================================Try
 		// making geometry page
 		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new Geometry());
+		geometryComponent.setGeometry(new ICEGeometry());
 		geometryComponent.setId(108);
 		geometryComponent.setName("ICE Geometry Editor");
 		geometryComponent.setDescription("Create or edit a geometry in 3D.");

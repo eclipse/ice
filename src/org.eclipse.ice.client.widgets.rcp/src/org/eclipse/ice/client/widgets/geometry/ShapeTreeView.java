@@ -16,9 +16,10 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -66,7 +67,7 @@ public class ShapeTreeView extends ViewPart implements
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+	private ArrayList<ICEShape> selectedShapes = new ArrayList<ICEShape>();
 
 	// The actions for manipulating shapes
 	private DropdownAction addPrimitiveShapes;
@@ -131,29 +132,29 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Add the PrimitiveShape actions
 
-		Action addSphere = new ActionAddShape(this, ShapeType.Sphere);
+		Action addSphere = new ActionAddShape(this, ICEShapeType.Sphere);
 		addPrimitiveShapes.addAction(addSphere);
 
-		Action addCube = new ActionAddShape(this, ShapeType.Cube);
+		Action addCube = new ActionAddShape(this, ICEShapeType.Cube);
 		addPrimitiveShapes.addAction(addCube);
 
-		Action addCylinder = new ActionAddShape(this, ShapeType.Cylinder);
+		Action addCylinder = new ActionAddShape(this, ICEShapeType.Cylinder);
 		addPrimitiveShapes.addAction(addCylinder);
 
-		Action addTube = new ActionAddShape(this, ShapeType.Tube);
+		Action addTube = new ActionAddShape(this, ICEShapeType.Tube);
 		addPrimitiveShapes.addAction(addTube);
 
 		// Add the ComplexShape actions
 
-		Action addUnion = new ActionAddShape(this, OperatorType.Union);
+		Action addUnion = new ActionAddShape(this, ICEOperatorType.Union);
 		addComplexShapes.addAction(addUnion);
 
 		Action addIntersection = new ActionAddShape(this,
-				OperatorType.Intersection);
+				ICEOperatorType.Intersection);
 		addIntersection.setEnabled(false);
 		addComplexShapes.addAction(addIntersection);
 
-		Action addComplement = new ActionAddShape(this, OperatorType.Complement);
+		Action addComplement = new ActionAddShape(this, ICEOperatorType.Complement);
 		addComplement.setEnabled(false);
 		addComplexShapes.addAction(addComplement);
 
@@ -226,8 +227,8 @@ public class ShapeTreeView extends ViewPart implements
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+			if (selectedObject instanceof ICEShape) {
+				ICEShape selectedShape = (ICEShape) selectedObject;
 
 				// Set the TransformationView's shape
 
@@ -291,7 +292,7 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Edit the shapes' selection property
 
-		for (IShape selectedShape : selectedShapes) {
+		for (ICEShape selectedShape : selectedShapes) {
 			selectedShape.removeProperty("selected");
 		}
 
@@ -304,9 +305,9 @@ public class ShapeTreeView extends ViewPart implements
 
 			// Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ICEShape) {
 
-				IShape selectedShape = (IShape) selectedObject;
+				ICEShape selectedShape = (ICEShape) selectedObject;
 				selectedShape.setProperty("selected", "true");
 				selectedShapes.add(selectedShape);
 			}

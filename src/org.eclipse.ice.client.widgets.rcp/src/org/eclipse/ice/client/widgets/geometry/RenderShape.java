@@ -13,13 +13,10 @@
 package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
 
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
@@ -38,12 +35,7 @@ import com.jme3.scene.shape.Box;
  * 
  * @author Jay Jay Billings
  */
-public class RenderShape implements IShape {
-	/**
-	 * The wrapped shape serving as a data structure without storing any
-	 * rendering details
-	 */
-	private IShape shape;
+public class RenderShape extends ICEShape {
 
 	/**
 	 * 
@@ -58,10 +50,12 @@ public class RenderShape implements IShape {
 	 * 
 	 * @param shape
 	 */
-	public RenderShape(IShape shape) {
-
-		this.shape = shape;
-
+	public RenderShape(ICEShapeType shapeType){
+		super(shapeType);
+	}
+	
+	public RenderShape(ICEOperatorType operatorType){
+		super(operatorType);
 	}
 
 	/**
@@ -114,35 +108,27 @@ public class RenderShape implements IShape {
 
 	}
 
-	private class SpatialGenerator implements IShapeVisitor {
+	private class SpatialGenerator{
 
 		Spatial spatial = null;
 
-		/**
-		 * Creates a mesh at the end of the scene graph
-		 */
-		@Override
-		public void visit(PrimitiveShape primitiveShape) {
+		public void addShape(ICEShape newShape){
+			if(newShape.isComplex()){
+				if (newShape.getOperatorType() == ICEOperatorType.Union) {
 
-			Mesh mesh = new Box(1.0f, 1.0f, 1.0f);
-			spatial = new Geometry(primitiveShape.getName(), mesh);
-		}
+					Node node = new Node();
 
-		/**
-		 * Creates a node and adds child spatials to it
-		 */
-		@Override
-		public void visit(ComplexShape complexShape) {
-
-			// Unions are the only ComplexShape currently supported
-
-			if (complexShape.getType() == OperatorType.Union) {
-
-				Node node = new Node();
-
-				spatial = node;
+					spatial = node;
+				}
 			}
+			else{
+				Mesh mesh = new Box(1.0f, 1.0f, 1.0f);
+				spatial = new Geometry(newShape.getName(), mesh);
+			}
+			
 		}
+		
+
 	}
 
 	/**
@@ -159,7 +145,7 @@ public class RenderShape implements IShape {
 
 		// Call the appropriate visit operation of the above anonymous class
 
-		shape.acceptShapeVisitor(spatialGenerator);
+		spatialGenerator.addShape(this);
 
 		return spatialGenerator.spatial;
 
@@ -269,7 +255,7 @@ public class RenderShape implements IShape {
 	 */
 	private Transform getTransform() {
 
-		Transformation transformation = shape.getTransformation();
+		ICETransformation transformation = getTransformation();
 
 		// Create the JME3 transform
 
@@ -316,87 +302,6 @@ public class RenderShape implements IShape {
 
 	}
 
-	/*
-	 * Implements a method from Component.
-	 */
-	@Override
-	public void accept(IComponentVisitor visitor) {
-		// TODO Auto-generated method stub
 
-	}
 
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public Transformation getTransformation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public boolean setTransformation(Transformation transformation) {
-		return shape.setTransformation(transformation);
-	}
-
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public String getProperty(String key) {
-		return shape.getProperty(key);
-	}
-
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public boolean setProperty(String key, String value) {
-		return shape.setProperty(key, value);
-	}
-
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public boolean removeProperty(String key) {
-		return shape.removeProperty(key);
-	}
-
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public IShape getParent() {
-		// TODO
-		return null;
-	}
-
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public void acceptShapeVisitor(IShapeVisitor visitor) {
-		shape.acceptShapeVisitor(visitor);
-	}
-
-	/*
-	 * Overrides a super class method.
-	 */
-	@Override
-	public Object clone() {
-		return null;
-	}
-
-	/*
-	 * Implements a method from IUpdateable.
-	 */
-	@Override
-	public void unregister(IUpdateableListener listener) {
-		// TODO Auto-generated method stub
-
-	}
 }

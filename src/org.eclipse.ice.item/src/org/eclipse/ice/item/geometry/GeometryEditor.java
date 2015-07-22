@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.viz.service.geometry.Geometry;
@@ -91,7 +92,7 @@ public class GeometryEditor extends Item {
 
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
-		geometryComp.setGeometry(new Geometry());
+		geometryComp.setGeometry(new ICEGeometry());
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());

@@ -13,9 +13,8 @@
 package org.eclipse.ice.datastructures.test;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
 
 /**
  * <p>
@@ -24,7 +23,12 @@ import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
  * 
  * @author Jay Jay Billings
  */
-public class TestShape extends AbstractShape {
+public class TestShape extends ICEShape {
+	
+	TestShape(){
+		super(ICEShapeType.Cone);
+	}
+	
 	/**
 	 * <p>
 	 * This operation returns a clone of the ICEObject using a deep copy.
@@ -58,14 +62,4 @@ public class TestShape extends AbstractShape {
 		// Not implemented
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
-	 */
-	@Override
-	public void acceptShapeVisitor(IShapeVisitor visitor) {
-		// TODO Auto-generated method stub
-
-	}
 }

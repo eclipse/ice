@@ -10,9 +10,8 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson, 
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.form.geometry;
+package org.eclipse.ice.viz.service.geometry;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 
 /**
  * <p>
@@ -25,7 +24,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
  * 
  * @author Jay Jay Billings
  */
-public interface IShape extends Component {
+public interface IShape extends IVizUpdateable{
 	/**
 	 * <p>
 	 * Returns a copy of the transformation matrix associated with this shape

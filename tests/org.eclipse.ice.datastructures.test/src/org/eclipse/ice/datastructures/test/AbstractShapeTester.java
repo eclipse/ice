@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
 import org.junit.Test;
 
 /**
@@ -101,30 +101,6 @@ public class AbstractShapeTester {
 
 	/**
 	 * <p>
-	 * This operation checks the shape to ensure that it can be correctly
-	 * visited by a realization of the IComponent interface.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkVisitation() {
-
-		// Instantiate TestVisitor
-		TestVisitor testVisitor = new TestVisitor();
-
-		// Instantiate TestShape
-		Component unknownComponent = new TestShape();
-
-		// Call accept operation
-		unknownComponent.accept(testVisitor);
-
-		// Check that testVisitor was visited
-		assertTrue(testVisitor.wasVisited());
-
-	}
-
-	/**
-	 * <p>
 	 * This operation tests the shape to ensure that it can properly dispatch
 	 * notifications when it receives an update that changes its state.
 	 * </p>
@@ -133,14 +109,14 @@ public class AbstractShapeTester {
 	@Test
 	public void checkNotifications() {
 		// Setup the listener
-		TestComponentListener testComponentListener = new TestComponentListener();
+		TestVizComponentListener testComponentListener = new TestVizComponentListener();
 
 		// Setup the TestShape
 		TestShape testShape = new TestShape();
-		testShape.register(testComponentListener);
+		testShape.getShape().register(testComponentListener);
 
 		// Trigger a notification with setTransformation
-		Transformation transformation = testShape.getTransformation();
+		ICETransformation transformation = testShape.getTransformation();
 		transformation.setRotation(1.1, 0.1, 0.0);
 		testShape.setTransformation(transformation);
 
@@ -193,7 +169,7 @@ public class AbstractShapeTester {
 		TestShape transitiveComponent = new TestShape();
 		TestShape unequalPropertiesComponent = new TestShape();
 
-		Transformation transformation = new Transformation();
+		ICETransformation transformation = new ICETransformation();
 		transformation.setScale(2.0, 3.0, 2.0e-4);
 
 		component.setTransformation(transformation);
@@ -206,7 +182,7 @@ public class AbstractShapeTester {
 		transitiveComponent.setProperty("key!", "value!");
 		unequalPropertiesComponent.setProperty("key!", " o(^-^)o ");
 
-		unEqualComponent.setTransformation(new Transformation());
+		unEqualComponent.setTransformation(new ICETransformation());
 
 		// Set ICEObject data
 		component.setId(1);
@@ -288,7 +264,7 @@ public class AbstractShapeTester {
 		// Set up IShape-specific stuff
 		testShape.setProperty("kei", "valeu");
 
-		Transformation transformation = new Transformation();
+		ICETransformation transformation = new ICETransformation();
 		transformation.setSkew(2, 0, 3498.0);
 		testShape.setTransformation(transformation);
 
@@ -327,7 +303,7 @@ public class AbstractShapeTester {
 		TestShape testShape = new TestShape();
 
 		// Check that the transformation is instantiated to an identity matrix
-		Transformation transformation = new Transformation();
+		ICETransformation transformation = new ICETransformation();
 		assertEquals(transformation, testShape.getTransformation());
 
 		// Modify and set the transformation

@@ -16,11 +16,9 @@ import java.net.URL;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -109,15 +107,15 @@ public class ActionReplicateShape extends Action {
 
 		Object selectedObject = paths[0].getLastSegment();
 
-		if (!(selectedObject instanceof IShape)) {
+		if (!(selectedObject instanceof ICEShape)) {
 			return;
 		}
-		IShape selectedShape = (IShape) selectedObject;
+		ICEShape selectedShape = (ICEShape) selectedObject;
 
 		// Create a transformation, initialized from the selected shape's
 		// transformation
 
-		Transformation accumulatedTransformation = (Transformation) selectedShape
+		ICETransformation accumulatedTransformation = (ICETransformation) selectedShape
 				.getTransformation().clone();
 
 		// Open the dialog
@@ -142,7 +140,7 @@ public class ActionReplicateShape extends Action {
 		// If the selected shape is a direct child of a GeometryComponent,
 		// its parent shape is null.
 
-		ComplexShape parentShape = (ComplexShape) selectedShape.getParent();
+		ICEShape parentShape = selectedShape.getShapeParent();
 
 		// Remove the selected shape from its original parent
 
@@ -156,7 +154,7 @@ public class ActionReplicateShape extends Action {
 
 		// Create a new parent union shape
 
-		ComplexShape replicateUnion = new ComplexShape(OperatorType.Union);
+		ICEShape replicateUnion = new ICEShape(ICEOperatorType.Union);
 		replicateUnion.setName("Replication");
 		replicateUnion.setId(((ICEObject) selectedShape).getId());
 
@@ -164,15 +162,15 @@ public class ActionReplicateShape extends Action {
 
 			// Clone the selected shape and remove its "selected" property
 
-			IShape clonedShape = (IShape) ((AbstractShape) selectedShape)
+			ICEShape clonedShape = (ICEShape) ((ICEShape) selectedShape)
 					.clone();
 			clonedShape.removeProperty("selected");
 			((ICEObject) clonedShape).setId(i);
 
 			// Add the translation
-
+			//ICETransformation clonedTransformation = (ICETransformation) accumulatedTransformation.clone();
 			clonedShape
-					.setTransformation((Transformation) accumulatedTransformation
+					.setTransformation((ICETransformation) accumulatedTransformation
 							.clone());
 
 			// Add it to the replicated union

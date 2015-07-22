@@ -15,8 +15,7 @@ package org.eclipse.ice.client.widgets.geometry;
 import java.net.URL;
 
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -112,25 +111,12 @@ public class ActionDeleteShape extends Action {
 
 			// Check if the selected object is an IShape
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ICEShape) {
 
-				IShape selectedShape = (IShape) selectedObject;
-				IShape parentShape = selectedShape.getParent();
-
-				if (parentShape instanceof ComplexShape) {
-
-					// Remove the selected shape from the parent
-
-					ComplexShape parentComplexShape = (ComplexShape) parentShape;
-
-					synchronized (geometry) {
-						parentComplexShape.removeShape(selectedShape);
-					}
-
-					view.treeViewer.refresh(parentShape);
-				}
-
-				else if (parentShape == null) {
+				ICEShape selectedShape = (ICEShape) selectedObject;
+				ICEShape parentShape = selectedShape.getShapeParent();
+				
+				if (parentShape == null) {
 
 					// The parent shape may be the root GeometryComponent,
 					// so try removing it from there.
@@ -139,6 +125,16 @@ public class ActionDeleteShape extends Action {
 						geometry.getGeometry().removeShape(selectedShape);
 					}
 					view.treeViewer.refresh();
+				}
+				else if (parentShape.isComplex()) {
+
+					// Remove the selected shape from the parent
+
+					synchronized (geometry) {
+						parentShape.removeShape(selectedShape);
+					}
+
+					view.treeViewer.refresh(parentShape);
 				}
 			}
 		}

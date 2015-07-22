@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.form.geometry;
+package org.eclipse.ice.viz.service.geometry;
 
 import java.util.ArrayList;
 
@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 
 /**
  * <p>

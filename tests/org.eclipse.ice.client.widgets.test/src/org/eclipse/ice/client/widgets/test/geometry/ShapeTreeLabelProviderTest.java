@@ -16,10 +16,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeLabelProvider;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
 import org.junit.Test;
 
 /**
@@ -63,8 +62,8 @@ public class ShapeTreeLabelProviderTest {
 
 		// Any input should produce a null return value
 
-		PrimitiveShape cube1 = new PrimitiveShape(ShapeType.Cube);
-		ComplexShape intersection1 = new ComplexShape(OperatorType.Intersection);
+		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
+		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
 
 		assertNull(labelProvider.getImage(cube1));
 		assertNull(labelProvider.getImage(intersection1));
@@ -85,13 +84,13 @@ public class ShapeTreeLabelProviderTest {
 
 		// Create some named shapes
 
-		PrimitiveShape cube1 = new PrimitiveShape(ShapeType.Cube);
+		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
 		cube1.setName("KUB");
 
-		ComplexShape intersection1 = new ComplexShape(OperatorType.Intersection);
+		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
 		intersection1.setName("INTRASECSION");
 
-		ComplexShape union1 = new ComplexShape(OperatorType.Union);
+		ICEShape union1 = new ICEShape(ICEOperatorType.Union);
 		union1.setDescription("Not a name");
 		union1.setId(1111);
 

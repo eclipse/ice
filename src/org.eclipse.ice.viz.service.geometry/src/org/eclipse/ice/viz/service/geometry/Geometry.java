@@ -22,13 +22,6 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.geometry.AbstractGeometry;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-
 /**
  * A class which manages a collection of shapes for its parent
  * GeometryComponent. It is registered as a listener for each IShape and the
@@ -40,7 +33,7 @@ import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
 
 @XmlRootElement(name = "Geometry")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateableListener {
+public class Geometry implements IVizUpdateable, IVizUpdateableListener {
 
 	/**
 	 * <p>
@@ -58,7 +51,7 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 * The list of objects registered as listeners to this one.
 	 */
 	@XmlTransient
-	private ArrayList<IUpdateableListener> listeners;
+	private ArrayList<IVizUpdateableListener> listeners;
 
 	/**
 	 * The IUpdateable description
@@ -85,7 +78,7 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 		// Create new shapes and listeners lists
 		shapes = new ArrayList<IShape>();
 
-		listeners = new ArrayList<IUpdateableListener>();
+		listeners = new ArrayList<IVizUpdateableListener>();
 	}
 
 	/**
@@ -98,7 +91,6 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 *            The new shape to be added to the existing list
 	 *            </p>
 	 */
-	@Override
 	public void addShape(IShape shape) {
 
 		// Ignore null
@@ -126,7 +118,6 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 *            The IShape reference to be removed from the shapes list
 	 *            </p>
 	 */
-	@Override
 	public void removeShape(IShape shape) {
 
 		// Ignore null
@@ -151,7 +142,6 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 *         The list of shapes contained in this GeometryComponent container
 	 *         </p>
 	 */
-	@Override
 	public ArrayList<IShape> getShapes() {
 
 		// Simply return a reference to the shapes list
@@ -166,7 +156,6 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 *            The shapes list to replace the existing shapes list
 	 *            </p>
 	 */
-	@Override
 	public void setShapes(ArrayList<IShape> shapes) {
 
 		// If null, quietly fail
@@ -295,7 +284,7 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 		// Copy listeners list
 		this.listeners.clear();
 
-		for (IUpdateableListener listener : iceObject.listeners) {
+		for (IVizUpdateableListener listener : iceObject.listeners) {
 			this.listeners.add(listener);
 		}
 
@@ -354,7 +343,7 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 		final Geometry geometry = this;
 
 		// If the listeners are empty, return
@@ -466,7 +455,7 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 * .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
-	public void register(IUpdateableListener listener) {
+	public void register(IVizUpdateableListener listener) {
 		listeners.add(listener);
 
 	}
@@ -479,7 +468,7 @@ public class Geometry extends AbstractGeometry implements IUpdateable, IUpdateab
 	 * .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
-	public void unregister(IUpdateableListener listener) {
+	public void unregister(IVizUpdateableListener listener) {
 		listeners.remove(listener);
 
 	}

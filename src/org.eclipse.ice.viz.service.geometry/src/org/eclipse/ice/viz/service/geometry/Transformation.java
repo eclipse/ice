@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.form.geometry;
+package org.eclipse.ice.viz.service.geometry;
 
 import java.util.Arrays;
 
@@ -19,8 +19,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <p>
@@ -36,7 +34,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
  */
 @XmlRootElement(name = "Transformation")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Transformation extends ICEObject {
+public class Transformation extends VizObject {
 	/**
 	 * <p>
 	 * The amount of skew for each of the three axes: x, y, and z
