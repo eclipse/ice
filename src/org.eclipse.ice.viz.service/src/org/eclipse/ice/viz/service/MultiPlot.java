@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
@@ -190,6 +191,14 @@ public abstract class MultiPlot implements IPlot {
 
 		// Get the PlotRender associated with the parent Composite.
 		PlotRender plotRender = plotRenders.get(parent);
+
+		if (plotRender instanceof ConnectionPlotRender) {
+			((ConnectionPlotRender) plotRender)
+					.setPlotCategory(independentSeries.getCategory());
+			((ConnectionPlotRender) plotRender)
+					.setPlotType(independentSeries.getLabel());
+
+		}
 
 		// Create the PlotRender and associate it with the parent as necessary.
 		if (plotRender == null) {

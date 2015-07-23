@@ -285,8 +285,19 @@ public class PlotEditor extends EditorPart {
 		List<ISeries> tempSeries = null;
 		// Temporary holder for the independent series for the plot
 		ISeries tempIndSeries = null;
+		String[] tempCategories = selectedService.getPlot().getCategories();
 		try {
-			tempSeries = selectedService.getPlot().getAllDependentSeries(null);
+			for (int i = 0; i < tempCategories.length; i++) {
+				List<ISeries> temp = selectedService.getPlot()
+						.getAllDependentSeries(tempCategories[i]);
+				if (temp != null) {
+					if (tempSeries == null) {
+						tempSeries = temp;
+					} else {
+						tempSeries.addAll(temp);
+					}
+				}
+			}
 			tempIndSeries = selectedService.getPlot().getIndependentSeries();
 		} catch (Exception e2) {
 			System.out.println("Error reading plot types.");
@@ -294,18 +305,42 @@ public class PlotEditor extends EditorPart {
 
 		// While loading is not yet complete, wait and periodically
 		// attempt to read the plot types again.
+		int maxWaitForIndependent = 2000;
+		int time = 0;
 		while (tempSeries == null || tempIndSeries == null
 				|| tempSeries.isEmpty()) {
 			try {
+				// Wait for 500 miliseconds
 				Thread.sleep(500);
+				// If the dependent series is null try adding the series from
+				// the categories retrieved
 				if (tempSeries == null || tempSeries.isEmpty()) {
-					tempSeries = selectedService.getPlot()
-							.getAllDependentSeries(null);
+					for (int i = 0; i < tempCategories.length; i++) {
+						List<ISeries> temp = selectedService.getPlot()
+								.getAllDependentSeries(tempCategories[i]);
+						if (temp != null) {
+							if (tempSeries == null) {
+								tempSeries = temp;
+							} else {
+								tempSeries.addAll(temp);
+							}
+						}
+					}
 				}
+				// Try getting the independent series
 				if (tempIndSeries == null) {
 					tempIndSeries = selectedService.getPlot()
 							.getIndependentSeries();
 				}
+
+				// Just set the independent series to the first one if the job
+				// goes over two seconds.
+				if (time > maxWaitForIndependent && tempSeries != null
+						&& tempIndSeries == null) {
+					tempIndSeries = tempSeries.get(0);
+				}
+
+				time += 500;
 
 			} catch (Exception e1) {
 				System.out.println("Error reading plot types.");
@@ -370,6 +405,7 @@ public class PlotEditor extends EditorPart {
 
 		// Create a map of category trees to add to the menu if need be.
 		Map<String, ActionTree> categoryTrees = null;
+		ActionTree seriesTree = new ActionTree("Plot Series");
 		// Only create categories if they will be useful in the menu (if there
 		// is more than one)
 		if (categories.length > 1) {
@@ -380,11 +416,10 @@ public class PlotEditor extends EditorPart {
 				menuTree.add(catTree);
 				categoryTrees.put(category, catTree);
 			}
+		} else {
+			// A second level menu that will hold the series to plot
+			menuTree.add(seriesTree);
 		}
-
-		// A second level menu that will hold the series to plot
-		ActionTree seriesTree = new ActionTree("Plot Series");
-		menuTree.add(seriesTree);
 
 		for (final ISeries series : seriesToPlot) {
 
@@ -398,6 +433,8 @@ public class PlotEditor extends EditorPart {
 						// redraw.
 						series.setEnabled(true);
 						if (series instanceof ConnectionSeries) {
+							System.out
+									.println("Setting new series and updating");
 							selectedService.getPlot()
 									.setIndependentSeries(series);
 						}
@@ -434,8 +471,15 @@ public class PlotEditor extends EditorPart {
 		// Add close action directly under menu
 		menuTree.add(new ActionTree(close));
 
-		// Update menu
-		seriesTree.getContributionItem().fill(menu.getMenu(), -1);
+		if (categoryTrees == null) {
+			// Update menu
+			seriesTree.getContributionItem().fill(menu.getMenu(), -1);
+		} else {
+			for (String category : categoryTrees.keySet()) {
+				categoryTrees.get(category).getContributionItem()
+						.fill(menu.getMenu(), -1);
+			}
+		}
 		menu.updateAll(true);
 		barManager.add(menuTree.getContributionItem());
 
@@ -449,6 +493,10 @@ public class PlotEditor extends EditorPart {
 
 		// Draw the plot
 		try {
+			if (independentSeries instanceof ConnectionSeries) {
+				selectedService.getPlot()
+						.setIndependentSeries(independentSeries);
+			}
 			selectedService.getPlot().draw(plotComposite);
 			body.layout();
 		} catch (Exception e) {

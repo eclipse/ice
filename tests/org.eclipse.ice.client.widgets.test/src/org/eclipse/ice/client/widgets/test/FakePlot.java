@@ -228,4 +228,11 @@ public class FakePlot implements IPlot {
 	public List<ISeries> getAllDependentSeries(String category) {
 		return depSeries.get(category);
 	}
+
+	@Override
+	public String[] getCategories() {
+		// TODO Auto-generated method stub
+		return depSeries.keySet()
+				.toArray(new String[depSeries.keySet().size()]);
+	}
 }
