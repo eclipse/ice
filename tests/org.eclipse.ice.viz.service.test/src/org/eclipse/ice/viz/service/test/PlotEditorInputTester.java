@@ -140,5 +140,11 @@ public class PlotEditorInputTester {
 		public List<ISeries> getAllDependentSeries(String category) {
 			return depSeries.get(category);
 		}
+
+		@Override
+		public String[] getCategories() {
+			return depSeries.keySet()
+					.toArray(new String[depSeries.keySet().size()]);
+		}
 	}
 }

@@ -135,4 +135,11 @@ public interface ISeries {
 	 */
 	public void setEnabled(boolean enable);
 
+	/**
+	 * Gets the current category that this series is in
+	 * 
+	 * @return
+	 */
+	public String getCategory();
+
 }

@@ -178,6 +178,16 @@ public abstract class MultiPlot implements IPlot {
 					+ "Cannot draw plot inside disposed Composite.");
 		}
 
+		// Set the default independent series as the first dependent one in the
+		// first category
+		if (this.independentSeries == null) {
+			if (!this.series.isEmpty()) {
+				String firstCategory = this.series.keySet()
+						.toArray(new String[this.series.keySet().size()])[0];
+				this.independentSeries = this.series.get(firstCategory).get(0);
+			}
+		}
+
 		// Get the PlotRender associated with the parent Composite.
 		PlotRender plotRender = plotRenders.get(parent);
 
@@ -301,6 +311,16 @@ public abstract class MultiPlot implements IPlot {
 			depSeries = series.get(category);
 		}
 		return depSeries;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IPlot#getCategories()
+	 */
+	@Override
+	public String[] getCategories() {
+		return series.keySet().toArray(new String[series.keySet().size()]);
 	}
 
 	// --------------------------- //

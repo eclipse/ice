@@ -95,4 +95,11 @@ public interface IPlot extends IVizCanvas {
 	 */
 	public List<ISeries> getAllDependentSeries(String category);
 
+	/**
+	 * Gets all of the categories currently associated with this plot.
+	 * 
+	 * @return The categories for this plot.
+	 */
+	public String[] getCategories();
+
 }

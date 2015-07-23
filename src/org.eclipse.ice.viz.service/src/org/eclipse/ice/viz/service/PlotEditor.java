@@ -14,12 +14,15 @@ package org.eclipse.ice.viz.service;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.viz.service.connections.ConnectionSeries;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -310,6 +313,7 @@ public class PlotEditor extends EditorPart {
 		}
 
 		// Get final references to use in the new thread.
+		final String[] categories = selectedService.getPlot().getCategories();
 		final List<ISeries> depSeries = tempSeries;
 		final ISeries indSeries = tempIndSeries;
 
@@ -322,7 +326,7 @@ public class PlotEditor extends EditorPart {
 			@Override
 			public void run() {
 				createUI(barManager, body, selectedService, thisEditor,
-						depSeries, indSeries);
+						depSeries, indSeries, categories);
 
 			}
 		});
@@ -350,7 +354,8 @@ public class PlotEditor extends EditorPart {
 	 */
 	private void createUI(ToolBarManager barManager, final Composite body,
 			final PlotEditorInput selectedService, final IEditorPart thisEditor,
-			final List<ISeries> seriesToPlot, final ISeries independentSeries) {
+			final List<ISeries> seriesToPlot, final ISeries independentSeries,
+			final String[] categories) {
 		body.setLayout(new GridLayout());
 		body.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		// Finish setting up the editor window
@@ -362,6 +367,20 @@ public class PlotEditor extends EditorPart {
 
 		// Top level menu
 		ActionTree menuTree = new ActionTree("Menu");
+
+		// Create a map of category trees to add to the menu if need be.
+		Map<String, ActionTree> categoryTrees = null;
+		// Only create categories if they will be useful in the menu (if there
+		// is more than one)
+		if (categories.length > 1) {
+			categoryTrees = new TreeMap<String, ActionTree>();
+			for (int i = 0; i < categories.length; i++) {
+				String category = categories[i];
+				ActionTree catTree = new ActionTree(category);
+				menuTree.add(catTree);
+				categoryTrees.put(category, catTree);
+			}
+		}
 
 		// A second level menu that will hold the series to plot
 		ActionTree seriesTree = new ActionTree("Plot Series");
@@ -378,6 +397,10 @@ public class PlotEditor extends EditorPart {
 						// Adds the series to the editor and sets the plot to
 						// redraw.
 						series.setEnabled(true);
+						if (series instanceof ConnectionSeries) {
+							selectedService.getPlot()
+									.setIndependentSeries(series);
+						}
 						selectedService.getPlot().draw(plotComposite);
 						body.layout();
 					} catch (Exception e) {
@@ -386,8 +409,16 @@ public class PlotEditor extends EditorPart {
 				}
 
 			};
-			// Add the new menu entry
-			seriesTree.add(new ActionTree(tempAction));
+			// If there are no categories in the tree hierarchy, then add to
+			// the general menu
+			if (categoryTrees == null) {
+				// Add the new menu entry
+				seriesTree.add(new ActionTree(tempAction));
+				// Otherwise, add to the specific category for this series
+			} else {
+				categoryTrees.get(series.getCategory())
+						.add(new ActionTree(tempAction));
+			}
 
 		}
 

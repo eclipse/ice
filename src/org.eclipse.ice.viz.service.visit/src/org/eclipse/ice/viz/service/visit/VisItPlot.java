@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.ConnectionSeries;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
 
@@ -96,28 +96,13 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		return new VisItPlotRender(parent, this);
 	}
 
-	protected Map<String, String[]> getPlotTypes() throws Exception {
-		// If needed, rebuild the plot type map
-		if (plotTypes == null) {
-			plotTypes = new HashMap<String, String[]>();
-
-			Map<String, String[]> newPlotTypes = findPlotTypes(source);
-			plotTypes.putAll(newPlotTypes);
-		}
-		return plotTypes;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.viz.service.MultiPlot#findPlotTypes(java.net.URI)
 	 */
 	@Override
-	protected Map<String, String[]> findPlotTypes(URI file)
-			throws IOException, Exception {
-
-		// Set the default return value.
-		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
+	protected void addAllPlotTypes(URI file) throws IOException, Exception {
 
 		// Get the connection adapter.
 		IConnectionAdapter<VisItSwtConnection> adapter = getConnectionAdapter();
@@ -131,18 +116,36 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		methods.openDatabase(sourcePath);
 		FileInfo info = methods.getDatabaseInfo();
 
-		// Get all of the plot types and plots in the file.
+		// Get all of the plot types and plots in the file and add them as
+		// series to this plot
 		List<String> plots;
 		plots = info.getMeshes();
-		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
+		convertToSeries("Meshes", plots);
 		plots = info.getMaterials();
-		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
+		convertToSeries("Materials", plots);
 		plots = info.getScalars();
-		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
+		convertToSeries("Scalars", plots);
 		plots = info.getVectors();
-		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
+		convertToSeries("Vectors", plots);
 
-		return plotTypes;
+		return;
+	}
+
+	/**
+	 * Converts each string in the types array to a VisItSeries, and adds it to
+	 * the dependent series array under the specified category
+	 * 
+	 * @param category
+	 *            The category to add the series under
+	 * @param types
+	 *            The type of plot this series will represent
+	 */
+	private void convertToSeries(String category, List<String> types) {
+		for (String str : types) {
+			ConnectionSeries newSeries = new ConnectionSeries(str);
+			newSeries.setCategory(category);
+			this.addDependentSeries(category, newSeries);
+		}
 	}
 
 	/**

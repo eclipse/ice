@@ -321,6 +321,11 @@ public abstract class ConnectionPlotRender<T> extends PlotRender {
 
 	public void setPlotType(String type) {
 		this.type = type;
+		try {
+			updatePlotComposite(this.plotComposite);
+		} catch (Exception e) {
+			logger.error("Unable to update plot composite!", e);
+		}
 	}
 
 }

@@ -18,8 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.ConnectionSeries;
 import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -138,6 +140,12 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// Create the ActionTree that will contain the representations for the
 		// current plot category.
 		repTree = new ActionTree("Representation");
+
+		ConnectionSeries indep = (ConnectionSeries) plot.getIndependentSeries();
+		if (indep != null) {
+			setPlotCategory(indep.getCategory());
+			setPlotType(indep.getLabel());
+		}
 
 		return;
 	}
@@ -310,7 +318,7 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		if (plotTypeChanged && type != null) {
 			plotTypeChanged = false;
 			// Check that the category and type is valid.
-			String[] types = plot.getPlotTypes().get(category);
+			String[] types = getTypesFromSeries(category);
 			if (types != null) {
 				for (int i = 0; !plotTypeChanged && i < types.length; i++) {
 					if (type.equals(types[i])) {
@@ -368,6 +376,24 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		}
 
 		return;
+	}
+
+	/**
+	 * Converts the series for the specific category into strings for setting
+	 * the plot type of the visIt client
+	 * 
+	 * @param category
+	 *            The category for retrieving all of the plot types
+	 * @return String[] an array of strings, representing the plot types
+	 */
+	private String[] getTypesFromSeries(String category) {
+		List<ISeries> series = plot.getAllDependentSeries(category);
+		String[] types = new String[series.size()];
+		for (int i = 0; i < series.size(); i++) {
+			ISeries ser = series.get(i);
+			types[i] = ser.getLabel();
+		}
+		return types;
 	}
 
 	/*

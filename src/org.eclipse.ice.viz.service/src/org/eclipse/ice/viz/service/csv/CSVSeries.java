@@ -12,6 +12,7 @@
 
 package org.eclipse.ice.viz.service.csv;
 
+import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.ISeriesStyle;
 import org.eclipse.ice.viz.service.styles.AbstractSeriesStyle;
@@ -211,6 +212,15 @@ public class CSVSeries extends TransformedList<Double, Double>
 	 */
 	public String getUnit() {
 		return unit;
+	}
+
+	/**
+	 * There should not be multiple categories for this type of series, so
+	 * return the default category
+	 */
+	@Override
+	public String getCategory() {
+		return IPlot.DEFAULT_CATEGORY;
 	}
 
 	@Override
