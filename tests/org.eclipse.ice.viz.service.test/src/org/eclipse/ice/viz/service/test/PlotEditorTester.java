@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
+
+import java.io.File;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -25,16 +27,14 @@ import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-
-import java.io.File;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * This class is responsible for testing the PlotEditor class.
@@ -91,9 +91,8 @@ public class PlotEditorTester {
 				// Set the location as
 				// ${workspace_loc}/CAEBATModelTesterWorkspace
 				defaultProjectLocation = (new File(
-						System.getProperty("user.home") + separator
-								+ "ICETests" + separator + projectName))
-						.toURI();
+						System.getProperty("user.home") + separator + "ICETests"
+								+ separator + projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -129,8 +128,7 @@ public class PlotEditorTester {
 		// Test the plot category selection menu
 		SWTBotToolbarDropDownButton button = bot.activeEditor().bot()
 				.toolbarDropDownButton();
-		button.menuItem("Plot Categories").menu("Bar").menu("x vs. f(x)")
-				.click();
+		button.menuItem("Plot Series").menu("f(x)").click();
 
 		// Close the menu before testing the next item
 		try {

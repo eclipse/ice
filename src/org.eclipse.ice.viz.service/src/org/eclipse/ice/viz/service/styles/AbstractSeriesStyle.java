@@ -78,8 +78,9 @@ public abstract class AbstractSeriesStyle implements ISeriesStyle {
 		if (propertyExists) {
 			// If the current value is null, then any value is good. Otherwise,
 			// see if the new value is an instance of the current value
-			valueIsGood = properties.get(propertyType) == null || (value
-					.getClass().isInstance(properties.get(propertyType)));
+			valueIsGood = properties.get(propertyType) == null || value == null
+					|| (value.getClass()
+							.isInstance(properties.get(propertyType)));
 
 			// Set the property
 			if (valueIsGood) {
@@ -99,6 +100,45 @@ public abstract class AbstractSeriesStyle implements ISeriesStyle {
 	@Override
 	public Set<String> getAllPropertyTypes() {
 		return properties.keySet();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		// Local declarations
+		boolean isEqual = false;
+		// Only compare if the other object is not null and an instance of this
+		// class
+		if (other != null && other instanceof AbstractSeriesStyle) {
+			// If these are the same reference, must be equal
+			if (other == this) {
+				isEqual = true;
+				// Otherwise, compare the properties of each style
+			} else {
+				AbstractSeriesStyle otherStyle = (AbstractSeriesStyle) other;
+				isEqual = properties.equals(otherStyle.properties);
+			}
+		}
+		// Return the equality between the two styles
+		return isEqual;
+	}
+
+	@Override
+	public int hashCode() {
+		// Local declarations
+		int hash = 8;
+		// Compute the hash from the properties
+		hash = 31 * hash + properties.hashCode();
+		return hash;
+	}
+
+	/**
+	 * Copies the properties from the specified style to this style
+	 * 
+	 * @param other
+	 *            The other style to copy
+	 */
+	public void copy(AbstractSeriesStyle other) {
+		this.properties = other.properties;
 	}
 
 }

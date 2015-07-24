@@ -11,7 +11,6 @@ Require-Bundle: org.junit,
 Import-Package: org.apache.log4j,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.form.geometry,
- org.eclipse.ice.datastructures.test,
  org.eclipse.ice.viz.service.geometry
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.viz.service.geometry.test

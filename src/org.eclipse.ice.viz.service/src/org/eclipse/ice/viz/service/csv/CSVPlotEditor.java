@@ -240,9 +240,13 @@ public class CSVPlotEditor extends EditorPart {
 			seriesMap.remove(series);
 			// See if it is an error series to a parent in the map and remove it
 		} else if (seriesMap.containsKey(series.getParentSeries())) {
+			ISeries parent = series.getParentSeries();
 			// Updates the trace for the parent, so that
-			seriesMap.get(series.getParentSeries()).remove(series);
-			// TODO- Refresh the plot that had this error series on it!
+			seriesMap.get(parent).remove(series);
+			// Redraw the series and recalculate the trace so that it updates on
+			// screen
+			redrawSeries((CSVSeries) parent);
+
 		}
 
 		// Remove the trace as well if it is being plotted on the graph
@@ -569,6 +573,74 @@ public class CSVPlotEditor extends EditorPart {
 		xyGraph.repaint();
 
 		return;
+
+	}
+
+	/**
+	 * This operation completely recreates the trace for the specified series
+	 * and replaces the current trace with this one.
+	 * 
+	 * @param series
+	 *            The series to recreate the trace for
+	 */
+	private void redrawSeries(CSVSeries series) {
+		// Get the x values and error for plotting
+		double[] xValues = getDoubleValue(independentSeries);
+		double[] xPlusError = new double[((CSVSeries) independentSeries)
+				.size()];
+		double[] xMinusError = new double[((CSVSeries) independentSeries)
+				.size()];
+		// Gets the error for the series, if there is any
+		if (seriesMap.containsKey(independentSeries)) {
+			List<ISeries> errors = seriesMap.get(independentSeries);
+			if (errors != null && errors.size() > 0) {
+				for (ISeries errSeries : errors) {
+					// Get the error style, and add the error to the
+					// appropriate series
+					BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
+							.getStyle();
+					// If the style is positive error (the bars are above
+					// the point)
+					if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+							.equals(ErrorBarType.PLUS)) {
+						sumArrays(xPlusError, getDoubleValue(errSeries));
+						// If the style is negative error (the bars are
+						// below the point)
+					} else
+						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.MINUS)) {
+						sumArrays(xMinusError, getDoubleValue(errSeries));
+						// If the style is both (above and below the point)
+					} else if (errStyle
+							.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+							.equals(ErrorBarType.BOTH)) {
+						sumArrays(xPlusError, getDoubleValue(errSeries));
+						sumArrays(xMinusError, getDoubleValue(errSeries));
+					}
+				}
+			}
+
+		}
+
+		// Create the new trace
+		Trace trace = configureTrace(series, xValues, xPlusError, xMinusError);
+
+		// If the trace is not null, then add the new trace to the graph and
+		// take the old trace out
+		if (trace != null) {
+			XYZSeriesStyle indepStyle = (XYZSeriesStyle) independentSeries
+					.getStyle();
+
+			// Configure the x error for the series
+			trace.setXErrorBarType((ErrorBarType) indepStyle
+					.getProperty(XYZSeriesStyle.ERROR_TYPE));
+		}
+		// Replace the other trace in the existing traces map
+		xyGraph.remove(this.existingTraces.remove(series));
+		xyGraph.addTrace(trace);
+
+		// Re-add to the existing traces map
+		existingTraces.put(series, trace);
 
 	}
 

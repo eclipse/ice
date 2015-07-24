@@ -121,4 +121,15 @@ public class XYZAxisStyle extends AbstractSeriesStyle {
 		properties.put(GRID_LINE_COLOR, null);
 	}
 
+	/**
+	 * Gets a clone of this style
+	 */
+	public Object clone() {
+		XYZAxisStyle newStyle = new XYZAxisStyle();
+		newStyle.properties.clear();
+		newStyle.properties.putAll(properties);
+		return newStyle;
+
+	}
+
 }

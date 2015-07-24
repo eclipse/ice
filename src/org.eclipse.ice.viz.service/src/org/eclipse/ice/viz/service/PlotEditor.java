@@ -14,12 +14,15 @@ package org.eclipse.ice.viz.service;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.viz.service.connections.ConnectionSeries;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -41,6 +44,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a plot editor. It takes as input a FileInput containing
@@ -62,9 +67,20 @@ public class PlotEditor extends EditorPart {
 	public static final String ID = "org.eclipse.ice.viz.service.PlotEditor";
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(PlotEditor.class);
+
+	/**
 	 * The FileEditorInput containing the plot the editor contains.
 	 */
 	private FileEditorInput plot;
+
+	/**
+	 * This flag signals if the plot editor's loading job should cancel or not.
+	 */
+	private boolean shouldCancelLoading = false;
 
 	/**
 	 * Default constructor.
@@ -136,6 +152,7 @@ public class PlotEditor extends EditorPart {
 	@Override
 	public void createPartControl(final Composite parent) {
 		setPartName("Plot Editor");
+		shouldCancelLoading = false;
 
 		// The PlotEditorInput containing the IPlot rendered with the service
 		// selected for this editor.
@@ -177,9 +194,10 @@ public class PlotEditor extends EditorPart {
 						inputArray.add(new PlotEditorInput(plot));
 						serviceNames.add(fullServiceNames[i]);
 					} catch (Exception e1) {
-						System.out.println(
-								"Problem creating plot with visualization service "
-										+ fullServiceNames[i] + ".");
+						logger.error(
+								"Problem creating plot with visulalizatoin service "
+										+ fullServiceNames[i] + ".",
+								e1);
 					}
 
 				}
@@ -190,8 +208,8 @@ public class PlotEditor extends EditorPart {
 			// an
 			// error message.
 			if (serviceNames.isEmpty()) {
-				System.out.println(
-						"All available visualizaiton services failed to render a plot.");
+				logger.debug(
+						"All available visualizatoin services failed to render a plot.");
 				Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
 						"No visualization service could render the file.",
 						null);
@@ -248,6 +266,12 @@ public class PlotEditor extends EditorPart {
 				return Status.OK_STATUS;
 			}
 
+			// Set the loading process to cancel
+			@Override
+			protected void canceling() {
+				shouldCancelLoading = true;
+			}
+
 		};
 
 		drawPlot.schedule();
@@ -282,34 +306,77 @@ public class PlotEditor extends EditorPart {
 		List<ISeries> tempSeries = null;
 		// Temporary holder for the independent series for the plot
 		ISeries tempIndSeries = null;
+		String[] tempCategories = selectedService.getPlot().getCategories();
 		try {
-			tempSeries = selectedService.getPlot().getAllDependentSeries();
+			for (int i = 0; i < tempCategories.length; i++) {
+				List<ISeries> temp = selectedService.getPlot()
+						.getAllDependentSeries(tempCategories[i]);
+				if (temp != null) {
+					if (tempSeries == null) {
+						tempSeries = temp;
+					} else {
+						tempSeries.addAll(temp);
+					}
+				}
+			}
 			tempIndSeries = selectedService.getPlot().getIndependentSeries();
 		} catch (Exception e2) {
-			System.out.println("Error reading plot types.");
+			logger.error(getClass().getName()
+					+ " Exception! Error reading plot types.", e2);
 		}
 
 		// While loading is not yet complete, wait and periodically
 		// attempt to read the plot types again.
+		int maxWaitForIndependent = 2000;
+		int time = 0;
 		while (tempSeries == null || tempIndSeries == null
 				|| tempSeries.isEmpty()) {
 			try {
-				Thread.sleep(500);
-				if (tempSeries == null || tempSeries.isEmpty()) {
-					tempSeries = selectedService.getPlot()
-							.getAllDependentSeries();
+				// This is the data loading method, and will return if the
+				// process has been canceled by the user
+				if (shouldCancelLoading) {
+					return;
 				}
+				// Wait for 500 milliseconds
+				Thread.sleep(500);
+				// If the dependent series is null try adding the series from
+				// the categories retrieved
+				if (tempSeries == null || tempSeries.isEmpty()) {
+					for (int i = 0; i < tempCategories.length; i++) {
+						List<ISeries> temp = selectedService.getPlot()
+								.getAllDependentSeries(tempCategories[i]);
+						if (temp != null) {
+							if (tempSeries == null) {
+								tempSeries = temp;
+							} else {
+								tempSeries.addAll(temp);
+							}
+						}
+					}
+				}
+				// Try getting the independent series
 				if (tempIndSeries == null) {
 					tempIndSeries = selectedService.getPlot()
 							.getIndependentSeries();
 				}
 
+				// Just set the independent series to the first one if the job
+				// goes over two seconds.
+				if (time > maxWaitForIndependent && tempSeries != null
+						&& tempIndSeries == null) {
+					tempIndSeries = tempSeries.get(0);
+				}
+
+				time += 500;
+
 			} catch (Exception e1) {
-				System.out.println("Error reading plot types.");
+				logger.error(getClass().getName()
+						+ "Exception! Error reading plot types.", e1);
 			}
 		}
 
 		// Get final references to use in the new thread.
+		final String[] categories = selectedService.getPlot().getCategories();
 		final List<ISeries> depSeries = tempSeries;
 		final ISeries indSeries = tempIndSeries;
 
@@ -322,7 +389,7 @@ public class PlotEditor extends EditorPart {
 			@Override
 			public void run() {
 				createUI(barManager, body, selectedService, thisEditor,
-						depSeries, indSeries);
+						depSeries, indSeries, categories);
 
 			}
 		});
@@ -350,7 +417,8 @@ public class PlotEditor extends EditorPart {
 	 */
 	private void createUI(ToolBarManager barManager, final Composite body,
 			final PlotEditorInput selectedService, final IEditorPart thisEditor,
-			final List<ISeries> seriesToPlot, final ISeries independentSeries) {
+			final List<ISeries> seriesToPlot, final ISeries independentSeries,
+			final String[] categories) {
 		body.setLayout(new GridLayout());
 		body.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		// Finish setting up the editor window
@@ -363,9 +431,23 @@ public class PlotEditor extends EditorPart {
 		// Top level menu
 		ActionTree menuTree = new ActionTree("Menu");
 
-		// A second level menu that will hold the series to plot
+		// Create a map of category trees to add to the menu if need be.
+		Map<String, ActionTree> categoryTrees = null;
 		ActionTree seriesTree = new ActionTree("Plot Series");
-		menuTree.add(seriesTree);
+		// Only create categories if they will be useful in the menu (if there
+		// is more than one)
+		if (categories.length > 1) {
+			categoryTrees = new TreeMap<String, ActionTree>();
+			for (int i = 0; i < categories.length; i++) {
+				String category = categories[i];
+				ActionTree catTree = new ActionTree(category);
+				menuTree.add(catTree);
+				categoryTrees.put(category, catTree);
+			}
+		} else {
+			// A second level menu that will hold the series to plot
+			menuTree.add(seriesTree);
+		}
 
 		for (final ISeries series : seriesToPlot) {
 
@@ -378,16 +460,34 @@ public class PlotEditor extends EditorPart {
 						// Adds the series to the editor and sets the plot to
 						// redraw.
 						series.setEnabled(true);
+						// If this is a connection series, set the independent
+						// series to the first dependent series. That is the one
+						// that is drawn
+						if (series instanceof ConnectionSeries) {
+							selectedService.getPlot()
+									.setIndependentSeries(series);
+						}
 						selectedService.getPlot().draw(plotComposite);
 						body.layout();
 					} catch (Exception e) {
-						System.out.println("Error while drawing plot.");
+						logger.error(
+								getClass().getName()
+										+ "Exception! Error while drwaing plot.",
+								e);
 					}
 				}
 
 			};
-			// Add the new menu entry
-			seriesTree.add(new ActionTree(tempAction));
+			// If there are no categories in the tree hierarchy, then add to
+			// the general menu
+			if (categoryTrees == null) {
+				// Add the new menu entry
+				seriesTree.add(new ActionTree(tempAction));
+				// Otherwise, add to the specific category for this series
+			} else {
+				categoryTrees.get(series.getCategory())
+						.add(new ActionTree(tempAction));
+			}
 
 		}
 
@@ -403,8 +503,15 @@ public class PlotEditor extends EditorPart {
 		// Add close action directly under menu
 		menuTree.add(new ActionTree(close));
 
-		// Update menu
-		seriesTree.getContributionItem().fill(menu.getMenu(), -1);
+		if (categoryTrees == null) {
+			// Update menu
+			seriesTree.getContributionItem().fill(menu.getMenu(), -1);
+		} else {
+			for (String category : categoryTrees.keySet()) {
+				categoryTrees.get(category).getContributionItem()
+						.fill(menu.getMenu(), -1);
+			}
+		}
 		menu.updateAll(true);
 		barManager.add(menuTree.getContributionItem());
 
@@ -418,10 +525,16 @@ public class PlotEditor extends EditorPart {
 
 		// Draw the plot
 		try {
+			if (independentSeries instanceof ConnectionSeries) {
+				selectedService.getPlot()
+						.setIndependentSeries(independentSeries);
+			}
 			selectedService.getPlot().draw(plotComposite);
 			body.layout();
 		} catch (Exception e) {
-			System.err.println("PlotEditor: Error while drawing plot.");
+			logger.error(getClass().getName()
+					+ " Exception! Error while drawing plot. ", e);
+			e.printStackTrace();
 		}
 
 		body.layout();

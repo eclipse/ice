@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.viz.service.geometry.AbstractShape;
 import org.eclipse.ice.viz.service.geometry.ComplexShape;
@@ -61,8 +62,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 * The ICEShape which holds the IShape that is the parent to this object's
 	 * wrapped IShape.
 	 */
-	@XmlAnyElement()
-	@XmlElementRef(name = "ICEShape", type = ICEShape.class)
+	@XmlTransient
 	private ICEShape parent;
 
 	/**

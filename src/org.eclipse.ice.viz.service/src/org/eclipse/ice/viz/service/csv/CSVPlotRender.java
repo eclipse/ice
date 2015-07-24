@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Kasper Gammeltoft
+ *   Kasper Gammeltoft, Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.MenuItem;
  * the plot to the plot provider, which is used by the editor to draw the plot.
  * Each plot render should be unique to a specific composite that it is being
  * drawn on and the CSVPlot object that is being plotted. This plot render is
- * also responsible for constructing a conxtext menu that allows for the user to
+ * also responsible for constructing a context menu that allows for the user to
  * add and remove plots. The plots that are initially drawn on the editor are
  * those that are enabled on the plot when this plot render is constructed.
  * 
@@ -122,7 +122,7 @@ public class CSVPlotRender extends PlotRender {
 
 		// Fill out the add series tree. This tree will never need to be
 		// updated.
-		for (ISeries series : plot.getAllDependentSeries()) {
+		for (ISeries series : plot.getAllDependentSeries(null)) {
 			if (series != null) {
 				// Create Actions for all the types. Each Action should call
 				// addSeries(...) with the specified series
@@ -249,15 +249,15 @@ public class CSVPlotRender extends PlotRender {
 			ActionTree tree = new ActionTree(new Action(series.getLabel()) {
 				@Override
 				public void run() {
-					finSeries.setEnabled(false);
 					removeSeries(finSeries);
+					finSeries.setEnabled(false);
 					refresh();
 				}
 			});
 			removeSeriesTree.add(tree);
 
 			// Store the series and ActionTree for later reference.
-			seriesMap.put(series, tree);
+			seriesMap.put(finSeries, tree);
 		}
 
 		return;
@@ -276,6 +276,7 @@ public class CSVPlotRender extends PlotRender {
 			removeSeriesTree.remove(tree);
 			plotProvider.removeSeries(plotTime, series);
 			editor.removeSeries(series);
+			seriesMap.remove(series);
 		}
 		return;
 	}

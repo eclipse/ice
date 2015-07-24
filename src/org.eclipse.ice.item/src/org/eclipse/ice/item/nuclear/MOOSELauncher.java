@@ -576,13 +576,13 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 */
 	@Override
 	protected String getFileDependenciesSearchString() {
-		String re1 = "((?:[a-z][a-z0-9_]*))";
+		String re1 = "((?i:[a-z][a-z0-9_]*))";
 		String re2 = "(\\s+)";
 		String re3 = "(=)";
 		String re4 = "(\\s+)";
-		String re5 = "((?:[a-z][a-z0-9_]*))";
+		String re5 = "((?i:[a-z][a-z0-9_]*))";
 		String re6 = "(\\.)";
-		String re7 = "((?:[a-z][a-z0-9_]*))";
+		String re7 = "((?i:[a-z][a-z0-9_]*))";
 		return re1 + re2 + re3 + re4 + re5 + re6 + re7;
 	}
 

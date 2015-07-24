@@ -29,6 +29,11 @@ import java.util.List;
 public interface IPlot extends IVizCanvas {
 
 	/**
+	 * The default category for all plots
+	 */
+	public static final String DEFAULT_CATEGORY = "Other";
+
+	/**
 	 * Sets the title of the plot to the specified string.
 	 * 
 	 * @param title
@@ -63,26 +68,19 @@ public interface IPlot extends IVizCanvas {
 	public ISeries getIndependentSeries();
 
 	/**
-	 * | Adds the specified series to the list of series to plot.
-	 * 
-	 * @param seriesToAdd
-	 *            The {@link ISeries} to add.
-	 */
-	public void addDependentSeries(ISeries seriesToAdd);
-
-	/**
-	 * Removes the specified series from the dependent series list.
-	 * 
-	 * @param series
-	 *            The series to remove from the list.
-	 */
-	public void removeDependantSeries(ISeries series);
-
-	/**
-	 * Gets all of the dependent series specified for this IPlot, as a list.
+	 * Gets all of the dependent series specified for this IPlot, as a list, for
+	 * the specified category. If the category is null, will return the default
+	 * category.
 	 * 
 	 * @return List<ISeries> all of the dependent series to be plotted.
 	 */
-	public List<ISeries> getAllDependentSeries();
+	public List<ISeries> getAllDependentSeries(String category);
+
+	/**
+	 * Gets all of the categories currently associated with this plot.
+	 * 
+	 * @return The categories for this plot.
+	 */
+	public String[] getCategories();
 
 }

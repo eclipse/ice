@@ -396,7 +396,7 @@ public class PlotGridComposite extends Composite {
 
 		if (plot != null && drawnPlots.size() < rows * columns
 				&& (independent = plot.getIndependentSeries()) != null
-				&& (dependent = plot.getAllDependentSeries()) != null) {
+				&& (dependent = plot.getAllDependentSeries(null)) != null) {
 
 			if (dependent.size() > 0 && independent.getBounds() != null) {
 

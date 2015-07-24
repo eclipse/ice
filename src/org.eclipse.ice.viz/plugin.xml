@@ -49,14 +49,6 @@
          </view>
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.csv.viewer.CSVPlotViewer"
-               fastViewWidthRatio="0.23f"
-               id="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
-               name="CSV Plot Viewer"
-               restorable="true">
-         </view>
-         <view
-               allowMultiple="false"
                class="org.eclipse.ice.viz.VizFileViewer"
                fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.VizFileViewer"
@@ -102,14 +94,6 @@
                ratio="0.23f"
                relationship="bottom"
                relative="org.eclipse.ice.viz.VizFileViewer"
-               visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="org.eclipse.ice.viz.plotviewer.CSVPlotViewer"
-               ratio="0.23f"
-               relationship="stack"
-               relative="org.eclipse.ice.viz.visit.VisitPlotViewer"
                visible="true">
          </view>
          <view

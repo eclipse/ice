@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.test;
+package org.eclipse.ice.viz.service.geometry.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -109,11 +109,11 @@ public class AbstractShapeTester {
 	@Test
 	public void checkNotifications() {
 		// Setup the listener
-		TestVizComponentListener testComponentListener = new TestVizComponentListener();
+		VizTestComponentListener testComponentListener = new VizTestComponentListener();
 
 		// Setup the TestShape
 		TestShape testShape = new TestShape();
-		testShape.getShape().register(testComponentListener);
+		testShape.register(testComponentListener);
 
 		// Trigger a notification with setTransformation
 		Transformation transformation = testShape.getTransformation();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014-2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.viz.service.ISeries;
+import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.ice.viz.service.csv.PlotProvider;
-import org.eclipse.ice.viz.service.csv.SeriesProvider;
+import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,6 +31,8 @@ import org.junit.Test;
  * This class is responsible for testing the PlotProvider
  * 
  * @author Claire Saunders
+ * @author Kasper Gammeltoft- Refactored to test the new ISeries based
+ *         implementation of the plot provider
  * 
  */
 public class PlotProviderTester {
@@ -41,9 +45,10 @@ public class PlotProviderTester {
 	private String yAxisTitle;
 	private String timeUnits;
 	private ArrayList<Double> times;
-	private ArrayList<SeriesProvider> seriesProviderList;
+	private ArrayList<ISeries> depSeries;
+	private ISeries indepSeries;
 	private PlotProvider plotProvider;
-	private SeriesProvider seriesProvider;
+	private CSVSeries testSeries;
 
 	/**
 	 * Intialize variables to be used throughout.
@@ -56,9 +61,12 @@ public class PlotProviderTester {
 		yAxisTitle = "Y-Axis Title";
 		timeUnits = "Seconds";
 		plotProvider = new PlotProvider();
-		seriesProvider = new SeriesProvider();
+		testSeries = new CSVSeries();
+		testSeries.setLabel("y");
 		times = new ArrayList<Double>();
-		seriesProviderList = new ArrayList<SeriesProvider>();
+		depSeries = new ArrayList<ISeries>();
+		indepSeries = new CSVSeries();
+		indepSeries.setLabel("x");
 
 		// Add double values to the arrayList Times
 		times.add(1.0);
@@ -66,13 +74,12 @@ public class PlotProviderTester {
 		times.add(3.0);
 
 		// Make a seriesproviderList of size 1 for testing purposes
-		seriesProviderList.add(seriesProvider);
+		depSeries.add(testSeries);
 
 	}
 
 	/**
-	 * Checks that SeriesProviders can be correctly removed from the
-	 * PlotProvider.
+	 * Checks that series can be correctly removed from the PlotProvider.
 	 */
 	@Test
 	public void checkSeriesAddRemove() {
@@ -83,16 +90,16 @@ public class PlotProviderTester {
 
 		// Series and times to add and later *remove*. Each series is added for
 		// each time, resulting in 4 total additions.
-		final SeriesProvider series1 = new SeriesProvider();
-		series1.setSeriesTitle("series1");
-		final SeriesProvider series2 = new SeriesProvider();
-		series2.setSeriesTitle("series2");
+		final CSVSeries series1 = new CSVSeries();
+		series1.setLabel("series1");
+		final CSVSeries series2 = new CSVSeries();
+		series2.setLabel("series2");
 		final double time1 = 42.0;
 		final double time2 = 343.1337;
 
 		// Used as the return value from getSeriesAtTime(). This is necessary to
 		// verify that series were in fact removed from the PlotProvider.
-		List<SeriesProvider> seriesProviders;
+		List<ISeries> testSeries;
 		List<Double> times;
 
 		// Add each series to time1.
@@ -100,12 +107,12 @@ public class PlotProviderTester {
 		plotProvider.addSeries(time1, series2);
 
 		// Verify that the only time is time1, but it has both series 1 and 2.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertNull(seriesProviders);
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertNull(testSeries);
 		// time1 is the only time in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(1, times.size());
@@ -117,14 +124,14 @@ public class PlotProviderTester {
 		plotProvider.addSeries(time2, series2);
 
 		// Verify that all series are associated with each time.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
 		// Each time now has a SeriesProvider in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(2, times.size());
@@ -136,14 +143,14 @@ public class PlotProviderTester {
 		plotProvider.removeSeries(time1, null);
 
 		// Verify that nothing changed.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
 		// Each time still has a SeriesProvider in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(2, times.size());
@@ -156,14 +163,14 @@ public class PlotProviderTester {
 
 		// Series 2 should be the only series for time 1. Likewise, series 1
 		// should be the only series for time 2.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertFalse(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertFalse(seriesProviders.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertFalse(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertFalse(testSeries.contains(series2));
 		// Note that each time still has a SeriesProvider in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(2, times.size());
@@ -175,14 +182,14 @@ public class PlotProviderTester {
 		plotProvider.removeSeries(time2, series2);
 
 		// Verify that nothing changed.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertFalse(seriesProviders.contains(series1));
-		assertTrue(seriesProviders.contains(series2));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertFalse(seriesProviders.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertFalse(testSeries.contains(series1));
+		assertTrue(testSeries.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertFalse(testSeries.contains(series2));
 		// Note that each time still has a SeriesProvider in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(2, times.size());
@@ -193,12 +200,12 @@ public class PlotProviderTester {
 		plotProvider.removeSeries(time1, series2);
 
 		// Now only time2 has series1.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertNull(seriesProviders);
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		assertFalse(seriesProviders.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertNull(testSeries);
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		assertFalse(testSeries.contains(series2));
 		// Only time2 is in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(1, times.size());
@@ -209,10 +216,10 @@ public class PlotProviderTester {
 		plotProvider.removeSeries(time2, series1);
 
 		// Now there are no more times or series.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertNull(seriesProviders);
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertNull(seriesProviders);
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertNull(testSeries);
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertNull(testSeries);
 		// No time is in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(0, times.size());
@@ -232,17 +239,17 @@ public class PlotProviderTester {
 
 		// Series and times for testing. Each series is added for each time,
 		// while the getTimes() method is checked at each change.
-		final SeriesProvider series1 = new SeriesProvider();
-		series1.setSeriesTitle("series1");
-		final SeriesProvider series2 = new SeriesProvider();
-		series2.setSeriesTitle("series2");
+		final CSVSeries series1 = new CSVSeries();
+		series1.setLabel("series1");
+		final CSVSeries series2 = new CSVSeries();
+		series2.setLabel("series2");
 		final double time1 = 42.0;
 		final double time2 = 343.1337;
 		final double time3 = 0.0;
 
 		// Used as the return value from getSeriesAtTime(). This is necessary to
 		// verify that series were in fact removed from the PlotProvider.
-		List<SeriesProvider> seriesProviders;
+		List<ISeries> testSeries;
 
 		// Initially, the list of series is null for each time.
 		assertNull(plotProvider.getSeriesAtTime(time1));
@@ -252,18 +259,18 @@ public class PlotProviderTester {
 		// Add a series to time1. series1 is the only series at time1.
 		plotProvider.addSeries(time1, series1);
 		// series1 is the only series at time1.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
 		assertNull(plotProvider.getSeriesAtTime(time2));
 		assertNull(plotProvider.getSeriesAtTime(time3));
 
 		// Try adding a null series to time2. Nothing should change.
 		plotProvider.addSeries(time2, null);
 		// series1 is the only series at time1.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
 		assertNull(plotProvider.getSeriesAtTime(time2));
 		assertNull(plotProvider.getSeriesAtTime(time3));
 
@@ -272,71 +279,71 @@ public class PlotProviderTester {
 		plotProvider.addSeries(time2, series2);
 		// series1 is the only series at time1. series2 is the only series at
 		// time2.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series2));
 		assertNull(plotProvider.getSeriesAtTime(time3));
 
 		// Add another series to time2. There will now be 2 series at time2.
 		plotProvider.addSeries(time2, series1);
 		// series1 is the only series at time1. Both series are at time2.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series2));
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series2));
+		assertTrue(testSeries.contains(series1));
 		assertNull(plotProvider.getSeriesAtTime(time3));
 
 		// Add a series to time3.
 		plotProvider.addSeries(time3, series1);
 		// time1 has series1. time2 has both series. time3 has series1.
-		seriesProviders = plotProvider.getSeriesAtTime(time1);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series2));
-		assertTrue(seriesProviders.contains(series1));
-		seriesProviders = plotProvider.getSeriesAtTime(time3);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time1);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series2));
+		assertTrue(testSeries.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time3);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
 
 		// Remove the series from time1. Now time1 will have no series.
 		plotProvider.removeSeries(time1, series1);
 		// time1 has no series. time2 has both series. time3 has series1.
 		assertNull(plotProvider.getSeriesAtTime(time1));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(2, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series2));
-		assertTrue(seriesProviders.contains(series1));
-		seriesProviders = plotProvider.getSeriesAtTime(time3);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(2, testSeries.size());
+		assertTrue(testSeries.contains(series2));
+		assertTrue(testSeries.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time3);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
 
 		// Remove one of the series from time2.
 		plotProvider.removeSeries(time2, series1);
 		// time1 has no series. time2 has series2. time3 has series1.
 		assertNull(plotProvider.getSeriesAtTime(time1));
-		seriesProviders = plotProvider.getSeriesAtTime(time2);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series2));
-		seriesProviders = plotProvider.getSeriesAtTime(time3);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time2);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series2));
+		testSeries = plotProvider.getSeriesAtTime(time3);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
 
 		// Now remove the last series at time2.
 		plotProvider.removeSeries(time2, series2);
 		// series1 is forever alone at time3...
 		assertNull(plotProvider.getSeriesAtTime(time1));
 		assertNull(plotProvider.getSeriesAtTime(time2));
-		seriesProviders = plotProvider.getSeriesAtTime(time3);
-		assertEquals(1, seriesProviders.size());
-		assertTrue(seriesProviders.contains(series1));
+		testSeries = plotProvider.getSeriesAtTime(time3);
+		assertEquals(1, testSeries.size());
+		assertTrue(testSeries.contains(series1));
 
 		return;
 	}
@@ -360,8 +367,10 @@ public class PlotProviderTester {
 	public void checkSetAndGetXAxisTitle() {
 
 		// check if the xAxisTitle matches
-		plotProvider.setXAxisTitle(xAxisTitle);
-		assertEquals(xAxisTitle, plotProvider.getXAxisTitle());
+		plotProvider.getXAxisStyle().setProperty(XYZAxisStyle.AXIS_TITLE,
+				xAxisTitle);
+		assertEquals(xAxisTitle, plotProvider.getXAxisStyle()
+				.getProperty(XYZAxisStyle.AXIS_TITLE));
 
 	}
 
@@ -372,8 +381,10 @@ public class PlotProviderTester {
 	public void checkSetAndGetYAxisTitle() {
 
 		// check if the yAxisTitle matches up
-		plotProvider.setYAxisTitle(yAxisTitle);
-		assertEquals(yAxisTitle, plotProvider.getYAxisTitle());
+		plotProvider.getXAxisStyle().setProperty(XYZAxisStyle.AXIS_TITLE,
+				yAxisTitle);
+		assertEquals(yAxisTitle, plotProvider.getXAxisStyle()
+				.getProperty(XYZAxisStyle.AXIS_TITLE));
 
 	}
 
@@ -401,10 +412,10 @@ public class PlotProviderTester {
 
 		// Series and times for testing. Each series is added for each time,
 		// while the getTimes() method is checked at each change.
-		final SeriesProvider series1 = new SeriesProvider();
-		series1.setSeriesTitle("series1");
-		final SeriesProvider series2 = new SeriesProvider();
-		series2.setSeriesTitle("series2");
+		final CSVSeries series1 = new CSVSeries();
+		series1.setLabel("series1");
+		final CSVSeries series2 = new CSVSeries();
+		series2.setLabel("series2");
 		final double time1 = 42.0;
 		final double time2 = 343.1337;
 		final double time3 = 0.0;

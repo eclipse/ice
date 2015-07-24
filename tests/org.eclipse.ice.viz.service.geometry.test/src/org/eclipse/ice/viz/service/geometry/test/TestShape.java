@@ -10,10 +10,11 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.test;
+package org.eclipse.ice.viz.service.geometry.test;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.viz.service.geometry.PrimitiveShape;
 import org.eclipse.ice.viz.service.geometry.ShapeType;
 
 /**
@@ -23,7 +24,7 @@ import org.eclipse.ice.viz.service.geometry.ShapeType;
  * 
  * @author Jay Jay Billings
  */
-public class TestShape extends ICEShape {
+public class TestShape extends PrimitiveShape {
 	
 	TestShape(){
 		super(ShapeType.Cone);

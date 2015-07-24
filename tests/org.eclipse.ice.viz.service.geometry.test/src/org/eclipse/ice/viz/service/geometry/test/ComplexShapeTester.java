@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
 import org.eclipse.ice.viz.service.geometry.ComplexShape;
 import org.eclipse.ice.viz.service.geometry.IShape;
 import org.eclipse.ice.viz.service.geometry.IShapeVisitor;

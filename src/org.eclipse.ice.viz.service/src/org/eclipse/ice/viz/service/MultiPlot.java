@@ -8,6 +8,7 @@
  * Contributors:
  *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
  *    Jay Jay Billings (UT-Battelle, LLC.) - moved IPlot
+ *    Kasper Gammeltoft (UT-Battelle, LLC.) - Viz Refactor for ISeries
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
@@ -25,22 +27,25 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * This class provides a basic plot capable of drawing in multiple parent
  * {@code Composite}s simply via the methods provided by the {@link IPlot}
- * interface.
+ * interface. Implementations should have ways of reading in series data into
+ * {@link ISeries} for display by the plot.
  * <p>
  * For client code that will be drawing these plots, do the following:
  * </p>
  * <ol>
- * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
- * and any category and type. This renders (if possible) a plot inside the
- * specified {@code Composite} based on the specified plot category and type.
- * </li>
- * <li>Call {@link #draw(String, String, Composite)} with the same
- * {@code Composite} but different category and type. <i>The plot rendered by
- * the previous call will have its plot category and type changed.</i></li>
- * <li>Call {@link #draw(String, String, Composite)} with a {@code Composite}
- * and any category and type. This renders (if possible) a plot inside the
- * {@code Composite} based on the specified plot category and type. <i>You now
- * have two separate renderings based on the same {@code IPlot}.</i></li>
+ * <li>Create the plot and add series to it if necessary. These series can be
+ * fully custom, as long as they provide the proper information and the proper
+ * editor is available.
+ * <li>Call {@link #draw(Composite)} with a {@code Composite}. This renders (if
+ * possible) a plot inside the specified {@code Composite} based on the
+ * specified enabled series already added to the plot.</li>
+ * <li>Call {@link #draw(Composite)} with the same {@code Composite} but change
+ * the enabled series. <i>The plot rendered by the previous call will have its
+ * plot updated to reflect the changes.</i></li>
+ * <li>Call {@link #draw(Composite)} with a {@code Composite}. This renders (if
+ * possible) a plot inside the {@code Composite} based on the specified series
+ * already added to this plot. <i>You now have two separate renderings based on
+ * the same {@code IPlot}.</i></li>
  * </ol>
  * <p>
  * Sub-classes should override the following methods so that the correct
@@ -52,6 +57,7 @@ import org.eclipse.swt.widgets.Composite;
  * </ol>
  * 
  * @author Jordan
+ * @author Kasper Gammeltoft- Viz Refactor
  *
  */
 public abstract class MultiPlot implements IPlot {
@@ -69,7 +75,7 @@ public abstract class MultiPlot implements IPlot {
 	/**
 	 * The list of ISeries series for this plot to render
 	 */
-	private List<ISeries> series;
+	private Map<String, List<ISeries>> series;
 
 	/**
 	 * The title of the plot
@@ -110,7 +116,8 @@ public abstract class MultiPlot implements IPlot {
 		this.vizService = null;
 		this.plotRenders = new HashMap<Composite, PlotRender>();
 		properties = new HashMap<String, String>();
-		this.series = new ArrayList<ISeries>();
+		this.series = new HashMap<String, List<ISeries>>();
+		this.series.put(IPlot.DEFAULT_CATEGORY, new ArrayList<ISeries>());
 		return;
 	}
 
@@ -132,7 +139,7 @@ public abstract class MultiPlot implements IPlot {
 		// Initialize any final collections.
 		plotRenders = new HashMap<Composite, PlotRender>();
 		properties = new HashMap<String, String>();
-		this.series = new ArrayList<ISeries>();
+		this.series = new HashMap<String, List<ISeries>>();
 		return;
 	}
 
@@ -177,8 +184,26 @@ public abstract class MultiPlot implements IPlot {
 					+ "Cannot draw plot inside disposed Composite.");
 		}
 
+		// Set the default independent series as the first dependent one in the
+		// first category
+		if (this.independentSeries == null) {
+			if (!this.series.isEmpty()) {
+				String firstCategory = this.series.keySet()
+						.toArray(new String[this.series.keySet().size()])[0];
+				this.independentSeries = this.series.get(firstCategory).get(0);
+			}
+		}
+
 		// Get the PlotRender associated with the parent Composite.
 		PlotRender plotRender = plotRenders.get(parent);
+
+		if (plotRender instanceof ConnectionPlotRender) {
+			((ConnectionPlotRender) plotRender)
+					.setPlotCategory(independentSeries.getCategory());
+			((ConnectionPlotRender) plotRender)
+					.setPlotType(independentSeries.getLabel());
+
+		}
 
 		// Create the PlotRender and associate it with the parent as necessary.
 		if (plotRender == null) {
@@ -246,9 +271,21 @@ public abstract class MultiPlot implements IPlot {
 	 * org.eclipse.ice.viz.service.IPlot#addDependentSeries(org.eclipse.ice.viz.
 	 * service.ISeries)
 	 */
-	@Override
+	public void addDependentSeries(String catagory, ISeries series) {
+		if (this.series.get(catagory) == null) {
+			ArrayList<ISeries> newList = new ArrayList<ISeries>();
+			this.series.put(catagory, newList);
+		}
+		this.series.get(catagory).add(series);
+	}
+
+	/**
+	 * Adds a series to this plot, under the default category entitled "Other"
+	 * 
+	 * @param series
+	 */
 	public void addDependentSeries(ISeries series) {
-		this.series.add(series);
+		this.addDependentSeries(IPlot.DEFAULT_CATEGORY, series);
 	}
 
 	/*
@@ -258,9 +295,18 @@ public abstract class MultiPlot implements IPlot {
 	 * org.eclipse.ice.viz.service.IPlot#removeDependantSeries(org.eclipse.ice.
 	 * viz.service.ISeries)
 	 */
-	@Override
 	public void removeDependantSeries(ISeries series) {
-		this.series.remove(series);
+		// If this series is in the list
+		if (this.series.containsValue(series)) {
+			// Iterate to find the right key
+			for (String key : this.series.keySet()) {
+				// Remove the series for the first category it is in in the map
+				if (this.series.get(key).contains(series)) {
+					this.series.get(key).remove(series);
+					break;
+				}
+			}
+		}
 	}
 
 	/*
@@ -269,24 +315,27 @@ public abstract class MultiPlot implements IPlot {
 	 * @see org.eclipse.ice.viz.service.IPlot#getAllDependentSeries()
 	 */
 	@Override
-	public List<ISeries> getAllDependentSeries() {
-		return series;
+	public List<ISeries> getAllDependentSeries(String category) {
+		List<ISeries> depSeries = null;
+		if (category == null) {
+			depSeries = series.get(IPlot.DEFAULT_CATEGORY);
+		} else {
+			depSeries = series.get(category);
+		}
+		return depSeries;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IPlot#getCategories()
+	 */
+	@Override
+	public String[] getCategories() {
+		return series.keySet().toArray(new String[series.keySet().size()]);
 	}
 
 	// --------------------------- //
-
-	/**
-	 * Adds a dependent series to the plot. This should be plotted against the
-	 * independent series specified.
-	 * 
-	 * @param series
-	 *            The ISeries to be plotted.
-	 */
-	public void addDependantSeries(ISeries series) {
-		if (!this.series.contains(series)) {
-			this.series.add(series);
-		}
-	}
 
 	// -- Implements IVizCanvas -- //
 
@@ -400,15 +449,22 @@ public abstract class MultiPlot implements IPlot {
 		// Get the list of new plot types from the sub-class implementation.
 		List<ISeries> newSeries = getSeries(file);
 
-		// If empty, throw an IllegalArgumentException.
-		if (newSeries.isEmpty()) {
-			throw new IllegalArgumentException(
-					"IPlot error: " + "No plots available in file.");
-		}
+		// If there are new series, replace the current series with the ones
+		// specified
+		// TODO - How do we know which category to place the read in series
+		// with? Maybe we need to be able to read that in as well.
+		if (newSeries.size() > 0) {
 
-		// Clear any cached meta data and rebuild the cache of plot types.
-		clearCache();
-		series.addAll(newSeries);
+			// Clear any cached meta data and rebuild the cache of plot types.
+			clearCache();
+			if (series.get(IPlot.DEFAULT_CATEGORY) == null) {
+				series.put(IPlot.DEFAULT_CATEGORY, new ArrayList<ISeries>());
+			}
+			// Reset the series for this plot to the new series
+			series.get(IPlot.DEFAULT_CATEGORY).clear();
+			series.get(IPlot.DEFAULT_CATEGORY).addAll(newSeries);
+
+		}
 
 		// Update the reference to the data source.
 		source = file;

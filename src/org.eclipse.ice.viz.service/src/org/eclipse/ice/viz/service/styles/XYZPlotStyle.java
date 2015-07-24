@@ -80,4 +80,15 @@ public class XYZPlotStyle extends AbstractSeriesStyle {
 		properties.put(IS_TRANSPARENT, false);
 	}
 
+	/**
+	 * Gets a clone of this style
+	 */
+	public Object clone() {
+		XYZPlotStyle newStyle = new XYZPlotStyle();
+		newStyle.properties.clear();
+		newStyle.properties.putAll(properties);
+		return newStyle;
+
+	}
+
 }
