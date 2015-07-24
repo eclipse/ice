@@ -44,6 +44,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a plot editor. It takes as input a FileInput containing
@@ -65,9 +67,20 @@ public class PlotEditor extends EditorPart {
 	public static final String ID = "org.eclipse.ice.viz.service.PlotEditor";
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(PlotEditor.class);
+
+	/**
 	 * The FileEditorInput containing the plot the editor contains.
 	 */
 	private FileEditorInput plot;
+
+	/**
+	 * This flag signals if the plot editor's loading job should cancel or not.
+	 */
+	private boolean shouldCancelLoading = false;
 
 	/**
 	 * Default constructor.
@@ -139,6 +152,7 @@ public class PlotEditor extends EditorPart {
 	@Override
 	public void createPartControl(final Composite parent) {
 		setPartName("Plot Editor");
+		shouldCancelLoading = false;
 
 		// The PlotEditorInput containing the IPlot rendered with the service
 		// selected for this editor.
@@ -180,9 +194,10 @@ public class PlotEditor extends EditorPart {
 						inputArray.add(new PlotEditorInput(plot));
 						serviceNames.add(fullServiceNames[i]);
 					} catch (Exception e1) {
-						System.out.println(
-								"Problem creating plot with visualization service "
-										+ fullServiceNames[i] + ".");
+						logger.error(
+								"Problem creating plot with visulalizatoin service "
+										+ fullServiceNames[i] + ".",
+								e1);
 					}
 
 				}
@@ -193,8 +208,8 @@ public class PlotEditor extends EditorPart {
 			// an
 			// error message.
 			if (serviceNames.isEmpty()) {
-				System.out.println(
-						"All available visualizaiton services failed to render a plot.");
+				logger.debug(
+						"All available visualizatoin services failed to render a plot.");
 				Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
 						"No visualization service could render the file.",
 						null);
@@ -251,6 +266,12 @@ public class PlotEditor extends EditorPart {
 				return Status.OK_STATUS;
 			}
 
+			// Set the loading process to cancel
+			@Override
+			protected void canceling() {
+				shouldCancelLoading = true;
+			}
+
 		};
 
 		drawPlot.schedule();
@@ -300,7 +321,8 @@ public class PlotEditor extends EditorPart {
 			}
 			tempIndSeries = selectedService.getPlot().getIndependentSeries();
 		} catch (Exception e2) {
-			System.out.println("Error reading plot types.");
+			logger.error(getClass().getName()
+					+ " Exception! Error reading plot types.", e2);
 		}
 
 		// While loading is not yet complete, wait and periodically
@@ -310,7 +332,12 @@ public class PlotEditor extends EditorPart {
 		while (tempSeries == null || tempIndSeries == null
 				|| tempSeries.isEmpty()) {
 			try {
-				// Wait for 500 miliseconds
+				// This is the data loading method, and will return if the
+				// process has been canceled by the user
+				if (shouldCancelLoading) {
+					return;
+				}
+				// Wait for 500 milliseconds
 				Thread.sleep(500);
 				// If the dependent series is null try adding the series from
 				// the categories retrieved
@@ -343,7 +370,8 @@ public class PlotEditor extends EditorPart {
 				time += 500;
 
 			} catch (Exception e1) {
-				System.out.println("Error reading plot types.");
+				logger.error(getClass().getName()
+						+ "Exception! Error reading plot types.", e1);
 			}
 		}
 
@@ -432,16 +460,20 @@ public class PlotEditor extends EditorPart {
 						// Adds the series to the editor and sets the plot to
 						// redraw.
 						series.setEnabled(true);
+						// If this is a connection series, set the independent
+						// series to the first dependent series. That is the one
+						// that is drawn
 						if (series instanceof ConnectionSeries) {
-							System.out
-									.println("Setting new series and updating");
 							selectedService.getPlot()
 									.setIndependentSeries(series);
 						}
 						selectedService.getPlot().draw(plotComposite);
 						body.layout();
 					} catch (Exception e) {
-						System.out.println("Error while drawing plot.");
+						logger.error(
+								getClass().getName()
+										+ "Exception! Error while drwaing plot.",
+								e);
 					}
 				}
 
@@ -500,7 +532,8 @@ public class PlotEditor extends EditorPart {
 			selectedService.getPlot().draw(plotComposite);
 			body.layout();
 		} catch (Exception e) {
-			System.err.println("PlotEditor: Error while drawing plot.");
+			logger.error(getClass().getName()
+					+ " Exception! Error while drawing plot. ", e);
 			e.printStackTrace();
 		}
 

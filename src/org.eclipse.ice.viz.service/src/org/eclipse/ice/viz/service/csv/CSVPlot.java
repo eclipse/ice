@@ -105,6 +105,9 @@ public class CSVPlot extends MultiPlot {
 
 				// Start the thread
 				loadingThread.start();
+			} else {
+				logger.error(getClass().getName() + ": Failed to load file "
+						+ file.getName() + ", it must be of type .csv");
 			}
 		}
 
@@ -160,7 +163,9 @@ public class CSVPlot extends MultiPlot {
 
 		} catch (IOException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!", e);
+			logger.error(getClass().getName()
+					+ " Exception! Could not read in data from file: "
+					+ file.getName() + ".", e);
 		}
 
 		if (!lines.isEmpty()) {
@@ -357,7 +362,10 @@ public class CSVPlot extends MultiPlot {
 						// Redraw the plot
 						draw(comp);
 					} catch (Exception e) {
-						logger.error(getClass().getName() + " Exception!", e);
+						logger.error(
+								getClass().getName()
+										+ " Exception! Error while drawing plot.",
+								e);
 					}
 				}
 			});

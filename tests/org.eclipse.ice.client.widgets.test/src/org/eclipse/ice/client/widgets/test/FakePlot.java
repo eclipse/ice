@@ -192,14 +192,12 @@ public class FakePlot implements IPlot {
 		return indepSeries;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Removes the specified series from this plot.
 	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.IPlot#removeDependantSeries(org.eclipse.ice.
-	 * viz.service.ISeries)
+	 * @param series
+	 *            The series to remove
 	 */
-	@Override
 	public void removeDependantSeries(ISeries series) {
 		depSeries.remove(series);
 		// If this series is in the list
@@ -215,7 +213,14 @@ public class FakePlot implements IPlot {
 		}
 	}
 
-	@Override
+	/**
+	 * Adds the specified series to this plot under the given category
+	 * 
+	 * @param catagory
+	 *            The category that this series falls under
+	 * @param seriesToAdd
+	 *            The series to add
+	 */
 	public void addDependentSeries(String catagory, ISeries seriesToAdd) {
 		if (depSeries.get(catagory) == null) {
 			depSeries.put(catagory, new ArrayList<ISeries>());

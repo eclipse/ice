@@ -111,7 +111,6 @@ public class PlotEditorInputTester {
 			return indepSeries;
 		}
 
-		@Override
 		public void removeDependantSeries(ISeries series) {
 			depSeries.remove(series);
 			// If this series is in the list
@@ -128,7 +127,6 @@ public class PlotEditorInputTester {
 			}
 		}
 
-		@Override
 		public void addDependentSeries(String category, ISeries seriesToAdd) {
 			if (depSeries.get(category) == null) {
 				depSeries.put(category, new ArrayList<ISeries>());

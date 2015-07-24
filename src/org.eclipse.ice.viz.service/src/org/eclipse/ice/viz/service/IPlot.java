@@ -68,25 +68,6 @@ public interface IPlot extends IVizCanvas {
 	public ISeries getIndependentSeries();
 
 	/**
-	 * | Adds the specified series to the list of series to plot.
-	 * 
-	 * @param seriesToAdd
-	 *            The {@link ISeries} to add.
-	 * @param catagory
-	 *            The category that this series should be put into, to group
-	 *            when in menus
-	 */
-	public void addDependentSeries(String catagory, ISeries seriesToAdd);
-
-	/**
-	 * Removes the specified series from the dependent series list.
-	 * 
-	 * @param series
-	 *            The series to remove from the list.
-	 */
-	public void removeDependantSeries(ISeries series);
-
-	/**
 	 * Gets all of the dependent series specified for this IPlot, as a list, for
 	 * the specified category. If the category is null, will return the default
 	 * category.
