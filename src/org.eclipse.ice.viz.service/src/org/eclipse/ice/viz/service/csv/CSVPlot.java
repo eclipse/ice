@@ -19,6 +19,8 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import org.apache.commons.beanutils.ConvertUtils;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.MultiPlot;
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
@@ -314,11 +316,16 @@ public class CSVPlot extends MultiPlot {
 		// FIXME Won't this affect all of the drawn plots?
 		// baseProvider.setTime(plotTime);
 
+		// Update the series for the render, in case any series have been added
+		// or enabled since the last call to draw()
+		for (ISeries series : getAllDependentSeries(IPlot.DEFAULT_CATEGORY)) {
+			if (series.enabled()) {
+				((CSVPlotRender) plotRender).addSeries(series);
+			}
+		}
+
 		// Trigger the appropriate update to the PlotRender's content.
 		updatePlotRender(plotRender);
-
-		// Refresh the drawn plot.
-		plotRender.refresh();
 
 		// We need to return the Composite used to render the CSV plot. Does not
 		// really sync up with MultiPlot's draw method (which returns its own
