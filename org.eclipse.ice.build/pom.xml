@@ -304,7 +304,7 @@
 	<!-- the modules that should be built together -->
 	<modules>
 		<module>../org.eclipse.ice.target.mars</module>
-		<module>../../org.eclipse.ice.dependencies</module>
+		<module>../../ICEDeps/org.eclipse.ice.dependencies</module>
 		<module>../src/org.eclipse.ice.client</module>
 		<module>../tests/org.eclipse.ice.client.test</module>
 		<module>../src/org.eclipse.ice.client.compatibility</module>
