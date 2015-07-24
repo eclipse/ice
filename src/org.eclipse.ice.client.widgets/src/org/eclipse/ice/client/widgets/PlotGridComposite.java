@@ -15,10 +15,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -53,6 +52,8 @@ import org.slf4j.LoggerFactory;
  * same plot can be added to the grid more than once.
  *
  * @author Jordan Deyton
+ * @author Kasper Gammeltoft- Refactored to work with {@link ISeries} rather
+ *         than SeriesProviders
  *
  */
 public class PlotGridComposite extends Composite {
@@ -195,12 +196,11 @@ public class PlotGridComposite extends Composite {
 							// be cleared.
 							closeButton
 									.addDisposeListener(new DisposeListener() {
-										@Override
-										public void widgetDisposed(
-												DisposeEvent e) {
-											closeButton = null;
-										}
-									});
+								@Override
+								public void widgetDisposed(DisposeEvent e) {
+									closeButton = null;
+								}
+							});
 						}
 						// Set the reference to the most recently entered plot.
 						lastPlot = plot;
@@ -242,6 +242,54 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
+	 * Sets the number of columns for this plot composite.
+	 * 
+	 * @param col
+	 *            The new number of columns in the grid to layout plots. Note-
+	 *            must be between 1 and 4 inclusive, as zero columns makes no
+	 *            sense and the screen is too crowded with more than 4.
+	 * @return Returns true if the number of columns was successfully set and
+	 *         the grid was updated, false if otherwise.
+	 */
+	public boolean setColumnCount(int col) {
+		// Local declarations
+		boolean wasSet = false;
+		// If the column number fits the criteria, set the value and refresh the
+		// composite
+		if (col > 0 && col < 5) {
+			columns = col;
+			refreshLayout();
+			wasSet = true;
+		}
+		// Return if the column was set or not
+		return wasSet;
+	}
+
+	/**
+	 * Sets the number of rows for this plot composite.
+	 * 
+	 * @param row
+	 *            The new number of rows in the grid to layout plots. Note- must
+	 *            be between 1 and 4 inclusive, as zero rows makes no sense and
+	 *            the screen is too crowded with more than 4.
+	 * @return Returns true if the number of rows was successfully set and the
+	 *         grid was updated, false if otherwise.
+	 */
+	public boolean setRowCount(int row) {
+		// Local declarations
+		boolean wasSet = false;
+		// If the row number fits the criteria, set the value and refresh the
+		// composite
+		if (row > 0 && row < 5) {
+			rows = row;
+			refreshLayout();
+			wasSet = true;
+		}
+		// Return if the row was set or not
+		return wasSet;
+	}
+
+	/**
 	 * Creates a {@code ToolBar} for this {@code Composite}. It includes the
 	 * following controls:
 	 * <ol>
@@ -258,8 +306,8 @@ public class PlotGridComposite extends Composite {
 
 		// Create and adapt the ToolBar first so that the default styles will be
 		// passed down to the widgets created by the ToolBarManager.
-		ToolBar toolBar = new ToolBar(parent, SWT.WRAP | SWT.FLAT
-				| SWT.HORIZONTAL);
+		ToolBar toolBar = new ToolBar(parent,
+				SWT.WRAP | SWT.FLAT | SWT.HORIZONTAL);
 		toolBar.setBackground(parent.getBackground());
 		ToolBarManager toolBarManager = new ToolBarManager(toolBar);
 
@@ -270,7 +318,8 @@ public class PlotGridComposite extends Composite {
 
 		// Add a Spinner for setting the grid rows to the ToolBarManager (this
 		// requires a JFace ControlContribution).
-		SpinnerContribution rowSpinner = new SpinnerContribution("rows.spinner");
+		SpinnerContribution rowSpinner = new SpinnerContribution(
+				"rows.spinner");
 		rowSpinner.setMinimum(1);
 		rowSpinner.setMaximum(4);
 		rowSpinner.setSelection(rows);
@@ -339,43 +388,26 @@ public class PlotGridComposite extends Composite {
 		int index = -1;
 
 		// Proceed if the plot is not null and there is still space available in
-		// the grid. We also can only proceed if the map of plot types is not
-		// null.
-		Map<String, String[]> plotTypes;
+		// the grid. We also can only proceed if there is at least one dependent
+		// series (y-axis) to plot and the independent series (x-axis) has been
+		// set for this plot.
+		ISeries independent = null;
+		List<ISeries> dependent = null;
+
 		if (plot != null && drawnPlots.size() < rows * columns
-				&& (plotTypes = plot.getPlotTypes()) != null) {
+				&& (independent = plot.getIndependentSeries()) != null
+				&& (dependent = plot.getAllDependentSeries(null)) != null) {
 
-			// Try to get the available categories and plot types, then try to
-			// plot the first available one.
-
-			// Find the first category and plot type.
-			String category = null;
-			String type = null;
-			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
-				category = entry.getKey();
-				String[] types = entry.getValue();
-				if (category != null && types != null) {
-					for (int i = 0; i < types.length && type == null; i++) {
-						type = types[i];
-					}
-					if (type != null) {
-						break;
-					}
-				}
-			}
-
-			// If a category and type could be found, try to draw the plot in a
-			// new cell in the grid.
-			if (category != null && type != null) {
+			if (dependent.size() > 0 && independent.getBounds() != null) {
 
 				// Create the basic plot Composite.
 				final DrawnPlot drawnPlot = new DrawnPlot(gridComposite, plot);
 				drawnPlot.setBackground(getBackground());
 
-				// Try to draw the category and type. If the underlying IPlot
+				// Try to draw the plot. If the underlying IPlot
 				// cannot draw, then dispose of the undrawn plot Composite.
 				try {
-					drawnPlot.draw(category, type);
+					drawnPlot.draw();
 				} catch (Exception e) {
 					drawnPlot.dispose();
 					throw e;
@@ -392,7 +424,8 @@ public class PlotGridComposite extends Composite {
 
 				// Set the layout data for the new drawn plot. It should grab
 				// all available space in the gridComposite's layout.
-				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
+						true);
 				drawnPlot.setLayoutData(gridData);
 
 				// Since a new plot was added, refresh the grid layout.
@@ -677,51 +710,9 @@ public class PlotGridComposite extends Composite {
 				}
 			};
 
-			// Create the root ActionTree for setting the plot category and
-			// type.
-			final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
-			try {
-				// Add an ActionTree for each category, and then add ActionTree
-				// leaf nodes for each type.
-				Map<String, String[]> plotTypes = plot.getPlotTypes();
-				for (Entry<String, String[]> entry : plotTypes.entrySet()) {
-					String category = entry.getKey();
-					String[] types = entry.getValue();
-
-					if (category != null && types != null && types.length > 0) {
-						// Create the category ActionTree.
-						ActionTree categoryTree = new ActionTree(category);
-						plotTypeTree.add(categoryTree);
-
-						// Add all types to the category ActionTree. Each Action
-						// should try to set the plot category and type of the
-						// drawn
-						// plot.
-						final String categoryRef = category;
-						for (String type : types) {
-							final String typeRef = type;
-							categoryTree.add(new ActionTree(new Action(type) {
-								@Override
-								public void run() {
-									try {
-										draw(categoryRef, typeRef);
-									} catch (Exception e) {
-										logger.error(getClass().getName() + " Exception!",e);
-									}
-								}
-							}));
-						}
-					}
-				}
-			} catch (Exception e) {
-				// Print out the error message (from getPlotTypes()).
-				logger.error(getClass().getName() + " Exception! ", e);
-			}
-
 			// Add the items to the context menu.
 			contextMenuManager.add(removeAction);
 			contextMenuManager.add(new Separator());
-			contextMenuManager.add(plotTypeTree.getContributionItem());
 
 			// Set the context Menu for the plot Composite.
 			setMenu(contextMenuManager.createContextMenu(this));
@@ -741,8 +732,8 @@ public class PlotGridComposite extends Composite {
 		 *             An exception is thrown if the underlying {@code IPlot}
 		 *             implementation fails to draw or update.
 		 */
-		public void draw(String category, String type) throws Exception {
-			plot.draw(category, type, this);
+		public void draw() throws Exception {
+			plot.draw(this);
 			refreshLayout();
 		}
 

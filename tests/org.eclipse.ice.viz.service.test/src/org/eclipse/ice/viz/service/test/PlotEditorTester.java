@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation -
+ *   Initial API and implementation and/or initial documentation - 
  *   Robert Smith
  *******************************************************************************/
 package org.eclipse.ice.viz.service.test;
@@ -21,24 +21,28 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.viz.service.BasicVizServiceFactory;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.csv.CSVVizService;
+import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
  * This class is responsible for testing the PlotEditor class.
- *
+ * 
  * @author Robert Smith
  *
  */
-@Ignore
+
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class PlotEditorTester {
 	/*
@@ -46,12 +50,16 @@ public class PlotEditorTester {
 	 */
 	private static SWTWorkbenchBot bot;
 
+	private static IVizServiceFactory realFactory;
+
 	/*
 	 * Creates the bot before running tests.
 	 */
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		bot = new SWTWorkbenchBot();
+		realFactory = VizServiceFactoryHolder.getFactory();
+
 	}
 
 	/*
@@ -60,6 +68,11 @@ public class PlotEditorTester {
 	 */
 	@Test
 	public void testPlotEditor() {
+
+		IVizServiceFactory fakeFactory = new BasicVizServiceFactory();
+		fakeFactory.register(new CSVVizService());
+
+		VizServiceFactoryHolder.setVizServiceFactory(fakeFactory);
 
 		// Set up the workspace
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
@@ -78,9 +91,8 @@ public class PlotEditorTester {
 				// Set the location as
 				// ${workspace_loc}/CAEBATModelTesterWorkspace
 				defaultProjectLocation = (new File(
-						System.getProperty("user.home") + separator
-								+ "ICETests" + separator + projectName))
-						.toURI();
+						System.getProperty("user.home") + separator + "ICETests"
+								+ separator + projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -116,8 +128,7 @@ public class PlotEditorTester {
 		// Test the plot category selection menu
 		SWTBotToolbarDropDownButton button = bot.activeEditor().bot()
 				.toolbarDropDownButton();
-		button.menuItem("Plot Categories").menu("Bar").menu("x vs. f(x)")
-				.click();
+		button.menuItem("Plot Series").menu("f(x)").click();
 
 		// Close the menu before testing the next item
 		try {
@@ -129,6 +140,12 @@ public class PlotEditorTester {
 
 		// Test the editor closing menu option.
 		button.menuItem("Close").click();
+
+	}
+
+	@AfterClass
+	public static void afterClass() throws Exception {
+		VizServiceFactoryHolder.setVizServiceFactory(realFactory);
 
 	}
 }

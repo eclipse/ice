@@ -8,10 +8,11 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,7 +21,9 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.viz.csv.viewer.CSVPlotViewer;
+import org.eclipse.ice.viz.service.PlotEditor;
+import org.eclipse.ice.viz.service.PlotEditorInput;
+import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -38,6 +41,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewReference;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -52,9 +56,11 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  * @author Taylor Patterson
  * @author Jordan H. Deyton
+ * @author Kasper Gammeltoft- Changed functionality to use the
+ *         {@link PlotEditor}
  */
-public class VizFileViewer extends ViewPart implements IUpdateableListener,
-		ISelectionChangedListener {
+public class VizFileViewer extends ViewPart
+		implements IUpdateableListener, ISelectionChangedListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -112,8 +118,8 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 
 		// Initialize the ListViewer. Disable multi-selection by specifying the
 		// default style bits except for SWT.MULTI.
-		fileTreeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.BORDER);
+		fileTreeViewer = new TreeViewer(parent,
+				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		fileTreeViewer.addSelectionChangedListener(this);
 
 		// Create content and label providers.
@@ -167,8 +173,8 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					if (lastIndex > -1) {
 						ICEResource resource = resourceComponent.getResources()
 								.get(lastIndex);
-						fileTreeViewer.setSelection(new StructuredSelection(
-								resource), true);
+						fileTreeViewer.setSelection(
+								new StructuredSelection(resource), true);
 					}
 
 				}
@@ -323,8 +329,7 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 					if (resource.getChildrenResources() != null
 							&& !resource.getChildrenResources().isEmpty()) {
 						// Return all Child resources
-						return resource.getChildrenResources()
-								.toArray();
+						return resource.getChildrenResources().toArray();
 
 					} else if (resource.getFileSet() != null
 							&& resource.getFileSet().length != 0) {
@@ -478,26 +483,23 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 						fileName = vizResource.getContents().getAbsolutePath();
 					}
 
-					// If the file is a .csv file...
+					// Get the Current page.
+					IWorkbenchPage page = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage();
+
+					// Get the file from the resource
+					File file = vizResource.getContents();
+					fileName = file.getAbsolutePath();
+					// If it is a CSV file, then open it here
 					if (fileName.matches(".*\\.csv$")) {
 						try {
-							// Show the CSV Plot Viewer
-							getSite().getWorkbenchWindow().getActivePage()
-									.showView(CSVPlotViewer.ID);
-							// Get the views of the this page
-							IViewReference[] refs = getSite()
-									.getWorkbenchWindow().getActivePage()
-									.getViewReferences();
-							// Get the CSV Plot Viewer and set its resource
-							for (IViewReference ref : refs) {
-								if ("CSV Plot Viewer".equals(ref.getPartName())) {
-									CSVPlotViewer view = (CSVPlotViewer) ref
-											.getView(false);
-									view.setResource(vizResource);
-								}
-							}
+							CSVPlot plot = new CSVPlot(file.toURI());
+							plot.load();
+							page.openEditor(new PlotEditorInput(plot),
+									PlotEditor.ID);
 						} catch (PartInitException e) {
-							logger.error(getClass().getName() + " Exception!",e);
+							logger.error("Could not open editor for CSV file: "
+									+ file.getAbsolutePath(), e);
 						}
 					}
 					// If the file is something else...
@@ -512,15 +514,16 @@ public class VizFileViewer extends ViewPart implements IUpdateableListener,
 									.getViewReferences();
 							// Get the VisIt Plot Viewer and set its resource
 							for (IViewReference ref : refs) {
-								if ("VisIt Plot Viewer".equals(ref
-										.getPartName())) {
+								if ("VisIt Plot Viewer"
+										.equals(ref.getPartName())) {
 									VisitPlotViewer view = (VisitPlotViewer) ref
 											.getView(false);
 									view.setResource(vizResource);
 								}
 							}
 						} catch (PartInitException e) {
-							logger.error(getClass().getName() + " Exception!",e);
+							logger.error(getClass().getName() + " Exception!",
+									e);
 						}
 					}
 				}

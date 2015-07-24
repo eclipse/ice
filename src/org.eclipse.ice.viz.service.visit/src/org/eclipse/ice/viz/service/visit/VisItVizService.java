@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +23,8 @@ import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+
+import gov.lbnl.visit.swt.VisItSwtConnection;
 
 /**
  * This is an implementation of the IVizService interface for the VisIt
@@ -202,14 +202,14 @@ public class VisItVizService extends AbstractVizService {
 	public IPlot createPlot(URI file) throws Exception {
 		// Call the super method to validate the URI's extension.
 		super.createPlot(file);
-		
+
 		VisItPlot plot = null;
 
 		// Create the plot.
 		plot = new VisItPlot(this);
 		// Associate the plot with the connection.
 		connections.addClient(plot);
-		// Set teh data source for the file.
+		// Set the data source for the file.
 		plot.setDataSource(file);
 
 		return plot;

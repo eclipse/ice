@@ -36,7 +36,6 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorReference;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,8 +43,8 @@ import org.junit.Test;
  *
  * @author Jay Jay Billings
  * @author Jordan H. Deyton
+ * @author Kasper Gammeltoft - Removed a line to conform with changes to IPlot
  */
-@Ignore
 public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 	// ---- Resources shared between tests. ---- //
@@ -113,9 +112,8 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#beforeAllTests
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#
+	 * beforeAllTests ()
 	 */
 	@Override
 	public void beforeAllTests() {
@@ -149,9 +147,8 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#beforeEachTest
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.test.AbstractWorkbenchTester#
+	 * beforeEachTest ()
 	 */
 	@Override
 	public void beforeEachTest() {
@@ -619,8 +616,7 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 			// If the extension was valid, create a new FakePlot.
 			FakePlot plot = new FakePlot();
-			plot.plotTypes.put("category", new String[] { "type" });
-			plots.add(plot);
+
 			// Set the flag that the plot was created successfully.
 			createCompleted.set(true);
 

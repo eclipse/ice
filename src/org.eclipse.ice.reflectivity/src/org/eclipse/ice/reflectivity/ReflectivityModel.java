@@ -219,35 +219,37 @@ public class ReflectivityModel extends Model {
 			double[] depth = profile.depth;
 			double[] rq4 = rq4Profile.reflectivity;
 			double[] rq4Data = new double[rq4.length];
-			
-			// Get the chi squared analysis from the data and calculate rq4 data.
+
+			// Get the chi squared analysis from the data and calculate rq4
+			// data.
 			double rChiSquare = 0;
 			double rq4ChiSquare = 0;
-			for(int i=0; i<reflectivity.length; i++){
-				
+			for (int i = 0; i < reflectivity.length; i++) {
+
 				// Get the data points to compare
 				double rPoint = reflectivity[i];
 				double rDataPoint = rData[i];
 				double rq4Point = rq4[i];
-				double rq4DataPoint = rDataPoint*(Math.pow(waveVector[i], 4));
-				
+				double rq4DataPoint = rDataPoint * (Math.pow(waveVector[i], 4));
+
 				// Set the rq4 data
 				rq4Data[i] = rq4DataPoint;
-				
+
 				// Calculate chi squared which equals sum((o-e)^2/e)
-				rChiSquare += (rPoint-rDataPoint)*(rPoint-rDataPoint)/rPoint;
-				rq4ChiSquare += (rq4Point-rq4DataPoint)*(rq4Point-rq4DataPoint)/rq4Point;
+				rChiSquare += (rPoint - rDataPoint) * (rPoint - rDataPoint)
+						/ rPoint;
+				rq4ChiSquare += (rq4Point - rq4DataPoint)
+						* (rq4Point - rq4DataPoint) / rq4Point;
 			}
-			
-			
-			System.out.println("Chi Squared: R = "+rChiSquare);
-			System.out.println("CHi Squared: QR^4 = "+rq4ChiSquare);
+
+			System.out.println("Chi Squared: R = " + rChiSquare);
+			System.out.println("CHi Squared: QR^4 = " + rq4ChiSquare);
 
 			// Create the csv data for the reflectivity file
-			String reflectData = "R,Q,RData,RData_error\n#units,R,A-1,R,R\n";
+			String reflectData = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
 			for (int i = 0; i < reflectivity.length; i++) {
-				reflectData += Double.toString(reflectivity[i]) + ","
-						+ Double.toString(waveVector[i]) + ", "
+				reflectData += Double.toString(waveVector[i]) + ", "
+						+ Double.toString(reflectivity[i]) + ","
 						+ Double.toString(rData[i]) + ","
 						+ Double.toString(error[i]) + "\n";
 			}
@@ -257,10 +259,10 @@ public class ReflectivityModel extends Model {
 					reflectData.getBytes());
 
 			// Create the data for the scattering density profile
-			String scatData = "b/V,Z\n#units,A-2,A\n";
+			String scatData = "Z,b/V\n#units,A,A-2\n";
 			for (int i = 0; i < depth.length; i++) {
-				scatData += Double.toString(scatDensity[i]) + ","
-						+ Double.toString(depth[i]) + "\n";
+				scatData += Double.toString(depth[i]) + ","
+						+ Double.toString(scatDensity[i]) + "\n";
 			}
 
 			// Create the stream
@@ -268,10 +270,10 @@ public class ReflectivityModel extends Model {
 					scatData.getBytes());
 
 			// Create the csv data for the rq4 file
-			String rq4DataStr = "R,Q,RData,RData_error\n#units,R,A-1,R,R\n";
+			String rq4DataStr = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
 			for (int i = 0; i < rq4.length; i++) {
-				rq4DataStr += Double.toString(rq4[i]) + ","
-						+ Double.toString(waveVector[i]) + ","
+				rq4DataStr += Double.toString(waveVector[i]) + ","
+						+ Double.toString(rq4[i]) + ","
 						+ Double.toString(rData[i]) + ","
 						+ Double.toString(error[i]) + "\n";
 			}
@@ -341,7 +343,7 @@ public class ReflectivityModel extends Model {
 					// Complain
 					System.err.println("ReflectivityModel Error: "
 							+ "Problem creating reflectivity files!");
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 
 				// Just override the existing files.
@@ -385,7 +387,7 @@ public class ReflectivityModel extends Model {
 				} catch (CoreException | NullPointerException e) {
 					System.err.println("Reflectivity Model Error: "
 							+ "Problem writing to reflectivity files.");
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 					retVal = FormStatus.InfoError;
 				}
 
@@ -472,8 +474,7 @@ public class ReflectivityModel extends Model {
 		};
 		deltaQ0Entry.setId(3);
 		deltaQ0Entry.setName(deltaQ0EntryName);
-		deltaQ0Entry
-				.setDescription("The incident angle of the neutron beam.");
+		deltaQ0Entry.setDescription("The incident angle of the neutron beam.");
 		paramComponent.addEntry(deltaQ0Entry);
 
 		// Add an entry for the deltaQ1ByQ
@@ -489,8 +490,8 @@ public class ReflectivityModel extends Model {
 		};
 		deltaQ1Entry.setId(4);
 		deltaQ1Entry.setName(deltaQ1ByQEntryName);
-		deltaQ1Entry.setDescription(
-				"The angle of refraction on the neutron beam.");
+		deltaQ1Entry
+				.setDescription("The angle of refraction on the neutron beam.");
 		paramComponent.addEntry(deltaQ1Entry);
 
 		// Add an entry for the wavelength
@@ -654,22 +655,24 @@ public class ReflectivityModel extends Model {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.item.Item#submitForm(org.eclipse.ice.datastructures.form.Form)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.Item#submitForm(org.eclipse.ice.datastructures.form.
+	 * Form)
 	 */
 	@Override
-	public FormStatus submitForm(Form preparedForm){
+	public FormStatus submitForm(Form preparedForm) {
 		// Get the form status from the model
 		FormStatus status = super.submitForm(preparedForm);
 		// If it is good, process
-		if(status.equals(FormStatus.ReadyToProcess)){
+		if (status.equals(FormStatus.ReadyToProcess)) {
 			// Get the status from processing and process the item
 			status = process(processActionName);
 		}
 		// Return the status
 		return status;
 	}
-	
-	
+
 	/**
 	 * Sets up the form with the basic services needed for the reflectivity
 	 * model. Namely, sets the materials database and the table format for the
