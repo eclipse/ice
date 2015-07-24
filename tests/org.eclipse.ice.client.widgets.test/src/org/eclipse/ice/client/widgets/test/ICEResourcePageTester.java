@@ -31,6 +31,7 @@ import org.eclipse.ice.viz.service.BasicVizServiceFactory;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -286,8 +287,24 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 		// Create a new IVizServiceFactory with fake CSVVizService and
 		// TXTVizServices.
 		vizServiceFactory = new BasicVizServiceFactory();
-		FakeCSVVizService csvVizService = new FakeCSVVizService();
-		FakeTXTVizService txtVizService = new FakeTXTVizService();
+		FakeCSVVizService csvVizService = new FakeCSVVizService() {
+			@Override
+			public IPlot createPlot(URI file) throws Exception {
+				FakePlot plot = (FakePlot) super.createPlot(file);
+				plot.addDependentSeries("something", new CSVSeries(null));
+				return plot;
+
+			}
+		};
+		FakeTXTVizService txtVizService = new FakeTXTVizService() {
+			@Override
+			public IPlot createPlot(URI file) throws Exception {
+				FakePlot plot = (FakePlot) super.createPlot(file);
+				plot.addDependentSeries("something", new CSVSeries(null));
+				return plot;
+
+			}
+		};
 		vizServiceFactory.register(csvVizService);
 		vizServiceFactory.register(txtVizService);
 		// Set the shared page's factory.
@@ -371,7 +388,15 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 		// Create a new IVizServiceFactory with a fake CSVVizService.
 		vizServiceFactory = new BasicVizServiceFactory();
-		FakeCSVVizService csvVizService = new FakeCSVVizService();
+
+		FakeCSVVizService csvVizService = new FakeCSVVizService() {
+			@Override
+			public IPlot createPlot(URI file) throws Exception {
+				FakePlot plot = (FakePlot) super.createPlot(file);
+				plot.addDependentSeries("blah", new CSVSeries(null));
+				return plot;
+			}
+		};
 		vizServiceFactory.register(csvVizService);
 		// Set the shared page's factory.
 		page.setVizService(vizServiceFactory);
@@ -616,6 +641,9 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 
 			// If the extension was valid, create a new FakePlot.
 			FakePlot plot = new FakePlot();
+
+			// Add the plot to the list of created plots
+			plots.add(plot);
 
 			// Set the flag that the plot was created successfully.
 			createCompleted.set(true);
