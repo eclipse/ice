@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeLabelProvider;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
 import org.junit.Test;
 
 /**
@@ -62,8 +62,8 @@ public class ShapeTreeLabelProviderTest {
 
 		// Any input should produce a null return value
 
-		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
-		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
+		ICEShape cube1 = new ICEShape(ShapeType.Cube);
+		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
 
 		assertNull(labelProvider.getImage(cube1));
 		assertNull(labelProvider.getImage(intersection1));
@@ -84,13 +84,13 @@ public class ShapeTreeLabelProviderTest {
 
 		// Create some named shapes
 
-		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
+		ICEShape cube1 = new ICEShape(ShapeType.Cube);
 		cube1.setName("KUB");
 
-		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
+		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
 		intersection1.setName("INTRASECSION");
 
-		ICEShape union1 = new ICEShape(ICEOperatorType.Union);
+		ICEShape union1 = new ICEShape(OperatorType.Union);
 		union1.setDescription("Not a name");
 		union1.setId(1111);
 

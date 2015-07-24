@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
+import org.eclipse.ice.viz.service.geometry.Transformation;
 import org.junit.Test;
 
 /**
@@ -116,7 +116,7 @@ public class AbstractShapeTester {
 		testShape.getShape().register(testComponentListener);
 
 		// Trigger a notification with setTransformation
-		ICETransformation transformation = testShape.getTransformation();
+		Transformation transformation = testShape.getTransformation();
 		transformation.setRotation(1.1, 0.1, 0.0);
 		testShape.setTransformation(transformation);
 
@@ -169,7 +169,7 @@ public class AbstractShapeTester {
 		TestShape transitiveComponent = new TestShape();
 		TestShape unequalPropertiesComponent = new TestShape();
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setScale(2.0, 3.0, 2.0e-4);
 
 		component.setTransformation(transformation);
@@ -182,7 +182,7 @@ public class AbstractShapeTester {
 		transitiveComponent.setProperty("key!", "value!");
 		unequalPropertiesComponent.setProperty("key!", " o(^-^)o ");
 
-		unEqualComponent.setTransformation(new ICETransformation());
+		unEqualComponent.setTransformation(new Transformation());
 
 		// Set ICEObject data
 		component.setId(1);
@@ -264,7 +264,7 @@ public class AbstractShapeTester {
 		// Set up IShape-specific stuff
 		testShape.setProperty("kei", "valeu");
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setSkew(2, 0, 3498.0);
 		testShape.setTransformation(transformation);
 
@@ -303,7 +303,7 @@ public class AbstractShapeTester {
 		TestShape testShape = new TestShape();
 
 		// Check that the transformation is instantiated to an identity matrix
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		assertEquals(transformation, testShape.getTransformation());
 
 		// Modify and set the transformation

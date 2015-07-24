@@ -16,9 +16,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
 import org.eclipse.ice.viz.service.geometry.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -132,29 +131,29 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Add the PrimitiveShape actions
 
-		Action addSphere = new ActionAddShape(this, ICEShapeType.Sphere);
+		Action addSphere = new ActionAddShape(this, ShapeType.Sphere);
 		addPrimitiveShapes.addAction(addSphere);
 
-		Action addCube = new ActionAddShape(this, ICEShapeType.Cube);
+		Action addCube = new ActionAddShape(this, ShapeType.Cube);
 		addPrimitiveShapes.addAction(addCube);
 
-		Action addCylinder = new ActionAddShape(this, ICEShapeType.Cylinder);
+		Action addCylinder = new ActionAddShape(this, ShapeType.Cylinder);
 		addPrimitiveShapes.addAction(addCylinder);
 
-		Action addTube = new ActionAddShape(this, ICEShapeType.Tube);
+		Action addTube = new ActionAddShape(this, ShapeType.Tube);
 		addPrimitiveShapes.addAction(addTube);
 
 		// Add the ComplexShape actions
 
-		Action addUnion = new ActionAddShape(this, ICEOperatorType.Union);
+		Action addUnion = new ActionAddShape(this, OperatorType.Union);
 		addComplexShapes.addAction(addUnion);
 
 		Action addIntersection = new ActionAddShape(this,
-				ICEOperatorType.Intersection);
+				OperatorType.Intersection);
 		addIntersection.setEnabled(false);
 		addComplexShapes.addAction(addIntersection);
 
-		Action addComplement = new ActionAddShape(this, ICEOperatorType.Complement);
+		Action addComplement = new ActionAddShape(this, OperatorType.Complement);
 		addComplement.setEnabled(false);
 		addComplexShapes.addAction(addComplement);
 

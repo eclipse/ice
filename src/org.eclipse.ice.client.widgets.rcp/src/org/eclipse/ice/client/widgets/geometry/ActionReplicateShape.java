@@ -16,9 +16,9 @@ import java.net.URL;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
+import org.eclipse.ice.viz.service.geometry.Transformation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -115,7 +115,7 @@ public class ActionReplicateShape extends Action {
 		// Create a transformation, initialized from the selected shape's
 		// transformation
 
-		ICETransformation accumulatedTransformation = (ICETransformation) selectedShape
+		Transformation accumulatedTransformation = (Transformation) selectedShape
 				.getTransformation().clone();
 
 		// Open the dialog
@@ -154,7 +154,7 @@ public class ActionReplicateShape extends Action {
 
 		// Create a new parent union shape
 
-		ICEShape replicateUnion = new ICEShape(ICEOperatorType.Union);
+		ICEShape replicateUnion = new ICEShape(OperatorType.Union);
 		replicateUnion.setName("Replication");
 		replicateUnion.setId(((ICEObject) selectedShape).getId());
 
@@ -170,7 +170,7 @@ public class ActionReplicateShape extends Action {
 			// Add the translation
 			//ICETransformation clonedTransformation = (ICETransformation) accumulatedTransformation.clone();
 			clonedShape
-					.setTransformation((ICETransformation) accumulatedTransformation
+					.setTransformation((Transformation) accumulatedTransformation
 							.clone());
 
 			// Add it to the replicated union

@@ -14,7 +14,7 @@ package org.eclipse.ice.datastructures.test;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
 
 /**
  * <p>
@@ -26,7 +26,7 @@ import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
 public class TestShape extends ICEShape {
 	
 	TestShape(){
-		super(ICEShapeType.Cone);
+		super(ShapeType.Cone);
 	}
 	
 	/**

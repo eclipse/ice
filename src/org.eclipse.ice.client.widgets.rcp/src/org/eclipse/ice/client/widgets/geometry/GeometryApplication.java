@@ -19,10 +19,10 @@ import java.util.Vector;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
-import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
+import org.eclipse.ice.viz.service.geometry.Transformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -360,7 +360,7 @@ public class GeometryApplication extends SimpleApplication implements
 				// is
 				// implemented
 
-				if (shape.getOperatorType() == ICEOperatorType.Union) {
+				if (shape.getOperatorType() == OperatorType.Union) {
 
 					// Create a new Node
 
@@ -386,14 +386,13 @@ public class GeometryApplication extends SimpleApplication implements
 					}
 
 					// Attach the Node to a parent
-					System.out.println("Attached shape " + complexShapeNode.getName() + " to root node.");
 					this.node.attachChild(complexShapeNode);
 				}
 			}
 
 			else {
 				// Local Declarations
-				ICEShapeType shapeType = ICEShapeType.None;
+				ShapeType shapeType = ShapeType.None;
 				Mesh mesh = null;
 
 				// If the assetManager doesn't exist, don't render the shape
@@ -404,12 +403,11 @@ public class GeometryApplication extends SimpleApplication implements
 				// can
 				// reuse the meshes.
 				shapeType = shape.getShapeType();
-				if (shapeType != ICEShapeType.None && shapeType != ICEShapeType.Cone) {
+				if (shapeType != ShapeType.None && shapeType != ShapeType.Cone) {
 					mesh = primitiveMeshes[shapeType.ordinal()];
 				} else {
 					return;
 				}
-				System.out.println("Mesh type: " + shapeType.ordinal());
 				// Create geometry and store the reference to the shape data
 				// structure
 				Geometry geom = new Geometry(shape.getName(), mesh);
@@ -419,7 +417,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 				// Cylinders need to be rotated 90 degrees on the x-axis
 
-				if (shapeType == ICEShapeType.Cylinder) {
+				if (shapeType == ShapeType.Cylinder) {
 					geom.rotate(FastMath.PI / 2, 0.0f, 0.0f);
 				}
 
@@ -445,7 +443,6 @@ public class GeometryApplication extends SimpleApplication implements
 				geom.setQueueBucket(Bucket.Transparent);
 				
 				// Attach the Geometry to a parent
-//				System.out.println("Attached gemetry " + geom.getName() + " to node " + node.getName());
 				this.node.attachChild(geom);
 
 
@@ -550,7 +547,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 					// Rotate 90 degrees if it's a cylinder
 
-					if (primitiveShape.getShapeType() == ICEShapeType.Cylinder) {
+					if (primitiveShape.getShapeType() == ShapeType.Cylinder) {
 						childSpatial.rotate(FastMath.PI / 2, 0.0f, 0.0f);
 					}
 
@@ -655,7 +652,7 @@ public class GeometryApplication extends SimpleApplication implements
 	 *            Geometry transformation data structure
 	 * @return The JME3 transformation
 	 */
-	private Transform convertTransformation(ICETransformation transformation) {
+	private Transform convertTransformation(Transformation transformation) {
 
 		// Create the JME3 transform
 

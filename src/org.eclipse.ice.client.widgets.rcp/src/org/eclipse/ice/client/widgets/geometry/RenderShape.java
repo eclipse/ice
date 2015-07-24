@@ -13,10 +13,10 @@
 package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
-import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
+import org.eclipse.ice.viz.service.geometry.Transformation;
 
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
@@ -50,11 +50,11 @@ public class RenderShape extends ICEShape {
 	 * 
 	 * @param shape
 	 */
-	public RenderShape(ICEShapeType shapeType){
+	public RenderShape(ShapeType shapeType){
 		super(shapeType);
 	}
 	
-	public RenderShape(ICEOperatorType operatorType){
+	public RenderShape(OperatorType operatorType){
 		super(operatorType);
 	}
 
@@ -114,7 +114,7 @@ public class RenderShape extends ICEShape {
 
 		public void addShape(ICEShape newShape){
 			if(newShape.isComplex()){
-				if (newShape.getOperatorType() == ICEOperatorType.Union) {
+				if (newShape.getOperatorType() == OperatorType.Union) {
 
 					Node node = new Node();
 
@@ -255,7 +255,7 @@ public class RenderShape extends ICEShape {
 	 */
 	private Transform getTransform() {
 
-		ICETransformation transformation = getTransformation();
+		Transformation transformation = getTransformation();
 
 		// Create the JME3 transform
 

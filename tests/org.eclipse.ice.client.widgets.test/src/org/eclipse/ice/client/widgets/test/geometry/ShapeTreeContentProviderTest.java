@@ -21,9 +21,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
 import org.junit.Test;
 
 /**
@@ -47,12 +47,12 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ICEShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
+		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
+		ICEShape cube1 = new ICEShape(ShapeType.Cube);
 
-		ICEShape union1 = new ICEShape(ICEOperatorType.Union);
-		ICEShape complement1 = new ICEShape(ICEOperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
+		ICEShape union1 = new ICEShape(OperatorType.Union);
+		ICEShape complement1 = new ICEShape(OperatorType.Complement);
+		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
 
 		// Create a simple CSG tree
 
@@ -112,12 +112,12 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ICEShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
+		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
+		ICEShape cube1 = new ICEShape(ShapeType.Cube);
 
-		ICEShape union1 = new ICEShape(ICEOperatorType.Union);
-		ICEShape complement1 = new ICEShape(ICEOperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
+		ICEShape union1 = new ICEShape(OperatorType.Union);
+		ICEShape complement1 = new ICEShape(OperatorType.Complement);
+		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
 
 		// Create a simple CSG tree
 
@@ -177,11 +177,11 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ICEShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ICEShapeType.Cube);
-		ICEShape union1 = new ICEShape(ICEOperatorType.Union);
-		ICEShape complement1 = new ICEShape(ICEOperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(ICEOperatorType.Intersection);
+		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
+		ICEShape cube1 = new ICEShape(ShapeType.Cube);
+		ICEShape union1 = new ICEShape(OperatorType.Union);
+		ICEShape complement1 = new ICEShape(OperatorType.Complement);
+		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
 
 		// Put them all in a GeometryComponent
 

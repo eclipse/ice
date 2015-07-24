@@ -27,7 +27,7 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
+import org.eclipse.ice.viz.service.geometry.Transformation;
 import org.junit.Test;
 
 /**
@@ -45,7 +45,7 @@ public class TransformationTester {
 	@Test
 	public void checkSkew() {
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setSkew(-1.0, 1.2, 5.0);
 
 		double[] expectedSkew = new double[] { -1.0, 1.2, 5.0 };
@@ -62,7 +62,7 @@ public class TransformationTester {
 	@Test
 	public void checkSize() {
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setSize(42.0);
 
 		assertEquals(42.0, transformation.getSize(), 0.0);
@@ -78,7 +78,7 @@ public class TransformationTester {
 	@Test
 	public void checkScale() {
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setScale(-1.0, 1.2, 5.0);
 
 		double[] expectedScale = new double[] { -1.0, 1.2, 5.0 };
@@ -95,7 +95,7 @@ public class TransformationTester {
 	@Test
 	public void checkRotation() {
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setRotation(-1.0, 1.2, 5.0);
 
 		double[] expectedRotation = new double[] { -1.0, 1.2, 5.0 };
@@ -113,7 +113,7 @@ public class TransformationTester {
 	@Test
 	public void checkTranslation() {
 
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setTranslation(-1.0, 1.2, 5.0);
 
 		double[] expectedTranslation = new double[] { -1.0, 1.2, 5.0 };
@@ -135,10 +135,10 @@ public class TransformationTester {
 		// Local Declarations
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(ICETransformation.class);
+		classList.add(Transformation.class);
 
 		// Instantiate a Transformation
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 		transformation.setName("Big transformation");
 		transformation.setId(999999999);
 		transformation.setDescription("Really huge!");
@@ -160,8 +160,8 @@ public class TransformationTester {
 		System.err.println("File " + xmlFile2);
 
 		// load contents into xml
-		ICETransformation loadTransformation = new ICETransformation();
-		loadTransformation = (ICETransformation) xmlHandler.read(classList, inputStream);
+		Transformation loadTransformation = new Transformation();
+		loadTransformation = (Transformation) xmlHandler.read(classList, inputStream);
 
 		// Check contents
 		assertTrue(loadTransformation.equals(transformation));
@@ -179,10 +179,10 @@ public class TransformationTester {
 	public void checkEquality() {
 
 		// Create Matrix4x4 to test
-		ICETransformation component = new ICETransformation();
-		ICETransformation equalComponent = new ICETransformation();
-		ICETransformation unEqualComponent = new ICETransformation();
-		ICETransformation transitiveComponent = new ICETransformation();
+		Transformation component = new Transformation();
+		Transformation equalComponent = new Transformation();
+		Transformation unEqualComponent = new Transformation();
+		Transformation transitiveComponent = new Transformation();
 
 		// Change values
 		component.setRotation(1.0, 2.0, 3.0);
@@ -256,7 +256,7 @@ public class TransformationTester {
 	public void checkCreation() {
 
 		// Create a Transformation
-		ICETransformation transformation = new ICETransformation();
+		Transformation transformation = new Transformation();
 
 		double[] expectedSkew = new double[] { 0.0, 0.0, 0.0 };
 		double expectedSize = 1.0;
@@ -286,9 +286,9 @@ public class TransformationTester {
 	@Test
 	public void checkCopying() {
 
-		ICETransformation transformation = new ICETransformation();
-		ICETransformation cloneTransformation;
-		ICETransformation copyTransformation;
+		Transformation transformation = new Transformation();
+		Transformation cloneTransformation;
+		Transformation copyTransformation;
 
 		// Set up ICEObject stuff for Transformation
 		transformation.setId(25);
@@ -303,7 +303,7 @@ public class TransformationTester {
 		transformation.setTranslation(10.0, 11.0, 12.0);
 
 		// Clone contents
-		cloneTransformation = (ICETransformation) transformation.clone();
+		cloneTransformation = (Transformation) transformation.clone();
 
 		assertNotNull(cloneTransformation);
 
@@ -311,7 +311,7 @@ public class TransformationTester {
 		assertTrue(cloneTransformation.equals(transformation));
 
 		// Copy contents
-		copyTransformation = new ICETransformation();
+		copyTransformation = new Transformation();
 		copyTransformation.copy(transformation);
 
 		// Check equality of contents

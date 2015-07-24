@@ -18,9 +18,9 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEOperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICEShapeType;
+import org.eclipse.ice.viz.service.geometry.OperatorType;
+import org.eclipse.ice.viz.service.geometry.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -54,7 +54,7 @@ public class ActionAddShape extends Action {
 	 * </p>
 	 * 
 	 */
-	private ICEShapeType shapeType;
+	private ShapeType shapeType;
 	/**
 	 * <p>
 	 * The OperatorType used to create new ComplexShapes when the AddShape
@@ -65,7 +65,7 @@ public class ActionAddShape extends Action {
 	 * </p>
 	 * 
 	 */
-	private ICEOperatorType operatorType;
+	private OperatorType operatorType;
 
 	/**
 	 * <p>
@@ -100,7 +100,7 @@ public class ActionAddShape extends Action {
 	 *            triggered
 	 *            </p>
 	 */
-	public ActionAddShape(ShapeTreeView view, ICEShapeType shapeType) {
+	public ActionAddShape(ShapeTreeView view, ShapeType shapeType) {
 
 		this.view = view;
 		this.shapeType = shapeType;
@@ -112,11 +112,11 @@ public class ActionAddShape extends Action {
 
 		// Create a map which stores the filenames of the icons, relative
 		// to the icons/ directory
-		Map<ICEShapeType, String> shapeIcons = new HashMap<ICEShapeType, String>();
-		shapeIcons.put(ICEShapeType.Sphere, "sphere.gif");
-		shapeIcons.put(ICEShapeType.Cube, "cube.gif");
-		shapeIcons.put(ICEShapeType.Cylinder, "cylinder.gif");
-		shapeIcons.put(ICEShapeType.Tube, "tube.gif");
+		Map<ShapeType, String> shapeIcons = new HashMap<ShapeType, String>();
+		shapeIcons.put(ShapeType.Sphere, "sphere.gif");
+		shapeIcons.put(ShapeType.Cube, "cube.gif");
+		shapeIcons.put(ShapeType.Cylinder, "cylinder.gif");
+		shapeIcons.put(ShapeType.Tube, "tube.gif");
 
 		// Create the image descriptor from the file path
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
@@ -142,7 +142,7 @@ public class ActionAddShape extends Action {
 	 *            triggered
 	 *            </p>
 	 */
-	public ActionAddShape(ShapeTreeView view, ICEOperatorType operatorType) {
+	public ActionAddShape(ShapeTreeView view, OperatorType operatorType) {
 
 		this.view = view;
 		this.shapeType = null;
@@ -156,10 +156,10 @@ public class ActionAddShape extends Action {
 		// Create a map which stores the filenames of the icons, relative
 		// to the icons/ directory
 
-		Map<ICEOperatorType, String> operatorIcons = new HashMap<ICEOperatorType, String>();
-		operatorIcons.put(ICEOperatorType.Union, "union.gif");
-		operatorIcons.put(ICEOperatorType.Intersection, "intersection.gif");
-		operatorIcons.put(ICEOperatorType.Complement, "complement.gif");
+		Map<OperatorType, String> operatorIcons = new HashMap<OperatorType, String>();
+		operatorIcons.put(OperatorType.Union, "union.gif");
+		operatorIcons.put(OperatorType.Intersection, "intersection.gif");
+		operatorIcons.put(OperatorType.Complement, "complement.gif");
 
 		// Create the image descriptor from the file path
 

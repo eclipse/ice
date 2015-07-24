@@ -13,7 +13,7 @@
 package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.datastructures.form.geometry.ICETransformation;
+import org.eclipse.ice.viz.service.geometry.Transformation;
 import org.eclipse.jface.databinding.swt.IWidgetValueProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
@@ -234,13 +234,13 @@ public class TransformationView extends ViewPart {
 
 		// Define a transformation for getting values
 
-		ICETransformation transformation;
+		Transformation transformation;
 
 		if (shape == null) {
 			// Make a new transformation to set the default values of the
 			// spinners
 
-			transformation = new ICETransformation();
+			transformation = new Transformation();
 		} else {
 			transformation = shape.getTransformation();
 		}
@@ -325,7 +325,7 @@ public class TransformationView extends ViewPart {
 
 				// Reset the Transformation to the new parameters
 
-				ICETransformation transformation = new ICETransformation();
+				Transformation transformation = new Transformation();
 				transformation.setSize(size);
 				transformation.setScale(scaleX, scaleY, scaleZ);
 				transformation.setRotation(rotationX, rotationY, rotationZ);
