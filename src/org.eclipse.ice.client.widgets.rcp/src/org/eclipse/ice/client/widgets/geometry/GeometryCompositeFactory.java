@@ -16,7 +16,7 @@ import java.awt.Canvas;
 import java.awt.EventQueue;
 import java.awt.Frame;
 
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;

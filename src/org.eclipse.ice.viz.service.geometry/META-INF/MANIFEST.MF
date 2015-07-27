@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: VisIt Visualization Service Plugin
+Bundle-SymbolicName: org.eclipse.ice.viz.service.geometry;singleton:=true
+Bundle-Version: 2.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: gov.lbnl.visit.swt,
+ gov.lbnl.visit.swt.widgets,
+ org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.datastructures.componentVisitor,
+ org.eclipse.ice.datastructures.form.geometry,
+ org.slf4j;version="1.7.2",
+ visit.java.client
+Export-Package: org.eclipse.ice.viz.service.geometry
+Service-Component: OSGI-INF/vizService.xml
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Vendor: Oak Ridge National Laboratory

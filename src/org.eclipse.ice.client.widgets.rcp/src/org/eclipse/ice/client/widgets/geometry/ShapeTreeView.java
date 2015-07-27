@@ -15,7 +15,7 @@ package org.eclipse.ice.client.widgets.geometry;
 import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.ShapeType;

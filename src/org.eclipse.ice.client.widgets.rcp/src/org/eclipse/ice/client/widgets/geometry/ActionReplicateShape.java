@@ -15,9 +15,9 @@ package org.eclipse.ice.client.widgets.geometry;
 import java.net.URL;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.Transformation;
@@ -150,7 +150,7 @@ public class ActionReplicateShape extends Action {
 			if (parentShape != null) {
 				parentShape.removeShape(selectedShape);
 			} else {
-				geometry.removeShape(selectedShape);
+				geometry.getGeometry().removeShape(selectedShape);
 			}
 		}
 
@@ -200,7 +200,7 @@ public class ActionReplicateShape extends Action {
 			// The parent is the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(replicateUnion);
+				geometry.getGeometry().addShape(replicateUnion);
 			}
 
 			view.treeViewer.refresh();

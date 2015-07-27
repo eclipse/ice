@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.ice.client.widgets.PlotGridComposite;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -34,6 +34,8 @@ import org.junit.Test;
  * This class tests the {@link PlotGridComposite}'s UI features.
  * 
  * @author Jordan Deyton
+ * @author Kasper Gammeltoft - Refactored to conform with <code>IPlot</code>'s
+ *         new usage of <code>ISeries</code>.
  *
  */
 public class PlotGridCompositeTester extends AbstractSWTTester {
@@ -305,24 +307,6 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 					+ "Should just return -1.");
 		}
 
-		// Check addPlot(...) when getPlotTypes() is null.
-		fakePlot = new FakePlot() {
-			@Override
-			public Map<String, String[]> getPlotTypes() throws Exception {
-				return null;
-			}
-		};
-		plot = fakePlot;
-		try {
-			assertEquals(-1, addPlot(plot));
-		} catch (Exception e) {
-			fail("PlotGridCompositeTester error: "
-					+ "Exception thrown when adding plot with null plot type map. "
-					+ "Should just return -1.");
-		}
-		// Make sure the plot's draw(...) method wasn't called.
-		assertEquals(0, fakePlot.getDrawCount());
-
 		// Check addPlot(...) when getPlotTypes() is empty.
 		fakePlot = new FakePlot();
 		plot = fakePlot;
@@ -336,34 +320,12 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		// Make sure the plot's draw(...) method wasn't called.
 		assertEquals(0, fakePlot.getDrawCount());
 
-		// Check addPlot(...) when getPlotTypes() throws an exception.
-		fakePlot = new FakePlot() {
-			@Override
-			public Map<String, String[]> getPlotTypes() throws Exception {
-				Exception e = new Exception("katana");
-				eRef.set(e);
-				throw e;
-			}
-		};
-		plot = fakePlot;
-		try {
-			addPlot(plot);
-			fail("PlotGridCompositeTester error: "
-					+ "Exception from getPlotTypes() was not relayed when adding plot.");
-		} catch (Exception e) {
-			// Make sure it's the same exception thrown from getPlotTypes().
-			assertSame(eRef.get(), e);
-		}
-		// Make sure the plot's draw(...) method wasn't called.
-		assertEquals(0, fakePlot.getDrawCount());
-
 		// Check addPlot(...) when draw(...) throws an exception.
 		fakePlot = new FakePlot() {
 			@Override
-			public Composite draw(String category, String plotType,
-					Composite parent) throws Exception {
+			public Composite draw(Composite parent) throws Exception {
 				// Draw something. This should create a new Composite.
-				super.draw(category, plotType, parent);
+				super.draw(parent);
 				// Throw an exception now after a Composite was created.
 				Exception e = new Exception("nunchaku");
 				eRef.set(e);
@@ -371,8 +333,11 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			}
 		};
 		// The plot needs to have some types...
-		fakePlot.plotTypes.put("preferred", new String[] { "katana", "sai",
-				"bo staff", "nunchaku" });
+		fakePlot.addDependentSeries("preferred", getSeries("katana"));
+		fakePlot.addDependentSeries("preferred", getSeries("sai"));
+		fakePlot.addDependentSeries("preferred", getSeries("bo staff"));
+		fakePlot.addDependentSeries("preferred", getSeries("nunchaku"));
+
 		plot = fakePlot;
 		try {
 			addPlot(plot);
@@ -852,6 +817,19 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	}
 
 	/**
+	 * Convince method to create a new series with the specified name
+	 * 
+	 * @param lbl
+	 *            The new label or name for the series
+	 * @return Returns a new series with the given label or name
+	 */
+	private CSVSeries getSeries(String lbl) {
+		CSVSeries series = new CSVSeries();
+		series.setLabel(lbl);
+		return series;
+	}
+
+	/**
 	 * A wrapper around {@link PlotGridComposite#removePlot(int)} that uses
 	 * {@code syncExec(...)} to perform the operation on the UI thread.
 	 */
@@ -915,12 +893,25 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	 */
 	private FakePlot createValidPlot() {
 		FakePlot plot = new FakePlot();
-		plot.plotTypes.put("tmnt", new String[] { "leo", "donnie", "raph",
-				"mikey" });
-		plot.plotTypes.put("joes", new String[] { "duke", "snake eyes",
-				"sgt. slaughter", "roadblock", "stalker" });
-		plot.plotTypes.put("autobots", new String[] { "optimus", "bumblebee",
-				"jazz", "ironhide" });
+		// Add some random series with different categories to the plot
+		plot.addDependentSeries("tmnt", getSeries("leo"));
+		plot.addDependentSeries("tmnt", getSeries("donnie"));
+		plot.addDependentSeries("tmnt", getSeries("raph"));
+		plot.addDependentSeries("tmnt", getSeries("mikey"));
+
+		plot.addDependentSeries("joes", getSeries("duke"));
+		plot.addDependentSeries("joes", getSeries("snake eyes"));
+		plot.addDependentSeries("joes", getSeries("sgt. slaughter"));
+		plot.addDependentSeries("joes", getSeries("roadblock"));
+		plot.addDependentSeries("joes", getSeries("stalker"));
+
+		plot.addDependentSeries("autobots", getSeries("optimus"));
+		plot.addDependentSeries("autobots", getSeries("bumblebee"));
+		plot.addDependentSeries("autobots", getSeries("jazz"));
+		plot.addDependentSeries("autobots", getSeries("ironhide"));
+
+		plot.setIndependentSeries(getSeries("timeRating"));
+
 		return plot;
 	}
 

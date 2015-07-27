@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.geometry.OperatorType;
 import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
@@ -242,7 +242,7 @@ public class ActionAddShape extends Action {
 			// Add a new shape to the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(childShape);
+				geometry.getGeometry().addShape(childShape);
 			}
 
 			view.treeViewer.refresh();

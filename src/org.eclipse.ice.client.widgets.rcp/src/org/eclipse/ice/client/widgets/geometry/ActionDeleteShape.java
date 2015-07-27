@@ -14,8 +14,8 @@ package org.eclipse.ice.client.widgets.geometry;
 
 import java.net.URL;
 
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -136,7 +136,7 @@ public class ActionDeleteShape extends Action {
 					// so try removing it from there.
 
 					synchronized (geometry) {
-						geometry.removeShape(selectedShape);
+						geometry.getGeometry().removeShape(selectedShape);
 					}
 					view.treeViewer.refresh();
 				}
