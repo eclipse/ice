@@ -84,6 +84,6 @@ public interface IPlot extends IVizCanvas {
 	 * 
 	 * @return The categories for this plot.
 	 */
-	public String[] getCategories();
+	public List<String> getCategories();
 
 }
