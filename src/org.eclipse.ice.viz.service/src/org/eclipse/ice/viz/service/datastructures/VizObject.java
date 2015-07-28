@@ -10,11 +10,9 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.geometry;
+package org.eclipse.ice.viz.service.datastructures;
 
 import java.util.ArrayList;
-
-import org.eclipse.ice.viz.service.geometry.IVizUpdateableListener;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;

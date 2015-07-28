@@ -13,7 +13,7 @@
 package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.geometry.Transformation;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 import org.eclipse.jface.databinding.swt.IWidgetValueProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;

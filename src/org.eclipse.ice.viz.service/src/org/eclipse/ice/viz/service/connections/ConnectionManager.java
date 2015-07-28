@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
 
@@ -130,7 +130,7 @@ public abstract class ConnectionManager<T> {
 			// Set the adapter's properties. If a change occurred and the method
 			// parameter says we need to attempt a connection, re-establish the
 			// adapter's connection.
-			List<Entry> row = table.getConnection(key);
+			List<VizEntry> row = table.getConnection(key);
 			if (adapter.setConnectionProperties(row) && connect) {
 				Thread thread = new Thread() {
 					@Override

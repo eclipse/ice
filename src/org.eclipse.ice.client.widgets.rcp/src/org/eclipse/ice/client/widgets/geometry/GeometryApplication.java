@@ -20,9 +20,9 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.geometry.OperatorType;
-import org.eclipse.ice.viz.service.geometry.ShapeType;
-import org.eclipse.ice.viz.service.geometry.Transformation;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,9 +14,9 @@ package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.geometry.OperatorType;
-import org.eclipse.ice.viz.service.geometry.ShapeType;
-import org.eclipse.ice.viz.service.geometry.Transformation;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;

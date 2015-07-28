@@ -11,11 +11,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+
 
 /**
- * A {@code KeyEntry} is essentially a basic {@link Entry} with a single caveat:
+ * A {@code KeyEntry} is essentially a basic {@link VizEntry} with a single caveat:
  * Its value and allowed values are managed by a {@link IKeyManager}. If a key
  * is not allowed, then the {@code KeyEntry} will not set its value to that key.
  * <p>
@@ -26,7 +27,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @author Jordan Deyton
  *
  */
-public class KeyEntry extends Entry {
+public class KeyEntry extends VizEntry {
 
 	/**
 	 * The manager for the keys stored in this and other {@code KeyEntry}s.
@@ -110,7 +111,7 @@ public class KeyEntry extends Entry {
 	public boolean setValue(String newValue) {
 		boolean returnCode = false;
 
-		AllowedValueType valueType = iEntryContentProvider
+		VizAllowedValueType valueType = iEntryContentProvider
 				.getAllowedValueType();
 
 		// Update the key value if we can.
@@ -123,7 +124,7 @@ public class KeyEntry extends Entry {
 			notifyListeners();
 		}
 		// Otherwise, handle the error message for a set of allowed keys.
-		else if (valueType == AllowedValueType.Discrete) {
+		else if (valueType == VizAllowedValueType.Discrete) {
 			String allowedValues = null;
 			for (String allowedValue : iEntryContentProvider.getAllowedValues()) {
 				if (allowedValues != null) {

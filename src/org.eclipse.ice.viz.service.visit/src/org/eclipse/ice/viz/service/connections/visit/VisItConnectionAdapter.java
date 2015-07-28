@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.ConnectionAdapter;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -119,7 +120,7 @@ public class VisItConnectionAdapter extends
 	 * setConnectionProperties(java.util.List)
 	 */
 	@Override
-	public boolean setConnectionProperties(List<Entry> row) {
+	public boolean setConnectionProperties(List<VizEntry> row) {
 
 		boolean changed = false;
 
@@ -234,4 +235,5 @@ public class VisItConnectionAdapter extends
 		// }
 		return windowId;
 	}
+
 }

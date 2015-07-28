@@ -385,7 +385,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 				// Try to create a plot with the service. If one was created, it
 				// will need to go into the map of plots.
 				try {
-					plot = service.createPlot(resource.getPath());
+					plot = (IPlot) service.createPlot(resource.getPath());
 					if (plot != null) {
 						plots.put(getPlotKey(resource), plot);
 						break;

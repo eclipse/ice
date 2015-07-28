@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.jface.resource.ImageDescription;
 
 public abstract class VizConnectionPreferencePage extends
 		AbstractVizPreferencePage implements IKeyChangeListener {

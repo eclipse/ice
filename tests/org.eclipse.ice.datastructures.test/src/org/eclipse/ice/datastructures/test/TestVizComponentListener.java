@@ -18,8 +18,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.viz.service.geometry.IVizUpdateable;
-import org.eclipse.ice.viz.service.geometry.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 
 /**
  * <p>

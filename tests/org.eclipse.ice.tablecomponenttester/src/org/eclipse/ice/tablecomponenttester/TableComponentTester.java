@@ -43,7 +43,6 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComponentReader;
-import org.eclipse.ice.viz.service.geometry.Geometry;
 import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")

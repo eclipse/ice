@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.viz.service.geometry.Geometry;
-import org.eclipse.ice.viz.service.geometry.IShape;
+import org.eclipse.ice.viz.service.jme3.shapes.Geometry;
+import org.eclipse.ice.viz.service.jme3.shapes.IShape;
 
 /**
  * This is a wrapper class around a Geometry object. It delegates almost all

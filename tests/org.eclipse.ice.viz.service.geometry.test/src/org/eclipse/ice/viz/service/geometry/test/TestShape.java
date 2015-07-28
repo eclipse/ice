@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.geometry.test;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.geometry.PrimitiveShape;
-import org.eclipse.ice.viz.service.geometry.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.PrimitiveShape;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
 
 /**
  * <p>

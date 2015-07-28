@@ -27,13 +27,13 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.viz.service.geometry.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.IShape;
-import org.eclipse.ice.viz.service.geometry.IShapeVisitor;
-import org.eclipse.ice.viz.service.geometry.OperatorType;
-import org.eclipse.ice.viz.service.geometry.PrimitiveShape;
-import org.eclipse.ice.viz.service.geometry.ShapeType;
-import org.eclipse.ice.viz.service.geometry.Transformation;
+import org.eclipse.ice.viz.service.jme3.shapes.ComplexShape;
+import org.eclipse.ice.viz.service.jme3.shapes.IShape;
+import org.eclipse.ice.viz.service.jme3.shapes.IShapeVisitor;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.PrimitiveShape;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 import org.junit.Test;
 
 /**

@@ -21,6 +21,8 @@ import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.SecretEntry;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
 import org.junit.Test;
 
 /**
@@ -47,7 +49,7 @@ public class SecretEntryTester {
 
 		// Make sure the secret flag is set when the IEntryContentProvider is
 		// passed into the constructor.
-		IEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		IVizEntryContentProvider contentProvider = new BasicVizEntryContentProvider();
 		entry = new SecretEntry(contentProvider);
 		assertTrue(entry.isSecret());
 		assertTrue(entry.isSecret());

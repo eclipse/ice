@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.viz.service.connections.IKeyManager;
 import org.eclipse.ice.viz.service.connections.KeyEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.junit.Test;
 
 /**
@@ -403,7 +404,7 @@ public class KeyEntryContentProviderTester {
 
 		KeyEntryContentProvider contentProvider;
 
-		final AllowedValueType nullType = null;
+		final VizAllowedValueType nullType = null;
 
 		SimpleCountKeyManager intKeys;
 		SimpleDiscreteKeyManager discreteKeys;
@@ -418,7 +419,7 @@ public class KeyEntryContentProviderTester {
 				contentProvider.getAllowedValueType());
 
 		// No matter what type we try to set it to, it cannot be changed.
-		for (AllowedValueType type : AllowedValueType.values()) {
+		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
 			assertEquals(AllowedValueType.Undefined,
 					contentProvider.getAllowedValueType());
@@ -436,7 +437,7 @@ public class KeyEntryContentProviderTester {
 				contentProvider.getAllowedValueType());
 
 		// No matter what type we try to set it to, it cannot be changed.
-		for (AllowedValueType type : AllowedValueType.values()) {
+		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
 			assertEquals(AllowedValueType.Discrete,
 					contentProvider.getAllowedValueType());

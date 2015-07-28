@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.viz.service.geometry.Transformation;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 import org.junit.Test;
 
 /**

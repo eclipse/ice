@@ -22,18 +22,18 @@ import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.viz.service.geometry.AbstractShape;
-import org.eclipse.ice.viz.service.geometry.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.IShape;
-import org.eclipse.ice.viz.service.geometry.OperatorType;
-import org.eclipse.ice.viz.service.geometry.PrimitiveShape;
-import org.eclipse.ice.viz.service.geometry.ShapeType;
-import org.eclipse.ice.viz.service.geometry.Transformation;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.viz.service.jme3.shapes.AbstractShape;
+import org.eclipse.ice.viz.service.jme3.shapes.ComplexShape;
+import org.eclipse.ice.viz.service.jme3.shapes.IShape;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.PrimitiveShape;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 
 /**
  * This is a wrapper class around an IShape object. It delegates almost all work
@@ -452,32 +452,6 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 			return ((ComplexShape) shape).getType();
 		} else
 			return null;
-	}
-
-	/**
-	 * Mutator method for the wrapped shape's name.
-	 * 
-	 * @param newName
-	 *            The string to set the wrapped shape's name to.
-	 */
-	public void setShapeName(String newName) {
-		shape.setName(newName);
-
-		// A change has been made, notify listeners
-		notifyListeners();
-	}
-
-	/**
-	 * Mutator method for the wrapped shape's ID
-	 * 
-	 * @param newID
-	 *            The integer to set the wrapped shape's ID to
-	 */
-	public void setShapeId(int newID) {
-		shape.setId(newID);
-
-		// A change has been made, notify listeners
-		notifyListeners();
 	}
 
 	/**

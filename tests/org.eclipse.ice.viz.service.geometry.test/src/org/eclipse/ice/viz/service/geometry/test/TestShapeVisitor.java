@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.test;
 
-import org.eclipse.ice.viz.service.geometry.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.IShapeVisitor;
-import org.eclipse.ice.viz.service.geometry.PrimitiveShape;
+import org.eclipse.ice.viz.service.jme3.shapes.ComplexShape;
+import org.eclipse.ice.viz.service.jme3.shapes.IShapeVisitor;
+import org.eclipse.ice.viz.service.jme3.shapes.PrimitiveShape;
 
 /**
  * <p>

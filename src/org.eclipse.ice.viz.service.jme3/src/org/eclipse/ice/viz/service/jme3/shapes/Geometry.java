@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz, Robert Smith
  *******************************************************************************/
-package org.eclipse.ice.viz.service.geometry;
+package org.eclipse.ice.viz.service.jme3.shapes;
 
 import java.util.ArrayList;
 
@@ -21,6 +21,9 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 
 /**
  * A class which manages a collection of shapes for its parent

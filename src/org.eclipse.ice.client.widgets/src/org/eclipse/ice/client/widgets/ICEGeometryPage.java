@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.client.widgets.geometry.GeometryCompositeFactory;
-import org.eclipse.ice.client.widgets.geometry.ShapeTreeView;
-import org.eclipse.ice.client.widgets.geometry.TransformationView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
@@ -27,6 +24,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ice.viz.service.jme3.ShapeTree;
 
 /**
  * <p>
@@ -122,7 +120,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
-		shapeTreeView.setGeometry(geometryComp);
+		shapeTreeView.setGeometry(geometryComp.getGeometry().getGeometry());
 
 		return;
 	}
@@ -166,7 +164,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 		Composite parent = pageForm.getBody();
 		// Use the GeometryCompositeFactory
 		GeometryCompositeFactory geomFactory = new GeometryCompositeFactory();
-		geomFactory.renderGeometryComposite(parent, geometryComp);
+		geomFactory.renderGeometryComposite(parent, geometryComp.getGeometry().getGeometry());
 
 		getFocus();
 

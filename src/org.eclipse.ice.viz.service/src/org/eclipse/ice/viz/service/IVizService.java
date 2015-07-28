@@ -135,5 +135,5 @@ public interface IVizService {
 	 *             An exception indicating that the IVizService could not create
 	 *             a plot with the given file and giving the reason why.
 	 */
-	public IPlot createPlot(URI file) throws Exception;
+	public IVizCanvas createPlot(URI file) throws Exception;
 }

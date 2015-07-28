@@ -16,13 +16,13 @@ import java.util.List;
 
 import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.ice.client.common.properties.IComboCellContentProvider;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * This class provides a basic JFace content provider that wraps an ICE
- * {@link Entry}. The text and value for an {@code Entry} are considered the
+ * {@link VizEntry}. The text and value for an {@code Entry} are considered the
  * same thing, while the tooltip is the {@code Entry}'s description.
  * 
  * @author Jordan Deyton
@@ -33,20 +33,20 @@ public class EntryCellContentProvider implements ICellContentProvider,
 
 	/**
 	 * The text to display when a cell's element (expected to be an
-	 * {@link Entry}) is invalid.
+	 * {@link VizEntry}) is invalid.
 	 */
 	protected static final String INVALID_ELEMENT_TEXT = "Invalid Entry.";
 
 	/**
-	 * By default, any {@link Entry} that is not null is valid.
+	 * By default, any {@link VizEntry} that is not null is valid.
 	 */
 	@Override
 	public boolean isValid(Object element) {
-		return element != null && element instanceof Entry;
+		return element != null && element instanceof VizEntry;
 	}
 
 	/**
-	 * By default, any valid {@link Entry} is enabled.
+	 * By default, any valid {@link VizEntry} is enabled.
 	 */
 	@Override
 	public boolean isEnabled(Object element) {
@@ -54,7 +54,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	}
 
 	/**
-	 * Returns the value, which is converted to a string, of the {@link Entry}.
+	 * Returns the value, which is converted to a string, of the {@link VizEntry}.
 	 */
 	@Override
 	public String getText(Object element) {
@@ -81,7 +81,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	}
 
 	/**
-	 * Returns the description of the {@link Entry}.
+	 * Returns the description of the {@link VizEntry}.
 	 */
 	@Override
 	public String getToolTipText(Object element) {
@@ -89,7 +89,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 		String text = INVALID_ELEMENT_TEXT;
 
 		if (isValid(element)) {
-			text = ((Entry) element).getDescription();
+			text = ((VizEntry) element).getDescription();
 		}
 
 		return text;
@@ -104,7 +104,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	}
 
 	/**
-	 * Returns the {@link Entry}'s value.
+	 * Returns the {@link VizEntry}'s value.
 	 */
 	@Override
 	public Object getValue(Object element) {
@@ -112,14 +112,14 @@ public class EntryCellContentProvider implements ICellContentProvider,
 		Object value = null;
 
 		if (isValid(element)) {
-			value = ((Entry) element).getValue();
+			value = ((VizEntry) element).getValue();
 		}
 
 		return value;
 	}
 
 	/**
-	 * Converts the value to a string and sets it as the {@link Entry}'s value.
+	 * Converts the value to a string and sets it as the {@link VizEntry}'s value.
 	 */
 	@Override
 	public boolean setValue(Object element, Object value) {
@@ -128,7 +128,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 
 		if (isValid(element) && value != null) {
 			String newValue = value.toString();
-			changed = ((Entry) element).setValue(newValue);
+			changed = ((VizEntry) element).setValue(newValue);
 		}
 
 		return changed;
@@ -137,23 +137,23 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	// ---- Implements IComboCellContentProvider ---- //
 
 	/**
-	 * An {@link Entry} requires a combo widget if its {@link AllowedValueType}
+	 * An {@link VizEntry} requires a combo widget if its {@link VizAllowedValueType}
 	 * is discrete.
 	 */
 	@Override
 	public boolean requiresCombo(Object element) {
 		return isValid(element)
-				&& ((Entry) element).getValueType() == AllowedValueType.Discrete;
+				&& ((VizEntry) element).getValueType() == VizAllowedValueType.Discrete;
 	}
 
 	/**
-	 * Gets the {@link Entry}'s allowed values, or an empty list if it has none.
+	 * Gets the {@link VizEntry}'s allowed values, or an empty list if it has none.
 	 */
 	@Override
 	public List<String> getAllowedValues(Object element) {
 		List<String> allowedValues;
 		if (isValid(element)) {
-			Entry entry = (Entry) element;
+			VizEntry entry = (VizEntry) element;
 			allowedValues = new ArrayList<String>(entry.getAllowedValues());
 		} else {
 			allowedValues = new ArrayList<String>(1);
@@ -165,11 +165,11 @@ public class EntryCellContentProvider implements ICellContentProvider,
 
 	// ---- Implements ISecretCellProvider ---- //
 	/**
-	 * An {@link Entry} should be obscured if its "secret" flag is true.
+	 * An {@link VizEntry} should be obscured if its "secret" flag is true.
 	 */
 	@Override
 	public boolean isSecret(Object element) {
-		return isValid(element) && ((Entry) element).isSecret();
+		return isValid(element) && ((VizEntry) element).isSecret();
 	}
 
 	/**

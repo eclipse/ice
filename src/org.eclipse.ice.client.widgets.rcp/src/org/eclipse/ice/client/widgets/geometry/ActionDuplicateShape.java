@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.geometry.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;

@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.connections;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 
 /**
  * This class provides a basic content provider for {@link PortEntry}s. Some
@@ -29,7 +29,7 @@ import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
  * @author Jordan Deyton
  *
  */
-public class PortEntryContentProvider extends BasicEntryContentProvider {
+public class PortEntryContentProvider extends BasicVizEntryContentProvider {
 
 	/**
 	 * The minimum allowed port. Anything below this is simply invalid!
@@ -51,7 +51,7 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	 */
 	public PortEntryContentProvider() {
 		// PortEntries are strictly continuous between some min and max value.
-		super.setAllowedValueType(AllowedValueType.Continuous);
+		super.setAllowedValueType(VizAllowedValueType.Continuous);
 
 		// Set the default port and range. We call the super
 		// setDefaultValue(...) method so that the default value is invalid.
@@ -65,7 +65,7 @@ public class PortEntryContentProvider extends BasicEntryContentProvider {
 	 * Does nothing. {@link PortEntry}s are strictly of the continuous type.
 	 */
 	@Override
-	public void setAllowedValueType(AllowedValueType allowedValueType) {
+	public void setAllowedValueType(VizAllowedValueType allowedValueType) {
 		// Do nothing.
 	}
 

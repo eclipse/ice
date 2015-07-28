@@ -360,6 +360,7 @@
 		<module>../tests/org.eclipse.ice.viz.service.test</module>
 		<module>../src/org.eclipse.ice.viz.service.geometry</module>
 		<module>../tests/org.eclipse.ice.viz.service.geometry.test</module>
+		<module>../src/org.eclipse.ice.viz.service.jme3</module>
 		<module>../src/org.eclipse.ice.viz.service.visit</module>
 		<module>../tests/org.eclipse.ice.viz.service.visit.test</module>
 		<module>../src/org.eclipse.ice.xolotl</module>
