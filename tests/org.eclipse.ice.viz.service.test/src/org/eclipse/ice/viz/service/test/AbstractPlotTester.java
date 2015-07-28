@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.AbstractPlot;
 import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.ISeriesStyle;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -160,64 +159,7 @@ public class AbstractPlotTester {
 	 */
 	@Test
 	public void checkIndependentSeries() {
-		ISeries fakeSeries = new ISeries() {
-
-			@Override
-			public double[] getBounds() {
-				return null;
-			}
-
-			@Override
-			public Object[] getDataPoints() {
-				return null;
-			}
-
-			@Override
-			public void setTime(double time) {
-			}
-
-			@Override
-			public double getTime() {
-				return 0;
-			}
-
-			@Override
-			public ISeries getParentSeries() {
-				return null;
-			}
-
-			@Override
-			public String getLabel() {
-				return null;
-			}
-
-			@Override
-			public void setLabel(String label) {
-			}
-
-			@Override
-			public ISeriesStyle getStyle() {
-				return null;
-			}
-
-			@Override
-			public void setStyle(ISeriesStyle style) {
-			}
-
-			@Override
-			public boolean enabled() {
-				return false;
-			}
-
-			@Override
-			public void setEnabled(boolean enable) {
-			}
-
-			@Override
-			public String getCategory() {
-				return null;
-			}
-		};
+		ISeries fakeSeries = new FakeSeries("category");
 
 		// Initially it is null, but it can be set to a new value.
 		assertNull(plot.getIndependentSeries());
