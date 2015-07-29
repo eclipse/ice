@@ -35,14 +35,12 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
-import org.eclipse.ice.viz.service.geometry.Geometry;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -68,6 +66,7 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 
 /**
  * The ICEFormEditor is an Eclipse FormEditor subclass that renders and displays
@@ -398,7 +397,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new Geometry());
+		geometryComponent.setGeometry(new ICEGeometry());
 
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(componentMap.get("geometry").isEmpty())) {
@@ -1110,16 +1109,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 		// Add the matrix component to the map of components
 		addComponentToMap(component, "matrix");
 
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(IShape component)
-	 */
-	@Override
-	public void visit(IShape component) {
-		addComponentToMap(component, "shape");
 	}
 
 	/**

@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+
 
 /**
  * A connection client is a class that can be associated with a single
@@ -25,7 +25,7 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
  * @param <T>
  *            The connection object's type.
  */
-public interface IConnectionClient<T> extends IUpdateableListener {
+public interface IConnectionClient<T> extends IVizUpdateableListener {
 
 	/**
 	 * Sets the current connection associated with the client.

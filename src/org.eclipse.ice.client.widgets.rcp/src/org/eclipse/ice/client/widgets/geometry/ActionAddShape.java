@@ -18,12 +18,9 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -208,7 +205,7 @@ public class ActionAddShape extends Action {
 		// Get the parent shape, regardless of whether an IShape or BlankShape
 		// is selected
 
-		ComplexShape parentComplexShape = null;
+		ICEShape parentComplexShape = null;
 
 		if (paths.length == 1) {
 
@@ -216,18 +213,18 @@ public class ActionAddShape extends Action {
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ICEShape) {
 
 				// Get the selected shape's parent
 
-				IShape selectedShape = (IShape) selectedObject;
-				parentComplexShape = (ComplexShape) selectedShape.getParent();
+				ICEShape selectedShape = (ICEShape) selectedObject;
+				parentComplexShape = selectedShape.getShapeParent();
 			} else if (selectedObject instanceof BlankShape) {
 
 				// Get the selected blank shape's parent
 
 				BlankShape selectedBlank = (BlankShape) selectedObject;
-				parentComplexShape = (ComplexShape) selectedBlank.getParent();
+				parentComplexShape = selectedBlank.getShapeParent();
 			}
 
 		}
@@ -235,7 +232,7 @@ public class ActionAddShape extends Action {
 		// Add a child shape to either the GeometryComponent or the parent
 		// ComplexShape
 
-		IShape childShape = createShape();
+		ICEShape childShape = createShape();
 
 		if (parentComplexShape == null) {
 
@@ -287,9 +284,9 @@ public class ActionAddShape extends Action {
 	 *         The newly created shape
 	 *         </p>
 	 */
-	public IShape createShape() {
+	public ICEShape createShape() {
 
-		AbstractShape shape = null;
+		ICEShape shape = null;
 
 		// Determine which type of shape should be created
 
@@ -297,7 +294,7 @@ public class ActionAddShape extends Action {
 
 			// Instantiate a PrimitiveShape and set its name and ID
 
-			shape = new PrimitiveShape(shapeType);
+			shape = new ICEShape(shapeType);
 
 			currentShapeId++;
 			shape.setName(shapeType.toString());
@@ -308,7 +305,7 @@ public class ActionAddShape extends Action {
 
 			// Instantiate a ComplexShape and set its name
 
-			shape = new ComplexShape(operatorType);
+			shape = new ICEShape(operatorType);
 
 			currentShapeId++;
 			shape.setName(operatorType.toString());

@@ -18,9 +18,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 
 /**
  * This class provides an adapter that wraps a connection. It provides feedback
@@ -48,7 +48,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionAdapter<T> extends ICEObject implements
+public abstract class ConnectionAdapter<T> extends VizObject implements
 		IConnectionAdapter<T> {
 	
 	/**
@@ -424,7 +424,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * setConnectionProperties(java.util.List)
 	 */
 	@Override
-	public abstract boolean setConnectionProperties(List<Entry> properties);
+	public abstract boolean setConnectionProperties(List<VizEntry> properties);
 
 	/*
 	 * (non-Javadoc)
@@ -473,7 +473,7 @@ public abstract class ConnectionAdapter<T> extends ICEObject implements
 	 * .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
-	public void register(IUpdateableListener listener) {
+	public void register(IVizUpdateableListener listener) {
 		// Don't allow double registration.
 		if (!listeners.contains(listener)) {
 			super.register(listener);

@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A {@code TableComponentPreferenceAdapter} can marshal a
- * {@link TableComponent} to or from a {@link CustomScopedPreferenceStore}. The
+ * {@link VizTableComponent} to or from a {@link CustomScopedPreferenceStore}. The
  * resulting preferences are stored in an {@link IEclipsePreferences} node,
  * whose relative path is "table.name" where "name" is the name of the
  * {@code TableComponent}. This node is a child node of the store's underlying
@@ -80,7 +80,7 @@ public class TableComponentPreferenceAdapter {
 	private static final String SEPARATOR = ";";
 
 	/**
-	 * Stores the rows of the specified {@link TableComponent} in the specified
+	 * Stores the rows of the specified {@link VizTableComponent} in the specified
 	 * preference store under a node named "table.name", where "name" is the
 	 * table's name.
 	 * 
@@ -90,7 +90,7 @@ public class TableComponentPreferenceAdapter {
 	 * @param store
 	 *            The target preference store.
 	 */
-	public void toPreferences(TableComponent table,
+	public void toPreferences(VizTableComponent table,
 			CustomScopedPreferenceStore store) {
 		// Check the parameters.
 		if (table == null || store == null) {
@@ -112,7 +112,7 @@ public class TableComponentPreferenceAdapter {
 		int columns = table.numberOfColumns();
 		// If there is more than one column, serialize their names.
 		if (columns > 0) {
-			List<Entry> template = table.getRowTemplate();
+			List<VizEntry> template = table.getRowTemplate();
 			String columnNames = template.get(0).getName();
 			for (int j = 1; j < columns; j++) {
 				columnNames += SEPARATOR + template.get(j).getName();
@@ -126,9 +126,9 @@ public class TableComponentPreferenceAdapter {
 
 		// Write the value of each Entry (per row, column).
 		for (int i = 0; i < rows; i++) {
-			List<Entry> row = table.getRow(i);
+			List<VizEntry> row = table.getRow(i);
 			for (int j = 0; j < columns; j++) {
-				Entry entry = row.get(j);
+				VizEntry entry = row.get(j);
 				String key = prefix + Integer.toString(i) + "."
 						+ Integer.toString(j);
 
@@ -146,7 +146,7 @@ public class TableComponentPreferenceAdapter {
 	}
 
 	/**
-	 * Reads in the rows of the specified {@link TableComponent} from the
+	 * Reads in the rows of the specified {@link VizTableComponent} from the
 	 * specified preference store.
 	 * <p>
 	 * <b>Note:</b> The table's template should match the values stored in the
@@ -160,7 +160,7 @@ public class TableComponentPreferenceAdapter {
 	 *            preference store.
 	 */
 	public void toTableComponent(CustomScopedPreferenceStore store,
-			TableComponent table) {
+			VizTableComponent table) {
 		// Check the parameters.
 		if (table == null || store == null) {
 			throw new NullPointerException(
@@ -188,7 +188,7 @@ public class TableComponentPreferenceAdapter {
 		}
 		// Otherwise, check all of the column names.
 		else if (columns > 0) {
-			List<Entry> template = table.getRowTemplate();
+			List<VizEntry> template = table.getRowTemplate();
 			List<String> columnNameList = new ArrayList<String>(columns);
 			for (int j = 0; j < columns; j++) {
 				String columnName = split[j];
@@ -217,10 +217,10 @@ public class TableComponentPreferenceAdapter {
 		for (int i = 0; i < rows; i++) {
 			// Add a new row.
 			int id = table.addRow();
-			List<Entry> row = table.getRow(id);
+			List<VizEntry> row = table.getRow(id);
 			// Set the value for each Entry in the row.
 			for (int j = 0; j < columns; j++) {
-				Entry entry = row.get(j);
+				VizEntry entry = row.get(j);
 				// The key is stored as row.column using their indices.
 				String key = prefix + Integer.toString(i) + "."
 						+ Integer.toString(j);
@@ -246,7 +246,7 @@ public class TableComponentPreferenceAdapter {
 	 * @return The table's relative path. This is "table.name" where "name" is
 	 *         the name of the {@code TableComponent}.
 	 */
-	private String getPrefix(TableComponent table) {
+	private String getPrefix(VizTableComponent table) {
 		return "table." + table.getName() + ".";
 	}
 
@@ -259,7 +259,7 @@ public class TableComponentPreferenceAdapter {
 	 * @param store
 	 *            The store from which to remove the preferences.
 	 */
-	private void clearPreferences(TableComponent table,
+	private void clearPreferences(VizTableComponent table,
 			CustomScopedPreferenceStore store) {
 
 		final String prefix = getPrefix(table);

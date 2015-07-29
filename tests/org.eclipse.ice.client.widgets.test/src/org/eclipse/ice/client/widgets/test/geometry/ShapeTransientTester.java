@@ -15,10 +15,9 @@ package org.eclipse.ice.client.widgets.test.geometry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.eclipse.ice.client.widgets.geometry.ShapeTransient;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.viz.service.jme3.geometry.ShapeTransient;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
 import org.junit.Test;
 
 /**
@@ -38,12 +37,12 @@ public class ShapeTransientTester {
 	@Test
 	public void checkStorage() {
 
-		IShape sphere = new PrimitiveShape(ShapeType.Sphere);
-		ShapeTransient shapeTransient = new ShapeTransient(sphere);
+		ICEShape sphere = new ICEShape(ShapeType.Sphere);
+		ShapeTransient shapeTransient = new ShapeTransient(sphere.getShape());
 
 		// Check that the ShapeTransient stored the variable
 
-		assertEquals(sphere, shapeTransient.getShape());
+		assertEquals(sphere.getShape(), shapeTransient.getShape());
 
 		// Check for null
 

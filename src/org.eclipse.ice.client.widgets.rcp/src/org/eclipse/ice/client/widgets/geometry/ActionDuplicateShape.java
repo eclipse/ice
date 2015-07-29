@@ -16,9 +16,8 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -91,13 +90,12 @@ public class ActionDuplicateShape extends Action {
 		for (TreePath path : paths) {
 			Object selectedObject = path.getLastSegment();
 
-			if (selectedObject instanceof AbstractShape) {
-				AbstractShape selectedShape = (AbstractShape) selectedObject;
+			if (selectedObject instanceof ICEShape) {
+				ICEShape selectedShape = (ICEShape) selectedObject;
 
 				// Clone the shape
 
-				IShape clonedShape = (IShape) selectedShape.clone();
-
+				ICEShape clonedShape = (ICEShape) selectedShape.clone();
 				// Remove the selected state from the cloned shape
 
 				clonedShape.removeProperty("selected");
@@ -105,15 +103,14 @@ public class ActionDuplicateShape extends Action {
 				// Try to get the selected shape's parent shape
 				// We can assume that if the parent exists, it is a ComplexShape
 
-				ComplexShape parentShape = (ComplexShape) selectedShape
-						.getParent();
+				ICEShape parentShape = selectedShape.getShapeParent();
 
 				if (parentShape != null) {
 
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					ArrayList<IShape> childShapes = parentShape.getShapes();
+					ArrayList<ICEShape> childShapes = parentShape.getShapes();
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					if (selectedShapeIndex < 0) {
@@ -132,7 +129,7 @@ public class ActionDuplicateShape extends Action {
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					ArrayList<IShape> childShapes = geometry.getGeometry().getShapes();
+					ArrayList<ICEShape> childShapes = geometry.getGeometry().getShapes();
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					// Add the cloned shape to the root GeometryComponent

@@ -14,9 +14,9 @@ package org.eclipse.ice.viz.service.csv;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.PlotRender;
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
 import org.eclipse.ice.viz.service.styles.XYZPlotStyle;
 import org.eclipse.jface.action.Action;
@@ -58,18 +58,18 @@ public class CSVPlotRender extends PlotRender {
 	/**
 	 * A tree of JFace {@code Action}s for adding new series to the drawn plot.
 	 */
-	private final ActionTree addSeriesTree;
+	private final VizActionTree addSeriesTree;
 	/**
 	 * A tree of JFace {@code Action}s for removing plotted series from the
 	 * drawn plot.
 	 */
-	private final ActionTree removeSeriesTree;
+	private final VizActionTree removeSeriesTree;
 
 	/**
 	 * A map keyed on the series and containing the ActionTrees for removing
 	 * them from the plot.
 	 */
-	private final Map<ISeries, ActionTree> seriesMap = new HashMap<ISeries, ActionTree>();
+	private final Map<ISeries, VizActionTree> seriesMap = new HashMap<ISeries, VizActionTree>();
 
 	/**
 	 * @param parent
@@ -109,10 +109,10 @@ public class CSVPlotRender extends PlotRender {
 		}
 
 		// Create the ActionTrees for adding and removing series on the fly.
-		addSeriesTree = new ActionTree("Add Series");
-		removeSeriesTree = new ActionTree("Remove Series");
+		addSeriesTree = new VizActionTree("Add Series");
+		removeSeriesTree = new VizActionTree("Remove Series");
 		final Separator separator = new Separator();
-		final ActionTree clearAction = new ActionTree(new Action("Clear Plot") {
+		final VizActionTree clearAction = new VizActionTree(new Action("Clear Plot") {
 			@Override
 			public void run() {
 				clear();
@@ -127,7 +127,7 @@ public class CSVPlotRender extends PlotRender {
 				// Create Actions for all the types. Each Action should call
 				// addSeries(...) with the specified series
 				final ISeries finSeries = series;
-				addSeriesTree.add(new ActionTree(new Action(series.getLabel()) {
+				addSeriesTree.add(new VizActionTree(new Action(series.getLabel()) {
 					@Override
 					public void run() {
 						finSeries.setEnabled(true);
@@ -246,7 +246,7 @@ public class CSVPlotRender extends PlotRender {
 
 			final ISeries finSeries = series;
 			// Add an ActionTree to remove the series.
-			ActionTree tree = new ActionTree(new Action(series.getLabel()) {
+			VizActionTree tree = new VizActionTree(new Action(series.getLabel()) {
 				@Override
 				public void run() {
 					removeSeries(finSeries);
@@ -270,7 +270,7 @@ public class CSVPlotRender extends PlotRender {
 	 *            The series to remove.
 	 */
 	public void removeSeries(ISeries series) {
-		ActionTree tree = seriesMap.remove(series);
+		VizActionTree tree = seriesMap.remove(series);
 		if (tree != null) {
 			double plotTime = 0.0;// dataProvider.getTimes().get(0);
 			removeSeriesTree.remove(tree);

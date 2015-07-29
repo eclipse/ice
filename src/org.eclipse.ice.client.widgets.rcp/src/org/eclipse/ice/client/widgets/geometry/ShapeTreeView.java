@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.geometry.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.ShapeType;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -66,7 +66,7 @@ public class ShapeTreeView extends ViewPart implements
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+	private ArrayList<ICEShape> selectedShapes = new ArrayList<ICEShape>();
 
 	// The actions for manipulating shapes
 	private DropdownAction addPrimitiveShapes;
@@ -226,8 +226,8 @@ public class ShapeTreeView extends ViewPart implements
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+			if (selectedObject instanceof ICEShape) {
+				ICEShape selectedShape = (ICEShape) selectedObject;
 
 				// Set the TransformationView's shape
 
@@ -291,7 +291,7 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Edit the shapes' selection property
 
-		for (IShape selectedShape : selectedShapes) {
+		for (ICEShape selectedShape : selectedShapes) {
 			selectedShape.removeProperty("selected");
 		}
 
@@ -304,9 +304,9 @@ public class ShapeTreeView extends ViewPart implements
 
 			// Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ICEShape) {
 
-				IShape selectedShape = (IShape) selectedObject;
+				ICEShape selectedShape = (ICEShape) selectedObject;
 				selectedShape.setProperty("selected", "true");
 				selectedShapes.add(selectedShape);
 			}

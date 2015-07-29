@@ -99,7 +99,7 @@ public class CSVVizServiceTester {
 				+ "fib8.csv");
 
 		// Try to create a plot using the file.
-		IPlot plot = service.createPlot(file.toURI());
+		IPlot plot = (IPlot) service.createPlot(file.toURI());
 		assertNotNull(plot);
 		assertEquals(file.toURI(), plot.getDataSource());
 

@@ -28,7 +28,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -412,16 +411,6 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		}
 
 		return;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 *
-	 * @see IComponentVisitor#visit(IShape component)
-	 */
-	@Override
-	public void visit(IShape component) {
-		// Nothing to do yet.
 	}
 
 	/**

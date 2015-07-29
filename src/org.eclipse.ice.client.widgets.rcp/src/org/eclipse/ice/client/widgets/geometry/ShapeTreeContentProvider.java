@@ -13,10 +13,7 @@
 package org.eclipse.ice.client.widgets.geometry;
 
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -28,8 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
  * 
  * @author Andrew P. Belt
  */
-public class ShapeTreeContentProvider implements ITreeContentProvider,
-		IShapeVisitor {
+public class ShapeTreeContentProvider implements ITreeContentProvider {
 	/**
 	 * <p>
 	 * Temporary variable for setting the return value of getChildren when the
@@ -62,14 +58,14 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		// If the element is an IShape, call its accept() operation to
 		// trigger the visit() call
 
-		if (parentElement instanceof IShape) {
+		if (parentElement instanceof ICEShape) {
 			temporaryChildren = null;
 
 			// Call the parentShape's accept operation to call the appropriate
 			// visit member function in this class
 
-			IShape parentShape = (IShape) parentElement;
-			parentShape.acceptShapeVisitor(this);
+			ICEShape parentShape = (ICEShape) parentElement;
+			addShape(parentShape);
 
 			// Return the result of the visit() operation
 
@@ -126,13 +122,13 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 
 		// Return null if the element is not an IShape
 
-		if (!(element instanceof IShape)) {
+		if (!(element instanceof ICEShape)) {
 			return null;
 		}
 		// Return the object's parent
 
-		IShape shape = (IShape) element;
-		return shape.getParent();
+		ICEShape shape = (ICEShape) element;
+		return shape.getShapeParent();
 
 	}
 
@@ -218,7 +214,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		/**
 		 * The shape which "contains" this blank shape object
 		 */
-		private IShape parent;
+		private ICEShape parent;
 
 		/**
 		 * Initializes the BlankShape with a parent
@@ -226,7 +222,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		 * @param parent
 		 *            The parent shape in the TreeViewer hierarchy
 		 */
-		public BlankShape(IShape parent) {
+		public BlankShape(ICEShape parent) {
 			this.parent = parent;
 		}
 
@@ -235,43 +231,31 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		 * 
 		 * @return The parent shape
 		 */
-		public IShape getParent() {
+		public ICEShape getShapeParent() {
 			return parent;
 		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShapeVisitor#visit(ComplexShape complexShape)
-	 */
-	@Override
-	public void visit(ComplexShape complexShape) {
+	public void addShape(ICEShape shape) {
+		if (shape.isComplex()) {
+			// IShape is a ComplexShape, so put its children in the temporary
+			// children field
 
-		// IShape is a ComplexShape, so put its children in the temporary
-		// children field
+			temporaryChildren = shape.getShapes().toArray();
 
-		temporaryChildren = complexShape.getShapes().toArray();
+			// Use a blank state if there are no children to display
 
-		// Use a blank state if there are no children to display
-
-		if (temporaryChildren.length == 0) {
-			temporaryChildren = new Object[] { new BlankShape(complexShape) };
+			if (temporaryChildren.length == 0) {
+				temporaryChildren = new Object[] { new BlankShape(shape) };
+			}
 		}
+		else{
 
+			// IShape is a PrimitiveShape, so it has no children :(
+
+			temporaryChildren = new Object[0];
+
+		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShapeVisitor#visit(PrimitiveShape primitiveShape)
-	 */
-	@Override
-	public void visit(PrimitiveShape primitiveShape) {
-
-		// IShape is a PrimitiveShape, so it has no children :(
-
-		temporaryChildren = new Object[0];
-
-	}
 }

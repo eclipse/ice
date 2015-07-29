@@ -13,21 +13,20 @@ package org.eclipse.ice.viz.service.preferences;
 
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
 import org.eclipse.swt.graphics.Image;
 
 // TODO Documentation
 public class TableComponentCellContentProvider implements
-		ICellContentProvider {
+		IVizCellContentProvider {
 
 	/**
 	 * The text to display when a cell's element (expected to be an
-	 * {@link Entry}) is invalid.
+	 * {@link VizEntry}) is invalid.
 	 */
 	protected static final String INVALID_ELEMENT_TEXT = "Invalid Row.";
 
-	private final ICellContentProvider realProvider;
+	private final IVizCellContentProvider realProvider;
 	private final int index;
 
 	private Object getIndexElement(Object element) {
@@ -41,7 +40,7 @@ public class TableComponentCellContentProvider implements
 		return indexElement;
 	}
 
-	public TableComponentCellContentProvider(ICellContentProvider contentProvider, int index) {
+	public TableComponentCellContentProvider(IVizCellContentProvider contentProvider, int index) {
 		realProvider = contentProvider;
 		this.index = index;
 	}

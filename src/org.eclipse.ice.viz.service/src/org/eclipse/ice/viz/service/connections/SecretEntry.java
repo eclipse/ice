@@ -11,17 +11,17 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 
 /**
- * A {@code SecretEntry} is simply an {@link Entry} whose secret flag is set to
+ * A {@code SecretEntry} is simply an {@link VizEntry} whose secret flag is set to
  * true.
  * 
  * @author Jordan Deyton
  *
  */
-public class SecretEntry extends Entry {
+public class SecretEntry extends VizEntry {
 
 	// If we add any other properties, then we will need to override the clone
 	// operation and provide a copy constructor.
@@ -52,7 +52,7 @@ public class SecretEntry extends Entry {
 	 * @param contentProvider
 	 *            The content provider for the {@code Entry}.
 	 */
-	public SecretEntry(IEntryContentProvider contentProvider) {
+	public SecretEntry(IVizEntryContentProvider contentProvider) {
 		super(contentProvider);
 
 		secretFlag = true;
@@ -68,7 +68,7 @@ public class SecretEntry extends Entry {
 		// Create a new entry and copy the contents. Note that since we already
 		// set the secret flag to true in the constructor, we can rely on the
 		// default copy operation.
-		Entry entry = new SecretEntry();
+		VizEntry entry = new SecretEntry();
 		entry.copy(this);
 
 		return entry;

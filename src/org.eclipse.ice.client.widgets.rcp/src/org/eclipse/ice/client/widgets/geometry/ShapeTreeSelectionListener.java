@@ -14,7 +14,7 @@ package org.eclipse.ice.client.widgets.geometry;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -40,7 +40,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+	private ArrayList<ICEShape> selectedShapes = new ArrayList<ICEShape>();
 
 	/**
 	 * <p>
@@ -105,7 +105,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 
 		// Remove the "selected" value from previously selected shapes
 
-		for (IShape shape : selectedShapes) {
+		for (ICEShape shape : selectedShapes) {
 			shape.removeProperty("selected");
 		}
 
@@ -119,8 +119,8 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 			// Only perform the action for selected IShapes
 			// (rather than GeometryComponents or null)
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+			if (selectedObject instanceof ICEShape) {
+				ICEShape selectedShape = (ICEShape) selectedObject;
 
 				selectedShape.setProperty("selected", "true");
 				selectedShapes.add(selectedShape);
@@ -139,8 +139,8 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 
 		// Determine if the shape of the TransformationView should be set
 
-		if (selectedObject instanceof IShape) {
-			transformationView.setShape((IShape) selectedObject);
+		if (selectedObject instanceof ICEShape) {
+			transformationView.setShape((ICEShape) selectedObject);
 		}
 
 		else {

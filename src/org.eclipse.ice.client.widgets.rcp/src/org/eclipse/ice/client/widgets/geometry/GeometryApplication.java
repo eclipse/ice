@@ -19,13 +19,10 @@ import java.util.Vector;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
-import org.eclipse.ice.datastructures.form.geometry.OperatorType;
-import org.eclipse.ice.datastructures.form.geometry.PrimitiveShape;
-import org.eclipse.ice.datastructures.form.geometry.ShapeType;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.eclipse.ice.datastructures.form.geometry.ICEShape;
+import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
+import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
+import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -294,11 +291,11 @@ public class GeometryApplication extends SimpleApplication implements
 
 		AddShapeToNode addShapeToNode = new AddShapeToNode(rootNode);
 
-		for (IShape shape : geometry.getGeometry().getShapes()) {
+		for (ICEShape shape : geometry.getGeometry().getShapes()) {
 
 			// Trigger the visitor pattern to render the IShape
 
-			shape.acceptShapeVisitor(addShapeToNode);
+			addShapeToNode.addShape(shape);
 		}
 
 		// Listen to the GeometryComponent
@@ -316,14 +313,14 @@ public class GeometryApplication extends SimpleApplication implements
 
 			// Get the shapes list from the GeometryComponent
 
-			ArrayList<IShape> shapes = geometry.getGeometry().getShapes();
+			ArrayList<ICEShape> shapes = geometry.getGeometry().getShapes();
 
 			SyncShapes syncVisitor = new SyncShapes(rootNode);
 
 			// Add each shape from the GeometryComponent to the SyncShapes
 
-			for (IShape shape : shapes) {
-				shape.acceptShapeVisitor(syncVisitor);
+			for (ICEShape shape : shapes) {
+				syncVisitor.addShape(shape);
 			}
 
 			// Commit the synchronization
@@ -338,7 +335,7 @@ public class GeometryApplication extends SimpleApplication implements
 	 * @author Andrew P. Belt
 	 * 
 	 */
-	class AddShapeToNode implements IShapeVisitor {
+	class AddShapeToNode {
 
 		/**
 		 * The node whose children will be added for each visited IShape
@@ -357,102 +354,102 @@ public class GeometryApplication extends SimpleApplication implements
 		/**
 		 * Prepares the ComplexShape to be synchronized
 		 */
-		@Override
-		public void visit(ComplexShape complexShape) {
+		public void addShape(ICEShape shape) {
+			if (shape.isComplex()) {
+				// Only unions are currently supported until the mesh renderer
+				// is
+				// implemented
 
-			// Only unions are currently supported until the mesh renderer is
-			// implemented
+				if (shape.getOperatorType() == OperatorType.Union) {
 
-			if (complexShape.getType() == OperatorType.Union) {
+					// Create a new Node
 
-				// Create a new Node
+					Node complexShapeNode = new Node(shape.getName());
+					complexShapeNode.setUserData("shape", new ShapeTransient(
+							shape));
+					complexShapeNode
+							.setLocalTransform(convertTransformation(shape
+									.getTransformation()));
 
-				Node complexShapeNode = new Node(complexShape.getName());
-				complexShapeNode.setUserData("shape", new ShapeTransient(
-						complexShape));
-				complexShapeNode
-						.setLocalTransform(convertTransformation(complexShape
-								.getTransformation()));
+					// Loop through the shapes in the ComplexShape
 
-				// Loop through the shapes in the ComplexShape
+					ArrayList<ICEShape> shapes = shape.getShapes();
 
-				ArrayList<IShape> shapes = complexShape.getShapes();
+					AddShapeToNode addShapeToNode = new AddShapeToNode(
+							complexShapeNode);
 
-				AddShapeToNode addShapeToNode = new AddShapeToNode(
-						complexShapeNode);
+					for (ICEShape childShape : shapes) {
 
-				for (IShape shape : shapes) {
+						// Visit the shape to add it to the current spatial
 
-					// Visit the shape to add it to the current spatial
+						addShapeToNode.addShape(childShape);
+					}
 
-					shape.acceptShapeVisitor(addShapeToNode);
+					// Attach the Node to a parent
+					this.node.attachChild(complexShapeNode);
+				}
+			}
+
+			else {
+				// Local Declarations
+				ShapeType shapeType = ShapeType.None;
+				Mesh mesh = null;
+
+				// If the assetManager doesn't exist, don't render the shape
+				if (assetManager == null) {
+					return;
+				}
+				// Get the mesh. Since we are only using primitive shapes, we
+				// can
+				// reuse the meshes.
+				shapeType = shape.getShapeType();
+				if (shapeType != ShapeType.None && shapeType != ShapeType.Cone) {
+					mesh = primitiveMeshes[shapeType.ordinal()];
+				} else {
+					return;
+				}
+				// Create geometry and store the reference to the shape data
+				// structure
+				Geometry geom = new Geometry(shape.getName(), mesh);
+				geom.setUserData("shape", new ShapeTransient(shape));
+				geom.setLocalTransform(convertTransformation(shape
+						.getTransformation()));
+
+				// Cylinders need to be rotated 90 degrees on the x-axis
+
+				if (shapeType == ShapeType.Cylinder) {
+					geom.rotate(FastMath.PI / 2, 0.0f, 0.0f);
 				}
 
-				// Attach the Node to a parent
+				// Give it a material
+				ShapeMaterial shapeMaterial = new ShapeMaterial(assetManager,
+						shape);
+				// Set the base material that is used for all the shapes
+				shapeMaterial.setMaterial(baseMaterial);
+				// Set the base material that is used for all selected shapes
+				shapeMaterial.setHighlightedMaterial(highlightedMaterial);
+				// Get the proper material from the shapeMaterial. It will
+				// change
+				// depending on whether or not it is selected.
+				geom.setMaterial(shapeMaterial.getMaterial());
 
-				this.node.attachChild(complexShapeNode);
+				// FIXME! - Great inside joke, Andrew! However, we actually need
+				// to
+				// know why it works and document it in here. Please fix it!
+
+				// I have no idea why this works...
+
+				// But it does.
+				geom.setQueueBucket(Bucket.Transparent);
+				
+				// Attach the Geometry to a parent
+				this.node.attachChild(geom);
+
+
+				return;
 			}
 		}
 
-		/**
-		 * Prepares the PrimitiveShape to be synchronized
-		 */
-		@Override
-		public void visit(PrimitiveShape primitiveShape) {
-
-			// Local Declarations
-			ShapeType shapeType = ShapeType.None;
-			Mesh mesh = null;
-
-			// If the assetManager doesn't exist, don't render the shape
-			if (assetManager == null) {
-				return;
-			}
-			// Get the mesh. Since we are only using primitive shapes, we can
-			// reuse the meshes.
-			shapeType = primitiveShape.getType();
-			if (shapeType != ShapeType.None && shapeType != ShapeType.Cone) {
-				mesh = primitiveMeshes[shapeType.ordinal()];
-			} else {
-				return;
-			}
-			// Create geometry and store the reference to the shape data
-			// structure
-			Geometry geom = new Geometry(primitiveShape.getName(), mesh);
-			geom.setUserData("shape", new ShapeTransient(primitiveShape));
-			geom.setLocalTransform(convertTransformation(primitiveShape
-					.getTransformation()));
-
-			// Cylinders need to be rotated 90 degrees on the x-axis
-
-			if (shapeType == ShapeType.Cylinder) {
-				geom.rotate(FastMath.PI / 2, 0.0f, 0.0f);
-			}
-
-			// Give it a material
-			ShapeMaterial shapeMaterial = new ShapeMaterial(assetManager,
-					primitiveShape);
-			// Set the base material that is used for all the shapes
-			shapeMaterial.setMaterial(baseMaterial);
-			// Set the base material that is used for all selected shapes
-			shapeMaterial.setHighlightedMaterial(highlightedMaterial);
-			// Get the proper material from the shapeMaterial. It will change
-			// depending on whether or not it is selected.
-			geom.setMaterial(shapeMaterial.getMaterial());
-
-			// FIXME! - Great inside joke, Andrew! However, we actually need to
-			// know why it works and document it in here. Please fix it!
-
-			// I have no idea why this works...
-
-			// But it does.
-			geom.setQueueBucket(Bucket.Transparent);
-
-			// Attach the Geometry to a parent
-			this.node.attachChild(geom);
-
-			return;
-		}
 	}
 
 	/**
@@ -461,7 +458,7 @@ public class GeometryApplication extends SimpleApplication implements
 	 * @author Andrew P. Belt
 	 * 
 	 */
-	class SyncShapes implements IShapeVisitor {
+	class SyncShapes{
 
 		/**
 		 * The JME3 scene graph node to update
@@ -471,12 +468,12 @@ public class GeometryApplication extends SimpleApplication implements
 		/**
 		 * The temporary working list of PrimitiveShapes
 		 */
-		private ArrayList<PrimitiveShape> primitiveShapes = new ArrayList<PrimitiveShape>();
+		private ArrayList<ICEShape> primitiveShapes = new ArrayList<ICEShape>();
 
 		/**
 		 * The temporary working list of ComplexShapes
 		 */
-		private ArrayList<ComplexShape> complexShapes = new ArrayList<ComplexShape>();
+		private ArrayList<ICEShape> complexShapes = new ArrayList<ICEShape>();
 
 		/**
 		 * Initializes an instance with a JME3 scene graph node
@@ -492,17 +489,13 @@ public class GeometryApplication extends SimpleApplication implements
 		/**
 		 * Adds a ComplexShape to the temporary working list
 		 */
-		@Override
-		public void visit(ComplexShape complexShape) {
-			complexShapes.add(complexShape);
-		}
-
-		/**
-		 * Adds a PrimitiveShape to the temporary working list
-		 */
-		@Override
-		public void visit(PrimitiveShape primitiveShape) {
-			primitiveShapes.add(primitiveShape);
+		public void addShape(ICEShape shape) {
+			if (shape.isComplex()){
+			complexShapes.add(shape);
+			}
+			else {
+				primitiveShapes.add(shape);
+			}
 		}
 
 		/**
@@ -511,7 +504,7 @@ public class GeometryApplication extends SimpleApplication implements
 		public void commit() {
 
 			// Local Declarations
-			IShape nodeShape = null;
+			ICEShape nodeShape = null;
 			int primitiveShapeIndex = -1;
 			int complexShapeIndex = -1;
 
@@ -543,7 +536,7 @@ public class GeometryApplication extends SimpleApplication implements
 				if (primitiveShapeIndex >= 0) {
 					// nodeShape is an existing PrimitiveShape
 
-					PrimitiveShape primitiveShape = primitiveShapes
+					ICEShape primitiveShape = primitiveShapes
 							.get(primitiveShapeIndex);
 
 					// Reset the transformation
@@ -554,7 +547,7 @@ public class GeometryApplication extends SimpleApplication implements
 
 					// Rotate 90 degrees if it's a cylinder
 
-					if (primitiveShape.getType() == ShapeType.Cylinder) {
+					if (primitiveShape.getShapeType() == ShapeType.Cylinder) {
 						childSpatial.rotate(FastMath.PI / 2, 0.0f, 0.0f);
 					}
 
@@ -578,7 +571,7 @@ public class GeometryApplication extends SimpleApplication implements
 				else if (complexShapeIndex >= 0) {
 					// nodeShape is an existing ComplexShape
 
-					ComplexShape complexShape = complexShapes
+					ICEShape complexShape = complexShapes
 							.get(complexShapeIndex);
 
 					// Reset the transform
@@ -590,11 +583,11 @@ public class GeometryApplication extends SimpleApplication implements
 					// Synchronize each individual child in the ComplexShape
 
 					SyncShapes syncComplexShapes = new SyncShapes(childNode);
-					ArrayList<IShape> complexShapeChildren = complexShape
+					ArrayList<ICEShape> complexShapeChildren = complexShape
 							.getShapes();
 
-					for (IShape complexShapeChild : complexShapeChildren) {
-						complexShapeChild.acceptShapeVisitor(syncComplexShapes);
+					for (ICEShape complexShapeChild : complexShapeChildren) {
+						syncComplexShapes.addShape(complexShapeChild);
 					}
 
 					// Perform the updating on the scene graph
@@ -626,12 +619,12 @@ public class GeometryApplication extends SimpleApplication implements
 
 			AddShapeToNode addShape = new AddShapeToNode(this.parentNode);
 
-			for (IShape primitiveShape : primitiveShapes) {
-				primitiveShape.acceptShapeVisitor(addShape);
+			for (ICEShape primitiveShape : primitiveShapes) {
+				addShape.addShape(primitiveShape);
 			}
 
-			for (IShape complexShape : complexShapes) {
-				complexShape.acceptShapeVisitor(addShape);
+			for (ICEShape complexShape : complexShapes) {
+				addShape.addShape(complexShape);
 			}
 		}
 	}
