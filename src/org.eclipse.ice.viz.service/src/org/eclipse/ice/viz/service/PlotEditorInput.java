@@ -30,11 +30,11 @@ public class PlotEditorInput implements IEditorInput {
 	/**
 	 * Constructor.
 	 * 
-	 * @param input
+	 * @param plot
 	 *            The IPlot to be rendered by the plot editor.
 	 */
-	public PlotEditorInput(IPlot input) {
-		data = input;
+	public PlotEditorInput(IPlot plot) {
+		data = plot;
 	}
 
 	/**

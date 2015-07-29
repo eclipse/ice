@@ -18,11 +18,11 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.SecretEntry;
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.junit.Test;
 
 /**
@@ -89,7 +89,7 @@ public class SecretEntryTester {
 		assertNotNull(clone);
 		assertTrue(clone instanceof SecretEntry);
 		// Check that the clone's secret flag is set.
-		assertTrue(((Entry) clone).isSecret());
+		assertTrue(((VizEntry) clone).isSecret());
 		// Check that they're unique references but equal.
 		assertNotSame(entry, clone);
 		assertEquals(entry, clone);

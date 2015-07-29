@@ -15,6 +15,9 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.ice.viz.service.jme3.geometry.GeometryCompositeFactory;
+import org.eclipse.ice.viz.service.jme3.geometry.ShapeTreeView;
+import org.eclipse.ice.viz.service.jme3.geometry.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -24,7 +27,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ice.viz.service.jme3.ShapeTree;
 
 /**
  * <p>

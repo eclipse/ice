@@ -41,7 +41,6 @@ import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -67,6 +66,7 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 
 /**
  * The ICEFormEditor is an Eclipse FormEditor subclass that renders and displays

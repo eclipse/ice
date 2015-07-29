@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
 
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
+
 
 /**
  * An {@code ISecretCellContentProvider} is simply a basic
@@ -21,7 +22,7 @@ import org.eclipse.ice.client.common.properties.ICellContentProvider;
  * @author Jordan Deyton
  *
  */
-public interface ISecretCellContentProvider extends ICellContentProvider {
+public interface ISecretCellContentProvider extends IVizCellContentProvider {
 
 	/**
 	 * The default character to use when obscuring text.

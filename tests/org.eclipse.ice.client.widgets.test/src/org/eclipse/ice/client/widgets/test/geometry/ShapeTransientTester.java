@@ -42,7 +42,7 @@ public class ShapeTransientTester {
 
 		// Check that the ShapeTransient stored the variable
 
-		assertEquals(sphere, shapeTransient.getShape());
+		assertEquals(sphere.getShape(), shapeTransient.getShape());
 
 		// Check for null
 

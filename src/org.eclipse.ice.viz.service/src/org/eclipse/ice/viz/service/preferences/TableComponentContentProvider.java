@@ -14,10 +14,10 @@ package org.eclipse.ice.viz.service.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.CellColumnLabelProvider;
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizCellColumnLabelProvider;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -216,11 +216,11 @@ public class TableComponentContentProvider implements
 				columnWidget.pack();
 
 				// Add the ColumnLabelProvider and the EditingSupport.
-				ICellContentProvider contentProvider = new TableComponentCellContentProvider(
+				IVizCellContentProvider contentProvider = new TableComponentCellContentProvider(
 						basicContentProvider, i);
 				EditingSupport editingSupport = new TableComponentCellEditingSupport(
 						viewer, basicEditingSupport, i);
-				column.setLabelProvider(new CellColumnLabelProvider(
+				column.setLabelProvider(new VizCellColumnLabelProvider(
 						contentProvider));
 				column.setEditingSupport(editingSupport);
 			}

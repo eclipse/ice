@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
-import org.eclipse.ice.client.common.properties.IComboCellContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizComboCellContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.swt.graphics.Image;
@@ -28,8 +28,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class EntryCellContentProvider implements ICellContentProvider,
-		IComboCellContentProvider, ISecretCellContentProvider {
+public class EntryCellContentProvider implements IVizCellContentProvider,
+		IVizComboCellContentProvider, ISecretCellContentProvider {
 
 	/**
 	 * The text to display when a cell's element (expected to be an

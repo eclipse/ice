@@ -79,7 +79,7 @@ public abstract class AbstractVizService implements IVizService {
 	 * </p>
 	 */
 	@Override
-	public IVizCanvas createPlot(URI file) throws Exception {
+	public IPlot createPlot(URI file) throws Exception {
 		// Throw an IllegalArgumentException if the file's URI is invalid.
 		if (!extensionSupported(file)) {
 			throw new IllegalArgumentException("IPlot error: "
