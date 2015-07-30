@@ -27,13 +27,13 @@ import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.viz.service.jme3.shapes.AbstractShape;
-import org.eclipse.ice.viz.service.jme3.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.jme3.shapes.IShape;
-import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
-import org.eclipse.ice.viz.service.jme3.shapes.PrimitiveShape;
-import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
-import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
+import org.eclipse.ice.viz.service.geometry.shapes.AbstractShape;
+import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
+import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
 
 /**
  * This is a wrapper class around an IShape object. It delegates almost all work

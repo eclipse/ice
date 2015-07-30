@@ -17,11 +17,13 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.connections.ConnectionManager;
 import org.eclipse.ice.viz.service.connections.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionTable;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
@@ -213,6 +215,16 @@ public class VisItVizService extends AbstractVizService {
 		plot.setDataSource(file);
 
 		return plot;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
+	 */
+	@Override
+	public IVizCanvas createCanvas(VizObject object) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

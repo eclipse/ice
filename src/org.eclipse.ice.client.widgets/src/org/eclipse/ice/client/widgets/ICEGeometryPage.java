@@ -15,9 +15,12 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.viz.service.jme3.geometry.GeometryCompositeFactory;
-import org.eclipse.ice.viz.service.jme3.geometry.ShapeTreeView;
-import org.eclipse.ice.viz.service.jme3.geometry.TransformationView;
+import org.eclipse.ice.viz.service.BasicVizServiceFactory;
+import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -27,6 +30,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.slf4j.Logger;
 
 /**
  * <p>
@@ -164,10 +168,18 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 		org.eclipse.ui.forms.widgets.Form pageForm = managedForm.getForm()
 				.getForm();
 		Composite parent = pageForm.getBody();
-		// Use the GeometryCompositeFactory
-		GeometryCompositeFactory geomFactory = new GeometryCompositeFactory();
-		geomFactory.renderGeometryComposite(parent, geometryComp.getGeometry().getGeometry());
-
+		
+		BasicVizServiceFactory factory = (BasicVizServiceFactory) ((ICEFormEditor) editor).getVizServiceFactory();
+		IVizService service = factory.get("geometry editor");
+		try {
+			IVizCanvas vizCanvas = service.createCanvas(geometryComp.getGeometry().getGeometry());
+			vizCanvas.draw(parent);
+			
+		} catch (Exception e) {
+			logger.error("Error creating Geometry Canvas with Geometry Service.", e);
+		}
+		
+		
 		getFocus();
 
 		return;

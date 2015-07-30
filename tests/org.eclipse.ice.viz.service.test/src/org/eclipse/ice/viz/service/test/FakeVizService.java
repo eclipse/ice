@@ -15,7 +15,9 @@ import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really
@@ -126,6 +128,16 @@ public class FakeVizService implements IVizService {
 	public boolean hasConnectionProperties() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
+	 */
+	@Override
+	public IVizCanvas createCanvas(VizObject object) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

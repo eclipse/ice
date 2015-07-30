@@ -15,7 +15,8 @@ import java.util.Map;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.jme3.shapes.Geometry;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
 
 /**
  * This class is an implementation of IVizService which provides a 3D
@@ -42,13 +43,18 @@ public class GeometryVizService extends AbstractVizService {
 	 *            canvas.
 	 * @return A new GeometryCanvas containing the geometry.
 	 */
-	public IVizCanvas createPlot(Geometry geometry) {
-		GeometryCanvas canvas = new GeometryCanvas(geometry);
-		return canvas;
+	@Override
+	public IVizCanvas createCanvas(VizObject geometry) {
+		if (geometry instanceof Geometry) {
+			GeometryCanvas canvas = new GeometryCanvas((Geometry) geometry);
+			return canvas;
+		}
+		throw new IllegalArgumentException("GeometryService can only render geometry viz objects.");
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
@@ -58,6 +64,7 @@ public class GeometryVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
@@ -72,6 +79,7 @@ public class GeometryVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getConnectionProperties()
 	 */
 	@Override
@@ -81,7 +89,10 @@ public class GeometryVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.IVizService#setConnectionProperties(java.util.Map)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#setConnectionProperties(java.
+	 * util.Map)
 	 */
 	@Override
 	public void setConnectionProperties(Map<String, String> props) {
@@ -89,6 +100,7 @@ public class GeometryVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#connect()
 	 */
 	@Override
@@ -98,6 +110,7 @@ public class GeometryVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#disconnect()
 	 */
 	@Override

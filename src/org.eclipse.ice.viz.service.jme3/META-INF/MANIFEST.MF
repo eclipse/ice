@@ -25,8 +25,6 @@ Import-Package: com.jme3.app,
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2",
  visit.java.client
-Export-Package: org.eclipse.ice.viz.service.jme3.geometry,
- org.eclipse.ice.viz.service.jme3.shapes
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.0",
  org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory

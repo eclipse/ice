@@ -195,7 +195,7 @@ public class PlotEditor extends EditorPart {
 						serviceNames.add(fullServiceNames[i]);
 					} catch (Exception e1) {
 						logger.error(
-								"Problem creating plot with visulalizatoin service "
+								"Problem creating plot with visualization service "
 										+ fullServiceNames[i] + ".",
 								e1);
 					}

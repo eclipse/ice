@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.jme3.geometry.ShapeTreeLabelProvider;
-import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
-import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
+import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeLabelProvider;
 import org.junit.Test;
 
 /**

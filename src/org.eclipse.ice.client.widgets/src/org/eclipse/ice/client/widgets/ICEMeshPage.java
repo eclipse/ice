@@ -35,7 +35,7 @@ import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.datastructures.form.mesh.Vertex;
-import org.eclipse.ice.viz.service.jme3.geometry.TransformationView;
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;

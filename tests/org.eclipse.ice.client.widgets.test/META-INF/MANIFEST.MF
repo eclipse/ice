@@ -8,7 +8,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.datastructures.form.geometry,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.csv,
- org.eclipse.ice.viz.service.jme3.shapes,
  org.eclipse.ui,
  org.junit
 Require-Bundle: org.eclipse.swtbot.eclipse.core,

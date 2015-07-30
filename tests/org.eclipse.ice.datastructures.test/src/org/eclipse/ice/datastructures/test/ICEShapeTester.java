@@ -29,9 +29,9 @@ import javax.xml.bind.JAXBException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 import org.eclipse.ice.datastructures.test.TestComponentListener;
-import org.eclipse.ice.viz.service.jme3.shapes.OperatorType;
-import org.eclipse.ice.viz.service.jme3.shapes.ShapeType;
-import org.eclipse.ice.viz.service.jme3.shapes.Transformation;
+import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
 import org.junit.Test;
 
 /**
