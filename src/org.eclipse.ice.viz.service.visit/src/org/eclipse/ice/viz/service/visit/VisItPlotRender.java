@@ -20,8 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
-import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.connections.ConnectionSeries;
+import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -34,6 +34,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import gov.lbnl.visit.swt.VisItSwtWidget;
@@ -219,6 +220,10 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 			@Override
 			public void menuShown(MenuEvent e) {
+				// Reset the menu and add back the representations tree
+				for (MenuItem item : ((Menu) e.widget).getItems()) {
+					item.dispose();
+				}
 				repTree.getContributionItem().fill((Menu) e.widget, -1);
 			}
 		});

@@ -467,6 +467,7 @@ public class PlotEditor extends EditorPart {
 							selectedService.getPlot()
 									.setIndependentSeries(series);
 						}
+						series.setEnabled(true);
 						selectedService.getPlot().draw(plotComposite);
 						body.layout();
 					} catch (Exception e) {
