@@ -7,19 +7,14 @@
  *
  * Contributors:
  *   Jay Jay Billings - Initial API and implementation and/or initial documentation
- *   Jordan H. Deyton - Added SWTBot UI tests.
+ *   Jordan Deyton - Added SWTBot UI tests.
+ *   Kasper Gammeltoft - viz series refactor
+ *   Jordan Deyton - removed code testing PlotGridComposite usage
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
@@ -28,12 +23,6 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.viz.service.AbstractVizService;
-import org.eclipse.ice.viz.service.BasicVizServiceFactory;
-import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
-import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -103,12 +92,6 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	 * double-click it}.
 	 */
 	private ResourceComponent resources;
-
-	/**
-	 * A factory that contains {@link IVizService}s used by the
-	 * {@code ICEResourcePage}.
-	 */
-	private IVizServiceFactory vizServiceFactory;
 
 	// ----------------------------------------------------- //
 
@@ -275,190 +258,6 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	}
 
 	/**
-	 * This checks that the {@code ICEResourcePage} properly handles different
-	 * resource file types based on the viz services available in its
-	 * {@link IVizServiceFactory}.
-	 */
-	@Test
-	public void checkVizChainOfCommand() {
-		// This test should be performed on a unique editor.
-		openNewEditor();
-
-		ICEResource resource;
-
-		// Create a new IVizServiceFactory with fake CSVVizService and
-		// TXTVizServices.
-		vizServiceFactory = new BasicVizServiceFactory();
-		FakeCSVVizService csvVizService = new FakeCSVVizService() {
-			@Override
-			public IPlot createPlot(URI file) throws Exception {
-				FakePlot plot = (FakePlot) super.createPlot(file);
-				plot.addDependentSeries("something", new CSVSeries(null));
-				return plot;
-
-			}
-		};
-		FakeTXTVizService txtVizService = new FakeTXTVizService() {
-			@Override
-			public IPlot createPlot(URI file) throws Exception {
-				FakePlot plot = (FakePlot) super.createPlot(file);
-				plot.addDependentSeries("something", new CSVSeries(null));
-				return plot;
-
-			}
-		};
-		vizServiceFactory.register(csvVizService);
-		vizServiceFactory.register(txtVizService);
-		// Set the shared page's factory.
-		page.setVizService(vizServiceFactory);
-
-		// In the beginning, no plots should have been created.
-		assertFalse(csvVizService.createWasCalled.getAndSet(false));
-		assertFalse(csvVizService.createCompleted.getAndSet(false));
-		assertFalse(txtVizService.createWasCalled.getAndSet(false));
-		assertFalse(txtVizService.createCompleted.getAndSet(false));
-
-		// ---- Add a CSV file. ---- //
-		// Add a csv file Resource, then show it. The CSVVizService should have
-		// attempted to create a plot.
-		resource = createVizResource(new File("blah.csv"));
-		resources.add(resource);
-		doubleClickResource(resource);
-		// If the txt VizService was queried, it should not have completed.
-		if (txtVizService.createWasCalled.getAndSet(false)) {
-			assertFalse(txtVizService.createCompleted.getAndSet(false));
-		}
-		// The csv VizService should have been queried and completed.
-		assertTrue(csvVizService.createWasCalled.getAndSet(false));
-		assertTrue(csvVizService.createCompleted.getAndSet(false));
-		// The plot should have been drawn once.
-		assertEquals(1, csvVizService.plots.get(0).getDrawCount());
-		// ------------------------- //
-
-		// ---- Add a TXT file. ---- //
-		// Add a txt file Resource, then show it. The TXTVizService should have
-		// attempted to create a plot.
-		resource = createVizResource(new File("blah.txt"));
-		resources.add(resource);
-		doubleClickResource(resource);
-		// If the csv VizService was queried, it should not have completed.
-		if (csvVizService.createWasCalled.getAndSet(false)) {
-			assertFalse(csvVizService.createCompleted.getAndSet(false));
-		}
-		// The txt VizService should have been queried and completed.
-		assertTrue(txtVizService.createWasCalled.getAndSet(false));
-		assertTrue(txtVizService.createCompleted.getAndSet(false));
-		// The plot should have been drawn once.
-		assertEquals(1, txtVizService.plots.get(0).getDrawCount());
-		// ------------------------- //
-
-		// ---- Add a CSV file. ---- //
-		// Add another csv file Resource, then show it. The CSVVizService should
-		// have attempted to create a plot.
-		resource = createVizResource(new File("blah2.csv"));
-		resources.add(resource);
-		doubleClickResource(resource);
-		// If the txt VizService was queried, it should not have completed.
-		if (txtVizService.createWasCalled.getAndSet(false)) {
-			assertFalse(txtVizService.createCompleted.getAndSet(false));
-		}
-		// The csv VizService should have been queried and completed.
-		assertTrue(csvVizService.createWasCalled.getAndSet(false));
-		assertTrue(csvVizService.createCompleted.getAndSet(false));
-		// The plot should have been drawn once.
-		assertEquals(1, csvVizService.plots.get(1).getDrawCount());
-		// ------------------------- //
-
-		// Close the editor.
-		closeEditor();
-
-		return;
-	}
-
-	/**
-	 * Checks that when the same resource is double-clicked in the Resources
-	 * View, the same editor or plot is opened. In the case of {@code IPlot}s,
-	 * the plot should be re-used, although it should be drawn a second time.
-	 */
-	@Test
-	public void checkReuse() {
-		// This test should be performed on a unique editor.
-		openNewEditor();
-
-		ICEResource resource;
-		ICEResource firstResource;
-
-		// Create a new IVizServiceFactory with a fake CSVVizService.
-		vizServiceFactory = new BasicVizServiceFactory();
-
-		FakeCSVVizService csvVizService = new FakeCSVVizService() {
-			@Override
-			public IPlot createPlot(URI file) throws Exception {
-				FakePlot plot = (FakePlot) super.createPlot(file);
-				plot.addDependentSeries("blah", new CSVSeries(null));
-				return plot;
-			}
-		};
-		vizServiceFactory.register(csvVizService);
-		// Set the shared page's factory.
-		page.setVizService(vizServiceFactory);
-
-		// In the beginning, no plots should have been created.
-		assertFalse(csvVizService.createWasCalled.getAndSet(false));
-		assertFalse(csvVizService.createCompleted.getAndSet(false));
-
-		// ---- Add a CSV file. ---- //
-		// Add a csv file Resource, then show it. The CSVVizService should have
-		// attempted to create a plot.
-		resource = createVizResource(new File("blah.csv"));
-		resources.add(resource);
-		doubleClickResource(resource);
-
-		// If the txt VizService was queried, it should not have completed.
-		// The csv VizService should have been queried and completed.
-		assertTrue(csvVizService.createWasCalled.getAndSet(false));
-		assertTrue(csvVizService.createCompleted.getAndSet(false));
-		// The plot should have been drawn once.
-		assertEquals(1, csvVizService.plots.get(0).getDrawCount());
-		// ------------------------- //
-
-		// Store a reference to the first resource.
-		firstResource = resource;
-
-		// ---- Add a CSV file. ---- //
-		// Add another csv file Resource, then show it. The CSVVizService should
-		// have attempted to create a plot.
-		resource = createVizResource(new File("blah2.csv"));
-		resources.add(resource);
-		doubleClickResource(resource);
-
-		// The csv VizService should have been queried and completed.
-		assertTrue(csvVizService.createWasCalled.getAndSet(false));
-		assertTrue(csvVizService.createCompleted.getAndSet(false));
-		// The plot should have been drawn once.
-		assertEquals(1, csvVizService.plots.get(1).getDrawCount());
-		// ------------------------- //
-
-		// ---- Plot the first CSV file again. ---- //
-		// Double-clicking the same resource again should NOT call create, but
-		// should call draw on the same plot.
-		doubleClickResource(firstResource);
-
-		// If the txt VizService was queried, it should not have completed.
-		// The csv VizService should have been queried and completed.
-		assertFalse(csvVizService.createWasCalled.getAndSet(false));
-		assertFalse(csvVizService.createCompleted.getAndSet(false));
-		// The plot should have been drawn once.
-		assertEquals(2, csvVizService.plots.get(0).getDrawCount());
-		// ---------------------------------------- //
-
-		// Close the editor.
-		closeEditor();
-
-		return;
-	}
-
-	/**
 	 * Ensures that text files, by default, are opened in a separate text
 	 * editor, provided there is no IVizService that handles them.
 	 */
@@ -593,126 +392,9 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 		// Unset all of the instance variables.
 		page = null;
 		editorRef = null;
-		vizServiceFactory = null;
 		resources = null;
 
 		return;
 	}
 
-	/**
-	 * An abstract base class for fake viz services. This just helps eliminate
-	 * some empty interface implementations.
-	 *
-	 * @author Jordan Deyton
-	 *
-	 */
-	private abstract class AbstractFakeVizService extends AbstractVizService {
-
-		/**
-		 * A list of all plots created by this viz service.
-		 */
-		public final List<FakePlot> plots = new ArrayList<FakePlot>();
-
-		/**
-		 * Whether or not the createPlot(...) method was called.
-		 */
-		public final AtomicBoolean createWasCalled = new AtomicBoolean();
-		/**
-		 * Whether or not the createPlot(...) method completed successfully.
-		 */
-		public final AtomicBoolean createCompleted = new AtomicBoolean();
-
-		/*
-		 * This method should be left abstract and implemented by sub-classes,
-		 * as each class that registers with the viz service factory needs a
-		 * unique name.
-		 */
-		@Override
-		public abstract String getName();
-
-		/*
-		 * Sets the two createPlot(...) flags before and after completion and
-		 * creates an empty FakePlot.
-		 */
-		@Override
-		public IPlot createPlot(URI file) throws Exception {
-			// Set the flag that createPlot() was called before proceeding with
-			// the default plot creation (which checks the extension).
-			createWasCalled.set(true);
-			super.createPlot(file);
-
-			// If the extension was valid, create a new FakePlot.
-			FakePlot plot = new FakePlot();
-
-			// Add the plot to the list of created plots
-			plots.add(plot);
-
-			// Set the flag that the plot was created successfully.
-			createCompleted.set(true);
-
-			return plot;
-		}
-
-		/*
-		 * Implements a method from IVizService.
-		 */
-		@Override
-		public String getVersion() {
-			return null;
-		}
-	}
-
-	/**
-	 * This class provides a viz service that handles the "csv" extension.
-	 *
-	 * @author Jordan Deyton
-	 *
-	 */
-	private class FakeCSVVizService extends AbstractFakeVizService {
-
-		/*
-		 * Return a name unique to this service.
-		 */
-		@Override
-		public String getName() {
-			return "Fake CSV Viz Service";
-		}
-
-		/*
-		 * Implements an abstract method from AbstractVizService.
-		 */
-		@Override
-		protected Set<String> findSupportedExtensions() {
-			Set<String> extensions = new HashSet<String>(1);
-			extensions.add("csv");
-			return extensions;
-		}
-	}
-
-	/**
-	 * This class provides a viz service that handles the "txt" extension.
-	 *
-	 * @author Jordan Deyton
-	 *
-	 */
-	private class FakeTXTVizService extends AbstractFakeVizService {
-
-		/*
-		 * Return a name unique to this service.
-		 */
-		@Override
-		public String getName() {
-			return "Fake Text File Viz Service";
-		}
-
-		/*
-		 * Implements an abstract method from AbstractVizService.
-		 */
-		@Override
-		protected Set<String> findSupportedExtensions() {
-			Set<String> extensions = new HashSet<String>(1);
-			extensions.add("txt");
-			return extensions;
-		}
-	}
 }

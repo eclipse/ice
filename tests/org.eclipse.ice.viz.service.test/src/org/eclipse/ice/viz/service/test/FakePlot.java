@@ -9,7 +9,7 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation 
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.test;
+package org.eclipse.ice.viz.service.test;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ice.client.widgets.ICEResourcePage;
-import org.eclipse.ice.client.widgets.PlotGridComposite;
+import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.csv.CSVSeries;
@@ -234,9 +234,7 @@ public class FakePlot implements IPlot {
 	}
 
 	@Override
-	public String[] getCategories() {
-		// TODO Auto-generated method stub
-		return depSeries.keySet()
-				.toArray(new String[depSeries.keySet().size()]);
+	public List<String> getCategories() {
+		return new ArrayList<String>(depSeries.keySet());
 	}
 }

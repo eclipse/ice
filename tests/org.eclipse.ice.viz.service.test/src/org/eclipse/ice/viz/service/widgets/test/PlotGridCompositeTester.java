@@ -9,13 +9,14 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation 
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.test;
+package org.eclipse.ice.viz.service.widgets.test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.client.widgets.PlotGridComposite;
+import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
+import org.eclipse.ice.client.widgets.test.FakePlot;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.csv.CSVSeries;

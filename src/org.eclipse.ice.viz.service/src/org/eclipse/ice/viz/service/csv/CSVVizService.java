@@ -12,7 +12,9 @@
 package org.eclipse.ice.viz.service.csv;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
@@ -31,6 +33,8 @@ import org.eclipse.ice.viz.service.IPlot;
  */
 public class CSVVizService extends AbstractVizService {
 
+	private final Map<URI, CSVPlot> dataPlots = new HashMap<URI, CSVPlot>();
+	
 	/**
 	 * The default constructor.
 	 * <p>
@@ -49,11 +53,19 @@ public class CSVVizService extends AbstractVizService {
 		// Call the super method to validate the URI's extension.
 		super.createPlot(file);
 
-		// Create the plot and load it
-		CSVPlot plot = new CSVPlot(file);
-		plot.load();
+		// Get the associated data plot. Create one if necessary.
+		CSVPlot dataPlot = dataPlots.get(file);
+		if (dataPlot == null) {
+			dataPlot = new CSVPlot();
+			dataPlot.setDataSource(file);
+			dataPlots.put(file, dataPlot);
+		}
+		
+		// Create a proxy to it. The proxy can be drawn anywhere.
+		CSVProxyPlot proxyPlot = new CSVProxyPlot();
+		proxyPlot.setSource(dataPlot);
 
-		return plot;
+		return proxyPlot;
 	}
 
 	/*

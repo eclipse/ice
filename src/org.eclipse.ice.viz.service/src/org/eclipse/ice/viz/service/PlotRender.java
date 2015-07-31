@@ -506,43 +506,43 @@ public abstract class PlotRender {
 	protected List<ActionTree> createPlotRenderActions() {
 		List<ActionTree> actions = new ArrayList<ActionTree>();
 
-		// Create the root ActionTree for setting the plot category and type.
-		final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
-		actions.add(plotTypeTree);
-		try {
-			// Add an ActionTree for each category, and then add ActionTree
-			// leaf nodes for each type.
-			Map<String, String[]> plotTypes = plot.getPlotTypes();
-			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
-				String category = entry.getKey();
-				String[] types = entry.getValue();
-
-				if (category != null && types != null && types.length > 0) {
-					// Create the category ActionTree.
-					ActionTree categoryTree = new ActionTree(category);
-					plotTypeTree.add(categoryTree);
-
-					// Add all types to the category ActionTree. Each Action
-					// should try to set the plot category and type of the drawn
-					// plot.
-					final String categoryRef = category;
-					for (String type : types) {
-						final String typeRef = type;
-						categoryTree.add(new ActionTree(new Action(type) {
-							@Override
-							public void run() {
-								setPlotCategory(categoryRef);
-								setPlotType(typeRef);
-								refresh();
-							}
-						}));
-					}
-				}
-			}
-		} catch (Exception e) {
-			// Print out the error message (from getPlotTypes()).
-			logger.error(getClass().getName() + " Exception! ", e);
-		}
+//		// Create the root ActionTree for setting the plot category and type.
+//		final ActionTree plotTypeTree = new ActionTree("Set Plot Type");
+//		actions.add(plotTypeTree);
+//		try {
+//			// Add an ActionTree for each category, and then add ActionTree
+//			// leaf nodes for each type.
+//			Map<String, String[]> plotTypes = plot.getPlotTypes();
+//			for (Entry<String, String[]> entry : plotTypes.entrySet()) {
+//				String category = entry.getKey();
+//				String[] types = entry.getValue();
+//
+//				if (category != null && types != null && types.length > 0) {
+//					// Create the category ActionTree.
+//					ActionTree categoryTree = new ActionTree(category);
+//					plotTypeTree.add(categoryTree);
+//
+//					// Add all types to the category ActionTree. Each Action
+//					// should try to set the plot category and type of the drawn
+//					// plot.
+//					final String categoryRef = category;
+//					for (String type : types) {
+//						final String typeRef = type;
+//						categoryTree.add(new ActionTree(new Action(type) {
+//							@Override
+//							public void run() {
+//								setPlotCategory(categoryRef);
+//								setPlotType(typeRef);
+//								refresh();
+//							}
+//						}));
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			// Print out the error message (from getPlotTypes()).
+//			logger.error(getClass().getName() + " Exception! ", e);
+//		}
 
 		return actions;
 	}

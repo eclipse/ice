@@ -6,10 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
- *    
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - relocated to viz.service.widgets
  *******************************************************************************/
-package org.eclipse.ice.client.widgets;
+package org.eclipse.ice.viz.service.widgets;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,10 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
- *    
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - relocated to viz.service.widgets
  *******************************************************************************/
-package org.eclipse.ice.client.widgets;
+package org.eclipse.ice.viz.service.widgets;
 
 import org.eclipse.jface.action.ControlContribution;
 import org.eclipse.swt.SWT;
@@ -52,7 +52,7 @@ public class LabelContribution extends ControlContribution {
 	 * @param id
 	 *            The ID of the contribution item.
 	 */
-	protected LabelContribution(String id) {
+	public LabelContribution(String id) {
 		this(id, SWT.NONE);
 	}
 
@@ -64,7 +64,7 @@ public class LabelContribution extends ControlContribution {
 	 * @param style
 	 *            The style to use for the {@link #label}.
 	 */
-	protected LabelContribution(String id, int style) {
+	public LabelContribution(String id, int style) {
 		super(id);
 
 		this.style = style;

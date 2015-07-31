@@ -99,47 +99,47 @@ public abstract class MultiPlot implements IPlot {
 	}
 
 	// ---- Implements IPlot ---- //
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
-	 * java.lang.String, org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public Composite draw(String category, String plotType, Composite parent) throws Exception {
-
-		Composite child = null;
-
-		// Check the parameters.
-		if (category == null || plotType == null || parent == null) {
-			throw new NullPointerException("IPlot error: " + "Null arguments are not allowed when drawing plot.");
-		} else if (parent.isDisposed()) {
-			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
-					"IPlot error: " + "Cannot draw plot inside disposed Composite.");
-		}
-
-		// Get the PlotRender associated with the parent Composite.
-		PlotRender plotRender = plotRenders.get(parent);
-
-		// Create the PlotRender and associate it with the parent as necessary.
-		if (plotRender == null) {
-			plotRender = createPlotRender(parent);
-			plotRenders.put(parent, plotRender);
-		}
-
-		// Send the new plot category and type to the PlotRender.
-		plotRender.setPlotCategory(category);
-		plotRender.setPlotType(plotType);
-
-		// Trigger the appropriate update to the PlotRender's content.
-		updatePlotRender(plotRender);
-
-		// FIXME The child needs to be set to something, or we need to come up
-		// with an alternate strategy.
-
-		return child;
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see
+//	 * org.eclipse.ice.client.widgets.viz.service.IPlot#draw(java.lang.String,
+//	 * java.lang.String, org.eclipse.swt.widgets.Composite)
+//	 */
+//	@Override
+//	public Composite draw(String category, String plotType, Composite parent) throws Exception {
+//
+//		Composite child = null;
+//
+//		// Check the parameters.
+//		if (category == null || plotType == null || parent == null) {
+//			throw new NullPointerException("IPlot error: " + "Null arguments are not allowed when drawing plot.");
+//		} else if (parent.isDisposed()) {
+//			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
+//					"IPlot error: " + "Cannot draw plot inside disposed Composite.");
+//		}
+//
+//		// Get the PlotRender associated with the parent Composite.
+//		PlotRender plotRender = plotRenders.get(parent);
+//
+//		// Create the PlotRender and associate it with the parent as necessary.
+//		if (plotRender == null) {
+//			plotRender = createPlotRender(parent);
+//			plotRenders.put(parent, plotRender);
+//		}
+//
+//		// Send the new plot category and type to the PlotRender.
+//		plotRender.setPlotCategory(category);
+//		plotRender.setPlotType(plotType);
+//
+//		// Trigger the appropriate update to the PlotRender's content.
+//		updatePlotRender(plotRender);
+//
+//		// FIXME The child needs to be set to something, or we need to come up
+//		// with an alternate strategy.
+//
+//		return child;
+//	}
 
 	/**
 	 * Updates all current plot renders.
@@ -151,22 +151,22 @@ public abstract class MultiPlot implements IPlot {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
-	 */
-	@Override
-	public Map<String, String[]> getPlotTypes() throws Exception {
-		// If necessary, re-build the cache of plot types.
-		if (plotTypes == null) {
-			plotTypes = new HashMap<String, String[]>();
-
-			Map<String, String[]> newPlotTypes = findPlotTypes(source);
-			plotTypes.putAll(newPlotTypes);
-		}
-		return plotTypes;
-	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getPlotTypes()
+//	 */
+//	@Override
+//	public Map<String, String[]> getPlotTypes() throws Exception {
+//		// If necessary, re-build the cache of plot types.
+//		if (plotTypes == null) {
+//			plotTypes = new HashMap<String, String[]>();
+//
+//			Map<String, String[]> newPlotTypes = findPlotTypes(source);
+//			plotTypes.putAll(newPlotTypes);
+//		}
+//		return plotTypes;
+//	}
 
 	/*
 	 * (non-Javadoc)

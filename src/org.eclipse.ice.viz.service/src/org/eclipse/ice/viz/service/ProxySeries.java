@@ -98,6 +98,12 @@ public class ProxySeries extends AbstractSeries {
 
 			// Register with the new source series.
 			this.source = source;
+			if (source != null) {
+				// If the label is unset, use the source series' label.
+				if (getLabel() == null) {
+					setLabel(source.getLabel());
+				}
+			}
 		}
 		return;
 	}

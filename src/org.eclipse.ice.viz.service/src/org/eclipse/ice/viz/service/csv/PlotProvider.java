@@ -160,7 +160,8 @@ public class PlotProvider {
 	 * @return
 	 */
 	public ArrayList<ISeries> getSeriesAtTime(double time) {
-		return seriesMap.get(time);
+		ArrayList<ISeries> seriesList = seriesMap.get(time);
+		return seriesList != null ? seriesList : new ArrayList<ISeries>(0);
 	}
 
 	/**

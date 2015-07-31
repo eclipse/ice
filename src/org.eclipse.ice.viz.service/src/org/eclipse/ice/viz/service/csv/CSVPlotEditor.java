@@ -79,7 +79,7 @@ public class CSVPlotEditor extends EditorPart {
 	/**
 	 * The top level composite that holds the editor's contents.
 	 */
-	public Composite vizComposite;
+	private Composite vizComposite;
 
 	/**
 	 * The {@code Composite} that contains the time slider.
@@ -120,7 +120,7 @@ public class CSVPlotEditor extends EditorPart {
 
 	/**
 	 * The independent series, to use as the x axis for plotting. Should be set
-	 * to non null {@link CSVSeries}
+	 * to non null {@link ISeries}
 	 */
 	private ISeries independentSeries;
 
@@ -211,6 +211,16 @@ public class CSVPlotEditor extends EditorPart {
 		return;
 	}
 
+	/**
+	 * Gets the main {@code Composite} in which the plot editor is drawn. This
+	 * is an ancestor of the {@link #plotCanvas}.
+	 * 
+	 * @return The main {@code Composite}.
+	 */
+	protected Composite getComposite() {
+		return vizComposite;
+	}
+
 	/*
 	 * Overrides a super class method.
 	 */
@@ -245,7 +255,7 @@ public class CSVPlotEditor extends EditorPart {
 			seriesMap.get(parent).remove(series);
 			// Redraw the series and recalculate the trace so that it updates on
 			// screen
-			redrawSeries((CSVSeries) parent);
+			redrawSeries((ISeries) parent);
 
 		}
 
@@ -508,10 +518,8 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Get the x values and error for plotting
 		double[] xValues = getDoubleValue(independentSeries);
-		double[] xPlusError = new double[((CSVSeries) independentSeries)
-				.size()];
-		double[] xMinusError = new double[((CSVSeries) independentSeries)
-				.size()];
+		double[] xPlusError = new double[xValues.length];
+		double[] xMinusError = new double[xValues.length];
 		// Gets the error for the series, if there is any
 		if (seriesMap.containsKey(independentSeries)) {
 			List<ISeries> errors = seriesMap.get(independentSeries);
@@ -549,7 +557,7 @@ public class CSVPlotEditor extends EditorPart {
 		// Iterate over all of the series and see if any need to be added or
 		// reset
 		for (ISeries iseries : seriesToPlot) {
-			CSVSeries series = (CSVSeries) iseries;
+			ISeries series = (ISeries) iseries;
 
 			// Creates a new trace with the name, axis,and provider to plot
 			Trace trace = configureTrace(series, xValues, xPlusError,
@@ -583,13 +591,11 @@ public class CSVPlotEditor extends EditorPart {
 	 * @param series
 	 *            The series to recreate the trace for
 	 */
-	private void redrawSeries(CSVSeries series) {
+	private void redrawSeries(ISeries series) {
 		// Get the x values and error for plotting
 		double[] xValues = getDoubleValue(independentSeries);
-		double[] xPlusError = new double[((CSVSeries) independentSeries)
-				.size()];
-		double[] xMinusError = new double[((CSVSeries) independentSeries)
-				.size()];
+		double[] xPlusError = new double[xValues.length];
+		double[] xMinusError = new double[xValues.length];
 		// Gets the error for the series, if there is any
 		if (seriesMap.containsKey(independentSeries)) {
 			List<ISeries> errors = seriesMap.get(independentSeries);
@@ -665,27 +671,28 @@ public class CSVPlotEditor extends EditorPart {
 	 *            multiple at a time
 	 * @return
 	 */
-	private Trace configureTrace(CSVSeries series, double[] xValues,
+	private Trace configureTrace(ISeries series, double[] xValues,
 			double[] xPlusError, double[] xMinusError) {
 
 		// Local declarations
 		Trace trace = null;
 
 		// Make sure it is a valid series for creating a trace
-		if (series != null && series.isEnabled
+		if (series != null && series.enabled()
 				&& !(series.getStyle() instanceof BasicErrorStyle)
 				&& !existingTraces.containsKey(series)) {
+
+			// Get the data and create the new error arrays
+			double[] yValues = getDoubleValue(series);
+			int seriesSize = yValues.length;
+			double[] yPlusError = new double[seriesSize];
+			double[] yMinusError = new double[seriesSize];
 
 			// Create the data provider
 			final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
 					false);
 			// Sets the size of the buffer
-			traceDataProvider.setBufferSize(series.size());
-
-			// Get the data and create the new error arrays
-			double[] yValues = getDoubleValue(series);
-			double[] yPlusError = new double[series.size()];
-			double[] yMinusError = new double[series.size()];
+			traceDataProvider.setBufferSize(seriesSize);
 
 			// Gets the error for the series, if there is any
 			if (seriesMap.containsKey(series)) {
@@ -720,7 +727,7 @@ public class CSVPlotEditor extends EditorPart {
 			}
 
 			// Set the data to be plotted
-			for (int i = 0; i < series.size(); i++) {
+			for (int i = 0; i < seriesSize; i++) {
 				// Create the new point add add it to the trace
 				Sample point = new Sample(xValues[i], yValues[i], yPlusError[i],
 						yMinusError[i], xPlusError[i], xMinusError[i],
@@ -808,13 +815,21 @@ public class CSVPlotEditor extends EditorPart {
 	 * @return Returns an array of double values to use
 	 */
 	private double[] getDoubleValue(ISeries series) {
-		// Try to get valid data from the series, and convert to double values
-		CSVSeries csvData = (CSVSeries) series;
-		double[] newArray = new double[csvData.size()];
-		for (int i = 0; i < csvData.size(); i++) {
-			newArray[i] = (Double) csvData.get(i);
+		Object[] dataPoints = series.getDataPoints();
+		double[] array = new double[dataPoints.length];
+		for (int i = 0; i < dataPoints.length; i++) {
+			array[i] = (Double) dataPoints[i];
 		}
-		return newArray;
+		return array;
+
+		// // Try to get valid data from the series, and convert to double
+		// values
+		// ISeries csvData = (ISeries) series;
+		// double[] newArray = new double[csvData.size()];
+		// for (int i = 0; i < csvData.size(); i++) {
+		// newArray[i] = (Double) csvData.get(i);
+		// }
+		// return newArray;
 	}
 
 	/**

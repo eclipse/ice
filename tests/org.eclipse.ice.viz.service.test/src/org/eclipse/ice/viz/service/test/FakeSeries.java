@@ -25,7 +25,9 @@ public class FakeSeries implements ISeries {
 
 	private final String category;
 
-	private String label;
+	private String label = null;
+
+	private boolean enabled = false;
 
 	public FakeSeries(String category) {
 		this.category = category;
@@ -85,14 +87,12 @@ public class FakeSeries implements ISeries {
 
 	@Override
 	public boolean enabled() {
-		// TODO Auto-generated method stub
-		return false;
+		return enabled;
 	}
 
 	@Override
 	public void setEnabled(boolean enable) {
-		// TODO Auto-generated method stub
-
+		enabled = enable;
 	}
 
 	@Override

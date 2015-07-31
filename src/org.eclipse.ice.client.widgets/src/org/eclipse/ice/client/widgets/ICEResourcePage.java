@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -61,8 +63,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  * @author Alex McCaskey
  *
  */
-public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
-		IUpdateableListener {
+public class ICEResourcePage extends ICEFormPage
+		implements ISelectionListener, IUpdateableListener {
 
 	/**
 	 * The ResourceComponent drawn by this page.
@@ -97,17 +99,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	private PlotGridComposite plotGridComposite;
 
 	/**
-	 * The service factory for visualization tools. This can be queried for
-	 * visualization services.
-	 */
-	private IVizServiceFactory vizFactory;
-
-	/**
-	 * The map that holds any existing plots, keyed on the resource IDs.
-	 */
-	private final Map<String, IPlot> plots;
-
-	/**
 	 * A list of file extensions that the ICEResourcePage should be treat as
 	 * text files and opened via the default Eclipse text editor.
 	 */
@@ -133,9 +124,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		if (!(editor instanceof ICEFormEditor)) {
 			logger.info("ICEResourcePage Message: Invalid FormEditor.");
 		}
-
-		// Setup the plot maps.
-		plots = new HashMap<String, IPlot>();
 
 		// Create the list of text file extensions
 		String[] extensions = { "txt", "sh", "i", "csv" };
@@ -163,7 +151,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(ICEResourceView.ID);
 		} catch (PartInitException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Get the parent Composite for the Resource Page widgets and set its
@@ -257,6 +245,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	 */
 	public void showResource(ICEResource resource) throws PartInitException {
 
+		// TODO Do this off the UI thread.
+		
 		// TODO This method has several return statements, making it a little
 		// hard to read. It should be updated and simplified.
 
@@ -289,16 +279,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// browser.
 		boolean useBrowser = !(resource instanceof VizResource);
 		if (!useBrowser) {
-
-			VizResource vizResource = (VizResource) resource;
-
-			// Try to find the plot for this resource.
-			String key = getPlotKey(vizResource);
-			IPlot plot = plots.get(key);
-
 			// Try to draw the plot on the grid.
 			try {
-				if (plotGridComposite.addPlot(plot) != -1) {
+				if (plotGridComposite.addPlot(resource.getPath()) != -1) {
 					stackLayout.topControl = plotGridComposite;
 					pageComposite.layout();
 					// Reactivate the Item editor tab if it's not in the front
@@ -323,8 +306,8 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// text editor
 		if (useEditor) {
 			// Get the content of the file
-			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(
-					resource.getPath());
+			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem()
+					.getStore(resource.getPath());
 			FileStoreEditorInput editorInput = new FileStoreEditorInput(
 					fileOnLocalDisk);
 
@@ -353,55 +336,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 	}
 
 	/**
-	 * Gets the resource's key for use in the plot maps.
-	 *
-	 * @param resource
-	 *            The resource whose key should be determined. Assumed not to be
-	 *            {@code null}.
-	 * @return The resource's key in the plot maps.
-	 */
-	private String getPlotKey(ICEResource resource) {
-		return resource.getPath().toString();
-	}
-
-	/**
-	 * This method queries each {@code IVizService} from the {@link #vizFactory}
-	 * until it finds the first one that can create an {@link IPlot} for the
-	 * specified resource. If one could be created, it will be added to the map
-	 * of {@link #plots}.
-	 *
-	 * @param resource
-	 *            The resource that needs an {@link IPlot}.
-	 * @return The plot, or {@code null} if one could not be created.
-	 */
-	private IPlot createPlot(VizResource resource) {
-		IPlot plot = null;
-
-		String[] serviceNames = vizFactory.getServiceNames();
-		for (String serviceName : serviceNames) {
-			// Get the next IVizService.
-			IVizService service = vizFactory.get(serviceName);
-			if (service != null) {
-				// Try to create a plot with the service. If one was created, it
-				// will need to go into the map of plots.
-				try {
-					plot = service.createPlot(resource.getPath());
-					if (plot != null) {
-						plots.put(getPlotKey(resource), plot);
-						break;
-					}
-				} catch (Exception e) {
-					// Instead of printing the stack trace, print the error
-					// message. This means the plot could not be created.
-					logger.error(getClass().getName() + " Exception! ", e);
-				}
-			}
-		}
-
-		return plot;
-	}
-
-	/**
 	 * Reactivates the Item's editor and brings it to the front if any other
 	 * editors have been opened on top of it.
 	 */
@@ -418,23 +352,12 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		} else {
 
 			// Set the workbench page and try activating the editor again
-			workbenchPage = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage();
+			workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage();
 			activateEditor();
 		}
 
 		return;
-	}
-
-	/**
-	 * This operation sets the IVizServiceFactory that should be used to create
-	 * plots.
-	 *
-	 * @param factory
-	 *            The service factory that should be used
-	 */
-	public void setVizService(IVizServiceFactory factory) {
-		vizFactory = factory;
 	}
 
 	/**
@@ -467,10 +390,6 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			}
 
 			// ---- Clear the Resource Page widgets. ---- //
-			// Clear out the old metadata that can be done from outside the UI
-			// thread.
-			plots.clear();
-
 			// Update the UI and dispose of any stale UI pieces.
 			if (display != null) {
 				display.asyncExec(new Runnable() {
@@ -485,7 +404,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						pageComposite.layout();
 
 						// Dispose any plot Composites.
-						plotGridComposite.clearPlots();
+						plotGridComposite.removeAllPlots();
 
 						return;
 					}
@@ -555,28 +474,29 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			// that are no longer available, or should we just let the user
 			// close them out?
 
-			// Create plots for any VizResources in the ResourceComponent that
-			// do not already have plots.
-			for (ICEResource resource : resourceComponent.getResources()) {
-				if (resource instanceof VizResource) {
-					// Try to get the existing plot.
-					IPlot plot = plots.get(getPlotKey(resource));
-					// If there is no plot already, try to create one.
-					if (plot == null) {
-						plot = createPlot((VizResource) resource);
-						// Register with the Resource so that if it
-						// changes we can know and operate accordingly
-						resource.register(this);
-					}
-				}
-			}
+			// // Create plots for any VizResources in the ResourceComponent
+			// that
+			// // do not already have plots.
+			// for (ICEResource resource : resourceComponent.getResources()) {
+			// if (resource instanceof VizResource) {
+			// // Try to get the existing plot.
+			// IPlot plot = plots.get(getPlotKey(resource));
+			// // If there is no plot already, try to create one.
+			// if (plot == null) {
+			// plot = createPlot((VizResource) resource);
+			// // Register with the Resource so that if it
+			// // changes we can know and operate accordingly
+			// resource.register(this);
+			// }
+			// }
+			// }
 		} else if (component != null && component instanceof VizResource) {
 			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
 
-			// Get the plot associated with this resource and redraw it.
-			plots.get(getPlotKey(resource)).redraw();
-
+			// Refresh all plots in the grid associated with the resource.
+			plotGridComposite.refreshPlots(resource.getPath());
+			
 			// Layout the composite on the UI thread.
 			if (pageComposite != null) {
 				pageComposite.getDisplay().asyncExec(new Runnable() {

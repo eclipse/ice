@@ -493,8 +493,8 @@ public class VizFileViewer extends ViewPart
 					// If it is a CSV file, then open it here
 					if (fileName.matches(".*\\.csv$")) {
 						try {
-							CSVPlot plot = new CSVPlot(file.toURI());
-							plot.load();
+							CSVPlot plot = new CSVPlot();
+							plot.setDataSource(file.toURI());
 							page.openEditor(new PlotEditorInput(plot),
 									PlotEditor.ID);
 						} catch (PartInitException e) {
