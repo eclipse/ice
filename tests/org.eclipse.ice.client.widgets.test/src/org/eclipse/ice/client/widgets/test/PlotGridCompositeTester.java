@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,7 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.eclipse.ice.client.widgets.PlotGridComposite;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -308,24 +306,6 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 					+ "Exception thrown when adding null plot. "
 					+ "Should just return -1.");
 		}
-
-		// Check addPlot(...) when getPlotTypes() is null.
-		fakePlot = new FakePlot() {
-			@Override
-			public List<ISeries> getAllDependentSeries(String category) {
-				return null;
-			}
-		};
-		plot = fakePlot;
-		try {
-			assertEquals(-1, addPlot(plot));
-		} catch (Exception e) {
-			fail("PlotGridCompositeTester error: "
-					+ "Exception thrown when adding plot with null plot type map. "
-					+ "Should just return -1.");
-		}
-		// Make sure the plot's draw(...) method wasn't called.
-		assertEquals(0, fakePlot.getDrawCount());
 
 		// Check addPlot(...) when getPlotTypes() is empty.
 		fakePlot = new FakePlot();
@@ -929,6 +909,8 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		plot.addDependentSeries("autobots", getSeries("bumblebee"));
 		plot.addDependentSeries("autobots", getSeries("jazz"));
 		plot.addDependentSeries("autobots", getSeries("ironhide"));
+
+		plot.setIndependentSeries(getSeries("timeRating"));
 
 		return plot;
 	}

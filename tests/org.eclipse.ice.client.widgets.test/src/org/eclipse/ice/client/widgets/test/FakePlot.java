@@ -75,8 +75,7 @@ public class FakePlot implements IPlot {
 	}
 
 	/**
-	 * Gets the number of times that {@link #draw(String, String, Composite)}
-	 * was called.
+	 * Gets the number of times that {@link #draw(Composite)} was called.
 	 */
 	public int getDrawCount() {
 		return children.size();
