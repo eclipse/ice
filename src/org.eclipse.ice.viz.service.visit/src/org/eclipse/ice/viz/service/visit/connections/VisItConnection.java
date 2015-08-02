@@ -146,19 +146,6 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 				properties);
 	}
 
-	/*
-	 * Implements an abstract method from VizConnection.
-	 */
-	@Override
-	protected boolean disconnectFromWidget(VisItSwtConnection widget) {
-		boolean closed = false;
-		if (widget != null) {
-			widget.close();
-			closed = true;
-		}
-		return closed;
-	}
-
 	/**
 	 * Creates a new, default {@code Shell} using the UI thread.
 	 * 
@@ -200,11 +187,16 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 	}
 
 	/*
-	 * Overrides a method from VizConnection.
+	 * Implements an abstract method from VizConnection.
 	 */
 	@Override
-	public String getName() {
-		return getProperty("connId");
+	protected boolean disconnectFromWidget(VisItSwtConnection widget) {
+		boolean closed = false;
+		if (widget != null) {
+			widget.close();
+			closed = true;
+		}
+		return closed;
 	}
 
 	/*
@@ -227,56 +219,8 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 	 * Overrides a method from VizConnection.
 	 */
 	@Override
-	public int getPort() {
-		return Integer.parseInt(getProperty("port"));
-	}
-
-	/*
-	 * Overrides a method from VizConnection.
-	 */
-	@Override
-	public String getPath() {
-		return getProperty("visDir");
-	}
-
-	/*
-	 * Overrides a method from VizConnection.
-	 */
-	@Override
-	public boolean setName(String name) {
-		return setProperty("connId", name);
-	}
-
-	/*
-	 * Overrides a method from VizConnection.
-	 */
-	@Override
-	public boolean setDescription(String description) {
-		return false;
-	}
-
-	/*
-	 * Overrides a method from VizConnection.
-	 */
-	@Override
-	public boolean setHost(String host) {
-		return setProperty("url", host);
-	}
-
-	/*
-	 * Overrides a method from VizConnection.
-	 */
-	@Override
-	public boolean setPort(int port) {
-		return setProperty("port", Integer.toString(port));
-	}
-
-	/*
-	 * Overrides a method from VizConnection.
-	 */
-	@Override
-	public boolean setPath(String path) {
-		return setProperty("visDir", path);
+	public String getName() {
+		return getProperty("connId");
 	}
 
 	/**
@@ -304,5 +248,61 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 //			windowId = -1;
 //		}
 		return windowId;
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public String getPath() {
+		return getProperty("visDir");
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public int getPort() {
+		return Integer.parseInt(getProperty("port"));
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public boolean setDescription(String description) {
+		return false;
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public boolean setHost(String host) {
+		return setProperty("url", host);
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public boolean setName(String name) {
+		return setProperty("connId", name);
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public boolean setPath(String path) {
+		return setProperty("visDir", path);
+	}
+
+	/*
+	 * Overrides a method from VizConnection.
+	 */
+	@Override
+	public boolean setPort(int port) {
+		return setProperty("port", Integer.toString(port));
 	}
 }
