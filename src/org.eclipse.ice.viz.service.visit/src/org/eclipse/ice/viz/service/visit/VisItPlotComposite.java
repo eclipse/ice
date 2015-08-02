@@ -103,6 +103,15 @@ public class VisItPlotComposite extends
 	}
 
 	/*
+	 * Overrides a method from PlotComposite.
+	 */
+	@Override
+	protected boolean canShowMultipleSeries() {
+		// Only one series (plot type and category) can be rendered at a time.
+		return false;
+	}
+
+	/*
 	 * Overrides a method from ConnectionPlotComposite.
 	 */
 	@Override
@@ -286,6 +295,9 @@ public class VisItPlotComposite extends
 		return actions;
 	}
 
+	/*
+	 * Implements a method from IPlotListener.
+	 */
 	@Override
 	public void plotUpdated(IPlot plot, String key, String value) {
 		// The only notification sent by the plot is that the data has loaded.

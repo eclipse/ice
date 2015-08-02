@@ -400,7 +400,7 @@ public class VisItPlot extends ConnectionPlot2<VisItSwtConnection> {
 						// This uses either the time, the cycles, or a "time"
 						// series with the single time 0.0.
 						addIndependentSeries(info);
-						monitor.worked(10);
+						monitor.worked(5);
 
 						// Get all of the plot types and plots in the file.
 						addPlotCategory("Meshes", info.getMeshes());
@@ -411,6 +411,10 @@ public class VisItPlot extends ConnectionPlot2<VisItSwtConnection> {
 						monitor.worked(10);
 						addPlotCategory("Vectors", info.getVectors());
 						monitor.worked(10);
+
+						// Enabled the mesh or the first available plot type.
+						setInitialPlotType();
+						monitor.worked(5);
 
 						// It is loaded, although it may not have any data.
 						loadLock.lock();
@@ -475,4 +479,26 @@ public class VisItPlot extends ConnectionPlot2<VisItSwtConnection> {
 		// We do not allow the client code to set the independent series.
 	}
 
+	/**
+	 * Finds the first dependent series, marking it as enabled. The priority is
+	 * placed on the mesh, but if no mesh is available, other categories will be
+	 * searched.
+	 */
+	private void setInitialPlotType() {
+		// If possible, enable the first mesh.
+		List<ISeries> meshes = plotTypes.get("Meshes");
+		if (!meshes.isEmpty()) {
+			meshes.get(0).setEnabled(true);
+		}
+		// Otherwise, enable the first dependent series that can be found.
+		else {
+			for (List<ISeries> seriesList : plotTypes.values()) {
+				if (!seriesList.isEmpty()) {
+					seriesList.get(0).setEnabled(true);
+					break;
+				}
+			}
+		}
+		return;
+	}
 }
