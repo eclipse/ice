@@ -36,6 +36,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
  * @param <T>
  *            The type of widget used for underlying viz connections.
  */
+@Deprecated
 public abstract class ConnectionPlotRender<T> extends PlotRender implements IVizConnectionListener<T> {
 
 	// TODO Make the image/icon in the PlotRender class customizable.

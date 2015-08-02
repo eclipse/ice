@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author Jordan
  *
  */
+@Deprecated
 public abstract class PlotRender {
 
 	/**

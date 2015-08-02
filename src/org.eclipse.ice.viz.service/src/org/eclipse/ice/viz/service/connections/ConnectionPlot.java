@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
  * @param <T>
  *            The type of the connection object.
  */
+@Deprecated
 public abstract class ConnectionPlot<T> extends MultiPlot {
 
 	/**

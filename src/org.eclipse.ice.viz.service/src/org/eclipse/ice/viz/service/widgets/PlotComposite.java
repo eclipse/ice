@@ -147,7 +147,6 @@ public abstract class PlotComposite extends Composite {
 	 *            be null)
 	 * @param style
 	 *            the style of widget to construct
-	 * 
 	 */
 	public PlotComposite(Composite parent, int style) {
 		super(parent, style);
@@ -256,29 +255,6 @@ public abstract class PlotComposite extends Composite {
 	}
 
 	/**
-	 * Creates a ToolBar in the specified parent composite. The bar is populated
-	 * using the same actions from {@link #getPlotActions()}.
-	 * 
-	 * @param parent
-	 *            The parent composite that will contain the ToolBar.
-	 * @return The new ToolBar.
-	 */
-	protected ToolBar createToolBar(Composite parent) {
-		ToolBar toolBar = null;
-
-		// Create the ToolBarManager and add its content.
-		final ToolBarManager toolBarManager = new ToolBarManager();
-		for (ActionTree action : plotActions) {
-			toolBarManager.add(action.getContributionItem());
-		}
-
-		// Create the ToolBar itself.
-		toolBar = toolBarManager.createControl(parent);
-
-		return toolBar;
-	}
-
-	/**
 	 * Creates holders for informational content to be displayed when either
 	 * {@link #createPlotContent(Composite, int)} or
 	 * {@link #updatePlotContent(Composite)} throws an exception signifying that
@@ -334,8 +310,32 @@ public abstract class PlotComposite extends Composite {
 	 */
 	protected Composite createPlotContent(Composite parent, int style)
 			throws Exception {
-		throw new UnsupportedOperationException("PlotComposite error: "
-				+ "The plot content cannot be created.");
+		throw new UnsupportedOperationException(getClass().getName()
+				+ " error: "
+				+ "The custom plot content method has not been implemented.");
+	}
+
+	/**
+	 * Creates a ToolBar in the specified parent composite. The bar is populated
+	 * using the same actions from {@link #getPlotActions()}.
+	 * 
+	 * @param parent
+	 *            The parent composite that will contain the ToolBar.
+	 * @return The new ToolBar.
+	 */
+	protected ToolBar createToolBar(Composite parent) {
+		ToolBar toolBar = null;
+
+		// Create the ToolBarManager and add its content.
+		final ToolBarManager toolBarManager = new ToolBarManager();
+		for (ActionTree action : plotActions) {
+			toolBarManager.add(action.getContributionItem());
+		}
+
+		// Create the ToolBar itself.
+		toolBar = toolBarManager.createControl(parent);
+
+		return toolBar;
 	}
 
 	/**

@@ -66,7 +66,7 @@ public abstract class ConnectionVizService<T> extends AbstractVizService {
 	 * 
 	 * @return A new, empty connection plot.
 	 */
-	protected abstract ConnectionPlot<T> createConnectionPlot();
+	protected abstract ConnectionPlot2<T> createConnectionPlot();
 
 	/**
 	 * Overrides the default behavior from {@link AbstractVizService} to find a
@@ -77,6 +77,7 @@ public abstract class ConnectionVizService<T> extends AbstractVizService {
 		// Check for a null URI and an unsupported extension.
 		super.createPlot(uri);
 
+		// TODO Change this to use the IP address for the lookup.
 		// Get the host from the URI.
 		String host = uri.getHost();
 		if (host == null) {
@@ -93,7 +94,7 @@ public abstract class ConnectionVizService<T> extends AbstractVizService {
 		IVizConnection<T> connection = manager.getConnection(name);
 
 		// Create a plot using the sub-class' implementation.
-		ConnectionPlot<T> plot = createConnectionPlot();
+		ConnectionPlot2<T> plot = createConnectionPlot();
 
 		// Set its connection and data source.
 		plot.setConnection(connection);

@@ -55,6 +55,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jordan
  *
  */
+@Deprecated
 public abstract class MultiPlot implements IPlot {
 
 	/**

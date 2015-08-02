@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014-2015 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,8 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
+ *   Kasper Gammeltoft - viz series refactor
+ *   Jordan Deyton - viz multi-series refactor 
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
@@ -48,8 +50,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CSVPlot extends AbstractPlot {
 
-	// TODO Add a listener so that proxy plots can be notified and refreshed
-	// when the data has been loaded.
+	// TODO All series should be stored in the map, including the independent
+	// series. This way if the independent series is cleared, its data is not
+	// lost.
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -57,20 +60,13 @@ public class CSVPlot extends AbstractPlot {
 	private static final Logger logger = LoggerFactory.getLogger(CSVPlot.class);
 
 	/**
-	 * A map containing all series, keyed on the categories.
+	 * A map containing all dependent series, keyed on the categories.
 	 */
 	private final Map<String, List<ISeries>> dataSeries;
 
 	/**
-	 * A list of listeners that need to be notified when the data has reloaded.
+	 * Whether or not the data has been loaded.
 	 */
-	private final List<ICSVPlotLoadListener> listeners = new ArrayList<ICSVPlotLoadListener>();
-
-	/**
-	 * The current data source.
-	 */
-	private URI uri;
-
 	private final AtomicBoolean loaded = new AtomicBoolean(false);
 
 	/**
@@ -84,18 +80,45 @@ public class CSVPlot extends AbstractPlot {
 		setPlotTitle("");
 	}
 
-	public void setDataSource(URI uri) {
-		if (uri != this.uri) {
-			// Unregister from the old data source URI.
-			dataSeries.clear();
-
-			// Register with the new data source URI.
-			this.uri = uri;
-			load();
-		}
-		return;
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public List<String> getCategories() {
+		// Use the map of ProxySeries, which has the categories.
+		return new ArrayList<String>(dataSeries.keySet());
 	}
 
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public List<ISeries> getAllDependentSeries(String category) {
+		// Use the map of ProxySeries to get a new list of ISeries associated
+		// with the category.
+		List<ISeries> series = dataSeries.get(category);
+		if (series != null) {
+			series = new ArrayList<ISeries>(series);
+		}
+		return series;
+	}
+
+	/**
+	 * Always returns two as CSV plots are always 2D
+	 * 
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
+	 */
+	@Override
+	public int getNumberOfAxes() {
+		// The CSV plots are always 2D
+		return 2;
+	}
+
+	/**
+	 * Gets whether or not data has been loaded from the data source.
+	 * 
+	 * @return True if data has been loaded, false otherwise.
+	 */
 	public boolean isLoaded() {
 		return loaded.get();
 	}
@@ -108,6 +131,7 @@ public class CSVPlot extends AbstractPlot {
 	 */
 	public void load() {
 
+		URI uri = getDataSource();
 		if (uri != null) {
 			// Only load the file if it is a CSV file.
 			final File file = new File(uri);
@@ -140,7 +164,7 @@ public class CSVPlot extends AbstractPlot {
 	}
 
 	/**
-	 * Attepts to load the CSV series data from the specified file. This
+	 * Attempts to load the CSV series data from the specified file. This
 	 * operation ignores all data that is marked as comments (i.e. if the line
 	 * starts with #), and ignores comments after the data in a line as well.
 	 * This operation takes the first column of CSV data as the independent
@@ -244,9 +268,7 @@ public class CSVPlot extends AbstractPlot {
 		loaded.set(true);
 
 		// Notify the listeners that loading has completed.
-		for (ICSVPlotLoadListener listener : listeners) {
-			listener.plotLoaded(this);
-		}
+		notifyPlotListeners("loaded", "true");
 
 		return;
 	}
@@ -255,60 +277,27 @@ public class CSVPlot extends AbstractPlot {
 	 * Overrides a method from AbstractPlot.
 	 */
 	@Override
-	public List<String> getCategories() {
-		// Use the map of ProxySeries, which has the categories.
-		return new ArrayList<String>(dataSeries.keySet());
-	}
-
-	/*
-	 * Overrides a method from AbstractPlot.
-	 */
-	@Override
-	public URI getDataSource() {
-		return uri;
-	}
-
-	/*
-	 * Overrides a method from AbstractPlot.
-	 */
-	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
-		// Use the map of ProxySeries to get a new list of ISeries associated
-		// with the category.
-		List<ISeries> series = dataSeries.get(category);
-		if (series != null) {
-			series = new ArrayList<ISeries>(series);
-		}
-		return series;
-	}
-
-	/**
-	 * Always returns two as CSV plots are always 2D
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
-	 */
-	@Override
-	public int getNumberOfAxes() {
-		// The CSV plots are always 2D
-		return 2;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IPlot#redraw()
-	 */
-	@Override
 	public void redraw() {
 		// Start off by reloading this IPlot's representative data set.
 		load();
 
-		// We can't actually draw...
+		// We don't actually draw with a CSVPlot, but with CSVProxyPlots.
 	}
 
-	public void addLoadListener(ICSVPlotLoadListener listener) {
-		if (listener != null && !listeners.contains(listener)) {
-			listeners.add(listener);
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public boolean setDataSource(URI uri) throws Exception {
+		boolean changed = super.setDataSource(uri);
+		if (changed) {
+			// Unregister from the old data source URI.
+			dataSeries.clear();
+
+			// Register with the new data source URI.
+			load();
 		}
+		return changed;
 	}
+
 }

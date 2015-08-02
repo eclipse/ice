@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.csv;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IPlotListener;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.ProxyPlot;
 import org.eclipse.ice.viz.service.ProxySeries;
@@ -24,7 +25,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 
-public class CSVProxyPlot extends ProxyPlot implements ICSVPlotLoadListener {
+public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 
 	private CSVPlotComposite plotComposite = null;
 
@@ -114,7 +115,7 @@ public class CSVProxyPlot extends ProxyPlot implements ICSVPlotLoadListener {
 
 		// Register as a listener to be notified when the data has been
 		// reloaded.
-		((CSVPlot) source).addLoadListener(this);
+		((CSVPlot) source).addPlotListener(this);
 	}
 
 	@Override
@@ -150,11 +151,13 @@ public class CSVProxyPlot extends ProxyPlot implements ICSVPlotLoadListener {
 	}
 
 	/*
-	 * Implements a method from ICSVPlotLoadListener.
+	 * Implements a method from IPlotListener.
 	 */
 	@Override
-	public void plotLoaded(CSVPlot plot) {
-		// This forces the data to be reloaded.
+	public void plotUpdated(IPlot plot, String key, String value) {
+		// The only event sent out by the CSVPlot signifies that loading has
+		// completed. Forces the data to be reloaded the next time it is fetched
+		// from client code (which should happen in the refresh).
 		loaded = false;
 		if (plotComposite != null && !plotComposite.isDisposed()) {
 			plotComposite.refresh();
