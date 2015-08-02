@@ -29,6 +29,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This abstract class provides a base implementation for the core functionality
@@ -65,6 +67,13 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		 */
 		public boolean validateValue(String value);
 	}
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(VizConnection.class);
+
 	/**
 	 * The minimum allowed port (inclusive).
 	 */
@@ -227,7 +236,12 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	public boolean addListener(IVizConnectionListener<T> listener) {
 		boolean added = false;
 		if (listener != null) {
-			added = listeners.add(listener);
+			notificationLock.lock();
+			try {
+				added = listeners.add(listener);
+			} finally {
+				notificationLock.unlock();
+			}
 		}
 		return added;
 	}
@@ -481,11 +495,6 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 		 * complete before the next set of notifications can be sent out.
 		 */
 
-		// If there are no listeners, don't send out notifications.
-		if (listeners.isEmpty()) {
-			return;
-		}
-
 		// Get final references to the arguments required to notify a given
 		// connection listener.
 		final IVizConnection<T> connRef = this;
@@ -494,45 +503,56 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 
 		notificationLock.lock();
 		try {
-			// Create worker threads if necessary.
-			if (notificationExecutorService == null) {
-				notificationExecutorService = Executors
-						.newSingleThreadExecutor();
-			}
 
-			// Submit a new task to notify all listeners.
-			notificationExecutorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					// FIXME Ideally, we would use a thread pool for this.
-					// However, using Executors.newCachedThreadPool() seems to
-					// break the tests sporadically.
+			// Log some output for the notification.
+			logger.debug(getClass().getName() + " message: "
+					+ "Notifying listeners of a connection state change to \""
+					+ state + "\" with the message \"" + message + "\".");
 
-					// Notify all listeners on this thread.
-					for (IVizConnectionListener<T> listener : listeners) {
-						try {
-							listener.connectionStateChanged(connRef, stateRef,
-									msgRef);
-						} catch (Exception e) {
-							// FIXME Log a warning.
-						}
-					}
-
-					// Stop the worker thread.
-					notificationLock.lock();
-					try {
-						if (notificationExecutorService != null) {
-							notificationExecutorService.shutdown();
-							notificationExecutorService = null;
-						}
-					} finally {
-						notificationLock.unlock();
-					}
-
-					return;
+			// If there are no listeners, don't send out notifications.
+			if (!listeners.isEmpty()) {
+				// Create worker threads if necessary.
+				if (notificationExecutorService == null) {
+					notificationExecutorService = Executors
+							.newSingleThreadExecutor();
 				}
-			});
 
+				// Submit tasks to notify the listeners. If a task throws an
+				// exception, it should not prevent other listeners from
+				// receiving
+				// the notification.
+				for (final IVizConnectionListener<T> listenerRef : listeners) {
+					notificationExecutorService.submit(new Runnable() {
+						@Override
+						public void run() {
+							listenerRef.connectionStateChanged(connRef,
+									stateRef, msgRef);
+						};
+					});
+				}
+
+				// Submit a new task to shutdown the notification thread.
+				notificationExecutorService.submit(new Runnable() {
+					@Override
+					public void run() {
+						// Stop the worker thread.
+						notificationLock.lock();
+						try {
+							if (notificationExecutorService != null) {
+								notificationExecutorService.shutdown();
+								notificationExecutorService = null;
+							}
+						} finally {
+							notificationLock.unlock();
+						}
+
+						return;
+					}
+				});
+			} else {
+				logger.debug(getClass().getName() + " message: "
+						+ "No listeners to notify.");
+			}
 		} finally {
 			notificationLock.unlock();
 		}
@@ -547,7 +567,12 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	public boolean removeListener(IVizConnectionListener<T> listener) {
 		boolean removed = false;
 		if (listener != null) {
-			removed = listeners.remove(listener);
+			notificationLock.lock();
+			try {
+				removed = listeners.remove(listener);
+			} finally {
+				notificationLock.unlock();
+			}
 		}
 		return removed;
 	}
