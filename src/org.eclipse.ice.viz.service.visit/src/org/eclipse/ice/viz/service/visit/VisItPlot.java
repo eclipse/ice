@@ -77,9 +77,6 @@ public class VisItPlot extends ConnectionPlot2<VisItSwtConnection> {
 
 	/**
 	 * The default constructor.
-	 * 
-	 * @param vizService
-	 *            The visualization service responsible for this plot.
 	 */
 	public VisItPlot() {
 

@@ -279,7 +279,7 @@ public class VisItPlotComposite extends
 	 */
 	@Override
 	protected String getConnectionPreferencePageID() {
-		return "org.eclipse.ice.viz.service.visit.preferences";
+		return VisItVizService.PREFERENCE_PAGE_ID;
 	}
 
 	/*
