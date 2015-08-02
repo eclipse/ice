@@ -22,6 +22,37 @@ package org.eclipse.ice.viz.service;
 public interface IVizServiceFactory {
 
 	/**
+	 * This operation returns the default IVizService provided by the factory,
+	 * which is entirely up to the factory, or null if the factory does not
+	 * contain a default service.
+	 * 
+	 * @return The default IVizService or null if no service is available
+	 */
+	public IVizService get();
+
+	/**
+	 * This operation returns the IVizService with the given name or null it if
+	 * is unavailable. It is the preferred way of retrieving an IVizService
+	 * because it is explicit in what needs to be retrieved.
+	 * 
+	 * @param serviceName
+	 *            The name of the service to find
+	 * @return The visualization service with the given name or null if that
+	 *         service cannot be found by the factory
+	 */
+	public IVizService get(String serviceName);
+
+	/**
+	 * This operation returns the names of all of the IVizServices registered
+	 * with the factory. It is makes it possible to give clients a choice of
+	 * services instead of relying on the default service or guessing at what
+	 * may be registered.
+	 * 
+	 * @return The names of the registered services
+	 */
+	public String[] getServiceNames();
+
+	/**
 	 * This operation registers an IVizService with the factory so that it can
 	 * be retrieved and used by clients.
 	 * <p>
@@ -43,36 +74,5 @@ public interface IVizServiceFactory {
 	 *            The visualization service to register
 	 */
 	public void unregister(IVizService service);
-
-	/**
-	 * This operation returns the names of all of the IVizServices registered
-	 * with the factory. It is makes it possible to give clients a choice of
-	 * services instead of relying on the default service or guessing at what
-	 * may be registered.
-	 * 
-	 * @return The names of the registered services
-	 */
-	public String[] getServiceNames();
-
-	/**
-	 * This operation returns the IVizService with the given name or null it if
-	 * is unavailable. It is the preferred way of retrieving an IVizService
-	 * because it is explicit in what needs to be retrieved.
-	 * 
-	 * @param serviceName
-	 *            The name of the service to find
-	 * @return The visualization service with the given name or null if that
-	 *         service cannot be found by the factory
-	 */
-	public IVizService get(String serviceName);
-
-	/**
-	 * This operation returns the default IVizService provided by the factory,
-	 * which is entirely up to the factory, or null if the factory does not
-	 * contain a default service.
-	 * 
-	 * @return The default IVizService or null if no service is available
-	 */
-	public IVizService get();
 
 }

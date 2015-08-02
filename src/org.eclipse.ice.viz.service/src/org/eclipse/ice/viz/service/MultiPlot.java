@@ -19,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -143,13 +141,16 @@ public abstract class MultiPlot implements IPlot {
 //	}
 
 	/**
-	 * Updates all current plot renders.
+	 * Clears any cached meta data for the plot.
 	 */
-	@Override
-	public void redraw() {
-		for (PlotRender plotRender : plotRenders.values()) {
-			updatePlotRender(plotRender);
+	protected void clearCache() {
+		// Clear the cache of known plot types.
+		if (plotTypes != null) {
+			plotTypes.clear();
+			plotTypes = null;
 		}
+
+		return;
 	}
 
 //	/*
@@ -169,37 +170,47 @@ public abstract class MultiPlot implements IPlot {
 //		return plotTypes;
 //	}
 
-	/*
-	 * (non-Javadoc)
+	// ---- UI Widgets ---- //
+	/**
+	 * Creates a {@link PlotRender} inside the specified parent
+	 * {@code Composite}. The {@code PlotRender}'s content should not be created
+	 * yet.
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
+	 * @param parent
+	 *            The parent {@code Composite} that will contain the new
+	 *            {@code PlotRender}.
+	 * @return The new {@code PlotRender}.
 	 */
-	@Override
-	public int getNumberOfAxes() {
-		return 0;
-	}
+	protected abstract PlotRender createPlotRender(Composite parent);
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * <b>Note:</b> This method is called automatically in
+	 * {@link #setDataSource(URI)}. Implementations should always query the file
+	 * and should <i>not</i> cache the data.
+	 * <p>
+	 * This operation returns a simple map of plot types that can be created by
+	 * the IPlot using its data source. The map is meant to have a structure
+	 * where each individual key is a type of plot - mesh, scalar, line, etc. -
+	 * with a list of values of all of the plots it can create of that given
+	 * type from the data source. For example, for a CSV file with three columns
+	 * x, y1, y2, y3, the map might be:
+	 * </p>
+	 * <p>
+	 * key | value<br>
+	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
+	 * scatter | "x vs y1", "x vs y2", "x vs y3"<br>
+	 * contour | "x vs y1", "x vs y2", "x vs y3"
+	 * </p>
 	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getProperties()
+	 * @param file
+	 *            The data source for the file.
+	 * @return The map of valid plot types this plot can be.
+	 * @throws IOException
+	 *             if there was an error while reading the file's contents
+	 * @throws Exception
+	 *             if there is some other unspecified problem with the file
 	 */
-	@Override
-	public Map<String, String> getProperties() {
-		return new HashMap<String, String>();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IPlot#setProperties(java.util
-	 * .Map)
-	 */
-	@Override
-	public void setProperties(Map<String, String> props) throws Exception {
-		// Nothing to do yet.
-	}
+	protected abstract Map<String, String[]> findPlotTypes(URI file) throws IOException, Exception;
 
 	/*
 	 * (non-Javadoc)
@@ -214,11 +225,53 @@ public abstract class MultiPlot implements IPlot {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getNumberOfAxes()
+	 */
+	@Override
+	public int getNumberOfAxes() {
+		return 0;
+	}
+
+	/**
+	 * Gets a list of all current rendered plots.
+	 * 
+	 * @return A list containing each current {@link PlotRender} in this
+	 *         {@code MultiPlot}.
+	 */
+	protected List<PlotRender> getPlotRenders() {
+		return new ArrayList<PlotRender>(plotRenders.values());
+	}
+	// -------------------- //
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getProperties()
+	 */
+	@Override
+	public Map<String, String> getProperties() {
+		return new HashMap<String, String>();
+	}
+
+	// -------------------------- //
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.viz.service.IPlot#getSourceHost()
 	 */
 	@Override
 	public String getSourceHost() {
 		return source.getHost();
+	}
+
+	/**
+	 * Gets the visualization service responsible for this plot.
+	 * 
+	 * @return The visualization service responsible for this plot.
+	 */
+	public IVizService getVizService() {
+		return vizService;
 	}
 
 	/*
@@ -231,7 +284,15 @@ public abstract class MultiPlot implements IPlot {
 		return !"localhost".equals(getSourceHost());
 	}
 
-	// -------------------------- //
+	/**
+	 * Updates all current plot renders.
+	 */
+	@Override
+	public void redraw() {
+		for (PlotRender plotRender : plotRenders.values()) {
+			updatePlotRender(plotRender);
+		}
+	}
 
 	/**
 	 * Sets the data source (which is currently rendered if the plot is drawn).
@@ -280,69 +341,17 @@ public abstract class MultiPlot implements IPlot {
 		return;
 	}
 
-	/**
-	 * Clears any cached meta data for the plot.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.viz.service.IPlot#setProperties(java.util
+	 * .Map)
 	 */
-	protected void clearCache() {
-		// Clear the cache of known plot types.
-		if (plotTypes != null) {
-			plotTypes.clear();
-			plotTypes = null;
-		}
-
-		return;
+	@Override
+	public void setProperties(Map<String, String> props) throws Exception {
+		// Nothing to do yet.
 	}
-
-	/**
-	 * <b>Note:</b> This method is called automatically in
-	 * {@link #setDataSource(URI)}. Implementations should always query the file
-	 * and should <i>not</i> cache the data.
-	 * <p>
-	 * This operation returns a simple map of plot types that can be created by
-	 * the IPlot using its data source. The map is meant to have a structure
-	 * where each individual key is a type of plot - mesh, scalar, line, etc. -
-	 * with a list of values of all of the plots it can create of that given
-	 * type from the data source. For example, for a CSV file with three columns
-	 * x, y1, y2, y3, the map might be:
-	 * </p>
-	 * <p>
-	 * key | value<br>
-	 * line | "x vs y1", "x vs y2", "x vs y3"<br>
-	 * scatter | "x vs y1", "x vs y2", "x vs y3"<br>
-	 * contour | "x vs y1", "x vs y2", "x vs y3"
-	 * </p>
-	 * 
-	 * @param file
-	 *            The data source for the file.
-	 * @return The map of valid plot types this plot can be.
-	 * @throws IOException
-	 *             if there was an error while reading the file's contents
-	 * @throws Exception
-	 *             if there is some other unspecified problem with the file
-	 */
-	protected abstract Map<String, String[]> findPlotTypes(URI file) throws IOException, Exception;
-
-	/**
-	 * Gets the visualization service responsible for this plot.
-	 * 
-	 * @return The visualization service responsible for this plot.
-	 */
-	public IVizService getVizService() {
-		return vizService;
-	}
-
-	// ---- UI Widgets ---- //
-	/**
-	 * Creates a {@link PlotRender} inside the specified parent
-	 * {@code Composite}. The {@code PlotRender}'s content should not be created
-	 * yet.
-	 * 
-	 * @param parent
-	 *            The parent {@code Composite} that will contain the new
-	 *            {@code PlotRender}.
-	 * @return The new {@code PlotRender}.
-	 */
-	protected abstract PlotRender createPlotRender(Composite parent);
 
 	/**
 	 * Updates the specified {@link PlotRender}. The default behavior of this
@@ -354,16 +363,5 @@ public abstract class MultiPlot implements IPlot {
 	protected void updatePlotRender(PlotRender plotRender) {
 		plotRender.refresh();
 	}
-
-	/**
-	 * Gets a list of all current rendered plots.
-	 * 
-	 * @return A list containing each current {@link PlotRender} in this
-	 *         {@code MultiPlot}.
-	 */
-	protected List<PlotRender> getPlotRenders() {
-		return new ArrayList<PlotRender>(plotRenders.values());
-	}
-	// -------------------- //
 
 }

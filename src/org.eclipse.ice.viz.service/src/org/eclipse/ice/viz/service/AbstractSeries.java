@@ -48,7 +48,7 @@ public abstract class AbstractSeries implements ISeries {
 	 * Implements a method from ISeries.
 	 */
 	@Override
-	public Object[] getDataPoints() {
+	public String getCategory() {
 		return null;
 	}
 
@@ -56,23 +56,7 @@ public abstract class AbstractSeries implements ISeries {
 	 * Implements a method from ISeries.
 	 */
 	@Override
-	public void setTime(double time) {
-		// Nothing to do.
-	}
-
-	/*
-	 * Implements a method from ISeries.
-	 */
-	@Override
-	public double getTime() {
-		return 0.0;
-	}
-
-	/*
-	 * Implements a method from ISeries.
-	 */
-	@Override
-	public ISeries getParentSeries() {
+	public Object[] getDataPoints() {
 		return null;
 	}
 
@@ -88,8 +72,8 @@ public abstract class AbstractSeries implements ISeries {
 	 * Implements a method from ISeries.
 	 */
 	@Override
-	public void setLabel(String label) {
-		this.label = label;
+	public ISeries getParentSeries() {
+		return null;
 	}
 
 	/*
@@ -104,8 +88,8 @@ public abstract class AbstractSeries implements ISeries {
 	 * Implements a method from ISeries.
 	 */
 	@Override
-	public void setStyle(ISeriesStyle style) {
-		this.style = style;
+	public double getTime() {
+		return 0.0;
 	}
 
 	/*
@@ -128,8 +112,24 @@ public abstract class AbstractSeries implements ISeries {
 	 * Implements a method from ISeries.
 	 */
 	@Override
-	public String getCategory() {
-		return null;
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/*
+	 * Implements a method from ISeries.
+	 */
+	@Override
+	public void setStyle(ISeriesStyle style) {
+		this.style = style;
+	}
+
+	/*
+	 * Implements a method from ISeries.
+	 */
+	@Override
+	public void setTime(double time) {
+		// Nothing to do.
 	}
 
 }

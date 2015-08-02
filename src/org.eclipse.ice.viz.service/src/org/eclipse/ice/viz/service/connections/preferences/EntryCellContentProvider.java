@@ -38,20 +38,36 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	protected static final String INVALID_ELEMENT_TEXT = "Invalid Entry.";
 
 	/**
-	 * By default, any {@link Entry} that is not null is valid.
+	 * Gets the {@link Entry}'s allowed values, or an empty list if it has none.
 	 */
 	@Override
-	public boolean isValid(Object element) {
-		return element != null && element instanceof Entry;
+	public List<String> getAllowedValues(Object element) {
+		List<String> allowedValues;
+		if (isValid(element)) {
+			Entry entry = (Entry) element;
+			allowedValues = new ArrayList<String>(entry.getAllowedValues());
+		} else {
+			allowedValues = new ArrayList<String>(1);
+		}
+		return allowedValues;
 	}
 
 	/**
-	 * By default, any valid {@link Entry} is enabled.
+	 * Returns {@code null} for no {@code Image}.
 	 */
 	@Override
-	public boolean isEnabled(Object element) {
-		return isValid(element);
+	public Image getImage(Object element) {
+		return null;
 	}
+
+	/**
+	 * Gets the default secret character used to obscure text.
+	 */
+	@Override
+	public char getSecretChar() {
+		return ISecretCellContentProvider.SECRET_CHAR;
+	}
+	// ---------------------------------------- //
 
 	/**
 	 * Returns the value, which is converted to a string, of the {@link Entry}.
@@ -96,14 +112,6 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	}
 
 	/**
-	 * Returns {@code null} for no {@code Image}.
-	 */
-	@Override
-	public Image getImage(Object element) {
-		return null;
-	}
-
-	/**
 	 * Returns the {@link Entry}'s value.
 	 */
 	@Override
@@ -116,6 +124,45 @@ public class EntryCellContentProvider implements ICellContentProvider,
 		}
 
 		return value;
+	}
+
+	/**
+	 * By default, any valid {@link Entry} is enabled.
+	 */
+	@Override
+	public boolean isEnabled(Object element) {
+		return isValid(element);
+	}
+
+	// ---- Implements IComboCellContentProvider ---- //
+
+	// ---- Implements ISecretCellProvider ---- //
+	/**
+	 * An {@link Entry} should be obscured if its "secret" flag is true.
+	 */
+	@Override
+	public boolean isSecret(Object element) {
+		return isValid(element) && ((Entry) element).isSecret();
+	}
+
+	/**
+	 * By default, any {@link Entry} that is not null is valid.
+	 */
+	@Override
+	public boolean isValid(Object element) {
+		return element != null && element instanceof Entry;
+	}
+
+	// ---------------------------------------------- //
+
+	/**
+	 * An {@link Entry} requires a combo widget if its {@link AllowedValueType}
+	 * is discrete.
+	 */
+	@Override
+	public boolean requiresCombo(Object element) {
+		return isValid(element)
+				&& ((Entry) element).getValueType() == AllowedValueType.Discrete;
 	}
 
 	/**
@@ -133,52 +180,5 @@ public class EntryCellContentProvider implements ICellContentProvider,
 
 		return changed;
 	}
-
-	// ---- Implements IComboCellContentProvider ---- //
-
-	/**
-	 * An {@link Entry} requires a combo widget if its {@link AllowedValueType}
-	 * is discrete.
-	 */
-	@Override
-	public boolean requiresCombo(Object element) {
-		return isValid(element)
-				&& ((Entry) element).getValueType() == AllowedValueType.Discrete;
-	}
-
-	/**
-	 * Gets the {@link Entry}'s allowed values, or an empty list if it has none.
-	 */
-	@Override
-	public List<String> getAllowedValues(Object element) {
-		List<String> allowedValues;
-		if (isValid(element)) {
-			Entry entry = (Entry) element;
-			allowedValues = new ArrayList<String>(entry.getAllowedValues());
-		} else {
-			allowedValues = new ArrayList<String>(1);
-		}
-		return allowedValues;
-	}
-
-	// ---------------------------------------------- //
-
-	// ---- Implements ISecretCellProvider ---- //
-	/**
-	 * An {@link Entry} should be obscured if its "secret" flag is true.
-	 */
-	@Override
-	public boolean isSecret(Object element) {
-		return isValid(element) && ((Entry) element).isSecret();
-	}
-
-	/**
-	 * Gets the default secret character used to obscure text.
-	 */
-	@Override
-	public char getSecretChar() {
-		return ISecretCellContentProvider.SECRET_CHAR;
-	}
-	// ---------------------------------------- //
 
 }

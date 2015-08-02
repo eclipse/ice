@@ -99,46 +99,40 @@ public class TableComponentComposite extends Composite {
 	}
 
 	/**
-	 * Sets the current {@code TableComponent} data model that is rendered in
-	 * the {@link #tableViewer}.
-	 * 
-	 * @param table
-	 *            The new {@code TableComponent}. This value must not be
-	 *            {@code null} and must have a row template.
+	 * Creates the JFace {@code Action}s used to add or remove rows to or from
+	 * the {@link #tableComponent}.
 	 */
-	public void setTableComponent(TableComponent table) {
+	private void createActions() {
 
-		// We cannot handle TableComponents with no template set.
-		if (table == null || table.getRowTemplate() == null) {
-			return;
-		}
-		// Otherwise, we should be able to add rows based on the set template.
-		tableComponent = table;
-
-		// Update the viewer's input.
-		Display.getDefault().asyncExec(new Runnable() {
+		// Create the add action. It will add a new, default row.
+		addRowAction = new Action("+", IAction.AS_PUSH_BUTTON) {
 			@Override
 			public void run() {
-				// Make sure the remove action is disabled since the
-				// TableComponent is new.
-				removeRowAction.setEnabled(false);
-				selectedIndices.clear();
-				// Set the TableViewer's input.
-				tableViewer.setInput(tableComponent);
+				tableComponent.addRow();
 			}
-		});
+		};
+		addRowAction.setToolTipText("Adds a new, default row.");
+
+		// Create the remove action. It will remove all rows selected in the
+		// TableViewer from the TableComponent.
+		removeRowAction = new Action("-", IAction.AS_PUSH_BUTTON) {
+			@Override
+			public void run() {
+				// The action should only be run once.
+				setEnabled(false);
+				// Delete all selected rows from the TableComponent.
+				for (int i = selectedIndices.size() - 1; i >= 0; i--) {
+					tableComponent.deleteRow(selectedIndices.get(i));
+				}
+				selectedIndices.clear();
+				// Make sure the model knows there is no selection.
+				tableComponent.setSelectedRows(new ArrayList<Integer>());
+			}
+		};
+		removeRowAction.setToolTipText("Removes all selected rows.");
+		removeRowAction.setEnabled(false);
 
 		return;
-	}
-
-	/**
-	 * Gets the current {@code TableComponent} data model that is rendered in
-	 * the {@link #tableViewer}.
-	 * 
-	 * @return The current {@code TableComponent}.
-	 */
-	public TableComponent getTableComponent() {
-		return tableComponent;
 	}
 
 	/**
@@ -203,12 +197,12 @@ public class TableComponentComposite extends Composite {
 		// the same values.
 		viewer.setComparer(new IElementComparer() {
 			@Override
-			public int hashCode(Object element) {
-				return element.hashCode();
-			}
-			@Override
 			public boolean equals(Object a, Object b) {
 				return a == b;
+			}
+			@Override
+			public int hashCode(Object element) {
+				return element.hashCode();
 			}
 		});
 		
@@ -216,38 +210,44 @@ public class TableComponentComposite extends Composite {
 	}
 
 	/**
-	 * Creates the JFace {@code Action}s used to add or remove rows to or from
-	 * the {@link #tableComponent}.
+	 * Gets the current {@code TableComponent} data model that is rendered in
+	 * the {@link #tableViewer}.
+	 * 
+	 * @return The current {@code TableComponent}.
 	 */
-	private void createActions() {
+	public TableComponent getTableComponent() {
+		return tableComponent;
+	}
 
-		// Create the add action. It will add a new, default row.
-		addRowAction = new Action("+", IAction.AS_PUSH_BUTTON) {
+	/**
+	 * Sets the current {@code TableComponent} data model that is rendered in
+	 * the {@link #tableViewer}.
+	 * 
+	 * @param table
+	 *            The new {@code TableComponent}. This value must not be
+	 *            {@code null} and must have a row template.
+	 */
+	public void setTableComponent(TableComponent table) {
+
+		// We cannot handle TableComponents with no template set.
+		if (table == null || table.getRowTemplate() == null) {
+			return;
+		}
+		// Otherwise, we should be able to add rows based on the set template.
+		tableComponent = table;
+
+		// Update the viewer's input.
+		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				tableComponent.addRow();
-			}
-		};
-		addRowAction.setToolTipText("Adds a new, default row.");
-
-		// Create the remove action. It will remove all rows selected in the
-		// TableViewer from the TableComponent.
-		removeRowAction = new Action("-", IAction.AS_PUSH_BUTTON) {
-			@Override
-			public void run() {
-				// The action should only be run once.
-				setEnabled(false);
-				// Delete all selected rows from the TableComponent.
-				for (int i = selectedIndices.size() - 1; i >= 0; i--) {
-					tableComponent.deleteRow(selectedIndices.get(i));
-				}
+				// Make sure the remove action is disabled since the
+				// TableComponent is new.
+				removeRowAction.setEnabled(false);
 				selectedIndices.clear();
-				// Make sure the model knows there is no selection.
-				tableComponent.setSelectedRows(new ArrayList<Integer>());
+				// Set the TableViewer's input.
+				tableViewer.setInput(tableComponent);
 			}
-		};
-		removeRowAction.setToolTipText("Removes all selected rows.");
-		removeRowAction.setEnabled(false);
+		});
 
 		return;
 	}

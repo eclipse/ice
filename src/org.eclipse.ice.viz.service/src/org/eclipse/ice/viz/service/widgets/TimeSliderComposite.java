@@ -69,6 +69,14 @@ import org.osgi.framework.FrameworkUtil;
 public class TimeSliderComposite extends Composite {
 
 	/**
+	 * A minimum FPS of 1 frame per minute.
+	 */
+	private static final double minFPS = 0.0167;
+	/**
+	 * The string to use in the text box when there are no times configured.
+	 */
+	private static final String NO_TIMES = "N/A";
+	/**
 	 * The widget used for coarse-grained timestep control.
 	 */
 	private final Scale scale;
@@ -102,6 +110,7 @@ public class TimeSliderComposite extends Composite {
 	 * The Action in the options menu for quickly getting to the first timestep.
 	 */
 	private Action firstStepAction;
+
 	/**
 	 * The Action in the options menu for quickly getting to the last timestep.
 	 */
@@ -110,11 +119,6 @@ public class TimeSliderComposite extends Composite {
 	 * The Action in the options menu for toggling looped playback.
 	 */
 	private Action loopPlaybackAction;
-
-	/**
-	 * A minimum FPS of 1 frame per minute.
-	 */
-	private static final double minFPS = 0.0167;
 	/**
 	 * The current frames per second for playback.
 	 */
@@ -134,22 +138,22 @@ public class TimeSliderComposite extends Composite {
 	 * timestep buttons.
 	 */
 	private boolean loopPlayback = true;
+
 	/**
 	 * The runnable operation used for "playback". It increments the timestep
 	 * and schedules itself to execute later based on the value of
 	 * {@link #playbackInterval}.
 	 */
 	private Runnable playbackRunnable;
-
 	/**
 	 * The current timestep, or -1 if there are no times available.
 	 */
 	private int timestep;
+
 	/**
 	 * A tree that contains the times associated with the timesteps.
 	 */
 	private BinarySearchTree times;
-
 	/**
 	 * A list of created ImageDescriptors. These will be used to allocate shared
 	 * Image resources for buttons in the widget.
@@ -164,16 +168,12 @@ public class TimeSliderComposite extends Composite {
 	 * paused.
 	 */
 	private Image playImage;
+
 	/**
 	 * A reference to the pause image. This will be displayed when the widget is
 	 * playing.
 	 */
 	private Image pauseImage;
-
-	/**
-	 * The string to use in the text box when there are no times configured.
-	 */
-	private static final String NO_TIMES = "N/A";
 
 	/**
 	 * A list of listeners that will be notified if the timestep changes to a
@@ -226,6 +226,48 @@ public class TimeSliderComposite extends Composite {
 		setTimes(new ArrayList<Double>());
 
 		return;
+	}
+
+	// ---- SelectionListeners ---- //
+	/**
+	 * Adds a new listener to be notified when the selected time changes.
+	 * 
+	 * @param listener
+	 *            The new listener to add.
+	 * 
+	 * @exception IllegalArgumentException
+	 *                <ul>
+	 *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 *                </ul>
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public void addSelectionListener(SelectionListener listener) {
+		// Check that this widget can be accessed. Also check the listener is
+		// not null.
+		checkWidget();
+		if (listener == null) {
+			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
+		}
+
+		listeners.add(listener);
+	}
+
+	/**
+	 * Creates a blank SelectionEvent that can be used when pausing the
+	 * playback.
+	 * 
+	 * @return A new, empty SelectionEvent associated with this widget.
+	 */
+	private SelectionEvent createBlankSelectionEvent() {
+		Event event = new Event();
+		event.widget = this;
+		return new SelectionEvent(event);
 	}
 
 	/**
@@ -622,6 +664,19 @@ public class TimeSliderComposite extends Composite {
 		return text;
 	}
 
+	// ---- Public Setters and Getters ---- //
+
+	/**
+	 * Decrements the timestep. Updates all widgets as necessary. This will loop
+	 * back around to the last timestep if necessary.
+	 * 
+	 * @return True if the timestep changed, false otherwise.
+	 */
+	private boolean decrementTimestep() {
+		int size = times.size();
+		return setValidTimestep((timestep - 1 + size) % size);
+	}
+
 	/*
 	 * Overrides a method from Widget.
 	 */
@@ -640,23 +695,6 @@ public class TimeSliderComposite extends Composite {
 	}
 
 	/**
-	 * A convenient operation for loading a custom image resource from this
-	 * widget's path.
-	 * 
-	 * @param name
-	 *            The name of (path to) the image to load, like "/image1.gif".
-	 * @return The loaded image, or {@code null} if the image could not be
-	 *         loaded.
-	 */
-	private ImageDescriptor getImageDescriptor(String name) {
-		Bundle bundle = FrameworkUtil.getBundle(TimeSliderComposite.class);
-		URL url = bundle.getEntry("icons/" + name);
-		return ImageDescriptor.createFromURL(url);
-	}
-
-	// ---- Public Setters and Getters ---- //
-
-	/**
 	 * Gets the current playback rate in frames per second.
 	 * 
 	 * @return The current frames per second for playback.
@@ -672,6 +710,21 @@ public class TimeSliderComposite extends Composite {
 		// Check that this widget can be accessed.
 		checkWidget();
 		return fps;
+	}
+
+	/**
+	 * A convenient operation for loading a custom image resource from this
+	 * widget's path.
+	 * 
+	 * @param name
+	 *            The name of (path to) the image to load, like "/image1.gif".
+	 * @return The loaded image, or {@code null} if the image could not be
+	 *         loaded.
+	 */
+	private ImageDescriptor getImageDescriptor(String name) {
+		Bundle bundle = FrameworkUtil.getBundle(TimeSliderComposite.class);
+		URL url = bundle.getEntry("icons/" + name);
+		return ImageDescriptor.createFromURL(url);
 	}
 
 	/**
@@ -730,11 +783,19 @@ public class TimeSliderComposite extends Composite {
 	}
 
 	/**
-	 * Starts playback on the widget. Calling this method <i>will not itself
-	 * notify SelectionListeners</i>, but the ensuing playback <i>will</i>.
+	 * Increments the timestep. Updates all widgets as necessary. This will loop
+	 * back around to the first timestep if necessary.
 	 * 
-	 * @return True if the widget was paused and is now playing, false
-	 *         otherwise.
+	 * @return True if the timestep changed, false otherwise.
+	 */
+	private boolean incrementTimestep() {
+		return setValidTimestep((timestep + 1) % times.size());
+	}
+
+	/**
+	 * Gets whether the widget is currently playing.
+	 * 
+	 * @return True if the widget is playing, false if it is paused.
 	 * @exception SWTException
 	 *                <ul>
 	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
@@ -743,19 +804,26 @@ public class TimeSliderComposite extends Composite {
 	 *                thread that created the receiver</li>
 	 *                </ul>
 	 */
-	public boolean play() {
+	public boolean isPlaying() {
 		// Check that this widget can be accessed.
 		checkWidget();
-
-		boolean changed = false;
-
-		if (!isPlaying) {
-			setPlayback(true, createBlankSelectionEvent());
-			changed = true;
-		}
-
-		return changed;
+		return isPlaying;
 	}
+
+	/**
+	 * Notifies listeners that the selected time has changed. This is performed
+	 * on the UI thread as with all SWT selection events.
+	 * 
+	 * @param e
+	 *            The event triggering the updated time.
+	 */
+	private void notifyListeners(SelectionEvent e) {
+		e.data = getTime();
+		for (SelectionListener listener : listeners) {
+			listener.widgetSelected(e);
+		}
+	}
+	// ---------------------------- //
 
 	/**
 	 * Stops playback on the widget at its current timestep.
@@ -785,9 +853,11 @@ public class TimeSliderComposite extends Composite {
 	}
 
 	/**
-	 * Gets whether the widget is currently playing.
+	 * Starts playback on the widget. Calling this method <i>will not itself
+	 * notify SelectionListeners</i>, but the ensuing playback <i>will</i>.
 	 * 
-	 * @return True if the widget is playing, false if it is paused.
+	 * @return True if the widget was paused and is now playing, false
+	 *         otherwise.
 	 * @exception SWTException
 	 *                <ul>
 	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
@@ -796,11 +866,51 @@ public class TimeSliderComposite extends Composite {
 	 *                thread that created the receiver</li>
 	 *                </ul>
 	 */
-	public boolean isPlaying() {
+	public boolean play() {
 		// Check that this widget can be accessed.
 		checkWidget();
-		return isPlaying;
+
+		boolean changed = false;
+
+		if (!isPlaying) {
+			setPlayback(true, createBlankSelectionEvent());
+			changed = true;
+		}
+
+		return changed;
 	}
+
+	/**
+	 * Removes the specified listener from this widget. It will no longer be
+	 * notified of time changes from this widget unless it has been registered
+	 * multiple times.
+	 * 
+	 * @param listener
+	 *            The listener to remove.
+	 * 
+	 * @exception IllegalArgumentException
+	 *                <ul>
+	 *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
+	 *                </ul>
+	 * @exception SWTException
+	 *                <ul>
+	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
+	 *                disposed</li>
+	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+	 *                thread that created the receiver</li>
+	 *                </ul>
+	 */
+	public void removeSelectionListener(SelectionListener listener) {
+		// Check that this widget can be accessed. Also check the listener is
+		// not null.
+		checkWidget();
+		if (listener == null) {
+			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
+		}
+		listeners.remove(listener);
+	}
+
+	// ------------------------------------ //
 
 	/*
 	 * Overrides a method from Control.
@@ -876,6 +986,74 @@ public class TimeSliderComposite extends Composite {
 			changed = true;
 		}
 		return changed;
+	}
+
+	/**
+	 * Starts or stops the playback operation.
+	 * 
+	 * @param play
+	 *            If true, playback will be started. If false, playback will be
+	 *            stopped.
+	 * @param e
+	 *            The selection event that triggered the playback operation.
+	 *            This is only used if play is true. Otherwise, you may use
+	 *            {@code null}.
+	 */
+	private void setPlayback(boolean play, final SelectionEvent e) {
+		if (play != this.isPlaying) {
+			this.isPlaying = play;
+
+			// Determine the text and image for the play/pause button as well as
+			// whether the playback event should be scheduled or cancelled.
+			final String text;
+			final Image image;
+			final int time;
+			if (play) {
+				// Set the text for the pause button.
+				text = "Pause";
+				image = pauseImage;
+
+				// If play is clicked on the last timestep, immediately start
+				// from the first (next) timestep. Otherwise, insert a delay.
+				time = (timestep < times.size() - 1 ? fpsDelay : 0);
+
+				// The playback runnable should be created.
+				playbackRunnable = new Runnable() {
+					@Override
+					public void run() {
+						// If the last timestep is reached and playback
+						// shouldn't be looped, halt playback.
+						if (!loopPlayback && timestep == times.size() - 2) {
+							setPlayback(false, null);
+						}
+						// Otherwise, schedule the next frame change.
+						else {
+							getDisplay().timerExec(fpsDelay, this);
+						}
+						// Increment the timestep.
+						if (incrementTimestep()) {
+							notifyListeners(e);
+						}
+						return;
+					}
+				};
+			} else {
+				// Set the text for the play button.
+				text = "Play";
+				image = playImage;
+
+				// The playback runnable should be cancelled.
+				time = -1;
+			}
+
+			// Update the tool tip and image for the play button.
+			playButton.setToolTipText(text);
+			playButton.setImage(image);
+
+			// Schedule or cancel the playback task.
+			getDisplay().timerExec(time, playbackRunnable);
+		}
+		return;
 	}
 
 	/**
@@ -1016,109 +1194,6 @@ public class TimeSliderComposite extends Composite {
 		return setValidTimestep(index);
 	}
 
-	// ------------------------------------ //
-
-	/**
-	 * Creates a blank SelectionEvent that can be used when pausing the
-	 * playback.
-	 * 
-	 * @return A new, empty SelectionEvent associated with this widget.
-	 */
-	private SelectionEvent createBlankSelectionEvent() {
-		Event event = new Event();
-		event.widget = this;
-		return new SelectionEvent(event);
-	}
-
-	/**
-	 * Decrements the timestep. Updates all widgets as necessary. This will loop
-	 * back around to the last timestep if necessary.
-	 * 
-	 * @return True if the timestep changed, false otherwise.
-	 */
-	private boolean decrementTimestep() {
-		int size = times.size();
-		return setValidTimestep((timestep - 1 + size) % size);
-	}
-
-	/**
-	 * Increments the timestep. Updates all widgets as necessary. This will loop
-	 * back around to the first timestep if necessary.
-	 * 
-	 * @return True if the timestep changed, false otherwise.
-	 */
-	private boolean incrementTimestep() {
-		return setValidTimestep((timestep + 1) % times.size());
-	}
-
-	/**
-	 * Starts or stops the playback operation.
-	 * 
-	 * @param play
-	 *            If true, playback will be started. If false, playback will be
-	 *            stopped.
-	 * @param e
-	 *            The selection event that triggered the playback operation.
-	 *            This is only used if play is true. Otherwise, you may use
-	 *            {@code null}.
-	 */
-	private void setPlayback(boolean play, final SelectionEvent e) {
-		if (play != this.isPlaying) {
-			this.isPlaying = play;
-
-			// Determine the text and image for the play/pause button as well as
-			// whether the playback event should be scheduled or cancelled.
-			final String text;
-			final Image image;
-			final int time;
-			if (play) {
-				// Set the text for the pause button.
-				text = "Pause";
-				image = pauseImage;
-
-				// If play is clicked on the last timestep, immediately start
-				// from the first (next) timestep. Otherwise, insert a delay.
-				time = (timestep < times.size() - 1 ? fpsDelay : 0);
-
-				// The playback runnable should be created.
-				playbackRunnable = new Runnable() {
-					@Override
-					public void run() {
-						// If the last timestep is reached and playback
-						// shouldn't be looped, halt playback.
-						if (!loopPlayback && timestep == times.size() - 2) {
-							setPlayback(false, null);
-						}
-						// Otherwise, schedule the next frame change.
-						else {
-							getDisplay().timerExec(fpsDelay, this);
-						}
-						// Increment the timestep.
-						if (incrementTimestep()) {
-							notifyListeners(e);
-						}
-						return;
-					}
-				};
-			} else {
-				// Set the text for the play button.
-				text = "Play";
-				image = playImage;
-
-				// The playback runnable should be cancelled.
-				time = -1;
-			}
-
-			// Update the tool tip and image for the play button.
-			playButton.setToolTipText(text);
-			playButton.setImage(image);
-
-			// Schedule or cancel the playback task.
-			getDisplay().timerExec(time, playbackRunnable);
-		}
-		return;
-	}
-
 	/**
 	 * Updates the timestep and all embedded widgets based on the new timestep
 	 * value.
@@ -1147,79 +1222,4 @@ public class TimeSliderComposite extends Composite {
 
 		return changed;
 	}
-
-	// ---- SelectionListeners ---- //
-	/**
-	 * Adds a new listener to be notified when the selected time changes.
-	 * 
-	 * @param listener
-	 *            The new listener to add.
-	 * 
-	 * @exception IllegalArgumentException
-	 *                <ul>
-	 *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-	 *                </ul>
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 */
-	public void addSelectionListener(SelectionListener listener) {
-		// Check that this widget can be accessed. Also check the listener is
-		// not null.
-		checkWidget();
-		if (listener == null) {
-			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
-		}
-
-		listeners.add(listener);
-	}
-
-	/**
-	 * Removes the specified listener from this widget. It will no longer be
-	 * notified of time changes from this widget unless it has been registered
-	 * multiple times.
-	 * 
-	 * @param listener
-	 *            The listener to remove.
-	 * 
-	 * @exception IllegalArgumentException
-	 *                <ul>
-	 *                <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
-	 *                </ul>
-	 * @exception SWTException
-	 *                <ul>
-	 *                <li>ERROR_WIDGET_DISPOSED - if the receiver has been
-	 *                disposed</li>
-	 *                <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
-	 *                thread that created the receiver</li>
-	 *                </ul>
-	 */
-	public void removeSelectionListener(SelectionListener listener) {
-		// Check that this widget can be accessed. Also check the listener is
-		// not null.
-		checkWidget();
-		if (listener == null) {
-			throw new SWTException(SWT.ERROR_NULL_ARGUMENT);
-		}
-		listeners.remove(listener);
-	}
-
-	/**
-	 * Notifies listeners that the selected time has changed. This is performed
-	 * on the UI thread as with all SWT selection events.
-	 * 
-	 * @param e
-	 *            The event triggering the updated time.
-	 */
-	private void notifyListeners(SelectionEvent e) {
-		e.data = getTime();
-		for (SelectionListener listener : listeners) {
-			listener.widgetSelected(e);
-		}
-	}
-	// ---------------------------- //
 }

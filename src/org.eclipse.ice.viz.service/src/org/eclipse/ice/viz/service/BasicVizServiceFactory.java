@@ -63,13 +63,52 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		serviceMap = new HashMap<String, IVizService>();
 	}
 
-	/**
-	 * This operation starts the service, including registering the basic CSV
-	 * plotter viz service, "ice-plot," with the platform.
+	/*
+	 * Implements a method from IVizServiceFactory.
 	 */
-	public void start() {
-		// Initialize "ice-plot" viz service
-		register(new CSVVizService());
+	@Override
+	public IVizService get() {
+		return get("ice-plot");
+	}
+
+	/*
+	 * Implements a method from IVizServiceFactory.
+	 */
+	@Override
+	public IVizService get(String serviceName) {
+
+		IVizService service = null;
+
+		if (serviceMap.containsKey(serviceName)) {
+			service = serviceMap.get(serviceName);
+		}
+
+		return service;
+	}
+
+	/**
+	 * Gets the {@link IPreferenceStore} for the associated preference page.
+	 *
+	 * @return The {@code IPreferenceStore} whose defaults should be set.
+	 */
+	private IPreferenceStore getPreferenceStore() {
+		if (preferenceStore == null) {
+			// Get the PreferenceStore for the bundle.
+			preferenceStore = new CustomScopedPreferenceStore(getClass());
+		}
+		return preferenceStore;
+	}
+
+	/*
+	 * Implements a method from IVizServiceFactory.
+	 */
+	@Override
+	public String[] getServiceNames() {
+
+		String[] names = {};
+		names = serviceMap.keySet().toArray(names);
+
+		return names;
 	}
 
 	/*
@@ -112,6 +151,15 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		return;
 	}
 
+	/**
+	 * This operation starts the service, including registering the basic CSV
+	 * plotter viz service, "ice-plot," with the platform.
+	 */
+	public void start() {
+		// Initialize "ice-plot" viz service
+		register(new CSVVizService());
+	}
+
 	/*
 	 * Implements a method from IVizServiceFactory.
 	 */
@@ -120,53 +168,5 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		if (service != null) {
 			serviceMap.remove(service.getName());
 		}
-	}
-
-	/*
-	 * Implements a method from IVizServiceFactory.
-	 */
-	@Override
-	public String[] getServiceNames() {
-
-		String[] names = {};
-		names = serviceMap.keySet().toArray(names);
-
-		return names;
-	}
-
-	/*
-	 * Implements a method from IVizServiceFactory.
-	 */
-	@Override
-	public IVizService get(String serviceName) {
-
-		IVizService service = null;
-
-		if (serviceMap.containsKey(serviceName)) {
-			service = serviceMap.get(serviceName);
-		}
-
-		return service;
-	}
-
-	/*
-	 * Implements a method from IVizServiceFactory.
-	 */
-	@Override
-	public IVizService get() {
-		return get("ice-plot");
-	}
-
-	/**
-	 * Gets the {@link IPreferenceStore} for the associated preference page.
-	 *
-	 * @return The {@code IPreferenceStore} whose defaults should be set.
-	 */
-	private IPreferenceStore getPreferenceStore() {
-		if (preferenceStore == null) {
-			// Get the PreferenceStore for the bundle.
-			preferenceStore = new CustomScopedPreferenceStore(getClass());
-		}
-		return preferenceStore;
 	}
 }

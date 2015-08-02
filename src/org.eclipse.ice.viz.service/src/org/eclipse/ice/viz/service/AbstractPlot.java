@@ -102,27 +102,11 @@ public abstract class AbstractPlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * Implements a method from IPlot.
 	 */
 	@Override
-	public int getNumberOfAxes() {
-		return 0;
-	}
-
-	/*
-	 * Implements a method from IVizCanvas.
-	 */
-	@Override
-	public Map<String, String> getProperties() {
-		return new HashMap<String, String>();
-	}
-
-	/*
-	 * Implements a method from IVizCanvas.
-	 */
-	@Override
-	public void setProperties(Map<String, String> props) throws Exception {
-		// Nothing to do.
+	public List<String> getCategories() {
+		return new ArrayList<String>();
 	}
 
 	/*
@@ -131,6 +115,46 @@ public abstract class AbstractPlot implements IPlot {
 	@Override
 	public URI getDataSource() {
 		return uri;
+	}
+
+	/*
+	 * Implements a method from IPlot.
+	 */
+	@Override
+	public List<ISeries> getDependentSeries(String category) {
+		return null;
+	}
+
+	/*
+	 * Implements a method from IPlot.
+	 */
+	@Override
+	public ISeries getIndependentSeries() {
+		return independentSeries;
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
+	 */
+	@Override
+	public int getNumberOfAxes() {
+		return 0;
+	}
+
+	/*
+	 * Implements a method from IPlot.
+	 */
+	@Override
+	public String getPlotTitle() {
+		return title;
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
+	 */
+	@Override
+	public Map<String, String> getProperties() {
+		return new HashMap<String, String>();
 	}
 
 	/*
@@ -290,22 +314,6 @@ public abstract class AbstractPlot implements IPlot {
 	 * Implements a method from IPlot.
 	 */
 	@Override
-	public void setPlotTitle(String title) {
-		this.title = title;
-	}
-
-	/*
-	 * Implements a method from IPlot.
-	 */
-	@Override
-	public String getPlotTitle() {
-		return title;
-	}
-
-	/*
-	 * Implements a method from IPlot.
-	 */
-	@Override
 	public void setIndependentSeries(ISeries series) {
 		independentSeries = series;
 	}
@@ -314,24 +322,16 @@ public abstract class AbstractPlot implements IPlot {
 	 * Implements a method from IPlot.
 	 */
 	@Override
-	public ISeries getIndependentSeries() {
-		return independentSeries;
+	public void setPlotTitle(String title) {
+		this.title = title;
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * Implements a method from IVizCanvas.
 	 */
 	@Override
-	public List<ISeries> getDependentSeries(String category) {
-		return null;
-	}
-
-	/*
-	 * Implements a method from IPlot.
-	 */
-	@Override
-	public List<String> getCategories() {
-		return new ArrayList<String>();
+	public void setProperties(Map<String, String> props) throws Exception {
+		// Nothing to do.
 	}
 
 }

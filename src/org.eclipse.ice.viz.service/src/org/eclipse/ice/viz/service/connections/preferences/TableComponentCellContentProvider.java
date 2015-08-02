@@ -74,16 +74,29 @@ public class TableComponentCellContentProvider implements ICellContentProvider {
 	 * Implements a method from ICellContentProvider.
 	 */
 	@Override
-	public boolean isValid(Object element) {
-		return realProvider.isValid(getIndexElement(element));
+	public Image getImage(Object element) {
+		return realProvider.getImage(getIndexElement(element));
 	}
 
-	/*
-	 * Implements a method from ICellContentProvider.
+	/**
+	 * Converts the element passed to this content provider to a {@code List<?>}
+	 * and returns the <i>i</i>-th element depending on the value of the index.
+	 * 
+	 * @param element
+	 *            The input element. This should be a {@code List<?>}.
+	 * @return The corresponding cell element for the column in the row/list, or
+	 *         {@code null} if the input was somehow invalid (either not a list
+	 *         or the index is invalid).
 	 */
-	@Override
-	public boolean isEnabled(Object element) {
-		return realProvider.isEnabled(getIndexElement(element));
+	private Object getIndexElement(Object element) {
+		Object indexElement = null;
+		if (element != null && element instanceof List<?>) {
+			List<?> list = (List<?>) element;
+			if (index >= 0 && index < list.size()) {
+				indexElement = list.get(index);
+			}
+		}
+		return indexElement;
 	}
 
 	/*
@@ -120,14 +133,6 @@ public class TableComponentCellContentProvider implements ICellContentProvider {
 	 * Implements a method from ICellContentProvider.
 	 */
 	@Override
-	public Image getImage(Object element) {
-		return realProvider.getImage(getIndexElement(element));
-	}
-
-	/*
-	 * Implements a method from ICellContentProvider.
-	 */
-	@Override
 	public Object getValue(Object element) {
 		return realProvider.getValue(getIndexElement(element));
 	}
@@ -136,28 +141,23 @@ public class TableComponentCellContentProvider implements ICellContentProvider {
 	 * Implements a method from ICellContentProvider.
 	 */
 	@Override
-	public boolean setValue(Object element, Object value) {
-		return realProvider.setValue(getIndexElement(element), value);
+	public boolean isEnabled(Object element) {
+		return realProvider.isEnabled(getIndexElement(element));
 	}
 
-	/**
-	 * Converts the element passed to this content provider to a {@code List<?>}
-	 * and returns the <i>i</i>-th element depending on the value of the index.
-	 * 
-	 * @param element
-	 *            The input element. This should be a {@code List<?>}.
-	 * @return The corresponding cell element for the column in the row/list, or
-	 *         {@code null} if the input was somehow invalid (either not a list
-	 *         or the index is invalid).
+	/*
+	 * Implements a method from ICellContentProvider.
 	 */
-	private Object getIndexElement(Object element) {
-		Object indexElement = null;
-		if (element != null && element instanceof List<?>) {
-			List<?> list = (List<?>) element;
-			if (index >= 0 && index < list.size()) {
-				indexElement = list.get(index);
-			}
-		}
-		return indexElement;
+	@Override
+	public boolean isValid(Object element) {
+		return realProvider.isValid(getIndexElement(element));
+	}
+
+	/*
+	 * Implements a method from ICellContentProvider.
+	 */
+	@Override
+	public boolean setValue(Object element, Object value) {
+		return realProvider.setValue(getIndexElement(element), value);
 	}
 }

@@ -40,6 +40,18 @@ public interface IVizConnectionManager<T> {
 	public static final String DEFAULT_CONNECTION_PREFERENCE_DELIMITER = ",";
 
 	/**
+	 * Gets the viz connection with the specified name. Names should be
+	 * retrieved from either {@link #getConnections()} or
+	 * {@link #getConnectionsForHost(String)}.
+	 * 
+	 * @param name
+	 *            The name of the connection to acquire.
+	 * @return The associated viz connection, or {@code null} if there is no
+	 *         connection for the specified name.
+	 */
+	public IVizConnection<T> getConnection(String name);
+
+	/**
 	 * Gets the names of all available connections.
 	 * 
 	 * @return A lexicographically ordered set of available connection names.
@@ -59,18 +71,6 @@ public interface IVizConnectionManager<T> {
 	 *             If the specified host is {@code null}.
 	 */
 	public Set<String> getConnectionsForHost(String host) throws NullPointerException;
-
-	/**
-	 * Gets the viz connection with the specified name. Names should be
-	 * retrieved from either {@link #getConnections()} or
-	 * {@link #getConnectionsForHost(String)}.
-	 * 
-	 * @param name
-	 *            The name of the connection to acquire.
-	 * @return The associated viz connection, or {@code null} if there is no
-	 *         connection for the specified name.
-	 */
-	public IVizConnection<T> getConnection(String name);
 
 	/**
 	 * Sets the preference store used by the manager. This will first cause any

@@ -34,16 +34,6 @@ public interface ISecretCellContentProvider extends ICellContentProvider {
 	public static final char PUBLIC_CHAR = '\0';
 
 	/**
-	 * Gets whether or not the specified element's cell text should be obscured.
-	 * 
-	 * @param element
-	 *            The element to test.
-	 * @return True if the element's cell text should be obscured, false
-	 *         otherwise.
-	 */
-	public boolean isSecret(Object element);
-
-	/**
 	 * Gets the character that should be used to obscure secret text. The
 	 * default value to return should be {@link #SECRET_CHAR}. This method
 	 * simply provides a way for sub-classes to provide their own secret
@@ -52,4 +42,14 @@ public interface ISecretCellContentProvider extends ICellContentProvider {
 	 * @return The "echo" character used for obscured or secret text.
 	 */
 	public char getSecretChar();
+
+	/**
+	 * Gets whether or not the specified element's cell text should be obscured.
+	 * 
+	 * @param element
+	 *            The element to test.
+	 * @return True if the element's cell text should be obscured, false
+	 *         otherwise.
+	 */
+	public boolean isSecret(Object element);
 }

@@ -34,6 +34,81 @@ import java.util.Map;
  */
 public interface IVizConnection<T> {
 	/**
+	 * Adds a listener for state changes to this connection. A listener can only
+	 * be registered once, and will be notified on a separate thread when the
+	 * connection state changes.
+	 * 
+	 * @param listener
+	 *            The listener to add. If {@code null}, no listener will be
+	 *            added.
+	 * @return True if the specified listener was added, false otherwise.
+	 */
+	public boolean addListener(IVizConnectionListener<T> listener);
+
+	/**
+	 * Gets a description of the connection. This should be a string that can be
+	 * displayed to the user.
+	 * 
+	 * @return A description of the connection. Should not be {@code null}, but
+	 *         may be an empty string.
+	 */
+	public String getDescription();
+
+	/**
+	 * Gets the current host associated with the connection. For local
+	 * connections, this will be "localhost".
+	 * 
+	 * @return The current host. This value should never be {@code null}.
+	 */
+	public String getHost();
+
+	/**
+	 * Gets the name of the connection. This name should be unique within its
+	 * associated {@link VizConnectionManager}.
+	 * 
+	 * @return The (unique) name of the connection.
+	 */
+	public String getName();
+
+	/**
+	 * Gets the installation path to the executable required to run the
+	 * associated connection widget. This should be a <i>full</i> path formatted
+	 * to the host machine's operating system.
+	 * 
+	 * @return The installation path to the visualization engine on the host
+	 *         machine.
+	 */
+	public String getPath();
+
+	/**
+	 * Gets the port associated with the connection. This is the port at which
+	 * the associated connection widget hosts the viz rendering service.
+	 * 
+	 * @return The connection's port.
+	 */
+	public int getPort();
+
+	/**
+	 * Gets the current properties for this connection. This should never be
+	 * {@code null} and should always contain the name, description, host, port,
+	 * and path, as well as any other properties required by the implementing
+	 * class.
+	 * 
+	 * @return The connection's properties.
+	 */
+	public Map<String, String> getProperties();
+
+	/**
+	 * Gets the value of the property with the specified name.
+	 * 
+	 * @param name
+	 *            The name of the property to get.
+	 * @return The current value of the property with the specified name, or
+	 *         {@code null} if it has not been set.
+	 */
+	public String getProperty(String name);
+
+	/**
 	 * Gets the current state of the connection.
 	 * <p>
 	 * This may change at any moment. If code needs to listen for the current
@@ -65,81 +140,6 @@ public interface IVizConnection<T> {
 	 *         connection is currently disconnected or failed.
 	 */
 	public T getWidget();
-
-	/**
-	 * Gets the name of the connection. This name should be unique within its
-	 * associated {@link VizConnectionManager}.
-	 * 
-	 * @return The (unique) name of the connection.
-	 */
-	public String getName();
-
-	/**
-	 * Gets a description of the connection. This should be a string that can be
-	 * displayed to the user.
-	 * 
-	 * @return A description of the connection. Should not be {@code null}, but
-	 *         may be an empty string.
-	 */
-	public String getDescription();
-
-	/**
-	 * Gets the current host associated with the connection. For local
-	 * connections, this will be "localhost".
-	 * 
-	 * @return The current host. This value should never be {@code null}.
-	 */
-	public String getHost();
-
-	/**
-	 * Gets the port associated with the connection. This is the port at which
-	 * the associated connection widget hosts the viz rendering service.
-	 * 
-	 * @return The connection's port.
-	 */
-	public int getPort();
-
-	/**
-	 * Gets the installation path to the executable required to run the
-	 * associated connection widget. This should be a <i>full</i> path formatted
-	 * to the host machine's operating system.
-	 * 
-	 * @return The installation path to the visualization engine on the host
-	 *         machine.
-	 */
-	public String getPath();
-
-	/**
-	 * Gets the current properties for this connection. This should never be
-	 * {@code null} and should always contain the name, description, host, port,
-	 * and path, as well as any other properties required by the implementing
-	 * class.
-	 * 
-	 * @return The connection's properties.
-	 */
-	public Map<String, String> getProperties();
-
-	/**
-	 * Gets the value of the property with the specified name.
-	 * 
-	 * @param name
-	 *            The name of the property to get.
-	 * @return The current value of the property with the specified name, or
-	 *         {@code null} if it has not been set.
-	 */
-	public String getProperty(String name);
-
-	/**
-	 * Adds a listener for state changes to this connection. A listener can only
-	 * be registered once, and will be notified on a separate thread when the
-	 * connection state changes.
-	 * 
-	 * @param listener
-	 *            The listener to add. If {@code null}, no listener will be
-	 *            added.
-	 * @return True if the specified listener was added, false otherwise.
-	 */
-	public boolean addListener(IVizConnectionListener<T> listener);
 
 	/**
 	 * Removes a listener from state change notifications.

@@ -49,6 +49,32 @@ import org.eclipse.core.runtime.jobs.Job;
 public abstract class VizConnection<T> implements IVizConnection<T> {
 
 	/**
+	 * A simple interface that handles setting a single property.
+	 * 
+	 * @author Jordan
+	 *
+	 */
+	protected interface IPropertyHandler {
+
+		/**
+		 * Validates the specified value for the associated property.
+		 * 
+		 * @param value
+		 *            The value to check.
+		 * @return True if the value allowed, false otherwise.
+		 */
+		public boolean validateValue(String value);
+	}
+	/**
+	 * The minimum allowed port (inclusive).
+	 */
+	private static final int MIN_PORT = 0;
+	/**
+	 * The maximum allowed port (inclusive).
+	 */
+	private static final int MAX_PORT = 65535;
+
+	/**
 	 * The current connection widget. This is only set when {@link #connect()}
 	 * or {@link #disconnect()} is called, and should be the return value from
 	 * the sub-class implementation of {@link #connectToWidget()}.
@@ -59,6 +85,7 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * {@link #connect()} or {@link #disconnect()} operations are called.
 	 */
 	private ConnectionState state;
+
 	/**
 	 * An informative status message to go along with the current connection
 	 * {@link #state}.
@@ -80,34 +107,25 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * connection state changes.
 	 */
 	private final Set<IVizConnectionListener<T>> listeners;
-
-	/**
-	 * The minimum allowed port (inclusive).
-	 */
-	private static final int MIN_PORT = 0;
-	/**
-	 * The maximum allowed port (inclusive).
-	 */
-	private static final int MAX_PORT = 65535;
-
 	/**
 	 * A lock for controlling access to the {@link #state} and
 	 * {@link #executorService} when multiple connect calls happen at roughly
 	 * the same time.
 	 */
 	private final Lock connectionLock;
+
 	/**
 	 * A single thread executor service specifically for connect and disconnect
 	 * operations.
 	 */
 	private ExecutorService executorService;
-
 	/**
 	 * A lock for accessing the notification thread ExecutorService. This allows
 	 * us to re-use the worker thread if a second notification arrives before
 	 * the current notification is processed.
 	 */
 	private final Lock notificationLock;
+
 	/**
 	 * A single thread executor service specifically for notifying listeners in
 	 * an orderly fashion.
@@ -206,103 +224,12 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	 * Implements a method from IVizConnection.
 	 */
 	@Override
-	public ConnectionState getState() {
-		return state;
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public String getStatusMessage() {
-		return statusMessage;
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public T getWidget() {
-		return widget;
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public String getName() {
-		return properties.get("Name");
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public String getDescription() {
-		return properties.get("Description");
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public String getHost() {
-		return properties.get("Host");
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public int getPort() {
-		return Integer.parseInt(properties.get("Port"));
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public String getPath() {
-		return properties.get("Path");
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public Map<String, String> getProperties() {
-		return new HashMap<String, String>(properties);
-	}
-
-	/**
-	 * Implements a method from IVizConnection.
-	 */
-	public String getProperty(String value) {
-		return properties.get(value);
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
 	public boolean addListener(IVizConnectionListener<T> listener) {
 		boolean added = false;
 		if (listener != null) {
 			added = listeners.add(listener);
 		}
 		return added;
-	}
-
-	/*
-	 * Implements a method from IVizConnection.
-	 */
-	@Override
-	public boolean removeListener(IVizConnectionListener<T> listener) {
-		boolean removed = false;
-		if (listener != null) {
-			removed = listeners.remove(listener);
-		}
-		return removed;
 	}
 
 	/**
@@ -343,6 +270,15 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/**
+	 * Attempts to establish the connection to the connection widget. This
+	 * method will be called from a separate worker thread.
+	 * 
+	 * @return The new connection widget, or {@code null} if the connection
+	 *         widget could not be created and connected.
+	 */
+	protected abstract T connectToWidget();
+
+	/**
 	 * Returns a Future whose state is as specified and can be evaluated
 	 * <i>immediately</i>.
 	 * 
@@ -359,16 +295,6 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 			}
 
 			@Override
-			public boolean isCancelled() {
-				return false;
-			}
-
-			@Override
-			public boolean isDone() {
-				return true;
-			}
-
-			@Override
 			public ConnectionState get()
 					throws InterruptedException, ExecutionException {
 				return stateRef;
@@ -380,7 +306,342 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 					TimeoutException {
 				return stateRef;
 			}
+
+			@Override
+			public boolean isCancelled() {
+				return false;
+			}
+
+			@Override
+			public boolean isDone() {
+				return true;
+			}
 		};
+	}
+
+	/**
+	 * Attempts to disconnect from the connection widget on a separate worker
+	 * thread.
+	 * 
+	 * @return A future wrapping the connection's state when the disconnect
+	 *         operation completes. To wait for the connection to disconnect (or
+	 *         fail), use the future's {@code get()} method.
+	 */
+	public Future<ConnectionState> disconnect() {
+
+		Future<ConnectionState> retVal;
+
+		// Based on the current state of the connection, we need to either start
+		// disconnecting or just immediately return (because it's already
+		// disconnected).
+		connectionLock.lock();
+		try {
+			// If already disconnected, we don't need the executor service.
+			if (state == ConnectionState.Disconnected) {
+				retVal = createInstantFuture(state);
+			}
+			// If the connection has failed previously and has no widget, then
+			// we can return immediately, too.
+			else if (state == ConnectionState.Failed && widget == null) {
+				retVal = createInstantFuture(state);
+			}
+			// Otherwise, if we haven't already, we need to start disconnecting.
+			else {
+				retVal = startDisconnectThread();
+			}
+		} finally {
+			connectionLock.unlock();
+		}
+
+		return retVal;
+	}
+
+	/**
+	 * Attempts to disconnect from the connection widget. This method will be
+	 * called from a separate worker thread.
+	 * 
+	 * @param widget
+	 *            The widget used for the connection.
+	 * @return True if the widget is disconnected at the end of the operation,
+	 *         false otherwise.
+	 */
+	protected abstract boolean disconnectFromWidget(T widget);
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public String getDescription() {
+		return properties.get("Description");
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public String getHost() {
+		return properties.get("Host");
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public String getName() {
+		return properties.get("Name");
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public String getPath() {
+		return properties.get("Path");
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public int getPort() {
+		return Integer.parseInt(properties.get("Port"));
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public Map<String, String> getProperties() {
+		return new HashMap<String, String>(properties);
+	}
+
+	/**
+	 * Implements a method from IVizConnection.
+	 */
+	public String getProperty(String value) {
+		return properties.get(value);
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public ConnectionState getState() {
+		return state;
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public String getStatusMessage() {
+		return statusMessage;
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public T getWidget() {
+		return widget;
+	}
+
+	/**
+	 * Hooks into the existing connection task started by calling
+	 * {@link #startConnectThread()} by submitting a new task to the
+	 * {@link #executorService}. The submitted task simply returns the current
+	 * connection state.
+	 * 
+	 * @return The future task after which the connection will either be
+	 *         connected or failed.
+	 */
+	private Future<ConnectionState> hookIntoConnectThread() {
+		return executorService.submit(new Callable<ConnectionState>() {
+			@Override
+			public ConnectionState call() throws Exception {
+				return state;
+			}
+		});
+	}
+
+	/**
+	 * Notifies registered {@link IVizConnectionListener}s using the specified
+	 * connection state and status message.
+	 * 
+	 * @param state
+	 *            The connection state to send to the listeners.
+	 * @param message
+	 *            The message to send to the listeners.
+	 */
+	private void notifyListeners(ConnectionState state, String message) {
+		/*
+		 * Notifications should be sent out in the order in which they occur.
+		 * This is achieved by using a single thread to delegate notifications
+		 * to worker threads (so they can work in parallel) and wait for them to
+		 * complete before the next set of notifications can be sent out.
+		 */
+
+		// If there are no listeners, don't send out notifications.
+		if (listeners.isEmpty()) {
+			return;
+		}
+
+		// Get final references to the arguments required to notify a given
+		// connection listener.
+		final IVizConnection<T> connRef = this;
+		final ConnectionState stateRef = state;
+		final String msgRef = message;
+
+		notificationLock.lock();
+		try {
+			// Create worker threads if necessary.
+			if (notificationExecutorService == null) {
+				notificationExecutorService = Executors
+						.newSingleThreadExecutor();
+			}
+
+			// Submit a new task to notify all listeners.
+			notificationExecutorService.submit(new Runnable() {
+				@Override
+				public void run() {
+					// FIXME Ideally, we would use a thread pool for this.
+					// However, using Executors.newCachedThreadPool() seems to
+					// break the tests sporadically.
+
+					// Notify all listeners on this thread.
+					for (IVizConnectionListener<T> listener : listeners) {
+						try {
+							listener.connectionStateChanged(connRef, stateRef,
+									msgRef);
+						} catch (Exception e) {
+							// FIXME Log a warning.
+						}
+					}
+
+					// Stop the worker thread.
+					notificationLock.lock();
+					try {
+						if (notificationExecutorService != null) {
+							notificationExecutorService.shutdown();
+							notificationExecutorService = null;
+						}
+					} finally {
+						notificationLock.unlock();
+					}
+
+					return;
+				}
+			});
+
+		} finally {
+			notificationLock.unlock();
+		}
+
+		return;
+	}
+
+	/*
+	 * Implements a method from IVizConnection.
+	 */
+	@Override
+	public boolean removeListener(IVizConnectionListener<T> listener) {
+		boolean removed = false;
+		if (listener != null) {
+			removed = listeners.remove(listener);
+		}
+		return removed;
+	}
+
+	/**
+	 * Sets the description of the connection. This is a convenient method that
+	 * can be used instead of {@link #setProperty(String, String)}.
+	 * 
+	 * @param description
+	 *            The new description of the property.
+	 * @return True if the description was changed, false otherwise.
+	 */
+	public boolean setDescription(String description) {
+		return setProperty("Description", description);
+	}
+
+	/**
+	 * Sets the host for the connection. This is a convenient method that can be
+	 * used instead of {@link #setProperty(String, String)}.
+	 * 
+	 * @param host
+	 *            The host name of the property.
+	 * @return True if the host was changed, false otherwise.
+	 */
+	public boolean setHost(String host) {
+		return setProperty("Host", host);
+	}
+
+	/**
+	 * Sets the name of the connection. This is a convenient method that can be
+	 * used instead of {@link #setProperty(String, String)}.
+	 * 
+	 * @param name
+	 *            The new name of the property.
+	 * @return True if the name was changed, false otherwise.
+	 */
+	public boolean setName(String name) {
+		return setProperty("Name", name);
+	}
+
+	/**
+	 * Sets the path of the connection. This is a convenient method that can be
+	 * used instead of {@link #setProperty(String, String)}.
+	 * 
+	 * @param path
+	 *            The new path of the property.
+	 * @return True if the path was changed, false otherwise.
+	 */
+	public boolean setPath(String path) {
+		return setProperty("Path", path);
+	}
+
+	/**
+	 * Sets the port of the connection. This is a convenient method that can be
+	 * used instead of {@link #setProperty(String, String)}.
+	 * 
+	 * @param port
+	 *            The new port of the property.
+	 * @return True if the port was changed, false otherwise.
+	 */
+	public boolean setPort(int port) {
+		return setProperty("Port", Integer.toString(port));
+	}
+
+	/**
+	 * Sets the specified property to the new value, provided the value is both
+	 * allowed and new.
+	 * 
+	 * @param name
+	 *            The name of the property to update.
+	 * @param value
+	 *            The new value of the property. If {@code null}, the property
+	 *            will be removed.
+	 * @return True if the property specified by the name was updated to a new
+	 *         value, false otherwise.
+	 */
+	public boolean setProperty(String name, String value) {
+		boolean changed = false;
+
+		// Validate the value through any available handler.
+		IPropertyHandler handler = propertyHandlers.get(name);
+		if (handler == null || handler.validateValue(value)) {
+			// If the value is not null, update the property in the map.
+			if (value != null) {
+				String oldValue = properties.put(name, value);
+				changed = (oldValue == null || !oldValue.equals(value));
+			}
+			// Otherwise, if the value is null, remove it from the map.
+			else {
+				changed = (properties.remove(name) != null);
+			}
+		}
+
+		return changed;
 	}
 
 	/**
@@ -511,70 +772,6 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/**
-	 * Hooks into the existing connection task started by calling
-	 * {@link #startConnectThread()} by submitting a new task to the
-	 * {@link #executorService}. The submitted task simply returns the current
-	 * connection state.
-	 * 
-	 * @return The future task after which the connection will either be
-	 *         connected or failed.
-	 */
-	private Future<ConnectionState> hookIntoConnectThread() {
-		return executorService.submit(new Callable<ConnectionState>() {
-			@Override
-			public ConnectionState call() throws Exception {
-				return state;
-			}
-		});
-	}
-
-	/**
-	 * Attempts to establish the connection to the connection widget. This
-	 * method will be called from a separate worker thread.
-	 * 
-	 * @return The new connection widget, or {@code null} if the connection
-	 *         widget could not be created and connected.
-	 */
-	protected abstract T connectToWidget();
-
-	/**
-	 * Attempts to disconnect from the connection widget on a separate worker
-	 * thread.
-	 * 
-	 * @return A future wrapping the connection's state when the disconnect
-	 *         operation completes. To wait for the connection to disconnect (or
-	 *         fail), use the future's {@code get()} method.
-	 */
-	public Future<ConnectionState> disconnect() {
-
-		Future<ConnectionState> retVal;
-
-		// Based on the current state of the connection, we need to either start
-		// disconnecting or just immediately return (because it's already
-		// disconnected).
-		connectionLock.lock();
-		try {
-			// If already disconnected, we don't need the executor service.
-			if (state == ConnectionState.Disconnected) {
-				retVal = createInstantFuture(state);
-			}
-			// If the connection has failed previously and has no widget, then
-			// we can return immediately, too.
-			else if (state == ConnectionState.Failed && widget == null) {
-				retVal = createInstantFuture(state);
-			}
-			// Otherwise, if we haven't already, we need to start disconnecting.
-			else {
-				retVal = startDisconnectThread();
-			}
-		} finally {
-			connectionLock.unlock();
-		}
-
-		return retVal;
-	}
-
-	/**
 	 * Queues a disconnect task in the {@link #executorService}. This task will
 	 * attempt to disconnect from the client. After completion, the service will
 	 * be shut down.
@@ -688,202 +885,5 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				return state;
 			}
 		});
-	}
-
-	/**
-	 * Attempts to disconnect from the connection widget. This method will be
-	 * called from a separate worker thread.
-	 * 
-	 * @param widget
-	 *            The widget used for the connection.
-	 * @return True if the widget is disconnected at the end of the operation,
-	 *         false otherwise.
-	 */
-	protected abstract boolean disconnectFromWidget(T widget);
-
-	/**
-	 * Notifies registered {@link IVizConnectionListener}s using the specified
-	 * connection state and status message.
-	 * 
-	 * @param state
-	 *            The connection state to send to the listeners.
-	 * @param message
-	 *            The message to send to the listeners.
-	 */
-	private void notifyListeners(ConnectionState state, String message) {
-		/*
-		 * Notifications should be sent out in the order in which they occur.
-		 * This is achieved by using a single thread to delegate notifications
-		 * to worker threads (so they can work in parallel) and wait for them to
-		 * complete before the next set of notifications can be sent out.
-		 */
-
-		// If there are no listeners, don't send out notifications.
-		if (listeners.isEmpty()) {
-			return;
-		}
-
-		// Get final references to the arguments required to notify a given
-		// connection listener.
-		final IVizConnection<T> connRef = this;
-		final ConnectionState stateRef = state;
-		final String msgRef = message;
-
-		notificationLock.lock();
-		try {
-			// Create worker threads if necessary.
-			if (notificationExecutorService == null) {
-				notificationExecutorService = Executors
-						.newSingleThreadExecutor();
-			}
-
-			// Submit a new task to notify all listeners.
-			notificationExecutorService.submit(new Runnable() {
-				@Override
-				public void run() {
-					// FIXME Ideally, we would use a thread pool for this.
-					// However, using Executors.newCachedThreadPool() seems to
-					// break the tests sporadically.
-
-					// Notify all listeners on this thread.
-					for (IVizConnectionListener<T> listener : listeners) {
-						try {
-							listener.connectionStateChanged(connRef, stateRef,
-									msgRef);
-						} catch (Exception e) {
-							// FIXME Log a warning.
-						}
-					}
-
-					// Stop the worker thread.
-					notificationLock.lock();
-					try {
-						if (notificationExecutorService != null) {
-							notificationExecutorService.shutdown();
-							notificationExecutorService = null;
-						}
-					} finally {
-						notificationLock.unlock();
-					}
-
-					return;
-				}
-			});
-
-		} finally {
-			notificationLock.unlock();
-		}
-
-		return;
-	}
-
-	/**
-	 * Sets the specified property to the new value, provided the value is both
-	 * allowed and new.
-	 * 
-	 * @param name
-	 *            The name of the property to update.
-	 * @param value
-	 *            The new value of the property. If {@code null}, the property
-	 *            will be removed.
-	 * @return True if the property specified by the name was updated to a new
-	 *         value, false otherwise.
-	 */
-	public boolean setProperty(String name, String value) {
-		boolean changed = false;
-
-		// Validate the value through any available handler.
-		IPropertyHandler handler = propertyHandlers.get(name);
-		if (handler == null || handler.validateValue(value)) {
-			// If the value is not null, update the property in the map.
-			if (value != null) {
-				String oldValue = properties.put(name, value);
-				changed = (oldValue == null || !oldValue.equals(value));
-			}
-			// Otherwise, if the value is null, remove it from the map.
-			else {
-				changed = (properties.remove(name) != null);
-			}
-		}
-
-		return changed;
-	}
-
-	/**
-	 * Sets the name of the connection. This is a convenient method that can be
-	 * used instead of {@link #setProperty(String, String)}.
-	 * 
-	 * @param name
-	 *            The new name of the property.
-	 * @return True if the name was changed, false otherwise.
-	 */
-	public boolean setName(String name) {
-		return setProperty("Name", name);
-	}
-
-	/**
-	 * Sets the description of the connection. This is a convenient method that
-	 * can be used instead of {@link #setProperty(String, String)}.
-	 * 
-	 * @param description
-	 *            The new description of the property.
-	 * @return True if the description was changed, false otherwise.
-	 */
-	public boolean setDescription(String description) {
-		return setProperty("Description", description);
-	}
-
-	/**
-	 * Sets the host for the connection. This is a convenient method that can be
-	 * used instead of {@link #setProperty(String, String)}.
-	 * 
-	 * @param host
-	 *            The host name of the property.
-	 * @return True if the host was changed, false otherwise.
-	 */
-	public boolean setHost(String host) {
-		return setProperty("Host", host);
-	}
-
-	/**
-	 * Sets the port of the connection. This is a convenient method that can be
-	 * used instead of {@link #setProperty(String, String)}.
-	 * 
-	 * @param port
-	 *            The new port of the property.
-	 * @return True if the port was changed, false otherwise.
-	 */
-	public boolean setPort(int port) {
-		return setProperty("Port", Integer.toString(port));
-	}
-
-	/**
-	 * Sets the path of the connection. This is a convenient method that can be
-	 * used instead of {@link #setProperty(String, String)}.
-	 * 
-	 * @param path
-	 *            The new path of the property.
-	 * @return True if the path was changed, false otherwise.
-	 */
-	public boolean setPath(String path) {
-		return setProperty("Path", path);
-	}
-
-	/**
-	 * A simple interface that handles setting a single property.
-	 * 
-	 * @author Jordan
-	 *
-	 */
-	protected interface IPropertyHandler {
-
-		/**
-		 * Validates the specified value for the associated property.
-		 * 
-		 * @param value
-		 *            The value to check.
-		 * @return True if the value allowed, false otherwise.
-		 */
-		public boolean validateValue(String value);
 	}
 }

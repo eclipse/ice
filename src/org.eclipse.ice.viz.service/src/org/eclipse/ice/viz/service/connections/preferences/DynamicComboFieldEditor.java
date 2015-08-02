@@ -44,23 +44,23 @@ public class DynamicComboFieldEditor extends FieldEditor {
 	// we're confident everything works properly.
 
 	/**
+	 * The default text to use when there are no values in the {@link #combo}.
+	 */
+	private static final String noValues = "N/A";
+
+	/**
 	 * The exposed combo box widget.
 	 */
 	private Combo combo;
-
 	/**
 	 * The list of allowed values displayed in the {@link #combo}.
 	 */
 	private final List<String> values;
+
 	/**
 	 * The default value, the first element.
 	 */
 	private int value = 0;
-
-	/**
-	 * The default text to use when there are no values in the {@link #combo}.
-	 */
-	private static final String noValues = "N/A";
 
 	/**
 	 * The default constructor.
@@ -88,113 +88,6 @@ public class DynamicComboFieldEditor extends FieldEditor {
 		createControl(parent);
 
 		return;
-	}
-
-	/**
-	 * Sets the allowed values displayed in the underlying {@link #combo}.
-	 * 
-	 * @param newValues
-	 *            The new list of values. If {@code null}, nothing is done.
-	 */
-	public void setAllowedValues(List<String> newValues) {
-		if (newValues != null) {
-			// Get the old preference name and set the value to the first index.
-			String oldName = values.get(value);
-			value = 0;
-
-			// Populate the allowed values with the new allowed values.
-			values.clear();
-			for (String newValue : newValues) {
-				// Don't accept null values.
-				if (newValue != null) {
-					values.add(newValue);
-					// If the new allowed value matches the old name, then
-					// update the currently-selected index to point to the old
-					// name's new index.
-					if (oldName.equals(newValue)) {
-						value = values.size() - 1;
-					}
-				}
-			}
-
-			// If necessary, add the default placeholder text.
-			if (values.isEmpty()) {
-				values.add(noValues);
-			}
-
-			// If possible, refresh the contents of the Combo.
-			if (combo != null) {
-				final String[] items = new String[this.values.size()];
-				values.toArray(items);
-				Display.getDefault().syncExec(new Runnable() {
-					@Override
-					public void run() {
-						combo.setItems(items);
-						combo.select(value);
-					}
-				});
-			}
-		}
-		return;
-	}
-
-	/**
-	 * Gets the currently selected value from the field editor.
-	 * <p>
-	 * <b>Note:</b>This value may not yet be in the preference store.
-	 * </p>
-	 * 
-	 * @return The currently selected value.
-	 */
-	public String getValue() {
-		return values.get(value);
-	}
-
-	/**
-	 * Gets the index of the currently selected value from the field editor.
-	 * <p>
-	 * <b>Note:</b>This value may not yet be in the preference store.
-	 * </p>
-	 * 
-	 * @return The index of the selected value in the combo.
-	 */
-	public int getIndex() {
-		return value;
-	}
-
-	/**
-	 * Sets the currently selected value in the field editor.
-	 * <p>
-	 * <b>Note:</b>This value will not be put in the preference store from this
-	 * operation.
-	 * </p>
-	 * 
-	 * @param value
-	 *            The new value. Nothing is done if the value cannot be found in
-	 *            the allowed {@link #values}.
-	 */
-	public void setValue(String value) {
-		int index = values.indexOf(value);
-		if (index != -1) {
-			updateCombo(index);
-		}
-	}
-
-	/**
-	 * Sets the currently selected value in the field editor.
-	 * <p>
-	 * <b>Note:</b>This value will not be put in the preference store from this
-	 * operation.
-	 * </p>
-	 * 
-	 * @param index
-	 *            The index of the new value. Nothing is done if the index is
-	 *            invalid.
-	 */
-	public void setValue(final int index) {
-		if (index >= 0 && index < values.size()) {
-			updateCombo(index);
-		}
 	}
 
 	/*
@@ -268,16 +161,6 @@ public class DynamicComboFieldEditor extends FieldEditor {
 		getPreferenceStore().setValue(getPreferenceName(), value);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
-	 */
-	@Override
-	public int getNumberOfControls() {
-		return 2;
-	}
-
 	/**
 	 * Gets the {@link #combo}, creating it if necessary.
 	 * 
@@ -314,6 +197,123 @@ public class DynamicComboFieldEditor extends FieldEditor {
 			});
 		}
 		return combo;
+	}
+
+	/**
+	 * Gets the index of the currently selected value from the field editor.
+	 * <p>
+	 * <b>Note:</b>This value may not yet be in the preference store.
+	 * </p>
+	 * 
+	 * @return The index of the selected value in the combo.
+	 */
+	public int getIndex() {
+		return value;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
+	 */
+	@Override
+	public int getNumberOfControls() {
+		return 2;
+	}
+
+	/**
+	 * Gets the currently selected value from the field editor.
+	 * <p>
+	 * <b>Note:</b>This value may not yet be in the preference store.
+	 * </p>
+	 * 
+	 * @return The currently selected value.
+	 */
+	public String getValue() {
+		return values.get(value);
+	}
+
+	/**
+	 * Sets the allowed values displayed in the underlying {@link #combo}.
+	 * 
+	 * @param newValues
+	 *            The new list of values. If {@code null}, nothing is done.
+	 */
+	public void setAllowedValues(List<String> newValues) {
+		if (newValues != null) {
+			// Get the old preference name and set the value to the first index.
+			String oldName = values.get(value);
+			value = 0;
+
+			// Populate the allowed values with the new allowed values.
+			values.clear();
+			for (String newValue : newValues) {
+				// Don't accept null values.
+				if (newValue != null) {
+					values.add(newValue);
+					// If the new allowed value matches the old name, then
+					// update the currently-selected index to point to the old
+					// name's new index.
+					if (oldName.equals(newValue)) {
+						value = values.size() - 1;
+					}
+				}
+			}
+
+			// If necessary, add the default placeholder text.
+			if (values.isEmpty()) {
+				values.add(noValues);
+			}
+
+			// If possible, refresh the contents of the Combo.
+			if (combo != null) {
+				final String[] items = new String[this.values.size()];
+				values.toArray(items);
+				Display.getDefault().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						combo.setItems(items);
+						combo.select(value);
+					}
+				});
+			}
+		}
+		return;
+	}
+
+	/**
+	 * Sets the currently selected value in the field editor.
+	 * <p>
+	 * <b>Note:</b>This value will not be put in the preference store from this
+	 * operation.
+	 * </p>
+	 * 
+	 * @param index
+	 *            The index of the new value. Nothing is done if the index is
+	 *            invalid.
+	 */
+	public void setValue(final int index) {
+		if (index >= 0 && index < values.size()) {
+			updateCombo(index);
+		}
+	}
+
+	/**
+	 * Sets the currently selected value in the field editor.
+	 * <p>
+	 * <b>Note:</b>This value will not be put in the preference store from this
+	 * operation.
+	 * </p>
+	 * 
+	 * @param value
+	 *            The new value. Nothing is done if the value cannot be found in
+	 *            the allowed {@link #values}.
+	 */
+	public void setValue(String value) {
+		int index = values.indexOf(value);
+		if (index != -1) {
+			updateCombo(index);
+		}
 	}
 
 	/**

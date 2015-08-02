@@ -40,12 +40,28 @@ public interface IPlot extends IVizCanvas {
 	public static final String DEFAULT_CATEGORY = "Other";
 
 	/**
-	 * Sets the title of the plot to the specified string.
+	 * Gets all of the categories currently associated with this plot.
 	 * 
-	 * @param title
-	 *            The new title for this plot
+	 * @return The categories for this plot.
 	 */
-	public void setPlotTitle(String title);
+	public List<String> getCategories();
+
+	/**
+	 * Gets all of the dependent series specified for this IPlot, as a list, for
+	 * the specified category. If the category is null, will return the default
+	 * category.
+	 * 
+	 * @return List<ISeries> all of the dependent series to be plotted.
+	 */
+	public List<ISeries> getDependentSeries(String category);
+
+	/**
+	 * Gets the independent series for the plot. This is the series that all the
+	 * other series should be plotted against.
+	 * 
+	 * @return ISeries the independent series.
+	 */
+	public ISeries getIndependentSeries();
 
 	/**
 	 * Gets the title of the plot to be displayed in whatever visualization
@@ -66,27 +82,11 @@ public interface IPlot extends IVizCanvas {
 	public void setIndependentSeries(ISeries series);
 
 	/**
-	 * Gets the independent series for the plot. This is the series that all the
-	 * other series should be plotted against.
+	 * Sets the title of the plot to the specified string.
 	 * 
-	 * @return ISeries the independent series.
+	 * @param title
+	 *            The new title for this plot
 	 */
-	public ISeries getIndependentSeries();
-
-	/**
-	 * Gets all of the dependent series specified for this IPlot, as a list, for
-	 * the specified category. If the category is null, will return the default
-	 * category.
-	 * 
-	 * @return List<ISeries> all of the dependent series to be plotted.
-	 */
-	public List<ISeries> getDependentSeries(String category);
-
-	/**
-	 * Gets all of the categories currently associated with this plot.
-	 * 
-	 * @return The categories for this plot.
-	 */
-	public List<String> getCategories();
+	public void setPlotTitle(String title);
 
 }

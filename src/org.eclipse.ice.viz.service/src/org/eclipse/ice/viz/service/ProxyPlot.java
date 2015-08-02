@@ -62,6 +62,31 @@ public abstract class ProxyPlot extends AbstractPlot {
 		proxySeries = new HashMap<String, List<ISeries>>();
 	}
 
+	protected Map<String, List<ISeries>> createProxySeries(IPlot source) {
+		Map<String, List<ISeries>> proxySeries = new HashMap<String, List<ISeries>>();
+		if (source != null) {
+			// Copy all dependent series using ProxySeries instances. This
+			// shares the data but allows each series to be customizable.
+			for (String category : source.getCategories()) {
+				// Copy the series for this category.
+				List<ISeries> sourceSeriesList = source
+						.getDependentSeries(category);
+				if (sourceSeriesList != null) {
+					List<ISeries> proxySeriesList = new ArrayList<ISeries>(
+							sourceSeriesList.size());
+					// For each ISeries in the source, create a new
+					// ProxySeries to point it to the source ISeries.
+					for (ISeries series : sourceSeriesList) {
+						proxySeriesList.add(createProxySeries(series));
+					}
+					// Put the category and proxy series into the map.
+					proxySeries.put(category, proxySeriesList);
+				}
+			}
+		}
+		return proxySeries;
+	}
+
 	/**
 	 * This method creates a proxy for an {@link ISeries} instance.
 	 * 
@@ -115,6 +140,18 @@ public abstract class ProxyPlot extends AbstractPlot {
 				: super.getNumberOfAxes();
 	}
 
+	protected IPlot getSource() {
+		return source;
+	}
+
+	protected void reloadSeries() {
+		proxySeries.clear();
+		if (source != null) {
+			proxySeries.putAll(createProxySeries(source));
+		}
+		return;
+	}
+
 	/**
 	 * Sets the source {@link IPlot} on which this plot is based. This method
 	 * synchronizes this plot's dependent series with those of the original plot
@@ -140,42 +177,5 @@ public abstract class ProxyPlot extends AbstractPlot {
 			reloadSeries();
 		}
 		return;
-	}
-
-	protected void reloadSeries() {
-		proxySeries.clear();
-		if (source != null) {
-			proxySeries.putAll(createProxySeries(source));
-		}
-		return;
-	}
-
-	protected IPlot getSource() {
-		return source;
-	}
-
-	protected Map<String, List<ISeries>> createProxySeries(IPlot source) {
-		Map<String, List<ISeries>> proxySeries = new HashMap<String, List<ISeries>>();
-		if (source != null) {
-			// Copy all dependent series using ProxySeries instances. This
-			// shares the data but allows each series to be customizable.
-			for (String category : source.getCategories()) {
-				// Copy the series for this category.
-				List<ISeries> sourceSeriesList = source
-						.getDependentSeries(category);
-				if (sourceSeriesList != null) {
-					List<ISeries> proxySeriesList = new ArrayList<ISeries>(
-							sourceSeriesList.size());
-					// For each ISeries in the source, create a new
-					// ProxySeries to point it to the source ISeries.
-					for (ISeries series : sourceSeriesList) {
-						proxySeriesList.add(createProxySeries(series));
-					}
-					// Put the category and proxy series into the map.
-					proxySeries.put(category, proxySeriesList);
-				}
-			}
-		}
-		return proxySeries;
 	}
 }

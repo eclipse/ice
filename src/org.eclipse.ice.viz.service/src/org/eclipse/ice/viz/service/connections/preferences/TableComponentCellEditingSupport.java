@@ -82,6 +82,26 @@ public class TableComponentCellEditingSupport extends EditingSupport {
 	 * Overrides a method from EditingSupport.
 	 */
 	@Override
+	protected boolean canEdit(Object element) {
+		boolean enabled = false;
+
+		// Only try to get the CellEditor if the indexed element exists. We do
+		// this because the real EditingSupport may provide editors for null
+		// values.
+		if (element != null && element instanceof List<?>) {
+			List<?> list = (List<?>) element;
+			if (index >= 0 && index < list.size()) {
+				enabled = realEditingSupport.canEdit(list.get(index));
+			}
+		}
+
+		return enabled;
+	}
+
+	/*
+	 * Overrides a method from EditingSupport.
+	 */
+	@Override
 	protected CellEditor getCellEditor(Object element) {
 		// If all else fails, we should return null.
 		CellEditor editor = null;
@@ -97,26 +117,6 @@ public class TableComponentCellEditingSupport extends EditingSupport {
 		}
 
 		return editor;
-	}
-
-	/*
-	 * Overrides a method from EditingSupport.
-	 */
-	@Override
-	protected boolean canEdit(Object element) {
-		boolean enabled = false;
-
-		// Only try to get the CellEditor if the indexed element exists. We do
-		// this because the real EditingSupport may provide editors for null
-		// values.
-		if (element != null && element instanceof List<?>) {
-			List<?> list = (List<?>) element;
-			if (index >= 0 && index < list.size()) {
-				enabled = realEditingSupport.canEdit(list.get(index));
-			}
-		}
-
-		return enabled;
 	}
 
 	/*

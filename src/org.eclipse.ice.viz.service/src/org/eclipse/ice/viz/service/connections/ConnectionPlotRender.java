@@ -81,32 +81,15 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 		this.plot = plot;
 	}
 
-	/**
-	 * Sets the viz connection used to render visualizations inside the content
-	 * composite.
-	 * 
-	 * @param connection
-	 *            The new connection.
+	/*
+	 * Implements a method from IVizConnectionListener.
 	 */
-	public void setConnection(IVizConnection<T> connection) {
-		if (connection != this.connection) {
-			// Unregister from the old connection.
-			if (this.connection != null) {
-				this.connection.removeListener(this);
-			}
+	@Override
+	public void connectionStateChanged(IVizConnection<T> connection, ConnectionState state, String message) {
+		// Trigger a refresh.
+		refresh();
 
-			// Set the new connection.
-			this.connection = connection;
-
-			// Trigger a refresh.
-			refresh();
-
-			// Register with the new connection if possible.
-			if (connection != null) {
-				connection.addListener(this);
-			}
-		}
-		return;
+		// TODO We can do more with this.
 	}
 
 	/**
@@ -137,6 +120,12 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 		// Add the listener to redirect the user to the preferences.
 		link.addHyperlinkListener(new IHyperlinkListener() {
 			@Override
+			public void linkActivated(HyperlinkEvent e) {
+				// Open up the viz service connection preferences.
+				PreferencesUtil.createPreferenceDialogOn(shell, getPreferenceNodeID(), null, null).open();
+			}
+
+			@Override
 			public void linkEntered(HyperlinkEvent e) {
 				// Nothing to do yet.
 			}
@@ -145,29 +134,53 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 			public void linkExited(HyperlinkEvent e) {
 				// Nothing to do yet.
 			}
-
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				// Open up the viz service connection preferences.
-				PreferencesUtil.createPreferenceDialogOn(shell, getPreferenceNodeID(), null, null).open();
-			}
 		});
 
 		return infoComposite;
 	}
 
 	/**
-	 * Updates the visibility of the {@link #link} in addition to the default
-	 * update behavior.
+	 * Checks the current connection's status before re-directing to
+	 * {@link #createPlotComposite(Composite, int, Object)}.
+	 * <p>
+	 * <b>Note:</b> Sub-classes should <i>not</i> override this method.
+	 * </p>
 	 */
 	@Override
-	protected void updateInfoComposite(Composite infoComposite, String message) {
+	protected Composite createPlotComposite(Composite parent, int style) throws Exception {
 
-		// Set the link's visibility.
-		link.setVisible(showLink);
+		// The default return value.
+		Composite plotComposite = null;
 
-		super.updateInfoComposite(infoComposite, message);
+		// Validate the current state of the connection. This throws an
+		// exception if there's a connection problem.
+		validateConnection(connection);
+
+		// Try to render the plot. This may also throw an exception depending on
+		// the sub-class' implementation.
+		plotComposite = createPlotComposite(parent, style, connection.getWidget());
+
+		return plotComposite;
 	};
+
+	/**
+	 * Creates the plot {@code Composite} that is shown when the associated
+	 * {@link #plot}, {@link #category}, and {@link #type} are all valid.
+	 * 
+	 * @param parent
+	 *            The parent in which the plot {@code Composite} should be
+	 *            created.
+	 * @param style
+	 *            The style to use for the plot {@code Composite}.
+	 * @param connection
+	 *            The current connection used to render the plot.
+	 * @return The new plot {@code Composite}.
+	 * @throws Exception
+	 *             If the plot is in an invalid state or otherwise cannot be
+	 *             rendered, this throws an exception with an informative
+	 *             message.
+	 */
+	protected abstract Composite createPlotComposite(Composite parent, int style, T connection) throws Exception;
 
 	/*
 	 * (non-Javadoc)
@@ -193,28 +206,81 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 	protected abstract String getPreferenceNodeID();
 
 	/**
+	 * Sets the viz connection used to render visualizations inside the content
+	 * composite.
+	 * 
+	 * @param connection
+	 *            The new connection.
+	 */
+	public void setConnection(IVizConnection<T> connection) {
+		if (connection != this.connection) {
+			// Unregister from the old connection.
+			if (this.connection != null) {
+				this.connection.removeListener(this);
+			}
+
+			// Set the new connection.
+			this.connection = connection;
+
+			// Trigger a refresh.
+			refresh();
+
+			// Register with the new connection if possible.
+			if (connection != null) {
+				connection.addListener(this);
+			}
+		}
+		return;
+	}
+
+	/**
+	 * Updates the visibility of the {@link #link} in addition to the default
+	 * update behavior.
+	 */
+	@Override
+	protected void updateInfoComposite(Composite infoComposite, String message) {
+
+		// Set the link's visibility.
+		link.setVisible(showLink);
+
+		super.updateInfoComposite(infoComposite, message);
+	}
+
+	/**
 	 * Checks the current connection's status before re-directing to
-	 * {@link #createPlotComposite(Composite, int, Object)}.
+	 * {@link #updatePlotComposite(Composite, Object)}.
 	 * <p>
 	 * <b>Note:</b> Sub-classes should <i>not</i> override this method.
 	 * </p>
 	 */
 	@Override
-	protected Composite createPlotComposite(Composite parent, int style) throws Exception {
-
-		// The default return value.
-		Composite plotComposite = null;
+	protected void updatePlotComposite(Composite plotComposite) throws Exception {
 
 		// Validate the current state of the connection. This throws an
 		// exception if there's a connection problem.
 		validateConnection(connection);
 
-		// Try to render the plot. This may also throw an exception depending on
+		// Try to update the plot. This may also throw an exception depending on
 		// the sub-class' implementation.
-		plotComposite = createPlotComposite(parent, style, connection.getWidget());
+		updatePlotComposite(plotComposite, connection.getWidget());
 
-		return plotComposite;
+		return;
 	}
+
+	/**
+	 * Updates the plot rendering contained in the specified plot
+	 * {@code Composite}.
+	 * 
+	 * @param plotComposite
+	 *            The plot {@code Composite} to update.
+	 * @param connection
+	 *            The current connection used to render the plot.
+	 * @throws Exception
+	 *             If the plot is in an invalid state or otherwise cannot be
+	 *             rendered, this throws an exception with an informative
+	 *             message.
+	 */
+	protected abstract void updatePlotComposite(Composite plotComposite, T connection) throws Exception;
 
 	/**
 	 * Validates the connection, returning if the connection is valid or
@@ -269,72 +335,6 @@ public abstract class ConnectionPlotRender<T> extends PlotRender implements IViz
 		showLink = true;
 		infoIcon = image;
 		throw new Exception(message);
-	}
-
-	/**
-	 * Creates the plot {@code Composite} that is shown when the associated
-	 * {@link #plot}, {@link #category}, and {@link #type} are all valid.
-	 * 
-	 * @param parent
-	 *            The parent in which the plot {@code Composite} should be
-	 *            created.
-	 * @param style
-	 *            The style to use for the plot {@code Composite}.
-	 * @param connection
-	 *            The current connection used to render the plot.
-	 * @return The new plot {@code Composite}.
-	 * @throws Exception
-	 *             If the plot is in an invalid state or otherwise cannot be
-	 *             rendered, this throws an exception with an informative
-	 *             message.
-	 */
-	protected abstract Composite createPlotComposite(Composite parent, int style, T connection) throws Exception;
-
-	/**
-	 * Checks the current connection's status before re-directing to
-	 * {@link #updatePlotComposite(Composite, Object)}.
-	 * <p>
-	 * <b>Note:</b> Sub-classes should <i>not</i> override this method.
-	 * </p>
-	 */
-	@Override
-	protected void updatePlotComposite(Composite plotComposite) throws Exception {
-
-		// Validate the current state of the connection. This throws an
-		// exception if there's a connection problem.
-		validateConnection(connection);
-
-		// Try to update the plot. This may also throw an exception depending on
-		// the sub-class' implementation.
-		updatePlotComposite(plotComposite, connection.getWidget());
-
-		return;
-	}
-
-	/**
-	 * Updates the plot rendering contained in the specified plot
-	 * {@code Composite}.
-	 * 
-	 * @param plotComposite
-	 *            The plot {@code Composite} to update.
-	 * @param connection
-	 *            The current connection used to render the plot.
-	 * @throws Exception
-	 *             If the plot is in an invalid state or otherwise cannot be
-	 *             rendered, this throws an exception with an informative
-	 *             message.
-	 */
-	protected abstract void updatePlotComposite(Composite plotComposite, T connection) throws Exception;
-
-	/*
-	 * Implements a method from IVizConnectionListener.
-	 */
-	@Override
-	public void connectionStateChanged(IVizConnection<T> connection, ConnectionState state, String message) {
-		// Trigger a refresh.
-		refresh();
-
-		// TODO We can do more with this.
 	}
 
 }

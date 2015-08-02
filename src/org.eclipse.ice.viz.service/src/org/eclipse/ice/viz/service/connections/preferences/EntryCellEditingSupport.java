@@ -92,6 +92,16 @@ public class EntryCellEditingSupport extends EditingSupport {
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
+	 */
+	@Override
+	protected boolean canEdit(Object element) {
+		return contentProvider.isEnabled(element);
+	}
+
 	/**
 	 * By default, this returns a {@link TextCellEditor}.
 	 */
@@ -140,16 +150,6 @@ public class EntryCellEditingSupport extends EditingSupport {
 		}
 
 		return editor;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
-	 */
-	@Override
-	protected boolean canEdit(Object element) {
-		return contentProvider.isEnabled(element);
 	}
 
 	/*

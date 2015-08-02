@@ -23,6 +23,7 @@ import org.eclipse.ice.viz.service.ISeriesStyle;
  * @author Kasper Gammeltoft
  *
  */
+@Deprecated
 public class ConnectionSeries implements ISeries {
 
 	/**
@@ -65,6 +66,16 @@ public class ConnectionSeries implements ISeries {
 	}
 
 	/**
+	 * Gets the category for this series
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getCategory() {
+		return category;
+	}
+
+	/**
 	 * Returns null
 	 * 
 	 * @see org.eclipse.ice.viz.service.ISeries#getDataPoints()
@@ -75,24 +86,15 @@ public class ConnectionSeries implements ISeries {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the plot type
 	 * 
-	 * @see org.eclipse.ice.viz.service.ISeries#setTime(double)
+	 * @see org.eclipse.ice.viz.service.ISeries#getLabel()
 	 */
 	@Override
-	public void setTime(double time) {
-		this.time = time;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.ISeries#getTime()
-	 */
-	@Override
-	public double getTime() {
-		return time;
+	public String getLabel() {
+		// The label is the type
+		return type;
 	}
 
 	/**
@@ -106,15 +108,55 @@ public class ConnectionSeries implements ISeries {
 		return null;
 	}
 
-	/**
-	 * Gets the plot type
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.ISeries#getLabel()
+	 * @see org.eclipse.ice.viz.service.ISeries#getStyle()
 	 */
 	@Override
-	public String getLabel() {
-		// The label is the type
-		return type;
+	public ISeriesStyle getStyle() {
+		return style;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.ISeries#getTime()
+	 */
+	@Override
+	public double getTime() {
+		return time;
+	}
+
+	/**
+	 * Is always true
+	 * 
+	 * @see org.eclipse.ice.viz.service.ISeries#isEnabled()
+	 */
+	@Override
+	public boolean isEnabled() {
+		// The endabled flag is not applicable for this series
+		return true;
+	}
+
+	/**
+	 * Sets the category for this series
+	 * 
+	 * @param category
+	 */
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	/**
+	 * Currently does nothing for this type of series!
+	 * 
+	 * @see org.eclipse.ice.viz.service.ISeries#setEnabled(boolean)
+	 */
+	@Override
+	public void setEnabled(boolean enable) {
+		// Nothing TODO
+		return;
 	}
 
 	/**
@@ -132,16 +174,6 @@ public class ConnectionSeries implements ISeries {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.ISeries#getStyle()
-	 */
-	@Override
-	public ISeriesStyle getStyle() {
-		return style;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * org.eclipse.ice.viz.service.ISeries#setStyle(org.eclipse.ice.viz.service.
 	 * ISeriesStyle)
@@ -151,45 +183,14 @@ public class ConnectionSeries implements ISeries {
 		this.style = style;
 	}
 
-	/**
-	 * Is always true
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.ISeries#enabled()
+	 * @see org.eclipse.ice.viz.service.ISeries#setTime(double)
 	 */
 	@Override
-	public boolean enabled() {
-		// The endabled flag is not applicable for this series
-		return true;
-	}
-
-	/**
-	 * Currently does nothing for this type of series!
-	 * 
-	 * @see org.eclipse.ice.viz.service.ISeries#setEnabled(boolean)
-	 */
-	@Override
-	public void setEnabled(boolean enable) {
-		// Nothing TODO
-		return;
-	}
-
-	/**
-	 * Gets the category for this series
-	 * 
-	 * @return
-	 */
-	@Override
-	public String getCategory() {
-		return category;
-	}
-
-	/**
-	 * Sets the category for this series
-	 * 
-	 * @param category
-	 */
-	public void setCategory(String category) {
-		this.category = category;
+	public void setTime(double time) {
+		this.time = time;
 	}
 
 }

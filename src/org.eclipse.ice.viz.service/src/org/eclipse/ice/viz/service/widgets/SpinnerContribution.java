@@ -90,6 +90,31 @@ public class SpinnerContribution extends ControlContribution {
 		this.style = style;
 	}
 
+	/**
+	 * Adds a {@link SelectionListener} to the {@link #spinner}. If the widget
+	 * has not yet been created, the listener will be added when the widget is
+	 * created.
+	 * 
+	 * @param listener
+	 *            The listener to add.
+	 */
+	public void addSelectionListener(final SelectionListener listener) {
+		if (spinner != null) {
+			spinner.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					spinner.addSelectionListener(listener);
+				}
+			});
+		} else {
+			if (selectionListeners == null) {
+				selectionListeners = new ArrayList<SelectionListener>();
+			}
+			selectionListeners.add(listener);
+		}
+		return;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,47 +152,22 @@ public class SpinnerContribution extends ControlContribution {
 	}
 
 	/**
-	 * Adds a {@link SelectionListener} to the {@link #spinner}. If the widget
-	 * has not yet been created, the listener will be added when the widget is
-	 * created.
+	 * Sets the [initial] increment for the spinner. This will be set either at
+	 * the next available opportunity or when the widget is created.
 	 * 
-	 * @param listener
-	 *            The listener to add.
+	 * @param increment
+	 *            The spinner increment.
 	 */
-	public void addSelectionListener(final SelectionListener listener) {
+	public void setIncrement(final int increment) {
 		if (spinner != null) {
 			spinner.getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					spinner.addSelectionListener(listener);
+					spinner.setIncrement(increment);
 				}
 			});
 		} else {
-			if (selectionListeners == null) {
-				selectionListeners = new ArrayList<SelectionListener>();
-			}
-			selectionListeners.add(listener);
-		}
-		return;
-	}
-
-	/**
-	 * Sets the [initial] minimum value for the spinner. This will be set either
-	 * at the next available opportunity or when the widget is created.
-	 * 
-	 * @param minimum
-	 *            The spinner minimum.
-	 */
-	public void setMinimum(final int minimum) {
-		if (spinner != null) {
-			spinner.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					spinner.setMinimum(minimum);
-				}
-			});
-		} else {
-			this.minimum = minimum;
+			this.increment = increment;
 		}
 		return;
 	}
@@ -194,6 +194,27 @@ public class SpinnerContribution extends ControlContribution {
 	}
 
 	/**
+	 * Sets the [initial] minimum value for the spinner. This will be set either
+	 * at the next available opportunity or when the widget is created.
+	 * 
+	 * @param minimum
+	 *            The spinner minimum.
+	 */
+	public void setMinimum(final int minimum) {
+		if (spinner != null) {
+			spinner.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					spinner.setMinimum(minimum);
+				}
+			});
+		} else {
+			this.minimum = minimum;
+		}
+		return;
+	}
+
+	/**
 	 * Sets the [initial] selection for the spinner. This will be set either at
 	 * the next available opportunity or when the widget is created.
 	 * 
@@ -210,27 +231,6 @@ public class SpinnerContribution extends ControlContribution {
 			});
 		} else {
 			this.selection = selection;
-		}
-		return;
-	}
-
-	/**
-	 * Sets the [initial] increment for the spinner. This will be set either at
-	 * the next available opportunity or when the widget is created.
-	 * 
-	 * @param increment
-	 *            The spinner increment.
-	 */
-	public void setIncrement(final int increment) {
-		if (spinner != null) {
-			spinner.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					spinner.setIncrement(increment);
-				}
-			});
-		} else {
-			this.increment = increment;
 		}
 		return;
 	}

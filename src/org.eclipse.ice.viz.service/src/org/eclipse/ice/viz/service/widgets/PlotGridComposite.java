@@ -220,89 +220,6 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/**
-	 * Creates a {@code ToolBar} for this {@code Composite}. It includes the
-	 * following controls:
-	 * <ol>
-	 * <li>Grid rows and columns</li>
-	 * <li>A button to clear plots from the grid</li>
-	 * </ol>
-	 *
-	 * @param parent
-	 *            The parent {@code Composite} in which to draw the
-	 *            {@code ToolBar}.
-	 * @return The newly created {@code ToolBar}.
-	 */
-	private ToolBar createToolBar(Composite parent) {
-
-		// Create and adapt the ToolBar first so that the default styles will be
-		// passed down to the widgets created by the ToolBarManager.
-		ToolBar toolBar = new ToolBar(parent,
-				SWT.WRAP | SWT.FLAT | SWT.HORIZONTAL);
-		toolBar.setBackground(parent.getBackground());
-		ToolBarManager toolBarManager = new ToolBarManager(toolBar);
-
-		// Add a "Rows" label next to the row Spinner.
-		LabelContribution rowLabel = new LabelContribution("rows.label");
-		rowLabel.setText("Rows:");
-		toolBarManager.add(rowLabel);
-
-		// Add a Spinner for setting the grid rows to the ToolBarManager (this
-		// requires a JFace ControlContribution).
-		SpinnerContribution rowSpinner = new SpinnerContribution(
-				"rows.spinner");
-		rowSpinner.setMinimum(1);
-		rowSpinner.setMaximum(4);
-		rowSpinner.setSelection(rows);
-		rowSpinner.setIncrement(1);
-		rowSpinner.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				rows = ((Spinner) e.widget).getSelection();
-				refreshLayout();
-			}
-		});
-		toolBarManager.add(rowSpinner);
-
-		// Add a "Columns" label next to the row Spinner.
-		LabelContribution columnLabel = new LabelContribution("columns.label");
-		columnLabel.setText("Columns:");
-		toolBarManager.add(columnLabel);
-
-		// Add a Spinner for setting the grid columns to the ToolBarManager
-		// (this requires a JFace ControlContribution).
-		SpinnerContribution columnSpinner = new SpinnerContribution(
-				"columns.spinner");
-		columnSpinner.setMinimum(1);
-		columnSpinner.setMaximum(4);
-		columnSpinner.setSelection(columns);
-		columnSpinner.setIncrement(1);
-		columnSpinner.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				columns = ((Spinner) e.widget).getSelection();
-				refreshLayout();
-			}
-		});
-		toolBarManager.add(columnSpinner);
-
-		// Add a separator between the spinners and the clear button.
-		toolBarManager.add(new Separator());
-
-		// Add a ToolBar button to clear the plots.
-		toolBarManager.add(new Action("Clear") {
-			@Override
-			public void run() {
-				removeAllPlots();
-			}
-		});
-
-		// Apply the ToolBarManager changes to the ToolBar.
-		toolBarManager.update(true);
-
-		return toolBar;
-	}
-
-	/**
 	 * Adds a plot to be drawn inside the plot grid. Note that the same URI can
 	 * be added more than once.
 	 * 
@@ -402,6 +319,89 @@ public class PlotGridComposite extends Composite {
 		});
 
 		return closeButton;
+	}
+
+	/**
+	 * Creates a {@code ToolBar} for this {@code Composite}. It includes the
+	 * following controls:
+	 * <ol>
+	 * <li>Grid rows and columns</li>
+	 * <li>A button to clear plots from the grid</li>
+	 * </ol>
+	 *
+	 * @param parent
+	 *            The parent {@code Composite} in which to draw the
+	 *            {@code ToolBar}.
+	 * @return The newly created {@code ToolBar}.
+	 */
+	private ToolBar createToolBar(Composite parent) {
+
+		// Create and adapt the ToolBar first so that the default styles will be
+		// passed down to the widgets created by the ToolBarManager.
+		ToolBar toolBar = new ToolBar(parent,
+				SWT.WRAP | SWT.FLAT | SWT.HORIZONTAL);
+		toolBar.setBackground(parent.getBackground());
+		ToolBarManager toolBarManager = new ToolBarManager(toolBar);
+
+		// Add a "Rows" label next to the row Spinner.
+		LabelContribution rowLabel = new LabelContribution("rows.label");
+		rowLabel.setText("Rows:");
+		toolBarManager.add(rowLabel);
+
+		// Add a Spinner for setting the grid rows to the ToolBarManager (this
+		// requires a JFace ControlContribution).
+		SpinnerContribution rowSpinner = new SpinnerContribution(
+				"rows.spinner");
+		rowSpinner.setMinimum(1);
+		rowSpinner.setMaximum(4);
+		rowSpinner.setSelection(rows);
+		rowSpinner.setIncrement(1);
+		rowSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rows = ((Spinner) e.widget).getSelection();
+				refreshLayout();
+			}
+		});
+		toolBarManager.add(rowSpinner);
+
+		// Add a "Columns" label next to the row Spinner.
+		LabelContribution columnLabel = new LabelContribution("columns.label");
+		columnLabel.setText("Columns:");
+		toolBarManager.add(columnLabel);
+
+		// Add a Spinner for setting the grid columns to the ToolBarManager
+		// (this requires a JFace ControlContribution).
+		SpinnerContribution columnSpinner = new SpinnerContribution(
+				"columns.spinner");
+		columnSpinner.setMinimum(1);
+		columnSpinner.setMaximum(4);
+		columnSpinner.setSelection(columns);
+		columnSpinner.setIncrement(1);
+		columnSpinner.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				columns = ((Spinner) e.widget).getSelection();
+				refreshLayout();
+			}
+		});
+		toolBarManager.add(columnSpinner);
+
+		// Add a separator between the spinners and the clear button.
+		toolBarManager.add(new Separator());
+
+		// Add a ToolBar button to clear the plots.
+		toolBarManager.add(new Action("Clear") {
+			@Override
+			public void run() {
+				removeAllPlots();
+			}
+		});
+
+		// Apply the ToolBarManager changes to the ToolBar.
+		toolBarManager.update(true);
+
+		return toolBar;
 	}
 
 	/*

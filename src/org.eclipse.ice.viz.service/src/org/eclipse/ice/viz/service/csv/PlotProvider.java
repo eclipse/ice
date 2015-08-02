@@ -95,22 +95,6 @@ public class PlotProvider {
 	}
 
 	/**
-	 * Sets the independent series to provide. Must not be null.
-	 * 
-	 * @param indptSeries
-	 *            The {@link ISeries} to provide.
-	 */
-	public void setIndependentSeries(ISeries indptSeries) {
-		if (indptSeries != null) {
-			independentSeries = indptSeries;
-		}
-	}
-
-	public ISeries getIndependentSeries() {
-		return independentSeries;
-	}
-
-	/**
 	 * Adds a new ISeries to the specified time
 	 * 
 	 * @param time
@@ -128,6 +112,84 @@ public class PlotProvider {
 			seriesProviders.add(newSeries);
 		}
 		return;
+	}
+
+	public ISeries getIndependentSeries() {
+		return independentSeries;
+	}
+
+	/**
+	 * Accessor for the plot style
+	 * 
+	 * @return
+	 */
+	public XYZPlotStyle getPlotStyle() {
+		return plotStyle;
+	}
+
+	/**
+	 * Accessor for the plot title
+	 * 
+	 * @return
+	 */
+	public String getPlotTitle() {
+		return plotTitle;
+	}
+
+	/**
+	 * Returns all the series at a specified time
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public ArrayList<ISeries> getSeriesAtTime(double time) {
+		ArrayList<ISeries> seriesList = seriesMap.get(time);
+		return seriesList != null ? seriesList : new ArrayList<ISeries>(0);
+	}
+
+	/**
+	 * Accessor for the times
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getTimes() {
+		return new ArrayList<Double>(seriesMap.keySet());
+	}
+
+	/**
+	 * Accessor for the plot's time units
+	 * 
+	 * @return
+	 */
+	public String getTimeUnits() {
+		return timeUnits;
+	}
+
+	/**
+	 * Accessor for the plot's x axis style
+	 * 
+	 * @return
+	 */
+	public XYZAxisStyle getXAxisStyle() {
+		return xAxisStyle;
+	}
+
+	/**
+	 * Accessor for the plot's y axis style
+	 * 
+	 * @return
+	 */
+	public XYZAxisStyle getYAxisStyle() {
+		return yAxisStyle;
+	}
+
+	/**
+	 * Method to check if this plotProvider is a contour
+	 * 
+	 * @return
+	 */
+	public boolean isContour() {
+		return contourFlag;
 	}
 
 	/**
@@ -154,77 +216,32 @@ public class PlotProvider {
 	}
 
 	/**
-	 * Returns all the series at a specified time
+	 * Sets the independent series to provide. Must not be null.
 	 * 
-	 * @param time
-	 * @return
+	 * @param indptSeries
+	 *            The {@link ISeries} to provide.
 	 */
-	public ArrayList<ISeries> getSeriesAtTime(double time) {
-		ArrayList<ISeries> seriesList = seriesMap.get(time);
-		return seriesList != null ? seriesList : new ArrayList<ISeries>(0);
+	public void setIndependentSeries(ISeries indptSeries) {
+		if (indptSeries != null) {
+			independentSeries = indptSeries;
+		}
 	}
 
 	/**
-	 * Accessor for the plot title
-	 * 
-	 * @return
+	 * Sets the plot to be drawn as a contour map rather than a series plot
 	 */
-	public String getPlotTitle() {
-		return plotTitle;
+	public void setPlotAsContour() {
+		contourFlag = true;
 	}
 
 	/**
-	 * Accessor for the plot style
+	 * Sets the {@link XYZPlotStyle} for the plot, which is read in by the
+	 * editor and applied appropriately.
 	 * 
-	 * @return
+	 * @param newStyle
 	 */
-	public XYZPlotStyle getPlotStyle() {
-		return plotStyle;
-	}
-
-	/**
-	 * Accessor for the plot's x axis style
-	 * 
-	 * @return
-	 */
-	public XYZAxisStyle getXAxisStyle() {
-		return xAxisStyle;
-	}
-
-	/**
-	 * Accessor for the plot's y axis style
-	 * 
-	 * @return
-	 */
-	public XYZAxisStyle getYAxisStyle() {
-		return yAxisStyle;
-	}
-
-	/**
-	 * Accessor for the plot's time units
-	 * 
-	 * @return
-	 */
-	public String getTimeUnits() {
-		return timeUnits;
-	}
-
-	/**
-	 * Accessor for the times
-	 * 
-	 * @return
-	 */
-	public ArrayList<Double> getTimes() {
-		return new ArrayList<Double>(seriesMap.keySet());
-	}
-
-	/**
-	 * Method to check if this plotProvider is a contour
-	 * 
-	 * @return
-	 */
-	public boolean isContour() {
-		return contourFlag;
+	public void setPlotStyle(XYZPlotStyle newStyle) {
+		plotStyle = newStyle;
 	}
 
 	/**
@@ -237,13 +254,11 @@ public class PlotProvider {
 	}
 
 	/**
-	 * Sets the {@link XYZPlotStyle} for the plot, which is read in by the
-	 * editor and applied appropriately.
 	 * 
-	 * @param newStyle
+	 * @param timeUnits
 	 */
-	public void setPlotStyle(XYZPlotStyle newStyle) {
-		plotStyle = newStyle;
+	public void setTimeUnits(String newUnit) {
+		timeUnits = newUnit;
 	}
 
 	/**
@@ -262,20 +277,5 @@ public class PlotProvider {
 	 */
 	public void setYAxisStyle(XYZAxisStyle newStyle) {
 		yAxisStyle = newStyle;
-	}
-
-	/**
-	 * 
-	 * @param timeUnits
-	 */
-	public void setTimeUnits(String newUnit) {
-		timeUnits = newUnit;
-	}
-
-	/**
-	 * Sets the plot to be drawn as a contour map rather than a series plot
-	 */
-	public void setPlotAsContour() {
-		contourFlag = true;
 	}
 }

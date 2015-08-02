@@ -74,6 +74,36 @@ public class TableComponentContentProvider implements
 	}
 
 	/**
+	 * For the root element (the {@link #tableComponent}), this method returns
+	 * the rows in the table. For each row, the {@link Entry} instances in the
+	 * row are returned.
+	 * <p>
+	 * All other input elements are ignored.
+	 * </p>
+	 */
+	@Override
+	public Object[] getElements(Object inputElement) {
+
+		Object[] elements;
+
+		// Handle the TableComponent.
+		if (inputElement == tableComponent) {
+			List<Integer> ids = tableComponent.getRowIds();
+			int size = ids.size();
+			elements = new Object[size];
+			for (int i = 0; i < size; i++) {
+				elements[i] = tableComponent.getRow(i);
+			}
+		}
+		// Return an empty array for anything else.
+		else {
+			elements = new Object[] {};
+		}
+
+		return elements;
+	}
+
+	/**
 	 * This method expects a new {@link #tableComponent} as input. This content
 	 * provider will register for updates from the {@code TableComponent} and
 	 * update the {@link #viewer} when the data model changes.
@@ -108,58 +138,6 @@ public class TableComponentContentProvider implements
 				}
 				tableComponent.register(this);
 			}
-		}
-
-		return;
-	}
-
-	/**
-	 * For the root element (the {@link #tableComponent}), this method returns
-	 * the rows in the table. For each row, the {@link Entry} instances in the
-	 * row are returned.
-	 * <p>
-	 * All other input elements are ignored.
-	 * </p>
-	 */
-	@Override
-	public Object[] getElements(Object inputElement) {
-
-		Object[] elements;
-
-		// Handle the TableComponent.
-		if (inputElement == tableComponent) {
-			List<Integer> ids = tableComponent.getRowIds();
-			int size = ids.size();
-			elements = new Object[size];
-			for (int i = 0; i < size; i++) {
-				elements[i] = tableComponent.getRow(i);
-			}
-		}
-		// Return an empty array for anything else.
-		else {
-			elements = new Object[] {};
-		}
-
-		return elements;
-	}
-
-	/**
-	 * This listens for changes to the {@link #tableComponent} and updates the
-	 * {@link #viewer} as necessary.
-	 */
-	@Override
-	public void update(IUpdateable component) {
-		// Update the viewer since the underlying data has changed
-
-		if (component != null && component == tableComponent) {
-
-			// We must use the UI Thread
-			Display.getDefault().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					refreshViewer();
-				}
-			});
 		}
 
 		return;
@@ -228,6 +206,28 @@ public class TableComponentContentProvider implements
 
 		// Refresh the viewer contents.
 		viewer.refresh();
+
+		return;
+	}
+
+	/**
+	 * This listens for changes to the {@link #tableComponent} and updates the
+	 * {@link #viewer} as necessary.
+	 */
+	@Override
+	public void update(IUpdateable component) {
+		// Update the viewer since the underlying data has changed
+
+		if (component != null && component == tableComponent) {
+
+			// We must use the UI Thread
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					refreshViewer();
+				}
+			});
+		}
 
 		return;
 	}

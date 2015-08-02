@@ -59,6 +59,16 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 		plotRenders = new ArrayList<ConnectionPlotRender<T>>();
 	}
 
+	/**
+	 * Creates a {@link ConnectionPlotRender} inside the specified parent
+	 * Composite. The PlotRender's content should not be created yet.
+	 * 
+	 * @param parent
+	 *            The parent Composite that will contain the new PlotRender.
+	 * @return The new PlotRender.
+	 */
+	protected abstract ConnectionPlotRender<T> createConnectionPlotRender(Composite parent);
+
 	/*
 	 * Implements an abstract method from MultiPlot#createPlotRender.
 	 */
@@ -70,16 +80,6 @@ public abstract class ConnectionPlot<T> extends MultiPlot {
 		plotRender.setConnection(connection);
 		return plotRender;
 	}
-
-	/**
-	 * Creates a {@link ConnectionPlotRender} inside the specified parent
-	 * Composite. The PlotRender's content should not be created yet.
-	 * 
-	 * @param parent
-	 *            The parent Composite that will contain the new PlotRender.
-	 * @return The new PlotRender.
-	 */
-	protected abstract ConnectionPlotRender<T> createConnectionPlotRender(Composite parent);
 
 	/**
 	 * Gets the current connection associated with this plot.

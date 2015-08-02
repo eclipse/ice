@@ -32,6 +32,14 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	private boolean loaded = false;
 
 	@Override
+	protected ProxySeries createProxySeries(ISeries source) {
+		ProxySeries series = super.createProxySeries(source);
+		XYZSeriesStyle style = (XYZSeriesStyle) source.getStyle();
+		series.setStyle((XYZSeriesStyle) style.clone());
+		return series;
+	}
+
+	@Override
 	public Composite draw(Composite parent) throws Exception {
 
 		// If necessary, create a new plot composite.
@@ -65,6 +73,44 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		}
 
 		return plotComposite;
+	}
+
+	@Override
+	public List<String> getCategories() {
+		if (!loaded) {
+			reloadSeries();
+		}
+		return super.getCategories();
+	}
+
+	@Override
+	public List<ISeries> getDependentSeries(String category) {
+		if (!loaded) {
+			reloadSeries();
+		}
+		return super.getDependentSeries(category);
+	}
+
+	@Override
+	public ISeries getIndependentSeries() {
+		if (!loaded) {
+			reloadSeries();
+		}
+		return super.getIndependentSeries();
+	}
+
+	/*
+	 * Implements a method from IPlotListener.
+	 */
+	@Override
+	public void plotUpdated(IPlot plot, String key, String value) {
+		// The only event sent out by the CSVPlot signifies that loading has
+		// completed. Forces the data to be reloaded the next time it is fetched
+		// from client code (which should happen in the refresh).
+		loaded = false;
+		if (plotComposite != null && !plotComposite.isDisposed()) {
+			plotComposite.refresh();
+		}
 	}
 
 	@Override
@@ -116,52 +162,6 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		// Register as a listener to be notified when the data has been
 		// reloaded.
 		((CSVPlot) source).addPlotListener(this);
-	}
-
-	@Override
-	protected ProxySeries createProxySeries(ISeries source) {
-		ProxySeries series = super.createProxySeries(source);
-		XYZSeriesStyle style = (XYZSeriesStyle) source.getStyle();
-		series.setStyle((XYZSeriesStyle) style.clone());
-		return series;
-	}
-
-	@Override
-	public List<String> getCategories() {
-		if (!loaded) {
-			reloadSeries();
-		}
-		return super.getCategories();
-	}
-
-	@Override
-	public List<ISeries> getDependentSeries(String category) {
-		if (!loaded) {
-			reloadSeries();
-		}
-		return super.getDependentSeries(category);
-	}
-
-	@Override
-	public ISeries getIndependentSeries() {
-		if (!loaded) {
-			reloadSeries();
-		}
-		return super.getIndependentSeries();
-	}
-
-	/*
-	 * Implements a method from IPlotListener.
-	 */
-	@Override
-	public void plotUpdated(IPlot plot, String key, String value) {
-		// The only event sent out by the CSVPlot signifies that loading has
-		// completed. Forces the data to be reloaded the next time it is fetched
-		// from client code (which should happen in the refresh).
-		loaded = false;
-		if (plotComposite != null && !plotComposite.isDisposed()) {
-			plotComposite.refresh();
-		}
 	}
 
 }

@@ -25,6 +25,15 @@ public class VizServiceFactoryHolder {
 	private static IVizServiceFactory factory;
 
 	/**
+	 * Getter for the held VizServiceFactory.
+	 * 
+	 * @return the held VizServiceFactory
+	 */
+	public static IVizServiceFactory getFactory() {
+		return factory;
+	}
+
+	/**
 	 * Setter for the VizServiceFactory.
 	 * 
 	 * @param input
@@ -45,15 +54,6 @@ public class VizServiceFactoryHolder {
 		factory = null;
 		}
 		return;
-	}
-
-	/**
-	 * Getter for the held VizServiceFactory.
-	 * 
-	 * @return the held VizServiceFactory
-	 */
-	public static IVizServiceFactory getFactory() {
-		return factory;
 	}
 
 }

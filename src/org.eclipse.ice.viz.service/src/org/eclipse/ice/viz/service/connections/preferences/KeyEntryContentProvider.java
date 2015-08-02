@@ -133,22 +133,6 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 		return;
 	}
 
-	/**
-	 * Gets whether the specified key is available for this content provider.
-	 * <p>
-	 * This provides an alternative to checking {@link #getAllowedValues()} when
-	 * the key set is unlimited or "undefined" (in which case the other method
-	 * returns an empty list).
-	 * </p>
-	 * 
-	 * @param key
-	 *            The key to check for availability.
-	 * @return True if the specified key is available, false otherwise.
-	 */
-	public boolean keyAvailable(String key) {
-		return keyManager.keyAvailable(key);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -206,6 +190,22 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 		return hash;
 	}
 
+	/**
+	 * Gets whether the specified key is available for this content provider.
+	 * <p>
+	 * This provides an alternative to checking {@link #getAllowedValues()} when
+	 * the key set is unlimited or "undefined" (in which case the other method
+	 * returns an empty list).
+	 * </p>
+	 * 
+	 * @param key
+	 *            The key to check for availability.
+	 * @return True if the specified key is available, false otherwise.
+	 */
+	public boolean keyAvailable(String key) {
+		return keyManager.keyAvailable(key);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -239,17 +239,6 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 	}
 
 	/**
-	 * Overrides the parent behavior to do nothing. The default is determined by
-	 * the associated {@link #keyManager}.
-	 * 
-	 * @param defaultValue
-	 */
-	@Override
-	public void setDefaultValue(String defaultValue) {
-		// Do nothing.
-	}
-
-	/**
 	 * Overrides the parent behavior to do nothing. The allowed values are
 	 * determined by the associated {@link #keyManager}.
 	 * 
@@ -268,6 +257,17 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 	 */
 	@Override
 	public void setAllowedValueType(AllowedValueType allowedValueType) {
+		// Do nothing.
+	}
+
+	/**
+	 * Overrides the parent behavior to do nothing. The default is determined by
+	 * the associated {@link #keyManager}.
+	 * 
+	 * @param defaultValue
+	 */
+	@Override
+	public void setDefaultValue(String defaultValue) {
 		// Do nothing.
 	}
 }

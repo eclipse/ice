@@ -266,19 +266,13 @@ public class TreeSelectionDialogProvider {
 			}
 
 			@Override
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
-				// Nothing to do.
+			public Object[] getChildren(Object parentElement) {
+				return ((Node) parentElement).children;
 			}
 
 			@Override
 			public Object[] getElements(Object inputElement) {
 				return ((Node) inputElement).children;
-			}
-
-			@Override
-			public Object[] getChildren(Object parentElement) {
-				return ((Node) parentElement).children;
 			}
 
 			@Override
@@ -289,6 +283,12 @@ public class TreeSelectionDialogProvider {
 			@Override
 			public boolean hasChildren(Object element) {
 				return ((Node) element).children.length > 0;
+			}
+
+			@Override
+			public void inputChanged(Viewer viewer, Object oldInput,
+					Object newInput) {
+				// Nothing to do.
 			}
 		};
 	}
@@ -380,6 +380,94 @@ public class TreeSelectionDialogProvider {
 			}
 		};
 	}
+
+	// ---- Results ---- //
+	/**
+	 * Gets all selected leaf nodes in the tree.
+	 * 
+	 * @return A list containing all selected leaf nodes in the tree.
+	 */
+	public List<Object> getAllSelectedLeafElements() {
+		List<Object> selectedObjects = new ArrayList<Object>();
+		for (Node node : newSelection) {
+			selectedObjects.add(node.element);
+		}
+		return selectedObjects;
+	}
+
+	// ---- These are intended to be overridden. ---- //
+	/**
+	 * Gets the children of the specified element.
+	 * <p>
+	 * <b>Note:</b> Cycles are prohibited and may cause unexpected results.
+	 * </p>
+	 * 
+	 * @param parent
+	 *            The element that may or may not have children that will also
+	 *            be put in the tree.
+	 * @return An array containing all child elements that will be put in the
+	 *         tree.
+	 */
+	public Object[] getChildren(Object parent) {
+		return new Object[0];
+	}
+
+	/**
+	 * Gets all newly selected leaf nodes in the tree. This does not include
+	 * nodes that were selected when the dialog was opened.
+	 * 
+	 * @return A list containing newly selected leaf nodes in the tree.
+	 */
+	public List<Object> getSelectedLeafElements() {
+		List<Object> selectedObjects = new ArrayList<Object>();
+		for (Node node : newSelection) {
+			if (!initialSelection.contains(node)) {
+				selectedObjects.add(node.element);
+			}
+		}
+		return selectedObjects;
+	}
+
+	/**
+	 * Gets the text label for the element.
+	 * 
+	 * @param element
+	 *            The element that will be put in the tree.
+	 * @return A string label for the element.
+	 */
+	public String getText(Object element) {
+		return "";
+	}
+
+	/**
+	 * Gets all leaf nodes that were unselected from the tree. In other words,
+	 * this returns all nodes that were part of the initial selection but were
+	 * at some point unselected by the user.
+	 * 
+	 * @return A list containing nodes that were unselected from the tree.
+	 */
+	public List<Object> getUnselectedLeafElements() {
+		List<Object> unselectedObjects = new ArrayList<Object>();
+		for (Node node : initialSelection) {
+			if (!newSelection.contains(node)) {
+				unselectedObjects.add(node.element);
+			}
+		}
+		return unselectedObjects;
+	}
+	// ----------------- //
+
+	/**
+	 * Whether or not the element is selected.
+	 * 
+	 * @param element
+	 *            The element that will be put in the tree.
+	 * @return True if the element is selected, false otherwise.
+	 */
+	public boolean isSelected(Object element) {
+		return false;
+	}
+	// ---------------------------------------------- //
 
 	/**
 	 * Creates and opens a dialog enabling the user to select one or more
@@ -520,92 +608,4 @@ public class TreeSelectionDialogProvider {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
-	// ---- These are intended to be overridden. ---- //
-	/**
-	 * Gets the children of the specified element.
-	 * <p>
-	 * <b>Note:</b> Cycles are prohibited and may cause unexpected results.
-	 * </p>
-	 * 
-	 * @param parent
-	 *            The element that may or may not have children that will also
-	 *            be put in the tree.
-	 * @return An array containing all child elements that will be put in the
-	 *         tree.
-	 */
-	public Object[] getChildren(Object parent) {
-		return new Object[0];
-	}
-
-	/**
-	 * Gets the text label for the element.
-	 * 
-	 * @param element
-	 *            The element that will be put in the tree.
-	 * @return A string label for the element.
-	 */
-	public String getText(Object element) {
-		return "";
-	}
-
-	/**
-	 * Whether or not the element is selected.
-	 * 
-	 * @param element
-	 *            The element that will be put in the tree.
-	 * @return True if the element is selected, false otherwise.
-	 */
-	public boolean isSelected(Object element) {
-		return false;
-	}
-	// ---------------------------------------------- //
-
-	// ---- Results ---- //
-	/**
-	 * Gets all selected leaf nodes in the tree.
-	 * 
-	 * @return A list containing all selected leaf nodes in the tree.
-	 */
-	public List<Object> getAllSelectedLeafElements() {
-		List<Object> selectedObjects = new ArrayList<Object>();
-		for (Node node : newSelection) {
-			selectedObjects.add(node.element);
-		}
-		return selectedObjects;
-	}
-
-	/**
-	 * Gets all newly selected leaf nodes in the tree. This does not include
-	 * nodes that were selected when the dialog was opened.
-	 * 
-	 * @return A list containing newly selected leaf nodes in the tree.
-	 */
-	public List<Object> getSelectedLeafElements() {
-		List<Object> selectedObjects = new ArrayList<Object>();
-		for (Node node : newSelection) {
-			if (!initialSelection.contains(node)) {
-				selectedObjects.add(node.element);
-			}
-		}
-		return selectedObjects;
-	}
-
-	/**
-	 * Gets all leaf nodes that were unselected from the tree. In other words,
-	 * this returns all nodes that were part of the initial selection but were
-	 * at some point unselected by the user.
-	 * 
-	 * @return A list containing nodes that were unselected from the tree.
-	 */
-	public List<Object> getUnselectedLeafElements() {
-		List<Object> unselectedObjects = new ArrayList<Object>();
-		for (Node node : initialSelection) {
-			if (!newSelection.contains(node)) {
-				unselectedObjects.add(node.element);
-			}
-		}
-		return unselectedObjects;
-	}
-	// ----------------- //
 }

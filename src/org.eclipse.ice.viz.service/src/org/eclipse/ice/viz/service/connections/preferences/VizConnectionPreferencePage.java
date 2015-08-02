@@ -105,14 +105,6 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	}
 
 	/**
-	 * Gets the ID of the {@link IEclipsePreferences} node in the store.
-	 * Connections will be stored under this node.
-	 * 
-	 * @return The ID of the connection preferences node.
-	 */
-	protected abstract String getConnectionsPreferenceNodeId();
-
-	/**
 	 * Gets the delimiter used when saving/loading connection preferences.
 	 * 
 	 * @return The delimiter for serializing connection preferences.
@@ -120,6 +112,14 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	protected String getConnectionPreferenceDelimiter() {
 		return IVizConnectionManager.DEFAULT_CONNECTION_PREFERENCE_DELIMITER;
 	}
+
+	/**
+	 * Gets the ID of the {@link IEclipsePreferences} node in the store.
+	 * Connections will be stored under this node.
+	 * 
+	 * @return The ID of the connection preferences node.
+	 */
+	protected abstract String getConnectionsPreferenceNodeId();
 
 	/*
 	 * Overrides a method from AbstractVizPreferencePage.

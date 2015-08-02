@@ -23,13 +23,13 @@ import java.util.List;
 public interface IKeyManager {
 
 	/**
-	 * Determines whether the specified key is available.
+	 * Adds a new {@link IKeyChangeListener} to listen for key change events in
+	 * the manager.
 	 * 
-	 * @param key
-	 *            The key to test.
-	 * @return True if the key is available, false otherwise.
+	 * @param listener
+	 *            The new listener. The same listener should not be added twice.
 	 */
-	public boolean keyAvailable(String key);
+	public void addKeyChangeListener(IKeyChangeListener listener);
 
 	/**
 	 * Gets the list of available keys.
@@ -51,13 +51,13 @@ public interface IKeyManager {
 	public String getNextKey() throws IllegalStateException;
 
 	/**
-	 * Adds a new {@link IKeyChangeListener} to listen for key change events in
-	 * the manager.
+	 * Determines whether the specified key is available.
 	 * 
-	 * @param listener
-	 *            The new listener. The same listener should not be added twice.
+	 * @param key
+	 *            The key to test.
+	 * @return True if the key is available, false otherwise.
 	 */
-	public void addKeyChangeListener(IKeyChangeListener listener);
+	public boolean keyAvailable(String key);
 
 	/**
 	 * Removes an existing {@link IKeyChangeListener} from the key manager.

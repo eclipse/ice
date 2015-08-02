@@ -202,8 +202,10 @@ public class ConnectionTable extends TableComponent {
 	private IKeyManager createKeyManager() {
 		return new IKeyManager() {
 			@Override
-			public boolean keyAvailable(String key) {
-				return key != null && !keyToIndexMap.containsKey(key);
+			public void addKeyChangeListener(IKeyChangeListener listener) {
+				// if (listener != null && !keyListeners.contains(listener)) {
+				// keyListeners.add(listener);
+				// }
 			}
 
 			@Override
@@ -224,10 +226,8 @@ public class ConnectionTable extends TableComponent {
 			}
 
 			@Override
-			public void addKeyChangeListener(IKeyChangeListener listener) {
-				// if (listener != null && !keyListeners.contains(listener)) {
-				// keyListeners.add(listener);
-				// }
+			public boolean keyAvailable(String key) {
+				return key != null && !keyToIndexMap.containsKey(key);
 			}
 
 			@Override

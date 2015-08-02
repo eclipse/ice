@@ -97,133 +97,6 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	@Override
-	protected boolean isWritable() {
-		return true;
-	}
-
-	@Override
-	public void listChanged(ListEvent<Double> listChanges) {
-		// TODO implementation
-		return;
-	}
-
-	@Override
-	public double[] getBounds() {
-		// Creates the array to return
-		double[] bounds = null;
-
-		// Only return a valid array if there is data
-		if (size() > 0) {
-			// Instantiate the array
-			bounds = new double[2];
-			// Set the initial values to the first data point
-			double min = (double) this.get(0);
-			double max = (double) this.get(0);
-			// Iterate and find the max and min values
-			for (Double d : this) {
-				if (((double) d) < min) {
-					min = (double) d;
-				} else if (((double) d) > max) {
-					max = (double) d;
-				}
-			}
-			// Set the values
-			bounds[0] = min;
-			bounds[1] = max - min;
-		}
-		// Finally return the array
-		return bounds;
-	}
-
-	@Override
-	public Object[] getDataPoints() {
-		return this.toArray();
-	}
-
-	@Override
-	public ISeries getParentSeries() {
-		return parent;
-	}
-
-	public void setParentSeries(ISeries parent) {
-		this.parent = parent;
-	}
-
-	@Override
-	public String getLabel() {
-		return label;
-	}
-
-	@Override
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	@Override
-	public void setTime(double time) {
-		this.time = time;
-	}
-
-	@Override
-	public double getTime() {
-		return time;
-	}
-
-	@Override
-	public ISeriesStyle getStyle() {
-		return style;
-	}
-
-	@Override
-	public void setStyle(ISeriesStyle style) {
-		this.style = style;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return isEnabled;
-	}
-
-	/**
-	 * Sets whether this series is enabled or not.
-	 * 
-	 * @param enabledFlag
-	 *            The enabled flag.
-	 */
-	@Override
-	public void setEnabled(boolean enabledFlag) {
-		isEnabled = enabledFlag;
-	}
-
-	/**
-	 * Sets the units used for this series.
-	 * 
-	 * @param unit
-	 *            The unit to use, of which the data is in.
-	 */
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
-
-	/**
-	 * Gets the string representation of the unit for this series.
-	 * 
-	 * @return String the unit for this series.
-	 */
-	public String getUnit() {
-		return unit;
-	}
-
-	/**
-	 * There should not be multiple categories for this type of series, so
-	 * return the default category
-	 */
-	@Override
-	public String getCategory() {
-		return IPlot.DEFAULT_CATEGORY;
-	}
-
-	@Override
 	public Object clone() {
 		CSVSeries clone = new CSVSeries();
 		clone.copy(this);
@@ -282,6 +155,77 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	@Override
+	public double[] getBounds() {
+		// Creates the array to return
+		double[] bounds = null;
+
+		// Only return a valid array if there is data
+		if (size() > 0) {
+			// Instantiate the array
+			bounds = new double[2];
+			// Set the initial values to the first data point
+			double min = (double) this.get(0);
+			double max = (double) this.get(0);
+			// Iterate and find the max and min values
+			for (Double d : this) {
+				if (((double) d) < min) {
+					min = (double) d;
+				} else if (((double) d) > max) {
+					max = (double) d;
+				}
+			}
+			// Set the values
+			bounds[0] = min;
+			bounds[1] = max - min;
+		}
+		// Finally return the array
+		return bounds;
+	}
+
+	/**
+	 * There should not be multiple categories for this type of series, so
+	 * return the default category
+	 */
+	@Override
+	public String getCategory() {
+		return IPlot.DEFAULT_CATEGORY;
+	}
+
+	@Override
+	public Object[] getDataPoints() {
+		return this.toArray();
+	}
+
+	@Override
+	public String getLabel() {
+		return label;
+	}
+
+	@Override
+	public ISeries getParentSeries() {
+		return parent;
+	}
+
+	@Override
+	public ISeriesStyle getStyle() {
+		return style;
+	}
+
+	@Override
+	public double getTime() {
+		return time;
+	}
+
+	/**
+	 * Gets the string representation of the unit for this series.
+	 * 
+	 * @return String the unit for this series.
+	 */
+	public String getUnit() {
+		return unit;
+	}
+
+	@Override
 	public int hashCode() {
 		// Local Declarations
 		int hash = super.hashCode();
@@ -295,6 +239,62 @@ public class CSVSeries extends TransformedList<Double, Double>
 		hash = 31 * hash + (int) time;
 
 		return hash;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	@Override
+	protected boolean isWritable() {
+		return true;
+	}
+
+	@Override
+	public void listChanged(ListEvent<Double> listChanges) {
+		// TODO implementation
+		return;
+	}
+
+	/**
+	 * Sets whether this series is enabled or not.
+	 * 
+	 * @param enabledFlag
+	 *            The enabled flag.
+	 */
+	@Override
+	public void setEnabled(boolean enabledFlag) {
+		isEnabled = enabledFlag;
+	}
+
+	@Override
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public void setParentSeries(ISeries parent) {
+		this.parent = parent;
+	}
+
+	@Override
+	public void setStyle(ISeriesStyle style) {
+		this.style = style;
+	}
+
+	@Override
+	public void setTime(double time) {
+		this.time = time;
+	}
+
+	/**
+	 * Sets the units used for this series.
+	 * 
+	 * @param unit
+	 *            The unit to use, of which the data is in.
+	 */
+	public void setUnit(String unit) {
+		this.unit = unit;
 	}
 
 }

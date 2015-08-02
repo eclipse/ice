@@ -30,16 +30,47 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 public class KeyEntry extends Entry {
 
 	/**
+	 * An error message for invalid keys in the case where there is no set list
+	 * of allowed keys.
+	 */
+	private static final String undefinedErrMsg = "'${incorrectValue}' is an unacceptable value. It must be a unique string.";
+
+	/**
 	 * The content provider for this {@code Entry}. It must be hooked up to an
 	 * {@link IKeyManager}.
 	 */
 	private KeyEntryContentProvider contentProvider;
 
 	/**
-	 * An error message for invalid keys in the case where there is no set list
-	 * of allowed keys.
+	 * The copy constructor. When used, both {@code KeyEntry}s will use the
+	 * exact same {@link #keyManager} (but valid or unique keys).
+	 * 
+	 * @param entry
+	 *            The other {@code KeyEntry} to copy.
+	 * @throws NullPointerException
+	 *             An NPE is thrown if the provided entry to copy is null, as a
+	 *             valid {@code KeyEntryContentProvider} cannot be acquired from
+	 *             a null entry.
 	 */
-	private static final String undefinedErrMsg = "'${incorrectValue}' is an unacceptable value. It must be a unique string.";
+	public KeyEntry(KeyEntry entry) throws NullPointerException {
+		// If the specified entry is not null, we can copy it.
+		if (entry != null) {
+			// Copy the super class' variables.
+			super.copy(entry);
+
+			// Copy this class' variables.
+			// The super class clones the content provider, so we just need to
+			// set the cast reference to it.
+			contentProvider = (KeyEntryContentProvider) iEntryContentProvider;
+		}
+		// Otherwise, we must throw an exception as this will be in an invalid
+		// state (no KeyEntryContentProvider).
+		else {
+			throw new NullPointerException("KeyEntry error: "
+					+ "Cannot copy null KeyEntry.");
+		}
+		return;
+	}
 
 	/**
 	 * The default constructor.
@@ -71,35 +102,51 @@ public class KeyEntry extends Entry {
 		return;
 	}
 
-	/**
-	 * The copy constructor. When used, both {@code KeyEntry}s will use the
-	 * exact same {@link #keyManager} (but valid or unique keys).
-	 * 
-	 * @param entry
-	 *            The other {@code KeyEntry} to copy.
-	 * @throws NullPointerException
-	 *             An NPE is thrown if the provided entry to copy is null, as a
-	 *             valid {@code KeyEntryContentProvider} cannot be acquired from
-	 *             a null entry.
+	/*
+	 * Overrides a method from Entry.
 	 */
-	public KeyEntry(KeyEntry entry) throws NullPointerException {
-		// If the specified entry is not null, we can copy it.
-		if (entry != null) {
-			// Copy the super class' variables.
-			super.copy(entry);
+	@Override
+	public Object clone() {
+		return new KeyEntry(this);
+	}
 
-			// Copy this class' variables.
-			// The super class clones the content provider, so we just need to
-			// set the cast reference to it.
-			contentProvider = (KeyEntryContentProvider) iEntryContentProvider;
+	/*
+	 * Overrides a method from Entry.
+	 */
+	@Override
+	public boolean equals(Object object) {
+		boolean equals = false;
+
+		// If the references match, we know it is equivalent.
+		if (object == this) {
+			equals = true;
 		}
-		// Otherwise, we must throw an exception as this will be in an invalid
-		// state (no KeyEntryContentProvider).
-		else {
-			throw new NullPointerException("KeyEntry error: "
-					+ "Cannot copy null KeyEntry.");
+		// Otherwise, if the type of the object is correct, we need to perform a
+		// full equivalence check.
+		else if (object != null && object instanceof KeyEntry) {
+			// Check all of the super class variables.
+			equals = super.equals(object);
+
+			// Compare all class variables.
+			// Nothing to do (the content provider was already compared in the
+			// super method).
 		}
-		return;
+
+		return equals;
+	}
+
+	/*
+	 * Overrides a method from Entry.
+	 */
+	@Override
+	public int hashCode() {
+		// Get the default hash code.
+		int hash = super.hashCode();
+
+		// Add class variable hash codes here:
+		hash += 31 * contentProvider.hashCode();
+
+		return hash;
 	}
 
 	/**
@@ -177,52 +224,5 @@ public class KeyEntry extends Entry {
 		}
 
 		return returnCode;
-	}
-
-	/*
-	 * Overrides a method from Entry.
-	 */
-	@Override
-	public Object clone() {
-		return new KeyEntry(this);
-	}
-
-	/*
-	 * Overrides a method from Entry.
-	 */
-	@Override
-	public boolean equals(Object object) {
-		boolean equals = false;
-
-		// If the references match, we know it is equivalent.
-		if (object == this) {
-			equals = true;
-		}
-		// Otherwise, if the type of the object is correct, we need to perform a
-		// full equivalence check.
-		else if (object != null && object instanceof KeyEntry) {
-			// Check all of the super class variables.
-			equals = super.equals(object);
-
-			// Compare all class variables.
-			// Nothing to do (the content provider was already compared in the
-			// super method).
-		}
-
-		return equals;
-	}
-
-	/*
-	 * Overrides a method from Entry.
-	 */
-	@Override
-	public int hashCode() {
-		// Get the default hash code.
-		int hash = super.hashCode();
-
-		// Add class variable hash codes here:
-		hash += 31 * contentProvider.hashCode();
-
-		return hash;
 	}
 }

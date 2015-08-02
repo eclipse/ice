@@ -57,6 +57,14 @@ public interface IVizCanvas {
 	public Composite draw(Composite parent) throws Exception;
 
 	/**
+	 * This operation returns the data source that is plotted/drawn by this
+	 * IPlot.
+	 * 
+	 * @return The data source
+	 */
+	public URI getDataSource();
+
+	/**
 	 * This operation returns the number of axes of the plot.
 	 * 
 	 * @return The number of axes or zero if the plot has not been drawn
@@ -72,27 +80,6 @@ public interface IVizCanvas {
 	 * @return A map of the properties.
 	 */
 	public Map<String, String> getProperties();
-
-	/**
-	 * This operation updates the properties of the plot based on client-side
-	 * modifications. The IPlot should redraw itself as needed if the properties
-	 * changed.
-	 * 
-	 * @param props
-	 *            The updated properties
-	 * @throws Exception
-	 *             This exception indicates that the IPlot could not update its
-	 *             properties or redraw itself.
-	 */
-	public void setProperties(Map<String, String> props) throws Exception;
-
-	/**
-	 * This operation returns the data source that is plotted/drawn by this
-	 * IPlot.
-	 * 
-	 * @return The data source
-	 */
-	public URI getDataSource();
 
 	/**
 	 * This operation retrieves the hostname for this IPlot's data source.
@@ -119,5 +106,18 @@ public interface IVizCanvas {
 	 * 
 	 */
 	public void redraw();
+
+	/**
+	 * This operation updates the properties of the plot based on client-side
+	 * modifications. The IPlot should redraw itself as needed if the properties
+	 * changed.
+	 * 
+	 * @param props
+	 *            The updated properties
+	 * @throws Exception
+	 *             This exception indicates that the IPlot could not update its
+	 *             properties or redraw itself.
+	 */
+	public void setProperties(Map<String, String> props) throws Exception;
 
 }

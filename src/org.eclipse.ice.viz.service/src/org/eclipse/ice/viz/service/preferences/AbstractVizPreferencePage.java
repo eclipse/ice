@@ -50,19 +50,6 @@ public abstract class AbstractVizPreferencePage extends FieldEditorPreferencePag
 	}
 
 	/**
-	 * Creates a new field editor preference page with the given title and
-	 * style, but no image.
-	 *
-	 * @param title
-	 *            the title of this preference page
-	 * @param style
-	 *            either <code>GRID</code> or <code>FLAT</code>
-	 */
-	public AbstractVizPreferencePage(String title, int style) {
-		super(title, style);
-	}
-
-	/**
 	 * Creates a new field editor preference page with the given title, image,
 	 * and style.
 	 *
@@ -78,12 +65,17 @@ public abstract class AbstractVizPreferencePage extends FieldEditorPreferencePag
 		super(title, image, style);
 	}
 
-	/*
-	 * Overrides a method from PreferencePage.
+	/**
+	 * Creates a new field editor preference page with the given title and
+	 * style, but no image.
+	 *
+	 * @param title
+	 *            the title of this preference page
+	 * @param style
+	 *            either <code>GRID</code> or <code>FLAT</code>
 	 */
-	@Override
-	public void init(IWorkbench workbench) {
-		setDescription("Visualization Service Preferences");
+	public AbstractVizPreferencePage(String title, int style) {
+		super(title, style);
 	}
 
 	/*
@@ -104,6 +96,14 @@ public abstract class AbstractVizPreferencePage extends FieldEditorPreferencePag
 		// AbstractVizPreferenceInitializer's getPreferenceStore() method may
 		// also need to be updated.
 		return new CustomScopedPreferenceStore(getClass());
+	}
+
+	/*
+	 * Overrides a method from PreferencePage.
+	 */
+	@Override
+	public void init(IWorkbench workbench) {
+		setDescription("Visualization Service Preferences");
 	}
 
 }

@@ -57,6 +57,40 @@ public class PlotDialogProvider {
 	private String selectedServiceName = null;
 
 	/**
+	 * This method creates all possible plots using the currently available viz
+	 * services.
+	 * 
+	 * @param uri
+	 *            The URI for the plot file.
+	 * @return A map containing all created plots, keyed on the names of the viz
+	 *         services that created them.
+	 */
+	private void createPlots(URI uri) {
+		// Get the VizServiceFactory and all Viz Services
+		IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder
+				.getFactory();
+
+		// Initialize a map of created plots for all viz services.
+		for (String vizServiceName : factory.getServiceNames()) {
+			IVizService service = factory.get(vizServiceName);
+
+			// Add any successfully created plot to the map.
+			if (service != null) {
+				try {
+					IPlot newPlot = service.createPlot(uri);
+					allPlots.put(vizServiceName, newPlot);
+				} catch (Exception e) {
+					logger.debug("The viz service \"" + vizServiceName
+							+ "\" could not create a plot for the file \""
+							+ uri.getPath() + "\".");
+				}
+			}
+		}
+
+		return;
+	}
+
+	/**
 	 * Gets all plots that were created by the dialog. This includes the one for
 	 * the selected viz service.
 	 * 
@@ -150,40 +184,6 @@ public class PlotDialogProvider {
 
 		return result;
 
-	}
-
-	/**
-	 * This method creates all possible plots using the currently available viz
-	 * services.
-	 * 
-	 * @param uri
-	 *            The URI for the plot file.
-	 * @return A map containing all created plots, keyed on the names of the viz
-	 *         services that created them.
-	 */
-	private void createPlots(URI uri) {
-		// Get the VizServiceFactory and all Viz Services
-		IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder
-				.getFactory();
-
-		// Initialize a map of created plots for all viz services.
-		for (String vizServiceName : factory.getServiceNames()) {
-			IVizService service = factory.get(vizServiceName);
-
-			// Add any successfully created plot to the map.
-			if (service != null) {
-				try {
-					IPlot newPlot = service.createPlot(uri);
-					allPlots.put(vizServiceName, newPlot);
-				} catch (Exception e) {
-					logger.debug("The viz service \"" + vizServiceName
-							+ "\" could not create a plot for the file \""
-							+ uri.getPath() + "\".");
-				}
-			}
-		}
-
-		return;
 	}
 
 }

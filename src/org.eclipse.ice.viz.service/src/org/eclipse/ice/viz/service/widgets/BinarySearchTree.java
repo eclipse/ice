@@ -160,6 +160,17 @@ public class BinarySearchTree {
 	}
 
 	/**
+	 * Finds the index of the value in the tree closest to the specified value.
+	 * 
+	 * @param d
+	 *            The value to search for in the tree.
+	 * @return The index of the element in the tree closest to the value.
+	 */
+	public int findNearestIndex(double d) {
+		return findNearestIndex(d, null, null);
+	}
+
+	/**
 	 * A recursive operation used to find the index of the nearest value in the
 	 * tree.
 	 * 
@@ -202,6 +213,18 @@ public class BinarySearchTree {
 	}
 
 	/**
+	 * Finds the value in the tree closest to the specified value.
+	 * 
+	 * @param d
+	 *            The value to search for in the tree.
+	 * @return The value in the tree closest to the specified value.
+	 */
+	public double findNearestValue(double d) {
+		int index = findNearestIndex(d);
+		return values.get(index);
+	}
+
+	/**
 	 * Gets the item at the specified index. Note that the tree contains the
 	 * times sorted in ascending order.
 	 * 
@@ -222,28 +245,5 @@ public class BinarySearchTree {
 	 */
 	public int size() {
 		return values.size();
-	}
-
-	/**
-	 * Finds the index of the value in the tree closest to the specified value.
-	 * 
-	 * @param d
-	 *            The value to search for in the tree.
-	 * @return The index of the element in the tree closest to the value.
-	 */
-	public int findNearestIndex(double d) {
-		return findNearestIndex(d, null, null);
-	}
-
-	/**
-	 * Finds the value in the tree closest to the specified value.
-	 * 
-	 * @param d
-	 *            The value to search for in the tree.
-	 * @return The value in the tree closest to the specified value.
-	 */
-	public double findNearestValue(double d) {
-		int index = findNearestIndex(d);
-		return values.get(index);
 	}
 }

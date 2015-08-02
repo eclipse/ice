@@ -121,15 +121,6 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	}
 
 	/**
-	 * Gets the associated preference node from the {@link #context}.
-	 *
-	 * @return The primary preference node.
-	 */
-	private IEclipsePreferences getPreferenceNode() {
-		return context.getNode(qualifier);
-	}
-
-	/**
 	 * Gets the associated default preference node from the
 	 * {@link #defaultContext}.
 	 *
@@ -137,80 +128,6 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	 */
 	private IEclipsePreferences getDefaultPreferenceNode() {
 		return defaultContext.getNode(qualifier);
-	}
-
-	/**
-	 * Gets the associated secure preference node from the
-	 * {@link SecurePreferencesFactory}.
-	 *
-	 * @return The preference node for secure values.
-	 */
-	private ISecurePreferences getSecurePreferenceNode() {
-		ISecurePreferences preferences = SecurePreferencesFactory.getDefault();
-		return preferences.node(qualifier);
-	}
-
-	/**
-	 * Determines whether or not the preference node with the specified relative
-	 * path exists underneath this store's associated preference node.
-	 *
-	 * @param path
-	 *            The relative path. A relative path must not start with "/"
-	 *            (meaning it is an absolute path) and must not be an empty
-	 *            string (meaning it is the primary node itself).
-	 * @return True if the store's primary node contains a child node with the
-	 *         specified relative path, false otherwise.
-	 */
-	public boolean hasNode(String path) {
-		boolean exists = false;
-
-		// Convert the path to a valid path string, if possible.
-		path = validatePath(path);
-
-		// If the path was valid, see if its node exists.
-		if (path != null) {
-			exists = nodeExists(path);
-		}
-
-		return exists;
-	}
-
-	/**
-	 * Determines whether or not a child node exists in the preference store.
-	 *
-	 * @param validPath
-	 *            A path validated by {@link #validatePath(String)}.
-	 * @return True if the node existed, false otherwise.
-	 */
-	private boolean nodeExists(String validPath) {
-		boolean exists = false;
-		try {
-			exists = getPreferenceNode().nodeExists(validPath);
-		} catch (BackingStoreException e) {
-			logger.error(getClass().getName() + " Exception!", e);
-		}
-		return exists;
-	}
-
-	/**
-	 * Validates the path, returning the valid version of the path, or null if
-	 * the path is invalid.
-	 *
-	 * @param path
-	 *            The path to validate.
-	 * @return The trimmed, validated path, or null if the path is invalid.
-	 */
-	private String validatePath(String path) {
-		if (path != null) {
-			path = path.trim();
-			// The path must be relative, i.e. it must not be:
-			// 1 - The current node (the path is empty)
-			// 2 - An absolute path (the path starts with a slash)
-			if (path.isEmpty() || path.startsWith("/")) {
-				path = null;
-			}
-		}
-		return path;
 	}
 
 	/**
@@ -240,6 +157,104 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 			child = (IEclipsePreferences) getPreferenceNode().node(path);
 		}
 		return child;
+	}
+
+	/**
+	 * Gets the associated preference node from the {@link #context}.
+	 *
+	 * @return The primary preference node.
+	 */
+	private IEclipsePreferences getPreferenceNode() {
+		return context.getNode(qualifier);
+	}
+
+	/**
+	 * Gets the associated secure preference node from the
+	 * {@link SecurePreferencesFactory}.
+	 *
+	 * @return The preference node for secure values.
+	 */
+	private ISecurePreferences getSecurePreferenceNode() {
+		ISecurePreferences preferences = SecurePreferencesFactory.getDefault();
+		return preferences.node(qualifier);
+	}
+
+	/**
+	 * Returns the current value of the string-valued, <i>securely stored</i>
+	 * preference with the given name.
+	 * <p>
+	 * Returns the default-default value (the empty string <code>""</code>) if
+	 * there is no preference with the given name, or if the current value
+	 * cannot be treated as a string.
+	 * </p>
+	 *
+	 * @param name
+	 *            The name of the preference.
+	 * @return The string-valued preference, which is stored securely.
+	 */
+	public String getSecureString(String name) {
+		String value = STRING_DEFAULT_DEFAULT;
+		if (name != null) {
+			ISecurePreferences node = getSecurePreferenceNode();
+			try {
+				value = node.get(name, STRING_DEFAULT_DEFAULT);
+			} catch (StorageException e) {
+				logger.error(getClass().getName() + " Exception!", e);
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Determines whether or not the preference node with the specified relative
+	 * path exists underneath this store's associated preference node.
+	 *
+	 * @param path
+	 *            The relative path. A relative path must not start with "/"
+	 *            (meaning it is an absolute path) and must not be an empty
+	 *            string (meaning it is the primary node itself).
+	 * @return True if the store's primary node contains a child node with the
+	 *         specified relative path, false otherwise.
+	 */
+	public boolean hasNode(String path) {
+		boolean exists = false;
+
+		// Convert the path to a valid path string, if possible.
+		path = validatePath(path);
+
+		// If the path was valid, see if its node exists.
+		if (path != null) {
+			exists = nodeExists(path);
+		}
+
+		return exists;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#needsSaving()
+	 */
+	@Override
+	public boolean needsSaving() {
+		return dirty || super.needsSaving();
+	}
+
+	/**
+	 * Determines whether or not a child node exists in the preference store.
+	 *
+	 * @param validPath
+	 *            A path validated by {@link #validatePath(String)}.
+	 * @return True if the node existed, false otherwise.
+	 */
+	private boolean nodeExists(String validPath) {
+		boolean exists = false;
+		try {
+			exists = getPreferenceNode().nodeExists(validPath);
+		} catch (BackingStoreException e) {
+			logger.error(getClass().getName() + " Exception!", e);
+		}
+		return exists;
 	}
 
 	/**
@@ -278,6 +293,19 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	}
 
 	/**
+	 * Removes the specified, <i>securely stored</i> value from the store.
+	 *
+	 * @param name
+	 *            The name of the value to remove.
+	 */
+	public void removeSecureString(String name) {
+		if (name != null) {
+			getSecurePreferenceNode().remove(name);
+			dirty = true;
+		}
+	}
+
+	/**
 	 * Removes the specified value (including its defaults) from the store.
 	 *
 	 * @param name
@@ -287,16 +315,6 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 		getPreferenceNode().remove(name);
 		getDefaultPreferenceNode().remove(name);
 		dirty = true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.preferences.ScopedPreferenceStore#needsSaving()
-	 */
-	@Override
-	public boolean needsSaving() {
-		return dirty || super.needsSaving();
 	}
 
 	/*
@@ -356,41 +374,23 @@ public class CustomScopedPreferenceStore extends ScopedPreferenceStore {
 	}
 
 	/**
-	 * Returns the current value of the string-valued, <i>securely stored</i>
-	 * preference with the given name.
-	 * <p>
-	 * Returns the default-default value (the empty string <code>""</code>) if
-	 * there is no preference with the given name, or if the current value
-	 * cannot be treated as a string.
-	 * </p>
+	 * Validates the path, returning the valid version of the path, or null if
+	 * the path is invalid.
 	 *
-	 * @param name
-	 *            The name of the preference.
-	 * @return The string-valued preference, which is stored securely.
+	 * @param path
+	 *            The path to validate.
+	 * @return The trimmed, validated path, or null if the path is invalid.
 	 */
-	public String getSecureString(String name) {
-		String value = STRING_DEFAULT_DEFAULT;
-		if (name != null) {
-			ISecurePreferences node = getSecurePreferenceNode();
-			try {
-				value = node.get(name, STRING_DEFAULT_DEFAULT);
-			} catch (StorageException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+	private String validatePath(String path) {
+		if (path != null) {
+			path = path.trim();
+			// The path must be relative, i.e. it must not be:
+			// 1 - The current node (the path is empty)
+			// 2 - An absolute path (the path starts with a slash)
+			if (path.isEmpty() || path.startsWith("/")) {
+				path = null;
 			}
 		}
-		return value;
-	}
-
-	/**
-	 * Removes the specified, <i>securely stored</i> value from the store.
-	 *
-	 * @param name
-	 *            The name of the value to remove.
-	 */
-	public void removeSecureString(String name) {
-		if (name != null) {
-			getSecurePreferenceNode().remove(name);
-			dirty = true;
-		}
+		return path;
 	}
 }

@@ -111,6 +111,15 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 		// Add the listener to redirect the user to the preferences.
 		link.addHyperlinkListener(new IHyperlinkListener() {
 			@Override
+			public void linkActivated(HyperlinkEvent e) {
+				// Open up the viz service connection preferences.
+				PreferencesUtil
+						.createPreferenceDialogOn(shell,
+								getConnectionPreferencePageID(), null, null)
+						.open();
+			}
+
+			@Override
 			public void linkEntered(HyperlinkEvent e) {
 				// Nothing to do yet.
 			}
@@ -118,15 +127,6 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 			@Override
 			public void linkExited(HyperlinkEvent e) {
 				// Nothing to do yet.
-			}
-
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				// Open up the viz service connection preferences.
-				PreferencesUtil
-						.createPreferenceDialogOn(shell,
-								getConnectionPreferencePageID(), null, null)
-						.open();
 			}
 		});
 

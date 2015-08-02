@@ -131,153 +131,34 @@ public class ComboDialog extends Dialog {
 		return;
 	}
 
-	/**
-	 * Sets the title text for the dialog.
-	 * 
-	 * @param text
-	 *            The new text to display in the dialog's title bar.
-	 * @return True if the title text was updated, false otherwise.
+	/*
+	 * Overrides a method from Dialog.
 	 */
-	public boolean setTitle(String text) {
-		boolean changed = false;
-		if (text != null && !text.equals(title)) {
-			title = text;
-			changed = true;
-		}
-		return changed;
+	@Override
+	protected void cancelPressed() {
+		super.cancelPressed();
+
+		// Clear the value.
+		value = null;
 	}
 
-	/**
-	 * Sets the text that is displayed in the dialog above the combo widget.
-	 * 
-	 * @param text
-	 *            The new text to display in the dialog above the combo widget.
-	 *            Must not be {@code null}.
-	 * @return True if the info text was updated, false otherwise.
+	/*
+	 * Overrides a method from Dialog.
 	 */
-	public boolean setInfoText(String text) {
-		boolean changed = false;
-		if (text != null && !text.equals(infoText)) {
-			infoText = text;
-			changed = true;
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+
+		// If the initial selection is invalid, disable the OK button.
+		boolean okEnabled = false;
+		if (comboText != null) {
+			okEnabled = (validateSelection(comboText) != null);
+		} else if (!allowedValueList.isEmpty()) {
+			okEnabled = true;
 		}
-		return changed;
-	}
+		getButton(IDialogConstants.OK_ID).setEnabled(okEnabled);
 
-	/**
-	 * Sets the text that is displayed in the combo widget's error decorator.
-	 * This text will be displayed when the combo's current selection is
-	 * invalid.
-	 * 
-	 * @param text
-	 *            The new text to display in the combo widget's error decorator.
-	 *            Must not be {@code null}.
-	 * @return True if the error text was updated, false otherwise.
-	 */
-	public boolean setErrorText(String text) {
-		boolean changed = false;
-		if (text != null && !text.equals(errorText)) {
-			errorText = text;
-			changed = true;
-		}
-		return changed;
-	}
-
-	/**
-	 * Sets the initial value that will be selected in the combo widget when the
-	 * dialog is opened.
-	 * 
-	 * @param value
-	 *            The initial value. This will be validated before being placed
-	 *            in the combo widget.
-	 * @return True if the initial value changed, false otherwise.
-	 */
-	public boolean setInitialValue(String value) {
-		boolean changed = false;
-
-		// Don't proceed for null values or values that aren't different.
-		if (value != null && !value.equals(this.comboText)) {
-			// If read-only, only set the initial combo text if it is an allowed
-			// value.
-			if (readOnly) {
-				if (allowedValueSet.contains(value)) {
-					this.comboText = value;
-					changed = true;
-				}
-			}
-			// Otherwise, we can let the combo text be anything.
-			else {
-				this.comboText = value;
-				changed = true;
-			}
-		}
-
-		return changed;
-	}
-
-	/**
-	 * Sets the list of allowed values that will be put into the dialog's combo
-	 * widget.
-	 * 
-	 * @param allowedValues
-	 *            The list of allowed values. If this list is {@code null},
-	 *            contains {@code null}, or is not different, this list will be
-	 *            ignored.
-	 * @return True if the list of allowed values was updated, false otherwise.
-	 */
-	public boolean setAllowedValues(List<String> allowedValues) {
-		boolean changed = false;
-		// Don't accept null lists, lists with null in them, or duplicate lists.
-		if (allowedValues != null && !allowedValues.contains(null)
-				&& !allowedValues.equals(allowedValueList)) {
-			// Update the list and hash set.
-			allowedValueList.clear();
-			allowedValueSet.clear();
-			for (String value : allowedValues) {
-				allowedValueList.add(value);
-				allowedValueSet.add(value);
-			}
-			changed = true;
-		}
-		return changed;
-	}
-
-	/**
-	 * Validates the selection from the combo widget. The default behavior only
-	 * returns valid text that is contained in the list of allowed values
-	 * specified by {@link #setAllowedValues(List)}.
-	 * <p>
-	 * If read-only, then this method does not need to be overridden. Otherwise,
-	 * sub-classes may allow additional input besides currently known/allowed
-	 * values by overriding this method and providing custom validation of the
-	 * input.
-	 * </p>
-	 * 
-	 * @param selection
-	 *            The current value in the combo widget.
-	 * @return The validated text (this value may be trimmed), or {@code null}
-	 *         if the selected value is invalid.
-	 */
-	protected String validateSelection(String selection) {
-		String validatedText = null;
-
-		// By default, we only accept allowed values.
-		if (allowedValueSet.contains(selection)) {
-			validatedText = selection;
-		}
-
-		return validatedText;
-	}
-
-	/**
-	 * Gets the selected value from the dialog's combo widget.
-	 * 
-	 * @return The validated value selected from the combo widget, or or
-	 *         {@code null} if a selection was not made or the dialog was
-	 *         cancelled.
-	 */
-	public String getValue() {
-		return value;
+		return;
 	}
 
 	/*
@@ -375,6 +256,17 @@ public class ComboDialog extends Dialog {
 		return composite;
 	}
 
+	/**
+	 * Gets the selected value from the dialog's combo widget.
+	 * 
+	 * @return The validated value selected from the combo widget, or or
+	 *         {@code null} if a selection was not made or the dialog was
+	 *         cancelled.
+	 */
+	public String getValue() {
+		return value;
+	}
+
 	/*
 	 * Overrides a method from Dialog.
 	 */
@@ -386,34 +278,142 @@ public class ComboDialog extends Dialog {
 		value = validateSelection(comboText);
 	}
 
-	/*
-	 * Overrides a method from Dialog.
+	/**
+	 * Sets the list of allowed values that will be put into the dialog's combo
+	 * widget.
+	 * 
+	 * @param allowedValues
+	 *            The list of allowed values. If this list is {@code null},
+	 *            contains {@code null}, or is not different, this list will be
+	 *            ignored.
+	 * @return True if the list of allowed values was updated, false otherwise.
 	 */
-	@Override
-	protected void cancelPressed() {
-		super.cancelPressed();
-
-		// Clear the value.
-		value = null;
+	public boolean setAllowedValues(List<String> allowedValues) {
+		boolean changed = false;
+		// Don't accept null lists, lists with null in them, or duplicate lists.
+		if (allowedValues != null && !allowedValues.contains(null)
+				&& !allowedValues.equals(allowedValueList)) {
+			// Update the list and hash set.
+			allowedValueList.clear();
+			allowedValueSet.clear();
+			for (String value : allowedValues) {
+				allowedValueList.add(value);
+				allowedValueSet.add(value);
+			}
+			changed = true;
+		}
+		return changed;
 	}
 
-	/*
-	 * Overrides a method from Dialog.
+	/**
+	 * Sets the text that is displayed in the combo widget's error decorator.
+	 * This text will be displayed when the combo's current selection is
+	 * invalid.
+	 * 
+	 * @param text
+	 *            The new text to display in the combo widget's error decorator.
+	 *            Must not be {@code null}.
+	 * @return True if the error text was updated, false otherwise.
 	 */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		super.createButtonsForButtonBar(parent);
-
-		// If the initial selection is invalid, disable the OK button.
-		boolean okEnabled = false;
-		if (comboText != null) {
-			okEnabled = (validateSelection(comboText) != null);
-		} else if (!allowedValueList.isEmpty()) {
-			okEnabled = true;
+	public boolean setErrorText(String text) {
+		boolean changed = false;
+		if (text != null && !text.equals(errorText)) {
+			errorText = text;
+			changed = true;
 		}
-		getButton(IDialogConstants.OK_ID).setEnabled(okEnabled);
+		return changed;
+	}
 
-		return;
+	/**
+	 * Sets the text that is displayed in the dialog above the combo widget.
+	 * 
+	 * @param text
+	 *            The new text to display in the dialog above the combo widget.
+	 *            Must not be {@code null}.
+	 * @return True if the info text was updated, false otherwise.
+	 */
+	public boolean setInfoText(String text) {
+		boolean changed = false;
+		if (text != null && !text.equals(infoText)) {
+			infoText = text;
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
+	 * Sets the initial value that will be selected in the combo widget when the
+	 * dialog is opened.
+	 * 
+	 * @param value
+	 *            The initial value. This will be validated before being placed
+	 *            in the combo widget.
+	 * @return True if the initial value changed, false otherwise.
+	 */
+	public boolean setInitialValue(String value) {
+		boolean changed = false;
+
+		// Don't proceed for null values or values that aren't different.
+		if (value != null && !value.equals(this.comboText)) {
+			// If read-only, only set the initial combo text if it is an allowed
+			// value.
+			if (readOnly) {
+				if (allowedValueSet.contains(value)) {
+					this.comboText = value;
+					changed = true;
+				}
+			}
+			// Otherwise, we can let the combo text be anything.
+			else {
+				this.comboText = value;
+				changed = true;
+			}
+		}
+
+		return changed;
+	}
+
+	/**
+	 * Sets the title text for the dialog.
+	 * 
+	 * @param text
+	 *            The new text to display in the dialog's title bar.
+	 * @return True if the title text was updated, false otherwise.
+	 */
+	public boolean setTitle(String text) {
+		boolean changed = false;
+		if (text != null && !text.equals(title)) {
+			title = text;
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
+	 * Validates the selection from the combo widget. The default behavior only
+	 * returns valid text that is contained in the list of allowed values
+	 * specified by {@link #setAllowedValues(List)}.
+	 * <p>
+	 * If read-only, then this method does not need to be overridden. Otherwise,
+	 * sub-classes may allow additional input besides currently known/allowed
+	 * values by overriding this method and providing custom validation of the
+	 * input.
+	 * </p>
+	 * 
+	 * @param selection
+	 *            The current value in the combo widget.
+	 * @return The validated text (this value may be trimmed), or {@code null}
+	 *         if the selected value is invalid.
+	 */
+	protected String validateSelection(String selection) {
+		String validatedText = null;
+
+		// By default, we only accept allowed values.
+		if (allowedValueSet.contains(selection)) {
+			validatedText = selection;
+		}
+
+		return validatedText;
 	}
 
 }
