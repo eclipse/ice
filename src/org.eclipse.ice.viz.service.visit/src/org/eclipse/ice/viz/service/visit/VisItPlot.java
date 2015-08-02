@@ -280,7 +280,7 @@ public class VisItPlot extends ConnectionPlot2<VisItSwtConnection> {
 	 * Overrides a method from AbstractPlot.
 	 */
 	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
+	public List<ISeries> getDependentSeries(String category) {
 		// Return a copy of the plot type series if the category is valid.
 		List<ISeries> series = plotTypes.get(category);
 		if (series != null) {

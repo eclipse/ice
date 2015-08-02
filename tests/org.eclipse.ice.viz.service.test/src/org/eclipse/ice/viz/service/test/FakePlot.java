@@ -229,7 +229,7 @@ public class FakePlot implements IPlot {
 	}
 
 	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
+	public List<ISeries> getDependentSeries(String category) {
 		return depSeries.get(category);
 	}
 

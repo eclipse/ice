@@ -678,7 +678,7 @@ public class CSVPlotEditor extends EditorPart {
 		Trace trace = null;
 
 		// Make sure it is a valid series for creating a trace
-		if (series != null && series.enabled()
+		if (series != null && series.isEnabled()
 				&& !(series.getStyle() instanceof BasicErrorStyle)
 				&& !existingTraces.containsKey(series)) {
 

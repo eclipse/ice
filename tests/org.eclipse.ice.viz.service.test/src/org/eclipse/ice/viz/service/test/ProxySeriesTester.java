@@ -114,15 +114,15 @@ public class ProxySeriesTester {
 	@Test
 	public void checkEnabled() {
 		// Initially it is not enabled.
-		assertFalse(proxy.enabled());
+		assertFalse(proxy.isEnabled());
 
 		// We should be able to enable it.
 		proxy.setEnabled(true);
-		assertTrue(proxy.enabled());
+		assertTrue(proxy.isEnabled());
 
 		// We should be able to disable it.
 		proxy.setEnabled(false);
-		assertFalse(proxy.enabled());
+		assertFalse(proxy.isEnabled());
 
 		return;
 	}

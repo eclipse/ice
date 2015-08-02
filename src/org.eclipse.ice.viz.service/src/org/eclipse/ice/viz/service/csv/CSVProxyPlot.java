@@ -91,7 +91,7 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 
 			// Enable the first dependent series.
 			for (String category : getCategories()) {
-				List<ISeries> series = getAllDependentSeries(category);
+				List<ISeries> series = getDependentSeries(category);
 				if (series != null && !series.isEmpty()) {
 					series.iterator().next().setEnabled(true);
 					break;
@@ -135,11 +135,11 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
+	public List<ISeries> getDependentSeries(String category) {
 		if (!loaded) {
 			reloadSeries();
 		}
-		return super.getAllDependentSeries(category);
+		return super.getDependentSeries(category);
 	}
 
 	@Override

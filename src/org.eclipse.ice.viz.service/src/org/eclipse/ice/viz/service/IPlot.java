@@ -6,11 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings - Initial API and implementation and/or initial documentation 
  *   Jordan Deyton - changed signature of draw to return Composite
  *   Alex McCaskey - added redraw method
  *   Kasper Gammeltoft - viz series refactor
+ *   Jordan Deyton - viz multi-series refactor
+ *   Jordan Deyton - renamed getAllDependentSeries() to getDependentSeries()
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
@@ -25,8 +27,9 @@ import java.util.List;
  * 
  * @see org.eclipse.ice.viz.service.ISeries
  * 
- * @author Jay Jay Billings, Alex McCaskey
- * @author Kasper Gammeltoft - Viz refactor for series
+ * @author Jay Jay Billings
+ * @author Alex McCaskey
+ * @author Kasper Gammeltoft
  *
  */
 public interface IPlot extends IVizCanvas {
@@ -77,7 +80,7 @@ public interface IPlot extends IVizCanvas {
 	 * 
 	 * @return List<ISeries> all of the dependent series to be plotted.
 	 */
-	public List<ISeries> getAllDependentSeries(String category);
+	public List<ISeries> getDependentSeries(String category);
 
 	/**
 	 * Gets all of the categories currently associated with this plot.

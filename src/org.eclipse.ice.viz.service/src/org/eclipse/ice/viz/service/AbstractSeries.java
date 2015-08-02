@@ -112,7 +112,7 @@ public abstract class AbstractSeries implements ISeries {
 	 * Implements a method from ISeries.
 	 */
 	@Override
-	public boolean enabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 

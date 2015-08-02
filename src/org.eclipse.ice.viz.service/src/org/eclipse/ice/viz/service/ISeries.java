@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Kasper Gammeltoft
+ *   Kasper Gammeltoft - Initial API and implementation and/or initial documentation 
+ *   Jordan Deyton - renamed enabled() to isEnabled()
  *******************************************************************************/
 
 package org.eclipse.ice.viz.service;
@@ -123,7 +123,7 @@ public interface ISeries {
 	 * @return True if the series is enabled and will be shown on a plot, false
 	 *         if otherwise
 	 */
-	public boolean enabled();
+	public boolean isEnabled();
 
 	/**
 	 * Sets the enabled state of this series. This determines if the series will

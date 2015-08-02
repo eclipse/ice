@@ -6,8 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - changed signature of draw to return Composite
+ *   Alex McCaskey - added redraw method
+ *   Kasper Gammeltoft - viz series refactor (extracted IVizCanvas from IPlot)
+ *   
  *******************************************************************************/
 
 package org.eclipse.ice.viz.service;
@@ -36,7 +39,9 @@ import org.eclipse.swt.widgets.Composite;
  * tools. Implementations should not be restricted to one usage scenario.
  * </p>
  * 
- * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
+ * @author Jay Jay Billings
+ * @author Alex McCaskey
+ * @author Kasper Gammeltoft
  *
  */
 public interface IVizCanvas {

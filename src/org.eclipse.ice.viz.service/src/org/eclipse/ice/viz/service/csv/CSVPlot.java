@@ -93,7 +93,7 @@ public class CSVPlot extends AbstractPlot {
 	 * Overrides a method from AbstractPlot.
 	 */
 	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
+	public List<ISeries> getDependentSeries(String category) {
 		// Use the map of ProxySeries to get a new list of ISeries associated
 		// with the category.
 		List<ISeries> series = dataSeries.get(category);

@@ -28,7 +28,7 @@ import java.util.Map;
  * </p>
  * <ul>
  * <li>{@link #getCategories()} - uses a map loaded from the source IPlot</li>
- * <li>{@link #getAllDependentSeries(String)} - uses {@link ProxySeries} that
+ * <li>{@link #getDependentSeries(String)} - uses {@link ProxySeries} that
  * point at the source plot's {@link ISeries}</li>
  * </ul>
  * The following methods are re-directed to the source plot.
@@ -95,7 +95,7 @@ public abstract class ProxyPlot extends AbstractPlot {
 	 * Overrides a method from AbstractPlot.
 	 */
 	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
+	public List<ISeries> getDependentSeries(String category) {
 		// Use the map of ProxySeries to get a new list of ISeries associated
 		// with the category.
 		List<ISeries> series = proxySeries.get(category);
@@ -162,7 +162,7 @@ public abstract class ProxyPlot extends AbstractPlot {
 			for (String category : source.getCategories()) {
 				// Copy the series for this category.
 				List<ISeries> sourceSeriesList = source
-						.getAllDependentSeries(category);
+						.getDependentSeries(category);
 				if (sourceSeriesList != null) {
 					List<ISeries> proxySeriesList = new ArrayList<ISeries>(
 							sourceSeriesList.size());

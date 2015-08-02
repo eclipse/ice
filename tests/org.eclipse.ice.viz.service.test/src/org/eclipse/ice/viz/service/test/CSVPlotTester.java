@@ -119,7 +119,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		assertEquals(series.getTime(), 0.0);
 
 		ArrayList<ISeries> depSeries = (ArrayList<ISeries>) plot
-				.getAllDependentSeries(null);
+				.getDependentSeries(null);
 		assertEquals(depSeries.size(), 2);
 		// Check the dependent series. No real need to check the values, as that
 		// is the same for the independent series
@@ -140,7 +140,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		plot.addDependentSeries(newSeries);
 
 		// Check to see if it was added
-		assertEquals(plot.getAllDependentSeries(null).size(), 3);
+		assertEquals(plot.getDependentSeries(null).size(), 3);
 
 		return;
 	}

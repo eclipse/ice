@@ -135,7 +135,7 @@ public class PlotEditorInputTester {
 		}
 
 		@Override
-		public List<ISeries> getAllDependentSeries(String category) {
+		public List<ISeries> getDependentSeries(String category) {
 			return depSeries.get(category);
 		}
 

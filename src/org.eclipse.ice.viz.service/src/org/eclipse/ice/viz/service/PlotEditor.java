@@ -240,7 +240,7 @@ public class PlotEditor extends EditorPart {
 					if (categories.size() > 1) {
 						children = categories.toArray();
 					} else if (!categories.isEmpty()) {
-						children = plot.getAllDependentSeries(categories.get(0))
+						children = plot.getDependentSeries(categories.get(0))
 								.toArray();
 					} else {
 						children = new Object[0];
@@ -248,7 +248,7 @@ public class PlotEditor extends EditorPart {
 				}
 				// If the element is a category, return its associated series.
 				else if (parent instanceof String) {
-					children = plot.getAllDependentSeries(parent.toString())
+					children = plot.getDependentSeries(parent.toString())
 							.toArray();
 				} else {
 					children = new Object[0];
@@ -273,7 +273,7 @@ public class PlotEditor extends EditorPart {
 				// Only series should be checked/enabled.
 				final boolean selected;
 				if (element instanceof ISeries) {
-					selected = ((ISeries) element).enabled();
+					selected = ((ISeries) element).isEnabled();
 				} else {
 					selected = false;
 				}

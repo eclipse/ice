@@ -322,7 +322,7 @@ public abstract class AbstractPlot implements IPlot {
 	 * Implements a method from IPlot.
 	 */
 	@Override
-	public List<ISeries> getAllDependentSeries(String category) {
+	public List<ISeries> getDependentSeries(String category) {
 		return null;
 	}
 

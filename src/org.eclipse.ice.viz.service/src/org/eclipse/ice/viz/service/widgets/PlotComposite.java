@@ -401,7 +401,7 @@ public abstract class PlotComposite extends Composite {
 					if (categories.size() > 1) {
 						children = categories.toArray();
 					} else if (!categories.isEmpty()) {
-						children = plot.getAllDependentSeries(categories.get(0))
+						children = plot.getDependentSeries(categories.get(0))
 								.toArray();
 					} else {
 						children = new Object[0];
@@ -409,7 +409,7 @@ public abstract class PlotComposite extends Composite {
 				}
 				// If the element is a category, return its associated series.
 				else if (parent instanceof String) {
-					children = plot.getAllDependentSeries(parent.toString())
+					children = plot.getDependentSeries(parent.toString())
 							.toArray();
 				} else {
 					children = new Object[0];
@@ -434,7 +434,7 @@ public abstract class PlotComposite extends Composite {
 				// Only series should be checked/enabled.
 				final boolean selected;
 				if (element instanceof ISeries) {
-					selected = ((ISeries) element).enabled();
+					selected = ((ISeries) element).isEnabled();
 				} else {
 					selected = false;
 				}
@@ -726,10 +726,10 @@ public abstract class PlotComposite extends Composite {
 
 		// Determine all added series and hide any removed series.
 		for (String category : plot.getCategories()) {
-			for (ISeries series : plot.getAllDependentSeries(category)) {
+			for (ISeries series : plot.getDependentSeries(category)) {
 				// If the series is enabled and is not plotted, we will need to
 				// show it.
-				if (series.enabled()) {
+				if (series.isEnabled()) {
 					if (!removedSeries.remove(series)) {
 						addedSeries.add(series);
 					}

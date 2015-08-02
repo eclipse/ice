@@ -104,7 +104,7 @@ public class ProxyPlotTester {
 			}
 
 			@Override
-			public List<ISeries> getAllDependentSeries(String category) {
+			public List<ISeries> getDependentSeries(String category) {
 				List<ISeries> series = sourceSeries.get(category);
 				if (series != null) {
 					series = new ArrayList<ISeries>(series);
@@ -233,9 +233,9 @@ public class ProxyPlotTester {
 	@Test
 	public void checkDependentSeriesWithoutSource() {
 		proxy.setSource(null);
-		assertNull(proxy.getAllDependentSeries(null));
-		assertNull(proxy.getAllDependentSeries("category"));
-		assertNull(proxy.getAllDependentSeries("default"));
+		assertNull(proxy.getDependentSeries(null));
+		assertNull(proxy.getDependentSeries("category"));
+		assertNull(proxy.getDependentSeries("default"));
 	}
 
 	/**
@@ -246,15 +246,15 @@ public class ProxyPlotTester {
 	public void checkDependentSeries() {
 
 		// Invalid categories should return null.
-		assertNull(proxy.getAllDependentSeries(null));
-		assertNull(proxy.getAllDependentSeries("category"));
+		assertNull(proxy.getDependentSeries(null));
+		assertNull(proxy.getDependentSeries("category"));
 
 		// Check that all valid categories are reported.
 		for (Entry<String, List<ISeries>> e : sourceSeries.entrySet()) {
 			String category = e.getKey();
 			List<ISeries> series = e.getValue();
 
-			List<ISeries> proxySeries = proxy.getAllDependentSeries(category);
+			List<ISeries> proxySeries = proxy.getDependentSeries(category);
 			// Check the number of proxy series created. It should match the
 			// number of source series.
 			assertNotNull(proxySeries);

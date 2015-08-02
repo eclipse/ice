@@ -86,7 +86,7 @@ public class FakeSeries implements ISeries {
 	}
 
 	@Override
-	public boolean enabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 

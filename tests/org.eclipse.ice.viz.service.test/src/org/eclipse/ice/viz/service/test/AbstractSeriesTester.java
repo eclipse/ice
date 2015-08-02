@@ -51,15 +51,15 @@ public class AbstractSeriesTester {
 	@Test
 	public void checkEnabled() {
 		// Initially it is not enabled.
-		assertFalse(series.enabled());
+		assertFalse(series.isEnabled());
 
 		// We should be able to enable it.
 		series.setEnabled(true);
-		assertTrue(series.enabled());
+		assertTrue(series.isEnabled());
 
 		// We should be able to disable it.
 		series.setEnabled(false);
-		assertFalse(series.enabled());
+		assertFalse(series.isEnabled());
 
 		return;
 	}

@@ -180,7 +180,7 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	@Override
-	public boolean enabled() {
+	public boolean isEnabled() {
 		return isEnabled;
 	}
 

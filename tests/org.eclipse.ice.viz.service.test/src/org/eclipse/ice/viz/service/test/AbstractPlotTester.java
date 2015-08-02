@@ -124,9 +124,9 @@ public class AbstractPlotTester {
 	 */
 	@Test
 	public void checkDependentSeries() {
-		assertNull(plot.getAllDependentSeries(null));
-		assertNull(plot.getAllDependentSeries("category"));
-		assertNull(plot.getAllDependentSeries("default"));
+		assertNull(plot.getDependentSeries(null));
+		assertNull(plot.getDependentSeries("category"));
+		assertNull(plot.getDependentSeries("default"));
 	}
 
 	/**
