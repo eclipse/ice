@@ -9,13 +9,14 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Jordan Deyton
  *   Jordan Deyton - bug 469997
+ *   Jordan Deyton - viz series refactor
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot2;
 import org.eclipse.ice.viz.service.connections.ConnectionVizService;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
@@ -63,8 +64,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	 * Implements an abstract method from ConnectionVizService.
 	 */
 	@Override
-	protected ConnectionPlot<VisItSwtConnection> createConnectionPlot() {
-		return new VisItPlot(this);
+	protected ConnectionPlot2<VisItSwtConnection> createConnectionPlot() {
+		return new VisItPlot();
 	}
 
 	/*

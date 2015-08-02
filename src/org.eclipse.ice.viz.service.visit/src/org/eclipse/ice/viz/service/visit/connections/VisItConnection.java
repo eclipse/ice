@@ -11,12 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.connections;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.swt.widgets.Display;
