@@ -21,7 +21,7 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IPlotListener;
 import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.connections.ConnectionPlot2;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
@@ -339,7 +339,7 @@ public class VisItPlotComposite extends
 	 * Overrides a method from ConnectionPlotComposite.
 	 */
 	@Override
-	public boolean setConnectionPlot(ConnectionPlot2<VisItSwtConnection> plot) {
+	public boolean setConnectionPlot(ConnectionPlot<VisItSwtConnection> plot) {
 		boolean changed = super.setConnectionPlot(plot);
 		// We need to listen for updates from the plot telling us when the data
 		// is loaded.

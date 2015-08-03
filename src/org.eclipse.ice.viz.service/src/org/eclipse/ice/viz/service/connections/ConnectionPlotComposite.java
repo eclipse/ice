@@ -50,7 +50,7 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	/**
 	 * A reference to the associated connection plot.
 	 */
-	private ConnectionPlot2<T> plot;
+	private ConnectionPlot<T> plot;
 
 	/**
 	 * Whether or not to show the {@link #link}. This should only be set to true
@@ -225,7 +225,7 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	 * 
 	 * @return The current plot, or {@code null} if it is not set.
 	 */
-	protected ConnectionPlot2<T> getConnectionPlot() {
+	protected ConnectionPlot<T> getConnectionPlot() {
 		return plot;
 	}
 
@@ -317,7 +317,7 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	 *            it.
 	 * @return True if the plot changed, false otherwise.
 	 */
-	public boolean setConnectionPlot(ConnectionPlot2<T> plot) {
+	public boolean setConnectionPlot(ConnectionPlot<T> plot) {
 		boolean changed = false;
 		if (super.setPlot(plot)) {
 			this.plot = plot;

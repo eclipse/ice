@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.viz.service.AbstractSeries;
 import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.connections.ConnectionPlot2;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
@@ -48,7 +48,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jordan Deyton
  *
  */
-public class ParaViewPlot extends ConnectionPlot2<IParaViewWebClient> {
+public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/**
 	 * Whether or not the data has been loaded.

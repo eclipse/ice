@@ -16,7 +16,7 @@ package org.eclipse.ice.viz.service.visit;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.connections.ConnectionPlot2;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionVizService;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
@@ -64,7 +64,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	 * Implements an abstract method from ConnectionVizService.
 	 */
 	@Override
-	protected ConnectionPlot2<VisItSwtConnection> createConnectionPlot() {
+	protected ConnectionPlot<VisItSwtConnection> createConnectionPlot() {
 		return new VisItPlot();
 	}
 

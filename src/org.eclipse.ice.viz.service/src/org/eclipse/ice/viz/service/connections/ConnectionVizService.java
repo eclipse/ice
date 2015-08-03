@@ -66,7 +66,7 @@ public abstract class ConnectionVizService<T> extends AbstractVizService {
 	 * 
 	 * @return A new, empty connection plot.
 	 */
-	protected abstract ConnectionPlot2<T> createConnectionPlot();
+	protected abstract ConnectionPlot<T> createConnectionPlot();
 
 	/**
 	 * Overrides the default behavior from {@link AbstractVizService} to find a
@@ -94,7 +94,7 @@ public abstract class ConnectionVizService<T> extends AbstractVizService {
 		IVizConnection<T> connection = manager.getConnection(name);
 
 		// Create a plot using the sub-class' implementation.
-		ConnectionPlot2<T> plot = createConnectionPlot();
+		ConnectionPlot<T> plot = createConnectionPlot();
 
 		// Set its connection and data source.
 		plot.setConnection(connection);
