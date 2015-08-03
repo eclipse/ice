@@ -24,6 +24,7 @@ import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.service.PlotEditor;
 import org.eclipse.ice.viz.service.PlotEditorInput;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
+import org.eclipse.ice.viz.service.csv.CSVProxyPlot;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -493,11 +494,15 @@ public class VizFileViewer extends ViewPart
 					// If it is a CSV file, then open it here
 					if (fileName.matches(".*\\.csv$")) {
 						try {
-							CSVPlot plot = new CSVPlot();
-							plot.setDataSource(file.toURI());
+							// FIXME This should be using the IVizService from
+							// OSGi instead of instantiating a CSVPlot.
+							CSVPlot dataPlot = new CSVPlot();
+							dataPlot.setDataSource(file.toURI());
+							CSVProxyPlot plot = new CSVProxyPlot();
+							plot.setSource(dataPlot);
 							page.openEditor(new PlotEditorInput(plot),
 									PlotEditor.ID);
-						} catch (PartInitException e) {
+						} catch (Exception e) {
 							logger.error("Could not open editor for CSV file: "
 									+ file.getAbsolutePath(), e);
 						}

@@ -268,6 +268,8 @@ public class VisItPlotComposite extends
 		if (canvas != null && !canvas.isDisposed()) {
 			canvas.dispose();
 			canvas = null;
+			timeSlider.dispose();
+			timeSlider = null;
 		}
 
 		// Proceed with the default disposal.
