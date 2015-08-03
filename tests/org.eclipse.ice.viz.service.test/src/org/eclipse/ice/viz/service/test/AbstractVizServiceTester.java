@@ -153,6 +153,62 @@ public class AbstractVizServiceTester {
 	}
 
 	/**
+	 * The abstract viz service throws simple exceptions for the create plot
+	 * method, including:
+	 * <ol>
+	 * <li>null URI specified</li>
+	 * <li>URI pointing to a file with a bad extension</li>
+	 * </ol>
+	 * <p>
+	 * However, when a non-null URI is passed in with a valid extension, it
+	 * should not throw any exceptions, but should return null.
+	 * </p>
+	 */
+	public void checkCreatePlot() {
+		FakeVizService service = new FakeVizService();
+		service.supportedExtensions.add("ext");
+
+		// An exception should be thrown when creating a plot with a null URI.
+		URI nullURI = null;
+		try {
+			service.createPlot(nullURI);
+			fail(getClass().getName() + " failure: "
+					+ "Exception not thrown when attempting to create a plot "
+					+ "from a null URI.");
+		} catch (Exception e) {
+			// Exception thrown as expected.
+		}
+
+		// An exception should be thrown when creating a plot with a URI that
+		// has an unsupported extension.
+		try {
+			URI uriWithBadExtension = new URI("file:///home/file.zip");
+			service.createPlot(uriWithBadExtension);
+			fail(getClass().getName() + " failure: "
+					+ "Exception not thrown when attempting to create a plot "
+					+ "from a URI with an unsupported extension.");
+		} catch (URISyntaxException e) {
+			fail("This shouldn't happen.");
+		} catch (Exception e) {
+			// Exception thrown as expected.
+		}
+
+		// Null should be returned for a valid URI with a valid extension.
+		try {
+			URI validURI = new URI("file:///home/file.ext");
+			assertNull(service.createPlot(validURI));
+		} catch (URISyntaxException e) {
+			fail("This shouldn't happen.");
+		} catch (Exception e) {
+			fail(getClass().getName() + " failure: "
+					+ "Exception thrown when attempting to create a plot "
+					+ "from a valid URI with a supported extension.");
+		}
+
+		return;
+	}
+
+	/**
 	 * Provides a basic, empty implementation for general testing purposes and
 	 * exposes the super-class' set of supported extensions.
 	 * 

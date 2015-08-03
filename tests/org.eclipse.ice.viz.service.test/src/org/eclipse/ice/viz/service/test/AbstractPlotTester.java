@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.AbstractPlot;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IPlotListener;
 import org.eclipse.ice.viz.service.ISeries;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +66,7 @@ public class AbstractPlotTester {
 	}
 
 	/**
-	 * Checks the data source is not managed by the abstract plot, although the
+	 * Checks the data source is managed by the abstract plot, and that the
 	 * operations that query the data source are implemented.
 	 */
 	@Test
@@ -74,46 +76,64 @@ public class AbstractPlotTester {
 		assertNull(plot.getSourceHost());
 		assertFalse(plot.isSourceRemote());
 
-		// Create a plot to point to a URI reference.
-		final AtomicReference<URI> uriRef = new AtomicReference<URI>();
-		plot = new AbstractPlot() {
-			public URI getDataSource() {
-				return uriRef.get();
-			};
-		};
-
-		// Set the reference to a local file (no host on the URI).
+		// We should be able to set the plot's URI. Set the reference to a local
+		// file (no host on the URI).
+		URI uri = null;
 		try {
-			uriRef.set(new URI("file:///home/test"));
+			uri = new URI("file:///some/path/to/a/file");
+			assertTrue(plot.setDataSource(uri));
+			assertFalse(plot.setDataSource(uri)); // Can't set the same thing.
+			assertSame(uri, plot.getDataSource());
+			assertEquals("localhost", plot.getSourceHost());
+			assertFalse(plot.isSourceRemote());
 		} catch (URISyntaxException e) {
-			fail("AbstractPlotTester error: "
-					+ "Invalid URI. This should never happen.");
+			fail("Bad URI. This shouldn't happen.");
+		} catch (Exception e) {
+			fail(getClass().getName() + " failure: "
+					+ "Exception thrown when setting the URI.");
 		}
-		assertNotNull(plot.getDataSource());
-		assertEquals("localhost", plot.getSourceHost());
-		assertFalse(plot.isSourceRemote());
 
 		// Set the reference to a local file (there is a host on the URI).
 		try {
-			uriRef.set(new URI("ssh://localhost:1000/home/test"));
+			uri = new URI("ssh://localhost:1000/home/test");
+			assertTrue(plot.setDataSource(uri));
+			assertSame(uri, plot.getDataSource());
+			assertEquals("localhost", plot.getSourceHost());
+			assertFalse(plot.isSourceRemote());
 		} catch (URISyntaxException e) {
-			fail("AbstractPlotTester error: "
-					+ "Invalid URI. This should never happen.");
+			fail("Bad URI. This shouldn't happen.");
+		} catch (Exception e) {
+			fail(getClass().getName() + " failure: "
+					+ "Exception thrown when setting the URI.");
 		}
-		assertNotNull(plot.getDataSource());
-		assertEquals("localhost", plot.getSourceHost());
-		assertFalse(plot.isSourceRemote());
 
 		// Set the reference to a remote file (there is a host on the URI).
 		try {
-			uriRef.set(new URI("ssh://remotehost:1000/home/test"));
+			uri = new URI("ssh://remotehost:1000/home/test");
+			assertTrue(plot.setDataSource(uri));
+			assertSame(uri, plot.getDataSource());
+			assertEquals("remotehost", plot.getSourceHost());
+			assertTrue(plot.isSourceRemote());
 		} catch (URISyntaxException e) {
-			fail("AbstractPlotTester error: "
-					+ "Invalid URI. This should never happen.");
+			fail("Bad URI. This shouldn't happen.");
+		} catch (Exception e) {
+			fail(getClass().getName() + " failure: "
+					+ "Exception thrown when setting the URI.");
 		}
-		assertNotNull(plot.getDataSource());
-		assertEquals("remotehost", plot.getSourceHost());
-		assertTrue(plot.isSourceRemote());
+
+		// We should be able to unset the URI.
+		try {
+			uri = null;
+			assertTrue(plot.setDataSource(uri));
+			assertNull(plot.getDataSource());
+			assertNull(plot.getSourceHost());
+			assertFalse(plot.isSourceRemote());
+		} catch (URISyntaxException e) {
+			fail("Bad URI. This shouldn't happen.");
+		} catch (Exception e) {
+			fail(getClass().getName() + " failure: "
+					+ "Exception thrown when setting the URI.");
+		}
 
 		return;
 	}
@@ -169,6 +189,76 @@ public class AbstractPlotTester {
 		// It can also be set to null.
 		plot.setIndependentSeries(null);
 		assertNull(plot.getIndependentSeries());
+
+		return;
+	}
+
+	/**
+	 * Checks that the provided methods to register, notify, and unregister
+	 * listeners works.
+	 */
+	@Test
+	public void checkPlotListeners() {
+		plot = new AbstractPlot() {
+			@Override
+			public void setPlotTitle(String title) {
+				notifyPlotListeners("key", "value");
+			}
+		};
+
+		// You can't add a null listener.
+		assertFalse(plot.addPlotListener(null));
+
+		final AtomicReference<IPlot> plotRef = new AtomicReference<IPlot>();
+		final AtomicReference<String> keyRef = new AtomicReference<String>();
+		final AtomicReference<String> valueRef = new AtomicReference<String>();
+
+		IPlotListener listener = new IPlotListener() {
+			@Override
+			public void plotUpdated(IPlot plot, String key, String value) {
+				plotRef.set(plot);
+				keyRef.set(key);
+				valueRef.set(value);
+			}
+		};
+
+		// You can only add a listener once.
+		assertTrue(plot.addPlotListener(listener));
+		assertFalse(plot.addPlotListener(listener));
+		plot.setPlotTitle("trigger a notification");
+
+		// The listener should have been notified. This means the plot, key, and
+		// value references should have been set.
+		long maxWait = 2000;
+		long interval = 50;
+		long totalWait = 0;
+		while (plotRef.get() != null && totalWait < maxWait) {
+			try {
+				Thread.sleep(interval);
+				totalWait += interval;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		assertSame(plot, plotRef.getAndSet(null));
+		assertEquals("key", keyRef.getAndSet(null));
+		assertEquals("value", valueRef.getAndSet(null));
+
+		// You can only remove a listener once.
+		assertTrue(plot.removePlotListener(listener));
+		assertFalse(plot.removePlotListener(listener));
+
+		// The listener should not have been notified. This means the plot, key,
+		// and value references are still unset.
+		plot.setPlotTitle("trigger another notification");
+		try {
+			Thread.sleep(interval);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		assertNull(plotRef.get());
+		assertNull(keyRef.get());
+		assertNull(valueRef.get());
 
 		return;
 	}

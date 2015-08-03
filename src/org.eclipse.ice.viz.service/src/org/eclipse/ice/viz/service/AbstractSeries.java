@@ -12,7 +12,7 @@
 package org.eclipse.ice.viz.service;
 
 /**
- * his class provides a basic, limited implementation of certain features of
+ * This class provides a basic, limited implementation of certain features of
  * {@link ISeries}. This class does not, however, manage the data, parent
  * series, or category.
  * 
