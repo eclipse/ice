@@ -66,6 +66,50 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 	 * Implements a method from IParaViewProxyFactory.
 	 */
 	@Override
+	public IParaViewProxy createProxy(URI uri)
+			throws NullPointerException, IllegalArgumentException {
+		// Check for a null URI.
+		if (uri == null) {
+			throw new NullPointerException("ParaViewProxyFactory error: "
+					+ "Cannot create a proxy for a null file.");
+		}
+
+		// If possible, determine the extension of the URI. Make it lower
+		// case, as case should not matter.
+		String extension = null;
+		try {
+			String path = uri.getPath();
+			extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
+		} catch (IndexOutOfBoundsException e) {
+			// Nothing to do.
+		}
+
+		// Throw an exception if the extension is not supported.
+		if (!builderMap.containsKey(extension)) {
+			throw new IllegalArgumentException("ParaViewProxyFactory error: "
+					+ "The extension \"" + extension + "\" is not supported.");
+		}
+
+		// Get the most recently registered builder for the extension.
+		List<IParaViewProxyBuilder> builders = builderMap.get(extension);
+		IParaViewProxyBuilder builder = builders.get(builders.size() - 1);
+
+		// Return a new proxy created by the builder.
+		return builder.createProxy(uri);
+	}
+
+	/*
+	 * Implements a method from IParaViewProxyFactory.
+	 */
+	@Override
+	public Set<String> getExtensions() {
+		return new TreeSet<String>(builderMap.keySet());
+	}
+
+	/*
+	 * Implements a method from IParaViewProxyFactory.
+	 */
+	@Override
 	public boolean registerProxyBuilder(IParaViewProxyBuilder builder) {
 		boolean registered = false;
 		if (builder != null) {
@@ -141,49 +185,5 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 		}
 
 		return unregistered;
-	}
-
-	/*
-	 * Implements a method from IParaViewProxyFactory.
-	 */
-	@Override
-	public IParaViewProxy createProxy(URI uri)
-			throws NullPointerException, IllegalArgumentException {
-		// Check for a null URI.
-		if (uri == null) {
-			throw new NullPointerException("ParaViewProxyFactory error: "
-					+ "Cannot create a proxy for a null file.");
-		}
-
-		// If possible, determine the extension of the URI. Make it lower
-		// case, as case should not matter.
-		String extension = null;
-		try {
-			String path = uri.getPath();
-			extension = path.substring(path.lastIndexOf(".") + 1).toLowerCase();
-		} catch (IndexOutOfBoundsException e) {
-			// Nothing to do.
-		}
-
-		// Throw an exception if the extension is not supported.
-		if (!builderMap.containsKey(extension)) {
-			throw new IllegalArgumentException("ParaViewProxyFactory error: "
-					+ "The extension \"" + extension + "\" is not supported.");
-		}
-
-		// Get the most recently registered builder for the extension.
-		List<IParaViewProxyBuilder> builders = builderMap.get(extension);
-		IParaViewProxyBuilder builder = builders.get(builders.size() - 1);
-
-		// Return a new proxy created by the builder.
-		return builder.createProxy(uri);
-	}
-
-	/*
-	 * Implements a method from IParaViewProxyFactory.
-	 */
-	@Override
-	public Set<String> getExtensions() {
-		return new TreeSet<String>(builderMap.keySet());
 	}
 }

@@ -47,6 +47,13 @@ import com.google.gson.JsonObject;
 public class ParaViewCanvas extends Canvas implements PaintListener, ControlListener {
 
 	/**
+	 * The quality of the rendered image. This is a parameter that is sent to
+	 * the ParaView web client in
+	 * {@link #refreshClient(IParaViewWebClient, int, int, int)}.
+	 */
+	private static final int IMAGE_QUALITY = 100;
+
+	/**
 	 * The client used to render meshes remotely. It sends images back that will
 	 * be painted onto this Canvas.
 	 */
@@ -61,11 +68,11 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	 * The current image acquired from the {@link #client}.
 	 */
 	private final AtomicReference<Image> image = new AtomicReference<Image>();
-
 	/**
 	 * The service used to start worker threads.
 	 */
 	private final ExecutorService executorService;
+
 	/**
 	 * If true, then the client needs to be queried and the Canvas updated. This
 	 * is used to see if the {@link #refreshRunnable} needs to be started or if
@@ -80,13 +87,6 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	 * </p>
 	 */
 	private AtomicReference<Point> size;
-
-	/**
-	 * The quality of the rendered image. This is a parameter that is sent to
-	 * the ParaView web client in
-	 * {@link #refreshClient(IParaViewWebClient, int, int, int)}.
-	 */
-	private static final int IMAGE_QUALITY = 100;
 
 	/**
 	 * The default constructor.
@@ -113,51 +113,48 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 		return;
 	}
 
-	/**
-	 * Sets the current ParaView web client used by this Canvas.
-	 * <p>
-	 * <b>Note:</b> Any change is not guaranteed to take effect until the next
-	 * refresh operation, which happens either after a manual call to
-	 * {@link #refresh()} or after the Canvas has been resized.
-	 * </p>
-	 * 
-	 * @param client
-	 *            The new client. If {@code null} or not connected, then the
-	 *            rendered image will not be able to update.
-	 * @return True if the client was changed to a <i>new</i> value, false
-	 *         otherwise.
+	/*
+	 * Implements a method from ControlListener.
 	 */
-	public boolean setClient(IParaViewWebClient client) {
-		boolean changed = false;
-		if (client != this.client) {
-			this.client = client;
-			changed = true;
-		}
-		return changed;
+	@Override
+	public void controlMoved(ControlEvent e) {
+		// Nothing to do.
 	}
 
-	/**
-	 * Sets the ID of the current view that is rendered via the associated
-	 * ParaView web client.
-	 * <p>
-	 * <b>Note:</b> Any change is not guaranteed to take effect until the next
-	 * refresh operation, which happens either after a manual call to
-	 * {@link #refresh()} or after the Canvas has been resized.
-	 * </p>
-	 * 
-	 * @param viewId
-	 *            The ID of the view to be rendered. If invalid, then the
-	 *            rendered image will not be able to update.
-	 * @return True if the view ID was changed to a <i>new</i> value, false
-	 *         otherwise.
+	/*
+	 * Implements a method from ControlListener.
 	 */
-	public boolean setViewId(int viewId) {
-		boolean changed = false;
-		if (viewId != this.viewId) {
-			this.viewId = viewId;
-			changed = true;
+	@Override
+	public void controlResized(ControlEvent e) {
+		// Update the current size.
+		size.set(getSize());
+		// Trigger an update to the client.
+		refresh();
+	}
+
+	/*
+	 * Overrides a method from Widget.
+	 */
+	@Override
+	public void dispose() {
+		// Shut down the worker thread.
+		executorService.shutdown();
+		// Proceed with the default behavior.
+		super.dispose();
+	}
+
+	/*
+	 * Implements a method from PaintListener.
+	 */
+	@Override
+	public void paintControl(PaintEvent e) {
+		// Paint the current image onto the Canvas.
+		Image image = this.image.get();
+		if (image != null) {
+			Rectangle imgBounds = image.getBounds();
+			e.gc.drawImage(image, 0, 0, imgBounds.width, imgBounds.height, 0, 0, e.width, e.height);
 		}
-		return changed;
+		return;
 	}
 
 	/**
@@ -212,50 +209,6 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 		}
 
 		return;
-	}
-
-	/*
-	 * Overrides a method from Widget.
-	 */
-	@Override
-	public void dispose() {
-		// Shut down the worker thread.
-		executorService.shutdown();
-		// Proceed with the default behavior.
-		super.dispose();
-	}
-
-	/*
-	 * Implements a method from PaintListener.
-	 */
-	@Override
-	public void paintControl(PaintEvent e) {
-		// Paint the current image onto the Canvas.
-		Image image = this.image.get();
-		if (image != null) {
-			Rectangle imgBounds = image.getBounds();
-			e.gc.drawImage(image, 0, 0, imgBounds.width, imgBounds.height, 0, 0, e.width, e.height);
-		}
-		return;
-	}
-
-	/*
-	 * Implements a method from ControlListener.
-	 */
-	@Override
-	public void controlMoved(ControlEvent e) {
-		// Nothing to do.
-	}
-
-	/*
-	 * Implements a method from ControlListener.
-	 */
-	@Override
-	public void controlResized(ControlEvent e) {
-		// Update the current size.
-		size.set(getSize());
-		// Trigger an update to the client.
-		refresh();
 	}
 
 	/**
@@ -342,5 +295,52 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 		}
 
 		return image;
+	}
+
+	/**
+	 * Sets the current ParaView web client used by this Canvas.
+	 * <p>
+	 * <b>Note:</b> Any change is not guaranteed to take effect until the next
+	 * refresh operation, which happens either after a manual call to
+	 * {@link #refresh()} or after the Canvas has been resized.
+	 * </p>
+	 * 
+	 * @param client
+	 *            The new client. If {@code null} or not connected, then the
+	 *            rendered image will not be able to update.
+	 * @return True if the client was changed to a <i>new</i> value, false
+	 *         otherwise.
+	 */
+	public boolean setClient(IParaViewWebClient client) {
+		boolean changed = false;
+		if (client != this.client) {
+			this.client = client;
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
+	 * Sets the ID of the current view that is rendered via the associated
+	 * ParaView web client.
+	 * <p>
+	 * <b>Note:</b> Any change is not guaranteed to take effect until the next
+	 * refresh operation, which happens either after a manual call to
+	 * {@link #refresh()} or after the Canvas has been resized.
+	 * </p>
+	 * 
+	 * @param viewId
+	 *            The ID of the view to be rendered. If invalid, then the
+	 *            rendered image will not be able to update.
+	 * @return True if the view ID was changed to a <i>new</i> value, false
+	 *         otherwise.
+	 */
+	public boolean setViewId(int viewId) {
+		boolean changed = false;
+		if (viewId != this.viewId) {
+			this.viewId = viewId;
+			changed = true;
+		}
+		return changed;
 	}
 }

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
+import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByLocation;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature.ColorByMode;

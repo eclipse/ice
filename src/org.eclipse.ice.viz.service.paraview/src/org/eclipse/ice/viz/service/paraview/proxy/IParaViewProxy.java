@@ -162,19 +162,6 @@ public interface IParaViewProxy {
 	public Future<Boolean> setFeature(String category, String feature);
 
 	/**
-	 * Sets the specified property to the new value.
-	 * 
-	 * @param name
-	 *            The property to updated. Allowed values can be retrieved via
-	 *            {@link #getProperties()}.
-	 * @param value
-	 *            The new value of the property. Allowed values can be retrieved
-	 *            via {@link #getPropertyAllowedValues(String)}.
-	 * @return True if the property was changed, false otherwise.
-	 */
-	public Future<Boolean> setProperty(String name, String value);
-
-	/**
 	 * Updates the proxy's current properties to include all properties listed
 	 * in the specified map. This can be used for a bulk update of properties
 	 * that triggers only a single refresh of the rendered view.
@@ -189,6 +176,19 @@ public interface IParaViewProxy {
 	 *         whose values were already set do not count.
 	 */
 	public Future<Integer> setProperties(Map<String, String> properties);
+
+	/**
+	 * Sets the specified property to the new value.
+	 * 
+	 * @param name
+	 *            The property to updated. Allowed values can be retrieved via
+	 *            {@link #getProperties()}.
+	 * @param value
+	 *            The new value of the property. Allowed values can be retrieved
+	 *            via {@link #getPropertyAllowedValues(String)}.
+	 * @return True if the property was changed, false otherwise.
+	 */
+	public Future<Boolean> setProperty(String name, String value);
 
 	/**
 	 * Sets the timestep for the loaded proxy.

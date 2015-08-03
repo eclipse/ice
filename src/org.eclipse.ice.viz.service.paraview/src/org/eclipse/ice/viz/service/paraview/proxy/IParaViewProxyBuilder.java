@@ -28,24 +28,6 @@ import java.util.Set;
 public interface IParaViewProxyBuilder {
 
 	/**
-	 * Gets a nice name for the builder. This is primarily intended for use when
-	 * exposing the builder to the developer.
-	 * 
-	 * @return A name for the builder. Should not be {@code null}.
-	 */
-	public String getName();
-
-	/**
-	 * Gets the set of supported extensions. Note that duplicate extensions are
-	 * not to be listed. The extensions should not include the leading period.
-	 * 
-	 * @return The set of supported extensions for this builder. This should
-	 *         never be {@code null}, and should not change throughout the
-	 *         builder's lifecycle.
-	 */
-	public Set<String> getExtensions();
-
-	/**
 	 * Creates an {@link IParaViewProxy} for the specified file based on its
 	 * extension.
 	 * 
@@ -60,4 +42,22 @@ public interface IParaViewProxyBuilder {
 	 */
 	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
 			IllegalArgumentException;
+
+	/**
+	 * Gets the set of supported extensions. Note that duplicate extensions are
+	 * not to be listed. The extensions should not include the leading period.
+	 * 
+	 * @return The set of supported extensions for this builder. This should
+	 *         never be {@code null}, and should not change throughout the
+	 *         builder's lifecycle.
+	 */
+	public Set<String> getExtensions();
+
+	/**
+	 * Gets a nice name for the builder. This is primarily intended for use when
+	 * exposing the builder to the developer.
+	 * 
+	 * @return A name for the builder. Should not be {@code null}.
+	 */
+	public String getName();
 }

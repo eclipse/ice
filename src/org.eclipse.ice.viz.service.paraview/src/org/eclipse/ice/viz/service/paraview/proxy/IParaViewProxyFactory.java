@@ -28,6 +28,32 @@ import java.util.Set;
 public interface IParaViewProxyFactory {
 
 	/**
+	 * Gets a proxy for the provided file based on its extension.
+	 * 
+	 * @param uri
+	 *            The file for which a proxy will be created.
+	 * @return A proxy for the specified file. This proxy is used to interact
+	 *         with the file through a ParaView server.
+	 * @throws NullPointerException
+	 *             If the specified URI is null.
+	 * @throws IllegalArgumentException
+	 *             If the specified URI's extension is not supported.
+	 */
+	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
+			IllegalArgumentException;
+
+	/**
+	 * Gets the set of supported extensions for all registered proxy builders.
+	 * Note that duplicate extensions are not to be listed. The extensions
+	 * should not include the leading period.
+	 * 
+	 * @return The set of supported extensions for all proxy builders. This
+	 *         should never be {@code null}, and should not change throughout
+	 *         the factory's lifecycle, as builders will be registered via OSGi.
+	 */
+	public Set<String> getExtensions();
+
+	/**
 	 * Registers a new proxy builder using the builder's supported extensions.
 	 * <p>
 	 * This method will usually be called by OSGi.
@@ -57,30 +83,4 @@ public interface IParaViewProxyFactory {
 	 *         extensions).
 	 */
 	public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder);
-
-	/**
-	 * Gets a proxy for the provided file based on its extension.
-	 * 
-	 * @param uri
-	 *            The file for which a proxy will be created.
-	 * @return A proxy for the specified file. This proxy is used to interact
-	 *         with the file through a ParaView server.
-	 * @throws NullPointerException
-	 *             If the specified URI is null.
-	 * @throws IllegalArgumentException
-	 *             If the specified URI's extension is not supported.
-	 */
-	public IParaViewProxy createProxy(URI uri) throws NullPointerException,
-			IllegalArgumentException;
-
-	/**
-	 * Gets the set of supported extensions for all registered proxy builders.
-	 * Note that duplicate extensions are not to be listed. The extensions
-	 * should not include the leading period.
-	 * 
-	 * @return The set of supported extensions for all proxy builders. This
-	 *         should never be {@code null}, and should not change throughout
-	 *         the factory's lifecycle, as builders will be registered via OSGi.
-	 */
-	public Set<String> getExtensions();
 }

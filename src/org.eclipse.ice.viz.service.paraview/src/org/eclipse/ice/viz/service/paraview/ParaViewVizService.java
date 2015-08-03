@@ -40,12 +40,6 @@ public class ParaViewVizService
 		extends ConnectionVizService<IParaViewWebClient> {
 
 	/**
-	 * The factory of builders used to get {@link IParaViewProxy}s for
-	 * manipulating and rendering files with ParaView.
-	 */
-	private IParaViewProxyFactory proxyFactory;
-
-	/**
 	 * The ID of the preferences node under which all connections will be added.
 	 */
 	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.paraview.connections";
@@ -54,6 +48,12 @@ public class ParaViewVizService
 	 * The ID of the preferences page.
 	 */
 	public static final String PREFERENCE_PAGE_ID = "org.eclipse.ice.viz.service.paraview.preferences";
+
+	/**
+	 * The factory of builders used to get {@link IParaViewProxy}s for
+	 * manipulating and rendering files with ParaView.
+	 */
+	private IParaViewProxyFactory proxyFactory;
 
 	/**
 	 * The default constructor.
@@ -117,6 +117,16 @@ public class ParaViewVizService
 		return "ParaView";
 	}
 
+	/**
+	 * Gets the factory of builders used to get {@link IParaViewProxy}s for
+	 * manipulating and rendering files with ParaView.
+	 * 
+	 * @return The factory, or {@code null} if it was never set (via OSGi).
+	 */
+	protected IParaViewProxyFactory getProxyFactory() {
+		return proxyFactory;
+	}
+
 	/*
 	 * Implements a method from IVizService.
 	 */
@@ -157,16 +167,6 @@ public class ParaViewVizService
 			proxyFactory = null;
 		}
 		return;
-	}
-
-	/**
-	 * Gets the factory of builders used to get {@link IParaViewProxy}s for
-	 * manipulating and rendering files with ParaView.
-	 * 
-	 * @return The factory, or {@code null} if it was never set (via OSGi).
-	 */
-	protected IParaViewProxyFactory getProxyFactory() {
-		return proxyFactory;
 	}
 
 }

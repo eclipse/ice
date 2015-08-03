@@ -84,54 +84,6 @@ import com.google.gson.JsonPrimitive;
 public abstract class ProxyProperty {
 
 	/**
-	 * Logger for handling event messages and other information.
-	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(ProxyProperty.class);
-
-	/**
-	 * The associated connection.
-	 */
-	private IVizConnection<IParaViewWebClient> connection;
-
-	/**
-	 * The name of the property. This corresponds to the "name" value in the
-	 * corresponding array element in the "ui" array.
-	 */
-	public final String name;
-	/**
-	 * The index of the property in its parent proxy's "ui" and "properties"
-	 * JsonArrays.
-	 */
-	public final int index;
-	/**
-	 * The type of property. This dictates the format of the "values" and
-	 * "value" JsonElements in its "ui" and "properties" entries, respectively.
-	 */
-	protected final PropertyType type;
-
-	/**
-	 * The allowed values. This is used for properties whose types are
-	 * {@link PropertyType#DISCRETE} or {@link PropertyType#DISCRETE_MULTI}.
-	 */
-	private final Set<String> allowedValues;
-	/**
-	 * The selected values. This is used for properties whose type is
-	 * {@link PropertyType#DISCRETE_MULTI}.
-	 */
-	private final Set<String> values;
-	/**
-	 * The selected value. This is used for properties whose type is
-	 * <b><i>not</i></b> {@link PropertyType#DISCRETE_MULTI}.
-	 */
-	private String value;
-
-	/**
-	 * The name of the property in the "properties" JsonArray.
-	 */
-	private String propertyName;
-
-	/**
 	 * This enumeration is used to determine how certain properties should be
 	 * treated.
 	 * 
@@ -155,6 +107,54 @@ public abstract class ProxyProperty {
 		 */
 		DISCRETE_MULTI;
 	}
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ProxyProperty.class);
+
+	/**
+	 * The associated connection.
+	 */
+	private IVizConnection<IParaViewWebClient> connection;
+	/**
+	 * The name of the property. This corresponds to the "name" value in the
+	 * corresponding array element in the "ui" array.
+	 */
+	public final String name;
+	/**
+	 * The index of the property in its parent proxy's "ui" and "properties"
+	 * JsonArrays.
+	 */
+	public final int index;
+
+	/**
+	 * The type of property. This dictates the format of the "values" and
+	 * "value" JsonElements in its "ui" and "properties" entries, respectively.
+	 */
+	protected final PropertyType type;
+	/**
+	 * The allowed values. This is used for properties whose types are
+	 * {@link PropertyType#DISCRETE} or {@link PropertyType#DISCRETE_MULTI}.
+	 */
+	private final Set<String> allowedValues;
+	/**
+	 * The selected values. This is used for properties whose type is
+	 * {@link PropertyType#DISCRETE_MULTI}.
+	 */
+	private final Set<String> values;
+
+	/**
+	 * The selected value. This is used for properties whose type is
+	 * <b><i>not</i></b> {@link PropertyType#DISCRETE_MULTI}.
+	 */
+	private String value;
+
+	/**
+	 * The name of the property in the "properties" JsonArray.
+	 */
+	private String propertyName;
 
 	/**
 	 * The default constructor.
@@ -199,59 +199,70 @@ public abstract class ProxyProperty {
 	}
 
 	/**
-	 * Sets the connection used for this property. This synchronizes this data
-	 * structure with the "ui" and "properties" arrays for the remote proxy
-	 * object with the ID specified by {@link #getProxyId()}.
+	 * Applies the current selection to the web client.
 	 * 
-	 * @param connection
-	 *            The new connection. If {@code null} or not connected, the
-	 *            property's data will be cleared.
-	 * @return True if the connection changed, false otherwise.
+	 * @return True if the client successfully processed the changes, false
+	 *         otherwise.
 	 */
-	public boolean setConnection(
-			IVizConnection<IParaViewWebClient> connection) {
-		boolean changed = false;
+	protected boolean applyChanges() {
+		boolean updated = false;
 
-		if (connection != this.connection) {
-			changed = true;
+		/*-
+		 * To do this, we need to call "pv.proxy.manager.update" where the
+		 * argument (an array) contains an array of updated properties.
+		 * 
+		 * Each property update element in the array must provide the following:
+		 *   "id" - the ID of the proxy object (file, view, or representation)
+		 *   "name" - the name of the property in the "properties" section
+		 *   "value" - a string containing the value or a JsonArray of selected 
+		 *      values if the widget type is "list-n"  
+		 */
 
-			this.connection = connection;
+		IParaViewWebClient widget = connection.getWidget();
 
-			// Reset everything.
-			propertyName = null;
-			allowedValues.clear();
-			values.clear();
-			value = null;
+		// Set up the basic arguments for "id" and "name".
+		JsonArray updatedProperties = new JsonArray();
+		JsonObject repProperty = new JsonObject();
+		repProperty.addProperty("id", Integer.toString(getProxyId()));
+		repProperty.addProperty("name", propertyName);
 
-			if (connection != null
-					&& connection.getState() == ConnectionState.Connected) {
-				IParaViewWebClient client = connection.getWidget();
+		// Determine the "value" property to be a string or a JsonArray.
+		if (type != PropertyType.DISCRETE_MULTI) {
+			repProperty.addProperty("value", value);
+		} else {
+			JsonArray valueArray = new JsonArray();
+			for (String value : values) {
+				valueArray.add(new JsonPrimitive(value));
+			}
+			repProperty.add("value", valueArray);
+		}
+		updatedProperties.add(repProperty);
 
-				// Find the name of the property in the "properties" object.
-				propertyName = findPropertyName(client);
-
-				// Reset the allowed values.
-				allowedValues.addAll(findAllowedValues(client));
-				if (type != PropertyType.DISCRETE_MULTI) {
-					value = findValue(client);
-				} else {
-					values.addAll(findValues(client));
+		// Send the request to the client.
+		JsonArray args = new JsonArray();
+		args.add(updatedProperties);
+		JsonObject response;
+		try {
+			response = widget.call("pv.proxy.manager.update", args).get();
+			// Get the response.
+			updated = response.get("success").getAsBoolean();
+			if (!updated) {
+				logger.debug(
+						"Failed to change the property \"" + name + "\": ");
+				JsonArray array = response.get("errorList").getAsJsonArray();
+				for (int i = 0; i < array.size(); i++) {
+					logger.debug(array.get(i).toString());
 				}
 			}
-
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		} catch (NullPointerException | ClassCastException
+				| IllegalStateException e) {
+			e.printStackTrace();
 		}
 
-		return changed;
+		return updated;
 	}
-
-	/**
-	 * Gets the ID of the array under which the property's "ui" and "properties"
-	 * arrays are found. This should be one of the file, view, or representation
-	 * proxy IDs.
-	 * 
-	 * @return The ID of the real ParaView proxy on the remote web client.
-	 */
-	protected abstract int getProxyId();
 
 	/**
 	 * Finds the allowed values from the "ui" array of the proxy object.
@@ -383,6 +394,35 @@ public abstract class ProxyProperty {
 	}
 
 	/**
+	 * Gets the ID of the array under which the property's "ui" and "properties"
+	 * arrays are found. This should be one of the file, view, or representation
+	 * proxy IDs.
+	 * 
+	 * @return The ID of the real ParaView proxy on the remote web client.
+	 */
+	protected abstract int getProxyId();
+
+	/**
+	 * Gets the proxy object from the client whose ID matches the value returned
+	 * by {@link #getProxyId()}.
+	 * 
+	 * @return The proxy JsonObject, or {@code null} if it could not be queried
+	 *         from the {@link #connection}.
+	 */
+	protected JsonObject getProxyObject() {
+		JsonObject object = null;
+		JsonArray args = new JsonArray();
+		args.add(new JsonPrimitive(getProxyId()));
+		try {
+			object = connection.getWidget().call("pv.proxy.manager.get", args)
+					.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+		return object;
+	}
+
+	/**
 	 * Gets the current value for the property.
 	 * 
 	 * @return The current value of the property, or {@code null} if the
@@ -402,6 +442,52 @@ public abstract class ProxyProperty {
 	 */
 	public List<String> getValues() {
 		return new ArrayList<String>(values);
+	}
+
+	/**
+	 * Sets the connection used for this property. This synchronizes this data
+	 * structure with the "ui" and "properties" arrays for the remote proxy
+	 * object with the ID specified by {@link #getProxyId()}.
+	 * 
+	 * @param connection
+	 *            The new connection. If {@code null} or not connected, the
+	 *            property's data will be cleared.
+	 * @return True if the connection changed, false otherwise.
+	 */
+	public boolean setConnection(
+			IVizConnection<IParaViewWebClient> connection) {
+		boolean changed = false;
+
+		if (connection != this.connection) {
+			changed = true;
+
+			this.connection = connection;
+
+			// Reset everything.
+			propertyName = null;
+			allowedValues.clear();
+			values.clear();
+			value = null;
+
+			if (connection != null
+					&& connection.getState() == ConnectionState.Connected) {
+				IParaViewWebClient client = connection.getWidget();
+
+				// Find the name of the property in the "properties" object.
+				propertyName = findPropertyName(client);
+
+				// Reset the allowed values.
+				allowedValues.addAll(findAllowedValues(client));
+				if (type != PropertyType.DISCRETE_MULTI) {
+					value = findValue(client);
+				} else {
+					values.addAll(findValues(client));
+				}
+			}
+
+		}
+
+		return changed;
 	}
 
 	/**
@@ -453,21 +539,6 @@ public abstract class ProxyProperty {
 	}
 
 	/**
-	 * A utility method for checking if two possibly {@code null} strings are
-	 * equals.
-	 * 
-	 * @param one
-	 *            The first string.
-	 * @param two
-	 *            The second string.
-	 * @return True if the strings are equivalent (including if both are null),
-	 *         false otherwise.
-	 */
-	private boolean stringsEqual(String one, String two) {
-		return (one != null && one.equals(two)) || (one == null && two == null);
-	}
-
-	/**
 	 * Sets the selected values for the property. Duplicates and bad values are
 	 * ignored.
 	 * <p>
@@ -516,15 +587,18 @@ public abstract class ProxyProperty {
 	}
 
 	/**
-	 * Determines whether the specified value is allowed.
+	 * A utility method for checking if two possibly {@code null} strings are
+	 * equals.
 	 * 
-	 * @param value
-	 *            The value to test.
-	 * @return True if the value is valid, false otherwise.
+	 * @param one
+	 *            The first string.
+	 * @param two
+	 *            The second string.
+	 * @return True if the strings are equivalent (including if both are null),
+	 *         false otherwise.
 	 */
-	public boolean valueAllowed(String value) {
-		return type == PropertyType.UNDEFINED ? validateValue(value)
-				: allowedValues.contains(value);
+	private boolean stringsEqual(String one, String two) {
+		return (one != null && one.equals(two)) || (one == null && two == null);
 	}
 
 	/**
@@ -542,88 +616,14 @@ public abstract class ProxyProperty {
 	}
 
 	/**
-	 * Applies the current selection to the web client.
+	 * Determines whether the specified value is allowed.
 	 * 
-	 * @return True if the client successfully processed the changes, false
-	 *         otherwise.
+	 * @param value
+	 *            The value to test.
+	 * @return True if the value is valid, false otherwise.
 	 */
-	protected boolean applyChanges() {
-		boolean updated = false;
-
-		/*-
-		 * To do this, we need to call "pv.proxy.manager.update" where the
-		 * argument (an array) contains an array of updated properties.
-		 * 
-		 * Each property update element in the array must provide the following:
-		 *   "id" - the ID of the proxy object (file, view, or representation)
-		 *   "name" - the name of the property in the "properties" section
-		 *   "value" - a string containing the value or a JsonArray of selected 
-		 *      values if the widget type is "list-n"  
-		 */
-
-		IParaViewWebClient widget = connection.getWidget();
-
-		// Set up the basic arguments for "id" and "name".
-		JsonArray updatedProperties = new JsonArray();
-		JsonObject repProperty = new JsonObject();
-		repProperty.addProperty("id", Integer.toString(getProxyId()));
-		repProperty.addProperty("name", propertyName);
-
-		// Determine the "value" property to be a string or a JsonArray.
-		if (type != PropertyType.DISCRETE_MULTI) {
-			repProperty.addProperty("value", value);
-		} else {
-			JsonArray valueArray = new JsonArray();
-			for (String value : values) {
-				valueArray.add(new JsonPrimitive(value));
-			}
-			repProperty.add("value", valueArray);
-		}
-		updatedProperties.add(repProperty);
-
-		// Send the request to the client.
-		JsonArray args = new JsonArray();
-		args.add(updatedProperties);
-		JsonObject response;
-		try {
-			response = widget.call("pv.proxy.manager.update", args).get();
-			// Get the response.
-			updated = response.get("success").getAsBoolean();
-			if (!updated) {
-				logger.debug(
-						"Failed to change the property \"" + name + "\": ");
-				JsonArray array = response.get("errorList").getAsJsonArray();
-				for (int i = 0; i < array.size(); i++) {
-					logger.debug(array.get(i).toString());
-				}
-			}
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		} catch (NullPointerException | ClassCastException
-				| IllegalStateException e) {
-			e.printStackTrace();
-		}
-
-		return updated;
-	}
-
-	/**
-	 * Gets the proxy object from the client whose ID matches the value returned
-	 * by {@link #getProxyId()}.
-	 * 
-	 * @return The proxy JsonObject, or {@code null} if it could not be queried
-	 *         from the {@link #connection}.
-	 */
-	protected JsonObject getProxyObject() {
-		JsonObject object = null;
-		JsonArray args = new JsonArray();
-		args.add(new JsonPrimitive(getProxyId()));
-		try {
-			object = connection.getWidget().call("pv.proxy.manager.get", args)
-					.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-		return object;
+	public boolean valueAllowed(String value) {
+		return type == PropertyType.UNDEFINED ? validateValue(value)
+				: allowedValues.contains(value);
 	}
 }

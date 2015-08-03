@@ -22,19 +22,15 @@ package org.eclipse.ice.viz.service.paraview.proxy;
 public abstract class ProxyFeature extends ProxyProperty {
 
 	/**
-	 * True if the view can be colored by the feature, false otherwise (in which
-	 * case a solid color should be used).
+	 * An enumeration for allowed values for the "location" of the visualization
+	 * data for this feature.
+	 * 
+	 * @author Jordan Deyton
+	 *
 	 */
-	protected final boolean canColorBy;
-	/**
-	 * The mode to use when coloring the visualization with this feature.
-	 */
-	protected final ColorByMode colorByMode;
-	/**
-	 * The "location" of the visualization data for this feature.
-	 */
-	protected final ColorByLocation colorByLocation;
-
+	public enum ColorByLocation {
+		POINTS, CELLS;
+	}
 	/**
 	 * An enumeration for allowed values for the mode to use when coloring the
 	 * visualization with a feature.
@@ -45,17 +41,21 @@ public abstract class ProxyFeature extends ProxyProperty {
 	public enum ColorByMode {
 		SOLID, ARRAY;
 	}
+	/**
+	 * True if the view can be colored by the feature, false otherwise (in which
+	 * case a solid color should be used).
+	 */
+	protected final boolean canColorBy;
 
 	/**
-	 * An enumeration for allowed values for the "location" of the visualization
-	 * data for this feature.
-	 * 
-	 * @author Jordan Deyton
-	 *
+	 * The mode to use when coloring the visualization with this feature.
 	 */
-	public enum ColorByLocation {
-		POINTS, CELLS;
-	}
+	protected final ColorByMode colorByMode;
+
+	/**
+	 * The "location" of the visualization data for this feature.
+	 */
+	protected final ColorByLocation colorByLocation;
 
 	/**
 	 * The default constructor. A feature constructed with this method cannot be

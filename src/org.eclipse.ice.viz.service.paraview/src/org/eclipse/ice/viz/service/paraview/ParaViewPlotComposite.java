@@ -106,47 +106,6 @@ public class ParaViewPlotComposite extends
 		return false;
 	}
 
-	/*
-	 * Overrides a method from ConnectionPlotComposite.
-	 */
-	@Override
-	protected Composite createPlotContent(Composite parent, int style,
-			IVizConnection<IParaViewWebClient> connection) throws Exception {
-		// Validate the connection.
-		super.createPlotContent(parent, style, connection);
-
-		// Throw an exception if the plot hasn't finished loading.
-		if (!plot.isLoaded()) {
-			throw new Exception(getClass().getName() + " error: "
-					+ "The VisIt plot has not finished loading.");
-		}
-
-		// Create the overall container.
-		Composite container = new Composite(parent, style);
-		container.setBackground(parent.getBackground());
-		container.setFont(parent.getFont());
-		GridLayout gridLayout = new GridLayout();
-		// Get rid of the default margins (5 px on top, bottom, left, right).
-		gridLayout.marginWidth = 0;
-		gridLayout.marginHeight = 0;
-		container.setLayout(gridLayout);
-
-		// Create the ParaView Canvas.
-		canvas = new ParaViewCanvas(container, SWT.NONE);
-		canvas.setBackground(parent.getBackground());
-		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		canvas.setClient(connection.getWidget());
-
-		// Add a time slider widget.
-		timeSlider = createTimeSlider(container);
-		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-		// Set the context Menu for the ParaView canvas.
-		addContextMenu(canvas);
-
-		return container;
-	}
-
 	/**
 	 * When the proxy changes (which happens on a data load/reload), the UI
 	 * widgets will need to be updated. This includes:
@@ -207,6 +166,47 @@ public class ParaViewPlotComposite extends
 		}
 
 		return changed;
+	}
+
+	/*
+	 * Overrides a method from ConnectionPlotComposite.
+	 */
+	@Override
+	protected Composite createPlotContent(Composite parent, int style,
+			IVizConnection<IParaViewWebClient> connection) throws Exception {
+		// Validate the connection.
+		super.createPlotContent(parent, style, connection);
+
+		// Throw an exception if the plot hasn't finished loading.
+		if (!plot.isLoaded()) {
+			throw new Exception(getClass().getName() + " error: "
+					+ "The VisIt plot has not finished loading.");
+		}
+
+		// Create the overall container.
+		Composite container = new Composite(parent, style);
+		container.setBackground(parent.getBackground());
+		container.setFont(parent.getFont());
+		GridLayout gridLayout = new GridLayout();
+		// Get rid of the default margins (5 px on top, bottom, left, right).
+		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 0;
+		container.setLayout(gridLayout);
+
+		// Create the ParaView Canvas.
+		canvas = new ParaViewCanvas(container, SWT.NONE);
+		canvas.setBackground(parent.getBackground());
+		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		canvas.setClient(connection.getWidget());
+
+		// Add a time slider widget.
+		timeSlider = createTimeSlider(container);
+		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		// Set the context Menu for the ParaView canvas.
+		addContextMenu(canvas);
+
+		return container;
 	}
 
 	/**
