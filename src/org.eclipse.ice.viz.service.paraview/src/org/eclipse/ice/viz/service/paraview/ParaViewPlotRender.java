@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jordan Deyton
  *
  */
+@Deprecated
 public class ParaViewPlotRender
 		extends ConnectionPlotRender<IParaViewWebClient> {
 
@@ -89,7 +90,7 @@ public class ParaViewPlotRender
 	 *            The rendered ConnectionPlot. This cannot be changed.
 	 */
 	public ParaViewPlotRender(Composite parent, ParaViewPlot plot) {
-		super(parent, plot);
+		super(parent, null);
 
 		// Set the reference to the ParaViewPlot.
 		this.plot = plot;

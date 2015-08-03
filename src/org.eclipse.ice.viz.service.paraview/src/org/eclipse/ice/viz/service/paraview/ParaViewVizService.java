@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.paraview;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.ConnectionPlot2;
 import org.eclipse.ice.viz.service.connections.ConnectionVizService;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
 import org.eclipse.ice.viz.service.connections.VizConnection;
@@ -88,7 +88,7 @@ public class ParaViewVizService
 	 * Implements an abstract method from ConnectionVizService.
 	 */
 	@Override
-	protected ConnectionPlot<IParaViewWebClient> createConnectionPlot() {
+	protected ConnectionPlot2<IParaViewWebClient> createConnectionPlot() {
 		return new ParaViewPlot(this);
 	}
 
