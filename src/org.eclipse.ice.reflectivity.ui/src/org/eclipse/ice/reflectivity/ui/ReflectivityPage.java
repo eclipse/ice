@@ -47,7 +47,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
-import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -104,11 +103,6 @@ public class ReflectivityPage extends ICEResourcePage
 	 * cell
 	 */
 	private MaterialSelection selectedCell;
-
-	/**
-	 * Provides the tabs for the properties section and the table data editor
-	 */
-	private ITabDescriptorProvider tabs;
 
 	/**
 	 * The selection changed listeners that are responsible for noting when the
@@ -570,20 +564,26 @@ public class ReflectivityPage extends ICEResourcePage
 				// Create an iterator over a list containing just the data
 				List<Object> list = new ArrayList<Object>();
 				list.add(data);
-				list.add(selectedCell);
+				if (selectedCell != null) {
+					list.add(selectedCell);
+				}
 				return list.iterator();
 			}
 
 			@Override
 			// Always 2 for now
 			public int size() {
-				return 2;
+				return selectedCell == null ? 1 : 2;
 			}
 
 			@Override
 			public Object[] toArray() {
 				// An array containing the data component
-				return new Object[] { data, selectedCell };
+				if (selectedCell != null) {
+					return new Object[] { data, selectedCell };
+				} else {
+					return new DataComponent[] { data };
+				}
 			}
 
 			@Override
@@ -591,7 +591,9 @@ public class ReflectivityPage extends ICEResourcePage
 				// A list containing the data component
 				List<Object> list = new ArrayList<Object>();
 				list.add(data);
-				list.add(selectedCell);
+				if (selectedCell != null) {
+					list.add(selectedCell);
+				}
 				return list;
 			}
 

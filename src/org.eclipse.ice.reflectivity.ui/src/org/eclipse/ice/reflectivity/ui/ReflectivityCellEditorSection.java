@@ -119,6 +119,7 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// Complain
 
 			}
 
@@ -139,10 +140,10 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 		// Call super
 		super.setInput(part, selection);
 
-		System.out.println("Calling set input!");
 		// If the selection is a proper selection, then try to set the new
 		// values
-		if (selection instanceof IStructuredSelection) {
+		if (selection instanceof IStructuredSelection
+				&& ((IStructuredSelection) selection).size() >= 2) {
 			// Get the second object from the selection, should be the material
 			// selection
 			Object second = ((IStructuredSelection) selection).toArray()[1];
@@ -155,11 +156,19 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 						+ " " + this.selection.getSelectedProperty() + ": ");
 				// Set the text of the text field to be the current value for
 				// the selected property
-				this.selectionText.setText(Double
-						.toString(this.selection.getMaterial().getProperty(
-								this.selection.getSelectedProperty())));
+				if (this.selection.getSelectedProperty().equals("Name")) {
+					this.selectionText
+							.setText(this.selection.getMaterial().getName());
+					this.selectionText.setEnabled(false);
+				} else {
+					this.selectionText.setText(Double
+							.toString(this.selection.getMaterial().getProperty(
+									this.selection.getSelectedProperty())));
+					this.selectionText.setEnabled(true);
+				}
 			}
 		}
+
 	}
 
 	/**

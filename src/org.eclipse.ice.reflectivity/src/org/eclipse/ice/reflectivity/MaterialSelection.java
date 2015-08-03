@@ -67,4 +67,25 @@ public class MaterialSelection {
 		return selectedProperty;
 	}
 
+	/**
+	 * Determines if this material selection is equal to another one
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other) {
+		boolean equal = false;
+		if (other != null && other instanceof MaterialSelection) {
+			if (this == other) {
+				equal = true;
+			} else {
+				MaterialSelection selection = (MaterialSelection) other;
+				equal = this.material.equals(selection.material)
+						&& this.selectedProperty
+								.equals(selection.selectedProperty);
+			}
+		}
+		return equal;
+	}
+
 }
