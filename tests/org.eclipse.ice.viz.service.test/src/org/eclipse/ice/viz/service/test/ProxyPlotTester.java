@@ -86,8 +86,10 @@ public class ProxyPlotTester {
 		// Create a default proxy plot.
 		proxy = new ProxyPlot() {
 			@Override
-			protected ProxySeries createProxySeries() {
-				return new FakeProxySeries();
+			protected ProxySeries createProxySeries(ISeries source) {
+				ProxySeries proxy = new FakeProxySeries();
+				proxy.setSource(source);
+				return proxy;
 			}
 		};
 
@@ -260,7 +262,7 @@ public class ProxyPlotTester {
 			assertNotNull(proxySeries);
 			assertEquals(series.size(), proxySeries.size());
 			// For each proxy series created, check its source series matches
-			// the one in the source proxy.
+			// the one in this test class' map of source series.
 			for (int i = 0; i < series.size(); i++) {
 				assertTrue(proxySeries.get(i) instanceof FakeProxySeries);
 				assertSame(series.get(i),
@@ -276,17 +278,15 @@ public class ProxyPlotTester {
 	 */
 	@Test
 	public void checkDraw() {
-
-		// The AbstractPlot cannot be used to draw unless a sub-class overrides
+		// The ProxyPlot cannot be used to draw unless a sub-class overrides
 		// the method.
 		try {
 			proxy.draw(null);
-			fail("AbstractPlotTester error: "
+			fail("ProxyPlotTester error: "
 					+ "No exception thrown when trying to draw.");
 		} catch (Exception e) {
 			// Exception thrown as expected.
 		}
-		return;
 	}
 
 	/**
