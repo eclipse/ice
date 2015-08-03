@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.ICEResourcePage;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
@@ -38,6 +37,12 @@ import org.eclipse.swt.widgets.Composite;
 public class FakePlot implements IPlot {
 
 	/**
+	 * A list of all child composites created when
+	 * {@link #draw(String, String, Composite)} is called.
+	 */
+	public final List<Composite> children = new ArrayList<Composite>();
+
+	/**
 	 * The map of dependent series. This will not be populated with anything by
 	 * default.
 	 */
@@ -50,21 +55,28 @@ public class FakePlot implements IPlot {
 	public ISeries indepSeries = new CSVSeries();
 
 	/**
-	 * A list of all child composites created when
-	 * {@link #draw(String, String, Composite)} is called.
-	 */
-	public final List<Composite> children = new ArrayList<Composite>();
-
-	/**
 	 * The name or label for this plot
 	 */
 	public String name = "";
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Adds the specified series to this plot under the given category
 	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.IPlot#draw(org.eclipse.swt.widgets.Composite)
+	 * @param catagory
+	 *            The category that this series falls under
+	 * @param seriesToAdd
+	 *            The series to add
+	 */
+	public void addDependentSeries(String catagory, ISeries seriesToAdd) {
+		if (depSeries.get(catagory) == null) {
+			depSeries.put(catagory, new ArrayList<ISeries>());
+		}
+		depSeries.get(catagory).add(seriesToAdd);
+
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
@@ -72,6 +84,30 @@ public class FakePlot implements IPlot {
 		children.add(child);
 		child.setMenu(parent.getMenu());
 		return child;
+	}
+
+	/*
+	 * Implements a method from IPlot.
+	 */
+	@Override
+	public List<String> getCategories() {
+		return new ArrayList<String>(depSeries.keySet());
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
+	 */
+	@Override
+	public URI getDataSource() {
+		return null;
+	}
+
+	/*
+	 * Implements a method from IPlot.
+	 */
+	@Override
+	public List<ISeries> getDependentSeries(String category) {
+		return depSeries.get(category);
 	}
 
 	/**
@@ -82,9 +118,15 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.VizCanvas#getNumberOfAxes()
+	 * Implements a method from IPlot.
+	 */
+	@Override
+	public ISeries getIndependentSeries() {
+		return indepSeries;
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
 	 */
 	@Override
 	public int getNumberOfAxes() {
@@ -92,76 +134,7 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.VizCanvas#getProperties()
-	 */
-	@Override
-	public Map<String, String> getProperties() {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.VizCanvas#setProperties(java.util.Map)
-	 */
-	@Override
-	public void setProperties(Map<String, String> props) throws Exception {
-		// Do nothing.
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.VizCanvas#getDataSource()
-	 */
-	@Override
-	public URI getDataSource() {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizCanvas#getSourceHost()
-	 */
-	@Override
-	public String getSourceHost() {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizCanvas#isSourceRemote()
-	 */
-	@Override
-	public boolean isSourceRemote() {
-		return false;
-	}
-
-	@Override
-	public void redraw() {
-		// Nothing TODO- fake plot
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IPlot#setPlotTitle(java.lang.String)
-	 */
-	@Override
-	public void setPlotTitle(String title) {
-		name = title;
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IPlot#getPlotTitle()
+	 * Implements a method from IPlot.
 	 */
 	@Override
 	public String getPlotTitle() {
@@ -169,26 +142,36 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.IPlot#setIndependentSeries(org.eclipse.ice.
-	 * viz.service.ISeries)
+	 * Implements a method from IVizCanvas.
 	 */
 	@Override
-	public void setIndependentSeries(ISeries series) {
-		indepSeries = series;
-		return;
+	public Map<String, String> getProperties() {
+		return null;
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IPlot#getIndependentSeries()
+	 * Implements a method from IVizCanvas.
 	 */
 	@Override
-	public ISeries getIndependentSeries() {
-		return indepSeries;
+	public String getSourceHost() {
+		return null;
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
+	 */
+	@Override
+	public boolean isSourceRemote() {
+		return false;
+	}
+
+	/*
+	 * Implements a method from IVizCanvas.
+	 */
+	@Override
+	public void redraw() {
+		// Nothing TODO- fake plot
+		return;
 	}
 
 	/**
@@ -212,29 +195,30 @@ public class FakePlot implements IPlot {
 		}
 	}
 
-	/**
-	 * Adds the specified series to this plot under the given category
-	 * 
-	 * @param catagory
-	 *            The category that this series falls under
-	 * @param seriesToAdd
-	 *            The series to add
+	/*
+	 * Implements a method from IPlot.
 	 */
-	public void addDependentSeries(String catagory, ISeries seriesToAdd) {
-		if (depSeries.get(catagory) == null) {
-			depSeries.put(catagory, new ArrayList<ISeries>());
-		}
-		depSeries.get(catagory).add(seriesToAdd);
-
-	}
-
 	@Override
-	public List<ISeries> getDependentSeries(String category) {
-		return depSeries.get(category);
+	public void setIndependentSeries(ISeries series) {
+		indepSeries = series;
+		return;
 	}
 
+	/*
+	 * Implements a method from IPlot.
+	 */
 	@Override
-	public List<String> getCategories() {
-		return new ArrayList<String>(depSeries.keySet());
+	public void setPlotTitle(String title) {
+		name = title;
+		return;
 	}
+
+	/*
+	 * Implements a method from IVizCanvas.
+	 */
+	@Override
+	public void setProperties(Map<String, String> props) throws Exception {
+		// Do nothing.
+	}
+
 }

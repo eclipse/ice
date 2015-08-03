@@ -15,18 +15,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
-import org.eclipse.ice.viz.service.csv.CSVSeries;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.eclipse.gef.finder.SWTBotGefTestCase;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
@@ -50,12 +43,17 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 	private static File file;
 
 	/**
+	 * The plot that is to be tested.
+	 */
+	private static CSVPlot plot;
+
+	/**
 	 * The test shell
 	 */
 	private Shell shell;
 
 	/**
-	 * @throws java.lang.Exception
+	 * Sets up a temporary csv file.
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -79,11 +77,31 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		writer.println(line5);
 		writer.close();
 
+		// Set the data source and wait for it to be loaded.
+		plot = new CSVPlot();
+		try {
+			plot.setDataSource(file.toURI());
+		} catch (Exception e) {
+			fail("CSVPlot error: "
+					+ "Exception while setting the data source.");
+		}
+		long maxWait = 5000;
+		long interval = 50;
+		long totalWait = 0;
+		while (!plot.isLoaded() && totalWait < maxWait) {
+			try {
+				Thread.sleep(interval);
+				totalWait += interval;
+			} catch (InterruptedException e) {
+				// Nothing to do.
+			}
+		}
+
 		return;
 	}
 
 	/**
-	 * @throws java.lang.Exception
+	 * Delets the temporary csv file.
 	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
@@ -95,172 +113,192 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#getPlotTypes()}.
-	 * 
-	 * @throws Exception
+	 * Checks the default plot values before any data is loaded.
 	 */
 	@Test
-	public void testGetPlotTypes() throws Exception {
+	public void checkDefaults() {
 
-		// Create and load the plot
-		CSVPlot plot = new CSVPlot(file.toURI());
-		plot.load();
-		Thread.currentThread();
-		Thread.sleep(2000);
+		CSVPlot plot = new CSVPlot();
 
-		// Test the independent series
-		CSVSeries series = (CSVSeries) plot.getIndependentSeries();
-		assertEquals(series.getLabel(), "t");
-		assertEquals(series.get(0), 1.0);
-		assertEquals(series.get(1), 2.0);
-		assertEquals(series.get(2), 3.0);
-		// No random time should be assigned
-		assertEquals(series.getTime(), 0.0);
+		// ---- Test IPlot Getters ---- //
+		// Initially the categories are empty.
+		assertNotNull(plot.getCategories());
+		assertTrue(plot.getCategories().isEmpty());
 
-		ArrayList<ISeries> depSeries = (ArrayList<ISeries>) plot
-				.getDependentSeries(null);
-		assertEquals(depSeries.size(), 2);
-		// Check the dependent series. No real need to check the values, as that
-		// is the same for the independent series
-		CSVSeries dep1 = (CSVSeries) depSeries.get(0);
-		assertTrue(
-				dep1.getLabel().equals("p_x") || dep1.getLabel().equals("p_y"));
-		// Check the second series
-		CSVSeries dep2 = (CSVSeries) depSeries.get(1);
-		assertTrue(
-				dep2.getLabel().equals("p_x") || dep2.getLabel().equals("p_y"));
+		// Initially, the source is unset.
+		assertNull(plot.getDataSource());
+		assertNull(plot.getSourceHost());
+		assertFalse(plot.isSourceRemote());
 
-		// Try adding a series and seeing if the plot changes
-		CSVSeries newSeries = new CSVSeries();
-		newSeries.add(4.0);
-		newSeries.add(6.0);
-		newSeries.add(8.0);
-		newSeries.setLabel("p_z");
-		plot.addDependentSeries(newSeries);
+		// There are no dependent series.
+		assertNull(plot.getDependentSeries(IPlot.DEFAULT_CATEGORY));
 
-		// Check to see if it was added
-		assertEquals(plot.getDependentSeries(null).size(), 3);
+		// There is no independent series.
+		assertNull(plot.getIndependentSeries());
+
+		// There are 2 axes.
+		assertEquals(2, plot.getNumberOfAxes());
+
+		// The title is null.
+		assertEquals("", plot.getPlotTitle());
+
+		// The properties is an empty map.
+		assertNotNull(plot.getProperties());
+		assertTrue(plot.getProperties().isEmpty());
+		// ---------------------------- //
+
+		// It is not loaded.
+		assertFalse(plot.isLoaded());
 
 		return;
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#getNumberOfAxes()}.
+	 * Checks that the categories are correctly loaded from the file.
 	 */
 	@Test
-	public void testGetNumberOfAxes() {
-		IPlot plot = new CSVPlot(null);
-		// The CSVPlot should always have only 2 axes.
+	public void checkCategories() {
+		// The only category should be the default one.
+		assertNotNull(plot.getCategories());
+		assertEquals(1, plot.getCategories().size());
+		assertTrue(plot.getCategories().contains(IPlot.DEFAULT_CATEGORY));
+	}
+
+	/**
+	 * Checks that the data source getters are correctly loaded from the file.
+	 */
+	@Test
+	public void checkDataSource() {
+		// The data source should be set, and it is a local file.
+		assertEquals(file.toURI(), plot.getDataSource());
+		assertEquals("localhost", plot.getSourceHost());
+		assertFalse(plot.isSourceRemote());
+	}
+
+	/**
+	 * Checks that drawing is not supported directly by the CSVPlot, but from a
+	 * proxy plot.
+	 */
+	@Test
+	public void checkDraw() {
+		try {
+			plot.draw(shell);
+			fail(getClass().getName() + " failure: "
+					+ "This plot is not intended to support drawing.");
+		} catch (Exception e) {
+			// Exception thrown as expected.
+		}
+	}
+
+	/**
+	 * Checks that the dependent series are correctly loaded from the file.
+	 */
+	@Test
+	public void checkDependentSeries() {
+		// Get the dependent series.
+		List<ISeries> seriesList = plot
+				.getDependentSeries(IPlot.DEFAULT_CATEGORY);
+		ISeries series;
+		Object[] data;
+
+		// Check the size of the list of dependent series.
+		assertNotNull(seriesList);
+		assertEquals(2, seriesList.size());
+
+		// Check the first series.
+		series = seriesList.get(0);
+		assertEquals(IPlot.DEFAULT_CATEGORY, series.getCategory());
+		assertEquals("p_x", series.getLabel());
+		data = series.getDataPoints();
+		assertNotNull(data);
+		assertEquals(3, data.length);
+		assertEquals(1.0, (double) data[0], 1e-7);
+		assertEquals(4.0, (double) data[1], 1e-7);
+		assertEquals(9.0, (double) data[2], 1e-7);
+
+		// Check the second series.
+		series = seriesList.get(1);
+		assertEquals(IPlot.DEFAULT_CATEGORY, series.getCategory());
+		assertEquals("p_y", series.getLabel());
+		data = series.getDataPoints();
+		assertNotNull(data);
+		assertEquals(3, data.length);
+		assertEquals(1.0, (double) data[0], 1e-7);
+		assertEquals(8.0, (double) data[1], 1e-7);
+		assertEquals(27.0, (double) data[2], 1e-7);
+
+		return;
+	}
+
+	/**
+	 * Checks that the independent series is correctly loaded from the file.
+	 */
+	@Test
+	public void checkIndependentSeries() {
+		ISeries series = plot.getIndependentSeries();
+		Object[] data;
+
+		// Check the content of the series.
+		assertNotNull(series);
+		assertEquals(IPlot.DEFAULT_CATEGORY, series.getCategory());
+		assertEquals("t", series.getLabel());
+		data = series.getDataPoints();
+		assertNotNull(data);
+		assertEquals(3, data.length);
+		assertEquals(1.0, (double) data[0], 1e-7);
+		assertEquals(2.0, (double) data[1], 1e-7);
+		assertEquals(3.0, (double) data[2], 1e-7);
+
+		return;
+	}
+
+	/**
+	 * Checks that loading notifies plot listeners.
+	 */
+	@Test
+	public void checkLoading() {
+
+		// Add a listener.
+		FakePlotListener listener = new FakePlotListener();
+		plot.addPlotListener(listener);
+
+		// Reload the plot.
+		plot.load();
+
+		// The listener should have been notified.
+		assertTrue(listener.wasNotified(2000));
+		assertTrue(plot.isLoaded());
+		assertSame(plot, listener.plot);
+		assertEquals("loaded", listener.key);
+		assertEquals("true", listener.value);
+
+		return;
+	}
+
+	/**
+	 * Checks that the number of axes remains unchanged after loading.
+	 */
+	@Test
+	public void checkNumberOfAxes() {
 		assertEquals(2, plot.getNumberOfAxes());
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#getProperties()}.
-	 * 
-	 * @throws Exception
+	 * Checks the default plot title after loading.
 	 */
 	@Test
-	public void testGetProperties() throws Exception {
-
-		IPlot plot = new CSVPlot(null);
-		Map<String, String> props = plot.getProperties();
-		// The CSVPlot should always have an empty property map, at least for
-		// now.
-		assertTrue(props.isEmpty());
-		// Make sure that passing them back doesn't spontaneously change
-		// anything.
-		plot.setProperties(props);
-		props = null;
-		props = plot.getProperties();
-		assertTrue(props.isEmpty());
-
-		return;
+	public void checkPlotTitle() {
+		assertEquals("CSVPlot.csv", plot.getPlotTitle());
 	}
 
 	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#getDataSource()}.
+	 * Checks that no properties are loaded from the file (it's a CSV file after
+	 * all).
 	 */
 	@Test
-	public void testGetDataSource() {
-
-		// Create the plot using the source file
-		IPlot plot = new CSVPlot(file.toURI());
-		// Make sure the plot reports the right file
-		assertEquals(file.toURI(), plot.getDataSource());
-		// Make sure it reports the right host details, namely localhost
-		assertFalse(plot.isSourceRemote());
-
-		return;
+	public void checkProperties() {
+		// The properties are still an empty map.
+		assertNotNull(plot.getProperties());
+		assertTrue(plot.getProperties().isEmpty());
 	}
-
-	/**
-	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.csv.CSVPlot#draw(java.lang.String, org.eclipse.swt.widgets.Composite)}
-	 * .
-	 * 
-	 * @throws Exception
-	 */
-	@Test
-	public void testDraw() throws Exception {
-
-		// Create and load the plot
-		final CSVPlot plot = new CSVPlot(file.toURI());
-		plot.load();
-		// Give a couple of seconds for the load() thread to run.
-		Thread.currentThread();
-		Thread.sleep(2000);
-
-		// Grab the shell to render the plot.
-		Display.getDefault().syncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				shell = new Shell(Display.getDefault(), SWT.SHELL_TRIM);
-				shell.setFullScreen(true);
-				shell.setText("TITLEBAR!!!!");
-				shell.setLayout(new GridLayout(1, false));
-				// Create a composite for it.
-				Composite testComposite = new Composite(shell, SWT.None);
-				testComposite.setLayout(new GridLayout(1, true));
-				testComposite.setLayoutData(
-						new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1));
-
-				// Draw the plot in the test composite.
-				try {
-					plot.draw(testComposite);
-				} catch (Exception e) {
-					// Complain
-					e.printStackTrace();
-					fail();
-				}
-
-				// Open the shell and lay it out before running the tests.
-				shell.open();
-				shell.layout();
-			}
-		});
-
-		// FIXME The slider should only show if the plot has multiple times
-		// defined.
-		// // Check for a few simple things just to make sure the plot area was
-		// // rendered.
-		// SWTBotLabel sliderLabel = bot.label("Slider: ");
-		// SWTBotButton upButton = bot.button(">");
-		// SWTBotButton downButton = bot.button("<");
-
-		// Cleaning up just seems like the right proper thing to do.
-		Display.getDefault().asyncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				shell.dispose();
-			}
-		});
-		return;
-	}
-
 }

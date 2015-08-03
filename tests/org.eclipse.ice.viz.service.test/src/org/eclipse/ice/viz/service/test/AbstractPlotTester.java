@@ -23,11 +23,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.viz.service.AbstractPlot;
-import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.IPlotListener;
 import org.eclipse.ice.viz.service.ISeries;
 import org.junit.Before;
 import org.junit.Test;
@@ -209,18 +206,7 @@ public class AbstractPlotTester {
 		// You can't add a null listener.
 		assertFalse(plot.addPlotListener(null));
 
-		final AtomicReference<IPlot> plotRef = new AtomicReference<IPlot>();
-		final AtomicReference<String> keyRef = new AtomicReference<String>();
-		final AtomicReference<String> valueRef = new AtomicReference<String>();
-
-		IPlotListener listener = new IPlotListener() {
-			@Override
-			public void plotUpdated(IPlot plot, String key, String value) {
-				plotRef.set(plot);
-				keyRef.set(key);
-				valueRef.set(value);
-			}
-		};
+		FakePlotListener listener = new FakePlotListener();
 
 		// You can only add a listener once.
 		assertTrue(plot.addPlotListener(listener));
@@ -229,20 +215,11 @@ public class AbstractPlotTester {
 
 		// The listener should have been notified. This means the plot, key, and
 		// value references should have been set.
-		long maxWait = 2000;
-		long interval = 50;
-		long totalWait = 0;
-		while (plotRef.get() != null && totalWait < maxWait) {
-			try {
-				Thread.sleep(interval);
-				totalWait += interval;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		assertSame(plot, plotRef.getAndSet(null));
-		assertEquals("key", keyRef.getAndSet(null));
-		assertEquals("value", valueRef.getAndSet(null));
+		assertTrue(listener.wasNotified(2000));
+		assertSame(plot, listener.plot);
+		assertEquals("key", listener.key);
+		assertEquals("value", listener.value);
+		listener.reset();
 
 		// You can only remove a listener once.
 		assertTrue(plot.removePlotListener(listener));
@@ -251,14 +228,7 @@ public class AbstractPlotTester {
 		// The listener should not have been notified. This means the plot, key,
 		// and value references are still unset.
 		plot.setPlotTitle("trigger another notification");
-		try {
-			Thread.sleep(interval);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertNull(plotRef.get());
-		assertNull(keyRef.get());
-		assertNull(valueRef.get());
+		assertFalse(listener.wasNotified(500));
 
 		return;
 	}
