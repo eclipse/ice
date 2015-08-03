@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014- UT-Battelle, LLC.
+ * Copyright (c) 2014-2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,22 +11,21 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.eclipse.ice.viz.service.PlotRender;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.ConnectionSeries;
 import org.eclipse.ice.viz.service.connections.visit.VisItConnectionAdapter;
 import org.eclipse.swt.widgets.Composite;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
 import visit.java.client.FileInfo;
 import visit.java.client.ViewerMethods;
 
@@ -34,6 +33,7 @@ import visit.java.client.ViewerMethods;
  * This class provides the VisIt implementation for an IPlot.
  * 
  * @author Jay Jay Billings, Jordan Deyton
+ * @author Kasper Gammeltoft- Refactor to handle new updates to IPlot
  * 
  */
 public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
@@ -102,11 +102,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	 * @see org.eclipse.ice.viz.service.MultiPlot#findPlotTypes(java.net.URI)
 	 */
 	@Override
-	protected Map<String, String[]> findPlotTypes(URI file) throws IOException,
-			Exception {
-
-		// Set the default return value.
-		Map<String, String[]> plotTypes = new TreeMap<String, String[]>();
+	protected void addAllPlotTypes(URI file) throws IOException, Exception {
 
 		// Get the connection adapter.
 		IConnectionAdapter<VisItSwtConnection> adapter = getConnectionAdapter();
@@ -120,18 +116,36 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 		methods.openDatabase(sourcePath);
 		FileInfo info = methods.getDatabaseInfo();
 
-		// Get all of the plot types and plots in the file.
+		// Get all of the plot types and plots in the file and add them as
+		// series to this plot
 		List<String> plots;
 		plots = info.getMeshes();
-		plotTypes.put("Meshes", plots.toArray(new String[plots.size()]));
+		convertToSeries("Meshes", plots);
 		plots = info.getMaterials();
-		plotTypes.put("Materials", plots.toArray(new String[plots.size()]));
+		convertToSeries("Materials", plots);
 		plots = info.getScalars();
-		plotTypes.put("Scalars", plots.toArray(new String[plots.size()]));
+		convertToSeries("Scalars", plots);
 		plots = info.getVectors();
-		plotTypes.put("Vectors", plots.toArray(new String[plots.size()]));
+		convertToSeries("Vectors", plots);
 
-		return plotTypes;
+		return;
+	}
+
+	/**
+	 * Converts each string in the types array to a VisItSeries, and adds it to
+	 * the dependent series array under the specified category
+	 * 
+	 * @param category
+	 *            The category to add the series under
+	 * @param types
+	 *            The type of plot this series will represent
+	 */
+	private void convertToSeries(String category, List<String> types) {
+		for (String str : types) {
+			ConnectionSeries newSeries = new ConnectionSeries(str);
+			newSeries.setCategory(category);
+			this.addDependentSeries(category, newSeries);
+		}
 	}
 
 	/**
@@ -165,9 +179,8 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 			String host = source.getHost();
 			// TODO VisIt should just be able to handle a raw URI... The code
 			// below can't handle remote Windows machines.
-			if ((host == null || "localhost".equals(host))
-					&& System.getProperty("os.name").toLowerCase()
-							.contains("windows")) {
+			if ((host == null || "localhost".equals(host)) && System
+					.getProperty("os.name").toLowerCase().contains("windows")) {
 				if (path.startsWith("/")) {
 					path = path.substring(1);
 					path = path.replace("/",
@@ -200,7 +213,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 	@Override
 	public void redraw() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

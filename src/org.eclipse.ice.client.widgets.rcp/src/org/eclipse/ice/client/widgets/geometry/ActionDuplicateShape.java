@@ -15,9 +15,9 @@ package org.eclipse.ice.client.widgets.geometry;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
 import org.eclipse.ice.datastructures.form.geometry.ComplexShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -132,14 +132,14 @@ public class ActionDuplicateShape extends Action {
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					ArrayList<IShape> childShapes = geometry.getShapes();
+					ArrayList<IShape> childShapes = geometry.getGeometry().getShapes();
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					// Add the cloned shape to the root GeometryComponent
 
 					synchronized (geometry) {
 						childShapes.add(selectedShapeIndex + 1, clonedShape);
-						geometry.setShapes(childShapes);
+						geometry.getGeometry().setShapes(childShapes);
 					}
 
 					view.treeViewer.refresh();

@@ -25,14 +25,22 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a view that shows the scattering density in a plot.
- * 
+ *
  * @author Jay Jay Billings
  *
  */
 public class ScatteringDensityViewPart extends ViewPart {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ScatteringDensityViewPart.class);
 
 	/**
 	 * The constructor
@@ -43,15 +51,15 @@ public class ScatteringDensityViewPart extends ViewPart {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
 	 * .Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		
-		
+
+
 		try {
 			Bundle bundle = FrameworkUtil.getBundle(this.getClass());
 			URL picBundleURL = bundle.getEntry("densityExample.png");
@@ -63,15 +71,15 @@ public class ScatteringDensityViewPart extends ViewPart {
 			label.setImage(image);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
-		
+
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override

@@ -3,6 +3,7 @@ package org.eclipse.ice.reflectivity.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.reflectivity.MaterialSelection;
 import org.eclipse.jface.viewers.IFilter;
@@ -44,6 +45,11 @@ public class ReflectivityTabDescriptorProvider
 	DataComponent component;
 
 	/**
+	 * The list component for the current reflectivity model table
+	 */
+	ListComponent listComp;
+
+	/**
 	 * The table selection in the model
 	 */
 	MaterialSelection tableSelection;
@@ -61,7 +67,8 @@ public class ReflectivityTabDescriptorProvider
 		@Override
 		public boolean select(Object toTest) {
 			return (toTest instanceof DataComponent
-					|| toTest instanceof MaterialSelection);
+					|| toTest instanceof MaterialSelection
+					|| toTest instanceof ListComponent);
 		}
 	};
 
@@ -82,16 +89,20 @@ public class ReflectivityTabDescriptorProvider
 			Object[] selectedObjects = ((IStructuredSelection) selection)
 					.toArray();
 			// If there are objects in the selection
-			if (selectedObjects.length >= 2) {
+			if (selectedObjects.length >= 3) {
 				// Set the data component if it is valid
 				Object first = selectedObjects[0];
 				if (first instanceof DataComponent) {
 					component = (DataComponent) first;
 				}
-				// Set the selection from the table if it is valid
 				Object second = selectedObjects[1];
-				if (second instanceof MaterialSelection) {
-					tableSelection = (MaterialSelection) second;
+				if (second instanceof ListComponent) {
+					listComp = (ListComponent) second;
+				}
+				// Set the selection from the table if it is valid
+				Object third = selectedObjects[2];
+				if (third instanceof MaterialSelection) {
+					tableSelection = (MaterialSelection) third;
 				}
 			}
 
@@ -203,6 +214,7 @@ public class ReflectivityTabDescriptorProvider
 					ReflectivityCellEditorSection section;
 					section = new ReflectivityCellEditorSection();
 					section.setMaterialSelection(tableSelection);
+					section.setListComponent(listComp);
 					return section;
 
 				}

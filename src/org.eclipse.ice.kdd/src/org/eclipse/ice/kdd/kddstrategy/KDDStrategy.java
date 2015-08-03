@@ -21,6 +21,8 @@ import org.eclipse.ice.analysistool.AnalysisAssetType;
 import org.eclipse.ice.analysistool.IAnalysisAsset;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -31,15 +33,21 @@ import org.eclipse.ice.datastructures.form.Entry;
  * realization of the IAnalysisAsset interface, and as such, must produce a URI
  * of the data it represents to be displayed to the user.
  * </p>
- * 
+ *
  * @author Alex McCaskey
  */
 public abstract class KDDStrategy implements IAnalysisAsset {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+
 	/**
 	 * <p>
 	 * The reference to the data this KDDStrategy has to work with.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected ArrayList<IDataProvider> dataForAnalysis;
 
@@ -47,7 +55,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * The name of this IAnalysisAsset.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected String assetName;
 
@@ -55,7 +63,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * This IAnalysisAsset's list of properties.
 	 * </p>
-	 * 
+	 *
 	 */
 	protected HashMap<String, String> properties;
 
@@ -63,7 +71,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * The URI of this IAnalysisAsset..
 	 * </p>
-	 * 
+	 *
 	 */
 	protected URI uri;
 
@@ -73,13 +81,14 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * first IDataProvider of that array will be the loaded data to be analyzed.
 	 * Any other IDataProviders will be reference or extra data.
 	 * </p>
-	 * 
+	 *
 	 * @param name
 	 * @param data
 	 * @throws IllegalArgumentException
 	 */
 	public KDDStrategy(String name, ArrayList<IDataProvider> data)
 			throws IllegalArgumentException {
+		this();
 		assetName = name;
 		dataForAnalysis = data;
 		properties = new HashMap<String, String>();
@@ -91,7 +100,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public abstract boolean executeStrategy();
@@ -100,9 +109,11 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * The constructor.
 	 * </p>
-	 * 
+	 *
 	 */
 	public KDDStrategy() {
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
 		assetName = "None";
 		dataForAnalysis = new ArrayList<IDataProvider>();
 		properties = new HashMap<String, String>();
@@ -112,10 +123,11 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * The constructor, with name injection.
 	 * </p>
-	 * 
+	 *
 	 * @param name
 	 */
 	public KDDStrategy(String name) {
+		this();
 		assetName = name;
 		dataForAnalysis = new ArrayList<IDataProvider>();
 		properties = new HashMap<String, String>();
@@ -125,7 +137,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * This operation returns the name of the asset.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The name
 	 *         </p>
@@ -139,7 +151,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * This operation returns the type of the IAnalysisAsset.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The type of the asset
 	 *         </p>
@@ -154,7 +166,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * This operation returns the value of one of the assets properties,
 	 * requested by a key. If that property does not exist, it returns null.
 	 * </p>
-	 * 
+	 *
 	 * @param key
 	 *            <p>
 	 *            The key of the property that should be retrieved.
@@ -178,7 +190,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * returns true if the key is in the properties list and false if not.
 	 * Calling this operation will never add new properties to the list.
 	 * </p>
-	 * 
+	 *
 	 * @param key
 	 *            <p>
 	 *            The key whose value should be set.
@@ -236,7 +248,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * This operations resets the properties of the asset to their default
 	 * state.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Override
 	public void resetProperties() {
@@ -248,7 +260,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * This operation returns the entire list of properties for this
 	 * IAnalysisAsset as an instance of Java's Properties class.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The properties of this asset or null if no properties exist.
 	 *         </p>
@@ -269,7 +281,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * This operation returns the asset's properties as a list of Entry objects.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -293,7 +305,7 @@ public abstract class KDDStrategy implements IAnalysisAsset {
 	 * <p>
 	 * This operation returns the URI of the asset.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The URI
 	 *         </p>

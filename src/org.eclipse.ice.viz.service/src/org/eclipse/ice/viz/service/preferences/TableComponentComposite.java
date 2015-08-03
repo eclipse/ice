@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IElementComparer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -221,7 +222,7 @@ public class TableComponentComposite extends Composite {
 	private void createActions() {
 
 		// Create the add action. It will add a new, default row.
-		addRowAction = new Action("+", Action.AS_PUSH_BUTTON) {
+		addRowAction = new Action("+", IAction.AS_PUSH_BUTTON) {
 			@Override
 			public void run() {
 				tableComponent.addRow();
@@ -231,7 +232,7 @@ public class TableComponentComposite extends Composite {
 
 		// Create the remove action. It will remove all rows selected in the
 		// TableViewer from the TableComponent.
-		removeRowAction = new Action("-", Action.AS_PUSH_BUTTON) {
+		removeRowAction = new Action("-", IAction.AS_PUSH_BUTTON) {
 			@Override
 			public void run() {
 				// The action should only be run once.

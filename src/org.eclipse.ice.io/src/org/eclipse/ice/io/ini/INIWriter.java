@@ -28,6 +28,8 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The INIWriter provides functionality for writing a group of TableComponents
@@ -37,6 +39,11 @@ import org.eclipse.ice.io.serializable.IWriter;
  *
  */
 public class INIWriter implements IWriter {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(INIWriter.class);
 
 	/**
 	 * Regex to match the section headers
@@ -133,13 +140,13 @@ public class INIWriter implements IWriter {
 				file.setContents(in, true, false, new NullProgressMonitor());
 				in.close();
 			} catch (FileNotFoundException e) {
-				System.out.println("INIWriter Message: Could not find "
+				logger.info("INIWriter Message: Could not find "
 						+ file.getName() + " for writing.");
 			} catch (IOException e) {
-				System.out.println("INIWriter Message: Could not write to "
+				logger.info("INIWriter Message: Could not write to "
 						+ file.getName() + " du to an IO error");
 			} catch (CoreException e) {
-				System.out.println("INIWriter Message: Could not write to "
+				logger.info("INIWriter Message: Could not write to "
 						+ file.getName() + " due to an ICE Core error.");
 			}
 		}

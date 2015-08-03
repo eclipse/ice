@@ -37,9 +37,9 @@ import org.eclipse.ice.item.ItemType;
 /**
  * This class extends the Item to create a modeler for Nek5000 input files. It
  * uses existing Nek5000 examples to seed the Form.
- * 
+ *
  * @author Jay Jay Billings and Anna Wojtowicz
- * 
+ *
  */
 @XmlRootElement(name = "NekModel")
 public class NekModel extends Item {
@@ -86,7 +86,7 @@ public class NekModel extends Item {
 
 	/**
 	 * The default constructor.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The Eclipse IProject that stores data related to this Item.
 	 */
@@ -100,7 +100,7 @@ public class NekModel extends Item {
 	 * This operation returns the list of reafiles in the
 	 * "Nek5000_Model_Builder" folder of the project space, or null if the
 	 * folder does not exist or there are no files.
-	 * 
+	 *
 	 * @return
 	 */
 	private ArrayList<String> getProjectFiles() {
@@ -120,10 +120,8 @@ public class NekModel extends Item {
 					// Add them to the list of input files
 					for (IResource resource : resources) {
 						// Dump the name of this file if debugging is enabled
-						if (debuggingEnabled) {
-							System.out.println("NekModel Message: "
-									+ "Found file " + resource.getName() + ".");
-						}
+						logger.debug("NekModel Message: " + "Found file "
+								+ resource.getName() + ".");
 						// See if the resource is a file with a .rea extension.
 						if (resource.getType() == IResource.FILE
 								&& resource.getProjectRelativePath()
@@ -137,7 +135,7 @@ public class NekModel extends Item {
 					return null;
 				}
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -149,7 +147,7 @@ public class NekModel extends Item {
 	 * reafiles that may be selected by a user from the Nek5000_Model_Builder
 	 * directory. This component will be empty if there are no files and contain
 	 * an Entry that says "No problems available."
-	 * 
+	 *
 	 * @param files
 	 *            The set of Nek reafiles available to be loaded
 	 * @return the data component
@@ -211,11 +209,11 @@ public class NekModel extends Item {
 	 * This operation overrides Item.reviewEntries() to review the selected
 	 * example problem and load a different one, if required.
 	 * </p>
-	 * 
+	 *
 	 * @param preparedForm
 	 *            The Form to review
 	 * @return The status
-	 * 
+	 *
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
@@ -249,23 +247,17 @@ public class NekModel extends Item {
 				try {
 					// Load new problem and set new example name
 					loadExample(problemPathName);
-					System.out.println("NekModel Message: Loading example: "
+					logger.info("NekModel Message: Loading example: "
 							+ problemName);
 					exampleName = problemName;
 				} catch (FileNotFoundException e) {
-					if (debuggingEnabled) {
-						System.out
-								.println("NekModel Message: Could not find file "
-										+ problemName);
-					}
-					e.printStackTrace();
+					logger.debug("NekModel Message: " + "Could not find file "
+							+ problemName);
+					logger.error(getClass().getName() + " Exception!",e);
 				} catch (IOException e) {
-					if (debuggingEnabled) {
-						System.out
-								.println("NekModel Message: Could not read file "
-										+ problemName);
-					}
-					e.printStackTrace();
+					logger.debug("NekModel Message: " + "Could not read file "
+							+ problemName);
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		} else {
@@ -277,7 +269,7 @@ public class NekModel extends Item {
 
 	/**
 	 * This operation loads the given example into the Form.
-	 * 
+	 *
 	 * @param name
 	 *            The path name of the example file name to load.
 	 * @throws IOException
@@ -331,10 +323,10 @@ public class NekModel extends Item {
 			for (int i = 0; i < components.size(); i++) {
 				form.addComponent(components.get(i));
 			}
-		} else if (debuggingEnabled) {
+		} else {
 			// Complain
-			System.err.println("NekModel Message: "
-					+ "No components found in form " + name + ".");
+			System.err.println("NekModel Message: " + "No components found in form "
+					+ name + ".");
 		}
 
 		return;
@@ -342,7 +334,7 @@ public class NekModel extends Item {
 
 	/**
 	 * This example writes the set of components to an REA file.
-	 * 
+	 *
 	 * @param components
 	 */
 	private void writeREAFile() {
@@ -355,10 +347,8 @@ public class NekModel extends Item {
 		String outputFilePath = outputFile.getLocation().toString();
 
 		// Print some debugging information
-		if (debuggingEnabled) {
-			System.out.println("NekModel Message: "
-					+ "Writing Nek input file to " + outputFilePath + ".");
-		}
+		logger.debug("NekModel Message: " + "Writing Nek input file to "
+				+ outputFilePath + ".");
 
 		// Setup the writer
 		writer = new NekWriter();
@@ -370,16 +360,16 @@ public class NekModel extends Item {
 					reader.getLastProperties());
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_ONE, null);
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			// Complain
 			System.err.println("NekModel Message: "
 					+ "Failed to write the file.");
-			e1.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (CoreException e) {
 			// Complain
 			System.err.println("NekModel Message: "
 					+ "Failed to refresh the project space.");
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -453,18 +443,14 @@ public class NekModel extends Item {
 
 				} catch (FileNotFoundException e) {
 					// Complain
-					if (debuggingEnabled) {
-						System.err.println("NekModel Message: "
-								+ "Unable to find REA file.");
-					}
-					e.printStackTrace();
+					System.err.println("NekModel Message: "
+							+ "Unable to find REA file.");
+					logger.error(getClass().getName() + " Exception!",e);
 				} catch (IOException e) {
 					// Complain
-					if (debuggingEnabled) {
-						System.err.println("NekModel Message: "
-								+ "Unable to load REA file.");
-					}
-					e.printStackTrace();
+					System.err.println("NekModel Message: "
+							+ "Unable to load REA file.");
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}

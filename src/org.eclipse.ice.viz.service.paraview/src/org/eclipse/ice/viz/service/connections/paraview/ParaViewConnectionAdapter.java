@@ -65,9 +65,9 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 			// Try to connect.
 			connected = client.connect(url).get();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		} catch (ExecutionException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// If the connection was not successful, we should return null.
@@ -147,7 +147,7 @@ public class ParaViewConnectionAdapter extends ConnectionAdapter<VtkWebClient> {
 			object = client.call("file.server.directory.list", args).get();
 			if (object != null) {
 				String directory = object.getJSONArray("path").getString(0);
-				System.out.println("The directory is: " + directory);
+				logger.info("The directory is: " + directory);
 
 				// If the path is indeed a full path, we need to determine its
 				// relative path.

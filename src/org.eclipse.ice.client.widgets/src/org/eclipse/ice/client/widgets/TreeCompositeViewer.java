@@ -47,6 +47,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides an Eclipse view showing the list of Items that have been
@@ -62,6 +64,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class TreeCompositeViewer extends ViewPart implements
 		IUpdateableListener, ITabbedPropertySheetPageContributor {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
 
 	/**
 	 * The id
@@ -123,6 +130,10 @@ public class TreeCompositeViewer extends ViewPart implements
 	 */
 	public TreeCompositeViewer() {
 
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
+		
+		// Null out the members
 		inputTree = null;
 		treeViewer = null;
 		viewerParent = null;

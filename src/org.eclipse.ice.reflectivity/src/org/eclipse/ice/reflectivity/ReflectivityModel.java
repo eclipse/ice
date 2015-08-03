@@ -246,10 +246,10 @@ public class ReflectivityModel extends Model {
 			System.out.println("CHi Squared: QR^4 = " + rq4ChiSquare);
 
 			// Create the csv data for the reflectivity file
-			String reflectData = "R,Q,RData,RData_error\n#units,R,A-1,R,R\n";
+			String reflectData = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
 			for (int i = 0; i < reflectivity.length; i++) {
-				reflectData += Double.toString(reflectivity[i]) + ","
-						+ Double.toString(waveVector[i]) + ", "
+				reflectData += Double.toString(waveVector[i]) + ", "
+						+ Double.toString(reflectivity[i]) + ","
 						+ Double.toString(rData[i]) + ","
 						+ Double.toString(error[i]) + "\n";
 			}
@@ -259,10 +259,10 @@ public class ReflectivityModel extends Model {
 					reflectData.getBytes());
 
 			// Create the data for the scattering density profile
-			String scatData = "b/V,Z\n#units,A-2,A\n";
+			String scatData = "Z,b/V\n#units,A,A-2\n";
 			for (int i = 0; i < depth.length; i++) {
-				scatData += Double.toString(scatDensity[i]) + ","
-						+ Double.toString(depth[i]) + "\n";
+				scatData += Double.toString(depth[i]) + ","
+						+ Double.toString(scatDensity[i]) + "\n";
 			}
 
 			// Create the stream
@@ -270,11 +270,12 @@ public class ReflectivityModel extends Model {
 					scatData.getBytes());
 
 			// Create the csv data for the rq4 file
-			String rq4DataStr = "RQ^4,Q,RQ^4Data,RQ^4Data_error\n#units,R(A-4),A-1,R(A-4),R(A-4)\n";
+			String rq4DataStr = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
+
 			for (int i = 0; i < rq4.length; i++) {
-				rq4DataStr += Double.toString(rq4[i]) + ","
-						+ Double.toString(waveVector[i]) + ","
-						+ Double.toString(rq4Data[i]) + ","
+				rq4DataStr += Double.toString(waveVector[i]) + ","
+						+ Double.toString(rq4[i]) + ","
+						+ Double.toString(rData[i]) + ","
 						+ Double.toString(error[i]) + "\n";
 			}
 
@@ -343,7 +344,7 @@ public class ReflectivityModel extends Model {
 					// Complain
 					System.err.println("ReflectivityModel Error: "
 							+ "Problem creating reflectivity files!");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 
 				// Just override the existing files.
@@ -387,7 +388,7 @@ public class ReflectivityModel extends Model {
 				} catch (CoreException | NullPointerException e) {
 					System.err.println("Reflectivity Model Error: "
 							+ "Problem writing to reflectivity files.");
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!", e);
 					retVal = FormStatus.InfoError;
 				}
 

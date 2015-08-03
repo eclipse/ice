@@ -27,6 +27,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -34,7 +35,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
@@ -42,6 +42,7 @@ import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.geometry.Geometry;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -65,6 +66,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ICEFormEditor is an Eclipse FormEditor subclass that renders and displays
@@ -77,6 +80,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class ICEFormEditor extends SharedHeaderFormEditor implements
 		IComponentVisitor, IObservableWidget, IUpdateableListener {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+	
 	/**
 	 * ID for Eclipse
 	 */
@@ -167,6 +175,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	public ICEFormEditor() {
 
+		// Create the logger
+		logger = LoggerFactory.getLogger(getClass());
+		
 		// Setup listener lists
 		updateListeners = new ArrayList<IUpdateEventListener>();
 		processListeners = new ArrayList<IProcessEventListener>();
@@ -196,7 +207,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	public static void setVizServiceFactory(IVizServiceFactory factory) {
 		vizFactory = factory;
-		System.out.println("ICEFormEditor Message: IVizServiceFactory set!");
+		Logger staticLogger = LoggerFactory.getLogger(ICEFormEditor.class);
+		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
 	}
 
 	/**
@@ -386,6 +398,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
+		geometryComponent.setGeometry(new Geometry());
 
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(componentMap.get("geometry").isEmpty())) {
@@ -513,7 +526,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				getSite().getWorkbenchWindow().getActivePage()
 						.showView(getTreeCompositeViewerID());
 			} catch (PartInitException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 
 			// Get the TreeComposite to pass to the tree view.
@@ -975,7 +988,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Loop over the DataComponents and get them into the map
 		for (Component i : iceDataForm.getComponents()) {
-			System.out.println("ICEFormEditor Message: Adding component "
+			logger.info("ICEFormEditor Message: Adding component "
 					+ i.getName() + " " + i.getId());
 			i.accept(this);
 		}
@@ -1021,7 +1034,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 
 		// Create the page for Reactors
 		if (!(componentMap.get("reactor").isEmpty())) {
-			System.out.println("ICEFormEditor Message: "
+			logger.info("ICEFormEditor Message: "
 					+ componentMap.get("reactor").size()
 					+ " IReactorComponents not rendered.");
 		}
@@ -1038,7 +1051,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 				addPage(i);
 			}
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		return;
@@ -1341,7 +1354,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor implements
 	 */
 	@Override
 	public void visit(EMFComponent component) {
-		System.out.println("Adding EMFComponent: " + component.getName());
+		logger.info("Adding EMFComponent: " + component.getName());
 		addComponentToMap(component, "emf");
 	}
 

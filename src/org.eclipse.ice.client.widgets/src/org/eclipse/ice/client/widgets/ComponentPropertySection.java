@@ -22,6 +22,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -29,7 +30,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,10 +46,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for ICE Components in a TabbedPropertiesWindow.
@@ -60,6 +63,11 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 public class ComponentPropertySection extends AbstractPropertySection implements
 		IComponentVisitor {
 
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ComponentPropertySection.class);
+	
 	/**
 	 * The tree composite provided to this section as input.
 	 */
@@ -110,7 +118,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,
-				Section.SHORT_TITLE_BAR | Section.DESCRIPTION);
+				ExpandableComposite.SHORT_TITLE_BAR | Section.DESCRIPTION);
 		section.setText("Node properties");
 		section.setDescription("All properties available for "
 				+ "this node can be modified here.");
@@ -170,7 +178,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
 
-		System.out.println("ComponentPropertySection message: "
+		logger.info("ComponentPropertySection message: "
 				+ "Setting input.");
 
 		// Get and check the selection.
@@ -182,7 +190,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 			// Update the reference to the input TreeComposite.
 			treeComp = (TreeComposite) input;
 
-			System.out.println("ComponentPropertySection message: "
+			logger.info("ComponentPropertySection message: "
 					+ "Input changed to " + treeComp.getName());
 		}
 
@@ -197,7 +205,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	public void refresh() {
 		super.refresh();
 
-		System.out.println("ComponentPropertySection message: "
+		logger.info("ComponentPropertySection message: "
 				+ "Refreshing properties.");
 
 		// Disable redrawing until the properties are completely redrawn. This

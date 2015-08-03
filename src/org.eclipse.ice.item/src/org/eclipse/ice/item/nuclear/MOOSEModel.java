@@ -66,19 +66,19 @@ import org.osgi.service.prefs.BackingStoreException;
  * YAML and action syntax files necessary in the ${workspace}/MOOSE directory.
  * These files can be generated automatically using the ICE YAML/action syntax
  * generator, or manually at the command line with the command(s):
- * 
+ *
  * ./{moose-app}-opt --yaml > {moose-app}.yaml <br>
  * ./{moose-app}-opt --syntax > {moose-app}.syntax
- * 
+ *
  * These lines must be executed for each MOOSE-based code to be used by ICE.
  * This class' Item builder defaults the MOOSE-based application to null,
  * forcing the user to select the app. Once an app is selected, reviewEntries()
  * is triggered and loads the YAML spec. If the Item was imported from an input
  * file, any data from the input file is consolidated with the YAML file in the
  * reviewEntries() method as well.
- * 
+ *
  * The MOOSEModel Form has components with set IDs as such:
- * 
+ *
  * ID = 1: The output file DataComponent ID = 2: The TreeComposite containing
  * MOOSE data ID = 3: The ResourceComponent (for displaying mesh files as
  * ICEResources)
@@ -87,7 +87,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * reconfiguration can be done by the builder by setting the executable name
  * since the only thing that changes from application to application is the YAML
  * input file.
- * 
+ *
  * @author Jay Jay Billings, Anna Wojtowicz, Alex McCaskey
  */
 
@@ -151,7 +151,7 @@ public class MOOSEModel extends Item {
 	private ArrayList<TreeComposite> topLevelYamlTrees = null;
 
 	/**
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private static IRemoteServicesManager remoteManager;
@@ -175,7 +175,7 @@ public class MOOSEModel extends Item {
 	/**
 	 * The constructor with a project space in which files should be
 	 * manipulated.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
@@ -188,7 +188,7 @@ public class MOOSEModel extends Item {
 
 	/**
 	 * This operation creates the MOOSE input file.
-	 * 
+	 *
 	 * @param actionName
 	 *            The name of action that should be performed using the
 	 *            processed Form data.
@@ -239,17 +239,17 @@ public class MOOSEModel extends Item {
 	/**
 	 * This operation sets up the Form for the MOOSEModel. The form is designed
 	 * to contain 3 Components.
-	 * 
+	 *
 	 * The Form component with ID=1 is a DataComponent containing Entries
 	 * related to which MOOSE-based codes are available, as well as the output
 	 * file created from the MOOSE Model. These Entries in the DataComponent are
 	 * named "MOOSE-Based Application" with ID=1 and "Output File Name" with
 	 * ID=2.
-	 * 
+	 *
 	 * The Form component with ID=2 is a TreeComposite containing the structure
 	 * of the MOOSE input tree. By default, this Tree is empty until blocks are
 	 * added to it by the user.
-	 * 
+	 *
 	 * The Form component with ID=3 is the ResourceComponent which can store
 	 * ICEResources on it. This is intended to be used for problems with mesh
 	 * files which can be rendered through a VizResource publisher.
@@ -289,8 +289,8 @@ public class MOOSEModel extends Item {
 					mooseApps.add(app);
 				}
 			}
-		} catch (BackingStoreException e1) {
-			e1.printStackTrace();
+		} catch (BackingStoreException e) {
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 
 		// Only load up the Entry if some MOOSE apps were discovered.
@@ -376,12 +376,12 @@ public class MOOSEModel extends Item {
 	/**
 	 * This method is used by the platform to give this MOOSEModel a reference
 	 * to the available IRemoteServicesManager.
-	 * 
+	 *
 	 * @param manager
 	 */
 	public void setRemoteServicesManager(IRemoteServicesManager manager) {
 		if (manager != null) {
-			System.out.println("[MOOSEModel Message] Setting the IRemoteServicesManager: " + manager.toString());
+			logger.info("[MOOSEModel Message] Setting the IRemoteServicesManager: " + manager.toString());
 			remoteManager = manager;
 		}
 	}
@@ -395,7 +395,7 @@ public class MOOSEModel extends Item {
 	 * function with the files in the project directory and looks for a match
 	 * with the name "executuableName.yaml" that it can load. It throws an
 	 * IOException if it cannot find a match.
-	 * 
+	 *
 	 * @param mooseExecutableName
 	 *            The name of the MOOSE executable whose YAML input
 	 *            specification should be loaded into the Form's TreeComposite.
@@ -470,8 +470,8 @@ public class MOOSEModel extends Item {
 						throw new Exception("Error in creating the YAML/Syntax files. Job return codes were " + code1
 								+ " and " + code2);
 					}
-				} catch (Exception e1) {
-					e1.printStackTrace();
+				} catch (Exception e) {
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -514,7 +514,7 @@ public class MOOSEModel extends Item {
 	/**
 	 * This method returns an IRemoteConnection stored in the Remote Preferences
 	 * that corresponds to the provided hostname.
-	 * 
+	 *
 	 * @param host
 	 * @return
 	 */
@@ -535,18 +535,18 @@ public class MOOSEModel extends Item {
 
 				}
 			} catch (UnknownHostException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return connection;
 	}
 
 	/**
-	 * 
+	 *
 	 * This operation reviews the Entries in the MOOSEModel to determine if the
 	 * currently selected MOOSE app has changed. If it has, it loads up the new
 	 * app's YAML tree and merges it with any existing tree data (if any).
-	 * 
+	 *
 	 * @param preparedForm
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
@@ -583,8 +583,8 @@ public class MOOSEModel extends Item {
 
 					try {
 						loadTreeContents(loadedApp);
-					} catch (IOException | CoreException e1) {
-						e1.printStackTrace();
+					} catch (IOException | CoreException e) {
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 
 					// Get the empty YAML TreeComposite
@@ -603,8 +603,8 @@ public class MOOSEModel extends Item {
 							prefs.put(new File(uri).getName(), loadedApp);
 						}
 						prefs.flush();
-					} catch (BackingStoreException | URISyntaxException e1) {
-						e1.printStackTrace();
+					} catch (BackingStoreException | URISyntaxException e) {
+						logger.error(getClass().getName() + " Exception!",e);
 					}
 
 				}
@@ -614,7 +614,7 @@ public class MOOSEModel extends Item {
 				try {
 					updateMeshResource();
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 				// Update the status
@@ -630,7 +630,7 @@ public class MOOSEModel extends Item {
 	 * Form's TreeComposite (id=2). It expects the input to be in the MOOSE's
 	 * GetPot format. This method is used when an input file is imported as a
 	 * MOOSE Model Builder Item.
-	 * 
+	 *
 	 * @param input
 	 *            The name of the input input file, including the file extension
 	 *            (ex. "bison.i", "raven.i", etc.)
@@ -664,19 +664,19 @@ public class MOOSEModel extends Item {
 	 * This method is responsible for merging the TreeComposite of imported
 	 * MOOSE data from an input file, with the corresponding YAML spec for that
 	 * MOOSE application.
-	 * 
+	 *
 	 * We will construct three HashMaps: one for the YAML tree, one for the
 	 * input tree, and one for the exemplar children of the YAML tree. All Maps
 	 * will be keyed on a tree's pathname relative to the root. (For the sake
 	 * semantics here, any reference to "top-level" trees is referring to the
 	 * trees directly beneath the root.)
-	 * 
+	 *
 	 * Then, we will traverse the input map (this includes all children,
 	 * subchildren, etc.) and copy over any applicable exemplar children from
 	 * the exemplar map. Once all exemplar children are set in the input tree,
 	 * then we will copy over the top-level trees (trees right below the root)
 	 * from the input map into the YAML map.
-	 * 
+	 *
 	 * @param inputTree
 	 *            The TreeComposite of imported MOOSE file data.
 	 * @param yamlTree
@@ -736,10 +736,10 @@ public class MOOSEModel extends Item {
 	 * This utility method is responsible for taking in a TreeComposite loaded
 	 * from a MOOSE YAML spec, and constructs a Map of all its nodes, keyed on a
 	 * String pathname (relative to the root).
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param yamlTree
 	 *            The TreeComposite loaded from a MOOSE YAML spec.
 	 * @return A Map containing all the YAML tree's nodes, keyed on pathname.
@@ -776,10 +776,10 @@ public class MOOSEModel extends Item {
 	 * This utility method is responsible for taking a TreeComposite loaded from
 	 * a MOOSE input file, and constructs a Map of all its nodes keyed on a
 	 * String pathname (relative to the root).
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param inputTree
 	 *            The TreeComposite loaded from an input MOOSE file.
 	 * @return A Map containing all the nodes of the input tree, keyed on
@@ -857,10 +857,10 @@ public class MOOSEModel extends Item {
 	 * This utility method is responsible for taking in a TreeComposite loaded
 	 * from a MOOSE YAML spec, and constructs a Map of all child exemplars
 	 * contained in the tree keyed on a String pathname (relative to the root).
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param yamlTree
 	 *            The TreeComposite loaded from a YAML spec.
 	 * @return A Map containing all the child exemplars of the YAML tree, keyed
@@ -942,7 +942,7 @@ public class MOOSEModel extends Item {
 	 * This method is responsible for append a "blank" TreeComposite to the
 	 * input tree's list of child exemplars. This enables a MOOSE user to add
 	 * their own, customized blocks.
-	 * 
+	 *
 	 * @param tree
 	 *            The tree to which a blank child exemplar will be appended.
 	 */
@@ -965,15 +965,15 @@ public class MOOSEModel extends Item {
 	 * data, comparing it to a HashMap of child exemplars. While it does this,
 	 * it copies over any exemplar children, plus converts parameters that are
 	 * supposed to have a discrete set of options.
-	 * 
+	 *
 	 * This method is "smart" enough to correctly match "wildchar" blocks (ie.
 	 * Block/Subblock/*) as well as chains of wildchar blocks when an exact
 	 * match to a block name cannot be found. This occurs when a user has
 	 * renamed a block.
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param inputMap
 	 *            The HashMap of TreeComposites constructed from an imported
 	 *            MOOSE input file, and keyed on pathname.
@@ -1020,24 +1020,24 @@ public class MOOSEModel extends Item {
 			 * a matching block in the exemplar map. Say our current inputCur
 			 * points to the node located at /Block/Subblock/foo/bar. Priority
 			 * for matching, in descending order:
-			 * 
+			 *
 			 * 1. Exact match An exact match to /Block/Subblock/foo/bar is found
 			 * in the exemplar HashMap
-			 * 
+			 *
 			 * 2. Renamed (with type) bar might have been previously named
 			 * something else, but was renamed. If bar has a parameter named
 			 * "type" on it, get the parameter value and check the exemplar
 			 * HashMap for /Block/Subblock/foo/parameter_value
-			 * 
+			 *
 			 * 3. Renamed (without type) bar might have been previously named
 			 * something else, but was renamed. If /foo/ has an exemplar child
 			 * named "*", check the exemplar HashMap for /Block/Subblock/foo/*
-			 * 
+			 *
 			 * 4. Multi-level Renamed If no match to /Block/Subblock/foo/* is
 			 * found in exemplar HashMap, begin traversing upwards replacing
 			 * more wildchars in the pathname until a match is found, or the
 			 * top-level of the tree is reached.
-			 * 
+			 *
 			 * First search: //Block//Subblock//
 			 *//*
 				 * Second search: //Block//
@@ -1203,7 +1203,7 @@ public class MOOSEModel extends Item {
 	 * the YAML spec) has any parameters that are intended to have discrete sets
 	 * of values (AllowedValueType.Discrete), the inputCur is fixed to reflect
 	 * the same value type and list of AllowedValues.
-	 * 
+	 *
 	 * @param exemplarCur
 	 *            The TreeComposite from the YAML file to compare against
 	 * @param inputCur
@@ -1266,10 +1266,10 @@ public class MOOSEModel extends Item {
 	 * of an imported MOOSE input data TreeComposite, into a HashMap of a YAML
 	 * TreeComposite, where both keys match. If a key match is not found, the
 	 * block in particular is discarded.
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}.
-	 * 
+	 *
 	 * @param inputMap
 	 *            The HashMap of the imported MOOSE data TreeComposite.
 	 * @param yamlMap
@@ -1372,11 +1372,11 @@ public class MOOSEModel extends Item {
 	 * This method attempts to add a mesh ICEResource to the Form's
 	 * ResourceComponent. If it cannot get a handle on a valid ICEResource, this
 	 * method does nothing.
-	 * 
+	 *
 	 * This method assumes the MOOSE Model Builder only deals with one
 	 * ICEResource at a time (the mesh), and thus, the Form's ResourceComponent
 	 * will contain no more than one ICEResource at a time.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void updateMeshResource() throws IOException {
@@ -1403,7 +1403,7 @@ public class MOOSEModel extends Item {
 
 				// Update the name on the Form
 				meshFileName = mesh.getName();
-				System.out.println("MOOSEModel Message: Adding new mesh file " + mesh.getName() + " to Resources list");
+				logger.info("MOOSEModel Message: Adding new mesh file " + mesh.getName() + " to Resources list");
 			}
 		}
 		// If a valid mesh file was not found, then the ResourceComponent should
@@ -1419,7 +1419,7 @@ public class MOOSEModel extends Item {
 	 * This method scans the Form's TreeComposite with ID=2 for the Mesh block.
 	 * If the Mesh block was found, it will return the corresponding
 	 * TreeComposite. Otherwise, it will return null.
-	 * 
+	 *
 	 * @return The Mesh block's TreeComposite, or null if it could not be found.
 	 */
 	private TreeComposite findMeshBlock() {
@@ -1454,7 +1454,7 @@ public class MOOSEModel extends Item {
 	 * If the Mesh block exists, it will attempt to find the name of a mesh file
 	 * on it. If a mesh filename is found, it will create and return an
 	 * ICEResource representing the mesh file.
-	 * 
+	 *
 	 * @return An ICEResource representing the MOOSE tree's mesh file, or null
 	 *         if no mesh file was found.
 	 * @throws IOException
@@ -1492,7 +1492,7 @@ public class MOOSEModel extends Item {
 	/**
 	 * This method convert the mesh "file" Entry into a Entry with
 	 * AllowedValueType.File and registers the Form as a listener.
-	 * 
+	 *
 	 * @param meshEntry
 	 *            The "file" Entry on the Mesh TreeComposite
 	 */
@@ -1542,10 +1542,10 @@ public class MOOSEModel extends Item {
 	 * all that have activeDataNode=null. This method requires that all parent,
 	 * sibling and child references be set correctly on all TreeComposites to be
 	 * successful.
-	 * 
+	 *
 	 * Used exclusively by {@link #reviewEntries(Form)
 	 * MOOSEModel.reviewEntries(...)}
-	 * 
+	 *
 	 * @param tree
 	 *            The tree that will have all active data nodes set.
 	 */
@@ -1584,7 +1584,7 @@ public class MOOSEModel extends Item {
 	 * AdaptiveTreeComposite, checks the "type" Entry (found in the tree's
 	 * DataNode), and setting the AdaptiveTreeComposite.type to be that (if such
 	 * a type exists in its typesMap).
-	 * 
+	 *
 	 * @param tree
 	 *            The AdaptiveTreeComposite to set the type of.
 	 */
@@ -1629,7 +1629,7 @@ public class MOOSEModel extends Item {
 	 * block's currently set type. Lastly, it will listen to updates from the
 	 * Mesh's active data node in case a new "file" Entry is ever manually added
 	 * (in which case it will register the new Entry with the form).
-	 * 
+	 *
 	 * @param component
 	 *            The component that triggered an update
 	 */
@@ -1649,7 +1649,7 @@ public class MOOSEModel extends Item {
 					// Also change the file type on the Mesh block to
 					// "FileEntry"
 					if (meshBlock == null) {
-						meshBlock = (AdaptiveTreeComposite) findMeshBlock();
+						meshBlock = findMeshBlock();
 					}
 					DataComponent meshDataComp = (DataComponent) meshBlock.getActiveDataNode();
 					if (meshDataComp != null && meshDataComp.retrieveEntry("file") != null) {
@@ -1660,7 +1660,7 @@ public class MOOSEModel extends Item {
 					}
 
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 
@@ -1736,7 +1736,7 @@ public class MOOSEModel extends Item {
 	 * that aren't valid syntax. If any lines from the file were removed, it
 	 * re-writes the file. If no changes were made (no header/footer to remove),
 	 * it does nothing.
-	 * 
+	 *
 	 * @param filePath
 	 *            The filepath to the YAML or action syntax file.
 	 * @throws IOException
@@ -1767,7 +1767,7 @@ public class MOOSEModel extends Item {
 		} else if (".syntax".equals(fileExt)) {
 			fileType = "SYNTAX";
 		} else {
-			System.out.println("MOOSEFileHandler message: File does not have "
+			logger.info("MOOSEFileHandler message: File does not have "
 					+ "vaid file extension. Must be .yaml or .syntax but is " + fileExt);
 		}
 
@@ -1805,7 +1805,7 @@ public class MOOSEModel extends Item {
 
 	/**
 	 * A private utility used for deleting a range of lines in a text file.
-	 * 
+	 *
 	 * @param filename
 	 * @param startline
 	 * @param numlines
@@ -1829,7 +1829,7 @@ public class MOOSEModel extends Item {
 				linenumber++;
 			}
 			if (startline + numlines > linenumber) {
-				System.out.println("End of file reached.");
+				logger.info("End of file reached.");
 			}
 			br.close();
 
@@ -1838,14 +1838,14 @@ public class MOOSEModel extends Item {
 			fw.write(sb.toString());
 			fw.close();
 		} catch (Exception e) {
-			System.out.println("Something went horribly wrong: " + e.getMessage());
+			logger.error(getClass().getName() + " Exception!",e);
 		}
 	}
 
 	/**
 	 * Return the IO Type string. This method is to be overriden by subclasses
 	 * to indicate which IReader and IWriter the Item subclass needs to use.
-	 * 
+	 *
 	 * @return The type of IO Reader/Writer to use (moose).
 	 */
 	@Override
@@ -1859,7 +1859,7 @@ public class MOOSEModel extends Item {
 	 * another MOOSEModel Item. It returns true if the Items are equal and false
 	 * if they are not.
 	 * </p>
-	 * 
+	 *
 	 * @param otherMoose
 	 *            <p>
 	 *            The MOOSEModel Item that should be checked for equality.
@@ -1869,22 +1869,24 @@ public class MOOSEModel extends Item {
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
-	public boolean equals(MOOSEModel otherMooseModel) {
+	@Override
+	public boolean equals(Object other) {
 
 		boolean retVal;
 
 		// Check if they are the same reference in memory
-		if (this == otherMooseModel) {
+		if (this == other) {
 			return true;
 		}
 
 		// Check that the object is not null, and that it is an Item
 		// Check that these objects have the same ICEObject data
-		if (otherMooseModel == null || !(otherMooseModel instanceof Item) || !super.equals(otherMooseModel)) {
+		if (other == null || !(other instanceof MOOSEModel) || !super.equals(other)) {
 			return false;
 		}
 
 		// Check data
+		MOOSEModel otherMooseModel = (MOOSEModel) other;
 		retVal = (this.allowedActions.equals(otherMooseModel.allowedActions))
 				&& (this.form.equals(otherMooseModel.form)) && (this.itemType == otherMooseModel.itemType)
 				&& (this.status.equals(otherMooseModel.status));
@@ -1910,12 +1912,13 @@ public class MOOSEModel extends Item {
 	 * <p>
 	 * This operation returns the hashcode value of the MOOSEModel.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 * 		<p>
 	 *         The hashcode
 	 *         </p>
 	 */
+	@Override
 	public int hashCode() {
 
 		// Local Declaration
@@ -1935,7 +1938,7 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param otherMoose
 	 *            <p>
 	 *            This operation performs a deep copy of the attributes of
@@ -1950,7 +1953,7 @@ public class MOOSEModel extends Item {
 		}
 
 		// Copy contents into super and current object
-		super.copy((Item) otherMoose);
+		super.copy(otherMoose);
 
 		// Clone contents correctly
 		form = new Form();
@@ -1971,12 +1974,13 @@ public class MOOSEModel extends Item {
 	 * <p>
 	 * This operation provides a deep copy of the MOOSEModel Item.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 * 		<p>
 	 *         A clone of the Moose Item.
 	 *         </p>
 	 */
+	@Override
 	public Object clone() {
 
 		// Create a new instance of JobLauncher and copy the contents
@@ -1989,7 +1993,7 @@ public class MOOSEModel extends Item {
 	/**
 	 * Enumeration to discern if a tree object is an AdaptiveTreeComposite, or
 	 * just a TreeComposite. This is an alternative to using instanceof.
-	 * 
+	 *
 	 * @author Anna Wojtowicz
 	 */
 	public enum TreeType {
@@ -2011,7 +2015,7 @@ public class MOOSEModel extends Item {
 		/**
 		 * This method performs a lookup to return a tree type based on an input
 		 * string, assumed to be equal to getClass().toString().
-		 * 
+		 *
 		 * @param className
 		 *            The String returned by getClass().toString()
 		 * @return The type associated to the className parameter, or null if

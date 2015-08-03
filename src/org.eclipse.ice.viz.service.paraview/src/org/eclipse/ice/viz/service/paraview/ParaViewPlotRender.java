@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.kitware.vtk.web.VtkWebClient;
 import com.kitware.vtk.web.util.InteractiveRenderPanel;
@@ -615,7 +617,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 
 		// Force a refresh of the ParaView rendering widget if necessary.
 		if (render) {
-			System.out.println("Rendering!!!");
+			logger.info("ParaViewPlotRender Message: " + "Rendering!!!");
 			renderPanel.dirty();
 		}
 
@@ -672,10 +674,10 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		args.add(updatedProperties);
 		object = connection.call("pv.proxy.manager.update", args).get();
 		if (!object.getBoolean("success")) {
-			System.out.println("Failed to set the representation: ");
+			logger.info("Failed to set the representation: ");
 			array = object.getJSONArray("errorList");
 			for (int i = 0; i < array.length(); i++) {
-				System.out.println(array.get(i));
+				logger.info(array.get(i));
 			}
 		}
 
@@ -709,7 +711,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		args.add(legendVisibilities);
 		object = connection.call("pv.color.manager.scalarbar.visibility.set",
 				args).get();
-		System.out.println(object.toString(4));
+		logger.info(object.toString(4));
 
 		// Auto-scale the color map to the data.
 		args.clear();
@@ -719,7 +721,7 @@ public class ParaViewPlotRender extends ConnectionPlotRender<VtkWebClient> {
 		args.add(scaleOptions);
 		object = connection.call("pv.color.manager.rescale.transfer.function",
 				args).get();
-		System.out.println(object.toString(4));
+		logger.info(object.toString(4));
 
 		return;
 	}

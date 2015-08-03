@@ -72,7 +72,7 @@ public abstract class ConnectionManager<T> {
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
 		tableAdapter.toTableComponent(
-				(CustomScopedPreferenceStore) getPreferenceStore(), table);
+				getPreferenceStore(), table);
 
 		// Create the default adapter based on the current properties. Do not
 		// connect yet.
@@ -177,7 +177,7 @@ public abstract class ConnectionManager<T> {
 		TableComponentPreferenceAdapter tableAdapter;
 		tableAdapter = new TableComponentPreferenceAdapter();
 		tableAdapter.toTableComponent(
-				(CustomScopedPreferenceStore) getPreferenceStore(), table);
+				getPreferenceStore(), table);
 
 		// TODO When we have multiple connections, we will need to do the
 		// following, then send the new connection adapters to the plots.

@@ -19,6 +19,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The action to add a file set where each file is a separate time
@@ -27,6 +29,12 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class AddFileSetAction extends Action {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AddFileSetAction.class);
 	/**
 	 * The ViewPart that owns an object of this class.
 	 */
@@ -127,7 +135,7 @@ public class AddFileSetAction extends Action {
 			// vizViewer adds the resource
 			vizViewer.addFile(vizResource);
 		} else {
-			System.out.println("AddFileSetAction message: No file selected.");
+			logger.info("AddFileSetAction message: No file selected.");
 		}
 
 		return;

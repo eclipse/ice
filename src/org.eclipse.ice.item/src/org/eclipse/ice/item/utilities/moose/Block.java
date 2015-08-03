@@ -20,6 +20,8 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class represents a MOOSE input block. This class is parsed from and
@@ -29,6 +31,11 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 public class Block {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Block.class);
 
 	/**
 	 * A regular expression representing three possible newlines. These are:
@@ -941,7 +948,7 @@ public class Block {
 					}
 				}
 			} catch (ClassCastException e) {
-				System.out.println("Block.fromTreeComposite() Message: "
+				logger.info("Block.fromTreeComposite() Message: "
 						+ "Unexpected component in TreeComposite. Aborting.");
 			}
 			// Convert the children to subblocks

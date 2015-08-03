@@ -14,12 +14,14 @@ package org.eclipse.ice.viz.service.test;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Arrays;
-import java.util.List;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
+import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -61,26 +63,20 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		// Create a small CSV file for testing the plot
 		String separator = System.getProperty("file.separator");
 		String home = System.getProperty("user.home");
-		file = new File(home + separator + "ICETests" + separator
-				+ "CSVPlot.csv");
+		file = new File(
+				home + separator + "ICETests" + separator + "CSVPlot.csv");
 		String line1 = "t, p_x, p_y";
 		String line2 = "#units,t,p_x,p_y";
 		String line3 = "1.0,1.0,1.0";
 		String line4 = "2.0,4.0,8.0";
 		String line5 = "3.0,9.0,27.0";
-		FileWriter writer = new FileWriter(file);
-		BufferedWriter bWriter = new BufferedWriter(writer);
-		bWriter.write(line1);
-		bWriter.newLine();
-		bWriter.write(line2);
-		bWriter.newLine();
-		bWriter.write(line3);
-		bWriter.newLine();
-		bWriter.write(line4);
-		bWriter.newLine();
-		bWriter.write(line5);
-		bWriter.newLine();
-		bWriter.close();
+		PrintWriter writer = new PrintWriter(
+				new BufferedWriter(new FileWriter(file)));
+		writer.println(line1);
+		writer.println(line2);
+		writer.println(line3);
+		writer.println(line4);
+		writer.println(line5);
 		writer.close();
 
 		return;
@@ -113,37 +109,38 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 		Thread.currentThread();
 		Thread.sleep(2000);
 
-		// Get the types
-		Map<String, String[]> types = plot.getPlotTypes();
+		// Test the independent series
+		CSVSeries series = (CSVSeries) plot.getIndependentSeries();
+		assertEquals(series.getLabel(), "t");
+		assertEquals(series.get(0), 1.0);
+		assertEquals(series.get(1), 2.0);
+		assertEquals(series.get(2), 3.0);
+		// No random time should be assigned
+		assertEquals(series.getTime(), 0.0);
 
-		// Check them
-		assertTrue(types.containsKey("Line"));
-		assertTrue(types.containsKey("Scatter"));
-		assertTrue(types.containsKey("Bar"));
-		List<String> lineTypes = Arrays.asList(types.get("Line"));
-		List<String> scatterTypes = Arrays.asList(types.get("Scatter"));
-		List<String> barTypes = Arrays.asList(types.get("Bar"));
-		// Check line types
-		assertTrue(lineTypes.contains("t vs. p_x"));
-		assertTrue(lineTypes.contains("t vs. p_y"));
-		assertTrue(lineTypes.contains("p_x vs. t"));
-		assertTrue(lineTypes.contains("p_x vs. p_y"));
-		assertTrue(lineTypes.contains("p_y vs. t"));
-		assertTrue(lineTypes.contains("p_y vs. p_x"));
-		// Check scatter types
-		assertTrue(scatterTypes.contains("t vs. p_x"));
-		assertTrue(scatterTypes.contains("t vs. p_y"));
-		assertTrue(scatterTypes.contains("p_x vs. t"));
-		assertTrue(scatterTypes.contains("p_x vs. p_y"));
-		assertTrue(scatterTypes.contains("p_y vs. t"));
-		assertTrue(scatterTypes.contains("p_y vs. p_x"));
-		// Check bar types
-		assertTrue(barTypes.contains("t vs. p_x"));
-		assertTrue(barTypes.contains("t vs. p_y"));
-		assertTrue(barTypes.contains("p_x vs. t"));
-		assertTrue(barTypes.contains("p_x vs. p_y"));
-		assertTrue(barTypes.contains("p_y vs. t"));
-		assertTrue(barTypes.contains("p_y vs. p_x"));
+		ArrayList<ISeries> depSeries = (ArrayList<ISeries>) plot
+				.getAllDependentSeries(null);
+		assertEquals(depSeries.size(), 2);
+		// Check the dependent series. No real need to check the values, as that
+		// is the same for the independent series
+		CSVSeries dep1 = (CSVSeries) depSeries.get(0);
+		assertTrue(
+				dep1.getLabel().equals("p_x") || dep1.getLabel().equals("p_y"));
+		// Check the second series
+		CSVSeries dep2 = (CSVSeries) depSeries.get(1);
+		assertTrue(
+				dep2.getLabel().equals("p_x") || dep2.getLabel().equals("p_y"));
+
+		// Try adding a series and seeing if the plot changes
+		CSVSeries newSeries = new CSVSeries();
+		newSeries.add(4.0);
+		newSeries.add(6.0);
+		newSeries.add(8.0);
+		newSeries.setLabel("p_z");
+		plot.addDependentSeries(newSeries);
+
+		// Check to see if it was added
+		assertEquals(plot.getAllDependentSeries(null).size(), 3);
 
 		return;
 	}
@@ -229,12 +226,12 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 				// Create a composite for it.
 				Composite testComposite = new Composite(shell, SWT.None);
 				testComposite.setLayout(new GridLayout(1, true));
-				testComposite.setLayoutData(new GridData(SWT.LEFT, SWT.FILL,
-						true, true, 1, 1));
+				testComposite.setLayoutData(
+						new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1));
 
 				// Draw the plot in the test composite.
 				try {
-					plot.draw("Scatter", "t vs. p_x", testComposite);
+					plot.draw(testComposite);
 				} catch (Exception e) {
 					// Complain
 					e.printStackTrace();

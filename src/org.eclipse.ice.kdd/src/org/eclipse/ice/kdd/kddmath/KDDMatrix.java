@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -33,6 +35,13 @@ import org.eclipse.ice.analysistool.IDataProvider;
  * @author Alex McCaskey
  */
 public class KDDMatrix implements IAbstractMatrix<Double> {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(KDDMatrix.class);
+
 	/**
 	 * <p>
 	 * The individual elements of this matrix. This is a list of n*m double
@@ -572,7 +581,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 		KDDMatrix retVector = new KDDMatrix(1, nCols);
 		for (int i = 0; i < nCols; i++) {
 			if (!retVector.setElement(0, i, getElement(index, i))) {
-				System.out.println("THIS WQAS FALSE");
+				logger.info("THIS WQAS FALSE");
 				return null;
 			}
 		}
@@ -622,6 +631,7 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	 * @param matrix
 	 * @return true if the matrices are equal to each other, false otherwise.
 	 */
+	@Override
 	public boolean equals(Object matrix) {
 
 		boolean retVal = true;
@@ -714,9 +724,9 @@ public class KDDMatrix implements IAbstractMatrix<Double> {
 	public void printMatrix() {
 		for (int i = 0; i < nRows; i++) {
 			for (int j = 0; j < nCols; j++) {
-				System.out.print(getElement(i, j) + " ");
+				logger.info(getElement(i, j) + " ");
 			}
-			System.out.println();
+			logger.info("\n");
 		}
 	}
 

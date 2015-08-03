@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +18,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
+import org.eclipse.ice.viz.service.connections.ConnectionSeries;
 import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
 import org.eclipse.ice.viz.service.visit.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
@@ -35,7 +34,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtWidget;
 import visit.java.client.ViewerMethods;
 
 public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
@@ -140,6 +142,12 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// current plot category.
 		repTree = new ActionTree("Representation");
 
+		ConnectionSeries indep = (ConnectionSeries) plot.getIndependentSeries();
+		if (indep != null) {
+			setPlotCategory(indep.getCategory());
+			setPlotType(indep.getLabel());
+		}
+
 		return;
 	}
 
@@ -177,10 +185,10 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		canvas.setBackground(parent.getBackground());
-		int windowWidth = Integer.parseInt(adapter
-				.getConnectionProperty("windowWidth"));
-		int windowHeight = Integer.parseInt(adapter
-				.getConnectionProperty("windowHeight"));
+		int windowWidth = Integer
+				.parseInt(adapter.getConnectionProperty("windowWidth"));
+		int windowHeight = Integer
+				.parseInt(adapter.getConnectionProperty("windowHeight"));
 
 		// Establish the canvas' connection to the VisIt server. This may throw
 		// an exception.
@@ -212,6 +220,10 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 
 			@Override
 			public void menuShown(MenuEvent e) {
+				// Reset the menu and add back the representations tree
+				for (MenuItem item : ((Menu) e.widget).getItems()) {
+					item.dispose();
+				}
 				repTree.getContributionItem().fill((Menu) e.widget, -1);
 			}
 		});
@@ -304,14 +316,14 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		// Check that the type is non-null and new. Then do the same for the
 		// representation and category.
 		boolean plotTypeChanged = (type != null && !type.equals(plotType));
-		plotTypeChanged |= (representation != null && !representation
-				.equals(plotRepresentation));
+		plotTypeChanged |= (representation != null
+				&& !representation.equals(plotRepresentation));
 		plotTypeChanged |= (category != null && !category.equals(plotCategory));
 		// Now check the validity of each property.
 		if (plotTypeChanged && type != null) {
 			plotTypeChanged = false;
 			// Check that the category and type is valid.
-			String[] types = plot.getPlotTypes().get(category);
+			String[] types = getTypesFromSeries(category);
 			if (types != null) {
 				for (int i = 0; !plotTypeChanged && i < types.length; i++) {
 					if (type.equals(types[i])) {
@@ -369,6 +381,24 @@ public class VisItPlotRender extends ConnectionPlotRender<VisItSwtConnection> {
 		}
 
 		return;
+	}
+
+	/**
+	 * Converts the series for the specific category into strings for setting
+	 * the plot type of the visIt client
+	 * 
+	 * @param category
+	 *            The category for retrieving all of the plot types
+	 * @return String[] an array of strings, representing the plot types
+	 */
+	private String[] getTypesFromSeries(String category) {
+		List<ISeries> series = plot.getAllDependentSeries(category);
+		String[] types = new String[series.size()];
+		for (int i = 0; i < series.size(); i++) {
+			ISeries ser = series.get(i);
+			types[i] = ser.getLabel();
+		}
+		return types;
 	}
 
 	/*

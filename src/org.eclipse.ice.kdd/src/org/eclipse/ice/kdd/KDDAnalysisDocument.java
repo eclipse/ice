@@ -21,6 +21,8 @@ import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategy;
 import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -33,6 +35,13 @@ import org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory;
  * @author Alex McCaskey
  */
 public class KDDAnalysisDocument implements IAnalysisDocument {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(KDDAnalysisDocument.class);
+
 	/**
 	 * <p>
 	 * KDDAnalysisDocument's reference to its list of created assets to be
@@ -205,7 +214,7 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 			// Set this documents data for analysis
 			loadedData = data;
 		} else {
-			System.out.println("KDDDOC data was null");
+			logger.info("KDDDOC data was null");
 			return false;
 		}
 

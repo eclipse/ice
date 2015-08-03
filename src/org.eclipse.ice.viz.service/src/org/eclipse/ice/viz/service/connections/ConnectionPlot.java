@@ -31,8 +31,8 @@ import org.eclipse.ice.viz.service.PlotRender;
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionPlot<T> extends MultiPlot implements
-		IConnectionClient<T> {
+public abstract class ConnectionPlot<T> extends MultiPlot
+		implements IConnectionClient<T> {
 
 	/**
 	 * The current connection adapter associated with this client.
@@ -83,8 +83,8 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 			// Check if the connection exists. If not, we need to throw an
 			// exception.
 			if (adapter == null) {
-				throw new NullPointerException("IPlot error: "
-						+ "The plot's connection is not set.");
+				throw new NullPointerException(
+						"IPlot error: " + "The plot's connection is not set.");
 			}
 
 			// Set up a message in case the file cannot be read by this plot.
@@ -136,6 +136,15 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 		// Proceed with the super class' methods for error checking and setting
 		// the data source.
 		super.setDataSource(file);
+
+		// Finds the plot types
+		addAllPlotTypes(file);
+
+	}
+
+	@Override
+	public void clearCache() {
+		super.clearCache();
 	}
 
 	// ---- Implements IConnectionClient (and IUpdateableListener) ---- //
@@ -162,6 +171,21 @@ public abstract class ConnectionPlot<T> extends MultiPlot implements
 				adapter.register(this);
 			}
 		}
+		return;
+	}
+
+	// -------- Methods for VisIt Plot --------//
+
+	/**
+	 * Leave for later implementation, by visItPlot, etc
+	 * 
+	 * @param file
+	 *            The file that will be searched for plot types
+	 * @return A map of plot types specified by the category as the key
+	 */
+	protected void addAllPlotTypes(URI file) throws IOException, Exception {
+		// Nothing TODO yet..we do not know what type of connection plot this
+		// is. Let super classes define this behavior
 		return;
 	}
 

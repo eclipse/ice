@@ -165,15 +165,15 @@ public class SHARPModel extends Item {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
 				// Complain
-				System.out.println("SHARPModel Exception: "
+				logger.info("SHARPModel Exception: "
 						+ "Unable to refresh "
 						+ "project space after creating output file!");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			} catch (IOException e) {
 				// Complain
-				System.out.println("SHARPModel Exception: "
+				logger.info("SHARPModel Exception: "
 						+ "Unable to save neutronics file!");
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// Update the status
 			retStatus = FormStatus.Processed;
@@ -227,7 +227,7 @@ public class SHARPModel extends Item {
 			} catch (NullPointerException | JAXBException | IOException
 					| CoreException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 			// This should only take one line!!! What do we need to do to fix this?
 			// form = getIOService().getReader("xml").read(specFile);

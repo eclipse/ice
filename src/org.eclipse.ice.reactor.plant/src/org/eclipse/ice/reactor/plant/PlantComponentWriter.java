@@ -21,6 +21,8 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 
 import org.eclipse.ice.datastructures.ICEObject.Composite;
 import org.eclipse.ice.io.hdf.HdfIOFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -38,6 +40,12 @@ import org.eclipse.ice.io.hdf.HdfIOFactory;
  * 
  */
 public class PlantComponentWriter implements IPlantComponentVisitor {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(PlantComponentWriter.class);
 
 	/**
 	 * The {@link PlantIOFactory} that is using this writer. We need access to
@@ -366,13 +374,13 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 			}
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
 		}
@@ -419,13 +427,13 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 			// ---------------------------------- //
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
 		}
@@ -489,13 +497,13 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 					buffer);
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
 		}
@@ -536,13 +544,13 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 					buffer);
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Junction " + plantComp.getName() + " "
 					+ plantComp.getId());
 		}
@@ -583,13 +591,13 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 			// they are tied directly to the HeatExchanger's properties.
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
 		}
@@ -618,13 +626,13 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getLength());
 
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Pipe " + plantComp.getName() + " "
 					+ plantComp.getId());
 		} catch (HDF5Exception e) {
-			e.printStackTrace();
-			System.out.println("PlantComponentWriter error: "
+			logger.error(getClass().getName() + " Exception!",e);
+			logger.info("PlantComponentWriter error: "
 					+ "Failed to write Pipe " + plantComp.getName() + " "
 					+ plantComp.getId());
 		}

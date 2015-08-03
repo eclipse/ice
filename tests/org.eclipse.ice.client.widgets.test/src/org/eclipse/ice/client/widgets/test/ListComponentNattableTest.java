@@ -6,12 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Kasper Gammeltoft
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 
@@ -25,7 +27,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -34,10 +35,10 @@ import org.junit.Test;
 
 /**
  * Tests the ListComponentNattable class and its methods.
- * 
- * 
+ *
+ *
  * @author Kasper Gammeltoft
- * 
+ *
  */
 public class ListComponentNattableTest {
 
@@ -75,90 +76,95 @@ public class ListComponentNattableTest {
 	@Test
 	public void testListComponentNattable() {
 
-		Display display;
-		FormToolkit formToolkit;
-		ManagedForm eclipseTestForm;
+		final Display display = Display.getDefault();
 
-		// Setup the display, form toolkit and test form. The display must be
-		// retrieved from the Eclipse PlatformUI if it is running or created
-		// separately if not.
-		if (!PlatformUI.isWorkbenchRunning()) {
-			display = new Display();
-		} else {
-			display = PlatformUI.getWorkbench().getDisplay();
-		}
-		eclipseTestForm = new ManagedForm(new Shell(display));
+		// Setup the display, form toolkit and test form.
+		display.syncExec(new Runnable() {
 
-		formToolkit = new FormToolkit(display);
+			@Override
+			public void run() {
+				FormToolkit formToolkit;
+				ManagedForm eclipseTestForm;
+				eclipseTestForm = new ManagedForm(new Shell(display));
 
-		final ScrolledForm scrolledForm = eclipseTestForm.getForm();
+				formToolkit = new FormToolkit(display);
 
-		// Set a GridLayout with a single column. Remove the default margins.
-		GridLayout layout = new GridLayout(1, true);
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		scrolledForm.getBody().setLayout(layout);
+				final ScrolledForm scrolledForm = eclipseTestForm.getForm();
 
-		// Only create something if there is valid input.
+				// Set a GridLayout with a single column. Remove the default
+				// margins.
+				GridLayout layout = new GridLayout(1, true);
+				layout.marginWidth = 0;
+				layout.marginHeight = 0;
+				scrolledForm.getBody().setLayout(layout);
 
-		// Get the parent
-		Composite parent = eclipseTestForm.getForm().getBody();
+				// Only create something if there is valid input.
 
-		shell = parent.getShell();
-		// Create the section and set its layout info
-		Section listSection = formToolkit.createSection(parent,
-				Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
-						| Section.EXPANDED | Section.COMPACT);
-		listSection.setLayout(new GridLayout(1, false));
-		listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
-		// Create the section client, which is the client area of the
-		// section that will actually render data.
-		sectionClient = new Composite(listSection, SWT.FLAT);
-		sectionClient.setLayout(new GridLayout(2, false));
-		sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true, 1, 1));
-		// parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		// listSection.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		sectionClient.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE));
-		shell.setBackground(Display.getCurrent()
-				.getSystemColor(SWT.COLOR_WHITE));
+				// Get the parent
+				Composite parent = eclipseTestForm.getForm().getBody();
 
-		// create some test materials to put into the table- to provide some
-		// sort of data
-		Material material = new Material();
-		material.setName("Mat1");
-		material.setProperty("A", 1.0);
-		material.setProperty("B", 2.0);
-		mat1 = material;
+				shell = parent.getShell();
+				// Create the section and set its layout info
+				Section listSection = formToolkit.createSection(parent,
+						Section.TITLE_BAR | Section.DESCRIPTION
+								| Section.TWISTIE | Section.EXPANDED
+								| Section.COMPACT);
+				listSection.setLayout(new GridLayout(1, false));
+				listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+						true, true, 1, 1));
+				// Create the section client, which is the client area of the
+				// section that will actually render data.
+				sectionClient = new Composite(listSection, SWT.FLAT);
+				sectionClient.setLayout(new GridLayout(2, false));
+				sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+						true, true, 1, 1));
+				// parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+				// listSection.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+				sectionClient.setBackground(Display.getCurrent()
+						.getSystemColor(SWT.COLOR_WHITE));
+				shell.setBackground(Display.getCurrent().getSystemColor(
+						SWT.COLOR_WHITE));
 
-		Material material2 = new Material();
-		material2.setName("Mat2");
-		material2.setProperty("A", 5.2);
-		material2.setProperty("B", 4.1);
-		mat2 = material2;
+				// create some test materials to put into the table- to provide
+				// some
+				// sort of data
+				Material material = new Material();
+				material.setName("Mat1");
+				material.setProperty("A", 1.0);
+				material.setProperty("B", 2.0);
+				mat1 = material;
 
-		mat3 = new Material();
-		mat3.setName("Mat3");
-		mat3.setProperty("A", 2.4);
-		mat3.setProperty("B", .394);
+				Material material2 = new Material();
+				material2.setName("Mat2");
+				material2.setProperty("A", 5.2);
+				material2.setProperty("B", 4.1);
+				mat2 = material2;
 
-		ArrayList<String> colNames = new ArrayList<String>();
-		colNames.addAll(material.getProperties().keySet());
+				mat3 = new Material();
+				mat3.setName("Mat3");
+				mat3.setProperty("A", 2.4);
+				mat3.setProperty("B", .394);
 
-		// Set the format of the table, it is tested for holding materials
-		MaterialWritableTableFormat tableFormat = new MaterialWritableTableFormat(
-				colNames);
+				ArrayList<String> colNames = new ArrayList<String>();
+				colNames.addAll(material.getProperties().keySet());
 
-		// Instantiate the ListComponent to test the Nattable with
-		list = new ListComponent();
-		list.setTableFormat(tableFormat);
-		list.add(material);
-		list.add(material2);
+				// Set the format of the table, it is tested for holding
+				// materials
+				MaterialWritableTableFormat tableFormat = new MaterialWritableTableFormat(
+						colNames);
 
-		// creates the new Nattable for testing
-		table = new ListComponentNattable(sectionClient, list, false);
+				// Instantiate the ListComponent to test the Nattable with
+				list = new ListComponent();
+				list.setTableFormat(tableFormat);
+				list.add(material);
+				list.add(material2);
+
+				// creates the new Nattable for testing
+				table = new ListComponentNattable(sectionClient, list, false);
+
+				return;
+			}
+		});
 
 		// assertions for testing
 		assertNotNull(table);
@@ -174,16 +180,7 @@ public class ListComponentNattableTest {
 		assertEquals(table.getList().getColumnValue(mat2, 1),
 				mat2.getProperty("A"));
 
-	}
-
-	@Test
-	public void testGetSelectedObjects() {
-		ListComponent setList = new ListComponent();
-		setList.add(mat2);
-		table.setSelection(setList);
-		ListComponent selected = table.getSelectedObjects();
-		assertEquals(selected.get(0), mat2);
-
+		return;
 	}
 
 }

@@ -157,6 +157,8 @@ public class ReflectivityPage extends ICEResourcePage
 		sashForm.setLayout(new GridLayout());
 		sashForm.setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		sashForm.setBackground(Display.getCurrent()
+				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 
 		// Create the list's section and set its layout info
 		Section listSection = formToolkit.createSection(sashForm,
@@ -562,39 +564,40 @@ public class ReflectivityPage extends ICEResourcePage
 			@Override
 			public Iterator iterator() {
 				// Create an iterator over a list containing just the data
-				List<Object> list = new ArrayList<Object>();
-				list.add(data);
+				List<Object> lst = new ArrayList<Object>();
+				lst.add(data);
+				lst.add(list);
 				if (selectedCell != null) {
-					list.add(selectedCell);
+					lst.add(selectedCell);
 				}
-				return list.iterator();
+				return lst.iterator();
 			}
 
 			@Override
-			// Always 2 for now
 			public int size() {
-				return selectedCell == null ? 1 : 2;
+				return selectedCell == null ? 2 : 3;
 			}
 
 			@Override
 			public Object[] toArray() {
 				// An array containing the data component
 				if (selectedCell != null) {
-					return new Object[] { data, selectedCell };
+					return new Object[] { data, list, selectedCell };
 				} else {
-					return new DataComponent[] { data };
+					return new Object[] { data, list };
 				}
 			}
 
 			@Override
 			public List<Object> toList() {
 				// A list containing the data component
-				List<Object> list = new ArrayList<Object>();
-				list.add(data);
+				List<Object> lst = new ArrayList<Object>();
+				lst.add(data);
+				lst.add(list);
 				if (selectedCell != null) {
-					list.add(selectedCell);
+					lst.add(selectedCell);
 				}
-				return list;
+				return lst;
 			}
 
 		};

@@ -12,6 +12,7 @@
 
 package org.eclipse.ice.reflectivity.ui;
 
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.reflectivity.MaterialSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,6 +28,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides a section for the tabbed properties view for inspecting the
@@ -53,6 +56,14 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 	 * A label for the selection text
 	 */
 	Label selectionLabel;
+
+	/**
+	 * The list component holding the data for the table
+	 */
+	ListComponent list;
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(ReflectivityCellEditorSection.class);
 
 	/**
 	 * Constructor
@@ -88,8 +99,7 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 		body.setLayout(clientLayout);
 		body.setBackground(backgroundColor);
 
-		// Create the label for the selection text
-		selectionLabel = new Label(body, SWT.NONE);
+		// Create the label's text for the selection text
 		String labelText;
 		if (selection != null) {
 			labelText = selection.getMaterial().getName() + " "
@@ -97,35 +107,57 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 		} else {
 			labelText = "Select A Cell in the Table to edit";
 		}
-		selectionLabel.setText(labelText);
+		// Create the label using the default styling
+		selectionLabel = getWidgetFactory().createLabel(body, labelText);
 
-		selectionText = new Text(body, SWT.SEARCH);
+		// Create the text field using the default styling
+		selectionText = getWidgetFactory().createText(body, "");
+		// Add a listener to see when the user presses enter to update the table
+		// cell
 		selectionText.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				// If the character is enter
 				if (e.character == SWT.CR) {
-					System.out.println("Enter pressed");
+					// Get the text
 					String text = selectionText.getText();
+					// See if it is a double value. If so, set the value
 					try {
 						double newVal = Double.parseDouble(text);
 						selection.getMaterial().setProperty(
 								selection.getSelectedProperty(), newVal);
+
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						// See if this is a function we are reading
+						if (text.startsWith("=")) {
+							// Get the value and set the current selection
+							getFunctionValue(text);
+						} else {
+							// Complain
+							logger.debug("Invalid entry value: " + text, e1);
+						}
 					}
+				} else if (e.character == '='
+						&& selectionText.getText().length() == 0) {
+					// TODO implement some sort of function reading or setup-
+					// let the user know that we are ready to read a function
 				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				// Complain
+				// Do nothing
 
 			}
 
 		});
 
 		return;
+	}
+
+	private void getFunctionValue(String func) {
+
 	}
 
 	/*
@@ -143,24 +175,27 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 		// If the selection is a proper selection, then try to set the new
 		// values
 		if (selection instanceof IStructuredSelection
-				&& ((IStructuredSelection) selection).size() >= 2) {
+				&& ((IStructuredSelection) selection).size() >= 3) {
 			// Get the second object from the selection, should be the material
 			// selection
-			Object second = ((IStructuredSelection) selection).toArray()[1];
+			Object third = ((IStructuredSelection) selection).toArray()[2];
 			// Make sure that the object is a material selection
-			if (second instanceof MaterialSelection && second != null) {
+			if (third instanceof MaterialSelection && third != null) {
 				// Set the selection
-				this.selection = (MaterialSelection) second;
+				this.selection = (MaterialSelection) third;
 				// Set the selection label to the new material and property
 				selectionLabel.setText(this.selection.getMaterial().getName()
 						+ " " + this.selection.getSelectedProperty() + ": ");
 				// Set the text of the text field to be the current value for
 				// the selected property
 				if (this.selection.getSelectedProperty().equals("Name")) {
+					// Set the text to the name and disable the text field to
+					// show that this value cannot be edited
 					this.selectionText
 							.setText(this.selection.getMaterial().getName());
 					this.selectionText.setEnabled(false);
 				} else {
+					// Enable the field and set the default value
 					this.selectionText.setText(Double
 							.toString(this.selection.getMaterial().getProperty(
 									this.selection.getSelectedProperty())));
@@ -169,6 +204,17 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 			}
 		}
 
+	}
+
+	/**
+	 * Sets the list component to be used when editing the table values and
+	 * setting constraints
+	 * 
+	 * @param listComp
+	 *            The list component
+	 */
+	public void setListComponent(ListComponent listComp) {
+		list = listComp;
 	}
 
 	/**

@@ -36,15 +36,23 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is an editor for interacting with the VisIt SWT Widget. It is opened by
  * the associated visualization views in org.eclipse.ice.viz.
- * 
+ *
  * @author Jay Jay Billings
  * @author Taylor Patterson
  */
 public class VisitEditor extends EditorPart {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(VisitEditor.class);
 
 	/**
 	 * The ID for this editor.
@@ -52,7 +60,7 @@ public class VisitEditor extends EditorPart {
 	public static final String ID = "org.eclipse.ice.viz.visit.VisitEditor";
 
 	/**
-	 * 
+	 *
 	 */
 	VisItSwtConnection vizConnection;
 
@@ -158,7 +166,7 @@ public class VisitEditor extends EditorPart {
 					vizWidget.zoom(direction);
 				}
 			});
-			
+
 
 			// Use mouse click to move the plot
 			vizWidget.addMouseMoveListener(new MouseMoveListener() {
@@ -248,6 +256,7 @@ public class VisitEditor extends EditorPart {
 				} catch (Exception e) {
 					MessageDialog.openError(parent.getShell(),
 							"Failed to Set VisIt Connection", e.getMessage());
+					logger.error(getClass().getName() + " Exception! ", e);
 				}
 			}
 
@@ -278,7 +287,7 @@ public class VisitEditor extends EditorPart {
 	/**
 	 * This operation returns the widget that is responsible for drawing the
 	 * VisIt canvas.
-	 * 
+	 *
 	 * @return The widget.
 	 */
 	public VisItSwtWidget getVizWidget() {

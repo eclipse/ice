@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jcraft.jsch.UIKeyboardInteractive;
 import com.jcraft.jsch.UserInfo;
@@ -33,6 +35,13 @@ import com.jcraft.jsch.UserInfo;
  * @author Jay Jay Billings
  */
 public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ICEJschUIInfo.class);
+
 	/**
 	 * <p>
 	 * An AtomicReference to the LoginInfoForm from which password information
@@ -166,7 +175,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 			comp = (DataComponent) loginInfoFormAtomic.get().getComponent(1);
 			entries = comp.retrieveAllEntries();
 			password = entries.get(1).getValue();
-			System.out.println("Password requested!");
+			logger.info("Password requested!");
 		}
 
 		return password;

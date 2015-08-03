@@ -4,17 +4,18 @@ Bundle-Name: ReactorEditor SFR Package
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.reactoreditor.sfr
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.client.widgets.reactoreditor,
- org.eclipse.ice.client.widgets.reactoreditor.grid,
- org.eclipse.ice.client.widgets.reactoreditor.properties,
- org.eclipse.core.runtime;version="3.4.0",
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.ice.analysistool,
  org.eclipse.ice.client.common,
+ org.eclipse.ice.client.widgets.reactoreditor,
+ org.eclipse.ice.client.widgets.reactoreditor.grid,
+ org.eclipse.ice.client.widgets.reactoreditor.properties,
  org.eclipse.ice.reactor.sfr.base,
  org.eclipse.ice.reactor.sfr.core,
  org.eclipse.ice.reactor.sfr.core.assembly,
  org.eclipse.ui,
- org.osgi.framework;version="1.7.0"
+ org.osgi.framework;version="1.7.0",
+ org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.client.widgets.reactoreditor.sfr
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.eclipse.draw2d;bundle-version="3.9.0",

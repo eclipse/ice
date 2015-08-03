@@ -36,7 +36,6 @@ import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 
@@ -819,7 +818,7 @@ public class TreeComposite extends ICEObject implements Composite,
 			unregister(listener);
 		}
 		// Copy ICEObject contents
-		super.copy((ICEObject) otherTreeComposite);
+		super.copy(otherTreeComposite);
 
 		// Copy contents - look at differences between "shallow", "deep", and
 		// nullaries

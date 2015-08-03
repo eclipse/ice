@@ -59,6 +59,7 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -66,7 +67,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
@@ -80,6 +80,8 @@ import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Item class is responsible for carrying out activities necessary to
@@ -284,7 +286,15 @@ import org.eclipse.ice.item.messaging.Message;
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "Item")
-public class Item implements IComponentVisitor, Identifiable, IUpdateableListener {
+public class Item implements IComponentVisitor, Identifiable,
+		IUpdateableListener {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	@XmlTransient
+	protected final Logger logger;
+
 	/**
 	 * The ItemType of the Item.
 	 */
@@ -300,7 +310,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * The Item's Form.
 	 */
 	@XmlAnyElement()
-	@XmlElementRefs(value = { @XmlElementRef(name = "Form", type = Form.class),
+	@XmlElementRefs(value = {
+			@XmlElementRef(name = "Form", type = Form.class),
 			@XmlElementRef(name = "JobLauncherForm", type = JobLauncherForm.class) })
 	protected Form form;
 
@@ -429,12 +440,6 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	protected ArrayList<ItemListener> listeners;
 
 	/**
-	 * A flag that is true if debug mode is enabled, false otherwise.
-	 */
-	@XmlTransient()
-	protected boolean debuggingEnabled = false;
-
-	/**
 	 * Reference to the IOService that provides IReaders and IWriters for the
 	 * Item.
 	 */
@@ -463,10 +468,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 */
 	public Item(IProject projectSpace) {
 
-		// Determine whether or not ICE is in debug mode
-		if (System.getProperty("DebugICE") != null) {
-			debuggingEnabled = true;
-		}
+		// Allocate the logger
+		logger = LoggerFactory.getLogger(getClass());
 
 		// Set the default information
 		uniqueId = 1;
@@ -521,7 +524,9 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			form.setId(getId());
 			form.markReady(true);
 		} else {
-			throw new RuntimeException("Form cannot be null in constructor for " + this.getClass().getName());
+			throw new RuntimeException(
+					"Form cannot be null in constructor for "
+							+ this.getClass().getName());
 		}
 
 		// Setup the output file handle.
@@ -719,12 +724,16 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			otherItem = (Item) otherObject;
 		}
 		// Check names, ids, descriptions and types
-		retVal = (uniqueId == otherItem.uniqueId) && (itemName.equals(otherItem.itemName))
+		retVal = (uniqueId == otherItem.uniqueId)
+				&& (itemName.equals(otherItem.itemName))
 				&& (itemDescription.equals(otherItem.itemDescription))
 				// && (this.DB_ID == otherItem.DB_ID)
-				&& (itemType.equals(otherItem.itemType)) && (allowedActions.equals(otherItem.allowedActions))
-				&& (form.equals(otherItem.form)) && (project == otherItem.project)
-				&& (this.status.equals(otherItem.status)) && (this.builderName.equals(otherItem.builderName));
+				&& (itemType.equals(otherItem.itemType))
+				&& (allowedActions.equals(otherItem.allowedActions))
+				&& (form.equals(otherItem.form))
+				&& (project == otherItem.project)
+				&& (this.status.equals(otherItem.status))
+				&& (this.builderName.equals(otherItem.builderName));
 
 		return retVal;
 
@@ -804,18 +813,20 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		if (!status.equals(FormStatus.NeedsInfo)) {
 			idsMatch = preparedForm.getId() == form.getId();
 			namesMatch = preparedForm.getName().equals(form.getName());
-			descMatch = preparedForm.getDescription().equals(form.getDescription());
+			descMatch = preparedForm.getDescription().equals(
+					form.getDescription());
 			itemIdsMatch = preparedForm.getItemID() == form.getItemID();
 		} else {
 			// Otherwise check the Action's Form
 			actionForm = action.getForm();
 			idsMatch = preparedForm.getId() == actionForm.getId();
 			namesMatch = preparedForm.getName().equals(actionForm.getName());
-			descMatch = preparedForm.getDescription().equals(actionForm.getDescription());
+			descMatch = preparedForm.getDescription().equals(
+					actionForm.getDescription());
 			itemIdsMatch = preparedForm.getItemID() == actionForm.getItemID();
 		}
 
-		System.out.println("Item Message: Form submitted for review.");
+		logger.info("Item Message: Form submitted for review.");
 
 		// Check the Form Entries only if the Form represents this Item. First
 		// make sure the Item ids match and then make sure the Forms share
@@ -841,11 +852,16 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 				retVal = action.submitForm(preparedForm);
 			}
 		} else {
-			System.out.println("Item " + getId() + " Message: Something is " + "wrong with the submitted form.");
-			System.out.println("Item " + getId() + " Message: Matching Ids... " + idsMatch);
-			System.out.println("Item " + getId() + " Message: Matching Names..." + namesMatch);
-			System.out.println("Item " + getId() + " Message: Matching Descriptions..." + descMatch);
-			System.out.println("Item " + getId() + " Message: Matching Item Ids..." + itemIdsMatch);
+			System.err.println("Item " + getId() + " Message: Something is "
+					+ "wrong with the submitted form.");
+			System.err.println("Item " + getId() + " Message: Matching Ids... "
+					+ idsMatch);
+			System.err.println("Item " + getId() + " Message: Matching Names..."
+					+ namesMatch);
+			System.err.println("Item " + getId()
+					+ " Message: Matching Descriptions..." + descMatch);
+			System.err.println("Item " + getId() + " Message: Matching Item Ids..."
+					+ itemIdsMatch);
 		}
 
 		// Set the status
@@ -895,7 +911,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		IFile outputFile = null;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		Hashtable<String, String> propsDictionary = null;
-		String filename = (form.getName() + "_" + form.getId()).replaceAll("\\s+", "_");
+		String filename = (form.getName() + "_" + form.getId()).replaceAll(
+				"\\s+", "_");
 
 		// Make sure the action is allowed and that the Item is enabled
 		if (allowedActions.contains(actionName) && enabled) {
@@ -919,9 +936,9 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 					// Setup the dictionary
 					propsDictionary = new Hashtable<String, String>();
 					// Set the output file name
-					propsDictionary.put("iceTaggedOutputFileName", outputFile.getLocationURI().getPath());
+					propsDictionary.put("iceTaggedOutputFileName", outputFile
+							.getLocationURI().getPath());
 					// Add the key-value pairs
-					System.out.println(entryList.size());
 					for (Entry i : entryList) {
 						// Use tags if they are available
 						if (i.getTag() != null) {
@@ -929,7 +946,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 						} else {
 							// Otherwise just use the Entry's name
 							propsDictionary.put(i.getName(), i.getValue());
-							System.out.println("Processing value " + i.getTag() + " = " + i.getValue());
+							logger.info("Item Message: Processing value " + i.getTag()
+									+ " = " + i.getValue());
 						}
 					}
 					// Write the file. This will always overwrite an existing
@@ -937,12 +955,12 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 					retStatus = action.execute(propsDictionary);
 					// Refresh the project space so that the file is added or
 					// updated
-					project.refreshLocal(IProject.DEPTH_ONE, null);
+					project.refreshLocal(IResource.DEPTH_ONE, null);
 					// Notify any observers of the change
 					notifyListenersOfProjectChange();
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 			}
@@ -1011,7 +1029,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		// it.
 		if (!enabled) {
 			return FormStatus.Unacceptable;
-		} else if (status.equals(FormStatus.NeedsInfo) || status.equals(FormStatus.Processing) && action != null) {
+		} else if (status.equals(FormStatus.NeedsInfo)
+				|| status.equals(FormStatus.Processing) && action != null) {
 			// Determine if the status is currently dictated by the Action. If
 			// the Action is currently running, then the Item will be in either
 			// one of the FormStatus.NeedsInfo or FormStatus.Processing states.
@@ -1110,14 +1129,15 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		// Update the values of the Entries in the Registry
 		for (Entry entry : entryList) {
 			if (registry.containsKey(entry.getName())) {
-				updateStatus = registry.updateValue(entry.getName(), entry.getValue());
+				updateStatus = registry.updateValue(entry.getName(),
+						entry.getValue());
 			}
 		}
 
 		// Dispatch the updates
 		registry.dispatch();
 
-		System.out.println("Item Message: Entries reviewed.");
+		logger.info("Item Message: Entries reviewed.");
 
 		// Set the status
 		if (updateStatus) {
@@ -1190,8 +1210,12 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		// Compute hash code from Item data
 		hash = 31 * hash + this.uniqueId;
 		// If objectName is null, add 0, otherwise add String.hashcode()
-		hash = 31 * hash + (null == this.itemName ? 0 : this.itemName.hashCode());
-		hash = 31 * hash + (null == this.itemDescription ? 0 : this.itemDescription.hashCode());
+		hash = 31 * hash
+				+ (null == this.itemName ? 0 : this.itemName.hashCode());
+		hash = 31
+				* hash
+				+ (null == this.itemDescription ? 0 : this.itemDescription
+						.hashCode());
 
 		if (this.allowedActions != null) {
 			hash += 31 * this.allowedActions.hashCode();
@@ -1225,7 +1249,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		this.itemName = otherItem.itemName;
 		this.itemDescription = otherItem.itemDescription;
 		this.action = otherItem.action;
-		this.allowedActions = (ArrayList<String>) otherItem.allowedActions.clone();
+		this.allowedActions = (ArrayList<String>) otherItem.allowedActions
+				.clone();
 		this.form.copy(otherItem.form); // Deep copy form.
 		this.itemType = otherItem.itemType;
 		this.project = otherItem.project;
@@ -1293,7 +1318,6 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			setupEntryList();
 			// Set the Item name and description
 			setName(form.getName());
-			System.out.println("Form name = " + form.getName());
 			setDescription(form.getDescription());
 			// Get the ItemType - just a linear search for now
 			for (String i : inputLines) {
@@ -1301,12 +1325,14 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 					// Clear out comments
 					String[] typeStringWithoutComments = i.split("\\s+");
 					// Split on equals and parse the type
-					itemType = ItemType.valueOf(typeStringWithoutComments[0].split("=")[1].trim());
+					itemType = ItemType.valueOf(typeStringWithoutComments[0]
+							.split("=")[1].trim());
 					break;
 				}
 			}
 		} else {
-			throw new IOException("PSF cannot be loaded from a null InputStream!");
+			throw new IOException(
+					"PSF cannot be loaded from a null InputStream!");
 		}
 	}
 
@@ -1417,7 +1443,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	private void setupOutputFile() {
 
 		// Setup the output file handle name
-		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_" + getId() + "_processOutput.txt";
+		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_"
+				+ getId() + "_processOutput.txt";
 		// Get the file handle from the project space. Note that it may not
 		// actually exist.
 		if (project != null) {
@@ -1428,7 +1455,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			try {
 				outputFile.createNewFile();
 			} catch (Exception fileFailException) {
-				System.out.println("Item Message: Unable to create output " + "file in workspace. Aborting.");
+				logger.info("Item Message: Unable to create output "
+						+ "file in workspace. Aborting.");
 				fileFailException.printStackTrace();
 				return;
 			}
@@ -1487,8 +1515,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 				}
 			} catch (CoreException e) {
 				// Complain
-				System.out.println("Item Message: " + "Unable to load project files!");
-				e.printStackTrace();
+				logger.info("Item Message: " + "Unable to load project files!");
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1562,7 +1590,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 					folder.create(true, true, null);
 				} catch (CoreException e) {
 					// Complain
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}
@@ -1581,7 +1609,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			try {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1652,8 +1680,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		// Check if the file is in the default workspace. If it is, get the
 		// fully qualified path
 		if (project != null) {
-			defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
-					+ file.getValue();
+			defaultFilePath = project.getLocation().toOSString()
+					+ System.getProperty("file.separator") + file.getValue();
 		}
 		File defaultFile = new File(defaultFilePath);
 		if (defaultFile != null && defaultFile.exists()) {
@@ -1695,7 +1723,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		if (Files.isDirectory(Paths.get(directory))) {
 			// Read through the directory searching for files with the
 			// given file extension.
-			try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory))) {
+			try (DirectoryStream<Path> directoryStream = Files
+					.newDirectoryStream(Paths.get(directory))) {
 				for (Path path : directoryStream) {
 					if (path.toString().endsWith(fileExtension)) {
 						files.add(path.toFile().getName());
@@ -1727,7 +1756,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * @param fileName
 	 *            The name of the file to be copied.
 	 */
-	protected void copyFile(String sourceDir, String destinationDir, String fileName) {
+	protected void copyFile(String sourceDir, String destinationDir,
+			String fileName) {
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -1738,11 +1768,12 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 				// Try to copy the file from the source directory to the target
 				// directory. This leaves the source file intact.
 				Files.copy(Paths.get(sourceDir + separator + fileName),
-						Paths.get(destinationDir + separator + fileName), StandardCopyOption.REPLACE_EXISTING);
+						Paths.get(destinationDir + separator + fileName),
+						StandardCopyOption.REPLACE_EXISTING);
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1763,7 +1794,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * @param fileName
 	 *            The name of the file to be moved.
 	 */
-	protected void moveFile(String sourceDir, String destinationDir, String fileName) {
+	protected void moveFile(String sourceDir, String destinationDir,
+			String fileName) {
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -1773,11 +1805,12 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			try {
 				// Move the file, this deletes the file in sourceDir.
 				Files.move(Paths.get(sourceDir + separator + fileName),
-						Paths.get(destinationDir + separator + fileName), StandardCopyOption.REPLACE_EXISTING);
+						Paths.get(destinationDir + separator + fileName),
+						StandardCopyOption.REPLACE_EXISTING);
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1797,26 +1830,30 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			try {
 
 				// Walk the directory tree, deleting all the files it contains.
-				Files.walkFileTree(Paths.get(directory), new SimpleFileVisitor<Path>() {
-					@Override
-					public FileVisitResult visitFile(Path file, java.nio.file.attribute.BasicFileAttributes attrs)
-							throws IOException {
-						Files.delete(file);
-						return FileVisitResult.CONTINUE;
-					}
+				Files.walkFileTree(Paths.get(directory),
+						new SimpleFileVisitor<Path>() {
+							@Override
+							public FileVisitResult visitFile(
+									Path file,
+									java.nio.file.attribute.BasicFileAttributes attrs)
+									throws IOException {
+								Files.delete(file);
+								return FileVisitResult.CONTINUE;
+							}
 
-					@Override
-					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-						Files.delete(dir);
-						return FileVisitResult.CONTINUE;
-					}
+							@Override
+							public FileVisitResult postVisitDirectory(Path dir,
+									IOException exc) throws IOException {
+								Files.delete(dir);
+								return FileVisitResult.CONTINUE;
+							}
 
-				});
+						});
 
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 	}
@@ -1833,7 +1870,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * @param fileExtension
 	 *            The file extension that the Item should search for.
 	 */
-	protected void moveFiles(String sourceDir, String destinationDir, String fileExtension) {
+	protected void moveFiles(String sourceDir, String destinationDir,
+			String fileExtension) {
 		for (String fileName : getFiles(sourceDir, fileExtension)) {
 			moveFile(sourceDir, destinationDir, fileName);
 		}
@@ -1853,7 +1891,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * @param fileExtension
 	 *            The file extension that the Item should search for.
 	 */
-	protected void copyFiles(String sourceDir, String destinationDir, String fileExtension) {
+	protected void copyFiles(String sourceDir, String destinationDir,
+			String fileExtension) {
 		for (String fileName : getFiles(sourceDir, fileExtension)) {
 			copyFile(sourceDir, destinationDir, fileName);
 		}
@@ -1888,8 +1927,10 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 				if (fileName.contains(separator)) {
 					pathSteps = fileName.split(separator);
 				}
-				String destFileName = (pathSteps == null ? fileName : pathSteps[pathSteps.length - 1]);
-				copyDirectory(sourceDir + separator + fileName, destinationDir + separator + destFileName);
+				String destFileName = (pathSteps == null ? fileName
+						: pathSteps[pathSteps.length - 1]);
+				copyDirectory(sourceDir + separator + fileName, destinationDir
+						+ separator + destFileName);
 			}
 		}
 	}
@@ -1933,14 +1974,12 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 */
 	public boolean update(Message msg) {
 
-		// Dump the text to stdout if we are in debugging mode.
-		if (debuggingEnabled) {
-			System.out.println("Item Message: Received update message!");
-			System.out.println("Item Message: Id = " + msg.getId());
-			System.out.println("Item Message: Item Id = " + msg.getItemId());
-			System.out.println("Item Message: Content = " + msg.getMessage());
-			System.out.println("Item Message: Type = " + msg.getType());
-		}
+		// Catch some debug info
+		logger.debug("Item Message: Received update message!");
+		logger.debug("Item Message: Id = " + msg.getId());
+		logger.debug("Item Message: Item Id = " + msg.getItemId());
+		logger.debug("Item Message: Content = " + msg.getMessage());
+		logger.debug("Item Message: Type = " + msg.getType());
 
 		// Just return true for now until the logging functionality can be moved
 		// from JobLauncher to Item.
@@ -1960,7 +1999,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 
 		// If the passed parameter is not null, not an empty string, and the
 		// builder name has not been set.
-		if (builderName != null && !(builderName.trim().isEmpty()) && (this.builderName.isEmpty())) {
+		if (builderName != null && !(builderName.trim().isEmpty())
+				&& (this.builderName.isEmpty())) {
 
 			// Set the name
 			this.builderName = builderName;
@@ -2040,7 +2080,8 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * @param packageLocation
 	 * @param errorMessage
 	 */
-	protected void throwErrorMessage(String title, String packageLocation, String errorMessage) {
+	protected void throwErrorMessage(String title, String packageLocation,
+			String errorMessage) {
 		// Local Declarations
 		final String location = packageLocation;
 		final String message = errorMessage;
@@ -2051,7 +2092,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		Job badJob = new Job(title) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				return new Status(Status.ERROR, location, 1, message, null);
+				return new Status(IStatus.ERROR, location, 1, message, null);
 			}
 		};
 

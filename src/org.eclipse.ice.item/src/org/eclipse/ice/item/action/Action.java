@@ -16,6 +16,8 @@ import java.util.Dictionary;
 
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Action class performs actions, such as launching a job or script, for
@@ -36,6 +38,12 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * @author Jay Jay Billings
  */
 public abstract class Action {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger;
+	
 	/**
 	 * <p>
 	 * A Form that is used to by the Action if it requires additional
@@ -70,7 +78,7 @@ public abstract class Action {
 	 * 
 	 */
 	public Action() {
-		// TODO Auto-generated constructor stub
+		logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**

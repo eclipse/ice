@@ -12,6 +12,29 @@
  *******************************************************************************/
 package org.eclipse.ice.nek5000;
 
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.MatrixComponent;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.form.TimeDataComponent;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.eclipse.ice.datastructures.form.geometry.IShape;
+import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
+import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
+import org.eclipse.ice.datastructures.form.mesh.Edge;
+import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.form.mesh.Quad;
+import org.eclipse.ice.datastructures.form.mesh.Vertex;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,29 +47,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.Quad;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
 
 /**
  * This class is responsible for writing the contents of a Component collection

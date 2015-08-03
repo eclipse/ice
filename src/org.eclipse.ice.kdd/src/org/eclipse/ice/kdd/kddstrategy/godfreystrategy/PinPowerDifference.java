@@ -34,15 +34,16 @@ import org.eclipse.ice.kdd.kddmath.KDDMatrix;
  * as well as the uncertainties in those differences. It also outputs the
  * maximum power difference by axial level.
  * </p>
- * 
+ *
  * @author Alex McCaskey
  */
 public class PinPowerDifference extends GodfreySubStrategy {
+
 	/**
 	 * <p>
 	 * Reference to the calculated pin power difference matrices.
 	 * </p>
-	 * 
+	 *
 	 */
 	private HashMap<Integer, ArrayList<KDDMatrix>> difference;
 
@@ -50,7 +51,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * <p>
 	 * Reference to the uncertainties pin power difference matrices.
 	 * </p>
-	 * 
+	 *
 	 */
 	private HashMap<Integer, ArrayList<KDDMatrix>> uncertaintyDiff;
 
@@ -59,7 +60,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * Reference to the type of difference this sub strategy should calculate.
 	 * This value can be Basic or Relative.
 	 * </p>
-	 * 
+	 *
 	 */
 	private String differenceType;
 
@@ -69,7 +70,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * Relative, and the loaded pin powers, reference pin powers, and the
 	 * symmetry dependent weights.
 	 * </p>
-	 * 
+	 *
 	 * @param pinPowers
 	 * @param refPinPowers
 	 * @param props
@@ -102,7 +103,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * detection algorithm and produce a KDDAnalysisAsset for clients to display
 	 * and manipulate.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -198,7 +199,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * <p>
 	 * This method is for the creation of this IAnalysisAsset's URI.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	private boolean createAsset() {
@@ -282,7 +283,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 			file.create(new ByteArrayInputStream(contents.getBytes()), false,
 					null);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!",e);
 			return false;
 		}
 
@@ -297,7 +298,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * Return the pin power difference between the input data and the reference
 	 * data.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public HashMap<Integer, ArrayList<KDDMatrix>> getPinPowerDifference() {
@@ -309,7 +310,7 @@ public class PinPowerDifference extends GodfreySubStrategy {
 	 * Return the uncertainty difference between the input data and the
 	 * reference data.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public HashMap<Integer, ArrayList<KDDMatrix>> getUncertaintyDifference() {

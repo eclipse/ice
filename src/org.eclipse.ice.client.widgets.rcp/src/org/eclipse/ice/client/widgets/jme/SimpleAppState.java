@@ -18,6 +18,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AppState;
 import com.jme3.app.state.AppStateManager;
@@ -34,6 +37,11 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 
 public abstract class SimpleAppState implements AppState, IRenderQueue {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(SimpleAppState.class);
 
 	// ---- Requirements from AppState ---- //
 	/**
@@ -685,7 +693,7 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 	public void printCollisionResults(CollisionResults results) {
 		if (results != null) {
 			// Print the results of the collision.
-			System.out.println("Hits: " + results.size());
+			logger.info("Hits: " + results.size());
 			if (results.size() > 0) {
 
 				// Print the results.
@@ -695,7 +703,7 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 					float dist = result.getDistance();
 					Vector3f pt = result.getContactPoint();
 					String hit = result.getGeometry().getName();
-					System.out.println("Hit " + hit + " at distance " + dist
+					logger.info("Hit " + hit + " at distance " + dist
 							+ " at location " + pt.toString());
 				}
 			}
