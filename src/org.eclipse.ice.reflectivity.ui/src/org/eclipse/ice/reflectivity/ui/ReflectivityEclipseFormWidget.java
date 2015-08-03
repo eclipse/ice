@@ -40,8 +40,8 @@ public class ReflectivityEclipseFormWidget extends EclipseFormWidget {
 	 * The default constructor.
 	 * 
 	 * @param factory
-	 *            The visualization service factory provided to ReflectivityFormEditors
-	 *            through OSGi.
+	 *            The visualization service factory provided to
+	 *            ReflectivityFormEditors through OSGi.
 	 */
 	public ReflectivityEclipseFormWidget(IVizServiceFactory factory) {
 		// Nothing to do yet.
@@ -59,7 +59,7 @@ public class ReflectivityEclipseFormWidget extends EclipseFormWidget {
 		IWorkbenchPage page = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
 
-		// Create the ICEFormInput for the MOOSEFormEditor.
+		// Create the ICEFormInput for the ReflectivityFormBuilder.
 		ICEFormInput = new ICEFormInput(widgetForm);
 
 		try {

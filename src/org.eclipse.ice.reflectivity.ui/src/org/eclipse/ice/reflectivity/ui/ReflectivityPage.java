@@ -21,6 +21,7 @@ import org.eclipse.ice.client.widgets.ListComponentNattable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.ice.reflectivity.MaterialSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -28,6 +29,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.nattable.selection.RowSelectionProvider;
+import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,6 +47,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
@@ -97,6 +100,23 @@ public class ReflectivityPage extends ICEResourcePage
 	private SashForm sashForm;
 
 	/**
+	 * Represents the selected cell in the nat table, holds the data from that
+	 * cell
+	 */
+	private MaterialSelection selectedCell;
+
+	/**
+	 * Provides the tabs for the properties section and the table data editor
+	 */
+	private ITabDescriptorProvider tabs;
+
+	/**
+	 * The selection changed listeners that are responsible for noting when the
+	 * selection changes on this page
+	 */
+	private ArrayList<ISelectionChangedListener> listeners;
+
+	/**
 	 * The constructor
 	 * 
 	 * @param editor
@@ -109,6 +129,7 @@ public class ReflectivityPage extends ICEResourcePage
 	 */
 	public ReflectivityPage(FormEditor editor, String id, String title) {
 		super(editor, id, title);
+		listeners = new ArrayList<ISelectionChangedListener>();
 	}
 
 	/*
@@ -166,6 +187,8 @@ public class ReflectivityPage extends ICEResourcePage
 		// Draws the table and sets that instance variable
 		listTable = new ListComponentNattable(sectionClient, list, true, true,
 				false);
+		// Nothing is selected by default
+		selectedCell = null;
 
 		// Add the buttons to the table
 		createButtons();
@@ -173,8 +196,13 @@ public class ReflectivityPage extends ICEResourcePage
 		// Set the section client.
 		listSection.setClient(sectionClient);
 
+		// Get a reference to this reflectivity page for use with the selection
+		// provider
+		ReflectivityPage reference = this;
+
 		// Enable a new selection listener to listen to the table's selection
 		// events
+
 		RowSelectionProvider provider = listTable.getSelectionProvider();
 		provider.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -182,10 +210,28 @@ public class ReflectivityPage extends ICEResourcePage
 			public void selectionChanged(SelectionChangedEvent event) {
 				ISelection selection = event.getSelection();
 				IStructuredSelection structSelect = (IStructuredSelection) selection;
-				Object obj = structSelect.getFirstElement();
+				Material selected = (Material) structSelect.getFirstElement();
 
+				// Get the selection layer to find the exact cell that was last
+				// selected
+				SelectionLayer layer = listTable.getSelectionLayer();
+				int col = layer.getLastSelectedCellPosition().columnPosition;
+				// Get the property from the table
+				String property = listTable.getColumnName(col);
+				// Set the selected cell from the material and property
+				MaterialSelection newSelection = new MaterialSelection(selected,
+						property);
+				// If this selection is a new one (different from the current
+				// one), then set the new selected cell and update the selection
+				// listeners
+				if (!newSelection.equals(selectedCell)) {
+					selectedCell = newSelection;
+					for (ISelectionChangedListener listener : listeners) {
+						listener.selectionChanged(new SelectionChangedEvent(
+								reference, reference.getSelection()));
+					}
+				}
 			}
-
 		});
 
 		// Create the scrolled and managed forms to pass to
@@ -487,34 +533,29 @@ public class ReflectivityPage extends ICEResourcePage
 
 	/**
 	 * Adds a selection changed listener. Part of the ISelectionProvider
-	 * interface. Currently does nothing.
+	 * interface.
 	 */
 	@Override
 	public void addSelectionChangedListener(
 			ISelectionChangedListener listener) {
-
+		listeners.add(listener);
 	}
 
 	/**
 	 * Gets the current selection for this page. If nothing in the list
 	 * component table is selected, should return the data component for editing
-	 * its entries.
-	 * 
-	 * TODO: Need to have the list component table selections be availiable as
-	 * selections, so as to place constrictions on them! Currently only returns
-	 * the data component!
+	 * its entries, and a material selection for editing the table.
 	 * 
 	 * Part of the ISelectionProvider interface.
 	 */
 	@Override
 	public ISelection getSelection() {
-		// Create the new selection- currently only (and always) contains just
-		// the data component to be displayed in the properties view
+		// Create the new selection
 		return new IStructuredSelection() {
 
 			@Override
 			public boolean isEmpty() {
-				// It is never empty- always has data component
+				// It is never empty- always has data component at least
 				return false;
 			}
 
@@ -527,28 +568,30 @@ public class ReflectivityPage extends ICEResourcePage
 			@Override
 			public Iterator iterator() {
 				// Create an iterator over a list containing just the data
-				List<DataComponent> list = new ArrayList<DataComponent>();
+				List<Object> list = new ArrayList<Object>();
 				list.add(data);
+				list.add(selectedCell);
 				return list.iterator();
 			}
 
 			@Override
-			// Always 1 for now
+			// Always 2 for now
 			public int size() {
-				return 1;
+				return 2;
 			}
 
 			@Override
 			public Object[] toArray() {
 				// An array containing the data component
-				return new DataComponent[] { data };
+				return new Object[] { data, selectedCell };
 			}
 
 			@Override
-			public List toList() {
+			public List<Object> toList() {
 				// A list containing the data component
-				List<DataComponent> list = new ArrayList<DataComponent>();
+				List<Object> list = new ArrayList<Object>();
 				list.add(data);
+				list.add(selectedCell);
 				return list;
 			}
 
@@ -562,7 +605,7 @@ public class ReflectivityPage extends ICEResourcePage
 	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
-
+		listeners.remove(listener);
 	}
 
 	/**
@@ -571,7 +614,7 @@ public class ReflectivityPage extends ICEResourcePage
 	 */
 	@Override
 	public void setSelection(ISelection selection) {
-		// Do nothing
+		// Do nothing, as we do not want this capability
 	}
 
 }

@@ -82,7 +82,7 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 		section.setBackground(backgroundColor);
 
 		dataComposite = new DataComponentComposite(data, section, SWT.NONE);
-		GridLayout clientLayout = new GridLayout(2, false);
+		GridLayout clientLayout = new GridLayout(2, true);
 
 		// Set the margins and spacing based on the tabbed property
 		// constants.

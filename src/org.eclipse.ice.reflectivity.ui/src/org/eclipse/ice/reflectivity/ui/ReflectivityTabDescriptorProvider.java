@@ -1,13 +1,10 @@
-/**
- * 
- */
 package org.eclipse.ice.reflectivity.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.reflectivity.MaterialSelection;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,12 +18,12 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
 /**
  * Provides custom tabs to the reflectivity model's custom tabbed properties
  * view. The first tab describes the data component and input values for its
- * entries. </br>
+ * entries. The second provides an interface for editing the values in the
+ * table.</br>
  * </br>
  * 
- * TODO: Need to implement second tab for list component selections! </br>
  * 
- * TODO: Need to implement vistor pattern for Data and List components! This is
+ * TODO: Need to implement visitor pattern for Data and List components! This is
  * a much better way of handling new selections rather than computing everything
  * in the getTabDescriptors() method.
  * 
@@ -37,8 +34,7 @@ public class ReflectivityTabDescriptorProvider
 		implements ITabDescriptorProvider {
 
 	/**
-	 * The tab descriptors. Should only hold the one tab for now with the
-	 * information on the data component entries
+	 * The tab descriptors.
 	 */
 	ITabDescriptor[] descriptors;
 
@@ -48,19 +44,24 @@ public class ReflectivityTabDescriptorProvider
 	DataComponent component;
 
 	/**
+	 * The table selection in the model
+	 */
+	MaterialSelection tableSelection;
+
+	/**
 	 * The constructor
 	 */
 	public ReflectivityTabDescriptorProvider() {
 		// Local declarations
 		component = null;
-		descriptors = new ITabDescriptor[1];
+		descriptors = new ITabDescriptor[2];
 	}
 
 	private final IFilter filter = new IFilter() {
 		@Override
 		public boolean select(Object toTest) {
 			return (toTest instanceof DataComponent
-					|| toTest instanceof ListComponent);
+					|| toTest instanceof MaterialSelection);
 		}
 	};
 
@@ -77,6 +78,22 @@ public class ReflectivityTabDescriptorProvider
 
 		// Make sure the selection is valid
 		if (selection != null && selection instanceof IStructuredSelection) {
+
+			Object[] selectedObjects = ((IStructuredSelection) selection)
+					.toArray();
+			// If there are objects in the selection
+			if (selectedObjects.length >= 2) {
+				// Set the data component if it is valid
+				Object first = selectedObjects[0];
+				if (first instanceof DataComponent) {
+					component = (DataComponent) first;
+				}
+				// Set the selection from the table if it is valid
+				Object second = selectedObjects[1];
+				if (second instanceof MaterialSelection) {
+					tableSelection = (MaterialSelection) second;
+				}
+			}
 
 			// Get a reference to the data component
 			Object obj = ((IStructuredSelection) selection).getFirstElement();
@@ -109,6 +126,29 @@ public class ReflectivityTabDescriptorProvider
 
 				// Set the tab provider
 				descriptors[0] = inputTabDescriptor;
+			}
+
+			if (descriptors[1] == null) {
+
+				AbstractTabDescriptor editCellTab = new AbstractTabDescriptor() {
+
+					@Override
+					public String getCategory() {
+						return "Reflectivity";
+					}
+
+					@Override
+					public String getId() {
+						return "Reflectivity.Cell";
+					}
+
+					@Override
+					public String getLabel() {
+						return "Cell Editor";
+					}
+				};
+
+				descriptors[1] = editCellTab;
 			}
 
 			ITabDescriptor tab = descriptors[0];
@@ -146,6 +186,44 @@ public class ReflectivityTabDescriptorProvider
 			sectionDescriptors.add(generalSection);
 
 			((AbstractTabDescriptor) tab)
+					.setSectionDescriptors(sectionDescriptors);
+
+			ITabDescriptor tab2 = descriptors[1];
+
+			// Create a SectionDescriptor for the data component's inputs
+			AbstractSectionDescriptor cellSection = new AbstractSectionDescriptor() {
+
+				@Override
+				public String getId() {
+					return "Cell:";
+				}
+
+				@Override
+				public ISection getSectionClass() {
+					ReflectivityCellEditorSection section;
+					section = new ReflectivityCellEditorSection();
+					section.setMaterialSelection(tableSelection);
+					return section;
+
+				}
+
+				@Override
+				public String getTargetTab() {
+					return tab2.getId();
+				}
+
+				@Override
+				public IFilter getFilter() {
+					return filter;
+				}
+
+			};
+
+			// Add the section descriptor to the tab
+			sectionDescriptors = new ArrayList<AbstractSectionDescriptor>();
+			sectionDescriptors.add(cellSection);
+
+			((AbstractTabDescriptor) tab2)
 					.setSectionDescriptors(sectionDescriptors);
 
 		}

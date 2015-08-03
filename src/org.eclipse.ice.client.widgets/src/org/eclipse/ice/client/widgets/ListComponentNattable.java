@@ -88,6 +88,17 @@ public class ListComponentNattable {
 	private RowSelectionProvider selectionProvider;
 
 	/**
+	 * The selection layer for the table, allows for getting selection events,
+	 * more general than the row selection provider
+	 */
+	private SelectionLayer selectionLayer;
+
+	/**
+	 * The column property accessor, used to get the column names
+	 */
+	private IColumnPropertyAccessor accessor;
+
+	/**
 	 * If the NatTable is editable or not (from the user's side). If false, the
 	 * user will only be able to select table cells, if true then the user will
 	 * be able to change the table's values.
@@ -164,8 +175,7 @@ public class ListComponentNattable {
 	private void createTable() {
 
 		// Create the data layer of the table
-		IColumnPropertyAccessor accessor = new ListComponentColumnPropertyAccessor(
-				list);
+		accessor = new ListComponentColumnPropertyAccessor(list);
 		IDataProvider dataProvider = new ListDataProvider(list, accessor);
 		DataLayer dataLayer = new DataLayer(dataProvider);
 		GlazedListsEventLayer eventLayer = new GlazedListsEventLayer(dataLayer,
@@ -177,7 +187,7 @@ public class ListComponentNattable {
 		dataLayer.setRowPercentageSizing(resizeHeights);
 
 		// Create the selection and viewport layers of the table
-		SelectionLayer selectionLayer = new SelectionLayer(eventLayer);
+		selectionLayer = new SelectionLayer(eventLayer);
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 
 		// Get the column names
@@ -283,13 +293,35 @@ public class ListComponentNattable {
 	}
 
 	/**
+	 * Gets the name of the column given by the position indicated.
+	 * 
+	 * @param columnPosition
+	 *            The column's position.
+	 * @return Returns the column name as a string
+	 */
+	public String getColumnName(int columnPosition) {
+
+		return accessor.getColumnProperty(columnPosition);
+	}
+
+	/**
 	 * Gets the row selection provider so that another class could potentially
-	 * listen for selection events in the table.
+	 * listen for row selection events in the table.
 	 * 
 	 * @return
 	 */
 	public RowSelectionProvider getSelectionProvider() {
 		return selectionProvider;
+	}
+
+	/**
+	 * Gets the entire selection layer for listening and responding to all
+	 * selection events
+	 * 
+	 * @return
+	 */
+	public SelectionLayer getSelectionLayer() {
+		return selectionLayer;
 	}
 
 	/**

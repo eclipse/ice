@@ -104,7 +104,7 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 	@Override
 	public Object getAdapter(Class adapter) {
-		if (adapter == IPropertySheetPage.class) {
+		if (adapter == IPropertySheetPage.class && reflectPage != null) {
 			return reflectPage.getAdapter(adapter);
 		}
 		return super.getAdapter(adapter);
