@@ -10,10 +10,11 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.plotviewer.test;
+package org.eclipse.ice.viz.service.csv.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -112,7 +113,8 @@ public class PlotProviderTester {
 		assertTrue(testSeries.contains(series1));
 		assertTrue(testSeries.contains(series2));
 		testSeries = plotProvider.getSeriesAtTime(time2);
-		assertNull(testSeries);
+		assertNotNull(testSeries);
+		assertTrue(testSeries.isEmpty());
 		// time1 is the only time in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(1, times.size());
@@ -201,7 +203,8 @@ public class PlotProviderTester {
 
 		// Now only time2 has series1.
 		testSeries = plotProvider.getSeriesAtTime(time1);
-		assertNull(testSeries);
+		assertNotNull(testSeries);
+		assertTrue(testSeries.isEmpty());
 		testSeries = plotProvider.getSeriesAtTime(time2);
 		assertEquals(1, testSeries.size());
 		assertTrue(testSeries.contains(series1));
@@ -217,9 +220,11 @@ public class PlotProviderTester {
 
 		// Now there are no more times or series.
 		testSeries = plotProvider.getSeriesAtTime(time1);
-		assertNull(testSeries);
+		assertNotNull(testSeries);
+		assertTrue(testSeries.isEmpty());
 		testSeries = plotProvider.getSeriesAtTime(time2);
-		assertNull(testSeries);
+		assertNotNull(testSeries);
+		assertTrue(testSeries.isEmpty());
 		// No time is in the PlotProvider.
 		times = plotProvider.getTimes();
 		assertEquals(0, times.size());
@@ -252,9 +257,12 @@ public class PlotProviderTester {
 		List<ISeries> testSeries;
 
 		// Initially, the list of series is null for each time.
-		assertNull(plotProvider.getSeriesAtTime(time1));
-		assertNull(plotProvider.getSeriesAtTime(time2));
-		assertNull(plotProvider.getSeriesAtTime(time3));
+		assertNotNull(plotProvider.getSeriesAtTime(time1));
+		assertTrue(plotProvider.getSeriesAtTime(time1).isEmpty());
+		assertNotNull(plotProvider.getSeriesAtTime(time2));
+		assertTrue(plotProvider.getSeriesAtTime(time2).isEmpty());
+		assertNotNull(plotProvider.getSeriesAtTime(time3));
+		assertTrue(plotProvider.getSeriesAtTime(time3).isEmpty());
 
 		// Add a series to time1. series1 is the only series at time1.
 		plotProvider.addSeries(time1, series1);
@@ -262,8 +270,10 @@ public class PlotProviderTester {
 		testSeries = plotProvider.getSeriesAtTime(time1);
 		assertEquals(1, testSeries.size());
 		assertTrue(testSeries.contains(series1));
-		assertNull(plotProvider.getSeriesAtTime(time2));
-		assertNull(plotProvider.getSeriesAtTime(time3));
+		assertNotNull(plotProvider.getSeriesAtTime(time2));
+		assertTrue(plotProvider.getSeriesAtTime(time2).isEmpty());
+		assertNotNull(plotProvider.getSeriesAtTime(time3));
+		assertTrue(plotProvider.getSeriesAtTime(time3).isEmpty());
 
 		// Try adding a null series to time2. Nothing should change.
 		plotProvider.addSeries(time2, null);
@@ -271,8 +281,10 @@ public class PlotProviderTester {
 		testSeries = plotProvider.getSeriesAtTime(time1);
 		assertEquals(1, testSeries.size());
 		assertTrue(testSeries.contains(series1));
-		assertNull(plotProvider.getSeriesAtTime(time2));
-		assertNull(plotProvider.getSeriesAtTime(time3));
+		assertNotNull(plotProvider.getSeriesAtTime(time2));
+		assertTrue(plotProvider.getSeriesAtTime(time2).isEmpty());
+		assertNotNull(plotProvider.getSeriesAtTime(time3));
+		assertTrue(plotProvider.getSeriesAtTime(time3).isEmpty());
 
 		// Now add a series to time2. time1 and time2 should now both be in the
 		// PlotProvider.
@@ -285,7 +297,8 @@ public class PlotProviderTester {
 		testSeries = plotProvider.getSeriesAtTime(time2);
 		assertEquals(1, testSeries.size());
 		assertTrue(testSeries.contains(series2));
-		assertNull(plotProvider.getSeriesAtTime(time3));
+		assertNotNull(plotProvider.getSeriesAtTime(time3));
+		assertTrue(plotProvider.getSeriesAtTime(time3).isEmpty());
 
 		// Add another series to time2. There will now be 2 series at time2.
 		plotProvider.addSeries(time2, series1);
@@ -297,7 +310,8 @@ public class PlotProviderTester {
 		assertEquals(2, testSeries.size());
 		assertTrue(testSeries.contains(series2));
 		assertTrue(testSeries.contains(series1));
-		assertNull(plotProvider.getSeriesAtTime(time3));
+		assertNotNull(plotProvider.getSeriesAtTime(time3));
+		assertTrue(plotProvider.getSeriesAtTime(time3).isEmpty());
 
 		// Add a series to time3.
 		plotProvider.addSeries(time3, series1);
@@ -316,7 +330,8 @@ public class PlotProviderTester {
 		// Remove the series from time1. Now time1 will have no series.
 		plotProvider.removeSeries(time1, series1);
 		// time1 has no series. time2 has both series. time3 has series1.
-		assertNull(plotProvider.getSeriesAtTime(time1));
+		assertNotNull(plotProvider.getSeriesAtTime(time1));
+		assertTrue(plotProvider.getSeriesAtTime(time1).isEmpty());
 		testSeries = plotProvider.getSeriesAtTime(time2);
 		assertEquals(2, testSeries.size());
 		assertTrue(testSeries.contains(series2));
@@ -328,7 +343,8 @@ public class PlotProviderTester {
 		// Remove one of the series from time2.
 		plotProvider.removeSeries(time2, series1);
 		// time1 has no series. time2 has series2. time3 has series1.
-		assertNull(plotProvider.getSeriesAtTime(time1));
+		assertNotNull(plotProvider.getSeriesAtTime(time1));
+		assertTrue(plotProvider.getSeriesAtTime(time1).isEmpty());
 		testSeries = plotProvider.getSeriesAtTime(time2);
 		assertEquals(1, testSeries.size());
 		assertTrue(testSeries.contains(series2));
@@ -339,8 +355,10 @@ public class PlotProviderTester {
 		// Now remove the last series at time2.
 		plotProvider.removeSeries(time2, series2);
 		// series1 is forever alone at time3...
-		assertNull(plotProvider.getSeriesAtTime(time1));
-		assertNull(plotProvider.getSeriesAtTime(time2));
+		assertNotNull(plotProvider.getSeriesAtTime(time1));
+		assertTrue(plotProvider.getSeriesAtTime(time2).isEmpty());
+		assertNotNull(plotProvider.getSeriesAtTime(time2));
+		assertTrue(plotProvider.getSeriesAtTime(time2).isEmpty());
 		testSeries = plotProvider.getSeriesAtTime(time3);
 		assertEquals(1, testSeries.size());
 		assertTrue(testSeries.contains(series1));
