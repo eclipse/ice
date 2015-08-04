@@ -12,7 +12,27 @@
 package org.eclipse.ice.viz.service.widgets.test;
 
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
+import org.junit.Ignore;
+import org.junit.Test;
 
+@Ignore
 public class PlotCompositeTester extends AbstractSWTTester {
+
+	/**
+	 * Checks that the plot can be set and retrieved by sub-classes.
+	 */
+	@Test
+	public void checkPlot() {
+		fail("Not implemented");
+	}
+
+	/**
+	 * Checks that the show/hide series methods are appropriately called for
+	 * series whose enabled flags are toggled.
+	 */
+	@Test
+	public void checkSeriesShownAndHidden() {
+		fail("Not implemented");
+	}
 
 }

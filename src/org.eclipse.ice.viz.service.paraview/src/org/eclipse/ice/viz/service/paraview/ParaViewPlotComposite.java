@@ -180,7 +180,7 @@ public class ParaViewPlotComposite extends
 		// Throw an exception if the plot hasn't finished loading.
 		if (!plot.isLoaded()) {
 			throw new Exception(getClass().getName() + " error: "
-					+ "The VisIt plot has not finished loading.");
+					+ "The ParaView plot has not finished loading.");
 		}
 
 		// Create the overall container.
@@ -407,7 +407,7 @@ public class ParaViewPlotComposite extends
 		// Throw an exception if the plot hasn't finished loading.
 		if (!plot.isLoaded()) {
 			throw new Exception(getClass().getName() + " error: "
-					+ "The VisIt plot has not finished loading.");
+					+ "The ParaView plot has not finished loading.");
 		}
 
 		// Check for a new proxy. This updates the canvas and time slider if

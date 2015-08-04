@@ -10,8 +10,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.test;
 
+import static org.junit.Assert.*;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+@Ignore
 public class PlotEntryContentProviderTester {
 
 	// TODO Add tests for the PlotEntryContentProvider
+	@Test
+	public void checkGetValue() {
+		fail("Not implemented.");
+	}
 	
 }
