@@ -26,6 +26,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.core.resources.IProject;
 
 /**
  * <p>
@@ -504,6 +505,12 @@ public class FakeCore implements ICore {
 
 	@Override
 	public String postUpdateMessage(String message) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String createItem(String itemType, IProject project) {
 		// TODO Auto-generated method stub
 		return null;
 	}

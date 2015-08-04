@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
@@ -125,6 +126,27 @@ public interface ICore {
 	 * 
 	 * @param itemType
 	 *            The type of Item to create.
+	 * @param project
+	 *            The workspace project where the Item should be created and
+	 *            persisted.
+	 * @return The identification number given as a String of the newly created
+	 *         Item or -1 if it was unable to create the Item. It is safe to
+	 *         parse this string as an integer.
+	 */
+	public String createItem(String itemType, IProject project);
+
+	/**
+	 * This operation is a utility operation that performs the same work as the
+	 * two argument createItem, except it creates the Item in a default project
+	 * space.
+	 * 
+	 * This operation is mapped via JAX-RS to the web interface.
+	 * 
+	 * Of historical note, this was the original implementation of this
+	 * operation and project support was added nearly four years later.
+	 * 
+	 * @param itemType
+	 *            The type of Item to create.
 	 * @return The identification number given as a String of the newly created
 	 *         Item or -1 if it was unable to create the Item. It is safe to
 	 *         parse this string as an integer.
@@ -135,8 +157,7 @@ public interface ICore {
 	public String createItem(String itemType);
 
 	/**
-	 * This operation directs the ICore to permanently delete an Item. Again:
-	 * this is permanent!
+	 * This operation directs the ICore to *PERMANTENTLY* delete an Item.
 	 * 
 	 * @param itemId
 	 *            The identification number of the Item that should be deleted
@@ -289,8 +310,7 @@ public interface ICore {
 	 *            argument is null.
 	 * @param itemType
 	 *            The type of Item to create.
-	 * @return 
-	 *         The identification number given as a String of the newly created
+	 * @return The identification number given as a String of the newly created
 	 *         Item or -1 if it was unable to create the Item. It is safe to
 	 *         parse this string as an integer.
 	 */

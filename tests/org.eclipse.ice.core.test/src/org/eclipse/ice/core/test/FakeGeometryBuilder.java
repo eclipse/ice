@@ -54,7 +54,7 @@ public class FakeGeometryBuilder implements ItemBuilder {
 	 */
 	@Override
 	public String getItemName() {
-		return new String("Inigo Montoya");
+		return "Inigo Montoya";
 	}
 
 	/**
@@ -75,6 +75,7 @@ public class FakeGeometryBuilder implements ItemBuilder {
 	@Override
 	public Item build(IProject projectSpace) {
 		lastFakeItem = new FakeItem(projectSpace);
+		lastFakeItem.setName(getItemName());
 		return lastFakeItem;
 	}
 
