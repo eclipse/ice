@@ -391,46 +391,43 @@ public class PlotGridComposite extends Composite {
 		// the grid. We also can only proceed if there is at least one dependent
 		// series (y-axis) to plot and the independent series (x-axis) has been
 		// set for this plot.
-		ISeries independent = null;
-		List<ISeries> dependent = null;
 
 		if (plot != null && drawnPlots.size() < rows * columns
-				&& (independent = plot.getIndependentSeries()) != null
-				&& (dependent = plot.getAllDependentSeries(null)) != null) {
+				&& plot.getIndependentSeries() != null
+				&& plot.getCategories().length > 0) {
 
-			if (dependent.size() > 0 && independent.getBounds() != null) {
+			// Create the basic plot Composite.
+			final DrawnPlot drawnPlot = new DrawnPlot(gridComposite, plot);
+			drawnPlot.setBackground(getBackground());
 
-				// Create the basic plot Composite.
-				final DrawnPlot drawnPlot = new DrawnPlot(gridComposite, plot);
-				drawnPlot.setBackground(getBackground());
-
-				// Try to draw the plot. If the underlying IPlot
-				// cannot draw, then dispose of the undrawn plot Composite.
-				try {
-					drawnPlot.draw();
-				} catch (Exception e) {
-					drawnPlot.dispose();
-					throw e;
-				}
-
-				// Add the drawn plot to the list.
-				index = drawnPlots.size();
-				drawnPlots.add(drawnPlot);
-				drawnPlotMap.put(drawnPlot, index);
-
-				// When the drawn plot is disposed, make sure it is removed from
-				// the list of drawn plots.
-				drawnPlot.addDisposeListener(plotDisposeListener);
-
-				// Set the layout data for the new drawn plot. It should grab
-				// all available space in the gridComposite's layout.
-				GridData gridData = new GridData(SWT.FILL, SWT.FILL, true,
-						true);
-				drawnPlot.setLayoutData(gridData);
-
-				// Since a new plot was added, refresh the grid layout.
-				refreshLayout();
+			// Try to draw the plot. If the underlying IPlot
+			// cannot draw, then dispose of the undrawn plot Composite.
+			try {
+				drawnPlot.draw();
+			} catch (Exception e) {
+				drawnPlot.dispose();
+				throw e;
 			}
+
+			// Add the drawn plot to the list.
+			index = drawnPlots.size();
+			drawnPlots.add(drawnPlot);
+			drawnPlotMap.put(drawnPlot, index);
+
+			// When the drawn plot is disposed, make sure it is removed
+			// from
+			// the list of drawn plots.
+			drawnPlot.addDisposeListener(plotDisposeListener);
+
+			// Set the layout data for the new drawn plot. It should
+			// grab
+			// all available space in the gridComposite's layout.
+			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+			drawnPlot.setLayoutData(gridData);
+
+			// Since a new plot was added, refresh the grid layout.
+			refreshLayout();
+
 		}
 
 		return index;
