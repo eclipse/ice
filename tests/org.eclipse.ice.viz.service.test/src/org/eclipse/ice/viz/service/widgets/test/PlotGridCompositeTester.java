@@ -11,15 +11,28 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.widgets.test;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
-import org.eclipse.ice.client.widgets.test.FakePlot;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
+import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.BasicVizServiceFactory;
 import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.ISeries;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVSeries;
+import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
+import org.eclipse.ice.viz.service.test.FakePlot;
+import org.eclipse.ice.viz.service.test.FakeSeries;
+import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -47,9 +60,29 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	private static PlotGridComposite composite;
 
 	/**
+	 * A reference to the viz service factory.
+	 */
+	private static IVizServiceFactory factory;
+
+	/**
+	 * The current fake plot that will be created by the fake viz service.
+	 */
+	private FakePlot fakePlot;
+
+	/**
+	 * A simple URI that can be used to create a plot.
+	 */
+	private URI simpleURI;
+
+	/**
 	 * A non-static, non-shared {@link PlotGridComposite} for testing.
 	 */
 	private PlotGridComposite testComposite;
+
+	/**
+	 * The viz service responsible for creating fake plots.
+	 */
+	private IVizService vizService;
 
 	/*
 	 * (non-Javadoc)
@@ -71,6 +104,11 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			}
 		});
 
+		// Add the fake viz service to the factory used by the
+		// PlotGridComposite.
+		factory = new BasicVizServiceFactory();
+		VizServiceFactoryHolder.setVizServiceFactory(factory);
+
 		return;
 	}
 
@@ -85,6 +123,37 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		super.beforeEachTest();
 
 		// Initialize per-test resources here.
+
+		simpleURI = createValidURI("simpleFile");
+
+		// Create a fake viz service that creates fake plots.
+		vizService = new AbstractVizService() {
+
+			@Override
+			public IPlot createPlot(URI uri) throws Exception {
+				return fakePlot;
+			}
+
+			@Override
+			public String getName() {
+				return "Fake Viz Service";
+			}
+
+			@Override
+			public String getVersion() {
+				return "0.0";
+			}
+
+			@Override
+			protected Set<String> findSupportedExtensions() {
+				Set<String> extensions = new HashSet<String>();
+				extensions.add("ext");
+				return extensions;
+			}
+		};
+		factory.register(vizService);
+
+		return;
 	}
 
 	/*
@@ -95,6 +164,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	@Override
 	public void afterEachTest() {
 		// Dispose per-test resources here.
+		factory.unregister(vizService);
 
 		// Proceed with the default post-test cleanup.
 		super.afterEachTest();
@@ -207,28 +277,21 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkAddPlot() {
 
-		// Makes the grid 1x3, and tries to add 4 valid plots. The 4th plot
-		// cannot be added because the grid is full.
+		// Makes the grid 1x1 and try to add 2 plots. The second plot cannot be
+		// added because there's not enough space.
 
-		FakePlot fakePlot;
-		FakePlot fakePlot2;
-		IPlot plot;
 		int index = -1;
 		int expectedIndex = -1;
 
 		// Make the grid 1x3.
 		getRowSpinner().setSelection(1);
-		getColumnSpinner().setSelection(3);
-
-		// Create a plot to test adding to the composite.
-		fakePlot = createValidPlot();
-		fakePlot2 = createValidPlot();
-		plot = fakePlot;
+		getColumnSpinner().setSelection(1);
 
 		// Add a plot. It should get the index 0.
 		expectedIndex = 0;
+		fakePlot = createValidPlot(simpleURI);
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
@@ -236,44 +299,20 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
 		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(0), composite));
-
-		// Add another plot. It should get the index 1.
-		expectedIndex = 1;
-		try {
-			index = addPlot(plot);
-		} catch (Exception e) {
-			fail("PlotGridCompositeTester error: "
-					+ "An exception was thrown when adding a valid plot.");
-		}
-		assertEquals(expectedIndex, index);
-		// Make sure its child composite exists.
-		assertEquals(2, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(1), composite));
-
-		// Try to add another plot.
-		expectedIndex = 2;
-		try {
-			index = addPlot(fakePlot2);
-		} catch (Exception e) {
-			fail("PlotGridCompositeTester error: "
-					+ "An exception was thrown when adding a valid plot.");
-		}
-		assertEquals(expectedIndex, index);
-		assertEquals(1, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(0), composite));
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Try to add another plot. It shouldn't be added.
 		expectedIndex = -1;
+		fakePlot = createValidPlot(simpleURI);
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
-		// Make sure its child composite does not exists.
-		assertEquals(2, fakePlot.getDrawCount());
+		// It should not be drawn.
+		assertEquals(0, fakePlot.getDrawCount());
 
 		// Clear the plots.
 		clearPlots();
@@ -286,40 +325,21 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	 * {@link PlotGridComposite#addPlot(IPlot)}.
 	 */
 	@Test
-	public void checkAddPlotExceptions() {
+	public void checkAddPlotFailures() {
 		// addPlot(null) should return -1.
-		// addPlot(...) when getPlotTypes() is null should return -1.
-		// addPlot(...) when getPlotTypes() is empty should return -1.
-		// addPlot(...) should throw getPlotTypes()'s exceptions.
-		// addPlot(...) should throw draw(...)'s exceptions.
+		// addPlot(...) should return -1 if draw(...) throws exceptions.
 
-		FakePlot fakePlot;
-		IPlot plot;
-		final IPlot nullPlot = null;
 		final AtomicReference<Exception> eRef = new AtomicReference<Exception>();
 
 		// Check addPlot(null).
-		plot = nullPlot;
+		fakePlot = null;
 		try {
-			assertEquals(-1, addPlot(plot));
+			assertEquals(-1, addPlot(simpleURI));
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "Exception thrown when adding null plot. "
 					+ "Should just return -1.");
 		}
-
-		// Check addPlot(...) when getPlotTypes() is empty.
-		fakePlot = new FakePlot();
-		plot = fakePlot;
-		try {
-			assertEquals(-1, addPlot(plot));
-		} catch (Exception e) {
-			fail("PlotGridCompositeTester error: "
-					+ "Exception thrown when adding plot with empty plot type map. "
-					+ "Should just return -1.");
-		}
-		// Make sure the plot's draw(...) method wasn't called.
-		assertEquals(0, fakePlot.getDrawCount());
 
 		// Check addPlot(...) when draw(...) throws an exception.
 		fakePlot = new FakePlot() {
@@ -332,25 +352,19 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 				eRef.set(e);
 				throw e;
 			}
-		};
-		// The plot needs to have some types...
-		fakePlot.addDependentSeries("preferred", getSeries("katana"));
-		fakePlot.addDependentSeries("preferred", getSeries("sai"));
-		fakePlot.addDependentSeries("preferred", getSeries("bo staff"));
-		fakePlot.addDependentSeries("preferred", getSeries("nunchaku"));
 
-		plot = fakePlot;
+			@Override
+			public ISeries getIndependentSeries() {
+				return new FakeSeries("fake");
+			}
+		};
 		try {
-			addPlot(plot);
-			fail("PlotGridCompositeTester error: "
-					+ "Exception from draw(...) was not relayed when adding plot.");
+			assertEquals(-1, addPlot(simpleURI));
 		} catch (Exception e) {
 			assertSame(eRef.get(), e);
+			fail("PlotGridCompositeTester error: "
+					+ "Exception from draw(...) was not relayed when adding plot.");
 		}
-		// Make sure the plot's draw(...) method was called, but its child is
-		// disposed by addPlot(...).
-		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(fakePlot.children.get(0).isDisposed());
 
 		return;
 	}
@@ -362,32 +376,28 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkRemovePlot() {
 
-		// Make the grid 1x3.
-		// Add 3 plots (two from the same IPlot) so that no more can be added.
-		// Remove one of the two plots from the same IPlot.
-		// We can now add another plot.
+		// Make the grid 1x2.
+		// Add 2 plots.
+		// Remove the first plot.
+		// We can now add another plot. Test by adding a third one.
 		// Remove all plots by index.
 
-		FakePlot fakePlot;
-		FakePlot fakePlot2;
-		IPlot plot;
+		List<FakePlot> plots = new ArrayList<FakePlot>();
+
 		int index = -1;
 		int expectedIndex = -1;
 
 		// Make the grid 1x3.
 		getRowSpinner().setSelection(1);
-		getColumnSpinner().setSelection(3);
-
-		// Create a plot to test adding to the composite.
-		fakePlot = createValidPlot();
-		fakePlot2 = createValidPlot();
-		plot = fakePlot;
+		getColumnSpinner().setSelection(2);
 
 		// ---- Add the three plots. ---- //
 		// Add a plot. It should get the index 0.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 0;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
@@ -395,66 +405,68 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
 		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(0), composite));
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Add another plot. It should get the index 1.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 1;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
-		assertEquals(2, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(1), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
+
+		// No more plots can be added.
 
 		// Try to add another plot.
-		expectedIndex = 2;
+		fakePlot = createValidPlot(simpleURI);
+		expectedIndex = -1;
 		try {
-			index = addPlot(fakePlot2);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
-		assertEquals(1, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(0), composite));
-
-		// No more plots can be added.
+		// It was not drawn
+		assertEquals(0, fakePlot.getDrawCount());
 		// ------------------------------ //
 
 		// ---- Remove one of the two plots with the shared IPlot. ---- //
-		// Remove the middle plot and make sure its drawn child is disposed.
-		removePlot(1);
-		assertTrue(fakePlot.children.get(1).isDisposed());
+		// Remove the first plot and make sure its drawn child is disposed.
+		removePlot(0);
+		assertTrue(plots.remove(0).child.isDisposed());
 		// ------------------------------------------------------------ //
 
 		// ---- Add another plot. ---- //
 		// Try to add another plot.
-		expectedIndex = 2;
+		// We can use the existing fake plot.
+		plots.add(fakePlot);
+		expectedIndex = 1;
 		try {
-			index = addPlot(fakePlot2);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
-		assertEquals(2, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(1), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 		// --------------------------- //
 
 		// ---- Remove all plots by index. ---- //
 		// Remove the last one first,
-		removePlot(2);
-		assertTrue(fakePlot2.children.get(1).isDisposed());
+		removePlot(1);
+		assertTrue(plots.remove(1).child.isDisposed());
 		// Then remove the first one.
 		removePlot(0);
-		assertTrue(fakePlot.children.get(0).isDisposed());
-		// THen remove the "middle" one (now the only one left).
-		removePlot(0);
-		assertTrue(fakePlot2.children.get(0).isDisposed());
+		assertTrue(plots.remove(0).child.isDisposed());
 		// ------------------------------------ //
 
 		// Trying to remove any more should do nothing.
@@ -472,31 +484,26 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	public void checkRemovePlots() {
 
 		// Make the grid 1x3.
-		// Add 3 plots (two from the same IPlot) so that no more can be added.
-		// Remove the two plots from the same IPlot.
-		// Remove all plots by IPlot.
+		// Add 3 plots (two from the same URI) so that no more can be added.
+		// Remove the two plots from the same URI.
 
-		FakePlot fakePlot;
-		FakePlot fakePlot2;
-		IPlot plot;
+		List<FakePlot> plots = new ArrayList<FakePlot>();
+
 		int index = -1;
 		int expectedIndex = -1;
-		final IPlot nullPlot = null;
 
 		// Make the grid 1x3.
 		getRowSpinner().setSelection(1);
 		getColumnSpinner().setSelection(3);
 
-		// Create a plot to test adding to the composite.
-		fakePlot = createValidPlot();
-		fakePlot2 = createValidPlot();
-		plot = fakePlot;
-
 		// ---- Add the three plots. ---- //
 		// Add a plot. It should get the index 0.
+		fakePlot = createValidPlot(simpleURI);
+		System.err.println(System.identityHashCode(fakePlot));
+		plots.add(fakePlot);
 		expectedIndex = 0;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("PlotGridCompositeTester error: "
@@ -504,52 +511,57 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		}
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
+		System.err.println(System.identityHashCode(fakePlot));
 		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(0), composite));
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Add another plot. It should get the index 1.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 1;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
-		assertEquals(2, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(1), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Try to add another plot.
+		fakePlot = createValidPlot(createValidURI("different"));
+		plots.add(fakePlot);
 		expectedIndex = 2;
 		try {
-			index = addPlot(fakePlot2);
+			index = addPlot(fakePlot.getDataSource());
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
-		assertEquals(1, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(0), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// No more plots can be added.
 		// ------------------------------ //
 
-		// ---- Remove the two plots with the shared IPlot. ---- //
-		removePlots(plot);
-		assertTrue(fakePlot.children.get(0).isDisposed());
-		assertTrue(fakePlot.children.get(1).isDisposed());
-		// ----------------------------------------------------- //
+		// ---- Remove the two plots with the shared URI. ---- //
+		removePlots(simpleURI);
+		assertTrue(plots.remove(1).child.isDisposed());
+		assertTrue(plots.remove(0).child.isDisposed());
+		// ---------------------------------------------------- //
 
 		// ---- Remove the remaining plots. ---- //
-		removePlots(fakePlot2);
-		assertTrue(fakePlot.children.get(0).isDisposed());
+		removePlots(fakePlot.getDataSource());
+		assertTrue(fakePlot.child.isDisposed());
 		// ------------------------------------- //
 
 		// Trying to remove any more should do nothing.
-		removePlots(plot);
-		removePlots(fakePlot2);
-		removePlots(nullPlot);
+		removePlots(simpleURI);
+		removePlots(fakePlot.getDataSource());
+		removePlots(null);
 
 		return;
 	}
@@ -562,9 +574,8 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 
 		// Add a couple of plots, then clear. Make sure the plots were disposed.
 
-		FakePlot fakePlot;
-		FakePlot fakePlot2;
-		IPlot plot;
+		List<FakePlot> plots = new ArrayList<FakePlot>();
+
 		int index = -1;
 		int expectedIndex = -1;
 
@@ -572,20 +583,17 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		getRowSpinner().setSelection(1);
 		getColumnSpinner().setSelection(3);
 
-		// Create some test plots.
-		fakePlot = createValidPlot();
-		fakePlot2 = createValidPlot();
-		plot = fakePlot;
-
 		// Reset the rows and columns to 2x2.
 		getRowSpinner().setSelection(2);
 		getColumnSpinner().setSelection(2);
 
 		// ---- Add two plots. ---- //
 		// Add a plot. It should get the index 0.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 0;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
@@ -593,28 +601,30 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
 		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(0), composite));
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Add another plot. It should get the index 1.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 1;
 		try {
-			index = addPlot(fakePlot2);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
-		assertEquals(1, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(0), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 		// ------------------------ //
 
 		// Clear the plots.
 		clearPlots();
 
 		// Make sure the children are disposed.
-		assertTrue(fakePlot.children.get(0).isDisposed());
-		assertTrue(fakePlot2.children.get(0).isDisposed());
+		assertTrue(plots.remove(0).child.isDisposed());
+		assertTrue(plots.remove(0).child.isDisposed());
 
 		return;
 	}
@@ -625,11 +635,8 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkClearPlotsButton() {
 
-		// Add a couple of plots, then clear. Make sure the plots were disposed.
+		List<FakePlot> plots = new ArrayList<FakePlot>();
 
-		FakePlot fakePlot;
-		FakePlot fakePlot2;
-		IPlot plot;
 		int index = -1;
 		int expectedIndex = -1;
 
@@ -637,20 +644,17 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		getRowSpinner().setSelection(1);
 		getColumnSpinner().setSelection(3);
 
-		// Create some test plots.
-		fakePlot = createValidPlot();
-		fakePlot2 = createValidPlot();
-		plot = fakePlot;
-
 		// Reset the rows and columns to 2x2.
 		getRowSpinner().setSelection(2);
 		getColumnSpinner().setSelection(2);
 
 		// ---- Add two plots. ---- //
 		// Add a plot. It should get the index 0.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 0;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
@@ -658,28 +662,33 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
 		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(0), composite));
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Add another plot. It should get the index 1.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 1;
 		try {
-			index = addPlot(fakePlot2);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
-		assertEquals(1, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(0), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 		// ------------------------ //
+
+		// Clear the plots.
+		clearPlots();
 
 		// Clear the plots by clicking to ToolBar button.
 		getBot().toolbarButton("Clear").click();
 
 		// Make sure the children are disposed.
-		assertTrue(fakePlot.children.get(0).isDisposed());
-		assertTrue(fakePlot2.children.get(0).isDisposed());
+		assertTrue(plots.remove(0).child.isDisposed());
+		assertTrue(plots.remove(0).child.isDisposed());
 
 		return;
 	}
@@ -694,9 +703,8 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		// Add 3 plots.
 		// Make the grid 2x1. The third plot should be disposed.
 
-		FakePlot fakePlot;
-		FakePlot fakePlot2;
-		IPlot plot;
+		List<FakePlot> plots = new ArrayList<FakePlot>();
+
 		int index = -1;
 		int expectedIndex = -1;
 
@@ -705,15 +713,13 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		getColumnSpinner().setSelection(1);
 
 		// ---- Add 3 plots to fill the grid. ---- //
-		// Create the plots.
-		fakePlot = createValidPlot();
-		fakePlot2 = createValidPlot();
-		plot = fakePlot;
 
 		// Add a plot. It should get the index 0.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 0;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
@@ -721,39 +727,44 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
 		assertEquals(1, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(0), composite));
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Add another plot. It should get the index 1.
+		fakePlot = createValidPlot(simpleURI);
+		plots.add(fakePlot);
 		expectedIndex = 1;
 		try {
-			index = addPlot(plot);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
 		// Make sure its child composite exists.
-		assertEquals(2, fakePlot.getDrawCount());
-		assertTrue(childOfComposite(fakePlot.children.get(1), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 
 		// Try to add another plot.
+		fakePlot = createValidPlot(simpleURI);
 		expectedIndex = 2;
 		try {
-			index = addPlot(fakePlot2);
+			index = addPlot(simpleURI);
 		} catch (Exception e) {
 			fail("PlotGridCompositeTester error: "
 					+ "An exception was thrown when adding a valid plot.");
 		}
 		assertEquals(expectedIndex, index);
-		assertEquals(1, fakePlot2.getDrawCount());
-		assertTrue(childOfComposite(fakePlot2.children.get(0), composite));
+		assertEquals(1, fakePlot.getDrawCount());
+		assertTrue(childOfComposite(fakePlot.child, composite));
 		// --------------------------------------- //
 
 		// Make the grid 2x1.
 		getRowSpinner().setSelection(2);
 
 		// The third plot should have been disposed.
-		assertTrue(fakePlot2.children.get(0).isDisposed());
+		assertTrue(fakePlot.child.isDisposed());
+		assertFalse(plots.get(0).child.isDisposed());
+		assertFalse(plots.get(1).child.isDisposed());
 
 		// Clear the plots.
 		clearPlots();
@@ -796,14 +807,14 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	 *             This catches the Exception (if one occurs) on the UI thread
 	 *             and throws it on the test thread.
 	 */
-	private int addPlot(final IPlot plot) throws Exception {
+	private int addPlot(final URI uri) throws Exception {
 		final AtomicInteger index = new AtomicInteger();
 		final AtomicReference<Exception> eRef = new AtomicReference<Exception>();
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					int i = composite.addPlot(plot);
+					int i = composite.addPlot(uri);
 					index.set(i);
 				} catch (Exception e) {
 					eRef.set(e);
@@ -847,11 +858,11 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	 * A wrapper around {@link PlotGridComposite#removePlots(IPlot))} that uses
 	 * {@code syncExec(...)} to perform the operation on the UI thread.
 	 */
-	private void removePlots(final IPlot plot) {
+	private void removePlots(final URI uri) {
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				composite.removePlots(plot);
+				composite.removePlots(uri);
 			}
 		});
 	}
@@ -864,7 +875,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				composite.clearPlots();
+				composite.removeAllPlots();
 			}
 		});
 	}
@@ -891,9 +902,18 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 
 	/**
 	 * Creates a FakePlot that will draw something and has a set of plot types.
+	 * 
+	 * @param The
+	 *            URI for the fake plot.
 	 */
-	private FakePlot createValidPlot() {
-		FakePlot plot = new FakePlot();
+	private FakePlot createValidPlot(URI uri) {
+		final URI uriRef = uri;
+		FakePlot plot = new FakePlot() {
+			@Override
+			public URI getDataSource() {
+				return uriRef;
+			}
+		};
 		// Add some random series with different categories to the plot
 		plot.addDependentSeries("tmnt", getSeries("leo"));
 		plot.addDependentSeries("tmnt", getSeries("donnie"));
@@ -967,5 +987,22 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 	 */
 	private SWTBotSpinner getColumnSpinner() {
 		return getBot().spinner(1);
+	}
+
+	/**
+	 * Used to create a URI with an extension supported by the fake viz service.
+	 * 
+	 * @param filename
+	 *            The name of the file, excluding the extension.
+	 * @return A valid (albeit completely fabricated) URI.
+	 */
+	private URI createValidURI(String filename) {
+		URI uri = null;
+		try {
+			uri = new URI("file:///some/path/to/" + filename + ".ext");
+		} catch (URISyntaxException e) {
+			fail("Bad URI. This should not happen.");
+		}
+		return uri;
 	}
 }

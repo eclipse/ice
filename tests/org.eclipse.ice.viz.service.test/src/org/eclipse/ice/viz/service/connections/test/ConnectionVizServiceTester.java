@@ -17,12 +17,19 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
+import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
 import org.eclipse.ice.viz.service.connections.ConnectionVizService;
+import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
+import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.ice.viz.service.connections.VizConnectionManager;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,11 +52,6 @@ public class ConnectionVizServiceTester {
 	 * The viz service that will be tested.
 	 */
 	private ConnectionVizService<FakeClient> service;
-	/**
-	 * A handle to the viz service that will be tested, but cast to its actual
-	 * type.
-	 */
-	private FakeConnectionVizService fakeService;
 
 	/**
 	 * A string containing the characters "localhost".
@@ -86,22 +88,54 @@ public class ConnectionVizServiceTester {
 		path = "";
 		node.put(name, host + "," + port + "," + path);
 
-		// Create the fake viz service.
-		fakeService = new FakeConnectionVizService() {
+		// Create a connection viz service.
+		service = new ConnectionVizService<FakeClient>() {
+
+			@Override
+			public String getName() {
+				return "Fake Connection Viz Service";
+			}
+
+			@Override
+			public String getVersion() {
+				return "0.0";
+			}
+
+			@Override
+			protected IVizConnectionManager<FakeClient> createConnectionManager() {
+				return new VizConnectionManager<FakeClient>() {
+					@Override
+					protected VizConnection<FakeClient> createConnection(
+							String name, String preferences) {
+						return new FakeVizConnection();
+					}
+				};
+			}
+
 			@Override
 			protected ConnectionPlot<FakeClient> createConnectionPlot() {
-				FakeConnectionPlot plot = (FakeConnectionPlot) super.createConnectionPlot();
-				plot.plotTypes.put("track", new String[] { "1", "2" });
-				return plot;
+				return new ConnectionPlot<FakeClient>() {
+					@Override
+					protected ConnectionPlotComposite<FakeClient> createPlotComposite(
+							Composite parent) {
+						// This shouldn't be called.
+						return null;
+					}
+				};
 			}
 
 			@Override
 			protected String getConnectionPreferencesNodeId() {
 				return NODE_ID;
 			}
+
+			@Override
+			protected Set<String> findSupportedExtensions() {
+				Set<String> extensions = new HashSet<String>();
+				extensions.add("csv");
+				return extensions;
+			}
 		};
-		fakeService.supportedExtensions.add("csv");
-		service = fakeService;
 
 		// Add a remote connection after creating the service.
 		name = "magic sword";

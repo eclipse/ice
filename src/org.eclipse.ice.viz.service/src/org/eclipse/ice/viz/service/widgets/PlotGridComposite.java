@@ -231,7 +231,7 @@ public class PlotGridComposite extends Composite {
 	 *             An exception is thrown if the {@link IPlot} implementation
 	 *             cannot be rendered.
 	 */
-	public int addPlot(URI uri) throws Exception {
+	public int addPlot(URI uri) {
 		int index = -1;
 
 		// Try to create a plot if there is space available.
@@ -243,7 +243,10 @@ public class PlotGridComposite extends Composite {
 			if (provider.openDialog(getShell(), uri) == Window.OK) {
 				plot = provider.getSelectedPlot();
 			}
+		} else {
+			System.err.println("Rejecting plot because not enough space");
 		}
+		
 
 		// If a plot could be created, try to draw it.
 		if (plot != null) {
@@ -256,11 +259,13 @@ public class PlotGridComposite extends Composite {
 				logger.warn(getClass().getName() + " Exception! "
 						+ "Error while attempting to draw a plot for the file \""
 						+ uri.getPath() + "\".", e);
+				System.err.println("Exception while drawing plot");
 				return index;
 			}
 
 			// Add the plot to the list.
 			index = plots.size();
+			System.err.println("Drawing plot with index " + index);
 			plots.add(plot);
 			plotComposites.add(plotComposite);
 
@@ -274,6 +279,8 @@ public class PlotGridComposite extends Composite {
 
 			// Since a new plot was added, refresh the grid layout.
 			refreshLayout();
+		} else {
+			System.err.println("Rejecting plot because is null");
 		}
 
 		return index;

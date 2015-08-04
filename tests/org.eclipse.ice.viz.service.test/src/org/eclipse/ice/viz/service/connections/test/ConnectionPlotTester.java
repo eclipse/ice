@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.connections.test;
 
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.junit.Ignore;
 import org.junit.Test;

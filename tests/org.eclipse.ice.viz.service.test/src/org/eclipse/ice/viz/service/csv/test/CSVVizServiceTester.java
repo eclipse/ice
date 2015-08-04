@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
+import org.eclipse.ice.viz.service.csv.CSVProxyPlot;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.junit.Test;
 
@@ -75,9 +76,8 @@ public class CSVVizServiceTester {
 		assertNotNull(plot);
 		assertEquals(file.toURI(), plot.getDataSource());
 
-		// It should actually return a CSVPlot, although that *could* change in
-		// the future.
-		assertTrue(plot instanceof CSVPlot);
+		// It should return a proxy to a CSVPlot.
+		assertTrue(plot instanceof CSVProxyPlot);
 
 		// Passing a null URI should throw an exception.
 		URI uri = null;

@@ -40,7 +40,7 @@ public class FakePlot implements IPlot {
 	 * A list of all child composites created when
 	 * {@link #draw(String, String, Composite)} is called.
 	 */
-	public final List<Composite> children = new ArrayList<Composite>();
+	public Composite child;
 
 	/**
 	 * The map of dependent series. This will not be populated with anything by
@@ -48,6 +48,8 @@ public class FakePlot implements IPlot {
 	 */
 	public final Map<String, List<ISeries>> depSeries = new HashMap<String, List<ISeries>>();
 
+	private int drawCount;
+	
 	/**
 	 * The independent series for this plot. This is a plain new series by
 	 * default.
@@ -59,6 +61,10 @@ public class FakePlot implements IPlot {
 	 */
 	public String name = "";
 
+	public FakePlot() {
+		drawCount = 0;
+	}
+	
 	/**
 	 * Adds the specified series to this plot under the given category
 	 * 
@@ -80,8 +86,9 @@ public class FakePlot implements IPlot {
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
-		Composite child = new Composite(parent, SWT.NONE);
-		children.add(child);
+		System.err.println("Drawing fake plot... " + drawCount);
+		drawCount++;
+		child = new Composite(parent, SWT.NONE);
 		child.setMenu(parent.getMenu());
 		return child;
 	}
@@ -114,7 +121,7 @@ public class FakePlot implements IPlot {
 	 * Gets the number of times that {@link #draw(Composite)} was called.
 	 */
 	public int getDrawCount() {
-		return children.size();
+		return drawCount;
 	}
 
 	/*
