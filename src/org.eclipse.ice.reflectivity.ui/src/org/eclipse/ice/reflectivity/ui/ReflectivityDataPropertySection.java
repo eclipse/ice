@@ -75,10 +75,8 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 		// Create a section for the data composites.
 		section = getWidgetFactory().createSection(parent,
 				Section.SHORT_TITLE_BAR | Section.DESCRIPTION);
-		section.setText("Reflectivity Inputs:");
-		section.setDescription(
-				"Give a wave vector, a number of layers of roughness "
-						+ "between interfaces, and the angles. ");
+		section.setText(data.getName());
+		section.setDescription(data.getDescription());
 		section.setBackground(backgroundColor);
 
 		dataComposite = new DataComponentComposite(data, section, SWT.NONE);

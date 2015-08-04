@@ -45,6 +45,11 @@ public class ReflectivityTabDescriptorProvider
 	DataComponent component;
 
 	/**
+	 * The output data component that is being displayed
+	 */
+	DataComponent output;
+
+	/**
 	 * The list component for the current reflectivity model table
 	 */
 	ListComponent listComp;
@@ -60,7 +65,7 @@ public class ReflectivityTabDescriptorProvider
 	public ReflectivityTabDescriptorProvider() {
 		// Local declarations
 		component = null;
-		descriptors = new ITabDescriptor[2];
+		descriptors = new ITabDescriptor[3];
 	}
 
 	private final IFilter filter = new IFilter() {
@@ -89,20 +94,27 @@ public class ReflectivityTabDescriptorProvider
 			Object[] selectedObjects = ((IStructuredSelection) selection)
 					.toArray();
 			// If there are objects in the selection
-			if (selectedObjects.length >= 3) {
+			if (selectedObjects.length >= 4) {
 				// Set the data component if it is valid
 				Object first = selectedObjects[0];
 				if (first instanceof DataComponent) {
 					component = (DataComponent) first;
 				}
+				// Set the output component from the seleciton if it is valid
 				Object second = selectedObjects[1];
-				if (second instanceof ListComponent) {
-					listComp = (ListComponent) second;
+				if (second instanceof DataComponent) {
+					output = (DataComponent) second;
+				}
+
+				// Set the list from the selection if it is valid
+				Object third = selectedObjects[2];
+				if (third instanceof ListComponent) {
+					listComp = (ListComponent) third;
 				}
 				// Set the selection from the table if it is valid
-				Object third = selectedObjects[2];
-				if (third instanceof MaterialSelection) {
-					tableSelection = (MaterialSelection) third;
+				Object fourth = selectedObjects[3];
+				if (fourth instanceof MaterialSelection) {
+					tableSelection = (MaterialSelection) fourth;
 				}
 			}
 
@@ -139,6 +151,7 @@ public class ReflectivityTabDescriptorProvider
 				descriptors[0] = inputTabDescriptor;
 			}
 
+			// Create the cell editing tab
 			if (descriptors[1] == null) {
 
 				AbstractTabDescriptor editCellTab = new AbstractTabDescriptor() {
@@ -158,10 +171,34 @@ public class ReflectivityTabDescriptorProvider
 						return "Cell Editor";
 					}
 				};
-
+				// Add the tab to the list of tab descriptors
 				descriptors[1] = editCellTab;
 			}
 
+			// Create the output tab
+			if (descriptors[2] == null) {
+				AbstractTabDescriptor outputTab = new AbstractTabDescriptor() {
+
+					@Override
+					public String getCategory() {
+						return "Reflectivity";
+					}
+
+					@Override
+					public String getId() {
+						return "Reflectivity.Output";
+					}
+
+					@Override
+					public String getLabel() {
+						return "Output";
+					}
+
+				};
+				// Add the tab to the list of descriptors
+				descriptors[2] = outputTab;
+			}
+			// Get the first tab, the input entries
 			ITabDescriptor tab = descriptors[0];
 
 			// Create a SectionDescriptor for the data component's inputs
@@ -236,6 +273,43 @@ public class ReflectivityTabDescriptorProvider
 			sectionDescriptors.add(cellSection);
 
 			((AbstractTabDescriptor) tab2)
+					.setSectionDescriptors(sectionDescriptors);
+
+			ITabDescriptor tab3 = descriptors[2];
+
+			// Create a SectionDescriptor for the output data component
+			AbstractSectionDescriptor outputSection = new AbstractSectionDescriptor() {
+
+				@Override
+				public String getId() {
+					return "Output:";
+				}
+
+				@Override
+				public ISection getSectionClass() {
+					ReflectivityDataPropertySection section;
+					section = new ReflectivityDataPropertySection();
+					section.setDataComponent(output);
+					return section;
+				}
+
+				@Override
+				public String getTargetTab() {
+					return tab3.getId();
+				}
+
+				@Override
+				public IFilter getFilter() {
+					return filter;
+				}
+
+			};
+
+			// Add the section descriptor to the tab
+			sectionDescriptors = new ArrayList<AbstractSectionDescriptor>();
+			sectionDescriptors.add(outputSection);
+
+			((AbstractTabDescriptor) tab3)
 					.setSectionDescriptors(sectionDescriptors);
 
 		}

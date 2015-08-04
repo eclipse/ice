@@ -94,6 +94,12 @@ public class ReflectivityPage extends ICEResourcePage
 	private DataComponent data;
 
 	/**
+	 * The output data, namely the chi squared analysis, should be presented
+	 * with this component
+	 */
+	private DataComponent output;
+
+	/**
 	 * The sash form that is the base composite for the editor in this page
 	 */
 	private SashForm sashForm;
@@ -494,6 +500,16 @@ public class ReflectivityPage extends ICEResourcePage
 	}
 
 	/**
+	 * Sets the output component used to display the chi squared analysis
+	 * 
+	 * @param outputComp
+	 *            The output component to use.
+	 */
+	public void setOutputComponent(DataComponent outputComp) {
+		output = outputComp;
+	}
+
+	/**
 	 * Sets the list component to use for this page. The list is displayed at
 	 * the top of the page in the upper part of the sash form.
 	 * 
@@ -563,9 +579,10 @@ public class ReflectivityPage extends ICEResourcePage
 
 			@Override
 			public Iterator iterator() {
-				// Create an iterator over a list containing just the data
+				// Create an iterator over a list containing the selection
 				List<Object> lst = new ArrayList<Object>();
 				lst.add(data);
+				lst.add(output);
 				lst.add(list);
 				if (selectedCell != null) {
 					lst.add(selectedCell);
@@ -575,24 +592,25 @@ public class ReflectivityPage extends ICEResourcePage
 
 			@Override
 			public int size() {
-				return selectedCell == null ? 2 : 3;
+				return selectedCell == null ? 3 : 4;
 			}
 
 			@Override
 			public Object[] toArray() {
-				// An array containing the data component
+				// An array containing the selection
 				if (selectedCell != null) {
-					return new Object[] { data, list, selectedCell };
+					return new Object[] { data, output, list, selectedCell };
 				} else {
-					return new Object[] { data, list };
+					return new Object[] { data, output, list };
 				}
 			}
 
 			@Override
 			public List<Object> toList() {
-				// A list containing the data component
+				// A list containing the selection
 				List<Object> lst = new ArrayList<Object>();
 				lst.add(data);
+				lst.add(output);
 				lst.add(list);
 				if (selectedCell != null) {
 					lst.add(selectedCell);

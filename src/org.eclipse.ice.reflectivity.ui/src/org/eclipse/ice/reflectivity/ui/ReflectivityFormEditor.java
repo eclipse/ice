@@ -54,12 +54,16 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 		// Get the components out if they were all properly set.
 		if (!(componentMap.get("data").isEmpty())
-				|| !(componentMap.get("list").isEmpty())
-				|| !(componentMap.get("output").isEmpty())) {
+				&& !(componentMap.get("list").isEmpty())
+				&& !(componentMap.get("output").isEmpty())) {
 
 			// Retrieve the data component
 			DataComponent dataComp = (DataComponent) componentMap.get("data")
 					.get(0);
+
+			// Retreive the output data component
+			DataComponent outputComp = (DataComponent) componentMap.get("data")
+					.get(1);
 
 			// Retrieve the list component
 			ListComponent listComp = (ListComponent) componentMap.get("list")
@@ -71,8 +75,9 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 			// Create the reflectivity page. Use all of the components for the
 			// Id.
-			ReflectivityPage page = new ReflectivityPage(this,
-					dataComp.getName() + listComp.getName() + resComp.getName(),
+			ReflectivityPage page = new ReflectivityPage(
+					this, dataComp.getName() + listComp.getName()
+							+ resComp.getName() + outputComp.getName(),
 					"Reflectivity Page");
 
 			// Set the resource component page for the resource view to know
@@ -84,6 +89,7 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 			page.setResourceComponent(resComp);
 			page.setDataComponent(dataComp);
 			page.setList(listComp);
+			page.setOutputComponent(outputComp);
 
 			// Finally, try adding the page to the editor.
 			try {

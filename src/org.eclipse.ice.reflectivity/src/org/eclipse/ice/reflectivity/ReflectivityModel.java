@@ -81,6 +81,16 @@ public class ReflectivityModel extends Model {
 	private static final String WaveLengthEntryName = "Wave Length";
 
 	/**
+	 * The entry name for the chi squared analysis entry
+	 */
+	private static final String ChiSquaredEntryName = "Chi Squared";
+
+	/**
+	 * The entry name for the chi squared analysis for the rq4 profile
+	 */
+	private static final String ChiSquaredRQ4EntryName = "RQ^4 Chi Squared";
+
+	/**
 	 * Identification number for the component that contains the parameters.
 	 */
 	public static final int paramsCompId = 1;
@@ -96,6 +106,12 @@ public class ReflectivityModel extends Model {
 	 * files.
 	 */
 	public static final int resourceCompId = 3;
+
+	/**
+	 * Identification number for the output data component that displays the chi
+	 * squared analysis
+	 */
+	public static final int outputCompId = 4;
 
 	/**
 	 * The constructor.
@@ -242,8 +258,16 @@ public class ReflectivityModel extends Model {
 						* (rq4Point - rq4DataPoint) / rq4Point;
 			}
 
-			System.out.println("Chi Squared: R = " + rChiSquare);
-			System.out.println("CHi Squared: QR^4 = " + rq4ChiSquare);
+			// Sets the chi squared value in the entry on the output data
+			// component
+			((DataComponent) form.getComponent(outputCompId))
+					.retrieveEntry(ChiSquaredEntryName)
+					.setValue(Double.toString(rChiSquare));
+			// Sets the rq4 chi squared value in the entry on the output data
+			// component
+			((DataComponent) form.getComponent(outputCompId))
+					.retrieveEntry(ChiSquaredRQ4EntryName)
+					.setValue(Double.toString(rq4ChiSquare));
 
 			// Create the csv data for the reflectivity file
 			String reflectData = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
@@ -422,7 +446,9 @@ public class ReflectivityModel extends Model {
 		// The data component for the number of rough layers and the
 		// input file, along with other user inputs.
 		DataComponent paramComponent = new DataComponent();
-		paramComponent.setDescription("Files and Parameters for calculation");
+		paramComponent.setDescription(
+				"Give a wave vector, a number of layers of roughness "
+						+ "between interfaces, and the angles. ");
 		paramComponent.setName("Parameters and Files");
 		paramComponent.setId(paramsCompId);
 		form.addComponent(paramComponent);
@@ -543,6 +569,44 @@ public class ReflectivityModel extends Model {
 		resources.setDescription("Results and Output");
 		resources.setId(resourceCompId);
 		form.addComponent(resources);
+
+		// Create the output data component to hold the chi squared analysis
+		DataComponent output = new DataComponent();
+		output.setDescription("Chi squared analysis:");
+		output.setName("Output");
+		output.setId(outputCompId);
+
+		// Add an entry for the wavelength
+		Entry chiSquared = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Continuous;
+				defaultValue = "0.0";
+				return;
+			}
+		};
+		chiSquared.setId(1);
+		chiSquared.setName(ChiSquaredEntryName);
+		chiSquared.setDescription(
+				"The chi squared analysis for the reflectivity profile.");
+		output.addEntry(chiSquared);
+
+		// Add an entry for the wavelength
+		Entry chiSquaredrq4 = new Entry() {
+			@Override
+			protected void setup() {
+				allowedValueType = AllowedValueType.Continuous;
+				defaultValue = "0.0";
+				return;
+			}
+		};
+		chiSquaredrq4.setId(2);
+		chiSquaredrq4.setName(ChiSquaredRQ4EntryName);
+		chiSquaredrq4.setDescription(
+				"The chi squared analysis for the rq^4 reflectivity profile.");
+		output.addEntry(chiSquaredrq4);
+
+		form.addComponent(output);
 
 		// Put the action name in the form so that the reflectivity can be
 		// calculated.
