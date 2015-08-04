@@ -26,13 +26,13 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.PolygonProperties;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.PolygonProperties;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.junit.Test;
 
 /**

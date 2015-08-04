@@ -12,8 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh.properties;
 
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 public class MeshSelection {
 

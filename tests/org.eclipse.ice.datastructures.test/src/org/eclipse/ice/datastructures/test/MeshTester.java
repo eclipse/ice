@@ -17,10 +17,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.junit.Test;
 
 /**

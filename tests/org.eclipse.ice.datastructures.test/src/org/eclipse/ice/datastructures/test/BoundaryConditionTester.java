@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.junit.Test;
 
 /**

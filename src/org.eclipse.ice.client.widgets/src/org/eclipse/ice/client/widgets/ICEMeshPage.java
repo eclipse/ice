@@ -19,23 +19,23 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.geometry.TransformationView;
 import org.eclipse.ice.client.widgets.jme.ViewFactory;
-import org.eclipse.ice.client.widgets.mesh.IMeshSelectionListener;
-import org.eclipse.ice.client.widgets.mesh.MeshAppState;
-import org.eclipse.ice.client.widgets.mesh.MeshAppStateMode;
-import org.eclipse.ice.client.widgets.mesh.MeshAppStateModeFactory;
-import org.eclipse.ice.client.widgets.mesh.MeshAppStateModeFactory.Mode;
-import org.eclipse.ice.client.widgets.mesh.MeshSelectionManager;
 import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.Hex;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPartVisitor;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
-import org.eclipse.ice.datastructures.form.mesh.Quad;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
+import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
+import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;
+import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory;
+import org.eclipse.ice.viz.service.jme3.mesh.MeshSelectionManager;
+import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
+import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -343,50 +343,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		return;
 	}
 
-	IMeshPartVisitor visitor = new IMeshPartVisitor() {
-
-		@Override
-		public void visit(Object object) {
-			// Do nothing.
-		}
-
-		@Override
-		public void visit(Vertex vertex) {
-		}
-
-		@Override
-		public void visit(PolynomialEdge edge) {
-			visit((Edge) edge);
-		}
-
-		@Override
-		public void visit(BezierEdge edge) {
-			visit((Edge) edge);
-		}
-
-		@Override
-		public void visit(Edge edge) {
-		}
-
-		@Override
-		public void visit(Hex hex) {
-			visit((Polygon) hex);
-		}
-
-		@Override
-		public void visit(Quad quad) {
-			visit((Polygon) quad);
-		}
-
-		@Override
-		public void visit(Polygon polygon) {
-		}
-
-		@Override
-		public void visit(MeshComponent mesh) {
-			// Do nothing.
-		}
-	};
+	
 
 	/**
 	 * This operation overrides the default/abstract implementation of

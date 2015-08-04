@@ -17,12 +17,12 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.client.widgets.mesh.properties.BoundaryConditionSection.Type;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
 import org.eclipse.ice.datastructures.form.mesh.Hex;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
 import org.eclipse.ice.datastructures.form.mesh.IMeshPartVisitor;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.form.mesh.Polygon;
 import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
 import org.eclipse.ice.datastructures.form.mesh.Quad;

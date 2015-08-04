@@ -6,7 +6,7 @@ Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.client.widgets.geometry,
  org.eclipse.ice.client.widgets.jme,
- org.eclipse.ice.client.widgets.mesh,
+ org.eclipse.ice.client.widgets.jme.internal,
  org.eclipse.ice.client.widgets.mesh.properties,
  org.eclipse.ice.client.widgets.reactoreditor.plant
 Import-Package: com.jme3.animation,
@@ -118,6 +118,8 @@ Import-Package: com.jme3.animation,
  org.eclipse.ice.datastructures.form.geometry,
  org.eclipse.ice.reactor.plant,
  org.eclipse.ice.viz.service.geometry,
+ org.eclipse.ice.viz.service.jme3.mesh,
+ org.eclipse.ice.viz.service.jme3.widgets,
  org.eclipse.jface.databinding.swt,
  org.eclipse.ui.views.properties.tabbed,
  org.osgi.framework,

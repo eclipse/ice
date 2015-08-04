@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.mesh.PolygonProperties;
+import org.eclipse.ice.viz.service.mesh.datastructures.PolygonProperties;
 import org.junit.Test;
 
 /**

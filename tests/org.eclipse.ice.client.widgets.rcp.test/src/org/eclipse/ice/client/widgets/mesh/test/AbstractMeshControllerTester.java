@@ -20,9 +20,9 @@ import static org.junit.Assert.fail;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.client.widgets.mesh.AbstractMeshController;
-import org.eclipse.ice.client.widgets.mesh.StateType;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.viz.service.jme3.mesh.AbstractMeshController;
+import org.eclipse.ice.viz.service.jme3.mesh.StateType;
 import org.junit.Test;
 
 import com.jme3.scene.Node;

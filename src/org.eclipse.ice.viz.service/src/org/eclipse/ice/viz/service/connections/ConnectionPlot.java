@@ -15,11 +15,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.MultiPlot;
 import org.eclipse.ice.viz.service.PlotRender;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 
 /**
  * This class provides the basic implementation for an {@link IPlot} whose
@@ -199,7 +199,7 @@ public abstract class ConnectionPlot<T> extends MultiPlot
 	 *            associated {@link ConnectionAdapter}.
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 		// If the argument is null, then do nothing. Even if the current adapter
 		// is null, the UI should already be up to date!
 		if (component != null && component == adapter) {

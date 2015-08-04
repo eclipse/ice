@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jMonkey Engine 3 Visualization Service Plugin
+Bundle-SymbolicName: org.eclipse.ice.viz.service.jme3;singleton:=true
+Bundle-Version: 2.0.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/vizService.xml
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.ice.viz.service.jme3.mesh,
+ org.eclipse.ice.viz.service.jme3.widgets
+Import-Package: com.jme3.app,
+ com.jme3.app.state,
+ com.jme3.bullet,
+ com.jme3.bullet.collision.shapes,
+ com.jme3.bullet.control,
+ com.jme3.bullet.objects,
+ com.jme3.collision,
+ com.jme3.font,
+ com.jme3.input,
+ com.jme3.input.controls,
+ com.jme3.material,
+ com.jme3.math,
+ com.jme3.post,
+ com.jme3.renderer,
+ com.jme3.renderer.queue,
+ com.jme3.scene,
+ com.jme3.scene.debug,
+ com.jme3.scene.shape,
+ com.jme3.system,
+ com.jme3.system.awt,
+ com.jme3.texture,
+ com.jme3.util,
+ org.eclipse.ice.viz.service.datastructures,
+ org.eclipse.ice.viz.service.mesh.datastructures,
+ org.slf4j;version="1.7.2"

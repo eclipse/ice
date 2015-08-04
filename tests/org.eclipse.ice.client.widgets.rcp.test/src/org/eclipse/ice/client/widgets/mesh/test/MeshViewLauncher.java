@@ -21,7 +21,7 @@ import org.eclipse.ice.client.widgets.mesh.MeshAppState;
 import org.eclipse.ice.client.widgets.mesh.MeshAppStateMode;
 import org.eclipse.ice.client.widgets.mesh.MeshAppStateModeFactory;
 import org.eclipse.ice.client.widgets.mesh.MeshAppStateModeFactory.Mode;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;

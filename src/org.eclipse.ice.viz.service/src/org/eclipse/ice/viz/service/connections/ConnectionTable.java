@@ -16,13 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 
 /**
  * This class manages a list of uniquely-keyed VisIt connections within an ICE
@@ -54,7 +54,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  *
  */
 public class ConnectionTable extends TableComponent implements IKeyManager,
-		IUpdateableListener {
+		IVizUpdateableListener {
 
 	// TODO Remove the debug output from this class.
 
@@ -266,7 +266,7 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 	 *            {@code Entry} for a connection's key.
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 		// See if the updated component is one of the key Entries. We have to
 		// test by reference, not by equality.
 		int index = -1;
