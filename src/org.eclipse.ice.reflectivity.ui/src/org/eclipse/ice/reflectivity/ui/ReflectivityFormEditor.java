@@ -36,8 +36,8 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 	private ReflectivityPage reflectPage;
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Adds the components of the model to the reflectivity page.
 	 * 
 	 * @see org.eclipse.ice.client.widgets.ICEFormEditor#addPages()
 	 */
@@ -105,7 +105,8 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 	}
 
 	/**
-	 * Gets the specific adapter needed for the class given
+	 * Gets the specific adapter needed for the class given. Used to declare the
+	 * tabbed properties view
 	 */
 
 	@Override

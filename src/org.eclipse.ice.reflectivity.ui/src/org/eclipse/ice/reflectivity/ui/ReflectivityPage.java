@@ -55,7 +55,17 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * model. It sets up the <code>ListComponentNattable</code> in the top of a
  * <code>SashForm</code>, with an <code>ICEResourcePage</code> on the bottom. It
  * uses the tabbed properties view to display information about the model as a
- * whole and about the cells for the table.
+ * whole and about the cells for the table. <br>
+ * The tabbed properties view contains three tabs, info, cell editor, and
+ * output. These describe the input values such as the wave vector on the info
+ * tab, allow for editing and containing the table's cells such as thickness on
+ * the cell editor tab, and display the output from the chi squared analysis on
+ * the output tab. This class provides selections to the eclipse environment to
+ * give the data to the properties view. It implements the
+ * {@link ISelectionProvider} interface to do so, always having the data
+ * component, the output data component, and the list component in it's
+ * selection, along with the material selection describing the selected cell if
+ * one is selected (not null).
  * 
  * @author Kasper Gammeltoft
  * @author Jay Billings
@@ -132,12 +142,13 @@ public class ReflectivityPage extends ICEResourcePage
 		listeners = new ArrayList<ISelectionChangedListener>();
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Creates the content of the composite and instantiates the graphics
+	 * widgets. Calls super for the resource component on the bottom of the sash
+	 * form, and constructs the NatTable on the top.
 	 * 
-	 * @see
-	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
-	 * .forms.IManagedForm)
+	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
+	 *      .forms.IManagedForm)
 	 */
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
@@ -205,6 +216,10 @@ public class ReflectivityPage extends ICEResourcePage
 		// Enable a new selection listener to listen to the table's selection
 		// events
 
+		// FIXME: Does not listen to changes in selection on the same row. This
+		// means that the user can select a different column on the same row and
+		// nothing will update as this listener is specifically for rows. Needs
+		// to find a more general selection listener or create on if necessary!
 		RowSelectionProvider provider = listTable.getSelectionProvider();
 		provider.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -254,7 +269,8 @@ public class ReflectivityPage extends ICEResourcePage
 
 	/**
 	 * This operation creates the add and delete buttons that are used to add
-	 * layers to the table. Also creates buttons for moving layers around.
+	 * layers to the table. Also creates buttons for moving layers around and
+	 * clearing the table.
 	 */
 	private void createButtons() {
 
@@ -554,9 +570,11 @@ public class ReflectivityPage extends ICEResourcePage
 	}
 
 	/**
-	 * Gets the current selection for this page. If nothing in the list
-	 * component table is selected, should return the data component for editing
-	 * its entries, and a material selection for editing the table.
+	 * Gets the current selection for this page. This selection is a structured
+	 * selection that should always contain, in order, a data component for the
+	 * inputs, a data component for the outputs, a list component containing the
+	 * table data, and a material selection if and only if one is present (not
+	 * null, meaning the user has selected a cell in the table)
 	 * 
 	 * Part of the ISelectionProvider interface.
 	 */

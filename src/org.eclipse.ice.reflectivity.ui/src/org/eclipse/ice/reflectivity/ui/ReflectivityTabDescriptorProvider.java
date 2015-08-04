@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Kasper Gammeltoft
+ *******************************************************************************/
+
 package org.eclipse.ice.reflectivity.ui;
 
 import java.util.ArrayList;
@@ -20,13 +32,8 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
  * Provides custom tabs to the reflectivity model's custom tabbed properties
  * view. The first tab describes the data component and input values for its
  * entries. The second provides an interface for editing the values in the
- * table.</br>
- * </br>
- * 
- * 
- * TODO: Need to implement visitor pattern for Data and List components! This is
- * a much better way of handling new selections rather than computing everything
- * in the getTabDescriptors() method.
+ * table. Finally, the third provides the output data for the chi squared
+ * analysis.
  * 
  * @author Kasper Gammeltoft
  *
@@ -68,6 +75,9 @@ public class ReflectivityTabDescriptorProvider
 		descriptors = new ITabDescriptor[3];
 	}
 
+	/**
+	 * A filter for filtering the selections received by the tab sections
+	 */
 	private final IFilter filter = new IFilter() {
 		@Override
 		public boolean select(Object toTest) {
@@ -77,12 +87,13 @@ public class ReflectivityTabDescriptorProvider
 		}
 	};
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the tab descriptors for the three tabs. Creates them if they haven't
+	 * been created and fills them with the appropriate tab section.
 	 * 
 	 * @see org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider#
-	 * getTabDescriptors(org.eclipse.ui.IWorkbenchPart,
-	 * org.eclipse.jface.viewers.ISelection)
+	 *      getTabDescriptors(org.eclipse.ui.IWorkbenchPart,
+	 *      org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public ITabDescriptor[] getTabDescriptors(IWorkbenchPart part,
@@ -254,6 +265,8 @@ public class ReflectivityTabDescriptorProvider
 
 				@Override
 				public ISection getSectionClass() {
+					// Create the cell editor section, and pass in the list
+					// component and selection from the table
 					ReflectivityCellEditorSection section;
 					section = new ReflectivityCellEditorSection();
 					section.setMaterialSelection(tableSelection);
@@ -293,9 +306,12 @@ public class ReflectivityTabDescriptorProvider
 
 				@Override
 				public ISection getSectionClass() {
+					// Use the data section with the output component.
 					ReflectivityDataPropertySection section;
 					section = new ReflectivityDataPropertySection();
 					section.setDataComponent(output);
+					// We do not want the user editing the output, so disable
+					// the entries!
 					section.setIsEnabled(false);
 					return section;
 				}
@@ -321,6 +337,7 @@ public class ReflectivityTabDescriptorProvider
 
 		}
 
+		// Finally return the descriptors for use with the properties view
 		return descriptors;
 	}
 

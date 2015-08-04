@@ -17,7 +17,9 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 /**
  * Adds a Reflectivity Perspective to ICE. See <code>plugin.xml</code> for the
- * layout code.
+ * layout code. Should provide the <code>ItemViewer</code> and the
+ * <code>ICEResourceView</code> stacked on the left, the properties view on the
+ * bottom, and the editor in the center.
  * 
  * @author Kasper Gammeltoft
  *
@@ -29,12 +31,12 @@ public class ReflectivityPerspective implements IPerspectiveFactory {
 	 */
 	public static final String ID = "org.eclipse.ice.reflectivity.ReflectivityPerspective";
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Adds the shortcut for this perspective to the list in the upper right of
+	 * the workbench.
 	 * 
-	 * @see
-	 * org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.
-	 * IPageLayout)
+	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.
+	 *      IPageLayout)
 	 */
 	@Override
 	public void createInitialLayout(IPageLayout layout) {

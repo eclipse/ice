@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
  * to put constraints on a certain cell selection, or just another editor for
  * the table.
  * 
+ * FIXME- Still needs to have constraints implemented!
+ * 
  * @author Kasper Gammeltoft
  *
  */
@@ -62,6 +64,9 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 	 */
 	ListComponent list;
 
+	/**
+	 * Provides the logging service for this class
+	 */
 	private static final Logger logger = LoggerFactory
 			.getLogger(ReflectivityCellEditorSection.class);
 
@@ -118,6 +123,11 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
+				// Do nothing
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
 				// If the character is enter
 				if (e.character == SWT.CR) {
 					// Get the text
@@ -145,27 +155,32 @@ public class ReflectivityCellEditorSection extends AbstractPropertySection {
 				}
 			}
 
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// Do nothing
-
-			}
-
 		});
 
 		return;
 	}
 
+	/**
+	 * Gets the value form the provided function and fits the proper constraints
+	 * on the list elements specified.
+	 * 
+	 * FIXME- Needs implementation!
+	 * 
+	 * @param func
+	 *            The string from the text field that should be converted into a
+	 *            mathematical function involving the variables from the table.
+	 */
 	private void getFunctionValue(String func) {
-
+		// Calculate the value of the function provided
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Sets the input for this section. This changes the
+	 * {@link MaterialSelection} that is currently selected, and updates the
+	 * text field and label appropriately.
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#setInput(
-	 * org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#setInput(
+	 *      org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void setInput(IWorkbenchPart part, ISelection selection) {

@@ -31,7 +31,13 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Provides the custom section for the data component in the reflectivity model.
- * This section is rendered in the properties view for the data component tab.
+ * This section is rendered in the properties view for the data component tab,
+ * labeled info. Puts the {@link DataComponent} into a
+ * {@link DataComponentComposite} and adds that composite to the properties
+ * view. If the data that is added should be hidden, use the
+ * {@link ReflectivityDataPropertySection#setIsEnabled(boolean)} method to
+ * change the state of the entries to the value provided. The entries are set to
+ * be enabled by default.
  * 
  * @author Kasper Gammeltoft
  *
@@ -67,7 +73,8 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 
 	/**
 	 * This operation draws the (initial) controls in the properties view based
-	 * on the input.
+	 * on the input. Adds the <code>DataComponent</code> to a
+	 * <code>DataComponentComposite</code> to be used in the properties view.
 	 */
 	@Override
 	public void createControls(Composite parent,
@@ -125,12 +132,14 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 		return;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Sets the input, or the data component, for this property section. If
+	 * multiple selections, assumes the first one is the data component to be
+	 * selected. Will discard anything else that is the first element in the
+	 * selection (not a data component).
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#setInput(
-	 * org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#setInput(
+	 *      org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void setInput(IWorkbenchPart part, ISelection selection) {
@@ -146,8 +155,9 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	}
 
 	/**
-	 * This operator manually sets the data component to be displayed by the
-	 * properties view
+	 * This operation manually sets the data component to be displayed by the
+	 * properties view. Set this property before the section is graphically
+	 * constructed.
 	 * 
 	 * @param dataComp
 	 *            The data component to display
