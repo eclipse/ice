@@ -61,7 +61,7 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 			DataComponent dataComp = (DataComponent) componentMap.get("data")
 					.get(0);
 
-			// Retreive the output data component
+			// Retrieve the output data component
 			DataComponent outputComp = (DataComponent) componentMap.get("data")
 					.get(1);
 

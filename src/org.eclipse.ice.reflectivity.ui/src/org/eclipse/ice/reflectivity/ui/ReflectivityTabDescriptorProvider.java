@@ -124,6 +124,12 @@ public class ReflectivityTabDescriptorProvider
 				component = (DataComponent) obj;
 			}
 
+			// Get a reference to the output data component
+			Object obj2 = ((IStructuredSelection) selection).toList().get(1);
+			if (obj2 instanceof DataComponent) {
+				output = (DataComponent) obj2;
+			}
+
 			// Create the tab first if it has not been done already
 			if (descriptors[0] == null) {
 
