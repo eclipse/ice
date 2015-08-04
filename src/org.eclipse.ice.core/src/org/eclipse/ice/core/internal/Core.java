@@ -201,14 +201,13 @@ public class Core extends Application implements ICore {
 
 	/**
 	 * This operation stops the Core.
-	 *
 	 */
 	public void stop() {
 		// Update everything in the ItemManager that requires it
 		itemManager.persistItems();
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see ICore#getFileSystem(int uniqueClientID)
@@ -218,7 +217,7 @@ public class Core extends Application implements ICore {
 		return new Form();
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
@@ -236,7 +235,7 @@ public class Core extends Application implements ICore {
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see ICore#registerCompositeItem(ICompositeItemBuilder builder)
@@ -246,15 +245,15 @@ public class Core extends Application implements ICore {
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (builder != null) {
-			logger.info("ICore Message: Composite Item "
-					+ builder.getItemName() + " registered with Core.");
+			logger.info("ICore Message: Composite Item " + builder.getItemName()
+					+ " registered with Core.");
 			itemManager.registerCompositeBuilder(builder);
 		}
 
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see ICore#unregisterItem(ItemBuilder itemBuilder)
@@ -263,26 +262,38 @@ public class Core extends Application implements ICore {
 	public void unregisterItem(ItemBuilder itemBuilder) {
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see ICore#createItem(String itemType)
 	 */
 	@Override
 	public String createItem(String itemType) {
+		return createItem(itemType, projectTable.get("defaultUser"));
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.core.iCore.ICore#createItem(java.lang.String,
+	 * org.eclipse.core.resources.IProject)
+	 */
+	public String createItem(String itemType, IProject project) {
 
 		// Local Declarations
 		int newItemId = -1;
 
 		// Create the Item if the ItemType is not null and the project space is
 		// available
-		if (itemType != null && projectTable.get("defaultUser") != null) {
-			newItemId = itemManager.createItem(itemType,
-					projectTable.get("defaultUser"));
+		if (itemType != null && project != null) {
+			newItemId = itemManager.createItem(itemType, project);
+		} else {
+			logger.error("Unable to create Item in the core! Type = " + itemType
+					+ " , project = " + project);
 		}
 
 		return String.valueOf(newItemId);
-
 	}
 
 	/**
@@ -429,8 +440,8 @@ public class Core extends Application implements ICore {
 			IFile fileInProject = project.getFile(path.lastSegment());
 			// Get the paths and convert them to strings
 			IPath fullPathInProject = fileInProject.getLocation();
-			String path1 = path.toString(), path2 = fullPathInProject
-					.toString();
+			String path1 = path.toString(),
+					path2 = fullPathInProject.toString();
 			// Remove devices ids and other such things from the path strings
 			path1 = path1.substring(path1.lastIndexOf(":") + 1);
 			path2 = path2.substring(path2.lastIndexOf(":") + 1);
@@ -446,15 +457,16 @@ public class Core extends Application implements ICore {
 						fileInProject.delete(true, null);
 					} catch (CoreException e) {
 						// Complain and don't do anything else.
-						logger.info("Core Message: " + "Unable to import file.");
+						logger.info(
+								"Core Message: " + "Unable to import file.");
 						logger.error(getClass().getName() + " Exception!", e);
 						return;
 					}
 				}
 				try {
 					// Open a stream of the file
-					FileInputStream fileStream = new FileInputStream(new File(
-							file));
+					FileInputStream fileStream = new FileInputStream(
+							new File(file));
 					// Import the file
 					fileInProject.create(fileStream, true, null);
 				} catch (FileNotFoundException e) {
@@ -474,8 +486,8 @@ public class Core extends Application implements ICore {
 
 			// Drop some debug info.
 			if (System.getProperty("DebugICE") != null) {
-				logger.info("Core Message: " + "Imported file "
-						+ file.toString());
+				logger.info(
+						"Core Message: " + "Imported file " + file.toString());
 			}
 		}
 
@@ -531,8 +543,8 @@ public class Core extends Application implements ICore {
 					// Grab PSF or XML file
 					if (filename.endsWith(".psf") | filename.endsWith(".xml")) {
 						// Get the file
-						file = project.getFile(currentResource
-								.getProjectRelativePath());
+						file = project.getFile(
+								currentResource.getProjectRelativePath());
 						try {
 							// Load the SerializedItemBuilder
 							builder = new SerializedItemBuilder(
@@ -646,7 +658,9 @@ public class Core extends Application implements ICore {
 	/**
 	 * This private operation configures the project area for the Core. It uses
 	 * the Eclipse Resources Plugin and behaves differently based on the value
-	 * of the osgi.instance.area system property. </p> <!-- end-UML-doc -->
+	 * of the osgi.instance.area system property.
+	 * </p>
+	 * <!-- end-UML-doc -->
 	 *
 	 * @return True if the setup operation was successful and false otherwise.
 	 */
@@ -847,9 +861,9 @@ public class Core extends Application implements ICore {
 
 		// Print the message if debugging is enabled
 		// if (debuggingEnabled) {
-		logger.info("Core Message: " + "Update received with message: "
-				+ message);
-		// }
+		logger.info(
+				"Core Message: " + "Update received with message: " + message);
+				// }
 
 		// Only process the message if it exists and is not empty
 		if (message != null && !message.isEmpty() && message.contains("=")) {
@@ -858,7 +872,8 @@ public class Core extends Application implements ICore {
 			String[] messageParts = message.split("=");
 			if (messageParts.length > 1) {
 				// Get the message object.
-				ArrayList<Message> msgList = buildMessagesFromString(messageParts[1]);
+				ArrayList<Message> msgList = buildMessagesFromString(
+						messageParts[1]);
 				// Post the messages if there are any. Fail otherwise.
 				if (!msgList.isEmpty()) {
 					for (int i = 0; i < msgList.size(); i++) {
@@ -874,4 +889,5 @@ public class Core extends Application implements ICore {
 		// Unlock the operation and return safely
 		return (updateLock.getAndSet(false)) ? retVal : null;
 	}
+
 }

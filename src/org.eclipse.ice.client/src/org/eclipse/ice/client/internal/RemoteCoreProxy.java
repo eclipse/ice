@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.ice.core.iCore.ICore;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
@@ -59,12 +60,13 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public class RemoteCoreProxy implements ICore {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(RemoteCoreProxy.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(RemoteCoreProxy.class);
+
 	/**
 	 * <p>
 	 * The hostname of the server to which the proxy is connected.
@@ -130,7 +132,8 @@ public class RemoteCoreProxy implements ICore {
 	 * connected or, if it is not connected, it returns null.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hostname
 	 *         </p>
 	 */
@@ -144,7 +147,8 @@ public class RemoteCoreProxy implements ICore {
 	 * its connection or, if it is not connected, it returns -1.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The port number
 	 *         </p>
 	 */
@@ -203,7 +207,8 @@ public class RemoteCoreProxy implements ICore {
 	 *            <p>
 	 *            The users' password.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The client id as specified by ICore.connect().
 	 *         </p>
 	 */
@@ -211,8 +216,8 @@ public class RemoteCoreProxy implements ICore {
 
 		// Create a filter for the client that sets the authentication
 		// credentials
-		final HTTPBasicAuthFilter authFilter = new HTTPBasicAuthFilter(
-				username, password);
+		final HTTPBasicAuthFilter authFilter = new HTTPBasicAuthFilter(username,
+				password);
 		client.addFilter(authFilter);
 
 		// Connect as usual
@@ -477,6 +482,14 @@ public class RemoteCoreProxy implements ICore {
 	@Override
 	public String postUpdateMessage(String message) {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String createItem(String itemType, IProject project) {
+		// This operation is not supported by the remote core proxy and may
+		// never be. As far as I know, there is no way to remotely transfer
+		// IProject instances with using full Java IPC.
 		return null;
 	}
 }
