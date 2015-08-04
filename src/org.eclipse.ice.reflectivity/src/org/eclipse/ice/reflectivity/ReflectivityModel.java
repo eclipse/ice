@@ -577,14 +577,7 @@ public class ReflectivityModel extends Model {
 		output.setId(outputCompId);
 
 		// Add an entry for the wavelength
-		Entry chiSquared = new Entry() {
-			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				defaultValue = "0.0";
-				return;
-			}
-		};
+		Entry chiSquared = new Entry();
 		chiSquared.setId(1);
 		chiSquared.setName(ChiSquaredEntryName);
 		chiSquared.setDescription(
@@ -592,14 +585,7 @@ public class ReflectivityModel extends Model {
 		output.addEntry(chiSquared);
 
 		// Add an entry for the wavelength
-		Entry chiSquaredrq4 = new Entry() {
-			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				defaultValue = "0.0";
-				return;
-			}
-		};
+		Entry chiSquaredrq4 = new Entry();
 		chiSquaredrq4.setId(2);
 		chiSquaredrq4.setName(ChiSquaredRQ4EntryName);
 		chiSquaredrq4.setDescription(

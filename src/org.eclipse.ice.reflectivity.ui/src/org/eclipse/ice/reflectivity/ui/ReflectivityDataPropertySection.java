@@ -13,6 +13,7 @@
 package org.eclipse.ice.reflectivity.ui;
 
 import org.eclipse.ice.client.widgets.DataComponentComposite;
+import org.eclipse.ice.client.widgets.EntryComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -20,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.widgets.Section;
@@ -45,6 +47,8 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	 * The data composite that displays and renders the data component entries
 	 */
 	private DataComponentComposite dataComposite;
+
+	private boolean isEnabled = true;
 
 	/**
 	 * The <code>Section</code> that holds the data component or list component
@@ -80,6 +84,16 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 		section.setBackground(backgroundColor);
 
 		dataComposite = new DataComponentComposite(data, section, SWT.NONE);
+
+		// Sets the entries to be enabled to the state of the isEnabled flag
+		Control[] children = dataComposite.getChildren();
+		for (Control child : children) {
+			if (child instanceof EntryComposite) {
+				EntryComposite entry = (EntryComposite) child;
+				entry.setEnabled(isEnabled);
+			}
+		}
+
 		GridLayout clientLayout = new GridLayout(2, true);
 
 		// Set the margins and spacing based on the tabbed property
@@ -140,6 +154,17 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	 */
 	public void setDataComponent(DataComponent dataComp) {
 		data = dataComp;
+	}
+
+	/**
+	 * Sets the enabled state of the entry composites in this section. This is
+	 * set to true by default.
+	 * 
+	 * @param enabled
+	 *            True if the entries are enabled, false if otherwise.
+	 */
+	public void setIsEnabled(boolean enabled) {
+		isEnabled = enabled;
 	}
 
 	/*

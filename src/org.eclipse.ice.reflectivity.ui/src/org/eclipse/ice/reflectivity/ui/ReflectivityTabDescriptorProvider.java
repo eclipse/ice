@@ -296,6 +296,7 @@ public class ReflectivityTabDescriptorProvider
 					ReflectivityDataPropertySection section;
 					section = new ReflectivityDataPropertySection();
 					section.setDataComponent(output);
+					section.setIsEnabled(false);
 					return section;
 				}
 
