@@ -36,6 +36,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -293,12 +294,12 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		// TODO create the camera reset action
 
 		// Create the toggle switch to show or hide the heads-up display
-		action = new ToggleHUDAction(meshView);
+		action = new org.eclipse.ice.viz.service.jme3.widgets.ToggleHUDAction(meshView);
 		toggleHUDActionTree = new ActionTree(action);
 		actions.add(toggleHUDActionTree);
 
 		// Create the toggle switch to show or hide the axes.
-		action = new ToggleAxesAction(meshView);
+		action = new org.eclipse.ice.viz.service.jme3.widgets.ToggleAxesAction(meshView);
 		toggleAxesActionTree = new ActionTree(action);
 		actions.add(toggleAxesActionTree);
 
@@ -421,7 +422,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 				}
 
 				@Override
-				public void visit(MeshComponent mesh) {
+				public void visit(VizMeshComponent mesh) {
 					// Do nothing.
 				}
 			};

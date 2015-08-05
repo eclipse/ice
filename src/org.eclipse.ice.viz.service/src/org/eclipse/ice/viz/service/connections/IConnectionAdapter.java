@@ -13,8 +13,8 @@ package org.eclipse.ice.viz.service.connections;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 
 /**
  * This is an interface for adapters that wrap any sort of local or remote
@@ -122,7 +122,7 @@ public interface IConnectionAdapter<T> extends IVizUpdateable {
 	 * @return True if the new connection properties were valid and a change
 	 *         occurred, false otherwise.
 	 */
-	boolean setConnectionProperties(List<Entry> properties);
+	boolean setConnectionProperties(List<VizEntry> properties);
 
 	/**
 	 * A convenience method to get the host for the connection. This will be
