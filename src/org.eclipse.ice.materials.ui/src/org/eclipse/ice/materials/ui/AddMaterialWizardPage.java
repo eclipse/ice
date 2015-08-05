@@ -19,11 +19,11 @@ import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.MaterialStackWritableTableFormat;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -31,6 +31,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -158,16 +159,15 @@ public class AddMaterialWizardPage extends WizardPage {
 		// Updates the material properties for the new material.
 		material.updateProperties();
 
-		// Just return the new material. 
+		// Just return the new material.
 		return material;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets
-	 * .Composite)
+	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.
+	 * widgets .Composite)
 	 */
 	@Override
 	public void createControl(Composite parent) {
@@ -185,8 +185,8 @@ public class AddMaterialWizardPage extends WizardPage {
 		// Add the composite to hold the name and density blocks
 		Composite nameAndDensityComposite = new Composite(container, SWT.None);
 		nameAndDensityComposite.setLayout(new GridLayout(2, true));
-		nameAndDensityComposite.setLayoutData(new GridData(SWT.FILL,
-				SWT.CENTER, true, false, 1, 1));
+		nameAndDensityComposite.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		// Composite that holds the name text field and labels
 		Composite nameComposite = new Composite(nameAndDensityComposite,
@@ -204,14 +204,14 @@ public class AddMaterialWizardPage extends WizardPage {
 
 		// Name text field
 		nameText = new Text(nameComposite, SWT.BORDER);
-		nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
-				1));
+		nameText.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
 		// Composite to hold the density text field and labels
 		Composite densityComposite = new Composite(nameAndDensityComposite,
 				SWT.NONE);
-		densityComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false, 1, 1));
+		densityComposite.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		densityComposite.setLayout(new GridLayout(3, false));
 
 		// Density label
@@ -220,8 +220,8 @@ public class AddMaterialWizardPage extends WizardPage {
 
 		// Density text field
 		densityText = new Text(densityComposite, SWT.BORDER);
-		densityText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 1, 1));
+		densityText.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		// Label for the density units (currently using g/cm3)
 		Label densityUnitsLabel = new Label(densityComposite, SWT.NONE);
@@ -246,17 +246,17 @@ public class AddMaterialWizardPage extends WizardPage {
 		// Create the composite to hold the stoichiometry buttons and table
 		Composite stoichiometryComposite = new Composite(container, SWT.NONE);
 		stoichiometryComposite.setLayout(new GridLayout(2, false));
-		stoichiometryComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true, 1, 1));
+		stoichiometryComposite.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// Create the composite to hold the table
 		Composite stoichiometryTableComposite = new Composite(
 				stoichiometryComposite, SWT.NONE);
 		stoichiometryTableComposite.setLayout(new GridLayout(1, false));
-		stoichiometryTableComposite.setLayoutData(new GridData(SWT.FILL,
-				SWT.FILL, true, true, 1, 1));
+		stoichiometryTableComposite.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		// Instanciate the list to give to the NatTable. We want to use material
+		// Instantiate the list to give to the NatTable. We want to use material
 		// stacks because that is what we are using to build our new materials.
 		list = new ListComponent<MaterialStack>();
 		list.setTableFormat(new MaterialStackWritableTableFormat());
@@ -264,13 +264,15 @@ public class AddMaterialWizardPage extends WizardPage {
 		// Create the table
 		stoichiometryTable = new ListComponentNattable(
 				stoichiometryTableComposite, list, true);
+		GridDataFactory.fillDefaults().grab(true, true)
+				.applyTo(stoichiometryTable.getTable());
 
 		// Create the composite to hold the buttons (add and delete)
 		Composite stoichiometryButtonComposite = new Composite(
 				stoichiometryComposite, SWT.NONE);
 		stoichiometryButtonComposite.setLayout(new GridLayout(1, false));
-		stoichiometryButtonComposite.setLayoutData(new GridData(SWT.RIGHT,
-				SWT.FILL, false, true, 1, 1));
+		stoichiometryButtonComposite.setLayoutData(
+				new GridData(SWT.RIGHT, SWT.FILL, false, true, 1, 1));
 
 		// Add the add button
 		Button addMaterialButton = new Button(stoichiometryButtonComposite,
@@ -287,14 +289,14 @@ public class AddMaterialWizardPage extends WizardPage {
 					// Add the material
 					Material matToAdd = (Material) dialog.getSelection();
 					// Get the right material reference from the database
-					IMaterialsDatabase database = (IMaterialsDatabase)source;
-					for(Material mat : database.getMaterials()){
-						if(matToAdd.equals(mat)){
+					IMaterialsDatabase database = (IMaterialsDatabase) source;
+					for (Material mat : database.getMaterials()) {
+						if (matToAdd.equals(mat)) {
 							matToAdd = mat;
 							break;
 						}
 					}
-					
+
 					// Add the new material stack
 					list.add(new MaterialStack(matToAdd, 1));
 				}
