@@ -85,7 +85,6 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 			super.resourceComponentPage = page;
 
 			// Add the viz service and the components to the reflectivity page.
-			page.setVizService(this.getVizServiceFactory());
 			page.setResourceComponent(resComp);
 			page.setDataComponent(dataComp);
 			page.setList(listComp);
