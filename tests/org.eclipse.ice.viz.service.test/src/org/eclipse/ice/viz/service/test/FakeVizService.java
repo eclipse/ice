@@ -12,7 +12,8 @@
 package org.eclipse.ice.viz.service.test;
 
 import java.net.URI;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
@@ -30,16 +31,20 @@ public class FakeVizService implements IVizService {
 	/**
 	 * The name of the fake service
 	 */
-	private String name;
+	public String name;
 
+	/**
+	 * The default constructor.
+	 * 
+	 * @param name
+	 *            The name of the fake service
+	 */
 	public FakeVizService(String name) {
 		this.name = name;
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getName()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getName() {
@@ -47,9 +52,7 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#getVersion()
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public String getVersion() {
@@ -58,57 +61,7 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * getConnectionProperties()
-	 */
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * setConnectionProperties(java.util.Map)
-	 */
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#connect()
-	 */
-	@Override
-	public boolean connect() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#disconnect()
-	 */
-	@Override
-	public boolean disconnect() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizService#createPlot(java
-	 * .net.URI)
+	 * Implements a method from IVizService.
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
@@ -117,15 +70,11 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizService#
-	 * hasConnectionProperties()
+	 * Implements a method from IVizService.
 	 */
 	@Override
-	public boolean hasConnectionProperties() {
-		// TODO Auto-generated method stub
-		return false;
+	public Set<String> getSupportedExtensions() {
+		return new HashSet<String>();
 	}
 
 }

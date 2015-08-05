@@ -9,16 +9,15 @@
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - replaced the selection dialog with something simpler
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
@@ -27,34 +26,22 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.PlotEntryContentProvider;
+import org.eclipse.ice.viz.service.widgets.TreeSelectionDialogProvider;
 import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
-import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.lbnl.visit.swt.VisItSwtWidget;
 import visit.java.client.FileInfo;
 
 /**
@@ -91,8 +78,8 @@ public class AddVisitPlotAction extends Action {
 
 		// Set the action's image (the green plus button for adding).
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "add.png");
+		Path imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "add.png");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		ImageDescriptor imageDescriptor = ImageDescriptor
 				.createFromURL(imageURL);
@@ -162,11 +149,7 @@ public class AddVisitPlotAction extends Action {
 
 			// Set up the ITreeContentProvider and the ILabelProvider for
 			// the TreeViewer that will go inside the dialog.
-			final Map<String, List<Entry>> groupMap = new HashMap<String, List<Entry>>(
-					4);
-			final Map<Integer, Boolean> valueMap = new HashMap<Integer, Boolean>(
-					entries.size());
-			List<String> groupNames = new ArrayList<String>(4);
+			final Map<String, List<Entry>> groupMap = new TreeMap<String, List<Entry>>();
 			for (Entry entry : entries) {
 				// Add the Entry to the proper group list. Create a new list
 				// if necessary.
@@ -175,89 +158,36 @@ public class AddVisitPlotAction extends Action {
 				if (groupEntries == null) {
 					groupEntries = new ArrayList<Entry>();
 					groupMap.put(parentName, groupEntries);
-					groupNames.add(parentName);
 				}
 				groupEntries.add(entry);
-
-				// Store a value in the map for the entry's current value.
-				valueMap.put(entry.getId(), "true".equals(entry.getValue()));
 			}
 
-			ITreeContentProvider contentProvider = new ITreeContentProvider() {
+			// Create an ElementTreeSelectionDialog to allow the user to
+			// select from the plots available in the currently-selected
+			// file from the VizFileViewer.
+			TreeSelectionDialogProvider provider = new TreeSelectionDialogProvider() {
 				@Override
-				public void dispose() {
-					// Do nothing.
-				}
-
-				@Override
-				public void inputChanged(Viewer viewer, Object oldInput,
-						Object newInput) {
-					// Do nothing.
-				}
-
-				@Override
-				public Object[] getElements(Object inputElement) {
-					Object[] elements;
-
-					// The input is expected to be a List of group names.
-					if (inputElement instanceof Object[]) {
-						elements = (Object[]) inputElement;
-					} else {
-						elements = new Object[] {};
+				public Object[] getChildren(Object parent) {
+					final Object[] children;
+					// The root input is the map of plottable features keyed on
+					// their type.
+					if (parent instanceof Map<?, ?>) {
+						// Return the available plot types/categories.
+						children = ((Map<?, ?>) parent).keySet().toArray();
 					}
-
-					return elements;
-				}
-
-				@Override
-				public Object[] getChildren(Object parentElement) {
-					Object[] children;
-
-					// The parent nodes should be the parent name Strings.
-					// Look up the List of entries for that group.
-					if (parentElement instanceof String) {
-						String parentName = (String) parentElement;
-						children = groupMap.get(parentName).toArray();
+					// For the plot type/category, return the available plots.
+					else if (parent instanceof String) {
+						children = groupMap.get(parent.toString()).toArray();
 					} else {
-						children = new Object[] {};
+						children = new Object[0];
 					}
-
 					return children;
 				}
 
 				@Override
-				public Object getParent(Object element) {
-					Object parent = null;
-
-					// Only entries should have parents. Just return the
-					// parent's name.
-					if (element instanceof Entry) {
-						parent = ((Entry) element).getParent();
-					}
-
-					return parent;
-				}
-
-				@Override
-				public boolean hasChildren(Object element) {
-					boolean hasChildren = false;
-
-					// The parent nodes should be the parent name Strings.
-					// Return true only if the List of entries for the
-					// parent/group name is not empty.
-					if (element instanceof String) {
-						String parentName = (String) element;
-						hasChildren = !(groupMap.get(parentName).isEmpty());
-					}
-					return hasChildren;
-				}
-			};
-			ILabelProvider labelProvider = new LabelProvider() {
-				@Override
 				public String getText(Object element) {
-
 					// Get a String from the ICEResource if possible.
-					String text;
+					final String text;
 					if (element instanceof Entry) {
 						text = ((Entry) element).getName();
 					}
@@ -266,244 +196,46 @@ public class AddVisitPlotAction extends Action {
 					else {
 						text = element.toString();
 					}
-
 					return text;
 				}
+
+				@Override
+				public boolean isSelected(Object element) {
+					// Leaf nodes are only selected if they are currently marked
+					// as plotted.
+					return element instanceof Entry
+							? "true".equals(((Entry) element).getValue())
+							: false;
+				}
 			};
 
-			// Create an ElementTreeSelectionDialog to allow the user to
-			// select from the plots available in the currently-selected
-			// file from the VizFileViewer.
-			ExposedCheckTreeDialog dialog = new ExposedCheckTreeDialog(shell,
-					labelProvider, contentProvider);
-
-			// Set the input. This is just the list of parent/group names.
-			dialog.setInput(groupNames.toArray());
-
-			// Get the initial selection of entries based on the entries'
-			// values.
-			List<Entry> initialSelection = new ArrayList<Entry>();
-			for (Entry entry : resource.getProperties()) {
-				if ("true".equals(entry.getValue())) {
-					initialSelection.add(entry);
-				}
-			}
-			dialog.setInitialSelections(initialSelection.toArray());
-
-			// Configure the dialog so that the root nodes in the TreeViewer
-			// are checked only if all child nodes are checked.
-			dialog.setContainerMode(true);
-			dialog.setTitle("Select Plots");
-			dialog.setMessage("Select the variables to plot. Checked "
+			// Customize the dialog.
+			provider.setTitle("Select Plots");
+			provider.setMessage("Select the variables to plot. Checked "
 					+ "variables are already plotted.");
 
-			// Create an ICheckStateListener to listen to for check events
-			// in the dialog. It should populate the map of values with the
-			// current selection.
-			ICheckStateListener listener = new ICheckStateListener() {
-				@Override
-				public void checkStateChanged(CheckStateChangedEvent event) {
-					// Get the element whose check state has changed.
-					Object element = event.getElement();
-					// If the element was an Entry, then one of the plots
-					// was either checked or unchecked.
+			// Open the and check its result. If selected plots were changed,
+			// update the plot viewer.
+			if (provider.openDialog(shell, groupMap, true) == Window.OK) {
+				// Add all newly selected plots.
+				for (Object element : provider.getSelectedLeafElements()) {
 					if (element instanceof Entry) {
-						Entry entry = (Entry) element;
-						valueMap.put(entry.getId(), event.getChecked());
-					}
-					// If the element was a String, then an entire group of
-					// plots was either checked or unchecked.
-					else {
-						String groupName = (String) element;
-						boolean checked = event.getChecked();
-						for (Entry entry : groupMap.get(groupName)) {
-							valueMap.put(entry.getId(), checked);
-						}
+						plotViewer.addPlot((Entry) element);
 					}
 				}
-			};
-			dialog.setCheckStateListener(listener);
-
-			// When the "Select All" and "Deselect All" buttons are clicked,
-			// the ICheckStateListener is not notified. Add listeners to
-			// these buttons so that the map of values can be updated
-			// accordingly.
-			dialog.setSelectAllListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					for (Integer id : valueMap.keySet()) {
-						valueMap.put(id, true);
-					}
-				}
-			});
-			dialog.setDeselectAllListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					for (Integer id : valueMap.keySet()) {
-						valueMap.put(id, false);
-					}
-				}
-			});
-
-			// Configure the dialog to block user input until it is
-			// dismissed. Then open it and check its result.
-			if (dialog.open() == Window.OK) {
-
-				// Loop over the entries to determine which ones should be
-				// added or removed from the PlotViewer.
-				for (Entry entry : entries) {
-					// See if the entry has been checked by comparing its
-					// value to its element's state in the TreeViewer.
-					boolean checked = valueMap.get(entry.getId());
-					if ("true".equals(entry.getValue()) != checked) {
-						if (checked) {
-							// The entry was checked.
-							plotViewer.addPlot(entry);
-						} else {
-							// The entry was unchecked.
-							plotViewer.removePlot(entry);
-						}
+				// Remove all unselected plots.
+				for (Object element : provider.getUnselectedLeafElements()) {
+					if (element instanceof Entry) {
+						plotViewer.removePlot((Entry) element);
 					}
 				}
 			} else {
-				logger.info("AddPlotAction message: " + "No plot selected.");
+				logger.info("AddPlotAction message: "
+						+ "Plot selection unchanged.");
 			}
 		}
 
 		return;
-	}
-
-	/**
-	 * This is a sub-class of {@link CheckedTreeSelectionDialog} that (a)
-	 * exposes the dialog's {@link CheckboxTreeViewer} to this class and (b)
-	 * allows this class to add an {@link ICheckStateListener} to the viewer.
-	 * 
-	 * @author Jordan H. Deyton
-	 * 
-	 */
-	private class ExposedCheckTreeDialog extends CheckedTreeSelectionDialog {
-
-		/**
-		 * An ICheckStateListener.
-		 */
-		private ICheckStateListener listener;
-
-		/**
-		 * This listener can be used to do something when the dialog's
-		 * "Select All" button is clicked.
-		 */
-		private SelectionListener selectAllListener;
-
-		/**
-		 * This listener can be used to do something when the dialog's
-		 * "Deselect All" button is clicked.
-		 */
-		private SelectionListener deselectAllListener;
-
-		/**
-		 * The default constructor.
-		 * 
-		 * @see CheckedTreeSelectionDialog#CheckedTreeSelectionDialog(Shell,
-		 *      ILabelProvider, ITreeContentProvider)
-		 */
-		public ExposedCheckTreeDialog(Shell parent,
-				ILabelProvider labelProvider,
-				ITreeContentProvider contentProvider) {
-			super(parent, labelProvider, contentProvider);
-		}
-
-		/**
-		 * Same as the default constructor, but this includes a style bit.
-		 * 
-		 * @see CheckedTreeSelectionDialog#CheckedTreeSelectionDialog(Shell,
-		 *      ILabelProvider, ITreeContentProvider, int)
-		 */
-		public ExposedCheckTreeDialog(Shell parent,
-				ILabelProvider labelProvider,
-				ITreeContentProvider contentProvider, int style) {
-			super(parent, labelProvider, contentProvider, style);
-		}
-
-		/**
-		 * Sets an ICheckStateListener to listen for check events in the
-		 * dialog's CheckboxTreeViewer.
-		 * 
-		 * @param listener
-		 *            The ICheckStateListener that will listen to the dialog's
-		 *            CheckboxTreeViewer.
-		 */
-		public void setCheckStateListener(ICheckStateListener listener) {
-			this.listener = listener;
-		}
-
-		/**
-		 * Sets a SelectionListener that will fire when the dialog's
-		 * "Select All" button is clicked.
-		 * 
-		 * @param listener
-		 *            The new "Select All" SelectionListener.
-		 */
-		public void setSelectAllListener(SelectionListener listener) {
-			selectAllListener = listener;
-		}
-
-		/**
-		 * Sets a SelectionListener that will fire when the dialog's
-		 * "Deselect All" button is clicked.
-		 * 
-		 * @param listener
-		 *            The new "Deselect All" SelectionListener.
-		 */
-		public void setDeselectAllListener(SelectionListener listener) {
-			deselectAllListener = listener;
-		}
-
-		/**
-		 * Supplements the default behavior by adding a custom
-		 * ICheckStateListener if one is set via {@link #}.
-		 */
-		@Override
-		protected CheckboxTreeViewer createTreeViewer(Composite parent) {
-			CheckboxTreeViewer viewer = super.createTreeViewer(parent);
-			if (listener != null) {
-				viewer.addCheckStateListener(listener);
-			}
-			return viewer;
-		}
-
-		/**
-		 * Supplements the default behavior by adding listeners to the "Select
-		 * All" and "Deselect All" buttons.
-		 */
-		@Override
-		protected Composite createSelectionButtons(Composite composite) {
-			Composite buttonComposite = super.createSelectionButtons(composite);
-
-			Button button;
-
-			// Add the listener to the "Select All" button.
-			button = getButton(IDialogConstants.SELECT_ALL_ID);
-			if (button != null && selectAllListener != null) {
-				button.addSelectionListener(selectAllListener);
-			}
-			// Add the listener to the "Deselect All" button.
-			button = getButton(IDialogConstants.DESELECT_ALL_ID);
-			if (button != null && deselectAllListener != null) {
-				button.addSelectionListener(deselectAllListener);
-			}
-
-			return buttonComposite;
-		}
-
-		/**
-		 * Exposes the super class' operation so the Action can gain access to
-		 * the TreeViewer.
-		 */
-		@Override
-		public CheckboxTreeViewer getTreeViewer() {
-			return super.getTreeViewer();
-		}
-
 	}
 
 	/**
@@ -602,8 +334,8 @@ public class AddVisitPlotAction extends Action {
 	 * @param parentFile
 	 *            The filename from which this plot originated.
 	 */
-	private void createPlotEntryGroup(String groupName,
-			List<String> childNames, List<Entry> entries, String parentFile) {
+	private void createPlotEntryGroup(String groupName, List<String> childNames,
+			List<Entry> entries, String parentFile) {
 		if (groupName != null && childNames != null && entries != null) {
 			Entry entry;
 			IEntryContentProvider entryContent;

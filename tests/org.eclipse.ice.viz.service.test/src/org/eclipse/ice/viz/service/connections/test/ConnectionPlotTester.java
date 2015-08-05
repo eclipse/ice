@@ -12,15 +12,14 @@
 package org.eclipse.ice.viz.service.connections.test;
 
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionPlotRender;
-import org.eclipse.ice.viz.service.connections.IConnectionAdapter;
+import org.eclipse.ice.viz.service.connections.IVizConnection;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * This class checks that the {@link ConnectionPlot} correctly synchronizes the
  * associated {@link ConnectionPlotRender} with changes to its properties or to
- * its associated {@link IConnectionAdapter}.
+ * its associated {@link IVizConnection}.
  * 
  * @author Jordan Deyton
  *
@@ -49,11 +48,11 @@ public class ConnectionPlotTester {
 	}
 
 	/**
-	 * Tests the {@code IConnectionAdapter} associated with a
-	 * {@code ConnectionPlot}.
+	 * Tests the {@code IVizConnection} associated with a {@code ConnectionPlot}
+	 * .
 	 */
 	@Test
-	public void checkConnectionAdapter() {
+	public void checkConnection() {
 
 	}
 

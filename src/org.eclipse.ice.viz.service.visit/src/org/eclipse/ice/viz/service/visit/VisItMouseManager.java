@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit;
 
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -30,6 +28,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.lbnl.visit.swt.VisItSwtWidget;
 
 /**
  * This class is used for managing a daemon thread for processing mouse input.
@@ -171,6 +171,44 @@ public class VisItMouseManager {
 	}
 
 	/**
+	 * Disposes all resources used by this mouse manager. After this method is
+	 * called, the manager no longer processes mouse input events for the
+	 * {@link #widget}.
+	 */
+	private void dispose() {
+
+		// Unregister and dispose all listeners.
+		unregisterListeners(widget);
+
+		// Stop processing thread events.
+		stop();
+
+		// Unset all flags.
+		mousePressed = false;
+		ctrlPressed = false;
+		shiftPressed = false;
+
+		return;
+	}
+
+	/**
+	 * This function collects the necessary state information execute an image
+	 * rotation operation.
+	 *
+	 * @param x
+	 *            The horizontal location of the mouse pointer
+	 * @param y
+	 *            The vertical location of the mouse pointer
+	 */
+	private void enqueueMouseLocation(int x, int y) {
+
+		// Set the mouse location
+		mouseLocation.set(new Point(x, y));
+
+		return;
+	}
+
+	/**
 	 * Creates and registers all listeners for the specified widget.
 	 *
 	 * @param widget
@@ -216,11 +254,8 @@ public class VisItMouseManager {
 		if (mouseListener == null) {
 			mouseListener = new MouseListener() {
 				@Override
-				public void mouseUp(MouseEvent e) {
-					// Set the mouse pressed flag
-					mousePressed = false;
-					// Stop the mouseManager thread
-					stop();
+				public void mouseDoubleClick(MouseEvent e) {
+					// Nothing to do yet.
 				}
 
 				@Override
@@ -233,8 +268,11 @@ public class VisItMouseManager {
 				}
 
 				@Override
-				public void mouseDoubleClick(MouseEvent e) {
-					// Nothing to do yet.
+				public void mouseUp(MouseEvent e) {
+					// Set the mouse pressed flag
+					mousePressed = false;
+					// Stop the mouseManager thread
+					stop();
 				}
 			};
 			widget.addMouseListener(mouseListener);
@@ -249,34 +287,6 @@ public class VisItMouseManager {
 				}
 			};
 			widget.addDisposeListener(disposeListener);
-		}
-
-		return;
-	}
-
-	/**
-	 * Unregisters and unsets all listeners for the specified widget.
-	 *
-	 * @param widget
-	 *            The widget whose listeners should be removed.
-	 */
-	private void unregisterListeners(VisItSwtWidget widget) {
-		// Remove and dispose all listeners.
-		if (disposeListener != null) {
-			widget.removeDisposeListener(disposeListener);
-			disposeListener = null;
-		}
-		if (wheelListener != null) {
-			widget.removeMouseWheelListener(wheelListener);
-			wheelListener = null;
-		}
-		if (moveListener != null) {
-			widget.removeMouseMoveListener(moveListener);
-			moveListener = null;
-		}
-		if (mouseListener != null) {
-			widget.removeMouseListener(mouseListener);
-			mouseListener = null;
 		}
 
 		return;
@@ -338,39 +348,29 @@ public class VisItMouseManager {
 	}
 
 	/**
-	 * This function collects the necessary state information execute an image
-	 * rotation operation.
+	 * Unregisters and unsets all listeners for the specified widget.
 	 *
-	 * @param x
-	 *            The horizontal location of the mouse pointer
-	 * @param y
-	 *            The vertical location of the mouse pointer
+	 * @param widget
+	 *            The widget whose listeners should be removed.
 	 */
-	private void enqueueMouseLocation(int x, int y) {
-
-		// Set the mouse location
-		mouseLocation.set(new Point(x, y));
-
-		return;
-	}
-
-	/**
-	 * Disposes all resources used by this mouse manager. After this method is
-	 * called, the manager no longer processes mouse input events for the
-	 * {@link #widget}.
-	 */
-	private void dispose() {
-
-		// Unregister and dispose all listeners.
-		unregisterListeners(widget);
-
-		// Stop processing thread events.
-		stop();
-
-		// Unset all flags.
-		mousePressed = false;
-		ctrlPressed = false;
-		shiftPressed = false;
+	private void unregisterListeners(VisItSwtWidget widget) {
+		// Remove and dispose all listeners.
+		if (disposeListener != null) {
+			widget.removeDisposeListener(disposeListener);
+			disposeListener = null;
+		}
+		if (wheelListener != null) {
+			widget.removeMouseWheelListener(wheelListener);
+			wheelListener = null;
+		}
+		if (moveListener != null) {
+			widget.removeMouseMoveListener(moveListener);
+			moveListener = null;
+		}
+		if (mouseListener != null) {
+			widget.removeMouseListener(mouseListener);
+			mouseListener = null;
+		}
 
 		return;
 	}

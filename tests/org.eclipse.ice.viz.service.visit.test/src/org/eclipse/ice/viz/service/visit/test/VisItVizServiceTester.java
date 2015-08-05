@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014- UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Jordan Deyton
+ *   Jordan Deyton - 
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.test;
 
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.visit.VisItVizService;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -32,7 +34,18 @@ import org.junit.Test;
  */
 public class VisItVizServiceTester {
 
-	// TODO Implement these tests.
+	/**
+	 * The viz service that will be tested.
+	 */
+	private VisItVizService service;
+
+	/**
+	 * Initializes class variables used for testing.
+	 */
+	@Before
+	public void beforeEachTest() {
+		service = new VisItVizService();
+	}
 
 	/**
 	 * This test checks the name of the visualization service.
@@ -41,15 +54,7 @@ public class VisItVizServiceTester {
 	 */
 	@Test
 	public void checkName() {
-		final String expectedName = "VisIt";
-
-		// The name should always be the same. Just try getting it a few times.
-		VisItVizService service = new VisItVizService();
-		assertEquals(expectedName, service.getName());
-		assertEquals(expectedName, service.getName());
-		assertEquals(expectedName, new VisItVizService().getName());
-
-		return;
+		assertEquals("VisIt", service.getName());
 	}
 
 	/**
@@ -59,43 +64,7 @@ public class VisItVizServiceTester {
 	 */
 	@Test
 	public void checkVersion() {
-		// TODO Update this test. For now, the version should always be the
-		// same. However, it may be that we can connect to multiple versions at
-		// run-time!
-		final String expectedVersion = "1.0";
-
-		// The name should always be the same. Just try getting it a few times.
-		VisItVizService service = new VisItVizService();
-		assertEquals(expectedVersion, service.getVersion());
-		assertEquals(expectedVersion, service.getVersion());
-		assertEquals(expectedVersion, new VisItVizService().getVersion());
-
-		return;
-	}
-
-	/**
-	 * This test checks the service's connection properties, including their
-	 * default values.
-	 * 
-	 * @see VisItVizService#hasConnectionProperties()
-	 * @see VisItVizService#getConnectionProperties()
-	 * @see VisItVizService#setConnectionProperties(java.util.Map)
-	 */
-	@Ignore
-	@Test
-	public void checkConnectionProperties() {
-		fail("Not implemented.");
-	}
-
-	/**
-	 * This test checks that the service connects properly.
-	 * 
-	 * @see VisItVizService#connect()
-	 */
-	@Ignore
-	@Test
-	public void checkConnect() {
-		fail("Not implemented.");
+		assertEquals("1.0", service.getVersion());
 	}
 
 	/**
@@ -103,8 +72,6 @@ public class VisItVizServiceTester {
 	 */
 	@Test
 	public void checkExtensions() {
-		VisItVizService service = new VisItVizService();
-
 		List<String> extensions = new ArrayList<String>();
 		// ExodusII
 		extensions.add("ex");
@@ -118,24 +85,27 @@ public class VisItVizServiceTester {
 		// Silo
 		extensions.add("silo");
 
-		// Check that each extension is supported by creating a simple URI with
-		// its extension and calling extensionSupported(URI).
+		// Check the contents of the supported extension set.
 		for (String extension : extensions) {
-			try {
-				// Check that the extension is supported.
-				URI uri = new URI("blah." + extension);
-				assertTrue("The extension \"" + extension
-						+ "\" is not supported.",
-						service.extensionSupported(uri));
-			} catch (URISyntaxException e) {
-				// This should never happen...
-				fail("VisItVizServiceTester error: "
-						+ "A test URI was invalid.");
-				e.printStackTrace();
-			}
+			// Check that the extension is in the set of supported extensions.
+			assertTrue(
+					"VisItVizServiceTester error: " + "Extension \"" + extension
+							+ "\" not supported.",
+					service.getSupportedExtensions().contains(extension));
 		}
 
 		return;
+	}
+
+	/**
+	 * Checks that plots can be created with the viz service.
+	 */
+	@Ignore
+	@Test
+	public void checkCreatePlot() {
+		fail("Not implemented.");
+		// TODO To test a successful operation, we need a running VisIt instance
+		// and a VisIt-compatible file.
 	}
 
 	/**
@@ -143,12 +113,72 @@ public class VisItVizServiceTester {
 	 * 
 	 * @see VisItVizService#createPlot(java.net.URI)
 	 */
-	@Ignore
 	@Test
-	public void checkPlot() {
-		// TODO Implement this. It should also check that the different file
-		// formats can be loaded (it is not necessary to check one for every
-		// extension).
+	public void checkCreatePlotExceptions() {
+
+		String host;
+		String path;
+		URI uri = null;
+
+		// ---- Try a null URI. ---- //
+		uri = null;
+		try {
+			service.createPlot(uri);
+			fail("VisItVizServiceTester error: "
+					+ "Did not throw an exception for a null URI.");
+		} catch (NullPointerException e) {
+			// Exception thrown as expected.
+		} catch (Exception e) {
+			fail("VisItVizServiceTester error: "
+					+ "Did not throw a NullPointerException for a null URI.");
+		}
+		// ------------------------- //
+
+		// ---- Try a URI with a bad extension. ---- //
+		host = "megadrive";
+		path = "/some_file.bad";
+		try {
+			uri = new URI("file://" + host + path);
+		} catch (URISyntaxException e) {
+			fail("VisItVizService error: " + "Invalid URI.");
+			e.printStackTrace();
+		}
+		try {
+			service.createPlot(uri);
+			fail("VisItVizServiceTester error: "
+					+ "Did not throw an exception for a URI with an "
+					+ "unsupported extension.");
+		} catch (IllegalArgumentException e) {
+			// Exception thrown as expected.
+		} catch (Exception e) {
+			fail("VisItVizServiceTester error: "
+					+ "Did not throw an IllegalArgumentException for a URI "
+					+ "with an unsupported extension.");
+		}
+		// ----------------------------------------- //
+
+		// ---- Try a URI for an unknown host. ---- //
+		// Set up the URI.
+		host = "megadrive";
+		path = "/some_file.e";
+		try {
+			uri = new URI("file://" + host + path);
+		} catch (URISyntaxException e) {
+			fail("VisItVizServiceTester error: " + "Invalid URI.");
+			e.printStackTrace();
+		}
+
+		// Creating a plot with an unknown host should throw an exception.
+		try {
+			service.createPlot(uri);
+			fail("VisItVizServiceTester error: "
+					+ "Exception not thrown for URI whose host has no "
+					+ "configured viz connection.");
+		} catch (Exception e) {
+			// Exception expected.
+		}
+		// ---------------------------------------- //
+
 		return;
 	}
 }
