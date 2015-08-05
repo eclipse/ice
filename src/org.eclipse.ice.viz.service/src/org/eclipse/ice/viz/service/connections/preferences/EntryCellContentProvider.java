@@ -67,7 +67,6 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	public char getSecretChar() {
 		return ISecretCellContentProvider.SECRET_CHAR;
 	}
-	// ---------------------------------------- //
 
 	/**
 	 * Returns the value, which is converted to a string, of the {@link Entry}.
@@ -134,9 +133,6 @@ public class EntryCellContentProvider implements ICellContentProvider,
 		return isValid(element);
 	}
 
-	// ---- Implements IComboCellContentProvider ---- //
-
-	// ---- Implements ISecretCellProvider ---- //
 	/**
 	 * An {@link Entry} should be obscured if its "secret" flag is true.
 	 */
@@ -152,8 +148,6 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	public boolean isValid(Object element) {
 		return element != null && element instanceof Entry;
 	}
-
-	// ---------------------------------------------- //
 
 	/**
 	 * An {@link Entry} requires a combo widget if its {@link AllowedValueType}
