@@ -70,6 +70,11 @@ public class CSVPlot extends AbstractPlot {
 	private final AtomicBoolean loaded = new AtomicBoolean(false);
 
 	/**
+	 * A flag signifying if the plot is contour or not
+	 */
+	private boolean isContour = false;
+
+	/**
 	 * The default constructor.
 	 */
 	public CSVPlot() {
@@ -187,9 +192,16 @@ public class CSVPlot extends AbstractPlot {
 			// Grab the contents of the file
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line = null;
+			boolean setContour = false;
 			while ((line = reader.readLine()) != null) {
+				if (line.startsWith("#")) {
+					if (line.toLowerCase().endsWith("contour")) {
+						isContour = true;
+						setContour = true;
+					}
+				}
 				// Skip lines that pure comments
-				if (!line.startsWith("#")) {
+				else {
 					// Clip the line if it has a comment symbol in it to be
 					// everything before the symbol
 					if (line.contains("#")) {
@@ -206,6 +218,9 @@ public class CSVPlot extends AbstractPlot {
 					// Put the lines in the list
 					lines.add(trimmedLine);
 				}
+			}
+			if (!setContour) {
+				isContour = false;
 			}
 
 			reader.close();
@@ -251,15 +266,30 @@ public class CSVPlot extends AbstractPlot {
 				}
 			}
 
-			// Just set the first series as the independent series for now
-			setIndependentSeries(series[0]);
+			if (!isContour) {
 
-			// Add the rest of the series as dependent series
-			List<ISeries> dependentSeries = new ArrayList<ISeries>(
-					series.length - 1);
-			dataSeries.put(IPlot.DEFAULT_CATEGORY, dependentSeries);
-			for (int i = 1; i < series.length; i++) {
-				dependentSeries.add(series[i]);
+				// Just set the first series as the independent series for now
+				setIndependentSeries(series[0]);
+
+				// Add the rest of the series as dependent series
+				List<ISeries> dependentSeries = new ArrayList<ISeries>(
+						series.length - 1);
+				dataSeries.put(IPlot.DEFAULT_CATEGORY, dependentSeries);
+				for (int i = 1; i < series.length; i++) {
+					dependentSeries.add(series[i]);
+				}
+
+			} else {
+				// Construct the contour series with the first three series (x,
+				// y, intensity)
+				CSVSeries contour = new CSVSeries();
+				for (int i = 0; i < series[0].size() && i < series[1].size()
+						&& i < series[2].size(); i++) {
+					contour.add(series[0].get(i));
+					contour.add(series[1].get(i));
+					contour.add(series[2].get(i));
+				}
+				this.setIndependentSeries(contour);
 			}
 
 		}
@@ -298,6 +328,11 @@ public class CSVPlot extends AbstractPlot {
 			load();
 		}
 		return changed;
+	}
+
+	public boolean getIsContour() {
+		// TODO Auto-generated method stub
+		return isContour;
 	}
 
 }

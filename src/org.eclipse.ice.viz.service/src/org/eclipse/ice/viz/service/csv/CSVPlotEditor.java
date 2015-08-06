@@ -109,6 +109,11 @@ public class CSVPlotEditor extends EditorPart {
 	private XYGraph xyGraph;
 
 	/**
+	 * The composite for setting min and max on the contour map
+	 */
+	private Composite minMaxComp;
+
+	/**
 	 * The widget that holds the toolbar for the xy graph
 	 */
 	private ToolbarArmedXYGraph graphToolbar;
@@ -701,7 +706,7 @@ public class CSVPlotEditor extends EditorPart {
 	 *            The PlotProvider containing the information to create the plot
 	 */
 	public void showPlotProvider(PlotProvider displayPlotProvider) {
-
+		displayPlotProvider.setIsContour(true);
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
 			// Get the time to show
@@ -796,45 +801,50 @@ public class CSVPlotEditor extends EditorPart {
 			// Sets the data array.
 			intensityGraph.setDataArray(newArray);
 
-			// Add controls for setting the min and max values
-			Composite minMaxComp = new Composite(vizComposite, SWT.NONE);
-			minMaxComp.setLayoutData(
-					new GridData(SWT.CENTER, SWT.BOTTOM, false, false));
-			minMaxComp.setLayout(new GridLayout(5, false));
+			// Add controls for setting the min and max values, if they do not
+			// already exist
+			if (minMaxComp == null) {
+				minMaxComp = new Composite(vizComposite, SWT.NONE);
+				minMaxComp.setLayoutData(
+						new GridData(SWT.CENTER, SWT.BOTTOM, false, false));
+				minMaxComp.setLayout(new GridLayout(5, false));
 
-			Label minLabel = new Label(minMaxComp, SWT.NONE);
-			minLabel.setText("Minimum: ");
-			final Text minText = new Text(minMaxComp, SWT.BORDER);
-			minText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				Label minLabel = new Label(minMaxComp, SWT.NONE);
+				minLabel.setText("Minimum: ");
+				final Text minText = new Text(minMaxComp, SWT.BORDER);
+				minText.setLayoutData(
+						new GridData(SWT.FILL, SWT.FILL, true, true));
 
-			Label maxLabel = new Label(minMaxComp, SWT.NONE);
-			maxLabel.setText("Maximum: ");
-			final Text maxText = new Text(minMaxComp, SWT.BORDER);
-			maxText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+				Label maxLabel = new Label(minMaxComp, SWT.NONE);
+				maxLabel.setText("Maximum: ");
+				final Text maxText = new Text(minMaxComp, SWT.BORDER);
+				maxText.setLayoutData(
+						new GridData(SWT.FILL, SWT.FILL, true, true));
 
-			Button applyMinMaxButton = new Button(minMaxComp, SWT.BORDER);
-			applyMinMaxButton.setText("Apply");
-			applyMinMaxButton.setLayoutData(
-					new GridData(SWT.FILL, SWT.FILL, true, true));
+				Button applyMinMaxButton = new Button(minMaxComp, SWT.BORDER);
+				applyMinMaxButton.setText("Apply");
+				applyMinMaxButton.setLayoutData(
+						new GridData(SWT.FILL, SWT.FILL, true, true));
 
-			vizComposite.layout();
+				vizComposite.layout();
 
-			applyMinMaxButton.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
+				applyMinMaxButton.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
 
-					// Set the minimum and maximum
-					intensityGraph
-							.setMax(Double.parseDouble(maxText.getText()));
-					intensityGraph
-							.setMin(Double.parseDouble(minText.getText()));
+						// Set the minimum and maximum
+						intensityGraph
+								.setMax(Double.parseDouble(maxText.getText()));
+						intensityGraph
+								.setMin(Double.parseDouble(minText.getText()));
 
-					// Set the contents
-					lws.setContents(intensityGraph);
+						// Set the contents
+						lws.setContents(intensityGraph);
 
-					return;
-				}
-			});
+						return;
+					}
+				});
+			}
 		}
 
 		return;

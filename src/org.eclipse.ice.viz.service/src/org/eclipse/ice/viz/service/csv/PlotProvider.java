@@ -193,6 +193,15 @@ public class PlotProvider {
 	}
 
 	/**
+	 * Sets the status of the plot to be either contour or regular xy.
+	 * 
+	 * @param contour
+	 */
+	public void setIsContour(boolean contour) {
+		contourFlag = contour;
+	}
+
+	/**
 	 * Removes an existing SeriesProvider from the specified time. Does nothing
 	 * if the arguments are invalid.
 	 * 

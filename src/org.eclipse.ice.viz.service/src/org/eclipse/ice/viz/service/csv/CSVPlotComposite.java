@@ -167,4 +167,14 @@ public class CSVPlotComposite extends PlotComposite {
 		return;
 	}
 
+	/**
+	 * Sets the contour flag state for this plot
+	 * 
+	 * @param contour
+	 *            True for contour, false for normal xy graph
+	 */
+	public void setIsContour(boolean contour) {
+		plotProvider.setIsContour(contour);
+	}
+
 }

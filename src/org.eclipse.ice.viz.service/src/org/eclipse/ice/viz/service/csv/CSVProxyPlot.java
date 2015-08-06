@@ -31,6 +31,8 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 
 	private boolean loaded = false;
 
+	private boolean isContour = false;
+
 	@Override
 	protected ProxySeries createProxySeries(ISeries source) {
 		ProxySeries series = super.createProxySeries(source);
@@ -57,6 +59,7 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 			// Create a plot composite.
 			plotComposite = new CSVPlotComposite(parent, SWT.BORDER);
 			plotComposite.setPlot(this);
+			plotComposite.setIsContour(((CSVPlot) getSource()).getIsContour());
 			// Tell it to update based on the new plot.
 			plotComposite.refresh();
 
