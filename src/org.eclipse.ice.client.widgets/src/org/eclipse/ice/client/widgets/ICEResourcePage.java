@@ -12,11 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -26,9 +23,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
-import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
@@ -246,7 +240,7 @@ public class ICEResourcePage extends ICEFormPage
 	public void showResource(ICEResource resource) throws PartInitException {
 
 		// TODO Do this off the UI thread.
-		
+
 		// TODO This method has several return statements, making it a little
 		// hard to read. It should be updated and simplified.
 
@@ -477,26 +471,18 @@ public class ICEResourcePage extends ICEFormPage
 			// // Create plots for any VizResources in the ResourceComponent
 			// that
 			// // do not already have plots.
-			// for (ICEResource resource : resourceComponent.getResources()) {
-			// if (resource instanceof VizResource) {
-			// // Try to get the existing plot.
-			// IPlot plot = plots.get(getPlotKey(resource));
-			// // If there is no plot already, try to create one.
-			// if (plot == null) {
-			// plot = createPlot((VizResource) resource);
-			// // Register with the Resource so that if it
-			// // changes we can know and operate accordingly
-			// resource.register(this);
-			// }
-			// }
-			// }
+			for (ICEResource resource : resourceComponent.getResources()) {
+				if (resource instanceof VizResource) {
+					resource.register(this);
+				}
+			}
 		} else if (component != null && component instanceof VizResource) {
 			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
 
 			// Refresh all plots in the grid associated with the resource.
 			plotGridComposite.refreshPlots(resource.getPath());
-			
+
 			// Layout the composite on the UI thread.
 			if (pageComposite != null) {
 				pageComposite.getDisplay().asyncExec(new Runnable() {
