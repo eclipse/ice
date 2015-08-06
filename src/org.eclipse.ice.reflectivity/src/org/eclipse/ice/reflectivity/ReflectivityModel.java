@@ -299,7 +299,7 @@ public class ReflectivityModel extends Model {
 			for (int i = 0; i < rq4.length; i++) {
 				rq4DataStr += Double.toString(waveVector[i]) + ","
 						+ Double.toString(rq4[i]) + ","
-						+ Double.toString(rData[i]) + ","
+						+ Double.toString(rq4Data[i]) + ","
 						+ Double.toString(error[i]) + "\n";
 			}
 
