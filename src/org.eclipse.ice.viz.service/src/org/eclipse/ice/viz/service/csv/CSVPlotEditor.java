@@ -706,7 +706,6 @@ public class CSVPlotEditor extends EditorPart {
 	 *            The PlotProvider containing the information to create the plot
 	 */
 	public void showPlotProvider(PlotProvider displayPlotProvider) {
-		displayPlotProvider.setIsContour(true);
 		// If it is not a contour plot then plot the regular series
 		if (!displayPlotProvider.isContour()) {
 			// Get the time to show

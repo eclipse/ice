@@ -174,7 +174,9 @@ public class CSVPlotComposite extends PlotComposite {
 	 *            True for contour, false for normal xy graph
 	 */
 	public void setIsContour(boolean contour) {
-		plotProvider.setIsContour(contour);
+		if (plotProvider != null) {
+			plotProvider.setIsContour(contour);
+		}
 	}
 
 }
