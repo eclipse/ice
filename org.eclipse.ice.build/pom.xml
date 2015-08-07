@@ -56,7 +56,7 @@
 				</sonar.host.url>
 			</properties>
 		</profile>
-		
+
 	</profiles>
 
 	<build>
@@ -133,6 +133,24 @@
 				</configuration>
 			</plugin>
 
+			<!-- This updates the version numbers of the POM, bundles, etc. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>versions</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>set-version</goal>
+							<goal>update-pom</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- This shows the full name of the POM for debugging. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -152,14 +170,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- Flyway Maven Dependencies -->
-			<plugin>
-				<groupId>com.googlecode.flyway</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>2.0.3</version>
-			</plugin>
-
 		</plugins>
 	</build>
 
@@ -371,8 +381,8 @@
 		<module>../tests/org.eclipse.ice.sassena.test</module>
 		<module>../src/org.eclipse.ice.reflectivity</module>
 		<module>../tests/org.eclipse.ice.reflectivity.test</module>
-		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST 
-			BUILD LAST! -->
+		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
+			LAST! -->
 		<module>../features/org.eclipse.ice.feature</module>
 	</modules>
 </project>
