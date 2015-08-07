@@ -37,13 +37,14 @@ public class PlotEditorInput implements IEditorInput {
 		data = input;
 	}
 
-	/**
-	 * Getter for the input plot.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return the plot that is to be rendered by the plot editor.
+	 * @see org.eclipse.ui.IEditorInput#exists()
 	 */
-	public IPlot getPlot() {
-		return data;
+	@Override
+	public boolean exists() {
+		return true;
 	}
 
 	/*
@@ -54,16 +55,6 @@ public class PlotEditorInput implements IEditorInput {
 	@Override
 	public Object getAdapter(Class adapter) {
 		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
-	@Override
-	public boolean exists() {
-		return true;
 	}
 
 	/*
@@ -95,6 +86,15 @@ public class PlotEditorInput implements IEditorInput {
 	@Override
 	public IPersistableElement getPersistable() {
 		return null;
+	}
+
+	/**
+	 * Getter for the input plot.
+	 * 
+	 * @return the plot that is to be rendered by the plot editor.
+	 */
+	public IPlot getPlot() {
+		return data;
 	}
 
 	/*

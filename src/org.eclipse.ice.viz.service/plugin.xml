@@ -6,7 +6,7 @@
          name="Visualization Preferences"
          point="org.eclipse.ui.preferencePages">
       <page
-            class="org.eclipse.ice.viz.service.VizPreferencePage"
+            class="org.eclipse.ice.viz.service.preferences.VizPreferencePage"
             id="org.eclipse.ice.viz.service.preferences"
             name="Visualization">
       </page>
@@ -14,7 +14,7 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="org.eclipse.ice.viz.service.VizPreferenceInitializer">
+            class="org.eclipse.ice.viz.service.preferences.VizPreferenceInitializer">
       </initializer>
    </extension>	
    		

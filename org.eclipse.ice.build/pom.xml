@@ -371,6 +371,9 @@
 		<module>../tests/org.eclipse.ice.viz.service.test</module>
 		<module>../src/org.eclipse.ice.viz.service.visit</module>
 		<module>../tests/org.eclipse.ice.viz.service.visit.test</module>
+		<module>../src/org.eclipse.ice.viz.service.paraview</module>
+		<module>../src/org.eclipse.ice.viz.service.paraview.web</module>
+		<module>../tests/org.eclipse.ice.viz.service.paraview.test</module>
 		<module>../src/org.eclipse.ice.xolotl</module>
 		<module>../src/org.eclipse.ice.materials</module>
 		<module>../tests/org.eclipse.ice.materials.test</module>
