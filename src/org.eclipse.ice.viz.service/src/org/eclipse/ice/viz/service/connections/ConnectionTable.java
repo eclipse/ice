@@ -16,12 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
+
+
 
 /**
  * This class manages a list of uniquely-keyed VisIt connections within an ICE
- * {@link TableComponent}.
+ * {@link VizTableComponent}.
  * <p>
  * Each connection is defined by the following parameters (although it must be
  * noted that the only required unique value is the name/key/ID):
@@ -48,7 +55,7 @@ import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
  * @author Jordan Deyton
  *
  */
-public class ConnectionTable extends TableComponent implements IKeyManager,
+public class ConnectionTable extends VizTableComponent implements IKeyManager,
 		IVizUpdateableListener {
 
 	// TODO Remove the debug output from this class.
@@ -69,7 +76,7 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 	 * helps us determine the previous key (see {@link #oldKeys}) for a key
 	 * {@code Entry} that was changed.
 	 */
-	private final List<Entry> keyEntries = new ArrayList<Entry>();
+	private final List<VizEntry> keyEntries = new ArrayList<VizEntry>();
 	/**
 	 * This keeps track of the previous values for the connection name/key
 	 * column's {@code Entry}s. This enables us to remove old values from the
@@ -105,7 +112,7 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 	 * Does nothing. The row template cannot be changed for this class.
 	 */
 	@Override
-	public void setRowTemplate(ArrayList<Entry> template) {
+	public void setRowTemplate(ArrayList<VizEntry> template) {
 		// Do nothing...
 	}
 
@@ -116,62 +123,62 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 	 * @return An {@code ArrayList<Entry>} containing the template {@code Entry}
 	 *         s for each exposed connection property.
 	 */
-	protected ArrayList<Entry> getConnectionTemplate() {
-		ArrayList<Entry> template = new ArrayList<Entry>();
+	protected ArrayList<VizEntry> getConnectionTemplate() {
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
 
 		// TODO These Entries need descriptions.
 		// TODO Add the password Entries.
 
-		IEntryContentProvider contentProvider;
+		IVizEntryContentProvider contentProvider;
 
 		// ---- name ---- //
 		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(
 				this);
-		Entry keyEntry = new KeyEntry(keyContentProvider, this);
+		VizEntry keyEntry = new KeyEntry(keyContentProvider, this);
 		keyEntry.setName("Name");
 		template.add(keyEntry);
 		// ---- host ---- //
-		contentProvider = new BasicEntryContentProvider();
+		contentProvider = new BasicVizEntryContentProvider();
 		contentProvider.setDefaultValue("localhost");
-		Entry hostEntry = new Entry(contentProvider);
+		VizEntry hostEntry = new VizEntry(contentProvider);
 		hostEntry.setName("Host");
 		template.add(hostEntry);
 		// ---- host port ---- //
 		PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
 		portContentProvider.setDefaultValue("9600");
-		Entry hostPortEntry = new PortEntry(portContentProvider);
+		VizEntry hostPortEntry = new PortEntry(portContentProvider);
 		hostPortEntry.setName("Host Port");
 		template.add(hostPortEntry);
 		// ---- host os ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Discrete);
 		ArrayList<String> systems = new ArrayList<String>(3);
 		systems.add("Windows");
 		systems.add("Linux");
 		systems.add("OS X");
 		contentProvider.setAllowedValues(systems);
 		contentProvider.setDefaultValue("Windows");
-		Entry hostOSEntry = new Entry(contentProvider);
+		VizEntry hostOSEntry = new VizEntry(contentProvider);
 		hostOSEntry.setName("Host OS");
 		template.add(hostOSEntry);
 		// ---- path ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		Entry pathEntry = new Entry(contentProvider);
+		contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
+		VizEntry pathEntry = new VizEntry(contentProvider);
 		pathEntry.setName("Path");
 		template.add(pathEntry);
 		// ---- username ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
 		contentProvider.setDefaultValue("");
-		Entry userEntry = new Entry(contentProvider);
+		VizEntry userEntry = new VizEntry(contentProvider);
 		userEntry.setName("User");
 		template.add(userEntry);
 		// ---- password ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+		contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
 		contentProvider.setDefaultValue("");
-		Entry passwordEntry = new SecretEntry(contentProvider);
+		VizEntry passwordEntry = new SecretEntry(contentProvider);
 		passwordEntry.setName("Password");
 		template.add(passwordEntry);
 
@@ -193,8 +200,8 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 		// return value is -1, then a row was not added.
 		if (index >= 0) {
 			// Get the name/key/ID of the connection.
-			List<Entry> connection = getRow(index);
-			Entry keyEntry = connection.get(0);
+			List<VizEntry> connection = getRow(index);
+			VizEntry keyEntry = connection.get(0);
 			String key = keyEntry.getValue();
 
 			// Throw an exception if the new key is already in the bookkeeping.
@@ -274,7 +281,7 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 
 		if (index >= 0) {
 			// Get the new and old keys from the key Entry.
-			Entry keyEntry = keyEntries.get(index);
+			VizEntry keyEntry = keyEntries.get(index);
 			String newKey = keyEntry.getValue();
 			String oldKey = oldKeys.get(index);
 
@@ -323,7 +330,7 @@ public class ConnectionTable extends TableComponent implements IKeyManager,
 	 * @return A row from the {@code TableComponent}, or null if the name is
 	 *         invalid.
 	 */
-	public List<Entry> getConnection(String name) {
+	public List<VizEntry> getConnection(String name) {
 		Integer id = keyToIndexMap.get(name);
 		return id != null ? getRow(id) : null;
 	}

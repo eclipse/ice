@@ -13,12 +13,11 @@ package org.eclipse.ice.viz.service.connections;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 
 /**
- * This class provides an {@link IEntryContentProvider} geared toward
+ * This class provides an {@link IVizEntryContentProvider} geared toward
  * {@link KeyEntry}s whose allowed keys are managed by a {@link IKeyManager}.
  * <p>
  * The purpose of this class is to interface some {@code IKeyManager}
@@ -30,7 +29,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * @author Jordan Deyton
  *
  */
-public class KeyEntryContentProvider extends BasicEntryContentProvider {
+public class KeyEntryContentProvider extends BasicVizEntryContentProvider {
 
 	/**
 	 * This manages all allowed keys for associated {@link KeyEntry}s.
@@ -55,11 +54,11 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 
 		// Determine whether the key manager supports any string key or a
 		// pre-defined set of keys. Then set the allowed value type.
-		AllowedValueType type;
+		VizAllowedValueType type;
 
 		// If the key manager has a list of keys, then the type is discrete.
 		if (!keyManager.getAvailableKeys().isEmpty()) {
-			type = AllowedValueType.Discrete;
+			type = VizAllowedValueType.Discrete;
 		} else {
 			// If the list is empty and requesting the next key throws an
 			// exception, then the type is discrete. In this case, the
@@ -67,9 +66,9 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 			// restricted.
 			try {
 				keyManager.getNextKey();
-				type = AllowedValueType.Undefined;
+				type = VizAllowedValueType.Undefined;
 			} catch (IllegalStateException e) {
-				type = AllowedValueType.Discrete;
+				type = VizAllowedValueType.Discrete;
 			}
 		}
 		super.setAllowedValueType(type);
@@ -97,7 +96,7 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider {
 	 * Does nothing.
 	 */
 	@Override
-	public void setAllowedValueType(AllowedValueType allowedValueType) {
+	public void setAllowedValueType(VizAllowedValueType allowedValueType) {
 		// Do nothing. The allowed value type is based on the key manager.
 	}
 

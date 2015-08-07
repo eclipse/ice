@@ -29,6 +29,12 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 /**
  * <p>
@@ -66,6 +72,14 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		return;
 	}
 
+	public VizMeshComponent getMesh(){
+		return mesh;
+	}
+	
+	public void setMesh(VizMeshComponent newMesh){
+		mesh = newMesh;
+	}
+	
 	/**
 	 * <p>
 	 * Adds a polygon to the MeshComponent. The polygon is expected to have a

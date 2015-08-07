@@ -200,7 +200,7 @@ public class MeshElementTreeView extends ViewPart implements
 				// Wrap the Polygons into PropertySources and add them to
 				// the array
 				for (Polygon i : allElements) {
-					contents.add(new MeshSelection(meshComponent, i));
+					contents.add(new MeshSelection(meshComponent.getMesh(), i));
 				}
 
 				return contents.toArray();
@@ -230,11 +230,11 @@ public class MeshElementTreeView extends ViewPart implements
 						Polygon polygon = (Polygon) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
 						for (Edge e : polygon.getEdges()) {
-							children.add(new MeshSelection(meshComponent, e));
+							children.add(new MeshSelection(meshComponent.getMesh(), e));
 						}
 						// Add new MeshSelections for the vertices.
 						for (Vertex v : polygon.getVertices()) {
-							children.add(new MeshSelection(meshComponent, v));
+							children.add(new MeshSelection(meshComponent.getMesh(), v));
 						}
 					}
 

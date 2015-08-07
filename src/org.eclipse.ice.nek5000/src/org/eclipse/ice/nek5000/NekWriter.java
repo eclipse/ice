@@ -29,11 +29,11 @@ import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.Quad;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 
 import java.io.File;
 import java.io.FileNotFoundException;

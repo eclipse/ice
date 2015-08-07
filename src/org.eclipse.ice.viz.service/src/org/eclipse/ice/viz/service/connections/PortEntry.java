@@ -13,10 +13,10 @@ package org.eclipse.ice.viz.service.connections;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 
 /**
- * This class provides an {@link Entry} that is a "continuous" {@code Entry}
+ * This class provides an {@link VizEntry} that is a "continuous" {@code Entry}
  * with a twist: instead of the allowed values' being a range between two
  * doubles, they are a range between two integers. The range is specified by the
  * {@link PortEntryContentProvider}.
@@ -24,7 +24,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @author Jordan Deyton
  *
  */
-public class PortEntry extends Entry {
+public class PortEntry extends VizEntry {
 
 	/**
 	 * The default constructor.

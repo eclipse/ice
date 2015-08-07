@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.connections;
 
 import java.util.List;
-
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 

@@ -16,16 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.Hex;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPartVisitor;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
-import org.eclipse.ice.datastructures.form.mesh.Quad;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -249,14 +249,14 @@ public class VertexSection extends AbstractPropertySection {
 
 			// Get the selected IMeshPart and mesh from the selection.
 			IMeshPart meshPart = meshSelection.selectedMeshPart;
-			final MeshComponent mesh = meshSelection.mesh;
+			final VizMeshComponent mesh = meshSelection.mesh;
 
 			// Create a visitor that can determine the appropriate Vertex
 			// instance whose properties are being exposed based on the type of
 			// IMeshPart passed in through the selection.
 			IMeshPartVisitor visitor = new IMeshPartVisitor() {
 				@Override
-				public void visit(MeshComponent mesh) {
+				public void visit(VizMeshComponent mesh) {
 					// Do nothing.
 				}
 

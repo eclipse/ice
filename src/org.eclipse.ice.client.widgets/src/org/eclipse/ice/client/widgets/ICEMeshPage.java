@@ -22,6 +22,9 @@ import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;
@@ -127,6 +130,11 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 * The collection of parts selected in the MeshApplication.
 	 */
 	private ArrayList<ICEObject> selectedMeshParts;
+	
+	/**
+	 * The factory for IVizServices
+	 */
+	private IVizServiceFactory factory;
 
 	/**
 	 * The constructor
@@ -227,12 +235,24 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		actionToolBarManager = new ToolBarManager(toolBar);
 
 		// Use a ViewFactory to create a jME mesh view.
-		ViewFactory factory = new ViewFactory();
-		meshView = factory.createMeshView(meshComp);
+//		ViewFactory factory = new ViewFactory();
+//		meshView = factory.createMeshView(meshComp);
 		// Render the mesh inside the parent Composite. We have to set its
 		// GridData so it will fill all available space!
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		meshView.createComposite(parent).setLayoutData(gridData);
+		//meshView.createComposite(parent).setLayoutData(gridData);
+		IVizService service = factory.get("JME3 Mesh Service");
+		IVizCanvas canvas = null;
+		try {
+			canvas = service.createCanvas(meshComp.getMesh());
+		} catch (Exception e) {
+			logger.error("Mesh Viz Service failed to create mesh Viz Canvas.");
+		}
+		try {
+			canvas.draw(parent);
+		} catch (Exception e) {
+			logger.error("Error drawing Mesh Viz Canvas.");
+		}
 
 		// The MeshPage should also listen for changes to the MeshApplication's
 		// current selection.
@@ -515,5 +535,14 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		return super.getAdapter(adapter);
 	}
 	// ----------------------------------------------------------- //
+	
+	/**
+	 * Consume an IVizServiceFactory OSGi declarative service by saving the provided factory.
+	 * 
+	 * @param newFactory The factory service to save
+	 */
+	public void setVizServiceFactory(IVizServiceFactory newFactory){
+		factory = newFactory;
+	}
 
 }

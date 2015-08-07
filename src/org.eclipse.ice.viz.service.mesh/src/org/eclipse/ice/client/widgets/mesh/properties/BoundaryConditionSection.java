@@ -15,7 +15,6 @@ package org.eclipse.ice.client.widgets.mesh.properties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
@@ -27,6 +26,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -374,7 +374,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 
 				// Get the selected IMeshPart and mesh from the selection.
 				IMeshPart meshPart = meshSelection.selectedMeshPart;
-				final MeshComponent mesh = meshSelection.mesh;
+				final VizMeshComponent mesh = meshSelection.mesh;
 
 				// Create a visitor that can determine the appropriate Vertex
 				// instance whose properties are being exposed based on the type
@@ -382,7 +382,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 				// IMeshPart passed in through the selection.
 				IMeshPartVisitor visitor = new IMeshPartVisitor() {
 					@Override
-					public void visit(MeshComponent mesh) {
+					public void visit(VizMeshComponent mesh) {
 						// Do nothing.
 					}
 

@@ -77,3 +77,4 @@ public interface IVizUpdateable extends VizIdentifiable{
 	 */
 	public void unregister(IVizUpdateableListener listener);
 }
+

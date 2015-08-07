@@ -15,6 +15,9 @@ package org.eclipse.ice.client.widgets.mesh.properties;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;

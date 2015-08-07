@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.mesh.properties;
 
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 public class MeshSelection {
 
-	public final MeshComponent mesh;
+	public final VizMeshComponent mesh;
 
 	public final IMeshPart selectedMeshPart;
 
-	public MeshSelection(MeshComponent mesh, IMeshPart selectedMeshPart) {
+	public MeshSelection(VizMeshComponent mesh, IMeshPart selectedMeshPart) {
 		this.mesh = mesh;
 		this.selectedMeshPart = selectedMeshPart;
 	}

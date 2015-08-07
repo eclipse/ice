@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.connections.ConnectionSeries;
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -195,7 +195,7 @@ public class PlotEditor extends EditorPart {
 						serviceNames.add(fullServiceNames[i]);
 					} catch (Exception e1) {
 						logger.error(
-								"Problem creating plot with visulalizatoin service "
+								"Problem creating plot with visualization service "
 										+ fullServiceNames[i] + ".",
 								e1);
 					}
@@ -429,18 +429,18 @@ public class PlotEditor extends EditorPart {
 		MenuManager menu = new MenuManager("Menu");
 
 		// Top level menu
-		ActionTree menuTree = new ActionTree("Menu");
+		VizActionTree menuTree = new VizActionTree("Menu");
 
 		// Create a map of category trees to add to the menu if need be.
-		Map<String, ActionTree> categoryTrees = null;
-		ActionTree seriesTree = new ActionTree("Plot Series");
+		Map<String, VizActionTree> categoryTrees = null;
+		VizActionTree seriesTree = new VizActionTree("Plot Series");
 		// Only create categories if they will be useful in the menu (if there
 		// is more than one)
 		if (categories.length > 1) {
-			categoryTrees = new TreeMap<String, ActionTree>();
+			categoryTrees = new TreeMap<String, VizActionTree>();
 			for (int i = 0; i < categories.length; i++) {
 				String category = categories[i];
-				ActionTree catTree = new ActionTree(category);
+				VizActionTree catTree = new VizActionTree(category);
 				menuTree.add(catTree);
 				categoryTrees.put(category, catTree);
 			}
@@ -483,11 +483,11 @@ public class PlotEditor extends EditorPart {
 			// the general menu
 			if (categoryTrees == null) {
 				// Add the new menu entry
-				seriesTree.add(new ActionTree(tempAction));
+				seriesTree.add(new VizActionTree(tempAction));
 				// Otherwise, add to the specific category for this series
 			} else {
 				categoryTrees.get(series.getCategory())
-						.add(new ActionTree(tempAction));
+						.add(new VizActionTree(tempAction));
 			}
 
 		}
@@ -502,7 +502,7 @@ public class PlotEditor extends EditorPart {
 		};
 
 		// Add close action directly under menu
-		menuTree.add(new ActionTree(close));
+		menuTree.add(new VizActionTree(close));
 
 		if (categoryTrees == null) {
 			// Update menu

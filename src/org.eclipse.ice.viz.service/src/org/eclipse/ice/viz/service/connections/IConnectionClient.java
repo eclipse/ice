@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.connections;
 
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 
+
 /**
  * A connection client is a class that can be associated with a single
  * {@link IConnectionAdapter}. It registers with the adapter as an

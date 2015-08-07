@@ -6,4 +6,5 @@ Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.analysistool
 Bundle-Vendor: Oak Ridge National Laboratory
-Import-Package: com.jme3.util
+Import-Package: com.jme3.util,
+ org.eclipse.ice.datastructures.form

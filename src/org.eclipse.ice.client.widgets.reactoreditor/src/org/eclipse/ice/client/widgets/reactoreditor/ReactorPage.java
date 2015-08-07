@@ -48,6 +48,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 
 /**
  * This class extends the default ICEFormPage to provide custom page composed of

@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
-import org.eclipse.ice.datastructures.form.mesh.Quad;
 import org.eclipse.ice.nek5000.NekReader;
+import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
 import org.junit.Test;
 
 /**

@@ -14,6 +14,8 @@ package org.eclipse.ice.viz.service;
 import java.net.URI;
 import java.util.Map;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject;
+
 /**
  * This is a pluggable service interface whereby visualization engines can
  * publish their services to the platform. It is designed to be implemented as a
@@ -122,7 +124,7 @@ public interface IVizService {
 	 *         disconnect.
 	 */
 	public boolean disconnect();
-	
+
 	/**
 	 * This operation directs the IVizService to create a new plot using the
 	 * specified file and to return a handle to that plot to the caller so that
@@ -136,4 +138,18 @@ public interface IVizService {
 	 *             a plot with the given file and giving the reason why.
 	 */
 	public IPlot createPlot(URI file) throws Exception;
+
+	/**
+	 * This operation directs the IVizService to create a new canvas using the
+	 * given VizObject and to return a handle to that canvas to the caller so
+	 * that it may modify the canvas.
+	 * 
+	 * @param object
+	 *            The input object which will be rendered in the new canvas
+	 * @return The IVizCanvas that will render the object
+	 * @throws Exception
+	 *             An exception indicating that the IVizService could not create
+	 *             a canvas with the given object and giving the reason why.
+	 */
+	public IVizCanvas createCanvas(VizObject object) throws Exception;
 }

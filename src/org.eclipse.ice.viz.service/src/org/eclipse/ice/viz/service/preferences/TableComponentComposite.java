@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -38,7 +38,7 @@ public class TableComponentComposite extends Composite {
 	 * The current {@code TableComponent} data model that is rendered in the
 	 * {@link #tableViewer}.
 	 */
-	private TableComponent tableComponent;
+	private VizTableComponent tableComponent;
 
 	/**
 	 * The JFace {@code Viewer} that displays the {@link #tableComponent}'s rows
@@ -106,7 +106,7 @@ public class TableComponentComposite extends Composite {
 	 *            The new {@code TableComponent}. This value must not be
 	 *            {@code null} and must have a row template.
 	 */
-	public void setTableComponent(TableComponent table) {
+	public void setTableComponent(VizTableComponent table) {
 
 		// We cannot handle TableComponents with no template set.
 		if (table == null || table.getRowTemplate() == null) {
@@ -137,12 +137,12 @@ public class TableComponentComposite extends Composite {
 	 * 
 	 * @return The current {@code TableComponent}.
 	 */
-	public TableComponent getTableComponent() {
+	public VizTableComponent getTableComponent() {
 		return tableComponent;
 	}
 
 	/**
-	 * Creates a new {@code TableViewer} to show a {@link TableComponent}.
+	 * Creates a new {@code TableViewer} to show a {@link VizTableComponent}.
 	 * 
 	 * @param parent
 	 *            The containing {@code Composite}.
