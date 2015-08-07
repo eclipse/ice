@@ -31,8 +31,6 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 
 	private boolean loaded = false;
 
-	private boolean isContour = false;
-
 	@Override
 	protected ProxySeries createProxySeries(ISeries source) {
 		ProxySeries series = super.createProxySeries(source);

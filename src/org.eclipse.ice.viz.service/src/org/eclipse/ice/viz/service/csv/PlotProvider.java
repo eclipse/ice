@@ -42,7 +42,8 @@ public class PlotProvider {
 	private XYZPlotStyle plotStyle;
 
 	/**
-	 * The TreeMap structure that will hold the series for each time
+	 * The TreeMap structure that will hold the series for each time step. If
+	 * contour, these should be the intensity values
 	 */
 	private TreeMap<Double, ArrayList<ISeries>> seriesMap;
 
@@ -51,6 +52,18 @@ public class PlotProvider {
 	 * plotted with respect to this series.
 	 */
 	private ISeries independentSeries;
+
+	/**
+	 * If the plot is contour, these are the y values that correspond to the x
+	 * values for the contour plot
+	 */
+	private ISeries dependentSeries;
+
+	/**
+	 * If the plot is contour, these are the intensity values the correspond to
+	 * the other values in the dependent and independent series
+	 */
+	private ISeries intensitySeries;
 
 	/**
 	 * The axis style for the x axis, providing the description necessary to
@@ -202,8 +215,8 @@ public class PlotProvider {
 	}
 
 	/**
-	 * Removes an existing SeriesProvider from the specified time. Does nothing
-	 * if the arguments are invalid.
+	 * Removes an existing Series from the specified time. Does nothing if the
+	 * arguments are invalid.
 	 * 
 	 * @param time
 	 *            The time at which the series should be removed.
@@ -222,6 +235,54 @@ public class PlotProvider {
 			}
 		}
 		return;
+	}
+
+	/**
+	 * Clears all of the series from the plot. Does not change the independent
+	 * series
+	 */
+	public void clearAllSeries() {
+		seriesMap.clear();
+	}
+
+	/**
+	 * Sets the dependent series to be used as the y values when plotting
+	 * contour plots
+	 * 
+	 * @param series
+	 *            The ISeries to use as the y values for the contour plot
+	 */
+	public void setDependentSeries(ISeries series) {
+		dependentSeries = series;
+	}
+
+	/**
+	 * Gets the dependent series, or the y values for plotting contour plots
+	 * 
+	 * @return The dependent series
+	 */
+	public ISeries getDependentSeries() {
+		return dependentSeries;
+	}
+
+	/**
+	 * Sets the series used for the intensity values when plotting contour plots
+	 * 
+	 * @param series
+	 *            The series to use for the intensity
+	 * @return
+	 */
+	public void setIntensitySeries(ISeries series) {
+		intensitySeries = series;
+	}
+
+	/**
+	 * Gets the series used for the intensity values when plotting contour plots
+	 * 
+	 * @return The intensity series
+	 */
+	public ISeries getIntensitySeries() {
+		return intensitySeries;
 	}
 
 	/**

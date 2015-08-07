@@ -14,8 +14,10 @@ package org.eclipse.ice.viz.service.csv;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.LightweightSystem;
@@ -771,21 +773,41 @@ public class CSVPlotEditor extends EditorPart {
 
 		} else {
 
-			// Get the first series
-			final ISeries plotSeries = displayPlotProvider
-					.getIndependentSeries();
+			// Get the series to plot
+			final ISeries xSeries = displayPlotProvider.getIndependentSeries();
+			final ISeries ySeries = displayPlotProvider.getDependentSeries();
+			final ISeries intensity = displayPlotProvider.getIntensitySeries();
 
 			// Create a new intensity graph
 			final IntensityGraphFigure intensityGraph = new IntensityGraphFigure();
 
 			// Set the minimum and maximum
-			double[] bounds = plotSeries.getBounds();
+			double[] bounds = intensity.getBounds();
 			intensityGraph.setMax(bounds[0] + bounds[1]);
 			intensityGraph.setMin(bounds[0]);
 
-			// FIXME Set the data width and data height
-			// intensityGraph.setDataHeight(seriesProvider.getDataHeight());
-			// intensityGraph.setDataWidth(seriesProvider.getDataWidth());
+			// Set the data width ( the number of unique values in the list)
+			int width = 0;
+			Set<Double> uniqueXVals = new HashSet<Double>();
+			double[] xVals = getDoubleValue(xSeries);
+			for (double x : xVals) {
+				if (!uniqueXVals.contains(x)) {
+					uniqueXVals.add(x);
+					width++;
+				}
+			}
+			intensityGraph.setDataWidth(width);
+			// Set the data height (the number of unique values in the list)
+			int height = 0;
+			Set<Double> uniqueYVals = new HashSet<Double>();
+			double[] yVals = getDoubleValue(ySeries);
+			for (double y : yVals) {
+				if (!uniqueYVals.contains(y)) {
+					uniqueYVals.add(y);
+					height++;
+				}
+			}
+			intensityGraph.setDataHeight(height);
 
 			// Stick with predefined colormap
 			intensityGraph.setColorMap(
@@ -794,11 +816,23 @@ public class CSVPlotEditor extends EditorPart {
 			// Set the contents
 			lws.setContents(intensityGraph);
 
-			// Try to get valid data from the series
-			double[] newArray = getDoubleValue(plotSeries);
+			double[] intenseValues = getDoubleValue(intensity);
 
+			// Try to get valid data from the series
+			double[] newArray = new double[intenseValues.length];
+			// Local declaration
+			int index = 0;
+			// Iterate over the height
+			/**
+			 * for (int i = 0; i < height; i++) { // Add the values backwards so
+			 * that lower positions are last, // makes the ordering cartesian
+			 * for (int j = intenseValues.length - (intenseValues.length % 4); i
+			 * >= 3; i -= 4) { for (int k = 0; k < 4; k++) { newArray[index + k]
+			 * = intenseValues[i - k]; } index += 4; } }
+			 * System.out.println(newArray);
+			 */
 			// Sets the data array.
-			intensityGraph.setDataArray(newArray);
+			intensityGraph.setDataArray(intenseValues);
 
 			// Add controls for setting the min and max values, if they do not
 			// already exist

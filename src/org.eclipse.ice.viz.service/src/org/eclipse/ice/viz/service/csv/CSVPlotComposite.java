@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,9 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.widgets.PlotComposite;
+import org.eclipse.ice.viz.service.widgets.TreeSelectionDialogProvider;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -38,6 +41,11 @@ public class CSVPlotComposite extends PlotComposite {
 	 * The provider responsible for maintaining the plot configuration.
 	 */
 	private PlotProvider plotProvider;
+
+	/**
+	 * A flag denoting if the plot managed by this composite should be contour
+	 */
+	private boolean isContour = false;
 
 	/**
 	 * The default constructor.
@@ -66,6 +74,7 @@ public class CSVPlotComposite extends PlotComposite {
 		// Create the editor and all required providers.
 		editor = new CSVPlotEditor();
 		plotProvider = new PlotProvider();
+		plotProvider.setIsContour(isContour);
 
 		// Create the plot contents and set its context Menu.
 		editor.createPartControl(parent);
@@ -96,8 +105,142 @@ public class CSVPlotComposite extends PlotComposite {
 	@Override
 	protected List<ActionTree> getPlotActions() {
 		// In addition to the default actions...
-		List<ActionTree> actions = super.getPlotActions();
+		List<ActionTree> actions = new ArrayList<ActionTree>();
 
+		if (!isContour) {
+			actions.addAll(super.getPlotActions());
+		} else {
+			// Create a dialog that can be used to select available series.
+			final TreeSelectionDialogProvider provider;
+			provider = new TreeSelectionDialogProvider() {
+				@Override
+				public Object[] getChildren(Object parent) {
+					final Object[] children;
+					IPlot plot = getPlot();
+					// The three selections that need to be made are the x, y,
+					// and intensity values
+					if (parent == plot) {
+						children = new Object[] { "X Values", "Y Values",
+								"Intensity Values" };
+					}
+					// If the user is selecting from one of the categories
+					// above, show the series available
+					else if (parent instanceof String) {
+						if (parent.equals("X Values")
+								|| parent.equals("Y Values")
+								|| parent.equals("Intensity Values")) {
+							List<String> categories = plot.getCategories();
+							if (categories.size() > 1) {
+								children = categories.toArray();
+							} else if (!categories.isEmpty()) {
+								children = plot
+										.getDependentSeries(categories.get(0))
+										.toArray();
+							} else {
+								children = new Object[0];
+							}
+						} else {
+							children = plot
+									.getDependentSeries(parent.toString())
+									.toArray();
+						}
+					} else {
+						children = new Object[0];
+					}
+					return children;
+				}
+
+				@Override
+				public String getText(Object element) {
+					// Get the text from the series' label.
+					final String text;
+					if (element instanceof ISeries) {
+						text = ((ISeries) element).getLabel();
+					} else {
+						text = element.toString();
+					}
+					return text;
+				}
+
+				@Override
+				public boolean isSelected(Object element) {
+					// Only series should be checked/enabled.
+					final boolean selected;
+					if (element instanceof ISeries) {
+						ISeries selectedSeries = (ISeries) element;
+						selectedSeries.setEnabled(true);
+						selected = ((ISeries) element).isEnabled();
+
+					} else {
+						selected = false;
+					}
+					return selected;
+				}
+			};
+
+			actions.add(new ActionTree(new Action("Select series...") {
+				@Override
+				public void run() {
+					if (provider.openDialog(getShell(), getPlot(),
+							true) == Window.OK) {
+						List<Object> selectedSeries = provider
+								.getAllSelectedLeafElements();
+						for (Object o : provider.getChildren(getPlot())) {
+							if (o instanceof String) {
+								String str = (String) o;
+								Object[] children = provider.getChildren(str);
+								ISeries selected = null;
+								if (children.length > 0
+										&& children[0] instanceof String) {
+									for (Object category : children) {
+										for (Object series : provider
+												.getChildren(
+														category.toString())) {
+											if (selectedSeries
+													.contains(series)) {
+												selected = (ISeries) series;
+												((ISeries) series)
+														.setEnabled(true);
+												break;
+											} else {
+												((ISeries) series)
+														.setEnabled(false);
+											}
+											if (selected != null) {
+												break;
+											}
+										}
+									}
+								} else if (children.length > 0
+										&& children[0] instanceof ISeries) {
+									for (Object series : children) {
+										if (selectedSeries.contains(series)) {
+											selected = (ISeries) series;
+											((ISeries) series).setEnabled(true);
+											break;
+										} else {
+											((ISeries) series)
+													.setEnabled(false);
+										}
+									}
+								}
+								if (o.toString().equals("X Value")) {
+									plotProvider.setIndependentSeries(selected);
+								} else if (o.toString().equals("Y Value")) {
+									plotProvider.setDependentSeries(selected);
+								} else if (o.toString()
+										.equals("Intensity Value")) {
+									plotProvider.setIntensitySeries(selected);
+								}
+							}
+						}
+						refresh();
+					}
+					return;
+				}
+			}));
+
+		}
 		// Add an action to clear all plotted series.
 		actions.add(new ActionTree(new Action("Remove all series") {
 			@Override
@@ -156,6 +299,10 @@ public class CSVPlotComposite extends PlotComposite {
 		// Apply the basic plot features.
 		plotProvider.setPlotTitle(plot.getPlotTitle());
 		plotProvider.setIndependentSeries(plot.getIndependentSeries());
+		plotProvider.setDependentSeries(
+				plot.getDependentSeries(IPlot.DEFAULT_CATEGORY).get(1));
+		plotProvider.setIntensitySeries(
+				plot.getDependentSeries(IPlot.DEFAULT_CATEGORY).get(2));
 
 		// Then, follow the default behavior. This triggers calls to hide/show
 		// series based on which ones are currently enabled.
@@ -176,7 +323,15 @@ public class CSVPlotComposite extends PlotComposite {
 	public void setIsContour(boolean contour) {
 		if (plotProvider != null) {
 			plotProvider.setIsContour(contour);
+			if (contour) {
+				plotProvider.setDependentSeries(getPlot()
+						.getDependentSeries(IPlot.DEFAULT_CATEGORY).get(1));
+				plotProvider.setIntensitySeries(getPlot()
+						.getDependentSeries(IPlot.DEFAULT_CATEGORY).get(2));
+			}
+			editor.refresh();
 		}
+		isContour = contour;
 	}
 
 }

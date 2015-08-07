@@ -685,7 +685,9 @@ public abstract class PlotComposite extends Composite {
 
 		// Update the contents of the infoComposite's widgets.
 		iconLabel.setImage(image);
-		msgLabel.setText(message);
+		if (message != null) {
+			msgLabel.setText(message);
+		}
 
 		// Force the StackLayout to refresh. We need the two boolean flags so
 		// that the text will wrap properly.

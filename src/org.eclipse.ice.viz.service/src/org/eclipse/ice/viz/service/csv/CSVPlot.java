@@ -195,7 +195,8 @@ public class CSVPlot extends AbstractPlot {
 			boolean setContour = false;
 			while ((line = reader.readLine()) != null) {
 				if (line.startsWith("#")) {
-					if (line.toLowerCase().endsWith("contour")) {
+					if (line.toLowerCase().trim().replace(",", "")
+							.endsWith("contour")) {
 						isContour = true;
 						setContour = true;
 					}
@@ -282,14 +283,16 @@ public class CSVPlot extends AbstractPlot {
 			} else {
 				// Construct the contour series with the first three series (x,
 				// y, intensity)
-				CSVSeries contour = new CSVSeries();
-				for (int i = 0; i < series[0].size() && i < series[1].size()
-						&& i < series[2].size(); i++) {
-					contour.add(series[0].get(i));
-					contour.add(series[1].get(i));
-					contour.add(series[2].get(i));
+				setIndependentSeries(series[0]);
+				List<ISeries> dependentSeries = new ArrayList<ISeries>();
+				dataSeries.put(IPlot.DEFAULT_CATEGORY, dependentSeries);
+				for (int i = 0; i < series.length; i++) {
+					dependentSeries.add(series[i]);
 				}
-				this.setIndependentSeries(contour);
+				// Enables the third series to be the intensity values
+				if (dependentSeries.size() > 2) {
+					dependentSeries.get(2).setEnabled(true);
+				}
 			}
 
 		}
