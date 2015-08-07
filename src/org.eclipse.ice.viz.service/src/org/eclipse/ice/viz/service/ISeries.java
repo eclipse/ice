@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Kasper Gammeltoft
+ *   Kasper Gammeltoft - Initial API and implementation and/or initial documentation 
+ *   Jordan Deyton - renamed enabled() to isEnabled()
  *******************************************************************************/
 
 package org.eclipse.ice.viz.service;
@@ -41,6 +41,13 @@ public interface ISeries {
 	public double[] getBounds();
 
 	/**
+	 * Gets the current category that this series is in
+	 * 
+	 * @return
+	 */
+	public String getCategory();
+
+	/**
 	 * Gets all of the data points for this series, used to plot the series no
 	 * matter what visualization service is being used. It is up to the service
 	 * to know what type of objects are being stored in the array and caste
@@ -52,20 +59,12 @@ public interface ISeries {
 	public Object[] getDataPoints();
 
 	/**
-	 * Sets the time for this series to the specified time. Should be greater
-	 * than or equal to 0.
+	 * Gets the label used to describe this series and to be shown on the
+	 * graphs. This is the name of the series.
 	 * 
-	 * @param time
-	 *            The time for this series.
+	 * @return String the series label.
 	 */
-	public void setTime(double time);
-
-	/**
-	 * Gets the timestamp for this series.
-	 * 
-	 * @return int The time for this series.
-	 */
-	public double getTime();
+	public String getLabel();
 
 	/**
 	 * Gets the parent series for this series. This allows for grouping of
@@ -76,23 +75,6 @@ public interface ISeries {
 	 * @return ISeries The parent series to this one.
 	 */
 	public ISeries getParentSeries();
-
-	/**
-	 * Gets the label used to describe this series and to be shown on the
-	 * graphs. This is the name of the series.
-	 * 
-	 * @return String the series label.
-	 */
-	public String getLabel();
-
-	/**
-	 * Sets the label used to describe this series and to be shown on the
-	 * graphs. This is the name of the series.
-	 * 
-	 * @param label
-	 *            The series label
-	 */
-	public void setLabel(String label);
 
 	/**
 	 * Sets the {@link ISeriesStyle} of the series. That style defines the
@@ -106,15 +88,11 @@ public interface ISeries {
 	public ISeriesStyle getStyle();
 
 	/**
-	 * Sets the {@link ISeriesStyle} used for this series. That style defines
-	 * the color, point style, line style, default preferred axis, and many
-	 * other types of style information for the series to be properly formatted
-	 * when being plotted. This allows for some configuration rather than the
-	 * default plot implementation to be used for every plotting purpose.
+	 * Gets the timestamp for this series.
 	 * 
-	 * @param style
+	 * @return int The time for this series.
 	 */
-	public void setStyle(ISeriesStyle style);
+	public double getTime();
 
 	/**
 	 * Gets if this series is enabled or not. This determines which series is
@@ -123,7 +101,7 @@ public interface ISeries {
 	 * @return True if the series is enabled and will be shown on a plot, false
 	 *         if otherwise
 	 */
-	public boolean enabled();
+	public boolean isEnabled();
 
 	/**
 	 * Sets the enabled state of this series. This determines if the series will
@@ -136,10 +114,32 @@ public interface ISeries {
 	public void setEnabled(boolean enable);
 
 	/**
-	 * Gets the current category that this series is in
+	 * Sets the label used to describe this series and to be shown on the
+	 * graphs. This is the name of the series.
 	 * 
-	 * @return
+	 * @param label
+	 *            The series label
 	 */
-	public String getCategory();
+	public void setLabel(String label);
+
+	/**
+	 * Sets the {@link ISeriesStyle} used for this series. That style defines
+	 * the color, point style, line style, default preferred axis, and many
+	 * other types of style information for the series to be properly formatted
+	 * when being plotted. This allows for some configuration rather than the
+	 * default plot implementation to be used for every plotting purpose.
+	 * 
+	 * @param style
+	 */
+	public void setStyle(ISeriesStyle style);
+
+	/**
+	 * Sets the time for this series to the specified time. Should be greater
+	 * than or equal to 0.
+	 * 
+	 * @param time
+	 *            The time for this series.
+	 */
+	public void setTime(double time);
 
 }

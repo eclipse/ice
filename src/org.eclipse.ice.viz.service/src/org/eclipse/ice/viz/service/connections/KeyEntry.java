@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
+import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 

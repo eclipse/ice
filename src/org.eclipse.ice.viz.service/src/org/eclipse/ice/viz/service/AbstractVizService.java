@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
@@ -22,6 +23,17 @@ import org.eclipse.jface.preference.IPreferenceStore;
 /**
  * This is an abstract base class for creating new {@link IVizService}s and
  * includes helpful methods that are frequently used.
+ * <p>
+ * In particular this abstract class provides the following basic functionality:
+ * </p>
+ * <ul>
+ * <li>It provides access to a preference store based on the sub-class and its
+ * bundle.</li>
+ * <li>It maintains a set of supported extensions that is lazily loaded when
+ * necessary.</li>
+ * <li>When {@link #createPlot(URI)} is called, this checks that the URI is not
+ * null and that its extension is supported.</li>
+ * </ul>
  * 
  * @author Jordan Deyton
  *
@@ -36,19 +48,6 @@ public abstract class AbstractVizService implements IVizService {
 	private IPreferenceStore preferenceStore = null;
 
 	/**
-	 * Gets the {@link IPreferenceStore} for the associated preference page.
-	 * 
-	 * @return The {@code IPreferenceStore} whose defaults should be set.
-	 */
-	protected IPreferenceStore getPreferenceStore() {
-		if (preferenceStore == null) {
-			// Get the PreferenceStore for the bundle.
-			preferenceStore = new CustomScopedPreferenceStore(getClass());
-		}
-		return preferenceStore;
-	}
-
-	/**
 	 * The set of supported file extensions for this viz service.
 	 * <p>
 	 * Extensions added to this are expected to be:
@@ -59,15 +58,7 @@ public abstract class AbstractVizService implements IVizService {
 	 * </ul>
 	 * </p>
 	 */
-	protected final Set<String> supportedExtensions;
-
-	/**
-	 * The default constructor.
-	 */
-	public AbstractVizService() {
-		// Initialize the HashSet of supported file extensions.
-		supportedExtensions = new HashSet<String>();
-	}
+	private Set<String> supportedExtensions;
 
 	/**
 	 * This class provides a basic implementation where an
@@ -80,11 +71,17 @@ public abstract class AbstractVizService implements IVizService {
 	 * </p>
 	 */
 	@Override
-	public IPlot createPlot(URI file) throws Exception {
+	public IPlot createPlot(URI uri) throws Exception {
+		// Throw a NullPointerException if the file's URI is null.
+		if (uri == null) {
+			throw new NullPointerException(
+					"IPlot error: " + "Null URI is not allowed.");
+		}
 		// Throw an IllegalArgumentException if the file's URI is invalid.
-		if (!extensionSupported(file)) {
-			throw new IllegalArgumentException("IPlot error: "
-					+ "Invalid URI or URI not specified . " + ((file != null) ? file.toString() : ""));
+		else if (!extensionSupported(uri)) {
+			throw new IllegalArgumentException(
+					"IPlot error: " + "Invalid URI or URI not specified . "
+							+ ((uri != null) ? uri.toString() : ""));
 		}
 		return null;
 	}
@@ -106,8 +103,13 @@ public abstract class AbstractVizService implements IVizService {
 	 * @return True if the URI's extension could be determined and is among the
 	 *         supported extensions, false otherwise.
 	 */
-	public boolean extensionSupported(URI uri) {
+	private boolean extensionSupported(URI uri) {
 		boolean supported = false;
+
+		// Lazily load the set of supported extensions from the sub-class.
+		if (supportedExtensions == null) {
+			getSupportedExtensions();
+		}
 
 		String path;
 		// Determine the extension, if possible, then see if the set of
@@ -124,4 +126,46 @@ public abstract class AbstractVizService implements IVizService {
 
 		return supported;
 	}
+
+	/**
+	 * This method will be called exactly once to get the set of supported
+	 * extensions for this viz service. Extensions in the set are expected to
+	 * conform to the following format:
+	 * <ul>
+	 * <li>simple (tar and gz, but not tar.gz),</li>
+	 * <li>should not include the leading period (doc, not .doc), and</li>
+	 * <li>should be lower case (txt, not TXT).</li>
+	 * </ul>
+	 * 
+	 * @return A set containing all supported extensions.
+	 */
+	protected abstract Set<String> findSupportedExtensions();
+
+	/**
+	 * Gets the {@link IPreferenceStore} for the associated preference page.
+	 * 
+	 * @return The {@code IPreferenceStore} whose defaults should be set.
+	 */
+	protected IPreferenceStore getPreferenceStore() {
+		if (preferenceStore == null) {
+			// Get the PreferenceStore for the bundle.
+			preferenceStore = new CustomScopedPreferenceStore(getClass());
+		}
+		return preferenceStore;
+	}
+
+	/*
+	 * Implements a method from IVizService.
+	 */
+	@Override
+	public Set<String> getSupportedExtensions() {
+		// Lazily load the set of supported extensions from the sub-class.
+		if (supportedExtensions == null) {
+			supportedExtensions = new HashSet<String>();
+			supportedExtensions.addAll(findSupportedExtensions());
+		}
+		// Return an ordered set of the extensions.
+		return new TreeSet<String>(supportedExtensions);
+	}
+
 }

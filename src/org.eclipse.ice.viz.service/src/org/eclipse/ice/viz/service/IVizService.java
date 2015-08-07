@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,11 +8,13 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
+ *   Jordan Deyton - added extension getter, removed connection methods
  *******************************************************************************/
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 
@@ -152,4 +154,21 @@ public interface IVizService {
 	 *             a canvas with the given object and giving the reason why.
 	 */
 	public IVizCanvas createCanvas(VizObject object) throws Exception;
+
+
+
+	/**
+	 * Gets a set containing all supported file extensions for which an IPlot
+	 * can be created. Extensions in the set are expected to conform to the
+	 * following format:
+	 * <ul>
+	 * <li>simple (tar and gz, but not tar.gz),</li>
+	 * <li>should not include the leading period (doc, not .doc), and</li>
+	 * <li>should be lower case (txt, not TXT).</li>
+	 * </ul>
+	 * 
+	 * @return A set containing all supported extensions.
+	 */
+	public Set<String> getSupportedExtensions();
+
 }

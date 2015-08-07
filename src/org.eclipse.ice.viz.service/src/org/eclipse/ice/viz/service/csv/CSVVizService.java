@@ -13,7 +13,9 @@ package org.eclipse.ice.viz.service.csv;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
@@ -33,6 +35,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject;
  */
 public class CSVVizService extends AbstractVizService {
 
+	private final Map<URI, CSVPlot> dataPlots = new HashMap<URI, CSVPlot>();
+	
 	/**
 	 * The default constructor.
 	 * <p>
@@ -40,8 +44,40 @@ public class CSVVizService extends AbstractVizService {
 	 * </p>
 	 */
 	public CSVVizService() {
-		// Add supported CSV extensions.
-		supportedExtensions.add("csv");
+		// Nothing to do.
+	}
+
+	/*
+	 * Overrides a super class method. Tries to create a CSVPlot.
+	 */
+	@Override
+	public IPlot createPlot(URI file) throws Exception {
+		// Call the super method to validate the URI's extension.
+		super.createPlot(file);
+
+		// Get the associated data plot. Create one if necessary.
+		CSVPlot dataPlot = dataPlots.get(file);
+		if (dataPlot == null) {
+			dataPlot = new CSVPlot();
+			dataPlot.setDataSource(file);
+			dataPlots.put(file, dataPlot);
+		}
+		
+		// Create a proxy to it. The proxy can be drawn anywhere.
+		CSVProxyPlot proxyPlot = new CSVProxyPlot();
+		proxyPlot.setSource(dataPlot);
+
+		return proxyPlot;
+	}
+
+	/*
+	 * Implements an abstract method from AbstractVizService.
+	 */
+	@Override
+	protected Set<String> findSupportedExtensions() {
+		Set<String> extensions = new HashSet<String>();
+		extensions.add("csv");
+		return extensions;
 	}
 
 	/*
@@ -61,64 +97,6 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		// There are no connection properties, but still an empty map is
-		// required.
-		return new HashMap<String, String>();
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-		// Nothing to do
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean connect() {
-		// No connection to be made, so just return true
-		return true;
-	}
-
-	/*
-	 * Overrides a super class method. Tries to create a CSVPlot.
-	 */
-	@Override
-	public IPlot createPlot(URI file) throws Exception {
-		// Call the super method to validate the URI's extension.
-		super.createPlot(file);
-
-		// Create the plot and load it
-		CSVPlot plot = new CSVPlot(file);
-		plot.load();
-
-		return plot;
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean hasConnectionProperties() {
-		return false;
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
-	public boolean disconnect() {
-		return true;
-	}
-
-	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
 	 */
@@ -126,6 +104,36 @@ public class CSVVizService extends AbstractVizService {
 	public IVizCanvas createCanvas(VizObject object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean hasConnectionProperties() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Map<String, String> getConnectionProperties() {
+		// TODO Auto-generated method stub
+		return new HashMap<String, String>();
+	}
+
+	@Override
+	public void setConnectionProperties(Map<String, String> props) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean connect() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean disconnect() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

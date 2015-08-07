@@ -7,5 +7,6 @@ Fragment-Host: org.eclipse.ice.client.widgets.rcp;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.common,
  org.eclipse.ice.client.widgets,
+ org.eclipse.ice.viz.service.jme3.mesh,
  org.junit
 Bundle-Vendor: Oak Ridge National Laboratory

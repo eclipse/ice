@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.connections;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 

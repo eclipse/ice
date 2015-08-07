@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014- UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,7 @@
 package org.eclipse.ice.viz.service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
@@ -65,123 +63,16 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		serviceMap = new HashMap<String, IVizService>();
 	}
 
-	/**
-	 * This operation starts the service, including registering the basic CSV
-	 * plotter viz service, "ice-plot," with the platform.
-	 */
-	public void start() {
-		// Initialize "ice-plot" viz service
-		register(new CSVVizService());
-	}
-
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#register
-	 * (org.eclipse.ice.client.widgets.viz.service.IVizService)
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
-	public void register(IVizService service) {
-		if (service != null) {
-			String name = service.getName();
-
-			// Put the service in service map so it can be retrieved later
-			serviceMap.put(name, service);
-
-			// Handle associated file types if the service supports file
-			// extensions
-			if (service instanceof AbstractVizService) {
-
-				Set<String> supportedExtensions = new HashSet<String>();
-				supportedExtensions
-						.addAll(((AbstractVizService) service).supportedExtensions);
-
-				// Register the plot editor as default editor for all file
-				// extensions handled by the new viz service
-				for (String ext : supportedExtensions) {
-					EditorRegistry editorReg = (EditorRegistry) PlatformUI
-							.getWorkbench().getEditorRegistry();
-					EditorDescriptor editor = (EditorDescriptor) editorReg
-							.findEditor("org.eclipse.ice.viz.service.PlotEditor");
-					FileEditorMapping mapping = new FileEditorMapping(ext);
-					mapping.addEditor(editor);
-					mapping.setDefaultEditor(editor);
-
-					IFileEditorMapping[] mappings = editorReg
-							.getFileEditorMappings();
-					FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length + 1];
-					for (int i = 0; i < mappings.length; i++) {
-						newMappings[i] = (FileEditorMapping) mappings[i];
-					}
-					newMappings[mappings.length] = mapping;
-					editorReg.setFileEditorMappings(newMappings);
-				}
-			}
-
-			logger.info("VizServiceFactory message: " + "Viz service \"" + name
-					+ "\" registered.");
-
-			// If the preference for automatically connecting to default viz
-			// service connections is set, establish default connections.
-			if (getPreferenceStore().getBoolean("autoConnectToDefaults")) {
-				if (service.connect()) {
-					logger.info("VizServiceFactory message: "
-							+ "Viz service \"" + name + "\" connected.");
-				} else {
-					logger.info("VizServiceFactory message: "
-							+ "Viz service \"" + name + "\" is connecting...");
-				}
-			}
-		}
-		return;
+	public IVizService get() {
+		return get("ice-plot");
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#unregister
-	 * (org.eclipse.ice.client.widgets.viz.service.IVizService)
-	 */
-	@Override
-	public void unregister(IVizService service) {
-		if (service != null) {
-			serviceMap.remove(service.getName());
-			// Try to disconnect the service.
-			if (service.disconnect()) {
-				logger.info("VizServiceFactory message: " + service.getName()
-						+ "unregistered and disconnected.");
-			} else {
-				logger.info("VizServiceFactory message: " + service.getName()
-						+ "unregistered and is currently disconnecting.");
-			}
-		}
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#getServiceNames
-	 * ()
-	 */
-	@Override
-	public String[] getServiceNames() {
-
-		String[] names = {};
-		names = serviceMap.keySet().toArray(names);
-
-		return names;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#get(java
-	 * .lang.String)
+	 * Implements a method from IVizServiceFactory.
 	 */
 	@Override
 	public IVizService get(String serviceName) {
@@ -195,16 +86,6 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 		return service;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.ice.client.widgets.viz.service.IVizServiceFactory#get()
-	 */
-	@Override
-	public IVizService get() {
-		return get("ice-plot");
-	}
-
 	/**
 	 * Gets the {@link IPreferenceStore} for the associated preference page.
 	 *
@@ -216,5 +97,76 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 			preferenceStore = new CustomScopedPreferenceStore(getClass());
 		}
 		return preferenceStore;
+	}
+
+	/*
+	 * Implements a method from IVizServiceFactory.
+	 */
+	@Override
+	public String[] getServiceNames() {
+
+		String[] names = {};
+		names = serviceMap.keySet().toArray(names);
+
+		return names;
+	}
+
+	/*
+	 * Implements a method from IVizServiceFactory.
+	 */
+	@Override
+	public void register(IVizService service) {
+		if (service != null) {
+			String name = service.getName();
+
+			// Put the service in service map so it can be retrieved later
+			serviceMap.put(name, service);
+
+			// Register the plot editor as default editor for all file
+			// extensions handled by the new viz service
+			for (String ext : service.getSupportedExtensions()) {
+				EditorRegistry editorReg = (EditorRegistry) PlatformUI
+						.getWorkbench().getEditorRegistry();
+				EditorDescriptor editor = (EditorDescriptor) editorReg
+						.findEditor("org.eclipse.ice.viz.service.PlotEditor");
+				FileEditorMapping mapping = new FileEditorMapping(ext);
+				mapping.addEditor(editor);
+				mapping.setDefaultEditor(editor);
+
+				IFileEditorMapping[] mappings = editorReg
+						.getFileEditorMappings();
+				FileEditorMapping[] newMappings = new FileEditorMapping[mappings.length
+						+ 1];
+				for (int i = 0; i < mappings.length; i++) {
+					newMappings[i] = (FileEditorMapping) mappings[i];
+				}
+				newMappings[mappings.length] = mapping;
+				editorReg.setFileEditorMappings(newMappings);
+			}
+
+			logger.info("VizServiceFactory message: " + "Viz service \"" + name
+					+ "\" registered.");
+		}
+
+		return;
+	}
+
+	/**
+	 * This operation starts the service, including registering the basic CSV
+	 * plotter viz service, "ice-plot," with the platform.
+	 */
+	public void start() {
+		// Initialize "ice-plot" viz service
+		register(new CSVVizService());
+	}
+
+	/*
+	 * Implements a method from IVizServiceFactory.
+	 */
+	@Override
+	public void unregister(IVizService service) {
+		if (service != null) {
+			serviceMap.remove(service.getName());
+		}
 	}
 }

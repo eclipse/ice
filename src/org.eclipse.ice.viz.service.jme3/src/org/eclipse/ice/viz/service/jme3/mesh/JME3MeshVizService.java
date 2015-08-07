@@ -2,7 +2,9 @@ package org.eclipse.ice.viz.service.jme3.mesh;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
@@ -89,6 +91,11 @@ public class JME3MeshVizService extends AbstractVizService {
 			canvas = new JME3MeshCanvas((VizMeshComponent) object);
 		}
 		return canvas;
+	}
+
+	@Override
+	protected Set<String> findSupportedExtensions() {
+		return new HashSet<String>();
 	}
 
 }
