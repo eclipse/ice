@@ -819,20 +819,20 @@ public class CSVPlotEditor extends EditorPart {
 			double[] intenseValues = getDoubleValue(intensity);
 
 			// Try to get valid data from the series
-			double[] newArray = new double[intenseValues.length];
+			double[] newArray = new double[width * height];
 			// Local declaration
 			int index = 0;
 			// Iterate over the height
-			/**
-			 * for (int i = 0; i < height; i++) { // Add the values backwards so
-			 * that lower positions are last, // makes the ordering cartesian
-			 * for (int j = intenseValues.length - (intenseValues.length % 4); i
-			 * >= 3; i -= 4) { for (int k = 0; k < 4; k++) { newArray[index + k]
-			 * = intenseValues[i - k]; } index += 4; } }
-			 * System.out.println(newArray);
-			 */
+			for (int j = intenseValues.length; j >= width; j -= width) {
+				for (int k = width; k > 0; k--) {
+					newArray[index + (width - k)] = intenseValues[j - k];
+				}
+				index += width;
+			}
+
+			System.out.println(width + " , " + height + ": " + newArray.length);
 			// Sets the data array.
-			intensityGraph.setDataArray(intenseValues);
+			intensityGraph.setDataArray(newArray);
 
 			// Add controls for setting the min and max values, if they do not
 			// already exist

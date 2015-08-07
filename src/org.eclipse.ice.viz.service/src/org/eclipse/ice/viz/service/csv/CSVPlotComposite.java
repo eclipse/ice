@@ -107,7 +107,7 @@ public class CSVPlotComposite extends PlotComposite {
 		// In addition to the default actions...
 		List<ActionTree> actions = new ArrayList<ActionTree>();
 
-		if (!isContour) {
+		if (isContour) {
 			actions.addAll(super.getPlotActions());
 		} else {
 			// Create a dialog that can be used to select available series.
@@ -124,7 +124,8 @@ public class CSVPlotComposite extends PlotComposite {
 								"Intensity Values" };
 					}
 					// If the user is selecting from one of the categories
-					// above, show the series available
+					// above, show the series available for the different
+					// options
 					else if (parent instanceof String) {
 						if (parent.equals("X Values")
 								|| parent.equals("Y Values")
@@ -168,7 +169,6 @@ public class CSVPlotComposite extends PlotComposite {
 					final boolean selected;
 					if (element instanceof ISeries) {
 						ISeries selectedSeries = (ISeries) element;
-						selectedSeries.setEnabled(true);
 						selected = ((ISeries) element).isEnabled();
 
 					} else {
@@ -178,7 +178,7 @@ public class CSVPlotComposite extends PlotComposite {
 				}
 			};
 
-			actions.add(new ActionTree(new Action("Select series...") {
+			actions.add(new ActionTree(new Action("Change contour") {
 				@Override
 				public void run() {
 					if (provider.openDialog(getShell(), getPlot(),
@@ -201,13 +201,9 @@ public class CSVPlotComposite extends PlotComposite {
 												selected = (ISeries) series;
 												((ISeries) series)
 														.setEnabled(true);
-												break;
 											} else {
 												((ISeries) series)
 														.setEnabled(false);
-											}
-											if (selected != null) {
-												break;
 											}
 										}
 									}
@@ -217,19 +213,18 @@ public class CSVPlotComposite extends PlotComposite {
 										if (selectedSeries.contains(series)) {
 											selected = (ISeries) series;
 											((ISeries) series).setEnabled(true);
-											break;
 										} else {
 											((ISeries) series)
 													.setEnabled(false);
 										}
 									}
 								}
-								if (o.toString().equals("X Value")) {
+								if (o.toString().equals("X Values")) {
 									plotProvider.setIndependentSeries(selected);
-								} else if (o.toString().equals("Y Value")) {
+								} else if (o.toString().equals("Y Values")) {
 									plotProvider.setDependentSeries(selected);
 								} else if (o.toString()
-										.equals("Intensity Value")) {
+										.equals("Intensity Values")) {
 									plotProvider.setIntensitySeries(selected);
 								}
 							}
