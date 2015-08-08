@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICEEclipseWidgetsTest
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.test
-Bundle-Version: 2.0.0
+Bundle-Version: 2.1.7.20150808
 Fragment-Host: org.eclipse.ice.client.widgets;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ui,

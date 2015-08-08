@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse Widgets RCP Bundle
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.rcp;singleton:=true
-Bundle-Version: 2.0.0
+Bundle-Version: 2.1.7.20150808
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.client.widgets.geometry,
  org.eclipse.ice.client.widgets.jme,

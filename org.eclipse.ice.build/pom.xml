@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>ICE</groupId>
-	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.0.0</version>
-	<packaging>pom</packaging>
-
-	<!-- this is the parent POM from which all modules inherit common settings -->
-
+	
 	<!-- Custom properties -->
 	<properties>
 		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>${basedir}/pom.xml</pom-filename>
+		<target-version>2.1.7.${maven.build.timestamp}</target-version>
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
+	
+	<!-- This is the parent POM from which all modules inherit common settings -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ICE</groupId>
+	<artifactId>org.eclipse.ice.build</artifactId>
+	<version>2.1.7.20150808</version>
+	<packaging>pom</packaging>
 
 	<profiles>
 		<profile>
@@ -126,7 +128,7 @@
 						<artifact>
 							<groupId>ICE</groupId>
 							<artifactId>org.eclipse.ice.target.mars</artifactId>
-							<version>2.0.0</version>
+							<version>${target-version}</version>
 							<classifier>mars</classifier>
 						</artifact>
 					</target>
