@@ -381,7 +381,6 @@ public class TreeSelectionDialogProvider {
 		};
 	}
 
-	// ---- Results ---- //
 	/**
 	 * Gets all selected leaf nodes in the tree.
 	 * 
@@ -395,7 +394,6 @@ public class TreeSelectionDialogProvider {
 		return selectedObjects;
 	}
 
-	// ---- These are intended to be overridden. ---- //
 	/**
 	 * Gets the children of the specified element.
 	 * <p>
@@ -455,7 +453,6 @@ public class TreeSelectionDialogProvider {
 		}
 		return unselectedObjects;
 	}
-	// ----------------- //
 
 	/**
 	 * Whether or not the element is selected.
@@ -467,7 +464,6 @@ public class TreeSelectionDialogProvider {
 	public boolean isSelected(Object element) {
 		return false;
 	}
-	// ---------------------------------------------- //
 
 	/**
 	 * Creates and opens a dialog enabling the user to select one or more

@@ -25,12 +25,31 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 
+/**
+ * This class serves as a proxy for a normal {@link CSVPlot}, which is itself
+ * responsible for loading and storing the CSV data. Instances of this class are
+ * provided from the {@link CSVVizService} when a plot is created, and it gives
+ * full access to customizing a plot without affecting the data source plot.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 
+	/**
+	 * The currently drawn plot composite.
+	 */
 	private CSVPlotComposite plotComposite = null;
 
+	/**
+	 * Whether or not the current data from the associated {@link CSVPlot} is
+	 * loaded.
+	 */
 	private boolean loaded = false;
 
+	/*
+	 * Overrides a method from ProxyPlot.
+	 */
 	@Override
 	protected ProxySeries createProxySeries(ISeries source) {
 		ProxySeries series = super.createProxySeries(source);
@@ -39,6 +58,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		return series;
 	}
 
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
 
@@ -60,6 +82,8 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 			// Tell it to update based on the new plot.
 			plotComposite.refresh();
 
+			// When the composite is disposed, unset the reference to it so a
+			// new composite can be drawn later.
 			plotComposite.addDisposeListener(new DisposeListener() {
 				@Override
 				public void widgetDisposed(DisposeEvent e) {
@@ -75,24 +99,36 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		return plotComposite;
 	}
 
+	/*
+	 * Overrides a method from ProxyPlot.
+	 */
 	@Override
 	public List<String> getCategories() {
+		// Try to reload the series data if necessary.
 		if (!loaded) {
 			reloadSeries();
 		}
 		return super.getCategories();
 	}
 
+	/*
+	 * Overrides a method from ProxyPlot.
+	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
+		// Try to reload the series data if necessary.
 		if (!loaded) {
 			reloadSeries();
 		}
 		return super.getDependentSeries(category);
 	}
 
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
 	@Override
 	public ISeries getIndependentSeries() {
+		// Try to reload the series data if necessary.
 		if (!loaded) {
 			reloadSeries();
 		}
@@ -113,6 +149,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		}
 	}
 
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
 	@Override
 	public void redraw() {
 		// Use the source CSVPlot's redraw operation, which reloads the file.
@@ -124,6 +163,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		return;
 	}
 
+	/*
+	 * Overrides a method from ProxyPlot.
+	 */
 	@Override
 	protected void reloadSeries() {
 
@@ -155,6 +197,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		return;
 	}
 
+	/*
+	 * Overrides a method from ProxyPlot.
+	 */
 	@Override
 	public void setSource(IPlot source) {
 		super.setSource(source);

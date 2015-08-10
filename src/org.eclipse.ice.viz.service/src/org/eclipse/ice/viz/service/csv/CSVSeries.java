@@ -96,6 +96,9 @@ public class CSVSeries extends TransformedList<Double, Double>
 		label = "unlabeled series";
 	}
 
+	/*
+	 * Overrides a method from Object.
+	 */
 	@Override
 	public Object clone() {
 		CSVSeries clone = new CSVSeries();
@@ -124,6 +127,9 @@ public class CSVSeries extends TransformedList<Double, Double>
 		this.addAll(other);
 	}
 
+	/*
+	 * Overrides a method from AbstractEventList.
+	 */
 	@Override
 	public boolean equals(Object other) {
 		// Local declarations
@@ -154,6 +160,9 @@ public class CSVSeries extends TransformedList<Double, Double>
 		return isEqual;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public double[] getBounds() {
 		// Creates the array to return
@@ -191,26 +200,41 @@ public class CSVSeries extends TransformedList<Double, Double>
 		return IPlot.DEFAULT_CATEGORY;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public Object[] getDataPoints() {
 		return this.toArray();
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public String getLabel() {
 		return label;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public ISeries getParentSeries() {
 		return parent;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public ISeriesStyle getStyle() {
 		return style;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public double getTime() {
 		return time;
@@ -225,6 +249,9 @@ public class CSVSeries extends TransformedList<Double, Double>
 		return unit;
 	}
 
+	/*
+	 * Overrides a method from AbstractEventList.
+	 */
 	@Override
 	public int hashCode() {
 		// Local Declarations
@@ -241,16 +268,25 @@ public class CSVSeries extends TransformedList<Double, Double>
 		return hash;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public boolean isEnabled() {
 		return isEnabled;
 	}
 
+	/*
+	 * Overrides a method from TransformedList.
+	 */
 	@Override
 	protected boolean isWritable() {
 		return true;
 	}
 
+	/*
+	 * Overrides a method from TransformedList.
+	 */
 	@Override
 	public void listChanged(ListEvent<Double> listChanges) {
 		// TODO implementation
@@ -268,20 +304,35 @@ public class CSVSeries extends TransformedList<Double, Double>
 		isEnabled = enabledFlag;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public void setLabel(String label) {
 		this.label = label;
 	}
 
+	/**
+	 * Sets the parent series.
+	 * 
+	 * @param parent
+	 *            The new parent series, or {@code null} to unset it.
+	 */
 	public void setParentSeries(ISeries parent) {
 		this.parent = parent;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public void setStyle(ISeriesStyle style) {
 		this.style = style;
 	}
 
+	/*
+	 * Implements a method from ISeries.
+	 */
 	@Override
 	public void setTime(double time) {
 		this.time = time;
