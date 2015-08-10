@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.preferences;
 
-import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
+import org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider;
 
 
 /**

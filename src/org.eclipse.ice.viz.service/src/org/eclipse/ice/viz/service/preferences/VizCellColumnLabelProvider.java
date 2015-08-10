@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.datastructures;
+package org.eclipse.ice.viz.service.preferences;
 
 import org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;

@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.widgets.ActionTree;
+import org.eclipse.ice.viz.service.widgets.VizActionTree;
 import org.eclipse.ice.viz.service.widgets.PlotComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Composite;
@@ -94,12 +94,12 @@ public class CSVPlotComposite extends PlotComposite {
 	 * Overrides a method from PlotComposite.
 	 */
 	@Override
-	protected List<ActionTree> getPlotActions() {
+	protected List<VizActionTree> getPlotActions() {
 		// In addition to the default actions...
-		List<ActionTree> actions = super.getPlotActions();
+		List<VizActionTree> actions = super.getPlotActions();
 
 		// Add an action to clear all plotted series.
-		actions.add(new ActionTree(new Action("Remove all series") {
+		actions.add(new VizActionTree(new Action("Remove all series") {
 			@Override
 			public void run() {
 				// Disable all plotted series, then refresh if the plot changed.

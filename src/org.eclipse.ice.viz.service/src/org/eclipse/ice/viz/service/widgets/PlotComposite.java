@@ -109,7 +109,7 @@ public abstract class PlotComposite extends Composite {
 	 * The plot actions that are added to the {@link #contextMenu} and
 	 * {@link #toolBar} (if it is enabled).
 	 */
-	private List<ActionTree> plotActions;
+	private List<VizActionTree> plotActions;
 
 	/**
 	 * A {@code Composite} containing the rendered {@link #plot}.
@@ -218,7 +218,7 @@ public abstract class PlotComposite extends Composite {
 	protected Menu createContextMenu(Composite parent) {
 		// Create the context MenuManager and create its Menu.
 		final MenuManager menuManager = new MenuManager();
-		for (ActionTree action : plotActions) {
+		for (VizActionTree action : plotActions) {
 			menuManager.add(action.getContributionItem());
 		}
 
@@ -327,7 +327,7 @@ public abstract class PlotComposite extends Composite {
 
 		// Create the ToolBarManager and add its content.
 		final ToolBarManager toolBarManager = new ToolBarManager();
-		for (ActionTree action : plotActions) {
+		for (VizActionTree action : plotActions) {
 			toolBarManager.add(action.getContributionItem());
 		}
 
@@ -382,8 +382,8 @@ public abstract class PlotComposite extends Composite {
 	 * 
 	 * @return A list containing the supported plot actions.
 	 */
-	protected List<ActionTree> getPlotActions() {
-		List<ActionTree> actions = new ArrayList<ActionTree>();
+	protected List<VizActionTree> getPlotActions() {
+		List<VizActionTree> actions = new ArrayList<VizActionTree>();
 
 		// Create a dialog that can be used to select available series.
 		final TreeSelectionDialogProvider provider;
@@ -453,7 +453,7 @@ public abstract class PlotComposite extends Composite {
 
 		// Create an action to open the dialog. If any were added or removed
 		// from the selection, add or remove them from the plot rendering.
-		actions.add(new ActionTree(new Action("Select series...") {
+		actions.add(new VizActionTree(new Action("Select series...") {
 			@Override
 			public void run() {
 				if (provider.openDialog(getShell(), getPlot(),

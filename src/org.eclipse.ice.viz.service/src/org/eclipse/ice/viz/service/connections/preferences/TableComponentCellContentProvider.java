@@ -13,7 +13,6 @@ package org.eclipse.ice.viz.service.connections.preferences;
 
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
 import org.eclipse.swt.graphics.Image;
 
 /**

@@ -106,34 +106,5 @@ public class CSVVizService extends AbstractVizService {
 		return null;
 	}
 
-	@Override
-	public boolean hasConnectionProperties() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		// TODO Auto-generated method stub
-		return new HashMap<String, String>();
-	}
-
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean connect() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean disconnect() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

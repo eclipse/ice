@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IPlotListener;
 import org.eclipse.ice.viz.service.ISeries;
@@ -29,6 +28,7 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewCanvas;
 import org.eclipse.ice.viz.service.paraview.widgets.ParaViewMouseAdapter;
+import org.eclipse.ice.viz.service.widgets.VizActionTree;
 import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -69,7 +69,7 @@ public class ParaViewPlotComposite extends
 	 * The {@code ActionTree} that can be used to update the available plot
 	 * properties.
 	 */
-	private ActionTree propertiesTree;
+	private VizActionTree propertiesTree;
 
 	/**
 	 * The current proxy rendered by this class. The lifecycle of the
@@ -146,10 +146,10 @@ public class ParaViewPlotComposite extends
 			// Refresh the plot actions.
 			propertiesTree.removeAll();
 			for (final String property : proxy.getProperties().keySet()) {
-				ActionTree tree = new ActionTree(property);
+				VizActionTree tree = new VizActionTree(property);
 				for (final String value : proxy
 						.getPropertyAllowedValues(property)) {
-					tree.add(new ActionTree(new Action(value) {
+					tree.add(new VizActionTree(new Action(value) {
 						@Override
 						public void run() {
 							Future<Boolean> task = proxy.setProperty(property,
@@ -307,11 +307,11 @@ public class ParaViewPlotComposite extends
 	 * Overrides a method from PlotComposite.
 	 */
 	@Override
-	protected List<ActionTree> getPlotActions() {
+	protected List<VizActionTree> getPlotActions() {
 		// In addition to the default actions, add the action to set the
 		// "representation".
-		List<ActionTree> actions = super.getPlotActions();
-		propertiesTree = new ActionTree("Properties");
+		List<VizActionTree> actions = super.getPlotActions();
+		propertiesTree = new VizActionTree("Properties");
 		actions.add(propertiesTree);
 		return actions;
 	}

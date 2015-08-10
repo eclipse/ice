@@ -17,13 +17,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IPlotListener;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.ice.viz.service.widgets.VizActionTree;
 import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -70,7 +70,7 @@ public class VisItPlotComposite extends
 	 * representations. This should be updated (as necessary) when the context
 	 * menu is opened.
 	 */
-	private ActionTree repTree;
+	private VizActionTree repTree;
 
 	/**
 	 * The current plot type rendered in the canvas.
@@ -288,11 +288,11 @@ public class VisItPlotComposite extends
 	 * Overrides a method from PlotComposite.
 	 */
 	@Override
-	protected List<ActionTree> getPlotActions() {
+	protected List<VizActionTree> getPlotActions() {
 		// In addition to the default actions, add the action to set the
 		// "representation".
-		List<ActionTree> actions = super.getPlotActions();
-		repTree = new ActionTree("Representation");
+		List<VizActionTree> actions = super.getPlotActions();
+		repTree = new VizActionTree("Representation");
 		actions.add(repTree);
 		return actions;
 	}
@@ -377,7 +377,7 @@ public class VisItPlotComposite extends
 			VisItPlot plot = (VisItPlot) getPlot();
 			repTree.removeAll();
 			for (final String rep : plot.getRepresentations(category)) {
-				repTree.add(new ActionTree(new Action(rep) {
+				repTree.add(new VizActionTree(new Action(rep) {
 					@Override
 					public void run() {
 						representation = rep;

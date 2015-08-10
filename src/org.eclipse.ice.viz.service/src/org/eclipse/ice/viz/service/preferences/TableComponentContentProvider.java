@@ -14,9 +14,10 @@ package org.eclipse.ice.viz.service.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.viz.service.connections.preferences.EntryCellContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.EntryCellEditingSupport;
+import org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.TableComponentCellEditingSupport;
-import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizCellColumnLabelProvider;
