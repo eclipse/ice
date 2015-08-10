@@ -9,9 +9,10 @@
  *    Sebastien Jourdain (Kitware Inc.) - initial API and implementation and/or 
  *      initial documentation
  *    Jordan Deyton (UT-Battelle, LLC.) - implemented disconnect()
- *    Jordan Deyton (UT-Battelle, LLC.) - updated to use GSON
- *    Jordan Deyton (UT-Battelle, LLC.) - removed temporary print statements; 
- *      rearranged return value in connect()
+ *    Jordan Deyton - updated to use GSON
+ *    Jordan Deyton - removed temporary print statements; rearranged return 
+ *      value in connect()
+ *    Jordan Deyton - ExecutorService now starts/stops on connect/disconnect
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.web;
 
@@ -49,19 +50,22 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	/**
 	 * 
 	 */
-	private final ExecutorService requestExecutor;
+	private ExecutorService requestExecutor;
 
 	/**
 	 * The default constructor.
 	 */
 	public HttpParaViewWebClient() {
-		requestExecutor = Executors.newSingleThreadExecutor();
+		requestExecutor = null;
 	}
 
 	/*
 	 * Implements a method from ParaViewWebClient.
 	 */
 	private JsonObject makeRequest(String method, JsonObject content) {
+		if (requestExecutor == null) {
+			return null;
+		}
 
 		JsonObject retVal = null;
 
@@ -73,10 +77,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 			url = new URL(fullUrl);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type",
-					"application/octetstream");
-			connection.setRequestProperty("Content-Length",
-					Integer.toString(content.entrySet().size()));
+			connection.setRequestProperty("Content-Type", "application/octetstream");
+			connection.setRequestProperty("Content-Length", Integer.toString(content.entrySet().size()));
 			connection.setRequestProperty("Content-Language", "en-US");
 
 			connection.setUseCaches(false);
@@ -131,6 +133,9 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	public Future<Boolean> connect(String url) {
 		this.baseEndPointURL = url;
 
+		// Now that a connection is requested, create the worker thread.
+		requestExecutor = Executors.newSingleThreadExecutor();
+
 		return requestExecutor.submit(new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
@@ -139,8 +144,7 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 
 				// ---- Send a HEAD request. ---- //
 				URL url = new URL(baseEndPointURL);
-				HttpURLConnection connection = (HttpURLConnection) url
-						.openConnection();
+				HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 				connection.setRequestMethod("HEAD");
 				connection.setDoInput(true);
 				connection.setDoOutput(true);
@@ -171,20 +175,26 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	 */
 	@Override
 	public Future<Boolean> disconnect() {
-		return requestExecutor.submit(new Callable<Boolean>() {
+		Future<Boolean> future = requestExecutor.submit(new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
 				return true;
 			}
 		});
+		// Stop and unset the worker thread.
+		requestExecutor.shutdown();
+		requestExecutor = null;
+		return future;
 	}
 
 	/*
 	 * Implements a method from ParaViewWebClient.
 	 */
 	@Override
-	public Future<JsonObject> render(int viewId, int quality, int width,
-			int height) {
+	public Future<JsonObject> render(int viewId, int quality, int width, int height) {
+		if (requestExecutor == null) {
+			return null;
+		}
 
 		// Set up the size array (with x height).
 		JsonArray size = new JsonArray();
@@ -217,8 +227,10 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	 * Implements a method from ParaViewWebClient.
 	 */
 	@Override
-	public Future<JsonObject> event(int viewId, double x, double y,
-			String action, boolean[] mouseState) {
+	public Future<JsonObject> event(int viewId, double x, double y, String action, boolean[] mouseState) {
+		if (requestExecutor == null) {
+			return null;
+		}
 
 		// Set up the content of the request.
 		JsonObject reqObj = new JsonObject();
@@ -254,6 +266,9 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	 */
 	@Override
 	public Future<JsonObject> call(String method, JsonArray args) {
+		if (requestExecutor == null) {
+			return null;
+		}
 
 		final String methodRef = method;
 		final JsonObject reqObj = new JsonObject();

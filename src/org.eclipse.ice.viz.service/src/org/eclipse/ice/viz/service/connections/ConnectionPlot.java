@@ -1,226 +1,240 @@
 /*******************************************************************************
- * Copyright (c) 2015- UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jordan Deyton
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
-import java.io.File;
-import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.viz.service.AbstractPlot;
 import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.MultiPlot;
-import org.eclipse.ice.viz.service.PlotRender;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Composite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This class provides the basic implementation for an {@link IPlot} whose
- * content depends on a local or remote connection (a {@link ConnectionAdapter}
- * ).
+ * This class provides a basic implementation for an {@link IPlot} whose content
+ * depends on a local or remote connection (an {@link IVizConnection} ).
  * 
  * @author Jordan Deyton
  *
  * @param <T>
  *            The type of the connection object.
  */
-public abstract class ConnectionPlot<T> extends MultiPlot
-		implements IConnectionClient<T> {
+public abstract class ConnectionPlot<T> extends AbstractPlot
+		implements IVizConnectionListener<T> {
+
+	// TODO Rename this class to ConnectionPlot.
 
 	/**
-	 * The current connection adapter associated with this client.
+	 * Logger for handling event messages and other information.
 	 */
-	private IConnectionAdapter<T> adapter;
+	private static final Logger logger = LoggerFactory
+			.getLogger(ConnectionPlot.class);
 
 	/**
-	 * The default constructor.
-	 * 
-	 * @param vizService
-	 *            The visualization service responsible for this plot.
+	 * The current connection associated with this plot.
 	 */
-	public ConnectionPlot(IVizService vizService) {
-		super(vizService);
-
-		// Nothing else to do yet.
-	}
+	private IVizConnection<T> connection;
 
 	/**
-	 * Sets the data source (which is currently rendered if the plot is drawn).
-	 * If the data source is valid and new, then the plot will be updated
-	 * accordingly.
-	 * <p>
-	 * <b>Note:</b> {@link ConnectionPlot} additionally performs basic checks on
-	 * the files. For instance, it will throw an exception if the file does not
-	 * exist or if there are read permission issues.
-	 * </p>
-	 * 
-	 * @param file
-	 *            The new data source URI.
-	 * @throws NullPointerException
-	 *             if the specified file is null
-	 * @throws IOException
-	 *             if there was an error while reading the file's contents
-	 * @throws IllegalArgumentException
-	 *             if there are no plots available
-	 * @throws Exception
-	 *             if there is some other unspecified problem with the file
+	 * The composite in which this plot is rendered.
 	 */
-	@Override
-	public void setDataSource(URI file) throws NullPointerException,
-			IOException, IllegalArgumentException, Exception {
+	private ConnectionPlotComposite<T> plotComposite;
 
-		// Check that the file's host matches the connection host. Also check
-		// that the file exists. We check that the file is not null so that the
-		// super method can throw the NPE for null files.
-		if (file != null) {
-			// Check if the connection exists. If not, we need to throw an
-			// exception.
-			if (adapter == null) {
-				throw new NullPointerException(
-						"IPlot error: " + "The plot's connection is not set.");
-			}
-
-			// Set up a message in case the file cannot be read by this plot.
-			final String message;
-
-			// TODO We may need to reintroduce this code if we start putting
-			// connection info in the URI.
-			// // Check for a mismatched host.
-			// String fileHost = file.getHost();
-			// String connHost = adapter.getHost();
-			// if (fileHost != null && !fileHost.equals(connHost)) {
-			// message = "The file host \"" + fileHost
-			// + "\" does not match the connection's host \""
-			// + connHost + "\".";
-			// }
-			// // This is necessary in case the file's host is null (localhost).
-			// else if (fileHost == null && adapter.isRemote()) {
-			// message = "The file host is localhost, while the "
-			// + "connection host is \"" + connHost + "\".";
-			// }
-			// else
-
-			// Check that the local file exists and can be read.
-			if (!adapter.isRemote()) {
-				File fileRef = new File(file);
-				if (!fileRef.isFile()) {
-					message = "The path \"" + file
-							+ "\" does not exist or is not a file.";
-				} else if (!fileRef.canRead()) {
-					message = "The file \"" + file + "\" cannot be read.";
-				}
-				// Otherwise, there is no problem.
-				else {
-					message = null;
-				}
-			}
-			// Check that the remote file exists and can be read.
-			else {
-				// TODO We need to find a way to check remote files...
-				message = null;
-			}
-
-			// Throw an exception if necessary.
-			if (message != null) {
-				throw new IllegalArgumentException("IPlot error: " + message);
-			}
-		}
-
-		// Proceed with the super class' methods for error checking and setting
-		// the data source.
-		super.setDataSource(file);
-
-		// Finds the plot types
-		addAllPlotTypes(file);
-
-	}
-
-	@Override
-	public void clearCache() {
-		super.clearCache();
-	}
-
-	// ---- Implements IConnectionClient (and IUpdateableListener) ---- //
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.connections.IConnectionClient#setConnection
-	 * (org.eclipse.ice.viz.service.connections.IConnectionAdapter)
+	 * Implements a method from IVizConnectionListener.
 	 */
 	@Override
-	public void setConnectionAdapter(IConnectionAdapter<T> adapter) {
-		if (adapter != this.adapter) {
-			if (this.adapter != null) {
-				this.adapter.unregister(this);
+	public void connectionStateChanged(IVizConnection<T> connection,
+			ConnectionState state, String message) {
+		// Nothing to do.
+	}
+
+	/**
+	 * Creates a composite that renders plot content using an
+	 * {@link IVizConnection}.
+	 * 
+	 * @param parent
+	 *            The parent composite.
+	 * @return A new, basic connection plot composite.
+	 */
+	protected abstract ConnectionPlotComposite<T> createPlotComposite(
+			Composite parent);
+
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public Composite draw(Composite parent) throws Exception {
+
+		// If necessary, create a new plot composite.
+		if (plotComposite == null) {
+			// Check the parent Composite.
+			if (parent == null) {
+				throw new SWTException(SWT.ERROR_NULL_ARGUMENT, "IPlot error: "
+						+ "Cannot draw plot in a null Composite.");
+			} else if (parent.isDisposed()) {
+				throw new SWTException(SWT.ERROR_WIDGET_DISPOSED,
+						"IPlot error: "
+								+ "Cannot draw plot in a disposed Composite.");
 			}
-			this.adapter = adapter;
 
-			// Trigger an update.
-			update(adapter);
+			// Create a plot composite.
+			plotComposite = createPlotComposite(parent);
+			plotComposite.setConnectionPlot(this);
+			plotComposite.setConnection(connection);
+			plotComposite.refresh();
+			// Its reference should be unset when disposed.
+			plotComposite.addDisposeListener(new DisposeListener() {
+				@Override
+				public void widgetDisposed(DisposeEvent e) {
+					plotComposite = null;
+				}
+			});
+		}
+		// Otherwise, ignore the parent argument and trigger a normal refresh.
+		else {
+			plotComposite.refresh();
+		}
 
-			// Register for updates from the adapter if possible.
-			if (adapter != null) {
-				adapter.register(this);
+		return plotComposite;
+	}
+
+	/**
+	 * Tries to convert the specified hostname (which may already be an IP) into
+	 * an IP address. If the IP cannot be found, it just returns the input
+	 * string.
+	 * 
+	 * @param host
+	 *            The hostname string.
+	 * @return Either the host's IP as a string or the input string if its IP
+	 *         address could not be found.
+	 */
+	protected final String findIPAddress(String host) {
+		String ipAddress;
+		try {
+			InetAddress address = InetAddress.getByName(host);
+			ipAddress = address.getHostAddress();
+		} catch (UnknownHostException e) {
+			ipAddress = host;
+		}
+		return ipAddress;
+	}
+
+	/**
+	 * Gets the current connection associated with this plot.
+	 * 
+	 * @return The {@link #connection}. This may be {@code null} if it has not
+	 *         been set.
+	 */
+	protected IVizConnection<T> getConnection() {
+		return connection;
+	}
+
+	/**
+	 * Gets the currently drawn plot composite.
+	 * 
+	 * @return The current plot composite, or {@code null} if it has not been
+	 *         drawn.
+	 */
+	protected ConnectionPlotComposite<T> getPlotComposite() {
+		return plotComposite;
+	}
+
+	/**
+	 * Sets the connection for this plot.
+	 * 
+	 * @param connection
+	 *            The new connection.
+	 * @return True if the connection changed, false otherwise.
+	 * @throws Exception
+	 *             If the data source URI is set and the connection host does
+	 *             not match the URI's host.
+	 */
+	public boolean setConnection(IVizConnection<T> connection)
+			throws Exception {
+		boolean changed = false;
+		if (connection != this.connection) {
+			// Check the connection host against the current URI.
+			validateURI(getDataSource(), connection);
+
+			// Unregister from the old connection.
+			if (this.connection != null) {
+				this.connection.removeListener(this);
+			}
+
+			// Register with the new connection.
+			if (plotComposite != null) {
+				plotComposite.setConnection(connection);
+			}
+			this.connection = connection;
+			this.connection.addListener(this);
+
+			changed = true;
+		}
+		return changed;
+	}
+
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public boolean setDataSource(URI uri) throws Exception {
+		// Validate the connection. Note that we must allow null values for the
+		// URI and connection in order to unset them.
+		validateURI(uri, connection);
+		return super.setDataSource(uri);
+	}
+
+	/**
+	 * Validates the URI against the viz connection. This method performs a
+	 * simple check against the host names for the connection and the file, if
+	 * available.
+	 * 
+	 * @param uri
+	 *            The data source URI being validated.
+	 * @param connection
+	 *            The viz connection being validated.
+	 * @throws Exception
+	 *             If both the URI and the connection are not null and
+	 *             correspond to different host IP addresses.
+	 */
+	protected void validateURI(URI uri, IVizConnection<T> connection)
+			throws Exception {
+		if (uri != null && connection != null) {
+			// Try to convert the host into an IP address. If not possible, just
+			// leave it as is.
+			String fileHost = findIPAddress(uri.getHost());
+			String connHost = findIPAddress(connection.getHost());
+
+			// Print the file and connection hosts to debug output.
+			logger.debug(getClass().getName() + " message: " + "File \"" + uri
+					+ "\" maps to host \"" + fileHost + ".");
+			logger.debug(getClass().getName() + " message: "
+					+ "Viz connection to \"" + connection.getHost()
+					+ "\" maps to host \"" + connHost + ".");
+
+			// Check that the hosts are the same.
+			if (!fileHost.equals(connHost)) {
+				throw new Exception(getClass().getName() + " Exception! "
+						+ "The plot file and connections are on different hosts.");
 			}
 		}
 		return;
 	}
 
-	// -------- Methods for VisIt Plot --------//
-
-	/**
-	 * Leave for later implementation, by visItPlot, etc
-	 * 
-	 * @param file
-	 *            The file that will be searched for plot types
-	 * @return A map of plot types specified by the category as the key
-	 */
-	protected void addAllPlotTypes(URI file) throws IOException, Exception {
-		// Nothing TODO yet..we do not know what type of connection plot this
-		// is. Let super classes define this behavior
-		return;
-	}
-
-	/**
-	 * This method informs the plot that its associated connection has been
-	 * updated. The plot can then update its contents if it has contributed to
-	 * the UI.
-	 * 
-	 * @param component
-	 *            The component that was updated. This is expected to be the
-	 *            associated {@link ConnectionAdapter}.
-	 */
-	@Override
-	public void update(IUpdateable component) {
-		// If the argument is null, then do nothing. Even if the current adapter
-		// is null, the UI should already be up to date!
-		if (component != null && component == adapter) {
-			// Clear the cache for this plot, since the new connection may
-			// affect the available plot types.
-			clearCache();
-			// Trigger an update to the UI for all currently rendered plots.
-			for (PlotRender plotRender : getPlotRenders()) {
-				plotRender.refresh(true);
-			}
-		}
-	}
-
-	// ---------------------------------------------------------------- //
-
-	/**
-	 * Gets the adapter for the current connection associated with this plot.
-	 * 
-	 * @return The {@link #adapter}. This may be null.
-	 */
-	protected IConnectionAdapter<T> getConnectionAdapter() {
-		return adapter;
-	}
 }

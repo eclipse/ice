@@ -24,6 +24,15 @@ import java.util.Set;
 public interface ISeriesStyle {
 
 	/**
+	 * Gets a list of all of the different object properties available.
+	 * 
+	 * @return Set<String> A list of all of the property types available.
+	 *         Returns an empty set if there are no properties for the given
+	 *         series style.
+	 */
+	public Set<String> getAllPropertyTypes();
+
+	/**
 	 * Gets the property value for the specified property type. Note that it is
 	 * up to the implementation to show which property types are available.
 	 * 
@@ -46,13 +55,4 @@ public interface ISeriesStyle {
 	 *         successfully set, false if otherwise.
 	 */
 	public boolean setProperty(String propertyType, Object value);
-
-	/**
-	 * Gets a list of all of the different object properties available.
-	 * 
-	 * @return Set<String> A list of all of the property types available.
-	 *         Returns an empty set if there are no properties for the given
-	 *         series style.
-	 */
-	public Set<String> getAllPropertyTypes();
 }

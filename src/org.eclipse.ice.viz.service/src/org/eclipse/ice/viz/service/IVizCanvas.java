@@ -6,8 +6,11 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - changed signature of draw to return Composite
+ *   Alex McCaskey - added redraw method
+ *   Kasper Gammeltoft - viz series refactor (extracted IVizCanvas from IPlot)
+ *   
  *******************************************************************************/
 
 package org.eclipse.ice.viz.service;
@@ -36,7 +39,9 @@ import org.eclipse.swt.widgets.Composite;
  * tools. Implementations should not be restricted to one usage scenario.
  * </p>
  * 
- * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
+ * @author Jay Jay Billings
+ * @author Alex McCaskey
+ * @author Kasper Gammeltoft
  *
  */
 public interface IVizCanvas {
@@ -50,6 +55,14 @@ public interface IVizCanvas {
 	 * @throws Exception
 	 */
 	public Composite draw(Composite parent) throws Exception;
+
+	/**
+	 * This operation returns the data source that is plotted/drawn by this
+	 * IPlot.
+	 * 
+	 * @return The data source
+	 */
+	public URI getDataSource();
 
 	/**
 	 * This operation returns the number of axes of the plot.
@@ -67,27 +80,6 @@ public interface IVizCanvas {
 	 * @return A map of the properties.
 	 */
 	public Map<String, String> getProperties();
-
-	/**
-	 * This operation updates the properties of the plot based on client-side
-	 * modifications. The IPlot should redraw itself as needed if the properties
-	 * changed.
-	 * 
-	 * @param props
-	 *            The updated properties
-	 * @throws Exception
-	 *             This exception indicates that the IPlot could not update its
-	 *             properties or redraw itself.
-	 */
-	public void setProperties(Map<String, String> props) throws Exception;
-
-	/**
-	 * This operation returns the data source that is plotted/drawn by this
-	 * IPlot.
-	 * 
-	 * @return The data source
-	 */
-	public URI getDataSource();
 
 	/**
 	 * This operation retrieves the hostname for this IPlot's data source.
@@ -114,5 +106,18 @@ public interface IVizCanvas {
 	 * 
 	 */
 	public void redraw();
+
+	/**
+	 * This operation updates the properties of the plot based on client-side
+	 * modifications. The IPlot should redraw itself as needed if the properties
+	 * changed.
+	 * 
+	 * @param props
+	 *            The updated properties
+	 * @throws Exception
+	 *             This exception indicates that the IPlot could not update its
+	 *             properties or redraw itself.
+	 */
+	public void setProperties(Map<String, String> props) throws Exception;
 
 }

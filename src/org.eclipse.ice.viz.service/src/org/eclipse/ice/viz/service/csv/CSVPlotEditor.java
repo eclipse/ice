@@ -77,9 +77,15 @@ public class CSVPlotEditor extends EditorPart {
 	public static final String ID = "org.eclipse.ice.viz.service.csv.CSVPlotEditor";
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(CSVPlotEditor.class);
+
+	/**
 	 * The top level composite that holds the editor's contents.
 	 */
-	public Composite vizComposite;
+	private Composite vizComposite;
 
 	/**
 	 * The {@code Composite} that contains the time slider.
@@ -120,15 +126,9 @@ public class CSVPlotEditor extends EditorPart {
 
 	/**
 	 * The independent series, to use as the x axis for plotting. Should be set
-	 * to non null {@link CSVSeries}
+	 * to non null {@link ISeries}
 	 */
 	private ISeries independentSeries;
-
-	/**
-	 * Logger for handling event messages and other information.
-	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(CSVPlotEditor.class);
 
 	/**
 	 * The constructor
@@ -139,6 +139,352 @@ public class CSVPlotEditor extends EditorPart {
 		xyGraph = null;
 		graphToolbar = null;
 		return;
+	}
+
+	/**
+	 * Configures the specified axis for the style given.
+	 * 
+	 * @param style
+	 *            The XYZAxisStyle to use when configuring the axis properties
+	 * @param axis
+	 *            The Axis to configure
+	 */
+	private void configureAxis(Axis axis, XYZAxisStyle style) {
+		// Set the default behavior if there is no axis style
+		if (style == null) {
+			axis.setShowMajorGrid(true);
+			axis.setAutoScale(true);
+
+			// Otherwise, set the config options from the axis style
+		} else {
+			// Set the title
+			axis.setTitle((String) style.getProperty(XYZAxisStyle.AXIS_TITLE));
+			// Set the axis title font, if specified
+			if (style.getProperty(XYZAxisStyle.TITLE_FONT) != null) {
+				axis.setTitleFont(
+						(Font) style.getProperty(XYZAxisStyle.TITLE_FONT));
+			}
+			// Set the axis font, if specified
+			if (style.getProperty(XYZAxisStyle.SCALE_FONT) != null) {
+				axis.setFont((Font) style.getProperty(XYZAxisStyle.SCALE_FONT));
+			}
+			// Set the axis color, if specified
+			if (style.getProperty(XYZAxisStyle.AXIS_COLOR) != null) {
+				axis.setForegroundColor(
+						(Color) style.getProperty(XYZAxisStyle.AXIS_COLOR));
+			}
+			// Set the log scale, true for use log, false for use linear scale
+			axis.setLogScale((boolean) style.getProperty(XYZAxisStyle.IS_LOG));
+			// Set the auto scale feature, true for does auto scale, false for
+			// does not
+			axis.setAutoScale(
+					(boolean) style.getProperty(XYZAxisStyle.AUTO_SCALE));
+			// Set the major grid lines to appear, true for show the grid lines,
+			// false for do not
+			axis.setShowMajorGrid(
+					(boolean) style.getProperty(XYZAxisStyle.SHOW_GRID_LINE));
+			// Set the grid line to either be dashed for true and solid for
+			// false
+			axis.setDashGridLine((boolean) style
+					.getProperty(XYZAxisStyle.GRID_LINE_IS_DASHED));
+			// Sets the grid line color if it is available
+			if (style.getProperty(XYZAxisStyle.GRID_LINE_COLOR) != null) {
+				axis.setMajorGridColor((Color) style
+						.getProperty(XYZAxisStyle.GRID_LINE_COLOR));
+			}
+
+		}
+
+	}
+
+	/**
+	 * This operation returns the trace that is created with the given series.
+	 * Returns null if this series is not enabled or is an error series.
+	 * 
+	 * @param series
+	 *            The series to use when creating this trace.
+	 * @param xValues
+	 *            The x values, or independent series values for this trace.
+	 *            This variable is added so as to not calculate the array every
+	 *            time a trace is added (in cases where there might be many
+	 *            dependent series to add)
+	 * @param xPlusError
+	 *            The x plus error, this is an input so as to not have to
+	 *            recalculate the information for every trace, if adding
+	 *            multiple at a time
+	 * @param xMinusError
+	 *            The x minus error, this is an input so as to not have to
+	 *            recalculate the information for every trace, if adding
+	 *            multiple at a time
+	 * @return
+	 */
+	private Trace configureTrace(ISeries series, double[] xValues,
+			double[] xPlusError, double[] xMinusError) {
+
+		// Local declarations
+		Trace trace = null;
+
+		// Make sure it is a valid series for creating a trace
+		if (series != null && series.isEnabled()
+				&& !(series.getStyle() instanceof BasicErrorStyle)
+				&& !existingTraces.containsKey(series)) {
+
+			// Get the data and create the new error arrays
+			double[] yValues = getDoubleValue(series);
+			int seriesSize = yValues.length;
+			double[] yPlusError = new double[seriesSize];
+			double[] yMinusError = new double[seriesSize];
+
+			// Create the data provider
+			final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
+					false);
+			// Sets the size of the buffer
+			traceDataProvider.setBufferSize(seriesSize);
+
+			// Gets the error for the series, if there is any
+			if (seriesMap.containsKey(series)) {
+				List<ISeries> errors = seriesMap.get(series);
+				if (errors != null && errors.size() > 0) {
+					for (ISeries errSeries : errors) {
+						// Get the error style, and add the error to the
+						// appropriate series
+						BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
+								.getStyle();
+						// If the style is positive error (the bars are above
+						// the point)
+						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.PLUS)) {
+							sumArrays(yPlusError, getDoubleValue(errSeries));
+							// If the style is negative error (the bars are
+							// below the point)
+						} else if (errStyle
+								.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.MINUS)) {
+							sumArrays(yMinusError, getDoubleValue(errSeries));
+							// If the style is both (above and below the point)
+						} else if (errStyle
+								.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.BOTH)) {
+							sumArrays(yPlusError, getDoubleValue(errSeries));
+							sumArrays(yMinusError, getDoubleValue(errSeries));
+						}
+					}
+				}
+
+			}
+
+			// Set the data to be plotted
+			for (int i = 0; i < seriesSize; i++) {
+				// Create the new point add add it to the trace
+				Sample point = new Sample(xValues[i], yValues[i], yPlusError[i],
+						yMinusError[i], xPlusError[i], xMinusError[i],
+						Double.toString(xValues[i]) + ", "
+								+ Double.toString(yValues[i]));
+
+				// Add the new point to the trace
+				traceDataProvider.addSample(point);
+			}
+
+			// Creates a new trace with the name, axis,and provider to plot
+			trace = new Trace(series.getLabel(), xyGraph.primaryXAxis,
+					xyGraph.primaryYAxis, traceDataProvider);
+
+			// Get the series style to configure the trace
+			XYZSeriesStyle style = (XYZSeriesStyle) series.getStyle();
+
+			// Sets trace properties
+			trace.setAntiAliasing(
+					(boolean) style.getProperty(XYZSeriesStyle.ANTI_ALIASING));
+			trace.setAreaAlpha(
+					(int) style.getProperty(XYZSeriesStyle.AREA_ALPHA));
+
+			// Sets the trace color if it is set in the style
+			if (style.getProperty(XYZSeriesStyle.COLOR) != null) {
+				trace.setTraceColor(
+						(Color) style.getProperty(XYZSeriesStyle.COLOR));
+			}
+
+			// Sets the trace type if it has been set
+			if (style.getProperty(XYZSeriesStyle.TYPE) != null) {
+				trace.setTraceType(
+						(TraceType) style.getProperty(XYZSeriesStyle.TYPE));
+			}
+
+			// Sets the point style for this trace
+			if (style.getProperty(XYZSeriesStyle.POINT) != null) {
+				trace.setPointStyle(
+						(PointStyle) style.getProperty(XYZSeriesStyle.POINT));
+			}
+
+			// Sets the line's width for this trace.
+			trace.setLineWidth(
+					(int) style.getProperty(XYZSeriesStyle.LINE_WIDTH));
+
+			// Set the point size (radius) for the points on the trace
+			trace.setPointSize(
+					(int) style.getProperty(XYZSeriesStyle.POINT_SIZE));
+
+			// Set the error to show up if this series has error
+			trace.setErrorBarEnabled(
+					(boolean) style.getProperty(XYZSeriesStyle.ERROR_ENABLED));
+
+			// Sets the error type for the error bars when drawing
+			trace.setYErrorBarType((ErrorBarType) style
+					.getProperty(XYZSeriesStyle.ERROR_TYPE));
+
+		}
+		// Finally, return the trace
+		return trace;
+
+	}
+
+	/**
+	 * This operation sets up the Composite that contains the VisIt canvas and
+	 * create the VisIt widget.
+	 * 
+	 * @param parent
+	 *            The parent Composite to create the Control in.
+	 */
+	@Override
+	public void createPartControl(Composite parent) {
+
+		// Create a top level composite to hold the canvas or text
+		vizComposite = new Composite(parent, SWT.NONE);
+		vizComposite.setLayout(new GridLayout(1, true));
+
+		// Set up the canvas where the graph is displayed
+		plotCanvas = new Canvas(vizComposite, SWT.BORDER);
+		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		// MAGIC
+		lws = new LightweightSystem(plotCanvas);
+
+		return;
+	}
+
+	/**
+	 * This method implements the Composite to hold the slider for moving
+	 * through plotted file sets.
+	 * 
+	 * @param sliderComp
+	 *            The Composite to create the widgets in
+	 * @param displayPlotProvider
+	 *            The PlotProvider containing the information to create the plot
+	 */
+	private Composite createSliderComp(Composite parent,
+			final PlotProvider displayPlotProvider) {
+
+		final Composite sliderComp = new Composite(parent, SWT.NONE);
+
+		// Set the layout and layout data for this Composite
+		sliderComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		sliderComp.setLayout(new GridLayout(5, false));
+
+		// The label for the slider
+		Label timeButtons = new Label(sliderComp, SWT.FILL);
+		timeButtons.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, false, false));
+		timeButtons.setText("Slider: ");
+
+		// The slider itself
+		final Slider slider = new Slider(sliderComp, SWT.HORIZONTAL);
+		slider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		// Set the selection, minimum, maximum, thumb, increment, and page
+		// increment
+		final int spinnerSliderMin = 0;
+		final int spinnerSliderMax = displayPlotProvider.getTimes().size() - 1;
+		slider.setValues(0, spinnerSliderMin, spinnerSliderMax, 1, 1, 1);
+
+		// Create the label for the selected time
+		final Label timeSelectedLabel = new Label(sliderComp, SWT.NONE);
+		timeSelectedLabel.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, false, false));
+		// Initially set it to the selected index
+		timeSelectedLabel
+				.setText(displayPlotProvider.getTimes().get(0).toString());
+
+		// The buttons for moving up and moving down
+		Button downSpinnerButton = new Button(sliderComp, SWT.PUSH);
+		Button upSpinnerButton = new Button(sliderComp, SWT.PUSH);
+		upSpinnerButton
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		upSpinnerButton.setText(">");
+		downSpinnerButton
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+		downSpinnerButton.setText("<");
+
+		final Runnable setPlotTime = new Runnable() {
+			@Override
+			public void run() {
+				// Get the slider's selection which is an index to the times
+				int sliderValue = slider.getSelection();
+
+				double time = displayPlotProvider.getTimes().get(sliderValue);
+				showXYGraph(displayPlotProvider, time, false);
+				timeSelectedLabel.setText(Double.toString(time));
+
+				// Refresh the slider composite
+				vizComposite.layout();
+				sliderComp.layout();
+
+				return;
+			}
+		};
+
+		// The listener for the slider.
+		slider.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Apply the new time to the plot.
+				setPlotTime.run();
+			}
+		});
+
+		// The listener for the up button in the slider.
+		upSpinnerButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Get the slider's selection which is an index to the times
+				int sliderValue = slider.getSelection();
+
+				// Check that the index is not out of bounds
+				if (sliderValue < spinnerSliderMax) {
+					// increment the index from the up button click
+					sliderValue++;
+					// Move the slider to the index of the selection
+					slider.setSelection(sliderValue);
+
+					// Apply the new time to the plot.
+					setPlotTime.run();
+				}
+
+				return;
+			}
+		});
+		// The listener for the down button in the slider.
+		downSpinnerButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// Get the slider's selection which is an index to the times
+				int sliderValue = slider.getSelection();
+
+				// Check that the index is within bounds
+				if (sliderValue > spinnerSliderMin) {
+					// Decrement the index
+					sliderValue--;
+					// Move the slider to the index of the selection
+					slider.setSelection(sliderValue);
+
+					// Apply the new time to the plot.
+					setPlotTime.run();
+				}
+
+				return;
+			}
+		});
+
+		return sliderComp;
 	}
 
 	/*
@@ -155,6 +501,52 @@ public class CSVPlotEditor extends EditorPart {
 	@Override
 	public void doSaveAs() {
 		return;
+	}
+
+	/**
+	 * Gets the main {@code Composite} in which the plot editor is drawn. This
+	 * is an ancestor of the {@link #plotCanvas}.
+	 * 
+	 * @return The main {@code Composite}.
+	 */
+	protected Composite getComposite() {
+		return vizComposite;
+	}
+
+	/**
+	 * Gets the double values of the specified series for all of its data
+	 * points. If the series data points cannot be cast to Double, then throws
+	 * an exception.
+	 * 
+	 * @param series
+	 *            The series to retrieve the data from
+	 * @return Returns an array of double values to use
+	 */
+	private double[] getDoubleValue(ISeries series) {
+		Object[] dataPoints = series.getDataPoints();
+		double[] array = new double[dataPoints.length];
+		for (int i = 0; i < dataPoints.length; i++) {
+			array[i] = (Double) dataPoints[i];
+		}
+		return array;
+
+		// // Try to get valid data from the series, and convert to double
+		// values
+		// ISeries csvData = (ISeries) series;
+		// double[] newArray = new double[csvData.size()];
+		// for (int i = 0; i < csvData.size(); i++) {
+		// newArray[i] = (Double) csvData.get(i);
+		// }
+		// return newArray;
+	}
+
+	/**
+	 * Gets the canvas used to render the CSV plot.
+	 * 
+	 * @return The plot canvas.
+	 */
+	public Canvas getPlotCanvas() {
+		return plotCanvas;
 	}
 
 	/*
@@ -188,35 +580,69 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
-	 * This operation sets up the Composite that contains the VisIt canvas and
-	 * create the VisIt widget.
+	 * This operation completely recreates the trace for the specified series
+	 * and replaces the current trace with this one.
 	 * 
-	 * @param parent
-	 *            The parent Composite to create the Control in.
+	 * @param series
+	 *            The series to recreate the trace for
 	 */
-	@Override
-	public void createPartControl(Composite parent) {
+	private void redrawSeries(ISeries series) {
+		// Get the x values and error for plotting
+		double[] xValues = getDoubleValue(independentSeries);
+		double[] xPlusError = new double[xValues.length];
+		double[] xMinusError = new double[xValues.length];
+		// Gets the error for the series, if there is any
+		if (seriesMap.containsKey(independentSeries)) {
+			List<ISeries> errors = seriesMap.get(independentSeries);
+			if (errors != null && errors.size() > 0) {
+				for (ISeries errSeries : errors) {
+					// Get the error style, and add the error to the
+					// appropriate series
+					BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
+							.getStyle();
+					// If the style is positive error (the bars are above
+					// the point)
+					if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+							.equals(ErrorBarType.PLUS)) {
+						sumArrays(xPlusError, getDoubleValue(errSeries));
+						// If the style is negative error (the bars are
+						// below the point)
+					} else
+						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+								.equals(ErrorBarType.MINUS)) {
+						sumArrays(xMinusError, getDoubleValue(errSeries));
+						// If the style is both (above and below the point)
+					} else if (errStyle
+							.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
+							.equals(ErrorBarType.BOTH)) {
+						sumArrays(xPlusError, getDoubleValue(errSeries));
+						sumArrays(xMinusError, getDoubleValue(errSeries));
+					}
+				}
+			}
 
-		// Create a top level composite to hold the canvas or text
-		vizComposite = new Composite(parent, SWT.NONE);
-		vizComposite.setLayout(new GridLayout(1, true));
+		}
 
-		// Set up the canvas where the graph is displayed
-		plotCanvas = new Canvas(vizComposite, SWT.BORDER);
-		plotCanvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		// Create the new trace
+		Trace trace = configureTrace(series, xValues, xPlusError, xMinusError);
 
-		// MAGIC
-		lws = new LightweightSystem(plotCanvas);
+		// If the trace is not null, then add the new trace to the graph and
+		// take the old trace out
+		if (trace != null) {
+			XYZSeriesStyle indepStyle = (XYZSeriesStyle) independentSeries
+					.getStyle();
 
-		return;
-	}
+			// Configure the x error for the series
+			trace.setXErrorBarType((ErrorBarType) indepStyle
+					.getProperty(XYZSeriesStyle.ERROR_TYPE));
+		}
+		// Replace the other trace in the existing traces map
+		xyGraph.remove(this.existingTraces.remove(series));
+		xyGraph.addTrace(trace);
 
-	/*
-	 * Overrides a super class method.
-	 */
-	@Override
-	public void setFocus() {
-		return;
+		// Re-add to the existing traces map
+		existingTraces.put(series, trace);
+
 	}
 
 	/**
@@ -245,7 +671,7 @@ public class CSVPlotEditor extends EditorPart {
 			seriesMap.get(parent).remove(series);
 			// Redraw the series and recalculate the trace so that it updates on
 			// screen
-			redrawSeries((CSVSeries) parent);
+			redrawSeries((ISeries) parent);
 
 		}
 
@@ -255,6 +681,14 @@ public class CSVPlotEditor extends EditorPart {
 			// TODO- Run on separate thread to not hang UI?
 			xyGraph.repaint();
 		}
+	}
+
+	/*
+	 * Overrides a super class method.
+	 */
+	@Override
+	public void setFocus() {
+		return;
 	}
 
 	/**
@@ -404,62 +838,6 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
-	 * Configures the specified axis for the style given.
-	 * 
-	 * @param style
-	 *            The XYZAxisStyle to use when configuring the axis properties
-	 * @param axis
-	 *            The Axis to configure
-	 */
-	private void configureAxis(Axis axis, XYZAxisStyle style) {
-		// Set the default behavior if there is no axis style
-		if (style == null) {
-			axis.setShowMajorGrid(true);
-			axis.setAutoScale(true);
-
-			// Otherwise, set the config options from the axis style
-		} else {
-			// Set the title
-			axis.setTitle((String) style.getProperty(XYZAxisStyle.AXIS_TITLE));
-			// Set the axis title font, if specified
-			if (style.getProperty(XYZAxisStyle.TITLE_FONT) != null) {
-				axis.setTitleFont(
-						(Font) style.getProperty(XYZAxisStyle.TITLE_FONT));
-			}
-			// Set the axis font, if specified
-			if (style.getProperty(XYZAxisStyle.SCALE_FONT) != null) {
-				axis.setFont((Font) style.getProperty(XYZAxisStyle.SCALE_FONT));
-			}
-			// Set the axis color, if specified
-			if (style.getProperty(XYZAxisStyle.AXIS_COLOR) != null) {
-				axis.setForegroundColor(
-						(Color) style.getProperty(XYZAxisStyle.AXIS_COLOR));
-			}
-			// Set the log scale, true for use log, false for use linear scale
-			axis.setLogScale((boolean) style.getProperty(XYZAxisStyle.IS_LOG));
-			// Set the auto scale feature, true for does auto scale, false for
-			// does not
-			axis.setAutoScale(
-					(boolean) style.getProperty(XYZAxisStyle.AUTO_SCALE));
-			// Set the major grid lines to appear, true for show the grid lines,
-			// false for do not
-			axis.setShowMajorGrid(
-					(boolean) style.getProperty(XYZAxisStyle.SHOW_GRID_LINE));
-			// Set the grid line to either be dashed for true and solid for
-			// false
-			axis.setDashGridLine((boolean) style
-					.getProperty(XYZAxisStyle.GRID_LINE_IS_DASHED));
-			// Sets the grid line color if it is available
-			if (style.getProperty(XYZAxisStyle.GRID_LINE_COLOR) != null) {
-				axis.setMajorGridColor((Color) style
-						.getProperty(XYZAxisStyle.GRID_LINE_COLOR));
-			}
-
-		}
-
-	}
-
-	/**
 	 * @param plotProvider
 	 * @param time
 	 */
@@ -508,10 +886,8 @@ public class CSVPlotEditor extends EditorPart {
 
 		// Get the x values and error for plotting
 		double[] xValues = getDoubleValue(independentSeries);
-		double[] xPlusError = new double[((CSVSeries) independentSeries)
-				.size()];
-		double[] xMinusError = new double[((CSVSeries) independentSeries)
-				.size()];
+		double[] xPlusError = new double[xValues.length];
+		double[] xMinusError = new double[xValues.length];
 		// Gets the error for the series, if there is any
 		if (seriesMap.containsKey(independentSeries)) {
 			List<ISeries> errors = seriesMap.get(independentSeries);
@@ -549,7 +925,7 @@ public class CSVPlotEditor extends EditorPart {
 		// Iterate over all of the series and see if any need to be added or
 		// reset
 		for (ISeries iseries : seriesToPlot) {
-			CSVSeries series = (CSVSeries) iseries;
+			ISeries series = (ISeries) iseries;
 
 			// Creates a new trace with the name, axis,and provider to plot
 			Trace trace = configureTrace(series, xValues, xPlusError,
@@ -577,214 +953,6 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/**
-	 * This operation completely recreates the trace for the specified series
-	 * and replaces the current trace with this one.
-	 * 
-	 * @param series
-	 *            The series to recreate the trace for
-	 */
-	private void redrawSeries(CSVSeries series) {
-		// Get the x values and error for plotting
-		double[] xValues = getDoubleValue(independentSeries);
-		double[] xPlusError = new double[((CSVSeries) independentSeries)
-				.size()];
-		double[] xMinusError = new double[((CSVSeries) independentSeries)
-				.size()];
-		// Gets the error for the series, if there is any
-		if (seriesMap.containsKey(independentSeries)) {
-			List<ISeries> errors = seriesMap.get(independentSeries);
-			if (errors != null && errors.size() > 0) {
-				for (ISeries errSeries : errors) {
-					// Get the error style, and add the error to the
-					// appropriate series
-					BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
-							.getStyle();
-					// If the style is positive error (the bars are above
-					// the point)
-					if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
-							.equals(ErrorBarType.PLUS)) {
-						sumArrays(xPlusError, getDoubleValue(errSeries));
-						// If the style is negative error (the bars are
-						// below the point)
-					} else
-						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
-								.equals(ErrorBarType.MINUS)) {
-						sumArrays(xMinusError, getDoubleValue(errSeries));
-						// If the style is both (above and below the point)
-					} else if (errStyle
-							.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
-							.equals(ErrorBarType.BOTH)) {
-						sumArrays(xPlusError, getDoubleValue(errSeries));
-						sumArrays(xMinusError, getDoubleValue(errSeries));
-					}
-				}
-			}
-
-		}
-
-		// Create the new trace
-		Trace trace = configureTrace(series, xValues, xPlusError, xMinusError);
-
-		// If the trace is not null, then add the new trace to the graph and
-		// take the old trace out
-		if (trace != null) {
-			XYZSeriesStyle indepStyle = (XYZSeriesStyle) independentSeries
-					.getStyle();
-
-			// Configure the x error for the series
-			trace.setXErrorBarType((ErrorBarType) indepStyle
-					.getProperty(XYZSeriesStyle.ERROR_TYPE));
-		}
-		// Replace the other trace in the existing traces map
-		xyGraph.remove(this.existingTraces.remove(series));
-		xyGraph.addTrace(trace);
-
-		// Re-add to the existing traces map
-		existingTraces.put(series, trace);
-
-	}
-
-	/**
-	 * This operation returns the trace that is created with the given series.
-	 * Returns null if this series is not enabled or is an error series.
-	 * 
-	 * @param series
-	 *            The series to use when creating this trace.
-	 * @param xValues
-	 *            The x values, or independent series values for this trace.
-	 *            This variable is added so as to not calculate the array every
-	 *            time a trace is added (in cases where there might be many
-	 *            dependent series to add)
-	 * @param xPlusError
-	 *            The x plus error, this is an input so as to not have to
-	 *            recalculate the information for every trace, if adding
-	 *            multiple at a time
-	 * @param xMinusError
-	 *            The x minus error, this is an input so as to not have to
-	 *            recalculate the information for every trace, if adding
-	 *            multiple at a time
-	 * @return
-	 */
-	private Trace configureTrace(CSVSeries series, double[] xValues,
-			double[] xPlusError, double[] xMinusError) {
-
-		// Local declarations
-		Trace trace = null;
-
-		// Make sure it is a valid series for creating a trace
-		if (series != null && series.isEnabled
-				&& !(series.getStyle() instanceof BasicErrorStyle)
-				&& !existingTraces.containsKey(series)) {
-
-			// Create the data provider
-			final CircularBufferDataProvider traceDataProvider = new CircularBufferDataProvider(
-					false);
-			// Sets the size of the buffer
-			traceDataProvider.setBufferSize(series.size());
-
-			// Get the data and create the new error arrays
-			double[] yValues = getDoubleValue(series);
-			double[] yPlusError = new double[series.size()];
-			double[] yMinusError = new double[series.size()];
-
-			// Gets the error for the series, if there is any
-			if (seriesMap.containsKey(series)) {
-				List<ISeries> errors = seriesMap.get(series);
-				if (errors != null && errors.size() > 0) {
-					for (ISeries errSeries : errors) {
-						// Get the error style, and add the error to the
-						// appropriate series
-						BasicErrorStyle errStyle = (BasicErrorStyle) errSeries
-								.getStyle();
-						// If the style is positive error (the bars are above
-						// the point)
-						if (errStyle.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
-								.equals(ErrorBarType.PLUS)) {
-							sumArrays(yPlusError, getDoubleValue(errSeries));
-							// If the style is negative error (the bars are
-							// below the point)
-						} else if (errStyle
-								.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
-								.equals(ErrorBarType.MINUS)) {
-							sumArrays(yMinusError, getDoubleValue(errSeries));
-							// If the style is both (above and below the point)
-						} else if (errStyle
-								.getProperty(BasicErrorStyle.ERROR_BAR_TYPE)
-								.equals(ErrorBarType.BOTH)) {
-							sumArrays(yPlusError, getDoubleValue(errSeries));
-							sumArrays(yMinusError, getDoubleValue(errSeries));
-						}
-					}
-				}
-
-			}
-
-			// Set the data to be plotted
-			for (int i = 0; i < series.size(); i++) {
-				// Create the new point add add it to the trace
-				Sample point = new Sample(xValues[i], yValues[i], yPlusError[i],
-						yMinusError[i], xPlusError[i], xMinusError[i],
-						Double.toString(xValues[i]) + ", "
-								+ Double.toString(yValues[i]));
-
-				// Add the new point to the trace
-				traceDataProvider.addSample(point);
-			}
-
-			// Creates a new trace with the name, axis,and provider to plot
-			trace = new Trace(series.getLabel(), xyGraph.primaryXAxis,
-					xyGraph.primaryYAxis, traceDataProvider);
-
-			// Get the series style to configure the trace
-			XYZSeriesStyle style = (XYZSeriesStyle) series.getStyle();
-
-			// Sets trace properties
-			trace.setAntiAliasing(
-					(boolean) style.getProperty(XYZSeriesStyle.ANTI_ALIASING));
-			trace.setAreaAlpha(
-					(int) style.getProperty(XYZSeriesStyle.AREA_ALPHA));
-
-			// Sets the trace color if it is set in the style
-			if (style.getProperty(XYZSeriesStyle.COLOR) != null) {
-				trace.setTraceColor(
-						(Color) style.getProperty(XYZSeriesStyle.COLOR));
-			}
-
-			// Sets the trace type if it has been set
-			if (style.getProperty(XYZSeriesStyle.TYPE) != null) {
-				trace.setTraceType(
-						(TraceType) style.getProperty(XYZSeriesStyle.TYPE));
-			}
-
-			// Sets the point style for this trace
-			if (style.getProperty(XYZSeriesStyle.POINT) != null) {
-				trace.setPointStyle(
-						(PointStyle) style.getProperty(XYZSeriesStyle.POINT));
-			}
-
-			// Sets the line's width for this trace.
-			trace.setLineWidth(
-					(int) style.getProperty(XYZSeriesStyle.LINE_WIDTH));
-
-			// Set the point size (radius) for the points on the trace
-			trace.setPointSize(
-					(int) style.getProperty(XYZSeriesStyle.POINT_SIZE));
-
-			// Set the error to show up if this series has error
-			trace.setErrorBarEnabled(
-					(boolean) style.getProperty(XYZSeriesStyle.ERROR_ENABLED));
-
-			// Sets the error type for the error bars when drawing
-			trace.setYErrorBarType((ErrorBarType) style
-					.getProperty(XYZSeriesStyle.ERROR_TYPE));
-
-		}
-		// Finally, return the trace
-		return trace;
-
-	}
-
-	/**
 	 * Adds the second array to the first, element by element.
 	 * 
 	 * @param runningSum
@@ -796,158 +964,5 @@ public class CSVPlotEditor extends EditorPart {
 		for (int i = 0; i < runningSum.length && i < toAdd.length; i++) {
 			runningSum[i] += toAdd[i];
 		}
-	}
-
-	/**
-	 * Gets the double values of the specified series for all of its data
-	 * points. If the series data points cannot be cast to Double, then throws
-	 * an exception.
-	 * 
-	 * @param series
-	 *            The series to retrieve the data from
-	 * @return Returns an array of double values to use
-	 */
-	private double[] getDoubleValue(ISeries series) {
-		// Try to get valid data from the series, and convert to double values
-		CSVSeries csvData = (CSVSeries) series;
-		double[] newArray = new double[csvData.size()];
-		for (int i = 0; i < csvData.size(); i++) {
-			newArray[i] = (Double) csvData.get(i);
-		}
-		return newArray;
-	}
-
-	/**
-	 * This method implements the Composite to hold the slider for moving
-	 * through plotted file sets.
-	 * 
-	 * @param sliderComp
-	 *            The Composite to create the widgets in
-	 * @param displayPlotProvider
-	 *            The PlotProvider containing the information to create the plot
-	 */
-	private Composite createSliderComp(Composite parent,
-			final PlotProvider displayPlotProvider) {
-
-		final Composite sliderComp = new Composite(parent, SWT.NONE);
-
-		// Set the layout and layout data for this Composite
-		sliderComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		sliderComp.setLayout(new GridLayout(5, false));
-
-		// The label for the slider
-		Label timeButtons = new Label(sliderComp, SWT.FILL);
-		timeButtons.setLayoutData(
-				new GridData(SWT.FILL, SWT.CENTER, false, false));
-		timeButtons.setText("Slider: ");
-
-		// The slider itself
-		final Slider slider = new Slider(sliderComp, SWT.HORIZONTAL);
-		slider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		// Set the selection, minimum, maximum, thumb, increment, and page
-		// increment
-		final int spinnerSliderMin = 0;
-		final int spinnerSliderMax = displayPlotProvider.getTimes().size() - 1;
-		slider.setValues(0, spinnerSliderMin, spinnerSliderMax, 1, 1, 1);
-
-		// Create the label for the selected time
-		final Label timeSelectedLabel = new Label(sliderComp, SWT.NONE);
-		timeSelectedLabel.setLayoutData(
-				new GridData(SWT.FILL, SWT.CENTER, false, false));
-		// Initially set it to the selected index
-		timeSelectedLabel
-				.setText(displayPlotProvider.getTimes().get(0).toString());
-
-		// The buttons for moving up and moving down
-		Button downSpinnerButton = new Button(sliderComp, SWT.PUSH);
-		Button upSpinnerButton = new Button(sliderComp, SWT.PUSH);
-		upSpinnerButton
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		upSpinnerButton.setText(">");
-		downSpinnerButton
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-		downSpinnerButton.setText("<");
-
-		final Runnable setPlotTime = new Runnable() {
-			@Override
-			public void run() {
-				// Get the slider's selection which is an index to the times
-				int sliderValue = slider.getSelection();
-
-				double time = displayPlotProvider.getTimes().get(sliderValue);
-				showXYGraph(displayPlotProvider, time, false);
-				timeSelectedLabel.setText(Double.toString(time));
-
-				// Refresh the slider composite
-				vizComposite.layout();
-				sliderComp.layout();
-
-				return;
-			}
-		};
-
-		// The listener for the slider.
-		slider.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Apply the new time to the plot.
-				setPlotTime.run();
-			}
-		});
-
-		// The listener for the up button in the slider.
-		upSpinnerButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Get the slider's selection which is an index to the times
-				int sliderValue = slider.getSelection();
-
-				// Check that the index is not out of bounds
-				if (sliderValue < spinnerSliderMax) {
-					// increment the index from the up button click
-					sliderValue++;
-					// Move the slider to the index of the selection
-					slider.setSelection(sliderValue);
-
-					// Apply the new time to the plot.
-					setPlotTime.run();
-				}
-
-				return;
-			}
-		});
-		// The listener for the down button in the slider.
-		downSpinnerButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Get the slider's selection which is an index to the times
-				int sliderValue = slider.getSelection();
-
-				// Check that the index is within bounds
-				if (sliderValue > spinnerSliderMin) {
-					// Decrement the index
-					sliderValue--;
-					// Move the slider to the index of the selection
-					slider.setSelection(sliderValue);
-
-					// Apply the new time to the plot.
-					setPlotTime.run();
-				}
-
-				return;
-			}
-		});
-
-		return sliderComp;
-	}
-
-	/**
-	 * Gets the canvas used to render the CSV plot.
-	 * 
-	 * @return The plot canvas.
-	 */
-	public Canvas getPlotCanvas() {
-		return plotCanvas;
 	}
 }
