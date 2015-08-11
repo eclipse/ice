@@ -56,7 +56,7 @@ public class BatMLModel extends Item {
 	 * Reference to the main BatML schema file.
 	 * </p>
 	 */
-	private static File xsdFile;
+	private static File xsdFile, xmlFile;
 
 	/**
 	 * <p>
@@ -147,7 +147,7 @@ public class BatMLModel extends Item {
 
 		// Setup the action list. Remove key-value pair support.
 		// allowedActions.remove(taggedExportActionString);
-		allowedActions.add("Write to XML");
+		allowedActions.add(0, "Write to XML");
 
 		return;
 	}
@@ -213,71 +213,73 @@ public class BatMLModel extends Item {
 				"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
 				"CellSandwichDB.xsd", "ModuleDB.xsd", "SimulationDB.xsd", "electrical.xml", "DeviceDB.xsd",
 				"NamedParameters.xsd", "UnitsDB.xsd", "electrical.xsd" };
-		IFile xsdIFile;
+		IFile xsdIFile, xmlIFile;
 		IFile inputFile = null;
 		File temp = null;
 
 		// Load the schema files into the workspace
-		if (input == null) {
-			for (String schemaFile : schemas) {
-				try {
-					// Create a filepath for the default file
-					String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
-							+ "batml";
-					temp = new File(defaultFilePath);
-					if (!temp.exists()) {
-						temp.mkdir();
-					}
-					// Create a temporary location to load the default file
-					temp = new File(defaultFilePath + System.getProperty("file.separator") + schemaFile);
-					if (!temp.exists()) {
-						temp.createNewFile();
-
-						// Pull the default file from inside the plugin
-						URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat.batml/data/" + schemaFile);
-						InputStream reader = uri.toURL().openStream();
-						FileOutputStream outStream = new FileOutputStream(temp);
-
-						// Write out the default file from the plugin to the
-						// temp
-						// location
-						int fileByte;
-						while ((fileByte = reader.read()) != -1) {
-							outStream.write(fileByte);
-						}
-						outStream.close();
-					}
-
-				} catch (URISyntaxException e) {
-					logger.error(getClass().getName() + " Exception!", e);
-					logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
-				} catch (MalformedURLException e) {
-					logger.error(getClass().getName() + " Exception!", e);
-					logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
-				} catch (IOException e) {
-					logger.error(getClass().getName() + " Exception!", e);
-					logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
-				}
-			}
+		for (String schemaFile : schemas) {
 			try {
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// Create a filepath for the default file
+				String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
+						+ "batml";
+				temp = new File(defaultFilePath);
+				if (!temp.exists()) {
+					temp.mkdir();
+				}
+				// Create a temporary location to load the default file
+				temp = new File(defaultFilePath + System.getProperty("file.separator") + schemaFile);
+				if (!temp.exists()) {
+					temp.createNewFile();
+
+					// Pull the default file from inside the plugin
+					URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat.batml/data/" + schemaFile);
+					InputStream reader = uri.toURL().openStream();
+					FileOutputStream outStream = new FileOutputStream(temp);
+
+					// Write out the default file from the plugin to the
+					// temp
+					// location
+					int fileByte;
+					while ((fileByte = reader.read()) != -1) {
+						outStream.write(fileByte);
+					}
+					outStream.close();
+				}
+
+			} catch (URISyntaxException e) {
+				logger.error(getClass().getName() + " Exception!", e);
+				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
+			} catch (MalformedURLException e) {
+				logger.error(getClass().getName() + " Exception!", e);
+				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
+			} catch (IOException e) {
+				logger.error(getClass().getName() + " Exception!", e);
+				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
 			}
+		}
+		try {
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (input == null) {
 			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
+			xmlIFile = project.getFolder("batml").getFile("electrical.xml");
 		} else {
-			xsdIFile = project.getFile(input);
+			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
+			xmlIFile = project.getFile(input);
 		}
 
-		try {
-			xsdFile = EFS.getStore(xsdIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
-		} catch (CoreException e) {
-			logger.error(getClass().getName() + " Exception!", e);
-		}
+		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile(); //EFS.getStore(xsdIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
+		xmlFile = xmlIFile.getRawLocation().makeAbsolute().toFile(); //EFS.getStore(xmlIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
+		
 		// Create the EMFComponent
 		if (xsdFile != null) {
 			emfComp = new EMFComponent(xsdFile);
+			emfComp.load(xsdFile, xmlFile);
 			emfComp.setName("BatML Model Editor");
 			emfComp.setId(1);
 		} else {
@@ -286,7 +288,7 @@ public class BatMLModel extends Item {
 			emfComp.setDescription("");
 			emfComp.setId(1);
 		}
-		
+
 		form.addComponent(emfComp);
 	}
 }
