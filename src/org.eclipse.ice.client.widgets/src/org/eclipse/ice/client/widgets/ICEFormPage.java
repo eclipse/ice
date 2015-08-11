@@ -49,6 +49,9 @@ public class ICEFormPage extends FormPage {
 		// Call the super constructor
 		super(editor, id, title);
 		
+		// Save the editor reference
+		this.editor = (ICEFormEditor) editor;
+		
 		// Create the logger
 		logger = LoggerFactory.getLogger(getClass());
 

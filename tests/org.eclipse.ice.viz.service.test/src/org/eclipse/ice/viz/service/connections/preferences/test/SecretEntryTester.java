@@ -21,6 +21,9 @@ import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.SecretEntry;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.junit.Test;
 
 /**
@@ -47,7 +50,7 @@ public class SecretEntryTester {
 
 		// Make sure the secret flag is set when the IEntryContentProvider is
 		// passed into the constructor.
-		IEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		IVizEntryContentProvider contentProvider = new BasicVizEntryContentProvider();
 		entry = new SecretEntry(contentProvider);
 		assertTrue(entry.isSecret());
 		assertTrue(entry.isSecret());
@@ -65,7 +68,7 @@ public class SecretEntryTester {
 		SecretEntry object;
 		Object equalObject;
 		Object unequalObject;
-		Entry superObject;
+		VizEntry superObject;
 
 		// Set up the object under test.
 		object = new SecretEntry();
@@ -80,7 +83,7 @@ public class SecretEntryTester {
 		((SecretEntry) unequalObject).setName("Jango"); // Different!
 
 		// Set up the super object.
-		superObject = new Entry();
+		superObject = new VizEntry();
 		superObject.copy(object);
 
 		// Check for equivalence (reflective case).

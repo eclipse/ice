@@ -1,117 +1,189 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh;
 
-import java.awt.Frame;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
+import org.eclipse.ice.client.widgets.jme.MasterApplication;
+import org.eclipse.ice.client.widgets.jme.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.jme3.widgets.EmbeddedView;
-import org.eclipse.ice.viz.service.jme3.widgets.MasterApplication;
-import org.eclipse.ice.viz.service.jme3.widgets.ViewAppState;
-import org.eclipse.ice.viz.service.jme3.widgets.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An IVizCanvas containing a mesh editor powered by jMonkeyEngine 3. This class
+ * creates and manages an AppState for the master JME3 SimpleApplication. This
+ * AppState contains a mesh editor, allowing the user to view and modify
+ * polygons (defined by vertices and edges) on a 2D plane.
+ * 
+ * @author Robert Smith
+ *
+ */
 public class JME3MeshCanvas implements IVizCanvas {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(JME3MeshCanvas.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(JME3MeshCanvas.class);
+
+	/**
+	 * The single JME3 Simple Application on which all ICE JME3 renderings will
+	 * run.
+	 */
 	private MasterApplication masterApp;
 
+	/**
+	 * The mesh component to be rendered and edited.
+	 */
 	private VizMeshComponent mesh;
-	
+
+	/**
+	 * An app state containing the mesh editor's JME3 implementation.
+	 */
+	private MeshAppState appState;
+
 	/**
 	 * The Constructor
 	 *
 	 * @param source
-	 *            The URI of the CSV file.
+	 *            The MeshComponent containing the meshes to be rendered.
 	 */
 	public JME3MeshCanvas(VizMeshComponent newMesh) {
 		mesh = newMesh;
-
-		
+		appState = new MeshAppState();
 	}
 
-
+	/*
+	 * Implements an IVizCanvas function
+	 */
 	@Override
 	public int getNumberOfAxes() {
 		// The Mesh is always 2D
 		return 2;
 	}
 
-	/**
-	 * @see org.eclipse.ice.viz.service.IPlot#draw(java.lang.String,
-	 *      java.lang.String, org.eclipse.swt.widgets.Composite)
+	/*
+	 * Implements a IVizCanvas method
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
 		masterApp = MasterApplicationHolder.getApplication();
-		MeshAppState appState = new MeshAppState();
+
+		if (masterApp != null) {
+
+			// If necessary, wait until the MasterApplication has started before
+			// trying to add a new AppState, or nothing may initialize.
+			if (!masterApp.isInitialized()) {
+				masterApp.blockUntilInitialized(0);
+			}
+		}
+
 		appState.start(masterApp);
-		EmbeddedView view = masterApp.getEmbeddedView();
-		appState.updateMesh(mesh);
-		Composite composite = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND) ;
-		Frame frame = SWT_AWT.new_Frame(composite);
-		view.addToEmbeddedFrame(frame);
-		return composite;
+		appState.setMesh(mesh);
+		return appState.createComposite(parent);
 
 	}
 
+	/**
+	 * Register a listener with the MeshAppState
+	 */
+	public void registerListener(IMeshSelectionListener listener) {
+		appState.getSelectionManager().addMeshApplicationListener(listener);
+	}
+
+	/**
+	 * Getter for the MeshAppState's MeshAppStateModeFactory
+	 * 
+	 * @return The MeshAppState's MeshAppStateModeFactory
+	 */
+	public MeshAppStateModeFactory getMeshAppStateModeFactory() {
+		return appState.getModeFactory();
+	}
+
+	/**
+	 * Mutator for the MeshAppState's mode
+	 * 
+	 * @param mode
+	 *            The new mode for the MeshAppState
+	 */
+	public void setMode(MeshAppStateMode mode) {
+		appState.setMode(mode);
+	}
+
+	/**
+	 * Getter for the MeshAppState
+	 * 
+	 * @return The MeshAppState containing the mesh editor
+	 */
+	public MeshAppState getMeshAppState() {
+		return appState;
+	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IPlot#redraw()
+	 * Implements an IVizCanvas method
 	 */
 	@Override
 	public void redraw() {
-		masterApp.simpleUpdate(0f);
+		appState.enqueue(new Callable<Boolean>() {
+			@Override
+			public Boolean call() {
+				appState.update(0f);
+				return true;
+			}
+		});
 	}
 
-
+	/*
+	 * Implements an IVizCanvas method
+	 */
 	@Override
 	public Map<String, String> getProperties() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-
+	/*
+	 * Implements an IVizCanvas method
+	 */
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {
-		// TODO Auto-generated method stub
-		
 	}
 
-
+	/*
+	 * Implements an IVizCanvas method
+	 */
 	@Override
 	public URI getDataSource() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-
+	/*
+	 * Implements an IVizCanvas method
+	 */
 	@Override
 	public String getSourceHost() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-
+	/*
+	 * Implements an IVizCanvas method
+	 */
 	@Override
 	public boolean isSourceRemote() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

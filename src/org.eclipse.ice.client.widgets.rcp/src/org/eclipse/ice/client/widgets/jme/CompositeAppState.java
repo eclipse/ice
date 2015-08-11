@@ -157,7 +157,7 @@ public abstract class CompositeAppState extends SimpleAppState {
 	 * all child <code>SimpleAppState</code>s.
 	 */
 	@Override
-	protected void enableAppState() {
+	public void enableAppState() {
 		super.enableAppState();
 
 		// Only enable the AppState's whose associated enable flags have been
@@ -190,7 +190,7 @@ public abstract class CompositeAppState extends SimpleAppState {
 	 * disables all child <code>SimpleAppState</code>s.
 	 */
 	@Override
-	protected void disableAppState() {
+	public void disableAppState() {
 		super.disableAppState();
 
 		// We need to keep track of which child AppStates are currently enabled

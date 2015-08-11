@@ -18,15 +18,11 @@ import java.util.List;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.geometry.TransformationView;
-import org.eclipse.ice.client.widgets.jme.ViewFactory;
-import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
-import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
+import org.eclipse.ice.viz.service.jme3.mesh.JME3MeshCanvas;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshSelectionManager;
@@ -40,6 +36,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -92,11 +89,6 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	private MeshElementTreeView meshElementTreeView;
 
 	/**
-	 * The jME mesh view (a <code>MeshAppState</code>) contained in this page.
-	 */
-	private MeshAppState meshView;
-
-	/**
 	 * The List of custom JFace Actions. This List and the ActionTrees therein
 	 * are used to populate the primary ToolBar of the parent
 	 * AnalysisToolComposite and the actionMenuManager, which can be used to
@@ -131,10 +123,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 */
 	private ArrayList<ICEObject> selectedMeshParts;
 	
-	/**
-	 * The factory for IVizServices
-	 */
-	private IVizServiceFactory factory;
+	private JME3MeshCanvas canvas;
 
 	/**
 	 * The constructor
@@ -234,29 +223,30 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		actionToolBarManager = new ToolBarManager(toolBar);
 
-		// Use a ViewFactory to create a jME mesh view.
-//		ViewFactory factory = new ViewFactory();
-//		meshView = factory.createMeshView(meshComp);
-		// Render the mesh inside the parent Composite. We have to set its
-		// GridData so it will fill all available space!
+		//Grid data so that the VizCanvas will fill the entire area
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		//meshView.createComposite(parent).setLayoutData(gridData);
-		IVizService service = factory.get("JME3 Mesh Service");
-		IVizCanvas canvas = null;
+		
+		//Get the JME3 viz service for meshes
+		IVizService service = editor.getVizServiceFactory().get("JME3 Mesh Service");
+		
+		//Create the VizCanvas
+		canvas = null;
 		try {
-			canvas = service.createCanvas(meshComp.getMesh());
+			canvas = (JME3MeshCanvas) service.createCanvas(meshComp.getMesh());
 		} catch (Exception e) {
 			logger.error("Mesh Viz Service failed to create mesh Viz Canvas.");
 		}
 		try {
-			canvas.draw(parent);
+			Composite composite = canvas.draw(parent);
+			composite.setLayoutData(gridData);
 		} catch (Exception e) {
 			logger.error("Error drawing Mesh Viz Canvas.");
 		}
 
 		// The MeshPage should also listen for changes to the MeshApplication's
 		// current selection.
-		meshView.getSelectionManager().addMeshApplicationListener(this);
+		canvas.registerListener(this);
+		
 
 		// Now that we have a MeshApplication, we need to create the Actions
 		// that fill the ToolBar with configuration settings for the
@@ -294,13 +284,13 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		modesActionTree = new ActionTree("Mode");
 		// Use a MeshAppStateModeFactory to get the available modes and create
 		// ActionTrees for each one to go in the Mode menu.
-		MeshAppStateModeFactory factory = meshView.getModeFactory();
+		MeshAppStateModeFactory factory = canvas.getMeshAppStateModeFactory();
 		for (Mode type : factory.getAvailableModes()) {
 			final MeshAppStateMode mode = factory.getMode(type);
 			action = new Action() {
 				@Override
 				public void run() {
-					meshView.setMode(mode);
+					canvas.setMode(mode);
 				}
 			};
 			// Set the Action's text and tool tip.
@@ -314,12 +304,12 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		// TODO create the camera reset action
 
 		// Create the toggle switch to show or hide the heads-up display
-		action = new org.eclipse.ice.viz.service.jme3.widgets.ToggleHUDAction(meshView);
+		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(canvas.getMeshAppState());
 		toggleHUDActionTree = new ActionTree(action);
 		actions.add(toggleHUDActionTree);
 
 		// Create the toggle switch to show or hide the axes.
-		action = new org.eclipse.ice.viz.service.jme3.widgets.ToggleAxesAction(meshView);
+		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(canvas.getMeshAppState());
 		toggleAxesActionTree = new ActionTree(action);
 		actions.add(toggleAxesActionTree);
 
@@ -327,7 +317,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		action = new Action() {
 			@Override
 			public void run() {
-				meshView.getSelectionManager().deleteSelection();
+				canvas.getMeshAppState().getSelectionManager().deleteSelection();
 			}
 		};
 		action.setText("Delete");
@@ -384,7 +374,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		if (part.getSite().getId().equals(MeshElementTreeView.ID)) {
 
 			// Get the mesh selection manager from the app.
-			MeshSelectionManager selectionManager = meshView
+			MeshSelectionManager selectionManager = canvas.getMeshAppState()
 					.getSelectionManager();
 
 			// Reset any existing selection data in the MeshApplication
@@ -536,13 +526,4 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	}
 	// ----------------------------------------------------------- //
 	
-	/**
-	 * Consume an IVizServiceFactory OSGi declarative service by saving the provided factory.
-	 * 
-	 * @param newFactory The factory service to save
-	 */
-	public void setVizServiceFactory(IVizServiceFactory newFactory){
-		factory = newFactory;
-	}
-
 }

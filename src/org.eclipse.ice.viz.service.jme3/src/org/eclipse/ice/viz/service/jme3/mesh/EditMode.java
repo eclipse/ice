@@ -459,7 +459,6 @@ public class EditMode extends MeshAppStateMode implements
 	@Override
 	public void leftClick(boolean isPressed, float tpf) {
 		super.leftClick(isPressed, tpf);
-
 		// Update the mouseDown boolean.
 		mouseDown.set(isPressed);
 

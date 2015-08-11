@@ -363,7 +363,7 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 	 * features.
 	 * </p>
 	 */
-	protected void enableAppState() {
+	public void enableAppState() {
 		// This method is usually called during run-time. Thus, we must make
 		// sure that it is initialized. We should also synchronize this method
 		// with the isEnabled() flag.
@@ -414,7 +414,7 @@ public abstract class SimpleAppState implements AppState, IRenderQueue {
 	 * features.
 	 * </p>
 	 */
-	protected void disableAppState() {
+	public void disableAppState() {
 		// This method is usually called during run-time. Thus, we must make
 		// sure that it is initialized. We should also synchronize this method
 		// with the isEnabled() flag.

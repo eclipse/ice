@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -24,6 +23,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;

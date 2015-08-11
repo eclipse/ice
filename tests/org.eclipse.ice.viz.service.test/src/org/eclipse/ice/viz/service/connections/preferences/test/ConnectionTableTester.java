@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -95,7 +96,7 @@ public class ConnectionTableTester {
 	public void checkAddConnection() {
 
 		int i;
-		List<Entry> row;
+		List<VizEntry> row;
 		String name;
 
 		// Add a new row and get it.
@@ -151,7 +152,7 @@ public class ConnectionTableTester {
 	@Test
 	public void checkRemoveConnection() {
 
-		List<Entry> row;
+		List<VizEntry> row;
 		String name;
 		String host = "qwerty";
 
@@ -268,7 +269,7 @@ public class ConnectionTableTester {
 	@Test
 	public void checkUniqueNames() {
 
-		List<Entry> row;
+		List<VizEntry> row;
 		String string = "qwerty";
 
 		// Add two connections.

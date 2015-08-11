@@ -16,7 +16,6 @@ import org.eclipse.ice.client.widgets.jme.internal.MasterApplicationHolder;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 
 /**
  * This factory is used to create custom {@link ViewAppState}s for components

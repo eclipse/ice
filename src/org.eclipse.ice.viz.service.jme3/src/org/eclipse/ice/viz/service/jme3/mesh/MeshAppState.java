@@ -22,12 +22,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.ice.client.widgets.jme.EmbeddedView;
+import org.eclipse.ice.client.widgets.jme.MasterApplication;
+import org.eclipse.ice.client.widgets.jme.SimpleAppState;
+import org.eclipse.ice.viz.service.jme3.application.CustomChaseCamera;
+import org.eclipse.ice.viz.service.jme3.application.ICameraListener;
+import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
-import org.eclipse.ice.viz.service.jme3.widgets.EmbeddedView;
 import org.eclipse.ice.viz.service.jme3.widgets.InputControl;
-import org.eclipse.ice.viz.service.jme3.widgets.MasterApplication;
-import org.eclipse.ice.viz.service.jme3.widgets.SimpleAppState;
-import org.eclipse.ice.viz.service.jme3.widgets.ViewAppState;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
@@ -671,7 +673,7 @@ public class MeshAppState extends ViewAppState implements
 	 * {@link #mode}.
 	 */
 	@Override
-	protected void enableAppState() {
+	public void enableAppState() {
 		super.enableAppState();
 
 		if (mode != null) {
@@ -698,7 +700,7 @@ public class MeshAppState extends ViewAppState implements
 	 * {@link #mode},
 	 */
 	@Override
-	protected void disableAppState() {
+	public void disableAppState() {
 		if (mode != null) {
 			mode.setEnabled(false);
 		}
@@ -1513,7 +1515,7 @@ public class MeshAppState extends ViewAppState implements
 	/**
 	 * Gets the chase camera used to follow the player around the scene. It is
 	 * intialized and configured to have a top-down view in
-	 * {@link #createViewCamera(EmbeddedView)}.
+	 * {@link #createViewCamera(VizEmbeddedView)}.
 	 * 
 	 * @return The application's ChaseCamera.
 	 */

@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: jMonkeyEngine3 Visualization Service Plugin Test Bundle
+Bundle-SymbolicName: org.eclipse.ice.viz.service.jme3.test
+Bundle-Version: 2.0.0
+Fragment-Host: org.eclipse.ice.viz.service.visit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit
+Import-Package: com.jme3.material,
+ com.jme3.scene,
+ org.apache.log4j,
+ org.eclipse.ice.client.widgets.jme,
+ org.eclipse.ice.datastructures.test,
+ org.eclipse.ice.viz.service.jme3.application,
+ org.eclipse.ice.viz.service.jme3.mesh,
+ org.eclipse.ice.viz.service.mesh.datastructures,
+ org.eclipse.ice.viz.service.visit
+Bundle-Vendor: Oak Ridge National Laboratory

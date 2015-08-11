@@ -20,8 +20,10 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.connections.IKeyManager;
 import org.eclipse.ice.viz.service.connections.KeyEntryContentProvider;
+import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
+import org.eclipse.ice.viz.service.connections.preferences.test.SimpleCountKeyManager;
+import org.eclipse.ice.viz.service.connections.preferences.test.SimpleDiscreteKeyManager;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.junit.Test;
 

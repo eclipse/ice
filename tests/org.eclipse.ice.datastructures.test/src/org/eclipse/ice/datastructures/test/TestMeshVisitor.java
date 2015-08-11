@@ -22,6 +22,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 /**
  * <p>
@@ -75,7 +76,6 @@ public class TestMeshVisitor implements IMeshPartVisitor {
 		visited = false;
 	}
 
-	@Override
 	public void visit(MeshComponent mesh) {
 		// Do nothing by default.
 	}
@@ -118,6 +118,12 @@ public class TestMeshVisitor implements IMeshPartVisitor {
 	@Override
 	public void visit(Object object) {
 		// Do nothing by default.
+	}
+
+	@Override
+	public void visit(VizMeshComponent mesh) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -8,8 +8,8 @@ Service-Component: OSGI-INF/vizService.xml
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory
-Export-Package: org.eclipse.ice.client.widgets.mesh.properties,
- org.eclipse.ice.viz.service.mesh.datastructures
+Export-Package: org.eclipse.ice.viz.service.mesh.datastructures,
+ org.eclipse.ice.viz.service.mesh.properties
 Import-Package: com.jme3.app,
  com.jme3.app.state,
  com.jme3.bullet,

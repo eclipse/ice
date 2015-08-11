@@ -357,8 +357,12 @@
 		<module>../src/org.eclipse.ice.viz</module>
 		<module>../tests/org.eclipse.ice.viz.test</module>
 		<module>../src/org.eclipse.ice.viz.service</module>
-		<module>../src/org.eclipse.ice.viz.service.geometry</module>
 		<module>../tests/org.eclipse.ice.viz.service.test</module>
+		<module>../src/org.eclipse.ice.viz.service.geometry</module>
+		<module>../src/org.eclipse.ice.viz.service.jme3</module>
+		<module>../src/org.eclipse.ice.viz.service.jme3.test</module>
+		<module>../src/org.eclipse.ice.viz.service.mesh</module>
+		<module>../src/org.eclipse.ice.viz.service.mesh.test</module>
 		<module>../src/org.eclipse.ice.viz.service.visit</module>
 		<module>../tests/org.eclipse.ice.viz.service.visit.test</module>
 		<module>../src/org.eclipse.ice.viz.service.paraview</module>
