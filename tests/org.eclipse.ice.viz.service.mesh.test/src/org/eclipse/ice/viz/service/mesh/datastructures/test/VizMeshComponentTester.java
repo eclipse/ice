@@ -26,9 +26,7 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.test.TestMeshVisitor;
 import org.eclipse.ice.datastructures.test.TestVisitor;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
@@ -489,51 +487,6 @@ public class VizMeshComponentTester {
 
 	/**
 	 * <p>
-	 * This operation checks MeshComponent to ensure that it can be correctly
-	 * visited by a realization of the IComponentVisitor and IMeshPartVisitor
-	 * interfaces.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkVisitation() {
-
-		// ---- Check visiting with an IComponentVisitor. ---- //
-		// Create a MeshComponent to test.
-		Component component = new MeshComponent();
-
-		// Create a new test visitor.
-		TestVisitor visitor = new TestVisitor();
-		assertFalse(visitor.wasVisited());
-
-		// Visit the component.
-		component.accept(visitor);
-
-		// Make sure the visitor visited successfully.
-		assertTrue(visitor.wasVisited());
-		// -------------------------------------------------- //
-
-		// ---- Check visiting with an IMeshPartVisitor. ---- //
-		// Create a new TestMeshVisitor that only does anything useful when
-		// visiting a MeshComponent.
-		TestMeshVisitor meshVisitor = new TestMeshVisitor() {
-			@Override
-			public void visit(VizMeshComponent component) {
-				visited = true;
-			}
-		};
-		assertFalse(meshVisitor.wasVisited());
-
-		// Now try to visit the MeshComponent with the TestMeshVisitor.
-		((MeshComponent) component).acceptMeshVisitor(meshVisitor);
-		assertTrue(meshVisitor.wasVisited());
-		// -------------------------------------------------- //
-
-		return;
-	}
-
-	/**
-	 * <p>
 	 * This operation tests the MeshComponent to ensure that it can properly
 	 * dispatch notifications when it receives an update that changes its state.
 	 * </p>
@@ -623,7 +576,7 @@ public class VizMeshComponentTester {
 		// Local Declarations
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(MeshComponent.class);
+		classList.add(VizMeshComponent.class);
 
 		// Create a simple polygon to add the the component.
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
@@ -641,7 +594,7 @@ public class VizMeshComponentTester {
 		Polygon shape = new Polygon(edges, vertices);
 
 		// Create a MeshComponent to test.
-		MeshComponent component = new MeshComponent();
+		VizMeshComponent component = new VizMeshComponent();
 
 		// Customize it.
 		component.setId(42);
@@ -657,8 +610,8 @@ public class VizMeshComponentTester {
 				outputStream.toByteArray());
 
 		// Load the input stream's contents into a new component.
-		MeshComponent loadedComponent = new MeshComponent();
-		loadedComponent = (MeshComponent) xmlHandler.read(classList, inputStream);
+		VizMeshComponent loadedComponent = new VizMeshComponent();
+		loadedComponent = (VizMeshComponent) xmlHandler.read(classList, inputStream);
 
 		// Make sure the two components match.
 		assertTrue(component.equals(loadedComponent));
@@ -693,9 +646,9 @@ public class VizMeshComponentTester {
 		polygon.setId(1);
 
 		// Initialize objects for testing.
-		MeshComponent object = new MeshComponent();
-		MeshComponent equalObject = new MeshComponent();
-		MeshComponent unequalObject = new MeshComponent();
+		VizMeshComponent object = new VizMeshComponent();
+		VizMeshComponent equalObject = new VizMeshComponent();
+		VizMeshComponent unequalObject = new VizMeshComponent();
 
 		// Set up the object and equalObject.
 		object.setName("YAMC");
@@ -789,9 +742,9 @@ public class VizMeshComponentTester {
 		shape2.setId(2);
 
 		// Initialize objects for testing.
-		MeshComponent object = new MeshComponent();
-		MeshComponent copy = new MeshComponent();
-		MeshComponent clone = null;
+		VizMeshComponent object = new VizMeshComponent();
+		VizMeshComponent copy = new VizMeshComponent();
+		VizMeshComponent clone = null;
 
 		// Set up the object.
 		object.setName("YAMC");
@@ -816,7 +769,7 @@ public class VizMeshComponentTester {
 		assertFalse(object.equals(clone));
 
 		// Copy the object.
-		clone = (MeshComponent) object.clone();
+		clone = (VizMeshComponent) object.clone();
 
 		// Make sure the references are different but contents the same.
 		assertFalse(object == clone);

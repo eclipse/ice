@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.application;
 
-import org.eclipse.ice.client.widgets.jme.MasterApplication;
-import org.eclipse.ice.client.widgets.jme.internal.MasterApplicationHolder;
+import org.eclipse.ice.viz.service.jme.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 

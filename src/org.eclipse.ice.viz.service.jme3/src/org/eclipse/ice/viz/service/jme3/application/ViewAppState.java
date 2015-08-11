@@ -18,9 +18,6 @@ import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.client.widgets.jme.EmbeddedView;
-import org.eclipse.ice.client.widgets.jme.IEmbeddedViewClient;
-import org.eclipse.ice.client.widgets.jme.MasterApplication;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;

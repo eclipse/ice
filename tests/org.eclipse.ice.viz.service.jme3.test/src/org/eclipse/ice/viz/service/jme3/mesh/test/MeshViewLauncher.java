@@ -11,9 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh.test;
 
-import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.jme.MasterApplication;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;
@@ -22,6 +20,7 @@ import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
 import org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction;
 import org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.widgets.VizActionTree;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
@@ -114,10 +113,10 @@ public class MeshViewLauncher {
 			final MeshAppState meshView) {
 
 		Action action;
-		ActionTree actionTree;
+		VizActionTree actionTree;
 
 		// Create the drop down for switching between add and modify modes
-		actionTree = new ActionTree("Mode");
+		actionTree = new VizActionTree("Mode");
 		// Use a MeshAppStateModeFactory to get the available modes and create
 		// ActionTrees for each one to go in the Mode menu.
 		MeshAppStateModeFactory factory = meshView.getModeFactory();
@@ -132,7 +131,7 @@ public class MeshViewLauncher {
 			// Set the Action's text and tool tip.
 			action.setText(mode.getName());
 			action.setToolTipText(mode.getDescription());
-			actionTree.add(new ActionTree(action));
+			actionTree.add(new VizActionTree(action));
 		}
 		manager.add(actionTree.getContributionItem());
 
@@ -141,12 +140,12 @@ public class MeshViewLauncher {
 
 		// Create the toggle switch to show or hide the heads-up display
 		action = new ToggleHUDAction(meshView);
-		actionTree = new ActionTree(action);
+		actionTree = new VizActionTree(action);
 		manager.add(actionTree.getContributionItem());
 
 		// Create the toggle switch to show or hide the axes.
 		action = new ToggleAxesAction(meshView);
-		actionTree = new ActionTree(action);
+		actionTree = new VizActionTree(action);
 		manager.add(actionTree.getContributionItem());
 
 		// Create the button to delete mesh elements.
@@ -158,7 +157,7 @@ public class MeshViewLauncher {
 		};
 		action.setText("Delete");
 		action.setToolTipText("Remove the selected element from the mesh");
-		actionTree = new ActionTree(action);
+		actionTree = new VizActionTree(action);
 		manager.add(actionTree.getContributionItem());
 
 		// Force an update for the ToolBarManager.

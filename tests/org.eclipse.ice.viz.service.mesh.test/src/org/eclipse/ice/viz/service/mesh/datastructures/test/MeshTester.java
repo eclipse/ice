@@ -17,10 +17,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.junit.Test;
 
 /**
@@ -53,7 +53,7 @@ public class MeshTester {
 		 *   This also changes the triangle!
 		 */
 
-		MeshComponent mesh = new MeshComponent();
+		VizMeshComponent mesh = new VizMeshComponent();
 		Polygon polygon;
 		ArrayList<Vertex> vertices;
 		Vertex vertex;
