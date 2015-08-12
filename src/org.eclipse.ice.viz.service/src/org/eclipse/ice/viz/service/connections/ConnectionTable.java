@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.viz.service.connections.preferences.IKeyChangeListener;
+import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;

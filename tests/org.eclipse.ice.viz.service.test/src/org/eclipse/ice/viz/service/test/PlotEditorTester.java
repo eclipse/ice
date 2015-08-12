@@ -25,11 +25,9 @@ import org.eclipse.ice.viz.service.BasicVizServiceFactory;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarDropDownButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -125,22 +123,18 @@ public class PlotEditorTester {
 		node.getNode("fib8.csv").select();
 		node.getNode("fib8.csv").doubleClick();
 
-		// Test the plot category selection menu
-		SWTBotToolbarDropDownButton button = bot.activeEditor().bot()
-				.toolbarDropDownButton();
-		button.menuItem("Plot Series").menu("f(x)").click();
-
-		// Close the menu before testing the next item
-		try {
-			button.pressShortcut(KeyStroke.getInstance("ESC"));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-			fail();
-		}
+		// Test the plot series selection dialog.
+		SWTBotToolbarButton button;
+		button = bot.activeEditor().bot().toolbarButton(0);
+		button.click();
+		bot.shell("Select a series").activate();
+		bot.tree().select("f(x)");
+		bot.button("OK").click();
 
 		// Test the editor closing menu option.
-		button.menuItem("Close").click();
+		button = bot.activeEditor().bot().toolbarButton(1).click();
 
+		return;
 	}
 
 	@AfterClass

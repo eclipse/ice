@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.geometry;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
@@ -74,49 +76,8 @@ public class JME3GeometryVizService extends AbstractVizService {
 	}
 
 	@Override
-	public boolean hasConnectionProperties() {
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getConnectionProperties()
-	 */
-	@Override
-	public Map<String, String> getConnectionProperties() {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.IVizService#setConnectionProperties(java.
-	 * util.Map)
-	 */
-	@Override
-	public void setConnectionProperties(Map<String, String> props) {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#connect()
-	 */
-	@Override
-	public boolean connect() {
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#disconnect()
-	 */
-	@Override
-	public boolean disconnect() {
-		return false;
+	protected Set<String> findSupportedExtensions() {
+		return new HashSet<String>();
 	}
 
 }

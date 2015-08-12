@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
@@ -22,6 +22,8 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.Circle;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory.Theme;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.PinFigure.DisplayType;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
@@ -121,6 +123,25 @@ public class PinAnalysisView extends AnalysisView {
 	private final ActionTree componentProperties;
 
 	/**
+	 * The action tree used to select the color theme used to color the assembly
+	 * view.
+	 */
+	private final ActionTree colorThemeTree;
+
+	/**
+	 * The color factory used to produce colors for the assembly data view.
+	 */
+	private final LinearColorFactory colorFactory;
+	/**
+	 * The current color theme used in the {@link #colorFactory}.
+	 */
+	private Theme colorTheme;
+	/**
+	 * Whether or not the current color theme should be inverted.
+	 */
+	private boolean reverseColorTheme;
+
+	/**
 	 * This enum is used to determine the source of changes to the axial level.
 	 * It is particularly useful to smooth out the scale widget.
 	 * 
@@ -132,10 +153,12 @@ public class PinAnalysisView extends AnalysisView {
 		 * Some other input is setting the axial level.
 		 */
 		NONE,
+
 		/*
 		 * The scale is setting the axial level.
 		 */
 		SCALE,
+
 		/**
 		 * The spinner is setting the axial level.
 		 */
@@ -209,6 +232,32 @@ public class PinAnalysisView extends AnalysisView {
 		featureTree = new ActionTree("Data Feature");
 		actions.add(featureTree);
 
+		// Set the default color factory and theme.
+		colorFactory = new LinearColorFactory();
+		colorTheme = LinearColorFactory.Theme.Rainbow2;
+		reverseColorTheme = false;
+		colorFactory.setColors(colorTheme, reverseColorTheme);
+
+		// Add an ActionTree for selecting the color scale theme.
+		colorThemeTree = new ActionTree("Color Theme");
+		// Add an action for each color theme.
+		for (final Theme theme : LinearColorFactory.Theme.values()) {
+			colorThemeTree.add(new ActionTree(new Action(theme.toString()) {
+				@Override
+				public void run() {
+					// If the theme is new, set it and refresh the view.
+					if (theme != colorTheme) {
+						colorTheme = theme;
+						colorFactory.setColors(theme, reverseColorTheme);
+						// Refresh each figure.
+						axialFigure.refreshData();
+						radialFigure.refreshData();
+					}
+				}
+			}));
+		}
+		actions.add(colorThemeTree);
+
 		// Add an ActionTree (single button) for viewing the pin properties.
 		componentProperties = new ActionTree(new Action("Pin Properties") {
 			@Override
@@ -220,8 +269,8 @@ public class PinAnalysisView extends AnalysisView {
 				// If it has properties, set the properties in the ICE
 				// Properties View.
 				if (properties != null) {
-					selectionProvider.setSelection(new StructuredSelection(
-							properties));
+					selectionProvider
+							.setSelection(new StructuredSelection(properties));
 				}
 			}
 		});
@@ -463,6 +512,7 @@ public class PinAnalysisView extends AnalysisView {
 		/* ---- Create the radial view. ---- */
 		// Initialize the radial figure.
 		radialFigure = new LonePinFigure();
+		radialFigure.setColorFactory(colorFactory);
 
 		// Set the radial figure as the content for the radial canvas.
 		LightweightSystem lws = new LightweightSystem(radialCanvas);
@@ -495,6 +545,7 @@ public class PinAnalysisView extends AnalysisView {
 		// Create the axial figure in the axial canvas.
 		// FIXME AxialPinFigure.
 		axialFigure = new AxialPinFigure();
+		axialFigure.setColorFactory(colorFactory);
 		lws = new LightweightSystem(axialCanvas);
 		lws.setContents(axialFigure);
 

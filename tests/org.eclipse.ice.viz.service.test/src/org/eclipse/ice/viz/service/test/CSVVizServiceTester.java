@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -21,13 +20,12 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
+import org.eclipse.ice.viz.service.csv.CSVProxyPlot;
 import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.junit.Test;
 
@@ -52,91 +50,93 @@ public class CSVVizServiceTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.viz.service.csv.CSVVizService#getConnectionProperties()}
-	 * .
-	 */
-	@Test
-	public void testGetConnectionProperties() {
-		// Make sure the properties are initially empty
-		IVizService service = new CSVVizService();
-		assertTrue(service.getConnectionProperties().isEmpty());
-
-		// Create a map with some property in it
-		Map<String, String> props = new HashMap<String, String>();
-		props.put("foo", "bar");
-
-		// Make sure it stays empty when the setter is called because this
-		// service does not require connection properties.
-		service.setConnectionProperties(props);
-		assertTrue(service.getConnectionProperties().isEmpty());
-
-		// Make sure the connect() operation always returns true.
-		assertTrue(service.connect());
-
-		// Make sure that the service says it doesn't need properties from the
-		// convenience method.
-		assertFalse(service.hasConnectionProperties());
-
-		return;
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.eclipse.ice.viz.service.csv.CSVVizService#createPlot(java.net.URI)}
 	 * .
-	 * 
-	 * @throws Exception
 	 */
 	@Test
-	public void testCreatePlot() throws Exception {
+	public void testCreatePlot() {
 		// Make sure the properties are initially empty
 		IVizService service = new CSVVizService();
 
 		// Create a URI pointing to the fib8.csv file for testing.
 		String s = System.getProperty("file.separator");
 		String home = System.getProperty("user.home");
-		File file = new File(home + s + "ICETests" + s + "CSVVizService" + s
-				+ "fib8.csv");
+		File file = new File(
+				home + s + "ICETests" + s + "CSVVizService" + s + "fib8.csv");
 
 		// Try to create a plot using the file.
-		IPlot plot = (IPlot) service.createPlot(file.toURI());
+		IPlot plot = null;
+		try {
+			plot = service.createPlot(file.toURI());
+		} catch (Exception e) {
+			fail("CSVVizService error: " + "Exception thrown for valid URI \""
+					+ file.getPath() + "\". See stack trace below:");
+			e.printStackTrace();
+		}
 		assertNotNull(plot);
 		assertEquals(file.toURI(), plot.getDataSource());
 
-		// It should actually return a CSVPlot, although that *could* change in
-		// the future.
-		assertTrue(plot instanceof CSVPlot);
+		// It should return a proxy to a CSVPlot.
+		assertTrue(plot instanceof CSVProxyPlot);
+
+		// Passing a null URI should throw an exception.
+		URI uri = null;
+		try {
+			service.createPlot(uri);
+		} catch (NullPointerException e) {
+			// Thrown as expected.
+		} catch (Exception e) {
+			// Some other exception was thrown. The super method is not called
+			// first!
+			fail("CSVVizServiceTester error: "
+					+ "NullPointerException not thrown for a null URI. "
+					+ "Does CSVVizService call the super class' "
+					+ "createPlot(...)?");
+		}
+
+		// Passing in a URI with an unsupported extension should throw an
+		// exception.
+		try {
+			uri = new URI("blah.jpg");
+			service.createPlot(uri);
+		} catch (IllegalArgumentException e) {
+			// Thrown as expected.
+		} catch (URISyntaxException e) {
+			// This should never happen.
+			fail("CSVVizServiceTester error: "
+					+ "Could not create test URI. This should never happen!");
+		} catch (Exception e) {
+			// Some other exception was thrown. The super method is not called
+			// first!
+			fail("CSVVizServiceTester error: "
+					+ "IllegalArgumentException not thrown for a URI with an "
+					+ "unsupported extension. Does CSVVizService call the "
+					+ "super class' createPlot(...)?");
+		}
 
 		return;
 	}
 
 	/**
-	 * Checks that the VisItVizService supports the correct file extensions.
+	 * Checks that the CSVVizService supports the correct file extensions.
 	 */
 	@Test
 	public void checkExtensions() {
 		CSVVizService service = new CSVVizService();
-
 		List<String> extensions = new ArrayList<String>();
 		// Only CSV files are supported.
 		extensions.add("csv");
 
-		// Check that each extension is supported by creating a simple URI with
-		// its extension and calling extensionSupported(URI).
+		// Check the contents of the supported extension set.
 		for (String extension : extensions) {
-			try {
-				// Check that the extension is supported.
-				URI uri = new URI("blah." + extension);
-				assertTrue("The extension \"" + extension
-						+ "\" is not supported.",
-						service.extensionSupported(uri));
-			} catch (URISyntaxException e) {
-				// This should never happen...
-				fail("CSVVizServiceTester error: " + "A test URI was invalid.");
-				e.printStackTrace();
-			}
+			// Check that the extension is in the set of supported extensions.
+			assertTrue(
+					"CSVVizServiceTester error: " + "Extension \"" + extension
+							+ "\" not supported.",
+					service.getSupportedExtensions().contains(extension));
 		}
 
 		return;
 	}
+
 }

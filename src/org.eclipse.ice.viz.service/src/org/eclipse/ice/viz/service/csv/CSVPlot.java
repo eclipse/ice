@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014-2015 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,8 @@
  * Contributors:
  *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
+ *   Kasper Gammeltoft - viz series refactor
+ *   Jordan Deyton - viz multi-series refactor 
  *******************************************************************************/
 package org.eclipse.ice.viz.service.csv;
 
@@ -17,18 +19,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.beanutils.ConvertUtils;
+import org.eclipse.ice.viz.service.AbstractPlot;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.MultiPlot;
-import org.eclipse.ice.viz.service.PlotRender;
-import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,11 @@ import org.slf4j.LoggerFactory;
  *         DrawnPlots.
  *
  */
-public class CSVPlot extends MultiPlot {
+public class CSVPlot extends AbstractPlot {
+
+	// TODO All series should be stored in the map, including the independent
+	// series. This way if the independent series is cleared, its data is not
+	// lost.
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -57,27 +60,67 @@ public class CSVPlot extends MultiPlot {
 	private static final Logger logger = LoggerFactory.getLogger(CSVPlot.class);
 
 	/**
-	 * The axis style used to decorate the x axis for this plot
+	 * A map containing all dependent series, keyed on the categories.
 	 */
-	private XYZAxisStyle xAxisStyle;
+	private final Map<String, List<ISeries>> dataSeries;
 
 	/**
-	 * The axis style used to decorate the y axis for this plot
+	 * Whether or not the data has been loaded.
 	 */
-	private XYZAxisStyle yAxisStyle;
+	private final AtomicBoolean loaded = new AtomicBoolean(false);
 
 	/**
-	 * The Constructor
-	 *
-	 * @param source
-	 *            The URI of the CSV file.
+	 * The default constructor.
 	 */
-	public CSVPlot(URI source) {
-		// Just call the super constructor
-		super(source);
-		xAxisStyle = null;
-		yAxisStyle = null;
-		return;
+	public CSVPlot() {
+		dataSeries = new HashMap<String, List<ISeries>>();
+
+		// Initially set the title to an empty string because the CSVPlotEditor
+		// does not like null titles.
+		setPlotTitle("");
+	}
+
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public List<String> getCategories() {
+		// Use the map of ProxySeries, which has the categories.
+		return new ArrayList<String>(dataSeries.keySet());
+	}
+
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public List<ISeries> getDependentSeries(String category) {
+		// Use the map of ProxySeries to get a new list of ISeries associated
+		// with the category.
+		List<ISeries> series = dataSeries.get(category);
+		if (series != null) {
+			series = new ArrayList<ISeries>(series);
+		}
+		return series;
+	}
+
+	/**
+	 * Always returns two as CSV plots are always 2D
+	 * 
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
+	 */
+	@Override
+	public int getNumberOfAxes() {
+		// The CSV plots are always 2D
+		return 2;
+	}
+
+	/**
+	 * Gets whether or not data has been loaded from the data source.
+	 * 
+	 * @return True if data has been loaded, false otherwise.
+	 */
+	public boolean isLoaded() {
+		return loaded.get();
 	}
 
 	/**
@@ -88,10 +131,14 @@ public class CSVPlot extends MultiPlot {
 	 */
 	public void load() {
 
-		if (source != null) {
+		URI uri = getDataSource();
+		if (uri != null) {
 			// Only load the file if it is a CSV file.
-			final File file = new File(source);
+			final File file = new File(uri);
 			if (file.getName().endsWith(".csv")) {
+				// Loading has not completed.
+				loaded.set(false);
+
 				// Create the loading thread.
 				Thread loadingThread = new Thread(new Runnable() {
 					@Override
@@ -117,7 +164,7 @@ public class CSVPlot extends MultiPlot {
 	}
 
 	/**
-	 * Attepts to load the CSV series data from the specified file. This
+	 * Attempts to load the CSV series data from the specified file. This
 	 * operation ignores all data that is marked as comments (i.e. if the line
 	 * starts with #), and ignores comments after the data in a line as well.
 	 * This operation takes the first column of CSV data as the independent
@@ -131,7 +178,7 @@ public class CSVPlot extends MultiPlot {
 	private void load(File file) {
 		// Initially set the name to the file name.
 		String plotName = file.getName();
-		this.setPlotTitle(plotName);
+		setPlotTitle(plotName);
 
 		// Configure the list
 		ArrayList<String[]> lines = new ArrayList<String[]>();
@@ -181,7 +228,7 @@ public class CSVPlot extends MultiPlot {
 			// Assume that the first line has information about the data
 			String[] seriesNames = lines.remove(0);
 
-			// Creates the
+			// Creates the series that contain the data loaded from the file.
 			CSVSeries[] series = new CSVSeries[seriesNames.length];
 			for (int i = 0; i < seriesNames.length; i++) {
 				series[i] = new CSVSeries();
@@ -205,179 +252,52 @@ public class CSVPlot extends MultiPlot {
 			}
 
 			// Just set the first series as the independent series for now
-			this.setIndependentSeries(series[0]);
+			setIndependentSeries(series[0]);
 
 			// Add the rest of the series as dependent series
+			List<ISeries> dependentSeries = new ArrayList<ISeries>(
+					series.length - 1);
+			dataSeries.put(IPlot.DEFAULT_CATEGORY, dependentSeries);
 			for (int i = 1; i < series.length; i++) {
-				this.addDependentSeries(series[i]);
+				dependentSeries.add(series[i]);
 			}
 
 		}
+
+		// Loading has completed.
+		loaded.set(true);
+
+		// Notify the listeners that loading has completed.
+		notifyPlotListeners("loaded", "true");
 
 		return;
 	}
 
-	/**
-	 * Always returns two as CSV plots are always 2D
-	 * 
-	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
-	 */
-	@Override
-	public int getNumberOfAxes() {
-		// The CSV plots are always 2D
-		return 2;
-	}
-
-	/**
-	 * Sets the new style for the csv plot. If null, the style will revert to
-	 * the default settings when being drawn in the editor.
-	 * 
-	 * @param newStyle
-	 */
-	public void setXAxisStyle(XYZAxisStyle newStyle) {
-		xAxisStyle = newStyle;
-	}
-
-	/**
-	 * Sets the new style for the csv plot. If null, the style will revert to
-	 * the default settings when being drawn in the editor.
-	 * 
-	 * @param newStyle
-	 */
-	public void setYAxisStyle(XYZAxisStyle newStyle) {
-		yAxisStyle = newStyle;
-	}
-
-	/**
-	 * Gets the axis style used to decorate the x axis. If null, then the editor
-	 * will use the default values.
-	 * 
-	 * @return XYZAxisStyle the style used.
-	 */
-	public XYZAxisStyle getXAxisStyle() {
-		return xAxisStyle;
-	}
-
-	/**
-	 * Gets the axis style used to decorate the y axis. If null, then the editor
-	 * will use the default values.
-	 * 
-	 * @return XYZAxisStyle the style used
-	 */
-	public XYZAxisStyle getYAxisStyle() {
-		return yAxisStyle;
-	}
-
-	/**
-	 * @see org.eclipse.ice.viz.service.IPlot#draw(java.lang.String,
-	 *      java.lang.String, org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public Composite draw(Composite parent) throws Exception {
-
-		// Create the plot render if it doesn't exist and legitimize the parent
-		// composite for use with this plot. Using the functionality of
-		// MultiPlot.draw(Composite) here
-		Composite child = null;
-
-		// Check the parameters.
-		if (parent == null) {
-			throw new NullPointerException("IPlot error: "
-					+ "Null arguments are not allowed when drawing plot.");
-		} else if (parent.isDisposed()) {
-			throw new SWTException(SWT.ERROR_WIDGET_DISPOSED, "IPlot error: "
-					+ "Cannot draw plot inside disposed Composite.");
-		}
-
-		// Get the PlotRender associated with the parent Composite.
-		PlotRender plotRender = plotRenders.get(parent);
-
-		// Create the PlotRender and associate it with the parent as necessary.
-		if (plotRender == null) {
-			plotRender = createPlotRender(parent);
-			plotRenders.put(parent, plotRender);
-		}
-
-		// Get the drawn plot associated with the parent Composite, creating
-		// a new editor if necessary.
-		plotRender = (CSVPlotRender) plotRenders.get(parent);
-
-		// When the parent is disposed, remove the drawn plot and
-		// dispose of any of its resources.
-		parent.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				((CSVPlotRender) plotRenders.remove(e.widget)).dispose();
-			}
-		});
-
-		// Reset the plot time to the initial time.
-		// double plotTime = 0.0;// baseProvider.getTimes().get(0);
-		// FIXME Won't this affect all of the drawn plots?
-		// baseProvider.setTime(plotTime);
-
-		// Update the series for the render, in case any series have been added
-		// or enabled since the last call to draw()
-		for (ISeries series : getAllDependentSeries(IPlot.DEFAULT_CATEGORY)) {
-			if (series.enabled()) {
-				((CSVPlotRender) plotRender).addSeries(series);
-			}
-		}
-
-		// Trigger the appropriate update to the PlotRender's content.
-		updatePlotRender(plotRender);
-
-		// We need to return the Composite used to render the CSV plot. Does not
-		// really sync up with MultiPlot's draw method (which returns its own
-		// plot composite rather than something from an editor), but that is ok
-		// for now.
-		child = ((CSVPlotRender) plotRender).getEditor().getPlotCanvas();
-
-		// Return the child composite
-		return child;
-
-	}
-
-	/**
-	 * Implements the method createPlotRender (Composite) for the multiplot.
-	 * This is essential for extending the multiplot behavior. Just return a new
-	 * CSVPlotRender so the draw(composite) method can use it.
-	 * 
-	 * @return PlotRender A new CSVPlotRender
-	 */
-	@Override
-	protected PlotRender createPlotRender(Composite parent) {
-		return new CSVPlotRender(parent, this);
-	}
-
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.IPlot#redraw()
+	 * Overrides a method from AbstractPlot.
 	 */
 	@Override
 	public void redraw() {
 		// Start off by reloading this IPlot's representative data set.
 		load();
 
-		// Then loop over all drawn plots and re-execute the draw method.
-		for (final Composite comp : plotRenders.keySet()) {
-			comp.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						// Redraw the plot
-						draw(comp);
-					} catch (Exception e) {
-						logger.error(
-								getClass().getName()
-										+ " Exception! Error while drawing plot.",
-								e);
-					}
-				}
-			});
+		// We don't actually draw with a CSVPlot, but with CSVProxyPlots.
+	}
 
+	/*
+	 * Overrides a method from AbstractPlot.
+	 */
+	@Override
+	public boolean setDataSource(URI uri) throws Exception {
+		boolean changed = super.setDataSource(uri);
+		if (changed) {
+			// Unregister from the old data source URI.
+			dataSeries.clear();
+
+			// Register with the new data source URI.
+			load();
 		}
+		return changed;
 	}
 
 }

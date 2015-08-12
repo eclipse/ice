@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
@@ -27,8 +27,8 @@ import org.eclipse.draw2d.StackLayout;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.widgets.reactoreditor.Circle;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScale;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScalePalette;
+import org.eclipse.ice.client.widgets.reactoreditor.IColorFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.CellFigure;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
@@ -68,16 +68,15 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 		/**
 		 * The default view, which just displays an empty circle.
 		 */
-		EMPTY("Empty"),
-		/**
-		 * The geometry view, which displays the rod as a radial slice of
-		 * materials.
-		 */
-		GEOMETRY("Geometry"),
-		/**
-		 * The state-point data view, which displays a text label with data
-		 * pertaining to a specific feature.
-		 */
+		EMPTY("Empty"), /**
+						 * The geometry view, which displays the rod as a radial
+						 * slice of materials.
+						 */
+		GEOMETRY("Geometry"), /**
+								 * The state-point data view, which displays a
+								 * text label with data pertaining to a specific
+								 * feature.
+								 */
 		DATA("State Point Data");
 
 		/**
@@ -194,10 +193,10 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	 */
 	protected boolean useCustomExtrema;
 	/**
-	 * The ColorScale used to color the data label's background based on the min
-	 * and max values.
+	 * The color factory used to color the data label's background based on the
+	 * min and max values.
 	 */
-	protected ColorScale colorScale;
+	protected IColorFactory colorFactory;
 	/* -------------------------------- */
 
 	/* ---- Other variables ---- */
@@ -239,7 +238,7 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 		customMinValue = null;
 		customMaxValue = null;
 		useCustomExtrema = false;
-		colorScale = ColorScalePalette.Rainbow1.getColorScale();
+		colorFactory = new LinearColorFactory();
 		displayType = DisplayType.GEOMETRY;
 
 		// Set the overall background color to white.
@@ -532,17 +531,16 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 	}
 
 	/**
-	 * Sets the {@link ColorScale} currently used to determine the background
-	 * color of the RodFigure. For handy preset scales, see
-	 * {@link ColorScalePalette}.
+	 * Sets the {@link IColorFactory} currently used to determine the background
+	 * color of the RodFigure.
 	 * 
-	 * @param colorScale
-	 *            The new ColorScale to use for the RodFigure's background.
+	 * @param colorFactory
+	 *            The new color factory to use for the RodFigure's background.
 	 */
-	public void setColorScale(ColorScale colorScale) {
-		if (colorScale != null && colorScale != this.colorScale) {
-			// Update the stored reference to the ColorScale.
-			this.colorScale = colorScale;
+	public void setColorFactory(IColorFactory colorFactory) {
+		if (colorFactory != null && colorFactory != this.colorFactory) {
+			// Update the stored reference to the factory.
+			this.colorFactory = colorFactory;
 
 			// Refresh the data label.
 			refreshData();
@@ -648,16 +646,17 @@ public class RodFigure extends CellFigure implements ILWRComponentVisitor {
 			value = featureData.get(axialLevel).getValue();
 
 			// Compute the background color of the value based on the current
-			// ColorScale.
-			bg = colorScale
-					.getColor((value - minValue) / (maxValue - minValue));
+			// color factory.
+			int color = colorFactory
+					.findColor((value - minValue) / (maxValue - minValue));
+			bg = colorFactory.createColor(null, color);
 
 			// Determine the proper foreground color so that the text will not
 			// be an eye sore. This uses the Rec. 709 luma coefficients. We use
 			// that with a threshold value to determine if the text should be
 			// white or black.
-			int luma = (int) (0.2126 * bg.getRed() + 0.7152 * bg.getGreen() + 0.0722 * bg
-					.getBlue());
+			int luma = (int) (0.2126 * bg.getRed() + 0.7152 * bg.getGreen()
+					+ 0.0722 * bg.getBlue());
 			fg = (luma < 75 ? ColorConstants.white : ColorConstants.black);
 		} else {
 			// If no data is available, the value is 0 and it's white on a black
