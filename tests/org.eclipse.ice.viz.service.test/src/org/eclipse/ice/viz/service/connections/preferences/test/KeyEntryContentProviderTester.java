@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
 import org.eclipse.ice.viz.service.connections.preferences.KeyEntryContentProvider;
@@ -62,7 +61,7 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(intKeys);
 
 		// Check the allowed value type. It should be undefined.
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 		// Check the allowed values. The list should be empty, but not null.
@@ -85,7 +84,7 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(discreteKeys);
 
 		// Check the allowed value type. It should be discrete.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		// Check the allowed values. The list should be empty, but not null.
@@ -117,7 +116,7 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(discreteKeys);
 
 		// Check the allowed value type. It should be discrete.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		// Check the allowed values. The list should be empty, but not null.
@@ -407,13 +406,13 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(intKeys);
 
 		// Check the allowed value type. It should be undefined.
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 		// No matter what type we try to set it to, it cannot be changed.
 		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
-			assertEquals(AllowedValueType.Undefined,
+			assertEquals(VizAllowedValueType.Undefined,
 					contentProvider.getAllowedValueType());
 		}
 		// ---------------------------------------------------------------- //
@@ -425,13 +424,13 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(discreteKeys);
 
 		// Check the allowed value type. It should be discrete.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		// No matter what type we try to set it to, it cannot be changed.
 		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
-			assertEquals(AllowedValueType.Discrete,
+			assertEquals(VizAllowedValueType.Discrete,
 					contentProvider.getAllowedValueType());
 		}
 		// -------------------------------------------------------------- //
@@ -439,7 +438,7 @@ public class KeyEntryContentProviderTester {
 		// Try using a null value type.
 		contentProvider.setAllowedValueType(nullType);
 		// The value type should not change.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		return;

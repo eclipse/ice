@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
+import org.eclipse.ice.viz.service.jme3.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.jme.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;

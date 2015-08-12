@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.preferences.TableComponentPreferenceAdapter;
@@ -255,7 +256,8 @@ public abstract class ConnectionManager<T> {
 	 */
 	private String getDefaultConnectionKey() {
 		int id = getPreferenceStore().getInt("defaultConnection");
-		List<String> connectionNames = table.getConnectionNames();
+		Set<String> set = table.getConnectionNames();
+		List<String> connectionNames = new ArrayList<String>(set);
 		return (id < connectionNames.size() ? connectionNames.get(id) : null);
 	}
 

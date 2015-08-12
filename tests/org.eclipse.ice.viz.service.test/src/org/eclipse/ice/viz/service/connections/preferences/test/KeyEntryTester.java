@@ -21,9 +21,6 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
 import org.eclipse.ice.viz.service.connections.preferences.KeyEntry;
 import org.eclipse.ice.viz.service.connections.preferences.KeyEntryContentProvider;

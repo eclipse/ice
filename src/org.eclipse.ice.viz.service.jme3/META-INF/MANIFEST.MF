@@ -4,10 +4,13 @@ Bundle-Name: jMonkey Engine 3 Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.jme3;singleton:=true
 Bundle-Version: 2.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/vizService.xml
+Service-Component: OSGI-INF/vizService.xml,
+ OSGI-INF/MasterApplicationFactory.xml,
+ OSGI-INF/MasterApplicationHolder.xml
 Require-Bundle: org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.viz.service.jme3.application,
+ org.eclipse.ice.viz.service.jme3.internal,
  org.eclipse.ice.viz.service.jme3.mesh,
  org.eclipse.ice.viz.service.jme3.widgets
 Import-Package: com.jme3.app,

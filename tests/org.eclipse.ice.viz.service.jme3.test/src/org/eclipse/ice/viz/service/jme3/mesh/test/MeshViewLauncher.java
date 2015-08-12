@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh.test;
 
-import org.eclipse.ice.client.widgets.jme.MasterApplication;
+import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;

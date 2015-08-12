@@ -21,8 +21,6 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
@@ -512,19 +510,19 @@ public class PortEntryContentProviderTester {
 		contentProvider = new PortEntryContentProvider();
 
 		// The default type should be "Continuous".
-		assertEquals(AllowedValueType.Continuous,
+		assertEquals(VizAllowedValueType.Continuous,
 				contentProvider.getAllowedValueType());
 
 		// Trying to set any valid type should change nothing.
 		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
-			assertEquals(AllowedValueType.Continuous,
+			assertEquals(VizAllowedValueType.Continuous,
 					contentProvider.getAllowedValueType());
 		}
 
 		// Trying to set a null type should change nothing.
 		contentProvider.setAllowedValueType(nullType);
-		assertEquals(AllowedValueType.Continuous,
+		assertEquals(VizAllowedValueType.Continuous,
 				contentProvider.getAllowedValueType());
 
 		return;

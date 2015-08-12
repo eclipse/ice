@@ -10,7 +10,7 @@
  *      initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.jme.internal;
+package org.eclipse.ice.viz.service.jme3.internal;
 
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 

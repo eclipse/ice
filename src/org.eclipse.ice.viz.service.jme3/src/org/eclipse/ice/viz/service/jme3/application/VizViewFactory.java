@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.application;
 
-import org.eclipse.ice.viz.service.jme.internal.MasterApplicationHolder;
+import org.eclipse.ice.viz.service.jme3.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
@@ -28,7 +28,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
  * @author Jordan
  * 
  */
-public class ViewFactory {
+public class VizViewFactory {
 
 	// TODO We may want to handle this via an OSGi-based factories and registry.
 
@@ -40,7 +40,7 @@ public class ViewFactory {
 	/**
 	 * The default constructor.
 	 */
-	public ViewFactory() {
+	public VizViewFactory() {
 		this(false);
 	}
 
@@ -65,7 +65,7 @@ public class ViewFactory {
 	 *            <code>MasterApplication</code> when it cannot acquire one via
 	 *            OSGi.
 	 */
-	public ViewFactory(boolean staticFallBack) {
+	public VizViewFactory(boolean staticFallBack) {
 
 		// Try to get the app via OSGi.
 		MasterApplication app = MasterApplicationHolder.getApplication();

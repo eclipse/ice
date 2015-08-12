@@ -10,9 +10,9 @@
  *      initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.jme.internal;
+package org.eclipse.ice.viz.service.jme3.internal;
 
-import org.eclipse.ice.client.widgets.jme.MasterApplication;
+import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 
 /**
  * This class provides an implementation for {@link IMasterApplicationFactory}.

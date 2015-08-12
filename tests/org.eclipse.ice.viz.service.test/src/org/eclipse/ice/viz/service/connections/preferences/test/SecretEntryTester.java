@@ -17,9 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.SecretEntry;
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
