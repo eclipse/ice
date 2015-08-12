@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Robert Smith
  *******************************************************************************/
-package org.eclipse.ice.viz.service.geometry;
+package org.eclipse.ice.viz.service.jme3.geometry;
 
 import java.util.Map;
 
@@ -17,6 +17,7 @@ import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
+
 
 /**
  * This class is an implementation of IVizService which provides a 3D
@@ -26,12 +27,12 @@ import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
  * @author Robert Smith
  *
  */
-public class GeometryVizService extends AbstractVizService {
+public class JME3GeometryVizService extends AbstractVizService {
 
 	/**
 	 * The default constructor. There is nothing to initialize.
 	 */
-	public GeometryVizService() {
+	public JME3GeometryVizService() {
 
 	}
 
@@ -46,7 +47,7 @@ public class GeometryVizService extends AbstractVizService {
 	@Override
 	public IVizCanvas createCanvas(VizObject geometry) {
 		if (geometry instanceof Geometry) {
-			GeometryCanvas canvas = new GeometryCanvas((Geometry) geometry);
+			JME3GeometryCanvas canvas = new JME3GeometryCanvas((Geometry) geometry);
 			return canvas;
 		}
 		throw new IllegalArgumentException("GeometryService can only render geometry viz objects.");

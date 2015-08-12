@@ -1,4 +1,4 @@
-package org.eclipse.ice.viz.service.geometry;
+package org.eclipse.ice.viz.service.jme3.geometry;
 
 import java.awt.Canvas;
 import java.awt.EventQueue;
@@ -12,17 +12,6 @@ import java.util.Vector;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
-import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
-import org.eclipse.ice.viz.service.geometry.shapes.Tube;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeMaterial;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
@@ -52,6 +41,17 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
+import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
+import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
+import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;
+import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
+import org.eclipse.ice.viz.service.geometry.shapes.Tube;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeMaterial;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
 
 /**
  * <p>
@@ -60,7 +60,7 @@ import com.jme3.system.JmeCanvasContext;
  * 
  * @author Andrew P. Belt
  */
-public class GeometryCanvas extends SimpleApplication implements IVizCanvas, IVizUpdateableListener {
+public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas, IVizUpdateableListener {
 
 
 
@@ -68,7 +68,7 @@ public class GeometryCanvas extends SimpleApplication implements IVizCanvas, IVi
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
-			.getLogger(GeometryCanvas.class);
+			.getLogger(JME3GeometryCanvas.class);
 
 	/**
 	 * Some of the code in this file was adapted from the JME3 tutorials and
@@ -264,7 +264,7 @@ public class GeometryCanvas extends SimpleApplication implements IVizCanvas, IVi
 	 * 
 	 * @param newGeometry The Geometry this canvas will display.
 	 */
-	public GeometryCanvas(Geometry newGeometry){
+	public JME3GeometryCanvas(Geometry newGeometry){
 		geometry = newGeometry;
 	}
 
