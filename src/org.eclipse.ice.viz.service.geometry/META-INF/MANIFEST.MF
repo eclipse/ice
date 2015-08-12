@@ -28,7 +28,6 @@ Import-Package: com.jme3.app,
  visit.java.client
 Export-Package: org.eclipse.ice.viz.service.geometry.widgets,
  org.eclipse.ice.viz.service.geometry.shapes
-Service-Component: OSGI-INF/vizService.xml
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory

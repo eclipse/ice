@@ -60,7 +60,7 @@ public class JME3GeometryVizService extends AbstractVizService {
 	 */
 	@Override
 	public String getName() {
-		return "geometry editor";
+		return "JME3 Geometry Editor";
 	}
 
 	/*

@@ -170,7 +170,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 		Composite parent = pageForm.getBody();
 		
 		BasicVizServiceFactory factory = (BasicVizServiceFactory) ((ICEFormEditor) editor).getVizServiceFactory();
-		IVizService service = factory.get("geometry editor");
+		IVizService service = factory.get("JME3 Geometry Editor");
 		try {
 			IVizCanvas vizCanvas = service.createCanvas(geometryComp.getGeometry().getGeometry());
 			vizCanvas.draw(parent);

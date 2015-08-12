@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.viz.service.geometry">
-   <implementation class="org.eclipse.ice.viz.service.geometry.GeometryVizService"/>
+   <implementation class="org.eclipse.ice.viz.service.jme3.geometry.JME3GeometryVizService"/>
    <service>
       <provide interface="org.eclipse.ice.viz.service.IVizService"/>
    </service>
