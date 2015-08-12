@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+
 	<!-- Custom properties -->
 	<properties>
 		<tycho-version>0.23.0</tycho-version>
@@ -9,7 +9,7 @@
 		<target-version>2.1.7.${maven.build.timestamp}</target-version>
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
-	
+
 	<!-- This is the parent POM from which all modules inherit common settings -->
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
@@ -61,6 +61,7 @@
 
 	</profiles>
 
+	<!-- This is the main build part that sets up all of the rules. -->
 	<build>
 		<plugins>
 			<plugin>
@@ -91,6 +92,7 @@
 				</configuration>
 			</plugin>
 
+			<!-- This configures the target platform and the supported architectures. -->
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>target-platform-configuration</artifactId>
@@ -173,9 +175,44 @@
 				</executions>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.tycho.extras</groupId>
+							<artifactId>tycho-buildtimestamp-jgit</artifactId>
+							<version>${tycho-version}</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<timestampProvider>jgit</timestampProvider>
+						<jgit.ignore>
+							pom.xml
+						</jgit.ignore>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<baselineRepositories>
+							<repository>
+								<url>https://sourceforge.net/projects/niceproject/files/nightly/update/</url>
+							</repository>
+						</baselineRepositories>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
-	<!-- Add the repositorys for the Jersey bundles -->
+	<!-- Add the repositories for the Jersey bundles -->
 	<repositories>
 
 		<repository>
