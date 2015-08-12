@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.reactor.sfr
 Bundle-SymbolicName: org.eclipse.ice.reactor.sfr
-Bundle-Version: 2.1.7.20150808
+Bundle-Version: 2.1.7.20150812
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: 
  org.eclipse.ice.reactor.sfr.base,

@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.7.20150808</version>
+	<version>2.1.7.20150812</version>
 	<packaging>pom</packaging>
 
 	<profiles>
@@ -64,6 +64,31 @@
 	<!-- This is the main build part that sets up all of the rules. -->
 	<build>
 		<plugins>
+
+			<!-- This shows the full name of the POM for debugging. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Displaying full POM filename:</echo>
+								<echo>[pom-filename] ${pom-filename}</echo>
+								<echo>${target-version}</echo>
+								<echo>${newVersion}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Setup all the tycho build extensions -->
 			<plugin>
 				<!-- enable tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
@@ -150,27 +175,6 @@
 							<goal>set-version</goal>
 							<goal>update-pom</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- This shows the full name of the POM for debugging. -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<echo>Displaying full POM filename:</echo>
-								<echo>[pom-filename] ${pom-filename}</echo>
-							</tasks>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
