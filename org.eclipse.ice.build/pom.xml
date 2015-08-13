@@ -180,6 +180,7 @@
 			</plugin>
 		</plugins>
 
+		<!-- This configured git support for examining the bundles and only updating the versions if they change. -->
 		<pluginManagement>
 			<plugins>
 				<plugin>

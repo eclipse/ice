@@ -22,7 +22,7 @@ import org.eclipse.ice.item.ItemType;
  * This is a fake implementation of the ItemBuilder interface that is used to
  * test the ItemManager and the Core. It fakes the creation of a Geometry Item.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class FakeGeometryBuilder implements ItemBuilder {
@@ -30,15 +30,25 @@ public class FakeGeometryBuilder implements ItemBuilder {
 	 * <p>
 	 * The last FakeItem created by the builder.
 	 * </p>
-	 * 
+	 *
 	 */
 	private FakeItem lastFakeItem;
+
+	/**
+	 * The name of the Items created by this class.
+	 */
+	public static final String name = "Inigo Montoya";
+
+	/**
+	 * The type of the Items created by this class.
+	 */
+	public static final ItemType type = ItemType.Geometry;
 
 	/**
 	 * <p>
 	 * Retrieve the last FakeItem created by the builder.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The last FakeItem created by the builder.
 	 *         </p>
@@ -49,27 +59,27 @@ public class FakeGeometryBuilder implements ItemBuilder {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemBuilder#getItemName()
 	 */
 	@Override
 	public String getItemName() {
-		return "Inigo Montoya";
+		return name;
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemBuilder#getItemType()
 	 */
 	@Override
 	public ItemType getItemType() {
-		return ItemType.Geometry;
+		return type;
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ItemBuilder#build(IProject projectSpace)
 	 */
 	@Override

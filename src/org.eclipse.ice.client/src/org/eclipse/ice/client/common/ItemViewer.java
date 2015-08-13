@@ -34,17 +34,18 @@ import org.slf4j.LoggerFactory;
 /**
  * This class provides an Eclipse view showing the list of Items that have been
  * created and made available in the Core.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class ItemViewer extends ViewPart {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ItemViewer.class);
-			
+	private static final Logger logger = LoggerFactory
+			.getLogger(ItemViewer.class);
+
 	/**
 	 * The id
 	 */
@@ -96,7 +97,7 @@ public class ItemViewer extends ViewPart {
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
-						logger.error(getClass().getName() + " Exception!",e);
+						logger.error(getClass().getName() + " Exception!", e);
 					}
 				}
 				// Sync with the display
@@ -227,7 +228,8 @@ public class ItemViewer extends ViewPart {
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
-							logger.error(getClass().getName() + " Exception!",e);
+							logger.error(getClass().getName() + " Exception!",
+									e);
 						}
 					}
 				}
@@ -240,7 +242,7 @@ public class ItemViewer extends ViewPart {
 
 	/**
 	 * A simple pass-through for setting the focus. It does nothing.
-	 * 
+	 *
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override

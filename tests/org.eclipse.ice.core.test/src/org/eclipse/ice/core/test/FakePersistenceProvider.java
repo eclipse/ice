@@ -18,6 +18,8 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.item.Item;
 
 /**
+ * This is a fake implementation of the persistence interface and it is used for
+ * testing the core.
  * 
  * @author Jay Jay Billings
  */
@@ -26,21 +28,21 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 * <p>
 	 * True if the Items were loaded, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private volatile boolean loaded = false;
 	/**
 	 * <p>
 	 * True if an individual Item was persisted, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private volatile boolean persisted = false;
 	/**
 	 * <p>
 	 * True if an individual Item was updated, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private volatile boolean updated = false;
 
@@ -48,7 +50,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 * <p>
 	 * True if an individual Item was deleted, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private volatile boolean deleted = false;
 
@@ -56,7 +58,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 * <p>
 	 * This operation returns true if the Items were loaded, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         True if the Items were loaded, false otherwise.
 	 *         </p>
@@ -69,7 +71,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 * <p>
 	 * This operation resets the provider's flags for the test.
 	 * </p>
-	 * 
+	 *
 	 */
 	public void reset() {
 
@@ -82,39 +84,27 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	}
 
 	/**
-	 * <p>
 	 * This operation returns true if an Item was loaded, false otherwise.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         True if an individual Item was persisted, false otherwise.
-	 *         </p>
+	 *
+	 * @return True if an individual Item was persisted, false otherwise.
 	 */
 	public boolean itemPersisted() {
 		return persisted;
 	}
 
 	/**
-	 * <p>
 	 * This operation returns true if an Item was updated, false otherwise.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         True if an individual Item was updated, false otherwise.
-	 *         </p>
+	 *
+	 * @return True if an individual Item was updated, false otherwise.
 	 */
 	public boolean itemUpdated() {
 		return updated;
 	}
 
 	/**
-	 * <p>
 	 * This operation returns true if an Item was loaded, false otherwise.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         True if an individual Item was deleted, false otherwise.
-	 *         </p>
+	 *
+	 * @return True if an individual Item was deleted, false otherwise.
 	 */
 	public boolean itemDeleted() {
 		return deleted;
@@ -122,7 +112,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IPersistenceProvider#persistItem(Item item)
 	 */
 	@Override
@@ -135,7 +125,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IPersistenceProvider#loadItem(int itemID)
 	 */
 	@Override
@@ -146,7 +136,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IPersistenceProvider#deleteItem(Item item)
 	 */
 	@Override
@@ -159,7 +149,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IPersistenceProvider#updateItem(Item item)
 	 */
 	@Override
@@ -172,7 +162,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IPersistenceProvider#loadItems()
 	 */
 	@Override
@@ -198,7 +188,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see IPersistenceProvider#getClassForItemId(int itemID)
 	 */
 	public Class getClassForItemId(int itemID) {

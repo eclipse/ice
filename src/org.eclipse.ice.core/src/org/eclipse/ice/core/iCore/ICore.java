@@ -35,15 +35,15 @@ import org.eclipse.ice.item.ItemBuilder;
  * ICore is an interface that is realized by Core and used by clients that
  * connect to the Core. It describes the services and data available upon
  * request from the server.
- * 
+ *
  * The Connect() operation must be called to obtain a unique identification
  * number for the client. After that, all of the other operations on this
  * interface will be available.
- * 
+ *
  * Realizations of ICore are intended to be used as web-APIs and, to that end,
  * many of the arguments in the operations are Strings that should be safe to
  * cast to integers.
- * 
+ *
  * @author Jay Jay Billings
  */
 @Path("/")
@@ -53,7 +53,7 @@ public interface ICore {
 	 * case is represented by a unique client id that is returned from this
 	 * operation. It is safe to parse this id as an integer and that integer
 	 * should always be greater than 0.
-	 * 
+	 *
 	 * @return The unique client identification number that has been assigned to
 	 *         the client that made the request. It is safe to parse this string
 	 *         as an integer.
@@ -65,7 +65,7 @@ public interface ICore {
 	/**
 	 * This operation will disconnect a client from the remote server if it is
 	 * connected.
-	 * 
+	 *
 	 * @param uniqueClientId
 	 *            The unique client identification number of the client that
 	 *            would like to disconnect.
@@ -75,7 +75,7 @@ public interface ICore {
 	/**
 	 * This operation retrieves the workspace file system available to the
 	 * ICEUser. It returns a Form that contains the directory structure.
-	 * 
+	 *
 	 * @param uniqueClientID
 	 *            The unique ID of the Client calling the operation.
 	 * @return A Form that contains a description of the workspace file system
@@ -87,7 +87,7 @@ public interface ICore {
 	 * This operation registers an ItemBuilder and thereby a particular Item
 	 * class with the Core. This operation is primarily used by the underlying
 	 * OSGi framework to publish available Item types to ICE.
-	 * 
+	 *
 	 * @param itemBuilder
 	 *            An instance of ItemBuilder for a particular Item that is
 	 *            available to the Core.
@@ -99,7 +99,7 @@ public interface ICore {
 	 * are Items that depend on other Items to function. This operation is
 	 * primarily used by the underlying OSGi framework to publish available Item
 	 * types to ICE.
-	 * 
+	 *
 	 * @param builder
 	 *            The ICompositeItemBuilder that will build the composite Item.
 	 */
@@ -110,7 +110,7 @@ public interface ICore {
 	 * class with the Core. This operation is primarily used by the underlying
 	 * OSGi framework to notify ICE if or when a particular type of Item, which
 	 * is stored in an OSGi bundle, becomes unavailable.
-	 * 
+	 *
 	 * @param itemBuilder
 	 *            An instance of ItemBuilder for a particular Item that is now
 	 *            unavailable to the Core.
@@ -123,7 +123,7 @@ public interface ICore {
 	 * Item. The caller of this operation should immediately inquire after the
 	 * status of the Item that was created using the getItemStatus() operation
 	 * to determine if more information is required to make the Item usable.
-	 * 
+	 *
 	 * @param itemType
 	 *            The type of Item to create.
 	 * @param project
@@ -139,12 +139,12 @@ public interface ICore {
 	 * This operation is a utility operation that performs the same work as the
 	 * two argument createItem, except it creates the Item in a default project
 	 * space.
-	 * 
+	 *
 	 * This operation is mapped via JAX-RS to the web interface.
-	 * 
+	 *
 	 * Of historical note, this was the original implementation of this
 	 * operation and project support was added nearly four years later.
-	 * 
+	 *
 	 * @param itemType
 	 *            The type of Item to create.
 	 * @return The identification number given as a String of the newly created
@@ -158,7 +158,7 @@ public interface ICore {
 
 	/**
 	 * This operation directs the ICore to *PERMANTENTLY* delete an Item.
-	 * 
+	 *
 	 * @param itemId
 	 *            The identification number of the Item that should be deleted
 	 *            given as a String. It is safe to parse this string as an
@@ -168,7 +168,7 @@ public interface ICore {
 
 	/**
 	 * This operation returns the status an Item.
-	 * 
+	 *
 	 * @param id
 	 *            The identification number of the Item that should be checked.
 	 * @return The status of the Item.
@@ -178,14 +178,14 @@ public interface ICore {
 	/**
 	 * This operation returns the representational state, a Form, of an Item
 	 * that is managed by the ICore to the caller.
-	 * 
+	 *
 	 * If this operation is called immediately after processItem() with the same
 	 * Item id and the call to processItem() returns FormStatus.NeedsInfo, then
 	 * this operation will return a simple Form composed of a single
 	 * DataComponent with Entries for all of the additional required
 	 * information. The smaller Form is created by the Action that is executed
 	 * during the call to processItem().
-	 * 
+	 *
 	 * @param itemId
 	 *            The identification number of the Item that should be
 	 *            retrieved.
@@ -200,7 +200,7 @@ public interface ICore {
 	 * This operation returns a list of the available Item types that can be
 	 * created by ICE or null if no Items are registered with the Core. It
 	 * returns an ICEList of Strings, (i.e. - ICEList&lt;Strings&gt; in Java).
-	 * 
+	 *
 	 * @return The list of ItemTypes that can be created by ICE. This list is
 	 *         determined by the Items that are currently registered with the
 	 *         running realization of ICore.
@@ -213,7 +213,7 @@ public interface ICore {
 	/**
 	 * This operation posts an updated Form to the Core so that the updated
 	 * information can be processed by the appropriate Item.
-	 * 
+	 *
 	 * @param form
 	 *            The Form that carries new information for an Item.
 	 * @param uniqueClientId
@@ -227,25 +227,25 @@ public interface ICore {
 	 * This operation directs the Core to process the Item with the specified id
 	 * by performing the specific action. The action name must be one of the set
 	 * of actions from the Form that represents the Item with the specified id.
-	 * 
+	 *
 	 * It is possible that ICE may require information in addition to that which
 	 * was requested in the original Form, such as for a username and password
 	 * for a remote machine. If this is the case, processItem will return
 	 * FormStatus.NeedsInfo and a new, temporary Form will be available for the
 	 * Item by calling getItem(). Once this new Form is submitted (by calling
 	 * updateItem() with the completed Form), the Item will finish processing.
-	 * 
+	 *
 	 * @param itemId
 	 *            The item id for the Item that should be processed with the
 	 *            specified action.
-	 * 
+	 *
 	 * @param actionName
 	 *            The action that should be performed on the Item.
-	 * 
+	 *
 	 * @param uniqueClientId
 	 *            The unique identification number of the client making the
 	 *            request.
-	 * 
+	 *
 	 * @return The status of the Item after the action was performed.
 	 */
 	public FormStatus processItem(int itemId, String actionName,
@@ -253,10 +253,10 @@ public interface ICore {
 
 	/**
 	 * This operation returns the list of Items that have been created in ICE.
-	 * It returns a list of ICEObjects that represent those Items and provide
-	 * the name, description and identification number. This operation is only
-	 * meant to provide information about the Items.
-	 * 
+	 * It returns a list of Identifiables that represent those Items and
+	 * provides the name, description and identification number of each Item.
+	 * This operation is only meant to provide information about the Items.
+	 *
 	 * @return The list of Identifiables that represent the Items.
 	 */
 	public ArrayList<Identifiable> getItemList();
@@ -270,7 +270,7 @@ public interface ICore {
 	 * returned is the <i>real</i> file handle and can be written, but clients
 	 * should be careful to only read from the file. It will return null if an
 	 * Item with the specified id does not exist.
-	 * 
+	 *
 	 * @param id
 	 *            The id of the Item.
 	 * @return The output file for the specified Item, thoroughly documented
@@ -281,7 +281,7 @@ public interface ICore {
 	/**
 	 * This operation cancels the process with the specified name for the Item
 	 * identified.
-	 * 
+	 *
 	 * @param itemId
 	 *            The id of the Item whose process should be canceled.
 	 * @param actionName
@@ -293,7 +293,7 @@ public interface ICore {
 
 	/**
 	 * This operation directs the core to import a file into its workspace.
-	 * 
+	 *
 	 * @param file
 	 *            The file that should be imported. Nothing will happen if this
 	 *            argument is null.
@@ -304,7 +304,7 @@ public interface ICore {
 	 * This operation directs the core to import a file into its workspace and
 	 * load that file as an input for the specified Item type. It returns the id
 	 * of the newly created Item.
-	 * 
+	 *
 	 * @param file
 	 *            The file that should be imported. Nothing will happen if this
 	 *            argument is null.
@@ -319,11 +319,11 @@ public interface ICore {
 	/**
 	 * This operation posts a message containing an update to the ICE Item
 	 * designated in the body of the message.
-	 * 
+	 *
 	 * This operation is primarily used by the ICE Updater to post messages to
 	 * the Core from remote processes. The message format can be found in the
 	 * documentation for the Updater.
-	 * 
+	 *
 	 * @param message
 	 *            The message that should be passed on to the specified Item.
 	 *            This string must be in JSON and conform to the message format

@@ -34,57 +34,42 @@ import org.junit.Test;
  * ClientTester checks the behavior and functionality of Client. It checks for
  * proper location setting and file system querying from Core.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class ClientTester {
 	/**
-	 * 
+	 * The client to test
 	 */
 	private Client iCEClient;
+
 	/**
-	 * 
+	 * The fake Core used in the test
 	 */
 	private FakeCore fakeCore;
 
 	/**
-	 * <p>
 	 * A string for storing locations on the file system.
-	 * </p>
-	 * 
 	 */
 	private String location;
 
 	/**
-	 * 
+	 * The fake widget factory used in the test
 	 */
 	private FakeUIWidgetFactory fakeUIWidgetFactory;
+
 	/**
-	 * 
+	 * A fake form widget to make sure the form is shown
 	 */
 	private FakeFormWidget fakeFormWidget;
+
 	/**
-	 * 
+	 * A fake error box to make sure the error box is shown
 	 */
 	private FakeErrorBoxWidget fakeErrorBoxWidget;
 
 	/**
-	 * 
-	 */
-	private FakeTextEditor fakeTextEditor;
-
-	/**
-	 * 
-	 */
-	private FakeExtraInfoWidget fakeExtraInfoWidget;
-
-	/**
-	 * 
-	 */
-	private FakeStreamingTextWidget fakeStreamingTextWidget;
-
-	/**
-	 * 
+	 * This operation configures the client for the test.
 	 */
 	@Before
 	public void BeforeClass() {
@@ -103,11 +88,8 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client by making sure that Items can be loaded
 	 * and displayed.
-	 * </p>
-	 * 
 	 */
 	@Test
 	public void checkItemLoading() {
@@ -154,7 +136,7 @@ public class ClientTester {
 	 * This operation checks the Client by making sure that errors can be
 	 * dispatched to the UI system to be displayed to the user.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkThrowingErrors() {
@@ -191,7 +173,7 @@ public class ClientTester {
 	 * list of available Item types as that in FakeCore: Red, Orange, Yellow,
 	 * Green.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkItemCreation() {
@@ -276,7 +258,7 @@ public class ClientTester {
 	 * documentation on the FakeCore class to determine the proper Form ids to
 	 * use for the test.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkItemUpdates() {
@@ -332,7 +314,7 @@ public class ClientTester {
 	 * through the IProcessEventListener interface and by directly calling
 	 * IClient.processItem().
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkItemProcessing() {
@@ -340,8 +322,6 @@ public class ClientTester {
 		// Local Declarations
 		int itemId = -1;
 		Form testForm = new Form();
-		FormStatus status = null;
-
 		// Create the Item - make sure it is something that can actually be
 		// created!
 		itemId = iCEClient.createItem("Red");
@@ -468,7 +448,7 @@ public class ClientTester {
 	 * signaled to do so by FormWidgets and other classes to which it may
 	 * subscribe.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkResourceLoading() {
@@ -497,7 +477,7 @@ public class ClientTester {
 	 * This operation checks the Client to make sure that if the connectToCore()
 	 * operation is called that the Client tries to load an ExtraInfoWidget.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkRemoteConnection() {
@@ -508,17 +488,17 @@ public class ClientTester {
 		/*
 		 * Further testing disabled for now until more requirements are
 		 * gathered. ~JJB 20120525 15:36
-		 * 
+		 *
 		 * // Tell the client to connect to www. That is, no where. boolean
 		 * status = iCEClient.connectToCore("www", 80);
-		 * 
+		 *
 		 * // Make sure the widget was requested from the factory
 		 * assertTrue(fakeUIWidgetFactory.widgetRequested());
-		 * 
+		 *
 		 * // Retrieve the info widget and get its Form FakeExtraInfoWidget
 		 * infoWidget = fakeUIWidgetFactory .getLastExtraInfoWidget();
 		 * assertNotNull(infoWidget); Form infoForm = infoWidget.getForm();
-		 * 
+		 *
 		 * // The connection should have returned false assertTrue(!status);
 		 */
 		// FIXME - What happens when the request is cancelled?
@@ -532,7 +512,7 @@ public class ClientTester {
 	 * This operation checks that the client can import a file and that it calls
 	 * the Core to do so.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkFileImport() {
@@ -565,7 +545,7 @@ public class ClientTester {
 	 * checkFS() checks that a valid file system representation is returned from
 	 * Core.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkFS() {

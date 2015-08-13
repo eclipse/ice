@@ -13,6 +13,8 @@
 package org.eclipse.ice.client.common.wizards;
 
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -30,9 +32,9 @@ import org.eclipse.ui.IWorkbenchWindow;
  * {@code org.eclipse.ui.newWizards} extension in the plugin (for adding it to
  * the workbench new wizards).
  * </p>
- * 
+ *
  * @author Jay Jay Billings, Jordan Deyton
- * 
+ *
  */
 public class NewItemWizard extends Wizard implements INewWizard {
 
@@ -47,6 +49,11 @@ public class NewItemWizard extends Wizard implements INewWizard {
 	protected IWorkbenchWindow workbenchWindow;
 
 	/**
+	 * The project selected when the wizard was used.
+	 */
+	protected IProject project;
+
+	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
 	 * {@link IHandler}, use {@link #NewItemWizard(IWorkbenchWindow)} </b>.
 	 */
@@ -57,7 +64,7 @@ public class NewItemWizard extends Wizard implements INewWizard {
 	/**
 	 * The default constructor. This is not normally called by the platform but
 	 * via handlers.
-	 * 
+	 *
 	 * @param window
 	 *            The workbench window.
 	 */
@@ -74,12 +81,20 @@ public class NewItemWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		// Save the window
 		workbenchWindow = workbench.getActiveWorkbenchWindow();
+		// Get and save the project. This just casts to IResource since
+		// IProjects are IResources and doing otherwise would require additional
+		// checks.
+		Object element = selection.getFirstElement();
+		if (element instanceof IResource) {
+			project = ((IResource) element).getProject();
+		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.wizard.Wizard#addPages()
 	 */
 	@Override
@@ -92,7 +107,7 @@ public class NewItemWizard extends Wizard implements INewWizard {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
@@ -112,7 +127,7 @@ public class NewItemWizard extends Wizard implements INewWizard {
 
 			// Direct the client to create a new Item if a selection was made
 			if (selectedItem != null) {
-				finished = client.createItem(selectedItem) > 0;
+				finished = client.createItem(selectedItem, project) > 0;
 			}
 
 		} else {

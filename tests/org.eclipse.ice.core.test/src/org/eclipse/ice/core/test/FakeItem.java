@@ -23,14 +23,14 @@ import org.eclipse.ice.item.messaging.Message;
  * This is a fake subclass of Item that is used to test the ItemManager and
  * Core.
  * </p>
- * 
+ *
  * @author Jay Jay Billings
  */
 public class FakeItem extends Item {
 
 	/**
 	 * A Constructor that merely calls super().
-	 * 
+	 *
 	 * @param projectSpace
 	 */
 	public FakeItem(IProject projectSpace) {
@@ -43,7 +43,7 @@ public class FakeItem extends Item {
 	 * <p>
 	 * The process state of the FakeItem. True if processed, false if not.
 	 * </p>
-	 * 
+	 *
 	 */
 	private boolean processed;
 
@@ -51,7 +51,7 @@ public class FakeItem extends Item {
 	 * <p>
 	 * True if the FakeItem was asked to reload data, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private boolean refreshed;
 
@@ -67,7 +67,7 @@ public class FakeItem extends Item {
 	 * True if the FakeItem was asked to load an imported input file, false
 	 * otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private boolean loaded;
 
@@ -75,7 +75,7 @@ public class FakeItem extends Item {
 	 * <p>
 	 * True if the FakeItem was successfully updated, false otherwise.
 	 * </p>
-	 * 
+	 *
 	 */
 	private boolean updated = false;
 
@@ -83,7 +83,7 @@ public class FakeItem extends Item {
 	 * <p>
 	 * This operation returns the process state of the FakeItem.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The state - true if the Item was processed, false otherwise.
 	 *         </p>
@@ -96,7 +96,7 @@ public class FakeItem extends Item {
 	 * <p>
 	 * This operation resets the FakeItem's process state to false.
 	 * </p>
-	 * 
+	 *
 	 */
 	public void reset() {
 
@@ -114,7 +114,7 @@ public class FakeItem extends Item {
 	 * This operation returns true if the FakeItem was refreshed by calling
 	 * reloadProjectData and false if not.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean wasRefreshed() {
@@ -127,7 +127,7 @@ public class FakeItem extends Item {
 	 * ItemTester can see that the Item super class correctly handles the
 	 * request.
 	 * </p>
-	 * 
+	 *
 	 */
 	public void notifyListeners() {
 		notifyListenersOfProjectChange();
@@ -139,7 +139,7 @@ public class FakeItem extends Item {
 	 * <p>
 	 * This operation returns the load state of the FakeItem.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The state - true if the Item was loaded, false otherwise.
 	 *         </p>
@@ -153,7 +153,7 @@ public class FakeItem extends Item {
 	 * This operation returns true if the FakeItem was successfully updated,
 	 * false otherwise.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         True if updated, false otherwise.
 	 *         </p>
@@ -164,12 +164,12 @@ public class FakeItem extends Item {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see Item#setupForm()
 	 */
 	@Override
 	protected void setupForm() {
-		
+
 		form = new Form();
 		form.setId(1);
 		form.setItemID(2); // Set it to 2 so that we can make sure Item.setId
@@ -177,13 +177,18 @@ public class FakeItem extends Item {
 		form.setName("Harry Potter");
 		form.setDescription("The Boy Who Lived");
 
+		// Set the name and type of the Item. Note that they are different than
+		// the name and type of the Form!
+		setName(FakeGeometryBuilder.name);
+		itemType = FakeGeometryBuilder.type;
+
 		return;
 
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see Item#reviewEntries(Form preparedForm)
 	 */
 	@Override
@@ -230,7 +235,7 @@ public class FakeItem extends Item {
 	 * This operation returns the true an attempt was made to cancel a process
 	 * request.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The status of the last call to process().
 	 *         </p>

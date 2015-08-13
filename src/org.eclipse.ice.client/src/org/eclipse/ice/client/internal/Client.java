@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -283,16 +284,43 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// Create the Item
 		itemId = Integer.valueOf(getCore().createItem(itemType));
 
+		// Load the Item into the editor
+		loadAfterCreate(itemId);
+
+		return itemId;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.iclient.IClient#createItem(java.lang.String,
+	 * org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public int createItem(String itemType, IProject project) {
+
+		// Local Declarations
+		int itemId = -1;
+
+		// Create the Item
+		itemId = Integer.valueOf(getCore().createItem(itemType, project));
+
+		// Load the Item into the editor
+		loadAfterCreate(itemId);
+
+		return itemId;
+	}
+
+	private void loadAfterCreate(int itemId) {
 		// FIXME - Get the status! Need ItemStatus type or something
 
 		// Either load the Item or throw an error
 		if (itemId > 0) {// FIXME Status check!
 			loadItem(itemId);
 		} else if (itemId <= 0) {
-			throwSimpleError("Unable to create Item of type " + itemType + ".");
+			throwSimpleError("Unable to load Item " + itemId
+					+ " after creating it.");
 		}
-
-		return itemId;
 	}
 
 	/**
