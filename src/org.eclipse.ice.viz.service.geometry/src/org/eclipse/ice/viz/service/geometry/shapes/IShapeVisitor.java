@@ -14,10 +14,8 @@ package org.eclipse.ice.viz.service.geometry.shapes;
 
 /**
  * <p>
- * Implementing&nbsp;this&nbsp;interface&nbsp;allows&nbsp;a&nbsp;class&nbsp;to&
- * nbsp
- * ;discover&nbsp;the&nbsp;type&nbsp;of&nbsp;an&nbsp;IShape&nbsp;through&nbsp
- * ;the&nbsp;visitor&nbsp;design&nbsp;pattern
+ * Implementing this interface allows a class to discover the type of an IShape
+ * through the visitor design pattern
  * </p>
  * 
  * @author Jay Jay Billings
@@ -25,7 +23,7 @@ package org.eclipse.ice.viz.service.geometry.shapes;
 public interface IShapeVisitor {
 	/**
 	 * <p>
-	 * Visits&nbsp;an&nbsp;IShapeVisitor&nbsp;as&nbsp;a&nbsp;ComplexShape
+	 * Visits an IShapeVisitor as a ComplexShape
 	 * </p>
 	 * 
 	 * @param complexShape
@@ -34,7 +32,7 @@ public interface IShapeVisitor {
 
 	/**
 	 * <p>
-	 * Visits&nbsp;an&nbsp;IShapeVisitor&nbsp;as&nbsp;a&nbsp;PrimitiveShape
+	 * Visits an IShapeVisitor as a PrimitiveShape
 	 * </p>
 	 * 
 	 * @param primitiveShape

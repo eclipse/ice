@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.datastructures;
+package org.eclipse.ice.viz.service.connections.preferences;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -23,13 +23,13 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan H. Deyton
  * 
  */
-public class VizCellColumnLabelProvider extends ColumnLabelProvider {
+public class CellColumnLabelProvider extends ColumnLabelProvider {
 
 	/**
 	 * The content provider. The methods required as a
 	 * <code>ColumnLabelProvider</code> are passed to this content provider.
 	 */
-	protected final IVizCellContentProvider contentProvider;
+	protected final ICellContentProvider contentProvider;
 
 	/**
 	 * The default constructor.
@@ -39,7 +39,7 @@ public class VizCellColumnLabelProvider extends ColumnLabelProvider {
 	 *            <code>ColumnLabelProvider</code> are passed to this content
 	 *            provider.
 	 */
-	public VizCellColumnLabelProvider(IVizCellContentProvider contentProvider) {
+	public CellColumnLabelProvider(ICellContentProvider contentProvider) {
 		this.contentProvider = contentProvider;
 	}
 

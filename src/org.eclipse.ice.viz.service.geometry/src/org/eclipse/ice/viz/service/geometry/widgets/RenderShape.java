@@ -37,14 +37,6 @@ import com.jme3.scene.shape.Box;
  * 
  * @author Jay Jay Billings
  */
-/**
- * <p>
- * Stores additional information for generating a JME3 spatial and material from
- * the IShape
- * </p>
- * 
- * @author Jay Jay Billings
- */
 public class RenderShape implements IShape {
 	/**
 	 * The wrapped shape serving as a data structure without storing any

@@ -10,20 +10,20 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.datastructures;
+package org.eclipse.ice.viz.service.connections.preferences;
 
 import java.util.List;
 
 /**
  * This interface provides additional methods for accessing an
- * {@link IVizCellContentProvider} that may have a discrete set of allowed values
+ * {@link ICellContentProvider} that may have a discrete set of allowed values
  * associated with it. In such a case, the widgets used to edit the cell should
  * represent all allowed values.
  * 
  * @author Jordan H. Deyton
  * 
  */
-public interface IVizComboCellContentProvider extends IVizCellContentProvider {
+public interface IComboCellContentProvider extends ICellContentProvider {
 
 	/**
 	 * Whether or not the specified element requires a <code>Combo</code> widget

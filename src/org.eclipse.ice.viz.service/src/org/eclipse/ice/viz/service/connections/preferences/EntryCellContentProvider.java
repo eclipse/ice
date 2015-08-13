@@ -14,7 +14,6 @@ package org.eclipse.ice.viz.service.connections.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.IVizCellContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.swt.graphics.Image;
@@ -27,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class EntryCellContentProvider implements IVizCellContentProvider,
+public class EntryCellContentProvider implements ICellContentProvider,
 		IComboCellContentProvider, ISecretCellContentProvider {
 
 	/**
