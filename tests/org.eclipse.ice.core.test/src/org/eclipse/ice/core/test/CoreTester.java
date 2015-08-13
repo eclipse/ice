@@ -552,10 +552,12 @@ public class CoreTester {
 
 		// Create the item
 		String name = fakeGeometryBuilder.getItemName();
+
 		String idString = iCECore.createItem(name, project);
 		int id = Integer.parseInt(idString);
 		assertTrue(id > 0);
-
+		System.out.println(iCECore.getItem(id).getName());
+		
 		// Check the project space for the XML file created by ICE
 		String fileName = name + "_" + idString + ".xml";
 		IFile file = project.getFile(fileName);

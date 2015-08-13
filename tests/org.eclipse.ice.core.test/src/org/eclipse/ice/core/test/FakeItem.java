@@ -169,7 +169,7 @@ public class FakeItem extends Item {
 	 */
 	@Override
 	protected void setupForm() {
-
+		
 		form = new Form();
 		form.setId(1);
 		form.setItemID(2); // Set it to 2 so that we can make sure Item.setId
