@@ -15,7 +15,7 @@ package org.eclipse.ice.viz.service;
 import java.net.URI;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 
 /**
  * This is a pluggable service interface whereby visualization engines can
@@ -37,6 +37,9 @@ import org.eclipse.ice.viz.service.datastructures.VizObject;
  * </p>
  * 
  * @author Jay Jay Billings
+ * @author Robert Smith
+ * @author Kasper Gammeltoft
+ * @author Jordan Deyton
  */
 public interface IVizService {
 
@@ -52,7 +55,7 @@ public interface IVizService {
 	 *             An exception indicating that the IVizService could not create
 	 *             a canvas with the given object and giving the reason why.
 	 */
-	public IVizCanvas createCanvas(VizObject object) throws Exception;
+	public IVizCanvas createCanvas(IVizObject object) throws Exception;
 	
 	/**
 	 * This operation directs the IVizService to create a new plot using the

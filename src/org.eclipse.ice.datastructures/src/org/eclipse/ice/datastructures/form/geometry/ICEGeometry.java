@@ -35,6 +35,7 @@ import org.eclipse.ice.viz.service.geometry.shapes.IShape;
  * in ICEShape objects.
  * 
  * @author Robert Smith
+ * @author Jay Jay Billings
  *
  */
 
@@ -66,6 +67,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	 * Instantiates each class variable to be empty.
 	 */
 	public ICEGeometry() {
+		//Create empty geometry, list of child shapes, and list of listeners.
 		geometry = new Geometry();
 
 		shapes = new ArrayList<ICEShape>();
@@ -136,6 +138,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	 */
 	public void setShapes(ArrayList<ICEShape> newShapes) {
 
+		//Unregister from old shapes
 		for (ICEShape iceShape : shapes){
 			iceShape.unregister(this);
 		}
@@ -161,6 +164,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	 * Calculate a hashcode for this object
 	 */
 	public int hashCode() {
+		//Sum the has for all held objects.
 		int hash = geometry.hashCode();
 		for (ICEShape shape : shapes) {
 			hash += shape.hashCode();
@@ -202,6 +206,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 		//Copy the other Geometry object.
 		geometry.copy(otherGeometry.getGeometry());
 
+		//Unregister old shapes
 		for (ICEShape shape : shapes){
 			shape.unregister(this);
 		}
@@ -360,6 +365,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	 */
 	@Override
 	public void update(IUpdateable component) {
+		//Notify listeners only if updated by ICEShape
 		if (component instanceof ICEShape) {
 			notifyListeners();
 		}

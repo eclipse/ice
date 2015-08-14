@@ -31,6 +31,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject;
  * GeometryComponent. It is registered as a listener for each IShape and the
  * parent GeometryComponent is registered as a listener of this class.
  * 
+ * @author Jay Jay Billings
  * @author Robert Smith
  *
  */

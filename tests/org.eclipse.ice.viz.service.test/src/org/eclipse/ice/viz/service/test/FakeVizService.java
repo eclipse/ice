@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really
@@ -84,7 +84,7 @@ public class FakeVizService implements IVizService {
 	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(VizObject object) throws Exception {
+	public IVizCanvas createCanvas(IVizObject object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

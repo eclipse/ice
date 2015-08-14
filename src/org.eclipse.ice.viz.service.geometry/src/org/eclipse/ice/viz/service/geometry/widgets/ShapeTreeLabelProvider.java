@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -65,7 +66,7 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 
 		// Check that the element is an ICEObject and is not null
 
-		if (element instanceof VizObject) {
+		if (element instanceof IVizObject) {
 
 			// Return the ICEObject's name property with its ICEObject ID
 			// appended with a space separator

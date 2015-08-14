@@ -15,12 +15,11 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.viz.service.BasicVizServiceFactory;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -30,7 +29,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.slf4j.Logger;
 
 /**
  * <p>
@@ -169,8 +167,11 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 				.getForm();
 		Composite parent = pageForm.getBody();
 		
-		BasicVizServiceFactory factory = (BasicVizServiceFactory) ((ICEFormEditor) editor).getVizServiceFactory();
+		//Get JME3 Geometry service from factory
+		IVizServiceFactory factory = ((ICEFormEditor) editor).getVizServiceFactory();
 		IVizService service = factory.get("JME3 Geometry Editor");
+		
+		//Create and draw geometry canvas
 		try {
 			IVizCanvas vizCanvas = service.createCanvas(geometryComp.getGeometry().getGeometry());
 			vizCanvas.draw(parent);

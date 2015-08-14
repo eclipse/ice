@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 
 @XmlRootElement(name = "VizObject")
-public class VizObject implements IVizUpdateable {
+public class VizObject implements IVizUpdateable, IVizObject {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -111,10 +111,8 @@ public class VizObject implements IVizUpdateable {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setId(int id)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#setId(int)
 	 */
 	@Override
 	public void setId(int id) {
@@ -127,10 +125,8 @@ public class VizObject implements IVizUpdateable {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getId()
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#getId()
 	 */
 	@Override
 	@XmlAttribute()
@@ -138,10 +134,8 @@ public class VizObject implements IVizUpdateable {
 		return uniqueId;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setName(String name)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#setName(java.lang.String)
 	 */
 	@Override
 	public void setName(String name) {
@@ -154,10 +148,8 @@ public class VizObject implements IVizUpdateable {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getName()
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#getName()
 	 */
 	@Override
 	@XmlAttribute()
@@ -165,10 +157,8 @@ public class VizObject implements IVizUpdateable {
 		return objectName;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#setDescription(String description)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#setDescription(java.lang.String)
 	 */
 	@Override
 	public void setDescription(String description) {
@@ -181,10 +171,8 @@ public class VizObject implements IVizUpdateable {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#getDescription()
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#getDescription()
 	 */
 	@Override
 	@XmlAttribute()
@@ -192,14 +180,10 @@ public class VizObject implements IVizUpdateable {
 		return objectDescription;
 	}
 
-	/**
-	 * This operation copies the contents of an ICEObject into the current
-	 * object using a deep copy.
-	 * 
-	 * @param entity
-	 *            The Identifiable entity from which the values should be
-	 *            copied.
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#copy(org.eclipse.ice.viz.service.datastructures.VizObject)
 	 */
+	@Override
 	public void copy(VizObject entity) {
 
 		// Return if null
@@ -243,20 +227,14 @@ public class VizObject implements IVizUpdateable {
 		return;
 	}
 
-	/**
-	 * <p>
-	 * This operation returns a clone of the ICEObject using a deep copy.
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The new clone.
-	 *         </p>
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#clone()
 	 */
 	@Override
 	public Object clone() {
 
 		// Create a new instance of the current object
-		VizObject newObject = new VizObject();
+		IVizObject newObject = new VizObject();
 
 		// Copy contents from current object to new object
 		newObject.copy(this);
@@ -266,10 +244,8 @@ public class VizObject implements IVizUpdateable {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#equals(Object otherObject)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -298,10 +274,8 @@ public class VizObject implements IVizUpdateable {
 		return retVal;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see Identifiable#hashCode()
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -321,10 +295,8 @@ public class VizObject implements IVizUpdateable {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#update(String updatedKey, String newValue)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#update(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void update(String updatedKey, String newValue) {
@@ -334,10 +306,8 @@ public class VizObject implements IVizUpdateable {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#register(IUpdateableListener listener)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#register(org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener)
 	 */
 	@Override
 	public void register(IVizUpdateableListener listener) {
@@ -349,10 +319,8 @@ public class VizObject implements IVizUpdateable {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#unregister(IUpdateableListener listener)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#unregister(org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener)
 	 */
 	@Override
 	public void unregister(IVizUpdateableListener listener) {

@@ -42,6 +42,7 @@ import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
  * like a ComplexShape, can maintain a list of child IShapes.
  * 
  * @author Robert Smith
+ * @author Jay Jay Billings
  *
  */
 @XmlRootElement(name = "ICEShape")
@@ -98,6 +99,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 * Nullary constructor. Instantiates the object with empty data.
 	 */
 	public ICEShape() {
+		//Initialize shape, parent and children as empty
 		shape = null;
 		parent = null;
 		children = new ArrayList<ICEShape>();
@@ -110,9 +112,12 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 *            The ShapeType for the PrimitiveShape this object will wrap.
 	 */
 	public ICEShape(ShapeType shapeType) {
+		//Initialize shape type to none if shape type is not provided
 		if (shapeType == null) {
 			shapeType = ShapeType.None;
 		}
+		
+		//Initialize shape to primitive of given shape type
 		shape = new PrimitiveShape(ShapeType.values()[shapeType.ordinal()]);
 		parent = null;
 		children = new ArrayList<ICEShape>();
@@ -125,9 +130,12 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 *            The OperatorType for the ComplexShape this object will wrap.
 	 */
 	public ICEShape(OperatorType operatorType) {
+		//Initialize operator type to none if none given
 		if (operatorType == null) {
 			operatorType = OperatorType.None;
 		}
+		
+		//Initialize complex shape with given operator type
 		shape = new ComplexShape(OperatorType.values()[operatorType.ordinal()]);
 		parent = null;
 		children = new ArrayList<ICEShape>();
@@ -244,7 +252,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 		super.copy(otherShape);
 		if (otherShape != null) {
 
-			// Invoke the correct copy method
+			// Invoke the correct copy method for the type of shape
 			if (!otherShape.isComplex()) {
 
 				shape = new PrimitiveShape(ShapeType.None);
@@ -310,6 +318,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 */
 	protected void setParent(ICEShape newParent) {
 
+		//Set the held shape's parent to the new ICEShape's held shape.
 		if (newParent != null) {
 			((AbstractShape) shape).setParent(newParent.getShape());
 		} else {
@@ -360,10 +369,12 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 * @return Whether or not the wrapped shape is a ComplexShape
 	 */
 	public boolean isComplex() {
+		//If held shape is not complex, return false
 		if (!(shape instanceof ComplexShape)) {
 			return false;
 		}
 
+		//Otherwise, return true
 		return true;
 	}
 
@@ -411,6 +422,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 
 		// Only ComplexShapes can have children
 		if (isComplex()) {
+			//Copy list of children and register as their listener
 			ArrayList<IShape> shapes = new ArrayList<IShape>();
 			for (ICEShape iceShape : newChildren) {
 				shapes.add(iceShape.getShape());
@@ -435,6 +447,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 *         shape is a ComplexShape
 	 */
 	public ShapeType getShapeType() {
+		//If the held shape exists and is not complex, return its type
 		if (!isComplex() && shape != null) {
 			return ((PrimitiveShape) shape).getType();
 		} else
@@ -448,6 +461,7 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 	 *         shape is a PrimitiveShape
 	 */
 	public OperatorType getOperatorType() {
+		//If the held shape exists and is complex, return its type
 		if (isComplex() && shape != null) {
 			return ((ComplexShape) shape).getType();
 		} else
@@ -534,7 +548,6 @@ public class ICEShape extends ICEObject implements Component, IUpdateable,
 
 	@Override
 	public void update(IUpdateable component) {
-		// TODO Auto-generated method stub
 		notifyListeners();
 
 	}
