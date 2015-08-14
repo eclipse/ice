@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.MenuManager;

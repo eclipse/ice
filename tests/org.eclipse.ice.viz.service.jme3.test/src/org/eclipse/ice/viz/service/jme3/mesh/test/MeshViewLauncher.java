@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh.test;
 
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
@@ -20,7 +21,6 @@ import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
 import org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction;
 import org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
-import org.eclipse.ice.viz.service.widgets.VizActionTree;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;

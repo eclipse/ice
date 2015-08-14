@@ -18,7 +18,6 @@ import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
-import org.eclipse.ice.viz.service.preferences.VizCellColumnLabelProvider;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -197,7 +196,7 @@ public class TableComponentContentProvider implements
 						basicContentProvider, i);
 				EditingSupport editingSupport = new TableComponentCellEditingSupport(
 						viewer, basicEditingSupport, i);
-				column.setLabelProvider(new VizCellColumnLabelProvider(
+				column.setLabelProvider(new CellColumnLabelProvider(
 						contentProvider));
 				column.setEditingSupport(editingSupport);
 			}

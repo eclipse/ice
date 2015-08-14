@@ -16,8 +16,8 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.ice.viz.service.widgets.PlotComposite;
-import org.eclipse.ice.viz.service.widgets.VizActionTree;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Composite;
 

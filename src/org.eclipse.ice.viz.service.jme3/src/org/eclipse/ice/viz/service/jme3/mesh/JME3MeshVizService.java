@@ -33,7 +33,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 public class JME3MeshVizService extends AbstractVizService {
 
 	/**
-	 * Nullary constructor. It has nothign to initialize.
+	 * Nullary constructor. It has nothing to initialize.
 	 */
 	public JME3MeshVizService() {
 	}

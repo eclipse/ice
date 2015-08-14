@@ -23,7 +23,7 @@ import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.widgets.VizActionTree;
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;

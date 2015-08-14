@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject;
-import org.eclipse.ice.viz.service.jme3.application.AbstractView;
 import org.eclipse.ice.viz.service.jme3.application.IRenderQueue;
 
 import com.jme3.scene.Node;

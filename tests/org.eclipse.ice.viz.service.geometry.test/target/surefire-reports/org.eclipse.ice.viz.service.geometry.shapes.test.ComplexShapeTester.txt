@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.431 sec - in org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester
+checkLoadingFromXML(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0.175 sec
+checkEquality(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0.001 sec
+checkVisitation(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0 sec
+checkCreation(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0 sec
+checkUpdate(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0.001 sec
+checkCopying(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0 sec
+checkAddPrimitiveShape(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0 sec
+checkAddComplexShape(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0 sec
+checkOperatorType(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0 sec
+checkNotifications(org.eclipse.ice.viz.service.geometry.shapes.test.ComplexShapeTester)  Time elapsed: 0.25 sec
