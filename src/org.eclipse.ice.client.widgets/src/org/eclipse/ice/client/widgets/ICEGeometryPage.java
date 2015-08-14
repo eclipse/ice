@@ -159,28 +159,30 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Create the geometry composite - get the parent
 		org.eclipse.ui.forms.widgets.Form pageForm = managedForm.getForm()
 				.getForm();
 		Composite parent = pageForm.getBody();
-		
-		//Get JME3 Geometry service from factory
-		IVizServiceFactory factory = ((ICEFormEditor) editor).getVizServiceFactory();
+
+		// Get JME3 Geometry service from factory
+		IVizServiceFactory factory = ((ICEFormEditor) editor)
+				.getVizServiceFactory();
 		IVizService service = factory.get("JME3 Geometry Editor");
-		
-		//Create and draw geometry canvas
+
+		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service.createCanvas(geometryComp.getGeometry().getGeometry());
+			IVizCanvas vizCanvas = service.createCanvas(geometryComp
+					.getGeometry().getGeometry());
 			vizCanvas.draw(parent);
-			
+
 		} catch (Exception e) {
-			logger.error("Error creating Geometry Canvas with Geometry Service.", e);
+			logger.error(
+					"Error creating Geometry Canvas with Geometry Service.", e);
 		}
-		
-		
+
 		getFocus();
 
 		return;

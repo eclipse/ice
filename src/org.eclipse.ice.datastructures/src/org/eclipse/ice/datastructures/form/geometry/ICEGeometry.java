@@ -51,7 +51,8 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	Geometry geometry;
 
 	/**
-	 * The list of ICEShapes which hold the IShapes corresponding to this object's Geometry's children.
+	 * The list of ICEShapes which hold the IShapes corresponding to this
+	 * object's Geometry's children.
 	 */
 	@XmlAnyElement()
 	@XmlElementRef(name = "ICEShape", type = ICEShape.class)
@@ -67,7 +68,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	 * Instantiates each class variable to be empty.
 	 */
 	public ICEGeometry() {
-		//Create empty geometry, list of child shapes, and list of listeners.
+		// Create empty geometry, list of child shapes, and list of listeners.
 		geometry = new Geometry();
 
 		shapes = new ArrayList<ICEShape>();
@@ -85,39 +86,43 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	}
 
 	/**
-	 * Add an ICEShape as a child to this object, and also add that ICEShape's wrapped IShape as a child to the wrapped Geometry.
+	 * Add an ICEShape as a child to this object, and also add that ICEShape's
+	 * wrapped IShape as a child to the wrapped Geometry.
 	 * 
-	 * @param shape The shape to be added as a child.
+	 * @param shape
+	 *            The shape to be added as a child.
 	 */
 	public void addShape(ICEShape shape) {
-		
-		//Fail silently if passed a null reference
+
+		// Fail silently if passed a null reference
 		if (shape != null) {
 			geometry.addShape(shape.getShape());
 			shapes.add(shape);
 			shape.register(this);
-			
-			//A change has been made, notify listeners
+
+			// A change has been made, notify listeners
 			notifyListeners();
 		}
 	}
 
 	/**
-	 * Remove an ICEShape as a child to this object, and also remove that ICEShape's wrapped IShape as a child to the wrapped Geometry. 
+	 * Remove an ICEShape as a child to this object, and also remove that
+	 * ICEShape's wrapped IShape as a child to the wrapped Geometry.
 	 * 
-	 * @param shape The shape to be removed from the list of children.
+	 * @param shape
+	 *            The shape to be removed from the list of children.
 	 */
 	public void removeShape(ICEShape shape) {
-		
-		//Fail silently if passed a null reference
+
+		// Fail silently if passed a null reference
 		if (shape != null) {
 			geometry.removeShape(shape.getShape());
 			shapes.remove(shape);
-			
-			//Unregister as the shape's listener
+
+			// Unregister as the shape's listener
 			shape.unregister(this);
-			
-			//A change has been made, notify listeners
+
+			// A change has been made, notify listeners
 			notifyListeners();
 		}
 	}
@@ -132,31 +137,35 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	}
 
 	/**
-	 * Set the list of child shapes to the list passed in. Also, set the wrapped Geometry's list of children to the list of IShapes held by the new list of ICEShapes. 
+	 * Set the list of child shapes to the list passed in. Also, set the wrapped
+	 * Geometry's list of children to the list of IShapes held by the new list
+	 * of ICEShapes.
 	 * 
-	 * @param newShapes The new list of child shapes
+	 * @param newShapes
+	 *            The new list of child shapes
 	 */
 	public void setShapes(ArrayList<ICEShape> newShapes) {
 
-		//Unregister from old shapes
-		for (ICEShape iceShape : shapes){
+		// Unregister from old shapes
+		for (ICEShape iceShape : shapes) {
 			iceShape.unregister(this);
 		}
-		
-		//Register as a listener for all the new ICEShapes and create a list of all their wrapped IShapes
+
+		// Register as a listener for all the new ICEShapes and create a list of
+		// all their wrapped IShapes
 		ArrayList<IShape> ishapes = new ArrayList<IShape>();
 		for (ICEShape iceShape : newShapes) {
 			iceShape.register(this);
 			ishapes.add(iceShape.getShape());
 		}
-		
-		//Set the held geometry's list of child shapes.
+
+		// Set the held geometry's list of child shapes.
 		geometry.setShapes(ishapes);
-		
-		//Replace the list of child shapes
+
+		// Replace the list of child shapes
 		shapes = newShapes;
-		
-		//A change has been made, notify listeners
+
+		// A change has been made, notify listeners
 		notifyListeners();
 	}
 
@@ -164,7 +173,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	 * Calculate a hashcode for this object
 	 */
 	public int hashCode() {
-		//Sum the has for all held objects.
+		// Sum the has for all held objects.
 		int hash = geometry.hashCode();
 		for (ICEShape shape : shapes) {
 			hash += shape.hashCode();
@@ -189,7 +198,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 		// At this point, other object must be a PrimitiveShape, so cast it
 		ICEGeometry iceGeometry = (ICEGeometry) otherObject;
 
-		//Check if the held Geometries are equal. 
+		// Check if the held Geometries are equal.
 		if (!geometry.equals(iceGeometry.getGeometry())) {
 			return false;
 		}
@@ -200,35 +209,37 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	/**
 	 * Copy the contents of the given ICEGeometry into this object.
 	 * 
-	 * @param otherGeometry The ICEGeometry to be copied into this object
+	 * @param otherGeometry
+	 *            The ICEGeometry to be copied into this object
 	 */
 	public void copy(ICEGeometry otherGeometry) {
-		//Copy the other Geometry object.
+		// Copy the other Geometry object.
 		geometry.copy(otherGeometry.getGeometry());
 
-		//Unregister old shapes
-		for (ICEShape shape : shapes){
+		// Unregister old shapes
+		for (ICEShape shape : shapes) {
 			shape.unregister(this);
 		}
-		
-		//Copy the list of child shapes. 
+
+		// Copy the list of child shapes.
 		shapes.clear();
-		
+
 		for (ICEShape shape : otherGeometry.getShapes()) {
 			shapes.add((ICEShape) shape.clone());
 		}
 
-		//Register as a listener for all the new child shapes.
+		// Register as a listener for all the new child shapes.
 		for (ICEShape shape : shapes) {
 			shape.register(this);
 		}
 
-		//A change has been made, notify listeners
+		// A change has been made, notify listeners
 		notifyListeners();
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setId(int)
 	 */
 	@Override
@@ -239,7 +250,9 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getDescription()
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.Identifiable#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -249,6 +262,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getId()
 	 */
 	@Override
@@ -259,7 +273,10 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setName(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.Identifiable#setName(java.lang
+	 * .String)
 	 */
 	@Override
 	public void setName(String name) {
@@ -269,6 +286,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getName()
 	 */
 	@Override
@@ -279,7 +297,10 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setDescription(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.Identifiable#setDescription(
+	 * java.lang.String)
 	 */
 	@Override
 	public void setDescription(String description) {
@@ -289,7 +310,10 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#update(java.lang.String, java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#update(java.lang
+	 * .String, java.lang.String)
 	 */
 	@Override
 	public void update(String updatedKey, String newValue) {
@@ -299,7 +323,10 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#register(org.eclipse.ice.datastructures.ICEObject.IUpdateableListener)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#register(org.eclipse
+	 * .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
 	public void register(IUpdateableListener listener) {
@@ -309,7 +336,10 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#unregister(org.eclipse.ice.datastructures.ICEObject.IUpdateableListener)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#unregister(org.eclipse
+	 * .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
 	public void unregister(IUpdateableListener listener) {
@@ -361,11 +391,14 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
+	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	@Override
 	public void update(IUpdateable component) {
-		//Notify listeners only if updated by ICEShape
+		// Notify listeners only if updated by ICEShape
 		if (component instanceof ICEShape) {
 			notifyListeners();
 		}

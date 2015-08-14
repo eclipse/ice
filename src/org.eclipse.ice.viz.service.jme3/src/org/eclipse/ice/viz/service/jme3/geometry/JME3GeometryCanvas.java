@@ -74,7 +74,8 @@ import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
  * @author Robert Smith
  * @author Jay Jay Billings
  */
-public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas, IVizUpdateableListener {
+public class JME3GeometryCanvas extends SimpleApplication implements
+		IVizCanvas, IVizUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -114,12 +115,12 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 	/**
 	 * Leaf nodes in the scene graph that show each axis
 	 */
-	private static com.jme3.scene.Geometry xAxis = new com.jme3.scene.Geometry("xAxis", new Line(
-			xPoint.negate(), xPoint));
-	private static com.jme3.scene.Geometry yAxis = new com.jme3.scene.Geometry("yAxis", new Line(
-			yPoint.negate(), yPoint));
-	private static com.jme3.scene.Geometry zAxis = new com.jme3.scene.Geometry("zAxis", new Line(
-			zPoint.negate(), zPoint));
+	private static com.jme3.scene.Geometry xAxis = new com.jme3.scene.Geometry(
+			"xAxis", new Line(xPoint.negate(), xPoint));
+	private static com.jme3.scene.Geometry yAxis = new com.jme3.scene.Geometry(
+			"yAxis", new Line(yPoint.negate(), yPoint));
+	private static com.jme3.scene.Geometry zAxis = new com.jme3.scene.Geometry(
+			"zAxis", new Line(zPoint.negate(), zPoint));
 
 	/**
 	 * A material for the axis and labels that define each.
@@ -270,13 +271,14 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 		return;
 	}
-	
+
 	/**
 	 * Constructor which assigns a Geometry for the GeoemetryCanvas to model.
 	 * 
-	 * @param newGeometry The Geometry this canvas will display.
+	 * @param newGeometry
+	 *            The Geometry this canvas will display.
 	 */
-	public JME3GeometryCanvas(Geometry newGeometry){
+	public JME3GeometryCanvas(Geometry newGeometry) {
 		geometry = newGeometry;
 	}
 
@@ -442,7 +444,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 			}
 			// Create geometry and store the reference to the shape data
 			// structure
-			com.jme3.scene.Geometry geom = new com.jme3.scene.Geometry(primitiveShape.getName(), mesh);
+			com.jme3.scene.Geometry geom = new com.jme3.scene.Geometry(
+					primitiveShape.getName(), mesh);
 			geom.setUserData("shape", new ShapeTransient(primitiveShape));
 			geom.setLocalTransform(convertTransformation(primitiveShape
 					.getTransformation()));
@@ -714,7 +717,7 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 		return transform;
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation renders the GeometryComponent.
@@ -730,7 +733,7 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 	 *            </p>
 	 */
 	@Override
-	public Composite draw (Composite parent) throws Exception{
+	public Composite draw(Composite parent) throws Exception {
 
 		// Set JME3 application settings
 		AppSettings settings = new AppSettings(true);
@@ -777,6 +780,7 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
 	 */
 	@Override
@@ -786,6 +790,7 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#getProperties()
 	 */
 	@Override
@@ -795,14 +800,16 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#setProperties(java.util.Map)
 	 */
 	@Override
-	public void setProperties(Map<String, String> props) throws Exception {		
+	public void setProperties(Map<String, String> props) throws Exception {
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#getDataSource()
 	 */
 	@Override
@@ -812,6 +819,7 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#getSourceHost()
 	 */
 	@Override
@@ -821,6 +829,7 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#isSourceRemote()
 	 */
 	@Override
@@ -830,12 +839,13 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizCanvas#redraw()
 	 */
 	@Override
 	public void redraw() {
 		simpleUpdate(0f);
-		
+
 	}
 
 }

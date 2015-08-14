@@ -48,10 +48,12 @@ public class JME3GeometryVizService extends AbstractVizService {
 	@Override
 	public IVizCanvas createCanvas(IVizObject geometry) {
 		if (geometry instanceof Geometry) {
-			JME3GeometryCanvas canvas = new JME3GeometryCanvas((Geometry) geometry);
+			JME3GeometryCanvas canvas = new JME3GeometryCanvas(
+					(Geometry) geometry);
 			return canvas;
 		} else {
-			throw new IllegalArgumentException("GeometryService can only render geometry viz objects.");
+			throw new IllegalArgumentException(
+					"GeometryService can only render geometry viz objects.");
 		}
 	}
 
