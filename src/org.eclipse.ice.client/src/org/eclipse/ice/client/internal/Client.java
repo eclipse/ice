@@ -19,6 +19,11 @@ import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
@@ -38,7 +43,6 @@ import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.services.IServiceLocator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -160,8 +164,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// posted to the IFormWidget based on the status of the process.
 		statusMessageMap.put(FormStatus.Processed, "Done!");
 		statusMessageMap.put(FormStatus.Processing, "Processing Form...");
-		statusMessageMap.put(FormStatus.InfoError,
-				"The Form contains an error" + " and cannot be processed.");
+		statusMessageMap.put(FormStatus.InfoError, "The Form contains an error"
+				+ " and cannot be processed.");
 		statusMessageMap.put(FormStatus.ReadyToProcess, "Ready to process.");
 		statusMessageMap.put(FormStatus.NeedsInfo,
 				"The Form requires additional information before "
@@ -169,6 +173,26 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		statusMessageMap.put(FormStatus.InReview, "In review...");
 		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
 				+ "processed or updated. It should be considered read-only.");
+
+		// Get the widgets factory from the registry
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		IExtensionPoint point = registry
+				.getExtensionPoint("org.eclipse.ice.client.iwidgetfactory");
+		IExtension[] extensions = point.getExtensions();
+		// Get the configuration element. The extension point can only have one
+		// extension by default, so no need for a loop or check.
+		IConfigurationElement[] elements = extensions[0]
+				.getConfigurationElements();
+		IConfigurationElement element = elements[0];
+		// Set the widget factory
+		try {
+			setUIWidgetFactory((IWidgetFactory) element
+					.createExecutableExtension("class"));
+		} catch (CoreException e) {
+			// Complain
+			logger.error("Unable to retrieve UI Widget factory from registry!",
+					e);
+		}
 
 		// Set the reference to this in the Singleton for the widget classes to
 		// retrieve as needed.
@@ -287,7 +311,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		itemId = Integer.valueOf(getCore().createItem(itemType));
 
 		// Load the Item into the editor
-		loadAfterCreate(itemId);
+		loadAfterCreate(itemId, itemType);
 
 		return itemId;
 	}
@@ -308,20 +332,29 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		itemId = Integer.valueOf(getCore().createItem(itemType, project));
 
 		// Load the Item into the editor
-		loadAfterCreate(itemId);
+		loadAfterCreate(itemId, itemType);
 
 		return itemId;
 	}
 
-	private void loadAfterCreate(int itemId) {
+	/**
+	 * This operation attempts to load a recently created Item into the UI an
+	 * throws an error message if it cannot.
+	 *
+	 * @param itemId
+	 *            The id of the Item to load.
+	 * @param itemType
+	 *            The type of the Item that was created.
+	 */
+	private void loadAfterCreate(int itemId, String itemType) {
 		// FIXME - Get the status! Need ItemStatus type or something
 
 		// Either load the Item or throw an error
 		if (itemId > 0) {// FIXME Status check!
 			loadItem(itemId);
 		} else if (itemId <= 0) {
-			throwSimpleError(
-					"Unable to load Item " + itemId + " after creating it.");
+			throwSimpleError("Unable to load Item " + itemType
+					+ " after creating it.");
 		}
 	}
 
@@ -338,8 +371,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (iWidgetFactory != null) {
 			logger.info("IClient Message: Widget Factory set!");
 		} else {
-			logger.info(
-					"IClient Message: " + "Widget Factory set, but is null.");
+			logger.info("IClient Message: "
+					+ "Widget Factory set, but is null.");
 		}
 		return;
 	}
@@ -368,16 +401,15 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			formWidget.display();
 			// Set the initial status of the Form
 			formStatus = getCore().getItemStatus(itemId);
-			formWidget.updateStatus(
-					statusMessageMap.get(iCore.getItemStatus(itemId)));
+			formWidget.updateStatus(statusMessageMap.get(iCore
+					.getItemStatus(itemId)));
 			// If the FormStatus signifies that the Form is absolutely
 			// unacceptable, then the user should be warned.
 			if (formStatus.equals(FormStatus.Unacceptable)) {
 				formWidget.disable(true);
-				throwSimpleError(
-						"This Form has been set to a read-only mode by "
-								+ "ICE. Please be advised that it can not be upated"
-								+ " or processed.");
+				throwSimpleError("This Form has been set to a read-only mode by "
+						+ "ICE. Please be advised that it can not be upated"
+						+ " or processed.");
 			}
 			// Register for updates
 			formWidget.registerUpdateListener(this);
@@ -569,8 +601,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 				// Update the status of the Item update
 				if (formWidgetTable.containsKey(form.getItemID())) {
 					String statusMessage = statusMessageMap.get(status);
-					formWidgetTable.get(form.getItemID())
-							.updateStatus(statusMessage);
+					formWidgetTable.get(form.getItemID()).updateStatus(
+							statusMessage);
 				}
 			} else {
 				// Notify the user that there is some invalid information in the

@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="clientInstance" name="ICE Client" schema="schema/clientInstance.exsd"/>
+   <extension-point id="iwidgetfactory" name="Widget Factory" schema="schema/iwidgetfactory.exsd"/>
  <extension point="org.eclipse.ui.newWizards">
     <category 
           id="org.eclipse.ice.wizards"

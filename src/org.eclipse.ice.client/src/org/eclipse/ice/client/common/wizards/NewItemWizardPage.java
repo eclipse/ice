@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.client.internal.Client;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -44,7 +43,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,6 +121,7 @@ public class NewItemWizardPage extends WizardPage {
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		itemSelectionComposite.setLayoutData(data);
 
+		// Get the extension registry and retrieve the client.
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry
 				.getExtensionPoint("org.eclipse.ice.client.clientInstance");

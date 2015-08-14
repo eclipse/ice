@@ -348,5 +348,13 @@
           type="java.lang.Object">
     </propertyTester>
  </extension>
+ <extension
+       id="eclipsewidgetfactory"
+       name="Eclipse UI Widget Factory"
+       point="org.eclipse.ice.client.iwidgetfactory">
+    <iwidgetfactory
+          class="org.eclipse.ice.client.widgets.EclipseUIWidgetFactory">
+    </iwidgetfactory>
+ </extension>
  
 </plugin>

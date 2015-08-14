@@ -125,8 +125,12 @@ public class NewItemWizard extends Wizard implements INewWizard {
 			// Get the selected Item from the dialog
 			String selectedItem = page.getSelectedItem();
 
-			// Direct the client to create a new Item if a selection was made
-			if (selectedItem != null) {
+			// Direct the client to create a new Item if a selection was made.
+			// It should put the Item into the default project if none was
+			// selected or into the designated project if one was provided.
+			if (selectedItem != null && project == null) {
+				finished = client.createItem(selectedItem) > 0;
+			} else if (selectedItem != null) {
 				finished = client.createItem(selectedItem, project) > 0;
 			}
 

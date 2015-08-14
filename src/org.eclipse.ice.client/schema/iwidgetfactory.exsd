@@ -3,10 +3,10 @@
 <schema targetNamespace="org.eclipse.ice.client" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.ice.client" id="clientInstance" name="ICE Client"/>
+         <meta.schema plugin="org.eclipse.ice.client" id="iwidgetfactory" name="Widget Factory"/>
       </appinfo>
       <documentation>
-         This extension point shall provide an instance of the IClient interface that is used as the Eclipse ICE interface.
+         This extension point shall provide a realization of the IWidgetFactory interface that is used by the Client to render widgets on the screen.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <choice>
-            <element ref="client"/>
+            <element ref="iwidgetfactory"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="client">
+   <element name="iwidgetfactory">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  This class must implement the IClient interface to provide ICE Client services.
+                  This class must implement the IWidgetFactory interface to provide widgets to  Eclipse ICE client.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.iclient.IClient"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.iclient.uiwidgets.IWidgetFactory"/>
                </appinfo>
             </annotation>
          </attribute>
