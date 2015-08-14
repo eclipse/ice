@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="clientInstance" name="ICE Client" schema="schema/clientInstance.exsd"/>
  <extension point="org.eclipse.ui.newWizards">
     <category 
           id="org.eclipse.ice.wizards"
@@ -43,5 +44,13 @@
           id="org.eclipse.ice.wizards"
           name="ICE">
     </category>
+ </extension>
+ <extension
+       id="client"
+       name="ICE Client"
+       point="org.eclipse.ice.client.clientInstance">
+    <client
+          class="org.eclipse.ice.client.internal.Client">
+    </client>
  </extension>
 </plugin>

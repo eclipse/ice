@@ -19,6 +19,7 @@ import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -36,6 +37,8 @@ import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.services.IServiceLocator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -157,8 +160,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// posted to the IFormWidget based on the status of the process.
 		statusMessageMap.put(FormStatus.Processed, "Done!");
 		statusMessageMap.put(FormStatus.Processing, "Processing Form...");
-		statusMessageMap.put(FormStatus.InfoError, "The Form contains an error"
-				+ " and cannot be processed.");
+		statusMessageMap.put(FormStatus.InfoError,
+				"The Form contains an error" + " and cannot be processed.");
 		statusMessageMap.put(FormStatus.ReadyToProcess, "Ready to process.");
 		statusMessageMap.put(FormStatus.NeedsInfo,
 				"The Form requires additional information before "
@@ -201,8 +204,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 		if (iCore == null) {
 			logger.info("IClient Message: Retrieving ICore for the client.");
-			iCoreServiceRef = context.getServiceReference(ICore.class);
-			iCore = context.getService(iCoreServiceRef);
+			iCore = PlatformUI.getWorkbench().getService(ICore.class);
 			logger.info("IClient Message: Core service set.");
 		}
 
@@ -318,8 +320,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (itemId > 0) {// FIXME Status check!
 			loadItem(itemId);
 		} else if (itemId <= 0) {
-			throwSimpleError("Unable to load Item " + itemId
-					+ " after creating it.");
+			throwSimpleError(
+					"Unable to load Item " + itemId + " after creating it.");
 		}
 	}
 
@@ -336,8 +338,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (iWidgetFactory != null) {
 			logger.info("IClient Message: Widget Factory set!");
 		} else {
-			logger.info("IClient Message: "
-					+ "Widget Factory set, but is null.");
+			logger.info(
+					"IClient Message: " + "Widget Factory set, but is null.");
 		}
 		return;
 	}
@@ -366,15 +368,16 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			formWidget.display();
 			// Set the initial status of the Form
 			formStatus = getCore().getItemStatus(itemId);
-			formWidget.updateStatus(statusMessageMap.get(iCore
-					.getItemStatus(itemId)));
+			formWidget.updateStatus(
+					statusMessageMap.get(iCore.getItemStatus(itemId)));
 			// If the FormStatus signifies that the Form is absolutely
 			// unacceptable, then the user should be warned.
 			if (formStatus.equals(FormStatus.Unacceptable)) {
 				formWidget.disable(true);
-				throwSimpleError("This Form has been set to a read-only mode by "
-						+ "ICE. Please be advised that it can not be upated"
-						+ " or processed.");
+				throwSimpleError(
+						"This Form has been set to a read-only mode by "
+								+ "ICE. Please be advised that it can not be upated"
+								+ " or processed.");
 			}
 			// Register for updates
 			formWidget.registerUpdateListener(this);
@@ -566,8 +569,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 				// Update the status of the Item update
 				if (formWidgetTable.containsKey(form.getItemID())) {
 					String statusMessage = statusMessageMap.get(status);
-					formWidgetTable.get(form.getItemID()).updateStatus(
-							statusMessage);
+					formWidgetTable.get(form.getItemID())
+							.updateStatus(statusMessage);
 				}
 			} else {
 				// Notify the user that there is some invalid information in the

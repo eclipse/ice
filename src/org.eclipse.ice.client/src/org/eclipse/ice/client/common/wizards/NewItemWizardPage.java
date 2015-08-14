@@ -15,7 +15,14 @@ package org.eclipse.ice.client.common.wizards;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.ice.client.internal.Client;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -37,6 +44,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the main page for the {@link NewItemWizard}. It includes
@@ -46,6 +56,11 @@ import org.eclipse.swt.widgets.MessageBox;
  *
  */
 public class NewItemWizardPage extends WizardPage {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
 	/**
 	 * The name of the Item that was selected in the list.
@@ -98,9 +113,6 @@ public class NewItemWizardPage extends WizardPage {
 		// Set the parent reference
 		parentComposite = parent;
 
-		// Get the client
-		IClient client = ClientHolder.getClient();
-
 		// Create the composite for file selection pieces
 		Composite itemSelectionComposite = new Composite(parentComposite,
 				SWT.NONE);
@@ -111,16 +123,30 @@ public class NewItemWizardPage extends WizardPage {
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		itemSelectionComposite.setLayoutData(data);
 
-		// Only create the wizard if the client is available
-		if (client != null) {
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		IExtensionPoint point = registry
+				.getExtensionPoint("org.eclipse.ice.client.clientInstance");
+		IExtension[] extensions = point.getExtensions();
+		// Get the configuration element. The extension point can only have one
+		// extension by default, so no need for a loop or check.
+		IConfigurationElement[] elements = extensions[0]
+				.getConfigurationElements();
+		IConfigurationElement element = elements[0];
+
+		// Get the client
+		try {
+			IClient client = (IClient) element
+					.createExecutableExtension("class");
 			// Draw the list of Items and present the selection wizard.
 			drawWizard(itemSelectionComposite, client);
-		} else {
+		} catch (CoreException e) {
 			// Otherwise throw an error
 			MessageBox errorMessage = new MessageBox(parent.getShell(), ERROR);
 			errorMessage.setMessage("The ICE Client is not available. "
 					+ "Please file a bug report.");
 			errorMessage.open();
+			// Log the error
+			logger.error("ICEClient Extension not found.",e);
 		}
 
 		// Set the control
