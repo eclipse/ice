@@ -912,11 +912,7 @@ public class SFReactorIOHandler extends HdfIOFactory {
 	private void writeSFRComponent(SFRComponent component, int groupId)
 			throws NullPointerException, HDF5Exception {
 		// ---- Write the component's properties. ---- //
-		writeStringAttribute(groupId, "name", component.getName());
-		writeStringAttribute(groupId, "description",
-				component.getDescription());
-		writeAttribute(groupId, "id", HDF5Constants.H5T_NATIVE_INT,
-				component.getId());
+		writeIdentifiableAttributes(component, groupId);
 		writeStringAttribute(groupId, "sourceInfo", component.getSourceInfo());
 		writeAttribute(groupId, "time", HDF5Constants.H5T_NATIVE_DOUBLE,
 				component.getCurrentTime());
@@ -950,10 +946,7 @@ public class SFReactorIOHandler extends HdfIOFactory {
 	private void readSFRComponent(SFRComponent component, int groupId)
 			throws NullPointerException, HDF5Exception {
 		// ---- Read in the component's properties. ---- //
-		component.setName(readStringAttribute(groupId, "name"));
-		component.setDescription(readStringAttribute(groupId, "description"));
-		component.setId((Integer) readAttribute(groupId, "id",
-				HDF5Constants.H5T_NATIVE_INT));
+		readIdentifiableAttributes(component, groupId);
 		component.setSourceInfo(readStringAttribute(groupId, "sourceInfo"));
 		component.setTime((Double) readAttribute(groupId, "time",
 				HDF5Constants.H5T_NATIVE_DOUBLE));

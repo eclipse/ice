@@ -16,15 +16,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import ncsa.hdf.hdf5lib.structs.H5O_info_t;
-
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class provides a base for implementing {@link IHdfIOFactory} and
@@ -919,8 +919,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * @param objectId
 	 *            The ID of the HDF5 Object receiving the ICEObject Attributes.
 	 */
-	public final void writeICEObjectInfo(ICEObject object, int objectId)
-			throws NullPointerException, HDF5Exception {
+	public final void writeIdentifiableAttributes(Identifiable object,
+			int objectId) throws NullPointerException, HDF5Exception {
 
 		// Write the component's name, description, and ID.
 		writeStringAttribute(objectId, "name", object.getName());
@@ -939,8 +939,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *            The ID of the HDF5 Group or Object that contains the
 	 *            ICEObject's information.
 	 */
-	public final void readICEObjectInfo(ICEObject object, int objectId)
-			throws NullPointerException, HDF5Exception {
+	public final void readIdentifiableAttributes(Identifiable object,
+			int objectId) throws NullPointerException, HDF5Exception {
 
 		// Read the object's name, description, and ID from the HDF5 Group or
 		// Object.

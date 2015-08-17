@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
@@ -112,7 +111,7 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			groupIds.push(groupId);
 
 			// Write all of the component's ICEObject Attributes.
-			factory.readICEObjectInfo(component, groupId);
+			factory.readIdentifiableAttributes(component, groupId);
 
 			// Visit the component to perform the proper read operations.
 			component.accept(this);
@@ -178,12 +177,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			// ------------------------- //
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -238,12 +237,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			// ---------------------------------- //
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
@@ -306,15 +305,15 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			plantComp.setOutputs(outputs);
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;
@@ -348,15 +347,15 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			plantComp.setCoreChannels(coreChannels);
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;
@@ -395,12 +394,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 					"length", H5T_NATIVE_DOUBLE));
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -433,11 +432,11 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 					"length", H5T_NATIVE_DOUBLE));
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: " + "Failed to read Pipe "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: " + "Failed to read Pipe "
 					+ plantComp.getName() + " " + plantComp.getId());
 		}
