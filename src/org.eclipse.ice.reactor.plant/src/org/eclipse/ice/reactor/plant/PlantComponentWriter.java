@@ -403,11 +403,11 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 
 		try {
 			// Write the rotation.
-			factory.writeAttribute(objectId, "rotation",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getRotation());
+			factory.writeDoubleAttribute(objectId, "rotation",
+					plantComp.getRotation());
 			// Write the number of elements.
-			factory.writeAttribute(objectId, "numElements",
-					HDF5Constants.H5T_NATIVE_INT, plantComp.getNumElements());
+			factory.writeIntegerAttribute(objectId, "numElements",
+					plantComp.getNumElements());
 
 			// ---- Position and orientation ---- //
 			// Combine the position and orientation into a single Dataset
@@ -581,12 +581,12 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		try {
 
 			// Write the radius.
-			factory.writeAttribute(objectId, "innerRadius",
-					HDF5Constants.H5T_NATIVE_DOUBLE,
-					plantComp.getInnerRadius());
+			factory.writeDoubleAttribute(objectId, "innerRadius",
+
+			plantComp.getInnerRadius());
 			// Write the length.
-			factory.writeAttribute(objectId, "length",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getLength());
+			factory.writeDoubleAttribute(objectId, "length",
+					plantComp.getLength());
 
 			// There is currently no need to write the pipe information since
 			// they are tied directly to the HeatExchanger's properties.
@@ -620,11 +620,11 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		try {
 
 			// Write the radius.
-			factory.writeAttribute(objectId, "radius",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getRadius());
+			factory.writeDoubleAttribute(objectId, "radius",
+					plantComp.getRadius());
 			// Write the length.
-			factory.writeAttribute(objectId, "length",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getLength());
+			factory.writeDoubleAttribute(objectId, "length",
+					plantComp.getLength());
 
 		} catch (NullPointerException e) {
 			logger.error(getClass().getName() + " Exception!", e);

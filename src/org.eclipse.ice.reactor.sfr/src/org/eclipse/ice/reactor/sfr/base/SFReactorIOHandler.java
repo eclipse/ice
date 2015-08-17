@@ -84,8 +84,6 @@ public class SFReactorIOHandler extends HdfIOFactory {
 		// HDF5 constants. Writing out "HDF5Constants." every time is annoying.
 		int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT; // Default flag.
 		int H5F_ACC_RDONLY = HDF5Constants.H5F_ACC_RDONLY; // Open read-only.
-		int H5T_NATIVE_INT = HDF5Constants.H5T_NATIVE_INT; // int
-		int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE; // double
 		int H5O_TYPE_GROUP = HDF5Constants.H5O_TYPE_GROUP;
 
 		// The status of the previous HDF5 operation. Generally, if it is
@@ -110,7 +108,7 @@ public class SFReactorIOHandler extends HdfIOFactory {
 			groupId = groupIds.push(openGroup(fileId, "/SFReactor"));
 
 			// Get the size of the reactor in the file and initialize it.
-			int size = (Integer) readAttribute(groupId, "size", H5T_NATIVE_INT);
+			int size = readIntegerAttribute(groupId, "size");
 			reactor = new SFReactor(size);
 
 			// ---- Read the reactor's attributes. ---- //
@@ -122,10 +120,10 @@ public class SFReactorIOHandler extends HdfIOFactory {
 
 			// SFReactor-specific attributes.
 			// size has already been read.
-			reactor.setLatticePitch((Double) readAttribute(groupId,
-					"latticePitch", H5T_NATIVE_DOUBLE));
-			reactor.setOuterFlatToFlat((Double) readAttribute(groupId,
-					"outerFlatToFlat", H5T_NATIVE_DOUBLE));
+			reactor.setLatticePitch(
+					readDoubleAttribute(groupId, "latticePitch"));
+			reactor.setOuterFlatToFlat(
+					readDoubleAttribute(groupId, "outerFlatToFlat"));
 					// ---------------------------------------- //
 
 			// ---- Read the reactor's Pin Assemblies. ---- //
@@ -151,10 +149,8 @@ public class SFReactorIOHandler extends HdfIOFactory {
 
 					// Read the name, pinType, and size of the assembly.
 					PinType pinType = PinType
-							.valueOf((Integer) readAttribute(groupId, "pinType",
-									H5T_NATIVE_INT));
-					size = (Integer) readAttribute(groupId, "size",
-							H5T_NATIVE_INT);
+							.valueOf(readIntegerAttribute(groupId, "pinType"));
+					size = readIntegerAttribute(groupId, "size");
 
 					// Initialize the assembly.
 					PinAssembly assembly = new PinAssembly(assemblyName,
@@ -169,17 +165,17 @@ public class SFReactorIOHandler extends HdfIOFactory {
 
 					// Attributes inherited from SFRAssembly.
 					// size has already been read.
-					assembly.setDuctThickness((Double) readAttribute(groupId,
-							"ductThickness", H5T_NATIVE_DOUBLE));
+					assembly.setDuctThickness(
+							readDoubleAttribute(groupId, "ductThickness"));
 
 					// PinAssembly-specific attributes.
-					assembly.setPinPitch((Double) readAttribute(groupId,
-							"pinPitch", H5T_NATIVE_DOUBLE));
+					assembly.setPinPitch(
+							readDoubleAttribute(groupId, "pinPitch"));
 					// pinType has already been read.
-					assembly.setInnerDuctFlatToFlat((Double) readAttribute(
-							groupId, "innerDuctFlatToFlat", H5T_NATIVE_DOUBLE));
-					assembly.setInnerDuctThickness((Double) readAttribute(
-							groupId, "innerDuctThickness", H5T_NATIVE_DOUBLE));
+					assembly.setInnerDuctFlatToFlat(readDoubleAttribute(groupId,
+							"innerDuctFlatToFlat"));
+					assembly.setInnerDuctThickness(
+							readDoubleAttribute(groupId, "innerDuctThickness"));
 							// --------------------------------------- //
 
 					// --- Read the assembly's reactor locations. --- //
@@ -254,9 +250,8 @@ public class SFReactorIOHandler extends HdfIOFactory {
 							readSFRComponent(block, groupId);
 
 							// Read the block's other attributes.
-							block.setVertPosition(
-									(Double) readAttribute(groupId,
-											"vertPosition", H5T_NATIVE_DOUBLE));
+							block.setVertPosition(readDoubleAttribute(groupId,
+									"vertPosition"));
 
 							// - Read the block's rings. - //
 
@@ -361,7 +356,7 @@ public class SFReactorIOHandler extends HdfIOFactory {
 						.push(openGroup(groupIds.peek(), assemblyName));
 
 				// Read the name, rodType, and size of the assembly.
-				size = (Integer) readAttribute(groupId, "size", H5T_NATIVE_INT);
+				size = readIntegerAttribute(groupId, "size");
 
 				// Initialize the assembly.
 				ReflectorAssembly assembly = new ReflectorAssembly(assemblyName,
@@ -376,13 +371,12 @@ public class SFReactorIOHandler extends HdfIOFactory {
 
 				// Attributes inherited from SFRAssembly.
 				// size has already been read.
-				assembly.setDuctThickness((Double) readAttribute(groupId,
-						"ductThickness", H5T_NATIVE_DOUBLE));
+				assembly.setDuctThickness(
+						readDoubleAttribute(groupId, "ductThickness"));
 
 				// ReflectorAssembly-specific attributes.
-				assembly.setRodPitch((Double) readAttribute(groupId, "rodPitch",
-						H5T_NATIVE_DOUBLE));
-						// --------------------------------------- //
+				assembly.setRodPitch(readDoubleAttribute(groupId, "rodPitch"));
+				// --------------------------------------- //
 
 				// --- Read the assembly's reactor locations. --- //
 				// Add the assembly to the reactor.
@@ -522,8 +516,6 @@ public class SFReactorIOHandler extends HdfIOFactory {
 		int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT; // Default flag.
 		int H5F_ACC_TRUNC = HDF5Constants.H5F_ACC_TRUNC; // Create, open,
 															// truncate.
-		int H5T_NATIVE_INT = HDF5Constants.H5T_NATIVE_INT; // int
-		int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE; // double
 
 		// The status of the previous HDF5 operation. Generally, if it is
 		// negative, there was some error.
@@ -556,10 +548,10 @@ public class SFReactorIOHandler extends HdfIOFactory {
 			// none
 
 			// SFReactor-specific attributes.
-			writeAttribute(groupId, "size", H5T_NATIVE_INT, reactor.getSize());
-			writeAttribute(groupId, "latticePitch", H5T_NATIVE_DOUBLE,
+			writeIntegerAttribute(groupId, "size", reactor.getSize());
+			writeDoubleAttribute(groupId, "latticePitch",
 					reactor.getLatticePitch());
-			writeAttribute(groupId, "outerFlatToFlat", H5T_NATIVE_DOUBLE,
+			writeDoubleAttribute(groupId, "outerFlatToFlat",
 					reactor.getOuterFlatToFlat());
 					// ----------------------------------------- //
 
@@ -594,23 +586,22 @@ public class SFReactorIOHandler extends HdfIOFactory {
 					// none
 
 					// Attributes inherited from SFRAssembly.
-					writeAttribute(groupId, "size", H5T_NATIVE_INT,
-							assembly.getSize());
-					writeAttribute(groupId, "ductThickness", H5T_NATIVE_DOUBLE,
+					writeIntegerAttribute(groupId, "size", assembly.getSize());
+					writeDoubleAttribute(groupId, "ductThickness",
 							assembly.getDuctThickness());
 
 					// PinAssembly-specific attributes.
-					writeAttribute(groupId, "pinPitch", H5T_NATIVE_DOUBLE,
+					writeDoubleAttribute(groupId, "pinPitch",
 							assembly.getPinPitch());
-					writeAttribute(groupId, "pinType", H5T_NATIVE_INT,
+					writeIntegerAttribute(groupId, "pinType",
 							assembly.getPinType().getId());
-					writeAttribute(groupId, "innerDuctFlatToFlat",
-							H5T_NATIVE_DOUBLE,
-							assembly.getInnerDuctFlatToFlat());
-					writeAttribute(groupId, "innerDuctThickness",
-							H5T_NATIVE_DOUBLE,
-							assembly.getInnerDuctThickness());
-							// ---------------------------------------- //
+					writeDoubleAttribute(groupId, "innerDuctFlatToFlat",
+
+					assembly.getInnerDuctFlatToFlat());
+					writeDoubleAttribute(groupId, "innerDuctThickness",
+
+					assembly.getInnerDuctThickness());
+					// ---------------------------------------- //
 
 					// --- Write the assembly's reactor locations. --- //
 					writeLocationData(reactor.getAssemblyLocations(assemblyType,
@@ -669,8 +660,8 @@ public class SFReactorIOHandler extends HdfIOFactory {
 							writeSFRComponent(block, groupId);
 
 							// Write the block's other attributes.
-							writeAttribute(groupId, "vertPosition",
-									H5T_NATIVE_DOUBLE, block.getVertPosition());
+							writeDoubleAttribute(groupId, "vertPosition",
+									block.getVertPosition());
 
 							// Create a group to contain the Rings.
 							groupIds.push(createGroup(groupId, "Rings"));
@@ -758,13 +749,12 @@ public class SFReactorIOHandler extends HdfIOFactory {
 				// none
 
 				// Attributes inherited from SFRAssembly.
-				writeAttribute(groupId, "size", H5T_NATIVE_INT,
-						assembly.getSize());
-				writeAttribute(groupId, "ductThickness", H5T_NATIVE_DOUBLE,
+				writeIntegerAttribute(groupId, "size", assembly.getSize());
+				writeDoubleAttribute(groupId, "ductThickness",
 						assembly.getDuctThickness());
 
 				// ReflectorAssembly-specific attributes.
-				writeAttribute(groupId, "rodPitch", H5T_NATIVE_DOUBLE,
+				writeDoubleAttribute(groupId, "rodPitch",
 						assembly.getRodPitch());
 						// ---------------------------------------- //
 
@@ -914,8 +904,7 @@ public class SFReactorIOHandler extends HdfIOFactory {
 		// ---- Write the component's properties. ---- //
 		writeIdentifiableAttributes(component, groupId);
 		writeStringAttribute(groupId, "sourceInfo", component.getSourceInfo());
-		writeAttribute(groupId, "time", HDF5Constants.H5T_NATIVE_DOUBLE,
-				component.getCurrentTime());
+		writeDoubleAttribute(groupId, "time", component.getCurrentTime());
 		writeStringAttribute(groupId, "timeUnits", component.getTimeUnits());
 		// ------------------------------------------- //
 
@@ -948,8 +937,7 @@ public class SFReactorIOHandler extends HdfIOFactory {
 		// ---- Read in the component's properties. ---- //
 		readIdentifiableAttributes(component, groupId);
 		component.setSourceInfo(readStringAttribute(groupId, "sourceInfo"));
-		component.setTime((Double) readAttribute(groupId, "time",
-				HDF5Constants.H5T_NATIVE_DOUBLE));
+		component.setTime(readDoubleAttribute(groupId, "time"));
 		component.setTimeUnits(readStringAttribute(groupId, "timeUnits"));
 		// --------------------------------------------- //
 
@@ -1526,12 +1514,9 @@ public class SFReactorIOHandler extends HdfIOFactory {
 		writeSFRComponent(ring, ringGroupId);
 
 		// Write ring-specific attributes.
-		writeAttribute(ringGroupId, "height", HDF5Constants.H5T_NATIVE_DOUBLE,
-				ring.getHeight());
-		writeAttribute(ringGroupId, "innerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE, ring.getInnerRadius());
-		writeAttribute(ringGroupId, "outerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE, ring.getOuterRadius());
+		writeDoubleAttribute(ringGroupId, "height", ring.getHeight());
+		writeDoubleAttribute(ringGroupId, "innerRadius", ring.getInnerRadius());
+		writeDoubleAttribute(ringGroupId, "outerRadius", ring.getOuterRadius());
 
 		// Write the material attributes.
 		Material material = ring.getMaterial();
@@ -1562,12 +1547,9 @@ public class SFReactorIOHandler extends HdfIOFactory {
 		readSFRComponent(ring, ringGroupId);
 
 		// Read ring-specific attributes.
-		ring.setHeight((Double) readAttribute(ringGroupId, "height",
-				HDF5Constants.H5T_NATIVE_DOUBLE));
-		ring.setInnerRadius((Double) readAttribute(ringGroupId, "innerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE));
-		ring.setOuterRadius((Double) readAttribute(ringGroupId, "outerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE));
+		ring.setHeight(readDoubleAttribute(ringGroupId, "height"));
+		ring.setInnerRadius(readDoubleAttribute(ringGroupId, "innerRadius"));
+		ring.setOuterRadius(readDoubleAttribute(ringGroupId, "outerRadius"));
 
 		// Read the material.
 		Material material = new Material();

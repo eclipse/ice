@@ -514,7 +514,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * @param value
 	 *            The value of the Attribute being written.
 	 */
-	public final void writeAttribute(int objectId, String name, int type,
+	private void writeAttribute(int objectId, String name, int type,
 			Object value) throws NullPointerException, HDF5Exception {
 		int status;
 
@@ -560,6 +560,44 @@ public class HdfIOFactory implements IHdfIOFactory {
 	}
 
 	/**
+	 * Writes a native int Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that will get the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @param value
+	 *            The value of the Attribute being written.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final void writeIntegerAttribute(int objectId, String name,
+			int value) throws NullPointerException, HDF5Exception {
+		writeAttribute(objectId, name, HDF5Constants.H5T_NATIVE_INT, value);
+	}
+
+	/**
+	 * Writes a native double Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that will get the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @param value
+	 *            The value of the Attribute being written.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final void writeDoubleAttribute(int objectId, String name,
+			double value) throws NullPointerException, HDF5Exception {
+		writeAttribute(objectId, name, HDF5Constants.H5T_NATIVE_DOUBLE, value);
+	}
+
+	/**
 	 * Reads an Attribute for an HDF5 Object, which is typically a Group. Array
 	 * Attributes are not supported.
 	 * 
@@ -573,7 +611,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *            H5T_NATIVE_INT and H5T_NATIVE_DOUBLE.
 	 * @return Returns the value of the attribute.
 	 */
-	public final Object readAttribute(int objectId, String name, int type)
+	private Object readAttribute(int objectId, String name, int type)
 			throws NullPointerException, HDF5Exception {
 		int status;
 
@@ -598,6 +636,44 @@ public class HdfIOFactory implements IHdfIOFactory {
 			throwException("Closing attribute \"" + name + "\"", status);
 		}
 		return buffer[0];
+	}
+
+	/**
+	 * Reads a native double Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that has the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @return Returns the value of the attribute.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final Double readDoubleAttribute(int objectId, String name)
+			throws NullPointerException, HDF5Exception {
+		return (Double) readAttribute(objectId, name,
+				HDF5Constants.H5T_NATIVE_DOUBLE);
+	}
+
+	/**
+	 * Reads a native int Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that has the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @return Returns the value of the attribute.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final Integer readIntegerAttribute(int objectId, String name)
+			throws NullPointerException, HDF5Exception {
+		return (Integer) readAttribute(objectId, name,
+				HDF5Constants.H5T_NATIVE_INT);
 	}
 
 	/**
@@ -990,7 +1066,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * @return The buffer as an array of Objects (of size 1). To set its value
 	 *         for writing, set buffer[0].
 	 */
-	public final Object[] getBuffer(int type) throws HDF5LibraryException {
+	private final Object[] getBuffer(int type) throws HDF5LibraryException {
 		Object[] buffer = null;
 
 		if (type == HDF5Constants.H5T_NATIVE_DOUBLE) {
@@ -1016,7 +1092,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *         the dimensions, e.g., 1st dimension length * 2nd dimension length
 	 *         * ... * nth dimension length.
 	 */
-	public final Object getBuffer(int type, long[] dims)
+	private final Object getBuffer(int type, long[] dims)
 			throws HDF5LibraryException {
 		Object buffer = null;
 

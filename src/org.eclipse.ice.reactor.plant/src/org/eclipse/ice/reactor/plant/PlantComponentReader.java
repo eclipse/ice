@@ -205,16 +205,13 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 		int objectId = groupIds.peek();
 
 		try {
-			int H5T_NATIVE_INT = HDF5Constants.H5T_NATIVE_INT;
-			int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
-
 			// Read the rotation.
-			plantComp.setRotation((Double) factory.readAttribute(objectId,
-					"rotation", H5T_NATIVE_DOUBLE));
+			plantComp.setRotation(
+					factory.readDoubleAttribute(objectId, "rotation"));
 
 			// Read the number of elements.
-			plantComp.setNumElements((Integer) factory.readAttribute(objectId,
-					"numElements", H5T_NATIVE_INT));
+			plantComp.setNumElements(
+					factory.readIntegerAttribute(objectId, "numElements"));
 
 			// ---- Position and orientation ---- //
 			// Combine the position and orientation into a single Dataset
@@ -383,15 +380,13 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 
 		try {
 
-			int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
-
 			// Read the radius.
-			plantComp.setInnerRadius((Double) factory.readAttribute(objectId,
-					"innerRadius", H5T_NATIVE_DOUBLE));
+			plantComp.setInnerRadius(
+					factory.readDoubleAttribute(objectId, "innerRadius"));
 
 			// Read the length.
-			plantComp.setLength((Double) factory.readAttribute(objectId,
-					"length", H5T_NATIVE_DOUBLE));
+			plantComp
+					.setLength(factory.readDoubleAttribute(objectId, "length"));
 
 		} catch (NullPointerException e) {
 			logger.error(getClass().getName() + " Exception!", e);
@@ -421,15 +416,13 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 
 		try {
 
-			int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
-
 			// Read the radius.
-			plantComp.setRadius((Double) factory.readAttribute(objectId,
-					"radius", H5T_NATIVE_DOUBLE));
+			plantComp
+					.setRadius(factory.readDoubleAttribute(objectId, "radius"));
 
 			// Read the length.
-			plantComp.setLength((Double) factory.readAttribute(objectId,
-					"length", H5T_NATIVE_DOUBLE));
+			plantComp
+					.setLength(factory.readDoubleAttribute(objectId, "length"));
 
 		} catch (NullPointerException e) {
 			logger.error(getClass().getName() + " Exception!", e);
