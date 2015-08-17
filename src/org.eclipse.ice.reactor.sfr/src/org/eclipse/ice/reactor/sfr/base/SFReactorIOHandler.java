@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Anna Wojtowics - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - Added HDF5 reading capabilities.
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor.sfr.base;
 
@@ -21,13 +21,8 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeSet;
 
-import ncsa.hdf.hdf5lib.H5;
-import ncsa.hdf.hdf5lib.HDF5Constants;
-import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import ncsa.hdf.hdf5lib.structs.H5O_info_t;
-
 import org.eclipse.ice.analysistool.IData;
+import org.eclipse.ice.io.hdf.HdfIOFactory;
 import org.eclipse.ice.reactor.sfr.core.AssemblyType;
 import org.eclipse.ice.reactor.sfr.core.Material;
 import org.eclipse.ice.reactor.sfr.core.MaterialBlock;
@@ -41,34 +36,25 @@ import org.eclipse.ice.reactor.sfr.core.assembly.SFRRod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ncsa.hdf.hdf5lib.H5;
+import ncsa.hdf.hdf5lib.HDF5Constants;
+import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+
 /**
- * <p>
- * Class acts as an intermediary between the reactor and HDF5 data. This class
- * both reads HDF5 data into the SFReactor, and writes from the SFReactor into
- * HDF5 data.
- * </p>
+ * This class acts as an intermediary between the reactor and HDF5 data. This
+ * class both reads HDF5 data into the SFReactor, and writes from the SFReactor
+ * into HDF5 data.
  *
  * @author Anna Wojtowicz
  */
-public class SFReactorIOHandler {
+public class SFReactorIOHandler extends HdfIOFactory {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
 			.getLogger(SFReactorIOHandler.class);
-
-	/**
-	 * <p>
-	 * Nullary constructor.
-	 * </p>
-	 *
-	 */
-	public SFReactorIOHandler() {
-
-		// Nothing to do here.
-
-	}
 
 	/**
 	 * Reads data from an input HDF5 file into a SFReactor.
@@ -112,9 +98,6 @@ public class SFReactorIOHandler {
 		// A stack representing the currently opened groups.
 		Stack<Integer> groupIds = new Stack<Integer>();
 
-		Integer[] intBuffer = new Integer[1];
-		Double[] doubleBuffer = new Double[1];
-
 		try {
 			// Open the H5 file with read-only access.
 			status = H5.H5Fopen(path, H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -127,11 +110,10 @@ public class SFReactorIOHandler {
 			groupId = groupIds.push(openGroup(fileId, "/SFReactor"));
 
 			// Get the size of the reactor in the file and initialize it.
-			int size = (Integer) readAttribute(groupId, "size", H5T_NATIVE_INT,
-					intBuffer);
+			int size = (Integer) readAttribute(groupId, "size", H5T_NATIVE_INT);
 			reactor = new SFReactor(size);
 
-			/* ---- Read the reactor's attributes. ---- */
+			// ---- Read the reactor's attributes. ---- //
 			// Attributes inherited from SFRComponent.
 			readSFRComponent(reactor, groupId);
 
@@ -141,12 +123,12 @@ public class SFReactorIOHandler {
 			// SFReactor-specific attributes.
 			// size has already been read.
 			reactor.setLatticePitch((Double) readAttribute(groupId,
-					"latticePitch", H5T_NATIVE_DOUBLE, doubleBuffer));
+					"latticePitch", H5T_NATIVE_DOUBLE));
 			reactor.setOuterFlatToFlat((Double) readAttribute(groupId,
-					"outerFlatToFlat", H5T_NATIVE_DOUBLE, doubleBuffer));
-			/* ---------------------------------------- */
+					"outerFlatToFlat", H5T_NATIVE_DOUBLE));
+					// ---------------------------------------- //
 
-			/* ---- Read the reactor's Pin Assemblies. ---- */
+			// ---- Read the reactor's Pin Assemblies. ---- //
 			List<AssemblyType> pinAssemblyTypes = new ArrayList<AssemblyType>();
 			pinAssemblyTypes.add(AssemblyType.Fuel);
 			pinAssemblyTypes.add(AssemblyType.Control);
@@ -155,8 +137,8 @@ public class SFReactorIOHandler {
 
 			for (AssemblyType assemblyType : pinAssemblyTypes) {
 				// Open the group for this assembly type.
-				groupId = groupIds.push(openGroup(groupIds.peek(),
-						assemblyType.toString()));
+				groupId = groupIds.push(
+						openGroup(groupIds.peek(), assemblyType.toString()));
 
 				// Loop over the child groups in this assembly type's group.
 				// These groups should have the assembly names.
@@ -164,20 +146,21 @@ public class SFReactorIOHandler {
 						H5O_TYPE_GROUP)) {
 
 					// Open the group for this assembly.
-					groupId = groupIds.push(openGroup(groupIds.peek(),
-							assemblyName));
+					groupId = groupIds
+							.push(openGroup(groupIds.peek(), assemblyName));
 
 					// Read the name, pinType, and size of the assembly.
-					PinType pinType = PinType.valueOf((Integer) readAttribute(
-							groupId, "pinType", H5T_NATIVE_INT, intBuffer));
+					PinType pinType = PinType
+							.valueOf((Integer) readAttribute(groupId, "pinType",
+									H5T_NATIVE_INT));
 					size = (Integer) readAttribute(groupId, "size",
-							H5T_NATIVE_INT, intBuffer);
+							H5T_NATIVE_INT);
 
 					// Initialize the assembly.
 					PinAssembly assembly = new PinAssembly(assemblyName,
 							pinType, size);
 
-					/* --- Read the assembly's attributes. --- */
+					// --- Read the assembly's attributes. --- //
 					// Attributes inherited from SFRComponent.
 					readSFRComponent(assembly, groupId);
 
@@ -187,43 +170,42 @@ public class SFReactorIOHandler {
 					// Attributes inherited from SFRAssembly.
 					// size has already been read.
 					assembly.setDuctThickness((Double) readAttribute(groupId,
-							"ductThickness", H5T_NATIVE_DOUBLE, doubleBuffer));
+							"ductThickness", H5T_NATIVE_DOUBLE));
 
 					// PinAssembly-specific attributes.
 					assembly.setPinPitch((Double) readAttribute(groupId,
-							"pinPitch", H5T_NATIVE_DOUBLE, doubleBuffer));
+							"pinPitch", H5T_NATIVE_DOUBLE));
 					// pinType has already been read.
 					assembly.setInnerDuctFlatToFlat((Double) readAttribute(
-							groupId, "innerDuctFlatToFlat", H5T_NATIVE_DOUBLE,
-							doubleBuffer));
+							groupId, "innerDuctFlatToFlat", H5T_NATIVE_DOUBLE));
 					assembly.setInnerDuctThickness((Double) readAttribute(
-							groupId, "innerDuctThickness", H5T_NATIVE_DOUBLE,
-							doubleBuffer));
-					/* --------------------------------------- */
+							groupId, "innerDuctThickness", H5T_NATIVE_DOUBLE));
+							// --------------------------------------- //
 
-					/* --- Read the assembly's reactor locations. --- */
+					// --- Read the assembly's reactor locations. --- //
 					// Add the assembly to the reactor.
 					reactor.addAssembly(assemblyType, assembly);
 
 					// Set the assembly's locations in the reactor.
 					for (int location : readLocationData(groupId)) {
 						reactor.setAssemblyLocation(assemblyType, assemblyName,
-								location / reactor.getSize(), location
-										% reactor.getSize());
+								location / reactor.getSize(),
+								location % reactor.getSize());
 					}
-					/* ---------------------------------------------- */
+					// ---------------------------------------------- //
 
-					/* --- Read the assembly's pins. --- */
+					// --- Read the assembly's pins. --- //
 					// Open the group that holds the pins.
 					groupId = groupIds.push(openGroup(groupId, "Pins"));
 
 					// Loop over the child groups in this assembly's Pins group.
 					// These groups should have the pin names.
-					for (String pinName : getChildNames(groupId, H5O_TYPE_GROUP)) {
+					for (String pinName : getChildNames(groupId,
+							H5O_TYPE_GROUP)) {
 
 						// Open the group for this pin.
-						groupId = groupIds.push(openGroup(groupIds.peek(),
-								pinName));
+						groupId = groupIds
+								.push(openGroup(groupIds.peek(), pinName));
 
 						// So we don't waste time creating default properties
 						// for the pin that will soon be replaced, we should
@@ -232,13 +214,13 @@ public class SFReactorIOHandler {
 						Material fillGas = null;
 						TreeSet<MaterialBlock> materialBlocks = null;
 
-						/* -- Read in the cladding. -- */
+						// -- Read in the cladding. -- //
 						groupId = openGroup(groupId, "cladding");
 						cladding = readRing(groupId);
 						closeGroup(groupId);
-						/* --------------------------- */
+						// --------------------------- //
 
-						/* -- Read in the fill gas. -- */
+						// -- Read in the fill gas. -- //
 						// Initialize the container for the fill gas.
 						fillGas = new Material();
 
@@ -246,15 +228,15 @@ public class SFReactorIOHandler {
 						groupId = openGroup(groupIds.peek(), "fillGas");
 						readSFRComponent(fillGas, groupId);
 						closeGroup(groupId);
-						/* --------------------------- */
+						// --------------------------- //
 
-						/* -- Read in the material blocks. -- */
+						// -- Read in the material blocks. -- //
 						// Initialize the container for the material blocks.
 						materialBlocks = new TreeSet<MaterialBlock>();
 
 						// Open the material blocks group.
-						groupId = groupIds.push(openGroup(groupIds.peek(),
-								"materialBlocks"));
+						groupId = groupIds.push(
+								openGroup(groupIds.peek(), "materialBlocks"));
 
 						// Loop over the child groups of materialBlocks. They
 						// correspond to individual MaterialBlocks in the
@@ -265,18 +247,18 @@ public class SFReactorIOHandler {
 							MaterialBlock block = new MaterialBlock();
 
 							// Open the MaterialBlock's group.
-							groupId = groupIds.push(openGroup(groupIds.peek(),
-									groupName));
+							groupId = groupIds.push(
+									openGroup(groupIds.peek(), groupName));
 
 							// Read the block's SFRComponent attributes.
 							readSFRComponent(block, groupId);
 
 							// Read the block's other attributes.
-							block.setVertPosition((Double) readAttribute(
-									groupId, "vertPosition", H5T_NATIVE_DOUBLE,
-									doubleBuffer));
+							block.setVertPosition(
+									(Double) readAttribute(groupId,
+											"vertPosition", H5T_NATIVE_DOUBLE));
 
-							/* - Read the block's rings. - */
+							// - Read the block's rings. - //
 
 							// Open the Rings group.
 							groupId = groupIds
@@ -295,7 +277,7 @@ public class SFReactorIOHandler {
 
 							// Close the Rings group.
 							closeGroup(groupIds.pop());
-							/* --------------------------- */
+							// --------------------------- //
 
 							// Close the MaterialBlock's group.
 							closeGroup(groupIds.pop());
@@ -306,7 +288,7 @@ public class SFReactorIOHandler {
 
 						// Close the material blocks group.
 						closeGroup(groupIds.pop());
-						/* ---------------------------------- */
+						// ---------------------------------- //
 
 						// Initialize the pin.
 						SFRPin pin = new SFRPin(pinName, cladding, fillGas,
@@ -315,15 +297,15 @@ public class SFReactorIOHandler {
 						// Get the pin's groupId.
 						groupId = groupIds.peek();
 
-						/* -- Read in the Pin's other attributes. -- */
+						// -- Read in the Pin's other attributes. -- //
 						// Attributes inherited from SFRComponent.
 						readSFRComponent(pin, groupId);
 
 						// Pin-specific attributes.
 						// none
-						/* ----------------------------------------- */
+						// ----------------------------------------- //
 
-						/* -- Read the pin's assembly locations. -- */
+						// -- Read the pin's assembly locations. -- //
 						// Add the pin to the assembly.
 						assembly.addPin(pin);
 
@@ -332,7 +314,7 @@ public class SFReactorIOHandler {
 							assembly.setPinLocation(pinName, location / size,
 									location % size);
 						}
-						/* ---------------------------------------- */
+						// ---------------------------------------- //
 
 						// Close the group for this pin.
 						closeGroup(groupIds.pop());
@@ -340,20 +322,21 @@ public class SFReactorIOHandler {
 
 					// Close the group that holds the pins.
 					closeGroup(groupIds.pop());
-					/* --------------------------------- */
+					// --------------------------------- //
 
-					/* --- Read the assembly's GridData. --- */
+					// --- Read the assembly's GridData. --- //
 					groupId = groupIds.peek();
 
 					List<SFRComponent> gridData = new ArrayList<SFRComponent>();
 					for (int row = 0; row < assembly.getSize(); row++) {
-						for (int column = 0; column < assembly.getSize(); column++) {
-							gridData.add(assembly.getDataProviderByLocation(
-									row, column));
+						for (int column = 0; column < assembly
+								.getSize(); column++) {
+							gridData.add(assembly.getDataProviderByLocation(row,
+									column));
 						}
 					}
 					readGridData(gridData, groupId);
-					/* -------------------------------------- */
+					// -------------------------------------- //
 
 					// Close the group for this assembly.
 					closeGroup(groupIds.pop());
@@ -362,9 +345,9 @@ public class SFReactorIOHandler {
 				// Close the group for this assembly type.
 				closeGroup(groupIds.pop());
 			}
-			/* -------------------------------------------- */
+			// -------------------------------------------- //
 
-			/* ---- Read the reactor's Reflector Assemblies. ---- */
+			// ---- Read the reactor's Reflector Assemblies. ---- //
 			// Open the group for this assembly type.
 			groupId = groupIds.push(openGroup(groupIds.peek(),
 					AssemblyType.Reflector.toString()));
@@ -378,14 +361,13 @@ public class SFReactorIOHandler {
 						.push(openGroup(groupIds.peek(), assemblyName));
 
 				// Read the name, rodType, and size of the assembly.
-				size = (Integer) readAttribute(groupId, "size", H5T_NATIVE_INT,
-						intBuffer);
+				size = (Integer) readAttribute(groupId, "size", H5T_NATIVE_INT);
 
 				// Initialize the assembly.
-				ReflectorAssembly assembly = new ReflectorAssembly(
-						assemblyName, size);
+				ReflectorAssembly assembly = new ReflectorAssembly(assemblyName,
+						size);
 
-				/* --- Read the assembly's attributes. --- */
+				// --- Read the assembly's attributes. --- //
 				// Attributes inherited from SFRComponent.
 				readSFRComponent(assembly, groupId);
 
@@ -395,14 +377,14 @@ public class SFReactorIOHandler {
 				// Attributes inherited from SFRAssembly.
 				// size has already been read.
 				assembly.setDuctThickness((Double) readAttribute(groupId,
-						"ductThickness", H5T_NATIVE_DOUBLE, doubleBuffer));
+						"ductThickness", H5T_NATIVE_DOUBLE));
 
 				// ReflectorAssembly-specific attributes.
-				assembly.setRodPitch((Double) readAttribute(groupId,
-						"rodPitch", H5T_NATIVE_DOUBLE, doubleBuffer));
-				/* --------------------------------------- */
+				assembly.setRodPitch((Double) readAttribute(groupId, "rodPitch",
+						H5T_NATIVE_DOUBLE));
+						// --------------------------------------- //
 
-				/* --- Read the assembly's reactor locations. --- */
+				// --- Read the assembly's reactor locations. --- //
 				// Add the assembly to the reactor.
 				reactor.addAssembly(AssemblyType.Reflector, assembly);
 
@@ -412,9 +394,9 @@ public class SFReactorIOHandler {
 							assemblyName, location / reactor.getSize(),
 							location % reactor.getSize());
 				}
-				/* ---------------------------------------------- */
+				// ---------------------------------------------- //
 
-				/* --- Read the assembly's rods. --- */
+				// --- Read the assembly's rods. --- //
 				// Open the group that holds the rods.
 				groupId = groupIds.push(openGroup(groupId, "Rods"));
 
@@ -429,24 +411,24 @@ public class SFReactorIOHandler {
 					// Initialize the rod.
 					SFRRod rod = new SFRRod(rodName);
 
-					/* -- Read in the Rod's other attributes. -- */
+					// -- Read in the Rod's other attributes. -- //
 					// Attributes inherited from SFRComponent.
 					readSFRComponent(rod, groupId);
 
 					// Rod-specific attributes.
 					// none
-					/* ----------------------------------------- */
+					// ----------------------------------------- //
 
-					/* -- Read in the reflector. -- */
+					// -- Read in the reflector. -- //
 					groupId = openGroup(groupId, "reflector");
 					rod.setReflector(readRing(groupId));
 					closeGroup(groupId);
-					/* --------------------------- */
+					// --------------------------- //
 
 					// Get the rod's groupId back.
 					groupId = groupIds.peek();
 
-					/* -- Read the rod's assembly locations. -- */
+					// -- Read the rod's assembly locations. -- //
 					// Add the rod to the assembly.
 					assembly.addRod(rod);
 
@@ -455,7 +437,7 @@ public class SFReactorIOHandler {
 						assembly.setRodLocation(rodName, location / size,
 								location % size);
 					}
-					/* ---------------------------------------- */
+					// ---------------------------------------- //
 
 					// Close the group for this rod.
 					closeGroup(groupIds.pop());
@@ -463,20 +445,21 @@ public class SFReactorIOHandler {
 
 				// Close the group that holds the rods.
 				closeGroup(groupIds.pop());
-				/* --------------------------------- */
+				// --------------------------------- //
 
-				/* --- Read the assembly's GridData. --- */
+				// --- Read the assembly's GridData. --- //
 				groupId = groupIds.peek();
 
 				List<SFRComponent> gridData = new ArrayList<SFRComponent>();
 				for (int row = 0; row < assembly.getSize(); row++) {
-					for (int column = 0; column < assembly.getSize(); column++) {
+					for (int column = 0; column < assembly
+							.getSize(); column++) {
 						gridData.add(assembly.getDataProviderByLocation(row,
 								column));
 					}
 				}
 				readGridData(gridData, groupId);
-				/* -------------------------------------- */
+				// -------------------------------------- //
 
 				// Close the group for this assembly.
 				closeGroup(groupIds.pop());
@@ -484,7 +467,7 @@ public class SFReactorIOHandler {
 
 			// Close the group for this assembly type.
 			closeGroup(groupIds.pop());
-			/* -------------------------------------------------- */
+			// -------------------------------------------------- //
 
 			// Close the reactor's group.
 			closeGroup(groupIds.pop());
@@ -495,11 +478,11 @@ public class SFReactorIOHandler {
 				throwException("Closing file \"" + path + "\"", status);
 			}
 		} catch (HDF5LibraryException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Return the loaded SFReactor.
@@ -507,11 +490,10 @@ public class SFReactorIOHandler {
 	}
 
 	/**
-	 * <p>
 	 * Writes data from the input SFReactor into a HDF5 file.
-	 * </p>
 	 *
 	 * @param reactor
+	 *            The reactor to write.
 	 */
 	public void writeHDF5(URI uri, SFReactor reactor) {
 
@@ -556,8 +538,8 @@ public class SFReactorIOHandler {
 		try {
 
 			// Create the H5 file. This should also open it with RW-access.
-			status = H5
-					.H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+			status = H5.H5Fcreate(path, H5F_ACC_TRUNC, H5P_DEFAULT,
+					H5P_DEFAULT);
 			if (status < 0) {
 				throwException("Opening file \"" + path + "\"", status);
 			}
@@ -566,7 +548,7 @@ public class SFReactorIOHandler {
 			// Create the group for the reactor.
 			groupId = groupIds.push(createGroup(fileId, "/SFReactor"));
 
-			/* ---- Write the reactor's attributes. ---- */
+			// ---- Write the reactor's attributes. ---- //
 			// Attributes inherited from SFRComponent.
 			writeSFRComponent(reactor, groupId);
 
@@ -574,15 +556,14 @@ public class SFReactorIOHandler {
 			// none
 
 			// SFReactor-specific attributes.
-			writeAttribute(groupId, "size", H5T_NATIVE_INT,
-					new int[] { reactor.getSize() });
+			writeAttribute(groupId, "size", H5T_NATIVE_INT, reactor.getSize());
 			writeAttribute(groupId, "latticePitch", H5T_NATIVE_DOUBLE,
-					new double[] { reactor.getLatticePitch() });
+					reactor.getLatticePitch());
 			writeAttribute(groupId, "outerFlatToFlat", H5T_NATIVE_DOUBLE,
-					new double[] { reactor.getOuterFlatToFlat() });
-			/* ----------------------------------------- */
+					reactor.getOuterFlatToFlat());
+					// ----------------------------------------- //
 
-			/* ---- Write the reactor's Pin Assemblies. ---- */
+			// ---- Write the reactor's Pin Assemblies. ---- //
 			List<AssemblyType> pinAssemblyTypes = new ArrayList<AssemblyType>();
 			pinAssemblyTypes.add(AssemblyType.Fuel);
 			pinAssemblyTypes.add(AssemblyType.Control);
@@ -591,8 +572,8 @@ public class SFReactorIOHandler {
 
 			for (AssemblyType assemblyType : pinAssemblyTypes) {
 				// Create a group for this assembly type.
-				groupId = groupIds.push(createGroup(groupIds.peek(),
-						assemblyType.toString()));
+				groupId = groupIds.push(
+						createGroup(groupIds.peek(), assemblyType.toString()));
 
 				for (String assemblyName : reactor
 						.getAssemblyNames(assemblyType)) {
@@ -602,10 +583,10 @@ public class SFReactorIOHandler {
 							.getAssemblyByName(assemblyType, assemblyName);
 
 					// Create a group for this assembly.
-					groupId = groupIds.push(createGroup(groupIds.peek(),
-							assemblyName));
+					groupId = groupIds
+							.push(createGroup(groupIds.peek(), assemblyName));
 
-					/* --- Write the assembly's attributes. --- */
+					// --- Write the assembly's attributes. --- //
 					// Attributes inherited from SFRComponent.
 					writeSFRComponent(assembly, groupId);
 
@@ -614,81 +595,82 @@ public class SFReactorIOHandler {
 
 					// Attributes inherited from SFRAssembly.
 					writeAttribute(groupId, "size", H5T_NATIVE_INT,
-							new int[] { assembly.getSize() });
+							assembly.getSize());
 					writeAttribute(groupId, "ductThickness", H5T_NATIVE_DOUBLE,
-							new double[] { assembly.getDuctThickness() });
+							assembly.getDuctThickness());
 
 					// PinAssembly-specific attributes.
 					writeAttribute(groupId, "pinPitch", H5T_NATIVE_DOUBLE,
-							new double[] { assembly.getPinPitch() });
+							assembly.getPinPitch());
 					writeAttribute(groupId, "pinType", H5T_NATIVE_INT,
-							new int[] { assembly.getPinType().getId() });
+							assembly.getPinType().getId());
 					writeAttribute(groupId, "innerDuctFlatToFlat",
 							H5T_NATIVE_DOUBLE,
-							new double[] { assembly.getInnerDuctFlatToFlat() });
+							assembly.getInnerDuctFlatToFlat());
 					writeAttribute(groupId, "innerDuctThickness",
-							H5T_NATIVE_INT,
-							new double[] { assembly.getInnerDuctThickness() });
-					/* ---------------------------------------- */
+							H5T_NATIVE_DOUBLE,
+							assembly.getInnerDuctThickness());
+							// ---------------------------------------- //
 
-					/* --- Write the assembly's reactor locations. --- */
-					writeLocationData(reactor.getAssemblyLocations(
-							assemblyType, assemblyName), groupId);
-					/* ----------------------------------------------- */
+					// --- Write the assembly's reactor locations. --- //
+					writeLocationData(reactor.getAssemblyLocations(assemblyType,
+							assemblyName), groupId);
+							/*
+							 * -----------------------------------------------
+							 */
 
 					// Create a group to hold the pins.
 					groupId = groupIds
 							.push(createGroup(groupIds.peek(), "Pins"));
 
-					/* --- Write the assembly's rods/pins. --- */
+					// --- Write the assembly's rods/pins. --- //
 					for (String pinName : assembly.getPinNames()) {
 
 						// Get the pin object from the assembly.
 						SFRPin pin = assembly.getPinByName(pinName);
 
 						// Create a group for the pin.
-						groupId = groupIds.push(createGroup(groupIds.peek(),
-								pinName));
+						groupId = groupIds
+								.push(createGroup(groupIds.peek(), pinName));
 
-						/* -- Write the pin's attributes. -- */
+						// -- Write the pin's attributes. -- //
 						// Attributes inherited from SFRComponent.
 						writeSFRComponent(pin, groupId);
 
 						// Pin-specific attributes.
 						// none
-						/* --------------------------------- */
+						// --------------------------------- //
 
-						/* -- Write the pin's physical properties. -- */
+						// -- Write the pin's physical properties. -- //
 						// Material fillGas
 						Material fillGas = pin.getFillGas();
-						groupId = groupIds.push(createGroup(groupIds.peek(),
-								"fillGas"));
+						groupId = groupIds
+								.push(createGroup(groupIds.peek(), "fillGas"));
 						writeSFRComponent(fillGas, groupId);
 						closeGroup(groupIds.pop());
 
 						// Ring cladding
 						Ring cladding = pin.getCladding();
-						groupId = groupIds.push(createGroup(groupIds.peek(),
-								"cladding"));
+						groupId = groupIds
+								.push(createGroup(groupIds.peek(), "cladding"));
 						writeRing(cladding, groupId);
 						closeGroup(groupIds.pop());
 
 						// TreeSet materialBlocks
-						groupId = groupIds.push(createGroup(groupIds.peek(),
-								"materialBlocks"));
+						groupId = groupIds.push(
+								createGroup(groupIds.peek(), "materialBlocks"));
 						int i = 0;
 						for (MaterialBlock block : pin.getMaterialBlocks()) {
 							// Create a Group for the MaterialBlock.
-							groupId = groupIds.push(createGroup(
-									groupIds.peek(), Integer.toString(i++)));
+							groupId = groupIds.push(createGroup(groupIds.peek(),
+									Integer.toString(i++)));
 
 							// Write the block's SFRComponent attributes.
 							writeSFRComponent(block, groupId);
 
 							// Write the block's other attributes.
 							writeAttribute(groupId, "vertPosition",
-									H5T_NATIVE_DOUBLE,
-									new Double[] { block.getVertPosition() });
+									H5T_NATIVE_DOUBLE, block.getVertPosition());
 
 							// Create a group to contain the Rings.
 							groupIds.push(createGroup(groupId, "Rings"));
@@ -710,36 +692,37 @@ public class SFReactorIOHandler {
 							closeGroup(groupIds.pop());
 						}
 						closeGroup(groupIds.pop());
-						/* ------------------------------------------ */
+						// ------------------------------------------ //
 
 						// Get the group ID back (subgroups have been created).
 						groupId = groupIds.peek();
 
-						/* -- Write the pin's assembly locations. -- */
+						// -- Write the pin's assembly locations. -- //
 						writeLocationData(assembly.getPinLocations(pinName),
 								groupId);
-						/* ----------------------------------------- */
+								// ----------------------------------------- //
 
 						// Close the group for the pin.
 						closeGroup(groupIds.pop());
 					}
-					/* --------------------------------------- */
+					// --------------------------------------- //
 
 					// Close the group containing the pins.
 					closeGroup(groupIds.pop());
 
-					/* --- Write the assembly's GridData. --- */
+					// --- Write the assembly's GridData. --- //
 					groupId = groupIds.peek();
 
 					List<SFRComponent> gridData = new ArrayList<SFRComponent>();
 					for (int row = 0; row < assembly.getSize(); row++) {
-						for (int column = 0; column < assembly.getSize(); column++) {
-							gridData.add(assembly.getDataProviderByLocation(
-									row, column));
+						for (int column = 0; column < assembly
+								.getSize(); column++) {
+							gridData.add(assembly.getDataProviderByLocation(row,
+									column));
 						}
 					}
 					writeGridData(gridData, groupId);
-					/* -------------------------------------- */
+					// -------------------------------------- //
 
 					// Close this assembly group.
 					closeGroup(groupIds.pop());
@@ -748,9 +731,9 @@ public class SFReactorIOHandler {
 				// Close the group for this assembly type.
 				closeGroup(groupIds.pop());
 			}
-			/* --------------------------------------------- */
+			// --------------------------------------------- //
 
-			/* ---- Write the reactor's Reflector Assemblies. ---- */
+			// ---- Write the reactor's Reflector Assemblies. ---- //
 			// Create a group for this assembly type.
 			groupId = groupIds.push(createGroup(groupIds.peek(),
 					AssemblyType.Reflector.toString()));
@@ -760,13 +743,14 @@ public class SFReactorIOHandler {
 
 				// Get the assembly object from the reactor.
 				ReflectorAssembly assembly = (ReflectorAssembly) reactor
-						.getAssemblyByName(AssemblyType.Reflector, assemblyName);
+						.getAssemblyByName(AssemblyType.Reflector,
+								assemblyName);
 
 				// Create a group for this assembly.
-				groupId = groupIds.push(createGroup(groupIds.peek(),
-						assemblyName));
+				groupId = groupIds
+						.push(createGroup(groupIds.peek(), assemblyName));
 
-				/* --- Write the assembly's attributes. --- */
+				// --- Write the assembly's attributes. --- //
 				// Attributes inherited from SFRComponent.
 				writeSFRComponent(assembly, groupId);
 
@@ -775,78 +759,79 @@ public class SFReactorIOHandler {
 
 				// Attributes inherited from SFRAssembly.
 				writeAttribute(groupId, "size", H5T_NATIVE_INT,
-						new int[] { assembly.getSize() });
+						assembly.getSize());
 				writeAttribute(groupId, "ductThickness", H5T_NATIVE_DOUBLE,
-						new double[] { assembly.getDuctThickness() });
+						assembly.getDuctThickness());
 
 				// ReflectorAssembly-specific attributes.
 				writeAttribute(groupId, "rodPitch", H5T_NATIVE_DOUBLE,
-						new double[] { assembly.getRodPitch() });
-				/* ---------------------------------------- */
+						assembly.getRodPitch());
+						// ---------------------------------------- //
 
-				/* --- Write the assembly's reactor locations. --- */
+				// --- Write the assembly's reactor locations. --- //
 				writeLocationData(reactor.getAssemblyLocations(
 						AssemblyType.Reflector, assemblyName), groupId);
-				/* ----------------------------------------------- */
+						// ----------------------------------------------- //
 
 				// Create a group to hold the pins.
 				groupId = groupIds.push(createGroup(groupIds.peek(), "Rods"));
 
-				/* --- Write the assembly's rods/pins. --- */
+				// --- Write the assembly's rods/pins. --- //
 				for (String rodName : assembly.getRodNames()) {
 
 					// Get the rod object from the assembly.
 					SFRRod rod = assembly.getRodByName(rodName);
 
 					// Create a group for the rod.
-					groupId = groupIds.push(createGroup(groupIds.peek(),
-							rodName));
+					groupId = groupIds
+							.push(createGroup(groupIds.peek(), rodName));
 
-					/* -- Write the rod's attributes. -- */
+					// -- Write the rod's attributes. -- //
 					// Attributes inherited from SFRComponent.
 					writeSFRComponent(rod, groupId);
 
 					// Rod-specific attributes.
 					// none
-					/* --------------------------------- */
+					// --------------------------------- //
 
-					/* -- Write the rod's physical properties. -- */
+					// -- Write the rod's physical properties. -- //
 					// Ring reflector.
 					Ring reflector = rod.getReflector();
-					groupId = groupIds.push(createGroup(groupIds.peek(),
-							"reflector"));
+					groupId = groupIds
+							.push(createGroup(groupIds.peek(), "reflector"));
 					writeRing(reflector, groupId);
 					closeGroup(groupIds.pop());
-					/* ------------------------------------------ */
+					// ------------------------------------------ //
 
 					// Get the group ID back (subgroups have been created).
 					groupId = groupIds.peek();
 
-					/* -- Write the rod's assembly locations. -- */
+					// -- Write the rod's assembly locations. -- //
 					writeLocationData(assembly.getRodLocations(rodName),
 							groupId);
-					/* ----------------------------------------- */
+							// ----------------------------------------- //
 
 					// Close the group for the rod.
 					closeGroup(groupIds.pop());
 				}
-				/* --------------------------------------- */
+				// --------------------------------------- //
 
 				// Close the group containing the rods.
 				closeGroup(groupIds.pop());
 
-				/* --- Write the assembly's GridData. --- */
+				// --- Write the assembly's GridData. --- //
 				groupId = groupIds.peek();
 
 				List<SFRComponent> gridData = new ArrayList<SFRComponent>();
 				for (int row = 0; row < assembly.getSize(); row++) {
-					for (int column = 0; column < assembly.getSize(); column++) {
+					for (int column = 0; column < assembly
+							.getSize(); column++) {
 						gridData.add(assembly.getDataProviderByLocation(row,
 								column));
 					}
 				}
 				writeGridData(gridData, groupId);
-				/* -------------------------------------- */
+				// -------------------------------------- //
 
 				// Close this assembly group.
 				closeGroup(groupIds.pop());
@@ -854,7 +839,7 @@ public class SFReactorIOHandler {
 
 			// Close the group for this assembly type.
 			closeGroup(groupIds.pop());
-			/* --------------------------------------------------- */
+			// --------------------------------------------------- //
 
 			// Close the reactor group.
 			closeGroup(groupIds.pop());
@@ -865,469 +850,53 @@ public class SFReactorIOHandler {
 				throwException("Closing file \"" + path + "\"", status);
 			}
 		} catch (HDF5LibraryException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return;
 	}
 
-	/**
-	 * This utility method throws an HDF5LibraryException with a custom message.
-	 *
-	 * @param message
-	 *            The message to append to the exception.
-	 * @param status
-	 *            The integer flag that indicated a problem. This is usually a
-	 *            negative number.
-	 * @throws HDF5LibraryException
+	/*
+	 * Overrides a method from HdfIOFactory.
 	 */
-	private void throwException(String message, int status)
-			throws HDF5LibraryException {
-		throw new HDF5LibraryException("SFReactorIOHandler error: " + message
-				+ ": " + Integer.toString(status));
+	@Override
+	public List<Class<?>> getSupportedClasses() {
+		List<Class<?>> supportedClasses = new ArrayList<Class<?>>();
+		// TODO
+		return supportedClasses;
 	}
 
-	/**
-	 * Opens an HDF5 Group.
-	 *
-	 * @param parentId
-	 *            The ID of the parent's Group, which should be open itself.
-	 * @param name
-	 *            The name of the Group to open.
-	 * @return The ID of the newly-opened Group.
-	 * @throws HDF5LibraryException
-	 * @throws NullPointerException
+	/*
+	 * Overrides a method from HdfIOFactory.
 	 */
-	private int openGroup(int parentId, String name)
-			throws HDF5LibraryException, NullPointerException {
-		int status = H5.H5Gopen(parentId, name, HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Opening group \"" + name + "\"", status);
-		}
-		return status;
+	@Override
+	public String getTag(Class<?> supportedClass) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/**
-	 * Creates and opens an HDF5 Group.
-	 *
-	 * @param parentId
-	 *            The ID of the parent's Group, which should be open itself.
-	 * @param name
-	 *            The name of the Group to open.
-	 * @return The ID of the newly-opened Group.
-	 * @throws HDF5LibraryException
-	 * @throws NullPointerException
+	/*
+	 * Overrides a method from HdfIOFactory.
 	 */
-	private int createGroup(int parentId, String name)
-			throws HDF5LibraryException, NullPointerException {
-		int status = H5.H5Gcreate(parentId, name, HDF5Constants.H5P_DEFAULT,
-				HDF5Constants.H5P_DEFAULT, HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Creating group \"" + name + "\"", status);
-		}
-		return status;
+	@Override
+	public Object read(int groupId, String tag)
+			throws NullPointerException, HDF5Exception, HDF5LibraryException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/**
-	 * Closes an HDF5 Group.
-	 *
-	 * @param groupId
-	 *            The ID of the Group to close.
-	 * @throws HDF5LibraryException
+	/*
+	 * Overrides a method from HdfIOFactory.
 	 */
-	private void closeGroup(int groupId) throws HDF5LibraryException {
-		int status = H5.H5Gclose(groupId);
-		if (status < 0) {
-			throwException("Closing group \"/SFReactor\"", status);
-		}
-		return;
-	}
+	@Override
+	public void writeObjectData(int groupId, Object object)
+			throws NullPointerException, HDF5Exception, HDF5LibraryException {
+		// TODO Auto-generated method stub
 
-	/**
-	 * Gets a List of all child Objects of an HDF5 Group with the specified ID
-	 * and type.
-	 *
-	 * @param parentId
-	 *            The ID of the parent Group.
-	 * @param objectType
-	 *            The type of object we are looking for, e.g., H5O_TYPE_GROUP or
-	 *            H5O_TYPE_DATASET.
-	 * @return A List of names of all child objects that are HDF5 Groups.
-	 * @throws HDF5LibraryException
-	 */
-	private List<String> getChildNames(int parentId, int objectType)
-			throws HDF5LibraryException {
-
-		// Constants used below.
-		String parentGroup = ".";
-		int indexType = HDF5Constants.H5_INDEX_NAME;
-		int indexOrder = HDF5Constants.H5_ITER_INC;
-		int lapl_id = HDF5Constants.H5P_DEFAULT;
-
-		// Get the number of members in this group.
-		int status = H5.H5Gn_members(parentId, ".");
-		if (status < 0) {
-			throwException("Getting number of children of group with ID "
-					+ parentId + "", status);
-		}
-		int nMembers = status;
-
-		// A List of group names within the parent group (which has ID groupId).
-		List<String> groupNames = new ArrayList<String>(nMembers);
-
-		// Loop over the possible indexes.
-		for (int i = 0; i < nMembers; i++) {
-			// Get the info for the object in this position.
-			H5O_info_t info = H5.H5Oget_info_by_idx(parentId, parentGroup,
-					indexType, indexOrder, i, lapl_id);
-
-			// See if the object exists and is an HDF5 Group.
-			if (info != null && info.type == objectType) {
-
-				// Get the name and add it to the List if possible.
-				String name = H5.H5Lget_name_by_idx(parentId, parentGroup,
-						indexType, indexOrder, i, lapl_id);
-				if (name != null) {
-					groupNames.add(name);
-				}
-			}
-		}
-
-		return groupNames;
-	}
-
-	/**
-	 * Writes an Attribute for an HDF5 Object, which is typically a Group. Array
-	 * Attributes are not supported.
-	 *
-	 * @param objectId
-	 *            The ID for the Object, which should be open, that will get the
-	 *            Attribute.
-	 * @param name
-	 *            The name of the Attribute.
-	 * @param type
-	 *            The HDF5 datatype of the Attribute. Currently supported are
-	 *            H5T_NATIVE_INT and H5T_NATIVE_DOUBLE.
-	 * @param buffer
-	 *            The buffer used by HDF5 to write the Attribute to the file.
-	 *            This should be an array of the appropriate type, e.g., an
-	 *            int[1] for an H5T_NATIVE_INT.
-	 * @throws NullPointerException
-	 * @throws HDF5Exception
-	 */
-	private void writeAttribute(int objectId, String name, int type,
-			Object buffer) throws NullPointerException, HDF5Exception {
-		int status;
-
-		// Create the buffer that holds the data to write to the attribute.
-		long[] bufferSize = new long[] { 1 };
-
-		// Create the dataspace to hold the value.
-		status = H5.H5Screate_simple(1, bufferSize, null);
-		if (status < 0) {
-			throwException("Creating dataspace for attribute \"" + name + "\"",
-					status);
-		}
-		int dataspaceId = status;
-
-		// Create the attribute for the dataspace.
-		status = H5.H5Acreate(objectId, name, type, dataspaceId,
-				HDF5Constants.H5P_DEFAULT, HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Creating attribute \"" + name + "\"", status);
-		}
-		int attributeId = status;
-
-		// Write the attribute.
-		status = H5.H5Awrite(attributeId, type, buffer);
-		if (status < 0) {
-			throwException("Writing attribute \"" + name + "\"", status);
-		}
-
-		// Close the attribute.
-		status = H5.H5Aclose(attributeId);
-		if (status < 0) {
-			throwException("Closing attribute \"" + name + "\"", status);
-		}
-
-		// Close the dataspace.
-		status = H5.H5Sclose(dataspaceId);
-		if (status < 0) {
-			throwException("Closing dataspace for attribute \"" + name + "\"",
-					status);
-		}
-
-		return;
-	}
-
-	/**
-	 * Reads an Attribute for an HDF5 Object, which is typically a Group. Array
-	 * Attributes are not supported.
-	 *
-	 * @param objectId
-	 *            The ID for the Object, which should be open, that has the
-	 *            Attribute.
-	 * @param name
-	 *            The name of the Attribute.
-	 * @param type
-	 *            The HDF5 datatype of the Attribute. Currently supported are
-	 *            H5T_NATIVE_INT and H5T_NATIVE_DOUBLE.
-	 * @param buffer
-	 *            The buffer used by HDF5 to read the Attribute from the file.
-	 *            This should be an array of the appropriate type, e.g., an
-	 *            Tnteger[1] for an H5T_NATIVE_INT.
-	 * @return Returns the first element in the buffer (buffer[0]), which is the
-	 *         value of the Attribute.
-	 * @throws NullPointerException
-	 * @throws HDF5Exception
-	 */
-	private Object readAttribute(int objectId, String name, int type,
-			Object[] buffer) throws NullPointerException, HDF5Exception {
-		int status;
-
-		// Open the attribute.
-		status = H5.H5Aopen(objectId, name, HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Opening attribute \"" + name + "\"", status);
-		}
-		int attributeId = status;
-
-		// Read the attribute.
-		status = H5.H5Aread(attributeId, type, buffer);
-		if (status < 0) {
-			throwException("Reading attribute \"" + name + "\"", status);
-		}
-		// Close the attribute.
-		status = H5.H5Aclose(attributeId);
-		if (status < 0) {
-			throwException("Closing attribute \"" + name + "\"", status);
-		}
-		return buffer[0];
-	}
-
-	/**
-	 * Writes a String as an Attribute for an HDF5 Object, which is typically a
-	 * Group. This requires a special method because the String must first be
-	 * converted to a byte array.
-	 *
-	 * @param objectId
-	 *            The ID for the Object, which should be open, that will get the
-	 *            Attribute.
-	 * @param name
-	 *            The name of the Attribute.
-	 * @param value
-	 *            The String value of the Attribute.
-	 * @throws NullPointerException
-	 * @throws HDF5Exception
-	 */
-	private void writeStringAttribute(int objectId, String name, String value)
-			throws NullPointerException, HDF5Exception {
-		int status;
-		// HDF5 requires null-terminated strings. Unfortunately, Java's
-		// String.getBytes() method does not return a byte array that includes a
-		// null character in the last position, so we have to create a new
-		// buffer that includes all bytes from the string and a null (0) byte.
-
-		// Method 1: Create byte array of correct size, then copy string bytes
-		// to byte array.
-
-		// Methd 2: Create array from a new string that has the null character.
-		byte[] buffer = (value + "\0").getBytes();
-
-		// We have 1 string, so set rank to 1 and the length of the 1st
-		// dimension is 1.
-		int rank = 1;
-		long[] dims = new long[] { 1 };
-
-		// Create the dataspace to hold the value.
-		status = H5.H5Screate_simple(rank, dims, null);
-		if (status < 0) {
-			throwException("Creating dataspace for attribute \"" + name + "\"",
-					status);
-		}
-		int dataspaceId = status;
-
-		// Create the datatype for the attribute. Note that we include the size
-		// of the string byte buffer that includes the null character.
-		status = H5.H5Tcreate(HDF5Constants.H5T_STRING, buffer.length);
-		if (status < 0) {
-			throwException("Creating datatype for attribute \"" + name + "\"",
-					status);
-		}
-		int datatypeId = status;
-
-		// FIXME I don't think this is necessary, but it may be!
-		// H5.H5Tset_strpad(datatypeId, HDF5Constants.H5T_STR_NULLTERM);
-
-		// Create the attribute for the dataspace.
-		status = H5.H5Acreate(objectId, name, datatypeId, dataspaceId,
-				HDF5Constants.H5P_DEFAULT, HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Creating attribute \"" + name + "\"", status);
-		}
-		int attributeId = status;
-
-		// Write the attribute.
-		status = H5.H5Awrite(attributeId, datatypeId, buffer);
-		if (status < 0) {
-			throwException("Writing attribute \"" + name + "\"", status);
-		}
-
-		// Close the attribute.
-		status = H5.H5Aclose(attributeId);
-		if (status < 0) {
-			throwException("Closing attribute \"" + name + "\"", status);
-		}
-
-		// Close the datatype.
-		status = H5.H5Tclose(datatypeId);
-		if (status < 0) {
-			throwException("Closing datatype for attribute \"" + name + "\"",
-					status);
-		}
-
-		// Close the dataspace.
-		status = H5.H5Sclose(dataspaceId);
-		if (status < 0) {
-			throwException("Closing dataspace for attribute \"" + name + "\"",
-					status);
-		}
-
-		return;
-	}
-
-	/**
-	 * Reads a String Attribute from an HDF5 Object, which is typically a Group.
-	 * This requires a special method because the String must first be converted
-	 * to a byte array.
-	 *
-	 * @param objectId
-	 *            The ID for the Object, which should be open, that has the
-	 *            Attribute.
-	 * @param name
-	 *            The name of the Attribute.
-	 * @return The value of the String stored in the Attribute.
-	 * @throws NullPointerException
-	 * @throws HDF5Exception
-	 */
-	private String readStringAttribute(int objectId, String name)
-			throws NullPointerException, HDF5Exception {
-		int status;
-
-		// Open the attribute.
-		status = H5.H5Aopen(objectId, name, HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Opening attribute \"" + name + "\"", status);
-		}
-		int attributeId = status;
-
-		// Get the datatype for the String (H5T_STRING with a size in bytes).
-		status = H5.H5Aget_type(attributeId);
-		if (status < 0) {
-			throwException("Reading datatype for attribute \"" + name + "\"",
-					status);
-		}
-		int datatypeId = status;
-
-		// Get the size of the String from the datatype.
-		status = H5.H5Tget_size(datatypeId);
-		if (status <= 0) {
-			throwException("Reading size of datatype for attribute \"" + name
-					+ "\"", status);
-		}
-		int size = status;
-
-		// Initialize the buffer.
-		byte[] buffer = new byte[size];
-
-		// Read the attribute.
-		status = H5.H5Aread(attributeId, datatypeId, buffer);
-		if (status < 0) {
-			throwException("Reading attribute \"" + name + "\"", status);
-		}
-
-		// Close the attribute.
-		status = H5.H5Aclose(attributeId);
-		if (status < 0) {
-			throwException("Closing attribute \"" + name + "\"", status);
-		}
-
-		// Convert the buffer into a String. The null character is only required
-		// inside HDF5, so strip the null character.
-		return new String(buffer, 0, size - 1);
-	}
-
-	/**
-	 * This method writes an HDF5 Dataset containing the data that is stored in
-	 * a buffer. All of the data's properties and the buffer must be allocated
-	 * before calling this method.
-	 *
-	 * @param objectId
-	 *            The ID for the Object, which should be open, that will get the
-	 *            Dataset.
-	 * @param name
-	 *            The name of the Dataset.
-	 * @param rank
-	 *            The number of dimensions in the data.
-	 * @param dims
-	 *            An array containing the sizes of each dimension in the data.
-	 * @param type
-	 *            The HDF5 datatype of the data in the Dataset, e.g.,
-	 *            H5T_NATIVE_INT or H5T_NATIVE_DOUBLE. This may also be an ID
-	 *            for an opened Datatype, e.g., an array of Strings (byte
-	 *            arrays).
-	 * @param buffer
-	 *            The buffer that contains the data to write. This needs to be
-	 *            an array, e.g., a double[n].
-	 * @throws NullPointerException
-	 * @throws HDF5Exception
-	 */
-	private void writeDataset(int objectId, String name, int rank, long[] dims,
-			int type, Object buffer) throws NullPointerException, HDF5Exception {
-		int status;
-
-		// Create the dataspace.
-		status = H5.H5Screate_simple(rank, dims, null);
-		if (status < 0) {
-			throwException("Creating dataspace for dataset \"" + name + "\"",
-					status);
-		}
-		int dataspaceId = status;
-
-		// Create the dataset.
-		status = H5.H5Dcreate(objectId, name, type, dataspaceId,
-				HDF5Constants.H5P_DEFAULT, HDF5Constants.H5P_DEFAULT,
-				HDF5Constants.H5P_DEFAULT);
-		if (status < 0) {
-			throwException("Creating dataset \"" + name + "\"", status);
-		}
-		int datasetId = status;
-
-		// Write the dataset.
-		status = H5.H5Dwrite(datasetId, type, HDF5Constants.H5S_ALL,
-				HDF5Constants.H5S_ALL, HDF5Constants.H5P_DEFAULT, buffer);
-		if (status < 0) {
-			throwException("Writing dataset \"" + name + "\"", status);
-		}
-
-		// Close the dataset.
-		status = H5.H5Dclose(datasetId);
-		if (status < 0) {
-			throwException("Closing dataset \"" + name + "\"", status);
-		}
-
-		// Close the dataspace.
-		status = H5.H5Sclose(dataspaceId);
-		if (status < 0) {
-			throwException("Closing dataspace for dataset \"" + name + "\"",
-					status);
-		}
-
-		return;
 	}
 
 	/**
@@ -1342,18 +911,19 @@ public class SFReactorIOHandler {
 	 */
 	private void writeSFRComponent(SFRComponent component, int groupId)
 			throws NullPointerException, HDF5Exception {
-		/* ---- Write the component's properties. ---- */
+		// ---- Write the component's properties. ---- //
 		writeStringAttribute(groupId, "name", component.getName());
-		writeStringAttribute(groupId, "description", component.getDescription());
+		writeStringAttribute(groupId, "description",
+				component.getDescription());
 		writeAttribute(groupId, "id", HDF5Constants.H5T_NATIVE_INT,
-				new int[] { component.getId() });
+				component.getId());
 		writeStringAttribute(groupId, "sourceInfo", component.getSourceInfo());
 		writeAttribute(groupId, "time", HDF5Constants.H5T_NATIVE_DOUBLE,
-				new double[] { component.getCurrentTime() });
+				component.getCurrentTime());
 		writeStringAttribute(groupId, "timeUnits", component.getTimeUnits());
-		/* ------------------------------------------- */
+		// ------------------------------------------- //
 
-		/* ---- Write the data. ---- */
+		// ---- Write the data. ---- //
 		// Create a Group to contain the feature data.
 		int dataGroupId = createGroup(groupId, "Data");
 
@@ -1362,7 +932,7 @@ public class SFReactorIOHandler {
 
 		// Close the feature data Group.
 		closeGroup(dataGroupId);
-		/* ------------------------- */
+		// ------------------------- //
 
 		return;
 	}
@@ -1379,18 +949,18 @@ public class SFReactorIOHandler {
 	 */
 	private void readSFRComponent(SFRComponent component, int groupId)
 			throws NullPointerException, HDF5Exception {
-		/* ---- Read in the component's properties. ---- */
+		// ---- Read in the component's properties. ---- //
 		component.setName(readStringAttribute(groupId, "name"));
 		component.setDescription(readStringAttribute(groupId, "description"));
 		component.setId((Integer) readAttribute(groupId, "id",
-				HDF5Constants.H5T_NATIVE_INT, new Integer[1]));
+				HDF5Constants.H5T_NATIVE_INT));
 		component.setSourceInfo(readStringAttribute(groupId, "sourceInfo"));
 		component.setTime((Double) readAttribute(groupId, "time",
-				HDF5Constants.H5T_NATIVE_DOUBLE, new Double[1]));
+				HDF5Constants.H5T_NATIVE_DOUBLE));
 		component.setTimeUnits(readStringAttribute(groupId, "timeUnits"));
-		/* --------------------------------------------- */
+		// --------------------------------------------- //
 
-		/* ---- Read the data. ---- */
+		// ---- Read the data. ---- //
 		// Open the data Group.
 		int dataGroupId = openGroup(groupId, "Data");
 
@@ -1399,7 +969,7 @@ public class SFReactorIOHandler {
 
 		// Close the data Group.
 		closeGroup(dataGroupId);
-		/* ------------------------ */
+		// ------------------------ //
 
 		return;
 	}
@@ -1632,7 +1202,7 @@ public class SFReactorIOHandler {
 		int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
 		int H5S_ALL = HDF5Constants.H5S_ALL;
 
-		/* ---- Read in the list of names of Units for the data. ---- */
+		// ---- Read in the list of names of Units for the data. ---- //
 		// An array to hold the units Strings.
 		String[] units = null;
 
@@ -1737,9 +1307,9 @@ public class SFReactorIOHandler {
 				units[i] = new String(buffer[i], 0, j);
 			}
 		}
-		/* ---------------------------------------------------------- */
+		// ---------------------------------------------------------- //
 
-		/* ---- Read in the data for each feature. ---- */
+		// ---- Read in the data for each feature. ---- //
 		// Loop over the groups in the Data group. These groups are named after
 		// the feature whose data they contain.
 		for (String feature : getChildNames(groupId,
@@ -1755,7 +1325,8 @@ public class SFReactorIOHandler {
 				// Open the dataset.
 				status = H5.H5Dopen(featureGroupId, timeString, H5P_DEFAULT);
 				if (status < 0) {
-					throwException("Opening dataset for IDataProvider.", status);
+					throwException("Opening dataset for IDataProvider.",
+							status);
 				}
 				int datasetId = status;
 
@@ -1788,7 +1359,8 @@ public class SFReactorIOHandler {
 				status = H5.H5Dread(datasetId, type, H5S_ALL, H5S_ALL,
 						H5P_DEFAULT, buffer);
 				if (status < 0) {
-					throwException("Reading dataset for IDataProvider.", status);
+					throwException("Reading dataset for IDataProvider.",
+							status);
 				}
 				// Close the dataspace.
 				status = H5.H5Sclose(dataspaceId);
@@ -1799,7 +1371,8 @@ public class SFReactorIOHandler {
 				// Close the dataset.
 				status = H5.H5Dclose(datasetId);
 				if (status < 0) {
-					throwException("Closing dataset for IDataProvider.", status);
+					throwException("Closing dataset for IDataProvider.",
+							status);
 				}
 				double time = Double.parseDouble(timeString);
 
@@ -1827,7 +1400,7 @@ public class SFReactorIOHandler {
 			// Close the feature group.
 			closeGroup(featureGroupId);
 		}
-		/* -------------------------------------------- */
+		// -------------------------------------------- //
 
 		return;
 	}
@@ -1874,16 +1447,15 @@ public class SFReactorIOHandler {
 	 * @throws NullPointerException
 	 * @throws HDF5Exception
 	 */
-	private int[] readLocationData(int groupId) throws NullPointerException,
-			HDF5Exception {
+	private int[] readLocationData(int groupId)
+			throws NullPointerException, HDF5Exception {
 		int status;
 
 		// Open the dataset.
 		status = H5.H5Dopen(groupId, "locations", HDF5Constants.H5P_DEFAULT);
 		if (status < 0) {
-			throwException(
-					"Opening dataset for location data in group with id "
-							+ groupId, status);
+			throwException("Opening dataset for location data in group with id "
+					+ groupId, status);
 		}
 		int datasetId = status;
 
@@ -1892,7 +1464,8 @@ public class SFReactorIOHandler {
 		if (status < 0) {
 			throwException(
 					"Opening dataspace for location data in group with id "
-							+ groupId, status);
+							+ groupId,
+					status);
 		}
 		int dataspaceId = status;
 
@@ -1906,7 +1479,8 @@ public class SFReactorIOHandler {
 		if (status != rank) {
 			throwException(
 					"Reading dataspace dimensions for location data in group with id "
-							+ groupId, status);
+							+ groupId,
+					status);
 		}
 
 		// Initialize the buffer.
@@ -1917,9 +1491,8 @@ public class SFReactorIOHandler {
 		status = H5.H5Dread(datasetId, type, HDF5Constants.H5S_ALL,
 				HDF5Constants.H5S_ALL, HDF5Constants.H5P_DEFAULT, buffer);
 		if (status < 0) {
-			throwException(
-					"Reading dataset for location data in group with id "
-							+ groupId, status);
+			throwException("Reading dataset for location data in group with id "
+					+ groupId, status);
 		}
 
 		// Close the dataspace.
@@ -1927,15 +1500,15 @@ public class SFReactorIOHandler {
 		if (status < 0) {
 			throwException(
 					"Closing dataspace for location data in group with id "
-							+ groupId, status);
+							+ groupId,
+					status);
 		}
 
 		// Close the dataset.
 		status = H5.H5Dclose(datasetId);
 		if (status < 0) {
-			throwException(
-					"Closing dataset for location data in group with id "
-							+ groupId, status);
+			throwException("Closing dataset for location data in group with id "
+					+ groupId, status);
 		}
 
 		// Return the locations.
@@ -1961,13 +1534,11 @@ public class SFReactorIOHandler {
 
 		// Write ring-specific attributes.
 		writeAttribute(ringGroupId, "height", HDF5Constants.H5T_NATIVE_DOUBLE,
-				new double[] { ring.getHeight() });
+				ring.getHeight());
 		writeAttribute(ringGroupId, "innerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE,
-				new double[] { ring.getInnerRadius() });
+				HDF5Constants.H5T_NATIVE_DOUBLE, ring.getInnerRadius());
 		writeAttribute(ringGroupId, "outerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE,
-				new double[] { ring.getOuterRadius() });
+				HDF5Constants.H5T_NATIVE_DOUBLE, ring.getOuterRadius());
 
 		// Write the material attributes.
 		Material material = ring.getMaterial();
@@ -1990,21 +1561,20 @@ public class SFReactorIOHandler {
 	 * @throws NullPointerException
 	 * @throws HDF5Exception
 	 */
-	private Ring readRing(int ringGroupId) throws NullPointerException,
-			HDF5Exception {
+	private Ring readRing(int ringGroupId)
+			throws NullPointerException, HDF5Exception {
 		Ring ring = new Ring();
 
 		// Read the basic SFRComponent attributes.
 		readSFRComponent(ring, ringGroupId);
 
 		// Read ring-specific attributes.
-		Double[] buffer = new Double[1];
 		ring.setHeight((Double) readAttribute(ringGroupId, "height",
-				HDF5Constants.H5T_NATIVE_DOUBLE, buffer));
+				HDF5Constants.H5T_NATIVE_DOUBLE));
 		ring.setInnerRadius((Double) readAttribute(ringGroupId, "innerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE, buffer));
+				HDF5Constants.H5T_NATIVE_DOUBLE));
 		ring.setOuterRadius((Double) readAttribute(ringGroupId, "outerRadius",
-				HDF5Constants.H5T_NATIVE_DOUBLE, buffer));
+				HDF5Constants.H5T_NATIVE_DOUBLE));
 
 		// Read the material.
 		Material material = new Material();
