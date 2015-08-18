@@ -15,6 +15,7 @@ package org.eclipse.ice.client.widgets.moose;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -38,10 +39,15 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
+import org.eclipse.remote.ui.dialogs.RemoteResourceBrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -52,12 +58,16 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
+import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -112,6 +122,182 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private boolean wireframe;
 
 	// ------------------------------ //
+
+	// TODO Remove this. This is just for testing the ParaViewVizService.
+	@Override
+	protected void addPages() {
+		super.addPages();
+		// Add a page with a plant view.
+		try {
+			addPage(new ICEFormPage(this, "ParaView Mesh", "Mesh View") {
+				@Override
+				protected void createFormContent(
+						final IManagedForm managedForm) {
+
+					// On the left should be a DataComponentComposite for
+					// the "Mesh" block's active data node. On the right
+					// should be a view of the mesh, if applicable.
+					Section section;
+					FormToolkit toolkit = managedForm.getToolkit();
+
+					// Set up the overall layout. Use a GridLayout to get
+					// the horizontal layout of the DataComponent and mesh.
+					Composite body = managedForm.getForm().getBody();
+					body.setLayout(new GridLayout(2, false));
+
+					// Create a section for the mesh view.
+					Composite parent = managedForm.getForm().getBody();
+					int style = Section.DESCRIPTION | Section.TITLE_BAR
+							| Section.TWISTIE | Section.EXPANDED;
+					section = toolkit.createSection(parent, style);
+					section.addExpansionListener(new ExpansionAdapter() {
+						public void expansionStateChanged(ExpansionEvent e) {
+							managedForm.reflow(true);
+						}
+					});
+					populateMeshViewSection(section, toolkit);
+					// The mesh view should grab all excess space.
+					section.setLayoutData(
+							new GridData(SWT.FILL, SWT.FILL, true, true));
+
+					return;
+				}
+			});
+		} catch (PartInitException e) {
+
+		}
+		return;
+	}
+
+	private Composite meshPlotParent;
+	private Composite plotComposite;
+	private Composite errorComposite;
+
+	private void createPlot(URI uri) {
+		// Try to get the ParaView viz service.
+		IVizServiceFactory vizFactory = getVizServiceFactory();
+		IVizService vizService = (vizFactory != null
+				? vizFactory.get("ParaView") : null);
+
+		boolean plotDrawn = false;
+
+		// Delete the plot composite.
+		if (plotComposite != null) {
+			if (!plotComposite.isDisposed()) {
+				plotComposite.dispose();
+			}
+			plotComposite = null;
+		}
+
+		// Either update the mesh plot or generate an error. Note that if the
+		// visualization service is not running, there is no way we will ever be
+		// able to generate a plot.
+		if (vizService != null && uri != null) {
+			try {
+				// Create the plot.
+				IPlot plot = vizService.createPlot(uri);
+				plotComposite = plot.draw(meshPlotParent);
+				plotDrawn = true;
+			} catch (Exception e) {
+				System.err.println("MOOSEFormEditor error: "
+						+ "Error creating VisIt plot.");
+				e.printStackTrace();
+			}
+		}
+
+		if (!plotDrawn) {
+			// Create the error composite if necessary.
+			if (errorComposite == null || errorComposite.isDisposed()) {
+
+				FormToolkit toolkit = getHeaderForm().getToolkit();
+
+				// Create an error message to show in the mesh view.
+				String errorMessage = "There was a problem connecting to "
+						+ "ICE's available visualization services.";
+				errorComposite = toolkit.createComposite(meshPlotParent);
+				errorComposite.setLayout(new GridLayout(2, false));
+				// Create the label with the error icon.
+				Label iconLabel = toolkit.createLabel(errorComposite, "");
+				iconLabel.setImage(
+						Display.getCurrent().getSystemImage(SWT.ICON_ERROR));
+				iconLabel.setLayoutData(new GridData(SWT.BEGINNING,
+						SWT.BEGINNING, false, false));
+				// Create the label with the text.
+				Label msgLabel = toolkit.createLabel(errorComposite,
+						errorMessage);
+				msgLabel.setLayoutData(
+						new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
+			}
+		}
+		// Delete the error composite if necessary.
+		else if (errorComposite != null) {
+			if (!errorComposite.isDisposed()) {
+				errorComposite.dispose();
+			}
+			errorComposite = null;
+		}
+
+		meshPlotParent.layout();
+
+		return;
+	}
+
+	private void populateMeshViewSection(Section section, FormToolkit toolkit) {
+		section.setText("Mesh");
+		section.setDescription("The current mesh configured for MOOSE input.");
+
+		// Create a container to hold a plot ToolBar and the mesh plot.
+		Composite container = toolkit.createComposite(section, SWT.NONE);
+		section.setClient(container);
+		container.setLayout(new GridLayout(1, false));
+
+		// Create a ToolBar using JFace utilities.
+		ToolBarManager toolBarManager = new ToolBarManager();
+		toolBarManager.add(new Action("Browse for remote file...") {
+			@Override
+			public void run() {
+				RemoteResourceBrowser browser = new RemoteResourceBrowser(
+						getContainer().getShell(), SWT.NONE);
+				browser.setTitle("Select a remote Exodus or Silo file.");
+				browser.setType(RemoteResourceBrowser.FILE_BROWSER);
+				
+				if (browser.open() == Window.OK) {
+					createPlot(browser.getResource().toURI());
+				}
+			}
+		});
+		ToolBar toolBar = toolBarManager.createControl(container);
+		toolkit.adapt(toolBar);
+		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		// Create the parent Composite for the mesh plot.
+		meshPlotParent = toolkit.createComposite(container, SWT.BORDER);
+		meshPlotParent
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		meshPlotParent.setLayout(new FillLayout());
+
+		// Create an initial error message to show in the mesh view.
+		String errorMessage = "Please select a remote file for ParaView.";
+		errorComposite = toolkit.createComposite(meshPlotParent);
+		errorComposite.setLayout(new GridLayout(2, false));
+		// Create the label with the error icon.
+		Label iconLabel = toolkit.createLabel(errorComposite, "");
+		iconLabel.setImage(
+				Display.getCurrent().getSystemImage(SWT.ICON_INFORMATION));
+		iconLabel.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		// Create the label with the text.
+		Label msgLabel = toolkit.createLabel(errorComposite, errorMessage);
+		msgLabel.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
+
+		// Set the client for the section according to SOP.
+		section.setClient(container);
+
+		return;
+	}
+
+	// END OF SECTION THAT SHOULD BE REMOVED...
 
 	/**
 	 * In addition to the default behavior, this method registers with the MOOSE
@@ -194,7 +380,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								// list of the Resources corresponding to the
 								// enabled
 								// Postprocessors.
-								while (resourceList.size() != enabledPPs.size()) {
+								while (resourceList.size() != enabledPPs
+										.size()) {
 
 									// Grab the ResourceComponent
 									resources = resourceComponentPage
@@ -204,7 +391,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 									try {
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
-										logger.error(getClass().getName() + " Exception!",e);
+										logger.error(getClass().getName()
+												+ " Exception!", e);
 									}
 
 									// Loop over the ICEResources and add them
@@ -214,7 +402,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 											.getResources()) {
 										if (enabledPPs.contains(FilenameUtils
 												.removeExtension(r.getName()))
-												&& hasValidPostprocessorData(r)) {
+												&& hasValidPostprocessorData(
+														r)) {
 											resourceList.add(r);
 										}
 									}
@@ -231,20 +420,23 @@ public class MOOSEFormEditor extends ICEFormEditor {
 									// Kick off on UI thread
 									PlatformUI.getWorkbench().getDisplay()
 											.asyncExec(new Runnable() {
-												@Override
-												public void run() {
-													try {
-														MOOSEFormEditor.this
-																.setActivePage(1);
+										@Override
+										public void run() {
+											try {
+												MOOSEFormEditor.this
+														.setActivePage(1);
 
-														resourceComponentPage
-																.showResource(r);
-													} catch (PartInitException e) {
-														logger.error(getClass().getName() + " Exception!",e);
-													}
-												}
+												resourceComponentPage
+														.showResource(r);
+											} catch (PartInitException e) {
+												logger.error(
+														getClass().getName()
+																+ " Exception!",
+														e);
+											}
+										}
 
-											});
+									});
 
 								}
 							}
@@ -257,7 +449,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 			}
 		});
-		
+
 		return;
 	}
 
@@ -272,11 +464,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * @return validData Whether or not there is valid data in the resource
 	 */
 	private boolean hasValidPostprocessorData(ICEResource r) {
-		
+
 		// Simply count the number of lines in the resource file
 		try {
-			LineNumberReader reader = new LineNumberReader(new FileReader(r
-					.getPath().getPath()));
+			LineNumberReader reader = new LineNumberReader(
+					new FileReader(r.getPath().getPath()));
 			int cnt = 0;
 			String lineRead = "";
 			while ((lineRead = reader.readLine()) != null) {
@@ -291,7 +483,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				return true;
 			}
 		} catch (IOException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			return false;
 		}
 	}
@@ -319,8 +511,9 @@ public class MOOSEFormEditor extends ICEFormEditor {
 						body.setLayout(new FillLayout());
 
 						// Create a Section for the plant view.
-						section = toolkit.createSection(body, ExpandableComposite.NO_TITLE
-								| ExpandableComposite.EXPANDED);
+						section = toolkit.createSection(body,
+								ExpandableComposite.NO_TITLE
+										| ExpandableComposite.EXPANDED);
 						populatePlantViewSection(section, toolkit);
 						// No layout data to set for FillLayouts.
 
@@ -328,7 +521,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					}
 				});
 			} catch (PartInitException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -343,7 +536,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * @param toolkit
 	 *            The {@code FormToolkit} used to decorate widgets as necessary.
 	 */
-	private void populatePlantViewSection(Section section, FormToolkit toolkit) {
+	private void populatePlantViewSection(Section section,
+			FormToolkit toolkit) {
 		// Get the background color to use later.
 		Color background = section.getBackground();
 
@@ -363,7 +557,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// Add it to the view.
 		ToolBar toolBar = toolBarManager.createControl(analysisComposite);
 		toolBar.setBackground(background);
-		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		toolBar.setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
 		// Create the plant view.
 		TreeComposite components = findComponentBlock();
@@ -374,8 +569,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// Render the plant view in the analysis Composite.
 		Composite plantComposite = plantView.createComposite(analysisComposite);
 		plantComposite.setBackground(background);
-		plantComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				true));
+		plantComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Make sure the factory/plant is reset when the plant view is disposed.
 		plantComposite.addDisposeListener(new DisposeListener() {
@@ -431,18 +626,18 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				plantView.resetCamera();
 			}
 		}));
-		cameraTree.add(new ActionTree(new Action(
-				"YZ (Y right, Z up - initial default)") {
-			@Override
-			public void run() {
-				Vector3f position = new Vector3f(10f, 0f, 0f);
-				Vector3f dir = new Vector3f(-1f, 0f, 0f);
-				Vector3f up = Vector3f.UNIT_Z;
-				plantView.setDefaultCameraPosition(position);
-				plantView.setDefaultCameraOrientation(dir, up);
-				plantView.resetCamera();
-			}
-		}));
+		cameraTree.add(new ActionTree(
+				new Action("YZ (Y right, Z up - initial default)") {
+					@Override
+					public void run() {
+						Vector3f position = new Vector3f(10f, 0f, 0f);
+						Vector3f dir = new Vector3f(-1f, 0f, 0f);
+						Vector3f up = Vector3f.UNIT_Z;
+						plantView.setDefaultCameraPosition(position);
+						plantView.setDefaultCameraOrientation(dir, up);
+						plantView.resetCamera();
+					}
+				}));
 		cameraTree.add(new ActionTree(new Action("XY (X right, Y up)") {
 			@Override
 			public void run() {
@@ -475,8 +670,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			}
 		};
 		// Set the action's image (a camera).
-		imagePath = new Path("icons" + System.getProperty("file.separator")
-				+ "camera.png");
+		imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "camera.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		ImageDescriptor imageDescriptor = ImageDescriptor
 				.createFromURL(imageURL);
