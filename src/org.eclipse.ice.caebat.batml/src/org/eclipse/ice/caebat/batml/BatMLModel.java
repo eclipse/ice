@@ -84,6 +84,8 @@ public class BatMLModel extends Item {
 	@Override
 	protected void setupForm() {
 
+		form = new Form();
+		
 		// It could be the case that we've already created the EMFComponent,
 		// if so just skip this creation stuff
 		if (project != null && project.isAccessible()) {
@@ -173,7 +175,7 @@ public class BatMLModel extends Item {
 		File temp = null;
 		
 		// If this is our first time loading up the form we will probably need to import the schema files
-		if (form == null) {
+		if (form.getNumberOfComponents() == 0) {
 			form = new Form();
 			String[] schemas = { "BuildingBlockDB.xsd", "MaterialDB.xsd", "PackDB.xsd", "UnitsML-v1.0-csd03.xsd",
 					"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
