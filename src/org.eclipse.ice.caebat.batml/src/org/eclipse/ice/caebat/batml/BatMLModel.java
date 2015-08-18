@@ -209,6 +209,7 @@ public class BatMLModel extends Item {
 	public void loadInput(String input) {
 
 		// Local Declarations
+		form = new Form();
 		String[] schemas = { "BuildingBlockDB.xsd", "MaterialDB.xsd", "PackDB.xsd", "UnitsML-v1.0-csd03.xsd",
 				"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
 				"CellSandwichDB.xsd", "ModuleDB.xsd", "SimulationDB.xsd", "electrical.xml", "DeviceDB.xsd",
@@ -217,16 +218,17 @@ public class BatMLModel extends Item {
 		IFile inputFile = null;
 		File temp = null;
 
+		// Create a filepath for the default file
+		String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
+				+ "batml";
+		temp = new File(defaultFilePath);
+		if (!temp.exists()) {
+			temp.mkdir();
+		}
+				
 		// Load the schema files into the workspace
 		for (String schemaFile : schemas) {
 			try {
-				// Create a filepath for the default file
-				String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
-						+ "batml";
-				temp = new File(defaultFilePath);
-				if (!temp.exists()) {
-					temp.mkdir();
-				}
 				// Create a temporary location to load the default file
 				temp = new File(defaultFilePath + System.getProperty("file.separator") + schemaFile);
 				if (!temp.exists()) {
@@ -246,7 +248,6 @@ public class BatMLModel extends Item {
 					}
 					outStream.close();
 				}
-
 			} catch (URISyntaxException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
@@ -258,6 +259,8 @@ public class BatMLModel extends Item {
 				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
 			}
 		}
+		
+		// Make sure that ICE can find the files to load
 		try {
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
@@ -265,6 +268,7 @@ public class BatMLModel extends Item {
 			e.printStackTrace();
 		}
 		
+		// Load up either a default file, or the newly imported one.
 		if (input == null) {
 			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
 			xmlIFile = project.getFolder("batml").getFile("electrical.xml");
@@ -273,12 +277,13 @@ public class BatMLModel extends Item {
 			xmlIFile = project.getFile(input);
 		}
 
+		// Get the handle to the files on the local file system
 		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile(); //EFS.getStore(xsdIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
 		xmlFile = xmlIFile.getRawLocation().makeAbsolute().toFile(); //EFS.getStore(xmlIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
 		
 		// Create the EMFComponent
 		if (xsdFile != null) {
-			emfComp = new EMFComponent(xsdFile);
+			emfComp = new EMFComponent();
 			emfComp.load(xsdFile, xmlFile);
 			emfComp.setName("BatML Model Editor");
 			emfComp.setId(1);
