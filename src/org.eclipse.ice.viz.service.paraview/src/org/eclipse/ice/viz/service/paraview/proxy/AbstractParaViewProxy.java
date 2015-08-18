@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
@@ -552,6 +553,33 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 				category = null;
 				feature = null;
 				// TODO
+				
+				ProxyFeature featureInfo = null;
+				for (ProxyFeature info : featureMap.values()) {
+					if (info.type == PropertyType.DISCRETE) {
+						String value = info.getValue();
+						if (value != null) {
+							category = info.name;
+							feature = value;
+							featureInfo = info;
+							break;
+						}
+					} else if (info.type == PropertyType.DISCRETE_MULTI) {
+						List<String> values = info.getValues();
+						if (!values.isEmpty()) {
+							category = info.name;
+							feature = values.get(0);
+							featureInfo = info;
+							break;
+						}
+					}
+				}
+				if (featureInfo != null) {
+					// Refresh the view.
+					setColorBy(featureInfo, feature);
+					rescale();
+					refreshScalarBar();
+				}
 				// -------------------------------------- //
 			}
 		}
