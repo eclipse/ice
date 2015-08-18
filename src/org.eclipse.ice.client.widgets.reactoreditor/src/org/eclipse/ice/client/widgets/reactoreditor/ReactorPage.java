@@ -32,7 +32,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
@@ -361,11 +360,6 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 
 	@Override
 	public void visit(MatrixComponent component) {
-		// Nothing to do
-	}
-
-	@Override
-	public void visit(IShape component) {
 		// Nothing to do
 	}
 

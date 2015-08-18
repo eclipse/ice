@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
@@ -28,8 +28,8 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.widgets.reactoreditor.Circle;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScale;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorScalePalette;
+import org.eclipse.ice.client.widgets.reactoreditor.IColorFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.HexagonalCellFigure;
 import org.eclipse.ice.reactor.sfr.base.ISFRComponentVisitor;
@@ -52,8 +52,8 @@ import org.eclipse.swt.graphics.Color;
  * @author Jordan
  * 
  */
-public class PinFigure extends HexagonalCellFigure implements
-		ISFRComponentVisitor {
+public class PinFigure extends HexagonalCellFigure
+		implements ISFRComponentVisitor {
 
 	/**
 	 * This enum provides the two possible views for a PinFigure: geometry and
@@ -67,11 +67,11 @@ public class PinFigure extends HexagonalCellFigure implements
 		 * The geometry view, which displays the rod as a radial slice of
 		 * materials.
 		 */
-		GEOMETRY("Geometry"),
-		/**
-		 * The state-point data view, which displays a text label with data
-		 * pertaining to a specific feature.
-		 */
+		GEOMETRY("Geometry"), /**
+								 * The state-point data view, which displays a
+								 * text label with data pertaining to a specific
+								 * feature.
+								 */
 		DATA("State Point Data");
 
 		/**
@@ -112,7 +112,7 @@ public class PinFigure extends HexagonalCellFigure implements
 	 */
 	private static final LineBorder selectedBorder = new LineBorder(
 			ColorConstants.red, 4);
-	/* ---------------------------------- */
+			/* ---------------------------------- */
 
 	/* ---- Empty display variables ---- */
 	/**
@@ -188,10 +188,10 @@ public class PinFigure extends HexagonalCellFigure implements
 	 */
 	protected boolean useCustomExtrema;
 	/**
-	 * The ColorScale used to color the data label's background based on the min
-	 * and max values.
+	 * The color factory used to color the data label's background based on the
+	 * min and max values.
 	 */
-	protected ColorScale colorScale;
+	protected IColorFactory colorFactory;
 	/* ------------------------ */
 
 	/* ---- Other variables ---- */
@@ -233,7 +233,7 @@ public class PinFigure extends HexagonalCellFigure implements
 		customMinValue = null;
 		customMaxValue = null;
 		useCustomExtrema = false;
-		colorScale = ColorScalePalette.Rainbow1.getColorScale();
+		colorFactory = new LinearColorFactory();
 		displayType = DisplayType.GEOMETRY;
 
 		// Create the hexagon that will appear behind the data label.
@@ -521,17 +521,16 @@ public class PinFigure extends HexagonalCellFigure implements
 	}
 
 	/**
-	 * Sets the {@link ColorScale} currently used to determine the background
-	 * color of the PinFigure. For handy preset scales, see
-	 * {@link ColorScalePalette}.
+	 * Sets the {@link IColorFactory} currently used to determine the background
+	 * color of the PinFigure.
 	 * 
-	 * @param colorScale
-	 *            The new ColorScale to use for the PinFigure's background.
+	 * @param colorFactory
+	 *            The new color factory to use for the PinFigure's background.
 	 */
-	public void setColorScale(ColorScale colorScale) {
-		if (colorScale != null && colorScale != this.colorScale) {
-			// Update the stored reference to the ColorScale.
-			this.colorScale = colorScale;
+	public void setColorFactory(IColorFactory colorFactory) {
+		if (colorFactory != null && colorFactory != this.colorFactory) {
+			// Update the stored reference to the color factory.
+			this.colorFactory = colorFactory;
 
 			// Refresh the data label.
 			refreshData();
@@ -658,16 +657,17 @@ public class PinFigure extends HexagonalCellFigure implements
 			value = featureData.get(axialLevel).getValue();
 
 			// Compute the background color of the value based on the current
-			// ColorScale.
-			bg = colorScale
-					.getColor((value - minValue) / (maxValue - minValue));
+			// color factory.
+			int color = colorFactory
+					.findColor((value - minValue) / (maxValue - minValue));
+			bg = colorFactory.createColor(null, color);
 
 			// Determine the proper foreground color so that the text will not
 			// be an eye sore. This uses the Rec. 709 luma coefficients. We use
 			// that with a threshold value to determine if the text should be
 			// white or black.
-			int luma = (int) (0.2126 * bg.getRed() + 0.7152 * bg.getGreen() + 0.0722 * bg
-					.getBlue());
+			int luma = (int) (0.2126 * bg.getRed() + 0.7152 * bg.getGreen()
+					+ 0.0722 * bg.getBlue());
 			fg = (luma < 75 ? ColorConstants.white : ColorConstants.black);
 		} else {
 			// If no data is available, the value is 0 and it's white on a black

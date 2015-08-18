@@ -18,13 +18,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 
 /**
  * This class manages a list of uniquely-keyed connections within an ICE
@@ -55,7 +55,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
  * @author Jordan Deyton
  *
  */
-public class ConnectionTable extends TableComponent {
+public class ConnectionTable extends VizTableComponent {
 
 	// TODO Pull from PTP preferences if possible.
 
@@ -77,7 +77,7 @@ public class ConnectionTable extends TableComponent {
 	 * key/name. These will be used to update the key/name bookkeeping when the
 	 * Entry changes.
 	 */
-	private final List<IUpdateableListener> keyListeners = new ArrayList<IUpdateableListener>();
+	private final List<IVizUpdateableListener> keyListeners = new ArrayList<IVizUpdateableListener>();
 
 	/**
 	 * The default constructor.
@@ -104,10 +104,10 @@ public class ConnectionTable extends TableComponent {
 		// return value is -1, then a row was not added.
 		if (index >= 0) {
 			// Get the new row.
-			List<Entry> connection = getRow(index);
+			List<VizEntry> connection = getRow(index);
 
 			// Update its key to the next available one.
-			Entry keyEntry = connection.get(0);
+			VizEntry keyEntry = connection.get(0);
 			final String key = keyManager.getNextKey();
 			keyEntry.setValue(key);
 
@@ -115,7 +115,7 @@ public class ConnectionTable extends TableComponent {
 			keyToIndexMap.put(key, index);
 
 			// Register with the key Entry for changes to the key.
-			IUpdateableListener keyListener = new IUpdateableListener() {
+			IVizUpdateableListener keyListener = new IVizUpdateableListener() {
 				/**
 				 * The previous key. It starts off as the new key above.
 				 */
@@ -125,9 +125,9 @@ public class ConnectionTable extends TableComponent {
 				 * Updates the bookkeeping if the key/name changes.
 				 */
 				@Override
-				public void update(IUpdateable component) {
+				public void update(IVizUpdateable component) {
 					// Convert it to an Entry and get its key.
-					Entry entry = (Entry) component;
+					VizEntry entry = (VizEntry) component;
 					String newKey = entry.getValue();
 
 					// If the name changes, update the bookkeeping.
@@ -154,21 +154,21 @@ public class ConnectionTable extends TableComponent {
 	 * @return An {@code ArrayList<Entry>} containing the template {@code Entry}
 	 *         s for each exposed connection property.
 	 */
-	protected ArrayList<Entry> createConnectionTemplate() {
-		ArrayList<Entry> template = new ArrayList<Entry>();
+	protected ArrayList<VizEntry> createConnectionTemplate() {
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
 
-		IEntryContentProvider contentProvider;
+		IVizEntryContentProvider contentProvider;
 
 		// ---- name ---- //
 		KeyEntryContentProvider keyContentProvider = new KeyEntryContentProvider(keyManager);
-		Entry keyEntry = new KeyEntry(keyContentProvider);
+		VizEntry keyEntry = new KeyEntry(keyContentProvider);
 		keyEntry.setName("Name");
 		keyEntry.setDescription("The name of the connection. This must be unique.");
 		template.add(keyEntry);
 		// ---- host ---- //
-		contentProvider = new BasicEntryContentProvider();
+		contentProvider = new BasicVizEntryContentProvider();
 		contentProvider.setDefaultValue("localhost");
-		Entry hostEntry = new Entry(contentProvider);
+		VizEntry hostEntry = new VizEntry(contentProvider);
 		hostEntry.setName("Host");
 		hostEntry.setDescription(
 				"The FQDN or IP address of the remote host.%n" + "For local launches, this should be \"localhost\".");
@@ -176,7 +176,7 @@ public class ConnectionTable extends TableComponent {
 		// ---- host port ---- //
 		PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
 		portContentProvider.setDefaultValue("9600");
-		Entry hostPortEntry = new PortEntry(portContentProvider);
+		VizEntry hostPortEntry = new PortEntry(portContentProvider);
 		hostPortEntry.setName("Port");
 		hostPortEntry.setDescription("The port on which the host serves the connection.%n"
 				+ "Should be a positive integer within the port range "
@@ -184,9 +184,9 @@ public class ConnectionTable extends TableComponent {
 				+ Integer.toString(PortEntryContentProvider.MAX_PORT) + ".");
 		template.add(hostPortEntry);
 		// ---- path ---- //
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		Entry pathEntry = new Entry(contentProvider);
+		contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
+		VizEntry pathEntry = new VizEntry(contentProvider);
 		pathEntry.setName("Path");
 		pathEntry.setDescription("The full path to the local or remote installation.");
 		template.add(pathEntry);
@@ -249,7 +249,7 @@ public class ConnectionTable extends TableComponent {
 
 		if (index >= 0 && index < numberOfRows()) {
 			// Get the row.
-			List<Entry> row = getRow(index);
+			List<VizEntry> row = getRow(index);
 
 			deleted = super.deleteRow(index);
 			if (deleted) {
@@ -282,7 +282,7 @@ public class ConnectionTable extends TableComponent {
 	 * @return A row from the {@code TableComponent}, or null if the name is
 	 *         invalid.
 	 */
-	public List<Entry> getConnection(String name) {
+	public List<VizEntry> getConnection(String name) {
 		Integer id = keyToIndexMap.get(name);
 		return id != null ? getRow(id) : null;
 	}
@@ -300,7 +300,7 @@ public class ConnectionTable extends TableComponent {
 	 * Does nothing. The row template cannot be changed for this class.
 	 */
 	@Override
-	public void setRowTemplate(ArrayList<Entry> template) {
+	public void setRowTemplate(ArrayList<VizEntry> template) {
 		// Do nothing...
 	}
 

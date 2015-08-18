@@ -14,12 +14,14 @@ package org.eclipse.ice.viz.service.connections.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.CellColumnLabelProvider;
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
+
+
+
+
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -39,12 +41,12 @@ import org.eclipse.swt.widgets.TableColumn;
  *
  */
 public class TableComponentContentProvider implements
-		IStructuredContentProvider, IUpdateableListener {
+		IStructuredContentProvider, IVizUpdateableListener {
 
 	/**
 	 * The data model for the {@link #viewer}.
 	 */
-	private TableComponent tableComponent;
+	private VizTableComponent tableComponent;
 
 	/**
 	 * The JFace {@code TableViewer} that shows the contents of the
@@ -56,7 +58,7 @@ public class TableComponentContentProvider implements
 	 * A list to keep track of the current row template. If the row template
 	 * changes, then the viewer's columns will need to be recreated.
 	 */
-	private List<Entry> rowTemplate;
+	private List<VizEntry> rowTemplate;
 
 	/**
 	 * The current {@link TableViewerColumn}s inside the {@link #viewer}.
@@ -120,8 +122,8 @@ public class TableComponentContentProvider implements
 			}
 			// Set the new input and register for model updates so that the
 			// viewer will be automatically updated later.
-			if (newInput instanceof TableComponent) {
-				tableComponent = (TableComponent) newInput;
+			if (newInput instanceof VizTableComponent) {
+				tableComponent = (VizTableComponent) newInput;
 				// TableComponents sent to this content provider should have a
 				// template set!
 				if (tableComponent.getRowTemplate() == null) {
@@ -155,7 +157,7 @@ public class TableComponentContentProvider implements
 
 		// Get the TableComponent's new row template and see if it changed.
 		boolean columnsChanged = false;
-		List<Entry> newRowTemplate = tableComponent.getRowTemplate();
+		List<VizEntry> newRowTemplate = tableComponent.getRowTemplate();
 		if (!newRowTemplate.equals(rowTemplate)) {
 			columnsChanged = true;
 			rowTemplate = newRowTemplate;
@@ -175,7 +177,7 @@ public class TableComponentContentProvider implements
 
 			// Add a new column for each Entry.
 			for (int i = 0; i < rowTemplate.size(); i++) {
-				Entry entry = rowTemplate.get(i);
+				VizEntry entry = rowTemplate.get(i);
 
 				// Create the column for the TableViewer.
 				TableViewerColumn column = new TableViewerColumn(viewer,
@@ -215,7 +217,7 @@ public class TableComponentContentProvider implements
 	 * {@link #viewer} as necessary.
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 		// Update the viewer since the underlying data has changed
 
 		if (component != null && component == tableComponent) {

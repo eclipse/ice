@@ -13,14 +13,14 @@ package org.eclipse.ice.viz.service.visit.connections;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntry;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.ui.IWorkbench;
 
@@ -41,33 +41,33 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 		// Add a proxy, proxy port, and visit user to the table.
 		return new ConnectionTable() {
 			@Override
-			protected ArrayList<Entry> createConnectionTemplate() {
+			protected ArrayList<VizEntry> createConnectionTemplate() {
 				// Get the default connection template so we can add additional
 				// columns.
-				ArrayList<Entry> template = super.createConnectionTemplate();
+				ArrayList<VizEntry> template = super.createConnectionTemplate();
 
 				// TODO These Entries need descriptions.
 
-				IEntryContentProvider contentProvider;
+				IVizEntryContentProvider contentProvider;
 
 				// ---- proxy ---- //
-				contentProvider = new BasicEntryContentProvider();
+				contentProvider = new BasicVizEntryContentProvider();
 				contentProvider.setDefaultValue("");
-				Entry proxyEntry = new Entry(contentProvider);
+				VizEntry proxyEntry = new VizEntry(contentProvider);
 				proxyEntry.setName("Proxy");
 				template.add(proxyEntry);
 				// ---- proxy port ---- //
 				PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
 				portContentProvider.setRange(PortEntryContentProvider.MIN_PORT, PortEntryContentProvider.MAX_PORT);
 				portContentProvider.setDefaultValue(22);
-				Entry proxyPortEntry = new PortEntry(portContentProvider);
+				VizEntry proxyPortEntry = new PortEntry(portContentProvider);
 				proxyPortEntry.setName("Proxy Port");
 				template.add(proxyPortEntry);
 				// ---- visit user ---- //
-				contentProvider = new BasicEntryContentProvider();
-				contentProvider.setAllowedValueType(AllowedValueType.Undefined);
+				contentProvider = new BasicVizEntryContentProvider();
+				contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
 				contentProvider.setDefaultValue("");
-				Entry visitUserEntry = new Entry(contentProvider);
+				VizEntry visitUserEntry = new VizEntry(contentProvider);
 				visitUserEntry.setName("VisIt User");
 				template.add(visitUserEntry);
 				// ---- visit password ---- //

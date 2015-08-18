@@ -19,12 +19,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.KeyEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntry;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.junit.Test;
 
 /**
@@ -262,7 +262,7 @@ public class PortEntryTester {
 
 		// ---- Try invalid content providers. ---- //
 		// Try a BasicEntryContentProvider.
-		entry.setContentProvider(new BasicEntryContentProvider());
+		entry.setContentProvider(new BasicVizEntryContentProvider());
 
 		// The value should not have changed, and the old content provider
 		// should still be used.
@@ -270,7 +270,7 @@ public class PortEntryTester {
 		assertTrue(entry.setValue("50051"));
 
 		// Try a null *IEntryContentProvider*.
-		final IEntryContentProvider nullContentProvider = null;
+		final IVizEntryContentProvider nullContentProvider = null;
 		entry.setContentProvider(nullContentProvider);
 
 		// The value should not have changed, and the old content provider
@@ -301,7 +301,7 @@ public class PortEntryTester {
 		PortEntry object;
 		Object equalObject;
 		Object unequalObject;
-		Entry superObject;
+		VizEntry superObject;
 
 		PortEntryContentProvider provider;
 
@@ -324,7 +324,7 @@ public class PortEntryTester {
 		((PortEntry) unequalObject).setName("Mandalore");
 
 		// Set up the super object.
-		superObject = new Entry();
+		superObject = new VizEntry();
 		superObject.copy(object);
 
 		// Check for equivalence (reflective case).

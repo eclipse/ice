@@ -14,36 +14,40 @@ package org.eclipse.ice.analysistool;
 
 import java.util.ArrayList;
 
-/** 
- * <p>An interface that provides the position and value of a data entry as well as a descriptive tag about the featureof the entry that the data represents.</p>
- * @author Eric J. Lingerfelt
+/**
+ * <p>
+ * An interface that provides the position and value of a data entry as well as
+ * a descriptive tag about the feature of the entry that the data represents.
+ * </p>
+ *
+ * @author Jay Jay Billings
  */
 public interface IData {
-	/** 
+	/**
 	 * <p>The position of the data relative to the position of the containing object.</p>
 	 * @return <p>The position.</p>
 	 */
 	public ArrayList<Double> getPosition();
 
-	/** 
+	/**
 	 * <p>The value of the particular feature (pin-power, temperature, etc).</p>
 	 * @return <p>The value of the IData object.</p>
 	 */
 	public double getValue();
 
-	/** 
+	/**
 	 * <p>The amount of uncertainty in the value.</p>
 	 * @return <p>The value of uncertainty.</p>
 	 */
 	public double getUncertainty();
 
-	/** 
+	/**
 	 * <p>A string describing the units of the value and its uncertainty.</p>
 	 * @return <p>The units.</p>
 	 */
 	public String getUnits();
 
-	/** 
+	/**
 	 * <p>The name of the feature that this data represents (pin-power, temperature, etc).</p>
 	 * @return <p>The name of the feature.</p>
 	 */

@@ -12,6 +12,7 @@
  *   Jordan Deyton - bug 471248
  *   Jordan Deyton - bug 471749
  *   Jordan Deyton - bug 471750
+ *   Jordan Deyton - bug 472304
  *******************************************************************************/
 package org.eclipse.ice.viz.service.widgets.test;
 
@@ -36,9 +37,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotScale;
@@ -403,34 +402,6 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		// Check the contents of the widgets.
 		assertEquals(timestep.get(), getTimeScale().getValue());
 		assertEquals(Double.toString(time.get()), getTimeText().getText());
-
-		return;
-	}
-
-	/**
-	 * Checks that setting the background for the main widget also updates its
-	 * child widgets.
-	 */
-	@Test
-	public void checkSetBackground() {
-
-		final Display display = getDisplay();
-		final AtomicReference<Color> bg = new AtomicReference<Color>();
-
-		// Set the background for the widget.
-		display.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				bg.set(display.getSystemColor(SWT.COLOR_DARK_GREEN));
-				timeComposite.setBackground(bg.get());
-			}
-		});
-
-		// Check the background for all of the child widgets.
-		assertEquals(bg.get(), getPrevButton().backgroundColor());
-		assertEquals(bg.get(), getPlayPauseButton().backgroundColor());
-		assertEquals(bg.get(), getNextButton().backgroundColor());
-		assertEquals(bg.get(), getTimeScale().backgroundColor());
 
 		return;
 	}

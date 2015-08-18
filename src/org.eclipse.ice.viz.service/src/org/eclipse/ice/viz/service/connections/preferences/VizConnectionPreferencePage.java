@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.preferences.AbstractVizPreferencePage;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -158,7 +158,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 			existingKeys = node.keys();
 			for (String key : existingKeys) {
 				int index = table.addRow();
-				List<Entry> row = table.getRow(index);
+				List<VizEntry> row = table.getRow(index);
 
 				// Update the key/name in the table.
 				row.get(0).setValue(key);
@@ -206,7 +206,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 		// operation, only the connections in the table will be in the
 		// preferences.
 		Set<String> updated = new HashSet<String>(table.getConnectionNames());
-		List<Entry> row;
+		List<VizEntry> row;
 
 		// Update old connections in the preferences.
 		String[] existingNames;
@@ -247,7 +247,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 *            The table row for the connection.
 	 * @return The serialized connection preferences.
 	 */
-	protected String serializeConnectionPreferences(List<Entry> connection) {
+	protected String serializeConnectionPreferences(List<VizEntry> connection) {
 		String preferences = "";
 		String delimiter = getConnectionPreferenceDelimiter();
 

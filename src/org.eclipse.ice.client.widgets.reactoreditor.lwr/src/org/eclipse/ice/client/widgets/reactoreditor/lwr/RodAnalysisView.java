@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
@@ -22,6 +22,8 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.Circle;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory.Theme;
 import org.eclipse.ice.client.widgets.reactoreditor.lwr.RodFigure.DisplayType;
 import org.eclipse.ice.client.widgets.reactoreditor.lwr.properties.PropertySourceFactory;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -50,8 +52,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * display data associated with the rod/tube.<br>
  * <br>
  * When a Ring inside the rod/tube is clicked, it should send a selection event
- * to the ICE Properties View via its
- * {@linkplain AnalysisView#selectionProvider ISelectionProvider}.
+ * to the ICE Properties View via its {@linkplain AnalysisView#selectionProvider
+ * ISelectionProvider}.
  * 
  * @author Jordan H. Deyton
  * 
@@ -120,6 +122,25 @@ public class RodAnalysisView extends AnalysisView {
 	private final ActionTree componentProperties;
 
 	/**
+	 * The action tree used to select the color theme used to color the assembly
+	 * view.
+	 */
+	private final ActionTree colorThemeTree;
+
+	/**
+	 * The color factory used to produce colors for the assembly data view.
+	 */
+	private final LinearColorFactory colorFactory;
+	/**
+	 * The current color theme used in the {@link #colorFactory}.
+	 */
+	private Theme colorTheme;
+	/**
+	 * Whether or not the current color theme should be inverted.
+	 */
+	private boolean reverseColorTheme;
+
+	/**
 	 * This enum is used to determine the source of changes to the axial level.
 	 * It is particularly useful to smooth out the scale widget.
 	 * 
@@ -131,10 +152,12 @@ public class RodAnalysisView extends AnalysisView {
 		 * Some other input is setting the axial level.
 		 */
 		NONE,
+
 		/*
 		 * The scale is setting the axial level.
 		 */
 		SCALE,
+
 		/**
 		 * The spinner is setting the axial level.
 		 */
@@ -212,6 +235,32 @@ public class RodAnalysisView extends AnalysisView {
 		featureTree = new ActionTree("Data Feature");
 		actions.add(featureTree);
 
+		// Set the default color factory and theme.
+		colorFactory = new LinearColorFactory();
+		colorTheme = LinearColorFactory.Theme.Rainbow2;
+		reverseColorTheme = false;
+		colorFactory.setColors(colorTheme, reverseColorTheme);
+
+		// Add an ActionTree for selecting the color scale theme.
+		colorThemeTree = new ActionTree("Color Theme");
+		// Add an action for each color theme.
+		for (final Theme theme : LinearColorFactory.Theme.values()) {
+			colorThemeTree.add(new ActionTree(new Action(theme.toString()) {
+				@Override
+				public void run() {
+					// If the theme is new, set it and refresh the view.
+					if (theme != colorTheme) {
+						colorTheme = theme;
+						colorFactory.setColors(theme, reverseColorTheme);
+						// Refresh each figure.
+						radialFigure.refreshData();
+						axialFigure.refreshData();
+					}
+				}
+			}));
+		}
+		actions.add(colorThemeTree);
+
 		// Add an ActionTree (single button) for viewing the core's properties.
 		componentProperties = new ActionTree(new Action("Rod Properties") {
 			@Override
@@ -223,8 +272,8 @@ public class RodAnalysisView extends AnalysisView {
 				// If it has properties, set the properties in the ICE
 				// Properties View.
 				if (properties != null) {
-					selectionProvider.setSelection(new StructuredSelection(
-							properties));
+					selectionProvider
+							.setSelection(new StructuredSelection(properties));
 				}
 			}
 		});
@@ -472,6 +521,7 @@ public class RodAnalysisView extends AnalysisView {
 		/* ---- Create the radial view. ---- */
 		// Initialize the radial figure.
 		radialFigure = new LoneRodFigure();
+		radialFigure.setColorFactory(colorFactory);
 
 		// Set the radial figure as the content for the radial canvas.
 		LightweightSystem lws = new LightweightSystem(radialCanvas);
@@ -503,6 +553,7 @@ public class RodAnalysisView extends AnalysisView {
 
 		// Create the axial figure in the axial canvas.
 		axialFigure = new AxialRodFigure();
+		axialFigure.setColorFactory(colorFactory);
 		lws = new LightweightSystem(axialCanvas);
 		lws.setContents(axialFigure);
 

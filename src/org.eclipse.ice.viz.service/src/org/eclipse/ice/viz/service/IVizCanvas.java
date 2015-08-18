@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Jay Jay Billings
  * @author Alex McCaskey
  * @author Kasper Gammeltoft
+ * @author Robert Smith
  *
  */
 public interface IVizCanvas {

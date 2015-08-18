@@ -21,8 +21,8 @@ import java.util.ArrayList;
  * information to share regardless of their positions in any particular
  * hierarchy.
  * </p>
- * 
- * @author Eric J. Lingerfelt
+ *
+ * @author Jay Jay Billings
  */
 public interface IDataProvider {
 	/**
@@ -30,7 +30,7 @@ public interface IDataProvider {
 	 * This operation returns the list of features available across all time
 	 * steps (pin-power, temperature, etc).
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The list of features.
 	 *         </p>
@@ -41,7 +41,7 @@ public interface IDataProvider {
 	 * <p>
 	 * This operation returns the total number of time steps.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The number of time steps.
 	 *         </p>
@@ -56,7 +56,7 @@ public interface IDataProvider {
 	 * be called to set the current time step before data is retrieved from the
 	 * provider. The provider will always default to the initial state.
 	 * </p>
-	 * 
+	 *
 	 * @param step
 	 *            <p>
 	 *            The time step to set.
@@ -73,7 +73,7 @@ public interface IDataProvider {
 	 * This operation will return null if no data is available and such a
 	 * situation will most likely signify an error.
 	 * </p>
-	 * 
+	 *
 	 * @param feature
 	 *            <p>
 	 *            The feature for the IData.
@@ -89,7 +89,7 @@ public interface IDataProvider {
 	 * This operation is a description of the source of information for this
 	 * provider and its data.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The source information.
 	 *         </p>
@@ -100,7 +100,7 @@ public interface IDataProvider {
 	 * <p>
 	 * Returns the list of features at the current time.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The returned list of features at the current time step.
 	 *         </p>
@@ -111,7 +111,7 @@ public interface IDataProvider {
 	 * <p>
 	 * Returns all the times in ascending order.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         An arraylist of times in order from least to greatest. This
 	 *         operation does not allow the user to change the order of this
@@ -125,7 +125,7 @@ public interface IDataProvider {
 	 * Returns the integer time based upon the time step. Returns -1 if the time
 	 * does not exist.
 	 * </p>
-	 * 
+	 *
 	 * @param time
 	 *            The time whose timestep index will be retrieved.
 	 * @return The index of the specified time, or -1 if the time does not exist
@@ -137,7 +137,7 @@ public interface IDataProvider {
 	 * <p>
 	 * Returns the time units.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The time unit.
 	 *         </p>

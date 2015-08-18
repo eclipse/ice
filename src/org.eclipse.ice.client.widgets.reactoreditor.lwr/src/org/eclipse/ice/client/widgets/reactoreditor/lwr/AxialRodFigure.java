@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
@@ -133,16 +133,17 @@ public class AxialRodFigure extends RodFigure {
 			value = featureData.get(i).getValue();
 
 			// Compute the background color of the value based on the current
-			// ColorScale.
-			bg = colorScale
-					.getColor((value - minValue) / (maxValue - minValue));
+			// color factory.
+			int color = colorFactory
+					.findColor((value - minValue) / (maxValue - minValue));
+			bg = colorFactory.createColor(null, color);
 
 			// Determine the proper foreground color so that the text will not
 			// be an eye sore. This uses the Rec. 709 luma coefficients. We use
 			// that with a threshold value to determine if the text should be
 			// white or black.
-			int luma = (int) (0.2126 * bg.getRed() + 0.7152 * bg.getGreen() + 0.0722 * bg
-					.getBlue());
+			int luma = (int) (0.2126 * bg.getRed() + 0.7152 * bg.getGreen()
+					+ 0.0722 * bg.getBlue());
 			fg = (luma < 75 ? ColorConstants.white : ColorConstants.black);
 
 			// Create and add the label to the GridLayout.

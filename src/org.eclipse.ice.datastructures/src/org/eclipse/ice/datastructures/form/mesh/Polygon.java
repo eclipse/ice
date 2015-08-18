@@ -24,11 +24,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 
 /**
  * <p>
@@ -41,7 +39,7 @@ import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
 @XmlRootElement(name = "Polygon")
 @XmlSeeAlso({ Quad.class, Hex.class })
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Polygon extends AbstractShape implements IUpdateableListener,
+public class Polygon extends ICEObject implements IUpdateableListener,
 		IMeshPart {
 
 	/**
@@ -634,19 +632,6 @@ public class Polygon extends AbstractShape implements IUpdateableListener,
 
 		// Return the newly instantiated object.
 		return object;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShape#acceptShapeVisitor(IShapeVisitor visitor)
-	 */
-	@Override
-	public void acceptShapeVisitor(IShapeVisitor visitor) {
-
-		// Nothing to do here. We are currently only extending AbstractShape for
-		// the transformation tools.
-		return;
 	}
 
 	/**

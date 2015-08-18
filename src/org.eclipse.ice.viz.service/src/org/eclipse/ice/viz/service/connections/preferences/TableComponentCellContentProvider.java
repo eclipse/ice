@@ -13,9 +13,6 @@ package org.eclipse.ice.viz.service.connections.preferences;
 
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.swt.graphics.Image;
 
 /**

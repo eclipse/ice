@@ -14,9 +14,9 @@ package org.eclipse.ice.viz.service.connections.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+
 
 /**
  * This class provides an {@link IEntryContentProvider} geared toward
@@ -35,7 +35,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * @author Jordan Deyton
  *
  */
-public class KeyEntryContentProvider extends BasicEntryContentProvider
+public class KeyEntryContentProvider extends BasicVizEntryContentProvider
 		implements IKeyChangeListener {
 
 	/**
@@ -66,11 +66,11 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 
 		// Determine whether the key manager supports any string key or a
 		// pre-defined set of keys. Then set the allowed value type.
-		AllowedValueType type;
+		VizAllowedValueType type;
 
 		// If the key manager has a list of keys, then the type is discrete.
 		if (!keyManager.getAvailableKeys().isEmpty()) {
-			type = AllowedValueType.Discrete;
+			type = VizAllowedValueType.Discrete;
 			super.setDefaultValue(keyManager.getNextKey());
 		} else {
 			// If the list is empty and requesting the next key throws an
@@ -81,10 +81,10 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 				String defaultKey = keyManager.getNextKey();
 				// Set the default key to the next available one. This will need
 				// to be updated when the next available key is taken.
-				type = AllowedValueType.Undefined;
+				type = VizAllowedValueType.Undefined;
 				super.setDefaultValue(defaultKey);
 			} catch (IllegalStateException e) {
-				type = AllowedValueType.Discrete;
+				type = VizAllowedValueType.Discrete;
 				super.setDefaultValue("");
 			}
 		}
@@ -218,7 +218,7 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 		// Update the allowed values to those that are now available. This only
 		// needs to be done for discrete key managers, as this list is always
 		// empty for undefined key managers.
-		if (getAllowedValueType() == AllowedValueType.Discrete) {
+		if (getAllowedValueType() == VizAllowedValueType.Discrete) {
 			List<String> availableKeys = keyManager.getAvailableKeys();
 			super.setAllowedValues((ArrayList<String>) availableKeys);
 			// We can't get the next available key if there are none left. In
@@ -256,7 +256,7 @@ public class KeyEntryContentProvider extends BasicEntryContentProvider
 	 * @param allowedValueType
 	 */
 	@Override
-	public void setAllowedValueType(AllowedValueType allowedValueType) {
+	public void setAllowedValueType(VizAllowedValueType allowedValueType) {
 		// Do nothing.
 	}
 

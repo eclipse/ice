@@ -22,8 +22,8 @@ import java.net.URI;
  * name and a version number that are unique so that they can be distinguished
  * from each other.
  * </p>
- * 
- * @author Alex McCaskey
+ *
+ * @author Jay Jay Billings
  */
 public interface IAnalysisTool {
 	/**
@@ -32,7 +32,7 @@ public interface IAnalysisTool {
 	 * are required by a back-end analysis service (such as VisIt) to close the
 	 * running processes.
 	 * </p>
-	 * 
+	 *
 	 * @return
 	 */
 	public Boolean close();
@@ -41,7 +41,7 @@ public interface IAnalysisTool {
 	 * <p>
 	 * This operation returns the name of the analysis tool.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The name of the analysis tool.
 	 *         </p>
@@ -52,7 +52,7 @@ public interface IAnalysisTool {
 	 * <p>
 	 * This operation returns the version number of the analysis tool.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The version number, as a string, for this analysis tool.
 	 *         </p>
@@ -64,7 +64,7 @@ public interface IAnalysisTool {
 	 * This operation create a new IAnalysisDocument for the data at the given
 	 * URI.
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            A URI to a folder or file that contains data which should be
@@ -83,7 +83,7 @@ public interface IAnalysisTool {
 	 * This operation notifies a client if the IAnalysisTool is ready to be
 	 * used.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         True if the tool is ready to be used, false otherwise.
 	 *         </p>
@@ -95,7 +95,7 @@ public interface IAnalysisTool {
 	 * This operation creates a new IAnalysisDocument for the data within the
 	 * given IDataProvider realization.
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            A concrete realization of IDataProvider that contains data

@@ -16,5 +16,5 @@ Import-Package: org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.item,
  org.eclipse.ice.reactor,
- org.eclipse.ice.viz.service.geometry
+ org.eclipse.ice.viz.service.jme3.geometry
 Bundle-Vendor: Oak Ridge National Laboratory
