@@ -25,13 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
@@ -39,77 +36,53 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <p>
  * The BatMLModel extends the Item to provide a model generator for the CAEBAT
  * BatML input files. It uses an EMFComponent to map the BatML schema to an
  * Eclipse Modeling Framework Ecore model, which is then translated to an ICE
  * TreeComposite to be visualized and editted by the user.
- * </p>
  *
- * @author Alex McCaskey
+ * @author Alex McCaskey, Andrew Bennett
  */
 @XmlRootElement(name = "BatMLModel")
 public class BatMLModel extends Item {
 
 	/**
-	 * <p>
-	 * Reference to the main BatML schema file.
-	 * </p>
+	 * References to the main BatML schema file and xml file to be loaded, respectively.
 	 */
 	private static File xsdFile, xmlFile;
 
 	/**
-	 * <p>
 	 * Reference to the EMFComponent that takes the XML Schema file and maps it
 	 * to an Ecore model.
-	 * </p>
 	 */
 	private static EMFComponent emfComp;
 
 	/**
-	 * <p>
 	 * The constructor.
-	 * </p>
-	 *
 	 */
 	public BatMLModel() {
 		this(null);
 	}
 
 	/**
-	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
-	 * </p>
 	 *
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
-	 *            </p>
 	 */
 	public BatMLModel(IProject projectSpace) {
-
-		// Call super
 		super(projectSpace);
-
 	}
 
 	/**
-	 * <p>
 	 * This method sets up the BatMLModel Item's Form reference, specifically,
 	 * it searches for the correct XML schema and creates an EMFComponent and
 	 * adds it to the Form.
-	 * </p>
-	 *
-	 *
 	 */
 	@Override
 	protected void setupForm() {
-
-		// Create the Form
-		form = new Form();
-		form.setName("BatML Model Builder");
 
 		// It could be the case that we've already created the EMFComponent,
 		// if so just skip this creation stuff
@@ -122,40 +95,26 @@ public class BatMLModel extends Item {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
 
-			// If valid, create the Java file instance needed by
-			// the EMFComponent
+			// Load in the default information
 			loadInput(null);
 		}
 	}
 
 	/**
-	 * <p>
 	 * This operation is used to setup the name and description of the model.
-	 * </p>
-	 *
 	 */
 	@Override
 	protected void setupItemInfo() {
-
-		// Local Declarations
 		String desc = "This item builds models based on a BatteryML schema.";
-
-		// Describe the Item
 		setName("BatML Model Builder");
 		setDescription(desc);
 		itemType = ItemType.Model;
-
-		// Setup the action list. Remove key-value pair support.
-		// allowedActions.remove(taggedExportActionString);
 		allowedActions.add(0, "Write to XML");
-
-		return;
 	}
 
 	/**
-	 * <p>
-	 * </p>
-	 *
+	 * Makes sure that the form is in an acceptable state
+	 * 
 	 * @param preparedForm
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
@@ -166,8 +125,10 @@ public class BatMLModel extends Item {
 	}
 
 	/**
-	 * <p>
-	 * </p>
+	 * Used to export the form's information into an output file.
+	 * 
+	 * @param actionName
+	 * 			A string description of the process that should happen
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -199,75 +160,75 @@ public class BatMLModel extends Item {
 	}
 
 	/**
-	 * <p>
-	 * </p>
-	 *
+	 * Loads a file into the form.  If null input is given a default form will
+	 * be populated by transferring files from the plugin itself.
+	 * 
 	 * @param input
 	 *            The name of the input input file, including the file extension
 	 */
 	@Override
 	public void loadInput(String input) {
 
-		// Local Declarations
-		form = new Form();
-		String[] schemas = { "BuildingBlockDB.xsd", "MaterialDB.xsd", "PackDB.xsd", "UnitsML-v1.0-csd03.xsd",
-				"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
-				"CellSandwichDB.xsd", "ModuleDB.xsd", "SimulationDB.xsd", "electrical.xml", "DeviceDB.xsd",
-				"NamedParameters.xsd", "UnitsDB.xsd", "electrical.xsd" };
 		IFile xsdIFile, xmlIFile;
-		IFile inputFile = null;
 		File temp = null;
+		
+		// If this is our first time loading up the form we will probably need to import the schema files
+		if (form == null) {
+			form = new Form();
+			String[] schemas = { "BuildingBlockDB.xsd", "MaterialDB.xsd", "PackDB.xsd", "UnitsML-v1.0-csd03.xsd",
+					"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
+					"CellSandwichDB.xsd", "ModuleDB.xsd", "SimulationDB.xsd", "electrical.xml", "DeviceDB.xsd",
+					"NamedParameters.xsd", "UnitsDB.xsd", "electrical.xsd" };
 
-		// Create a filepath for the default file
-		String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
-				+ "batml";
-		temp = new File(defaultFilePath);
-		if (!temp.exists()) {
-			temp.mkdir();
-		}
-				
-		// Load the schema files into the workspace
-		for (String schemaFile : schemas) {
-			try {
-				// Create a temporary location to load the default file
-				temp = new File(defaultFilePath + System.getProperty("file.separator") + schemaFile);
-				if (!temp.exists()) {
-					temp.createNewFile();
-
-					// Pull the default file from inside the plugin
-					URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat.batml/data/" + schemaFile);
-					InputStream reader = uri.toURL().openStream();
-					FileOutputStream outStream = new FileOutputStream(temp);
-
-					// Write out the default file from the plugin to the
-					// temp
-					// location
-					int fileByte;
-					while ((fileByte = reader.read()) != -1) {
-						outStream.write(fileByte);
+	
+			// Create a filepath for the default file
+			String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
+					+ "batml";
+			temp = new File(defaultFilePath);
+			if (!temp.exists()) {
+				temp.mkdir();
+			}
+					
+			// Load the schema files into the workspace
+			for (String schemaFile : schemas) {
+				try {
+					// Create a temporary location to load the default file
+					temp = new File(defaultFilePath + System.getProperty("file.separator") + schemaFile);
+					if (!temp.exists()) {
+						temp.createNewFile();
+	
+						// Pull the default file from inside the plugin
+						URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat.batml/data/" + schemaFile);
+						InputStream reader = uri.toURL().openStream();
+						FileOutputStream outStream = new FileOutputStream(temp);
+	
+						// Write out the default file from the plugin to the temp location
+						int fileByte;
+						while ((fileByte = reader.read()) != -1) {
+							outStream.write(fileByte);
+						}
+						outStream.close();
+						reader.close();
 					}
-					outStream.close();
+				} catch (URISyntaxException e) {
+					logger.error(getClass().getName() + " Exception!", e);
+					logger.error("[BatML Model] ERROR: Could not load the default BatML schema data!");
+				} catch (MalformedURLException e) {
+					logger.error(getClass().getName() + " Exception!", e);
+					logger.error("[BatML Model] ERROR: Could not load the default BatML schema data!");
+				} catch (IOException e) {
+					logger.error(getClass().getName() + " Exception!", e);
+					logger.error("[BatML Model] ERROR: Could not load the default BatML schema data!");
 				}
-			} catch (URISyntaxException e) {
-				logger.error(getClass().getName() + " Exception!", e);
-				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
-			} catch (MalformedURLException e) {
-				logger.error(getClass().getName() + " Exception!", e);
-				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
-			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!", e);
-				logger.error("BatML Message: Error!  Could not load the default BatML schema data!");
+			}
+			
+			// Make sure that ICE can find the files to load
+			try {
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				logger.error("[BatML Model] ERROR: Could not refresh project workspace!");
 			}
 		}
-		
-		// Make sure that ICE can find the files to load
-		try {
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		// Load up either a default file, or the newly imported one.
 		if (input == null) {
 			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
@@ -278,8 +239,8 @@ public class BatMLModel extends Item {
 		}
 
 		// Get the handle to the files on the local file system
-		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile(); //EFS.getStore(xsdIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
-		xmlFile = xmlIFile.getRawLocation().makeAbsolute().toFile(); //EFS.getStore(xmlIFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor());
+		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile();
+		xmlFile = xmlIFile.getRawLocation().makeAbsolute().toFile();
 		
 		// Create the EMFComponent
 		if (xsdFile != null) {
