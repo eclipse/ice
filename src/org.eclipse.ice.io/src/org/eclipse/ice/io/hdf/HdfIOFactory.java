@@ -496,6 +496,34 @@ public class HdfIOFactory implements IHdfIOFactory {
 		return groupNames;
 	}
 
+	/**
+	 * Determines whether or not the open group has a child with the specified
+	 * name.
+	 * 
+	 * @param parentId
+	 *            The ID of the parent Group.
+	 * @param childName
+	 *            The name of the child group.
+	 * @return True if the open group has a child group with the specified name,
+	 *         false otherwise.
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public final boolean hasChildGroup(int parentId, String childName)
+			throws HDF5LibraryException, NullPointerException {
+		int type = HDF5Constants.H5O_TYPE_GROUP;
+		boolean childOfTypeExists = false;
+
+		// Check that the link exists first.
+		if (H5.H5Lexists(parentId, childName, HDF5Constants.H5P_DEFAULT)) {
+			// If so, get the object's metadata.
+			H5O_info_t info = H5.H5Oget_info_by_name(parentId, childName,
+					HDF5Constants.H5P_DEFAULT);
+			// Only return true if the type matches.
+			childOfTypeExists = info != null && info.type == type;
+		}
+		return childOfTypeExists;
+	}
 	// -------------------------- //
 
 	// ---- Atribute Operations ---- //
@@ -821,7 +849,6 @@ public class HdfIOFactory implements IHdfIOFactory {
 		int length = buffer[size - 1] == 0 ? size - 1 : size;
 		return new String(buffer, 0, length);
 	}
-
 	// ----------------------------- //
 
 	// ---- Dataset Operations ---- //
@@ -984,6 +1011,145 @@ public class HdfIOFactory implements IHdfIOFactory {
 		return buffer;
 	}
 
+	/**
+	 * Reads in a 1D array of strings stored in an HDF dataset. The underlying
+	 * dataset is expected to have fixed-length strings, although they may be
+	 * padded with null terminators.
+	 * 
+	 * @param groupId
+	 *            The ID of the object, which should be open, that contains the
+	 *            dataset.
+	 * @param name
+	 *            The name of the dataset.
+	 * @return An array of strings stored in the dataset.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public String[] readStringArrayDataset(int groupId, String name)
+			throws NullPointerException, HDF5Exception {
+		int status;
+
+		// int type = HDF5Constants.H5T_STRING;
+		int type = HDF5Constants.H5T_C_S1;
+
+		final String errorSuffix = " string dataset \"" + name
+				+ "\" in group with id " + groupId;
+
+		// Open the dataset.
+		status = H5.H5Dopen(groupId, name, HDF5Constants.H5P_DEFAULT);
+		if (status < 0) {
+			throwException("Opening" + errorSuffix, status);
+		}
+		int datasetId = status;
+
+		// Get the data type. It should be a string.
+		status = H5.H5Dget_type(datasetId);
+		if (status < 0) {
+			throwException("Opening datatype for" + errorSuffix, status);
+		}
+		int datatypeId = status;
+
+		// Get the size of the String from the datatype.
+		status = H5.H5Tget_size(datatypeId);
+		if (status < 0) {
+			throwException(
+					"Reading size of datatype for attribute \"" + name + "\"",
+					status);
+		}
+		int stringLength = status + 1; // Make room for the null terminator.
+
+		// Close the data type.
+		status = H5.H5Tclose(datatypeId);
+		if (status < 0) {
+			throwException("Opening datatype for" + errorSuffix, status);
+		}
+		datatypeId = -1;
+
+		// Open the dataspace.
+		status = H5.H5Dget_space(datasetId);
+		if (status < 0) {
+			throwException("Opening dataspace for" + errorSuffix, status);
+		}
+		int dataspaceId = status;
+
+		// Determine the rank (number of dimensions) for the dataset.
+		status = H5.H5Sget_simple_extent_ndims(dataspaceId);
+		if (status != 1) {
+			throwException(
+					"Reading rank (number of dimensions) for" + errorSuffix,
+					status);
+		}
+		int rank = status;
+
+		// Determine the lengths of each dimension of the string dataset.
+		long[] dims = new long[rank];
+		status = H5.H5Sget_simple_extent_dims(dataspaceId, dims, null);
+		if (status != rank) {
+			throwException("Reading dataspace dimensions for" + errorSuffix,
+					status);
+		}
+		int size = (int) dims[0];
+
+		// Initialize the buffer for the string array.
+		byte[][] buffer = new byte[size][stringLength];
+
+		// Create a memory data type.
+		status = H5.H5Tcopy(type);
+		if (status < 0) {
+			throwException("Creating memory datatype for" + errorSuffix,
+					status);
+		}
+		int memtypeId = status;
+		// Set its size.
+		status = H5.H5Tset_size(memtypeId, stringLength);
+		if (status < 0) {
+			throwException("Setting size of memory datatype for" + errorSuffix,
+					status);
+		}
+
+		// Read in the data set into the buffer.
+		status = H5.H5Dread(datasetId, memtypeId, HDF5Constants.H5S_ALL,
+				HDF5Constants.H5S_ALL, HDF5Constants.H5P_DEFAULT, buffer);
+		if (status < 0) {
+			throwException("Reading dataset for" + errorSuffix, status);
+		}
+
+		// Close the memory datatype.
+		status = H5.H5Tclose(memtypeId);
+		if (status < 0) {
+			throwException("Closing memory datatype for" + errorSuffix, status);
+		}
+		memtypeId = -1;
+
+		// Close the dataspace.
+		status = H5.H5Sclose(dataspaceId);
+		if (status < 0) {
+			throwException("Closing dataspace for" + errorSuffix, status);
+		}
+
+		// Close the dataset.
+		status = H5.H5Dclose(datasetId);
+		if (status < 0) {
+			throwException("Closing" + errorSuffix, status);
+		}
+
+		// If the last byte is the null character, ignore it. The null character
+		// is only required inside HDF5 (for native strings).
+
+		// Convert the byte buffer into a string array.
+		String strings[] = new String[size];
+		stringLength--;
+		for (int i = 0; i < size; i++) {
+			byte[] bufferedString = buffer[i];
+			int j = stringLength;
+			while (j >= 0 && bufferedString[j] == 0) {
+				j--;
+			}
+			strings[i] = new String(bufferedString, 0, j + 1);
+		}
+
+		return strings;
+	}
 	// ---------------------------- //
 
 	/**
