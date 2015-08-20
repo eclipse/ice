@@ -77,8 +77,8 @@ public class PWRAssembly extends LWRComposite {
 	protected double rodPitch;
 
 	// Private attributes for readChild operations.
-	private static final String LWRROD_COMPOSITE_NAME = "LWRRods";
-	private static final String LWRROD_GRID_MANAGER_NAME = "LWRRod Grid";
+	public static final String LWRROD_COMPOSITE_NAME = "LWRRods";
+	public static final String LWRROD_GRID_MANAGER_NAME = "LWRRod Grid";
 
 	/**
 	 * <p>
