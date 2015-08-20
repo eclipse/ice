@@ -30,11 +30,9 @@ import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
- * <p>
  * The LWRGridManager class manages LWRComponents and their GridLocations on a
  * Cartesian grid with an equal number of rows and columns. This class
  * implements the ICE IGridManager interface.
- * </p>
  * <p>
  * This class also allows a "pass through" for LWRDataProviders, which are used
  * to store state point data. This is a preferred method for storing data over
@@ -51,18 +49,12 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	private TreeMap<GridLocation, String> lWRComponents;
 
 	/**
-	 * <p>
 	 * The size of the rows and columns.
-	 * </p>
-	 *
 	 */
 	private int size;
 
 	/**
-	 * <p>
 	 * A grid table suffix for reading the dataset.
-	 * </p>
-	 *
 	 */
 	protected String hdf5GridTableSuffix = "'s Grid Table";
 	// Names for groups
@@ -73,18 +65,11 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	private String dataTableString = " dataTable";
 
 	/**
-	 * <p>
 	 * The Constructor.
-	 * </p>
 	 *
 	 * @param size
-	 *            <p>
 	 *            The maximum number of rows or columns.
-	 *            </p>
-	 *            <p>
-	 *            </p>
 	 */
-
 	public LWRGridManager(int size) {
 
 		// Setup LWRComponent Attributes
@@ -107,13 +92,9 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
 	 * Returns the maximum number of rows or columns.
-	 * </p>
 	 *
-	 * @return <p>
-	 *         Returns the maximum number of rows or columns.
-	 *         </p>
+	 * @return Returns the maximum number of rows or columns.
 	 */
 	public int getSize() {
 
@@ -121,19 +102,13 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
-	 * </p>
 	 *
 	 * @param otherObject
-	 *            <p>
 	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	 * @return True if otherObject is equal. False otherwise.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -152,7 +127,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 			}
 			// Check values
 			retVal = (super.equals(otherObject)
-					&& this.lWRComponents.equals(manager.lWRComponents) && this.size == manager.size);
+					&& this.lWRComponents.equals(manager.lWRComponents)
+					&& this.size == manager.size);
 
 			// If the size is not equal, return false
 			if (this.lWRComponents.size() != manager.lWRComponents.size()) {
@@ -171,8 +147,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				// If it does, mark it as true
 				for (Map.Entry<GridLocation, String> managerEntry : manager.lWRComponents
 						.entrySet()) {
-					if (managerEntry.getKey().equals(location)
-							&& managerEntry.getValue().equals(entry.getValue())) {
+					if (managerEntry.getKey().equals(location) && managerEntry
+							.getValue().equals(entry.getValue())) {
 						objectFound = true;
 						break;
 					}
@@ -190,13 +166,9 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
 	 * Returns the hashCode of the object.
-	 * </p>
 	 *
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	 * @return The hash of the object.
 	 */
 	@Override
 	public int hashCode() {
@@ -214,14 +186,10 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
 	 * Deep copies the contents of the object.
-	 * </p>
 	 *
 	 * @param otherObject
-	 *            <p>
 	 *            The object to be copied.
-	 *            </p>
 	 */
 	public void copy(LWRGridManager otherObject) {
 
@@ -256,13 +224,9 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
 	 * Deep copies and returns a newly instantiated object.
-	 * </p>
 	 *
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	 * @return The newly instantiated copied object.
 	 */
 	@Override
 	public Object clone() {
@@ -398,7 +362,6 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	 *            H5File
 	 * @param The
 	 *            Group
-	 *
 	 * @return True if successful, false otherwise
 	 */
 	private boolean writeFeatureSets(H5File h5File, H5Group h5Group) {
@@ -470,7 +433,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 				positionDataset.init();
 			} catch (Exception e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				return false;
 			}
 
@@ -537,8 +500,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 						Datatype.CLASS_STRING, maxLength, Datatype.NATIVE,
 						Datatype.NATIVE);
 				Dataset dataSet3 = h5File.createScalarDS("Units Table",
-						mainH5Group, datatypeString, dimsStrings, null, null,
-						0, null);
+						mainH5Group, datatypeString, dimsStrings, null, null, 0,
+						null);
 				dataSet3.write(arrayUnits);
 
 				dataSet3.init();
@@ -546,7 +509,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 		} catch (Exception e) {
 			// Break and return
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			return false;
 
 		}
@@ -596,11 +559,12 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 			// Create a Compound Dataset for each timeStep to represent the
 			// collection of FeatureSets. This contains the list of Feature
 			// Sets
-			for (int i = 0; i < provider.getFeaturesAtCurrentTime().size(); i++) {
+			for (int i = 0; i < provider.getFeaturesAtCurrentTime()
+					.size(); i++) {
 
 				// Get the FeatureSet
-				ArrayList<IData> set = provider.getDataAtCurrentTime(provider
-						.getFeatureList().get(i));
+				ArrayList<IData> set = provider
+						.getDataAtCurrentTime(provider.getFeatureList().get(i));
 
 				// Get the number of IDatas stored on the FeatureSet
 				int iDataSize = set.size();
@@ -658,22 +622,22 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 							Datatype.NATIVE);
 
 					// Create the simple dataset - dataList
-					Dataset dataSet1 = h5File.createScalarDS(set.get(0)
-							.getFeature() + this.dataTableString,
+					Dataset dataSet1 = h5File.createScalarDS(
+							set.get(0).getFeature() + this.dataTableString,
 							timeStepH5Group, dataTypeDouble, dimsData, null,
 							null, 0, dataList);
 
 					// Create the simple dataset - headData
-					Dataset dataSet2 = h5File.createScalarDS(set.get(0)
-							.getFeature() + this.headTableString,
-							timeStepH5Group, dataTypeLong, dimsHead, null,
-							null, 0, headData);
+					Dataset dataSet2 = h5File.createScalarDS(
+							set.get(0).getFeature() + this.headTableString,
+							timeStepH5Group, dataTypeLong, dimsHead, null, null,
+							0, headData);
 
 					dataSet1.init();
 					dataSet2.init();
 				} catch (Exception e) {
 					// Break and return
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 
 					return false;
 				}
@@ -733,7 +697,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				arrayStrings = (String[]) unitListData;
 
 			} catch (Exception e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				return false;
 			}
 		}
@@ -742,8 +706,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 		if (HdfReaderFactory.getDataset(dataH5Group,
 				"Simple Position Names Table") == null) {
 			// Return false. This is bad
-			System.err
-					.println("LWRGridManager: Can't find dataset for reading the positions table.");
+			System.err.println(
+					"LWRGridManager: Can't find dataset for reading the positions table.");
 			return false;
 		} else {
 
@@ -759,7 +723,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				// Cast to array of strings
 				arrayPositions = (String[]) positionsNamesData;
 			} catch (Exception e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				return false;
 			}
 		}
@@ -784,7 +748,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 				positionDataset.init();
 				positionData = positionDataset.getData();
 			} catch (Exception e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				return false;
 			}
 
@@ -802,7 +766,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 			// This is important: If there is a units table with no data in it,
 			// then there should be no positions. Flag error and exit
-			if (arrayStrings == null && position.getNumberOfMembersInFile() > 1) {
+			if (arrayStrings == null
+					&& position.getNumberOfMembersInFile() > 1) {
 				return false;
 			}
 			// Iterate over ONLY the groups
@@ -862,8 +827,8 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 
 				// Get the name of the feature - note replace the
 				// dataTableString
-				String featureName = featureGroupData.getName().replace(
-						this.dataTableString, "");
+				String featureName = featureGroupData.getName()
+						.replace(this.dataTableString, "");
 
 				// call init
 				featureGroupData.init();
@@ -876,7 +841,7 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 					dataListData = featureGroupData.getData();
 					headListData = featureGroupHead.getData();
 				} catch (Exception e) {
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 					return false;
 				}
 
@@ -907,7 +872,9 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 					// column value for each row.
 					// The last column value should represent the unitsID,
 					// or the id to represent the units
-					lwrdata.setUnits(arrayStrings[(int) headArray[(int) ((counter) * headColSize) + 1]]);
+					lwrdata.setUnits(
+							arrayStrings[(int) headArray[(int) ((counter)
+									* headColSize) + 1]]);
 
 					// Setup position
 					ArrayList<Double> positionss = new ArrayList<Double>();
@@ -963,18 +930,15 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
+	 * 
 	 * Returns the data provider at the grid location or null if it does not
 	 * exist.
-	 * </p>
+	 * 
 	 *
 	 * @param location
-	 *            <p>
 	 *            The grid location.
-	 *            </p>
-	 * @return <p>
-	 *         The provider at that location
-	 *         </p>
+	 * @return The provider at that location
+	 * 
 	 */
 	public LWRDataProvider getDataProviderAtLocation(GridLocation location) {
 
@@ -998,18 +962,13 @@ public class LWRGridManager extends LWRComponent implements IGridManager {
 	}
 
 	/**
-	 * <p>
 	 * Returns the list of grid locations at the given name. If none are found,
 	 * returns an empty list.
-	 * </p>
 	 *
 	 * @param name
-	 *            <p>
 	 *            The name
-	 *            </p>
-	 * @return <p>
-	 *         The locations
-	 *         </p>
+	 * @return The locations
+	 * 
 	 */
 	public ArrayList<GridLocation> getGridLocationsAtName(String name) {
 
