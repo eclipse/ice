@@ -175,6 +175,6 @@ public class BatMLModelTester {
 		EMFComponent component = (EMFComponent) batml.getForm().getComponent(1);
 		assertNotNull(component);
 		assertNotNull(component.getEMFTreeComposite());
-		assertTrue("DocumentRoot".equals(component.getEMFTreeComposite().getName()));
+		assertTrue("BatML".equals(component.getEMFTreeComposite().getName()));
 	}
 }

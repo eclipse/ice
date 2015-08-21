@@ -248,6 +248,7 @@ public class BatMLModel extends Item {
 		if (xsdFile != null) {
 			emfComp = new EMFComponent();
 			emfComp.load(xsdFile, xmlFile);
+			emfComp.getEMFTreeComposite().setName("BatML");
 			emfComp.setName("BatML Model Editor");
 			emfComp.setId(1);
 		} else {
