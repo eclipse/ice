@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.common.ActionTree;
+import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -361,7 +361,7 @@ public class TimeSliderComposite extends Composite {
 		MenuManager manager = new MenuManager();
 
 		// Add a sub-menu for selecting the playback rate.
-		ActionTree playbackRate = new ActionTree("Playback Rate");
+		VizActionTree playbackRate = new VizActionTree("Playback Rate");
 
 		// Set up the list of previous rates. This will be used to keep track of
 		// previous values when selecting a new custom framerate.
@@ -372,32 +372,32 @@ public class TimeSliderComposite extends Composite {
 		previousRates.add("30");
 
 		// Add some default framerates for 1, 12, 24, and 30 fps.
-		playbackRate.add(new ActionTree(new Action("1 fps") {
+		playbackRate.add(new VizActionTree(new Action("1 fps") {
 			@Override
 			public void run() {
 				setFPS(1.0);
 			}
 		}));
-		playbackRate.add(new ActionTree(new Action("12 fps") {
+		playbackRate.add(new VizActionTree(new Action("12 fps") {
 			@Override
 			public void run() {
 				setFPS(12.0);
 			}
 		}));
-		playbackRate.add(new ActionTree(new Action("24 fps") {
+		playbackRate.add(new VizActionTree(new Action("24 fps") {
 			@Override
 			public void run() {
 				setFPS(24.0);
 			}
 		}));
-		playbackRate.add(new ActionTree(new Action("30 fps") {
+		playbackRate.add(new VizActionTree(new Action("30 fps") {
 			@Override
 			public void run() {
 				setFPS(30.0);
 			}
 		}));
 		// Add an action for selecting a custom framerate.
-		playbackRate.add(new ActionTree(new Action("Custom...") {
+		playbackRate.add(new VizActionTree(new Action("Custom...") {
 			@Override
 			public void run() {
 				// Set up a dialog based on the previous and current framerate

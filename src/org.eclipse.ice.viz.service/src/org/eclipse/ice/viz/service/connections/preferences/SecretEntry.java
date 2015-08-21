@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
 
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 
 /**
  * A {@code SecretEntry} is simply an {@link Entry} whose secret flag is set to
@@ -21,7 +21,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * @author Jordan Deyton
  *
  */
-public class SecretEntry extends Entry {
+public class SecretEntry extends VizEntry {
 
 	/**
 	 * A constructor that will create an {@code Entry} with only a unique ID and
@@ -49,7 +49,7 @@ public class SecretEntry extends Entry {
 	 * @param contentProvider
 	 *            The content provider for the {@code Entry}.
 	 */
-	public SecretEntry(IEntryContentProvider contentProvider) {
+	public SecretEntry(IVizEntryContentProvider contentProvider) {
 		super(contentProvider);
 
 		secretFlag = true;

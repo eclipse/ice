@@ -20,8 +20,7 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.form.geometry.AbstractShape;
-import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <p>
@@ -34,7 +33,7 @@ import org.eclipse.ice.datastructures.form.geometry.IShapeVisitor;
  */
 @XmlRootElement(name = "Custom2DShape")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Custom2DShape extends AbstractShape {
+public class Custom2DShape extends ICEObject {
 	/**
 	 * <p>
 	 * The collection of polygons composing the Custom2DShape.
@@ -275,13 +274,4 @@ public class Custom2DShape extends AbstractShape {
 
 	}
 
-	/*
-	 * Implements a method from IShape.
-	 */
-	@Override
-	public void acceptShapeVisitor(IShapeVisitor visitor) {
-
-		return;
-
-	}
 }

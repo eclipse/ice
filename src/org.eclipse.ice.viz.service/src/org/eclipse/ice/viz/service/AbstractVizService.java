@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -82,6 +83,14 @@ public abstract class AbstractVizService implements IVizService {
 					"IPlot error: " + "Invalid URI or URI not specified . "
 							+ ((uri != null) ? uri.toString() : ""));
 		}
+		return null;
+	}
+	
+	/**
+	 * Nothing to do for the basic implementation for creating a canvas.
+	 */
+	@Override
+	public IVizCanvas createCanvas(IVizObject object) throws Exception {
 		return null;
 	}
 

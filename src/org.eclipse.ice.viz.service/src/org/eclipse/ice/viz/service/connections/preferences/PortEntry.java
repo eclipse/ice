@@ -13,8 +13,8 @@ package org.eclipse.ice.viz.service.connections.preferences;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 
 /**
  * This class provides an {@link Entry} that is a "continuous" {@code Entry}
@@ -25,7 +25,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * @author Jordan Deyton
  *
  */
-public class PortEntry extends Entry {
+public class PortEntry extends VizEntry {
 
 	/**
 	 * The copy constructor.
@@ -118,7 +118,7 @@ public class PortEntry extends Entry {
 	 * *must* be {@link PortEntryContentProvider}s.
 	 */
 	@Override
-	public void setContentProvider(IEntryContentProvider contentProvider) {
+	public void setContentProvider(IVizEntryContentProvider contentProvider) {
 		if (contentProvider instanceof PortEntryContentProvider) {
 			setContentProvider((PortEntryContentProvider) contentProvider);
 		}

@@ -15,6 +15,8 @@ package org.eclipse.ice.viz.service;
 import java.net.URI;
 import java.util.Set;
 
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
+
 /**
  * This is a pluggable service interface whereby visualization engines can
  * publish their services to the platform. It is designed to be implemented as a
@@ -35,9 +37,26 @@ import java.util.Set;
  * </p>
  * 
  * @author Jay Jay Billings
+ * @author Robert Smith
+ * @author Kasper Gammeltoft
+ * @author Jordan Deyton
  */
 public interface IVizService {
 
+	/**
+	 * This operation directs the IVizService to create a new canvas using the
+	 * given VizObject and to return a handle to that canvas to the caller so
+	 * that it may modify the canvas.
+	 * 
+	 * @param object
+	 *            The input object which will be rendered in the new canvas
+	 * @return The IVizCanvas that will render the object
+	 * @throws Exception
+	 *             An exception indicating that the IVizService could not create
+	 *             a canvas with the given object and giving the reason why.
+	 */
+	public IVizCanvas createCanvas(IVizObject object) throws Exception;
+	
 	/**
 	 * This operation directs the IVizService to create a new plot using the
 	 * specified file and to return a handle to that plot to the caller so that
@@ -51,7 +70,7 @@ public interface IVizService {
 	 *             a plot with the given file and giving the reason why.
 	 */
 	public IPlot createPlot(URI file) throws Exception;
-
+	
 	/**
 	 * This operation returns the name of the service. The name should be
 	 * something simple and human-readable.
@@ -59,7 +78,7 @@ public interface IVizService {
 	 * @return The name of the IVizService
 	 */
 	public String getName();
-
+	
 	/**
 	 * Gets a set containing all supported file extensions for which an IPlot
 	 * can be created. Extensions in the set are expected to conform to the
@@ -82,4 +101,6 @@ public interface IVizService {
 	 * @return The version of the IVizService
 	 */
 	public String getVersion();
+
+
 }

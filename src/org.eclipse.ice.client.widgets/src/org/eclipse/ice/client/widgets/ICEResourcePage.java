@@ -26,9 +26,6 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
-import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
@@ -333,6 +330,19 @@ public class ICEResourcePage extends ICEFormPage
 		}
 
 		return;
+	}
+
+	/**
+<<<<<<< HEAD
+	 * Gets the resource's key for use in the plot maps.
+	 *
+	 * @param resource
+	 *            The resource whose key should be determined. Assumed not to be
+	 *            {@code null}.
+	 * @return The resource's key in the plot maps.
+	 */
+	private String getPlotKey(ICEResource resource) {
+		return resource.getPath().toString();
 	}
 
 	/**

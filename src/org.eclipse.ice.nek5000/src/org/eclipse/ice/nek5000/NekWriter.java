@@ -27,7 +27,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryCondition;
 import org.eclipse.ice.datastructures.form.mesh.BoundaryConditionType;
 import org.eclipse.ice.datastructures.form.mesh.Edge;
@@ -1097,12 +1096,6 @@ public class NekWriter implements IComponentVisitor {
 
 	@Override
 	public void visit(MatrixComponent component) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void visit(IShape component) {
 		// TODO Auto-generated method stub
 
 	}

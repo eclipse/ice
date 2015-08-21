@@ -150,7 +150,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.moose" autoStart="true" startLevel="0" />
@@ -182,9 +182,9 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.xolotl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />

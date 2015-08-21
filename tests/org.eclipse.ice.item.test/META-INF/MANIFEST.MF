@@ -9,7 +9,6 @@ Import-Package: org.eclipse.ice.core.iCore,
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.item,
  org.eclipse.ice.persistence.xml,
- org.eclipse.ice.viz.service.geometry,
  org.osgi.framework;version="1.6.0"
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-Vendor: Oak Ridge National Laboratory
