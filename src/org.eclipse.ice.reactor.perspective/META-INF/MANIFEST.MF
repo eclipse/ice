@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Reactors Component
 Bundle-SymbolicName: org.eclipse.ice.reactor.perspective;singleton:=true
-Bundle-Version: 2.1.7.20150812
+Bundle-Version: 2.1.7.20150821
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.widgets,
  org.eclipse.ice.client.widgets.reactoreditor,
