@@ -228,7 +228,6 @@ public class TimeSliderComposite extends Composite {
 		return;
 	}
 
-	// ---- SelectionListeners ---- //
 	/**
 	 * Adds a new listener to be notified when the selected time changes.
 	 * 
@@ -415,7 +414,8 @@ public class TimeSliderComposite extends Composite {
 								if (Double.compare(newValue, minFPS) >= 0) {
 									validatedText = text;
 								}
-							} catch (NullPointerException | NumberFormatException exception) {
+							} catch (NullPointerException
+									| NumberFormatException exception) {
 								// Nothing to do.
 							}
 						}
@@ -424,9 +424,11 @@ public class TimeSliderComposite extends Composite {
 				};
 				// Customize the dialog's appearance.
 				dialog.setTitle("Custom Framerate");
-				dialog.setInfoText("Enter a new frame rate or\n" + "select a previous rate.\n"
+				dialog.setInfoText("Enter a new frame rate or\n"
+						+ "select a previous rate.\n"
 						+ "Values must be greater than 0.0");
-				dialog.setErrorText("Please enter a number greater than 60\n" + "seconds per frame (0.0167 FPS).");
+				dialog.setErrorText("Please enter a number greater than 60\n"
+						+ "seconds per frame (0.0167 FPS).");
 				// Set the dialog Combo's allowed values and initial value.
 				dialog.setAllowedValues(previousRates);
 				dialog.setInitialValue(Double.toString(fps));
@@ -475,7 +477,8 @@ public class TimeSliderComposite extends Composite {
 				}
 			}
 		};
-		firstStepAction.setImageDescriptor(getImageDescriptor("skip_backward.gif"));
+		firstStepAction
+				.setImageDescriptor(getImageDescriptor("skip_backward.gif"));
 		manager.add(firstStepAction);
 
 		// Add a menu item for skipping to the last timestep.
@@ -493,7 +496,8 @@ public class TimeSliderComposite extends Composite {
 				}
 			}
 		};
-		lastStepAction.setImageDescriptor(getImageDescriptor("skip_forward.gif"));
+		lastStepAction
+				.setImageDescriptor(getImageDescriptor("skip_forward.gif"));
 		manager.add(lastStepAction);
 
 		// Create the manager's context Menu.
@@ -664,8 +668,6 @@ public class TimeSliderComposite extends Composite {
 		return text;
 	}
 
-	// ---- Public Setters and Getters ---- //
-
 	/**
 	 * Decrements the timestep. Updates all widgets as necessary. This will loop
 	 * back around to the last timestep if necessary.
@@ -823,7 +825,6 @@ public class TimeSliderComposite extends Composite {
 			listener.widgetSelected(e);
 		}
 	}
-	// ---------------------------- //
 
 	/**
 	 * Stops playback on the widget at its current timestep.
@@ -910,8 +911,6 @@ public class TimeSliderComposite extends Composite {
 		listeners.remove(listener);
 	}
 
-	// ------------------------------------ //
-
 	/*
 	 * Overrides a method from Control.
 	 */
@@ -949,7 +948,8 @@ public class TimeSliderComposite extends Composite {
 		checkWidget();
 
 		boolean changed = false;
-		if (Double.compare(fps, minFPS) >= 0 && Math.abs(fps - this.fps) > 1e-7) {
+		if (Double.compare(fps, minFPS) >= 0
+				&& Math.abs(fps - this.fps) > 1e-7) {
 			this.fps = fps;
 			// Convert the FPS into a millisecond delay.
 			fpsDelay = (int) (Math.round(1000.0 / this.fps));

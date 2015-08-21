@@ -45,8 +45,8 @@ import java.util.ArrayList;
  * and return the URI instead of returning null. Reference data is treated the
  * same way.
  * </p>
- * 
- * @author Eric J. Lingerfelt
+ *
+ * @author Jay Jay Billings
  */
 public interface IAnalysisDocument {
 	/**
@@ -55,7 +55,7 @@ public interface IAnalysisDocument {
 	 * data from a folder or file with the specified URI. All IAnalysisAssets
 	 * will be created from this data.
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            A URI to the data folder or file used to create assets for
@@ -75,7 +75,7 @@ public interface IAnalysisDocument {
 	 * data from an IDataProvider. All IAnalysisAssets will be created from this
 	 * data.
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            An IDataProvider used to create assets for this document.
@@ -94,7 +94,7 @@ public interface IAnalysisDocument {
 	 * data from a folder or file with the specified URI. All IAnalysisAssets
 	 * will be created from this data.
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            A URI to the data folder or file used to retrieve the
@@ -114,7 +114,7 @@ public interface IAnalysisDocument {
 	 * data from an IDataProvider as a reference for comparison with the data
 	 * loaded by loadData().
 	 * </p>
-	 * 
+	 *
 	 * @param data
 	 *            <p>
 	 *            An IDataProvider used to retrieve the reference data.
@@ -132,7 +132,7 @@ public interface IAnalysisDocument {
 	 * This operation returns a URI specifying the location of the data from
 	 * which this IAnalysisDocument is creating IAnalysisAssets.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         A URI to the data folder or file used to create assets for this
 	 *         document.
@@ -145,7 +145,7 @@ public interface IAnalysisDocument {
 	 * This operation provides a list of all of the assets that can be created
 	 * for the data under consideration by this IAnalysisDocument.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The list of assets that can be created for this IAnalysisDocument
 	 *         or null if the document can not create any assets.
@@ -158,7 +158,7 @@ public interface IAnalysisDocument {
 	 * This operation returns the list of all of assets that should be or was
 	 * created for the data at each slice for this IAnalysisDocument.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The list of assets.
 	 *         </p>
@@ -173,7 +173,7 @@ public interface IAnalysisDocument {
 	 * should be called after getAvailableAssets() unless it is known for
 	 * certain that the list of desired assets can be created in the document.
 	 * </p>
-	 * 
+	 *
 	 * @param assets
 	 *            <p>
 	 *            The lists of assets that should be created for each slice of
@@ -198,7 +198,7 @@ public interface IAnalysisDocument {
 	 * the data or the total number of cells. This operation will return 0 if
 	 * the IAnalysisDocument can not manipulate the data.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         The total number of data slices in this IAnalysisDocument.
 	 *         </p>
@@ -211,7 +211,7 @@ public interface IAnalysisDocument {
 	 * that is more descriptive than just its slice id. This could be, for
 	 * example, a number identifying the time step or the cell id.
 	 * </p>
-	 * 
+	 *
 	 * @param sliceNumber
 	 * @return <p>
 	 *         The identifier with more information about the slice.
@@ -224,7 +224,7 @@ public interface IAnalysisDocument {
 	 * This operation returns the set of assets created for the specified data
 	 * slice.
 	 * </p>
-	 * 
+	 *
 	 * @param sliceNumber
 	 *            <p>
 	 *            The slice of data for which assets should be retrieved.
@@ -242,7 +242,7 @@ public interface IAnalysisDocument {
 	 * This operation returns all assets created for all data slices in the
 	 * IAnalysisDocument.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         All of the assets for all of the data slices in the document or
 	 *         null if no assets have been created or otherwise just don't
@@ -256,7 +256,7 @@ public interface IAnalysisDocument {
 	 * This operation returns a URI specifying the location of the reference
 	 * data used by this IAnalysisDocument.
 	 * </p>
-	 * 
+	 *
 	 * @return <p>
 	 *         A URI to the data folder or file used to create assets for this
 	 *         document.

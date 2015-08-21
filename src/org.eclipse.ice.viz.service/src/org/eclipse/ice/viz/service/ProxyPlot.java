@@ -140,10 +140,19 @@ public abstract class ProxyPlot extends AbstractPlot {
 				: super.getNumberOfAxes();
 	}
 
+	/**
+	 * Gets the source IPlot for which this plot serves as a proxy.
+	 * 
+	 * @return The source IPlot, or {@code null} if one is not set.
+	 */
 	protected IPlot getSource() {
 		return source;
 	}
 
+	/**
+	 * This method is called to rebuild the dependent series based on the
+	 * current set of series available from the source plot.
+	 */
 	protected void reloadSeries() {
 		// Only reload if not null.
 		if (source != null) {

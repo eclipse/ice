@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
@@ -26,6 +26,8 @@ import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory;
+import org.eclipse.ice.client.widgets.reactoreditor.LinearColorFactory.Theme;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Grid;
@@ -70,7 +72,8 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * @author Jordan H. Deyton
  * 
  */
-public class AssemblyAnalysisView extends AnalysisView implements IGridListener {
+public class AssemblyAnalysisView extends AnalysisView
+		implements IGridListener {
 
 	/**
 	 * The name for this type of analysis view. This can be used for the display
@@ -131,6 +134,25 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 	 * properties.
 	 */
 	private final ActionTree assemblyProperties;
+
+	/**
+	 * The action tree used to select the color theme used to color the assembly
+	 * view.
+	 */
+	private final ActionTree colorThemeTree;
+
+	/**
+	 * The color factory used to produce colors for the assembly data view.
+	 */
+	private final LinearColorFactory colorFactory;
+	/**
+	 * The current color theme used in the {@link #colorFactory}.
+	 */
+	private Theme colorTheme;
+	/**
+	 * Whether or not the current color theme should be inverted.
+	 */
+	private boolean reverseColorTheme;
 	/* -------------------------- */
 
 	/* ----- Current State ----- */
@@ -223,10 +245,12 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 		 * A full view of the assembly.
 		 */
 		FULL("Full-core", 1),
+
 		/**
 		 * A view of one-quarter of the assembly.
 		 */
 		QUARTER("Quarter", 4),
+
 		/**
 		 * A view of one-eighth of the assembly.
 		 */
@@ -269,11 +293,13 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 		 * Each component computes its own min and max.
 		 */
 		PIECEWISE("Piecewise (each component calculates its own extrema)"),
+
 		/**
 		 * The min and max among the current feature data in the current axial
 		 * level.
 		 */
 		LOCAL("Local (current axial level)"),
+
 		/**
 		 * The global min and max among all axial levels for the current feature
 		 * data.
@@ -385,6 +411,34 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 			dataExtrema.add(new ActionTree(action));
 		}
 
+		// Set the default color factory and theme.
+		colorFactory = new LinearColorFactory();
+		colorTheme = LinearColorFactory.Theme.Rainbow2;
+		reverseColorTheme = false;
+		colorFactory.setColors(colorTheme, reverseColorTheme);
+
+		// Add an ActionTree for selecting the color scale theme.
+		colorThemeTree = new ActionTree("Color Theme");
+		// Add an action for each color theme.
+		for (final Theme theme : LinearColorFactory.Theme.values()) {
+			colorThemeTree.add(new ActionTree(new Action(theme.toString()) {
+				@Override
+				public void run() {
+					// If the theme is new, set it and refresh the view.
+					if (theme != colorTheme) {
+						colorTheme = theme;
+						colorFactory.setColors(theme, reverseColorTheme);
+						// Refresh each figure.
+						axialFigure.refreshData();
+						for (RodFigure figure : figures) {
+							figure.refreshData();
+						}
+					}
+				}
+			}));
+		}
+		actions.add(colorThemeTree);
+
 		// Add an ActionTree (single button) for viewing the core's properties.
 		assemblyProperties = new ActionTree(new Action("Assembly Properties") {
 			@Override
@@ -396,8 +450,8 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 				// If it has properties, set the properties in the ICE
 				// Properties View.
 				if (properties != null) {
-					selectionProvider.setSelection(new StructuredSelection(
-							properties));
+					selectionProvider
+							.setSelection(new StructuredSelection(properties));
 				}
 			}
 		});
@@ -425,7 +479,7 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 	 */
 	private void setAssembly(FuelAssembly assembly) {
 		logger.info("FuelAssemblyAnalysisView message: "
-						+ "Setting fuel assembly.");
+				+ "Setting fuel assembly.");
 
 		// Check the parameters.
 		if (assembly != null && assembly != this.assembly) {
@@ -473,14 +527,15 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 						LWRRod rod = (LWRRod) lwrComp;
 
 						// Try to update the max radius.
-						maxRadius = Math.max(maxRadius, rod.getClad()
-								.getOuterRadius());
+						maxRadius = Math.max(maxRadius,
+								rod.getClad().getOuterRadius());
 
 						// Update the state.
 						assemblyCellStates.set(index, State.UNSELECTED);
 					}
 					// Try to get a Tube at that location.
-					else if ((lwrComp = assembly.getTubeByLocation(row, column)) != null) {
+					else if ((lwrComp = assembly.getTubeByLocation(row,
+							column)) != null) {
 						// Convert the component to a tube.
 						Tube tube = (Tube) lwrComp;
 
@@ -494,8 +549,8 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 						// Get the features available here. For each feature,
 						// get the maximum number of levels supported.
 						for (String feature : lwrData.getFeatureList()) {
-							int newCount = lwrData
-									.getDataAtCurrentTime(feature).size();
+							int newCount = lwrData.getDataAtCurrentTime(feature)
+									.size();
 							if (!featureMap.containsKey(feature)
 									|| newCount > featureMap.get(feature)) {
 								featureMap.put(feature, newCount);
@@ -624,8 +679,8 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 		// Make sure the symmetry value is not null *and* different.
 		// Also validate the symmetryIndex by modulo dividing it with the
 		// number of sections for the symmetry type.
-		if (symmetry != null
-				&& (symmetry != this.symmetry || (symmetryIndex %= symmetry.sections) != this.symmetryIndex)) {
+		if (symmetry != null && (symmetry != this.symmetry
+				|| (symmetryIndex %= symmetry.sections) != this.symmetryIndex)) {
 
 			// Update the symmetry values.
 			this.symmetry = symmetry;
@@ -941,13 +996,15 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 
 				LWRComponent lwrComp;
 				if (validLocations.contains(fullIndex)
-						&& (lwrComp = assemblyLocations.get(fullIndex)) != null) {
+						&& (lwrComp = assemblyLocations
+								.get(fullIndex)) != null) {
 
 					AssemblyCellEditPart editPart = (AssemblyCellEditPart) registry
 							.get(cells.get(gridIndex));
 
 					RodFigure figure = (RodFigure) editPart.getFigure();
 					figures.add(figure);
+					figure.setColorFactory(colorFactory);
 					figure.setComponent(lwrComp, maxRadius);
 					figure.setDataProvider(assemblyData.get(fullIndex));
 					figure.setFeature(feature);
@@ -998,8 +1055,8 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 
 		// If possible, select the component in that location.
 		if (component != null) {
-			LWRComponentInfo info = new LWRComponentInfo(row, column,
-					component, dataProvider);
+			LWRComponentInfo info = new LWRComponentInfo(row, column, component,
+					dataProvider);
 
 			// Send the new selection to the StateBroker.
 			String key = dataSource + "-" + "rod";
@@ -1026,8 +1083,8 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 
 			// Send the new selection to the SelectionProvider.
 			if (properties != null) {
-				selectionProvider.setSelection(new StructuredSelection(
-						properties));
+				selectionProvider
+						.setSelection(new StructuredSelection(properties));
 			}
 		}
 
@@ -1090,6 +1147,7 @@ public class AssemblyAnalysisView extends AnalysisView implements IGridListener 
 
 		// Create the axial figure in the axial canvas.
 		axialFigure = new AxialRodFigure();
+		axialFigure.setColorFactory(colorFactory);
 		LightweightSystem lws = new LightweightSystem(axialCanvas);
 		lws.setContents(axialFigure);
 
