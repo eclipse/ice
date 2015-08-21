@@ -19,9 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.KeyEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntry;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;

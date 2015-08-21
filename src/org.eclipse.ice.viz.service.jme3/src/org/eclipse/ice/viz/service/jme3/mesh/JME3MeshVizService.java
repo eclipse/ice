@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
@@ -66,7 +67,7 @@ public class JME3MeshVizService extends AbstractVizService {
 	 * Implements a method from IVizService.
 	 */
 	@Override
-	public IVizCanvas createCanvas(VizObject object) throws Exception {
+	public IVizCanvas createCanvas(IVizObject object) throws Exception {
 		JME3MeshCanvas canvas = null;
 		
 		//If input is a VizMeshComponent, use it to create a JME3MeshCanvas.

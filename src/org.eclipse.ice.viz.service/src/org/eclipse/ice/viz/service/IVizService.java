@@ -18,6 +18,8 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
+
 /**
  * This is a pluggable service interface whereby visualization engines can
  * publish their services to the platform. It is designed to be implemented as a
@@ -38,9 +40,26 @@ import org.eclipse.ice.viz.service.datastructures.VizObject;
  * </p>
  * 
  * @author Jay Jay Billings
+ * @author Robert Smith
+ * @author Kasper Gammeltoft
+ * @author Jordan Deyton
  */
 public interface IVizService {
 
+	/**
+	 * This operation directs the IVizService to create a new canvas using the
+	 * given VizObject and to return a handle to that canvas to the caller so
+	 * that it may modify the canvas.
+	 * 
+	 * @param object
+	 *            The input object which will be rendered in the new canvas
+	 * @return The IVizCanvas that will render the object
+	 * @throws Exception
+	 *             An exception indicating that the IVizService could not create
+	 *             a canvas with the given object and giving the reason why.
+	 */
+	public IVizCanvas createCanvas(IVizObject object) throws Exception;
+	
 	/**
 	 * This operation returns the name of the service. The name should be
 	 * something simple and human-readable.
@@ -72,20 +91,6 @@ public interface IVizService {
 	 */
 	public IPlot createPlot(URI file) throws Exception;
 
-	/**
-	 * This operation directs the IVizService to create a new canvas using the
-	 * given VizObject and to return a handle to that canvas to the caller so
-	 * that it may modify the canvas.
-	 * 
-	 * @param object
-	 *            The input object which will be rendered in the new canvas
-	 * @return The IVizCanvas that will render the object
-	 * @throws Exception
-	 *             An exception indicating that the IVizService could not create
-	 *             a canvas with the given object and giving the reason why.
-	 */
-	public IVizCanvas createCanvas(VizObject object) throws Exception;
-
 
 
 	/**
@@ -101,5 +106,6 @@ public interface IVizService {
 	 * @return A set containing all supported extensions.
 	 */
 	public Set<String> getSupportedExtensions();
+
 
 }

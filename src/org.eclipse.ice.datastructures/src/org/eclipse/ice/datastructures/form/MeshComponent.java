@@ -13,18 +13,10 @@
 package org.eclipse.ice.datastructures.form;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
@@ -38,26 +30,22 @@ import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 /**
  * <p>
- * Composite container for Polygons along with any additional information
- * required to interpret the mesh data.<br>
- * <br>
- * The MeshComponent breaks a mesh down into vertices and edges. As polygons are
- * added, the new edges and vertices are incorporated into the mesh, and
- * IUpdateableListeners registered with the MeshComponent are notified that it
- * has changed.<br>
- * <br>
- * All polygons are expected to have a unique ID among all other polygons. This
- * also holds for vertices and edges.
+ * A wrapper class for a VizMeshComponent. It provides all the functionality of
+ * a VizMeshComponent, but delegates to a wrapped VizMeshComponent for all
+ * actual implementations.
  * </p>
  * 
  * @author Jordan H. Deyton
+ * @author Robert Smith
  */
 @XmlRootElement(name = "MeshComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MeshComponent extends ICEObject implements Component, IMeshPart {
 
+	/**
+	 * The wrapped VizMeshComponent.
+	 */
 	private VizMeshComponent mesh;
-
 
 	/**
 	 * <p>
@@ -72,14 +60,24 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		return;
 	}
 
-	public VizMeshComponent getMesh(){
+	/**
+	 * Getter method for the wrapped VizMeshComponent
+	 * 
+	 * @return The wrapped VizMeshComponent
+	 */
+	public VizMeshComponent getMesh() {
 		return mesh;
 	}
-	
-	public void setMesh(VizMeshComponent newMesh){
+
+	/**
+	 * Setter method for the wrapped VizMeshComponent
+	 * 
+	 * @param newMesh The new mesh to hold
+	 */
+	public void setMesh(VizMeshComponent newMesh) {
 		mesh = newMesh;
 	}
-	
+
 	/**
 	 * <p>
 	 * Adds a polygon to the MeshComponent. The polygon is expected to have a
@@ -432,8 +430,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 			MeshComponent component = (MeshComponent) otherObject;
 
 			// Compare the values between the two objects.
-			equals = (super.equals(otherObject) && mesh
-					.equals(component.mesh));
+			equals = (super.equals(otherObject) && mesh.equals(component.mesh));
 			// The polygons are the only defining feature of the MeshComponent
 			// (aside from the super properties). If the polygon lists are
 			// equivalent, we can safely expect the other bookkeeping structures

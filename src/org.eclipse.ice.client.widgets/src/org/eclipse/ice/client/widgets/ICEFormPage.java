@@ -48,6 +48,8 @@ public class ICEFormPage extends FormPage {
 
 		// Call the super constructor
 		super(editor, id, title);
+
+		this.editor = (ICEFormEditor) editor;
 		
 		// Save the editor reference
 		this.editor = (ICEFormEditor) editor;

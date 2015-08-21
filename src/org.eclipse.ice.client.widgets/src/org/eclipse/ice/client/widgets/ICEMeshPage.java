@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.ice.client.common.ActionTree;
-import org.eclipse.ice.client.widgets.geometry.TransformationView;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.IVizService;
@@ -37,6 +36,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -236,6 +236,8 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		} catch (Exception e) {
 			logger.error("Mesh Viz Service failed to create mesh Viz Canvas.");
 		}
+		
+		//Draw the canvas and set its layout data
 		try {
 			Composite composite = canvas.draw(parent);
 			composite.setLayoutData(gridData);

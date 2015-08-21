@@ -112,7 +112,4 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	public String getVersion() {
 		return "1.0";
 	}
-
-
-
 }

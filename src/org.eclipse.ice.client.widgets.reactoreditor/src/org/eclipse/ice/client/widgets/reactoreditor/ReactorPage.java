@@ -33,7 +33,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.eclipse.ice.reactorAnalyzer.ReactorComposite;
@@ -48,7 +47,6 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 
 /**
  * This class extends the default ICEFormPage to provide custom page composed of
@@ -362,11 +360,6 @@ public class ReactorPage extends ICEFormPage implements IComponentVisitor,
 
 	@Override
 	public void visit(MatrixComponent component) {
-		// Nothing to do
-	}
-
-	@Override
-	public void visit(IShape component) {
 		// Nothing to do
 	}
 

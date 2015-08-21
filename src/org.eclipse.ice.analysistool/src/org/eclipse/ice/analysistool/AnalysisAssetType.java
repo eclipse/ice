@@ -16,29 +16,29 @@ package org.eclipse.ice.analysistool;
  * <p>
  * This is an enumeration of all the types of assets that can be created.
  * </p>
- * 
- * @author Eric J. Lingerfelt
+ *
+ * @author Jay Jay Billings
  */
 public enum AnalysisAssetType {
 	/**
 	 * <p>
 	 * This asset is a picture.
 	 * </p>
-	 * 
+	 *
 	 */
 	PICTURE,
 	/**
 	 * <p>
 	 * This asset is a table of data organized into rows and columns.
 	 * </p>
-	 * 
+	 *
 	 */
 	TABLE,
 	/**
 	 * <p>
 	 * This asset is a single number.
 	 * </p>
-	 * 
+	 *
 	 */
 	VALUE
 }

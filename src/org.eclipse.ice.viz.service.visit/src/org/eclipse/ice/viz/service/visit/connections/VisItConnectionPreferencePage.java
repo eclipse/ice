@@ -66,8 +66,7 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 				template.add(proxyPortEntry);
 				// ---- visit user ---- //
 				contentProvider = new BasicVizEntryContentProvider();
-				contentProvider
-						.setAllowedValueType(VizAllowedValueType.Undefined);
+				contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
 				contentProvider.setDefaultValue("");
 				VizEntry visitUserEntry = new VizEntry(contentProvider);
 				visitUserEntry.setName("VisIt User");

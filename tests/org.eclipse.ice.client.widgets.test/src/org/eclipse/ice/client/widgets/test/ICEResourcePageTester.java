@@ -29,6 +29,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorReference;
 import org.junit.Test;
+import org.hamcrest.Matcher;
 
 /**
  * This class is responsible for testing the ICEResourcePage.

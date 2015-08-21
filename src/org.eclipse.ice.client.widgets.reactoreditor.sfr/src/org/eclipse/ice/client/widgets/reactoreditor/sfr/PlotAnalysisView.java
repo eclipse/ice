@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474742
+ *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.sfr;
 
@@ -24,9 +24,9 @@ import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
-import org.eclipse.ice.client.widgets.reactoreditor.ColorFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.IAnalysisView;
+import org.eclipse.ice.client.widgets.reactoreditor.PaletteColorFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.Cell.State;
 import org.eclipse.ice.client.widgets.reactoreditor.grid.GridEditorInput;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
@@ -137,7 +137,7 @@ public class PlotAnalysisView extends AnalysisView {
 	/**
 	 * A ColorFactory to use for the trace colors.
 	 */
-	protected final ColorFactory palette;
+	protected final PaletteColorFactory colorFactory;
 
 	/*------------------------------*/
 
@@ -161,18 +161,18 @@ public class PlotAnalysisView extends AnalysisView {
 		traces = new HashMap<String, Trace>();
 		validLocations = new HashMap<String, BitSet>();
 		selectedLocations = new HashMap<String, BitSet>();
-		palette = new ColorFactory();
+		colorFactory = new PaletteColorFactory();
 
 		// Populate the list of actions (for ToolBar and context Menu).
 
 		// Add an ActionTree (single button) for selecting series.
-		ActionTree selectSeries = new ActionTree(new Action(
-				"Select Plotted Series") {
-			@Override
-			public void run() {
-				requestPlotSeries();
-			}
-		});
+		ActionTree selectSeries = new ActionTree(
+				new Action("Select Plotted Series") {
+					@Override
+					public void run() {
+						requestPlotSeries();
+					}
+				});
 		actions.add(selectSeries);
 
 		// Add an ActionTree (single button) for clearing the plot.
@@ -182,19 +182,20 @@ public class PlotAnalysisView extends AnalysisView {
 				MessageDialog dialog = new MessageDialog(container.getShell(),
 						"Clear Plot", null,
 						"Are you sure you want to remove all plotted series?",
-						MessageDialog.QUESTION, new String[] { "Yes", "No" }, 0);
+						MessageDialog.QUESTION, new String[] { "Yes", "No" },
+						0);
 
 				if (dialog.open() == Window.OK) {
 					/* ---- Clear the currently-graphed data. ---- */
 					BitSet selected = selectedLocations.get(feature);
 					if (selected != null) {
-						for (int i = selected.nextSetBit(0); i >= 0; i = selected
-								.nextSetBit(i + 1)) {
+						for (int i = selected.nextSetBit(
+								0); i >= 0; i = selected.nextSetBit(i + 1)) {
 							unplotData(i);
 						}
 					}
 					// Reset the color palette.
-					palette.reset();
+					colorFactory.reset();
 					/* ------------------------------------------- */
 				}
 			}
@@ -260,13 +261,13 @@ public class PlotAnalysisView extends AnalysisView {
 									.isEmpty()) {
 								if (!featureSet.contains(feature)) {
 									featureSet.add(feature);
-									validLocations.put(feature, new BitSet(
-											totalSize));
-									selectedLocations.put(feature, new BitSet(
-											totalSize));
+									validLocations.put(feature,
+											new BitSet(totalSize));
+									selectedLocations.put(feature,
+											new BitSet(totalSize));
 								}
-								validLocations.get(feature).set(
-										row * columns + column);
+								validLocations.get(feature)
+										.set(row * columns + column);
 							}
 						}
 					} else {
@@ -376,8 +377,8 @@ public class PlotAnalysisView extends AnalysisView {
 			// ---------------------------------------------------- //
 
 			// ---- Open the GridEditorDialog and get the selection. ---- //
-			GridEditorDialog dialog = new GridEditorDialog(
-					container.getShell(), input);
+			GridEditorDialog dialog = new GridEditorDialog(container.getShell(),
+					input);
 			if (dialog.open() != Window.CANCEL) {
 				// Get the resulting selection.
 				BitSet newSelectedLocations = dialog.getSelectedLocations();
@@ -393,15 +394,15 @@ public class PlotAnalysisView extends AnalysisView {
 				addedLocations.andNot(selected);
 
 				// Unplot all of the removed locations.
-				for (int i = removedLocations.nextSetBit(0); i >= 0; i = removedLocations
-						.nextSetBit(i + 1)) {
+				for (int i = removedLocations.nextSetBit(
+						0); i >= 0; i = removedLocations.nextSetBit(i + 1)) {
 					unplotData(i);
 					states.set(i, State.UNSELECTED);
 				}
 
 				// Plot all of the added locations.
-				for (int i = addedLocations.nextSetBit(0); i >= 0; i = addedLocations
-						.nextSetBit(i + 1)) {
+				for (int i = addedLocations.nextSetBit(
+						0); i >= 0; i = addedLocations.nextSetBit(i + 1)) {
 					plotData(i);
 					states.set(i, State.SELECTED);
 				}
@@ -458,7 +459,9 @@ public class PlotAnalysisView extends AnalysisView {
 				Trace trace = new Trace(key, xyGraph.primaryXAxis,
 						xyGraph.primaryYAxis, traceDataProvider);
 				trace.setPointStyle(PointStyle.XCROSS);
-				trace.setTraceColor(palette.getNextColor());
+				int hex = colorFactory.findColor(0.0);
+				trace.setTraceColor(
+						colorFactory.createColor(canvas.getDisplay(), hex));
 
 				// Add the trace to the graph.
 				traces.put(key, trace);
@@ -534,8 +537,8 @@ public class PlotAnalysisView extends AnalysisView {
 	protected void resetGraph() {
 
 		// Update the y-axis title.
-		xyGraph.primaryYAxis.setTitle((feature != null ? feature
-				: "No feature selected"));
+		xyGraph.primaryYAxis
+				.setTitle((feature != null ? feature : "No feature selected"));
 
 		// ---- Remove all the traces. ---- //
 		for (Trace trace : traces.values()) {
@@ -549,7 +552,7 @@ public class PlotAnalysisView extends AnalysisView {
 		// -------------------------------- //
 
 		// Reset the color palette.
-		palette.reset();
+		colorFactory.reset();
 
 		// ---- Add traces for selected components for the feature. ---- //
 		BitSet selected = selectedLocations.get(feature);

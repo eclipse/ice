@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 import org.eclipse.ice.viz.service.datastructures.VizObject;
 
 /**
@@ -101,10 +102,9 @@ public class CSVVizService extends AbstractVizService {
 	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(VizObject object) throws Exception {
+	public IVizCanvas createCanvas(IVizObject object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }

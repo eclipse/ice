@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.eclipse.ice.client.widgets.geometry.Tube;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.viz.service.jme3.application.IRenderQueue;

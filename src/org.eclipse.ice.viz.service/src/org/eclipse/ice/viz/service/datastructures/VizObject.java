@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 
 @XmlRootElement(name = "VizObject")
-public class VizObject implements IVizUpdateable {
+public class VizObject implements IVizObject, IVizUpdateable {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -349,10 +349,8 @@ public class VizObject implements IVizUpdateable {
 		return;
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IUpdateable#unregister(IUpdateableListener listener)
+	/* (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#unregister(org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener)
 	 */
 	@Override
 	public void unregister(IVizUpdateableListener listener) {
