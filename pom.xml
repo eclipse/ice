@@ -5,7 +5,7 @@
 	<!-- Custom properties -->
 	<properties>
 		<tycho-version>0.24.0-SNAPSHOT</tycho-version>
-		<pom-filename>${basedir}/pom.xml</pom-filename>
+		<pom-filename>pom.xml</pom-filename>
 		<target-version>2.1.7.${maven.build.timestamp}</target-version>
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
@@ -66,163 +66,6 @@
 			</properties>
 		</profile>
 	</profiles>
-
-	<!-- This is the main build part that sets up all of the rules. -->
-	<build>
-		<plugins>
-
-			<!-- This shows the full name of the POM for debugging. -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<tasks>
-								<echo>Displaying full POM filename:</echo>
-								<echo>[pom-filename] ${pom-filename}</echo>
-								<echo>${target-version}</echo>
-								<echo>${newVersion}</echo>
-							</tasks>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- Setup all the tycho build extensions -->
-			<plugin>
-				<!-- enable tycho build extension -->
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<includes>
-						<include>**/*Tester.class</include>
-					</includes>
-					<argLine>${ui.test.vmargs}</argLine>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-repository-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<includeAllDependencies>true</includeAllDependencies>
-				</configuration>
-			</plugin>
-
-			<!-- This configures the target platform and the supported architectures. -->
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<pomDependencies>consider</pomDependencies>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-					</environments>
-					<target>
-						<artifact>
-							<groupId>ICE</groupId>
-							<artifactId>org.eclipse.ice.target.mars</artifactId>
-							<version>${target-version}</version>
-							<classifier>mars</classifier>
-						</artifact>
-					</target>
-				</configuration>
-			</plugin>
-
-			<!-- This updates the version numbers of the POM, bundles, etc. -->
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<executions>
-					<execution>
-						<id>versions</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>set-version</goal>
-							<goal>update-pom</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-
-		<!-- This configured git support for examining the bundles and only updating 
-			the versions if they change. -->
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-packaging-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.eclipse.tycho.extras</groupId>
-							<artifactId>tycho-buildtimestamp-jgit</artifactId>
-							<version>${tycho-version}</version>
-						</dependency>
-					</dependencies>
-					<configuration>
-						<timestampProvider>jgit</timestampProvider>
-						<jgit.ignore>
-							pom.xml
-						</jgit.ignore>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-plugin</artifactId>
-					<version>${tycho-version}</version>
-					<configuration>
-						<baselineRepositories>
-							<repository>
-								<url>https://sourceforge.net/projects/niceproject/files/nightly/update/</url>
-							</repository>
-						</baselineRepositories>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 
 	<!-- Add the repositories for the Jersey bundles -->
 	<repositories>
@@ -365,7 +208,7 @@
 	<!-- the modules that should be built together -->
 	<modules>
 		<module>org.eclipse.ice.target.mars</module>
-		<module>../../ICEDeps/org.eclipse.ice.dependencies</module>
+		<module>../ICEDeps/org.eclipse.ice.dependencies</module>
 		<module>org.eclipse.ice.client</module>
 		<module>org.eclipse.ice.client.test</module>
 		<module>org.eclipse.ice.client.compatibility</module>
@@ -414,7 +257,7 @@
 		<module>org.eclipse.ice.mesh.test</module>
 		<module>org.eclipse.ice.nek5000</module>
 		<module>org.eclipse.ice.nek5000.test</module>
-		<module>../../visit_java_client/gov.lbnl.visit.swt</module>
+		<module>../visit_java_client/gov.lbnl.visit.swt</module>
 		<module>org.eclipse.ice.viz</module>
 		<module>org.eclipse.ice.viz.test</module>
 		<module>org.eclipse.ice.viz.service</module>
@@ -439,6 +282,148 @@
 		<module>org.eclipse.ice.reflectivity.test</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
 			LAST! -->
-		<module>features/org.eclipse.ice.feature</module>
+		<module>org.eclipse.ice.feature</module>
 	</modules>
+
+	<!-- This is the main build part that sets up all of the rules. -->
+	<build>
+		<plugins>
+
+			<!-- This shows the full name of the POM for debugging. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Displaying full POM filename:</echo>
+								<echo>[pom-filename] ${pom-filename}</echo>
+								<echo>${target-version}</echo>
+								<echo>${newVersion}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Setup all the tycho build extensions -->
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includes>
+						<include>**/*Tester.class</include>
+					</includes>
+					<argLine>${ui.test.vmargs}</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includeAllDependencies>true</includeAllDependencies>
+				</configuration>
+			</plugin>
+
+			<!-- This configures the target platform and the supported architectures. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<pomDependencies>consider</pomDependencies>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>ICE</groupId>
+							<artifactId>org.eclipse.ice.target.mars</artifactId>
+							<version>${target-version}</version>
+							<classifier>mars</classifier>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+
+			<!-- This updates the version numbers of the POM, bundles, etc. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>versions</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>set-version</goal>
+							<goal>update-pom</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+		<!-- This configures git support for examining the bundles and only updating 
+			the versions if they change. -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-versions-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<!-- <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-packaging-plugin</artifactId> 
+					<version>${tycho-version}</version> <dependencies> <dependency> <groupId>org.eclipse.tycho.extras</groupId> 
+					<artifactId>tycho-buildtimestamp-jgit</artifactId> <version>${tycho-version}</version> 
+					</dependency> </dependencies> <configuration> <timestampProvider>jgit</timestampProvider> 
+					<jgit.ignore> pom.xml </jgit.ignore> </configuration> </plugin> <plugin> 
+					<groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId> 
+					<version>${tycho-version}</version> <configuration> <baselineRepositories> 
+					<repository> <url>https://sourceforge.net/projects/niceproject/files/nightly/update/</url> 
+					</repository> </baselineRepositories> </configuration> </plugin> -->
+			</plugins>
+		</pluginManagement>
+	</build>
+
 </project>

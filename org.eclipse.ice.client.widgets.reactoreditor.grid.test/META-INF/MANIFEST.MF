@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GridTester
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.reactoreditor.grid.test;singleton:=true
-Bundle-Version: 2.1.7.20150812
+Bundle-Version: 2.1.7.20150822
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.client.widgets.reactoreditor.grid,
  org.eclipse.ui,
