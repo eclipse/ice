@@ -12,4 +12,5 @@
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.io</artifactId>
 	<packaging>eclipse-plugin</packaging>
+<version>2.1.7.20150821</version>
 </project>
