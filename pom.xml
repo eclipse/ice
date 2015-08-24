@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.7.20150822</version>
+	<version>2.1.7.20150824</version>
 	<packaging>pom</packaging>
 
 	<pluginRepositories>
@@ -283,6 +283,7 @@
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
 			LAST! -->
 		<module>org.eclipse.ice.feature</module>
+		<module>org.eclipse.ice.repository</module>
 	</modules>
 
 	<!-- This is the main build part that sets up all of the rules. -->

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Materials UI
 Bundle-SymbolicName: org.eclipse.ice.materials.ui;singleton:=true
-Bundle-Version: 2.1.7.20150821
+Bundle-Version: 2.1.7.20150824
 Bundle-Vendor: Oak Ridge National Laboratory
 Require-Bundle: org.eclipse.e4.ui.model.workbench;bundle-version="1.0.1.v20131118-1956",
  org.eclipse.e4.core.di;bundle-version="1.3.0",

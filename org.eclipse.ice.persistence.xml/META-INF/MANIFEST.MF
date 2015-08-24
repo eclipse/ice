@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE XML Persistence Provider
 Bundle-SymbolicName: org.eclipse.ice.persistence.xml;singleton:=true
-Bundle-Version: 2.1.7.20150822
+Bundle-Version: 2.1.7.20150824
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.core.iCore,
  org.eclipse.ice.datastructures.ICEObject,

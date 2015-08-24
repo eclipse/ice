@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Client
 Bundle-SymbolicName: org.eclipse.ice.client;singleton:=true
-Bundle-Version: 2.1.7.20150822
+Bundle-Version: 2.1.7.20150824
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.client.common,
  org.eclipse.ice.client.common.internal,

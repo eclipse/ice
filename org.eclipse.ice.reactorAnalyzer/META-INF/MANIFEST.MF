@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ReactorAnalyzer
 Bundle-SymbolicName: org.eclipse.ice.reactorAnalyzer;singleton:=true
-Bundle-Version: 2.1.7.20150822
+Bundle-Version: 2.1.7.20150824
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: ncsa.hdf.hdf5lib,
  ncsa.hdf.hdf5lib.callbacks,

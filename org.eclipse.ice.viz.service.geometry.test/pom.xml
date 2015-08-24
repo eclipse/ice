@@ -7,7 +7,7 @@
 		<groupId>ICE</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
 		<relativePath>../${pom-filename}</relativePath>
-		<version>2.1.7.20150822</version>
+		<version>2.1.7.20150824</version>
 	</parent>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.viz.service.geometry.test</artifactId>
@@ -33,5 +33,4 @@
 	<properties>
 		<sonar.skip>true</sonar.skip>
 	</properties>
-	<version>2.0.0</version>
-</project>
+	</project>

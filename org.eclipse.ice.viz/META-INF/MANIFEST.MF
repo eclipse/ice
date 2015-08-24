@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Viz Component
 Bundle-SymbolicName: org.eclipse.ice.viz;singleton:=true
-Bundle-Version: 2.1.7.20150821
+Bundle-Version: 2.1.7.20150824
 Import-Package: gov.lbnl.visit.swt,
  org.eclipse.core.internal.resources,
  org.eclipse.core.resources,
