@@ -392,7 +392,7 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
 				<version>${tycho-version}</version>
-				<executions>
+<!-- 				<executions>
 					<execution>
 						<id>versions</id>
 						<phase>validate</phase>
@@ -401,7 +401,7 @@
 							<goal>update-pom</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions>-->
 			</plugin>
 		</plugins>
 
