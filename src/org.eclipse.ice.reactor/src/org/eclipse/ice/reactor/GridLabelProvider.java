@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Scott Forest Hull II - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
@@ -26,12 +25,10 @@ import org.eclipse.ice.io.hdf.HdfReaderFactory;
 import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
- * <p>
  * This is a utility class that provides labels on a 2D grid for rows and
  * columns. This class should be considered as a piece designed specifically for
  * interactions with the GUI and should not be considered as a means to override
  * the ability to set rows and column indicie types.
- * </p>
  * <p>
  * The constructor takes a size that is N squared, and defaults to a positive
  * number if the size is non-positive or zero.
@@ -41,27 +38,19 @@ import org.eclipse.ice.io.hdf.HdfWriterFactory;
  */
 public class GridLabelProvider extends LWRComponent {
 	/**
-	 * <p>
 	 * An ArrayList of Strings of length size containing the label for each
 	 * column position from left to right.
-	 * </p>
-	 * 
 	 */
 	@XmlTransient
 	private ArrayList<String> columnLabels;
 	/**
-	 * <p>
 	 * An ArrayList of Strings of length size containing the label for each row
 	 * position from top to bottom.
-	 * </p>
-	 * 
 	 */
 	@XmlTransient
 	private ArrayList<String> rowLabels;
 	/**
-	 * <p>
 	 * The size for the row and column label ArrayLists.
-	 * </p>
 	 * 
 	 */
 	@XmlTransient
@@ -69,11 +58,11 @@ public class GridLabelProvider extends LWRComponent {
 
 	// Private Attributes for specifying row and column types
 	@XmlTransient
-	private static final String ROW_LABELS_NAME = "Row Labels";
+	public static final String ROW_LABELS_NAME = "Row Labels";
 	@XmlTransient
-	private static final String COLUMN_LABELS_NAME = "Column Labels";
+	public static final String COLUMN_LABELS_NAME = "Column Labels";
 	@XmlTransient
-	private static final String LABELS_GROUP_NAME = "Labels";
+	public static final String LABELS_GROUP_NAME = "Labels";
 
 	/**
 	 * A default constructor that should ONLY be used for persistence and
@@ -84,14 +73,10 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * A parameterized constructor.
-	 * </p>
 	 * 
 	 * @param size
-	 *            <p>
 	 *            The size for the row and column label ArrayLists.
-	 *            </p>
 	 */
 	public GridLabelProvider(int size) {
 
@@ -117,18 +102,12 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Returns the column position from a label. Returns -1 if the label is not
 	 * found or if the label is null.
-	 * </p>
 	 * 
 	 * @param columnLabel
-	 *            <p>
 	 *            The column label.
-	 *            </p>
-	 * @return <p>
-	 *         The column position.
-	 *         </p>
+	 * @return The column position.
 	 */
 	public int getColumnFromLabel(String columnLabel) {
 		// If the column label is in there, or -1 if it does not exist
@@ -140,18 +119,12 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Returns the row position from a label. Returns -1 if the label is not
 	 * found or if the label is null.
-	 * </p>
 	 * 
 	 * @param rowLabel
-	 *            <p>
 	 *            The row label.
-	 *            </p>
-	 * @return <p>
-	 *         The row position.
-	 *         </p>
+	 * @return The row position.
 	 */
 	public int getRowFromLabel(String rowLabel) {
 
@@ -165,17 +138,11 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Returns the label at position column.
-	 * </p>
 	 * 
 	 * @param column
-	 *            <p>
 	 *            The column position.
-	 *            </p>
-	 * @return <p>
-	 *         The label at the provided column position.
-	 *         </p>
+	 * @return The label at the provided column position.
 	 */
 	public String getLabelFromColumn(int column) {
 		// Return the column label or null if it does not exist
@@ -190,17 +157,11 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Returns the label at position row.
-	 * </p>
 	 * 
 	 * @param row
-	 *            <p>
 	 *            The row position.
-	 *            </p>
-	 * @return <p>
-	 *         The label at the provided row position.
-	 *         </p>
+	 * @return The label at the provided row position.
 	 */
 	public String getLabelFromRow(int row) {
 
@@ -217,14 +178,10 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Sets the array of row labels ordered from top to bottom.
-	 * </p>
 	 * 
 	 * @param rowLabels
-	 *            <p>
 	 *            The array of row labels ordered from top to bottom.
-	 *            </p>
 	 */
 	public void setRowLabels(ArrayList<String> rowLabels) {
 
@@ -239,14 +196,10 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Sets the array of column labels ordered from left to right.
-	 * </p>
 	 * 
 	 * @param columnLabels
-	 *            <p>
 	 *            The array of column labels ordered from left to right.
-	 *            </p>
 	 */
 	public void setColumnLabels(ArrayList<String> columnLabels) {
 
@@ -262,34 +215,23 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Returns the size for the row and column label ArrayLists.
-	 * </p>
 	 * 
-	 * @return <p>
-	 *         The size for the row and column label ArrayLists.
-	 *         </p>
+	 * @return The size for the row and column label ArrayLists.
 	 */
 	public int getSize() {
 		return this.size;
 
-
 	}
 
 	/**
-	 * <p>
 	 * Overrides the equals operation to check the attributes on this object
 	 * with another object of the same type. Returns true if the objects are
 	 * equal. False otherwise.
-	 * </p>
 	 * 
 	 * @param otherObject
-	 *            <p>
 	 *            The object to be compared.
-	 *            </p>
-	 * @return <p>
-	 *         True if otherObject is equal. False otherwise.
-	 *         </p>
+	 * @return True if otherObject is equal. False otherwise.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -311,8 +253,8 @@ public class GridLabelProvider extends LWRComponent {
 
 			// Get the equality of the values
 			retVal = (super.equals(otherObject) && this.size == provider.size
-					&& this.rowLabels.equals(provider.rowLabels) && this.columnLabels
-					.equals(provider.columnLabels));
+					&& this.rowLabels.equals(provider.rowLabels)
+					&& this.columnLabels.equals(provider.columnLabels));
 		}
 
 		// Return the equality
@@ -321,13 +263,9 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Returns the hashCode of the object.
-	 * </p>
 	 * 
-	 * @return <p>
-	 *         The hash of the object.
-	 *         </p>
+	 * @return The hash of the object.
 	 */
 	@Override
 	public int hashCode() {
@@ -346,14 +284,10 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Deep copies the contents of the object.
-	 * </p>
 	 * 
 	 * @param otherObject
-	 *            <p>
 	 *            The object to be copied.
-	 *            </p>
 	 */
 	public void copy(GridLabelProvider otherObject) {
 
@@ -384,13 +318,9 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/**
-	 * <p>
 	 * Deep copies and returns a newly instantiated object.
-	 * </p>
 	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	 * @return The newly instantiated copied object.
 	 */
 	@Override
 	public Object clone() {
@@ -504,7 +434,7 @@ public class GridLabelProvider extends LWRComponent {
 		} catch (Exception e) {
 
 			// Print stack trace
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 
 			// Return false
 			return false;
@@ -544,8 +474,7 @@ public class GridLabelProvider extends LWRComponent {
 		// If the group is null, return false
 		// Verify that the two pieces
 		// are datasets and the contents are in there correctly
-		if (labelGroup == null || rowSet == null || colSet == null
-				|| !flag) {
+		if (labelGroup == null || rowSet == null || colSet == null || !flag) {
 			return false;
 		}
 
@@ -556,7 +485,7 @@ public class GridLabelProvider extends LWRComponent {
 			rowData = rowSet.getData();
 			colData = colSet.getData();
 		} catch (Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			return false;
 		}
 
