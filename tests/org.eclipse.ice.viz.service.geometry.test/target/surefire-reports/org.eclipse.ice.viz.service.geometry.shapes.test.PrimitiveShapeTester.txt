@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.277 sec - in org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester
-checkLoadingFromXML(org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester)  Time elapsed: 0.023 sec
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.265 sec - in org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester
+checkLoadingFromXML(org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester)  Time elapsed: 0.013 sec
 checkEquality(org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester)  Time elapsed: 0 sec
 checkVisitation(org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester)  Time elapsed: 0 sec
 checkCreation(org.eclipse.ice.viz.service.geometry.shapes.test.PrimitiveShapeTester)  Time elapsed: 0 sec

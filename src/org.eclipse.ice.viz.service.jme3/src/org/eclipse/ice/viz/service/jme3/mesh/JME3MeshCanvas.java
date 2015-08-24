@@ -93,8 +93,11 @@ public class JME3MeshCanvas implements IVizCanvas {
 			}
 		}
 
+		//Start the app state and add the mesh to it
 		appState.start(masterApp);
 		appState.setMesh(mesh);
+		
+		//Return a composite displauying the app state
 		return appState.createComposite(parent);
 
 	}
@@ -139,6 +142,7 @@ public class JME3MeshCanvas implements IVizCanvas {
 	 */
 	@Override
 	public void redraw() {
+		//Add a call to the app state's update method to its render queue
 		appState.enqueue(new Callable<Boolean>() {
 			@Override
 			public Boolean call() {

@@ -1,14 +1,12 @@
 /******************************************************************************* 
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Initial API and implementation and/or initial documentation - Robert Smith
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh.test;
 
@@ -29,6 +27,9 @@ import org.junit.Test;
 public class JME3MeshVizServiceTester {
 	
 	@Test
+	/**
+	 * Tests basic functionalities for the JME3 mesh viz service.
+	 */
 	public void testService() {
 		JME3MeshVizService service = new JME3MeshVizService();
 		JME3MeshCanvas canvas = null;

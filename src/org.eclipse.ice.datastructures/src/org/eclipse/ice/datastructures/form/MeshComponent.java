@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
@@ -40,7 +42,8 @@ import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
  */
 @XmlRootElement(name = "MeshComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class MeshComponent extends ICEObject implements Component, IMeshPart {
+public class MeshComponent extends ICEObject implements Component, IMeshPart,
+		IVizUpdateableListener {
 
 	/**
 	 * The wrapped VizMeshComponent.
@@ -57,6 +60,7 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	public MeshComponent() {
 		super();
 		mesh = new VizMeshComponent();
+		mesh.register(this);
 		return;
 	}
 
@@ -72,7 +76,8 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 	/**
 	 * Setter method for the wrapped VizMeshComponent
 	 * 
-	 * @param newMesh The new mesh to hold
+	 * @param newMesh
+	 *            The new mesh to hold
 	 */
 	public void setMesh(VizMeshComponent newMesh) {
 		mesh = newMesh;
@@ -517,5 +522,13 @@ public class MeshComponent extends ICEObject implements Component, IMeshPart {
 		}
 		return;
 	}
+
+	@Override
+	public void update(IVizUpdateable component) {
+		notifyListeners();
+		
+	}
+
+
 
 }

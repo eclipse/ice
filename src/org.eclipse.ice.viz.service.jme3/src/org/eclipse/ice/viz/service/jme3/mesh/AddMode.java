@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.jme3.widgets.InputControl;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Hex;

@@ -14,11 +14,11 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
@@ -299,7 +299,7 @@ public class MeshElementTreeView extends ViewPart implements
 
 					// Cast the IMeshPart to an ICEObject and set the label text
 					// from its name and ID.
-					ICEObject object = (ICEObject) meshPart;
+					VizObject object = (VizObject) meshPart;
 					label = object.getName() + " " + object.getId();
 
 					return label;
