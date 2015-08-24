@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
 import static org.junit.Assert.*;
@@ -8,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.LWRComponent;
-import org.eclipse.ice.reactor.LWRComponentWriter;
 import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRRod;
@@ -262,10 +272,8 @@ public class LWRIOHandlerTester {
 		reactor.setAssemblyLocation(AssemblyType.RodCluster,
 				rodClusterAssembly.getName(), 0, 3);
 
-//		LWRComponentWriter w = new LWRComponentWriter();
-//		w.write(reactor,
-//				new File("C:\\Users\\djg\\Desktop\\oldFormatReactor.h5")
-//						.toURI());
+		// LWRComponentWriter w = new LWRComponentWriter();
+		// w.write(reactor, new File("C:\\oldFormatReactor.h5").toURI());
 
 		return;
 	}
@@ -320,7 +328,27 @@ public class LWRIOHandlerTester {
 		assertEquals(expectedAssembly.getSize(), assembly.getSize());
 
 		// Assembly-specific properties...
-		// TODO
+		assertEquals(expectedAssembly.getRodPitch(), assembly.getRodPitch(),
+				epsilon);
+
+		// Compare some state point data added directly to the assembly.
+		String dataName = "Test Feature Data";
+		IData expectedData = expectedAssembly.getDataAtCurrentTime(dataName)
+				.get(0);
+		// Make sure the data exists in the loaded assembly.
+		List<IData> dataList = assembly.getDataAtCurrentTime(dataName);
+		assertNotNull(dataList);
+		assertEquals(1, dataList.size());
+		// Finally, we can check the data.
+		IData data = dataList.get(0);
+		assertEquals(expectedData.getValue(), data.getValue(), epsilon);
+		assertEquals(expectedData.getUncertainty(), data.getUncertainty(),
+				epsilon);
+		assertEquals(expectedData.getFeature(), data.getFeature());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(expectedData.getPosition().get(i),
+					data.getPosition().get(i), epsilon);
+		}
 		// ---------------------------------------------------- //
 
 		// ---- Check the rod's attributes. ---- //

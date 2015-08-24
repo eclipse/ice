@@ -1,6 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *******************************************************************************/
 package org.eclipse.ice.reactor.hdf;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -597,12 +606,6 @@ public class LWRComponentReader {
 	 */
 	private void readLWRComponentData(LWRComponent provider, int groupId)
 			throws NullPointerException, HDF5Exception {
-		int status;
-
-		// Commonly-used constants.
-		int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
-		int H5S_ALL = HDF5Constants.H5S_ALL;
-		int H5O_TYPE_DATASET = HDF5Constants.H5O_TYPE_DATASET;
 
 		// Open the encapsulating group.
 		int dataGroupId = factory.openGroup(groupId, "State Point Data");
@@ -616,14 +619,14 @@ public class LWRComponentReader {
 			double groupTime = factory.readDoubleAttribute(timestepGroupId,
 					"time");
 
-			// FIXME Time units are listed for each timestep's group and in each
-			// data's compound dataset.
+			// Read in the time units for the data provider.
 			String groupUnits = factory.readStringAttribute(timestepGroupId,
 					"units");
+			provider.setTimeUnits(groupUnits);
 
 			// Loop over the features at this timestep.
 			for (String datasetName : factory.getChildNames(timestepGroupId,
-					H5O_TYPE_DATASET)) {
+					HDF5Constants.H5O_TYPE_DATASET)) {
 				// Read the data for each feature.
 				LWRData data = new LWRData();
 				readLWRData(data, timestepGroupId, datasetName);
@@ -642,20 +645,43 @@ public class LWRComponentReader {
 	}
 
 	private void readLWRData(LWRData data, int groupId, String datasetName)
-			throws HDF5LibraryException {
+			throws NullPointerException, HDF5Exception {
 		int status;
 
 		// These values will be derived from the HDF dataset.
-		double uncertainty = 0.0;
-		String units = "";
-		double value = 0.0;
-		double x = 0.0;
-		double y = 0.0;
-		double z = 0.0;
+		final double uncertainty;
+		final String units;
+		final double value;
+		final ArrayList<Double> position;
+
+		/*-
+		 * LWRData are stored as a 1x1 array of a Compound Datatype. The type is
+		 * defined as follows:
+		 * 
+		 *  1 - 1 64-bit floating-point (value)
+		 *  2 - 1 64-bit floating-point (uncertainty)
+		 *  3 - 1 fixed-length string (units)
+		 *  4 - array of 3 64-bit floating-points (position)
+		 *  
+		 *  Reading this requires construction of the correct compound datatype.
+		 *  We also must perform 3 separate read operations:
+		 *  
+		 *  1 - read the value and uncertainty as a double array
+		 *  2 - read the units string after getting its length
+		 *  3 - read the position as a double array
+		 *  
+		 *  Note: If we have 1 read operation, the data is stored as raw bytes.
+		 *  The problem here is that it is unclear how to convert the 8-byte
+		 *  portions of the byte array into Java doubles. Attempts to use the
+		 *  ByteBuffer produce incorrect doubles. Using 3 read operations lets
+		 *  HDF5 handle the native-double-to-java conversion.
+		 */
 
 		// Commonly-used constants.
-		int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
-		int H5S_ALL = HDF5Constants.H5S_ALL;
+		final int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
+		final int H5S_ALL = HDF5Constants.H5S_ALL;
+		final int H5T_COMPOUND = HDF5Constants.H5T_COMPOUND;
+		final int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
 
 		// Open the dataset.
 		status = H5.H5Dopen(groupId, datasetName, H5P_DEFAULT);
@@ -673,52 +699,229 @@ public class LWRComponentReader {
 		}
 		int dataspaceId = status;
 
-//		// Open the datatype for the dataset.
-//		status = H5.H5Dget_type(datasetId);
-//		if (status < 0) {
-//			factory.throwException("Could not open datatype of dataset \""
-//					+ datasetName + "\".", status);
-//		}
-//		int datatypeId = status;
-//
-//		// There should be 4 components:
-//		// value: double
-//		// uncertainty: double
-//		// units: string
-//		// position: array of doubles of size 3
-//
-//		status = H5.H5Tget_size(datatypeId);
-//		int size = status;
-//		
-//		byte[] buffer = new byte[size];
-//		status = H5.H5Dread(datasetId, datatypeId, H5S_ALL, H5S_ALL, H5P_DEFAULT, buffer);
-//		
-//		status = H5.H5Tget_member_type(datatypeId, 0);
-//		int memberDatatypeId = status;
-//		status = H5.H5Tget_size(memberDatatypeId);
-//		value = ByteBuffer.wrap(buffer, 0, status).getDouble();
-//		status = H5.H5Tclose(memberDatatypeId);
-//		
-////		// Open the datatype for the first member (value, a double).
-////		status = H5.H5Tget_member_type(datatypeId, 0);
-////		if (status < 0) {
-////			factory.throwException("Could not open \"value\" datatype of "
-////					+ "dataset \"" + datasetName + "\".", status);
-////		}
-////		int memberDatatypeId = status;		
-////		// Close the datatype for the first member.
-////		status = H5.H5Tclose(memberDatatypeId);
-////		if (status < 0) {
-////			factory.throwException("Could not close \"value\" datatype of "
-////					+ "dataset \"" + datasetName + "\".", status);
-////		}
-//
-//		// Close the datatype.
-//		status = H5.H5Tclose(datatypeId);
-//		if (status < 0) {
-//			factory.throwException("Could not close datatype of dataset \""
-//					+ datasetName + "\".", status);
-//		}
+		// Allocate memory for the read buffer.
+		long[] dims = new long[1];
+		status = H5.H5Sget_simple_extent_dims(dataspaceId, dims, null);
+		if (status < 0) {
+			factory.throwException("Could not allocate memory for reading "
+					+ "dataset \"" + datasetName + "\".", status);
+		}
+
+		// Used in reading the compound dataset...
+		int compoundTypeId;
+		int memberTypeId;
+		Double[] doubleBuffer;
+
+		// Get the size of the double datatype as stored in HDF5.
+		status = H5.H5Tget_size(H5T_NATIVE_DOUBLE);
+		if (status < 0) {
+			factory.throwException("Could not determine HDF5 storage size of "
+					+ "native double.", status);
+		}
+		final int doubleSize = status;
+
+		// ---- Read the value and uncertainty. ---- //
+		// Create the compound datatype for 2 doubles.
+		status = H5.H5Tcreate(H5T_COMPOUND, doubleSize + doubleSize);
+		if (status < 0) {
+			factory.throwException("Could not create compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		compoundTypeId = status;
+
+		// Insert 2 double datatypes into the compound datatype.
+		status = H5.H5Tinsert(compoundTypeId, "value", 0, H5T_NATIVE_DOUBLE);
+		if (status < 0) {
+			factory.throwException("Could not add value member datatype "
+					+ " for dataset \"" + datasetName + "\".", status);
+		}
+		status = H5.H5Tinsert(compoundTypeId, "uncertainty", doubleSize,
+				H5T_NATIVE_DOUBLE);
+		if (status < 0) {
+			factory.throwException("Could not add uncertainty member datatype "
+					+ " for dataset \"" + datasetName + "\".", status);
+		}
+
+		// Read the data into a double buffer.
+		doubleBuffer = new Double[2];
+		status = H5.H5Dread(datasetId, compoundTypeId, dataspaceId, H5S_ALL,
+				H5P_DEFAULT, doubleBuffer);
+		if (status < 0) {
+			factory.throwException("Could not read compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// Close the compound datatype for 2 doubles.
+		status = H5.H5Tclose(compoundTypeId);
+		if (status < 0) {
+			factory.throwException("Could not close compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// Get the value and uncertainty from the buffer.
+		value = doubleBuffer[0];
+		uncertainty = doubleBuffer[1];
+		// ----------------------------------------- //
+
+		// ---- Read the units string. ---- //
+		final int stringTypeId;
+		final int stringSize;
+		byte[] stringBuffer;
+
+		// -- Get the length of the units string. -- //
+		// Get a read-only version of the compound datatype.
+		status = H5.H5Dget_type(datasetId);
+		if (status < 0) {
+			factory.throwException("Could not read compound datatype info "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		compoundTypeId = status;
+
+		// Get a read-only version of the string member datatype.
+		status = H5.H5Tget_member_type(compoundTypeId, 2);
+		if (status < 0) {
+			factory.throwException("Could not read units datatype info "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		memberTypeId = status;
+
+		// Get the size of the string member datatype.
+		status = H5.H5Tget_size(memberTypeId);
+		if (status < 0) {
+			factory.throwException("Could not get size of units string "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		stringSize = status;
+
+		// Close the read-only version of the string member datatype.
+		status = H5.H5Tclose(memberTypeId);
+		if (status < 0) {
+			factory.throwException("Could not close units datatype info "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		// Close the read-only version of the compound datatype.
+		// Doesn't need to be closed... otherwise it throws an error.
+
+		// -- Create the member datatype for the string. -- //
+		// Copy it from the native string datatype.
+		status = H5.H5Tcopy(HDF5Constants.H5T_C_S1);
+		if (status < 0) {
+			factory.throwException("Could not create units string datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		stringTypeId = status;
+
+		// Set its size.
+		status = H5.H5Tset_size(stringTypeId, stringSize);
+		if (status < 0) {
+			factory.throwException("Could not set units string datatype size "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// -- Create the compound datatype for the string. -- //
+		// Create the compound datatype for the string.
+		status = H5.H5Tcreate(H5T_COMPOUND, stringSize);
+		if (status < 0) {
+			factory.throwException("Could not create compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		compoundTypeId = status;
+		// Add the member string datatype.
+		status = H5.H5Tinsert(compoundTypeId, "units", 0, stringTypeId);
+		if (status < 0) {
+			factory.throwException("Could not add units member datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// -- Read the string from the compound dataset into a buffer. --/
+		stringBuffer = new byte[stringSize];
+		status = H5.H5Dread(datasetId, compoundTypeId, dataspaceId, H5S_ALL,
+				H5P_DEFAULT, stringBuffer);
+		if (status < 0) {
+			factory.throwException("Could not read compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// -- Close the datatypes. -- //
+		// Close the member datatype for the string.
+		status = H5.H5Tclose(stringTypeId);
+		if (status < 0) {
+			factory.throwException("Could not close units string datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		// Close the compound datatype for the string.
+		status = H5.H5Tclose(compoundTypeId);
+		if (status < 0) {
+			factory.throwException("Could not close compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// -- Extract the useful data from the buffer. -- //
+		units = new String(stringBuffer);
+		// -------------------------------- //
+
+		// ---- Read the position array. ---- //
+		final int positionTypeId;
+		final int positionSize;
+
+		// -- Create the datatypes. -- //
+		// Create the 3-length floating point array datatype.
+		status = H5.H5Tarray_create(H5T_NATIVE_DOUBLE, 1, new long[] { 3 });
+		if (status < 0) {
+			factory.throwException("Could not create position array datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		positionTypeId = status;
+		status = H5.H5Tget_size(positionTypeId);
+		if (status < 0) {
+			factory.throwException("Could not set position array datatype size "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		positionSize = status;
+
+		// Create the compound datatype.
+		status = H5.H5Tcreate(H5T_COMPOUND, positionSize);
+		if (status < 0) {
+			factory.throwException("Could not create compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+		compoundTypeId = status;
+		status = H5.H5Tinsert(compoundTypeId, "position", 0, positionTypeId);
+		if (status < 0) {
+			factory.throwException("Could not add position member datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// -- Read the array from the compound dataset into a buffer. -- //
+		doubleBuffer = new Double[3];
+		status = H5.H5Dread(datasetId, compoundTypeId, dataspaceId, H5S_ALL,
+				H5P_DEFAULT, doubleBuffer);
+		if (status < 0) {
+			factory.throwException("Could not read position array "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// -- Close the datatypes. -- //
+		// Close the position array datatype.
+		status = H5.H5Tclose(positionTypeId);
+		if (status < 0) {
+			factory.throwException("Could not close position array datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// Close the compound datatype.
+		status = H5.H5Tclose(compoundTypeId);
+		if (status < 0) {
+			factory.throwException("Could not close compound datatype "
+					+ "for dataset \"" + datasetName + "\".", status);
+		}
+
+		// Get the position data from the double buffer.
+		position = new ArrayList<Double>(3);
+		position.add(doubleBuffer[0]);
+		position.add(doubleBuffer[1]);
+		position.add(doubleBuffer[2]);
+		// ---------------------------------- //
 
 		// Close the dataspace.
 		status = H5.H5Sclose(dataspaceId);
@@ -733,12 +936,6 @@ public class LWRComponentReader {
 			factory.throwException(
 					"Could not close dataset \"" + datasetName + "\".", status);
 		}
-
-		// Convert the position into an ArrayList as required by LWRData.
-		ArrayList<Double> position = new ArrayList<Double>();
-		position.add(x);
-		position.add(y);
-		position.add(z);
 
 		// Apply the discovered values to the data.
 		data.setFeature(datasetName);
