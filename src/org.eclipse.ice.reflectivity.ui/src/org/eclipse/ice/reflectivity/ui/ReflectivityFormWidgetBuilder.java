@@ -15,17 +15,25 @@ package org.eclipse.ice.reflectivity.ui;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the declarative service that registers the Reflectivity
  * FormEditor Widget with ICE's service for dynamically extending the widget
  * factory. This lets us tailor the standard ICEFormEditor behavior for
  * Reflectivity Model Builders.
- * 
+ *
  * @author Kasper Gammeltoft, Jordan H. Deyton
  *
  */
 public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected static final Logger logger = LoggerFactory
+			.getLogger(ReflectivityFormWidgetBuilder.class);
 
 	/**
 	 * The name of the items/forms used to create {@link ReflectivityFormEditor}
@@ -42,7 +50,7 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.client.widgets.IFormWidgetBuilder#getTargetFormName
 	 * ()
 	 */
@@ -53,7 +61,7 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.client.widgets.IFormWidgetBuilder#build()
 	 */
 	@Override
@@ -64,19 +72,19 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 	/**
 	 * This method is called by the OSGi implementation to bind the
 	 * {@link IVizServiceFactory} (an OSGi service) to this instance.
-	 * 
+	 *
 	 * @param factory
 	 *            The factory service available through OSGi.
 	 */
 	public void setVizServiceFactory(IVizServiceFactory factory) {
-		System.out.println("ReflectivityFormWidgetBuilder: Setting Viz Service");
+		logger.info("ReflectivityFormWidgetBuilder: Setting Viz Service");
 		this.vizServiceFactory = factory;
 	}
 
 	/**
 	 * This method is called by the OSGi implementation to unbind the
 	 * {@link IVizServiceFactory} (an OSGi service) from this instance.
-	 * 
+	 *
 	 * @param factory
 	 *            The factory service that is no longer available through OSGi.
 	 */
