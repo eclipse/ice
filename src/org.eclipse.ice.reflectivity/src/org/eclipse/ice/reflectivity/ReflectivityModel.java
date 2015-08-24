@@ -366,7 +366,7 @@ public class ReflectivityModel extends Model {
 					resources.addResource(rq4Source);
 				} catch (CoreException | IOException e) {
 					// Complain
-					System.err.println("ReflectivityModel Error: "
+					logger.error("ReflectivityModel Error: "
 							+ "Problem creating reflectivity files!");
 					logger.error(getClass().getName() + " Exception!", e);
 				}
@@ -410,7 +410,7 @@ public class ReflectivityModel extends Model {
 
 					// Catch exceptions, should return an error.
 				} catch (CoreException | NullPointerException e) {
-					System.err.println("Reflectivity Model Error: "
+					logger.error("Reflectivity Model Error: "
 							+ "Problem writing to reflectivity files.");
 					logger.error(getClass().getName() + " Exception!", e);
 					retVal = FormStatus.InfoError;

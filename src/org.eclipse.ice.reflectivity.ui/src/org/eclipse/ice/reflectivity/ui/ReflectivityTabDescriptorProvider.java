@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Kasper Gammeltoft
  *******************************************************************************/
 
@@ -34,7 +34,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider;
  * entries. The second provides an interface for editing the values in the
  * table. Finally, the third provides the output data for the chi squared
  * analysis.
- * 
+ *
  * @author Kasper Gammeltoft
  *
  */
@@ -90,7 +90,7 @@ public class ReflectivityTabDescriptorProvider
 	/**
 	 * Gets the tab descriptors for the three tabs. Creates them if they haven't
 	 * been created and fills them with the appropriate tab section.
-	 * 
+	 *
 	 * @see org.eclipse.ui.views.properties.tabbed.ITabDescriptorProvider#
 	 *      getTabDescriptors(org.eclipse.ui.IWorkbenchPart,
 	 *      org.eclipse.jface.viewers.ISelection)
@@ -216,7 +216,7 @@ public class ReflectivityTabDescriptorProvider
 				descriptors[2] = outputTab;
 			}
 			// Get the first tab, the input entries
-			ITabDescriptor tab = descriptors[0];
+			final ITabDescriptor tab = descriptors[0];
 
 			// Create a SectionDescriptor for the data component's inputs
 			AbstractSectionDescriptor generalSection = new AbstractSectionDescriptor() {
@@ -253,7 +253,7 @@ public class ReflectivityTabDescriptorProvider
 			((AbstractTabDescriptor) tab)
 					.setSectionDescriptors(sectionDescriptors);
 
-			ITabDescriptor tab2 = descriptors[1];
+			final ITabDescriptor tab2 = descriptors[1];
 
 			// Create a SectionDescriptor for the data component's inputs
 			AbstractSectionDescriptor cellSection = new AbstractSectionDescriptor() {
@@ -294,7 +294,7 @@ public class ReflectivityTabDescriptorProvider
 			((AbstractTabDescriptor) tab2)
 					.setSectionDescriptors(sectionDescriptors);
 
-			ITabDescriptor tab3 = descriptors[2];
+			final ITabDescriptor tab3 = descriptors[2];
 
 			// Create a SectionDescriptor for the output data component
 			AbstractSectionDescriptor outputSection = new AbstractSectionDescriptor() {

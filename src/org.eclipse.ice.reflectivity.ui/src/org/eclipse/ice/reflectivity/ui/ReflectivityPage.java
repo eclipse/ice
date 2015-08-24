@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Kasper Gammeltoft, Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.ui;
@@ -66,7 +66,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * component, the output data component, and the list component in it's
  * selection, along with the material selection describing the selected cell if
  * one is selected (not null).
- * 
+ *
  * @author Kasper Gammeltoft
  * @author Jay Billings
  *
@@ -128,7 +128,7 @@ public class ReflectivityPage extends ICEResourcePage
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param editor
 	 *            The ICEFormEditor to use. Should always be an instance of
 	 *            ReflectivityFormEditor.
@@ -146,7 +146,7 @@ public class ReflectivityPage extends ICEResourcePage
 	 * Creates the content of the composite and instantiates the graphics
 	 * widgets. Calls super for the resource component on the bottom of the sash
 	 * form, and constructs the NatTable on the top.
-	 * 
+	 *
 	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui
 	 *      .forms.IManagedForm)
 	 */
@@ -209,10 +209,6 @@ public class ReflectivityPage extends ICEResourcePage
 		// Set the section client.
 		listSection.setClient(sectionClient);
 
-		// Get a reference to this reflectivity page for use with the selection
-		// provider
-		ReflectivityPage reference = this;
-
 		// Enable a new selection listener to listen to the table's selection
 		// events
 
@@ -245,7 +241,8 @@ public class ReflectivityPage extends ICEResourcePage
 					selectedCell = newSelection;
 					for (ISelectionChangedListener listener : listeners) {
 						listener.selectionChanged(new SelectionChangedEvent(
-								reference, reference.getSelection()));
+								ReflectivityPage.this, ReflectivityPage.this
+										.getSelection()));
 					}
 				}
 			}
@@ -317,7 +314,7 @@ public class ReflectivityPage extends ICEResourcePage
 						try {
 							// Get the selection and add it if they actually
 							// selected something.
-							list.add((Material) dialog.getSelection());
+							list.add(dialog.getSelection());
 						} finally {
 							// Unlock the list
 							list.getReadWriteLock().writeLock().unlock();
@@ -507,7 +504,7 @@ public class ReflectivityPage extends ICEResourcePage
 
 	/**
 	 * Sets the data component to use as the inputs for this model.
-	 * 
+	 *
 	 * @param dataComp
 	 *            The data component to use.
 	 */
@@ -517,7 +514,7 @@ public class ReflectivityPage extends ICEResourcePage
 
 	/**
 	 * Sets the output component used to display the chi squared analysis
-	 * 
+	 *
 	 * @param outputComp
 	 *            The output component to use.
 	 */
@@ -528,7 +525,7 @@ public class ReflectivityPage extends ICEResourcePage
 	/**
 	 * Sets the list component to use for this page. The list is displayed at
 	 * the top of the page in the upper part of the sash form.
-	 * 
+	 *
 	 * @param listComp
 	 *            The list component to display.
 	 */
@@ -575,7 +572,7 @@ public class ReflectivityPage extends ICEResourcePage
 	 * inputs, a data component for the outputs, a list component containing the
 	 * table data, and a material selection if and only if one is present (not
 	 * null, meaning the user has selected a cell in the table)
-	 * 
+	 *
 	 * Part of the ISelectionProvider interface.
 	 */
 	@Override

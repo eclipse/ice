@@ -23,7 +23,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 /**
  * The custom form editor for the reflectivity model. Should be used instead of
  * {@link ICEFormEditor} to display reflectivity models.
- * 
+ *
  * @author Kasper Gammeltoft
  *
  */
@@ -38,7 +38,7 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 
 	/**
 	 * Adds the components of the model to the reflectivity page.
-	 * 
+	 *
 	 * @see org.eclipse.ice.client.widgets.ICEFormEditor#addPages()
 	 */
 	@Override
@@ -47,7 +47,7 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 		// Loop over the DataComponents and get them into the map. This is the
 		// same process as for the regular ICEFormEditor
 		for (Component i : iceDataForm.getComponents()) {
-			System.out.println("ICEFormEditor Message: Adding component "
+			logger.info("ICEFormEditor Message: Adding component "
 					+ i.getName() + " " + i.getId());
 			i.accept(this);
 		}
