@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 475606
  *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
@@ -24,6 +25,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -36,8 +38,8 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Jordan Deyton
  *
  */
-public class TableComponentContentProvider implements
-		IStructuredContentProvider, IVizUpdateableListener {
+public class TableComponentContentProvider
+		implements IStructuredContentProvider, IVizUpdateableListener {
 
 	/**
 	 * The data model for the {@link #viewer}.
@@ -108,7 +110,8 @@ public class TableComponentContentProvider implements
 	 */
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (viewer != null && viewer instanceof TableViewer && newInput != null) {
+		if (viewer != null && viewer instanceof TableViewer
+				&& newInput != null) {
 
 			// Update the reference to the JFace Viewer.
 			this.viewer = (TableViewer) viewer;
@@ -171,9 +174,18 @@ public class TableComponentContentProvider implements
 			EntryCellEditingSupport basicEditingSupport = new EntryCellEditingSupport(
 					viewer, basicContentProvider);
 
+			// Get a graphics context to compute the width of UI text.
+			GC gc = new GC(viewer.getTable());
+
 			// Add a new column for each Entry.
 			for (int i = 0; i < rowTemplate.size(); i++) {
 				VizEntry entry = rowTemplate.get(i);
+				String header = entry.getName();
+
+				// Compute the width (in pixels) of the header string. Add a
+				// buffer of 20 pixels to account for clipping/padding in the
+				// table header. This will be used to set the column width.
+				int headerWidth = gc.stringExtent(header).x + 20;
 
 				// Create the column for the TableViewer.
 				TableViewerColumn column = new TableViewerColumn(viewer,
@@ -182,24 +194,23 @@ public class TableComponentContentProvider implements
 
 				// Customize the underlying Column widget.
 				TableColumn columnWidget = column.getColumn();
-				columnWidget.setText(entry.getName());
+				columnWidget.setText(header);
 				columnWidget.setToolTipText(entry.getDescription());
 				columnWidget.setResizable(true);
-				// Since we are replacing all the columns, pack it here based on
-				// the column header text. Note: auto packing based on the
-				// table's data might not be reasonable if a cell has a long
-				// text string.
-				columnWidget.pack();
+				columnWidget.setWidth(headerWidth);
 
 				// Add the ColumnLabelProvider and the EditingSupport.
 				IVizCellContentProvider contentProvider = new TableComponentCellContentProvider(
 						basicContentProvider, i);
 				EditingSupport editingSupport = new TableComponentCellEditingSupport(
 						viewer, basicEditingSupport, i);
-				column.setLabelProvider(new CellColumnLabelProvider(
-						contentProvider));
+				column.setLabelProvider(
+						new CellColumnLabelProvider(contentProvider));
 				column.setEditingSupport(editingSupport);
 			}
+
+			// Dispose the graphics context to void leaking memory.
+			gc.dispose();
 		}
 
 		// Refresh the viewer contents.
