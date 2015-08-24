@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PROTEUS
+Bundle-SymbolicName: org.eclipse.ice.proteus
+Bundle-Version: 2.1.7.20150824
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Service-Component: OSGI-INF/*.xml
+Import-Package: org.eclipse.ice.datastructures.form,
+ org.eclipse.ice.io.ini,
+ org.eclipse.ice.io.serializable,
+ org.eclipse.ice.item.jobLauncher,
+ org.slf4j;version="1.7.2"
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.eclipse.ice.item;bundle-version="2.0.0",
+ org.eclipse.ice.datastructures;bundle-version="2.0.0"
+Export-Package: org.eclipse.ice.proteus;
+  uses:="org.eclipse.ice.item,
+   org.eclipse.ice.datastructures.form,
+   org.eclipse.core.resources,
+   org.eclipse.ice.item.jobLauncher"
+Meta-Persistence: META-INF/persistence.xml
+JPA-PersistenceUnits: org.eclipse.ice.item
+Bundle-ClassPath: .
+Bundle-Vendor: Oak Ridge National Laboratory

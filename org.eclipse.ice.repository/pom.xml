@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>ICE</groupId>
+		<artifactId>org.eclipse.ice.build</artifactId>
+		<version>2.1.7.20150824</version>
+	</parent>
+
+	<name>ICE Infrastructure Product</name>
+	<artifactId>org.eclipse.ice.repository</artifactId>
+	<packaging>eclipse-repository</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includeAllDependencies>true</includeAllDependencies>
+					<profileProperties>
+						<macosx-bundled>true</macosx-bundled>
+					</profileProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-director-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<!-- (optional) install the product for all configured os/ws/arch environments 
+							using p2 director -->
+						<id>materialize-products</id>
+						<goals>
+							<goal>materialize-products</goal>
+						</goals>
+					</execution>
+					<execution>
+						<!-- (optional) create product zips (one per os/ws/arch) -->
+						<id>archive-products</id>
+						<goals>
+							<goal>archive-products</goal>
+						</goals>
+					</execution>
+				</executions>
+				<!-- (optional) customize the root folder name of the product zip -->
+				<configuration>
+
+					<products>
+						<product>
+							<id>ice.product</id>
+							<rootFolders>
+								<rootFolder>ICE</rootFolder>
+								<macosx>ICE.app</macosx>
+							</rootFolders>
+							<attachId>ICEComplete</attachId>
+						</product>
+					</products>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<version>2.1.7.20150824</version>
+</project>
