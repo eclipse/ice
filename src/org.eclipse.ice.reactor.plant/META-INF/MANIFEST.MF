@@ -9,6 +9,7 @@ Export-Package: org.eclipse.ice.reactor.plant
 Import-Package: ncsa.hdf.hdf5lib,
  ncsa.hdf.hdf5lib.exceptions,
  org.eclipse.ice.io.hdf,
+ org.eclipse.ice.viz.service.datastructures,
  org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/PlantIOFactory.xml
 Bundle-Vendor: Oak Ridge National Laboratory

@@ -200,7 +200,7 @@ public class TableComponentContentProvider
 				columnWidget.setWidth(headerWidth);
 
 				// Add the ColumnLabelProvider and the EditingSupport.
-				ICellContentProvider contentProvider = new TableComponentCellContentProvider(
+				IVizCellContentProvider contentProvider = new TableComponentCellContentProvider(
 						basicContentProvider, i);
 				EditingSupport editingSupport = new TableComponentCellEditingSupport(
 						viewer, basicEditingSupport, i);

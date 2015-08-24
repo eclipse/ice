@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.jme;
 
-import org.eclipse.ice.client.widgets.jme.internal.MasterApplicationHolder;
-import org.eclipse.ice.client.widgets.mesh.MeshAppState;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
+import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
+import org.eclipse.ice.viz.service.jme3.internal.MasterApplicationHolder;
 
 /**
  * This factory is used to create custom {@link ViewAppState}s for components
@@ -79,35 +80,35 @@ public class ViewFactory {
 	}
 
 	/**
-	 * Creates a {@link MeshAppState} for the specified
-	 * <code>MeshComponent</code>.
-	 * 
-	 * @param mesh
-	 *            The root <code>MeshComponent</code> or mesh that contains
-	 *            edges, vertices, and other <code>MeshComponent</code>s.
-	 * @return A new <code>MeshAppState</code>, or null if there is no core
-	 *         <code>MasterApplication</code> in the background.
-	 */
-	public MeshAppState createMeshView(MeshComponent mesh) {
-
-		MeshAppState view = null;
-
-		if (app != null) {
-
-			// If necessary, wait until the MasterApplication has started before
-			// trying to add a new AppState, or nothing may initialize.
-			if (!app.isInitialized()) {
-				app.blockUntilInitialized(0);
-			}
-
-			view = new MeshAppState();
-			view.start(app);
-
-			view.setMesh(mesh);
-		}
-
-		return view;
-	}
+//	 * Creates a {@link MeshAppState} for the specified
+//	 * <code>MeshComponent</code>.
+//	 * 
+//	 * @param mesh
+//	 *            The root <code>MeshComponent</code> or mesh that contains
+//	 *            edges, vertices, and other <code>MeshComponent</code>s.
+//	 * @return A new <code>MeshAppState</code>, or null if there is no core
+//	 *         <code>MasterApplication</code> in the background.
+//	 */
+//	public MeshAppState createMeshView(MeshComponent mesh) {
+//
+//		MeshAppState view = null;
+//
+//		if (app != null) {
+//
+//			// If necessary, wait until the MasterApplication has started before
+//			// trying to add a new AppState, or nothing may initialize.
+//			if (!app.isInitialized()) {
+//				app.blockUntilInitialized(0);
+//			}
+//
+//			view = new MeshAppState();
+//			view.start(app);
+//
+//			view.setMesh(mesh);
+//		}
+//
+//		return view;
+//	}
 
 	/**
 	 * Creates a {@link PlantAppState} for the specified

@@ -26,8 +26,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class EntryCellContentProvider implements ICellContentProvider,
-		IComboCellContentProvider, ISecretCellContentProvider {
+public class EntryCellContentProvider implements IVizCellContentProvider,
+		IVizComboCellContentProvider, ISecretCellContentProvider {
 
 	/**
 	 * The text to display when a cell's element (expected to be an

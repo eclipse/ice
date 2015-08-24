@@ -44,7 +44,7 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
  * displays a table for entering the materials and reordering the layers.
  * Finally, the last component gives access to the computed data as both
  * editable graphs (see CSVPlotEditor) and .csv files.
- * 
+ *
  * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
  */
 @XmlRootElement(name = "ReflectivityModel")
@@ -81,6 +81,16 @@ public class ReflectivityModel extends Model {
 	private static final String WaveLengthEntryName = "Wave Length";
 
 	/**
+	 * The entry name for the chi squared analysis entry
+	 */
+	private static final String ChiSquaredEntryName = "Chi Squared";
+
+	/**
+	 * The entry name for the chi squared analysis for the rq4 profile
+	 */
+	private static final String ChiSquaredRQ4EntryName = "RQ^4 Chi Squared";
+
+	/**
 	 * Identification number for the component that contains the parameters.
 	 */
 	public static final int paramsCompId = 1;
@@ -98,6 +108,12 @@ public class ReflectivityModel extends Model {
 	public static final int resourceCompId = 3;
 
 	/**
+	 * Identification number for the output data component that displays the chi
+	 * squared analysis
+	 */
+	public static final int outputCompId = 4;
+
+	/**
 	 * The constructor.
 	 */
 	public ReflectivityModel() {
@@ -106,7 +122,7 @@ public class ReflectivityModel extends Model {
 
 	/**
 	 * The constructor with a project space in which files should be handled.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
@@ -120,7 +136,7 @@ public class ReflectivityModel extends Model {
 	 * If the action name is ReflectivityModel.processActionName, then
 	 * calculates the reflectivity and scattering density profiles for the
 	 * material layers and input fields.
-	 * 
+	 *
 	 * @see {@link org.eclipse.ice.item.Item#process(String)}
 	 */
 	@Override
@@ -242,8 +258,16 @@ public class ReflectivityModel extends Model {
 						* (rq4Point - rq4DataPoint) / rq4Point;
 			}
 
-			System.out.println("Chi Squared: R = " + rChiSquare);
-			System.out.println("CHi Squared: QR^4 = " + rq4ChiSquare);
+			// Sets the chi squared value in the entry on the output data
+			// component
+			((DataComponent) form.getComponent(outputCompId))
+					.retrieveEntry(ChiSquaredEntryName)
+					.setValue(Double.toString(rChiSquare));
+			// Sets the rq4 chi squared value in the entry on the output data
+			// component
+			((DataComponent) form.getComponent(outputCompId))
+					.retrieveEntry(ChiSquaredRQ4EntryName)
+					.setValue(Double.toString(rq4ChiSquare));
 
 			// Create the csv data for the reflectivity file
 			String reflectData = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
@@ -271,10 +295,11 @@ public class ReflectivityModel extends Model {
 
 			// Create the csv data for the rq4 file
 			String rq4DataStr = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
+
 			for (int i = 0; i < rq4.length; i++) {
 				rq4DataStr += Double.toString(waveVector[i]) + ","
 						+ Double.toString(rq4[i]) + ","
-						+ Double.toString(rData[i]) + ","
+						+ Double.toString(rq4Data[i]) + ","
 						+ Double.toString(error[i]) + "\n";
 			}
 
@@ -341,7 +366,7 @@ public class ReflectivityModel extends Model {
 					resources.addResource(rq4Source);
 				} catch (CoreException | IOException e) {
 					// Complain
-					System.err.println("ReflectivityModel Error: "
+					logger.error("ReflectivityModel Error: "
 							+ "Problem creating reflectivity files!");
 					logger.error(getClass().getName() + " Exception!", e);
 				}
@@ -385,7 +410,7 @@ public class ReflectivityModel extends Model {
 
 					// Catch exceptions, should return an error.
 				} catch (CoreException | NullPointerException e) {
-					System.err.println("Reflectivity Model Error: "
+					logger.error("Reflectivity Model Error: "
 							+ "Problem writing to reflectivity files.");
 					logger.error(getClass().getName() + " Exception!", e);
 					retVal = FormStatus.InfoError;
@@ -409,7 +434,7 @@ public class ReflectivityModel extends Model {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.Item#setupForm()
 	 */
 	@Override
@@ -421,7 +446,9 @@ public class ReflectivityModel extends Model {
 		// The data component for the number of rough layers and the
 		// input file, along with other user inputs.
 		DataComponent paramComponent = new DataComponent();
-		paramComponent.setDescription("Files and Parameters for calculation");
+		paramComponent.setDescription(
+				"Give a wave vector, a number of layers of roughness "
+						+ "between interfaces, and the angles. ");
 		paramComponent.setName("Parameters and Files");
 		paramComponent.setId(paramsCompId);
 		form.addComponent(paramComponent);
@@ -543,6 +570,30 @@ public class ReflectivityModel extends Model {
 		resources.setId(resourceCompId);
 		form.addComponent(resources);
 
+		// Create the output data component to hold the chi squared analysis
+		DataComponent output = new DataComponent();
+		output.setDescription("Chi squared analysis:");
+		output.setName("Output");
+		output.setId(outputCompId);
+
+		// Add an entry for the wavelength
+		Entry chiSquared = new Entry();
+		chiSquared.setId(1);
+		chiSquared.setName(ChiSquaredEntryName);
+		chiSquared.setDescription(
+				"The chi squared analysis for the reflectivity profile.");
+		output.addEntry(chiSquared);
+
+		// Add an entry for the wavelength
+		Entry chiSquaredrq4 = new Entry();
+		chiSquaredrq4.setId(2);
+		chiSquaredrq4.setName(ChiSquaredRQ4EntryName);
+		chiSquaredrq4.setDescription(
+				"The chi squared analysis for the rq^4 reflectivity profile.");
+		output.addEntry(chiSquaredrq4);
+
+		form.addComponent(output);
+
 		// Put the action name in the form so that the reflectivity can be
 		// calculated.
 		allowedActions.add(0, processActionName);
@@ -553,7 +604,7 @@ public class ReflectivityModel extends Model {
 	/**
 	 * This operation fills the material list with a default set of materials so
 	 * that the Item is immediately valid and can be processed.
-	 * 
+	 *
 	 * @param matList
 	 *            the list of Materials that represents the system. One material
 	 *            per layer.
@@ -571,8 +622,8 @@ public class ReflectivityModel extends Model {
 		// NiOx
 		Slab niOx = new Slab();
 		niOx.scatteringLength = (0.00000686 + 0.00000715) / 2.0;
-		niOx.trueAbsLength = 2.27931868269305E-09;
-		niOx.incAbsLength = 4.74626235093697E-09;
+		niOx.trueAbsLength = 2.27931E-09;
+		niOx.incAbsLength = 4.746262E-09;
 		niOx.thickness = 22.0;
 		niOx.interfaceWidth = 4.0 * 2.35;
 		matList.add(convertSlabToMaterial(niOx, "NiOx", 1));
@@ -580,8 +631,8 @@ public class ReflectivityModel extends Model {
 		// Ni
 		Slab ni = new Slab();
 		ni.scatteringLength = 9.31e-6;
-		ni.trueAbsLength = 2.27931868269305E-09;
-		ni.incAbsLength = 4.74626235093697E-09;
+		ni.trueAbsLength = 2.27931E-09;
+		ni.incAbsLength = 4.746262E-09;
 		ni.thickness = 551.0;
 		ni.interfaceWidth = 4.3 * 2.35;
 		matList.add(convertSlabToMaterial(ni, "Ni", 1));
@@ -589,8 +640,8 @@ public class ReflectivityModel extends Model {
 		// SiNiOx
 		Slab siNiOx = new Slab();
 		siNiOx.scatteringLength = (0.00000554 + 0.00000585) / 2.0;
-		siNiOx.trueAbsLength = 2.27931868269305E-09;
-		siNiOx.incAbsLength = 4.74626235093697E-09;
+		siNiOx.trueAbsLength = 2.27931E-09;
+		siNiOx.incAbsLength = 4.746262E-09;
 		siNiOx.thickness = 42.0;
 		siNiOx.interfaceWidth = 7.0 * 2.35;
 		matList.add(convertSlabToMaterial(siNiOx, "SiNiOx", 1));
@@ -598,8 +649,8 @@ public class ReflectivityModel extends Model {
 		// SiOx
 		Slab si = new Slab();
 		si.scatteringLength = 2.070e-6;
-		si.trueAbsLength = 4.74981478870069E-11;
-		si.incAbsLength = 1.99769988072137E-12;
+		si.trueAbsLength = 4.74981E-11;
+		si.incAbsLength = 1.997699E-12;
 		si.thickness = 100.0;
 		si.interfaceWidth = 17.5;
 		matList.add(convertSlabToMaterial(si, "Si", 1));
@@ -609,7 +660,7 @@ public class ReflectivityModel extends Model {
 
 	/**
 	 * This operation create a Material based on a Slab
-	 * 
+	 *
 	 * @param slab
 	 *            the slab
 	 * @param name
@@ -636,7 +687,7 @@ public class ReflectivityModel extends Model {
 	/**
 	 * Gives this item a name, description, and item type. Also sets the builder
 	 * name. The name should be the same as the ReflectivityModelBuilder name.
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.Item#setupItemInfo()
 	 */
 	@Override
@@ -655,7 +706,7 @@ public class ReflectivityModel extends Model {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.item.Item#submitForm(org.eclipse.ice.datastructures.form.
 	 * Form)
@@ -677,7 +728,7 @@ public class ReflectivityModel extends Model {
 	 * Sets up the form with the basic services needed for the reflectivity
 	 * model. Namely, sets the materials database and the table format for the
 	 * list component in the model.
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
 	 */
 	@Override

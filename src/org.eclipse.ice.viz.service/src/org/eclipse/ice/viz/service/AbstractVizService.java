@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.eclipse.ice.viz.service.datastructures.IVizObject;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
