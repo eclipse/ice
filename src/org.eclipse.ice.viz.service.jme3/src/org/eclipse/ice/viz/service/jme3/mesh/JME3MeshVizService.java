@@ -59,14 +59,6 @@ public class JME3MeshVizService extends AbstractVizService {
 	 * Implements a method from IVizService.
 	 */
 	@Override
-	public IPlot createPlot(URI file) throws Exception {
-		return null;
-	}
-
-	/*
-	 * Implements a method from IVizService.
-	 */
-	@Override
 	public IVizCanvas createCanvas(IVizObject object) throws Exception {
 		JME3MeshCanvas canvas = null;
 		

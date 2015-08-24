@@ -1,9 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester
--------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 sec - in org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester
-checkLoadingFromXML(org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester)  Time elapsed: 0.024 sec
-checkClone(org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester)  Time elapsed: 0.001 sec
-checkEquals(org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester)  Time elapsed: 0 sec
-checkListenerNotification(org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester)  Time elapsed: 0.05 sec
-checkShapes(org.eclipse.ice.viz.service.geometry.shapes.test.GeometryTester)  Time elapsed: 0 sec
