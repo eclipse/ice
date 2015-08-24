@@ -11,12 +11,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 
 import org.eclipse.ice.viz.service.AbstractPlot;
-import org.eclipse.ice.viz.service.IPlot;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
@@ -234,6 +235,23 @@ public abstract class ConnectionPlot<T> extends AbstractPlot
 						+ "The plot file and connections are on different hosts.");
 			}
 		}
+		return;
+	}
+
+
+
+	// -------- Methods for VisIt Plot --------//
+
+	/**
+	 * Leave for later implementation, by visItPlot, etc
+	 * 
+	 * @param file
+	 *            The file that will be searched for plot types
+	 * @return A map of plot types specified by the category as the key
+	 */
+	protected void addAllPlotTypes(URI file) throws IOException, Exception {
+		// Nothing TODO yet..we do not know what type of connection plot this
+		// is. Let super classes define this behavior
 		return;
 	}
 

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.mesh.editor.MeshEditor;
 import org.eclipse.ice.mesh.editor.MeshEditorBuilder;
 import org.junit.Test;

@@ -14,10 +14,8 @@ package org.eclipse.ice.viz.service.connections.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
-import org.eclipse.ice.client.common.properties.IComboCellContentProvider;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -28,8 +26,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class EntryCellContentProvider implements ICellContentProvider,
-		IComboCellContentProvider, ISecretCellContentProvider {
+public class EntryCellContentProvider implements IVizCellContentProvider,
+		IVizComboCellContentProvider, ISecretCellContentProvider {
 
 	/**
 	 * The text to display when a cell's element (expected to be an
@@ -44,7 +42,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	public List<String> getAllowedValues(Object element) {
 		List<String> allowedValues;
 		if (isValid(element)) {
-			Entry entry = (Entry) element;
+			VizEntry entry = (VizEntry) element;
 			allowedValues = new ArrayList<String>(entry.getAllowedValues());
 		} else {
 			allowedValues = new ArrayList<String>(1);
@@ -104,7 +102,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 		String text = INVALID_ELEMENT_TEXT;
 
 		if (isValid(element)) {
-			text = ((Entry) element).getDescription();
+			text = ((VizEntry) element).getDescription();
 		}
 
 		return text;
@@ -119,7 +117,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 		Object value = null;
 
 		if (isValid(element)) {
-			value = ((Entry) element).getValue();
+			value = ((VizEntry) element).getValue();
 		}
 
 		return value;
@@ -138,7 +136,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	 */
 	@Override
 	public boolean isSecret(Object element) {
-		return isValid(element) && ((Entry) element).isSecret();
+		return isValid(element) && ((VizEntry) element).isSecret();
 	}
 
 	/**
@@ -146,7 +144,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	 */
 	@Override
 	public boolean isValid(Object element) {
-		return element != null && element instanceof Entry;
+		return element != null && element instanceof VizEntry;
 	}
 
 	/**
@@ -156,7 +154,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 	@Override
 	public boolean requiresCombo(Object element) {
 		return isValid(element)
-				&& ((Entry) element).getValueType() == AllowedValueType.Discrete;
+				&& ((VizEntry) element).getValueType() == VizAllowedValueType.Discrete;
 	}
 
 	/**
@@ -169,7 +167,7 @@ public class EntryCellContentProvider implements ICellContentProvider,
 
 		if (isValid(element) && value != null) {
 			String newValue = value.toString();
-			changed = ((Entry) element).setValue(newValue);
+			changed = ((VizEntry) element).setValue(newValue);
 		}
 
 		return changed;

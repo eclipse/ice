@@ -330,6 +330,19 @@ public class ICEResourcePage extends ICEFormPage
 	}
 
 	/**
+<<<<<<< HEAD
+	 * Gets the resource's key for use in the plot maps.
+	 *
+	 * @param resource
+	 *            The resource whose key should be determined. Assumed not to be
+	 *            {@code null}.
+	 * @return The resource's key in the plot maps.
+	 */
+	private String getPlotKey(ICEResource resource) {
+		return resource.getPath().toString();
+	}
+
+	/**
 	 * Reactivates the Item's editor and brings it to the front if any other
 	 * editors have been opened on top of it.
 	 */

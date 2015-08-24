@@ -21,10 +21,10 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.IKeyManager;
 import org.eclipse.ice.viz.service.connections.preferences.KeyEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.junit.Test;
 
 /**
@@ -60,7 +60,7 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(intKeys);
 
 		// Check the allowed value type. It should be undefined.
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 		// Check the allowed values. The list should be empty, but not null.
@@ -83,7 +83,7 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(discreteKeys);
 
 		// Check the allowed value type. It should be discrete.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		// Check the allowed values. The list should be empty, but not null.
@@ -115,7 +115,7 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(discreteKeys);
 
 		// Check the allowed value type. It should be discrete.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		// Check the allowed values. The list should be empty, but not null.
@@ -394,7 +394,7 @@ public class KeyEntryContentProviderTester {
 
 		KeyEntryContentProvider contentProvider;
 
-		final AllowedValueType nullType = null;
+		final VizAllowedValueType nullType = null;
 
 		SimpleCountKeyManager intKeys;
 		SimpleDiscreteKeyManager discreteKeys;
@@ -405,13 +405,13 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(intKeys);
 
 		// Check the allowed value type. It should be undefined.
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 		// No matter what type we try to set it to, it cannot be changed.
-		for (AllowedValueType type : AllowedValueType.values()) {
+		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
-			assertEquals(AllowedValueType.Undefined,
+			assertEquals(VizAllowedValueType.Undefined,
 					contentProvider.getAllowedValueType());
 		}
 		// ---------------------------------------------------------------- //
@@ -423,13 +423,13 @@ public class KeyEntryContentProviderTester {
 		contentProvider = new KeyEntryContentProvider(discreteKeys);
 
 		// Check the allowed value type. It should be discrete.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		// No matter what type we try to set it to, it cannot be changed.
-		for (AllowedValueType type : AllowedValueType.values()) {
+		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
-			assertEquals(AllowedValueType.Discrete,
+			assertEquals(VizAllowedValueType.Discrete,
 					contentProvider.getAllowedValueType());
 		}
 		// -------------------------------------------------------------- //
@@ -437,7 +437,7 @@ public class KeyEntryContentProviderTester {
 		// Try using a null value type.
 		contentProvider.setAllowedValueType(nullType);
 		// The value type should not change.
-		assertEquals(AllowedValueType.Discrete,
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
 		return;
@@ -537,7 +537,7 @@ public class KeyEntryContentProviderTester {
 		KeyEntryContentProvider object;
 		Object equalObject;
 		Object unequalObject;
-		BasicEntryContentProvider superObject;
+		BasicVizEntryContentProvider superObject;
 
 		SimpleCountKeyManager keyManager = new SimpleCountKeyManager();
 		keyManager.takeKey();
@@ -559,7 +559,7 @@ public class KeyEntryContentProviderTester {
 		((KeyEntryContentProvider) unequalObject).setName("Individual Eleven");
 
 		// Set up the "equivalent" super class object.
-		superObject = new BasicEntryContentProvider();
+		superObject = new BasicVizEntryContentProvider();
 		superObject.copy(object);
 
 		// Check for equivalence (reflective case).

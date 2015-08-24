@@ -21,12 +21,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.eclipse.ice.client.widgets.jme.IRenderQueue;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Junction;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.Reactor;
+import org.eclipse.ice.viz.service.jme3.application.IRenderQueue;
 
 import com.jme3.material.Material;
 

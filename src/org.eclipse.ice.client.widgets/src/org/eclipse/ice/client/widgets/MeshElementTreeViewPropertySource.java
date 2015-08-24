@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;

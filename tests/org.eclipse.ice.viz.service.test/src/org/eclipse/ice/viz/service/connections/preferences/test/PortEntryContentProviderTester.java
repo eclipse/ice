@@ -21,9 +21,9 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.junit.Test;
 
 /**
@@ -505,24 +505,24 @@ public class PortEntryContentProviderTester {
 	public void checkAllowedValueType() {
 
 		PortEntryContentProvider contentProvider;
-		final AllowedValueType nullType = null;
+		final VizAllowedValueType nullType = null;
 
 		contentProvider = new PortEntryContentProvider();
 
 		// The default type should be "Continuous".
-		assertEquals(AllowedValueType.Continuous,
+		assertEquals(VizAllowedValueType.Continuous,
 				contentProvider.getAllowedValueType());
 
 		// Trying to set any valid type should change nothing.
-		for (AllowedValueType type : AllowedValueType.values()) {
+		for (VizAllowedValueType type : VizAllowedValueType.values()) {
 			contentProvider.setAllowedValueType(type);
-			assertEquals(AllowedValueType.Continuous,
+			assertEquals(VizAllowedValueType.Continuous,
 					contentProvider.getAllowedValueType());
 		}
 
 		// Trying to set a null type should change nothing.
 		contentProvider.setAllowedValueType(nullType);
-		assertEquals(AllowedValueType.Continuous,
+		assertEquals(VizAllowedValueType.Continuous,
 				contentProvider.getAllowedValueType());
 
 		return;
@@ -538,7 +538,7 @@ public class PortEntryContentProviderTester {
 		PortEntryContentProvider object;
 		Object equalObject;
 		Object unequalObject;
-		BasicEntryContentProvider superObject;
+		BasicVizEntryContentProvider superObject;
 
 		// Set up the object under test.
 		object = new PortEntryContentProvider();
@@ -556,7 +556,7 @@ public class PortEntryContentProviderTester {
 		((PortEntryContentProvider) unequalObject).setRange(59999, 60010); // Different!
 
 		// Set up the super object.
-		superObject = new BasicEntryContentProvider();
+		superObject = new BasicVizEntryContentProvider();
 		superObject.copy(object);
 
 		// Check for equivalence (reflective case).

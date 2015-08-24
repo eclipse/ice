@@ -13,8 +13,6 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant.test;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.client.widgets.jme.MasterApplication;
-import org.eclipse.ice.client.widgets.jme.ViewAppState;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.reactor.plant.CoreChannel;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
@@ -22,6 +20,7 @@ import org.eclipse.ice.reactor.plant.Junction;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.reactor.plant.Reactor;
+import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

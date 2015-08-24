@@ -14,16 +14,16 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.client.widgets.mesh.properties.MeshSelection;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -200,7 +200,7 @@ public class MeshElementTreeView extends ViewPart implements
 				// Wrap the Polygons into PropertySources and add them to
 				// the array
 				for (Polygon i : allElements) {
-					contents.add(new MeshSelection(meshComponent, i));
+					contents.add(new MeshSelection(meshComponent.getMesh(), i));
 				}
 
 				return contents.toArray();
@@ -230,11 +230,11 @@ public class MeshElementTreeView extends ViewPart implements
 						Polygon polygon = (Polygon) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
 						for (Edge e : polygon.getEdges()) {
-							children.add(new MeshSelection(meshComponent, e));
+							children.add(new MeshSelection(meshComponent.getMesh(), e));
 						}
 						// Add new MeshSelections for the vertices.
 						for (Vertex v : polygon.getVertices()) {
-							children.add(new MeshSelection(meshComponent, v));
+							children.add(new MeshSelection(meshComponent.getMesh(), v));
 						}
 					}
 
@@ -299,7 +299,7 @@ public class MeshElementTreeView extends ViewPart implements
 
 					// Cast the IMeshPart to an ICEObject and set the label text
 					// from its name and ID.
-					ICEObject object = (ICEObject) meshPart;
+					VizObject object = (VizObject) meshPart;
 					label = object.getName() + " " + object.getId();
 
 					return label;

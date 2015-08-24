@@ -7,6 +7,7 @@
  *
  * Contributors:
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 475606
  *   
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
@@ -14,18 +15,17 @@ package org.eclipse.ice.viz.service.connections.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.common.properties.CellColumnLabelProvider;
-import org.eclipse.ice.client.common.properties.ICellContentProvider;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -38,13 +38,13 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author Jordan Deyton
  *
  */
-public class TableComponentContentProvider implements
-		IStructuredContentProvider, IUpdateableListener {
+public class TableComponentContentProvider
+		implements IStructuredContentProvider, IVizUpdateableListener {
 
 	/**
 	 * The data model for the {@link #viewer}.
 	 */
-	private TableComponent tableComponent;
+	private VizTableComponent tableComponent;
 
 	/**
 	 * The JFace {@code TableViewer} that shows the contents of the
@@ -56,7 +56,7 @@ public class TableComponentContentProvider implements
 	 * A list to keep track of the current row template. If the row template
 	 * changes, then the viewer's columns will need to be recreated.
 	 */
-	private List<Entry> rowTemplate;
+	private List<VizEntry> rowTemplate;
 
 	/**
 	 * The current {@link TableViewerColumn}s inside the {@link #viewer}.
@@ -110,7 +110,8 @@ public class TableComponentContentProvider implements
 	 */
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		if (viewer != null && viewer instanceof TableViewer && newInput != null) {
+		if (viewer != null && viewer instanceof TableViewer
+				&& newInput != null) {
 
 			// Update the reference to the JFace Viewer.
 			this.viewer = (TableViewer) viewer;
@@ -120,8 +121,8 @@ public class TableComponentContentProvider implements
 			}
 			// Set the new input and register for model updates so that the
 			// viewer will be automatically updated later.
-			if (newInput instanceof TableComponent) {
-				tableComponent = (TableComponent) newInput;
+			if (newInput instanceof VizTableComponent) {
+				tableComponent = (VizTableComponent) newInput;
 				// TableComponents sent to this content provider should have a
 				// template set!
 				if (tableComponent.getRowTemplate() == null) {
@@ -155,7 +156,7 @@ public class TableComponentContentProvider implements
 
 		// Get the TableComponent's new row template and see if it changed.
 		boolean columnsChanged = false;
-		List<Entry> newRowTemplate = tableComponent.getRowTemplate();
+		List<VizEntry> newRowTemplate = tableComponent.getRowTemplate();
 		if (!newRowTemplate.equals(rowTemplate)) {
 			columnsChanged = true;
 			rowTemplate = newRowTemplate;
@@ -173,9 +174,18 @@ public class TableComponentContentProvider implements
 			EntryCellEditingSupport basicEditingSupport = new EntryCellEditingSupport(
 					viewer, basicContentProvider);
 
+			// Get a graphics context to compute the width of UI text.
+			GC gc = new GC(viewer.getTable());
+
 			// Add a new column for each Entry.
 			for (int i = 0; i < rowTemplate.size(); i++) {
-				Entry entry = rowTemplate.get(i);
+				VizEntry entry = rowTemplate.get(i);
+				String header = entry.getName();
+
+				// Compute the width (in pixels) of the header string. Add a
+				// buffer of 20 pixels to account for clipping/padding in the
+				// table header. This will be used to set the column width.
+				int headerWidth = gc.stringExtent(header).x + 20;
 
 				// Create the column for the TableViewer.
 				TableViewerColumn column = new TableViewerColumn(viewer,
@@ -184,24 +194,23 @@ public class TableComponentContentProvider implements
 
 				// Customize the underlying Column widget.
 				TableColumn columnWidget = column.getColumn();
-				columnWidget.setText(entry.getName());
+				columnWidget.setText(header);
 				columnWidget.setToolTipText(entry.getDescription());
 				columnWidget.setResizable(true);
-				// Since we are replacing all the columns, pack it here based on
-				// the column header text. Note: auto packing based on the
-				// table's data might not be reasonable if a cell has a long
-				// text string.
-				columnWidget.pack();
+				columnWidget.setWidth(headerWidth);
 
 				// Add the ColumnLabelProvider and the EditingSupport.
-				ICellContentProvider contentProvider = new TableComponentCellContentProvider(
+				IVizCellContentProvider contentProvider = new TableComponentCellContentProvider(
 						basicContentProvider, i);
 				EditingSupport editingSupport = new TableComponentCellEditingSupport(
 						viewer, basicEditingSupport, i);
-				column.setLabelProvider(new CellColumnLabelProvider(
-						contentProvider));
+				column.setLabelProvider(
+						new CellColumnLabelProvider(contentProvider));
 				column.setEditingSupport(editingSupport);
 			}
+
+			// Dispose the graphics context to void leaking memory.
+			gc.dispose();
 		}
 
 		// Refresh the viewer contents.
@@ -215,7 +224,7 @@ public class TableComponentContentProvider implements
 	 * {@link #viewer} as necessary.
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 		// Update the viewer since the underlying data has changed
 
 		if (component != null && component == tableComponent) {

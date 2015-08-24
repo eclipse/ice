@@ -13,7 +13,12 @@
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.ice.viz.service.datastructures.VizObject;
+
+import org.eclipse.ice.viz.service.datastructures.IVizObject;
 
 /**
  * This is a pluggable service interface whereby visualization engines can
@@ -35,8 +40,42 @@ import java.util.Set;
  * </p>
  * 
  * @author Jay Jay Billings
+ * @author Robert Smith
+ * @author Kasper Gammeltoft
+ * @author Jordan Deyton
  */
 public interface IVizService {
+
+	/**
+	 * This operation directs the IVizService to create a new canvas using the
+	 * given VizObject and to return a handle to that canvas to the caller so
+	 * that it may modify the canvas.
+	 * 
+	 * @param object
+	 *            The input object which will be rendered in the new canvas
+	 * @return The IVizCanvas that will render the object
+	 * @throws Exception
+	 *             An exception indicating that the IVizService could not create
+	 *             a canvas with the given object and giving the reason why.
+	 */
+	public IVizCanvas createCanvas(IVizObject object) throws Exception;
+	
+	/**
+	 * This operation returns the name of the service. The name should be
+	 * something simple and human-readable.
+	 * 
+	 * @return The name of the IVizService
+	 */
+	public String getName();
+
+	/**
+	 * This operation returns a version number for the service. It should be
+	 * more or less human readable and contain a major and a minor version
+	 * (Version 2.1 instead of just 2, for example).
+	 * 
+	 * @return The version of the IVizService
+	 */
+	public String getVersion();
 
 	/**
 	 * This operation directs the IVizService to create a new plot using the
@@ -52,13 +91,7 @@ public interface IVizService {
 	 */
 	public IPlot createPlot(URI file) throws Exception;
 
-	/**
-	 * This operation returns the name of the service. The name should be
-	 * something simple and human-readable.
-	 * 
-	 * @return The name of the IVizService
-	 */
-	public String getName();
+
 
 	/**
 	 * Gets a set containing all supported file extensions for which an IPlot
@@ -74,12 +107,5 @@ public interface IVizService {
 	 */
 	public Set<String> getSupportedExtensions();
 
-	/**
-	 * This operation returns a version number for the service. It should be
-	 * more or less human readable and contain a major and a minor version
-	 * (Version 2.1 instead of just 2, for example).
-	 * 
-	 * @return The version of the IVizService
-	 */
-	public String getVersion();
+
 }

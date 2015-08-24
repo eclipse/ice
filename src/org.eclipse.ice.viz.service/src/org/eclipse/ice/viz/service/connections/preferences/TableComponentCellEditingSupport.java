@@ -13,7 +13,6 @@ package org.eclipse.ice.viz.service.connections.preferences;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;

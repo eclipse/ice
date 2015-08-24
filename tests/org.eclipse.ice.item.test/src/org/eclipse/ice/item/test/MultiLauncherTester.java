@@ -38,13 +38,12 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
@@ -332,17 +331,6 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 */
 	@Override
 	public void visit(MatrixComponent component) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(IShape component)
-	 */
-	@Override
-	public void visit(IShape component) {
 		// TODO Auto-generated method stub
 
 	}

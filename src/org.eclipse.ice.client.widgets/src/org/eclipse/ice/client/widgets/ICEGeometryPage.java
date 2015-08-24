@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.client.widgets.geometry.GeometryCompositeFactory;
-import org.eclipse.ice.client.widgets.geometry.ShapeTreeView;
-import org.eclipse.ice.client.widgets.geometry.TransformationView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -122,7 +124,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
-		shapeTreeView.setGeometry(geometryComp);
+		shapeTreeView.setGeometry(geometryComp.getGeometry().getGeometry());
 
 		return;
 	}
@@ -157,16 +159,29 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Create the geometry composite - get the parent
 		org.eclipse.ui.forms.widgets.Form pageForm = managedForm.getForm()
 				.getForm();
 		Composite parent = pageForm.getBody();
-		// Use the GeometryCompositeFactory
-		GeometryCompositeFactory geomFactory = new GeometryCompositeFactory();
-		geomFactory.renderGeometryComposite(parent, geometryComp);
+
+		// Get JME3 Geometry service from factory
+		IVizServiceFactory factory = ((ICEFormEditor) editor)
+				.getVizServiceFactory();
+		IVizService service = factory.get("JME3 Geometry Editor");
+
+		// Create and draw geometry canvas
+		try {
+			IVizCanvas vizCanvas = service.createCanvas(geometryComp
+					.getGeometry().getGeometry());
+			vizCanvas.draw(parent);
+
+		} catch (Exception e) {
+			logger.error(
+					"Error creating Geometry Canvas with Geometry Service.", e);
+		}
 
 		getFocus();
 

@@ -27,7 +27,7 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.geometry.Transformation;
+import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
 import org.junit.Test;
 
 /**

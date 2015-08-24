@@ -11,9 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+
 
 /**
  * A {@code KeyEntry} is essentially a basic {@link Entry} with a single caveat:
@@ -27,7 +28,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * @author Jordan Deyton
  *
  */
-public class KeyEntry extends Entry {
+public class KeyEntry extends VizEntry {
 
 	/**
 	 * An error message for invalid keys in the case where there is no set list
@@ -154,7 +155,7 @@ public class KeyEntry extends Entry {
 	 * *must* be {@link KeyEntryContentProvider}s.
 	 */
 	@Override
-	public void setContentProvider(IEntryContentProvider contentProvider) {
+	public void setContentProvider(IVizEntryContentProvider contentProvider) {
 		if (contentProvider instanceof KeyEntryContentProvider) {
 			setContentProvider((KeyEntryContentProvider) contentProvider);
 		}
@@ -188,7 +189,7 @@ public class KeyEntry extends Entry {
 	public boolean setValue(String newValue) {
 		boolean returnCode = false;
 
-		AllowedValueType valueType = contentProvider.getAllowedValueType();
+		VizAllowedValueType valueType = contentProvider.getAllowedValueType();
 
 		// If the new value is the same, do nothing.
 		if (value == newValue || (value != null && value.equals(newValue))) {
@@ -199,7 +200,7 @@ public class KeyEntry extends Entry {
 		}
 		// For an undefined set of keys, we need to check if the specified key
 		// is valid.
-		else if (valueType == AllowedValueType.Undefined) {
+		else if (valueType == VizAllowedValueType.Undefined) {
 			// If the new value is valid, change it.
 			if (contentProvider.keyAvailable(newValue)) {
 				value = newValue;

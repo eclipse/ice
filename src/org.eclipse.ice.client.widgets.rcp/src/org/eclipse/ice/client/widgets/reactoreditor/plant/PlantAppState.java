@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import org.eclipse.ice.client.widgets.jme.EmbeddedView;
-import org.eclipse.ice.client.widgets.jme.FlightCamera;
-import org.eclipse.ice.client.widgets.jme.ViewAppState;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.reactor.plant.IPlantCompositeListener;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.jme3.application.EmbeddedView;
+import org.eclipse.ice.viz.service.jme3.application.FlightCamera;
+import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 
 import com.jme3.app.state.AppState;
 import com.jme3.light.AmbientLight;

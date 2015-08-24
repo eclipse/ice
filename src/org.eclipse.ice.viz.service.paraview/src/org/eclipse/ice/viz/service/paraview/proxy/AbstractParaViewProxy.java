@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
- *   
+ *   Jordan Deyton - bug 475301
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.proxy;
 
@@ -28,6 +28,7 @@ import java.util.concurrent.Future;
 
 import org.eclipse.ice.viz.service.connections.ConnectionState;
 import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
@@ -547,11 +548,35 @@ public class AbstractParaViewProxy implements IParaViewProxy {
 					}
 				}
 
-				// Reset the selected category and feature to the next available
-				// one.
+				// Reset the selected category and feature.
 				category = null;
 				feature = null;
-				// TODO
+
+				// Find the first selected feature if one exists.
+				ProxyFeature selectedFeature = null;
+				for (ProxyFeature featureInfo : featureMap.values()) {
+					if (featureInfo.type == PropertyType.DISCRETE_MULTI) {
+						List<String> values = featureInfo.getValues();
+						if (!values.isEmpty()) {
+							selectedFeature = featureInfo;
+							feature = values.get(0);
+							break;
+						}
+					} else if (featureInfo.getValue() != null) {
+						selectedFeature = featureInfo;
+						feature = featureInfo.getValue();
+						break;
+					}
+				}
+
+				// If a feature is selected, refresh the view contents.
+				if (selectedFeature != null) {
+					category = selectedFeature.name;
+					// Refresh the view.
+					setColorBy(selectedFeature, feature);
+					rescale();
+					refreshScalarBar();
+				}
 				// -------------------------------------- //
 			}
 		}

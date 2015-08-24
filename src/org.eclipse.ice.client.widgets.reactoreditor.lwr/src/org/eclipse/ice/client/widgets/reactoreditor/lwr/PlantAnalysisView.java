@@ -18,6 +18,7 @@ import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
