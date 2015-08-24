@@ -44,7 +44,7 @@ import org.eclipse.ice.materials.MaterialWritableTableFormat;
  * displays a table for entering the materials and reordering the layers.
  * Finally, the last component gives access to the computed data as both
  * editable graphs (see CSVPlotEditor) and .csv files.
- * 
+ *
  * @author Jay Jay Billings, Alex McCaskey, Kasper Gammeltoft
  */
 @XmlRootElement(name = "ReflectivityModel")
@@ -122,7 +122,7 @@ public class ReflectivityModel extends Model {
 
 	/**
 	 * The constructor with a project space in which files should be handled.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
@@ -136,7 +136,7 @@ public class ReflectivityModel extends Model {
 	 * If the action name is ReflectivityModel.processActionName, then
 	 * calculates the reflectivity and scattering density profiles for the
 	 * material layers and input fields.
-	 * 
+	 *
 	 * @see {@link org.eclipse.ice.item.Item#process(String)}
 	 */
 	@Override
@@ -434,7 +434,7 @@ public class ReflectivityModel extends Model {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.Item#setupForm()
 	 */
 	@Override
@@ -604,7 +604,7 @@ public class ReflectivityModel extends Model {
 	/**
 	 * This operation fills the material list with a default set of materials so
 	 * that the Item is immediately valid and can be processed.
-	 * 
+	 *
 	 * @param matList
 	 *            the list of Materials that represents the system. One material
 	 *            per layer.
@@ -622,8 +622,8 @@ public class ReflectivityModel extends Model {
 		// NiOx
 		Slab niOx = new Slab();
 		niOx.scatteringLength = (0.00000686 + 0.00000715) / 2.0;
-		niOx.trueAbsLength = 2.27931868269305E-09;
-		niOx.incAbsLength = 4.74626235093697E-09;
+		niOx.trueAbsLength = 2.27931E-09;
+		niOx.incAbsLength = 4.746262E-09;
 		niOx.thickness = 22.0;
 		niOx.interfaceWidth = 4.0 * 2.35;
 		matList.add(convertSlabToMaterial(niOx, "NiOx", 1));
@@ -631,8 +631,8 @@ public class ReflectivityModel extends Model {
 		// Ni
 		Slab ni = new Slab();
 		ni.scatteringLength = 9.31e-6;
-		ni.trueAbsLength = 2.27931868269305E-09;
-		ni.incAbsLength = 4.74626235093697E-09;
+		ni.trueAbsLength = 2.27931E-09;
+		ni.incAbsLength = 4.746262E-09;
 		ni.thickness = 551.0;
 		ni.interfaceWidth = 4.3 * 2.35;
 		matList.add(convertSlabToMaterial(ni, "Ni", 1));
@@ -640,8 +640,8 @@ public class ReflectivityModel extends Model {
 		// SiNiOx
 		Slab siNiOx = new Slab();
 		siNiOx.scatteringLength = (0.00000554 + 0.00000585) / 2.0;
-		siNiOx.trueAbsLength = 2.27931868269305E-09;
-		siNiOx.incAbsLength = 4.74626235093697E-09;
+		siNiOx.trueAbsLength = 2.27931E-09;
+		siNiOx.incAbsLength = 4.746262E-09;
 		siNiOx.thickness = 42.0;
 		siNiOx.interfaceWidth = 7.0 * 2.35;
 		matList.add(convertSlabToMaterial(siNiOx, "SiNiOx", 1));
@@ -649,8 +649,8 @@ public class ReflectivityModel extends Model {
 		// SiOx
 		Slab si = new Slab();
 		si.scatteringLength = 2.070e-6;
-		si.trueAbsLength = 4.74981478870069E-11;
-		si.incAbsLength = 1.99769988072137E-12;
+		si.trueAbsLength = 4.74981E-11;
+		si.incAbsLength = 1.997699E-12;
 		si.thickness = 100.0;
 		si.interfaceWidth = 17.5;
 		matList.add(convertSlabToMaterial(si, "Si", 1));
@@ -660,7 +660,7 @@ public class ReflectivityModel extends Model {
 
 	/**
 	 * This operation create a Material based on a Slab
-	 * 
+	 *
 	 * @param slab
 	 *            the slab
 	 * @param name
@@ -687,7 +687,7 @@ public class ReflectivityModel extends Model {
 	/**
 	 * Gives this item a name, description, and item type. Also sets the builder
 	 * name. The name should be the same as the ReflectivityModelBuilder name.
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.Item#setupItemInfo()
 	 */
 	@Override
@@ -706,7 +706,7 @@ public class ReflectivityModel extends Model {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.item.Item#submitForm(org.eclipse.ice.datastructures.form.
 	 * Form)
@@ -728,7 +728,7 @@ public class ReflectivityModel extends Model {
 	 * Sets up the form with the basic services needed for the reflectivity
 	 * model. Namely, sets the materials database and the table format for the
 	 * list component in the model.
-	 * 
+	 *
 	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
 	 */
 	@Override
