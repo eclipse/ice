@@ -498,6 +498,38 @@ public class HdfIOFactory implements IHdfIOFactory {
 
 	/**
 	 * Determines whether or not the open group has a child with the specified
+	 * name and type.
+	 * 
+	 * @param parentId
+	 *            The ID of the parent Group.
+	 * @param childName
+	 *            The name of the child group.
+	 * @param type
+	 *            The type of child object, e.g., {@code H5O_TYPE_GROUP} or
+	 *            {@code H5O_TYPE_DATASET}.
+	 * @return True if the open group has a child group with the specified name
+	 *         and type, false otherwise.
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public final boolean hasChild(int parentId, String childName, int type)
+			throws HDF5LibraryException, NullPointerException {
+		boolean childOfTypeExists = false;
+
+		// Check that the link exists first.
+		if (H5.H5Lexists(parentId, childName, HDF5Constants.H5P_DEFAULT)) {
+			// If so, get the object's metadata.
+			H5O_info_t info = H5.H5Oget_info_by_name(parentId, childName,
+					HDF5Constants.H5P_DEFAULT);
+			// Only return true if the type matches.
+			childOfTypeExists = info != null && info.type == type;
+		}
+
+		return childOfTypeExists;
+	}
+
+	/**
+	 * Determines whether or not the open group has a child with the specified
 	 * name.
 	 * 
 	 * @param parentId
@@ -511,18 +543,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 */
 	public final boolean hasChildGroup(int parentId, String childName)
 			throws HDF5LibraryException, NullPointerException {
-		int type = HDF5Constants.H5O_TYPE_GROUP;
-		boolean childOfTypeExists = false;
-
-		// Check that the link exists first.
-		if (H5.H5Lexists(parentId, childName, HDF5Constants.H5P_DEFAULT)) {
-			// If so, get the object's metadata.
-			H5O_info_t info = H5.H5Oget_info_by_name(parentId, childName,
-					HDF5Constants.H5P_DEFAULT);
-			// Only return true if the type matches.
-			childOfTypeExists = info != null && info.type == type;
-		}
-		return childOfTypeExists;
+		return hasChild(parentId, childName, HDF5Constants.H5O_TYPE_GROUP);
 	}
 	// -------------------------- //
 

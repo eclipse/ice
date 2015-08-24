@@ -24,6 +24,7 @@ import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRData;
+import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.LWReactor;
@@ -305,9 +306,9 @@ public class LWRComponentReader {
 
 		// Read the rod grid locations...
 		childGroupName = PWRAssembly.LWRROD_GRID_MANAGER_NAME;
-		LWRGridManager rodLocations = new LWRGridManager(assembly.getSize());
+		LWRGridManager gridManager = new LWRGridManager(assembly.getSize());
 		childGroupId = factory.openGroup(groupId, childGroupName);
-		read(childGroupId, rodLocations);
+		read(childGroupId, gridManager);
 		factory.closeGroup(childGroupId);
 
 		// Add all rods to the assembly. Also set their locations.
@@ -316,10 +317,18 @@ public class LWRComponentReader {
 			// Add it to the assembly.
 			assembly.addLWRRod(rod);
 			// Add every location for the tube to the assembly.
-			for (GridLocation location : rodLocations
+			for (GridLocation location : gridManager
 					.getGridLocationsAtName(rodName)) {
-				assembly.setLWRRodLocation(rodName, location.getRow(),
-						location.getColumn());
+				int row = location.getRow();
+				int column = location.getColumn();
+
+				// Mark the rod's location in the assembly.
+				assembly.setLWRRodLocation(rodName, row, column);
+
+				// Copy over the data at the location.
+				LWRDataProvider sourceData = location.getLWRDataProvider();
+				assembly.getLWRRodDataProviderAtLocation(row, column)
+						.copy(sourceData);
 			}
 		}
 
@@ -384,8 +393,16 @@ public class LWRComponentReader {
 			// Add every location for the tube to the assembly.
 			for (GridLocation location : tubeLocations
 					.getGridLocationsAtName(tubeName)) {
-				assembly.setTubeLocation(tubeName, location.getRow(),
-						location.getColumn());
+				int row = location.getRow();
+				int column = location.getColumn();
+
+				// Mark the tube's location in the assembly.
+				assembly.setTubeLocation(tubeName, row, column);
+
+				// Copy over the data at the location.
+				LWRDataProvider sourceData = location.getLWRDataProvider();
+				assembly.getTubeDataProviderAtLocation(row, column)
+						.copy(sourceData);
 			}
 		}
 
@@ -517,30 +534,39 @@ public class LWRComponentReader {
 		// Read properties specific to this type...
 		// Note: The size was already read in as it is required at construction.
 
+		int datasetType = HDF5Constants.H5O_TYPE_DATASET;
+		String datasetName;
+		String[] labels;
+		ArrayList<String> labelList;
+
 		// Read in the row and column labels.
-		int labelsGroupId = factory.openGroup(groupId, "Labels");
-		String[] columnLabels = factory.readStringArrayDataset(labelsGroupId,
-				"Column Labels");
-		String[] rowLabels = factory.readStringArrayDataset(labelsGroupId,
-				"Row Labels");
+		int labelsGroupId = factory.openGroup(groupId,
+				GridLabelProvider.LABELS_GROUP_NAME);
+
+		// Read in the column labels if they exist, and set them.
+		datasetName = GridLabelProvider.COLUMN_LABELS_NAME;
+		if (factory.hasChild(labelsGroupId, datasetName, datasetType)) {
+			labels = factory.readStringArrayDataset(labelsGroupId, datasetName);
+			labelList = new ArrayList<String>(labels.length);
+			for (String label : labels) {
+				labelList.add(label);
+			}
+			provider.setColumnLabels(labelList);
+		}
+
+		// Read in the column labels if they exist, and set them.
+		datasetName = GridLabelProvider.ROW_LABELS_NAME;
+		if (factory.hasChild(labelsGroupId, datasetName, datasetType)) {
+			labels = factory.readStringArrayDataset(labelsGroupId, datasetName);
+			labelList = new ArrayList<String>(labels.length);
+			for (String label : labels) {
+				labelList.add(label);
+			}
+			provider.setRowLabels(labelList);
+		}
+
+		// Close the labels group.
 		factory.closeGroup(labelsGroupId);
-
-		// Set them for the grid label provider.
-		ArrayList<String> labels;
-
-		// Set the column labels.
-		labels = new ArrayList<String>(columnLabels.length);
-		for (String label : columnLabels) {
-			labels.add(label);
-		}
-		provider.setColumnLabels(labels);
-
-		// Set the row labels.
-		labels = new ArrayList<String>(rowLabels.length);
-		for (String label : rowLabels) {
-			labels.add(label);
-		}
-		provider.setColumnLabels(labels);
 
 		return;
 	}
@@ -559,11 +585,23 @@ public class LWRComponentReader {
 
 			// Read in the set of assemblies with set locations in the
 			// reactor.
-			Map<Integer, String> assemblyNameMap = new HashMap<Integer, String>();
 			String[] table = factory.readStringArrayDataset(positionsGroupId,
 					"Simple Position Names Table");
+			List<String> assemblyNames = new ArrayList<String>(table.length);
 			for (int j = 0; j < table.length; j++) {
-				assemblyNameMap.put(j, table[j]);
+				assemblyNames.add(table[j]);
+			}
+
+			// Read in the table of units used in the location data.
+			List<String> unitsNames = null;
+			if (factory.hasChild(positionsGroupId, "Units Table",
+					HDF5Constants.H5O_TYPE_DATASET)) {
+				table = factory.readStringArrayDataset(positionsGroupId,
+						"Units Table");
+				unitsNames = new ArrayList<String>(table.length);
+				for (int j = 0; j < table.length; j++) {
+					unitsNames.add(table[j]);
+				}
 			}
 
 			// Add all positions to the list.
@@ -576,11 +614,21 @@ public class LWRComponentReader {
 				int[] position = (int[]) factory.readDataset(positionGroupId,
 						"Position Dataset", HDF5Constants.H5T_NATIVE_INT);
 
+				// Create a new GridLocation.
+				GridLocation location = new GridLocation(position[0],
+						position[1]);
+
 				// Add a new location to the grid manager.
-				String assemblyName = assemblyNameMap
-						.get((Integer) position[2]);
+				String assemblyName = assemblyNames.get((Integer) position[2]);
+
+				// Read in the remainder of the grid location data.
+				if (unitsNames != null) {
+					readGridLocation(location, positionGroupId, unitsNames);
+				}
+
+				// Add the location to the grid manager.
 				gridManager.addComponent(new LWRComponent(assemblyName),
-						new GridLocation(position[0], position[1]));
+						location);
 
 				// Close the position group.
 				factory.closeGroup(positionGroupId);
@@ -588,6 +636,84 @@ public class LWRComponentReader {
 
 			// Close the "Positions" group.
 			factory.closeGroup(positionsGroupId);
+		}
+
+		return;
+	}
+
+	private void readGridLocation(GridLocation location, int groupId,
+			List<String> unitsNames)
+					throws NullPointerException, HDF5Exception {
+
+		LWRDataProvider dataProvider = location.getLWRDataProvider();
+
+		// Loop over the timesteps at this position.
+		for (String timestepGroup : factory.getChildNames(groupId,
+				HDF5Constants.H5O_TYPE_GROUP)) {
+			// Open the timestep group.
+			int timestepGroupId = factory.openGroup(groupId, timestepGroup);
+
+			// Read the time for the group.
+			double time = factory.readDoubleAttribute(timestepGroupId, "time");
+
+			List<LWRData> dataList = null;
+
+			for (String dataset : factory.getChildNames(timestepGroupId,
+					HDF5Constants.H5O_TYPE_DATASET)) {
+
+				// Get the feature from the dataset name. Note: Each dataset
+				// ends with the string " headTable" or " dataTable".
+				String feature = dataset.substring(0, dataset.length() - 10);
+
+				// Each feature's "dataTable" comes first.
+				if (dataset.endsWith("dataTable")) {
+
+					// Read the dataset.
+					double[] table = (double[]) factory.readDataset(
+							timestepGroupId, dataset,
+							HDF5Constants.H5T_NATIVE_DOUBLE);
+
+					// Allocate an array for new LWRData instances.
+					dataList = new ArrayList<LWRData>(table.length / 5);
+
+					// Add data for each row in the table.
+					for (int i = 0; i < table.length;) {
+						LWRData data = new LWRData(feature);
+						// Get the data's value, uncertainty, and position from
+						// the table. Note that the index is incremented below.
+						data.setValue(table[i++]);
+						data.setUncertainty(table[i++]);
+						ArrayList<Double> position = new ArrayList<Double>(3);
+						position.add(table[i++]);
+						position.add(table[i++]);
+						position.add(table[i++]);
+						data.setPosition(position);
+						// Units must be determined from the head table.
+						dataList.add(data);
+					}
+				}
+				// Each feature's "headTable" comes after the data table.
+				else if (dataset.endsWith("headTable")) {
+
+					// Read the dataset.
+					int[] table = (int[]) factory.readDataset(timestepGroupId,
+							dataset, HDF5Constants.H5T_NATIVE_INT);
+
+					// Update the units for each of the LWRData instances.
+					for (int i = 0; i < table.length;) {
+						// Get the corresponding data and the units name.
+						LWRData data = dataList.get(table[i++]);
+						String units = unitsNames.get(table[i++]);
+						// Set the units.
+						data.setUnits(units);
+						// We may now add the data to the data provider.
+						dataProvider.addData(data, time);
+					}
+				}
+			}
+
+			// Close the timestep group.
+			factory.closeGroup(timestepGroupId);
 		}
 
 		return;

@@ -365,9 +365,57 @@ public class LWRIOHandlerTester {
 		assertEquals(expectedRod.getDescription(), rod.getDescription());
 
 		// Rod-specific properties...
-		// TODO
-
+		assertEquals(expectedRod.getPressure(), rod.getPressure(), epsilon);
 		// ------------------------------------- //
+
+		// Add data for the rod at every location in the assembly. Utilize 10 z
+		// positions and 3 timesteps.
+		ArrayList<Double> position;
+		for (int x = 0; x < assembly.getSize(); x++) {
+			for (int y = 0; y < assembly.getSize(); y++) {
+				LWRDataProvider dataProvider = assembly
+						.getLWRRodDataProviderAtLocation(x, y);
+				if (dataProvider == null) {
+					dataProvider = assembly.getTubeDataProviderAtLocation(x, y);
+				}
+
+				for (double t = 0; t < 3.0; t++) {
+					dataProvider.setTime(t);
+
+					List<IData> zDataList = dataProvider
+							.getDataAtCurrentTime("z");
+					List<IData> fzDataList = dataProvider
+							.getDataAtCurrentTime("f(z) = z^2");
+
+					IData zData;
+					IData fzData;
+					for (int z = 0; z < 10; z++) {
+						// Check the data for the variable "z".
+						zData = zDataList.get(z);
+						position = zData.getPosition();
+						assertEquals((double) x, position.get(0), epsilon);
+						assertEquals((double) y, position.get(1), epsilon);
+						assertEquals((double) z, position.get(2), epsilon);
+						assertEquals(0.0, zData.getUncertainty(), epsilon);
+						assertEquals("z units", zData.getUnits());
+						assertEquals((double) z, zData.getValue(), epsilon);
+						assertEquals("z", zData.getFeature());
+
+						// Check the data for the variable "f(z) = z^2".
+						fzData = fzDataList.get(z);
+						position = fzData.getPosition();
+						assertEquals((double) x, position.get(0), epsilon);
+						assertEquals((double) y, position.get(1), epsilon);
+						assertEquals((double) z, position.get(2), epsilon);
+						assertEquals(0.0, fzData.getUncertainty(), epsilon);
+						assertEquals("z units", fzData.getUnits());
+						assertEquals((double) (z * z), fzData.getValue(),
+								epsilon);
+						assertEquals("f(z) = z^2", fzData.getFeature());
+					}
+				}
+			}
+		}
 
 		return;
 	}
