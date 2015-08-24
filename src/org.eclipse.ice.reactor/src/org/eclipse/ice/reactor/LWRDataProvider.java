@@ -6,67 +6,50 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Scott Forest Hull II - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 
 /**
- * <p>
  * An implementation of the IDataProvider. This class is used to store State
  * point data, usually for material decompositions or powers, that can be used
  * to store and display changes in value overtime across different features.
- * </p>
  * 
  * @author Scott Forest Hull II
  */
 public class LWRDataProvider implements IDataProvider {
 	/**
-	 * <p>
 	 * A TreeMap implementation of IData and features. Keep in mind that there
 	 * can be multiple IData for the same feature.
-	 * </p>
-	 * 
 	 */
 	private TreeMap<Double, ArrayList<FeatureSet>> dataTree;
 	/**
-	 * <p>
 	 * The current time step. Can not be less than 0, and must be strictly less
 	 * than the number of TimeSteps. Defaults to 0.
-	 * </p>
-	 * 
 	 */
 	private double time;
 	/**
-	 * <p>
 	 * A description of the source of information for this provider and its
 	 * data.
-	 * </p>
-	 * 
 	 */
 	private String sourceInfo;
 	/**
-	 * <p>
 	 * The time unit.
-	 * </p>
-	 * 
 	 */
 	private String timeUnit;
 
 	/**
-	 * <p>
 	 * The constructor.
-	 * </p>
-	 * 
 	 */
 	public LWRDataProvider() {
 		// Setup TreeMap
@@ -81,33 +64,24 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/**
-	 * <p>
 	 * Sets the sourceInfo. Can not be null or the empty string. Strings passed
 	 * will be trimmed before being set.
-	 * </p>
 	 * 
 	 * @param sourceInfo
-	 *            <p>
 	 *            The sourceInfo to set.
-	 *            </p>
 	 */
 	public void setSourceInfo(String sourceInfo) {
 		if (sourceInfo != null && !sourceInfo.trim().isEmpty()) {
 			this.sourceInfo = sourceInfo.trim();
 		}
-
 	}
 
 	/**
-	 * <p>
 	 * Adds a IData piece, keyed on the feature and timeStep, to the dataTree.
 	 * If the feature exists in the tree, it will append to the end of the list.
-	 * </p>
 	 * 
 	 * @param data
-	 *            <p>
 	 *            The data to add.
-	 *            </p>
 	 * @param time
 	 */
 	public void addData(LWRData data, double time) {
@@ -160,20 +134,17 @@ public class LWRDataProvider implements IDataProvider {
 
 		}
 
+		return;
 	}
 
 	/**
-	 * <p>
 	 * Removes the feature and all associated IData from the dataTree at all
 	 * time steps. If a user wishes to remove a single piece of IData from the
 	 * tree, then use the appropriate getData operation on that feature and
 	 * manipulate the data that way.
-	 * </p>
 	 * 
 	 * @param feature
-	 *            <p>
 	 *            The feature.
-	 *            </p>
 	 */
 	public void removeAllDataFromFeature(String feature) {
 
@@ -199,17 +170,14 @@ public class LWRDataProvider implements IDataProvider {
 			}
 		}
 
+		return;
 	}
 
 	/**
-	 * <p>
 	 * Deep copies the contents of the object.
-	 * </p>
 	 * 
 	 * @param otherObject
-	 *            <p>
 	 *            The object to be copied.
-	 *            </p>
 	 */
 	public void copy(LWRDataProvider otherObject) {
 
@@ -239,16 +207,13 @@ public class LWRDataProvider implements IDataProvider {
 		this.sourceInfo = otherObject.sourceInfo;
 		this.timeUnit = otherObject.timeUnit;
 
+		return;
 	}
 
 	/**
-	 * <p>
 	 * Deep copies and returns a newly instantiated object.
-	 * </p>
 	 * 
-	 * @return <p>
-	 *         The newly instantiated copied object.
-	 *         </p>
+	 * @return The newly instantiated copied object.
 	 */
 	@Override
 	public Object clone() {
@@ -261,39 +226,26 @@ public class LWRDataProvider implements IDataProvider {
 
 		// Return the component
 		return component;
-
 	}
 
 	/**
-	 * <p>
 	 * Sets the time units.
-	 * </p>
 	 * 
 	 * @param timeUnit
-	 *            <p>
 	 *            The time unit to be set.
-	 *            </p>
 	 */
 	public void setTimeUnits(String timeUnit) {
-
 		if (timeUnit != null && !timeUnit.trim().isEmpty()) {
 			this.timeUnit = timeUnit;
 		}
-
 	}
 
 	/**
-	 * <p>
 	 * Equality check. Returns true if equals, false otherwise.
-	 * </p>
 	 * 
 	 * @param otherObject
-	 *            <p>
 	 *            Object to equate.
-	 *            </p>
-	 * @return <p>
-	 *         True if equal, false otherwise.
-	 *         </p>
+	 * @return True if equal, false otherwise.
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -312,10 +264,60 @@ public class LWRDataProvider implements IDataProvider {
 			component = (LWRDataProvider) otherObject;
 
 			// Check values
-			retVal = (this.dataTree.equals(component.dataTree)
-					&& this.time == component.time
-					&& this.sourceInfo.equals(component.sourceInfo) && this.timeUnit
-					.equals(component.timeUnit));
+			retVal = this.time == component.time
+					&& this.sourceInfo.equals(component.sourceInfo)
+					&& this.timeUnit.equals(component.timeUnit)
+					&& this.dataTree.size() == component.dataTree.size();
+
+			// There is no intrinsic order of the FeatureSet ordering in the
+			// data tree's lists. Thus, for each list in both components, we
+			// need to manually check the correct feature sets against each
+			// other based on their names.
+			if (retVal) {
+
+				Iterator<Entry<Double, ArrayList<FeatureSet>>> iter;
+				Iterator<Entry<Double, ArrayList<FeatureSet>>> otherIter;
+				Iterator<FeatureSet> setIter;
+				Entry<Double, ArrayList<FeatureSet>> entry;
+				Entry<Double, ArrayList<FeatureSet>> otherEntry;
+
+				// Iterate over each entry in the data tree.
+				iter = dataTree.entrySet().iterator();
+				otherIter = component.dataTree.entrySet().iterator();
+				while (retVal && iter.hasNext()) {
+					entry = iter.next();
+					otherEntry = otherIter.next();
+
+					// Compare the times and the feature set array sizes.
+					// FIXME double comparison is bad...
+					retVal = entry.getKey().equals(otherEntry.getKey()) && entry
+							.getValue().size() == otherEntry.getValue().size();
+					// If the times and list sizes match, we need to compare the
+					// contents of the lists.
+					if (retVal) {
+						// For each feature set at this time in this data tree,
+						// find a corresponding feature set (based on the
+						// feature's name) and compare.
+						setIter = entry.getValue().iterator();
+						while (retVal && setIter.hasNext()) {
+							FeatureSet set = setIter.next();
+							FeatureSet otherSet = null;
+							// Find the corresponding feature set with the same
+							// feature name.
+							String feature = set.getName();
+							for (FeatureSet s : otherEntry.getValue()) {
+								if (feature.equals(s.getName())) {
+									otherSet = s;
+									break;
+								}
+							}
+							// Compare the two feature sets. If one was not
+							// found, this returns false.
+							retVal = set.equals(otherSet);
+						}
+					}
+				}
+			}
 
 		}
 
@@ -324,13 +326,9 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/**
-	 * <p>
 	 * The hashcode.
-	 * </p>
 	 * 
-	 * @return <p>
-	 *         the hash.
-	 *         </p>
+	 * @return the hash.
 	 */
 	@Override
 	public int hashCode() {
@@ -345,7 +343,6 @@ public class LWRDataProvider implements IDataProvider {
 
 		// return hash
 		return hash;
-
 	}
 
 	/*
@@ -381,7 +378,6 @@ public class LWRDataProvider implements IDataProvider {
 
 		// Return the featureList
 		return featureList;
-
 	}
 
 	/*
@@ -389,7 +385,6 @@ public class LWRDataProvider implements IDataProvider {
 	 */
 	@Override
 	public int getNumberOfTimeSteps() {
-
 		return this.dataTree.size();
 	}
 
@@ -401,7 +396,6 @@ public class LWRDataProvider implements IDataProvider {
 		if (step >= 0.0) {
 			this.time = step;
 		}
-
 	}
 
 	/*
@@ -429,7 +423,6 @@ public class LWRDataProvider implements IDataProvider {
 		}
 
 		return new ArrayList<IData>();
-
 	}
 
 	/*
@@ -437,9 +430,7 @@ public class LWRDataProvider implements IDataProvider {
 	 */
 	@Override
 	public String getSourceInfo() {
-
 		return this.sourceInfo;
-
 	}
 
 	/*
@@ -465,7 +456,6 @@ public class LWRDataProvider implements IDataProvider {
 		}
 
 		return features;
-
 	}
 
 	/*
@@ -487,7 +477,6 @@ public class LWRDataProvider implements IDataProvider {
 
 		// Return the list of times
 		return times;
-
 	}
 
 	/*
@@ -513,7 +502,6 @@ public class LWRDataProvider implements IDataProvider {
 
 		// Time not found!
 		return -1;
-
 	}
 
 	/*
@@ -521,22 +509,15 @@ public class LWRDataProvider implements IDataProvider {
 	 */
 	@Override
 	public String getTimeUnits() {
-
 		return this.timeUnit;
-
 	}
 
 	/**
-	 * <p>
 	 * Returns the current time step.
-	 * </p>
 	 * 
-	 * @return <p>
-	 *         The current time step.
-	 *         </p>
+	 * @return The current time step.
 	 */
 	public double getCurrentTime() {
-
 		return this.time;
 	}
 }
