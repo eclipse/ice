@@ -58,12 +58,12 @@ public class LWRComponentReader {
 	private static final Logger logger = LoggerFactory
 			.getLogger(LWRComponentReader.class);
 
-	private HdfIOFactory factory;
+	private final HdfIOFactory factory;
 
 	private final LWRComponentFactory componentFactory;
 
 	private interface IComponentReader {
-		public void readComponent(LWRComponent component, int groupId)
+		public void readComponent(int groupId, LWRComponent component)
 				throws NullPointerException, HDF5Exception;
 	}
 
@@ -83,7 +83,7 @@ public class LWRComponentReader {
 
 	int counter = 0;
 
-	public LWRComponent read(int groupId)
+	public LWRComponent readComponent(int groupId)
 			throws NullPointerException, HDF5Exception {
 
 		// Set the default return value.
@@ -108,7 +108,7 @@ public class LWRComponentReader {
 				IComponentReader reader = readerMap.get(tagType);
 				// Try to read the component.
 				try {
-					reader.readComponent(component, groupId);
+					reader.readComponent(groupId, component);
 				} catch (NullPointerException | HDF5Exception e) {
 					logger.error(getClass().getName() + " error: "
 							+ "Error reading " + component.getClass().getName()
@@ -151,7 +151,7 @@ public class LWRComponentReader {
 		for (String childName : getChildGroups(groupId)) {
 			// Read the child component.
 			int childGroupId = factory.openGroup(groupId, childName);
-			LWRComponent childComponent = read(childGroupId);
+			LWRComponent childComponent = readComponent(childGroupId);
 			factory.closeGroup(childGroupId);
 
 			// Add the child component to the composite if possible.
@@ -239,7 +239,7 @@ public class LWRComponentReader {
 		for (String childGroupName : getChildGroups(groupId)) {
 			// Read the child.
 			int childGroupId = factory.openGroup(groupId, childGroupName);
-			LWRComponent component = read(childGroupId);
+			LWRComponent component = readComponent(childGroupId);
 			factory.closeGroup(childGroupId);
 
 			// Get its tag type.
@@ -424,7 +424,7 @@ public class LWRComponentReader {
 		// Read it from HDF.
 		String ringGroupName = getChildGroups(groupId).get(0);
 		int ringGroupId = factory.openGroup(groupId, ringGroupName);
-		Ring ring = (Ring) read(ringGroupId);
+		Ring ring = (Ring) readComponent(ringGroupId);
 		factory.closeGroup(ringGroupId);
 		// Set it as the incore instrument's thimble.
 		incoreInstrument.setThimble(ring);
@@ -462,7 +462,7 @@ public class LWRComponentReader {
 		for (String child : getChildGroups(groupId)) {
 			// Open, read, and close the group for the child LWRComponent.
 			int childGroupId = factory.openGroup(groupId, child);
-			LWRComponent component = read(childGroupId);
+			LWRComponent component = readComponent(childGroupId);
 			factory.closeGroup(childGroupId);
 
 			// Add the component to the rod depending on its type.
@@ -501,7 +501,7 @@ public class LWRComponentReader {
 		int materialGroupId = factory.openGroup(groupId, materialName);
 		// Create the component and read its information. Note that Material
 		// is not part of the visitor pattern, so it must be read directly.
-		Material material = (Material) read(materialGroupId);
+		Material material = (Material) readComponent(materialGroupId);
 		// Close its group.
 		factory.closeGroup(materialGroupId);
 
@@ -1122,14 +1122,14 @@ public class LWRComponentReader {
 		// Add readers for base types.
 		readerMap.put(HDF5LWRTagType.LWRCOMPONENT, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (LWRComponent) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.LWRCOMPOSITE, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (LWRComposite) component);
 			}
@@ -1138,21 +1138,21 @@ public class LWRComponentReader {
 		// Add readers for LWR types.
 		readerMap.put(HDF5LWRTagType.LWREACTOR, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (LWReactor) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.BWREACTOR, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (BWReactor) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.PWREACTOR, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (PressurizedWaterReactor) component);
 			}
@@ -1161,28 +1161,28 @@ public class LWRComponentReader {
 		// Add readers for the assembly types.
 		readerMap.put(HDF5LWRTagType.PWRASSEMBLY, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (PWRAssembly) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.CONTROL_BANK, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (ControlBank) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.FUEL_ASSEMBLY, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (FuelAssembly) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.INCORE_INSTRUMENT, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (IncoreInstrument) component);
 			}
@@ -1190,8 +1190,8 @@ public class LWRComponentReader {
 		readerMap.put(HDF5LWRTagType.ROD_CLUSTER_ASSEMBLY,
 				new IComponentReader() {
 					@Override
-					public void readComponent(LWRComponent component,
-							int groupId)
+					public void readComponent(int groupId,
+							LWRComponent component)
 									throws NullPointerException, HDF5Exception {
 						read(groupId, (RodClusterAssembly) component);
 					}
@@ -1200,7 +1200,7 @@ public class LWRComponentReader {
 		// Add readers for the rod/pin types.
 		readerMap.put(HDF5LWRTagType.LWRROD, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (LWRRod) component);
 			}
@@ -1209,14 +1209,14 @@ public class LWRComponentReader {
 		// Add readers for the ring types.
 		readerMap.put(HDF5LWRTagType.RING, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (Ring) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.TUBE, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (Tube) component);
 			}
@@ -1225,14 +1225,14 @@ public class LWRComponentReader {
 		// Add readers for Materials.
 		readerMap.put(HDF5LWRTagType.MATERIAL, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (Material) component);
 			}
 		});
 		readerMap.put(HDF5LWRTagType.MATERIALBLOCK, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (MaterialBlock) component);
 			}
@@ -1242,15 +1242,15 @@ public class LWRComponentReader {
 		readerMap.put(HDF5LWRTagType.GRID_LABEL_PROVIDER,
 				new IComponentReader() {
 					@Override
-					public void readComponent(LWRComponent component,
-							int groupId)
+					public void readComponent(int groupId,
+							LWRComponent component)
 									throws NullPointerException, HDF5Exception {
 						read(groupId, (GridLabelProvider) component);
 					}
 				});
 		readerMap.put(HDF5LWRTagType.LWRGRIDMANAGER, new IComponentReader() {
 			@Override
-			public void readComponent(LWRComponent component, int groupId)
+			public void readComponent(int groupId, LWRComponent component)
 					throws NullPointerException, HDF5Exception {
 				read(groupId, (LWRGridManager) component);
 			}

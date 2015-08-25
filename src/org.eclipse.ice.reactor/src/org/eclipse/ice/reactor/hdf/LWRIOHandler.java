@@ -74,7 +74,7 @@ public class LWRIOHandler extends HdfIOFactory {
 				// Open the group, try to read it, and close the group.
 				groupId = openGroup(fileId, groupPath);
 				try {
-					LWRComponent component = reader.read(groupId);
+					LWRComponent component = reader.readComponent(groupId);
 					// If successfully read, add it to the list.
 					if (component != null) {
 						components.add(component);
@@ -124,20 +124,43 @@ public class LWRIOHandler extends HdfIOFactory {
 
 		// Proceed if the file is valid and there are components to write.
 		if (uri != null && hasComponents) {
-			// The status of the previous HDF5 operation. Generally, if it is
-			// negative, there was some error.
-			int status = -1;
-
 			// Other IDs for HDF5 components.
 			int fileId;
 			int groupId;
+			String groupPath;
 
 			try {
 				// Open the file for writing.
 				fileId = createFile(uri);
-				
-				// TODO
-				
+
+				// Create a writer for writing each component.
+				LWRComponentWriter writer = new LWRComponentWriter(this);
+
+				// Write all of the non-null components in the list.
+				for (LWRComponent component : components) {
+					if (component != null) {
+						// Add the root prefix.
+						groupPath = "/" + component.getName();
+
+						// Write the component...
+						try {
+							// Create the group, write the component, and close
+							// the group.
+							groupId = createGroup(fileId, groupPath);
+							writer.writeComponent(groupId, component);
+							closeGroup(groupId);
+
+							// Increment the number of written components.
+							writtenComponents++;
+
+						} catch (NullPointerException | HDF5Exception e) {
+							logger.error(getClass().getName() + " error: "
+									+ "Error while writing group \"" + groupPath
+									+ "\".", e);
+						}
+					}
+				}
+
 				// Close the file.
 				closeFile(fileId);
 			} catch (HDF5LibraryException e) {
