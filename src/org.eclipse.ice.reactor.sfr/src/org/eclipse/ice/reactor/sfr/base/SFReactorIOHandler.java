@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Anna Wojtowics - Initial API and implementation and/or initial documentation
+ *   Anna Wojtowicz - Initial API and implementation and/or initial documentation
  *   Jordan Deyton - Added HDF5 reading capabilities.
  *   Jordan Deyton - bug 474744
  *******************************************************************************/
