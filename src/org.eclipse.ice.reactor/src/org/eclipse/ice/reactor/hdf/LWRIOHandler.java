@@ -12,6 +12,7 @@ package org.eclipse.ice.reactor.hdf;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.ice.io.hdf.HdfIOFactory;
@@ -36,30 +37,28 @@ public class LWRIOHandler extends HdfIOFactory {
 	 * 
 	 * @param uri
 	 *            The data source URI.
-	 * @return A valid reactor if the file could be completely read,
-	 *         {@code null} if the file could not be opened.
+	 * @return A list of components that could be read from the file.
 	 */
 	public List<LWRComponent> readHDF5(URI uri) {
 
 		List<LWRComponent> components = new ArrayList<LWRComponent>();
-
-		// HDF5 constants. Writing out "HDF5Constants." every time is annoying.
-		int H5O_TYPE_GROUP = HDF5Constants.H5O_TYPE_GROUP;
 
 		// The status of the previous HDF5 operation. Generally, if it is
 		// negative, there was some error.
 		int status = -1;
 
 		// Other IDs for HDF5 components.
-		int fileId, groupId;
+		int fileId;
+		int groupId;
 
 		try {
-			// Open the H5 file to read.
+			// Open the file for reading.
 			fileId = openFile(uri);
 
 			// Try to get the first group in the file.
 			int rootGroupId = openGroup(fileId, "/");
-			List<String> children = getChildNames(rootGroupId, H5O_TYPE_GROUP);
+			List<String> children = getChildNames(rootGroupId,
+					HDF5Constants.H5O_TYPE_GROUP);
 			if (children.isEmpty()) {
 				throwException("Finding root node.", status);
 			}
@@ -88,7 +87,7 @@ public class LWRIOHandler extends HdfIOFactory {
 				closeGroup(groupId);
 			}
 
-			// Close the H5file.
+			// Close the file.
 			closeFile(fileId);
 
 		} catch (NullPointerException | HDF5LibraryException e) {
@@ -99,6 +98,55 @@ public class LWRIOHandler extends HdfIOFactory {
 		}
 
 		return components;
+	}
+
+	/**
+	 * Writes the list of specified LWR components to an output HDF5 file.
+	 * 
+	 * @param uri
+	 *            The URI pointing to the target output file.
+	 * @param components
+	 *            A list of components to write.
+	 * @return The number of components successfully written to the file.
+	 */
+	public int writeHDF5(URI uri, List<LWRComponent> components) {
+
+		int writtenComponents = 0;
+
+		// Determine whether the list contains any non-null components to write.
+		boolean hasComponents = false;
+		if (components != null) {
+			Iterator<LWRComponent> iter = components.iterator();
+			while (!hasComponents && iter.hasNext()) {
+				hasComponents = (iter.next() != null);
+			}
+		}
+
+		// Proceed if the file is valid and there are components to write.
+		if (uri != null && hasComponents) {
+			// The status of the previous HDF5 operation. Generally, if it is
+			// negative, there was some error.
+			int status = -1;
+
+			// Other IDs for HDF5 components.
+			int fileId;
+			int groupId;
+
+			try {
+				// Open the file for writing.
+				fileId = createFile(uri);
+				
+				// TODO
+				
+				// Close the file.
+				closeFile(fileId);
+			} catch (HDF5LibraryException e) {
+				logger.error(getClass().getName() + " error: "
+						+ "Error while writing the file \"" + uri + "\".", e);
+			}
+		}
+
+		return writtenComponents;
 	}
 
 	/*

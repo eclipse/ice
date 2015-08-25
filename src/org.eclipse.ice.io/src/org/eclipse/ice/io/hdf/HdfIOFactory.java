@@ -400,6 +400,70 @@ public class HdfIOFactory implements IHdfIOFactory {
 	}
 
 	// ---- File Operations ---- //
+
+	/**
+	 * Opens the file for writing. This truncates the content of the file.
+	 * 
+	 * @param uri
+	 *            A URI pointing to the file to create.
+	 * @return A handle to the file.
+	 * @throws HDF5LibraryException
+	 */
+	public final int createFile(URI uri) throws HDF5LibraryException {
+		int fileId = -1;
+
+		int status = -1;
+
+		if (uri != null) {
+			// ---- The URI must be a file and requires write access. ---- //
+			File file = new File(uri);
+			String path = file.getPath();
+			// If the file cannot be written to, don't do anything.
+			String directoryName = file.getParent();
+			File directory = new File(directoryName);
+			// If the file exists and is read-only or a directory, cancel.
+			if (file.exists()) {
+				if (file.isDirectory()) {
+					throwException("The file \"" + path + "\" is a directory.",
+							status);
+				} else if (!file.canWrite()) {
+					throwException("The file \"" + path + "\" is read only.",
+							status);
+				}
+			}
+			// If the directory exists but is read-only, cancel.
+			else if (directory.exists()) {
+				if (!directory.canWrite()) {
+					throwException("The directory \"" + directoryName
+							+ "\" cannot be written.", status);
+				}
+			}
+			// If the path does not exist and cannot be created, cancel.
+			else if (!directory.mkdirs()) {
+				if (!directory.canWrite()) {
+					throwException(
+							"The directory \"" + directoryName
+									+ "\" does not exist and cannot be created.",
+							status);
+				}
+			}
+			// ----------------------------------------------------------- //
+
+			// Now we can try to open the file. Truncate its content.
+			status = H5.H5Fcreate(path, HDF5Constants.H5F_ACC_TRUNC,
+					HDF5Constants.H5P_DEFAULT, HDF5Constants.H5P_DEFAULT);
+			if (status < 0) {
+				throwException("Creating file \"" + path + "\"", status);
+			}
+			fileId = status;
+
+			// Store a reference to the URI in the map of open files.
+			openFiles.put(fileId, uri);
+		}
+
+		return fileId;
+	}
+
 	/**
 	 * Opens the file for reading.
 	 * 
@@ -419,7 +483,9 @@ public class HdfIOFactory implements IHdfIOFactory {
 			// read from it.
 			File file = new File(uri);
 			String path = file.getPath();
-			if (!file.canRead()) {
+			if (!file.isFile()) {
+				throwException("File \"" + path + "\" is not a file.", status);
+			} else if (!file.canRead()) {
 				throwException("File \"" + path + "\" cannot be read.", status);
 			}
 

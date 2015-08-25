@@ -38,12 +38,16 @@ import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LWRIOHandlerTester {
 
 	private LWRIOHandler handler;
+
+	private File newFile;
+	private File oldFile;
 
 	private PressurizedWaterReactor expectedReactor;
 	private FuelAssembly expectedAssembly;
@@ -58,8 +62,29 @@ public class LWRIOHandlerTester {
 
 	private static final double epsilon = 1e-7;
 
+	@After
+	public void afterEachTest() {
+		// Delete the created file if it exists.
+		if (newFile != null) {
+			if (newFile.exists()) {
+				newFile.delete();
+			}
+			newFile = null;
+		}
+		return;
+	}
+
 	@Before
 	public void beforeEachTest() {
+
+		// Create the test files. The old file should always exist, whereas the
+		// new file should not.
+		String s = System.getProperty("file.separator");
+		oldFile = new File(System.getProperty("user.home") + s + "ICETests" + s
+				+ "reactorData" + s + "oldFormatLWR.h5");
+		newFile = new File(System.getProperty("user.home") + s + "ICETests" + s
+				+ "reactorData" + s + "testLWR.h5");
+
 		handler = new LWRIOHandler();
 
 		int idCounter = 1;
@@ -276,19 +301,16 @@ public class LWRIOHandlerTester {
 		reactor.setAssemblyLocation(AssemblyType.RodCluster,
 				rodClusterAssembly.getName(), 0, 3);
 
-		// LWRComponentWriter w = new LWRComponentWriter();
-		// w.write(reactor, new File("C:\\oldFormatReactor.h5").toURI());
-
 		return;
 	}
 
 	@Test
-	public void checkRead() {
+	public void checkReadManually() {
 
-		String s = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.home") + s
-				+ "ICETests" + s + "reactorData" + s + "oldFormatReactor.h5");
-		URI uri = dataFile.toURI();
+		// Check that the file can be read.
+		assertTrue(oldFile.exists());
+		assertTrue(oldFile.canRead());
+		URI uri = oldFile.toURI();
 
 		// Read in the reactor.
 		List<LWRComponent> components = handler.readHDF5(uri);
@@ -517,10 +539,10 @@ public class LWRIOHandlerTester {
 	@Test
 	public void checkReadObjects() {
 
-		String s = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.home") + s
-				+ "ICETests" + s + "reactorData" + s + "oldFormatReactor.h5");
-		URI uri = dataFile.toURI();
+		// Check that the file can be read.
+		assertTrue(oldFile.exists());
+		assertTrue(oldFile.canRead());
+		URI uri = oldFile.toURI();
 
 		// Read in the reactor.
 		List<LWRComponent> components = handler.readHDF5(uri);
@@ -606,4 +628,64 @@ public class LWRIOHandlerTester {
 		return;
 	}
 
+	@Test
+	public void checkWrite() {
+
+		// Ensure that the new file can be written.
+		if (newFile.exists()) {
+			assertTrue(newFile.canWrite());
+		}
+		URI uri = newFile.toURI();
+
+		// Set up the list of components to write.
+		List<LWRComponent> components = new ArrayList<LWRComponent>();
+		components.add(expectedReactor);
+
+		// Write the file.
+		assertEquals(1, handler.writeHDF5(uri, components));
+
+		// Check invalid input such that no components can be written to a file.
+		// One or both parameters are null...
+		assertEquals(0, handler.writeHDF5(null, null));
+		assertEquals(0, handler.writeHDF5(uri, null));
+		assertEquals(0, handler.writeHDF5(null, components));
+		// List of components is empty or has nothing but null values...
+		components.clear();
+		assertEquals(0, handler.writeHDF5(uri, components));
+		components.add(null);
+		components.add(null);
+		assertEquals(0, handler.writeHDF5(uri, components));
+
+		return;
+	}
+
+	@Test
+	public void checkWriteAndRead() {
+		// Ensure that the new file can be written.
+		if (newFile.exists()) {
+			assertTrue(newFile.canWrite());
+		}
+		URI uri = newFile.toURI();
+
+		// Set up the list of components to write.
+		List<LWRComponent> components = new ArrayList<LWRComponent>();
+		components.add(expectedReactor);
+		components.add(null); // This list item should be ignored.
+		components.add(expectedRod);
+
+		// Write the file.
+		assertEquals(2, handler.writeHDF5(uri, components));
+
+		// Now try to read them.
+		components = handler.readHDF5(uri);
+
+		// Check the response.
+		assertNotNull(components);
+		assertEquals(2, components.size());
+		// Both components should match.
+		assertEquals(expectedReactor, components.get(0));
+		assertEquals(expectedRod, components.get(1));
+
+		return;
+	}
 }
