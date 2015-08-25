@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.hdf;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.eclipse.ice.reactor.LWRComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
@@ -45,39 +43,19 @@ public class LWRIOHandler extends HdfIOFactory {
 
 		List<LWRComponent> components = new ArrayList<LWRComponent>();
 
-		// Check the parameters.
-		if (uri == null) {
-			return components;
-		}
-		// Check the file associated with the URI. We need to be able to read
-		// from it.
-		File file = new File(uri);
-		String path = file.getPath();
-		if (!file.canRead()) {
-			System.err.println(getClass().getName() + " error: File \"" + path
-					+ "\" cannot be read.");
-			return components;
-		}
-
 		// HDF5 constants. Writing out "HDF5Constants." every time is annoying.
-		int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT; // Default flag.
-		int H5F_ACC_RDONLY = HDF5Constants.H5F_ACC_RDONLY; // Open read-only.
 		int H5O_TYPE_GROUP = HDF5Constants.H5O_TYPE_GROUP;
 
 		// The status of the previous HDF5 operation. Generally, if it is
 		// negative, there was some error.
-		int status;
+		int status = -1;
 
 		// Other IDs for HDF5 components.
 		int fileId, groupId;
 
 		try {
-			// Open the H5 file with read-only access.
-			status = H5.H5Fopen(path, H5F_ACC_RDONLY, H5P_DEFAULT);
-			if (status < 0) {
-				throwException("Opening file \"" + path + "\"", status);
-			}
-			fileId = status;
+			// Open the H5 file to read.
+			fileId = openFile(uri);
 
 			// Try to get the first group in the file.
 			int rootGroupId = openGroup(fileId, "/");
@@ -111,10 +89,8 @@ public class LWRIOHandler extends HdfIOFactory {
 			}
 
 			// Close the H5file.
-			status = H5.H5Fclose(fileId);
-			if (status < 0) {
-				throwException("Closing file \"" + path + "\"", status);
-			}
+			closeFile(fileId);
+
 		} catch (NullPointerException | HDF5LibraryException e) {
 			logger.error(
 					getClass().getName() + " error: "

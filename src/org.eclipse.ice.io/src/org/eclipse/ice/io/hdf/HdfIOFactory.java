@@ -14,7 +14,9 @@ package org.eclipse.ice.io.hdf;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.slf4j.Logger;
@@ -80,6 +82,11 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * Service.
 	 */
 	private static IHdfIORegistry hdfIORegistry = null;
+
+	/**
+	 * A map of open files.
+	 */
+	private final Map<Integer, URI> openFiles = new HashMap<Integer, URI>();
 
 	// ---- Methods that sub-classes MUST override! ---- //
 	/**
@@ -391,6 +398,83 @@ public class HdfIOFactory implements IHdfIOFactory {
 		throw new HDF5LibraryException(getClass().getName() + " error: "
 				+ message + ": " + Integer.toString(status));
 	}
+
+	// ---- File Operations ---- //
+	/**
+	 * Opens the file for reading.
+	 * 
+	 * @param uri
+	 *            A URI pointing to the file to read.
+	 * @return A handle to the file.
+	 * @throws IllegalArgumentException
+	 * @throws HDF5LibraryException
+	 */
+	public final int openFile(URI uri)
+			throws IllegalArgumentException, HDF5LibraryException {
+		int fileId = -1;
+
+		int status = -1;
+		if (uri != null) {
+			// Check the file associated with the URI. We need to be able to
+			// read from it.
+			File file = new File(uri);
+			String path = file.getPath();
+			if (!file.canRead()) {
+				throwException("File \"" + path + "\" cannot be read.", status);
+			}
+
+			// Open the H5 file, with read-only access if necessary.
+			status = H5.H5Fopen(path, HDF5Constants.H5F_ACC_RDONLY,
+					HDF5Constants.H5P_DEFAULT);
+			if (status < 0) {
+				throwException("Opening file \"" + path + "\"", status);
+			}
+			fileId = status;
+
+			// Store a reference to the URI in the map of open files.
+			openFiles.put(fileId, uri);
+		} else {
+			throwException("File to read must not be null.", status);
+		}
+
+		return fileId;
+	}
+
+	/**
+	 * Closes the file corresponding to the open file handle.
+	 * 
+	 * @param fileId
+	 *            The ID of the file handle.
+	 * @throws HDF5LibraryException
+	 */
+	public final void closeFile(int fileId) throws HDF5LibraryException {
+		int status;
+
+		// Find the URI and get its path if possible.
+
+		URI uri = openFiles.remove(fileId);
+		String path = uri != null ? uri.getPath() : "";
+
+		// Determine how many objects remain open in the file. There should
+		// only be one (the file itself).
+		status = H5.H5Fget_obj_count(fileId, HDF5Constants.H5F_OBJ_ALL);
+		if (status < 0) {
+			throwException(
+					"Getting open object count for file \"" + path + "\"",
+					status);
+		} else if (status > 1) {
+			logger.warn(getClass().getName() + " warning: " + status
+					+ " HDF objects remain open in file \"" + path + "\".");
+		}
+
+		status = H5.H5Fclose(fileId);
+		if (status < 0) {
+			throwException("Closing file \"" + path + "\"", status);
+		}
+
+		return;
+	}
+	// ------------------------- //
 
 	// ---- Group Operations ---- //
 	/**

@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.ice.analysistool.IData;
@@ -146,6 +149,7 @@ public class LWRIOHandlerTester {
 
 		TreeSet<MaterialBlock> materialBlocks = new TreeSet<MaterialBlock>();
 		materialBlocks.add(block);
+		expectedMaterialBlock = block;
 
 		// Add a rod to the assembly.
 		LWRRod rod = new LWRRod();
@@ -368,6 +372,95 @@ public class LWRIOHandlerTester {
 		assertEquals(expectedRod.getPressure(), rod.getPressure(), epsilon);
 		// ------------------------------------- //
 
+		// ---- Check the tube's attributes. ---- //
+		Tube tube;
+
+		// Get the tube from the loaded assembly.
+		assertEquals(1, assembly.getNumberOfTubes());
+		tube = assembly.getTubeByLocation(0, 2);
+
+		// Inherited properties...
+		assertNotNull(tube);
+		assertEquals(expectedTube.getName(), tube.getName());
+		assertEquals(expectedTube.getId(), tube.getId());
+		assertEquals(expectedTube.getDescription(), tube.getDescription());
+
+		// Tube-specific properties...
+		assertEquals(expectedTube.getHeight(), tube.getHeight(), epsilon);
+		assertEquals(expectedTube.getInnerRadius(), tube.getInnerRadius(),
+				epsilon);
+		assertEquals(expectedTube.getOuterRadius(), tube.getOuterRadius(),
+				epsilon);
+		assertEquals(expectedTube.getTubeType(), tube.getTubeType());
+		// -------------------------------------- //
+
+		// ---- Check the rod's clad. ---- //
+		Ring clad;
+
+		// Get the clad from the loaded rod.
+		clad = rod.getClad();
+
+		// Inherited properties...
+		assertNotNull(clad);
+		assertEquals(expectedClad.getName(), clad.getName());
+		assertEquals(expectedClad.getId(), clad.getId());
+		assertEquals(expectedClad.getDescription(), clad.getDescription());
+
+		// Ring-specific properties...
+		assertEquals(expectedClad.getHeight(), clad.getHeight(), epsilon);
+		assertEquals(expectedClad.getInnerRadius(), clad.getInnerRadius(),
+				epsilon);
+		assertEquals(expectedClad.getOuterRadius(), clad.getOuterRadius(),
+				epsilon);
+
+		// ------------------------------- //
+
+		// ---- Check the rod's MaterialBlocks. ---- //
+		MaterialBlock block;
+
+		// Get the material block from the rod.
+		Set<MaterialBlock> blocks = rod.getMaterialBlocks();
+		assertNotNull(blocks);
+		assertEquals(1, blocks.size());
+		block = blocks.iterator().next();
+
+		// Inherited properties...
+		assertNotNull(block);
+		assertEquals(expectedMaterialBlock.getName(), block.getName());
+		assertEquals(expectedMaterialBlock.getId(), block.getId());
+		assertEquals(expectedMaterialBlock.getDescription(),
+				block.getDescription());
+
+		// Block-specific properties...
+		assertEquals(expectedMaterialBlock.getPosition(), block.getPosition(),
+				epsilon);
+		assertNotNull(block.getRings());
+		assertEquals(expectedMaterialBlock.getRings().size(),
+				block.getRings().size());
+
+		// ----------------------------------------- //
+
+		// ---- Check the liquid material. ---- //
+		Material liquidMaterial;
+
+		// Get the material from the block.
+		liquidMaterial = block.getRing(0.0).getMaterial();
+
+		// Inherited properties...
+		assertNotNull(liquidMaterial);
+		assertEquals(expectedLiquidMaterial.getName(),
+				liquidMaterial.getName());
+		assertEquals(expectedLiquidMaterial.getId(), liquidMaterial.getId());
+		assertEquals(expectedLiquidMaterial.getDescription(),
+				liquidMaterial.getDescription());
+
+		// Material-specific properties...
+		assertEquals(expectedLiquidMaterial.getMaterialType(),
+				liquidMaterial.getMaterialType());
+
+		// ------------------------------------ //
+
+		// ---- Check data for each location in the assembly. ---- //
 		// Add data for the rod at every location in the assembly. Utilize 10 z
 		// positions and 3 timesteps.
 		ArrayList<Double> position;
@@ -416,6 +509,99 @@ public class LWRIOHandlerTester {
 				}
 			}
 		}
+		// ------------------------------------------------------- //
+
+		return;
+	}
+
+	@Test
+	public void checkReadObjects() {
+
+		String s = System.getProperty("file.separator");
+		File dataFile = new File(System.getProperty("user.home") + s
+				+ "ICETests" + s + "reactorData" + s + "oldFormatReactor.h5");
+		URI uri = dataFile.toURI();
+
+		// Read in the reactor.
+		List<LWRComponent> components = handler.readHDF5(uri);
+		assertNotNull(components);
+		assertEquals(1, components.size());
+		assertTrue(components.get(0) instanceof PressurizedWaterReactor);
+
+		// Declarations of components that will be extracted from the read
+		// reactor components.
+		PressurizedWaterReactor reactor = null;
+		FuelAssembly assembly = null;
+		LWRData assemblyData = null;
+		LWRRod rod = null;
+		Tube tube = null;
+		MaterialBlock block = null;
+		Ring clad = null;
+		Material solidMaterial = null;
+		Material liquidMaterial = null;
+		Material gasMaterial = null;
+
+		// Get the reactor.
+		reactor = (PressurizedWaterReactor) components.get(0);
+		assertNotNull(reactor);
+
+		// Get the assembly.
+		assembly = (FuelAssembly) reactor.getAssemblyByName(AssemblyType.Fuel,
+				expectedAssembly.getName());
+		assertNotNull(assembly);
+
+		// Get the data off the assembly.
+		List<IData> dataList = assembly
+				.getDataAtCurrentTime(expectedAssemblyData.getFeature());
+		assertNotNull(dataList);
+		assertEquals(1, dataList.size());
+		assemblyData = (LWRData) dataList.get(0);
+		assertNotNull(assemblyData);
+
+		// Get the rod off the assembly.
+		rod = assembly.getLWRRodByName(expectedRod.getName());
+		assertNotNull(rod);
+
+		// Get the tube off the assembly.
+		tube = assembly.getTubeByName(expectedTube.getName());
+		assertNotNull(tube);
+
+		// Get the clad off the rod.
+		clad = rod.getClad();
+		assertNotNull(clad);
+
+		// Get the material block off the rod.
+		Set<MaterialBlock> blocks = rod.getMaterialBlocks();
+		assertNotNull(blocks);
+		assertEquals(1, blocks.size());
+		block = blocks.iterator().next();
+		assertNotNull(block);
+
+		// Get the materials off the block.
+		List<Ring> rings = block.getRings();
+		assertNotNull(rings);
+		assertEquals(3, rings.size());
+		liquidMaterial = rings.get(0).getMaterial();
+		assertNotNull(liquidMaterial);
+		gasMaterial = rings.get(1).getMaterial();
+		assertNotNull(gasMaterial);
+		solidMaterial = rings.get(2).getMaterial();
+		assertNotNull(solidMaterial);
+
+		// Now perform normal equals checks from the lowest component to the
+		// highest-level component. The intention here is to make debugging this
+		// test much easier if equality comparisons fail somewhere inside the
+		// reactor.
+		assertEquals(expectedGasMaterial, gasMaterial);
+		assertEquals(expectedLiquidMaterial, liquidMaterial);
+		assertEquals(expectedSolidMaterial, solidMaterial);
+		assertEquals(expectedClad, clad);
+		assertEquals(expectedMaterialBlock, block);
+		assertEquals(expectedTube, tube);
+		assertEquals(expectedRod, rod);
+		assertEquals(expectedAssemblyData, assemblyData);
+		assertEquals(expectedAssembly, assembly);
+		assertEquals(expectedReactor, reactor);
 
 		return;
 	}

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.TreeSet;
 
 import org.eclipse.ice.io.hdf.HdfIOFactory;
 import org.eclipse.ice.reactor.AssemblyType;
@@ -30,6 +31,7 @@ import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.LWReactor;
 import org.eclipse.ice.reactor.Material;
 import org.eclipse.ice.reactor.MaterialBlock;
+import org.eclipse.ice.reactor.MaterialType;
 import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.Tube;
 import org.eclipse.ice.reactor.TubeType;
@@ -79,6 +81,8 @@ public class LWRComponentReader {
 		return;
 	}
 
+	int counter = 0;
+
 	public LWRComponent read(int groupId)
 			throws NullPointerException, HDF5Exception {
 
@@ -104,6 +108,12 @@ public class LWRComponentReader {
 				IComponentReader reader = readerMap.get(tagType);
 				// Try to read the component.
 				try {
+					if (tagType == HDF5LWRTagType.LWRCOMPOSITE) {
+						counter++;
+						if (counter == 3) {
+							System.err.println("blah");
+						}
+					}
 					reader.readComponent(component, groupId);
 				} catch (NullPointerException | HDF5Exception e) {
 					logger.error(getClass().getName() + " error: "
@@ -421,7 +431,7 @@ public class LWRComponentReader {
 		String ringGroupName = getChildGroups(groupId).get(0);
 		int ringGroupId = factory.openGroup(groupId, ringGroupName);
 		Ring ring = (Ring) read(ringGroupId);
-		factory.closeGroup(groupId);
+		factory.closeGroup(ringGroupId);
 		// Set it as the incore instrument's thimble.
 		incoreInstrument.setThimble(ring);
 
@@ -453,14 +463,27 @@ public class LWRComponentReader {
 		// Read properties specific to this type...
 		rod.setPressure(factory.readDoubleAttribute(groupId, "pressure"));
 
-		// Read the clad.
-		// TODO
+		TreeSet<MaterialBlock> blocks = new TreeSet<MaterialBlock>();
 
-		// Read the fill gas.
-		// TODO
+		for (String child : getChildGroups(groupId)) {
+			// Open, read, and close the group for the child LWRComponent.
+			int childGroupId = factory.openGroup(groupId, child);
+			LWRComponent component = read(childGroupId);
+			factory.closeGroup(childGroupId);
 
-		// Read the material blocks.
-		// TODO
+			// Add the component to the rod depending on its type.
+			HDF5LWRTagType tag = component.getHDF5LWRTag();
+			if (tag == HDF5LWRTagType.RING) {
+				rod.setClad((Ring) component);
+			} else if (tag == HDF5LWRTagType.MATERIAL) {
+				rod.setFillGas((Material) component);
+			} else if (tag == HDF5LWRTagType.MATERIALBLOCK) {
+				blocks.add((MaterialBlock) component);
+			}
+		}
+
+		// Set the rod's material blocks based on those loaded into the set.
+		rod.setMaterialBlocks(blocks);
 
 		return;
 	}
@@ -473,21 +496,23 @@ public class LWRComponentReader {
 
 		// Read properties specific to this type...
 		ring.setHeight(factory.readDoubleAttribute(groupId, "height"));
-		ring.setOuterRadius(factory.readDoubleAttribute(groupId, "height"));
-		ring.setInnerRadius(factory.readDoubleAttribute(groupId, "height"));
+		ring.setOuterRadius(
+				factory.readDoubleAttribute(groupId, "outerRadius"));
+		ring.setInnerRadius(
+				factory.readDoubleAttribute(groupId, "innerRadius"));
 
 		// Read the material.
 		// Open its group.
 		String materialName = getChildGroups(groupId).get(0);
-		groupId = factory.openGroup(groupId, materialName);
+		int materialGroupId = factory.openGroup(groupId, materialName);
 		// Create the component and read its information. Note that Material
 		// is not part of the visitor pattern, so it must be read directly.
-		Material material = (Material) read(groupId);
-		read(groupId, material);
+		Material material = (Material) read(materialGroupId);
+		// Close its group.
+		factory.closeGroup(materialGroupId);
+
 		// Add it to the tube.
 		ring.setMaterial(material);
-		// Close its group.
-		factory.closeGroup(groupId);
 
 		return;
 	}
@@ -510,18 +535,32 @@ public class LWRComponentReader {
 		read(groupId, (LWRComponent) material);
 
 		// Read properties specific to this type...
-		// TODO
+		String materialType = factory.readStringAttribute(groupId,
+				"materialType");
+		material.setMaterialType(MaterialType.toType(materialType));
 
 		return;
 	}
 
-	private void read(int groupId, MaterialBlock materialBlock)
+	private void read(int groupId, MaterialBlock block)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
-		read(groupId, (LWRComponent) materialBlock);
+		read(groupId, (LWRComponent) block);
 
 		// Read properties specific to this type...
-		// TODO
+		block.setPosition(factory.readDoubleAttribute(groupId, "position"));
+
+		// Read in all of the rings in the block.
+		for (String child : getChildGroups(groupId)) {
+			// Since we know the type, we can directly read it in as a ring.
+			Ring ring = new Ring();
+			// Open, read, and close the ring's group.
+			int childGroupId = factory.openGroup(groupId, child);
+			read(childGroupId, ring);
+			factory.closeGroup(childGroupId);
+			// Add the ring to the block.
+			block.addRing(ring);
+		}
 
 		return;
 	}
