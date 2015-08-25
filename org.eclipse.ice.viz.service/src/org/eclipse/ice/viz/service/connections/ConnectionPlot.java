@@ -238,6 +238,8 @@ public abstract class ConnectionPlot<T> extends AbstractPlot
 		return;
 	}
 
+
+
 	// -------- Methods for VisIt Plot --------//
 
 	/**

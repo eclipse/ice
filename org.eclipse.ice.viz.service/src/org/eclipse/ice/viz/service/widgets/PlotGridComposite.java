@@ -246,7 +246,6 @@ public class PlotGridComposite extends Composite {
 		} else {
 			System.err.println("Rejecting plot because not enough space");
 		}
-		
 
 		// If a plot could be created, try to draw it.
 		if (plot != null) {
@@ -554,9 +553,9 @@ public class PlotGridComposite extends Composite {
 		for (int i = 0; i < plots.size(); i++) {
 			IPlot plot = plots.get(i);
 			// Composite plotComposite = plotComposites.get(i);
-			if (plot.getDataSource() == uri) {
+			if (plot.getDataSource().equals(uri)) {
 				try {
-					plot.draw(grid);
+					plot.redraw();
 				} catch (Exception e) {
 					logger.warn(getClass().getName() + " Exception! "
 							+ "Error while refreshing a plot for the file \""

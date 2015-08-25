@@ -21,6 +21,7 @@ import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.datastructures.IVizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools

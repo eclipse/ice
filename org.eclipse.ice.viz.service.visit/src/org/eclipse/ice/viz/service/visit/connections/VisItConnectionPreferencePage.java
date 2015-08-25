@@ -58,7 +58,8 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 				template.add(proxyEntry);
 				// ---- proxy port ---- //
 				PortEntryContentProvider portContentProvider = new PortEntryContentProvider();
-				portContentProvider.setRange(PortEntryContentProvider.MIN_PORT, PortEntryContentProvider.MAX_PORT);
+				portContentProvider.setRange(PortEntryContentProvider.MIN_PORT,
+						PortEntryContentProvider.MAX_PORT);
 				portContentProvider.setDefaultValue(22);
 				VizEntry proxyPortEntry = new PortEntry(portContentProvider);
 				proxyPortEntry.setName("Proxy Port");

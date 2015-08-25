@@ -29,7 +29,7 @@ public class CellColumnLabelProvider extends ColumnLabelProvider {
 	 * The content provider. The methods required as a
 	 * <code>ColumnLabelProvider</code> are passed to this content provider.
 	 */
-	protected final ICellContentProvider contentProvider;
+	protected final IVizCellContentProvider contentProvider;
 
 	/**
 	 * The default constructor.
@@ -39,7 +39,7 @@ public class CellColumnLabelProvider extends ColumnLabelProvider {
 	 *            <code>ColumnLabelProvider</code> are passed to this content
 	 *            provider.
 	 */
-	public CellColumnLabelProvider(ICellContentProvider contentProvider) {
+	public CellColumnLabelProvider(IVizCellContentProvider contentProvider) {
 		this.contentProvider = contentProvider;
 	}
 

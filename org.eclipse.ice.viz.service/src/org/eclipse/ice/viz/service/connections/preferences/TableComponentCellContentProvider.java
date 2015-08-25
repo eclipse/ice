@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class TableComponentCellContentProvider implements ICellContentProvider {
+public class TableComponentCellContentProvider implements IVizCellContentProvider {
 
 	/**
 	 * The text to display when the element passed to this provider is invalid.
@@ -41,7 +41,7 @@ public class TableComponentCellContentProvider implements ICellContentProvider {
 	/**
 	 * The underlying content provider that is used for each cell in the table.
 	 */
-	private final ICellContentProvider realProvider;
+	private final IVizCellContentProvider realProvider;
 
 	/**
 	 * The column index for this provider. This provider expects a row (which
@@ -62,7 +62,7 @@ public class TableComponentCellContentProvider implements ICellContentProvider {
 	 *            specifies which column in that row provides the real content
 	 *            for the cell.
 	 */
-	public TableComponentCellContentProvider(ICellContentProvider contentProvider, int index) {
+	public TableComponentCellContentProvider(IVizCellContentProvider contentProvider, int index) {
 		realProvider = contentProvider;
 		this.index = index;
 	}

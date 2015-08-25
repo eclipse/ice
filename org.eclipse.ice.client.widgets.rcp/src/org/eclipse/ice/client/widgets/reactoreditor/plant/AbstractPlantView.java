@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
-import org.eclipse.ice.client.widgets.jme.AbstractView;
+import org.eclipse.ice.viz.service.jme3.widgets.AbstractView;
 
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;

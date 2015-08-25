@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.geometry.test;
 
-import org.eclipse.ice.client.widgets.jme.MasterApplication;
-import org.eclipse.ice.client.widgets.jme.ViewAppState;
+import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

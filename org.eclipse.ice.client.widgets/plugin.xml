@@ -214,7 +214,7 @@
 	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor 
 			contributorId="org.eclipse.ice.client.widgets.MeshElementTreeView"
-			tabDescriptorProvider="org.eclipse.ice.client.widgets.mesh.properties.TabDescriptorProvider">
+			tabDescriptorProvider="org.eclipse.ice.viz.service.mesh.properties.TabDescriptorProvider">
 			<propertyCategory category="MeshSelection"/>
 		</propertyContributor>
 	</extension>
@@ -222,7 +222,7 @@
 	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor 
 			contributorId="org.eclipse.ice.client.widgets.ICEMeshPage"
-			tabDescriptorProvider="org.eclipse.ice.client.widgets.mesh.properties.TabDescriptorProvider">
+			tabDescriptorProvider="org.eclipse.ice.viz.service.mesh.properties.TabDescriptorProvider">
 			<propertyCategory category="MeshSelection"/>
 		</propertyContributor>
 	</extension>

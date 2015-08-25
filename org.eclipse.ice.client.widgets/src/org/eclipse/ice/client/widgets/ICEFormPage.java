@@ -51,6 +51,9 @@ public class ICEFormPage extends FormPage {
 
 		this.editor = (ICEFormEditor) editor;
 		
+		// Save the editor reference
+		this.editor = (ICEFormEditor) editor;
+		
 		// Create the logger
 		logger = LoggerFactory.getLogger(getClass());
 

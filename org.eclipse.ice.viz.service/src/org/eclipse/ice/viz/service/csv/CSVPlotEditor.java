@@ -37,6 +37,7 @@ import org.eclipse.nebula.visualization.xygraph.figures.Trace.ErrorBarType;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.PointStyle;
 import org.eclipse.nebula.visualization.xygraph.figures.Trace.TraceType;
 import org.eclipse.nebula.visualization.xygraph.figures.XYGraph;
+import org.eclipse.nebula.visualization.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -638,7 +639,9 @@ public class CSVPlotEditor extends EditorPart {
 					.getProperty(XYZSeriesStyle.ERROR_TYPE));
 		}
 		// Replace the other trace in the existing traces map
-		xyGraph.remove(this.existingTraces.remove(series));
+		Trace toRemove = this.existingTraces.remove(series);
+		trace.setTraceColor(toRemove.getTraceColor());
+		xyGraph.remove(toRemove);
 		xyGraph.addTrace(trace);
 
 		// Re-add to the existing traces map
@@ -939,15 +942,21 @@ public class CSVPlotEditor extends EditorPart {
 						.getProperty(XYZSeriesStyle.ERROR_TYPE));
 				// Add the trace that was just created
 				this.existingTraces.put(series, trace);
+				// Make sure that if a series was recently removed that this
+				// series won't be a new color for no reason.
+				if (trace.getTraceColor() == null) {
+					List<ISeries> keys = new ArrayList<ISeries>(
+							existingTraces.keySet());
+					trace.setTraceColor(XYGraphMediaFactory.getInstance()
+							.getColor(XYGraph.DEFAULT_TRACES_COLOR[keys
+									.indexOf(series)
+									% XYGraph.DEFAULT_TRACES_COLOR.length]));
+				}
 				xyGraph.addTrace(trace);
 
 			}
 
 		}
-
-		// Repaint the figure
-		// TODO- Run on separate thread to not hang UI?
-		xyGraph.repaint();
 
 		return;
 

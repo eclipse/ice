@@ -12,16 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.test;
 
-import org.eclipse.ice.datastructures.form.mesh.BezierEdge;
-import org.eclipse.ice.datastructures.form.mesh.Edge;
-import org.eclipse.ice.datastructures.form.mesh.Hex;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPart;
-import org.eclipse.ice.datastructures.form.mesh.IMeshPartVisitor;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.mesh.Polygon;
-import org.eclipse.ice.datastructures.form.mesh.PolynomialEdge;
-import org.eclipse.ice.datastructures.form.mesh.Quad;
-import org.eclipse.ice.datastructures.form.mesh.Vertex;
+import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
+import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
+import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
+import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 /**
  * <p>
@@ -75,7 +76,6 @@ public class TestMeshVisitor implements IMeshPartVisitor {
 		visited = false;
 	}
 
-	@Override
 	public void visit(MeshComponent mesh) {
 		// Do nothing by default.
 	}
@@ -118,6 +118,12 @@ public class TestMeshVisitor implements IMeshPartVisitor {
 	@Override
 	public void visit(Object object) {
 		// Do nothing by default.
+	}
+
+	@Override
+	public void visit(VizMeshComponent mesh) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

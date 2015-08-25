@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 
-
 /**
  * This class provides a basic content provider for {@link PortEntry}s. Some
  * notes about its behavior:

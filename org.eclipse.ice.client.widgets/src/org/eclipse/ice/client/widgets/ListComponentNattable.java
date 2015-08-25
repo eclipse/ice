@@ -12,6 +12,7 @@
 package org.eclipse.ice.client.widgets;
 
 import java.util.Iterator;
+
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -87,13 +88,32 @@ public class ListComponentNattable {
 	private RowSelectionProvider selectionProvider;
 
 	/**
+	 * The selection layer for the table, allows for getting selection events,
+	 * more general than the row selection provider
+	 */
+	private SelectionLayer selectionLayer;
+
+	/**
+	 * The column property accessor, used to get the column names
+	 */
+	private IColumnPropertyAccessor accessor;
+
+	/**
 	 * If the NatTable is editable or not (from the user's side). If false, the
 	 * user will only be able to select table cells, if true then the user will
 	 * be able to change the table's values.
 	 */
 	private boolean canEdit;
 
-	private boolean percentResize;
+	/**
+	 * Flag denoting if the column widths should be sized to fit the container
+	 */
+	private boolean resizeWidths;
+
+	/**
+	 * Flag denoting if the row heights should be resized to fit the container
+	 */
+	private boolean resizeHeights;
 
 	/**
 	 * Constructor, needs the parent Composite and the List for data. This has
@@ -114,7 +134,8 @@ public class ListComponentNattable {
 		list = listComponent;
 		selectedList = new ListComponent();
 		canEdit = editable;
-		percentResize = true;
+		resizeWidths = true;
+		resizeHeights = false;
 		createTable();
 	}
 
@@ -127,18 +148,23 @@ public class ListComponentNattable {
 	 *            The ListComponent to be used as list data for the Nattable
 	 * @param editable
 	 *            A boolean representing if the table is editable by the user
-	 * @param sizeForParent
+	 * @param sizeWidths
 	 *            A boolean representing if the table should take the size of
 	 *            its parent or maintain its preferred size and have scroll bars
 	 *            or unfilled space instead. Only effects column width.
+	 * @param sizeHeights
+	 *            A boolean representing if the table should take the size of
+	 *            its parent or maintain its perferred size and ahve scroll bars
+	 *            or unfilled space instead. Only effects row height.
 	 */
 	public ListComponentNattable(Composite parent, ListComponent listComponent,
-			boolean editable, boolean sizeForParent) {
+			boolean editable, boolean sizeWidths, boolean sizeHeights) {
 		sectionClient = parent;
 		list = listComponent;
 		selectedList = new ListComponent();
 		canEdit = editable;
-		percentResize = sizeForParent;
+		resizeWidths = sizeWidths;
+		resizeHeights = sizeHeights;
 		createTable();
 	}
 
@@ -149,19 +175,19 @@ public class ListComponentNattable {
 	private void createTable() {
 
 		// Create the data layer of the table
-		IColumnPropertyAccessor accessor = new ListComponentColumnPropertyAccessor(
-				list);
+		accessor = new ListComponentColumnPropertyAccessor(list);
 		IDataProvider dataProvider = new ListDataProvider(list, accessor);
 		DataLayer dataLayer = new DataLayer(dataProvider);
 		GlazedListsEventLayer eventLayer = new GlazedListsEventLayer(dataLayer,
 				list);
 
-		// If the table's columns should autoresize their widths to fill the
-		// parent Composite.
-		dataLayer.setColumnPercentageSizing(percentResize);
+		// If the table's columns and rows should autoresize their widths to
+		// fill the parent Composite.
+		dataLayer.setColumnPercentageSizing(resizeWidths);
+		dataLayer.setRowPercentageSizing(resizeHeights);
 
 		// Create the selection and viewport layers of the table
-		SelectionLayer selectionLayer = new SelectionLayer(eventLayer);
+		selectionLayer = new SelectionLayer(eventLayer);
 		ViewportLayer viewportLayer = new ViewportLayer(selectionLayer);
 
 		// Get the column names
@@ -225,8 +251,8 @@ public class ListComponentNattable {
 
 		// Configure the table (lay it out)
 		natTable.configure();
-		natTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
-				1));
+		natTable.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
 		// Setting table instance variable
 		table = natTable;
@@ -267,13 +293,35 @@ public class ListComponentNattable {
 	}
 
 	/**
+	 * Gets the name of the column given by the position indicated.
+	 * 
+	 * @param columnPosition
+	 *            The column's position.
+	 * @return Returns the column name as a string
+	 */
+	public String getColumnName(int columnPosition) {
+
+		return accessor.getColumnProperty(columnPosition);
+	}
+
+	/**
 	 * Gets the row selection provider so that another class could potentially
-	 * listen for selection events in the table.
+	 * listen for row selection events in the table.
 	 * 
 	 * @return
 	 */
 	public RowSelectionProvider getSelectionProvider() {
 		return selectionProvider;
+	}
+
+	/**
+	 * Gets the entire selection layer for listening and responding to all
+	 * selection events
+	 * 
+	 * @return
+	 */
+	public SelectionLayer getSelectionLayer() {
+		return selectionLayer;
 	}
 
 	/**
