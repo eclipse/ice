@@ -45,5 +45,6 @@ Import-Package: com.jme3.app,
  org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.client.widgets
 Service-Component: OSGI-INF/eclipseWidgetsComponent.xml,
+ OSGI-INF/meshPageVizService.xml,
  OSGI-INF/formEditorVizService.xml
 Bundle-Vendor: Oak Ridge National Laboratory

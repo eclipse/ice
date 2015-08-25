@@ -164,8 +164,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// posted to the IFormWidget based on the status of the process.
 		statusMessageMap.put(FormStatus.Processed, "Done!");
 		statusMessageMap.put(FormStatus.Processing, "Processing Form...");
-		statusMessageMap.put(FormStatus.InfoError, "The Form contains an error"
-				+ " and cannot be processed.");
+		statusMessageMap.put(FormStatus.InfoError,
+				"The Form contains an error" + " and cannot be processed.");
 		statusMessageMap.put(FormStatus.ReadyToProcess, "Ready to process.");
 		statusMessageMap.put(FormStatus.NeedsInfo,
 				"The Form requires additional information before "
@@ -175,24 +175,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 				+ "processed or updated. It should be considered read-only.");
 
 		// Get the widgets factory from the registry
-		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		IExtensionPoint point = registry
-				.getExtensionPoint("org.eclipse.ice.client.iwidgetfactory");
-		IExtension[] extensions = point.getExtensions();
-		// Get the configuration element. The extension point can only have one
-		// extension by default, so no need for a loop or check.
-		IConfigurationElement[] elements = extensions[0]
-				.getConfigurationElements();
-		IConfigurationElement element = elements[0];
-		// Set the widget factory
-		try {
-			setUIWidgetFactory((IWidgetFactory) element
-					.createExecutableExtension("class"));
-		} catch (CoreException e) {
-			// Complain
-			logger.error("Unable to retrieve UI Widget factory from registry!",
-					e);
-		}
+		IWidgetFactory factory = PlatformUI.getWorkbench()
+				.getService(IWidgetFactory.class);
+		setUIWidgetFactory(factory);
 
 		// Set the reference to this in the Singleton for the widget classes to
 		// retrieve as needed.
@@ -353,8 +338,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (itemId > 0) {// FIXME Status check!
 			loadItem(itemId);
 		} else if (itemId <= 0) {
-			throwSimpleError("Unable to load Item " + itemType
-					+ " after creating it.");
+			throwSimpleError(
+					"Unable to load Item " + itemType + " after creating it.");
 		}
 	}
 
@@ -371,8 +356,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (iWidgetFactory != null) {
 			logger.info("IClient Message: Widget Factory set!");
 		} else {
-			logger.info("IClient Message: "
-					+ "Widget Factory set, but is null.");
+			logger.info(
+					"IClient Message: " + "Widget Factory set, but is null.");
 		}
 		return;
 	}
@@ -401,15 +386,16 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			formWidget.display();
 			// Set the initial status of the Form
 			formStatus = getCore().getItemStatus(itemId);
-			formWidget.updateStatus(statusMessageMap.get(iCore
-					.getItemStatus(itemId)));
+			formWidget.updateStatus(
+					statusMessageMap.get(iCore.getItemStatus(itemId)));
 			// If the FormStatus signifies that the Form is absolutely
 			// unacceptable, then the user should be warned.
 			if (formStatus.equals(FormStatus.Unacceptable)) {
 				formWidget.disable(true);
-				throwSimpleError("This Form has been set to a read-only mode by "
-						+ "ICE. Please be advised that it can not be upated"
-						+ " or processed.");
+				throwSimpleError(
+						"This Form has been set to a read-only mode by "
+								+ "ICE. Please be advised that it can not be upated"
+								+ " or processed.");
 			}
 			// Register for updates
 			formWidget.registerUpdateListener(this);
@@ -601,8 +587,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 				// Update the status of the Item update
 				if (formWidgetTable.containsKey(form.getItemID())) {
 					String statusMessage = statusMessageMap.get(status);
-					formWidgetTable.get(form.getItemID()).updateStatus(
-							statusMessage);
+					formWidgetTable.get(form.getItemID())
+							.updateStatus(statusMessage);
 				}
 			} else {
 				// Notify the user that there is some invalid information in the
