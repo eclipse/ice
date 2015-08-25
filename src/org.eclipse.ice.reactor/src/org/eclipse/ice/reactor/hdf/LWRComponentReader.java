@@ -108,12 +108,6 @@ public class LWRComponentReader {
 				IComponentReader reader = readerMap.get(tagType);
 				// Try to read the component.
 				try {
-					if (tagType == HDF5LWRTagType.LWRCOMPOSITE) {
-						counter++;
-						if (counter == 3) {
-							System.err.println("blah");
-						}
-					}
 					reader.readComponent(component, groupId);
 				} catch (NullPointerException | HDF5Exception e) {
 					logger.error(getClass().getName() + " error: "
