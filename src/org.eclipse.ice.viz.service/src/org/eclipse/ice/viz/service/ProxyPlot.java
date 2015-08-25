@@ -154,9 +154,29 @@ public abstract class ProxyPlot extends AbstractPlot {
 	 * current set of series available from the source plot.
 	 */
 	protected void reloadSeries() {
-		proxySeries.clear();
+		// Only reload if not null.
 		if (source != null) {
-			proxySeries.putAll(createProxySeries(source));
+			// Get the new series from the source
+			Map<String, List<ISeries>> newSeries = createProxySeries(source);
+			// Iterate over the categories and the series lists to enable all of
+			// the previously enabled series, this allows for easier model
+			// fitting
+			for (String category : newSeries.keySet()) {
+				List<ISeries> listSeries = newSeries.get(category);
+				List<ISeries> oldSeries = proxySeries.get(category);
+				if (oldSeries != null) {
+					for (int i = 0; i < listSeries.size()
+							&& i < oldSeries.size(); i++) {
+						listSeries.get(i)
+								.setEnabled(oldSeries.get(i).isEnabled());
+					}
+				}
+			}
+			proxySeries.clear();
+			proxySeries.putAll(newSeries);
+		} else {
+			// If null, clear the series so that nothing appears on the graph
+			proxySeries.clear();
 		}
 		return;
 	}

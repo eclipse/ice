@@ -360,7 +360,10 @@
 		<module>../tests/org.eclipse.ice.viz.service.test</module>
 		<module>../src/org.eclipse.ice.viz.service.geometry</module>
 		<module>../tests/org.eclipse.ice.viz.service.geometry.test</module>
-		<module>../src/org.eclipse.ice.viz.service.jme3</module>		
+		<module>../src/org.eclipse.ice.viz.service.jme3</module>
+		<module>../tests/org.eclipse.ice.viz.service.jme3.test</module>
+		<module>../src/org.eclipse.ice.viz.service.mesh</module>
+		<module>../tests/org.eclipse.ice.viz.service.mesh.test</module>
 		<module>../src/org.eclipse.ice.viz.service.visit</module>
 		<module>../tests/org.eclipse.ice.viz.service.visit.test</module>
 		<module>../src/org.eclipse.ice.viz.service.paraview</module>
@@ -376,6 +379,7 @@
 		<module>../tests/org.eclipse.ice.sassena.test</module>
 		<module>../src/org.eclipse.ice.reflectivity</module>
 		<module>../tests/org.eclipse.ice.reflectivity.test</module>
+		<module>../src/org.eclipse.ice.reflectivity.ui</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST 
 			BUILD LAST! -->
 		<module>../features/org.eclipse.ice.feature</module>

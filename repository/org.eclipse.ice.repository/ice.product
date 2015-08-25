@@ -7,9 +7,9 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs
+      <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault
       </programArgs>
-      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080 -Dosgi.instance.area=@user.home/ICEFiles
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
       </vmArgs>
       <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin
       </vmArgsLin>
@@ -159,7 +159,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.grid" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.lwr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.sfr" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.core" autoStart="true" startLevel="5" />
+      <plugin id="org.eclipse.ice.core" autoStart="true" startLevel="6" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
@@ -169,7 +169,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />
@@ -177,14 +177,15 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reflectivity.ui" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.ice.sassena" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.xolotl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />

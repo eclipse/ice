@@ -14,10 +14,10 @@ package org.eclipse.ice.client.widgets.reactoreditor.plant;
 
 import java.util.concurrent.Callable;
 
-import org.eclipse.ice.client.widgets.jme.IRenderQueue;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Junction;
+import org.eclipse.ice.viz.service.jme3.application.IRenderQueue;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.math.Quaternion;

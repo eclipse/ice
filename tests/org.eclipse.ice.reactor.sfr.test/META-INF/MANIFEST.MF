@@ -10,5 +10,7 @@ Import-Package: org.eclipse.ice.analysistool,
  org.eclipse.ice.datastructures.test,
  org.eclipse.ice.reactor.sfr.base,
  org.eclipse.ice.reactor.sfr.core,
- org.eclipse.ice.reactor.sfr.core.assembly
+ org.eclipse.ice.reactor.sfr.core.assembly,
+ org.eclipse.ice.viz.service.datastructures,
+ org.eclipse.ice.viz.service.mesh.datastructures
 Bundle-Vendor: Oak Ridge National Laboratory

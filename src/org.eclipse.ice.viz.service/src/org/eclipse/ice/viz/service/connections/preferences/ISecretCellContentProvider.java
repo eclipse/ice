@@ -20,7 +20,7 @@ package org.eclipse.ice.viz.service.connections.preferences;
  * @author Jordan Deyton
  *
  */
-public interface ISecretCellContentProvider extends ICellContentProvider {
+public interface ISecretCellContentProvider extends IVizCellContentProvider {
 
 	/**
 	 * The default character to use when obscuring text.

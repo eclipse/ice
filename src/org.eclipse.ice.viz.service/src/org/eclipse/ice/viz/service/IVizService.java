@@ -13,7 +13,10 @@
 package org.eclipse.ice.viz.service;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
+
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 
 import org.eclipse.ice.viz.service.datastructures.IVizObject;
 
@@ -58,6 +61,23 @@ public interface IVizService {
 	public IVizCanvas createCanvas(IVizObject object) throws Exception;
 	
 	/**
+	 * This operation returns the name of the service. The name should be
+	 * something simple and human-readable.
+	 * 
+	 * @return The name of the IVizService
+	 */
+	public String getName();
+
+	/**
+	 * This operation returns a version number for the service. It should be
+	 * more or less human readable and contain a major and a minor version
+	 * (Version 2.1 instead of just 2, for example).
+	 * 
+	 * @return The version of the IVizService
+	 */
+	public String getVersion();
+
+	/**
 	 * This operation directs the IVizService to create a new plot using the
 	 * specified file and to return a handle to that plot to the caller so that
 	 * it may modify the plot.
@@ -70,15 +90,9 @@ public interface IVizService {
 	 *             a plot with the given file and giving the reason why.
 	 */
 	public IPlot createPlot(URI file) throws Exception;
-	
-	/**
-	 * This operation returns the name of the service. The name should be
-	 * something simple and human-readable.
-	 * 
-	 * @return The name of the IVizService
-	 */
-	public String getName();
-	
+
+
+
 	/**
 	 * Gets a set containing all supported file extensions for which an IPlot
 	 * can be created. Extensions in the set are expected to conform to the
@@ -92,15 +106,6 @@ public interface IVizService {
 	 * @return A set containing all supported extensions.
 	 */
 	public Set<String> getSupportedExtensions();
-
-	/**
-	 * This operation returns a version number for the service. It should be
-	 * more or less human readable and contain a major and a minor version
-	 * (Version 2.1 instead of just 2, for example).
-	 * 
-	 * @return The version of the IVizService
-	 */
-	public String getVersion();
 
 
 }
