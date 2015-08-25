@@ -5,8 +5,6 @@ Bundle-SymbolicName: org.eclipse.ice.client.widgets.rcp;singleton:=true
 Bundle-Version: 2.1.7.20150824
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.client.widgets.jme,
- org.eclipse.ice.client.widgets.mesh,
- org.eclipse.ice.client.widgets.mesh.properties,
  org.eclipse.ice.client.widgets.reactoreditor.plant
 Import-Package: com.jme3.animation,
  com.jme3.app,
@@ -118,6 +116,7 @@ Import-Package: com.jme3.animation,
  org.eclipse.ice.reactor.plant,
  org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.jme3.application,
+ org.eclipse.ice.viz.service.jme3.internal,
  org.eclipse.ice.viz.service.jme3.widgets,
  org.eclipse.jface.databinding.swt,
  org.eclipse.ui.views.properties.tabbed,

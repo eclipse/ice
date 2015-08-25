@@ -38,7 +38,6 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
