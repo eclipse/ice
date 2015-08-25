@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.hdf;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.TreeSet;
 
+import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.io.hdf.HdfIOFactory;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
@@ -24,6 +26,7 @@ import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
+import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
@@ -44,10 +47,28 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
 public class LWRComponentWriter {
+
+	/*-
+	 * Improvements:
+	 * 
+	 * 1 - Groups are written even if there is nothing there, including:
+	 *   a - LWRComponent's "State Point Data"
+	 *   b - Grid labels for PWRs and FuelAssemblies.
+	 * 2 - LWRComponent's implementation of IDataProvider:
+	 *   a - Uses a compound datatype (double, double, string, double[3]).
+	 *   b - Can be combined into simpler datasets for faster reading.
+	 * 3 - There is also room for coalescing grid data providers into one large
+	 *     multi-dimensional table.
+	 * 4 - No re-use of the same components. If the same clad is used twice, it
+	 *     will be written twice in the file and become two separate instances
+	 *     when read.
+	 */
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -101,6 +122,9 @@ public class LWRComponentWriter {
 		// Write properties specific to this type...
 		String tag = component.getHDF5LWRTag().toString();
 		factory.writeStringAttribute(groupId, "HDF5LWRTag", tag);
+
+		// Write the LWRComponent data...
+		writeLWRComponentData(groupId, component);
 
 		return;
 	}
@@ -215,7 +239,26 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) rod);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeDoubleAttribute(groupId, "pressure", rod.getPressure());
+
+		// Write the rod's fill gas...
+		Material gas = rod.getFillGas();
+		int gasGroupId = factory.createGroup(groupId, gas.getName());
+		writeComponent(gasGroupId, gas);
+		factory.closeGroup(gasGroupId);
+
+		// Write the rod's clad...
+		Ring clad = rod.getClad();
+		int cladGroupId = factory.createGroup(groupId, clad.getName());
+		writeComponent(cladGroupId, clad);
+		factory.closeGroup(cladGroupId);
+
+		// Write the rod's material blocks...
+		for (MaterialBlock block : rod.getMaterialBlocks()) {
+			int blockGroupId = factory.createGroup(groupId, block.getName());
+			writeComponent(blockGroupId, block);
+			factory.closeGroup(blockGroupId);
+		}
 
 		return;
 	}
@@ -227,7 +270,17 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) ring);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeDoubleAttribute(groupId, "height", ring.getHeight());
+		factory.writeDoubleAttribute(groupId, "outerRadius",
+				ring.getOuterRadius());
+		factory.writeDoubleAttribute(groupId, "innerRadius",
+				ring.getInnerRadius());
+
+		// Write the material.
+		Material material = ring.getMaterial();
+		int materialGroupId = factory.createGroup(groupId, material.getName());
+		writeComponent(materialGroupId, material);
+		factory.closeGroup(materialGroupId);
 
 		return;
 	}
@@ -249,7 +302,8 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) material);
 
 		// Write properties specific to this type...
-		// TODO
+		MaterialType type = material.getMaterialType();
+		factory.writeStringAttribute(groupId, "materialType", type.toString());
 
 		return;
 	}
@@ -260,7 +314,14 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) block);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeDoubleAttribute(groupId, "position", block.getPosition());
+
+		// Write all of the rings in the block.
+		for (Ring ring : block.getRings()) {
+			int ringGroupId = factory.createGroup(groupId, ring.getName());
+			writeComponent(ringGroupId, ring);
+			factory.closeGroup(ringGroupId);
+		}
 
 		return;
 	}
@@ -283,6 +344,201 @@ public class LWRComponentWriter {
 
 		// Write properties specific to this type...
 		// TODO
+
+		return;
+	}
+
+	/**
+	 * Writes all of the data for an IDataProvider (implemented by
+	 * LWRComponent).
+	 * 
+	 * @param groupId
+	 *            The ID of the parent HDF5 Group for the component.
+	 * @param provider
+	 *            The IDataProvider to write the data from.
+	 * 
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	private void writeLWRComponentData(int groupId, LWRComponent provider)
+			throws NullPointerException, HDF5Exception {
+		// FIXME Why do we write this if there is no data? Changing this would
+		// require further changes in the native IO library.
+
+		// Get the initial timestep.
+		final double initialTimestep = provider.getCurrentTime();
+		final String units = provider.getTimeUnits();
+
+		// Create the encapsulating group.
+		int dataGroupId = factory.createGroup(groupId, "State Point Data");
+
+		// Loop over the timesteps.
+		for (double time : provider.getTimes()) {
+			// Set the provider to the current timestep.
+			int timestep = provider.getTimeStep(time);
+			provider.setTime(time);
+
+			// Create the group for the timestep.
+			String groupName = "Timestep: "
+					+ (Integer.toString((int) timestep));
+			int timestepGroupId = factory.createGroup(dataGroupId, groupName);
+
+			// Set the time and units attributes on the timestep group.
+			factory.writeDoubleAttribute(timestepGroupId, "time", time);
+			factory.writeStringAttribute(timestepGroupId, "units", units);
+
+			// Loop over the features at this timestep.
+			for (String datasetName : provider.getFeaturesAtCurrentTime()) {
+				List<IData> dataList = provider
+						.getDataAtCurrentTime(datasetName);
+				writeLWRData(timestepGroupId, datasetName, dataList);
+			}
+
+			// Close the group for the timestep.
+			factory.closeGroup(timestepGroupId);
+		}
+
+		// Close the "State Point Data" group that holds the data.
+		factory.closeGroup(dataGroupId);
+
+		// Restore the initial timestep.
+		provider.setTime(initialTimestep);
+
+		return;
+	}
+
+	private void writeLWRData(int groupId, String datasetName,
+			List<IData> dataList) throws NullPointerException, HDF5Exception {
+
+		// Constants used to avoid constant use of HDF5Constants namespace.
+		final int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
+		final int H5S_ALL = HDF5Constants.H5S_ALL;
+		final int H5T_COMPOUND = HDF5Constants.H5T_COMPOUND;
+		final int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
+
+		// ---- Create the buffers from which the dataset is written. ---- //
+		int size = 0;
+		for (IData data : dataList) {
+			String units = data.getUnits();
+			if (units.length() > size) {
+				size = units.length();
+			}
+		}
+		final int stringSize = size;
+
+		size = dataList.size();
+		long[] dims = new long[] { 1, size };
+
+		// Allocate the buffers.
+		Double[] doubleBuffer = new Double[2 * size];
+		ByteBuffer byteBuf = ByteBuffer.allocate(stringSize * size);
+		byte[] stringBuffer;
+		Double[] positionBuffer = new Double[3 * size];
+
+		int doubleIndex = 0;
+		int positionIndex = 0;
+		for (IData data : dataList) {
+
+			// Update the value/uncertainty buffer.
+			doubleBuffer[doubleIndex++] = data.getValue();
+			doubleBuffer[doubleIndex++] = data.getUncertainty();
+
+			// Update the string buffer.
+			String units = data.getUnits();
+			// Add the string's bytes.
+			byteBuf.put(units.getBytes());
+			// Fill the space allocated for this string with null bytes.
+			byteBuf.position(byteBuf.position() + stringSize - units.length());
+
+			// Update the position buffer.
+			List<Double> position = data.getPosition();
+			positionBuffer[positionIndex++] = position.get(0);
+			positionBuffer[positionIndex++] = position.get(1);
+			positionBuffer[positionIndex++] = position.get(2);
+		}
+		// Get the backing array from the byte buffer.
+		stringBuffer = byteBuf.array();
+		// --------------------------------------------------------------- //
+
+		// ---- Create the Dataset ---- //
+
+		String valueName = "value";
+		String uncertaintyName = "uncertainty";
+		String unitsName = "units";
+		String positionName = "position";
+
+		// Get the size of the double datatype.
+		int doubleSize = H5.H5Tget_size(H5T_NATIVE_DOUBLE);
+
+		// Create the string datatype.
+		final int stringDatatype = H5.H5Tcopy(HDF5Constants.H5T_C_S1);
+		H5.H5Tset_size(stringDatatype, stringSize);
+
+		// Create the position datatype.
+		final int positionDatatype = H5.H5Tarray_create(H5T_NATIVE_DOUBLE, 1,
+				new long[] { 3 });
+		final int positionSize = doubleSize * 3;
+
+		// Create the compound datatype for the whole dataset.
+		int offset = 0;
+		int datatype = H5.H5Tcreate(H5T_COMPOUND,
+				doubleSize + doubleSize + stringSize + positionSize);
+		H5.H5Tinsert(datatype, valueName, 0, H5T_NATIVE_DOUBLE);
+		offset = doubleSize;
+		H5.H5Tinsert(datatype, uncertaintyName, offset, H5T_NATIVE_DOUBLE);
+		offset += doubleSize;
+		H5.H5Tinsert(datatype, unitsName, offset, stringDatatype);
+		offset += stringSize;
+		H5.H5Tinsert(datatype, positionName, offset, positionDatatype);
+
+		// Create the dataset.
+		int dataspace = H5.H5Screate_simple(2, dims, null);
+		int dataset = H5.H5Dcreate(groupId, datasetName, datatype, dataspace,
+				H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+		// Close the compound datatype used to create the dataset.
+		H5.H5Tclose(datatype);
+		// ---------------------------- //
+
+		// ---- Write the value and uncertainty. ---- //
+		// Create the compound datatype.
+		datatype = H5.H5Tcreate(H5T_COMPOUND, doubleSize + doubleSize);
+		H5.H5Tinsert(datatype, valueName, 0, H5T_NATIVE_DOUBLE);
+		H5.H5Tinsert(datatype, uncertaintyName, doubleSize, H5T_NATIVE_DOUBLE);
+		// Write the data from the buffer.
+		H5.H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+				doubleBuffer);
+		// Close datatypes used for this write.
+		H5.H5Tclose(datatype);
+		// ------------------------------------------ //
+
+		// ---- Write the units. ---- //
+		// Create the compound datatype.
+		datatype = H5.H5Tcreate(H5T_COMPOUND, stringSize);
+		H5.H5Tinsert(datatype, unitsName, 0, stringDatatype);
+		// Write the data from the buffer.
+		H5.H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+				stringBuffer);
+		// Close datatypes used for this write.
+		H5.H5Tclose(datatype);
+		H5.H5Tclose(stringDatatype);
+		// -------------------------- //
+
+		// ---- Write the positions. ---- //
+		// Create the compound datatype.
+		datatype = H5.H5Tcreate(H5T_COMPOUND, positionSize);
+		H5.H5Tinsert(datatype, positionName, 0, positionDatatype);
+		// Write the data from the buffer.
+		H5.H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+				positionBuffer);
+		// Close datatypes used for this write.
+		H5.H5Tclose(datatype);
+		H5.H5Tclose(positionDatatype);
+		// ------------------------------ //
+
+		// Close the dataspace and dataset.
+		H5.H5Sclose(dataspace);
+		H5.H5Dclose(dataset);
 
 		return;
 	}
