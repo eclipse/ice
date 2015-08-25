@@ -280,6 +280,7 @@
 		<module>org.eclipse.ice.sassena.test</module>
 		<module>org.eclipse.ice.reflectivity</module>
 		<module>org.eclipse.ice.reflectivity.test</module>
+		<module>org.eclipse.ice.reflectivity.ui</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
 			LAST! -->
 		<module>org.eclipse.ice.feature</module>
