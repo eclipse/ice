@@ -26,11 +26,9 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
-import org.eclipse.ice.datastructures.test.TestVisitor;
+import org.eclipse.ice.viz.service.datastructures.DataComponent;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizJAXBHandler;
 import org.junit.Test;
 
 /**
@@ -41,7 +39,7 @@ import org.junit.Test;
  * 
  * @author Jay Jay Billings
  */
-public class DataComponentTester {
+public class VizDataComponentTester {
 	/**
 	 * <p>
 	 * The DataComponent to be tested.
@@ -51,20 +49,12 @@ public class DataComponentTester {
 	private DataComponent dataComponent;
 	/**
 	 * <p>
-	 * The TestComponentListener used to subscribe to and check notifications
+	 * The TestVizComponentListener used to subscribe to and check notifications
 	 * from the DataComponent.
 	 * </p>
 	 * 
 	 */
-	private TestComponentListener testComponentListener;
-
-	/**
-	 * <p>
-	 * A TestVisitor that is used to test the visitation scheme.
-	 * </p>
-	 * 
-	 */
-	private TestVisitor testVisitor;
+	private TestVizComponentListener testComponentListener;
 
 	/**
 	 * <p>
@@ -100,7 +90,7 @@ public class DataComponentTester {
 
 	/**
 	 * <p>
-	 * This operation tests the DataComponent class by making sure that Entry
+	 * This operation tests the DataComponent class by making sure that VizEntry
 	 * can be added to the component.
 	 * </p>
 	 */
@@ -109,15 +99,15 @@ public class DataComponentTester {
 
 		// Location Declarations
 		int i = 0, numEntries = 50;
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		ArrayList<Entry> retEntries = null;
-		Entry Entry = null;
+		ArrayList<VizEntry> entries = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> retEntries = null;
+		VizEntry VizEntry = null;
 
 		// Setup the list of Entries
 		for (i = 0; i < numEntries; i++) {
-			entries.add(new Entry());
+			entries.add(new VizEntry());
 			(entries.get(i)).setId(i);
-			(entries.get(i)).setName("Test Entry " + i);
+			(entries.get(i)).setName("Test VizEntry " + i);
 		}
 		(entries.get(4)).setReady(false);
 		(entries.get(39)).setReady(false);
@@ -130,8 +120,8 @@ public class DataComponentTester {
 
 		// Retrieve the Entries one-by-one and check them
 		for (i = 0; i < entries.size(); i++) {
-			Entry = dataComponent.retrieveEntry("Test Entry " + i);
-			assertEquals(Entry.getId(), (entries.get(i)).getId());
+			VizEntry = dataComponent.retrieveEntry("Test VizEntry " + i);
+			assertEquals(VizEntry.getId(), (entries.get(i)).getId());
 		}
 
 		// Retrieve the Entries in a block and check them
@@ -163,13 +153,13 @@ public class DataComponentTester {
 
 		// Location Declarations
 		int i = 0, numEntries = 50;
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		ArrayList<Entry> retEntries = null;
+		ArrayList<VizEntry> entries = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> retEntries = null;
 		// Setup the list of Entries
 		for (i = 0; i < numEntries; i++) {
-			entries.add(new Entry());
+			entries.add(new VizEntry());
 			(entries.get(i)).setId(i);
-			(entries.get(i)).setName("Test Entry " + i);
+			(entries.get(i)).setName("Test VizEntry " + i);
 		}
 
 		// Add the Entries to the DataComponent
@@ -196,7 +186,7 @@ public class DataComponentTester {
 	/**
 	 * <p>
 	 * This operation tests the DataComponent class to insure that checking for
-	 * Entry containment functions properly.
+	 * VizEntry containment functions properly.
 	 * </p>
 	 */
 	@Test
@@ -204,13 +194,13 @@ public class DataComponentTester {
 
 		// Location Declarations
 		int i = 0, numEntries = 50;
-		ArrayList<Entry> entries = new ArrayList<Entry>();
+		ArrayList<VizEntry> entries = new ArrayList<VizEntry>();
 
 		// Setup the list of Entries
 		for (i = 0; i < numEntries; i++) {
-			entries.add(new Entry());
+			entries.add(new VizEntry());
 			(entries.get(i)).setId(i);
-			(entries.get(i)).setName("Test Entry " + i);
+			(entries.get(i)).setName("Test VizEntry " + i);
 		}
 
 		// Add the Entries to the DataComponent
@@ -237,13 +227,13 @@ public class DataComponentTester {
 
 		// Location Declarations
 		int i = 0, numEntries = 10;
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		ArrayList<Entry> retEntries = null;
+		ArrayList<VizEntry> entries = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> retEntries = null;
 		String value = "3D";
 
 		// Setup the list of Entries
 		for (i = 0; i < numEntries; i++) {
-			entries.add(new Entry() {
+			entries.add(new VizEntry() {
 				@Override
 				public void update(String key, String newValue) {
 					if ("Blender".equals(key)) {
@@ -252,7 +242,7 @@ public class DataComponentTester {
 				}
 			});
 			(entries.get(i)).setId(i);
-			(entries.get(i)).setName("Test Entry " + i);
+			(entries.get(i)).setName("Test VizEntry " + i);
 			(entries.get(i)).setValue("2D");
 		}
 
@@ -285,11 +275,11 @@ public class DataComponentTester {
 	public void checkNotifications() {
 
 		// Local Declarations
-		Entry testEntry = new Entry();
-		TestComponentListener secondTestComponentListener = new TestComponentListener();
+		VizEntry testVizEntry = new VizEntry();
+		TestVizComponentListener secondTestVizComponentListener = new TestVizComponentListener();
 
 		// Setup the listener
-		testComponentListener = new TestComponentListener();
+		testComponentListener = new TestVizComponentListener();
 
 		// Setup the DataComponent
 		dataComponent = new DataComponent();
@@ -297,32 +287,32 @@ public class DataComponentTester {
 		// Register the listener
 		dataComponent.register(testComponentListener);
 
-		// Create a new Entry in the DataComponent
-		dataComponent.addEntry(testEntry);
+		// Create a new VizEntry in the DataComponent
+		dataComponent.addEntry(testVizEntry);
 		// Check the Listener
 		assertTrue(testComponentListener.wasNotified());
 		// Reset the listener
 		testComponentListener.reset();
 
-		// Change the value of the Entry
-		testEntry.setValue("Entry Value Change Test");
+		// Change the value of the VizEntry
+		testVizEntry.setValue("VizEntry Value Change Test");
 		// Check the Listener
 		assertTrue(testComponentListener.wasNotified());
 		// Reset the listener
 		testComponentListener.reset();
 
 		// Add the second listener
-		dataComponent.register(secondTestComponentListener);
-		// Change the value of the Entry
-		testEntry.setValue("Second listener test value");
+		dataComponent.register(secondTestVizComponentListener);
+		// Change the value of the VizEntry
+		testVizEntry.setValue("Second listener test value");
 		// Check the Listeners
 		assertTrue(testComponentListener.wasNotified());
-		assertTrue(secondTestComponentListener.wasNotified());
+		assertTrue(secondTestVizComponentListener.wasNotified());
 		// Reset the listeners
 		testComponentListener.reset();
-		secondTestComponentListener.reset();
+		secondTestVizComponentListener.reset();
 
-		// Remove the Entry
+		// Remove the VizEntry
 		dataComponent.clearEntries();
 		// Check the listener to make sure it was updated
 		assertTrue(testComponentListener.wasNotified());
@@ -349,30 +339,6 @@ public class DataComponentTester {
 
 	/**
 	 * <p>
-	 * This operation checks the DataComponent to insure that it can be
-	 * correctly visited by a realization of the IComponentVisitor interface.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkVisitation() {
-
-		// Setup the visitor
-		testVisitor = new TestVisitor();
-
-		// Setup the DataComponent
-		dataComponent = new DataComponent();
-
-		// Send the visitor
-		dataComponent.accept(testVisitor);
-
-		// Check the visitor
-		assertTrue(testVisitor.wasVisited());
-
-	}
-
-	/**
-	 * <p>
 	 * This operation checks the DataComponent to insure that its equals() and
 	 * hashcode() operations work.
 	 * </p>
@@ -388,14 +354,14 @@ public class DataComponentTester {
 		DataComponent transitiveComponent = new DataComponent();
 
 		// Create Entries to add to DataComponents
-		ArrayList<Entry> entries = new ArrayList<Entry>();
+		ArrayList<VizEntry> entries = new ArrayList<VizEntry>();
 
 		// Create list of Entries
 		for (int i = 0; i < 10; i++) {
-			// Create Entry, add to list, and set data
-			entries.add(new Entry());
+			// Create VizEntry, add to list, and set data
+			entries.add(new VizEntry());
 			(entries.get(i)).setId(i);
-			(entries.get(i)).setName("Test Entry " + i);
+			(entries.get(i)).setName("Test VizEntry " + i);
 			(entries.get(i)).setValue("Value" + i);
 
 			// Create 3 equal DataComponents by adding Entries to DC's
@@ -485,7 +451,7 @@ public class DataComponentTester {
 				+ "our Lord 2011";
 		DataComponent cloneData = new DataComponent();
 		DataComponent copyData = new DataComponent();
-		TestComponentListener listener = new TestComponentListener();
+		TestVizComponentListener listener = new TestVizComponentListener();
 
 		// Create the DataComponent
 		dataComponent = new DataComponent();
@@ -497,8 +463,8 @@ public class DataComponentTester {
 		dataComponent.register(listener);
 
 		// create entries
-		Entry entry1 = new Entry();
-		Entry entry2 = new Entry();
+		VizEntry entry1 = new VizEntry();
+		VizEntry entry2 = new VizEntry();
 
 		// add entries to DataComponent
 		dataComponent.addEntry(entry1);
@@ -573,7 +539,7 @@ public class DataComponentTester {
 		String name = "September 1st 2011";
 		String description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(DataComponent.class);
 
@@ -587,8 +553,8 @@ public class DataComponentTester {
 		dataComponent.setName(name);
 
 		// create entries
-		Entry entry1 = new Entry();
-		Entry entry2 = new Entry();
+		VizEntry entry1 = new VizEntry();
+		VizEntry entry2 = new VizEntry();
 
 		// add entries to DataComponent
 		dataComponent.addEntry(entry1);

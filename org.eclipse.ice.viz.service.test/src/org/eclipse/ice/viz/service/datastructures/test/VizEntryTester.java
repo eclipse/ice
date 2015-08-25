@@ -27,52 +27,51 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizJAXBHandler;
 import org.junit.Test;
 
 /**
- * The EntryTester is responsible for testing the Entry class.
+ * The VizEntryTester is responsible for testing the VizEntry class.
  * 
  * @author Jay Jay Billings, Anna Wojtowicz
  */
-public class EntryTester {
+public class VizEntryTester {
 
 	/**
 	 * An entry used for testing.
 	 */
-	private Entry entry;
+	private VizEntry entry;
 
 	/**
-	 * This operation tests the Entry by creating an Entry using the simple
+	 * This operation tests the VizEntry by creating an VizEntry using the simple
 	 * constructor. It checks that the name and ID are set to proper values
-	 * while all remaining values are set to the defaults values for an Entry.
-	 * It also checks the ability of the Entry to report whether or not it is
+	 * while all remaining values are set to the defaults values for an VizEntry.
+	 * It also checks the ability of the VizEntry to report whether or not it is
 	 * secret.
 	 */
 	@Test
-	public void createSimpleEntry() {
+	public void createSimpleVizEntry() {
 
 		// Local Declarations
 		String parentName = "Clark Griswald";
 
 		// Create the simple entry
-		entry = new Entry();
+		entry = new VizEntry();
 		entry.setId(1);
-		entry.setName("Simple Entry");
+		entry.setName("Simple VizEntry");
 		entry.setParent(parentName);
 		entry.setTag("ChevyChase");
 
 		// Check the name
-		assertEquals("Simple Entry", entry.getName());
+		assertEquals("Simple VizEntry", entry.getName());
 		// Check the id
 		assertEquals(entry.getId(), 1);
 		// Check the description
-		assertEquals("Entry 1", entry.getDescription());
+		assertEquals("VizEntry 1", entry.getDescription());
 		// Check the allowed values
 		assertEquals(0, entry.getAllowedValues().size());
 		// Check the default values
@@ -83,13 +82,13 @@ public class EntryTester {
 		assertEquals(true, entry.isReady());
 		// Check the changed state
 		assertEquals(false, entry.isModified());
-		// By default the Entry should not be secret
+		// By default the VizEntry should not be secret
 		assertTrue(!entry.isSecret());
 		// Make sure the parent name is Clark's
 		assertEquals(parentName, entry.getParent());
-		// Make sure the Entry's tag is correct
+		// Make sure the VizEntry's tag is correct
 		assertEquals("ChevyChase", entry.getTag());
-		// Make sure the Entry is not required by default
+		// Make sure the VizEntry is not required by default
 		assertFalse(entry.isRequired());
 		// Change its required state and make sure it updated properly.
 		entry.setRequired(true);
@@ -102,7 +101,7 @@ public class EntryTester {
 	}
 
 	/**
-	 * This operation tests the readyState attribute of the Entry by first
+	 * This operation tests the readyState attribute of the VizEntry by first
 	 * trying to set the readiness state using setReady() and then calling
 	 * isReady().
 	 */
@@ -113,9 +112,9 @@ public class EntryTester {
 		String parentName = "Clark Griswald";
 
 		// Create the test entry
-		entry = new Entry();
+		entry = new VizEntry();
 		entry.setId(3);
-		entry.setName("Ready Entry");
+		entry.setName("Ready VizEntry");
 
 		// Set the readiness to true
 		entry.setReady(true);
@@ -135,11 +134,11 @@ public class EntryTester {
 		// Ready should be true since the parent name was passed with the ready
 		// key.
 		assertTrue(entry.isReady());
-		// The Entry should now be marked as unmodified.
+		// The VizEntry should now be marked as unmodified.
 		assertTrue(!entry.isModified());
 
 		// Passing null values for either argument should not change the
-		// readiness of the Entry.
+		// readiness of the VizEntry.
 		entry.update(parentName, null);
 		assertTrue(entry.isReady());
 		entry.update(null, "blah");
@@ -152,58 +151,58 @@ public class EntryTester {
 		entry.update("ready", parentName);
 		assertTrue(entry.isReady());
 
-		// Tell the Entry that it shouldn't be ready and make sure it updated.
+		// Tell the VizEntry that it shouldn't be ready and make sure it updated.
 		entry.update(parentName, "not ready");
 		assertTrue(!entry.isReady());
-		// The Entry should not be marked as modified.
+		// The VizEntry should not be marked as modified.
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry to update with "yes"
+		// Tell the VizEntry to update with "yes"
 		entry.update(parentName, "yes");
 		assertTrue(entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry that it shouldn't be ready with "no"
+		// Tell the VizEntry that it shouldn't be ready with "no"
 		entry.update(parentName, "no");
 		assertTrue(!entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry to update with "y"
+		// Tell the VizEntry to update with "y"
 		entry.update(parentName, "y");
 		assertTrue(entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry that it shouldn't be ready with "n"
+		// Tell the VizEntry that it shouldn't be ready with "n"
 		entry.update(parentName, "n");
 		assertTrue(!entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry to update with "true"
+		// Tell the VizEntry to update with "true"
 		entry.update(parentName, "true");
 		assertTrue(entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry that it shouldn't be ready with "false"
+		// Tell the VizEntry that it shouldn't be ready with "false"
 		entry.update(parentName, "false");
 		assertTrue(!entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry to update with "enabled"
+		// Tell the VizEntry to update with "enabled"
 		entry.update(parentName, "enabled");
 		assertTrue(entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry that it shouldn't be ready with "disabled"
+		// Tell the VizEntry that it shouldn't be ready with "disabled"
 		entry.update(parentName, "disabled");
 		assertTrue(!entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry to update with "enabled"
+		// Tell the VizEntry to update with "enabled"
 		entry.update(parentName, "on");
 		assertTrue(entry.isReady());
 		assertTrue(!entry.isModified());
 
-		// Tell the Entry that it shouldn't be ready with "disabled"
+		// Tell the VizEntry that it shouldn't be ready with "disabled"
 		entry.update(parentName, "off");
 		assertTrue(!entry.isReady());
 		assertTrue(!entry.isModified());
@@ -212,7 +211,7 @@ public class EntryTester {
 	}
 
 	/**
-	 * This operation tries to set the value stored in the Entry.
+	 * This operation tries to set the value stored in the VizEntry.
 	 */
 	@Test
 	public void checkValue() {
@@ -220,16 +219,16 @@ public class EntryTester {
 		boolean changed;
 		final String nullString = null;
 
-		// Create the test Entry, just use the default since the string
+		// Create the test VizEntry, just use the default since the string
 		// doesn't need to be checked for validity.
-		entry = new Entry() {
+		entry = new VizEntry() {
 			@Override
 			protected void setup() {
 				defaultValue = "SynthOne";
 			}
 		};
 		entry.setId(4);
-		entry.setName("Value Entry");
+		entry.setName("Value VizEntry");
 
 		// Make sure that the correct value is returned. Since setValue has not
 		// been called, getValue should return the default value.
@@ -237,18 +236,18 @@ public class EntryTester {
 		assertEquals(entry.getValue(), entry.getDefaultValue());
 
 		// Set the value and check that the acceptance code is valid.
-		// Strings are merely accepted for AllowedValueType.Undefined.
+		// Strings are merely accepted for VizAllowedValueType.Undefined.
 		assertEquals(true, entry.setValue("Outshined."));
 
 		// check value to make sure no error is set.
 		assertNull(entry.getErrorMessage());
 		// Check the value
 		assertEquals("Outshined.", entry.getValue());
-		// Make sure that the Entry's change state is true
+		// Make sure that the VizEntry's change state is true
 		assertEquals(true, entry.isModified());
 
-		// Create the full entry, allowedValueType = AllowedValueType.Discrete
-		entry = new Entry() {
+		// Create the full entry, allowedValueType = VizAllowedValueType.Discrete
+		entry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -256,16 +255,16 @@ public class EntryTester {
 				allowedValues.add("true");
 				allowedValues.add("false");
 				defaultValue = "true";
-				allowedValueType = AllowedValueType.Discrete;
+				allowedValueType = VizAllowedValueType.Discrete;
 				// Using the setters instead of setting the member variables
-				// helps check the IEntryContentProvider.
+				// helps check the IVizEntryContentProvider.
 				setParent("Otis Redding");
 				setTag("theseArmsOfMine");
 			}
 		};
 		entry.setId(4);
-		entry.setName("Full Valid Entry");
-		// Make sure the call to Entry.setValue returns true
+		entry.setName("Full Valid VizEntry");
+		// Make sure the call to VizEntry.setValue returns true
 		// if the value is accepted
 		assertEquals(true, entry.setValue("true"));
 		// Check the value
@@ -274,16 +273,16 @@ public class EntryTester {
 		assertEquals("Otis Redding", entry.getParent());
 		// Check the tag
 		assertEquals("theseArmsOfMine", entry.getTag());
-		// Make sure that the Entry's change state is true
+		// Make sure that the VizEntry's change state is true
 		assertEquals(true, entry.isModified());
-		// Make sure the call to Entry.setValue returns true
+		// Make sure the call to VizEntry.setValue returns true
 		// if the value is accepted
 		assertEquals(true, entry.setValue("false"));
 		// Check the value
 		assertEquals("false", entry.getValue());
-		// Make sure that the Entry's change state is true
+		// Make sure that the VizEntry's change state is true
 		assertEquals(true, entry.isModified());
-		// Make sure the the Entry returns false
+		// Make sure the the VizEntry returns false
 		// the value is not accepted
 		assertEquals(false, entry.setValue("Overburdened."));
 		assertEquals(
@@ -295,8 +294,8 @@ public class EntryTester {
 		assertNull(entry.getErrorMessage());
 
 		// Recreate the full entry, but this time with
-		// AllowedValueType.Continuous and doubles
-		entry = new Entry() {
+		// VizAllowedValueType.Continuous and doubles
+		entry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -304,27 +303,27 @@ public class EntryTester {
 				allowedValues.add("0.0");
 				allowedValues.add("0.2");
 				this.defaultValue = "0.1";
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 			}
 		};
 		// check value to make sure no error is set.
 		assertNull(entry.getErrorMessage());
 		entry.setId(4);
-		entry.setName("Value Entry");
-		// Make sure the call to Entry.setValue can check the bounds
+		entry.setName("Value VizEntry");
+		// Make sure the call to VizEntry.setValue can check the bounds
 		assertEquals(true, entry.setValue("0.088"));
 		// Check the value
 		assertEquals("0.088", entry.getValue());
-		// Make sure that the Entry's change state is true
+		// Make sure that the VizEntry's change state is true
 		assertEquals(true, entry.isModified());
-		// Check an invalid Entry
+		// Check an invalid VizEntry
 		assertEquals(false, entry.setValue("1.88"));
 		assertEquals("'1.88' is an unacceptable value. The value must be "
 				+ "between 0.0 and 0.2.", entry.getErrorMessage());
 
 		// Recreate the full entry, but this time with
-		// AllowedValueType.Continuous and integers
-		entry = new Entry() {
+		// VizAllowedValueType.Continuous and integers
+		entry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -332,46 +331,46 @@ public class EntryTester {
 				allowedValues.add("0");
 				allowedValues.add("2");
 				this.defaultValue = "1";
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 			}
 		};
 		// check value to make sure no error is set.
 		assertNull(entry.getErrorMessage());
 		entry.setId(4);
-		entry.setName("Value Entry");
-		// Make sure the call to Entry.setValue can check the bounds
+		entry.setName("Value VizEntry");
+		// Make sure the call to VizEntry.setValue can check the bounds
 		assertEquals(true, entry.setValue("1"));
 		// Check the value
 		assertEquals("1", entry.getValue());
-		// Make sure that the Entry's change state is true
+		// Make sure that the VizEntry's change state is true
 		assertEquals(true, entry.isModified());
-		// Check an invalid Entry
+		// Check an invalid VizEntry
 		assertEquals(false, entry.setValue("3"));
 
 		// Discrete test - error message catching - list of one size
-		entry = new Entry() {
+		entry = new VizEntry() {
 
 			@Override
 			protected void setup() {
 				allowedValues = new ArrayList<String>(2);
 				allowedValues.add("true");
 				this.defaultValue = "true";
-				this.allowedValueType = AllowedValueType.Discrete;
+				this.allowedValueType = VizAllowedValueType.Discrete;
 			}
 		};
 		assertEquals(false, entry.setValue("false"));
 		assertEquals("'false' is an unacceptable value. The value must be "
 				+ "one of true.", entry.getErrorMessage());
 
-		// Try setting the Entry's value to null. This should not break the
+		// Try setting the VizEntry's value to null. This should not break the
 		// operation (via NPE) or the error message.
-		IEntryContentProvider contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Continuous);
+		IVizEntryContentProvider contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Continuous);
 		ArrayList<String> allowedValues = new ArrayList<String>(2);
 		allowedValues.add("0.0");
 		allowedValues.add("1.0");
 		contentProvider.setAllowedValues(allowedValues);
-		entry = new Entry(contentProvider);
+		entry = new VizEntry(contentProvider);
 		// Try setting the value to null, then check the error message.
 		changed = entry.setValue(nullString);
 		assertFalse(changed);
@@ -379,15 +378,15 @@ public class EntryTester {
 		assertEquals("'null' is an unacceptable value. The value must be "
 				+ "between 0.0 and 1.0.", entry.getErrorMessage());
 
-		// Try setting the Entry's value to null. This should not break the
+		// Try setting the VizEntry's value to null. This should not break the
 		// operation (via NPE) or the error message.
-		contentProvider = new BasicEntryContentProvider();
-		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		contentProvider = new BasicVizEntryContentProvider();
+		contentProvider.setAllowedValueType(VizAllowedValueType.Discrete);
 		allowedValues = new ArrayList<String>(2);
 		allowedValues.add("0.0");
 		allowedValues.add("1.0");
 		contentProvider.setAllowedValues(allowedValues);
-		entry = new Entry(contentProvider);
+		entry = new VizEntry(contentProvider);
 		// Try setting the value to null, then check the error message.
 		changed = entry.setValue(nullString);
 		assertFalse(changed);
@@ -399,40 +398,40 @@ public class EntryTester {
 	}
 
 	/**
-	 * This operation checks the changed state of the Entry by first setting the
-	 * value of the Entry and then making sure that isModified() returns true.
+	 * This operation checks the changed state of the VizEntry by first setting the
+	 * value of the VizEntry and then making sure that isModified() returns true.
 	 */
 	@Test
 	public void checkChanged() {
 
-		// Create the test Entry
-		entry = new Entry();
+		// Create the test VizEntry
+		entry = new VizEntry();
 		entry.setId(5);
-		entry.setName("Changed Entry");
+		entry.setName("Changed VizEntry");
 
-		// Make sure the Entry starts in an unchanged (false) state
+		// Make sure the VizEntry starts in an unchanged (false) state
 		assertEquals(false, entry.isModified());
 		// Set the value
 		entry.setValue("Get stoned.");
-		// Make sure that the Entry's change state is true
+		// Make sure that the VizEntry's change state is true
 		assertEquals(true, entry.isModified());
 
 		return;
 	}
 
 	/**
-	 * This operation checks the Entry class to insure that its copy operation
+	 * This operation checks the VizEntry class to insure that its copy operation
 	 * works.
 	 */
 	@Test
 	public void checkEquality() {
 
 		// Local Declarations
-		Entry copyOfEntry, otherEntry;
+		VizEntry copyOfVizEntry, otherVizEntry;
 		String parentName = "Clark Griswald";
 
-		// Setup the base Entry
-		entry = new Entry() {
+		// Setup the base VizEntry
+		entry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -440,11 +439,11 @@ public class EntryTester {
 				allowedValues.add("8675308");
 				allowedValues.add("8675310");
 				this.defaultValue = "1";
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 			}
 		};
 		entry.setId(6);
-		entry.setName("Copy Test Entry");
+		entry.setName("Copy Test VizEntry");
 		entry.setDescription("Fluffy Bunny");
 		entry.setValue("8675309");
 		entry.setComment("Peanut butter and jelly");
@@ -453,7 +452,7 @@ public class EntryTester {
 		entry.setRequired(true);
 
 		// Setup the copy
-		copyOfEntry = new Entry() {
+		copyOfVizEntry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -461,38 +460,38 @@ public class EntryTester {
 				allowedValues.add("8675308");
 				allowedValues.add("8675310");
 				this.defaultValue = "1";
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 			}
 		};
-		copyOfEntry.setId(entry.getId());
-		copyOfEntry.setName(entry.getName());
-		copyOfEntry.setDescription(entry.getDescription());
-		copyOfEntry.setValue(entry.getValue());
-		copyOfEntry.setComment(entry.getComment());
-		copyOfEntry.setParent(parentName);
-		copyOfEntry.setTag("ChevyChase");
-		copyOfEntry.setRequired(true);
+		copyOfVizEntry.setId(entry.getId());
+		copyOfVizEntry.setName(entry.getName());
+		copyOfVizEntry.setDescription(entry.getDescription());
+		copyOfVizEntry.setValue(entry.getValue());
+		copyOfVizEntry.setComment(entry.getComment());
+		copyOfVizEntry.setParent(parentName);
+		copyOfVizEntry.setTag("ChevyChase");
+		copyOfVizEntry.setRequired(true);
 
-		// Setup a different Entry
-		otherEntry = new Entry();
+		// Setup a different VizEntry
+		otherVizEntry = new VizEntry();
 
-		// Test Entry.equals(), first one should be true, second false
-		assertEquals(entry.equals(copyOfEntry), true);
-		assertEquals(entry.equals(otherEntry), false);
+		// Test VizEntry.equals(), first one should be true, second false
+		assertEquals(entry.equals(copyOfVizEntry), true);
+		assertEquals(entry.equals(otherVizEntry), false);
 
-		// Check Entry.hashcode(), first one should be true, second true,
+		// Check VizEntry.hashcode(), first one should be true, second true,
 		// third false and fourth false
 		assertEquals(entry.hashCode(), entry.hashCode());
-		assertEquals(entry.hashCode(), copyOfEntry.hashCode());
-		copyOfEntry.setId(444);
-		assertEquals(entry.hashCode() == copyOfEntry.hashCode(), false);
-		assertEquals(entry.hashCode() == otherEntry.hashCode(), false);
+		assertEquals(entry.hashCode(), copyOfVizEntry.hashCode());
+		copyOfVizEntry.setId(444);
+		assertEquals(entry.hashCode() == copyOfVizEntry.hashCode(), false);
+		assertEquals(entry.hashCode() == otherVizEntry.hashCode(), false);
 
 		return;
 	}
 
 	/**
-	 * This operation checks the Entry to ensure that its copy() and clone()
+	 * This operation checks the VizEntry to ensure that its copy() and clone()
 	 * operations work as specified.
 	 */
 	@Test
@@ -503,11 +502,11 @@ public class EntryTester {
 
 		/*
 		 * The following sets of operations will be used to test the
-		 * "clone and copy" portion of Entry.
+		 * "clone and copy" portion of VizEntry.
 		 */
 
-		// Setup the base Entry
-		entry = new Entry() {
+		// Setup the base VizEntry
+		entry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -515,11 +514,11 @@ public class EntryTester {
 				allowedValues.add("8675308");
 				allowedValues.add("8675310");
 				this.defaultValue = "1";
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 			}
 		};
 		entry.setId(6);
-		entry.setName("Copy Test Entry");
+		entry.setName("Copy Test VizEntry");
 		entry.setDescription("Fluffy Bunny");
 		entry.setValue("8675309");
 		entry.setComment("Peanut butter and jelly");
@@ -527,8 +526,8 @@ public class EntryTester {
 		entry.setTag("ChevyChase");
 		entry.setRequired(true);
 
-		// Create a new instance of Entry and copy contents
-		Entry entryCopy = new Entry();
+		// Create a new instance of VizEntry and copy contents
+		VizEntry entryCopy = new VizEntry();
 		entryCopy.copy(entry);
 
 		// Check contents
@@ -537,10 +536,10 @@ public class EntryTester {
 		// Test to show valid usage of clone
 
 		// Run clone operation
-		Entry cloneEntry = (Entry) entry.clone();
+		VizEntry cloneVizEntry = (VizEntry) entry.clone();
 
 		// Check contents
-		assertTrue(entry.equals(cloneEntry));
+		assertTrue(entry.equals(cloneVizEntry));
 
 		// Call copy with null, which should not change anything
 		entry.copy(null);
@@ -552,7 +551,7 @@ public class EntryTester {
 	}
 
 	/**
-	 * This operation checks the ability of the Entry to persist itself to XML
+	 * This operation checks the ability of the VizEntry to persist itself to XML
 	 * and to load itself from an XML input stream.
 	 */
 	@Test
@@ -560,21 +559,21 @@ public class EntryTester {
 
 		/*
 		 * The following sets of operations will be used to test the
-		 * "read and write" portion of the Entry. It will demonstrate the
+		 * "read and write" portion of the VizEntry. It will demonstrate the
 		 * behavior of reading and writing from an "XML (inputStream and
-		 * outputStream)" file. It will use an annotated Entry to demonstrate
+		 * outputStream)" file. It will use an annotated VizEntry to demonstrate
 		 * basic behavior.
 		 */
 
 		// Local declarations
-		Entry entry2;
+		VizEntry entry2;
 		String parentName = "Clark Griswald";
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(Entry.class);
+		classList.add(VizEntry.class);
 
-		// Fill out Entry and override setup
-		Entry myEntry = new Entry() {
+		// Fill out VizEntry and override setup
+		VizEntry myVizEntry = new VizEntry() {
 
 			@Override
 			protected void setup() {
@@ -582,24 +581,24 @@ public class EntryTester {
 				allowedValues.add("8675308");
 				allowedValues.add("8675310");
 				this.defaultValue = "1";
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 				this.secretFlag = true;
 				this.ready = false;
 				this.changeState = true;
 
 			}
 		};
-		myEntry.setId(1);
-		myEntry.setName("Simple Entry");
-		myEntry.setComment("Peanut butter and jelly");
-		myEntry.setParent(parentName);
-		myEntry.setTag("ChevyChase");
+		myVizEntry.setId(1);
+		myVizEntry.setName("Simple VizEntry");
+		myVizEntry.setComment("Peanut butter and jelly");
+		myVizEntry.setParent(parentName);
+		myVizEntry.setTag("ChevyChase");
 
 		// Demonstrate a basic "write" to file. Should not fail
 		try {
 			// persist to an output stream
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			xmlHandler.write(myEntry, classList, outputStream);
+			xmlHandler.write(myVizEntry, classList, outputStream);
 			System.err.println(outputStream.toString());
 
 			// Demonstrate a basic read in. Create file in memory and convert to
@@ -609,14 +608,14 @@ public class EntryTester {
 					outputStream.toByteArray());
 
 			// Initialize object and pass inputStream to read()
-			entry2 = (Entry) xmlHandler.read(classList, inputStream);
+			entry2 = (VizEntry) xmlHandler.read(classList, inputStream);
 			System.out.println(entry2.getAllowedValues());
 
 			// Check contents - currently broken due to isReady() needs to
 			// return a
 			// class Boolean
 			// not an attribute Scott Forest Hull II
-			assertTrue(myEntry.equals(entry2));
+			assertTrue(myVizEntry.equals(entry2));
 
 		} catch (NullPointerException | JAXBException | IOException e) {
 			e.printStackTrace();
@@ -627,27 +626,27 @@ public class EntryTester {
 	}
 
 	/**
-	 * Checks the Entry(IEntryContentProvider) method.
+	 * Checks the VizEntry(IVizEntryContentProvider) method.
 	 */
 	public void checkContentProviderConstructor() {
 
 		// Local Declarations
-		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		BasicVizEntryContentProvider contentProvider = new BasicVizEntryContentProvider();
 		ArrayList<String> goodValues = new ArrayList<String>();
 		goodValues.add("Yabba");
 		goodValues.add("Dabba");
 		goodValues.add("Dooo!");
-		Entry entry, overriddenEntry = null;
+		VizEntry entry, overriddenVizEntry = null;
 
 		// Setup the content provider
 		contentProvider.setAllowedValues(goodValues);
 		contentProvider.setParent("Parental Figure");
 		contentProvider.setTag("tagorama!");
-		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
+		contentProvider.setAllowedValueType(VizAllowedValueType.Discrete);
 		contentProvider.setDefaultValue("Yabba");
 
 		// Create entry
-		entry = new Entry(contentProvider);
+		entry = new VizEntry(contentProvider);
 
 		// Check contents
 		assertEquals(contentProvider.getAllowedValues(),
@@ -658,14 +657,14 @@ public class EntryTester {
 		assertEquals(contentProvider.getDefaultValue(), entry.getDefaultValue());
 		assertEquals(contentProvider.getParent(), entry.getParent());
 
-		// Create overridden Entry
-		overriddenEntry = new Entry(contentProvider) {
+		// Create overridden VizEntry
+		overriddenVizEntry = new VizEntry(contentProvider) {
 			@Override
 			protected void setup() {
 				this.allowedValues = new ArrayList<String>();
 				this.allowedValues.add("3");
 				this.allowedValues.add("5");
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 				this.defaultValue = "Foo";
 				this.parent = "ORPHAN!";
 				this.tag = "Not a tag";
@@ -675,23 +674,23 @@ public class EntryTester {
 
 		// Check contents - forces changes by contentProvider
 		assertEquals(contentProvider.getAllowedValues(),
-				overriddenEntry.getAllowedValues());
+				overriddenVizEntry.getAllowedValues());
 		assertEquals(contentProvider.getAllowedValueType(),
-				overriddenEntry.getValueType());
-		assertEquals(contentProvider.getTag(), overriddenEntry.getTag());
+				overriddenVizEntry.getValueType());
+		assertEquals(contentProvider.getTag(), overriddenVizEntry.getTag());
 		assertEquals(contentProvider.getDefaultValue(),
-				overriddenEntry.getDefaultValue());
-		assertEquals(contentProvider.getParent(), overriddenEntry.getParent());
-		assertEquals("", overriddenEntry.getValue()); // Resets value to empty!
+				overriddenVizEntry.getDefaultValue());
+		assertEquals(contentProvider.getParent(), overriddenVizEntry.getParent());
+		assertEquals("", overriddenVizEntry.getValue()); // Resets value to empty!
 
 		// Change contentProvider on the fly.
-		overriddenEntry = new Entry() {
+		overriddenVizEntry = new VizEntry() {
 			@Override
 			protected void setup() {
 				this.allowedValues = new ArrayList<String>();
 				this.allowedValues.add("3");
 				this.allowedValues.add("5");
-				this.allowedValueType = AllowedValueType.Continuous;
+				this.allowedValueType = VizAllowedValueType.Continuous;
 				this.defaultValue = "Foo";
 				this.parent = "ORPHAN!";
 				this.tag = "Not a tag";
@@ -700,54 +699,54 @@ public class EntryTester {
 		};
 
 		// Change the content provider
-		overriddenEntry.setContentProvider(contentProvider);
+		overriddenVizEntry.setContentProvider(contentProvider);
 
 		// Check contents - forces changes by contentProvider
 		assertEquals(contentProvider.getAllowedValues(),
-				overriddenEntry.getAllowedValues());
+				overriddenVizEntry.getAllowedValues());
 		assertEquals(contentProvider.getAllowedValueType(),
-				overriddenEntry.getValueType());
-		assertEquals(contentProvider.getTag(), overriddenEntry.getTag());
+				overriddenVizEntry.getValueType());
+		assertEquals(contentProvider.getTag(), overriddenVizEntry.getTag());
 		assertEquals(contentProvider.getDefaultValue(),
-				overriddenEntry.getDefaultValue());
-		assertEquals(contentProvider.getParent(), overriddenEntry.getParent());
-		assertEquals("", overriddenEntry.getValue()); // Resets value to empty!
+				overriddenVizEntry.getDefaultValue());
+		assertEquals(contentProvider.getParent(), overriddenVizEntry.getParent());
+		assertEquals("", overriddenVizEntry.getValue()); // Resets value to empty!
 
 		// Null check
 
 		// Change the content provider
-		overriddenEntry.setContentProvider(null);
+		overriddenVizEntry.setContentProvider(null);
 
 		// Check contents - nothing has changed
 		assertEquals(contentProvider.getAllowedValues(),
-				overriddenEntry.getAllowedValues());
+				overriddenVizEntry.getAllowedValues());
 		assertEquals(contentProvider.getAllowedValueType(),
-				overriddenEntry.getValueType());
-		assertEquals(contentProvider.getTag(), overriddenEntry.getTag());
+				overriddenVizEntry.getValueType());
+		assertEquals(contentProvider.getTag(), overriddenVizEntry.getTag());
 		assertEquals(contentProvider.getDefaultValue(),
-				overriddenEntry.getDefaultValue());
-		assertEquals(contentProvider.getParent(), overriddenEntry.getParent());
-		assertEquals("", overriddenEntry.getValue()); // Resets value to empty!
+				overriddenVizEntry.getDefaultValue());
+		assertEquals(contentProvider.getParent(), overriddenVizEntry.getParent());
+		assertEquals("", overriddenVizEntry.getValue()); // Resets value to empty!
 
 		return;
 	}
 
 	/**
-	 * This operation tests the Entry to insure that it can properly dispatch
+	 * This operation tests the VizEntry to insure that it can properly dispatch
 	 * notifications when its value changes.
 	 */
 	@Test
 	public void checkNotifications() {
 
 		// Setup the listener
-		TestComponentListener testComponentListener = new TestComponentListener();
+		TestVizComponentListener testComponentListener = new TestVizComponentListener();
 
-		// Setup the Entry
-		entry = new Entry();
+		// Setup the VizEntry
+		entry = new VizEntry();
 		// Register the listener
 		entry.register(testComponentListener);
 
-		// Set the value of the Entry
+		// Set the value of the VizEntry
 		entry.setValue("Investment");
 		// Check the Listener
 		assertTrue(testComponentListener.wasNotified());
@@ -759,7 +758,7 @@ public class EntryTester {
 		// operation can not be checked with the TestComponentListener. This
 		// more of an optimization than a functional requirement, anyway, so it
 		// should be no big deal. The presence of this optimization can be
-		// easily verified by running ICE and triggering event on any Entry
+		// easily verified by running ICE and triggering event on any VizEntry
 		// with the UI. ~JJB 20130224 16:49
 
 		return;

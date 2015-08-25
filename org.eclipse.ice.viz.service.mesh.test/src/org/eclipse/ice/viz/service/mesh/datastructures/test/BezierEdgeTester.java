@@ -15,7 +15,6 @@ package org.eclipse.ice.viz.service.mesh.datastructures.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.test.TestMeshVisitor;
 import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 import org.junit.Ignore;

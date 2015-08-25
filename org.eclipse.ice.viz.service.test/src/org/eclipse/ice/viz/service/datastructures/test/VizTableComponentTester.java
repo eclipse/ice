@@ -26,11 +26,9 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
-import org.eclipse.ice.datastructures.test.TestVisitor;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
 import org.junit.Test;
 
 /**
@@ -38,61 +36,54 @@ import org.junit.Test;
  * @author Jay Jay Billings
  */
 
-public class TableComponentTester {
+public class VizTableComponentTester {
 	/**
 	 * <p>
-	 * The TableComponent used in the test.
+	 * The VizTableComponent used in the test.
 	 * </p>
 	 * 
 	 */
-	private static TableComponent tableComponent;
+	private static VizTableComponent tableComponent;
+	
 	/**
 	 * <p>
-	 * An IComponentListener used to test notifications from the TableComponent.
+	 * An IComponentListener used to test notifications from the VizTableComponent.
 	 * </p>
 	 * 
 	 */
-	private TestComponentListener testComponentListener;
+	private TestVizComponentListener testComponentListener;
+	
 	/**
 	 * <p>
-	 * An IComponentVisitor used to test the ability of the TableComponent to be
-	 * visited.
-	 * </p>
-	 * 
-	 */
-	private TestVisitor testVisitor;
-
-	/**
-	 * <p>
-	 * This operation checks the TableComponent to make sure that setting the
+	 * This operation checks the VizTableComponent to make sure that setting the
 	 * Row Template can only be done once and that the Row Template can be
 	 * retrieved, but not manipulated. It also checks the name, id and
-	 * description of the TableComponent.
+	 * description of the VizTableComponent.
 	 * </p>
 	 * 
 	 */
 	@Test
 	public void checkConstruction() {
 		// Local Declarations
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		ArrayList<Entry> template2 = new ArrayList<Entry>();
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> template2 = new ArrayList<VizEntry>();
 
-		Entry column1 = new Entry();
-		Entry column2 = new Entry();
-		Entry column3 = new Entry();
+		VizEntry column1 = new VizEntry();
+		VizEntry column2 = new VizEntry();
+		VizEntry column3 = new VizEntry();
 
-		Entry column4 = new Entry();
-		Entry column5 = new Entry();
-		Entry column6 = new Entry();
+		VizEntry column4 = new VizEntry();
+		VizEntry column5 = new VizEntry();
+		VizEntry column6 = new VizEntry();
 
-		Entry testColumn1, testColumn2, testColumn3 = null;
+		VizEntry testColumn1, testColumn2, testColumn3 = null;
 
 		// This test will verify a legal use of table component, append a row
 		// template,
 		// and set values. It will assert if they are correct.
 
 		// create new tableComponent
-		tableComponent = new TableComponent();
+		tableComponent = new VizTableComponent();
 
 		// set tableComponent values for name, id, description
 		tableComponent.setName("Table 1");
@@ -192,7 +183,7 @@ public class TableComponentTester {
 		assertEquals(column3.getName(), tableComponent.getColumnNames().get(2));
 
 		// Test for nulleries
-		// test for setTableComponent
+		// test for setVizTableComponent
 		tableComponent.setRowTemplate(null);
 		tableComponent.setDescription(null);
 		tableComponent.setName(null);
@@ -207,7 +198,7 @@ public class TableComponentTester {
 		// template
 		// or columnNames
 		ArrayList<String> tempArray = new ArrayList<String>();
-		ArrayList<Entry> tArray = new ArrayList<Entry>();
+		ArrayList<VizEntry> tArray = new ArrayList<VizEntry>();
 
 		// check columnNames
 		tempArray = tableComponent.getColumnNames();
@@ -265,18 +256,18 @@ public class TableComponentTester {
 	public void checkRowManipulation() {
 
 		// Local Declarations
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		ArrayList<Entry> row1 = new ArrayList<Entry>();
-		ArrayList<Entry> row2 = new ArrayList<Entry>();
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> row1 = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> row2 = new ArrayList<VizEntry>();
 
-		Entry column1 = new Entry();
-		Entry column2 = new Entry();
-		Entry column3 = new Entry();
+		VizEntry column1 = new VizEntry();
+		VizEntry column2 = new VizEntry();
+		VizEntry column3 = new VizEntry();
 
 		// These tests will check the elasticity of the row editing methods.
 
 		// create new tableComponent
-		tableComponent = new TableComponent();
+		tableComponent = new VizTableComponent();
 
 		// quick test to specify if an addRow operation fails for a nonexisting
 		// template
@@ -374,30 +365,30 @@ public class TableComponentTester {
 		// edit entries to rows
 
 		// edit row1
-		row1.get(0).setName("Entry1");
+		row1.get(0).setName("VizEntry1");
 		row1.get(0).setId(1);
-		row1.get(0).setDescription("I am Entry1!");
+		row1.get(0).setDescription("I am VizEntry1!");
 
-		row1.get(1).setName("Entry2");
+		row1.get(1).setName("VizEntry2");
 		row1.get(1).setId(2);
-		row1.get(1).setDescription("I am Entry2!");
+		row1.get(1).setDescription("I am VizEntry2!");
 
-		row1.get(2).setName("Entry3");
+		row1.get(2).setName("VizEntry3");
 		row1.get(2).setId(3);
-		row1.get(2).setDescription("I am Entry3!");
+		row1.get(2).setDescription("I am VizEntry3!");
 
 		// edit row2
-		row2.get(0).setName("Entry4");
+		row2.get(0).setName("VizEntry4");
 		row2.get(0).setId(4);
-		row2.get(0).setDescription("I am Entry4!");
+		row2.get(0).setDescription("I am VizEntry4!");
 
-		row2.get(1).setName("Entry5");
+		row2.get(1).setName("VizEntry5");
 		row2.get(1).setId(5);
-		row2.get(1).setDescription("I am Entry5!");
+		row2.get(1).setDescription("I am VizEntry5!");
 
-		row2.get(2).setName("Entry6");
+		row2.get(2).setName("VizEntry6");
 		row2.get(2).setId(6);
-		row2.get(2).setDescription("I am Entry6!");
+		row2.get(2).setDescription("I am VizEntry6!");
 
 		// check to see if entries were added correctly
 		row1 = null;
@@ -408,30 +399,30 @@ public class TableComponentTester {
 		assertNotNull(row2);
 
 		// check row1's information and contents for validity
-		assertEquals("Entry1", row1.get(0).getName());
+		assertEquals("VizEntry1", row1.get(0).getName());
 		assertEquals(1, row1.get(0).getId());
-		assertEquals("I am Entry1!", row1.get(0).getDescription());
+		assertEquals("I am VizEntry1!", row1.get(0).getDescription());
 
-		assertEquals("Entry2", row1.get(1).getName());
+		assertEquals("VizEntry2", row1.get(1).getName());
 		assertEquals(2, row1.get(1).getId());
-		assertEquals("I am Entry2!", row1.get(1).getDescription());
+		assertEquals("I am VizEntry2!", row1.get(1).getDescription());
 
-		assertEquals("Entry3", row1.get(2).getName());
+		assertEquals("VizEntry3", row1.get(2).getName());
 		assertEquals(3, row1.get(2).getId());
-		assertEquals("I am Entry3!", row1.get(2).getDescription());
+		assertEquals("I am VizEntry3!", row1.get(2).getDescription());
 
 		// check row2's information and contents for validity
-		assertEquals("Entry4", row2.get(0).getName());
+		assertEquals("VizEntry4", row2.get(0).getName());
 		assertEquals(4, row2.get(0).getId());
-		assertEquals("I am Entry4!", row2.get(0).getDescription());
+		assertEquals("I am VizEntry4!", row2.get(0).getDescription());
 
-		assertEquals("Entry5", row2.get(1).getName());
+		assertEquals("VizEntry5", row2.get(1).getName());
 		assertEquals(5, row2.get(1).getId());
-		assertEquals("I am Entry5!", row2.get(1).getDescription());
+		assertEquals("I am VizEntry5!", row2.get(1).getDescription());
 
-		assertEquals("Entry6", row2.get(2).getName());
+		assertEquals("VizEntry6", row2.get(2).getName());
 		assertEquals(6, row2.get(2).getId());
-		assertEquals("I am Entry6!", row2.get(2).getDescription());
+		assertEquals("I am VizEntry6!", row2.get(2).getDescription());
 
 		// check number of rows, columns, and rowIds
 		assertEquals(2, tableComponent.numberOfRows());
@@ -450,17 +441,17 @@ public class TableComponentTester {
 		assertNotNull(row1);
 
 		// check row1's information and contents for validity contents
-		assertEquals("Entry4", row1.get(0).getName());
+		assertEquals("VizEntry4", row1.get(0).getName());
 		assertEquals(4, row1.get(0).getId());
-		assertEquals("I am Entry4!", row1.get(0).getDescription());
+		assertEquals("I am VizEntry4!", row1.get(0).getDescription());
 
-		assertEquals("Entry5", row1.get(1).getName());
+		assertEquals("VizEntry5", row1.get(1).getName());
 		assertEquals(5, row1.get(1).getId());
-		assertEquals("I am Entry5!", row1.get(1).getDescription());
+		assertEquals("I am VizEntry5!", row1.get(1).getDescription());
 
-		assertEquals("Entry6", row1.get(2).getName());
+		assertEquals("VizEntry6", row1.get(2).getName());
 		assertEquals(6, row1.get(2).getId());
-		assertEquals("I am Entry6!", row1.get(2).getDescription());
+		assertEquals("I am VizEntry6!", row1.get(2).getDescription());
 
 		// Trying to delete a nonexisting row - return false
 		assertFalse(tableComponent.deleteRow(-1));
@@ -572,7 +563,7 @@ public class TableComponentTester {
 
 	/**
 	 * <p>
-	 * This operation tests the TableComponent to insure that it can properly
+	 * This operation tests the VizTableComponent to insure that it can properly
 	 * dispatch notifications when it receives an update that changes its state.
 	 * </p>
 	 * 
@@ -581,10 +572,10 @@ public class TableComponentTester {
 	public void checkNotifications() {
 
 		// Setup the listener
-		testComponentListener = new TestComponentListener();
+		testComponentListener = new TestVizComponentListener();
 
 		// Setup the DataComponent
-		tableComponent = new TableComponent();
+		tableComponent = new VizTableComponent();
 
 		// Register the listener
 		tableComponent.register(testComponentListener);
@@ -593,8 +584,8 @@ public class TableComponentTester {
 		testComponentListener.reset();
 
 		// set a template
-		ArrayList<Entry> array = new ArrayList<Entry>();
-		array.add(new Entry());
+		ArrayList<VizEntry> array = new ArrayList<VizEntry>();
+		array.add(new VizEntry());
 		tableComponent.setRowTemplate(array);
 
 		// Check the listener to make sure it was updated
@@ -603,9 +594,9 @@ public class TableComponentTester {
 		// Reset the listener
 		testComponentListener.reset();
 
-		// Create a new row in the TableComponent
+		// Create a new row in the VizTableComponent
 		tableComponent.addRow();
-		// add "Entry"
+		// add "VizEntry"
 
 		// Check the Listener
 		assertTrue(testComponentListener.wasNotified());
@@ -625,31 +616,7 @@ public class TableComponentTester {
 
 	/**
 	 * <p>
-	 * This operation checks the TableComponent to insure that it can be
-	 * correctly visited by a realization of the IComponentVisitor interface.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkVisitation() {
-
-		// Setup the visitor
-		testVisitor = new TestVisitor();
-
-		// Setup the DataComponent
-		tableComponent = new TableComponent();
-
-		// Send the visitor
-		tableComponent.accept(testVisitor);
-
-		// Check the visitor
-		assertTrue(testVisitor.wasVisited());
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the TableComponent to insure that its equals() and
+	 * This operation checks the VizTableComponent to insure that its equals() and
 	 * hashcode() operations work.
 	 * </p>
 	 * 
@@ -657,19 +624,19 @@ public class TableComponentTester {
 	@Test
 	public void checkEquality() {
 		// Local Declarations
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		ArrayList<Entry> template2 = new ArrayList<Entry>();
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> template2 = new ArrayList<VizEntry>();
 
-		// Create TableComponents to test
-		TableComponent component = new TableComponent();
-		TableComponent equalComponent = new TableComponent();
-		TableComponent unEqualComponent = new TableComponent();
-		TableComponent transitiveComponent = new TableComponent();
+		// Create VizTableComponents to test
+		VizTableComponent component = new VizTableComponent();
+		VizTableComponent equalComponent = new VizTableComponent();
+		VizTableComponent unEqualComponent = new VizTableComponent();
+		VizTableComponent transitiveComponent = new VizTableComponent();
 
 		// Create ArrayList for row templates. Add to component, equalcomponent,
 		// and transitivecomponent
 		for (int i = 0; i < 10; i++) {
-			Entry e = new Entry();
+			VizEntry e = new VizEntry();
 			e.setName("" + i);
 			template.add(e);
 		}
@@ -746,7 +713,7 @@ public class TableComponentTester {
 
 	/**
 	 * <p>
-	 * This operation checks the TableComponent to ensure that its copy() and
+	 * This operation checks the VizTableComponent to ensure that its copy() and
 	 * clone() operations work as specified.
 	 * </p>
 	 * 
@@ -756,24 +723,24 @@ public class TableComponentTester {
 
 		/*
 		 * The following sets of operations will be used to test the
-		 * "clone and copy" portion of TableComponent.
+		 * "clone and copy" portion of VizTableComponent.
 		 */
 		// Local Declarations
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		ArrayList<Entry> row1 = new ArrayList<Entry>();
-		ArrayList<Entry> row2 = new ArrayList<Entry>();
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> row1 = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> row2 = new ArrayList<VizEntry>();
 
-		Entry column1 = new Entry();
-		Entry column2 = new Entry();
-		Entry column3 = new Entry();
+		VizEntry column1 = new VizEntry();
+		VizEntry column2 = new VizEntry();
+		VizEntry column3 = new VizEntry();
 
-		TableComponent cloneTable = new TableComponent();
-		TableComponent copyTable = new TableComponent();
+		VizTableComponent cloneTable = new VizTableComponent();
+		VizTableComponent copyTable = new VizTableComponent();
 
-		Entry testColumn1, testColumn2, testColumn3 = null;
+		VizEntry testColumn1, testColumn2, testColumn3 = null;
 
 		// create new tableComponent
-		tableComponent = new TableComponent();
+		tableComponent = new VizTableComponent();
 
 		// set tableComponent values for name, id, description
 		tableComponent.setName("Table 1");
@@ -817,30 +784,30 @@ public class TableComponentTester {
 		row2 = tableComponent.getRow(1);
 
 		// edit row1
-		row1.get(0).setName("Entry1");
+		row1.get(0).setName("VizEntry1");
 		row1.get(0).setId(1);
-		row1.get(0).setDescription("I am Entry1!");
+		row1.get(0).setDescription("I am VizEntry1!");
 
-		row1.get(1).setName("Entry2");
+		row1.get(1).setName("VizEntry2");
 		row1.get(1).setId(2);
-		row1.get(1).setDescription("I am Entry2!");
+		row1.get(1).setDescription("I am VizEntry2!");
 
-		row1.get(2).setName("Entry3");
+		row1.get(2).setName("VizEntry3");
 		row1.get(2).setId(3);
-		row1.get(2).setDescription("I am Entry3!");
+		row1.get(2).setDescription("I am VizEntry3!");
 
 		// edit row2
-		row2.get(0).setName("Entry4");
+		row2.get(0).setName("VizEntry4");
 		row2.get(0).setId(4);
-		row2.get(0).setDescription("I am Entry4!");
+		row2.get(0).setDescription("I am VizEntry4!");
 
-		row2.get(1).setName("Entry5");
+		row2.get(1).setName("VizEntry5");
 		row2.get(1).setId(5);
-		row2.get(1).setDescription("I am Entry5!");
+		row2.get(1).setDescription("I am VizEntry5!");
 
-		row2.get(2).setName("Entry6");
+		row2.get(2).setName("VizEntry6");
 		row2.get(2).setId(6);
-		row2.get(2).setDescription("I am Entry6!");
+		row2.get(2).setDescription("I am VizEntry6!");
 
 		// Select a row to check selected row copying
 		ArrayList<Integer> selectedRowList = new ArrayList<Integer>();
@@ -848,7 +815,7 @@ public class TableComponentTester {
 		tableComponent.setSelectedRows(selectedRowList);
 
 		// run clone operation
-		cloneTable = (TableComponent) tableComponent.clone();
+		cloneTable = (VizTableComponent) tableComponent.clone();
 
 		// check contents
 		assertTrue(tableComponent.equals(cloneTable));
@@ -869,7 +836,7 @@ public class TableComponentTester {
 	}
 
 	/**
-	 * This operation checks the ability of the TableComponent to persist itself
+	 * This operation checks the ability of the VizTableComponent to persist itself
 	 * to XML and to load itself from an XML input stream.
 	 * @throws IOException 
 	 * @throws JAXBException 
@@ -880,30 +847,30 @@ public class TableComponentTester {
 
 		/*
 		 * The following sets of operations will be used to test the
-		 * "read and write" portion of the TableComponent. It will demonstrate
+		 * "read and write" portion of the VizTableComponent. It will demonstrate
 		 * the behavior of reading and writing from an
 		 * "XML (inputStream and outputStream)" file. It will use an annotated
-		 * TableComponent to demonstrate basic behavior.
+		 * VizTableComponent to demonstrate basic behavior.
 		 */
 
 		// Local Declarations
-		ArrayList<Entry> template = new ArrayList<Entry>();
-		ArrayList<Entry> row1 = new ArrayList<Entry>();
-		ArrayList<Entry> row2 = new ArrayList<Entry>();
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> row1 = new ArrayList<VizEntry>();
+		ArrayList<VizEntry> row2 = new ArrayList<VizEntry>();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(TableComponent.class);
+		classList.add(VizTableComponent.class);
 
-		Entry column1 = new Entry();
-		Entry column2 = new Entry();
-		Entry column3 = new Entry();
+		VizEntry column1 = new VizEntry();
+		VizEntry column2 = new VizEntry();
+		VizEntry column3 = new VizEntry();
 
-		TableComponent tableComponent2 = new TableComponent();
+		VizTableComponent tableComponent2 = new VizTableComponent();
 
-		Entry testColumn1, testColumn2, testColumn3 = null;
+		VizEntry testColumn1, testColumn2, testColumn3 = null;
 
 		// create new tableComponent
-		tableComponent = new TableComponent();
+		tableComponent = new VizTableComponent();
 
 		// set tableComponent values for name, id, description
 		tableComponent.setName("Table 1");
@@ -949,30 +916,30 @@ public class TableComponentTester {
 		row2 = tableComponent.getRow(1);
 
 		// edit row1
-		row1.get(0).setName("Entry1");
+		row1.get(0).setName("VizEntry1");
 		row1.get(0).setId(1);
-		row1.get(0).setDescription("I am Entry1!");
+		row1.get(0).setDescription("I am VizEntry1!");
 
-		row1.get(1).setName("Entry2");
+		row1.get(1).setName("VizEntry2");
 		row1.get(1).setId(2);
-		row1.get(1).setDescription("I am Entry2!");
+		row1.get(1).setDescription("I am VizEntry2!");
 
-		row1.get(2).setName("Entry3");
+		row1.get(2).setName("VizEntry3");
 		row1.get(2).setId(3);
-		row1.get(2).setDescription("I am Entry3!");
+		row1.get(2).setDescription("I am VizEntry3!");
 
 		// edit row2
-		row2.get(0).setName("Entry4");
+		row2.get(0).setName("VizEntry4");
 		row2.get(0).setId(4);
-		row2.get(0).setDescription("I am Entry4!");
+		row2.get(0).setDescription("I am VizEntry4!");
 
-		row2.get(1).setName("Entry5");
+		row2.get(1).setName("VizEntry5");
 		row2.get(1).setId(5);
-		row2.get(1).setDescription("I am Entry5!");
+		row2.get(1).setDescription("I am VizEntry5!");
 
-		row2.get(2).setName("Entry6");
+		row2.get(2).setName("VizEntry6");
 		row2.get(2).setId(6);
-		row2.get(2).setDescription("I am Entry6!");
+		row2.get(2).setDescription("I am VizEntry6!");
 
 		// Select a row for the test
 		ArrayList<Integer> selectedRowList = new ArrayList<Integer>();
@@ -990,10 +957,10 @@ public class TableComponentTester {
 				outputStream.toByteArray());
 
 		// create a new instance of a different variable to compare
-		tableComponent2 = new TableComponent();
+		tableComponent2 = new VizTableComponent();
 
 		// load into DataComponent();
-		tableComponent2 = (TableComponent) xmlHandler.read(classList, inputStream);
+		tableComponent2 = (VizTableComponent) xmlHandler.read(classList, inputStream);
 		assertTrue(tableComponent.equals(tableComponent2));
 
 		// check contents
@@ -1027,30 +994,30 @@ public class TableComponentTester {
 		assertEquals("Column3", tableComponent2.getColumnNames().get(2));
 
 		// check row1's information and contents for validity
-		assertEquals("Entry1", row1.get(0).getName());
+		assertEquals("VizEntry1", row1.get(0).getName());
 		assertEquals(1, row1.get(0).getId());
-		assertEquals("I am Entry1!", row1.get(0).getDescription());
+		assertEquals("I am VizEntry1!", row1.get(0).getDescription());
 
-		assertEquals("Entry2", row1.get(1).getName());
+		assertEquals("VizEntry2", row1.get(1).getName());
 		assertEquals(2, row1.get(1).getId());
-		assertEquals("I am Entry2!", row1.get(1).getDescription());
+		assertEquals("I am VizEntry2!", row1.get(1).getDescription());
 
-		assertEquals("Entry3", row1.get(2).getName());
+		assertEquals("VizEntry3", row1.get(2).getName());
 		assertEquals(3, row1.get(2).getId());
-		assertEquals("I am Entry3!", row1.get(2).getDescription());
+		assertEquals("I am VizEntry3!", row1.get(2).getDescription());
 
 		// check row2's information and contents for validity
-		assertEquals("Entry4", row2.get(0).getName());
+		assertEquals("VizEntry4", row2.get(0).getName());
 		assertEquals(4, row2.get(0).getId());
-		assertEquals("I am Entry4!", row2.get(0).getDescription());
+		assertEquals("I am VizEntry4!", row2.get(0).getDescription());
 
-		assertEquals("Entry5", row2.get(1).getName());
+		assertEquals("VizEntry5", row2.get(1).getName());
 		assertEquals(5, row2.get(1).getId());
-		assertEquals("I am Entry5!", row2.get(1).getDescription());
+		assertEquals("I am VizEntry5!", row2.get(1).getDescription());
 
-		assertEquals("Entry6", row2.get(2).getName());
+		assertEquals("VizEntry6", row2.get(2).getName());
 		assertEquals(6, row2.get(2).getId());
-		assertEquals("I am Entry6!", row2.get(2).getDescription());
+		assertEquals("I am VizEntry6!", row2.get(2).getDescription());
 
 		// check number of rows, columns, and rowIds
 		assertEquals(2, tableComponent2.numberOfRows());

@@ -24,24 +24,23 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.test.TestComponentListener;
+import org.eclipse.ice.viz.service.datastructures.VizJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizObject;
 import org.junit.Test;
 
 /**
  * <p>
- * The ICEObjectTester is responsible for testing the ICEObject class. It only
+ * The VizObjectTester is responsible for testing the VizObject class. It only
  * tests the name, id, and description properties as well as persistence.
  * It also checks equality, hashCode computation, copying, and cloning.
  * </p>
  * 
  * @author Jay Jay Billings
  */
-public class ICEObjectTester {
+public class VizObjectTester {
 
 	/**
-	 * This operation checks the ICEObject to insure that the id, name and
+	 * This operation checks the VizObject to insure that the id, name and
 	 * description getters and setters function properly.
 	 */
 	@Test
@@ -53,8 +52,8 @@ public class ICEObjectTester {
 		String description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
 
-		// Create the ICEObject
-		ICEObject testNC = new ICEObject();
+		// Create the VizObject
+		VizObject testNC = new VizObject();
 
 		// Set up the id, name and description
 		testNC.setId(id);
@@ -69,7 +68,7 @@ public class ICEObjectTester {
 	}
 
 	/**
-	 * This operation checks the ICEObject class to ensure that its copy() and
+	 * This operation checks the VizObject class to ensure that its copy() and
 	 * clone() operations work as specified.
 	 */
 	@Test
@@ -80,7 +79,7 @@ public class ICEObjectTester {
 		String name = "September 1st 2011";
 		String description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		ICEObject testNC = new ICEObject();
+		VizObject testNC = new VizObject();
 		
 		// Test to show valid usage of clone
 
@@ -90,7 +89,7 @@ public class ICEObjectTester {
 		testNC.setDescription(description);
 
 		// Run clone operation
-		ICEObject cloneNC = (ICEObject) testNC.clone();
+		VizObject cloneNC = (VizObject) testNC.clone();
 
 		// Check the id, name and description with clone
 		assertEquals(testNC.getId(), cloneNC.getId());
@@ -104,15 +103,15 @@ public class ICEObjectTester {
 		name = "September 1st 2011";
 		description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		testNC = new ICEObject();
+		testNC = new VizObject();
 
 		// Set up the id, name and description
 		testNC.setId(id);
 		testNC.setName(name);
 		testNC.setDescription(description);
 
-		// Create a new instance of ICEObject and copy contents
-		ICEObject testNC2 = new ICEObject();
+		// Create a new instance of VizObject and copy contents
+		VizObject testNC2 = new VizObject();
 		testNC2.copy(testNC);
 
 		// Check the id, name and description with copy
@@ -127,7 +126,7 @@ public class ICEObjectTester {
 		name = "September 1st 2011";
 		description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		testNC = new ICEObject();
+		testNC = new VizObject();
 
 		// Set up the id, name and description
 		testNC.setId(id);
@@ -145,7 +144,7 @@ public class ICEObjectTester {
 
 	/**
 	 * <p>
-	 * This operation checks the ability of the ICEObject to persist itself to
+	 * This operation checks the ability of the VizObject to persist itself to
 	 * XML and to load itself from an XML input stream.
 	 * </p>
 	 * @throws IOException 
@@ -159,25 +158,25 @@ public class ICEObjectTester {
 
 		/*
 		 * The following sets of operations will be used to test the
-		 * "read and write" portion of the ICEObject. It will demonstrate the
+		 * "read and write" portion of the VizObject. It will demonstrate the
 		 * behavior of reading and writing from an
 		 * "XML (inputStream and outputStream)" file. It will use an annotated
-		 * ICEObject to demonstrate basic behavior.
+		 * VizObject to demonstrate basic behavior.
 		 */
 
 		// Local declarations
-		ICEObject testNC = null, testNC2 = null;
+		VizObject testNC = null, testNC2 = null;
 		int id = 20110901;
 		String name = "September 1st 2011";
 		String description = "The 1st day of the ninth month in the year of "
 				+ "our Lord 2011";
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(ICEObject.class);
+		classList.add(VizObject.class);
 
 		// Demonstrate a basic "write" to file. Should not fail
 		// Initialize the object and set values.
-		testNC = new ICEObject();
+		testNC = new VizObject();
 		testNC.setId(id);
 		testNC.setName(name);
 		testNC.setDescription(description);
@@ -189,7 +188,7 @@ public class ICEObjectTester {
 				outputStream.toByteArray());
 
 		// Convert to inputStream
-		testNC2 = (ICEObject) xmlHandler.read(classList, inputStream);
+		testNC2 = (VizObject) xmlHandler.read(classList, inputStream);
 
 		// Check that it equals the persisted object
 		assertTrue(testNC.equals(testNC2));
@@ -198,7 +197,7 @@ public class ICEObjectTester {
 
 	/**
 	 * <p>
-	 * This operation checks the ICEObject class to insure that its equals()
+	 * This operation checks the VizObject class to insure that its equals()
 	 * operation works.
 	 * </p>
 	 * 
@@ -206,93 +205,93 @@ public class ICEObjectTester {
 	@Test
 	public void checkEquality() {
 
-		// Create an ICEObject
-		ICEObject testICEObject = new ICEObject();
+		// Create an VizObject
+		VizObject testVizObject = new VizObject();
 
 		// Set its data
-		testICEObject.setId(12);
-		testICEObject.setName("ICE ICEObject");
-		testICEObject.setDescription("This is an ICEObject that will "
-				+ "be used for testing equality with other ICEObjects.");
+		testVizObject.setId(12);
+		testVizObject.setName("ICE VizObject");
+		testVizObject.setDescription("This is an VizObject that will "
+				+ "be used for testing equality with other VizObjects.");
 
-		// Create another ICEObject to assert Equality with the last
-		ICEObject equalObject = new ICEObject();
+		// Create another VizObject to assert Equality with the last
+		VizObject equalObject = new VizObject();
 
-		// Set its data, equal to testICEObject
+		// Set its data, equal to testVizObject
 		equalObject.setId(12);
-		equalObject.setName("ICE ICEObject");
-		equalObject.setDescription("This is an ICEObject that will "
-				+ "be used for testing equality with other ICEObjects.");
+		equalObject.setName("ICE VizObject");
+		equalObject.setDescription("This is an VizObject that will "
+				+ "be used for testing equality with other VizObjects.");
 
-		// Create an ICEObject that is not equal to testICEObject
-		ICEObject unEqualObject = new ICEObject();
+		// Create an VizObject that is not equal to testVizObject
+		VizObject unEqualObject = new VizObject();
 
-		// Set its data, not equal to testICEObject
+		// Set its data, not equal to testVizObject
 		unEqualObject.setId(52);
-		unEqualObject.setName("Bill the ICEObject");
-		unEqualObject.setDescription("This is an ICEObject to verify that "
-				+ "ICEObject.equals() returns false for an object that is not "
-				+ "equivalent to testICEObject.");
+		unEqualObject.setName("Bill the VizObject");
+		unEqualObject.setDescription("This is an VizObject to verify that "
+				+ "VizObject.equals() returns false for an object that is not "
+				+ "equivalent to testVizObject.");
 
-		// Create a third ICEObject to test Transitivity
-		ICEObject transitiveObject = new ICEObject();
+		// Create a third VizObject to test Transitivity
+		VizObject transitiveObject = new VizObject();
 
-		// Set its data, not equal to testICEObject
+		// Set its data, not equal to testVizObject
 		transitiveObject.setId(12);
-		transitiveObject.setName("ICE ICEObject");
-		transitiveObject.setDescription("This is an ICEObject that will "
-				+ "be used for testing equality with other ICEObjects.");
+		transitiveObject.setName("ICE VizObject");
+		transitiveObject.setDescription("This is an VizObject that will "
+				+ "be used for testing equality with other VizObjects.");
 
-		// Assert that these two ICEObjects are equal
-		assertTrue(testICEObject.equals(equalObject));
+		// Assert that these two VizObjects are equal
+		assertTrue(testVizObject.equals(equalObject));
 
 		// Assert that two unequal objects returns false
-		assertFalse(testICEObject.equals(unEqualObject));
+		assertFalse(testVizObject.equals(unEqualObject));
 
 		// Check that equals() is Reflexive
 		// x.equals(x) = true
-		assertTrue(testICEObject.equals(testICEObject));
+		assertTrue(testVizObject.equals(testVizObject));
 
 		// Check that equals() is Symmetric
 		// x.equals(y) = true iff y.equals(x) = true
-		assertTrue(testICEObject.equals(equalObject)
-				&& equalObject.equals(testICEObject));
+		assertTrue(testVizObject.equals(equalObject)
+				&& equalObject.equals(testVizObject));
 
 		// Check that equals() is Transitive
 		// x.equals(y) = true, y.equals(z) = true => x.equals(z) = true
-		if (testICEObject.equals(equalObject)
+		if (testVizObject.equals(equalObject)
 				&& equalObject.equals(transitiveObject)) {
-			assertTrue(testICEObject.equals(transitiveObject));
+			assertTrue(testVizObject.equals(transitiveObject));
 		} else {
 			fail();
 		}
 
 		// Check the Consistent nature of equals()
-		assertTrue(testICEObject.equals(equalObject)
-				&& testICEObject.equals(equalObject)
-				&& testICEObject.equals(equalObject));
-		assertTrue(!testICEObject.equals(unEqualObject)
-				&& !testICEObject.equals(unEqualObject)
-				&& !testICEObject.equals(unEqualObject));
+		assertTrue(testVizObject.equals(equalObject)
+				&& testVizObject.equals(equalObject)
+				&& testVizObject.equals(equalObject));
+		assertTrue(!testVizObject.equals(unEqualObject)
+				&& !testVizObject.equals(unEqualObject)
+				&& !testVizObject.equals(unEqualObject));
 
 		// Assert checking equality with null value returns false
-		assertFalse(testICEObject == null);
+		assertFalse(testVizObject == null);
 
 		// Assert that two equal objects have the same hashcode
-		assertTrue(testICEObject.equals(equalObject)
-				&& testICEObject.hashCode() == equalObject.hashCode());
+		assertTrue(testVizObject.equals(equalObject)
+				&& testVizObject.hashCode() == equalObject.hashCode());
 
 		// Assert that hashcode is consistent
-		assertTrue(testICEObject.hashCode() == testICEObject.hashCode());
+		assertTrue(testVizObject.hashCode() == testVizObject.hashCode());
 
 		// Assert that hashcodes are different for unequal objects
-		assertFalse(testICEObject.hashCode() == unEqualObject.hashCode());
+		assertFalse(testVizObject.hashCode() == unEqualObject.hashCode());
 
 	}
 
 	/**
 	 * <p>
-	 * This operation tests the ICEObject to insure that it can properly
+	 * This operation tests the VizObject to insure that it can properly
 	 * dispatch notifications when it receives an update that changes its state.
 	 * </p>
 	 * 
@@ -301,11 +300,11 @@ public class ICEObjectTester {
 	public void checkNotifications() {
 
 		// Setup the listeners
-		TestComponentListener firstListener = new TestComponentListener();
-		TestComponentListener secondListener = new TestComponentListener();
+		TestVizComponentListener firstListener = new TestVizComponentListener();
+		TestVizComponentListener secondListener = new TestVizComponentListener();
 
 		// Setup the iceObject
-		ICEObject iceObject = new ICEObject();
+		VizObject iceObject = new VizObject();
 
 		// Register the listener
 		iceObject.register(firstListener);

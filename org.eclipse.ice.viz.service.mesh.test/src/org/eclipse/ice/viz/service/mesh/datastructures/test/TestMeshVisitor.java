@@ -10,9 +10,8 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.test;
+package org.eclipse.ice.viz.service.mesh.datastructures.test;
 
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
@@ -74,10 +73,6 @@ public class TestMeshVisitor implements IMeshPartVisitor {
 	 */
 	public void reset() {
 		visited = false;
-	}
-
-	public void visit(MeshComponent mesh) {
-		// Do nothing by default.
 	}
 
 	@Override

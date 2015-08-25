@@ -27,7 +27,6 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.test.TestMeshVisitor;
 import org.eclipse.ice.datastructures.test.TestVisitor;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;

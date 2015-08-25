@@ -10,14 +10,12 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.datastructures.test;
+package org.eclipse.ice.viz.service.datastructures.test;
 
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 
