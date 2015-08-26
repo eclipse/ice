@@ -14,7 +14,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.7.20150824</version>
+	<version>2.1.7.20150825</version>
 	<packaging>pom</packaging>
 
 	<pluginRepositories>
@@ -265,6 +265,9 @@
 		<module>org.eclipse.ice.viz.service.geometry</module>
 		<module>org.eclipse.ice.viz.service.geometry.test</module>
 		<module>org.eclipse.ice.viz.service.jme3</module>
+		<module>org.eclipse.ice.viz.service.jme3.test</module>
+		<module>org.eclipse.ice.viz.service.mesh</module>
+		<module>org.eclipse.ice.viz.service.mesh.test</module>		
 		<module>org.eclipse.ice.viz.service.visit</module>
 		<module>org.eclipse.ice.viz.service.visit.test</module>
 		<module>org.eclipse.ice.viz.service.paraview</module>

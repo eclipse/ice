@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PROTEUS
 Bundle-SymbolicName: org.eclipse.ice.proteus
-Bundle-Version: 2.1.7.20150824
+Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.ice.datastructures.form,
@@ -13,7 +13,7 @@ Import-Package: org.eclipse.ice.datastructures.form,
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.ice.item;bundle-version="2.0.0",
- org.eclipse.ice.datastructures;bundle-version="2.0.0"
+ org.eclipse.ice.datastructures
 Export-Package: org.eclipse.ice.proteus;
   uses:="org.eclipse.ice.item,
    org.eclipse.ice.datastructures.form,

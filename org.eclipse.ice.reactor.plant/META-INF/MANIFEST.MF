@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.reactor.plant
 Bundle-SymbolicName: org.eclipse.ice.reactor.plant;singleton:=true
-Bundle-Version: 2.1.7.20150824
+Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0"
+Require-Bundle: org.eclipse.ice.datastructures
 Export-Package: org.eclipse.ice.reactor.plant
 Import-Package: ncsa.hdf.hdf5lib,
  ncsa.hdf.hdf5lib.exceptions,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.io
 Bundle-SymbolicName: org.eclipse.ice.io;singleton:=true
-Bundle-Version: 2.1.7.20150824
+Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  deps/jhdf.jar,
@@ -10,7 +10,7 @@ Bundle-ClassPath: .,
  deps/jhdf5.jar,
  deps/jhdf5obj.jar,
  deps/jhdfobj.jar
-Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.0.0",
+Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.dependencies;bundle-version="2.0.0";visibility:=reexport
 Service-Component: OSGI-INF/HdfIORegistry.xml,OSGI-INF/HdfIOFactory.xml,
  OSGI-INF/ioservice.xml

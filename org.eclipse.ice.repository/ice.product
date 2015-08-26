@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.7.20150824" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.7.20150825" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -171,7 +171,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ptp.rm.ibm.platform.lsf" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ptp.rm.jaxb.contrib" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ptp.rm.slurm" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ice" version="2.1.7.20150824"/>
+      <feature id="org.eclipse.ice" version="2.1.7.20150825"/>
    </features>
 
    <configurations>
