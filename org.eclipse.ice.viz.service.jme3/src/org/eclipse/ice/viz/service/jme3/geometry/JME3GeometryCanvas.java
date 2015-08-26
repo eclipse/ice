@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
@@ -53,6 +51,8 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
 import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
 import org.eclipse.ice.viz.service.geometry.shapes.IShape;

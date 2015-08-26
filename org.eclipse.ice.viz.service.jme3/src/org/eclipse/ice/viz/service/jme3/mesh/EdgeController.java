@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.jme3.mesh;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 
 import com.jme3.material.Material;

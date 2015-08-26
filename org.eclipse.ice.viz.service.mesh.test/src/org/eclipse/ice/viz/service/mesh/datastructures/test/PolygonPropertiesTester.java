@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolygonProperties;
 import org.junit.Test;
 
@@ -89,7 +89,7 @@ public class PolygonPropertiesTester {
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 
 		// Local Declarations
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(PolygonProperties.class);
 

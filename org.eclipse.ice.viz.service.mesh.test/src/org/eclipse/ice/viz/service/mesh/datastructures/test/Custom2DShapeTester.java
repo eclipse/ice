@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.eclipse.ice.viz.service.mesh.datastructures.Custom2DShape;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
@@ -357,7 +357,7 @@ public class Custom2DShapeTester {
 		ArrayList<Edge> edges;
 		Polygon polygon;
 		int size;
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(Custom2DShape.class);
 

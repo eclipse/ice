@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 
 /**
  * <p>

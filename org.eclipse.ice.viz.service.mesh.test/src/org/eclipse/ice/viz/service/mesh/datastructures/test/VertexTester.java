@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.junit.Test;
@@ -250,7 +250,7 @@ public class VertexTester {
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 		// Local Declarations
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(Vertex.class);
 

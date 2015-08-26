@@ -25,9 +25,9 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.junit.Test;
 
 /**
@@ -47,7 +47,7 @@ public class BasicEntryContentProviderTester {
 	@Test
 	public void checkConstruction() {
 		// Local Declarations
-		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		BasicVizEntryContentProvider contentProvider = new BasicVizEntryContentProvider();
 
 		// Check basic information
 		assertEquals("ICE Object", contentProvider.getName());
@@ -59,7 +59,7 @@ public class BasicEntryContentProviderTester {
 		assertEquals("orphan", contentProvider.getParent());
 		assertEquals(null, contentProvider.getTag());
 		assertEquals("", contentProvider.getDefaultValue());
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 	}
@@ -73,7 +73,7 @@ public class BasicEntryContentProviderTester {
 	@Test
 	public void checkGettersAndSetters() {
 		// Local Declarations
-		BasicEntryContentProvider contentProvider = new BasicEntryContentProvider();
+		BasicVizEntryContentProvider contentProvider = new BasicVizEntryContentProvider();
 		ArrayList<String> goodValues = new ArrayList<String>();
 		ArrayList<String> emptyValues = new ArrayList<String>();
 
@@ -87,7 +87,7 @@ public class BasicEntryContentProviderTester {
 		assertEquals("orphan", contentProvider.getParent());
 		assertEquals(null, contentProvider.getTag());
 		assertEquals("", contentProvider.getDefaultValue());
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 		// Now, try to set some data
@@ -133,21 +133,21 @@ public class BasicEntryContentProviderTester {
 		// allowedValues,
 		// which is invalid (or continuous with allowedValues != 2 or correctly
 		// paired).
-		contentProvider.setAllowedValueType(AllowedValueType.Discrete);
-		assertEquals(AllowedValueType.Discrete,
+		contentProvider.setAllowedValueType(VizAllowedValueType.Discrete);
+		assertEquals(VizAllowedValueType.Discrete,
 				contentProvider.getAllowedValueType());
 
-		contentProvider.setAllowedValueType(AllowedValueType.Continuous);
-		assertEquals(AllowedValueType.Continuous,
+		contentProvider.setAllowedValueType(VizAllowedValueType.Continuous);
+		assertEquals(VizAllowedValueType.Continuous,
 				contentProvider.getAllowedValueType());
 
-		contentProvider.setAllowedValueType(AllowedValueType.Undefined);
-		assertEquals(AllowedValueType.Undefined,
+		contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 		// Try to set it to null - does not change
 		contentProvider.setAllowedValueType(null);
-		assertEquals(AllowedValueType.Undefined,
+		assertEquals(VizAllowedValueType.Undefined,
 				contentProvider.getAllowedValueType());
 
 	}
@@ -161,23 +161,23 @@ public class BasicEntryContentProviderTester {
 	@Test
 	public void checkEquality() {
 		// Local Declarations
-		BasicEntryContentProvider contentProvider, equalContentProvider, unEqualContentProvider, transitiveContentProvider = null;
+		BasicVizEntryContentProvider contentProvider, equalContentProvider, unEqualContentProvider, transitiveContentProvider = null;
 		ArrayList<String> allowedValues = new ArrayList<String>();
 
 		allowedValues.add("3");
 		allowedValues.add("5");
 
-		contentProvider = new BasicEntryContentProvider();
-		equalContentProvider = new BasicEntryContentProvider();
-		transitiveContentProvider = new BasicEntryContentProvider();
-		unEqualContentProvider = new BasicEntryContentProvider();
+		contentProvider = new BasicVizEntryContentProvider();
+		equalContentProvider = new BasicVizEntryContentProvider();
+		transitiveContentProvider = new BasicVizEntryContentProvider();
+		unEqualContentProvider = new BasicVizEntryContentProvider();
 
 		// Set type
-		contentProvider.setAllowedValueType(AllowedValueType.Continuous);
+		contentProvider.setAllowedValueType(VizAllowedValueType.Continuous);
 		transitiveContentProvider
-				.setAllowedValueType(AllowedValueType.Continuous);
-		equalContentProvider.setAllowedValueType(AllowedValueType.Continuous);
-		unEqualContentProvider.setAllowedValueType(AllowedValueType.Discrete);
+				.setAllowedValueType(VizAllowedValueType.Continuous);
+		equalContentProvider.setAllowedValueType(VizAllowedValueType.Continuous);
+		unEqualContentProvider.setAllowedValueType(VizAllowedValueType.Discrete);
 
 		// Set AllowedValues
 		contentProvider.setAllowedValues(allowedValues);
@@ -243,16 +243,16 @@ public class BasicEntryContentProviderTester {
 	@Test
 	public void checkCopying() {
 		// Local Declarations
-		BasicEntryContentProvider contentProvider, contentProviderCopy, contentProviderClone = null;
+		BasicVizEntryContentProvider contentProvider, contentProviderCopy, contentProviderClone = null;
 		ArrayList<String> allowedValues = new ArrayList<String>();
 
 		allowedValues.add("3");
 		allowedValues.add("5");
 
-		contentProviderCopy = new BasicEntryContentProvider();
-		contentProvider = new BasicEntryContentProvider();
+		contentProviderCopy = new BasicVizEntryContentProvider();
+		contentProvider = new BasicVizEntryContentProvider();
 		contentProvider.setAllowedValues(allowedValues);
-		contentProvider.setAllowedValueType(AllowedValueType.Continuous);
+		contentProvider.setAllowedValueType(VizAllowedValueType.Continuous);
 
 		contentProviderCopy.copy(contentProvider);
 
@@ -262,7 +262,7 @@ public class BasicEntryContentProviderTester {
 		// Test to show valid usage of clone
 
 		// Run clone operation
-		contentProviderClone = (BasicEntryContentProvider) contentProvider
+		contentProviderClone = (BasicVizEntryContentProvider) contentProvider
 				.clone();
 
 		// Check contents
@@ -286,18 +286,18 @@ public class BasicEntryContentProviderTester {
 	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
 
 		// Local Declarations
-		BasicEntryContentProvider persistProvider, loadedProvider = null;
+		BasicVizEntryContentProvider persistProvider, loadedProvider = null;
 		ArrayList<String> allowedValues = new ArrayList<String>();
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(BasicEntryContentProvider.class);
+		classList.add(BasicVizEntryContentProvider.class);
 
 		allowedValues.add("3");
 		allowedValues.add("5");
 
-		persistProvider = new BasicEntryContentProvider();
+		persistProvider = new BasicVizEntryContentProvider();
 		persistProvider.setAllowedValues(allowedValues);
-		persistProvider.setAllowedValueType(AllowedValueType.Continuous);
+		persistProvider.setAllowedValueType(VizAllowedValueType.Continuous);
 		persistProvider.setTag("tagorama");
 
 		// Demonstrate a basic "write" to file. Should not fail
@@ -312,8 +312,8 @@ public class BasicEntryContentProviderTester {
 				outputStream.toByteArray());
 
 		// Initialize object and pass inputStream to read()
-		loadedProvider = new BasicEntryContentProvider();
-		loadedProvider = (BasicEntryContentProvider) xmlHandler.read(classList, inputStream);
+		loadedProvider = new BasicVizEntryContentProvider();
+		loadedProvider = (BasicVizEntryContentProvider) xmlHandler.read(classList, inputStream);
 
 		// Check contents
 		assertTrue(persistProvider.equals(loadedProvider));

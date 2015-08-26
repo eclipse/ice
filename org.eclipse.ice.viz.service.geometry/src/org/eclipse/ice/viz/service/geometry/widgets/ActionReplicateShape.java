@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.net.URL;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.geometry.shapes.AbstractShape;
 import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
 import org.eclipse.ice.viz.service.geometry.shapes.Geometry;

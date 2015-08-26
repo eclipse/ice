@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
 import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;
@@ -271,7 +271,7 @@ public class ComplexShapeTester {
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
 
 		// Local Declarations
-		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
+		VizJAXBHandler xmlHandler = new VizJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(ComplexShape.class);
 		ComplexShape loadComplexShape;

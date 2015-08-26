@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
 import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;

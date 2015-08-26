@@ -16,8 +16,8 @@ package org.eclipse.ice.viz.service.jme3.mesh;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

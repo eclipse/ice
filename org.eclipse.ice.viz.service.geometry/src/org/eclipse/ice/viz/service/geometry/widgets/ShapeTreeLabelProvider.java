@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import org.eclipse.ice.viz.service.datastructures.IVizObject;
-import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;

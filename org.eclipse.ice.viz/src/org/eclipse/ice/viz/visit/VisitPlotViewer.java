@@ -21,15 +21,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.DeletePlotAction;
 import org.eclipse.ice.viz.IDeletePlotActionViewPart;
 import org.eclipse.ice.viz.VizFileViewer;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.resource.IResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VizResourceComponent;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -68,7 +68,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
  */
 public class VisitPlotViewer extends ViewPart implements
-		IDeletePlotActionViewPart, IUpdateableListener,
+		IDeletePlotActionViewPart, IVizUpdateableListener,
 		ISelectionChangedListener, IDoubleClickListener {
 
 	/**
@@ -85,34 +85,34 @@ public class VisitPlotViewer extends ViewPart implements
 	/**
 	 * The currently selected VisIt-compatible ICEResource.
 	 */
-	private VizResource resource;
+	private IVizResource resource;
 
 	/**
 	 * A Map of the currently selected resource's plot Entries keyed on their
 	 * integer IDs.
 	 */
-	private final Map<Integer, Entry> entryMap;
+	private final Map<Integer, VizEntry> entryMap;
 
 	/**
 	 * A List of all plot-able Entries.
 	 */
-	private final List<Entry> plotEntries;
+	private final List<VizEntry> plotEntries;
 
 	/**
 	 * The current Entry that is plotted, or null if none is plotted.
 	 */
-	private Entry plottedEntry;
+	private VizEntry plottedEntry;
 
 	/**
 	 * A List containing the ICEResource for each of the currently plotted
 	 * Entries.
 	 */
-	private final List<VizResource> entryResources;
+	private final List<IVizResource> entryResources;
 
 	/**
 	 * The active ResourceComponent
 	 */
-	private ResourceComponent resourceComponent;
+	private VizResourceComponent resourceComponent;
 
 	/**
 	 * The TreeViewer contained in this ViewPart used for managing resources in
@@ -167,11 +167,11 @@ public class VisitPlotViewer extends ViewPart implements
 		// Initialize the variables tied to the current VisIt-compatible
 		// ICEResource.
 		resource = null;
-		entryMap = new HashMap<Integer, Entry>();
+		entryMap = new HashMap<Integer, VizEntry>();
 
 		// Initialize the lists for the selected plots.
-		plotEntries = new ArrayList<Entry>();
-		entryResources = new ArrayList<VizResource>();
+		plotEntries = new ArrayList<VizEntry>();
+		entryResources = new ArrayList<IVizResource>();
 
 		// Initialize the Map of variable types to plot types
 		varTypePlotTypeMap = new HashMap<String, String[]>();
@@ -297,7 +297,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 *            The Component that was just updated.
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 
 		logger.info("VisitPlotViewer Message: "
 						+ "Incoming resource update.");
@@ -331,7 +331,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @param component
 	 *            The ResourceComponent
 	 */
-	public void setResourceComponent(ResourceComponent component) {
+	public void setResourceComponent(VizResourceComponent component) {
 
 		// Make sure the ResourceComponent exists.
 		if (component != null) {
@@ -360,7 +360,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @return The ResourceComponent or null if the component was not previously
 	 *         set.
 	 */
-	public ResourceComponent getResourceComponent() {
+	public VizResourceComponent getResourceComponent() {
 		return resourceComponent;
 	}
 
@@ -461,8 +461,8 @@ public class VisitPlotViewer extends ViewPart implements
 
 				// Get a String from the Entry if possible.
 				StyledString styledStr = new StyledString();
-				if (element instanceof Entry) {
-					Entry entry = (Entry) element;
+				if (element instanceof VizEntry) {
+					VizEntry entry = (VizEntry) element;
 					// Get the name from the resource
 					styledStr.append(entry.getName());
 					// Append the path stored as the Entry description
@@ -494,7 +494,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * 
 	 * @return an ICEResource with plots as the Entry properties.
 	 */
-	public ICEResource getResource() {
+	public IResource getResource() {
 		return resource;
 	}
 
@@ -505,7 +505,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @param entry
 	 *            The Entry for the plot that is to be added.
 	 */
-	public void addPlot(Entry entry) {
+	public void addPlot(VizEntry entry) {
 		// Make sure the entry and current resource are not null, that the entry
 		// is not already plotted, and that the current resource has the exact
 		// entry in its properties.
@@ -537,7 +537,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @param entry
 	 *            The Entry for the plot that is to be removed.
 	 */
-	public void removePlot(Entry entry) {
+	public void removePlot(VizEntry entry) {
 		// Make sure the entry is not null and that it is marked as plotted.
 		if (entry != null && "true".equals(entry.getValue())) {
 			// Get the index of the entry in the list of plotted entries.
@@ -586,7 +586,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 * @param entry
 	 *            The entry to draw with the VisIt widget.
 	 */
-	public void drawPlot(Entry entry) {
+	public void drawPlot(VizEntry entry) {
 		// Make sure the entry is not null and that it is marked as plotted.
 		if (entry != null && "true".equals(entry.getValue())) {
 			// Get the index of the entry in the list of plotted entries.
@@ -643,20 +643,20 @@ public class VisitPlotViewer extends ViewPart implements
 				IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
 				// Create a List of entries to be unplotted.
-				List<Entry> entries = new ArrayList<Entry>();
+				List<VizEntry> entries = new ArrayList<VizEntry>();
 
 				// Loop over the selected elements and add any Entry to the List
 				// of entries to be unplotted.
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
 						.hasNext();) {
 					Object object = iter.next();
-					if (object instanceof Entry) {
-						entries.add((Entry) object);
+					if (object instanceof VizEntry) {
+						entries.add((VizEntry) object);
 					}
 				}
 
 				// Remove all of the entries that were selected.
-				for (Entry entry : entries) {
+				for (VizEntry entry : entries) {
 					removePlot(entry);
 				}
 			}
@@ -671,19 +671,19 @@ public class VisitPlotViewer extends ViewPart implements
 		if (selection != null && !selection.isEmpty()) {
 
 			// Create a List of entries to be plotted.
-			List<Entry> entries = new ArrayList<Entry>();
+			List<VizEntry> entries = new ArrayList<VizEntry>();
 
 			// Loop over the selected elements and add any Entry to the List
 			// of entries to be plotted.
 			for (Iterator<?> iter = selection.iterator(); iter.hasNext();) {
 				Object object = iter.next();
-				if (object instanceof Entry) {
-					entries.add((Entry) object);
+				if (object instanceof VizEntry) {
+					entries.add((VizEntry) object);
 				}
 			}
 
 			// Draw all of the entries that were selected.
-			for (Entry entry : entries) {
+			for (VizEntry entry : entries) {
 				// Draw the plot
 				drawPlot(entry);
 			}
@@ -699,7 +699,7 @@ public class VisitPlotViewer extends ViewPart implements
 		// Build a map of the entries for the current resource
 		// keyed on their IDs.
 		entryMap.clear();
-		for (Entry entry : resource.getProperties()) {
+		for (VizEntry entry : resource.getProperties()) {
 			entryMap.put(entry.getId(), entry);
 		}
 
@@ -715,7 +715,7 @@ public class VisitPlotViewer extends ViewPart implements
 	 *            The VizResource in the {@link VizFileViewer} to set this
 	 *            object's {@link #resource} to.
 	 */
-	public void setResource(VizResource inResource) {
+	public void setResource(IVizResource inResource) {
 		// Reset the VizResource
 		resource = inResource;
 		logger.info("VisitPlotViewer message: The selected file from "
@@ -785,8 +785,8 @@ public class VisitPlotViewer extends ViewPart implements
 			// Just get the first selection from the {@link #plotTreeViewer}.
 			Object element = structuredSelection.getFirstElement();
 			// Make sure this is an Entry
-			if (element instanceof Entry) {
-				Entry entry = (Entry) element;
+			if (element instanceof VizEntry) {
+				VizEntry entry = (VizEntry) element;
 
 				// Update the contents of the plot type selection Combo based on
 				// the selection in the plotTreeViewer.

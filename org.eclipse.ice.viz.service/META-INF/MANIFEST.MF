@@ -7,6 +7,7 @@ Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: ca.odell.glazedlists,
  ca.odell.glazedlists.event,
+ ca.odell.glazedlists.gui,
  com.google.gson;version="2.2.4",
  org.apache.commons.beanutils,
  org.apache.commons.math;version="2.1.0",
@@ -50,10 +51,12 @@ Export-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.connections.preferences,
  org.eclipse.ice.viz.service.csv,
+ org.eclipse.ice.viz.service.datastructures,
+ org.eclipse.ice.viz.service.datastructures.VizObject,
+ org.eclipse.ice.viz.service.datastructures.resource,
  org.eclipse.ice.viz.service.internal,
  org.eclipse.ice.viz.service.preferences,
  org.eclipse.ice.viz.service.styles,
- org.eclipse.ice.viz.service.datastructures,
  org.eclipse.ice.viz.service.widgets
 Service-Component: OSGI-INF/vizFactory.xml, OSGI-INF/VizServiceFactoryHolder.xml
 Require-Bundle: org.eclipse.nebula.visualization.widgets;bundle-version="1.0.0",

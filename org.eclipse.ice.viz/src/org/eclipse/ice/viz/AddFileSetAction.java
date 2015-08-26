@@ -12,7 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
-import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -112,7 +113,7 @@ public class AddFileSetAction extends Action {
 			// The file names selected
 			String[] fileNames = dialog.getFileNames();
 			// Create a new vizResource for a fileSet
-			VizResource vizResource = new VizResource();
+			IVizResource vizResource = new VisualizationResource();
 			// Name of the resource
 			String resourceName = "";
 			resourceName += fileNames[0];

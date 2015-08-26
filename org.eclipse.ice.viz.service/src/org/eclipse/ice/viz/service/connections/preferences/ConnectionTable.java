@@ -20,11 +20,11 @@ import java.util.TreeSet;
 
 import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 
 /**
  * This class manages a list of uniquely-keyed connections within an ICE

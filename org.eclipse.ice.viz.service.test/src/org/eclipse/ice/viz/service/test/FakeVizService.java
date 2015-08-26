@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.datastructures.IVizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really

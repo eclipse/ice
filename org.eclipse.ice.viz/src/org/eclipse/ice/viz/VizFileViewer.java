@@ -16,15 +16,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.service.PlotEditor;
 import org.eclipse.ice.viz.service.PlotEditorInput;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.ice.viz.service.csv.CSVProxyPlot;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizListComponent;
+import org.eclipse.ice.viz.service.datastructures.resource.IResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VizResourceComponent;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
@@ -49,6 +50,8 @@ import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ca.odell.glazedlists.AbstractEventList;
+
 /**
  * This class extends the ViewPart class and provides a view in the
  * Visualization Perspective to look at the files that are currently available
@@ -61,7 +64,7 @@ import org.slf4j.LoggerFactory;
  *         {@link PlotEditor}
  */
 public class VizFileViewer extends ViewPart
-		implements IUpdateableListener, ISelectionChangedListener {
+		implements IVizUpdateableListener, ISelectionChangedListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -77,7 +80,7 @@ public class VizFileViewer extends ViewPart
 	/**
 	 * The active ResourceComponent.
 	 */
-	private ResourceComponent resourceComponent;
+	private VizResourceComponent resourceComponent;
 
 	/**
 	 * A TreeViewer that shows imported files. This is created in
@@ -101,7 +104,7 @@ public class VizFileViewer extends ViewPart
 	 */
 	public VizFileViewer() {
 		// Set a default ResourceComponent.
-		setResourceComponent(new ResourceComponent());
+		setResourceComponent(new VizResourceComponent());
 	}
 
 	/**
@@ -148,7 +151,7 @@ public class VizFileViewer extends ViewPart
 	 *            The ResourceComponent that was just updated.
 	 */
 	@Override
-	public void update(IUpdateable component) {
+	public void update(IVizUpdateable component) {
 
 		logger.info("VizFileViewer Message: Incoming resource update.");
 
@@ -172,7 +175,7 @@ public class VizFileViewer extends ViewPart
 					// Set the selection to the newly added file
 					int lastIndex = resourceComponent.getResources().size() - 1;
 					if (lastIndex > -1) {
-						ICEResource resource = resourceComponent.getResources()
+						IResource resource = resourceComponent.getResources()
 								.get(lastIndex);
 						fileTreeViewer.setSelection(
 								new StructuredSelection(resource), true);
@@ -194,7 +197,7 @@ public class VizFileViewer extends ViewPart
 	 * @param component
 	 *            The ResourceComponent
 	 */
-	public void setResourceComponent(ResourceComponent component) {
+	public void setResourceComponent(VizResourceComponent component) {
 
 		// Make sure the ResourceComponent exists.
 		if (component != null) {
@@ -223,7 +226,7 @@ public class VizFileViewer extends ViewPart
 	 * @return The ResourceComponent or null if the component was not previously
 	 *         set.
 	 */
-	public ResourceComponent getResourceComponent() {
+	public VizResourceComponent getResourceComponent() {
 		return resourceComponent;
 	}
 
@@ -275,9 +278,9 @@ public class VizFileViewer extends ViewPart
 			public boolean hasChildren(Object element) {
 
 				// Make sure we have a VizResource
-				if (element instanceof VizResource) {
+				if (element instanceof IVizResource) {
 					// Cast it to make life easier
-					VizResource resource = (VizResource) element;
+					IVizResource resource = (IVizResource) element;
 
 					// If this resource has a valid fileset...
 					if (resource.getFileSet() != null) {
@@ -322,9 +325,9 @@ public class VizFileViewer extends ViewPart
 			public Object[] getChildren(Object parentElement) {
 
 				// Make sure this is a VizResource
-				if (parentElement instanceof VizResource) {
+				if (parentElement instanceof IVizResource) {
 					// Cast to make life easier
-					VizResource resource = (VizResource) parentElement;
+					IVizResource resource = (IVizResource) parentElement;
 
 					// If we have children...
 					if (resource.getChildrenResources() != null
@@ -354,8 +357,8 @@ public class VizFileViewer extends ViewPart
 
 				// Get a String from the VizResource if possible.
 				StyledString styledStr = new StyledString();
-				if (element instanceof VizResource) {
-					VizResource resource = (VizResource) element;
+				if (element instanceof IVizResource) {
+					IVizResource resource = (IVizResource) element;
 					// Get the name from the resource
 					styledStr.append(resource.getName());
 
@@ -411,7 +414,7 @@ public class VizFileViewer extends ViewPart
 				// ResourceComponent.
 				for (Iterator<?> iter = structuredSelection.iterator(); iter
 						.hasNext();) {
-					ICEResource resource = (ICEResource) iter.next();
+					IResource resource = (IResource) iter.next();
 					logger.info("VizFileViewer message: "
 							+ "Removing the resource for file \""
 							+ resource.getPath().getPath() + "\".");
@@ -433,13 +436,13 @@ public class VizFileViewer extends ViewPart
 	 * @param resource
 	 *            an ICEResource for the file to add to the VizFileViewer.
 	 */
-	public void addFile(ICEResource resource) {
+	public void addFile(IResource resource) {
 
 		if (resource != null) {
 			// If it's a VizResource, print out the name
 			// Only add the resource to the ResourceComponent if a resource for
 			// the same file does not already exist in the ResourceComponent.
-			ArrayList<ICEResource> resources = resourceComponent.getResources();
+			ArrayList<IResource> resources = resourceComponent.getResources();
 			if (!resources.contains(resource)) {
 				resourceComponent.addResource(resource);
 			}
@@ -470,8 +473,8 @@ public class VizFileViewer extends ViewPart
 			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 			if (!structuredSelection.isEmpty()) {
 				Object object = structuredSelection.getFirstElement();
-				if (object instanceof VizResource) {
-					VizResource vizResource = (VizResource) object;
+				if (object instanceof IVizResource) {
+					IVizResource vizResource = (IVizResource) object;
 
 					// Extract the file name from the VizResource
 					String fileName = "";

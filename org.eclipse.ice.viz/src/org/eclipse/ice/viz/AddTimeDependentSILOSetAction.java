@@ -21,7 +21,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -91,8 +92,8 @@ public class AddTimeDependentSILOSetAction extends Action {
 		String[] fileNames;
 		String visitFileName = null;
 		ArrayList<String> siloFilesToAdd;
-		VizResource vizResource = null, child = null;
-		ArrayList<VizResource> children = new ArrayList<VizResource>();
+		IVizResource vizResource = null, child = null;
+		ArrayList<IVizResource> children = new ArrayList<IVizResource>();
 
 		// Filter files by images (*.silo) or all files.
 		String[] filterNames = new String[] { "All Files (*)", ".silo Files",
@@ -139,14 +140,14 @@ public class AddTimeDependentSILOSetAction extends Action {
 						StandardOpenOption.TRUNCATE_EXISTING);
 
 				for (String name : fileNames) {
-					child = new VizResource(new File(dialog.getFilterPath()
+					child = new VisualizationResource(new File(dialog.getFilterPath()
 							+ separator + name));
 					child.setHost("localhost");
 					children.add(child);
 				}
 
 				// Create the VizResource from it
-				vizResource = new VizResource(new File(visitFileName));// ,
+				vizResource = new VisualizationResource(new File(visitFileName));// ,
 																		// children);
 
 				// Set the host, this should just be local

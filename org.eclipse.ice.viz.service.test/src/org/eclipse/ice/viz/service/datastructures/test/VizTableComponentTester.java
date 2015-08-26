@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
-import org.eclipse.ice.viz.service.datastructures.VizJAXBHandler;
 import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.junit.Test;
 
 /**

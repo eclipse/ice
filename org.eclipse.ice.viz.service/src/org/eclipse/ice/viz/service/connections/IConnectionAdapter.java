@@ -12,8 +12,9 @@
 package org.eclipse.ice.viz.service.connections;
 
 import java.util.List;
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 
 /**
  * This is an interface for adapters that wrap any sort of local or remote

@@ -15,7 +15,8 @@ package org.eclipse.ice.viz;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -125,7 +126,7 @@ public class AddLocalFileAction extends Action {
 				// Try to construct an ICEResource from the File, then add it to
 				// the viewer.
 				try {
-					VizResource resource = new VizResource(file);
+					IVizResource resource = new VisualizationResource(file);
 					resource.setHost("localhost");
 					vizViewer.addFile(resource);
 				} catch (IOException e) {

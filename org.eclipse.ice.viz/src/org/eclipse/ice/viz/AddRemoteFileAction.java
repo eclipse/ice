@@ -19,7 +19,8 @@ import gov.lbnl.visit.swt.VisItSwtWidget;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.ice.viz.visit.VisitEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -129,7 +130,7 @@ public class AddRemoteFileAction extends Action {
 			return;
 		}
 		try {
-			VizResource resource = new VizResource(new File(remoteFile));
+			IVizResource resource = new VisualizationResource(new File(remoteFile));
 			resource.setHost(conn.getHostname());
 			VizFileViewer vizViewer = (VizFileViewer) viewer;
 			vizViewer.addFile(resource);

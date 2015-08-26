@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.jme3.mesh.test;
 
 import static org.junit.Assert.*;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.jme3.mesh.JME3MeshCanvas;
 import org.eclipse.ice.viz.service.jme3.mesh.JME3MeshVizService;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;

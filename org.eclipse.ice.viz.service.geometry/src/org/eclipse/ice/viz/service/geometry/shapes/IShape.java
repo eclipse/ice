@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.shapes;
 
-import org.eclipse.ice.viz.service.datastructures.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 
 
 /**

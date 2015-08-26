@@ -21,11 +21,11 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.form.Entry;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.viz.PlotEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.ice.viz.service.datastructures.resource.IResource;
+import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
 import org.eclipse.ice.viz.service.widgets.TreeSelectionDialogProvider;
 import org.eclipse.ice.viz.VizFileViewer;
 import org.eclipse.jface.action.Action;
@@ -130,7 +130,7 @@ public class AddVisitPlotAction extends Action {
 		VisitPlotViewer plotViewer = (VisitPlotViewer) viewer;
 
 		// Get the ICEResource used by the PlotViewer.
-		ICEResource resource = plotViewer.getResource();
+		IResource resource = plotViewer.getResource();
 
 		// If we pulled an ICEResource from the selection, we may proceed.
 		if (resource != null) {
@@ -145,18 +145,18 @@ public class AddVisitPlotAction extends Action {
 			// Get the Entries for the ICEResource. The Entries include the
 			// four categories of available plots (meshes, scalars, vectors,
 			// and materials) and the available plots for them.
-			ArrayList<Entry> entries = resource.getProperties();
+			ArrayList<VizEntry> entries = resource.getProperties();
 
 			// Set up the ITreeContentProvider and the ILabelProvider for
 			// the TreeViewer that will go inside the dialog.
-			final Map<String, List<Entry>> groupMap = new TreeMap<String, List<Entry>>();
-			for (Entry entry : entries) {
+			final Map<String, List<VizEntry>> groupMap = new TreeMap<String, List<VizEntry>>();
+			for (VizEntry entry : entries) {
 				// Add the Entry to the proper group list. Create a new list
 				// if necessary.
 				String parentName = entry.getParent();
-				List<Entry> groupEntries = groupMap.get(parentName);
+				List<VizEntry> groupEntries = groupMap.get(parentName);
 				if (groupEntries == null) {
-					groupEntries = new ArrayList<Entry>();
+					groupEntries = new ArrayList<VizEntry>();
 					groupMap.put(parentName, groupEntries);
 				}
 				groupEntries.add(entry);
@@ -188,8 +188,8 @@ public class AddVisitPlotAction extends Action {
 				public String getText(Object element) {
 					// Get a String from the ICEResource if possible.
 					final String text;
-					if (element instanceof Entry) {
-						text = ((Entry) element).getName();
+					if (element instanceof VizEntry) {
+						text = ((VizEntry) element).getName();
 					}
 					// If the element isn't an ICEResource, convert it to a
 					// String.
@@ -203,8 +203,8 @@ public class AddVisitPlotAction extends Action {
 				public boolean isSelected(Object element) {
 					// Leaf nodes are only selected if they are currently marked
 					// as plotted.
-					return element instanceof Entry
-							? "true".equals(((Entry) element).getValue())
+					return element instanceof VizEntry
+							? "true".equals(((VizEntry) element).getValue())
 							: false;
 				}
 			};
@@ -219,14 +219,14 @@ public class AddVisitPlotAction extends Action {
 			if (provider.openDialog(shell, groupMap, true) == Window.OK) {
 				// Add all newly selected plots.
 				for (Object element : provider.getSelectedLeafElements()) {
-					if (element instanceof Entry) {
-						plotViewer.addPlot((Entry) element);
+					if (element instanceof VizEntry) {
+						plotViewer.addPlot((VizEntry) element);
 					}
 				}
 				// Remove all unselected plots.
 				for (Object element : provider.getUnselectedLeafElements()) {
-					if (element instanceof Entry) {
-						plotViewer.removePlot((Entry) element);
+					if (element instanceof VizEntry) {
+						plotViewer.removePlot((VizEntry) element);
 					}
 				}
 			} else {
@@ -248,9 +248,9 @@ public class AddVisitPlotAction extends Action {
 	 * @return A List of Entries corresponding to the available plots in the
 	 *         ICEResource.
 	 */
-	private ArrayList<Entry> createPlotEntries(ICEResource resource) {
+	private ArrayList<VizEntry> createPlotEntries(IResource resource) {
 
-		ArrayList<Entry> entries;
+		ArrayList<VizEntry> entries;
 
 		if (resource != null) {
 			// Get the ICEResource's List of entries. If it's empty, we need to
@@ -278,7 +278,7 @@ public class AddVisitPlotAction extends Action {
 				// TODO - Add some sort of check to use the correct path here.
 				String dbPath = "";
 				// Use this for local
-				if (!((VizResource) resource).isRemote()) {
+				if (!((IVizResource) resource).isRemote()) {
 					dbPath = resource.getPath().getPath();
 				}
 				// The remote file system only needs the name.
@@ -315,7 +315,7 @@ public class AddVisitPlotAction extends Action {
 						entries, parentFile);
 			}
 		} else {
-			entries = new ArrayList<Entry>();
+			entries = new ArrayList<VizEntry>();
 		}
 
 		return entries;
@@ -335,16 +335,16 @@ public class AddVisitPlotAction extends Action {
 	 *            The filename from which this plot originated.
 	 */
 	private void createPlotEntryGroup(String groupName, List<String> childNames,
-			List<Entry> entries, String parentFile) {
+			List<VizEntry> entries, String parentFile) {
 		if (groupName != null && childNames != null && entries != null) {
-			Entry entry;
-			IEntryContentProvider entryContent;
+			VizEntry entry;
+			IVizEntryContentProvider entryContent;
 
 			// Create the child entries. We can re-use the same content provider
 			// for the children, so create one.
 			entryContent = new PlotEntryContentProvider(groupName);
 			for (String child : childNames) {
-				entry = new Entry(entryContent);
+				entry = new VizEntry(entryContent);
 				entry.setName(child);
 				entry.setId(entries.size() + 1);
 				// FIXME using the entry description to keep track of the parent

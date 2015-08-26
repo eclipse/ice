@@ -18,6 +18,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
+
 /**
  * <p>
  * A class that implements the IEntryContentProvider interface.

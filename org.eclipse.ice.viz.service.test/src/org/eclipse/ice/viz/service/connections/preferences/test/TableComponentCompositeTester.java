@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.connections.preferences.test;
 
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.viz.service.connections.preferences.TableComponentComposite;
 import org.junit.Ignore;
 import org.junit.Test;

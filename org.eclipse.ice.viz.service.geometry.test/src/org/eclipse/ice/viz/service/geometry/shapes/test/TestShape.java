@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.shapes.test;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 

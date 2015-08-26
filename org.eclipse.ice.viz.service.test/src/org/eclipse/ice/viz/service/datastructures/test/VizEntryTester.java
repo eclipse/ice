@@ -31,7 +31,7 @@ import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
-import org.eclipse.ice.viz.service.datastructures.VizJAXBHandler;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.junit.Test;
 
 /**

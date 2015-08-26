@@ -10,9 +10,11 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.datastructures;
+package org.eclipse.ice.viz.service.datastructures.VizObject;
 
 import java.util.ArrayList;
+
+import org.eclipse.ice.viz.service.datastructures.VizIdentifiable;
 
 /**
  * <p>

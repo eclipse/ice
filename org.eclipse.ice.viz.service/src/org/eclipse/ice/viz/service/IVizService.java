@@ -16,9 +16,8 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject;
-
-import org.eclipse.ice.viz.service.datastructures.IVizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 
 /**
  * This is a pluggable service interface whereby visualization engines can

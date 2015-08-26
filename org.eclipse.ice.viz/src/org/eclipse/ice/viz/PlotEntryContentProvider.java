@@ -14,8 +14,8 @@ package org.eclipse.ice.viz;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
 
 /**
  * This class provides an IEntryContentProvider for plots, which are stored as
@@ -29,7 +29,7 @@ import org.eclipse.ice.datastructures.form.IEntryContentProvider;
  * 
  * @author Jordan H. Deyton
  */
-public class PlotEntryContentProvider implements IEntryContentProvider {
+public class PlotEntryContentProvider implements IVizEntryContentProvider {
 
 	/**
 	 * The parent entry's name.
@@ -79,12 +79,12 @@ public class PlotEntryContentProvider implements IEntryContentProvider {
 	 * stored in an instance of the Entry class.
 	 */
 	@Override
-	public AllowedValueType getAllowedValueType() {
-		return AllowedValueType.Discrete;
+	public VizAllowedValueType getAllowedValueType() {
+		return VizAllowedValueType.Discrete;
 	}
 
 	@Override
-	public void setAllowedValueType(AllowedValueType type) {
+	public void setAllowedValueType(VizAllowedValueType type) {
 		// Does nothing.
 	}
 
