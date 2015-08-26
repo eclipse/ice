@@ -13,6 +13,7 @@ package org.eclipse.ice.io.hdf;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1320,6 +1321,82 @@ public class HdfIOFactory implements IHdfIOFactory {
 		}
 
 		return strings;
+	}
+
+	/**
+	 * Writes in a 1D array of strings to an HDF dataset. The underlying dataset
+	 * is expected to have fixed-length strings, although they may be padded
+	 * with null terminators.
+	 * 
+	 * @param groupId
+	 *            The ID of the object, which should be open, that will contain
+	 *            the dataset.
+	 * @param name
+	 *            The name of the dataset.
+	 * @param array
+	 *            The array of strings to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public void writeStringArrayDataset(int groupId, String name,
+			String[] array) throws NullPointerException, HDF5Exception {
+
+		// FIXME This method does not check the return values for H5 calls.
+
+		int type = HDF5Constants.H5T_C_S1;
+
+		final int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
+		final int H5S_ALL = HDF5Constants.H5S_ALL;
+
+		int size = 0;
+
+		// ---- Create the buffer that will be written to the dataset. ---- //
+		// Determine the max length of the string.
+		final int stringSize;
+		for (String label : array) {
+			if (label.length() > size) {
+				size = label.length();
+			}
+		}
+		stringSize = size;
+
+		// Create the string buffer.
+		size = array.length;
+		final byte[] stringBuffer;
+		ByteBuffer byteBuf = ByteBuffer.allocate(size * stringSize);
+		for (String string : array) {
+			byteBuf.put(string.getBytes());
+			// Skip ahead to the next string's start index.
+			byteBuf.position(byteBuf.position() + stringSize - string.length());
+		}
+		// Get the backing array from the byte buffer.
+		stringBuffer = byteBuf.array();
+		// ---------------------------------------------------------------- //
+
+		// ---- Create the string datatype. ---- //
+		int datatype = H5.H5Tcopy(type);
+		H5.H5Tset_size(datatype, stringSize);
+		// ------------------------------------- //
+
+		// ---- Create the dataset and dataspace. ---- //
+		long[] dims = new long[] { size };
+		int dataspace = H5.H5Screate_simple(1, dims, null);
+		int dataset = H5.H5Dcreate(groupId, name, datatype, dataspace,
+				H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+				// ------------------------------------------- //
+
+		// ---- Write the buffer to the dataset. ---- //
+		H5.H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+				stringBuffer);
+				// ------------------------------------------ //
+
+		// ---- Close the datatypes, dataspace, and dataset. ---- //
+		H5.H5Dclose(dataset);
+		H5.H5Sclose(dataspace);
+		H5.H5Tclose(datatype);
+		// ------------------------------------------------------ //
+
+		return;
 	}
 	// ---------------------------- //
 

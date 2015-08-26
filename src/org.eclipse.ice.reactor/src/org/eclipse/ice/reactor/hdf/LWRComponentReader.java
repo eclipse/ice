@@ -199,7 +199,7 @@ public class LWRComponentReader {
 		reactor.setFuelAssemblyPitch(
 				factory.readDoubleAttribute(groupId, "fuelAssemblyPitch"));
 
-		// Read the assemblies, grid managers, and labels...
+		// Read the assemblies and grid managers...
 
 		// Create a map of grid manager / composite names to their proper
 		// assembly types.
@@ -231,11 +231,11 @@ public class LWRComponentReader {
 		List<LWRGridManager> gridManagers = new ArrayList<LWRGridManager>();
 
 		// Read all of the child groups and add them to the reactor.
-		for (String childGroupName : getChildGroups(groupId)) {
+		for (String childName : getChildGroups(groupId)) {
 			// Read the child.
-			int childGroupId = factory.openGroup(groupId, childGroupName);
-			LWRComponent component = readComponent(childGroupId);
-			factory.closeGroup(childGroupId);
+			int child = factory.openGroup(groupId, childName);
+			LWRComponent component = readComponent(child);
+			factory.closeGroup(child);
 
 			// Get its tag type.
 			HDF5LWRTagType type = component.getHDF5LWRTag();
@@ -296,13 +296,6 @@ public class LWRComponentReader {
 		String childGroupName;
 		int childGroupId;
 
-		// Read the rods...
-		childGroupName = PWRAssembly.LWRROD_COMPOSITE_NAME;
-		LWRComposite rods = new LWRComposite();
-		childGroupId = factory.openGroup(groupId, childGroupName);
-		read(childGroupId, rods);
-		factory.closeGroup(childGroupId);
-
 		// Read the rod grid locations...
 		childGroupName = PWRAssembly.LWRROD_GRID_MANAGER_NAME;
 		LWRGridManager gridManager = new LWRGridManager(assembly.getSize());
@@ -310,12 +303,19 @@ public class LWRComponentReader {
 		read(childGroupId, gridManager);
 		factory.closeGroup(childGroupId);
 
-		// Add all rods to the assembly. Also set their locations.
-		for (String rodName : rods.getComponentNames()) {
-			LWRRod rod = (LWRRod) rods.getComponent(rodName);
-			// Add it to the assembly.
+		// Read the rods, and add them to the assembly...
+		childGroupName = PWRAssembly.LWRROD_COMPOSITE_NAME;
+		childGroupId = factory.openGroup(groupId, childGroupName);
+		for (String rodName : getChildGroups(childGroupId)) {
+			// Open the rod's group, read it, and close it.
+			int rodGroupId = factory.openGroup(childGroupId, rodName);
+			LWRRod rod = (LWRRod) readComponent(rodGroupId);
+			factory.closeGroup(rodGroupId);
+
+			// Add the rod to the assembly.
 			assembly.addLWRRod(rod);
-			// Add every location for the tube to the assembly.
+
+			// Mark every location of the rod in the assembly.
 			for (GridLocation location : gridManager
 					.getGridLocationsAtName(rodName)) {
 				int row = location.getRow();
@@ -330,6 +330,7 @@ public class LWRComponentReader {
 						.copy(sourceData);
 			}
 		}
+		factory.closeGroup(childGroupId);
 
 		return;
 	}
@@ -360,29 +361,44 @@ public class LWRComponentReader {
 		// Nothing to do.
 
 		String childGroupName;
-		int childGroupId;
+		int child;
 
 		// Read the assembly's grid label provider...
-		childGroupName = FuelAssembly.GRID_LABEL_PROVIDER_NAME;
-		GridLabelProvider gridLabelProvider = new GridLabelProvider();
-		childGroupId = factory.openGroup(groupId, childGroupName);
-		read(childGroupId, gridLabelProvider);
-		factory.closeGroup(childGroupId);
-		assembly.setGridLabelProvider(gridLabelProvider);
+		// Note that the grid label provider can have a different name from the
+		// default name.
+		for (String childName : getChildGroups(groupId)) {
+			// Find the first object that has the GridLabelProvider tag.
+			child = factory.openGroup(groupId, childName);
+			if (H5.H5Aexists(child, "HDF5LWRTag")) {
+				String tag = factory.readStringAttribute(child, "HDF5LWRTag");
+				HDF5LWRTagType tagType = HDF5LWRTagType.toType(tag);
+				if (tagType == HDF5LWRTagType.GRID_LABEL_PROVIDER) {
+					// Create the grid label provider and read it.
+					int size = factory.readIntegerAttribute(child, "size");
+					GridLabelProvider labels = new GridLabelProvider(size);
+					read(child, labels);
+					factory.closeGroup(child);
+					// Set the assembly's grid label provider.
+					assembly.setGridLabelProvider(labels);
+					break;
+				}
+			}
+			factory.closeGroup(child);
+		}
 
 		// Read the tubes...
 		childGroupName = FuelAssembly.TUBE_COMPOSITE_NAME;
 		LWRComposite tubes = new LWRComposite();
-		childGroupId = factory.openGroup(groupId, childGroupName);
-		read(childGroupId, tubes);
-		factory.closeGroup(childGroupId);
+		child = factory.openGroup(groupId, childGroupName);
+		read(child, tubes);
+		factory.closeGroup(child);
 
 		// Read the tube grid locations...
 		childGroupName = FuelAssembly.TUBE_GRID_MANAGER_NAME;
 		LWRGridManager tubeLocations = new LWRGridManager(assembly.getSize());
-		childGroupId = factory.openGroup(groupId, childGroupName);
-		read(childGroupId, tubeLocations);
-		factory.closeGroup(childGroupId);
+		child = factory.openGroup(groupId, childGroupName);
+		read(child, tubeLocations);
+		factory.closeGroup(child);
 
 		// Add all tubes to the assembly. Also set their locations.
 		for (String tubeName : tubes.getComponentNames()) {

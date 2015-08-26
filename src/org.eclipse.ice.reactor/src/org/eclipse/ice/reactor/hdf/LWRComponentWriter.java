@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.io.hdf.HdfIOFactory;
@@ -26,7 +25,6 @@ import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
-import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
@@ -36,7 +34,6 @@ import org.eclipse.ice.reactor.MaterialBlock;
 import org.eclipse.ice.reactor.MaterialType;
 import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.Tube;
-import org.eclipse.ice.reactor.TubeType;
 import org.eclipse.ice.reactor.bwr.BWReactor;
 import org.eclipse.ice.reactor.pwr.ControlBank;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
@@ -50,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
 public class LWRComponentWriter {
 
@@ -63,8 +59,13 @@ public class LWRComponentWriter {
 	 * 2 - LWRComponent's implementation of IDataProvider:
 	 *   a - Uses a compound datatype (double, double, string, double[3]).
 	 *   b - Can be combined into simpler datasets for faster reading.
-	 * 3 - There is also room for coalescing grid data providers into one large
-	 *     multi-dimensional table.
+	 * 3 - LWRGridManagers: 
+	 *   a - There is room for coalescing grid data providers into one large
+	 *       multi-dimensional table.
+	 *   b - The head tables contain "the index of the data list table" and the 
+	 *       index for the associated units name. The first column is redundant:
+	 *       This is because the indices of the head and data tables are
+	 *       identical.
 	 * 4 - No re-use of the same components. If the same clad is used twice, it
 	 *     will be written twice in the file and become two separate instances
 	 *     when read.
@@ -135,7 +136,16 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) composite);
 
 		// Write properties specific to this type...
-		// TODO
+		// Nothing to do.
+
+		// Write the child components...
+		for (String childName : composite.getComponentNames()) {
+			LWRComponent child = composite.getComponent(childName);
+			// Create the child's group, write it, and close the group.
+			int childGroupId = factory.createGroup(groupId, childName);
+			writeComponent(childGroupId, child);
+			factory.closeGroup(childGroupId);
+		}
 
 		return;
 	}
@@ -144,10 +154,13 @@ public class LWRComponentWriter {
 			throws NullPointerException, HDF5Exception {
 
 		// Write properties specific to its super class (LWRComposite)...
+		// Note: Components are not handled using the default LWRComposite
+		// functionality, so they must be read in manually. Instead, re-direct
+		// to the super-super class (LWRComponent).
 		write(groupId, (LWRComponent) reactor);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeIntegerAttribute(groupId, "size", reactor.getSize());
 
 		return;
 	}
@@ -172,7 +185,84 @@ public class LWRComponentWriter {
 		write(groupId, (LWReactor) reactor);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeDoubleAttribute(groupId, "fuelAssemblyPitch",
+				reactor.getFuelAssemblyPitch());
+
+		// To write the grid managers and composites, we need to copy their
+		// content. This is because they are private members!
+		List<LWRComponent> children = new ArrayList<LWRComponent>();
+
+		// We can simply add the grid label provider to the list of
+		// LWRComponents that will be written.
+		children.add(reactor.getGridLabelProvider());
+
+		int child;
+		LWRComponent assembly;
+		LWRComposite composite;
+		LWRGridManager grid;
+		GridLocation location;
+		LWRDataProvider data;
+
+		final int size = reactor.getSize();
+
+		// Create maps so the LWRComposite and LWRGridManager names can be found
+		// based on the assembly type.
+		Map<AssemblyType, String> compositeNames = new HashMap<AssemblyType, String>();
+		Map<AssemblyType, String> gridNames = new HashMap<AssemblyType, String>();
+		compositeNames.put(AssemblyType.ControlBank,
+				PressurizedWaterReactor.CONTROL_BANK_COMPOSITE_NAME);
+		gridNames.put(AssemblyType.ControlBank,
+				PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME);
+		compositeNames.put(AssemblyType.Fuel,
+				PressurizedWaterReactor.FUEL_ASSEMBLY_COMPOSITE_NAME);
+		gridNames.put(AssemblyType.Fuel,
+				PressurizedWaterReactor.FUEL_ASSEMBLY_GRID_MANAGER_NAME);
+		compositeNames.put(AssemblyType.IncoreInstrument,
+				PressurizedWaterReactor.INCORE_INSTRUMENT_COMPOSITE_NAME);
+		gridNames.put(AssemblyType.IncoreInstrument,
+				PressurizedWaterReactor.INCORE_INSTRUMENT_GRID_MANAGER_NAME);
+		compositeNames.put(AssemblyType.RodCluster,
+				PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME);
+		gridNames.put(AssemblyType.RodCluster,
+				PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME);
+
+		// For each assembly type, duplicate the *private* LWRComposite and
+		// LWRGridManager inside the reactor.
+		for (AssemblyType type : AssemblyType.values()) {
+			// Duplicate the LWRComposite.
+			composite = new LWRComposite();
+			composite.setName(compositeNames.get(type));
+			for (String name : reactor.getAssemblyNames(type)) {
+				composite.addComponent(reactor.getAssemblyByName(type, name));
+			}
+			// Duplicate the LWRGridManager.
+			grid = new LWRGridManager(reactor.getSize());
+			grid.setName(gridNames.get(type));
+			for (int row = 0; row < size; row++) {
+				for (int column = 0; column < size; column++) {
+					// Get the assembly and the data provider for the location.
+					assembly = reactor.getAssemblyByLocation(type, row, column);
+					data = reactor.getAssemblyDataProviderAtLocation(type, row,
+							column);
+					// Add them to the location in the new grid manager.
+					location = new GridLocation(row, column);
+					location.setLWRDataProvider(data);
+					grid.addComponent(assembly, location);
+				}
+			}
+			// Add them both to the list of children that will be written to the
+			// HDF file.
+			children.add(composite);
+			children.add(grid);
+		}
+
+		// Write all of the children. This includes the label provider and the
+		// grid managers and composites for each assembly type.
+		for (LWRComponent component : children) {
+			child = factory.createGroup(groupId, component.getName());
+			writeComponent(child, component);
+			factory.closeGroup(child);
+		}
 
 		return;
 	}
@@ -181,10 +271,54 @@ public class LWRComponentWriter {
 			throws NullPointerException, HDF5Exception {
 
 		// Write properties specific to its super class (LWRComposite)...
+		// Note: Components are not handled using the default LWRComposite
+		// functionality, so they must be read in manually. Instead, re-direct
+		// to the super-super class (LWRComponent).
 		write(groupId, (LWRComponent) assembly);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeIntegerAttribute(groupId, "size", assembly.getSize());
+		factory.writeDoubleAttribute(groupId, "rodPitch",
+				assembly.getRodPitch());
+
+		int childGroupId;
+
+		// Write the rods...
+		// Build an LWRComposite containing the rods. This mirrors the *private*
+		// one inside the assembly.
+		LWRComposite composite = new LWRComposite();
+		composite.setName(PWRAssembly.LWRROD_COMPOSITE_NAME);
+		for (String rodName : assembly.getLWRRodNames()) {
+			composite.addComponent(assembly.getLWRRodByName(rodName));
+		}
+		// Create the composite group, write it, and close it.
+		childGroupId = factory.createGroup(groupId, composite.getName());
+		writeComponent(childGroupId, composite);
+		factory.closeGroup(childGroupId);
+
+		// Write the rod grid locations...
+		// Create a duplicate grid manager. This mirrors the *private* one
+		// inside the assembly.
+		int size = assembly.getSize();
+		LWRGridManager gridManager = new LWRGridManager(size);
+		gridManager.setName(PWRAssembly.LWRROD_GRID_MANAGER_NAME);
+		for (int row = 0; row < size; row++) {
+			for (int column = 0; column < size; column++) {
+				// We have to use a GridLocation to add things to the grid.
+				GridLocation location = new GridLocation(row, column);
+				// Set its data. If null, nothing happens.
+				location.setLWRDataProvider(
+						assembly.getLWRRodDataProviderAtLocation(row, column));
+				// Add the rod to the location. If there is nothing in that
+				// location, nothing happens.
+				gridManager.addComponent(
+						assembly.getLWRRodByLocation(row, column), location);
+			}
+		}
+		// Create the grid manager's group, write it, and close it.
+		childGroupId = factory.createGroup(groupId, gridManager.getName());
+		writeComponent(childGroupId, gridManager);
+		factory.closeGroup(childGroupId);
 
 		return;
 	}
@@ -195,7 +329,12 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) controlBank);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeIntegerAttribute(groupId, "maxNumberOfSteps",
+				controlBank.getMaxNumberOfSteps());
+		factory.writeDoubleAttribute(groupId, "stepSize",
+				controlBank.getStepSize());
+
+		// There are no sub-assembly components.
 
 		return;
 	}
@@ -206,7 +345,53 @@ public class LWRComponentWriter {
 		write(groupId, (PWRAssembly) assembly);
 
 		// Write properties specific to this type...
-		// TODO
+		// Nothing to do.
+
+		int childGroupId;
+
+		// Write the grid label provider...
+		GridLabelProvider labels = assembly.getGridLabelProvider();
+		// Create the label provider's group, write it, and close it.
+		childGroupId = factory.createGroup(groupId, labels.getName());
+		writeComponent(childGroupId, labels);
+		factory.closeGroup(childGroupId);
+
+		// Write the tubes...
+		// Build an LWRComposite containing the tubes. This mirrors the
+		// *private* one inside the assembly.
+		LWRComposite composite = new LWRComposite();
+		composite.setName(FuelAssembly.TUBE_COMPOSITE_NAME);
+		for (String tubeName : assembly.getTubeNames()) {
+			composite.addComponent(assembly.getTubeByName(tubeName));
+		}
+		// Create the composite group, write it, and close it.
+		childGroupId = factory.createGroup(groupId, composite.getName());
+		writeComponent(childGroupId, composite);
+		factory.closeGroup(childGroupId);
+
+		// Write the tube grid locations...
+		// Create a duplicate grid manager. This mirrors the *private* one
+		// inside the assembly.
+		int size = assembly.getSize();
+		LWRGridManager gridManager = new LWRGridManager(size);
+		gridManager.setName(FuelAssembly.TUBE_GRID_MANAGER_NAME);
+		for (int row = 0; row < size; row++) {
+			for (int column = 0; column < size; column++) {
+				// We have to use a GridLocation to add things to the grid.
+				GridLocation location = new GridLocation(row, column);
+				// Set its data. If null, nothing happens.
+				location.setLWRDataProvider(
+						assembly.getTubeDataProviderAtLocation(row, column));
+				// Add the tube to the location. If there is nothing in that
+				// location, nothing happens.
+				gridManager.addComponent(
+						assembly.getTubeByLocation(row, column), location);
+			}
+		}
+		// Create the grid manager's group, write it, and close it.
+		childGroupId = factory.createGroup(groupId, gridManager.getName());
+		writeComponent(childGroupId, gridManager);
+		factory.closeGroup(childGroupId);
 
 		return;
 	}
@@ -217,7 +402,16 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) incoreInstrument);
 
 		// Write properties specific to this type...
-		// TODO
+		// Nothing to do.
+
+		// Write the thimble (a Ring).
+		Ring ring = incoreInstrument.getThimble();
+		// Create the ring's group, write it, and close it.
+		int ringGroupId = factory.createGroup(groupId, ring.getName());
+		writeComponent(ringGroupId, ring);
+		factory.closeGroup(ringGroupId);
+
+		// There are no sub-assembly components.
 
 		return;
 	}
@@ -228,7 +422,10 @@ public class LWRComponentWriter {
 		write(groupId, (PWRAssembly) assembly);
 
 		// Write properties specific to this type...
-		// TODO
+		// Nothing to do.
+
+		// There are also no sub-assembly components besides the rods, which are
+		// managed by PWRAssembly.
 
 		return;
 	}
@@ -291,7 +488,8 @@ public class LWRComponentWriter {
 		write(groupId, (Ring) tube);
 
 		// Write properties specific to this type...
-		// TODO
+		factory.writeStringAttribute(groupId, "tubeType",
+				tube.getTubeType().toString());
 
 		return;
 	}
@@ -331,8 +529,55 @@ public class LWRComponentWriter {
 		// Write properties specific to its super class (LWRComponent)...
 		write(groupId, (LWRComponent) provider);
 
+		int size = provider.getSize();
+
 		// Write properties specific to this type...
-		// TODO
+		factory.writeIntegerAttribute(groupId, "size", size);
+
+		// Write the labels...
+		// Create the "Labels" group.
+		int labelsGroupId = factory.createGroup(groupId,
+				GridLabelProvider.LABELS_GROUP_NAME);
+
+		String datasetName;
+		String[] labels = new String[size];
+		String label;
+		boolean hasLabels = false;
+
+		// Build a string array from the column labels.
+		for (int column = 0; column < size; column++) {
+			label = provider.getLabelFromColumn(column);
+			if (label != null) {
+				labels[column] = label;
+				hasLabels = true;
+			} else {
+				labels[column] = "";
+			}
+		}
+		// If there are column labels, write the dataset.
+		if (hasLabels) {
+			datasetName = GridLabelProvider.COLUMN_LABELS_NAME;
+			factory.writeStringArrayDataset(labelsGroupId, datasetName, labels);
+		}
+
+		// Build a string array from the row labels.
+		for (int row = 0; row < size; row++) {
+			label = provider.getLabelFromRow(row);
+			if (label != null) {
+				labels[row] = label;
+				hasLabels = true;
+			} else {
+				labels[row] = "";
+			}
+		}
+		// If there are row labels, write the dataset.
+		if (hasLabels) {
+			datasetName = GridLabelProvider.ROW_LABELS_NAME;
+			factory.writeStringArrayDataset(labelsGroupId, datasetName, labels);
+		}
+
+		// Close the "Labels" group.
+		factory.closeGroup(labelsGroupId);
 
 		return;
 	}
@@ -343,7 +588,172 @@ public class LWRComponentWriter {
 		write(groupId, (LWRComponent) gridManager);
 
 		// Write properties specific to this type...
-		// TODO
+		int size = gridManager.getSize();
+		factory.writeIntegerAttribute(groupId, "size", gridManager.getSize());
+
+		// Create the "Positions" group.
+		String groupName = "Positions";
+		int positionsGroupId = factory.createGroup(groupId, groupName);
+
+		Map<String, Integer> namesMap = new HashMap<String, Integer>();
+		Map<String, Integer> unitsMap = new HashMap<String, Integer>();
+
+		for (int row = 0; row < size; row++) {
+			for (int column = 0; column < size; column++) {
+				GridLocation location = new GridLocation(row, column);
+
+				// Get the name of the component at that location.
+				String name = gridManager.getComponentName(location);
+				if (name != null) {
+
+					location.setLWRDataProvider(
+							gridManager.getDataProviderAtLocation(location));
+
+					// Create the grid location's group, write it, and close it.
+					groupName = "Position " + row + " " + column;
+					int positionGroupId = factory.createGroup(positionsGroupId,
+							groupName);
+					writeGridLocation(positionGroupId, location, name, namesMap,
+							unitsMap);
+					factory.closeGroup(positionGroupId);
+				}
+			}
+		}
+
+		String[] stringArray;
+
+		// Write the component names...
+		// Note: We need to convert the map into an array using the map values
+		// as the index in the array.
+		stringArray = new String[namesMap.size()];
+		for (Entry<String, Integer> e : namesMap.entrySet()) {
+			stringArray[e.getValue()] = e.getKey();
+		}
+		factory.writeStringArrayDataset(positionsGroupId,
+				"Simple Position Names Table", stringArray);
+
+		// Write the unit names...
+		// Note: We need to convert the map into an array using the map values
+		// as the index in the array.
+		if (!unitsMap.isEmpty()) {
+			stringArray = new String[unitsMap.size()];
+			for (Entry<String, Integer> e : unitsMap.entrySet()) {
+				stringArray[e.getValue()] = e.getKey();
+			}
+			factory.writeStringArrayDataset(positionsGroupId, "Units Table",
+					stringArray);
+		}
+
+		// Close the "Positions" group.
+		factory.closeGroup(positionsGroupId);
+
+		return;
+	}
+
+	private void writeGridLocation(int groupId, GridLocation location,
+			String name, Map<String, Integer> namesMap,
+			Map<String, Integer> unitsMap)
+					throws NullPointerException, HDF5Exception {
+
+		// Get the index of the component name. If the name is new to the map,
+		// add it to the map.
+		final int index;
+		if (!namesMap.containsKey(name)) {
+			index = namesMap.size();
+			namesMap.put(name, index);
+		} else {
+			index = namesMap.get(name);
+		}
+
+		// Create the "Position Dataset" dataset.
+		long[] dims = new long[] { 3 };
+		int[] buffer = new int[] { location.getRow(), location.getColumn(),
+				index };
+		factory.writeDataset(groupId, "Position Dataset", 1, dims,
+				HDF5Constants.H5T_NATIVE_INT, buffer);
+
+		ArrayList<Double> position;
+
+		// Record the initial time so it can be reset after the write has
+		// completed.
+		LWRDataProvider dataProvider = location.getLWRDataProvider();
+		double initialTime = dataProvider.getCurrentTime();
+
+		// Write the data for each timestep.
+		for (double time : dataProvider.getTimes()) {
+			int timestep = dataProvider.getTimeStep(time);
+
+			// Create the timestep group.
+			int timestepGroupId = factory.createGroup(groupId,
+					"TimeStep: " + timestep);
+
+			// Write the time to the group as an attribute.
+			factory.writeDoubleAttribute(timestepGroupId, "time", time);
+
+			// Write the features...
+			for (String feature : dataProvider.getFeaturesAtCurrentTime()) {
+				List<IData> dataList = dataProvider
+						.getDataAtCurrentTime(feature);
+				int nData = dataList.size();
+
+				// Allocate the buffer for the values, uncertainties, and
+				// position data (all doubles).
+				double[] dataBuffer = new double[nData * 5];
+				// Allocate the buffer for the head table (used for looking up
+				// units). The first column is the data table index, and the
+				// second column is the units lookup index.
+				buffer = new int[nData * 2];
+
+				int dataBufferIndex = 0;
+				int headBufferIndex = 0;
+				for (int i = 0; i < nData; i++) {
+					IData data = dataList.get(i);
+
+					// Determine the lookup index for the units name.
+					final int unitsIndex;
+					String units = data.getUnits();
+					if (unitsMap.containsKey(units)) {
+						unitsIndex = unitsMap.get(units);
+					} else {
+						unitsIndex = unitsMap.size();
+						unitsMap.put(units, unitsIndex);
+					}
+
+					// Add the value, uncertainty, and position data to the data
+					// buffer.
+					dataBuffer[dataBufferIndex++] = data.getValue();
+					dataBuffer[dataBufferIndex++] = data.getUncertainty();
+					position = data.getPosition();
+					dataBuffer[dataBufferIndex++] = position.get(0);
+					dataBuffer[dataBufferIndex++] = position.get(1);
+					dataBuffer[dataBufferIndex++] = position.get(2);
+
+					// Add the data table index and units name index to the head
+					// table buffer.
+					buffer[headBufferIndex++] = i;
+					buffer[headBufferIndex++] = unitsIndex;
+				}
+
+				dims = new long[2];
+
+				// Write the "data table" dataset.
+				dims[0] = nData;
+				dims[1] = 5;
+				factory.writeDataset(timestepGroupId, feature + " dataTable", 2,
+						dims, HDF5Constants.H5T_NATIVE_DOUBLE, dataBuffer);
+
+				// Write the "head table" dataset.
+				dims[1] = 2;
+				factory.writeDataset(timestepGroupId, feature + " headTable", 2,
+						dims, HDF5Constants.H5T_NATIVE_INT, buffer);
+			}
+
+			// Close the timestep group.
+			factory.closeGroup(timestepGroupId);
+		}
+
+		// Restore the initial time.
+		dataProvider.setTime(initialTime);
 
 		return;
 	}
@@ -455,7 +865,7 @@ public class LWRComponentWriter {
 			String units = data.getUnits();
 			// Add the string's bytes.
 			byteBuf.put(units.getBytes());
-			// Fill the space allocated for this string with null bytes.
+			// Skip ahead to the next string's start index.
 			byteBuf.position(byteBuf.position() + stringSize - units.length());
 
 			// Update the position buffer.
