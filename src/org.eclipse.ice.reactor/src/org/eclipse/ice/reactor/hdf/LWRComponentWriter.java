@@ -410,11 +410,19 @@ public class LWRComponentWriter {
 	private void writeLWRData(int groupId, String datasetName,
 			List<IData> dataList) throws NullPointerException, HDF5Exception {
 
+		// FIXME There is no error checking on the return values from H5 calls.
+
 		// Constants used to avoid constant use of HDF5Constants namespace.
 		final int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
 		final int H5S_ALL = HDF5Constants.H5S_ALL;
 		final int H5T_COMPOUND = HDF5Constants.H5T_COMPOUND;
 		final int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
+
+		// The names of the columns in the dataset.
+		final String valueName = "value";
+		final String uncertaintyName = "uncertainty";
+		final String unitsName = "units";
+		final String positionName = "position";
 
 		// ---- Create the buffers from which the dataset is written. ---- //
 		int size = 0;
@@ -430,10 +438,10 @@ public class LWRComponentWriter {
 		long[] dims = new long[] { 1, size };
 
 		// Allocate the buffers.
-		Double[] doubleBuffer = new Double[2 * size];
+		double[] doubleBuffer = new double[2 * size];
 		ByteBuffer byteBuf = ByteBuffer.allocate(stringSize * size);
 		byte[] stringBuffer;
-		Double[] positionBuffer = new Double[3 * size];
+		double[] positionBuffer = new double[3 * size];
 
 		int doubleIndex = 0;
 		int positionIndex = 0;
@@ -461,12 +469,6 @@ public class LWRComponentWriter {
 		// --------------------------------------------------------------- //
 
 		// ---- Create the Dataset ---- //
-
-		String valueName = "value";
-		String uncertaintyName = "uncertainty";
-		String unitsName = "units";
-		String positionName = "position";
-
 		// Get the size of the double datatype.
 		int doubleSize = H5.H5Tget_size(H5T_NATIVE_DOUBLE);
 

@@ -51,7 +51,9 @@ public class LWRIOHandlerTester {
 
 	private PressurizedWaterReactor expectedReactor;
 	private FuelAssembly expectedAssembly;
-	private LWRData expectedAssemblyData;
+	private LWRData expectedData;
+	private LWRData expectedData2;
+	private LWRData expectedData3;
 	private LWRRod expectedRod;
 	private Tube expectedTube;
 	private Material expectedGasMaterial;
@@ -67,7 +69,8 @@ public class LWRIOHandlerTester {
 		// Delete the created file if it exists.
 		if (newFile != null) {
 			if (newFile.exists()) {
-				newFile.delete();
+				// TODO Uncomment this
+				// newFile.delete();
 			}
 			newFile = null;
 		}
@@ -117,7 +120,7 @@ public class LWRIOHandlerTester {
 		data.setPosition(position);
 		data.setValue(42.0);
 		fuelAssembly.addData(data, 0.0);
-		expectedAssemblyData = data;
+		expectedData = data;
 
 		// Create a fill gas.
 		Material gasMaterial = new Material();
@@ -301,6 +304,22 @@ public class LWRIOHandlerTester {
 		reactor.setAssemblyLocation(AssemblyType.RodCluster,
 				rodClusterAssembly.getName(), 0, 3);
 
+		// Add the expected data to the rod.
+		expectedRod.addData(expectedData, 0.1);
+		// Add a modified copy of the data to the rod. Same feature.
+		data = new LWRData();
+		data.copy(expectedData);
+		data.setValue(1337.0);
+		data.setUnits(data.getUnits() + " 2");
+		expectedRod.addData(data, 0.1);
+		expectedData2 = data;
+		// Add a copy of the data to the rod. Different feature.
+		data = new LWRData();
+		data.copy(expectedData);
+		data.setFeature(data.getFeature() + " 2");
+		expectedRod.addData(data, 0.1);
+		expectedData3 = data;
+
 		return;
 	}
 
@@ -356,26 +375,7 @@ public class LWRIOHandlerTester {
 		// Assembly-specific properties...
 		assertEquals(expectedAssembly.getRodPitch(), assembly.getRodPitch(),
 				epsilon);
-
-		// Compare some state point data added directly to the assembly.
-		String dataName = "Test Feature Data";
-		IData expectedData = expectedAssembly.getDataAtCurrentTime(dataName)
-				.get(0);
-		// Make sure the data exists in the loaded assembly.
-		List<IData> dataList = assembly.getDataAtCurrentTime(dataName);
-		assertNotNull(dataList);
-		assertEquals(1, dataList.size());
-		// Finally, we can check the data.
-		IData data = dataList.get(0);
-		assertEquals(expectedData.getValue(), data.getValue(), epsilon);
-		assertEquals(expectedData.getUncertainty(), data.getUncertainty(),
-				epsilon);
-		assertEquals(expectedData.getFeature(), data.getFeature());
-		for (int i = 0; i < 3; i++) {
-			assertEquals(expectedData.getPosition().get(i),
-					data.getPosition().get(i), epsilon);
-		}
-		// ---------------------------------------------------- //
+				// ---------------------------------------------------- //
 
 		// ---- Check the rod's attributes. ---- //
 		LWRRod rod;
@@ -533,6 +533,51 @@ public class LWRIOHandlerTester {
 		}
 		// ------------------------------------------------------- //
 
+		// Compare some state point data added directly to the rod.
+		String dataName = "Test Feature Data";
+		IData data;
+		List<IData> dataList;
+
+		// Make sure the data exists in the loaded assembly.
+		// Note: The rod's time defaults to 0, but the time for the data is 0.1.
+		rod.setTime(rod.getTimes().get(0));
+		dataList = rod.getDataAtCurrentTime(dataName);
+		assertNotNull(dataList);
+		assertEquals(2, dataList.size());
+		// Finally, we can check the data.
+		data = dataList.get(0);
+		assertEquals(expectedData.getValue(), data.getValue(), epsilon);
+		assertEquals(expectedData.getUncertainty(), data.getUncertainty(),
+				epsilon);
+		assertEquals(expectedData.getFeature(), data.getFeature());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(expectedData.getPosition().get(i),
+					data.getPosition().get(i), epsilon);
+		}
+		// Check the second data point.
+		data = dataList.get(1);
+		assertEquals(expectedData2.getValue(), data.getValue(), epsilon);
+		assertEquals(expectedData2.getUncertainty(), data.getUncertainty(),
+				epsilon);
+		assertEquals(expectedData2.getFeature(), data.getFeature());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(expectedData2.getPosition().get(i),
+					data.getPosition().get(i), epsilon);
+		}
+		// Check the third data point (different feature).
+		dataList = rod.getDataAtCurrentTime(dataName + " 2");
+		assertNotNull(dataList);
+		assertEquals(1, dataList.size());
+		data = dataList.get(0);
+		assertEquals(expectedData3.getValue(), data.getValue(), epsilon);
+		assertEquals(expectedData3.getUncertainty(), data.getUncertainty(),
+				epsilon);
+		assertEquals(expectedData3.getFeature(), data.getFeature());
+		for (int i = 0; i < 3; i++) {
+			assertEquals(expectedData3.getPosition().get(i),
+					data.getPosition().get(i), epsilon);
+		}
+
 		return;
 	}
 
@@ -556,6 +601,9 @@ public class LWRIOHandlerTester {
 		FuelAssembly assembly = null;
 		LWRData assemblyData = null;
 		LWRRod rod = null;
+		IData data1;
+		IData data2;
+		IData data3;
 		Tube tube = null;
 		MaterialBlock block = null;
 		Ring clad = null;
@@ -574,7 +622,7 @@ public class LWRIOHandlerTester {
 
 		// Get the data off the assembly.
 		List<IData> dataList = assembly
-				.getDataAtCurrentTime(expectedAssemblyData.getFeature());
+				.getDataAtCurrentTime(expectedData.getFeature());
 		assertNotNull(dataList);
 		assertEquals(1, dataList.size());
 		assemblyData = (LWRData) dataList.get(0);
@@ -587,6 +635,22 @@ public class LWRIOHandlerTester {
 		// Get the tube off the assembly.
 		tube = assembly.getTubeByName(expectedTube.getName());
 		assertNotNull(tube);
+
+		// Get the three data off the rod.
+		// Note: The rod's time defaults to 0, but the time for the data is 0.1.
+		double initialTime = rod.getCurrentTime();
+		rod.setTime(rod.getTimes().get(0));
+		dataList = rod.getDataAtCurrentTime("Test Feature Data");
+		assertNotNull(dataList);
+		assertEquals(2, dataList.size());
+		data1 = dataList.get(0);
+		data2 = dataList.get(1);
+		dataList = rod.getDataAtCurrentTime("Test Feature Data 2");
+		assertNotNull(dataList);
+		assertEquals(1, dataList.size());
+		data3 = dataList.get(0);
+		// Restore the default time.
+		rod.setTime(initialTime);
 
 		// Get the clad off the rod.
 		clad = rod.getClad();
@@ -620,8 +684,11 @@ public class LWRIOHandlerTester {
 		assertEquals(expectedClad, clad);
 		assertEquals(expectedMaterialBlock, block);
 		assertEquals(expectedTube, tube);
+		assertEquals(expectedData, data1);
+		assertEquals(expectedData2, data2);
+		assertEquals(expectedData3, data3);
 		assertEquals(expectedRod, rod);
-		assertEquals(expectedAssemblyData, assemblyData);
+		assertEquals(expectedData, assemblyData);
 		assertEquals(expectedAssembly, assembly);
 		assertEquals(expectedReactor, reactor);
 
@@ -640,9 +707,11 @@ public class LWRIOHandlerTester {
 		// Set up the list of components to write.
 		List<LWRComponent> components = new ArrayList<LWRComponent>();
 		components.add(expectedReactor);
+		components.add(null);
+		components.add(expectedRod);
 
 		// Write the file.
-		assertEquals(1, handler.writeHDF5(uri, components));
+		assertEquals(2, handler.writeHDF5(uri, components));
 
 		// Check invalid input such that no components can be written to a file.
 		// One or both parameters are null...
@@ -671,20 +740,29 @@ public class LWRIOHandlerTester {
 		List<LWRComponent> components = new ArrayList<LWRComponent>();
 		components.add(expectedReactor);
 		components.add(null); // This list item should be ignored.
+		components.add(expectedGasMaterial);
+		components.add(expectedClad);
+		components.add(expectedMaterialBlock);
 		components.add(expectedRod);
+		int expectedNumberOfComponents = 5;
 
 		// Write the file.
-		assertEquals(2, handler.writeHDF5(uri, components));
+		assertEquals(expectedNumberOfComponents,
+				handler.writeHDF5(uri, components));
 
 		// Now try to read them.
 		components = handler.readHDF5(uri);
 
 		// Check the response.
 		assertNotNull(components);
-		assertEquals(2, components.size());
-		// Both components should match.
-		assertEquals(expectedReactor, components.get(0));
-		assertEquals(expectedRod, components.get(1));
+		assertEquals(expectedNumberOfComponents, components.size());
+		// All components should match. Note that HDF reads the groups in
+		// ascending alphabetical order.
+		assertEquals(expectedGasMaterial, components.get(0));
+		assertEquals(expectedClad, components.get(1));
+		assertEquals(expectedMaterialBlock, components.get(2));
+		assertEquals(expectedReactor, components.get(3));
+		assertEquals(expectedRod, components.get(4));
 
 		return;
 	}
