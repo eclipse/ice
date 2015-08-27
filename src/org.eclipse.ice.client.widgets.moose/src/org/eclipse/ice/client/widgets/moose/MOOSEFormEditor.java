@@ -123,13 +123,36 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 	// ------------------------------ //
 
-	// TODO Remove this. This is just for testing the ParaViewVizService.
+	// ---- Example of adding a new tab to the MOOSE Workflow Item. ---- //
+	/**
+	 * Contains either the {@link #plotComposite} or the {@link #errorComposite}
+	 * , depending on whether the ParaView visualization could be drawn. It uses
+	 * a FillLayout, so there's no need to worry about setting layout data on
+	 * either of the child composites!
+	 */
+	private Composite meshPlotParent;
+	/**
+	 * The SWT Composite in which the ParaView visualization is rendered.
+	 */
+	private Composite plotComposite;
+	/**
+	 * The SWT Composite in which useful or error information is displayed when
+	 * the ParaView visualization cannot be rendered.
+	 */
+	private Composite errorComposite;
+
+	/**
+	 * Overrides the parent method to add an extra page to the ICE Item.
+	 */
 	@Override
 	protected void addPages() {
+		// Add the default pages.
 		super.addPages();
-		// Add a page with a plant view.
+
+		// Add a page with an embedded remote ParaView visualization.
 		try {
-			addPage(new ICEFormPage(this, "ParaView Mesh", "Mesh View") {
+			addPage(new ICEFormPage(this, "ParaView",
+					"Embedded ParaView Visualization") {
 				@Override
 				protected void createFormContent(
 						final IManagedForm managedForm) {
@@ -145,7 +168,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 					Composite body = managedForm.getForm().getBody();
 					body.setLayout(new GridLayout(2, false));
 
-					// Create a section for the mesh view.
+					// Create a section for the ParaView visualization.
 					Composite parent = managedForm.getForm().getBody();
 					int style = Section.DESCRIPTION | Section.TITLE_BAR
 							| Section.TWISTIE | Section.EXPANDED;
@@ -155,7 +178,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 							managedForm.reflow(true);
 						}
 					});
-					populateMeshViewSection(section, toolkit);
+					// Add widgets to the section.
+					populateParaViewSection(section, toolkit);
 					// The mesh view should grab all excess space.
 					section.setLayoutData(
 							new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -164,85 +188,25 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				}
 			});
 		} catch (PartInitException e) {
-
+			// Log an error if it couldn't create the ParaView page.
+			logger.warn(getClass().getName() + " error: "
+					+ "Error trying to create an embedded remote "
+					+ "ParaView visualization!", e);
 		}
 		return;
 	}
 
-	private Composite meshPlotParent;
-	private Composite plotComposite;
-	private Composite errorComposite;
-
-	private void createPlot(URI uri) {
-		// Try to get the ParaView viz service.
-		IVizServiceFactory vizFactory = getVizServiceFactory();
-		IVizService vizService = (vizFactory != null
-				? vizFactory.get("ParaView") : null);
-
-		boolean plotDrawn = false;
-
-		// Delete the plot composite.
-		if (plotComposite != null) {
-			if (!plotComposite.isDisposed()) {
-				plotComposite.dispose();
-			}
-			plotComposite = null;
-		}
-
-		// Either update the mesh plot or generate an error. Note that if the
-		// visualization service is not running, there is no way we will ever be
-		// able to generate a plot.
-		if (vizService != null && uri != null) {
-			try {
-				// Create the plot.
-				IPlot plot = vizService.createPlot(uri);
-				plotComposite = plot.draw(meshPlotParent);
-				plotDrawn = true;
-			} catch (Exception e) {
-				System.err.println("MOOSEFormEditor error: "
-						+ "Error creating VisIt plot.");
-				e.printStackTrace();
-			}
-		}
-
-		if (!plotDrawn) {
-			// Create the error composite if necessary.
-			if (errorComposite == null || errorComposite.isDisposed()) {
-
-				FormToolkit toolkit = getHeaderForm().getToolkit();
-
-				// Create an error message to show in the mesh view.
-				String errorMessage = "There was a problem connecting to "
-						+ "ICE's available visualization services.";
-				errorComposite = toolkit.createComposite(meshPlotParent);
-				errorComposite.setLayout(new GridLayout(2, false));
-				// Create the label with the error icon.
-				Label iconLabel = toolkit.createLabel(errorComposite, "");
-				iconLabel.setImage(
-						Display.getCurrent().getSystemImage(SWT.ICON_ERROR));
-				iconLabel.setLayoutData(new GridData(SWT.BEGINNING,
-						SWT.BEGINNING, false, false));
-				// Create the label with the text.
-				Label msgLabel = toolkit.createLabel(errorComposite,
-						errorMessage);
-				msgLabel.setLayoutData(
-						new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
-			}
-		}
-		// Delete the error composite if necessary.
-		else if (errorComposite != null) {
-			if (!errorComposite.isDisposed()) {
-				errorComposite.dispose();
-			}
-			errorComposite = null;
-		}
-
-		meshPlotParent.layout();
-
-		return;
-	}
-
-	private void populateMeshViewSection(Section section, FormToolkit toolkit) {
+	/**
+	 * Adds widgets to the ParaView section, which is the main UI piece in the
+	 * ParaView visualization tab/page.
+	 * 
+	 * @param section
+	 *            The section that will be populated.
+	 * @param toolkit
+	 *            The toolkit used to decorate widgets to ensure standard
+	 *            appearance.
+	 */
+	private void populateParaViewSection(Section section, FormToolkit toolkit) {
 		section.setText("Mesh");
 		section.setDescription("The current mesh configured for MOOSE input.");
 
@@ -256,14 +220,18 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		toolBarManager.add(new Action("Browse for remote file...") {
 			@Override
 			public void run() {
+				// Open a browser for a remote file.
 				RemoteResourceBrowser browser = new RemoteResourceBrowser(
 						getContainer().getShell(), SWT.NONE);
 				browser.setTitle("Select a remote Exodus or Silo file.");
 				browser.setType(RemoteResourceBrowser.FILE_BROWSER);
-				
+
+				// If a remote file was selected, try to plot it.
 				if (browser.open() == Window.OK) {
 					createPlot(browser.getResource().toURI());
 				}
+
+				return;
 			}
 		});
 		ToolBar toolBar = toolBarManager.createControl(container);
@@ -297,7 +265,87 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		return;
 	}
 
-	// END OF SECTION THAT SHOULD BE REMOVED...
+	/**
+	 * Attempts to create a ParaView plot inside the {@link #plotComposite}. If
+	 * it fails, then the {@link #errorComposite} will instead be shown.
+	 * 
+	 * @param uri
+	 *            The URI for the local or remote file.
+	 */
+	private void createPlot(URI uri) {
+		// Try to get the ParaView viz service.
+		IVizServiceFactory vizFactory = getVizServiceFactory();
+		IVizService vizService = (vizFactory != null
+				? vizFactory.get("ParaView") : null);
+
+		boolean plotDrawn = false;
+
+		// Delete the plot composite.
+		if (plotComposite != null) {
+			if (!plotComposite.isDisposed()) {
+				plotComposite.dispose();
+			}
+			plotComposite = null;
+		}
+
+		// Either update the mesh plot or generate an error. Note that if the
+		// visualization service is not running, there is no way we will ever be
+		// able to generate a plot.
+		if (vizService != null && uri != null) {
+			try {
+				// Create the plot.
+				IPlot plot = vizService.createPlot(uri);
+				plotComposite = plot.draw(meshPlotParent);
+				plotDrawn = true;
+			} catch (Exception e) {
+				// Log some info. We expect an exception if, say, the connection
+				// is not configured or if the file is invalid. However, we
+				// notify the user with the content in the error composite!
+				logger.info(getClass().getName() + " error: "
+						+ "Error creating ParaView plot.", e);
+			}
+		}
+
+		// If the plot could not be drawn, give the user some useful information
+		// about what happened.
+		if (!plotDrawn) {
+			// Create the error composite if necessary.
+			if (errorComposite == null || errorComposite.isDisposed()) {
+
+				FormToolkit toolkit = getHeaderForm().getToolkit();
+
+				// Create an error message to show in the mesh view.
+				String errorMessage = "There was a problem connecting to "
+						+ "ICE's available visualization services.";
+				errorComposite = toolkit.createComposite(meshPlotParent);
+				errorComposite.setLayout(new GridLayout(2, false));
+				// Create the label with the error icon.
+				Label iconLabel = toolkit.createLabel(errorComposite, "");
+				iconLabel.setImage(
+						Display.getCurrent().getSystemImage(SWT.ICON_ERROR));
+				iconLabel.setLayoutData(new GridData(SWT.BEGINNING,
+						SWT.BEGINNING, false, false));
+				// Create the label with the text.
+				Label msgLabel = toolkit.createLabel(errorComposite,
+						errorMessage);
+				msgLabel.setLayoutData(
+						new GridData(SWT.BEGINNING, SWT.CENTER, true, false));
+			}
+		}
+		// Delete the error composite if necessary.
+		else if (errorComposite != null) {
+			if (!errorComposite.isDisposed()) {
+				errorComposite.dispose();
+			}
+			errorComposite = null;
+		}
+
+		// Refresh the layout for the plot/error composite container.
+		meshPlotParent.layout();
+
+		return;
+	}
+	// ------------------- End of example code. ------------------------ //
 
 	/**
 	 * In addition to the default behavior, this method registers with the MOOSE
