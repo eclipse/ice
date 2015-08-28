@@ -24,7 +24,43 @@ import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
+/**
+ * This class handles general IO routines for reading/writing
+ * {@link LWRComponent}s from/to an HDF file.
+ * 
+ * <p>
+ * <b>Note:</b> Currently, client code must use the methods
+ * {@link #readHDF5(URI)} and {@link #writeHDF5(URI, List)} to read and write
+ * components. This is similar to how the IO is handled in SFReactors. However,
+ * it extends {@link HdfIOFactory} to gain access to its useful methods for
+ * dealing with HDF files.
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class LWRIOHandler extends HdfIOFactory {
+
+	/*-
+	 * Improvements:
+	 * 
+	 * 1 - Groups are written even if there is nothing there, including:
+	 *   a - LWRComponent's "State Point Data"
+	 *   b - Grid labels for PWRs and FuelAssemblies.
+	 * 2 - LWRComponent's implementation of IDataProvider:
+	 *   a - Uses a compound datatype (double, double, string, double[3]).
+	 *   b - Can be combined into simpler datasets for faster reading.
+	 * 3 - LWRGridManagers: 
+	 *   a - There is room for coalescing grid data providers into one large
+	 *       multi-dimensional table.
+	 *   b - The head tables contain "the index of the data list table" and the 
+	 *       index for the associated units name. The first column is redundant:
+	 *       This is because the indices of the head and data tables are
+	 *       identical.
+	 * 4 - No re-use of the same components. If the same clad is used twice, it
+	 *     will be written twice in the file and become two separate instances
+	 *     when read.
+	 */
 
 	/**
 	 * Logger for handling event messages and other information.

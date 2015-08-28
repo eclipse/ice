@@ -51,6 +51,14 @@ import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
+/**
+ * This class handles HDF reading for each type of {@link LWRComponent}
+ * available in the reactor model. Note that this class operates directly on
+ * <i>open</i> HDF groups and does not accept files or URIs themselves.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class LWRComponentReader {
 
 	/**
@@ -59,17 +67,53 @@ public class LWRComponentReader {
 	private static final Logger logger = LoggerFactory
 			.getLogger(LWRComponentReader.class);
 
+	/**
+	 * The factory that provides many helpful methods for reading from HDF
+	 * files.
+	 */
 	private final HdfIOFactory factory;
 
+	/**
+	 * A factory used to create {@link LWRComponent}s based on their tag read
+	 * from the file.
+	 */
 	private final LWRComponentFactory componentFactory;
 
+	/**
+	 * A simple interface for reading. This is used to redirect read operations
+	 * to one for the specific type. We use this because the LWR visitor does
+	 * not include visit operations for all types with an {@link HDF5LWRTagType}
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	private interface IComponentReader {
+		/**
+		 * Reads the HDF group specified by the ID into the component.
+		 * 
+		 * @param groupId
+		 *            The ID of the HDF group to read.
+		 * @param component
+		 *            The component into which the group's content will be read.
+		 * @throws NullPointerException
+		 * @throws HDF5Exception
+		 */
 		public void readComponent(int groupId, LWRComponent component)
 				throws NullPointerException, HDF5Exception;
 	}
 
+	/**
+	 * A map of the readers keyed on their tag type. For the content of the map,
+	 * see {@link #addReaders()}.
+	 */
 	private final Map<HDF5LWRTagType, IComponentReader> readerMap;
 
+	/**
+	 * The default constructor.
+	 * 
+	 * @param factory
+	 *            The parent HDF IO factory used to read from the file.
+	 */
 	public LWRComponentReader(HdfIOFactory factory) {
 		this.factory = factory;
 
@@ -82,8 +126,17 @@ public class LWRComponentReader {
 		return;
 	}
 
-	int counter = 0;
-
+	/**
+	 * Attempts to read the HDF group with the specified ID into a new
+	 * {@link LWRComponent}.
+	 * 
+	 * @param groupId
+	 *            The ID of the group that contain the content to read.
+	 * @return The read in component, or {@code null} if the group could not be
+	 *         read. It may be a sub-class of LWRComponent.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	public LWRComponent readComponent(int groupId)
 			throws NullPointerException, HDF5Exception {
 
@@ -122,6 +175,16 @@ public class LWRComponentReader {
 		return component;
 	}
 
+	/**
+	 * Reads the content of the group into the specified LWRComponent.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param component
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, LWRComponent component)
 			throws NullPointerException, HDF5Exception {
 		// Read properties inherited from Identifiable...
@@ -134,6 +197,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified LWRComposite.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param composite
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, LWRComposite composite)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -158,6 +231,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified LWReactor.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param reactor
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, LWReactor reactor)
 			throws NullPointerException, HDF5Exception {
 
@@ -173,6 +256,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified BWReactor.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param reactor
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, BWReactor reactor)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWReactor)...
@@ -187,6 +280,17 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified
+	 * PressurizedWaterReactor.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param reactor
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, PressurizedWaterReactor reactor)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWReactor)...
@@ -280,6 +384,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified PWRAssembly.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param assembly
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, PWRAssembly assembly)
 			throws NullPointerException, HDF5Exception {
 
@@ -335,6 +449,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified ControlBank.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param controlBank
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, ControlBank controlBank)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -352,6 +476,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified FuelAssembly.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param assembly
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, FuelAssembly assembly)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (PWRAssembly)...
@@ -424,6 +558,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified IncoreInstrument.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param incoreInstrument
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, IncoreInstrument incoreInstrument)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -446,6 +590,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified RodClusterAssembly.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param assembly
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, RodClusterAssembly assembly)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (PWRAssembly)...
@@ -460,6 +614,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified LWRRod.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param rod
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, LWRRod rod)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -493,6 +657,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified Ring.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param ring
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, Ring ring)
 			throws NullPointerException, HDF5Exception {
 
@@ -522,6 +696,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified Tube.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param tube
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, Tube tube)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (Ring)...
@@ -534,6 +718,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified Material.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param material
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, Material material)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -547,6 +741,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified MaterialBlock.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param block
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, MaterialBlock block)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -570,6 +774,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified GridLabelProvider.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param provider
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, GridLabelProvider provider)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -615,6 +829,16 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified LWRGridManager.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param gridManager
+	 *            The object to read into.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void read(int groupId, LWRGridManager gridManager)
 			throws NullPointerException, HDF5Exception {
 		// Read properties specific to its super class (LWRComponent)...
@@ -685,6 +909,18 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the content of the group into the specified GridLocation.
+	 * 
+	 * @param location
+	 *            The object to read into.
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param unitsNames
+	 *            A map of the unit names, keyed on the data table indices.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void readGridLocation(GridLocation location, int groupId,
 			List<String> unitsNames)
 					throws NullPointerException, HDF5Exception {
@@ -767,7 +1003,7 @@ public class LWRComponentReader {
 	 * Reads all of the data for an IDataProvider (implemented by LWRComponent).
 	 * 
 	 * @param groupId
-	 *            The ID of the parent HDF5 Group, which should be open.
+	 *            The ID of the parent group.
 	 * @param provider
 	 *            The IDataProvider to read the data into.
 	 *
@@ -816,6 +1052,17 @@ public class LWRComponentReader {
 		return;
 	}
 
+	/**
+	 * Reads the {@link LWRData} from the dataset.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param datasetName
+	 *            The name of the dataset to read.
+	 * @return A list of all data read from the dataset.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private List<LWRData> readLWRData(int groupId, String datasetName)
 			throws NullPointerException, HDF5Exception {
 		int status;
@@ -950,6 +1197,16 @@ public class LWRComponentReader {
 		return dataList;
 	}
 
+	/**
+	 * Gets a list of all child groups for the specified group, except for the
+	 * group for the LWR component's data (if it exists).
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @return The list of child HDF groups, except for the "State Point Data"
+	 *         group.
+	 * @throws HDF5LibraryException
+	 */
 	private List<String> getChildGroups(int groupId)
 			throws HDF5LibraryException {
 		List<String> children = factory.getChildNames(groupId,

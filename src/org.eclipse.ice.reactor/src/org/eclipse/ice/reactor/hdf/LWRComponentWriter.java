@@ -25,6 +25,7 @@ import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
+import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
@@ -48,28 +49,15 @@ import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 
+/**
+ * This clas handles HDF writing for each type of {@link LWRComponent} available
+ * in the reactor model. Note that this class operates directly on <i>open</i>
+ * HDF groups and does not accept files or URIs themselves.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class LWRComponentWriter {
-
-	/*-
-	 * Improvements:
-	 * 
-	 * 1 - Groups are written even if there is nothing there, including:
-	 *   a - LWRComponent's "State Point Data"
-	 *   b - Grid labels for PWRs and FuelAssemblies.
-	 * 2 - LWRComponent's implementation of IDataProvider:
-	 *   a - Uses a compound datatype (double, double, string, double[3]).
-	 *   b - Can be combined into simpler datasets for faster reading.
-	 * 3 - LWRGridManagers: 
-	 *   a - There is room for coalescing grid data providers into one large
-	 *       multi-dimensional table.
-	 *   b - The head tables contain "the index of the data list table" and the 
-	 *       index for the associated units name. The first column is redundant:
-	 *       This is because the indices of the head and data tables are
-	 *       identical.
-	 * 4 - No re-use of the same components. If the same clad is used twice, it
-	 *     will be written twice in the file and become two separate instances
-	 *     when read.
-	 */
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -77,15 +65,46 @@ public class LWRComponentWriter {
 	private static final Logger logger = LoggerFactory
 			.getLogger(LWRComponentWriter.class);
 
+	/**
+	 * The factory that provides many helpful methods for writing to HDF files.
+	 */
 	private final HdfIOFactory factory;
 
+	/**
+	 * A simple interface for writing. This is used to redirect write operations
+	 * to one for the specific type. We use this because the LWR visitor does
+	 * not include visit operations for all types with an {@link HDF5LWRTagType}
+	 * 
+	 * @author Jordan Deyton
+	 *
+	 */
 	private interface IComponentWriter {
+		/**
+		 * Writes the component into the HDF group specified by the ID.
+		 * 
+		 * @param groupId
+		 *            The ID of the HDF group to write to.
+		 * @param component
+		 *            The component that will be written to the group.
+		 * @throws NullPointerException
+		 * @throws HDF5Exception
+		 */
 		public void writeComponent(int groupId, LWRComponent component)
 				throws NullPointerException, HDF5Exception;
 	}
 
+	/**
+	 * A map of the writers keyed on their tag type. For the content of the map,
+	 * see {@link #addWriters()}.
+	 */
 	private final Map<HDF5LWRTagType, IComponentWriter> writerMap;
 
+	/**
+	 * The default constructor.
+	 * 
+	 * @param factory
+	 *            The parent HDF IO factory used to write to the file.
+	 */
 	public LWRComponentWriter(HdfIOFactory factory) {
 		this.factory = factory;
 
@@ -94,6 +113,15 @@ public class LWRComponentWriter {
 		addWriters();
 	}
 
+	/**
+	 * Attempts to write the specified {@link LWRComponent}'s content into the
+	 * HDF group with the specified ID.
+	 * 
+	 * @param groupId
+	 *            The ID of the group to contain the content.
+	 * @param component
+	 *            The component to write. Should not be {@code null}.
+	 */
 	public void writeComponent(int groupId, LWRComponent component) {
 
 		if (component != null) {
@@ -115,6 +143,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified LWRComponent.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param component
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, LWRComponent component)
 			throws NullPointerException, HDF5Exception {
 		// Write properties inherited from Identifiable...
@@ -130,6 +168,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified LWRComposite.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param composite
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, LWRComposite composite)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -150,6 +198,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified LWReactor.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param reactor
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, LWReactor reactor)
 			throws NullPointerException, HDF5Exception {
 
@@ -165,6 +223,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified BWReactor.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param reactor
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, BWReactor reactor)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWReactor)...
@@ -179,6 +247,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified PressurizedWaterReactor.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param reactor
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, PressurizedWaterReactor reactor)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWReactor)...
@@ -267,6 +345,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified PWRAssembly.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param assembly
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, PWRAssembly assembly)
 			throws NullPointerException, HDF5Exception {
 
@@ -323,6 +411,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified ControlBank.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param controlBank
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, ControlBank controlBank)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -339,6 +437,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified FuelAssembly.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param assembly
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, FuelAssembly assembly)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (PWRAssembly)...
@@ -396,6 +504,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified IncoreInstrument.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param incoreInstrument
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, IncoreInstrument incoreInstrument)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -416,6 +534,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified RodClusterAssembly.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param assembly
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, RodClusterAssembly assembly)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (PWRAssembly)...
@@ -430,6 +558,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified LWRRod.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param rod
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, LWRRod rod)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -460,6 +598,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified Ring.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param ring
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, Ring ring)
 			throws NullPointerException, HDF5Exception {
 
@@ -482,6 +630,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified Tube.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param tube
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, Tube tube)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (Ring)...
@@ -494,6 +652,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified Material.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param material
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, Material material)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -506,6 +674,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified MaterialBlock.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param block
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, MaterialBlock block)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -524,6 +702,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified GridLabelProvider.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param provider
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, GridLabelProvider provider)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -582,6 +770,16 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified LWRGridManager.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param gridManager
+	 *            The object to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void write(int groupId, LWRGridManager gridManager)
 			throws NullPointerException, HDF5Exception {
 		// Write properties specific to its super class (LWRComponent)...
@@ -659,6 +857,24 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the group content based on the specified GridLocation.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param location
+	 *            The object to write.
+	 * @param name
+	 *            The name of the component at that location.
+	 * @param namesMap
+	 *            The map of names of components in the whole grid. This will be
+	 *            updated if the component's name is new.
+	 * @param unitsMap
+	 *            The map of unit names. This will be updated if the location
+	 *            contains data with a new unit.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void writeGridLocation(int groupId, GridLocation location,
 			String name, Map<String, Integer> namesMap,
 			Map<String, Integer> unitsMap)
@@ -772,7 +988,7 @@ public class LWRComponentWriter {
 	 * LWRComponent).
 	 * 
 	 * @param groupId
-	 *            The ID of the parent HDF5 Group for the component.
+	 *            The ID of the parent group.
 	 * @param provider
 	 *            The IDataProvider to write the data from.
 	 * 
@@ -826,6 +1042,18 @@ public class LWRComponentWriter {
 		return;
 	}
 
+	/**
+	 * Writes the {@link LWRData} from the list into a dataset in an HDF group.
+	 * 
+	 * @param groupId
+	 *            The ID of the parent group.
+	 * @param datasetName
+	 *            The name to use for the dataset.
+	 * @param dataList
+	 *            The list of data to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
 	private void writeLWRData(int groupId, String datasetName,
 			List<IData> dataList) throws NullPointerException, HDF5Exception {
 
