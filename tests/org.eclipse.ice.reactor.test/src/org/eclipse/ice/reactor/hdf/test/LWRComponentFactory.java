@@ -34,7 +34,7 @@ public class LWRComponentFactory {
 	// ---- Base LWRComponent types ---- //
 	public LWRComponent createLWRComponent() {
 		LWRComponent component = new LWRComponent();
-		component.setName("comp");
+		component.setName("Test " + component.getClass().getName());
 		component.setId(idCounter++);
 
 		LWRData data;
@@ -67,7 +67,7 @@ public class LWRComponentFactory {
 
 	public LWRComposite createLWRComposite() {
 		LWRComposite composite = new LWRComposite();
-		composite.setName("Test Composite");
+		composite.setName("Test " + composite.getClass().getName());
 		composite.setId(idCounter++);
 
 		// Add some components to it.
@@ -85,7 +85,7 @@ public class LWRComponentFactory {
 		int size = 42;
 
 		LWReactor reactor = new LWReactor(size);
-		reactor.setName("Test LW Reactor");
+		reactor.setName("Test " + reactor.getClass().getName());
 		reactor.setId(idCounter++);
 
 		// Can't do anything else...
@@ -98,7 +98,7 @@ public class LWRComponentFactory {
 		int size = 42;
 
 		BWReactor reactor = new BWReactor(size);
-		reactor.setName("Test BW Reactor");
+		reactor.setName("Test " + reactor.getClass().getName());
 		reactor.setId(idCounter++);
 
 		// Can't do anything else...
@@ -112,7 +112,7 @@ public class LWRComponentFactory {
 
 		// Create the reactor.
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(size);
-		reactor.setName("Test Reactor");
+		reactor.setName("Test " + reactor.getClass().getName());
 		reactor.setId(idCounter++);
 		reactor.setFuelAssemblyPitch(1.0);
 
@@ -167,7 +167,7 @@ public class LWRComponentFactory {
 		int size = 5;
 
 		PWRAssembly assembly = new PWRAssembly(size);
-		assembly.setName("Test Assembly 1");
+		assembly.setName("Test " + assembly.getClass().getName());
 		assembly.setId(idCounter++);
 		assembly.setRodPitch(2.0);
 
@@ -214,7 +214,7 @@ public class LWRComponentFactory {
 
 	public ControlBank createControlBank() {
 		ControlBank controlBank = new ControlBank();
-		controlBank.setName("Test Control Bank");
+		controlBank.setName("Test " + controlBank.getClass().getName());
 		controlBank.setId(idCounter++);
 		controlBank.setMaxNumberOfSteps(10);
 		controlBank.setStepSize(1.3);
@@ -226,6 +226,7 @@ public class LWRComponentFactory {
 		int size = 5;
 
 		FuelAssembly assembly = new FuelAssembly(size);
+		assembly.setName("Test " + assembly.getClass().getName());
 
 		// Add grid labels to the assembly.
 		assembly.setGridLabelProvider(
@@ -293,7 +294,7 @@ public class LWRComponentFactory {
 							position.add((double) z);
 							data.setPosition(position);
 							data.setUncertainty(0.0);
-							data.setUnits("z units");
+							data.setUnits("f(z) units");
 							data.setValue(z * z);
 							dataProvider.addData(data, t);
 						}
@@ -307,7 +308,8 @@ public class LWRComponentFactory {
 
 	public IncoreInstrument createIncoreInstrument() {
 		IncoreInstrument incoreInstrument = new IncoreInstrument();
-		incoreInstrument.setName("Test Incore Instrument");
+		incoreInstrument
+				.setName("Test " + incoreInstrument.getClass().getName());
 		incoreInstrument.setId(idCounter++);
 		incoreInstrument.setThimble(createRing());
 		return incoreInstrument;
@@ -319,6 +321,7 @@ public class LWRComponentFactory {
 
 		// Create the assembly.
 		RodClusterAssembly assembly = new RodClusterAssembly(size);
+		assembly.setName("Test " + assembly.getClass().getName());
 
 		// Create a rod to add to the assembly.
 		LWRRod rod = createLWRRod();
@@ -337,7 +340,7 @@ public class LWRComponentFactory {
 	// ---- Rods, Tubes, Rings and Materials ---- //
 	public LWRRod createLWRRod() {
 		LWRRod rod = new LWRRod();
-		rod.setName("Test Rod 1");
+		rod.setName("Test " + rod.getClass().getName());
 		rod.setId(idCounter++);
 		rod.setFillGas(createGasMaterial());
 		rod.setClad(createRing());
@@ -349,7 +352,7 @@ public class LWRComponentFactory {
 
 	public Tube createTube() {
 		Tube tube = new Tube();
-		tube.setName("Test Tube");
+		tube.setName("Test " + tube.getClass().getName());
 		tube.setId(idCounter++);
 		tube.setMaterial(createSolidMaterial());
 		tube.setHeight(70.0);
@@ -360,7 +363,7 @@ public class LWRComponentFactory {
 
 	public MaterialBlock createMaterialBlock() {
 		MaterialBlock block = new MaterialBlock();
-		block.setName("Test Material Block");
+		block.setName("Test " + block.getClass().getName());
 		block.setId(idCounter++);
 		block.addRing(createRing());
 		// Add a ring for the gas material.
@@ -384,7 +387,7 @@ public class LWRComponentFactory {
 
 	public Ring createRing() {
 		Ring clad = new Ring();
-		clad.setName("Test Clad");
+		clad.setName("Test " + clad.getClass().getName());
 		clad.setId(idCounter++);
 		clad.setMaterial(createSolidMaterial());
 		clad.setHeight(50.0);
@@ -395,7 +398,8 @@ public class LWRComponentFactory {
 
 	public Material createGasMaterial() {
 		Material gasMaterial = new Material();
-		gasMaterial.setName("He");
+		gasMaterial.setName("Test " + gasMaterial.getClass().getName());
+		gasMaterial.setDescription("He");
 		gasMaterial.setId(idCounter++);
 		gasMaterial.setMaterialType(MaterialType.GAS);
 		return gasMaterial;
@@ -403,7 +407,8 @@ public class LWRComponentFactory {
 
 	public Material createLiquidMaterial() {
 		Material liquidMaterial = new Material();
-		liquidMaterial.setName("Water");
+		liquidMaterial.setName("Test " + liquidMaterial.getClass().getName());
+		liquidMaterial.setDescription("Water");
 		liquidMaterial.setId(idCounter++);
 		liquidMaterial.setMaterialType(MaterialType.LIQUID);
 		return liquidMaterial;
@@ -411,7 +416,8 @@ public class LWRComponentFactory {
 
 	public Material createSolidMaterial() {
 		Material solidMaterial = new Material();
-		solidMaterial.setName("Steel");
+		solidMaterial.setName("Test " + solidMaterial.getClass().getName());
+		solidMaterial.setDescription("Steel");
 		solidMaterial.setId(idCounter++);
 		solidMaterial.setMaterialType(MaterialType.SOLID);
 		return solidMaterial;
@@ -422,6 +428,7 @@ public class LWRComponentFactory {
 	public LWRGridManager createLWRGridManager(int size) {
 
 		LWRGridManager manager = new LWRGridManager(size);
+		manager.setName("Test " + manager.getClass().getName());
 
 		LWRData data;
 		ArrayList<Double> position;
@@ -477,6 +484,7 @@ public class LWRComponentFactory {
 	public GridLabelProvider createGridLabelProvider(int size, boolean columns,
 			boolean rows) {
 		GridLabelProvider provider = new GridLabelProvider(size);
+		provider.setName("Test " + provider.getClass().getName());
 
 		ArrayList<String> labels;
 

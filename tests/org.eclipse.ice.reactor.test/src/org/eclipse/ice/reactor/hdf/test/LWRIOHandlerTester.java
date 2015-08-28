@@ -8,7 +8,7 @@
  * Contributors:
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.ice.reactor.test;
+package org.eclipse.ice.reactor.hdf.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,7 +25,6 @@ import org.eclipse.ice.reactor.Material;
 import org.eclipse.ice.reactor.MaterialBlock;
 import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.hdf.LWRIOHandler;
-import org.eclipse.ice.reactor.hdf.test.LWRComponentFactory;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.junit.After;
@@ -73,7 +72,7 @@ public class LWRIOHandlerTester {
 
 	@Test
 	public void checkRead() {
-
+		
 		// Check that the file can be read.
 		assertTrue(oldFile.exists());
 		assertTrue(oldFile.canRead());

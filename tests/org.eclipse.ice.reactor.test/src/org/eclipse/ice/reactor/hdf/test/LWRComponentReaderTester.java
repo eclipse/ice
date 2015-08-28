@@ -19,7 +19,6 @@ import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.Tube;
 import org.eclipse.ice.reactor.bwr.BWReactor;
 import org.eclipse.ice.reactor.hdf.LWRComponentReader;
-import org.eclipse.ice.reactor.hdf.LWRComponentWriter;
 import org.eclipse.ice.reactor.pwr.ControlBank;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.IncoreInstrument;
@@ -32,9 +31,8 @@ import org.junit.Test;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
-public class LWRComponentWriterTester {
+public class LWRComponentReaderTester {
 
-	private LWRComponentWriter writer;
 	private LWRComponentReader reader;
 
 	private LWRComponentFactory componentFactory;
@@ -42,6 +40,7 @@ public class LWRComponentWriterTester {
 
 	private File file;
 	private int fileId;
+	private int rootGroup;
 
 	/**
 	 * Creates and opens a temporary HDF file for writing and reading. Creates
@@ -54,20 +53,20 @@ public class LWRComponentWriterTester {
 		// new file should not.
 		String s = System.getProperty("file.separator");
 		file = new File(System.getProperty("user.home") + s + "ICETests" + s
-				+ "reactorData" + s + "testLWRComponent.h5");
+				+ "reactorData" + s + "oldFormatLWRComponents.h5");
 
 		// Create the factory, writer, and reader.
 		componentFactory = new LWRComponentFactory();
 		factory = new HdfIOFactory();
 		reader = new LWRComponentReader(factory);
-		writer = new LWRComponentWriter(factory);
 
 		// Create the HDF file.
 		if (file.exists()) {
-			assertTrue(file.canWrite());
+			assertTrue(file.canRead());
 		}
 		try {
-			fileId = factory.createFile(file.toURI());
+			fileId = factory.openFile(file.toURI());
+			rootGroup = factory.openGroup(fileId, "/root");
 		} catch (HDF5LibraryException e) {
 			fail(getClass().getName() + " error: "
 					+ " Could not open HDF file \"" + file.getPath() + "\".");
@@ -77,25 +76,18 @@ public class LWRComponentWriterTester {
 	}
 
 	/**
-	 * Closes and deletes the temporary HDF file.
+	 * Closes the test HDF file containing all components.
 	 */
 	@After
 	public void afterEachTest() {
 
 		// Close the HDF file.
 		try {
+			factory.closeGroup(rootGroup);
 			factory.closeFile(fileId);
 		} catch (HDF5LibraryException e) {
 			fail(getClass().getName() + " error: "
 					+ " Could not close HDF file \"" + file.getPath() + "\".");
-		}
-
-		// Delete the created file if it exists.
-		if (file != null) {
-			if (file.exists()) {
-				file.delete();
-			}
-			file = null;
 		}
 
 		return;
@@ -106,17 +98,18 @@ public class LWRComponentWriterTester {
 		LWRComponent expectedComponent = componentFactory.createLWRComponent();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -131,17 +124,18 @@ public class LWRComponentWriterTester {
 		LWRComposite expectedComponent = componentFactory.createLWRComposite();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -157,17 +151,18 @@ public class LWRComponentWriterTester {
 				.createGridLabelProvider(10, true, true);
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -183,17 +178,18 @@ public class LWRComponentWriterTester {
 				.createLWRGridManager(7);
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -208,17 +204,18 @@ public class LWRComponentWriterTester {
 		Material expectedComponent = componentFactory.createLiquidMaterial();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -233,17 +230,18 @@ public class LWRComponentWriterTester {
 		Ring expectedComponent = componentFactory.createRing();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -259,17 +257,18 @@ public class LWRComponentWriterTester {
 				.createMaterialBlock();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -284,17 +283,18 @@ public class LWRComponentWriterTester {
 		LWRRod expectedComponent = componentFactory.createLWRRod();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -309,17 +309,18 @@ public class LWRComponentWriterTester {
 		Tube expectedComponent = componentFactory.createTube();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -334,17 +335,18 @@ public class LWRComponentWriterTester {
 		PWRAssembly expectedComponent = componentFactory.createPWRAssembly();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -359,17 +361,18 @@ public class LWRComponentWriterTester {
 		FuelAssembly expectedComponent = componentFactory.createFuelAssembly();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -384,17 +387,18 @@ public class LWRComponentWriterTester {
 		FuelAssembly expectedComponent = componentFactory.createFuelAssembly();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -410,17 +414,18 @@ public class LWRComponentWriterTester {
 				.createIncoreInstrument();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -435,17 +440,18 @@ public class LWRComponentWriterTester {
 		ControlBank expectedComponent = componentFactory.createControlBank();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -460,17 +466,18 @@ public class LWRComponentWriterTester {
 		LWReactor expectedComponent = componentFactory.createLWReactor();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -485,17 +492,18 @@ public class LWRComponentWriterTester {
 		BWReactor expectedComponent = componentFactory.createBWReactor();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -511,17 +519,18 @@ public class LWRComponentWriterTester {
 				.createPressurizedWaterReactor();
 		LWRComponent component = null;
 
-		// Create the group for the component, write it, read it into a new
+		// Check that the component's group exists, open it, read it into a new
 		// component, and close the group.
+		String name = expectedComponent.getName();
 		try {
-			int groupId = factory.createGroup(fileId,
-					"/" + expectedComponent.getName());
-			writer.writeComponent(groupId, expectedComponent);
-			component = reader.readComponent(groupId);
-			factory.closeGroup(groupId);
+			// The component should have a group in the file.
+			assertTrue(factory.hasChildGroup(rootGroup, name));
+			// Open the group, read it into an LWRComponent, and close it.
+			int child = factory.openGroup(rootGroup, name);
+			component = reader.readComponent(child);
+			factory.closeGroup(child);
 		} catch (NullPointerException | HDF5Exception e) {
-			fail(getClass().getName() + " error: "
-					+ "Error while writing or reading the "
+			fail(getClass().getName() + " error: " + "Error while reading the "
 					+ expectedComponent.getClass().getName() + ".");
 		}
 
@@ -530,4 +539,5 @@ public class LWRComponentWriterTester {
 
 		return;
 	}
+
 }
