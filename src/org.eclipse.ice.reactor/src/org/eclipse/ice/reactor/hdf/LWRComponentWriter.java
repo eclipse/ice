@@ -625,27 +625,36 @@ public class LWRComponentWriter {
 		// Write the component names...
 		// Note: We need to convert the map into an array using the map values
 		// as the index in the array.
-		stringArray = new String[namesMap.size()];
-		for (Entry<String, Integer> e : namesMap.entrySet()) {
-			stringArray[e.getValue()] = e.getKey();
-		}
-		factory.writeStringArrayDataset(positionsGroupId,
-				"Simple Position Names Table", stringArray);
-
-		// Write the unit names...
-		// Note: We need to convert the map into an array using the map values
-		// as the index in the array.
-		if (!unitsMap.isEmpty()) {
-			stringArray = new String[unitsMap.size()];
-			for (Entry<String, Integer> e : unitsMap.entrySet()) {
+		if (!namesMap.isEmpty()) {
+			stringArray = new String[namesMap.size()];
+			for (Entry<String, Integer> e : namesMap.entrySet()) {
 				stringArray[e.getValue()] = e.getKey();
 			}
-			factory.writeStringArrayDataset(positionsGroupId, "Units Table",
-					stringArray);
-		}
+			factory.writeStringArrayDataset(positionsGroupId,
+					"Simple Position Names Table", stringArray);
 
-		// Close the "Positions" group.
-		factory.closeGroup(positionsGroupId);
+			// Write the unit names...
+			// Note: We need to convert the map into an array using the map
+			// values as the index in the array.
+			if (!unitsMap.isEmpty()) {
+				stringArray = new String[unitsMap.size()];
+				for (Entry<String, Integer> e : unitsMap.entrySet()) {
+					stringArray[e.getValue()] = e.getKey();
+				}
+				factory.writeStringArrayDataset(positionsGroupId, "Units Table",
+						stringArray);
+			}
+
+			// Close the "Positions" group.
+			factory.closeGroup(positionsGroupId);
+		}
+		// If there are no names, then there are no elements in the grid. We
+		// should delete the "Positions" group!
+		else {
+			// Close the "Positions" group.
+			factory.closeGroup(positionsGroupId);
+			H5.H5Ldelete(groupId, "Positions", HDF5Constants.H5P_DEFAULT);
+		}
 
 		return;
 	}

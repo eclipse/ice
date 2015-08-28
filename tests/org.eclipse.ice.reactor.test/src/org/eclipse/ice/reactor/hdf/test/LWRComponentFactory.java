@@ -19,6 +19,7 @@ import org.eclipse.ice.reactor.MaterialBlock;
 import org.eclipse.ice.reactor.MaterialType;
 import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.Tube;
+import org.eclipse.ice.reactor.TubeType;
 import org.eclipse.ice.reactor.bwr.BWReactor;
 import org.eclipse.ice.reactor.pwr.ControlBank;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
@@ -507,6 +508,309 @@ public class LWRComponentFactory {
 		return provider;
 	}
 	// ---------------------------------- //
+
+	public PressurizedWaterReactor createOldReactor() {
+
+		// Note: Most of the changes to the inner radius are being ignored. This
+		// is because the inner radius is being set before the outer radius,
+		// which usually fails because the new inner radius value is greater
+		// than the initial outer radius value of 1.0.
+
+		AssemblyType type;
+		int size;
+		String labelString;
+		ArrayList<String> labels;
+
+		// Initialize the reactor.
+		size = 15;
+		PressurizedWaterReactor reactor = new PressurizedWaterReactor(size);
+		reactor.setName("PWR Reactor");
+		reactor.setFuelAssemblyPitch(0.12345678912345);
+
+		// Add row and column labels.
+		labels = new ArrayList<String>(size);
+		for (int i = 1; i < size + 1; i++) {
+			labels.add(Integer.toString(i));
+		}
+		reactor.getGridLabelProvider().setRowLabels(labels);
+		labels = new ArrayList<String>(size);
+		labelString = "RPNMLKJHGFEDCBA";
+		for (int i = 0; i < labelString.length();) {
+			labels.add(labelString.substring(i, ++i));
+		}
+		reactor.getGridLabelProvider().setColumnLabels(labels);
+
+		// ---- Add control banks to the reactor. ---- //
+		type = AssemblyType.ControlBank;
+
+		// Create and add them to the reactor.
+		reactor.addAssembly(type, new ControlBank("A", 0.625, 230));
+		reactor.addAssembly(type, new ControlBank("B", 0.625, 215));
+		reactor.addAssembly(type, new ControlBank("C", 0.625, 200));
+		reactor.addAssembly(type, new ControlBank("D", 0.625, 185));
+
+		// Assign a position for each control bank.
+		reactor.setAssemblyLocation(type, "A", 4, 4);
+		reactor.setAssemblyLocation(type, "A", 4, 10);
+		reactor.setAssemblyLocation(type, "A", 5, 7);
+		reactor.setAssemblyLocation(type, "A", 7, 5);
+		reactor.setAssemblyLocation(type, "A", 7, 9);
+		reactor.setAssemblyLocation(type, "A", 9, 7);
+		reactor.setAssemblyLocation(type, "A", 10, 4);
+		reactor.setAssemblyLocation(type, "A", 10, 10);
+		reactor.setAssemblyLocation(type, "B", 1, 5);
+		reactor.setAssemblyLocation(type, "B", 1, 9);
+		reactor.setAssemblyLocation(type, "B", 5, 1);
+		reactor.setAssemblyLocation(type, "B", 5, 13);
+		reactor.setAssemblyLocation(type, "B", 9, 1);
+		reactor.setAssemblyLocation(type, "B", 9, 13);
+		reactor.setAssemblyLocation(type, "B", 13, 5);
+		reactor.setAssemblyLocation(type, "B", 13, 9);
+		reactor.setAssemblyLocation(type, "C", 1, 7);
+		reactor.setAssemblyLocation(type, "C", 5, 5);
+		reactor.setAssemblyLocation(type, "C", 5, 9);
+		reactor.setAssemblyLocation(type, "C", 7, 1);
+		reactor.setAssemblyLocation(type, "C", 7, 13);
+		reactor.setAssemblyLocation(type, "C", 9, 5);
+		reactor.setAssemblyLocation(type, "C", 9, 9);
+		reactor.setAssemblyLocation(type, "C", 13, 7);
+		reactor.setAssemblyLocation(type, "D", 3, 3);
+		reactor.setAssemblyLocation(type, "D", 3, 7);
+		reactor.setAssemblyLocation(type, "D", 3, 11);
+		reactor.setAssemblyLocation(type, "D", 7, 3);
+		reactor.setAssemblyLocation(type, "D", 7, 7);
+		reactor.setAssemblyLocation(type, "D", 7, 11);
+		reactor.setAssemblyLocation(type, "D", 11, 3);
+		reactor.setAssemblyLocation(type, "D", 11, 7);
+		reactor.setAssemblyLocation(type, "D", 11, 11);
+		// ------------------------------------------- //
+
+		// ---- Add incore instruments to the reactor. ---- //
+		type = AssemblyType.IncoreInstrument;
+
+		// Create incore instruments for the reactor
+		IncoreInstrument incoreInstrument1 = new IncoreInstrument();
+		incoreInstrument1.setName("Incore Instrument 1");
+		IncoreInstrument incoreInstrument2 = new IncoreInstrument();
+		incoreInstrument2.setName("Incore Instrument 2");
+		IncoreInstrument incoreInstrument3 = new IncoreInstrument();
+		incoreInstrument3.setName("Incore Instrument 3");
+		IncoreInstrument incoreInstrument4 = new IncoreInstrument();
+		incoreInstrument4.setName("Incore Instrument 4");
+
+		// Create the thimble material
+		Material material = new Material("stainless steel");
+		material.setMaterialType(MaterialType.SOLID);
+
+		// Create the thimble
+		Ring thimble = new Ring("Thimble", material, 155, 0.258, 0.382);
+		incoreInstrument1.setThimble(thimble);
+		incoreInstrument2.setThimble(thimble);
+		incoreInstrument3.setThimble(thimble);
+		incoreInstrument4.setThimble(thimble);
+
+		// Add the incore instruments
+		reactor.addAssembly(type, incoreInstrument1);
+		reactor.addAssembly(type, incoreInstrument2);
+		reactor.addAssembly(type, incoreInstrument3);
+		reactor.addAssembly(type, incoreInstrument4);
+
+		// Assign locations for the incore instruments
+		reactor.setAssemblyLocation(type, incoreInstrument1.getName(), 2, 1);
+		reactor.setAssemblyLocation(type, incoreInstrument2.getName(), 6, 5);
+		reactor.setAssemblyLocation(type, incoreInstrument3.getName(), 11, 2);
+		reactor.setAssemblyLocation(type, incoreInstrument4.getName(), 13, 8);
+		// ------------------------------------------------ //
+
+		// ---- Create a guide tube. ---- //
+		Tube guideTube = new Tube("Guide Tube A", TubeType.GUIDE);
+		guideTube.setHeight(1.56);
+		guideTube.setInnerRadius(7.89);
+		guideTube.setOuterRadius(10.0);
+
+		// Set the material for the guide tube
+		guideTube.setMaterial(new Material("Guide Tube Material"));
+		// ------------------------------ //
+
+		// ---- Create an instrument tube. ---- //
+		Tube instrumentTube = new Tube("Instrument Tube A",
+				TubeType.INSTRUMENT);
+		instrumentTube.setHeight(1.2);
+		instrumentTube.setInnerRadius(0.987);
+		instrumentTube.setOuterRadius(34.5);
+
+		// Set the material for the instrument tube
+		instrumentTube.setMaterial(new Material("Instrument Tube Material"));
+		// ------------------------------------ //
+
+		// ---- Create a material block. ---- //
+		MaterialBlock materialBlock = new MaterialBlock();
+		materialBlock.setName("Stack of Cards");
+
+		// Create a ring for the material block.
+		Ring ring = new Ring("Ring 1");
+		ring.setHeight(155);
+		ring.setOuterRadius(0.5);
+		material = new Material("Ring 1 Material", MaterialType.SOLID);
+		ring.setMaterial(material);
+		materialBlock.addRing(ring);
+
+		// Create another ring for the material block.
+		ring = new Ring("Ring 2");
+		ring.setHeight(155);
+		ring.setInnerRadius(0.5);
+		ring.setOuterRadius(1.0);
+		material = new Material("Ring 2 Material", MaterialType.SOLID);
+		ring.setMaterial(material);
+		materialBlock.addRing(ring);
+
+		TreeSet<MaterialBlock> materialBlockList = new TreeSet<MaterialBlock>();
+		materialBlockList.add(materialBlock);
+		// ---------------------------------- //
+
+		// ---- Create a clad (ring). ---- //
+		// Create a clad
+		Ring clad = new Ring("Clad");
+		clad.setHeight(155);
+		clad.setInnerRadius(0.9);
+		clad.setOuterRadius(1.0);
+
+		// Create a material for the clad
+		clad.setMaterial(new Material("Clad Material", MaterialType.SOLID));
+		// ------------------------------- //
+
+		// ---- Create a rod. ---- //
+		// Create an lwrrod for this fuel assembly
+		LWRRod rod = new LWRRod("LWRRod A");
+		rod.setPressure(23.56);
+
+		// Create a fill gas for the rod
+		rod.setFillGas(new Material("He", MaterialType.GAS));
+
+		// Set the MaterialBlock in the rod
+		rod.setMaterialBlocks(materialBlockList);
+		// Add the clad
+		rod.setClad(clad);
+		// ----------------------- //
+
+		// ---- Add fuel assemblies to the reactor. ---- //
+		type = AssemblyType.Fuel;
+
+		// Create a fuel assembly
+		size = 17;
+		FuelAssembly fuelAssembly = new FuelAssembly("Fuel Assembly A", size);
+
+		// Create a list of row labels
+		labels = new ArrayList<String>(size);
+		for (int i = 1; i < size + 1; i++) {
+			labels.add(Integer.toString(i));
+		}
+		fuelAssembly.getGridLabelProvider().setRowLabels(labels);
+
+		// Create list of column labels
+		labelString = "ABCDEFGHIJKLMNOPQ";
+		labels = new ArrayList<String>(size);
+		for (int i = 0; i < labelString.length();) {
+			labels.add(labelString.substring(i, ++i));
+		}
+		fuelAssembly.getGridLabelProvider().setColumnLabels(labels);
+
+		// Add the fuel assembly to the reactor
+		reactor.addAssembly(type, fuelAssembly);
+
+		// Assign a position on the grid of the reactor
+		reactor.setAssemblyLocation(type, fuelAssembly.getName(), 4, 4);
+
+		// Add tubes and rods to the assembly.
+		fuelAssembly.addTube(guideTube);
+		fuelAssembly.setTubeLocation(guideTube.getName(), 8, 13);
+		fuelAssembly.addTube(instrumentTube);
+		fuelAssembly.setTubeLocation(instrumentTube.getName(), 8, 8);
+		fuelAssembly.addLWRRod(rod);
+		fuelAssembly.setLWRRodLocation(rod.getName(), 15, 4);
+		// --------------------------------------------- //
+
+		// ---- Add rod cluster assemblies to the reactor. ---- //
+		type = AssemblyType.RodCluster;
+		// Create a rca
+		RodClusterAssembly rca = new RodClusterAssembly(
+				"Rod Cluster Assembly A", 17);
+
+		// Add the rca to the reactor
+		reactor.addAssembly(type, rca);
+
+		// Assign the rca location
+		reactor.setAssemblyLocation(type, rca.getName(), 5, 2);
+		// ---------------------------------------------------- //
+
+		// ---- Add data the the reactor itself. ---- //
+		// Add LWRData
+		// Setup LWRData
+		String feature1 = "Feature 1";
+		String feature2 = "Feature 2";
+		double time1 = 1.0, time2 = 3.0, time3 = 3.5;
+
+		List<LWRData> dataList = new ArrayList<LWRData>(5);
+		List<ArrayList<Double>> positions = new ArrayList<ArrayList<Double>>(5);
+		LWRData data;
+		ArrayList<Double> position;
+		for (int i = 0; i < 5; i++) {
+			positions.add(new ArrayList<Double>(3));
+		}
+
+		// Setup Positions
+
+		// Setup Position 1
+		position = positions.get(0);
+		position.add(0.0);
+		position.add(1.0);
+		position.add(0.0);
+
+		// Setup Position 2
+		position = positions.get(1);
+		position.add(0.0);
+		position.add(1.0);
+		position.add(4.0);
+
+		// Setup Position 3
+		position = positions.get(2);
+		position.add(1.0);
+		position.add(1.0);
+		position.add(0.0);
+
+		// Setup Position 4
+		position = positions.get(3);
+		position.add(0.0);
+		position.add(1.0);
+		position.add(1.0);
+		position.add(0.0); // Yes, this is a bug in the old factory.
+		position.add(1.0);
+		position.add(3.0);
+
+		// Set up the middle data points.
+		for (int i = 1; i < 6; i++) {
+			data = new LWRData(feature1);
+			data.setPosition(positions.get(i - 1));
+			data.setValue((double) i);
+			data.setUncertainty(i + 0.5);
+			data.setUnits("Units " + Integer.toString(i));
+			dataList.add(data);
+		}
+
+		// Change data1 and data5.
+		dataList.get(0).setUnits("Units 123456");
+		dataList.get(4).setFeature(feature2);
+
+		// Add them to the reactor.
+		reactor.addData(dataList.get(0), time1);
+		reactor.addData(dataList.get(1), time1);
+		reactor.addData(dataList.get(2), time2);
+		reactor.addData(dataList.get(3), time3);
+		reactor.addData(dataList.get(4), time3);
+		// ------------------------------------------ //
+
+		return reactor;
+	}
 
 	private void addLWRRodsToPWRAssembly(List<LWRRod> rods,
 			PWRAssembly assembly) {

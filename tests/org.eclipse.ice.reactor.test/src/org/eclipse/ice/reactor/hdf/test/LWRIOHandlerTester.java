@@ -72,7 +72,7 @@ public class LWRIOHandlerTester {
 
 	@Test
 	public void checkRead() {
-		
+
 		// Check that the file can be read.
 		assertTrue(oldFile.exists());
 		assertTrue(oldFile.canRead());
@@ -80,7 +80,7 @@ public class LWRIOHandlerTester {
 
 		// Create the expected reactor.
 		PressurizedWaterReactor expectedReactor = componentFactory
-				.createPressurizedWaterReactor();
+				.createOldReactor();
 
 		// Read the old file.
 		List<LWRComponent> components = handler.readHDF5(uri);
@@ -155,6 +155,8 @@ public class LWRIOHandlerTester {
 		URI uri = newFile.toURI();
 
 		// Create some components.
+		PressurizedWaterReactor oldReactor = componentFactory
+				.createOldReactor();
 		PressurizedWaterReactor reactor = componentFactory
 				.createPressurizedWaterReactor();
 		FuelAssembly assembly = componentFactory.createFuelAssembly();
@@ -165,6 +167,7 @@ public class LWRIOHandlerTester {
 
 		// Set up the list of components to write.
 		List<LWRComponent> components = new ArrayList<LWRComponent>();
+		components.add(oldReactor);
 		components.add(reactor);
 		components.add(null); // This list item should be ignored.
 		components.add(assembly);
@@ -191,6 +194,7 @@ public class LWRIOHandlerTester {
 		assertTrue(components.contains(rod));
 		assertTrue(components.contains(assembly));
 		assertTrue(components.contains(reactor));
+		assertTrue(components.contains(oldReactor));
 
 		return;
 	}
