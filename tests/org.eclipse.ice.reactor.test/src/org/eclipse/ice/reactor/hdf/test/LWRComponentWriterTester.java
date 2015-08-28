@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *******************************************************************************/
 package org.eclipse.ice.reactor.hdf.test;
 
 import static org.junit.Assert.assertEquals;
@@ -25,6 +35,7 @@ import org.eclipse.ice.reactor.pwr.FuelAssembly;
 import org.eclipse.ice.reactor.pwr.IncoreInstrument;
 import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
+import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,15 +43,45 @@ import org.junit.Test;
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 
+/**
+ * This tests the HDF writing functionality that the {@link LWRComponentWriter}
+ * provides for <i>all</i> {@link LWRComponent} sub-classes.
+ * <p>
+ * It does this by using a factory to create components, writing the components
+ * to a temporary test file, reading the components back into new instances, and
+ * comparing them with the originals.
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class LWRComponentWriterTester {
 
+	/**
+	 * The writer that is under test.
+	 */
 	private LWRComponentWriter writer;
+	/**
+	 * The reader used to verify what was written to the file.
+	 */
 	private LWRComponentReader reader;
-
+	/**
+	 * The factory used to generate LWR components.
+	 */
 	private LWRComponentFactory componentFactory;
+	/**
+	 * The factory used to write/read HDF files. This is only necessary because
+	 * the reader and writer operate directly on HDF groups and objects.
+	 */
 	private HdfIOFactory factory;
 
+	/**
+	 * The temporary file that a component will be written to.
+	 */
 	private File file;
+	/**
+	 * The handle to the temporary test file.
+	 */
 	private int fileId;
 
 	/**
@@ -101,6 +142,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares an LWRComponent.
+	 */
 	@Test
 	public void checkLWRComponent() {
 		LWRComponent expectedComponent = componentFactory.createLWRComponent();
@@ -126,6 +170,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares an LWRComposite.
+	 */
 	@Test
 	public void checkLWRComposite() {
 		LWRComposite expectedComponent = componentFactory.createLWRComposite();
@@ -151,6 +198,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a GridLabelProvider.
+	 */
 	@Test
 	public void checkGridLabelProvider() {
 		GridLabelProvider expectedComponent = componentFactory
@@ -177,6 +227,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares an LWRGridManager.
+	 */
 	@Test
 	public void checkLWRGridManager() {
 		LWRGridManager expectedComponent = componentFactory
@@ -203,6 +256,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a Material.
+	 */
 	@Test
 	public void checkMaterial() {
 		Material expectedComponent = componentFactory.createLiquidMaterial();
@@ -228,6 +284,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a Ring.
+	 */
 	@Test
 	public void checkRing() {
 		Ring expectedComponent = componentFactory.createRing();
@@ -253,6 +312,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a MaterialBlock.
+	 */
 	@Test
 	public void checkMaterialBlock() {
 		MaterialBlock expectedComponent = componentFactory
@@ -279,6 +341,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares an LWRRod.
+	 */
 	@Test
 	public void checkLWRRod() {
 		LWRRod expectedComponent = componentFactory.createLWRRod();
@@ -304,6 +369,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a Tube.
+	 */
 	@Test
 	public void checkTube() {
 		Tube expectedComponent = componentFactory.createTube();
@@ -329,6 +397,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a PWRAssembly.
+	 */
 	@Test
 	public void checkPWRAssembly() {
 		PWRAssembly expectedComponent = componentFactory.createPWRAssembly();
@@ -354,6 +425,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a FuelAssembly.
+	 */
 	@Test
 	public void checkFuelAssembly() {
 		FuelAssembly expectedComponent = componentFactory.createFuelAssembly();
@@ -379,9 +453,13 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a RodClusterAssembly.
+	 */
 	@Test
 	public void checkRodClusterAssembly() {
-		FuelAssembly expectedComponent = componentFactory.createFuelAssembly();
+		RodClusterAssembly expectedComponent = componentFactory
+				.createRodClusterAssembly();
 		LWRComponent component = null;
 
 		// Create the group for the component, write it, read it into a new
@@ -404,6 +482,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares an IncoreInstrument.
+	 */
 	@Test
 	public void checkIncoreInstrument() {
 		IncoreInstrument expectedComponent = componentFactory
@@ -430,6 +511,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a ControlBank.
+	 */
 	@Test
 	public void checkControlBank() {
 		ControlBank expectedComponent = componentFactory.createControlBank();
@@ -455,6 +539,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares an LWReactor.
+	 */
 	@Test
 	public void checkLWReactor() {
 		LWReactor expectedComponent = componentFactory.createLWReactor();
@@ -480,6 +567,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a BWReactor.
+	 */
 	@Test
 	public void checkBWReactor() {
 		BWReactor expectedComponent = componentFactory.createBWReactor();
@@ -505,6 +595,9 @@ public class LWRComponentWriterTester {
 		return;
 	}
 
+	/**
+	 * Generates, writes, reads, and compares a PressurizedWaterReactor.
+	 */
 	@Test
 	public void checkPressurizedWaterReactor() {
 		PressurizedWaterReactor expectedComponent = componentFactory

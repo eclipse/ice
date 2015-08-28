@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *******************************************************************************/
 package org.eclipse.ice.reactor.hdf.test;
 
 import java.util.ArrayList;
@@ -28,8 +38,20 @@ import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 
+/**
+ * This class provides a factory that can generate LWR components. Note that is
+ * uses an ID counter to set the ID of each created component, so if the same
+ * factory is used to generate successive components, their IDs will be
+ * different than if a new factory was used to generate them.
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class LWRComponentFactory {
 
+	/**
+	 * A counter used to generate IDs for LWR components.
+	 */
 	private int idCounter = 0;
 
 	// ---- Base LWRComponent types ---- //
@@ -812,6 +834,14 @@ public class LWRComponentFactory {
 		return reactor;
 	}
 
+	/**
+	 * Adds rods and data to a PWR assembly.
+	 * 
+	 * @param rods
+	 *            A list containing the rods.
+	 * @param assembly
+	 *            The assembly to add rods and data to.
+	 */
 	private void addLWRRodsToPWRAssembly(List<LWRRod> rods,
 			PWRAssembly assembly) {
 
@@ -824,7 +854,7 @@ public class LWRComponentFactory {
 
 		// Add the rods to the assembly based on the column index.
 		for (int row = 0; row < size; row++) {
-			for (int column = 1; column < size; column += 3) {
+			for (int column = 0; column < size; column++) {
 				LWRRod rod = rods.get(column);
 				if (rod != null) {
 					assembly.setLWRRodLocation(rod.getName(), row, column);

@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.io.hdf.IHdfIOFactory;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.Material;
@@ -31,27 +32,46 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * This class tests the {@link LWRIOHandler} class' implementation of
+ * {@link IHdfIOFactory} for the purposes of reading and writing
+ * {@link LWRComponent}s.
+ * <p>
+ * This more or less functions as an integration test for the underlying reader
+ * and writer used. It also tests the HDF IO functionality that should be used
+ * by client code.
+ * </p>
+ * 
+ * @author Jordan Deyton
+ *
+ */
 public class LWRIOHandlerTester {
 
+	/**
+	 * The IO factory to test.
+	 */
 	private LWRIOHandler handler;
 
+	/**
+	 * A new file generated from tests.
+	 */
 	private File newFile;
+	/**
+	 * An old file using the traditional file format for LWRs. This is to ensure
+	 * that the file format does not change.
+	 */
 	private File oldFile;
 
+	/**
+	 * A factory used to create the expected LWR components to write/read from
+	 * file.
+	 */
 	private LWRComponentFactory componentFactory;
 
-	@After
-	public void afterEachTest() {
-		// Delete the created file if it exists.
-		if (newFile != null) {
-			if (newFile.exists()) {
-				newFile.delete();
-			}
-			newFile = null;
-		}
-		return;
-	}
-
+	/**
+	 * Creates the {@link #newFile} and a handle to the {@link #oldFile}. Also
+	 * creates other class variables used in each test.
+	 */
 	@Before
 	public void beforeEachTest() {
 
@@ -70,6 +90,26 @@ public class LWRIOHandlerTester {
 		return;
 	}
 
+	/**
+	 * Deletes the {@link #newFile}.
+	 */
+	@After
+	public void afterEachTest() {
+		// Delete the created file if it exists.
+		if (newFile != null) {
+			if (newFile.exists()) {
+				newFile.delete();
+			}
+			newFile = null;
+		}
+		return;
+	}
+
+	/**
+	 * Opens the {@link #oldFile} for reading and ensures that the reactor's
+	 * data is read in as expected by comparing to a reactor generated from the
+	 * {@link #componentFactory}.
+	 */
 	@Test
 	public void checkRead() {
 
@@ -108,6 +148,10 @@ public class LWRIOHandlerTester {
 		return;
 	}
 
+	/**
+	 * Attempts to write some LWR components to the {@link #newFile} and checks
+	 * the return values from the write method.
+	 */
 	@Test
 	public void checkWrite() {
 
@@ -146,6 +190,11 @@ public class LWRIOHandlerTester {
 		return;
 	}
 
+	/**
+	 * Attempts to write some LWR components to the {@link #newFile} and reads
+	 * them back into new LWR components. These components are then checked to
+	 * be equivalent.
+	 */
 	@Test
 	public void checkWriteAndRead() {
 		// Ensure that the new file can be written.
@@ -198,4 +247,5 @@ public class LWRIOHandlerTester {
 
 		return;
 	}
+
 }
