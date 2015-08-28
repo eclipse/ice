@@ -71,7 +71,7 @@ public class VizEntryTester {
 		// Check the id
 		assertEquals(entry.getId(), 1);
 		// Check the description
-		assertEquals("VizEntry 1", entry.getDescription());
+		assertEquals("Entry 1", entry.getDescription());
 		// Check the allowed values
 		assertEquals(0, entry.getAllowedValues().size());
 		// Check the default values

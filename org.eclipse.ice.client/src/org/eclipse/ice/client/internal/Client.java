@@ -174,7 +174,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
 				+ "processed or updated. It should be considered read-only.");
 
-		// Get the widgets factory from the registry
+		// Get the widgets factory service by using the Workbench. This is a
+		// good way to do it that prevents the ResourcesPlugin from being called
+		// prematurely.
 		IWidgetFactory factory = PlatformUI.getWorkbench()
 				.getService(IWidgetFactory.class);
 		setUIWidgetFactory(factory);
