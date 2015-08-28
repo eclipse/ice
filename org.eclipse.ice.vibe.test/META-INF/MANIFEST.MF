@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: VibeTest
+Bundle-SymbolicName: org.eclipse.ice.vibe.test
+Bundle-Version: 2.1.7.20150825
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Fragment-Host: org.eclipse.ice.vibe;bundle-version="2.0.0"
+Require-Bundle: org.junit;bundle-version="4.8.1"
+Bundle-Vendor: Oak Ridge National Laboratory

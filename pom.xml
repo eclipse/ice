@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Custom properties -->
+	<properties>
+		<tycho-version>0.23.0</tycho-version>
+		<pom-filename>pom.xml</pom-filename>
+		<!-- <target-version>2.1.7.${maven.build.timestamp}</target-version>  -->
+		<target-version>2.1.7.20150825</target-version>		
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+	</properties>
+
+	<!-- This is the parent POM from which all modules inherit common settings -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>ICE</groupId>
+	<artifactId>org.eclipse.ice.build</artifactId>
+	<version>2.1.7.20150825</version>
+	<packaging>pom</packaging>
+
+	<!-- This enables the repository for the latest nightly builds of Tycho. -->
+	<!-- <pluginRepositories> <pluginRepository> <id>tycho-snapshots</id> <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url> 
+		</pluginRepository> </pluginRepositories> -->
+
+	<profiles>
+		<profile>
+			<id>macosx</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs>-XstartOnFirstThread</ui.test.vmargs>
+			</properties>
+		</profile>
+		<profile>
+			<id>other-os</id>
+			<activation>
+				<os>
+					<name>not-mac</name>
+					<family>!mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs></ui.test.vmargs>
+			</properties>
+		</profile>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>
+					jdbc:mysql://${sonarHost}:${sonarJDBCPort}/sonar?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance
+				</sonar.jdbc.url>
+				<sonar.jdbc.username>${sonarUser}</sonar.jdbc.username>
+				<sonar.jdbc.password>${sonarPassword}</sonar.jdbc.password>
+				<sonar.host.url>
+					http://${sonarHost}:${sonarPort}/sonar
+				</sonar.host.url>
+			</properties>
+		</profile>
+	</profiles>
+
+	<!-- the modules that should be built together -->
+	<modules>
+		<module>org.eclipse.ice.target.mars</module>
+		<module>../ICEDeps/org.eclipse.ice.dependencies</module>
+		<module>org.eclipse.ice.client</module>
+		<module>org.eclipse.ice.client.test</module>
+		<module>org.eclipse.ice.client.compatibility</module>
+		<module>org.eclipse.ice.client.widgets</module>
+		<module>org.eclipse.ice.client.widgets.moose</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.test</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.grid</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.grid.test</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.lwr</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.lwr.test</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
+		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
+		<module>org.eclipse.ice.client.widgets.rcp</module>
+		<module>org.eclipse.ice.client.widgets.test</module>
+		<module>org.eclipse.ice.client.widgets.test.utils</module>
+		<module>org.eclipse.ice.client.widgets.rcp.test</module>
+		<module>org.eclipse.ice.client.rcp</module>
+		<module>org.eclipse.ice.datastructures</module>
+		<module>org.eclipse.ice.datastructures.test</module>
+		<module>org.eclipse.ice.core</module>
+		<module>org.eclipse.ice.core.test</module>
+		<module>org.eclipse.ice.item</module>
+		<module>org.eclipse.ice.item.test</module>
+		<module>org.eclipse.ice.persistence.xml</module>
+		<module>org.eclipse.ice.persistence.xml.test</module>
+		<module>org.eclipse.ice.io</module>
+		<module>org.eclipse.ice.io.test</module>
+		<module>org.eclipse.ice.analysistool</module>
+		<module>org.eclipse.ice.reactor</module>
+		<module>org.eclipse.ice.reactor.test</module>
+		<module>org.eclipse.ice.reactor.sfr</module>
+		<module>org.eclipse.ice.reactor.sfr.test</module>
+		<module>org.eclipse.ice.reactor.plant</module>
+		<module>org.eclipse.ice.reactor.plant.test</module>
+		<module>org.eclipse.ice.reactor.perspective</module>
+		<module>org.eclipse.ice.reactorAnalyzer</module>
+		<module>org.eclipse.ice.reactorAnalyzer.test</module>
+		<module>org.eclipse.ice.vibe</module>
+		<module>org.eclipse.ice.vibe.test</module>
+		<module>org.eclipse.ice.kdd</module>
+		<module>org.eclipse.ice.kdd.test</module>
+		<module>org.eclipse.ice.proteus</module>
+		<module>org.eclipse.ice.proteus.test</module>
+		<module>org.eclipse.ice.mesh</module>
+		<module>org.eclipse.ice.mesh.test</module>
+		<module>org.eclipse.ice.nek5000</module>
+		<module>org.eclipse.ice.nek5000.test</module>
+		<module>../visit_java_client/gov.lbnl.visit.swt</module>
+		<module>org.eclipse.ice.viz</module>
+		<module>org.eclipse.ice.viz.test</module>
+		<module>org.eclipse.ice.viz.service</module>
+		<module>org.eclipse.ice.viz.service.test</module>
+		<module>org.eclipse.ice.viz.service.geometry</module>
+		<module>org.eclipse.ice.viz.service.geometry.test</module>
+		<module>org.eclipse.ice.viz.service.jme3</module>
+		<module>org.eclipse.ice.viz.service.jme3.test</module>
+		<module>org.eclipse.ice.viz.service.mesh</module>
+		<module>org.eclipse.ice.viz.service.mesh.test</module>
+		<module>org.eclipse.ice.viz.service.visit</module>
+		<module>org.eclipse.ice.viz.service.visit.test</module>
+		<module>org.eclipse.ice.viz.service.paraview</module>
+		<module>org.eclipse.ice.viz.service.paraview.web</module>
+		<module>org.eclipse.ice.viz.service.paraview.test</module>
+		<module>org.eclipse.ice.xolotl</module>
+		<module>org.eclipse.ice.materials</module>
+		<module>org.eclipse.ice.materials.test</module>
+		<module>org.eclipse.ice.materials.ui</module>
+		<module>org.eclipse.ice.caebat.batml</module>
+		<module>org.eclipse.ice.caebat.batml.test</module>
+		<module>org.eclipse.ice.sassena</module>
+		<module>org.eclipse.ice.sassena.test</module>
+		<module>org.eclipse.ice.reflectivity</module>
+		<module>org.eclipse.ice.reflectivity.test</module>
+		<module>org.eclipse.ice.reflectivity.ui</module>
+		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
+			LAST! -->
+		<module>org.eclipse.ice.feature</module>
+		<module>org.eclipse.ice.repository</module>
+	</modules>
+
+	<!-- This is the main build part that sets up all of the rules. -->
+	<build>
+		<plugins>
+
+			<!-- This shows the full name of the POM for debugging. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Displaying full POM filename:</echo>
+								<echo>[pom-filename] ${pom-filename}</echo>
+								<echo>${target-version}</echo>
+								<echo>${newVersion}</echo>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Setup all the tycho build extensions -->
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includes>
+						<include>**/*Tester.class</include>
+					</includes>
+					<argLine>${ui.test.vmargs}</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includeAllDependencies>true</includeAllDependencies>
+				</configuration>
+			</plugin>
+
+			<!-- This configures the target platform and the supported architectures. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<pomDependencies>consider</pomDependencies>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>ICE</groupId>
+							<artifactId>org.eclipse.ice.target.mars</artifactId>
+							<version>${target-version}</version>
+							<classifier>mars</classifier>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+
+			<!-- This updates the version numbers of the POM, bundles, etc. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<!-- <executions> <execution> <id>versions</id> <phase>validate</phase> 
+					<goals> <goal>set-version</goal> <goal>update-pom</goal> </goals> </execution> 
+					</executions> -->
+			</plugin>
+		</plugins>
+
+		<!-- This configures git support for examining the bundles and only updating 
+			the versions if they change. -->
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-versions-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<!-- <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-packaging-plugin</artifactId> 
+					<version>${tycho-version}</version> <dependencies> <dependency> <groupId>org.eclipse.tycho.extras</groupId> 
+					<artifactId>tycho-buildtimestamp-jgit</artifactId> <version>${tycho-version}</version> 
+					</dependency> </dependencies> <configuration> <timestampProvider>jgit</timestampProvider> 
+					<jgit.ignore> pom.xml </jgit.ignore> </configuration> </plugin> <plugin> 
+					<groupId>org.eclipse.tycho</groupId> <artifactId>tycho-p2-plugin</artifactId> 
+					<version>${tycho-version}</version> <configuration> <baselineRepositories> 
+					<repository> <url>https://sourceforge.net/projects/niceproject/files/nightly/update/</url> 
+					</repository> </baselineRepositories> </configuration> </plugin> -->
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

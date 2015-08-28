@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.7.20150825" useFeatures="true" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault
+      </programArgs>
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
+      </vmArgs>
+      <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin
+      </vmArgsLin>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dvisit.binpath=@user.home/visit/bin
+      </vmArgsMac>
+      <vmArgsWin>-Dvisit.binpath=C:\PROGRA~1\LLNL\VISIT2~1.2&quot;\r&quot;
+-Djava.library.path=C:\PROGRA~1\HDF_Group\HDFView\2.10.1\lib&quot;\r&quot;
+      </vmArgsWin>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <splash
+      location="org.eclipse.ice.client.rcp" />
+   <launcher name="ICE">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <license>
+        <url>http://projects.eclipse.org/projects/technology.ice</url>
+        <text>
+   Eclipse Foundation Software User Agreement
+
+July 1, 2014
+
+Usage of Content
+
+THE ECLIPSE FOUNDATION MAKES AVAILABLE SOFTWARE, DOCUMENTATION, INFORMATION AND/OR OTHER MATERIALS FOR OPEN SOURCE PROJECTS (COLLECTIVELY &amp;quot;CONTENT&amp;quot;). USE OF THE CONTENT IS GOVERNED BY THE TERMS AND CONDITIONS OF THIS AGREEMENT AND/OR THE TERMS AND CONDITIONS OF LICENSE AGREEMENTS OR NOTICES INDICATED OR REFERENCED BELOW. BY USING THE CONTENT, YOU AGREE THAT YOUR USE OF THE CONTENT IS GOVERNED BY THIS AGREEMENT AND/OR THE TERMS AND CONDITIONS OF ANY APPLICABLE LICENSE AGREEMENTS OR NOTICES INDICATED OR REFERENCED BELOW. IF YOU DO NOT AGREE TO THE TERMS AND CONDITIONS OF THIS AGREEMENT AND THE TERMS AND CONDITIONS OF ANY APPLICABLE LICENSE AGREEMENTS OR NOTICES INDICATED OR REFERENCED BELOW, THEN YOU MAY NOT USE THE CONTENT.
+
+Applicable Licenses
+
+Unless otherwise indicated, all Content made available by the Eclipse Foundation is provided to you under the terms and conditions of the Eclipse Public License Version 1.0 (&amp;quot;EPL&amp;quot;). A copy of the EPL is provided with this Content and is also available at http://www.eclipse.org/legal/epl-v10.html. For purposes of the EPL, &amp;quot;Program&amp;quot; will mean the Content.
+
+Content includes, but is not limited to, source code, object code, documentation and other files maintained in the Eclipse Foundation source code repository (&amp;quot;Repository&amp;quot;) in software modules (&amp;quot;Modules&amp;quot;) and made available as downloadable archives (&amp;quot;Downloads&amp;quot;).
+
+* Content may be structured and packaged into modules to facilitate delivering, extending, and upgrading the Content. Typical modules may include plug-ins (&amp;quot;Plug-ins&amp;quot;), plug-in fragments (&amp;quot;Fragments&amp;quot;), and features (&amp;quot;Features&amp;quot;).
+* Each Plug-in or Fragment may be packaged as a sub-directory or JAR (Java ARchive) in a directory named &amp;quot;plugins&amp;quot;.
+* A feature is a bundle of one or more Plug-ins and/or Fragments and associated material. Each Feature may be packaged as a sub-directory in a directory named &amp;quot;features&amp;quot;. Within a Feature, files named &amp;quot;feature.xml&amp;quot; may contain a list of the names and version numbers of the Plug-ins and/or Fragments associated with that Feature.
+* Features may also include other Features (&amp;quot;Included Features&amp;quot;). Within a Feature, files named &amp;quot;feature.xml&amp;quot; may contain a list of the names and version numbers of Included Features.
+
+The terms and conditions governing Plug-ins and Fragments should be contained in files named &amp;quot;about.html&amp;quot; (&amp;quot;Abouts&amp;quot;). The terms and conditions governing Features and Included Features should be contained in files named &amp;quot;license.html&amp;quot; (&amp;quot;Feature Licenses&amp;quot;). Abouts and Feature Licenses may be located in any directory of a Download or Module including, but not limited to the following locations:
+
+* The top-level (root) directory
+* Plug-in and Fragment directories
+* Inside Plug-ins and Fragments packaged as JARs
+* Sub-directories of the directory named &amp;quot;src&amp;quot; of certain Plug-ins
+* Feature directories
+
+Note: if a Feature made available by the Eclipse Foundation is installed using the Provisioning Technology (defined below), you must agree to a license (&amp;quot;Feature Update License&amp;quot;) during the installation process. If the Feature contains Included Features, the Feature Update License should either provide you with the terms and conditions governing the Included Features or inform you where you can locate them. Feature Update Licenses may be found in the &amp;quot;license&amp;quot; property of files named &amp;quot;feature.properties&amp;quot; found within a Feature. Such Abouts, Feature Licenses, and Feature Update Licenses contain the terms and conditions (or references to such terms and conditions) that govern your use of the associated Content in that directory.
+
+THE ABOUTS, FEATURE LICENSES, AND FEATURE UPDATE LICENSES MAY REFER TO THE EPL OR OTHER LICENSE AGREEMENTS, NOTICES OR TERMS AND CONDITIONS. SOME OF THESE OTHER LICENSE AGREEMENTS MAY INCLUDE (BUT ARE NOT LIMITED TO):
+
+* Eclipse Distribution License Version 1.0 (available at http://www.eclipse.org/licenses/edl-v1.0.html)
+* Common Public License Version 1.0 (available at http://www.eclipse.org/legal/cpl-v10.html)
+* Apache Software License 1.1 (available at http://www.apache.org/licenses/LICENSE)
+* Apache Software License 2.0 (available at http://www.apache.org/licenses/LICENSE-2.0)
+* Mozilla Public License Version 1.1 (available at http://www.mozilla.org/MPL/MPL-1.1.html)
+
+IT IS YOUR OBLIGATION TO READ AND ACCEPT ALL SUCH TERMS AND CONDITIONS PRIOR TO USE OF THE CONTENT. If no About, Feature License, or Feature Update License is provided, please contact the Eclipse Foundation to determine what terms and conditions govern that particular Content.
+
+Use of Provisioning Technology
+
+The Eclipse Foundation makes available provisioning software, examples of which include, but are not limited to, p2 and the Eclipse Update Manager (&amp;quot;Provisioning Technology&amp;quot;) for the purpose of allowing users to install software, documentation, information and/or other materials (collectively &amp;quot;Installable Software&amp;quot;). This capability is provided with the intent of allowing such users to install, extend and update Eclipse-based products. Information about packaging Installable Software is available at http://eclipse.org/equinox/p2/repository_packaging.html (&amp;quot;Specification&amp;quot;).
+
+You may use Provisioning Technology to allow other parties to install Installable Software. You shall be responsible for enabling the applicable license agreements relating to the Installable Software to be presented to, and accepted by, the users of the Provisioning Technology in accordance with the Specification. By using Provisioning Technology in such a manner and making it available in accordance with the Specification, you further acknowledge your agreement to, and the acquisition of all necessary rights to permit the following:
+
+1. A series of actions may occur (&amp;quot;Provisioning Process&amp;quot;) in which a user may execute the Provisioning Technology on a machine (&amp;quot;Target Machine&amp;quot;) with the intent of installing, extending or updating the functionality of an Eclipse-based product.
+2. During the Provisioning Process, the Provisioning Technology may cause third party Installable Software or a portion thereof to be accessed and copied to the Target Machine.
+3. Pursuant to the Specification, you will provide to the user the terms and conditions that govern the use of the Installable Software (&amp;quot;Installable Software Agreement&amp;quot;) and such Installable Software Agreement shall be accessed from the Target Machine in accordance with the Specification. Such Installable Software Agreement must inform the user of the terms and conditions that govern the Installable Software and must solicit acceptance by the end user in the manner prescribed in such Installable Software Agreement. Upon such indication of agreement by the user, the provisioning Technology will complete installation of the Installable Software.
+
+Cryptography
+
+Content may contain encryption software. The country in which you are currently may have restrictions on the import, possession, and use, and/or re-export to another country, of encryption software. BEFORE using any encryption software, please check the country&amp;apos;s laws, regulations and policies concerning the import, possession, or use, and re-export of encryption software, to see if this is permitted.
+
+Java and all Java-based trademarks are trademarks of Oracle Corporation in the United States, or countries, or both.
+         </text>
+   </license>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.rcp" version="4.5.0.v20150603-2331"/>
+      <feature id="org.eclipse.platform" version="4.5.0.v20150603-2358"/>
+      <feature id="org.eclipse.equinox.p2.discovery.feature" version="1.0.300.v20150430-1836"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.100.v20150601-1708"/>
+      <feature id="org.eclipse.equinox.server.p2" version="1.2.200.v20150527-1706"/>
+      <feature id="org.eclipse.help"/>
+      <feature id="org.eclipse.cdt" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.jdt" version="3.11.0.v20150603-2000"/>
+      <feature id="org.eclipse.cdt.autotools" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.dsf"/>
+      <feature id="org.eclipse.cdt.gnu.build"/>
+      <feature id="org.eclipse.cdt.platform"/>
+      <feature id="org.eclipse.cdt.native"/>
+      <feature id="org.eclipse.cdt.gnu.debug"/>
+      <feature id="org.eclipse.cdt.gdb"/>
+      <feature id="org.eclipse.ease.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.javascript.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.modules.charting.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.modules.team.svn.feature" version="0.2.0.201504281229"/>
+      <feature id="org.eclipse.ease.python.feature" version="0.2.0.201504281226"/>
+      <feature id="org.eclipse.ease.ui.feature" version="0.2.0.201505111426"/>
+      <feature id="org.eclipse.epp.mpc" version="1.4.0.v20150618-1659"/>
+      <feature id="org.eclipse.remote" version="2.0.0.201506061609"/>
+      <feature id="org.eclipse.pde" version="3.11.0.v20150603-2000"/>
+      <feature id="org.eclipse.wst.common_core.feature" version="3.7.0.v201505132009"/>
+      <feature id="org.eclipse.wst.common_ui.feature" version="3.7.0.v201505132009"/>
+      <feature id="org.eclipse.wst.jsdt.feature" version="1.6.200.v201505071819"/>
+      <feature id="org.eclipse.wst.server_core.feature" version="3.3.500.v201505132000"/>
+      <feature id="org.eclipse.wst.server_ui.feature" version="3.3.500.v201505261810"/>
+      <feature id="org.eclipse.wst.server_userdoc.feature" version="3.3.300.v201405011426"/>
+      <feature id="org.eclipse.wst.web_core.feature" version="3.7.0.v201505132009"/>
+      <feature id="org.eclipse.wst.web_ui.feature" version="3.7.0.v201505261810"/>
+      <feature id="org.eclipse.wst.web_userdoc.feature" version="3.6.0.v201405062147"/>
+      <feature id="org.eclipse.wst.xml.xpath2.processor.feature" version="2.0.301.v201409111854"/>
+      <feature id="org.eclipse.wst.xml_core.feature" version="3.7.0.v201502261749"/>
+      <feature id="org.eclipse.wst.xml_ui.feature" version="3.7.0.v201505141512"/>
+      <feature id="org.eclipse.wst.xml_userdoc.feature" version="3.6.0.v201405062147"/>
+      <feature id="org.eclipse.wst.xsl.feature" version="1.3.401.v201409111855"/>
+      <feature id="org.eclipse.ptp" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.core" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.debug.sdm" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.etfw" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.etfw.feedback.perfsuite" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.etfw.tau" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.etfw.tau.fortran" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.fortran" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.gem" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.pldt" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.pldt.fortran" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.pldt.upc" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rdt.sync" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rdt.sync.cdt" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rdt.sync.fortran" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.remote" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.remote.terminal" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rm.ibm.ll" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rm.ibm.pe" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rm.ibm.platform.lsf" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rm.jaxb.contrib" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ptp.rm.slurm" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.ice" version="2.1.7.20150825"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.e4.ui.workbench.addons.swt" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.moose" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.rcp" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.reactoreditor" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.grid" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.lwr" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.sfr" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.core" autoStart="true" startLevel="5" />
+      <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.item" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.kdd" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.materials" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.reflectivity.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.sassena" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.jme3" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.xolotl" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+      <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ui.forms" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ui.ide.application" autoStart="false" startLevel="0" />
+      <plugin id="org.eclipse.ui.intro" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="3" />
+      <property name="eclipse.p2.data.area" value="@config.dir/../p2" />
+      <property name="eclipse.p2.profile" value="epp.package.rcp" />
+      <property name="osgi.instance.area.default" value="@user.home/Documents/workspace" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

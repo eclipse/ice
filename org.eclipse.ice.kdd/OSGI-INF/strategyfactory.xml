@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.eclipse.ice.kdd.kddstrategy">
+   <implementation class="org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory"/>
+   <reference bind="registerStrategy" cardinality="1..n" interface="org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder" name="IStrategyBuilder" policy="dynamic" unbind="unregisterStrategy"/>
+   <service>
+      <provide interface="org.eclipse.ice.kdd.kddstrategy.KDDStrategyFactory"/>
+   </service>
+</scr:component>
