@@ -69,7 +69,7 @@ public class PWRAssembly extends LWRComposite {
 	protected LWRGridManager lWRRodGridManager;
 	/**
 	 * <p>
-	 * ﻿The distance between centers of adjacent fuel rods in the fuel grid.
+	 * The distance between centers of adjacent fuel rods in the fuel grid.
 	 * Must be greater than zero.
 	 * </p>
 	 * 
@@ -77,8 +77,8 @@ public class PWRAssembly extends LWRComposite {
 	protected double rodPitch;
 
 	// Private attributes for readChild operations.
-	private static final String LWRROD_COMPOSITE_NAME = "LWRRods";
-	private static final String LWRROD_GRID_MANAGER_NAME = "LWRRod Grid";
+	public static final String LWRROD_COMPOSITE_NAME = "LWRRods";
+	public static final String LWRROD_GRID_MANAGER_NAME = "LWRRod Grid";
 
 	/**
 	 * <p>

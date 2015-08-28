@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
@@ -112,7 +111,7 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 			groupIds.push(groupId);
 
 			// Write all of the component's ICEObject Attributes.
-			factory.writeICEObjectInfo(component, groupId);
+			factory.writeIdentifiableAttributes(component, groupId);
 
 			// Visit the component to perform the proper write operations.
 			component.accept(this);
@@ -374,12 +373,12 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 			}
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -404,11 +403,11 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 
 		try {
 			// Write the rotation.
-			factory.writeAttribute(objectId, "rotation",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getRotation());
+			factory.writeDoubleAttribute(objectId, "rotation",
+					plantComp.getRotation());
 			// Write the number of elements.
-			factory.writeAttribute(objectId, "numElements",
-					HDF5Constants.H5T_NATIVE_INT, plantComp.getNumElements());
+			factory.writeIntegerAttribute(objectId, "numElements",
+					plantComp.getNumElements());
 
 			// ---- Position and orientation ---- //
 			// Combine the position and orientation into a single Dataset
@@ -427,12 +426,12 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 			// ---------------------------------- //
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
@@ -474,7 +473,8 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 				buffer[i++] = (component instanceof HeatExchanger ? 0 : 1);
 			}
 			// Write the inputs dataset.
-			factory.writeDataset(junctionId, "inputs", rank, dims, type, buffer);
+			factory.writeDataset(junctionId, "inputs", rank, dims, type,
+					buffer);
 
 			// Get the junction's outputs.
 			List<PlantComponent> outputs = plantComp.getOutputs();
@@ -497,15 +497,15 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 					buffer);
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;
@@ -544,15 +544,15 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 					buffer);
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;
@@ -581,22 +581,23 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		try {
 
 			// Write the radius.
-			factory.writeAttribute(objectId, "innerRadius",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getInnerRadius());
+			factory.writeDoubleAttribute(objectId, "innerRadius",
+
+			plantComp.getInnerRadius());
 			// Write the length.
-			factory.writeAttribute(objectId, "length",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getLength());
+			factory.writeDoubleAttribute(objectId, "length",
+					plantComp.getLength());
 
 			// There is currently no need to write the pipe information since
 			// they are tied directly to the HeatExchanger's properties.
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -619,22 +620,20 @@ public class PlantComponentWriter implements IPlantComponentVisitor {
 		try {
 
 			// Write the radius.
-			factory.writeAttribute(objectId, "radius",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getRadius());
+			factory.writeDoubleAttribute(objectId, "radius",
+					plantComp.getRadius());
 			// Write the length.
-			factory.writeAttribute(objectId, "length",
-					HDF5Constants.H5T_NATIVE_DOUBLE, plantComp.getLength());
+			factory.writeDoubleAttribute(objectId, "length",
+					plantComp.getLength());
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Pipe " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info("PlantComponentWriter error: " + "Failed to write Pipe "
+					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Pipe " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info("PlantComponentWriter error: " + "Failed to write Pipe "
+					+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;

@@ -114,23 +114,23 @@ public class PressurizedWaterReactor extends LWReactor {
 	private GridLabelProvider gridLabelProvider;
 
 	@XmlTransient
-	private static final String CONTROL_BANK_COMPOSITE_NAME = "Control Banks";
+	public static final String CONTROL_BANK_COMPOSITE_NAME = "Control Banks";
 	@XmlTransient
-	private static final String FUEL_ASSEMBLY_COMPOSITE_NAME = "Fuel Assemblies";
+	public static final String FUEL_ASSEMBLY_COMPOSITE_NAME = "Fuel Assemblies";
 	@XmlTransient
-	private static final String INCORE_INSTRUMENT_COMPOSITE_NAME = "Incore Instruments";
+	public static final String INCORE_INSTRUMENT_COMPOSITE_NAME = "Incore Instruments";
 	@XmlTransient
-	private static final String ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME = "Rod Cluster Assemblies";
+	public static final String ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME = "Rod Cluster Assemblies";
 	@XmlTransient
-	private static final String CONTROL_BANK_GRID_MANAGER_NAME = "Control Bank Grid";
+	public static final String CONTROL_BANK_GRID_MANAGER_NAME = "Control Bank Grid";
 	@XmlTransient
-	private static final String FUEL_ASSEMBLY_GRID_MANAGER_NAME = "Fuel Assembly Grid";
+	public static final String FUEL_ASSEMBLY_GRID_MANAGER_NAME = "Fuel Assembly Grid";
 	@XmlTransient
-	private static final String INCORE_INSTRUMENT_GRID_MANAGER_NAME = "Incore Instrument Grid";
+	public static final String INCORE_INSTRUMENT_GRID_MANAGER_NAME = "Incore Instrument Grid";
 	@XmlTransient
-	private static final String ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME = "Rod Cluster Assembly Grid";
+	public static final String ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME = "Rod Cluster Assembly Grid";
 	@XmlTransient
-	private static final String GRID_LABEL_PROVIDER_NAME = "Grid Labels";
+	public static final String GRID_LABEL_PROVIDER_NAME = "Grid Labels";
 
 	/**
 	 * A default constructor that should ONLY be used for persistence and

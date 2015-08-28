@@ -1,21 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
@@ -23,16 +29,10 @@ import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
 import ncsa.hdf.hdf5lib.structs.H5O_info_t;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
- * <p>
  * This class provides a base for implementing {@link IHdfIOFactory} and
  * includes many helpful methods for writing and reading HDF5 attributes,
  * datasets, groups, and more.
- * </p>
  * <p>
  * Sub-classes <b><i>must</i></b> override the following methods (no calls to
  * the super method necessary):
@@ -84,6 +84,11 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 */
 	private static IHdfIORegistry hdfIORegistry = null;
 
+	/**
+	 * A map of open files.
+	 */
+	private final Map<Integer, URI> openFiles = new HashMap<Integer, URI>();
+
 	// ---- Methods that sub-classes MUST override! ---- //
 	/**
 	 * Sub-classes <b>must</b> override this method.
@@ -105,8 +110,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * Sub-classes <b>must</b> override this method.
 	 */
 	@Override
-	public Object read(int groupId, String tag) throws NullPointerException,
-			HDF5Exception, HDF5LibraryException {
+	public Object read(int groupId, String tag)
+			throws NullPointerException, HDF5Exception, HDF5LibraryException {
 		return null;
 	}
 
@@ -134,10 +139,11 @@ public class HdfIOFactory implements IHdfIOFactory {
 	public static void setHdfIORegistry(IHdfIORegistry registry) {
 		if (registry != null) {
 			hdfIORegistry = registry;
-			logger.info("HdfIOFactory message: " + "Registry set successfully!");
+			logger.info(
+					"HdfIOFactory message: " + "Registry set successfully!");
 		} else {
-			logger.info("HdfIOFactory message: "
-					+ "Failed to set the registry.");
+			logger.info(
+					"HdfIOFactory message: " + "Failed to set the registry.");
 		}
 
 		return;
@@ -209,22 +215,22 @@ public class HdfIOFactory implements IHdfIOFactory {
 			// Check the file associated with the URI. If it exists, delete it.
 			File file = new File(uri);
 			String path = file.getPath();
-			logger.info("HdfIOFactory message: " + "File \"" + path
+			logger.info(getClass().getName() + " message: " + "File \"" + path
 					+ "\" is being opened.");
 			if (file.exists()) {
-				logger.info("HdfIOFactory message: " + "File \"" + path
-						+ "\" already exists and will be overwritten.");
+				logger.info(getClass().getName() + " message: " + "File \""
+						+ path + "\" already exists and will be overwritten.");
 			} else {
 				// Make sure the directory containing this file exists! If we
 				// can't create the directory, then quit!
 				String directoryName = file.getParent();
 				File directory = new File(directoryName);
 				if (!directory.exists()) {
-					logger.info("HdfIOFactory message: " + "Directory \""
-							+ directoryName
+					logger.info(getClass().getName() + " message: "
+							+ "Directory \"" + directoryName
 							+ "\" does not exist. Creating directory...");
 					if (!directory.mkdirs()) {
-						System.err.println("HdfIOFactory error: "
+						logger.error(getClass().getName() + " error: "
 								+ "Directory \"" + directoryName
 								+ "\" could not be created.");
 						return;
@@ -275,11 +281,11 @@ public class HdfIOFactory implements IHdfIOFactory {
 					throwException("Closing file \"" + path + "\"", status);
 				}
 			} catch (HDF5LibraryException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			} catch (HDF5Exception e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			} catch (NullPointerException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -302,11 +308,11 @@ public class HdfIOFactory implements IHdfIOFactory {
 			// read from it.
 			File file = new File(uri);
 			String path = file.getPath();
-			logger.info("HdfIOFactory message: " + "File \"" + path
+			logger.info(getClass().getName() + " message: " + "File \"" + path
 					+ "\" is being opened.");
 			if (!file.canRead()) {
-				System.err.println("HdfIOFactory error: " + "File \"" + path
-						+ "\" cannot be read.");
+				System.err.println(getClass().getName() + " error: " + "File \""
+						+ path + "\" cannot be read.");
 				return objects;
 			}
 			// ------------------------ //
@@ -362,11 +368,11 @@ public class HdfIOFactory implements IHdfIOFactory {
 					throwException("Closing file \"" + path + "\"", status);
 				}
 			} catch (HDF5LibraryException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			} catch (HDF5Exception e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			} catch (NullPointerException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -390,9 +396,152 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 */
 	public final void throwException(String message, int status)
 			throws HDF5LibraryException {
-		throw new HDF5LibraryException("HdfIOFactory error: " + message + ": "
-				+ Integer.toString(status));
+		throw new HDF5LibraryException(getClass().getName() + " error: "
+				+ message + ": " + Integer.toString(status));
 	}
+
+	// ---- File Operations ---- //
+
+	/**
+	 * Opens the file for writing. This truncates the content of the file.
+	 * 
+	 * @param uri
+	 *            A URI pointing to the file to create.
+	 * @return A handle to the file.
+	 * @throws HDF5LibraryException
+	 */
+	public final int createFile(URI uri) throws HDF5LibraryException {
+		int fileId = -1;
+
+		int status = -1;
+
+		if (uri != null) {
+			// ---- The URI must be a file and requires write access. ---- //
+			File file = new File(uri);
+			String path = file.getPath();
+			// If the file cannot be written to, don't do anything.
+			String directoryName = file.getParent();
+			File directory = new File(directoryName);
+			// If the file exists and is read-only or a directory, cancel.
+			if (file.exists()) {
+				if (file.isDirectory()) {
+					throwException("The file \"" + path + "\" is a directory.",
+							status);
+				} else if (!file.canWrite()) {
+					throwException("The file \"" + path + "\" is read only.",
+							status);
+				}
+			}
+			// If the directory exists but is read-only, cancel.
+			else if (directory.exists()) {
+				if (!directory.canWrite()) {
+					throwException("The directory \"" + directoryName
+							+ "\" cannot be written.", status);
+				}
+			}
+			// If the path does not exist and cannot be created, cancel.
+			else if (!directory.mkdirs()) {
+				if (!directory.canWrite()) {
+					throwException(
+							"The directory \"" + directoryName
+									+ "\" does not exist and cannot be created.",
+							status);
+				}
+			}
+			// ----------------------------------------------------------- //
+
+			// Now we can try to open the file. Truncate its content.
+			status = H5.H5Fcreate(path, HDF5Constants.H5F_ACC_TRUNC,
+					HDF5Constants.H5P_DEFAULT, HDF5Constants.H5P_DEFAULT);
+			if (status < 0) {
+				throwException("Creating file \"" + path + "\"", status);
+			}
+			fileId = status;
+
+			// Store a reference to the URI in the map of open files.
+			openFiles.put(fileId, uri);
+		}
+
+		return fileId;
+	}
+
+	/**
+	 * Opens the file for reading.
+	 * 
+	 * @param uri
+	 *            A URI pointing to the file to read.
+	 * @return A handle to the file.
+	 * @throws IllegalArgumentException
+	 * @throws HDF5LibraryException
+	 */
+	public final int openFile(URI uri)
+			throws IllegalArgumentException, HDF5LibraryException {
+		int fileId = -1;
+
+		int status = -1;
+		if (uri != null) {
+			// Check the file associated with the URI. We need to be able to
+			// read from it.
+			File file = new File(uri);
+			String path = file.getPath();
+			if (!file.isFile()) {
+				throwException("File \"" + path + "\" is not a file.", status);
+			} else if (!file.canRead()) {
+				throwException("File \"" + path + "\" cannot be read.", status);
+			}
+
+			// Open the H5 file, with read-only access if necessary.
+			status = H5.H5Fopen(path, HDF5Constants.H5F_ACC_RDONLY,
+					HDF5Constants.H5P_DEFAULT);
+			if (status < 0) {
+				throwException("Opening file \"" + path + "\"", status);
+			}
+			fileId = status;
+
+			// Store a reference to the URI in the map of open files.
+			openFiles.put(fileId, uri);
+		} else {
+			throwException("File to read must not be null.", status);
+		}
+
+		return fileId;
+	}
+
+	/**
+	 * Closes the file corresponding to the open file handle.
+	 * 
+	 * @param fileId
+	 *            The ID of the file handle.
+	 * @throws HDF5LibraryException
+	 */
+	public final void closeFile(int fileId) throws HDF5LibraryException {
+		int status;
+
+		// Find the URI and get its path if possible.
+
+		URI uri = openFiles.remove(fileId);
+		String path = uri != null ? uri.getPath() : "";
+
+		// Determine how many objects remain open in the file. There should
+		// only be one (the file itself).
+		status = H5.H5Fget_obj_count(fileId, HDF5Constants.H5F_OBJ_ALL);
+		if (status < 0) {
+			throwException(
+					"Getting open object count for file \"" + path + "\"",
+					status);
+		} else if (status > 1) {
+			logger.warn(getClass().getName() + " warning: " + status
+					+ " HDF objects remain open in file \"" + path + "\".");
+		}
+
+		status = H5.H5Fclose(fileId);
+		if (status < 0) {
+			throwException("Closing file \"" + path + "\"", status);
+		}
+
+		return;
+	}
+	// ------------------------- //
 
 	// ---- Group Operations ---- //
 	/**
@@ -498,6 +647,55 @@ public class HdfIOFactory implements IHdfIOFactory {
 		return groupNames;
 	}
 
+	/**
+	 * Determines whether or not the open group has a child with the specified
+	 * name and type.
+	 * 
+	 * @param parentId
+	 *            The ID of the parent Group.
+	 * @param childName
+	 *            The name of the child group.
+	 * @param type
+	 *            The type of child object, e.g., {@code H5O_TYPE_GROUP} or
+	 *            {@code H5O_TYPE_DATASET}.
+	 * @return True if the open group has a child group with the specified name
+	 *         and type, false otherwise.
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public final boolean hasChild(int parentId, String childName, int type)
+			throws HDF5LibraryException, NullPointerException {
+		boolean childOfTypeExists = false;
+
+		// Check that the link exists first.
+		if (H5.H5Lexists(parentId, childName, HDF5Constants.H5P_DEFAULT)) {
+			// If so, get the object's metadata.
+			H5O_info_t info = H5.H5Oget_info_by_name(parentId, childName,
+					HDF5Constants.H5P_DEFAULT);
+			// Only return true if the type matches.
+			childOfTypeExists = info != null && info.type == type;
+		}
+
+		return childOfTypeExists;
+	}
+
+	/**
+	 * Determines whether or not the open group has a child with the specified
+	 * name.
+	 * 
+	 * @param parentId
+	 *            The ID of the parent Group.
+	 * @param childName
+	 *            The name of the child group.
+	 * @return True if the open group has a child group with the specified name,
+	 *         false otherwise.
+	 * @throws HDF5LibraryException
+	 * @throws NullPointerException
+	 */
+	public final boolean hasChildGroup(int parentId, String childName)
+			throws HDF5LibraryException, NullPointerException {
+		return hasChild(parentId, childName, HDF5Constants.H5O_TYPE_GROUP);
+	}
 	// -------------------------- //
 
 	// ---- Atribute Operations ---- //
@@ -516,7 +714,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * @param value
 	 *            The value of the Attribute being written.
 	 */
-	public final void writeAttribute(int objectId, String name, int type,
+	private void writeAttribute(int objectId, String name, int type,
 			Object value) throws NullPointerException, HDF5Exception {
 		int status;
 
@@ -562,6 +760,44 @@ public class HdfIOFactory implements IHdfIOFactory {
 	}
 
 	/**
+	 * Writes a native int Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that will get the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @param value
+	 *            The value of the Attribute being written.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final void writeIntegerAttribute(int objectId, String name,
+			int value) throws NullPointerException, HDF5Exception {
+		writeAttribute(objectId, name, HDF5Constants.H5T_NATIVE_INT, value);
+	}
+
+	/**
+	 * Writes a native double Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that will get the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @param value
+	 *            The value of the Attribute being written.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final void writeDoubleAttribute(int objectId, String name,
+			double value) throws NullPointerException, HDF5Exception {
+		writeAttribute(objectId, name, HDF5Constants.H5T_NATIVE_DOUBLE, value);
+	}
+
+	/**
 	 * Reads an Attribute for an HDF5 Object, which is typically a Group. Array
 	 * Attributes are not supported.
 	 * 
@@ -575,7 +811,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *            H5T_NATIVE_INT and H5T_NATIVE_DOUBLE.
 	 * @return Returns the value of the attribute.
 	 */
-	public final Object readAttribute(int objectId, String name, int type)
+	private Object readAttribute(int objectId, String name, int type)
 			throws NullPointerException, HDF5Exception {
 		int status;
 
@@ -600,6 +836,44 @@ public class HdfIOFactory implements IHdfIOFactory {
 			throwException("Closing attribute \"" + name + "\"", status);
 		}
 		return buffer[0];
+	}
+
+	/**
+	 * Reads a native double Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that has the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @return Returns the value of the attribute.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final Double readDoubleAttribute(int objectId, String name)
+			throws NullPointerException, HDF5Exception {
+		return (Double) readAttribute(objectId, name,
+				HDF5Constants.H5T_NATIVE_DOUBLE);
+	}
+
+	/**
+	 * Reads a native int Attribute for an HDF5 Object, which is typically a
+	 * Group.
+	 * 
+	 * @param objectId
+	 *            The ID for the Object, which should be open, that has the
+	 *            Attribute.
+	 * @param name
+	 *            The name of the Attribute.
+	 * @return Returns the value of the attribute.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public final Integer readIntegerAttribute(int objectId, String name)
+			throws NullPointerException, HDF5Exception {
+		return (Integer) readAttribute(objectId, name,
+				HDF5Constants.H5T_NATIVE_INT);
 	}
 
 	/**
@@ -722,8 +996,9 @@ public class HdfIOFactory implements IHdfIOFactory {
 		// Get the size of the String from the datatype.
 		status = H5.H5Tget_size(datatypeId);
 		if (status <= 0) {
-			throwException("Reading size of datatype for attribute \"" + name
-					+ "\"", status);
+			throwException(
+					"Reading size of datatype for attribute \"" + name + "\"",
+					status);
 		}
 		int size = status;
 
@@ -740,11 +1015,12 @@ public class HdfIOFactory implements IHdfIOFactory {
 		if (status < 0) {
 			throwException("Closing attribute \"" + name + "\"", status);
 		}
-		// Convert the buffer into a String. The null character is only required
-		// inside HDF5, so strip the null character.
-		return new String(buffer, 0, size - 1);
-	}
 
+		// If the last byte is the null character, ignore it. The null character
+		// is only required inside HDF5 (for native strings).
+		int length = buffer[size - 1] == 0 ? size - 1 : size;
+		return new String(buffer, 0, length);
+	}
 	// ----------------------------- //
 
 	// ---- Dataset Operations ---- //
@@ -772,8 +1048,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *            an array, e.g., a double[n] or int[n].
 	 */
 	public final void writeDataset(int objectId, String name, int rank,
-			long[] dims, int type, Object buffer) throws NullPointerException,
-			HDF5Exception {
+			long[] dims, int type, Object buffer)
+					throws NullPointerException, HDF5Exception {
 		int status;
 
 		// Create the dataspace.
@@ -866,7 +1142,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 			if (status < 0) {
 				throwException(
 						"Could not determine rank (number of dimensions) of dataspace for dataset \""
-								+ name + "\".", status);
+								+ name + "\".",
+						status);
 			}
 			int rank = status;
 
@@ -876,7 +1153,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 			if (status != rank) {
 				throwException(
 						"Could not determine dimensions of dataspace for dataset \""
-								+ name + "\".", status);
+								+ name + "\".",
+						status);
 			}
 			// Create an appropriately sized buffer.
 			buffer = getBuffer(type, dims);
@@ -891,8 +1169,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 			// Close the Dataspace.
 			status = H5.H5Sclose(dataspaceId);
 			if (status < 0) {
-				throwException("Could not close dataspace for dataset \""
-						+ name + "\".", status);
+				throwException("Could not close dataspace for dataset \"" + name
+						+ "\".", status);
 			}
 			// Close the Dataset.
 			status = H5.H5Dclose(datasetId);
@@ -905,6 +1183,221 @@ public class HdfIOFactory implements IHdfIOFactory {
 		return buffer;
 	}
 
+	/**
+	 * Reads in a 1D array of strings stored in an HDF dataset. The underlying
+	 * dataset is expected to have fixed-length strings, although they may be
+	 * padded with null terminators.
+	 * 
+	 * @param groupId
+	 *            The ID of the object, which should be open, that contains the
+	 *            dataset.
+	 * @param name
+	 *            The name of the dataset.
+	 * @return An array of strings stored in the dataset.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public String[] readStringArrayDataset(int groupId, String name)
+			throws NullPointerException, HDF5Exception {
+		int status;
+
+		// int type = HDF5Constants.H5T_STRING;
+		int type = HDF5Constants.H5T_C_S1;
+
+		final String errorSuffix = " string dataset \"" + name
+				+ "\" in group with id " + groupId;
+
+		// Open the dataset.
+		status = H5.H5Dopen(groupId, name, HDF5Constants.H5P_DEFAULT);
+		if (status < 0) {
+			throwException("Opening" + errorSuffix, status);
+		}
+		int datasetId = status;
+
+		// Get the data type. It should be a string.
+		status = H5.H5Dget_type(datasetId);
+		if (status < 0) {
+			throwException("Opening datatype for" + errorSuffix, status);
+		}
+		int datatypeId = status;
+
+		// Get the size of the String from the datatype.
+		status = H5.H5Tget_size(datatypeId);
+		if (status < 0) {
+			throwException(
+					"Reading size of datatype for attribute \"" + name + "\"",
+					status);
+		}
+		int stringLength = status + 1; // Make room for the null terminator.
+
+		// Close the data type.
+		status = H5.H5Tclose(datatypeId);
+		if (status < 0) {
+			throwException("Opening datatype for" + errorSuffix, status);
+		}
+		datatypeId = -1;
+
+		// Open the dataspace.
+		status = H5.H5Dget_space(datasetId);
+		if (status < 0) {
+			throwException("Opening dataspace for" + errorSuffix, status);
+		}
+		int dataspaceId = status;
+
+		// Determine the rank (number of dimensions) for the dataset.
+		status = H5.H5Sget_simple_extent_ndims(dataspaceId);
+		if (status != 1) {
+			throwException(
+					"Reading rank (number of dimensions) for" + errorSuffix,
+					status);
+		}
+		int rank = status;
+
+		// Determine the lengths of each dimension of the string dataset.
+		long[] dims = new long[rank];
+		status = H5.H5Sget_simple_extent_dims(dataspaceId, dims, null);
+		if (status != rank) {
+			throwException("Reading dataspace dimensions for" + errorSuffix,
+					status);
+		}
+		int size = (int) dims[0];
+
+		// Initialize the buffer for the string array.
+		byte[][] buffer = new byte[size][stringLength];
+
+		// Create a memory data type.
+		status = H5.H5Tcopy(type);
+		if (status < 0) {
+			throwException("Creating memory datatype for" + errorSuffix,
+					status);
+		}
+		int memtypeId = status;
+		// Set its size.
+		status = H5.H5Tset_size(memtypeId, stringLength);
+		if (status < 0) {
+			throwException("Setting size of memory datatype for" + errorSuffix,
+					status);
+		}
+
+		// Read in the data set into the buffer.
+		status = H5.H5Dread(datasetId, memtypeId, HDF5Constants.H5S_ALL,
+				HDF5Constants.H5S_ALL, HDF5Constants.H5P_DEFAULT, buffer);
+		if (status < 0) {
+			throwException("Reading dataset for" + errorSuffix, status);
+		}
+
+		// Close the memory datatype.
+		status = H5.H5Tclose(memtypeId);
+		if (status < 0) {
+			throwException("Closing memory datatype for" + errorSuffix, status);
+		}
+		memtypeId = -1;
+
+		// Close the dataspace.
+		status = H5.H5Sclose(dataspaceId);
+		if (status < 0) {
+			throwException("Closing dataspace for" + errorSuffix, status);
+		}
+
+		// Close the dataset.
+		status = H5.H5Dclose(datasetId);
+		if (status < 0) {
+			throwException("Closing" + errorSuffix, status);
+		}
+
+		// If the last byte is the null character, ignore it. The null character
+		// is only required inside HDF5 (for native strings).
+
+		// Convert the byte buffer into a string array.
+		String strings[] = new String[size];
+		stringLength--;
+		for (int i = 0; i < size; i++) {
+			byte[] bufferedString = buffer[i];
+			int j = stringLength;
+			while (j >= 0 && bufferedString[j] == 0) {
+				j--;
+			}
+			strings[i] = new String(bufferedString, 0, j + 1);
+		}
+
+		return strings;
+	}
+
+	/**
+	 * Writes in a 1D array of strings to an HDF dataset. The underlying dataset
+	 * is expected to have fixed-length strings, although they may be padded
+	 * with null terminators.
+	 * 
+	 * @param groupId
+	 *            The ID of the object, which should be open, that will contain
+	 *            the dataset.
+	 * @param name
+	 *            The name of the dataset.
+	 * @param array
+	 *            The array of strings to write.
+	 * @throws NullPointerException
+	 * @throws HDF5Exception
+	 */
+	public void writeStringArrayDataset(int groupId, String name,
+			String[] array) throws NullPointerException, HDF5Exception {
+
+		// FIXME This method does not check the return values for H5 calls.
+
+		int type = HDF5Constants.H5T_C_S1;
+
+		final int H5P_DEFAULT = HDF5Constants.H5P_DEFAULT;
+		final int H5S_ALL = HDF5Constants.H5S_ALL;
+
+		int size = 0;
+
+		// ---- Create the buffer that will be written to the dataset. ---- //
+		// Determine the max length of the string.
+		final int stringSize;
+		for (String label : array) {
+			if (label.length() > size) {
+				size = label.length();
+			}
+		}
+		stringSize = size;
+
+		// Create the string buffer.
+		size = array.length;
+		final byte[] stringBuffer;
+		ByteBuffer byteBuf = ByteBuffer.allocate(size * stringSize);
+		for (String string : array) {
+			byteBuf.put(string.getBytes());
+			// Skip ahead to the next string's start index.
+			byteBuf.position(byteBuf.position() + stringSize - string.length());
+		}
+		// Get the backing array from the byte buffer.
+		stringBuffer = byteBuf.array();
+		// ---------------------------------------------------------------- //
+
+		// ---- Create the string datatype. ---- //
+		int datatype = H5.H5Tcopy(type);
+		H5.H5Tset_size(datatype, stringSize);
+		// ------------------------------------- //
+
+		// ---- Create the dataset and dataspace. ---- //
+		long[] dims = new long[] { size };
+		int dataspace = H5.H5Screate_simple(1, dims, null);
+		int dataset = H5.H5Dcreate(groupId, name, datatype, dataspace,
+				H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+				// ------------------------------------------- //
+
+		// ---- Write the buffer to the dataset. ---- //
+		H5.H5Dwrite(dataset, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT,
+				stringBuffer);
+				// ------------------------------------------ //
+
+		// ---- Close the datatypes, dataspace, and dataset. ---- //
+		H5.H5Dclose(dataset);
+		H5.H5Sclose(dataspace);
+		H5.H5Tclose(datatype);
+		// ------------------------------------------------------ //
+
+		return;
+	}
 	// ---------------------------- //
 
 	/**
@@ -916,8 +1409,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * @param objectId
 	 *            The ID of the HDF5 Object receiving the ICEObject Attributes.
 	 */
-	public final void writeICEObjectInfo(ICEObject object, int objectId)
-			throws NullPointerException, HDF5Exception {
+	public final void writeIdentifiableAttributes(Identifiable object,
+			int objectId) throws NullPointerException, HDF5Exception {
 
 		// Write the component's name, description, and ID.
 		writeStringAttribute(objectId, "name", object.getName());
@@ -936,8 +1429,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *            The ID of the HDF5 Group or Object that contains the
 	 *            ICEObject's information.
 	 */
-	public final void readICEObjectInfo(ICEObject object, int objectId)
-			throws NullPointerException, HDF5Exception {
+	public final void readIdentifiableAttributes(Identifiable object,
+			int objectId) throws NullPointerException, HDF5Exception {
 
 		// Read the object's name, description, and ID from the HDF5 Group or
 		// Object.
@@ -972,8 +1465,8 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *            The HDF5 Group that should have a tag Attribute.
 	 * @return The value of the tag Attribute.
 	 */
-	public String readTag(int objectId) throws NullPointerException,
-			HDF5Exception {
+	public String readTag(int objectId)
+			throws NullPointerException, HDF5Exception {
 		return readStringAttribute(objectId, "tag");
 	}
 
@@ -987,7 +1480,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 * @return The buffer as an array of Objects (of size 1). To set its value
 	 *         for writing, set buffer[0].
 	 */
-	public final Object[] getBuffer(int type) throws HDF5LibraryException {
+	private final Object[] getBuffer(int type) throws HDF5LibraryException {
 		Object[] buffer = null;
 
 		if (type == HDF5Constants.H5T_NATIVE_DOUBLE) {
@@ -1013,7 +1506,7 @@ public class HdfIOFactory implements IHdfIOFactory {
 	 *         the dimensions, e.g., 1st dimension length * 2nd dimension length
 	 *         * ... * nth dimension length.
 	 */
-	public final Object getBuffer(int type, long[] dims)
+	private final Object getBuffer(int type, long[] dims)
 			throws HDF5LibraryException {
 		Object buffer = null;
 

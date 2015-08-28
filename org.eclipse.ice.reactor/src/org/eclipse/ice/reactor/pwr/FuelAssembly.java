@@ -72,9 +72,9 @@ public class FuelAssembly extends PWRAssembly {
 	 */
 	private GridLabelProvider gridLabelProvider;
 
-	private static final String TUBE_COMPOSITE_NAME = "Tubes";
-	private static final String TUBE_GRID_MANAGER_NAME = "Tube Grid";
-	private static final String GRID_LABEL_PROVIDER_NAME = "Grid Labels";
+	public static final String TUBE_COMPOSITE_NAME = "Tubes";
+	public static final String TUBE_GRID_MANAGER_NAME = "Tube Grid";
+	public static final String GRID_LABEL_PROVIDER_NAME = "Grid Labels";
 
 	/**
 	 * <p>

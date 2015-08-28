@@ -1,81 +1,84 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2012, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Scott Forest Hull II - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-/** 
- * <p>The MaterialType enumeration describes each type of material phase.</p>
+/**
+ * The MaterialType enumeration describes each type of material phase.
+ * 
  * @author Scott Forest Hull II
  */
 public enum MaterialType {
-	/** 
-	 * <p>This literal indicates a gas material phase.</p>
+	/**
+	 * This literal indicates a gas material phase.
 	 */
 	GAS("Gas"),
-	/** 
-	 * <p>This literal indicates a liquid material phase.</p>
+
+	/**
+	 * This literal indicates a liquid material phase.
 	 */
 	LIQUID("Liquid"),
-	/** 
-	 * <p>This literal indicates a solid material phase.</p>
+
+	/**
+	 * This literal indicates a solid material phase.
 	 */
 	SOLID("Solid");
 
-	/** 
-	 * <p>Human readable string associated with enumerated value.</p>
+	/**
+	 * Human readable string associated with enumerated value.
 	 */
-	private String name;
+	private final String name;
 
-	/** 
-	 * <p>The constructor.</p>
+	/**
+	 * The private constructor.
+	 * 
 	 * @param name
+	 *            The name associated with the enumerated value.
 	 */
-	MaterialType(String name) {
-
+	private MaterialType(String name) {
 		this.name = name;
-
 	}
 
-	/** 
-	 * <p>Returns the type of enumeration keyed on name.  Returns null if invalid name.</p>
-	 * @param name <p>The name associated with the enumerated value.</p>
-	 * @return <p>The type of enumeration.</p>
+	/**
+	 * Returns the type of enumeration keyed on name. Returns null if invalid
+	 * name.
+	 * 
+	 * @param name
+	 *            The name associated with the enumerated value.
+	 * @return The type of enumeration.
 	 */
-	public MaterialType toType(String name) {
+	public static MaterialType toType(String name) {
 
-		//Cycle over all types
+		// Cycle over all types
 		for (MaterialType p : values()) {
 
-			//If this property's name equals name
+			// If this property's name equals name
 			if (p.name.equals(name)) {
 
-				//Return the property
+				// Return the property
 				return p;
 			}
 		}
 
-		//If not found return null
+		// If not found return null
 		return null;
-
 	}
 
-	/** 
-	 * <p>Returns the string name of the enumerated value.</p>
-	 * @return <p>The name of the enumerated value.</p>
+	/**
+	 * Returns the string name of the enumerated value.
+	 * 
+	 * @return The name of the enumerated value.
 	 */
 	@Override
 	public String toString() {
-
 		return name;
-
 	}
 }

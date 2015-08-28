@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
@@ -112,7 +111,7 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			groupIds.push(groupId);
 
 			// Write all of the component's ICEObject Attributes.
-			factory.readICEObjectInfo(component, groupId);
+			factory.readIdentifiableAttributes(component, groupId);
 
 			// Visit the component to perform the proper read operations.
 			component.accept(this);
@@ -178,12 +177,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			// ------------------------- //
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentWriter error: "
 					+ "Failed to write PlantComposite " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -206,16 +205,13 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 		int objectId = groupIds.peek();
 
 		try {
-			int H5T_NATIVE_INT = HDF5Constants.H5T_NATIVE_INT;
-			int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
-
 			// Read the rotation.
-			plantComp.setRotation((Double) factory.readAttribute(objectId,
-					"rotation", H5T_NATIVE_DOUBLE));
+			plantComp.setRotation(
+					factory.readDoubleAttribute(objectId, "rotation"));
 
 			// Read the number of elements.
-			plantComp.setNumElements((Integer) factory.readAttribute(objectId,
-					"numElements", H5T_NATIVE_INT));
+			plantComp.setNumElements(
+					factory.readIntegerAttribute(objectId, "numElements"));
 
 			// ---- Position and orientation ---- //
 			// Combine the position and orientation into a single Dataset
@@ -238,12 +234,12 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			// ---------------------------------- //
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read GeometricalComponent "
 					+ plantComp.getName() + " " + plantComp.getId());
@@ -306,15 +302,15 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			plantComp.setOutputs(outputs);
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;
@@ -348,15 +344,15 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 			plantComp.setCoreChannels(coreChannels);
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
-			logger.info("PlantComponentWriter error: "
-					+ "Failed to write Junction " + plantComp.getName() + " "
-					+ plantComp.getId());
+			logger.error(getClass().getName() + " Exception!", e);
+			logger.info(
+					"PlantComponentWriter error: " + "Failed to write Junction "
+							+ plantComp.getName() + " " + plantComp.getId());
 		}
 
 		return;
@@ -384,23 +380,21 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 
 		try {
 
-			int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
-
 			// Read the radius.
-			plantComp.setInnerRadius((Double) factory.readAttribute(objectId,
-					"innerRadius", H5T_NATIVE_DOUBLE));
+			plantComp.setInnerRadius(
+					factory.readDoubleAttribute(objectId, "innerRadius"));
 
 			// Read the length.
-			plantComp.setLength((Double) factory.readAttribute(objectId,
-					"length", H5T_NATIVE_DOUBLE));
+			plantComp
+					.setLength(factory.readDoubleAttribute(objectId, "length"));
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: "
 					+ "Failed to read HeatExchanger " + plantComp.getName()
 					+ " " + plantComp.getId());
@@ -422,22 +416,20 @@ public class PlantComponentReader implements IPlantComponentVisitor {
 
 		try {
 
-			int H5T_NATIVE_DOUBLE = HDF5Constants.H5T_NATIVE_DOUBLE;
-
 			// Read the radius.
-			plantComp.setRadius((Double) factory.readAttribute(objectId,
-					"radius", H5T_NATIVE_DOUBLE));
+			plantComp
+					.setRadius(factory.readDoubleAttribute(objectId, "radius"));
 
 			// Read the length.
-			plantComp.setLength((Double) factory.readAttribute(objectId,
-					"length", H5T_NATIVE_DOUBLE));
+			plantComp
+					.setLength(factory.readDoubleAttribute(objectId, "length"));
 
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: " + "Failed to read Pipe "
 					+ plantComp.getName() + " " + plantComp.getId());
 		} catch (HDF5Exception e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("PlantComponentReader error: " + "Failed to read Pipe "
 					+ plantComp.getName() + " " + plantComp.getId());
 		}
