@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="clientInstance" name="ICE Client" schema="schema/clientInstance.exsd"/>
+   <extension-point id="iwidgetfactory" name="Widget Factory" schema="schema/iwidgetfactory.exsd"/>
+ <extension point="org.eclipse.ui.newWizards">
+    <category 
+          id="org.eclipse.ice.wizards"
+          name="Computing Wizards">
+    </category>
+    <wizard
+            name="Create Item Wizard"
+            class="org.eclipse.ice.client.common.wizards.NewItemWizard"
+            id="org.eclipse.ice.client.common.CreateItemWizard"
+            category="org.eclipse.ice.wizards">
+    </wizard>
+    <primaryWizard
+          id="org.eclipse.ice.client.common.CreateItemWizard">
+    </primaryWizard> 
+ </extension>
+ <extension
+       point="org.eclipse.ui.importWizards">
+    <category
+          id="org.eclipse.ice.wizards"
+          name="ICE">
+    </category>
+    <wizard
+          category="org.eclipse.ice.wizards"
+          class="org.eclipse.ice.client.common.wizards.ImportFileWizard"
+          icon="icons/importArrow.gif"
+          id="org.eclipse.ice.client.widgets.wizards.ImportFile"
+          name="Import existing files into the workspace">
+    </wizard>
+    <wizard
+          category="org.eclipse.ice.wizards"
+          class="org.eclipse.ice.client.common.wizards.ImportItemWizard"
+          icon="icons/itemImport.gif"
+          id="org.eclipse.ice.client.widgets.wizards.ImportItem"
+          name="Import existing files into an Item">
+    </wizard>
+ </extension>
+ <extension
+       point="org.eclipse.ui.exportWizards">
+    <category
+          id="org.eclipse.ice.wizards"
+          name="ICE">
+    </category>
+ </extension>
+ <extension
+       id="client"
+       name="ICE Client"
+       point="org.eclipse.ice.client.clientInstance">
+    <client
+          class="org.eclipse.ice.client.internal.Client">
+    </client>
+ </extension>
+</plugin>
