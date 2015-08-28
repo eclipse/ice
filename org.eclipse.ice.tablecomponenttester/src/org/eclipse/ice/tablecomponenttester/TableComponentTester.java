@@ -42,7 +42,7 @@ import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.reactor.LWRComponent;
-import org.eclipse.ice.reactor.LWRComponentReader;
+import org.eclipse.ice.reactor.hdf.LWRIOHandler;
 import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")
@@ -339,12 +339,12 @@ public class TableComponentTester extends Item {
 		String separator = System.getProperty("file.separator");
 		Path testDataPath = new Path("data" + separator + "test_new.h5");
 		URL testDataURL = FileLocator.find(bundle, testDataPath, null);
-		LWRComponentReader reader = new LWRComponentReader();
+		LWRIOHandler reader = new LWRIOHandler();
 		LWRComponent lwrComponent;
 		try {
 			URI dataFileURI = FileLocator.toFileURL(testDataURL).toURI();
 			System.out.println(dataFileURI);
-			lwrComponent = (LWRComponent) reader.read(dataFileURI);
+			lwrComponent = (LWRComponent) reader.readHDF5(dataFileURI).get(0);
 			lwrComponent.setId(999);
 			// Add the LWRComponent to the form
 			form.addComponent(lwrComponent);

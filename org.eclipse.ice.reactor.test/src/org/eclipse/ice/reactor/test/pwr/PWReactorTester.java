@@ -20,26 +20,15 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 
-import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
-import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
-import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.Ring;
 import org.eclipse.ice.reactor.pwr.ControlBank;
 import org.eclipse.ice.reactor.pwr.FuelAssembly;
@@ -145,7 +134,8 @@ public class PWReactorTester {
 		// Make a new reactor
 		reactor = new PressurizedWaterReactor(reactorSize);
 		// Check to see the default's gridLabelprovider
-		assertEquals(-1, reactor.getGridLabelProvider().getColumnFromLabel("A"));
+		assertEquals(-1,
+				reactor.getGridLabelProvider().getColumnFromLabel("A"));
 		assertEquals(reactorSize, reactor.getGridLabelProvider().getSize()); // Size
 																				// the
 																				// same
@@ -163,21 +153,24 @@ public class PWReactorTester {
 
 		// Check the row and column labels
 		assertTrue(this.doLabelsMatchLabelsInReactor(true, rowLabels, reactor));
-		assertTrue(this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
+		assertTrue(
+				this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
 
 		// You can not set it to null or illegal size
 		reactor.setGridLabelProvider(null);
 
 		// Check the row and column labels
 		assertTrue(this.doLabelsMatchLabelsInReactor(true, rowLabels, reactor));
-		assertTrue(this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
+		assertTrue(
+				this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
 
 		reactor.setGridLabelProvider(new GridLabelProvider(reactorSize + 22));
 
 		// Stays the same as before
 		// Check the row and column labels
 		assertTrue(this.doLabelsMatchLabelsInReactor(true, rowLabels, reactor));
-		assertTrue(this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
+		assertTrue(
+				this.doLabelsMatchLabelsInReactor(false, colLabels, reactor));
 
 	}
 
@@ -195,8 +188,9 @@ public class PWReactorTester {
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
 				reactorSize);
-		FuelAssembly testComponent = new FuelAssembly(5), testComponent2 = new FuelAssembly(
-				5), testComponent3 = new FuelAssembly(5);
+		FuelAssembly testComponent = new FuelAssembly(5),
+				testComponent2 = new FuelAssembly(5),
+				testComponent3 = new FuelAssembly(5);
 		String testComponentName = "Bob";
 		String testComponentName2 = "Bill!";
 		int rowLoc1 = 5, colLoc1 = 5;
@@ -232,8 +226,8 @@ public class PWReactorTester {
 		// location is bad
 		for (int i = 0; i < reactorSize; i++) {
 			for (int j = 0; j < reactorSize; j++) {
-				assertNull(reactor.getAssemblyByLocation(AssemblyType.Fuel, i,
-						j));
+				assertNull(
+						reactor.getAssemblyByLocation(AssemblyType.Fuel, i, j));
 			}
 		}
 
@@ -280,8 +274,8 @@ public class PWReactorTester {
 				colLoc1));
 		assertFalse(reactor.setAssemblyLocation(AssemblyType.Fuel, null,
 				rowLoc1, -1));
-		assertFalse(reactor
-				.setAssemblyLocation(AssemblyType.Fuel, null, -1, -1));
+		assertFalse(
+				reactor.setAssemblyLocation(AssemblyType.Fuel, null, -1, -1));
 		assertFalse(reactor.setAssemblyLocation(AssemblyType.Fuel,
 				testComponentName, rowLoc1, reactorSize + 25));
 		assertFalse(reactor.setAssemblyLocation(AssemblyType.Fuel,
@@ -289,8 +283,8 @@ public class PWReactorTester {
 
 		// The above erroneous settings does not change the original location of
 		// the first, valid set
-		assertTrue(testComponent.equals(reactor.getAssemblyByName(
-				AssemblyType.Fuel, testComponentName)));
+		assertTrue(testComponent.equals(reactor
+				.getAssemblyByName(AssemblyType.Fuel, testComponentName)));
 
 		// Check invalid overwrite of location:
 		testComponent2.setName(testComponentName2);
@@ -300,8 +294,8 @@ public class PWReactorTester {
 				testComponent2.getName(), rowLoc1, colLoc1));
 
 		// Check that it is the first, but not second
-		assertTrue(testComponent.equals(reactor.getAssemblyByName(
-				AssemblyType.Fuel, testComponentName)));
+		assertTrue(testComponent.equals(reactor
+				.getAssemblyByName(AssemblyType.Fuel, testComponentName)));
 
 		// Add it in there
 		assertTrue(reactor.addAssembly(AssemblyType.Fuel, testComponent2));
@@ -312,16 +306,16 @@ public class PWReactorTester {
 
 		// Check values - see the components are different and they reside in
 		// the table correctly
-		assertTrue(testComponent.equals(reactor.getAssemblyByName(
-				AssemblyType.Fuel, testComponentName)));
-		assertTrue(testComponent2.equals(reactor.getAssemblyByName(
-				AssemblyType.Fuel, testComponentName2)));
+		assertTrue(testComponent.equals(reactor
+				.getAssemblyByName(AssemblyType.Fuel, testComponentName)));
+		assertTrue(testComponent2.equals(reactor
+				.getAssemblyByName(AssemblyType.Fuel, testComponentName2)));
 
 		// Check the locations
-		assertTrue(testComponent.equals(reactor.getAssemblyByLocation(
-				AssemblyType.Fuel, rowLoc1, colLoc1)));
-		assertTrue(testComponent2.equals(reactor.getAssemblyByLocation(
-				AssemblyType.Fuel, rowLoc2, colLoc2)));
+		assertTrue(testComponent.equals(reactor
+				.getAssemblyByLocation(AssemblyType.Fuel, rowLoc1, colLoc1)));
+		assertTrue(testComponent2.equals(reactor
+				.getAssemblyByLocation(AssemblyType.Fuel, rowLoc2, colLoc2)));
 
 		// Check the names, should contain 2!
 		assertEquals(2, reactor.getAssemblyNames(AssemblyType.Fuel).size());
@@ -351,10 +345,10 @@ public class PWReactorTester {
 		assertFalse(reactor.addAssembly(AssemblyType.Fuel, testComponent3));
 
 		// Check that the object has not been overwritten
-		assertTrue(testComponent.equals(reactor.getAssemblyByName(
-				AssemblyType.Fuel, testComponentName)));
-		assertFalse(testComponent3.equals(reactor.getAssemblyByName(
-				AssemblyType.Fuel, testComponentName)));
+		assertTrue(testComponent.equals(reactor
+				.getAssemblyByName(AssemblyType.Fuel, testComponentName)));
+		assertFalse(testComponent3.equals(reactor
+				.getAssemblyByName(AssemblyType.Fuel, testComponentName)));
 
 		// Test to remove components from the reactor
 		assertFalse(reactor.removeAssembly(AssemblyType.Fuel, null));
@@ -385,14 +379,12 @@ public class PWReactorTester {
 				testComponent.getName(), rowLoc1, colLoc1));
 
 		// Check the size, the respective locations
-		assertEquals(
-				testComponent2.getName(),
-				reactor.getAssemblyByLocation(AssemblyType.Fuel, rowLoc1,
-						colLoc1).getName());
-		assertEquals(
-				testComponent2.getName(),
-				reactor.getAssemblyByLocation(AssemblyType.Fuel, rowLoc2,
-						colLoc2).getName());
+		assertEquals(testComponent2.getName(), reactor
+				.getAssemblyByLocation(AssemblyType.Fuel, rowLoc1, colLoc1)
+				.getName());
+		assertEquals(testComponent2.getName(), reactor
+				.getAssemblyByLocation(AssemblyType.Fuel, rowLoc2, colLoc2)
+				.getName());
 		assertEquals(2, reactor.getNumberOfAssemblies(AssemblyType.Fuel));
 	}
 
@@ -409,7 +401,9 @@ public class PWReactorTester {
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
 				reactorSize);
-		ControlBank testComponent = new ControlBank(), testComponent2 = new ControlBank(), testComponent3 = new ControlBank();
+		ControlBank testComponent = new ControlBank(),
+				testComponent2 = new ControlBank(),
+				testComponent3 = new ControlBank();
 		String testComponentName = "Bob";
 		String testComponentName2 = "Bill!";
 		int rowLoc1 = 5, colLoc1 = 5;
@@ -423,14 +417,14 @@ public class PWReactorTester {
 		// location is bad
 		for (int i = 0; i < reactorSize; i++) {
 			for (int j = 0; j < reactorSize; j++) {
-				assertNull(reactor.getAssemblyByLocation(
-						AssemblyType.ControlBank, i, j));
+				assertNull(reactor
+						.getAssemblyByLocation(AssemblyType.ControlBank, i, j));
 			}
 		}
 
 		// Check the names, should be empty!
-		assertEquals(0, reactor.getAssemblyNames(AssemblyType.ControlBank)
-				.size());
+		assertEquals(0,
+				reactor.getAssemblyNames(AssemblyType.ControlBank).size());
 
 		// Try to get by name - valid string, empty string, and null
 		assertNull(reactor.getAssemblyByName(AssemblyType.ControlBank,
@@ -496,8 +490,8 @@ public class PWReactorTester {
 				AssemblyType.ControlBank, testComponentName)));
 
 		// Add it in there
-		assertTrue(reactor
-				.addAssembly(AssemblyType.ControlBank, testComponent2));
+		assertTrue(
+				reactor.addAssembly(AssemblyType.ControlBank, testComponent2));
 
 		// Show that you can have at least 2 components in there
 		assertTrue(reactor.setAssemblyLocation(AssemblyType.ControlBank,
@@ -517,8 +511,8 @@ public class PWReactorTester {
 				AssemblyType.ControlBank, rowLoc2, colLoc2)));
 
 		// Check the names, should contain 2!
-		assertEquals(2, reactor.getAssemblyNames(AssemblyType.ControlBank)
-				.size());
+		assertEquals(2,
+				reactor.getAssemblyNames(AssemblyType.ControlBank).size());
 		assertEquals(testComponentName,
 				reactor.getAssemblyNames(AssemblyType.ControlBank).get(0));
 		assertEquals(testComponentName2,
@@ -542,8 +536,8 @@ public class PWReactorTester {
 		assertFalse(testComponent.getId() == testComponentId);
 
 		// Overwrite in table
-		assertFalse(reactor.addAssembly(AssemblyType.ControlBank,
-				testComponent3));
+		assertFalse(
+				reactor.addAssembly(AssemblyType.ControlBank, testComponent3));
 
 		// Check that the object has not been overwritten
 		assertTrue(testComponent.equals(reactor.getAssemblyByName(
@@ -567,7 +561,8 @@ public class PWReactorTester {
 		assertNull(reactor.getAssemblyByName(AssemblyType.ControlBank,
 				testComponent.getName()));
 		// Check size
-		assertEquals(1, reactor.getNumberOfAssemblies(AssemblyType.ControlBank));
+		assertEquals(1,
+				reactor.getNumberOfAssemblies(AssemblyType.ControlBank));
 
 		// It can now be overridden!
 		assertTrue(reactor.setAssemblyLocation(AssemblyType.ControlBank,
@@ -575,20 +570,20 @@ public class PWReactorTester {
 
 		// Show that the component's names can NOT overwrite each others
 		// locations
-		assertTrue(reactor.addAssembly(AssemblyType.ControlBank, testComponent));
+		assertTrue(
+				reactor.addAssembly(AssemblyType.ControlBank, testComponent));
 		assertFalse(reactor.setAssemblyLocation(AssemblyType.ControlBank,
 				testComponent.getName(), rowLoc1, colLoc1));
 
 		// Check the size, the respective locations
-		assertEquals(
-				testComponent2.getName(),
-				reactor.getAssemblyByLocation(AssemblyType.ControlBank,
-						rowLoc1, colLoc1).getName());
-		assertEquals(
-				testComponent2.getName(),
-				reactor.getAssemblyByLocation(AssemblyType.ControlBank,
-						rowLoc2, colLoc2).getName());
-		assertEquals(2, reactor.getNumberOfAssemblies(AssemblyType.ControlBank));
+		assertEquals(testComponent2.getName(),
+				reactor.getAssemblyByLocation(AssemblyType.ControlBank, rowLoc1,
+						colLoc1).getName());
+		assertEquals(testComponent2.getName(),
+				reactor.getAssemblyByLocation(AssemblyType.ControlBank, rowLoc2,
+						colLoc2).getName());
+		assertEquals(2,
+				reactor.getNumberOfAssemblies(AssemblyType.ControlBank));
 
 	}
 
@@ -605,7 +600,9 @@ public class PWReactorTester {
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
 				reactorSize);
-		IncoreInstrument testComponent = new IncoreInstrument(), testComponent2 = new IncoreInstrument(), testComponent3 = new IncoreInstrument();
+		IncoreInstrument testComponent = new IncoreInstrument(),
+				testComponent2 = new IncoreInstrument(),
+				testComponent3 = new IncoreInstrument();
 		String testComponentName = "Bob";
 		String testComponentName2 = "Bill!";
 		int rowLoc1 = 5, colLoc1 = 5;
@@ -625,15 +622,16 @@ public class PWReactorTester {
 		}
 
 		// Check the names, should be empty!
-		assertEquals(0, reactor.getAssemblyNames(AssemblyType.IncoreInstrument)
-				.size());
+		assertEquals(0,
+				reactor.getAssemblyNames(AssemblyType.IncoreInstrument).size());
 
 		// Try to get by name - valid string, empty string, and null
 		assertNull(reactor.getAssemblyByName(AssemblyType.IncoreInstrument,
 				"validNameThatDoesNotExistInThere152423"));
-		assertNull(reactor.getAssemblyByName(AssemblyType.IncoreInstrument, ""));
-		assertNull(reactor.getAssemblyByName(AssemblyType.IncoreInstrument,
-				null));
+		assertNull(
+				reactor.getAssemblyByName(AssemblyType.IncoreInstrument, ""));
+		assertNull(
+				reactor.getAssemblyByName(AssemblyType.IncoreInstrument, null));
 
 		// Set the name
 		testComponent.setName(testComponentName);
@@ -714,8 +712,8 @@ public class PWReactorTester {
 				AssemblyType.IncoreInstrument, rowLoc2, colLoc2)));
 
 		// Check the names, should contain 2!
-		assertEquals(2, reactor.getAssemblyNames(AssemblyType.IncoreInstrument)
-				.size());
+		assertEquals(2,
+				reactor.getAssemblyNames(AssemblyType.IncoreInstrument).size());
 		assertEquals(testComponentName,
 				reactor.getAssemblyNames(AssemblyType.IncoreInstrument).get(0));
 		assertEquals(testComponentName2,
@@ -723,8 +721,11 @@ public class PWReactorTester {
 
 		// Check operation for null
 		reactor.addAssembly(AssemblyType.IncoreInstrument, null);
-		assertNull(reactor.getAssemblyByName(AssemblyType.IncoreInstrument,
-				null)); // Make sure null does
+		assertNull(
+				reactor.getAssemblyByName(AssemblyType.IncoreInstrument, null)); // Make
+																					// sure
+																					// null
+																					// does
 		// not work!
 
 		// Finally, demonstrate what happens when a component of the same name
@@ -747,7 +748,8 @@ public class PWReactorTester {
 				AssemblyType.IncoreInstrument, testComponentName)));
 
 		// Test to remove components from the reactor
-		assertFalse(reactor.removeAssembly(AssemblyType.IncoreInstrument, null));
+		assertFalse(
+				reactor.removeAssembly(AssemblyType.IncoreInstrument, null));
 		assertFalse(reactor.removeAssembly(AssemblyType.IncoreInstrument, ""));
 		assertFalse(reactor.removeAssembly(AssemblyType.IncoreInstrument,
 				"!--+ANamETHaTDoESNOTEXIST19674376393<><(@#*)%^"));
@@ -777,12 +779,10 @@ public class PWReactorTester {
 				testComponent.getName(), rowLoc1, colLoc1));
 
 		// Check the size, the respective locations
-		assertEquals(
-				testComponent2.getName(),
+		assertEquals(testComponent2.getName(),
 				reactor.getAssemblyByLocation(AssemblyType.IncoreInstrument,
 						rowLoc1, colLoc1).getName());
-		assertEquals(
-				testComponent2.getName(),
+		assertEquals(testComponent2.getName(),
 				reactor.getAssemblyByLocation(AssemblyType.IncoreInstrument,
 						rowLoc2, colLoc2).getName());
 		assertEquals(2,
@@ -803,8 +803,9 @@ public class PWReactorTester {
 		int reactorSize = 17;
 		PressurizedWaterReactor reactor = new PressurizedWaterReactor(
 				reactorSize);
-		RodClusterAssembly testComponent = new RodClusterAssembly(10), testComponent2 = new RodClusterAssembly(
-				10), testComponent3 = new RodClusterAssembly(10);
+		RodClusterAssembly testComponent = new RodClusterAssembly(10),
+				testComponent2 = new RodClusterAssembly(10),
+				testComponent3 = new RodClusterAssembly(10);
 		String testComponentName = "Bob";
 		String testComponentName2 = "Bill!";
 		int rowLoc1 = 5, colLoc1 = 5;
@@ -818,14 +819,14 @@ public class PWReactorTester {
 		// location is bad
 		for (int i = 0; i < reactorSize; i++) {
 			for (int j = 0; j < reactorSize; j++) {
-				assertNull(reactor.getAssemblyByLocation(
-						AssemblyType.RodCluster, i, j));
+				assertNull(reactor
+						.getAssemblyByLocation(AssemblyType.RodCluster, i, j));
 			}
 		}
 
 		// Check the names, should be empty!
-		assertEquals(0, reactor.getAssemblyNames(AssemblyType.RodCluster)
-				.size());
+		assertEquals(0,
+				reactor.getAssemblyNames(AssemblyType.RodCluster).size());
 
 		// Try to get by name - valid string, empty string, and null
 		assertNull(reactor.getAssemblyByName(AssemblyType.RodCluster,
@@ -891,7 +892,8 @@ public class PWReactorTester {
 				AssemblyType.RodCluster, testComponentName)));
 
 		// Add it in there
-		assertTrue(reactor.addAssembly(AssemblyType.RodCluster, testComponent2));
+		assertTrue(
+				reactor.addAssembly(AssemblyType.RodCluster, testComponent2));
 
 		// Show that you can have at least 2 components in there
 		assertTrue(reactor.setAssemblyLocation(AssemblyType.RodCluster,
@@ -911,8 +913,8 @@ public class PWReactorTester {
 				AssemblyType.RodCluster, rowLoc2, colLoc2)));
 
 		// Check the names, should contain 2!
-		assertEquals(2, reactor.getAssemblyNames(AssemblyType.RodCluster)
-				.size());
+		assertEquals(2,
+				reactor.getAssemblyNames(AssemblyType.RodCluster).size());
 		assertEquals(testComponentName,
 				reactor.getAssemblyNames(AssemblyType.RodCluster).get(0));
 		assertEquals(testComponentName2,
@@ -936,8 +938,8 @@ public class PWReactorTester {
 		assertFalse(testComponent.getId() == testComponentId);
 
 		// Overwrite in table
-		assertFalse(reactor
-				.addAssembly(AssemblyType.RodCluster, testComponent3));
+		assertFalse(
+				reactor.addAssembly(AssemblyType.RodCluster, testComponent3));
 
 		// Check that the object has not been overwritten
 		assertTrue(testComponent.equals(reactor.getAssemblyByName(
@@ -974,12 +976,10 @@ public class PWReactorTester {
 				testComponent.getName(), rowLoc1, colLoc1));
 
 		// Check the size, the respective locations
-		assertEquals(
-				testComponent2.getName(),
+		assertEquals(testComponent2.getName(),
 				reactor.getAssemblyByLocation(AssemblyType.RodCluster, rowLoc1,
 						colLoc1).getName());
-		assertEquals(
-				testComponent2.getName(),
+		assertEquals(testComponent2.getName(),
 				reactor.getAssemblyByLocation(AssemblyType.RodCluster, rowLoc2,
 						colLoc2).getName());
 		assertEquals(2, reactor.getNumberOfAssemblies(AssemblyType.RodCluster));
@@ -1069,31 +1069,32 @@ public class PWReactorTester {
 		reactor = new PressurizedWaterReactor(reactorSize);
 
 		// Has a size of numberOfDefaultComponents
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 
 		// It is equal to the default rodComposite for many of the composite
 		// getters
 		assertTrue(rodComposite.equals(reactor.getComponent(4)));
-		assertTrue(rodComposite.equals(reactor.getComponent(rodComposite
-				.getName())));
+		assertTrue(rodComposite
+				.equals(reactor.getComponent(rodComposite.getName())));
 
 		// It is equal to the default coreComposite for many of the composite
 		// getters
 		assertTrue(coreComposite.equals(reactor.getComponent(3)));
-		assertTrue(coreComposite.equals(reactor.getComponent(coreComposite
-				.getName())));
+		assertTrue(coreComposite
+				.equals(reactor.getComponent(coreComposite.getName())));
 
 		// It is equal to the default fuelComposite for many of the composite
 		// getters
 		assertTrue(fuelComposite.equals(reactor.getComponent(2)));
-		assertTrue(fuelComposite.equals(reactor.getComponent(fuelComposite
-				.getName())));
+		assertTrue(fuelComposite
+				.equals(reactor.getComponent(fuelComposite.getName())));
 
 		// It is equal to the default controlComposite for many of the composite
 		// getters
 		assertTrue(controlComposite.equals(reactor.getComponent(1)));
-		assertTrue(controlComposite.equals(reactor
-				.getComponent(controlComposite.getName())));
+		assertTrue(controlComposite
+				.equals(reactor.getComponent(controlComposite.getName())));
 
 		// Check general getters for the other pieces
 		assertTrue(compNames.size() == reactor.getComponentNames().size());
@@ -1102,22 +1103,28 @@ public class PWReactorTester {
 		// These operations will show that these will not work for this class
 
 		// Check addComponent
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 		reactor.addComponent(new LWRComposite());
 		// No size change!
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 
 		// Check removeComponent - id
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 		reactor.removeComponent(1);
 		// No size change!
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 
 		// Check remove component - name
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 
 		// No size change!
-		assertEquals(numberOfDefaultComponents, reactor.getNumberOfComponents());
+		assertEquals(numberOfDefaultComponents,
+				reactor.getNumberOfComponents());
 
 	}
 
@@ -1142,7 +1149,8 @@ public class PWReactorTester {
 	 *            <p>
 	 *            The reactor to be compared with.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if they are equal. False otherwise.
 	 *         </p>
 	 */
@@ -1155,8 +1163,8 @@ public class PWReactorTester {
 			for (int i = 0; i < labels.size(); i++) {
 				// Assert that the column labels are in order and are set
 				// correctly to the 0 indexed value of size
-				assertEquals(labels.get(i), reactor.getGridLabelProvider()
-						.getLabelFromColumn(i));
+				assertEquals(labels.get(i),
+						reactor.getGridLabelProvider().getLabelFromColumn(i));
 				assertEquals(i, reactor.getGridLabelProvider()
 						.getColumnFromLabel(labels.get(i)));
 				colCount++;
@@ -1173,12 +1181,10 @@ public class PWReactorTester {
 			for (int i = 0; i < labels.size(); i++) {
 				// Assert that the row labels are in order and are set correctly
 				// to the 0 indexed value of size
-				assertEquals(labels.get(i), reactor.getGridLabelProvider()
-						.getLabelFromRow(i));
-				assertEquals(
-						i,
-						reactor.getGridLabelProvider().getRowFromLabel(
-								labels.get(i)));
+				assertEquals(labels.get(i),
+						reactor.getGridLabelProvider().getLabelFromRow(i));
+				assertEquals(i, reactor.getGridLabelProvider()
+						.getRowFromLabel(labels.get(i)));
 				rowCount++;
 			}
 
@@ -1200,7 +1206,8 @@ public class PWReactorTester {
 	public void checkEquality() {
 
 		// Local Declarations
-		PressurizedWaterReactor object, equalObject, unEqualObject, transitiveObject;
+		PressurizedWaterReactor object, equalObject, unEqualObject,
+				transitiveObject;
 		int size = 5;
 
 		// Setup Values
@@ -1219,7 +1226,8 @@ public class PWReactorTester {
 		object.setAssemblyLocation(AssemblyType.ControlBank, bank.getName(), 0,
 				0);
 		object.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), 0, 0);
-		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), 0, 0);
+		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), 0,
+				0);
 		object.setAssemblyLocation(AssemblyType.IncoreInstrument,
 				instrument.getName(), 0, 0);
 
@@ -1261,8 +1269,8 @@ public class PWReactorTester {
 		unEqualObject.addAssembly(AssemblyType.RodCluster, rca);
 		unEqualObject.setAssemblyLocation(AssemblyType.ControlBank,
 				bank.getName(), 0, 0);
-		unEqualObject.setAssemblyLocation(AssemblyType.Fuel,
-				assembly.getName(), 0, 0);
+		unEqualObject.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(),
+				0, 0);
 		unEqualObject.setAssemblyLocation(AssemblyType.RodCluster,
 				rca.getName(), 0, 0);
 		unEqualObject.setAssemblyLocation(AssemblyType.IncoreInstrument,
@@ -1284,7 +1292,8 @@ public class PWReactorTester {
 
 		// Check that equals() is Transitive
 		// x.equals(y) = true, y.equals(z) = true => x.equals(z) = true
-		if (object.equals(equalObject) && equalObject.equals(transitiveObject)) {
+		if (object.equals(equalObject)
+				&& equalObject.equals(transitiveObject)) {
 			assertTrue(object.equals(transitiveObject));
 		} else {
 			fail();
@@ -1293,12 +1302,12 @@ public class PWReactorTester {
 		// Check the Consistent nature of equals()
 		assertTrue(object.equals(equalObject) && object.equals(equalObject)
 				&& object.equals(equalObject));
-		assertTrue(!object.equals(unEqualObject)
-				&& !object.equals(unEqualObject)
-				&& !object.equals(unEqualObject));
+		assertTrue(
+				!object.equals(unEqualObject) && !object.equals(unEqualObject)
+						&& !object.equals(unEqualObject));
 
 		// Assert checking equality with null value returns false
-		assertFalse(object==null);
+		assertFalse(object == null);
 
 		// Assert that two equal objects have the same hashcode
 		assertTrue(object.equals(equalObject)
@@ -1323,7 +1332,8 @@ public class PWReactorTester {
 
 		// Local Declarations
 		PressurizedWaterReactor object;
-		PressurizedWaterReactor copyObject = new PressurizedWaterReactor(0), clonedObject;
+		PressurizedWaterReactor copyObject = new PressurizedWaterReactor(0),
+				clonedObject;
 		int size = 5;
 
 		// Setup Values
@@ -1342,7 +1352,8 @@ public class PWReactorTester {
 		object.setAssemblyLocation(AssemblyType.ControlBank, bank.getName(), 0,
 				0);
 		object.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), 0, 0);
-		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), 0, 0);
+		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), 0,
+				0);
 		object.setAssemblyLocation(AssemblyType.IncoreInstrument,
 				instrument.getName(), 0, 0);
 
@@ -1369,352 +1380,6 @@ public class PWReactorTester {
 
 	/**
 	 * <p>
-	 * This operation checks the HDF5 writing operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Writeables() {
-
-		// Local Declarations
-		int size = 5;
-		PressurizedWaterReactor reactor = new PressurizedWaterReactor(size);
-		String name = "Bob the Builder";
-		String description = "Can he fix it?";
-		int id = 4;
-		HDF5LWRTagType tag = reactor.getHDF5LWRTag();
-		Attribute attribute = null;
-		String attributeValue = null;
-		double fuelAssemblyPitch = 4;
-
-		// Setup Assemblies, instruments, and controlBank locations
-
-		// Size of the assemblies
-		int assemblySize = 3;
-
-		// Locations
-		GridLocation loc1 = new GridLocation(0, 0);
-		GridLocation loc2 = new GridLocation(2, 0);
-		GridLocation loc3 = new GridLocation(0, 3);
-		GridLocation loc4 = new GridLocation(1, 1);
-		GridLocation loc5 = new GridLocation(3, 1);
-		GridLocation loc6 = new GridLocation(1, 3);
-		GridLocation loc7 = new GridLocation(3, 0);
-		GridLocation loc8 = new GridLocation(2, 3);
-		GridLocation loc9 = new GridLocation(3, 3);
-
-		// Control Banks
-		ControlBank bank1 = new ControlBank("ControlBank1", 2, 4);
-		ControlBank bank2 = new ControlBank("ControlBank2", 3, 6);
-
-		// IncoreInstruments
-		IncoreInstrument instruments1 = new IncoreInstrument("Instrument1",
-				new Ring("I am a thimble!"));
-		IncoreInstrument instruments2 = new IncoreInstrument("Instrument2",
-				new Ring("I am a thimble, too!"));
-
-		// Fuel Assembly
-		FuelAssembly fuel1 = new FuelAssembly("Fuel Assembly 1", assemblySize);
-		FuelAssembly fuel2 = new FuelAssembly("Fuel Assembly 2", assemblySize);
-
-		// RodClusterAssembly
-		RodClusterAssembly rod1 = new RodClusterAssembly("RCA 1", assemblySize);
-		RodClusterAssembly rod2 = new RodClusterAssembly("RCA 2", assemblySize);
-
-		// Setup Duplicate Grids
-		LWRGridManager bankGridManager = new LWRGridManager(size);
-		LWRGridManager coreGridManager = new LWRGridManager(size);
-		LWRGridManager fuelGridManager = new LWRGridManager(size);
-		LWRGridManager rodGridManager = new LWRGridManager(size);
-
-		// Setup names
-		bankGridManager.setName("Control Bank Grid");
-		coreGridManager.setName("Incore Instrument Grid");
-		fuelGridManager.setName("Fuel Assembly Grid");
-		rodGridManager.setName("Rod Cluster Assembly Grid");
-
-		// Add objects to the grid for later comparison
-		// ControlBank
-		bankGridManager.addComponent(bank1, loc1);
-		bankGridManager.addComponent(bank2, loc2);
-		// Incore Instruments
-		coreGridManager.addComponent(instruments1, loc3);
-		coreGridManager.addComponent(instruments2, loc4);
-		// Fuel Assemblies
-		fuelGridManager.addComponent(fuel1, loc5);
-		fuelGridManager.addComponent(fuel2, loc6);
-		// RodClusterAssemblies
-		rodGridManager.addComponent(rod1, loc7);
-		rodGridManager.addComponent(rod2, loc8);
-
-		// Setup LWRComposite clones
-		LWRComposite bankComposite = new LWRComposite();
-		LWRComposite coreComposite = new LWRComposite();
-		LWRComposite fuelComposite = new LWRComposite();
-		LWRComposite rodComposite = new LWRComposite();
-
-		// Setup names, descriptions, ids and add pieces
-		// Control Bank
-		bankComposite.setName("Control Banks");
-		bankComposite
-				.setDescription("A Composite that contains many ControlBank Components.");
-		bankComposite.setId(1);
-		bankComposite.addComponent(bank1);
-		bankComposite.addComponent(bank2);
-		// Incore Instrument
-		coreComposite.setName("Incore Instruments");
-		coreComposite
-				.setDescription("A Composite that contains many IncoreInstrument Components.");
-		coreComposite.setId(3);
-		coreComposite.addComponent(instruments1);
-		coreComposite.addComponent(instruments2);
-		// Fuel Composite
-		fuelComposite.setName("Fuel Assemblies");
-		fuelComposite
-				.setDescription("A Composite that contains many FuelAssembly Components.");
-		fuelComposite.setId(2);
-		fuelComposite.addComponent(fuel1);
-		fuelComposite.addComponent(fuel2);
-		// Rod Cluster Assemblies
-		rodComposite.setName("Rod Cluster Assemblies");
-		rodComposite
-				.setDescription("A Composite that contains many RodClusterAssembly Components.");
-		rodComposite.setId(4);
-		rodComposite.addComponent(rod1);
-		rodComposite.addComponent(rod2);
-
-		// Setup Rows and Columns
-		ArrayList<String> rowLabels = new ArrayList<String>();
-		ArrayList<String> columnLabels = new ArrayList<String>();
-
-		// Setup row labels
-		rowLabels.add("A");
-		rowLabels.add("B");
-		rowLabels.add("C");
-		rowLabels.add("D");
-		rowLabels.add("E");
-
-		// Setup col labels
-		rowLabels.add("1");
-		rowLabels.add("2");
-		rowLabels.add("3");
-		rowLabels.add("4");
-		rowLabels.add("OVER 9000!");
-
-		GridLabelProvider provider = new GridLabelProvider(size);
-		provider.setRowLabels(rowLabels);
-		provider.setColumnLabels(columnLabels);
-		provider.setName("Grid Labels");
-
-		// Setup reactor
-		reactor.setName(name);
-		reactor.setId(id);
-		reactor.setDescription(description);
-		reactor.setGridLabelProvider(provider);
-		reactor.setFuelAssemblyPitch(fuelAssemblyPitch);
-
-		// Add pieces to reactor
-		// Control Bank
-		reactor.addAssembly(AssemblyType.ControlBank, bank1);
-		reactor.addAssembly(AssemblyType.ControlBank, bank2);
-		// IncoreInstrument
-		reactor.addAssembly(AssemblyType.IncoreInstrument, instruments1);
-		reactor.addAssembly(AssemblyType.IncoreInstrument, instruments2);
-		// Fuel Assemblies
-		reactor.addAssembly(AssemblyType.Fuel, fuel1);
-		reactor.addAssembly(AssemblyType.Fuel, fuel2);
-		// RodClusterAssemblies
-		reactor.addAssembly(AssemblyType.RodCluster, rod1);
-		reactor.addAssembly(AssemblyType.RodCluster, rod2);
-
-		// Setup Positions
-		// Control Bank
-		reactor.setAssemblyLocation(AssemblyType.ControlBank, bank1.getName(),
-				loc1.getRow(), loc1.getColumn());
-		reactor.setAssemblyLocation(AssemblyType.ControlBank, bank2.getName(),
-				loc2.getRow(), loc2.getColumn());
-		// IncoreInstrument
-		reactor.setAssemblyLocation(AssemblyType.IncoreInstrument,
-				instruments1.getName(), loc3.getRow(), loc3.getColumn());
-		reactor.setAssemblyLocation(AssemblyType.IncoreInstrument,
-				instruments2.getName(), loc4.getRow(), loc4.getColumn());
-		// Fuel Assemblies
-		reactor.setAssemblyLocation(AssemblyType.Fuel, fuel1.getName(),
-				loc5.getRow(), loc5.getColumn());
-		reactor.setAssemblyLocation(AssemblyType.Fuel, fuel2.getName(),
-				loc6.getRow(), loc6.getColumn());
-		// RodClusterAssemblies
-		reactor.setAssemblyLocation(AssemblyType.RodCluster, rod1.getName(),
-				loc7.getRow(), loc7.getColumn());
-		reactor.setAssemblyLocation(AssemblyType.RodCluster, rod2.getName(),
-				loc8.getRow(), loc8.getColumn());
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "test.h5");
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			// Fail here
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Check to see if it has any children
-		assertNotNull(reactor.getWriteableChildren());
-		// Check Children - use equals comparison
-		// Check size
-		assertEquals(9, reactor.getWriteableChildren().size());
-		// Check contents
-		assertTrue(rodComposite.equals(reactor.getWriteableChildren().get(0)));
-		assertTrue(coreComposite.equals(reactor.getWriteableChildren().get(1)));
-		assertTrue(fuelComposite.equals(reactor.getWriteableChildren().get(2)));
-		assertTrue(bankComposite.equals(reactor.getWriteableChildren().get(3)));
-		assertTrue(provider.equals(reactor.getWriteableChildren().get(4)));
-
-		assertTrue(reactor.getWriteableChildren().contains(bankGridManager));
-		assertTrue(reactor.getWriteableChildren().contains(fuelGridManager));
-		assertTrue(reactor.getWriteableChildren().contains(coreGridManager));
-		assertTrue(reactor.getWriteableChildren().contains(rodGridManager));
-
-		// Check writing attributes
-		H5Group h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		// Pass the group and file to the writer for attributes
-		// See that it passes
-		assertTrue(reactor.writeAttributes(h5File, h5Group));
-
-		// Close group and then reopen
-		try {
-			h5File.close();
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Get the group again
-		h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-
-		// Check attributes
-		assertEquals("/", h5Group.getName());
-
-		try {
-			// Show that there are no other groups made at this time
-			assertEquals(0, h5Group.getMemberList().size());
-
-			// Check the meta data
-			assertEquals(6, h5Group.getMetadata().size());
-
-			// Check String attribute - HDF5LWRTag
-			attribute = (Attribute) h5Group.getMetadata().get(0);
-			assertEquals(attribute.getName(), "HDF5LWRTag");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(tag.toString(), attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - description
-			attribute = (Attribute) h5Group.getMetadata().get(1);
-			assertEquals(attribute.getName(), "description");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(description, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Double Attribute - fuelAssemblyPitch
-			attribute = (Attribute) h5Group.getMetadata().get(2);
-			assertEquals(attribute.getName(), "fuelAssemblyPitch");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_FLOAT);
-			assertEquals(fuelAssemblyPitch,
-					((double[]) attribute.getValue())[0], 1.2);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - id
-			attribute = (Attribute) h5Group.getMetadata().get(3);
-			assertEquals(attribute.getName(), "id");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(id, ((int[]) attribute.getValue())[0]);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - name
-			attribute = (Attribute) h5Group.getMetadata().get(4);
-			assertEquals(attribute.getName(), "name");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(name, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - size
-			attribute = (Attribute) h5Group.getMetadata().get(5);
-			assertEquals(attribute.getName(), "size");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(size, ((int[]) attribute.getValue())[0]);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		// Make sure the writeAttributes fail for invalid stuff
-		assertFalse(reactor.writeAttributes(null, h5Group));
-		assertFalse(reactor.writeAttributes(h5File, null));
-
-		// Check dataSet.
-		assertFalse(reactor.writeDatasets(null, null));
-
-		// Check Group Creation
-		H5Group group = reactor.createGroup(h5File, h5Group);
-		// See that the previous group has a group
-		assertEquals(1, h5Group.getMemberList().size());
-		// Check that it has the same name as the root reactor
-		assertEquals(reactor.getName(), h5Group.getMemberList().get(0)
-				.toString());
-		// Check that the returned group is a Group but no members
-		assertEquals(0, group.getMemberList().size());
-		assertEquals(0, ((Group) h5Group.getMemberList().get(0))
-				.getMemberList().size());
-
-		// Close that h5 file!
-		try {
-			h5File.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Delete the file once you are done
-		dataFile.delete();
-
-	}
-
-	/**
-	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
@@ -1731,291 +1396,6 @@ public class PWReactorTester {
 		if (dataFile.exists()) {
 			dataFile.delete();
 		}
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the HDF5 readable operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Readables() {
-
-		// Local Declarations
-		int size = 5;
-		PressurizedWaterReactor component = new PressurizedWaterReactor(size);
-		PressurizedWaterReactor newComponent = new PressurizedWaterReactor(-1);
-		String name = "Bob the Builder";
-		String description = "Can he fix it?";
-		int id = 4;
-		HDF5LWRTagType tag = component.getHDF5LWRTag();
-		double fuelAssemblyPitch = 4;
-		H5Group subGroup = null;
-		String testFileName = "testWrite.h5";
-
-		// Setup Assemblies, instruments, and controlBank locations
-
-		// Size of the assemblies
-		int assemblySize = 3;
-
-		// Locations
-		GridLocation loc1 = new GridLocation(0, 0);
-		GridLocation loc2 = new GridLocation(2, 0);
-		GridLocation loc3 = new GridLocation(0, 3);
-		GridLocation loc4 = new GridLocation(1, 1);
-		GridLocation loc5 = new GridLocation(3, 1);
-		GridLocation loc6 = new GridLocation(1, 3);
-		GridLocation loc7 = new GridLocation(3, 0);
-		GridLocation loc8 = new GridLocation(2, 3);
-		GridLocation loc9 = new GridLocation(3, 3);
-
-		// Control Banks
-		ControlBank bank1 = new ControlBank("ControlBank1", 2, 4);
-		ControlBank bank2 = new ControlBank("ControlBank2", 3, 6);
-
-		// IncoreInstruments
-		IncoreInstrument instruments1 = new IncoreInstrument("Instrument1",
-				new Ring("I am a thimble!"));
-		IncoreInstrument instruments2 = new IncoreInstrument("Instrument2",
-				new Ring("I am a thimble, too!"));
-
-		// Fuel Assembly
-		FuelAssembly fuel1 = new FuelAssembly("Fuel Assembly 1", assemblySize);
-		FuelAssembly fuel2 = new FuelAssembly("Fuel Assembly 2", assemblySize);
-
-		// RodClusterAssembly
-		RodClusterAssembly rod1 = new RodClusterAssembly("RCA 1", assemblySize);
-		RodClusterAssembly rod2 = new RodClusterAssembly("RCA 2", assemblySize);
-
-		// Setup Duplicate Grids
-		LWRGridManager bankGridManager = new LWRGridManager(size);
-		LWRGridManager coreGridManager = new LWRGridManager(size);
-		LWRGridManager fuelGridManager = new LWRGridManager(size);
-		LWRGridManager rodGridManager = new LWRGridManager(size);
-
-		// Setup names
-		bankGridManager.setName("Control Bank Grid");
-		coreGridManager.setName("Incore Instrument Grid");
-		fuelGridManager.setName("Fuel Assembly Grid");
-		rodGridManager.setName("Rod Cluster Assembly Grid");
-
-		// Add objects to the grid for later comparison
-		// ControlBank
-		bankGridManager.addComponent(bank1, loc1);
-		bankGridManager.addComponent(bank2, loc2);
-		// Incore Instruments
-		coreGridManager.addComponent(instruments1, loc3);
-		coreGridManager.addComponent(instruments2, loc4);
-		// Fuel Assemblies
-		fuelGridManager.addComponent(fuel1, loc5);
-		fuelGridManager.addComponent(fuel2, loc6);
-		// RodClusterAssemblies
-		rodGridManager.addComponent(rod1, loc7);
-		rodGridManager.addComponent(rod2, loc8);
-
-		// Setup LWRComposite clones
-		LWRComposite bankComposite = new LWRComposite();
-		LWRComposite coreComposite = new LWRComposite();
-		LWRComposite fuelComposite = new LWRComposite();
-		LWRComposite rodComposite = new LWRComposite();
-
-		// Setup names, descriptions, ids and add pieces
-		// Control Bank
-		bankComposite.setName("Control Banks");
-		bankComposite
-				.setDescription("A Composite that contains many ControlBank Components.");
-		bankComposite.setId(1);
-		bankComposite.addComponent(bank1);
-		bankComposite.addComponent(bank2);
-		// Incore Instrument
-		coreComposite.setName("Incore Instruments");
-		coreComposite
-				.setDescription("A Composite that contains many IncoreInstrument Components.");
-		coreComposite.setId(3);
-		coreComposite.addComponent(instruments1);
-		coreComposite.addComponent(instruments2);
-		// Fuel Composite
-		fuelComposite.setName("Fuel Assemblies");
-		fuelComposite
-				.setDescription("A Composite that contains many FuelAssembly Components.");
-		fuelComposite.setId(2);
-		fuelComposite.addComponent(fuel1);
-		fuelComposite.addComponent(fuel2);
-		// Rod Cluster Assemblies
-		rodComposite.setName("Rod Cluster Assemblies");
-		rodComposite
-				.setDescription("A Composite that contains many RodClusterAssembly Components.");
-		rodComposite.setId(4);
-		rodComposite.addComponent(rod1);
-		rodComposite.addComponent(rod2);
-
-		// Setup Rows and Columns
-		ArrayList<String> rowLabels = new ArrayList<String>();
-		ArrayList<String> columnLabels = new ArrayList<String>();
-
-		// Setup row labels
-		rowLabels.add("A");
-		rowLabels.add("B");
-		rowLabels.add("C");
-		rowLabels.add("D");
-		rowLabels.add("E");
-
-		// Setup col labels
-		rowLabels.add("1");
-		rowLabels.add("2");
-		rowLabels.add("3");
-		rowLabels.add("4");
-		rowLabels.add("OVER 9000!");
-
-		GridLabelProvider provider = new GridLabelProvider(size);
-		provider.setRowLabels(rowLabels);
-		provider.setColumnLabels(columnLabels);
-		provider.setName("Grid Labels");
-
-		// Setup reactor
-		component.setName(name);
-		component.setId(id);
-		component.setDescription(description);
-		component.setGridLabelProvider(provider);
-		component.setFuelAssemblyPitch(fuelAssemblyPitch);
-
-		// Add pieces to component
-		// Control Bank
-		component.addAssembly(AssemblyType.ControlBank, bank1);
-		component.addAssembly(AssemblyType.ControlBank, bank2);
-		// IncoreInstrument
-		component.addAssembly(AssemblyType.IncoreInstrument, instruments1);
-		component.addAssembly(AssemblyType.IncoreInstrument, instruments2);
-		// Fuel Assemblies
-		component.addAssembly(AssemblyType.Fuel, fuel1);
-		component.addAssembly(AssemblyType.Fuel, fuel2);
-		// RodClusterAssemblies
-		component.addAssembly(AssemblyType.RodCluster, rod1);
-		component.addAssembly(AssemblyType.RodCluster, rod2);
-
-		// Setup Positions
-		// Control Bank
-		component.setAssemblyLocation(AssemblyType.ControlBank,
-				bank1.getName(), loc1.getRow(), loc1.getColumn());
-		component.setAssemblyLocation(AssemblyType.ControlBank,
-				bank2.getName(), loc2.getRow(), loc2.getColumn());
-		// IncoreInstrument
-		component.setAssemblyLocation(AssemblyType.IncoreInstrument,
-				instruments1.getName(), loc3.getRow(), loc3.getColumn());
-		component.setAssemblyLocation(AssemblyType.IncoreInstrument,
-				instruments2.getName(), loc4.getRow(), loc4.getColumn());
-		// Fuel Assemblies
-		component.setAssemblyLocation(AssemblyType.Fuel, fuel1.getName(),
-				loc5.getRow(), loc5.getColumn());
-		component.setAssemblyLocation(AssemblyType.Fuel, fuel2.getName(),
-				loc6.getRow(), loc6.getColumn());
-		// RodClusterAssemblies
-		component.setAssemblyLocation(AssemblyType.RodCluster, rod1.getName(),
-				loc7.getRow(), loc7.getColumn());
-		component.setAssemblyLocation(AssemblyType.RodCluster, rod2.getName(),
-				loc8.getRow(), loc8.getColumn());
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ testFileName);
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Setup PWRAssembly with Data in the Group
-
-		H5Group parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		try {
-			// Setup the subGroup
-			subGroup = (H5Group) h5File.createGroup(name, parentH5Group);
-
-			// Setup the subGroup's attributes
-
-			// Setup Tag Attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"HDF5LWRTag", tag.toString());
-
-			// Setup name attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup, "name",
-					name);
-
-			// Setup id attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "id", id);
-
-			// Setup description attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"description", description);
-
-			// Setup size attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "size",
-					size);
-
-			// Setup fuelAssemblyPitch attribute
-			HdfWriterFactory.writeDoubleAttribute(h5File, subGroup,
-					"fuelAssemblyPitch", fuelAssemblyPitch);
-
-			// Close group and then reopen
-			h5File.close();
-			h5File.open();
-			parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-					.getRootNode()).getUserObject();
-
-			// Get the subGroup
-			subGroup = (H5Group) parentH5Group.getMemberList().get(0);
-
-			// Read information
-			assertTrue(newComponent.readAttributes(subGroup));
-			assertFalse(newComponent.readDatasets(null));
-			assertTrue(newComponent.readChild(bankComposite));
-			assertTrue(newComponent.readChild(fuelComposite));
-			assertTrue(newComponent.readChild(rodComposite));
-			assertTrue(newComponent.readChild(coreComposite));
-			assertTrue(newComponent.readChild(provider));
-			assertTrue(newComponent.readChild(bankGridManager));
-			assertTrue(newComponent.readChild(coreGridManager));
-			assertTrue(newComponent.readChild(fuelGridManager));
-			assertTrue(newComponent.readChild(rodGridManager));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Try to break the readChild operation
-			assertFalse(newComponent.readChild(null));
-			assertTrue(newComponent.readChild(new LWRGridManager(size)));
-			assertTrue(newComponent.readChild(new LWRComposite()));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Now, lets try to set an erroneous H5Group with missing data
-			subGroup.getMetadata().remove(1);
-
-			// Run it through
-			assertFalse(newComponent.readAttributes(subGroup));
-			// Check it does not change
-			assertTrue(component.equals(newComponent));
-
-			// Check for nullaries
-			assertFalse(newComponent.readAttributes(null));
-			// Doesn't change anything
-			assertTrue(component.equals(newComponent));
-
-			h5File.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		dataFile.delete();
 
 	}
 
@@ -2065,8 +1445,8 @@ public class PWReactorTester {
 				row1, col1);
 		object.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), row1,
 				col1);
-		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(),
-				row1, col1);
+		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), row1,
+				col1);
 		object.setAssemblyLocation(AssemblyType.IncoreInstrument,
 				instrument.getName(), row1, col1);
 
@@ -2074,8 +1454,8 @@ public class PWReactorTester {
 				row2, col2);
 		object.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), row2,
 				col2);
-		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(),
-				row2, col2);
+		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), row2,
+				col2);
 		object.setAssemblyLocation(AssemblyType.IncoreInstrument,
 				instrument.getName(), row2, col2);
 
@@ -2083,8 +1463,8 @@ public class PWReactorTester {
 				row3, col3);
 		object.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), row3,
 				col3);
-		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(),
-				row3, col3);
+		object.setAssemblyLocation(AssemblyType.RodCluster, rca.getName(), row3,
+				col3);
 		object.setAssemblyLocation(AssemblyType.IncoreInstrument,
 				instrument.getName(), row3, col3);
 
@@ -2146,19 +1526,19 @@ public class PWReactorTester {
 				AssemblyType.ControlBank, row1, col1));
 		assertNotNull(object.getAssemblyDataProviderAtLocation(
 				AssemblyType.ControlBank, row1, col1));
-		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank,
-				row1, col1).addData(data1, time1);
+		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank, row1,
+				col1).addData(data1, time1);
 		assertNotNull(object.getAssemblyDataProviderAtLocation(
 				AssemblyType.ControlBank, row1, col1));
-		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank,
-				row1, col1).addData(data2, time1);
+		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank, row1,
+				col1).addData(data2, time1);
 
-		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank,
-				row1, col1).addData(data3, time1);
-		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank,
-				row1, col1).addData(data3, time2);
-		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank,
-				row1, col1).addData(data4, time2);
+		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank, row1,
+				col1).addData(data3, time1);
+		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank, row1,
+				col1).addData(data3, time2);
+		object.getAssemblyDataProviderAtLocation(AssemblyType.ControlBank, row1,
+				col1).addData(data4, time2);
 
 		// Add some data
 		object.getAssemblyDataProviderAtLocation(AssemblyType.Fuel, row1, col1)
@@ -2203,8 +1583,10 @@ public class PWReactorTester {
 				row1, col1).equals(provider));
 		assertTrue(object.getAssemblyDataProviderAtLocation(
 				AssemblyType.RodCluster, row1, col1).equals(provider));
-		assertTrue(object.getAssemblyDataProviderAtLocation(
-				AssemblyType.IncoreInstrument, row1, col1).equals(provider));
+		assertTrue(object
+				.getAssemblyDataProviderAtLocation(
+						AssemblyType.IncoreInstrument, row1, col1)
+				.equals(provider));
 
 	}
 

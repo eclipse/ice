@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -129,7 +124,8 @@ public class ControlBank extends LWRComponent {
 	 * Returns the maximum number of axial steps.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The maximum number of axial steps.
 	 *         </p>
 	 */
@@ -142,7 +138,8 @@ public class ControlBank extends LWRComponent {
 	 * Returns the axial step size.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The axial step size.
 	 *         </p>
 	 */
@@ -156,7 +153,8 @@ public class ControlBank extends LWRComponent {
 	 * multiplied by the maximum number of axial steps.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The axial step size multiplied by the maximum number of axial
 	 *         steps.
 	 *         </p>
@@ -164,22 +162,6 @@ public class ControlBank extends LWRComponent {
 	public double getStrokeLength() {
 
 		return (this.maxNumberOfSteps) * this.stepSize;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeDoubleAttribute(h5File, h5Group,
-				"stepSize", stepSize);
-		flag &= HdfWriterFactory.writeIntegerAttribute(h5File, h5Group,
-				"maxNumberOfSteps", maxNumberOfSteps);
-
-		return flag;
 	}
 
 	/*
@@ -205,7 +187,8 @@ public class ControlBank extends LWRComponent {
 
 			// Compare values
 			retVal = (super.equals(otherObject)
-					&& this.maxNumberOfSteps == bank.maxNumberOfSteps && this.stepSize == bank.stepSize);
+					&& this.maxNumberOfSteps == bank.maxNumberOfSteps
+					&& this.stepSize == bank.stepSize);
 		}
 
 		// Return retVal
@@ -269,38 +252,6 @@ public class ControlBank extends LWRComponent {
 
 		// Return newly instantiated object
 		return bank;
-
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		Double stepSize = HdfReaderFactory.readDoubleAttribute(h5Group,
-				"stepSize");
-		Integer maxNumberOfSteps = HdfReaderFactory.readIntegerAttribute(
-				h5Group, "maxNumberOfSteps");
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (stepSize == null || maxNumberOfSteps == null || !flag
-				|| h5Group == null) {
-			return false;
-		}
-
-		// If everything is valid, then set data
-		this.stepSize = stepSize.doubleValue();
-		this.maxNumberOfSteps = maxNumberOfSteps.intValue();
-
-		return true;
 
 	}
 

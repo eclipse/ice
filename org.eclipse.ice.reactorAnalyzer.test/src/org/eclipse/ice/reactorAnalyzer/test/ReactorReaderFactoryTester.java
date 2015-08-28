@@ -20,9 +20,12 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.reactor.LWRComponentWriter;
+import org.eclipse.ice.reactor.LWRComponent;
+import org.eclipse.ice.reactor.hdf.LWRIOHandler;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.sfr.base.SFReactorIOHandler;
 import org.eclipse.ice.reactor.sfr.core.SFReactor;
@@ -41,7 +44,8 @@ public class ReactorReaderFactoryTester {
 		String separator = System.getProperty("file.separator");
 		String directory = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "reactorReaderTesterWorkspace";
-		URI badURI = new File(directory + separator + "doesNotExist.h5").toURI();
+		URI badURI = new File(directory + separator + "doesNotExist.h5")
+				.toURI();
 
 		// Bad URIs shouldn't work.
 		assertNull(factory.readReactor(null));
@@ -50,7 +54,7 @@ public class ReactorReaderFactoryTester {
 		// Test valid URIs.
 		IReactorComponent reactor;
 		IReactorComponent loadedReactor;
-		LWRComponentWriter lwrWriter = new LWRComponentWriter();
+		LWRIOHandler lwrWriter = new LWRIOHandler();
 		SFReactorIOHandler sfrWriter = new SFReactorIOHandler();
 		File file;
 		URI uri;
@@ -60,7 +64,9 @@ public class ReactorReaderFactoryTester {
 		reactor = new PressurizedWaterReactor(4);
 		file = new File(directory + "simpleLWR.h5");
 		uri = file.toURI();
-		lwrWriter.write((PressurizedWaterReactor) reactor, uri);
+		List<LWRComponent> components = new ArrayList<LWRComponent>(1);
+		components.add((LWRComponent) reactor);
+		lwrWriter.writeHDF5(uri, components);
 
 		// Use the factory to read the reactor.
 		loadedReactor = factory.readReactor(uri);
@@ -72,8 +78,8 @@ public class ReactorReaderFactoryTester {
 		try {
 			file.delete();
 		} catch (Exception e) {
-			System.err
-					.println("ReactorReaderFactoryTester error: Could not delete file \""
+			System.err.println(
+					"ReactorReaderFactoryTester error: Could not delete file \""
 							+ file.getAbsolutePath() + "\".");
 			fail();
 		}
@@ -96,8 +102,8 @@ public class ReactorReaderFactoryTester {
 		try {
 			file.delete();
 		} catch (Exception e) {
-			System.err
-					.println("ReactorReaderFactoryTester error: Could not delete file \""
+			System.err.println(
+					"ReactorReaderFactoryTester error: Could not delete file \""
 							+ file.getAbsolutePath() + "\".");
 			fail();
 		}

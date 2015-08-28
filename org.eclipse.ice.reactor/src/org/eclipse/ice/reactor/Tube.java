@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-
 /**
  * <p>
  * The Tube class represents the hollow tubes in a FuelAssembly which allow for
@@ -298,48 +292,6 @@ public class Tube extends Ring {
 
 		// Return newly instantiated object
 		return tube;
-
-	}
-
-	/*
-	 * Overrides a method from Ring.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeStringAttribute(h5File, h5Group,
-				"tubeType", tubeType.toString());
-
-		return flag;
-	}
-
-	/*
-	 * Overrides a method from Ring.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		TubeType type1 = TubeType.GUIDE;
-		TubeType type = type1.toType((HdfReaderFactory.readStringAttribute(
-				h5Group, "tubeType")));
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (type == null || !flag || h5Group == null) {
-			return false;
-		}
-		// If everything is valid, then set data
-		this.tubeType = type;
-
-		return true;
 
 	}
 

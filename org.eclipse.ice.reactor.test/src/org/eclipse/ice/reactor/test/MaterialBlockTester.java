@@ -20,17 +20,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 
-import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.Material;
 import org.eclipse.ice.reactor.MaterialBlock;
@@ -227,7 +218,8 @@ public class MaterialBlockTester {
 
 		// Check that equals() is Transitive
 		// x.equals(y) = true, y.equals(z) = true => x.equals(z) = true
-		if (object.equals(equalObject) && equalObject.equals(transitiveObject)) {
+		if (object.equals(equalObject)
+				&& equalObject.equals(transitiveObject)) {
 			assertTrue(object.equals(transitiveObject));
 		} else {
 			fail();
@@ -236,12 +228,12 @@ public class MaterialBlockTester {
 		// Check the Consistent nature of equals()
 		assertTrue(object.equals(equalObject) && object.equals(equalObject)
 				&& object.equals(equalObject));
-		assertTrue(!object.equals(unEqualObject)
-				&& !object.equals(unEqualObject)
-				&& !object.equals(unEqualObject));
+		assertTrue(
+				!object.equals(unEqualObject) && !object.equals(unEqualObject)
+						&& !object.equals(unEqualObject));
 
 		// Assert checking equality with null value returns false
-		assertFalse(object==null);
+		assertFalse(object == null);
 
 		// Assert that two equal objects have the same hashcode
 		assertTrue(object.equals(equalObject)
@@ -300,184 +292,6 @@ public class MaterialBlockTester {
 
 	/**
 	 * <p>
-	 * This operation checks the HDF5 writing operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Writeables() {
-
-		// Local Declarations
-		MaterialBlock component = new MaterialBlock();
-		String name = "MaterialBlock";
-		String description = "Its a collection of rings!  MaterialBlock put a ring on it!  It has several!";
-		int id = 4;
-		HDF5LWRTagType tag = component.getHDF5LWRTag();
-		Ring ring1 = new Ring("Ring 1");
-		ring1.setOuterRadius(6);
-		ring1.setInnerRadius(4);
-		Ring ring2 = new Ring("Ring 2");
-		ring2.setOuterRadius(3);
-		ring2.setInnerRadius(1);
-		String testFileName = "testWrite.h5";
-		double position = 2.3;
-
-		Attribute attribute = null;
-		String attributeValue = null;
-
-		// Setup Component
-		component.setName(name);
-		component.setId(id);
-		component.setDescription(description);
-		component.addRing(ring1);
-		component.addRing(ring2);
-		component.setPosition(position);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		System.out.println("Going to open file: "
-				+ System.getProperty("user.dir") + separator + testFileName);
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ testFileName);
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Check to see if it has any children
-		assertNotNull(component.getWriteableChildren());
-
-		// Check children
-		assertEquals(component.getRings().size(), component
-				.getWriteableChildren().size());
-		assertTrue(ring2.equals(component.getWriteableChildren().get(0)));
-		assertTrue(ring1.equals(component.getWriteableChildren().get(1)));
-
-		// Check writing attributes
-		H5Group h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		// Pass the group and file to the writer for attributes
-		// See that it passes
-		assertTrue(component.writeAttributes(h5File, h5Group));
-
-		// Close group and then reopen
-		try {
-			h5File.close();
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Get the group again
-		h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-
-		// Check attributes
-		assertEquals("/", h5Group.getName());
-		try {
-			// Show that there are no other groups made at this time
-			assertEquals(0, h5Group.getMemberList().size());
-
-			// Check the meta data
-			assertEquals(5, h5Group.getMetadata().size());
-
-			// Check String attribute - HDF5LWRTag
-			attribute = (Attribute) h5Group.getMetadata().get(0);
-			assertEquals(attribute.getName(), "HDF5LWRTag");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(tag.toString(), attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - description
-			attribute = (Attribute) h5Group.getMetadata().get(1);
-			assertEquals(attribute.getName(), "description");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(description, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - id
-			attribute = (Attribute) h5Group.getMetadata().get(2);
-			assertEquals(attribute.getName(), "id");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(id, ((int[]) attribute.getValue())[0]);
-
-			// Check String Attribute - name
-			attribute = (Attribute) h5Group.getMetadata().get(3);
-			assertEquals(attribute.getName(), "name");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(name, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Double Attribute - rodPitch
-			attribute = (Attribute) h5Group.getMetadata().get(4);
-			assertEquals(attribute.getName(), "position");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_FLOAT);
-			assertEquals(position, ((double[]) attribute.getValue())[0], 1.2);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		// Make sure the writeAttributes fail for invalid stuff
-		assertFalse(component.writeAttributes(null, h5Group));
-		assertFalse(component.writeAttributes(h5File, null));
-
-		// Check dataSet. Pass null to show that it always returns true and does
-		// nothing
-		assertFalse(component.writeDatasets(null, null));
-
-		// Check Group Creation
-		H5Group group = component.createGroup(h5File, h5Group);
-		// See that the previous group has a group
-		assertEquals(1, h5Group.getMemberList().size());
-		// Check that it has the same name as the root component
-		assertEquals(component.getName(), h5Group.getMemberList().get(0)
-				.toString());
-		// Check that the returned group is a Group but no members
-		assertEquals(0, group.getMemberList().size());
-		assertEquals(0, ((Group) h5Group.getMemberList().get(0))
-				.getMemberList().size());
-
-		// Close that h5 file!
-		try {
-			h5File.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Delete the file once you are done
-		dataFile.delete();
-
-	}
-
-	/**
-	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
@@ -494,135 +308,6 @@ public class MaterialBlockTester {
 		if (dataFile.exists()) {
 			dataFile.delete();
 		}
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the HDF5 readable operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Readables() {
-
-		// Local Declarations
-		MaterialBlock component = new MaterialBlock();
-		MaterialBlock newComponent = new MaterialBlock();
-		String name = "MaterialBlock";
-		String description = "Its a collection of rings!  MaterialBlock put a ring on it!  It has several!";
-		int id = 4;
-		HDF5LWRTagType tag = component.getHDF5LWRTag();
-		Ring ring1 = new Ring("Ring 1");
-		ring1.setOuterRadius(6);
-		ring1.setInnerRadius(4);
-		Ring ring2 = new Ring("Ring 2");
-		ring2.setOuterRadius(3);
-		ring2.setInnerRadius(1);
-		H5Group subGroup = null;
-		double position = 2.3;
-
-		// Test readChild here
-		assertTrue(component.readChild(ring1));
-		assertFalse(component.readChild(null));
-		assertTrue(component.readChild(newComponent));
-		assertTrue(component.getRings().size() == 1);
-		assertTrue(component.getRing(ring1.getName()).equals(ring1));
-
-		// Reset component
-		component.removeRing(ring1.getName());
-
-		// Setup Component
-		component.setName(name);
-		component.setId(id);
-		component.setDescription(description);
-		component.addRing(ring1);
-		component.addRing(ring2);
-		component.setPosition(position);
-
-		// Add rings to group. Should remove once children are set up correctly
-		newComponent.addRing(ring1);
-		newComponent.addRing(ring2);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "test.h5");
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Setup LWRComponent with Data in the Group
-
-		H5Group parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		try {
-			// Setup the subGroup
-			subGroup = (H5Group) h5File.createGroup(name, parentH5Group);
-
-			// Setup the subGroup's attributes
-
-			// Setup Tag Attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"HDF5LWRTag", tag.toString());
-
-			// Setup name attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup, "name",
-					name);
-
-			// Setup id attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "id", id);
-
-			// Setup description attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"description", description);
-
-			// Write pos
-			HdfWriterFactory.writeDoubleAttribute(h5File, subGroup, "position",
-					position);
-
-			// Close group and then reopen
-			h5File.close();
-			h5File.open();
-			parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-					.getRootNode()).getUserObject();
-
-			// Get the subGroup
-			subGroup = (H5Group) parentH5Group.getMemberList().get(0);
-
-			// Read information
-			assertTrue(newComponent.readAttributes(subGroup));
-			assertFalse(newComponent.readDatasets(null));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Now, lets try to set an erroneous H5Group with missing data
-			subGroup.getMetadata().remove(1);
-
-			// Run it through
-			assertFalse(newComponent.readAttributes(subGroup));
-			// Check it does not change
-			assertTrue(component.equals(newComponent));
-
-			// Check for nullaries
-			assertFalse(newComponent.readAttributes(null));
-			// Doesn't change anything
-			assertTrue(component.equals(newComponent));
-
-			// Close the h5 file!
-			h5File.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		dataFile.delete();
 
 	}
 

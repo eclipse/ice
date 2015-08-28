@@ -47,7 +47,8 @@ public class PWReactorFactory {
 		assembly.setName("Test Assembly");
 
 		reactor.addAssembly(AssemblyType.Fuel, assembly);
-		reactor.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), 0, 0);
+		reactor.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), 0,
+				0);
 
 		ArrayList<Material> materialList = new ArrayList<Material>();
 		materialList.add(new Material("uo2", MaterialType.SOLID));
@@ -58,8 +59,8 @@ public class PWReactorFactory {
 		String separator = System.getProperty("file.separator");
 		File pinDataFile = new File(System.getProperty("user.dir") + separator
 				+ "data" + separator + "pin_data.txt");
-		File powerDataFile = new File(System.getProperty("user.dir")
-				+ separator + "data" + separator + "power_data.txt");
+		File powerDataFile = new File(System.getProperty("user.dir") + separator
+				+ "data" + separator + "power_data.txt");
 
 		try {
 
@@ -81,8 +82,7 @@ public class PWReactorFactory {
 				int materialNumber = Integer.valueOf(elements[1]);
 				double radius = Double.valueOf(elements[2]);
 
-				Ring clad = new Ring(
-						"Clad " + pinNumber,
+				Ring clad = new Ring("Clad " + pinNumber,
 						(Material) materialList.get(materialNumber - 1).clone(),
 						1.0, radius);
 				LWRRod rod = new LWRRod("Pin " + pinNumber);

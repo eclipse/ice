@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-
 /**
  * <p>
  * The Material class is a representation of any material property of any class
@@ -129,7 +123,8 @@ public class Material extends LWRComponent {
 	 * listed in MaterialType.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The phase of this Material. Must be one of the enumeration values
 	 *         listed in MaterialType.
 	 *         </p>
@@ -161,8 +156,8 @@ public class Material extends LWRComponent {
 			material = (Material) otherObject;
 
 			// Check values
-			retVal = (super.equals(otherObject) && this.materialType
-					.equals(material.materialType));
+			retVal = (super.equals(otherObject)
+					&& this.materialType.equals(material.materialType));
 
 		}
 
@@ -224,48 +219,6 @@ public class Material extends LWRComponent {
 
 		// Return newly instantiated object
 		return material;
-
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeStringAttribute(h5File, h5Group,
-				"materialType", materialType.toString());
-
-		return flag;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		MaterialType type1 = MaterialType.GAS;
-		MaterialType type = type1.toType((HdfReaderFactory.readStringAttribute(
-				h5Group, "materialType")));
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (type == null || !flag || h5Group == null) {
-			return false;
-		}
-		// If everything is valid, then set data
-		this.materialType = type;
-
-		return true;
 
 	}
 

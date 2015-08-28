@@ -19,13 +19,6 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.AssemblyType;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.GridLocation;
@@ -165,9 +158,10 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Setup Control Banks information
 		LWRComposite controlBankComposite = new LWRComposite();
-		controlBankComposite.setName(PressurizedWaterReactor.CONTROL_BANK_COMPOSITE_NAME);
 		controlBankComposite
-				.setDescription("A Composite that contains many ControlBank Components.");
+				.setName(PressurizedWaterReactor.CONTROL_BANK_COMPOSITE_NAME);
+		controlBankComposite.setDescription(
+				"A Composite that contains many ControlBank Components.");
 		controlBankComposite.setId(1);
 		// Put into the lWRComponents
 		this.lWRComponents.put(controlBankComposite.getName(),
@@ -175,13 +169,15 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Setup Grid Manager
 		LWRGridManager controlBankGridManager = new LWRGridManager(this.size);
-		controlBankGridManager.setName(PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME);
+		controlBankGridManager.setName(
+				PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME);
 
 		// Setup Fuel Assemblies information
 		LWRComposite fuelAssemblyComposite = new LWRComposite();
-		fuelAssemblyComposite.setName(PressurizedWaterReactor.FUEL_ASSEMBLY_COMPOSITE_NAME);
 		fuelAssemblyComposite
-				.setDescription("A Composite that contains many FuelAssembly Components.");
+				.setName(PressurizedWaterReactor.FUEL_ASSEMBLY_COMPOSITE_NAME);
+		fuelAssemblyComposite.setDescription(
+				"A Composite that contains many FuelAssembly Components.");
 		fuelAssemblyComposite.setId(2);
 		// Put into the lWRComponents
 		this.lWRComponents.put(fuelAssemblyComposite.getName(),
@@ -189,16 +185,17 @@ public class PressurizedWaterReactor extends LWReactor {
 
 		// Setup Grid Manager
 		LWRGridManager fuelAssemblyGridManager = new LWRGridManager(this.size);
-		fuelAssemblyGridManager.setName(PressurizedWaterReactor.FUEL_ASSEMBLY_GRID_MANAGER_NAME);
+		fuelAssemblyGridManager.setName(
+				PressurizedWaterReactor.FUEL_ASSEMBLY_GRID_MANAGER_NAME);
 
 		this.fuelAssemblyPitch = 0.0;
 
 		// Setup InCoreInstruments
 		LWRComposite incoreInstrumentComposite = new LWRComposite();
-		incoreInstrumentComposite
-				.setName(PressurizedWaterReactor.INCORE_INSTRUMENT_COMPOSITE_NAME);
-		incoreInstrumentComposite
-				.setDescription("A Composite that contains many IncoreInstrument Components.");
+		incoreInstrumentComposite.setName(
+				PressurizedWaterReactor.INCORE_INSTRUMENT_COMPOSITE_NAME);
+		incoreInstrumentComposite.setDescription(
+				"A Composite that contains many IncoreInstrument Components.");
 		incoreInstrumentComposite.setId(3);
 		// Put into the lWRComponents
 		this.lWRComponents.put(incoreInstrumentComposite.getName(),
@@ -207,15 +204,15 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Setup Grid Manager
 		LWRGridManager incoreInstrumentGridManager = new LWRGridManager(
 				this.size);
-		incoreInstrumentGridManager
-				.setName(PressurizedWaterReactor.INCORE_INSTRUMENT_GRID_MANAGER_NAME);
+		incoreInstrumentGridManager.setName(
+				PressurizedWaterReactor.INCORE_INSTRUMENT_GRID_MANAGER_NAME);
 
 		// Setup RodClusterAssemblies
 		LWRComposite rodClusterAssemblyComposite = new LWRComposite();
-		rodClusterAssemblyComposite
-				.setName(PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME);
-		rodClusterAssemblyComposite
-				.setDescription("A Composite that contains many RodClusterAssembly Components.");
+		rodClusterAssemblyComposite.setName(
+				PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME);
+		rodClusterAssemblyComposite.setDescription(
+				"A Composite that contains many RodClusterAssembly Components.");
 		rodClusterAssemblyComposite.setId(4);
 		// Put into the lWRComponents
 		this.lWRComponents.put(rodClusterAssemblyComposite.getName(),
@@ -224,12 +221,13 @@ public class PressurizedWaterReactor extends LWReactor {
 		// Setup Grid Manager
 		LWRGridManager rodClusterAssemblyGridManager = new LWRGridManager(
 				this.size);
-		rodClusterAssemblyGridManager
-				.setName(PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME);
+		rodClusterAssemblyGridManager.setName(
+				PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME);
 
 		// Add a default GridLabelProvider
 		this.gridLabelProvider = new GridLabelProvider(this.size);
-		this.gridLabelProvider.setName(PressurizedWaterReactor.GRID_LABEL_PROVIDER_NAME);
+		this.gridLabelProvider
+				.setName(PressurizedWaterReactor.GRID_LABEL_PROVIDER_NAME);
 
 		// Setup the Name, Id, Description
 		this.name = "PWReactor 1";
@@ -252,7 +250,8 @@ public class PressurizedWaterReactor extends LWReactor {
 		managers = new HashMap<AssemblyType, LWRGridManager>();
 		managers.put(AssemblyType.ControlBank, controlBankGridManager);
 		managers.put(AssemblyType.Fuel, fuelAssemblyGridManager);
-		managers.put(AssemblyType.IncoreInstrument, incoreInstrumentGridManager);
+		managers.put(AssemblyType.IncoreInstrument,
+				incoreInstrumentGridManager);
 		managers.put(AssemblyType.RodCluster, rodClusterAssemblyGridManager);
 
 	}
@@ -271,7 +270,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * Returns the GridLabelProvider for this PWReactor.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The GridLabelProvider for this PWReactor.
 	 *         </p>
 	 */
@@ -306,7 +306,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * seating location in the core plates.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The distance between assemblies in the core, determined by the
 	 *         seating location in the core plates.
 	 *         </p>
@@ -341,68 +342,6 @@ public class PressurizedWaterReactor extends LWReactor {
 	 * Overrides a method from LWReactor.
 	 */
 	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		boolean flag = super.readAttributes(h5Group);
-
-		Double fuelAssemblyPitch = HdfReaderFactory.readDoubleAttribute(
-				h5Group, "fuelAssemblyPitch");
-
-		// If any of them are erroneous, return false
-		if (fuelAssemblyPitch == null || !flag) {
-			return false;
-		}
-
-		// Set the primitive data
-		this.fuelAssemblyPitch = fuelAssemblyPitch.doubleValue();
-
-		// Reset info
-		this.gridLabelProvider = new GridLabelProvider(this.size);
-		this.gridLabelProvider.setName(PressurizedWaterReactor.GRID_LABEL_PROVIDER_NAME);
-
-		LWRGridManager controlBankGridManager = new LWRGridManager(this.size);
-		controlBankGridManager.setName(PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME);
-		LWRGridManager fuelAssemblyGridManager = new LWRGridManager(this.size);
-		fuelAssemblyGridManager.setName(FUEL_ASSEMBLY_GRID_MANAGER_NAME);
-		LWRGridManager incoreInstrumentGridManager = new LWRGridManager(
-				this.size);
-		incoreInstrumentGridManager
-				.setName(INCORE_INSTRUMENT_GRID_MANAGER_NAME);
-		LWRGridManager rodClusterAssemblyGridManager = new LWRGridManager(
-				this.size);
-		rodClusterAssemblyGridManager
-				.setName(ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME);
-
-		// Setup the grid map
-		managers = new HashMap<AssemblyType, LWRGridManager>();
-		managers.put(AssemblyType.ControlBank, controlBankGridManager);
-		managers.put(AssemblyType.Fuel, fuelAssemblyGridManager);
-		managers.put(AssemblyType.IncoreInstrument, incoreInstrumentGridManager);
-		managers.put(AssemblyType.RodCluster, rodClusterAssemblyGridManager);
-
-		return true;
-
-	}
-
-	/*
-	 * Overrides a method from LWReactor.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeDoubleAttribute(h5File, h5Group,
-				"fuelAssemblyPitch", fuelAssemblyPitch);
-
-		return flag;
-	}
-
-	/*
-	 * Overrides a method from LWReactor.
-	 */
-	@Override
 	public boolean equals(Object otherObject) {
 		// Local Declarations
 		PressurizedWaterReactor reactor;
@@ -418,8 +357,7 @@ public class PressurizedWaterReactor extends LWReactor {
 			// Cast it
 			reactor = (PressurizedWaterReactor) otherObject;
 			// Compare values
-			retVal = super.equals(otherObject)
-					&& this.size == reactor.size
+			retVal = super.equals(otherObject) && this.size == reactor.size
 					&& this.fuelAssemblyPitch == reactor.fuelAssemblyPitch
 					&& this.managers.equals(reactor.managers)
 					&& this.assemblyComposites
@@ -428,131 +366,6 @@ public class PressurizedWaterReactor extends LWReactor {
 		}
 		// Return retVal
 		return retVal;
-	}
-
-	/*
-	 * Overrides a method from LWRComposite.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add the label provider to the children
-		children.add(this.gridLabelProvider);
-
-		// Add all the managers
-		children.addAll(this.managers.values());
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from LWRComposite.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		// If the child is null or not an instance of LWRComponent, then return
-		// false.
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// If this is a GridLabelProvider
-		if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.GRID_LABEL_PROVIDER
-				&& childComponent.getName().equals(GRID_LABEL_PROVIDER_NAME)) {
-
-			// Assign to variable
-			this.gridLabelProvider = (GridLabelProvider) childComponent;
-
-			// If this is a LwrGridManager
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.LWRGRIDMANAGER) {
-
-			// Cast into a LWRGridManager object
-			LWRGridManager lWRGridManager = (LWRGridManager) childComponent;
-
-			// Check the name and assign to correct object
-			if (lWRGridManager.getName().equals(
-					PressurizedWaterReactor.CONTROL_BANK_GRID_MANAGER_NAME)) {
-
-				this.managers.put(AssemblyType.ControlBank, lWRGridManager);
-
-			} else if (lWRGridManager.getName().equals(
-					PressurizedWaterReactor.FUEL_ASSEMBLY_GRID_MANAGER_NAME)) {
-
-				this.managers.put(AssemblyType.Fuel, lWRGridManager);
-
-			} else if (lWRGridManager.getName().equals(
-					PressurizedWaterReactor.INCORE_INSTRUMENT_GRID_MANAGER_NAME)) {
-
-				this.managers
-						.put(AssemblyType.IncoreInstrument, lWRGridManager);
-
-			} else if (lWRGridManager.getName().equals(
-					PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_GRID_MANAGER_NAME)) {
-
-				this.managers.put(AssemblyType.RodCluster, lWRGridManager);
-
-			}
-
-			// If this is an LWRComposite
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.LWRCOMPOSITE) {
-
-			// Cast into a LWRComposite object
-			LWRComposite lWRComposite = (LWRComposite) childComponent;
-
-			// Check the name and assign to correct object
-			if (lWRComposite.getName().equals(PressurizedWaterReactor.CONTROL_BANK_COMPOSITE_NAME)) {
-
-				// Remove existing component and replace with new one
-				this.lWRComponents.remove(lWRComposite.getName());
-				this.lWRComponents.put(lWRComposite.getName(), lWRComposite);
-				this.assemblyComposites.put(AssemblyType.ControlBank,
-						lWRComposite);
-
-			} else if (lWRComposite.getName().equals(
-					PressurizedWaterReactor.FUEL_ASSEMBLY_COMPOSITE_NAME)) {
-
-				// Remove existing component and replace with new one
-				this.lWRComponents.remove(lWRComposite.getName());
-				this.lWRComponents.put(lWRComposite.getName(), lWRComposite);
-				this.assemblyComposites.put(AssemblyType.Fuel, lWRComposite);
-
-			} else if (lWRComposite.getName().equals(
-					PressurizedWaterReactor.INCORE_INSTRUMENT_COMPOSITE_NAME)) {
-
-				// Remove existing component and replace with new one
-				this.lWRComponents.remove(lWRComposite.getName());
-				this.lWRComponents.put(lWRComposite.getName(), lWRComposite);
-				this.assemblyComposites.put(AssemblyType.IncoreInstrument,
-						lWRComposite);
-
-			} else if (lWRComposite.getName().equals(
-					PressurizedWaterReactor.ROD_CLUSTER_ASSEMBLY_COMPOSITE_NAME)) {
-
-				// Remove existing component and replace with new one
-				this.lWRComponents.remove(lWRComposite.getName());
-				this.lWRComponents.put(lWRComposite.getName(), lWRComposite);
-				this.assemblyComposites.put(AssemblyType.RodCluster,
-						lWRComposite);
-
-			}
-
-		}
-
-		return true;
 	}
 
 	/*
@@ -608,8 +421,8 @@ public class PressurizedWaterReactor extends LWReactor {
 				.entrySet()) {
 
 			// Clone and add
-			this.managers.put(entry.getKey(), (LWRGridManager) entry.getValue()
-					.clone());
+			this.managers.put(entry.getKey(),
+					(LWRGridManager) entry.getValue().clone());
 
 			// Add reference
 
@@ -685,7 +498,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The assembly to add to the collection of FuelAssemblies.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the assembly was added successfully.
 	 *         </p>
 	 */
@@ -720,7 +534,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The name of the assembly to be removed.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the assembly was removed successfully.
 	 *         </p>
 	 */
@@ -755,7 +570,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The type of the assembly.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of names for each element of the collection of
 	 *         assemblies.
 	 *         </p>
@@ -782,7 +598,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The name of the assembly to find.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The assembly
 	 *         </p>
 	 */
@@ -814,7 +631,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The column id.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The assembly corresponding to the provided type, column and row
 	 *         or null if one is not found at the provided location.
 	 *         </p>
@@ -858,7 +676,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The column id.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the location of the assembly was set successfully.
 	 *         </p>
 	 */
@@ -881,8 +700,8 @@ public class PressurizedWaterReactor extends LWReactor {
 			manager.addComponent(component, location);
 
 			// Update the status
-			status = (manager.getComponentName(location) != null && manager
-					.getComponentName(location).equals(assemblyName));
+			status = (manager.getComponentName(location) != null
+					&& manager.getComponentName(location).equals(assemblyName));
 		}
 
 		return status;
@@ -906,7 +725,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The column id.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the assembly removal was successful.
 	 *         </p>
 	 */
@@ -948,7 +768,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The column id.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The DataProvider that manages state point data for the specified
 	 *         assembly.
 	 *         </p>
@@ -973,7 +794,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	 *            <p>
 	 *            The type of the assembly.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The number of assemblies of the specified type.
 	 *         </p>
 	 */

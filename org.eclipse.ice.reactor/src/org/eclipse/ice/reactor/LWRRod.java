@@ -12,16 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor;
 
-import java.util.ArrayList;
 import java.util.TreeSet;
-
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
  * <p>
@@ -152,7 +143,8 @@ public class LWRRod extends LWRComponent {
 	 * LWRRod.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A Material of MaterialType.GAS that fills the voids within this
 	 *         LWRRod.
 	 *         </p>
@@ -205,7 +197,8 @@ public class LWRRod extends LWRComponent {
 	 * Returns the pressure of the fillGas Material.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The pressure of the fillGas Material.
 	 *         </p>
 	 */
@@ -218,7 +211,8 @@ public class LWRRod extends LWRComponent {
 	 * Returns the list of MaterialBlocks within this LWRRod.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The Stack object within this LWRRod.
 	 *         </p>
 	 */
@@ -288,7 +282,8 @@ public class LWRRod extends LWRComponent {
 			// Check values
 			retVal = (super.equals(otherObject) && this.clad.equals(rod.clad)
 					&& this.fillGas.equals(rod.fillGas)
-					&& this.materialBlocks.equals(rod.materialBlocks) && this.pressure == rod.pressure);
+					&& this.materialBlocks.equals(rod.materialBlocks)
+					&& this.pressure == rod.pressure);
 		}
 
 		// Return retVal
@@ -362,109 +357,6 @@ public class LWRRod extends LWRComponent {
 
 		// Return newly instantiated object
 		return rod;
-
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeDoubleAttribute(h5File, h5Group,
-				"pressure", pressure);
-
-		return flag;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add the materialBlocks, clad and fillGas to children
-		children.add(this.clad);
-		children.add(this.fillGas);
-		children.addAll(this.materialBlocks);
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		// If the child is null or not an instance of LWRComponent, then return
-		// false.
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// If this is a Ring
-		if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.RING) {
-
-			// Assign to correct object
-			this.clad = (Ring) childComponent;
-
-			// If this is a material
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.MATERIAL) {
-
-			// Assign to correct object
-			this.fillGas = (Material) childComponent;
-
-			// If this is a Material Block
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.MATERIALBLOCK) {
-
-			// Assign to correct object
-			this.materialBlocks.add((MaterialBlock) childComponent);
-
-		}
-
-		return true;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		Double pressure = HdfReaderFactory.readDoubleAttribute(h5Group,
-				"pressure");
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (pressure == null || !flag || h5Group == null) {
-			return false;
-		}
-		// If everything is valid, then set data
-		this.pressure = pressure;
-
-		return true;
 
 	}
 

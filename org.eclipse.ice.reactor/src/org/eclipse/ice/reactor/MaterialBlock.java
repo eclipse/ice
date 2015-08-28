@@ -16,14 +16,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
-
 /**
  * <p>
  * The MaterialBlock class is a generalized class containing a set of concentric
@@ -382,92 +374,6 @@ public class MaterialBlock extends LWRComponent implements
 		// Return newly instantiated object
 		return materialBlock;
 
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add all of the Rings to the children array list
-		children.addAll(rings);
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// If this is ring
-		if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.RING) {
-
-			// Ass to the collection of Rings
-			this.addRing((Ring) childComponent);
-
-		}
-
-		return true;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeDoubleAttribute(h5File, h5Group,
-				"position", this.pos);
-
-		return flag;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		Double position = HdfReaderFactory.readDoubleAttribute(h5Group,
-				"position");
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (position == null || !flag || h5Group == null) {
-			return false;
-		}
-		// If everything is valid, then set data
-		this.pos = position.doubleValue();
-
-		return true;
 	}
 
 	/**

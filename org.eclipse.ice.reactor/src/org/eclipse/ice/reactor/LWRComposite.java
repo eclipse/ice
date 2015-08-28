@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Composite;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 
 /**
  * <p>
@@ -245,53 +243,6 @@ public class LWRComposite extends LWRComponent implements Composite {
 		// Return the newly instantiated object
 		return composite;
 
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add all of these children
-		children.addAll(lWRComponents.values());
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		// If the child is null or not an instance of LWRComponent, then return
-		// false.
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// Remove any child with the new child's name from this LWRComposite
-		this.removeComponent(childComponent.getName());
-
-		// Add the new child LWRComponent
-		this.addComponent(childComponent);
-
-		// Return true for success
-		return true;
 	}
 
 	/*

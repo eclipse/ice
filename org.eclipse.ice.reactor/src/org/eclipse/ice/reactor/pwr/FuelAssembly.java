@@ -14,16 +14,10 @@ package org.eclipse.ice.reactor.pwr;
 
 import java.util.ArrayList;
 
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.GridLabelProvider;
 import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
-import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
@@ -568,112 +562,6 @@ public class FuelAssembly extends PWRAssembly {
 
 		// Return newly instantiated object
 		return assembly;
-
-	}
-
-	/*
-	 * Overrides a method from PWRAssembly.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add children
-		children.add(this.gridLabelProvider);
-		children.add(this.tubeGridManager);
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from PWRAssembly.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		// If the child is null or not an instance of LWRComponent, then return
-		// false.
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Call readChild on PWRAssembly
-		super.readChild(iHdfReadable);
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// If this is a GridLabelProvider
-		if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.GRID_LABEL_PROVIDER
-				&& childComponent.getName().equals(GRID_LABEL_PROVIDER_NAME)) {
-
-			// Assign to correct object
-			this.gridLabelProvider = (GridLabelProvider) childComponent;
-
-			// If this is a LwrGridManager
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.LWRGRIDMANAGER) {
-
-			// Cast into a LWRGridManager object
-			LWRGridManager lWRGridManager = (LWRGridManager) childComponent;
-
-			// Assign to correct object
-			if (lWRGridManager.getName().equals(FuelAssembly.TUBE_GRID_MANAGER_NAME)) {
-
-				this.tubeGridManager = (LWRGridManager) childComponent;
-
-			}
-
-			// If this is an LWRComposite
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.LWRCOMPOSITE) {
-
-			// Cast into a LWRComposite object
-			LWRComposite lWRComposite = (LWRComposite) childComponent;
-
-			// Assign to correct object
-			if (lWRComposite.getName().equals(FuelAssembly.TUBE_COMPOSITE_NAME)) {
-
-				// Remove the tube from the composite and add it back
-				this.lWRComponents.remove(FuelAssembly.TUBE_COMPOSITE_NAME);
-				this.tubeComposite = lWRComposite;
-				this.lWRComponents.put(tubeComposite.getName(), tubeComposite);
-
-			}
-
-			// If it is a rod cluster assembly
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.ROD_CLUSTER_ASSEMBLY) {
-
-			this.rodClusterAssembly = (RodClusterAssembly) childComponent;
-
-		}
-
-		return true;
-	}
-
-	/*
-	 * Overrides a method from PWRAssembly.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		boolean flag = super.readAttributes(h5Group);
-
-		if (flag) {
-			this.gridLabelProvider = new GridLabelProvider(this.size);
-			this.gridLabelProvider.setName(GRID_LABEL_PROVIDER_NAME);
-			this.tubeGridManager = new LWRGridManager(this.size);
-			this.tubeGridManager.setName(TUBE_GRID_MANAGER_NAME);
-		}
-
-		return flag;
 
 	}
 

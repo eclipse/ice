@@ -6,6 +6,7 @@ Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.ice.reactor,
  org.eclipse.ice.reactor.bwr,
+ org.eclipse.ice.reactor.hdf,
  org.eclipse.ice.reactor.pwr
 Import-Package: org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.reactor.pwr,

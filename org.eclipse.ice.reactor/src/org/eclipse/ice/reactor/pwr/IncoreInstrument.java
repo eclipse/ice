@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.pwr;
 
-import java.util.ArrayList;
-
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.ILWRComponentVisitor;
 import org.eclipse.ice.reactor.LWRComponent;
@@ -113,54 +109,6 @@ public class IncoreInstrument extends LWRComponent {
 	 */
 	public Ring getThimble() {
 		return this.thimble;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add the thimble Ring to children
-		children.add(this.thimble);
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		// If the child is null or not an instance of LWRComponent, then return
-		// false.
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// If this is a Ring
-		if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.RING) {
-
-			// Assign to correct object
-			this.thimble = (Ring) childComponent;
-
-		}
-
-		return true;
 	}
 
 	/*

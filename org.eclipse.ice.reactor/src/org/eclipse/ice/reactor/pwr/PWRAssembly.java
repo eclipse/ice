@@ -14,17 +14,9 @@ package org.eclipse.ice.reactor.pwr;
 
 import java.util.ArrayList;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
-import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRDataProvider;
 import org.eclipse.ice.reactor.LWRGridManager;
@@ -69,8 +61,8 @@ public class PWRAssembly extends LWRComposite {
 	protected LWRGridManager lWRRodGridManager;
 	/**
 	 * <p>
-	 * The distance between centers of adjacent fuel rods in the fuel grid.
-	 * Must be greater than zero.
+	 * The distance between centers of adjacent fuel rods in the fuel grid. Must
+	 * be greater than zero.
 	 * </p>
 	 * 
 	 */
@@ -155,7 +147,8 @@ public class PWRAssembly extends LWRComposite {
 	 * Returns the size of either dimension of this PWRAssembly.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The size of either dimension of this PWRAssembly.
 	 *         </p>
 	 */
@@ -175,7 +168,8 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The LWRRod to add to the collection of LWRRods.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the LWRRod was added successfully.
 	 *         </p>
 	 */
@@ -204,7 +198,8 @@ public class PWRAssembly extends LWRComposite {
 	 *            The name of the LWRRod to be removed. Returns true if the
 	 *            LWRRod was removed successfully.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the LWRRod was removed successfully.
 	 *         </p>
 	 */
@@ -215,15 +210,15 @@ public class PWRAssembly extends LWRComposite {
 		}
 
 		// Remove it from the grid as well
-		this.lWRRodGridManager.removeComponent(this.lWRRodComposite
-				.getComponent(lWRRodName));
+		this.lWRRodGridManager
+				.removeComponent(this.lWRRodComposite.getComponent(lWRRodName));
 
 		// Remove the component from the composite with the given name
 		this.lWRRodComposite.removeComponent(lWRRodName);
 
 		// Remove it from the grid as well
-		this.lWRRodGridManager.removeComponent(this.lWRRodComposite
-				.getComponent(lWRRodName));
+		this.lWRRodGridManager
+				.removeComponent(this.lWRRodComposite.getComponent(lWRRodName));
 
 		// If name does not exist, return true. Else false
 		if (this.lWRRodComposite.getComponent(lWRRodName) != null) {
@@ -240,7 +235,8 @@ public class PWRAssembly extends LWRComposite {
 	 * LWRRods.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of names for each element of the collection of
 	 *         LWRRods.
 	 *         </p>
@@ -261,7 +257,8 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The provided LWRRod's name.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The LWRRod corresponding to the provided name or null if the name
 	 *         is not found.
 	 *         </p>
@@ -285,7 +282,8 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The column position.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The LWRRod corresponding to the provided column and row or null
 	 *         if one is not found at the provided location.
 	 *         </p>
@@ -296,8 +294,8 @@ public class PWRAssembly extends LWRComposite {
 		String name = "";
 
 		// Get the name
-		name = this.lWRRodGridManager.getComponentName(new GridLocation(row,
-				column));
+		name = this.lWRRodGridManager
+				.getComponentName(new GridLocation(row, column));
 
 		// Return the component
 		return this.getLWRRodByName(name);
@@ -309,7 +307,8 @@ public class PWRAssembly extends LWRComposite {
 	 * Returns the number of LWRRods in the collection of LWRRods.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The number of LWRRods in the collection of LWRRods.
 	 *         </p>
 	 */
@@ -340,7 +339,8 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The column position.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the location of the LWRRod was set successfully.
 	 *         </p>
 	 */
@@ -355,13 +355,12 @@ public class PWRAssembly extends LWRComposite {
 
 		// Set the location
 		this.lWRRodGridManager.addComponent(
-				this.lWRRodComposite.getComponent(lWRRodName),
-				location);
+				this.lWRRodComposite.getComponent(lWRRodName), location);
 
 		// If the name changed, then return true
 		if (this.lWRRodGridManager.getComponentName(location) != null
-				&& this.lWRRodGridManager.getComponentName(location).equals(
-						lWRRodName)) {
+				&& this.lWRRodGridManager.getComponentName(location)
+						.equals(lWRRodName)) {
 			return true;
 		}
 
@@ -384,7 +383,8 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The column position.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True, if the removal was successful.
 	 *         </p>
 	 */
@@ -420,7 +420,8 @@ public class PWRAssembly extends LWRComposite {
 	 * Returns the distance between centers of adjacent fuel rods.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The distance between centers of adjacent fuel rods in the fuel
 	 *         lattice.
 	 *         </p>
@@ -533,8 +534,7 @@ public class PWRAssembly extends LWRComposite {
 			// Compare values
 			retVal = super.equals(otherObject)
 					&& this.lWRRodComposite.equals(assembly.lWRRodComposite)
-					&& this.lWRRodGridManager
-							.equals(assembly.lWRRodGridManager)
+					&& this.lWRRodGridManager.equals(assembly.lWRRodGridManager)
 					&& this.size == assembly.size
 					&& this.rodPitch == assembly.rodPitch;
 
@@ -611,78 +611,6 @@ public class PWRAssembly extends LWRComposite {
 
 	}
 
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeIntegerAttribute(h5File, h5Group, "size",
-				this.size);
-		flag &= HdfWriterFactory.writeDoubleAttribute(h5File, h5Group,
-				"rodPitch", rodPitch);
-
-		return flag;
-	}
-
-	/*
-	 * Overrides a method from LWRComposite.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-
-		// Get the children in super
-		ArrayList<IHdfWriteable> children = super.getWriteableChildren();
-
-		// If super had no children
-		if (children == null) {
-
-			// Initialize to new array list
-			children = new ArrayList<IHdfWriteable>();
-		}
-
-		// Add children
-		children.add(this.lWRRodGridManager);
-
-		return children;
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		Integer size = HdfReaderFactory.readIntegerAttribute(h5Group, "size");
-		Double rodPitch = HdfReaderFactory.readDoubleAttribute(h5Group,
-				"rodPitch");
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (size == null || rodPitch == null || !flag || h5Group == null) {
-			return false;
-		}
-
-		// If everything is valid, then set data
-		this.size = size.intValue();
-		this.rodPitch = rodPitch.doubleValue();
-
-		// Reset the sizes on the grids
-		this.lWRRodGridManager = new LWRGridManager(size.intValue());
-		this.lWRRodGridManager.setName(PWRAssembly.LWRROD_GRID_MANAGER_NAME);
-
-		return true;
-
-	}
-
 	/**
 	 * <p>
 	 * Returns the data provider for specific group at location or null if it
@@ -697,60 +625,17 @@ public class PWRAssembly extends LWRComposite {
 	 *            <p>
 	 *            The column
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         the provider
 	 *         </p>
 	 */
-	public LWRDataProvider getLWRRodDataProviderAtLocation(int row, int column) {
+	public LWRDataProvider getLWRRodDataProviderAtLocation(int row,
+			int column) {
 
 		return this.lWRRodGridManager
 				.getDataProviderAtLocation(new GridLocation(row, column));
 
-	}
-
-	/*
-	 * Overrides a method from LWRComposite.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-
-		// If the child is null or not an instance of LWRComponent, then return
-		// false.
-		if (iHdfReadable == null || !(iHdfReadable instanceof LWRComponent)) {
-			return false;
-		}
-
-		// Cast the child into a LWRComponent
-		LWRComponent childComponent = (LWRComponent) iHdfReadable;
-
-		// If this is a LWRGridManager
-		if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.LWRGRIDMANAGER) {
-
-			// Cast into a LWRGridManager object
-			LWRGridManager lWRGridManager = (LWRGridManager) childComponent;
-
-			// Assign to the correct object
-			if (lWRGridManager.getName().equals(PWRAssembly.LWRROD_GRID_MANAGER_NAME)) {
-				this.lWRRodGridManager = (LWRGridManager) childComponent;
-
-			}
-
-			// If this is an LWRComposite
-		} else if (childComponent.getHDF5LWRTag() == HDF5LWRTagType.LWRCOMPOSITE) {
-
-			// Cast into a LWRComposite object
-			LWRComposite lWRComposite = (LWRComposite) childComponent;
-			// Assign to the correct object
-			if (lWRComposite.getName().equals(PWRAssembly.LWRROD_COMPOSITE_NAME)) {
-				super.removeComponent(PWRAssembly.LWRROD_COMPOSITE_NAME);
-				this.lWRRodComposite = lWRComposite;
-				super.addComponent(lWRRodComposite);
-
-			}
-
-		}
-
-		return true;
 	}
 
 }

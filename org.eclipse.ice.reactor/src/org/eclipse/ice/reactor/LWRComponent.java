@@ -16,27 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlTransient;
-
-import ncsa.hdf.object.Dataset;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.HObject;
-import ncsa.hdf.object.h5.H5CompoundDS;
-import ncsa.hdf.object.h5.H5Datatype;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
 
 import org.eclipse.ice.analysistool.IData;
 import org.eclipse.ice.analysistool.IDataProvider;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
-import org.eclipse.ice.io.hdf.IHdfWriteable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,8 +50,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Scott Forest Hull II
  */
-public class LWRComponent implements IReactorComponent, IDataProvider,
-		IHdfWriteable, IHdfReadable {
+public class LWRComponent implements IReactorComponent, IDataProvider {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -475,8 +461,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 					&& this.dataTree.equals(component.dataTree)
 					&& this.time == component.time
 					&& this.sourceInfo.equals(component.sourceInfo)
-					&& this.HDF5LWRTag.equals(component.HDF5LWRTag) && this.timeUnit
-					.equals(component.timeUnit));
+					&& this.HDF5LWRTag.equals(component.HDF5LWRTag)
+					&& this.timeUnit.equals(component.timeUnit));
 
 		}
 
@@ -727,352 +713,13 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 
 	}
 
-	/*
-	 * Implements method from IHdfWriteable.
-	 */
-	@Override
-	public H5Group createGroup(H5File h5File, H5Group parentH5Group) {
-
-		// Create the group for this component
-		H5Group h5Group = HdfWriterFactory.createH5Group(h5File, name,
-				parentH5Group);
-
-		// Return the group
-		return h5Group;
-	}
-
-	/*
-	 * Implements method from IHdfWriteable.
-	 */
-	@Override
-	public ArrayList<IHdfWriteable> getWriteableChildren() {
-		return null;
-	}
-
-	/*
-	 * Implements method from IHdfWriteable.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-
-		boolean flag = true;
-
-		flag &= HdfWriterFactory.writeStringAttribute(h5File, h5Group,
-				"HDF5LWRTag", HDF5LWRTag.toString());
-		flag &= HdfWriterFactory.writeStringAttribute(h5File, h5Group, "name",
-				name);
-		flag &= HdfWriterFactory.writeIntegerAttribute(h5File, h5Group, "id",
-				id);
-		flag &= HdfWriterFactory.writeStringAttribute(h5File, h5Group,
-				"description", description);
-
-		return flag;
-	}
-
-	/*
-	 * Implements method from IHdfWriteable.
-	 */
-	@Override
-	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
-
-		// If these pieces are null, return
-		if (h5File == null || h5Group == null) {
-			return false;
-		}
-		// Local Declarations
-		H5Group dataH5Group, timeStepH5Group;
-		Iterator<Double> iter;
-		int counter = 0;
-		String[] featureDSNames = { "value", "uncertainty", "units", "position" };
-
-		// Preliminary work: Create the dataTypes and setup the DS for it's
-		// dimensions
-
-		// Each member's type
-		Datatype[] memberDatatypes = {
-				HdfWriterFactory.createFloatH5Datatype(h5File),
-				HdfWriterFactory.createFloatH5Datatype(h5File),
-				null, // Will replace later with a specific string datatype.
-				HdfWriterFactory.createFloatH5Datatype(h5File),
-				HdfWriterFactory.createFloatH5Datatype(h5File),
-				HdfWriterFactory.createFloatH5Datatype(h5File), };
-
-		// Create a HDF5Group for data
-		dataH5Group = HdfWriterFactory.createH5Group(h5File, dataH5GroupName,
-				h5Group);
-
-		// Get the iterator
-		iter = this.dataTree.keySet().iterator();
-
-		// Iterate over the dataTree and create timesteps for each key in the
-		// tree
-		while (iter.hasNext()) {
-
-			// Get the time
-			double time = iter.next();
-
-			// Get the list of FeatureSets at that time
-			ArrayList<FeatureSet> setList = this.dataTree.get(time);
-
-			// Create a new timeStep group based on the prefix and the timeStep
-			timeStepH5Group = HdfWriterFactory.createH5Group(h5File,
-					timeStepNamePrefix + "" + counter, dataH5Group);
-
-			// Add attributes to the timeStep group
-
-			// Create attribute: time as Double
-			HdfWriterFactory.writeDoubleAttribute(h5File, timeStepH5Group,
-					"time", time);
-
-			// Create attribute: units as String
-			HdfWriterFactory.writeStringAttribute(h5File, timeStepH5Group,
-					"units", this.timeUnit);
-
-			// Create a Compound Dataset for each timeStep to represent the
-			// collection of FeatureSets. This contains the list of Feature Sets
-			for (int i = 0; i < setList.size(); i++) {
-
-				// Get the FeatureSet
-				FeatureSet set = setList.get(i);
-
-				// Setup the size of the String array Dataset
-				int maxLength = 0;
-				H5Datatype datatype = null;
-
-				// Get the number of IDatas stored on the FeatureSet
-				int iDataSize = set.getIData().size();
-
-				// Create the arrays for each dataSet
-				double[] value = new double[iDataSize];
-				double[] uncertainty = new double[iDataSize];
-				String[] units = new String[iDataSize];
-				double[] position = new double[iDataSize * 3];
-
-				// Iterate over the IDatas to fill out the arrays listed above
-				for (int j = 0; j < set.getIData().size(); j++) {
-					// Get the iData at the location
-					IData iData = set.getIData().get(j);
-
-					// Copy contents of iData to the array
-					value[j] = iData.getValue();
-					uncertainty[j] = iData.getUncertainty();
-					units[j] = iData.getUnits();
-					maxLength = Math.max(units[j].length(), maxLength);
-
-					// Get the position
-					ArrayList<Double> pos = iData.getPosition();
-					position[3 * j] = pos.get(0);
-					position[3 * j + 1] = pos.get(1);
-					position[3 * j + 2] = pos.get(2);
-
-				}
-
-				// Setup the 3rd position in the memberList DataTypes for the
-				// correct size
-				// Create a custom String data type for the value
-				try {
-					datatype = (H5Datatype) h5File.createDatatype(
-							Datatype.CLASS_STRING, maxLength, Datatype.NATIVE,
-							Datatype.NATIVE);
-
-					memberDatatypes[2] = datatype;
-
-					// Calculate the dimensions of the length of each dataSet by
-					// the number of IDatas in the FeatureSet
-					long[] dims = { 1, set.getIData().size() };
-
-					// Create the arrayList of objects to add the data to the
-					// list
-					ArrayList<Object> data = new ArrayList<Object>();
-					data.add(value);
-					data.add(uncertainty);
-					data.add(units);
-					data.add(position);
-
-					// The member's sizes at each point in the dataset
-					int[] memberSizes = { 1, 1, 1, 3 };
-
-					// Create the compound dataset
-					Dataset dataSet = h5File.createCompoundDS(set.getName(),
-							timeStepH5Group, dims, null, null, 0,
-							featureDSNames, memberDatatypes, memberSizes, data);
-					dataSet.init();
-				} catch (Exception e) {
-					// Break and return
-					logger.error(getClass().getName() + " Exception!",e);
-					return false;
-				}
-
-			}
-
-			// Iterate the counter
-			counter++;
-		}
-
-		// Everything passed, return true!
-		return true;
-
-	}
-
-	/*
-	 * Implements method from IHdfReadable.
-	 */
-	@Override
-	public boolean readChild(IHdfReadable iHdfReadable) {
-		return true;
-	}
-
-	/*
-	 * Implements method from IHdfReadable.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local attributes (so we only call read ONCE)
-		// These will clear out by the garbage collector
-		String name, description;
-		Integer id;
-
-		// Get the information
-		name = HdfReaderFactory.readStringAttribute(h5Group, "name");
-		description = HdfReaderFactory.readStringAttribute(h5Group,
-				"description");
-		id = HdfReaderFactory.readIntegerAttribute(h5Group, "id");
-
-		// If any of them are erroneous, return false
-		if (name == null || description == null || id == null) {
-			return false;
-		}
-		// Set the primitive data
-		this.name = name;
-		this.description = description;
-		this.id = id.intValue();
-
-		return true;
-
-	}
-
-	/*
-	 * Implements method from IHdfReadable.
-	 */
-	@Override
-	public boolean readDatasets(H5Group h5Group) {
-
-		// Local Declarations
-		int numOfTimeSteps = 0;
-		H5Group dataH5Group, timeStepH5Group;
-
-		// return if null
-		if (h5Group == null) {
-			return false;
-		}
-		// Get the dataH5Group
-		dataH5Group = HdfReaderFactory.getChildH5Group(h5Group,
-				this.dataH5GroupName);
-
-		ArrayList<H5Group> dataH5GroupMembers = HdfReaderFactory
-				.getChildH5Groups(dataH5Group);
-
-		// Verify the group exists
-		if (dataH5Group != null && !(dataH5GroupMembers.isEmpty())) {
-
-			// Get the number of timeSteps
-			numOfTimeSteps = dataH5GroupMembers.size();
-
-			// Iterate over the timeSteps to create the list of features
-			for (int i = 0; i < numOfTimeSteps; i++) {
-
-				// Convert the h5Group to a timeStep
-				timeStepH5Group = dataH5GroupMembers.get(i);
-
-				// Get the local time attribute and setup the featureSet list
-				double time = HdfReaderFactory.readDoubleAttribute(
-						timeStepH5Group, "time");
-				ArrayList<FeatureSet> list = new ArrayList<FeatureSet>();
-
-				ArrayList<HObject> timeStepH5GroupMembers = HdfReaderFactory
-						.getChildH5Members(timeStepH5Group);
-
-				// Get the number of FeatureSets
-				int numOfFeatureSets = timeStepH5GroupMembers.size();
-
-				// Iterate over the FeatureSets
-				for (int j = 0; j < numOfFeatureSets; j++) {
-
-					// Get the FeatureGroup
-					H5CompoundDS featureGroup = (H5CompoundDS) timeStepH5GroupMembers
-							.get(j);
-
-					// Get the name of the feature
-					String featureName = featureGroup.getName();
-
-					// Create the feature set
-					FeatureSet set = new FeatureSet(featureName);
-
-					// Get the object data off the dataset
-					Object data;
-					try {
-						data = featureGroup.getData();
-					} catch (Exception e) {
-						logger.error(getClass().getName() + " Exception!",e);
-						return false;
-					}
-
-					// Convert the data to a readable format: Cast it as a
-					// Vector, then grab the pieces out of it
-					Vector<Object> objects = (Vector<Object>) data;
-
-					// Cast the objects to their subsets
-					// Create the arrays for each dataSet
-					double[] value = (double[]) objects.get(0);
-					double[] uncertainty = (double[]) objects.get(1);
-					String[] units = (String[]) objects.get(2);
-					double[] pos = (double[]) objects.get(3);
-
-					// Iterate over the values and create the correct LWRData
-					for (int k = 0; k < value.length; k++) {
-
-						// Create the data and setup basic attributes
-						LWRData lwrdata = new LWRData(featureName);
-						lwrdata.setValue(value[k]);
-						lwrdata.setUncertainty(uncertainty[k]);
-						lwrdata.setUnits(units[k]);
-
-						// Setup position
-						ArrayList<Double> position = new ArrayList<Double>();
-						position.add(pos[k * 3]);
-						position.add(pos[k * 3 + 1]);
-						position.add(pos[k * 3 + 2]);
-
-						// Set position
-						lwrdata.setPosition(position);
-
-						// Add the lwrdata to the list
-						set.addIData(lwrdata);
-					}
-
-					// Add the set to the list
-					list.add(set);
-
-				}
-
-				// Add the list to the dataTree
-				this.dataTree.put(time, list);
-
-			}
-
-		}
-
-		return true;
-
-	}
-
 	/**
 	 * <p>
 	 * Returns the current time step.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The current time step.
 	 *         </p>
 	 */
@@ -1086,7 +733,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * Returns the LWRComponentType.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The LWRComponentType.
 	 *         </p>
 	 */
@@ -1154,7 +802,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	 * Deep copies and returns a newly instantiated object.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The newly instantiated copied object.
 	 *         </p>
 	 */

@@ -14,23 +14,12 @@ package org.eclipse.ice.reactor.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.net.URI;
 import java.util.TreeSet;
 
-import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.io.hdf.IHdfReadable;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.Material;
@@ -56,7 +45,8 @@ public class LWRRodTester {
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
-		// System.setProperty("java.library.path", "/home/Scott Forest Hull II/usr/local/lib64");
+		// System.setProperty("java.library.path", "/home/Scott Forest Hull
+		// II/usr/local/lib64");
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
@@ -99,15 +89,15 @@ public class LWRRodTester {
 		assertEquals(defaultName, testRod.getName());
 		assertEquals(defaultDesc, testRod.getDescription());
 		assertEquals(defaultFillGas.getName(), testRod.getFillGas().getName());
-		assertEquals(defaultFillGas.getMaterialType(), testRod.getFillGas()
-				.getMaterialType());
+		assertEquals(defaultFillGas.getMaterialType(),
+				testRod.getFillGas().getMaterialType());
 		assertEquals(defaultGasPressure, testRod.getPressure(), 0.0);
 		assertEquals(defaultId, testRod.getId());
-		assertEquals(materialBlockSizeDefault, testRod.getMaterialBlocks()
-				.size());
+		assertEquals(materialBlockSizeDefault,
+				testRod.getMaterialBlocks().size());
 		assertEquals(defaultClad.getName(), testRod.getClad().getName());
-		assertEquals(defaultClad.getMaterial().getMaterialType(), testRod
-				.getClad().getMaterial().getMaterialType());
+		assertEquals(defaultClad.getMaterial().getMaterialType(),
+				testRod.getClad().getMaterial().getMaterialType());
 		assertEquals(type, testRod.getHDF5LWRTag());
 
 		// test non-nullary constructor -name
@@ -118,11 +108,11 @@ public class LWRRodTester {
 		assertEquals(defaultFillGas, testRod.getFillGas());
 		assertEquals(defaultGasPressure, testRod.getPressure(), 0.0);
 		assertEquals(defaultId, testRod.getId());
-		assertEquals(materialBlockSizeDefault, testRod.getMaterialBlocks()
-				.size());
+		assertEquals(materialBlockSizeDefault,
+				testRod.getMaterialBlocks().size());
 		assertEquals(defaultClad.getName(), testRod.getClad().getName());
-		assertEquals(defaultClad.getMaterial().getMaterialType(), testRod
-				.getClad().getMaterial().getMaterialType());
+		assertEquals(defaultClad.getMaterial().getMaterialType(),
+				testRod.getClad().getMaterial().getMaterialType());
 		assertEquals(type, testRod.getHDF5LWRTag());
 
 		// test non-nullary constructor -name fillgas pressure, list of
@@ -156,8 +146,8 @@ public class LWRRodTester {
 
 		// test non-nullary constructor with null MaterialBlock
 		testRod = new LWRRod(null, newFillGas, newGasPressure, null);
-		assertEquals(materialBlockSizeDefault, testRod.getMaterialBlocks()
-				.size());
+		assertEquals(materialBlockSizeDefault,
+				testRod.getMaterialBlocks().size());
 	}
 
 	/**
@@ -321,7 +311,8 @@ public class LWRRodTester {
 
 		// Check that equals() is Transitive
 		// x.equals(y) = true, y.equals(z) = true => x.equals(z) = true
-		if (object.equals(equalObject) && equalObject.equals(transitiveObject)) {
+		if (object.equals(equalObject)
+				&& equalObject.equals(transitiveObject)) {
 			assertTrue(object.equals(transitiveObject));
 		} else {
 			fail();
@@ -330,12 +321,12 @@ public class LWRRodTester {
 		// Check the Consistent nature of equals()
 		assertTrue(object.equals(equalObject) && object.equals(equalObject)
 				&& object.equals(equalObject));
-		assertTrue(!object.equals(unEqualObject)
-				&& !object.equals(unEqualObject)
-				&& !object.equals(unEqualObject));
+		assertTrue(
+				!object.equals(unEqualObject) && !object.equals(unEqualObject)
+						&& !object.equals(unEqualObject));
 
 		// Assert checking equality with null value returns false
-		assertFalse(object==null);
+		assertFalse(object == null);
 
 		// Assert that two equal objects have the same hashcode
 		assertTrue(object.equals(equalObject)
@@ -409,203 +400,6 @@ public class LWRRodTester {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation checks the HDF5 writing operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Writeables() {
-
-		// Local Declarations
-		LWRRod rod = new LWRRod();
-		String name = "Wacky Waving Inflatable Arm-Flailing Tubeman!";
-		String description = "I am overstocked with deals!";
-		int id = 4;
-		HDF5LWRTagType tag = rod.getHDF5LWRTag();
-		Attribute attribute = null;
-		String attributeValue = null;
-		Double pressure = 23.898;
-		String testFileName = "testWrite.h5";
-		MaterialBlock materialBlock1, materialBlock2;
-		TreeSet<MaterialBlock> blocks = new TreeSet<MaterialBlock>();
-
-		// Setup MaterialBlocks
-		materialBlock1 = new MaterialBlock();
-		materialBlock2 = new MaterialBlock();
-
-		// Set position
-		materialBlock1.setPosition(1.0);
-		materialBlock2.setPosition(2.0);
-
-		blocks.add(materialBlock1);
-		blocks.add(materialBlock2);
-
-		materialBlock1.setName("Made of inflatable plastic11!");
-		materialBlock2.setName("Made of inflatable plastic22!");
-		Material material = new Material("Wacky Helium and AIR!");
-		Ring ring1 = new Ring("THE WAVING ARMS PART!");
-		Ring ring2 = new Ring("THE WAVING ARMS PART2222!");
-
-		materialBlock1.addRing(ring1);
-		materialBlock1.addRing(ring2);
-		materialBlock2.addRing(ring1);
-
-		// Setup composite
-		rod.setName(name);
-		rod.setId(id);
-		rod.setDescription(description);
-		rod.setClad(ring1);
-		rod.setFillGas(material);
-		rod.setMaterialBlocks(blocks);
-		rod.setPressure(pressure);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ testFileName);
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Check to see if it has any children
-		assertNotNull(rod.getWriteableChildren());
-		// Check Children
-		assertEquals(4, rod.getWriteableChildren().size());
-		assertTrue(rod.getClad().equals(rod.getWriteableChildren().get(0)));
-		assertTrue(rod.getFillGas().equals(rod.getWriteableChildren().get(1)));
-		assertTrue(rod.getWriteableChildren().contains(
-				rod.getMaterialBlocks().toArray()[0]));
-		assertTrue(rod.getWriteableChildren().contains(
-				rod.getMaterialBlocks().toArray()[1]));
-
-		// Check writing attributes
-		H5Group h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		// Pass the group and file to the writer for attributes
-		// See that it passes
-		assertTrue(rod.writeAttributes(h5File, h5Group));
-
-		// Close group and then reopen
-		try {
-			h5File.close();
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Get the group again
-		h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-
-		// Check attributes
-		assertEquals("/", h5Group.getName());
-
-		try {
-			// Show that there are no other groups made at this time
-			assertEquals(0, h5Group.getMemberList().size());
-
-			// Check the meta data
-			assertEquals(5, h5Group.getMetadata().size());
-
-			// Check String attribute - HDF5LWRTag
-			attribute = (Attribute) h5Group.getMetadata().get(0);
-			assertEquals(attribute.getName(), "HDF5LWRTag");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(tag.toString(), attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - description
-			attribute = (Attribute) h5Group.getMetadata().get(1);
-			assertEquals(attribute.getName(), "description");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(description, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - id
-			attribute = (Attribute) h5Group.getMetadata().get(2);
-			assertEquals(attribute.getName(), "id");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(id, ((int[]) attribute.getValue())[0]);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - name
-			attribute = (Attribute) h5Group.getMetadata().get(3);
-			assertEquals(attribute.getName(), "name");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(name, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Double Attribute - pressure
-			attribute = (Attribute) h5Group.getMetadata().get(4);
-			assertEquals(attribute.getName(), "pressure");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_FLOAT);
-			assertEquals(((double[]) attribute.getValue())[0], 1.2, pressure);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		// Make sure the writeAttributes fail for invalid stuff
-		assertFalse(rod.writeAttributes(null, h5Group));
-		assertFalse(rod.writeAttributes(h5File, null));
-
-		// Check dataSet.
-		assertFalse(rod.writeDatasets(null, null));
-
-		// Check Group Creation
-		H5Group group = rod.createGroup(h5File, h5Group);
-		// See that the previous group has a group
-		assertEquals(1, h5Group.getMemberList().size());
-		// Check that it has the same name as the root rod
-		assertEquals(rod.getName(), h5Group.getMemberList().get(0).toString());
-		// Check that the returned group is a Group but no members
-		assertEquals(0, group.getMemberList().size());
-		assertEquals(0, ((Group) h5Group.getMemberList().get(0))
-				.getMemberList().size());
-
-		// Close that h5 file!
-		try {
-			h5File.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Delete the file once you are done
-		dataFile.delete();
-
-	}
-
 	@AfterClass
 	public static void afterClass() {
 
@@ -617,158 +411,6 @@ public class LWRRodTester {
 		if (dataFile.exists()) {
 			dataFile.delete();
 		}
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the HDF5 readable operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Readables() {
-
-		// Local Declarations
-		LWRRod component = new LWRRod();
-		LWRRod newComponent = new LWRRod();
-		String name = "Wacky Waving Inflatable Arm-Flailing Tubeman!";
-		String description = "I am overstocked with deals!";
-		int id = 4;
-		HDF5LWRTagType tag = component.getHDF5LWRTag();
-		Double pressure = 23.898;
-		H5Group subGroup = null;
-
-		MaterialBlock materialBlock1, materialBlock2;
-		TreeSet<MaterialBlock> blocks = new TreeSet<MaterialBlock>();
-
-		// Setup MaterialBlocks
-		materialBlock1 = new MaterialBlock();
-		materialBlock2 = new MaterialBlock();
-
-		// Set position
-		materialBlock1.setPosition(1.0);
-		materialBlock2.setPosition(2.0);
-
-		blocks.add(materialBlock1);
-		blocks.add(materialBlock2);
-
-		materialBlock1.setName("Made of inflatable plastic11!");
-		materialBlock2.setName("Made of inflatable plastic22!");
-		Material material = new Material("Wacky Helium and AIR!");
-		Ring ring1 = new Ring("THE WAVING ARMS PART!");
-		Ring ring2 = new Ring("THE WAVING ARMS PART2222!");
-
-		materialBlock1.addRing(ring1);
-		materialBlock1.addRing(ring2);
-		materialBlock2.addRing(ring1);
-
-		// Test readChild here
-		assertFalse(component.readChild(null));
-		assertTrue(component.readChild(newComponent));
-		assertTrue(component.readChild(ring1));
-		assertTrue(component.readChild(material));
-		assertTrue(component.readChild((IHdfReadable) blocks.toArray()[0]));
-		assertTrue(component.readChild((IHdfReadable) blocks.toArray()[1]));
-		assertTrue(blocks.containsAll(component.getMaterialBlocks()));
-		assertTrue(component.getClad().getName().equals(ring1.getName()));
-		assertTrue(component.getFillGas().getName().equals(material.getName()));
-
-		// Reset values
-		component = new LWRRod();
-
-		// Setup composite
-		component.setName(name);
-		component.setId(id);
-		component.setDescription(description);
-		component.setClad(ring1);
-		component.setFillGas(material);
-		component.setMaterialBlocks(blocks);
-		component.setPressure(pressure);
-
-		newComponent.setClad(ring1);
-		newComponent.setFillGas(material);
-		newComponent.setMaterialBlocks(blocks);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "test.h5");
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Setup LWRComponent with Data in the Group
-
-		H5Group parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		try {
-			// Setup the subGroup
-			subGroup = (H5Group) h5File.createGroup(name, parentH5Group);
-
-			// Setup the subGroup's attributes
-
-			// Setup Tag Attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"HDF5LWRTag", tag.toString());
-
-			// Setup name attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup, "name",
-					name);
-
-			// Setup id attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "id", id);
-
-			// Setup description attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"description", description);
-
-			// Setup pressure attribute
-			HdfWriterFactory.writeDoubleAttribute(h5File, subGroup, "pressure",
-					pressure);
-
-			// Close group and then reopen
-			h5File.close();
-			h5File.open();
-			parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-					.getRootNode()).getUserObject();
-
-			// Get the subGroup
-			subGroup = (H5Group) parentH5Group.getMemberList().get(0);
-
-			// Read information
-			assertTrue(newComponent.readAttributes(subGroup));
-			assertFalse(newComponent.readDatasets(null));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Now, lets try to set an erroneous H5Group with missing data
-			subGroup.getMetadata().remove(1);
-
-			// Run it through
-			assertFalse(newComponent.readAttributes(subGroup));
-			// Check it does not change
-			assertTrue(component.equals(newComponent));
-
-			// Check for nullaries
-			assertFalse(newComponent.readAttributes(null));
-			// Doesn't change anything
-			assertTrue(component.equals(newComponent));
-
-			// Close the h5File.
-			h5File.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		dataFile.delete();
 
 	}
 

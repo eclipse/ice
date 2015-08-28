@@ -15,20 +15,22 @@ package org.eclipse.ice.reactorAnalyzer;
 import java.io.File;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import ncsa.hdf.hdf5lib.H5;
-import ncsa.hdf.hdf5lib.HDF5Constants;
-import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
-import ncsa.hdf.hdf5lib.structs.H5O_info_t;
-
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.reactor.LWRComponentReader;
+import org.eclipse.ice.reactor.LWRComponent;
+import org.eclipse.ice.reactor.hdf.LWRIOHandler;
 import org.eclipse.ice.reactor.pwr.PressurizedWaterReactor;
 import org.eclipse.ice.reactor.sfr.base.SFReactorIOHandler;
 import org.eclipse.ice.reactor.sfr.core.SFReactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ncsa.hdf.hdf5lib.H5;
+import ncsa.hdf.hdf5lib.HDF5Constants;
+import ncsa.hdf.hdf5lib.exceptions.HDF5LibraryException;
+import ncsa.hdf.hdf5lib.structs.H5O_info_t;
 
 public class ReactorReaderFactory {
 
@@ -56,8 +58,9 @@ public class ReactorReaderFactory {
 				new IReactorFactory() {
 					@Override
 					public IReactorComponent read(URI uri) {
-						return (PressurizedWaterReactor) new LWRComponentReader()
-								.read(uri);
+						List<LWRComponent> components = new LWRIOHandler()
+								.readHDF5(uri);
+						return !components.isEmpty() ? components.get(0) : null;
 					}
 
 					@Override
@@ -123,8 +126,8 @@ public class ReactorReaderFactory {
 			int fileId = H5.H5Fopen(path, HDF5Constants.H5F_ACC_RDONLY,
 					H5P_DEFAULT);
 			if (fileId < 0) {
-				throw new HDF5LibraryException("Error opening .h5 file \""
-						+ path + "\".");
+				throw new HDF5LibraryException(
+						"Error opening .h5 file \"" + path + "\".");
 			}
 			// Get the name of the first group. That should determine the type
 			// of reactor.
@@ -147,7 +150,8 @@ public class ReactorReaderFactory {
 					indexOrder, 0, H5P_DEFAULT);
 			if (name == null) {
 				throw new HDF5LibraryException(
-						"Invalid name of first Group in file \"" + path + "\".");
+						"Invalid name of first Group in file \"" + path
+								+ "\".");
 			}
 			// For the moment, SFReactor files have the name of the first Group
 			// set to SFReactor. PWReactor files have an HDF5LWRTag Attribute.
@@ -211,13 +215,13 @@ public class ReactorReaderFactory {
 			}
 			// Close the H5file.
 			if (H5.H5Fclose(fileId) < 0) {
-				throw new HDF5LibraryException("Error closing .h5 file \""
-						+ path + "\".");
+				throw new HDF5LibraryException(
+						"Error closing .h5 file \"" + path + "\".");
 			}
 		} catch (HDF5LibraryException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Look up the factory for the type and, if possible, use the factory to
@@ -250,8 +254,8 @@ public class ReactorReaderFactory {
 
 			// Get the factory that knows how to copy the IReactorComponent
 			// implementation.
-			IReactorFactory factory = reactorFactoryMap.get(destination
-					.getClass());
+			IReactorFactory factory = reactorFactoryMap
+					.get(destination.getClass());
 
 			// If the factory is valid, then try to copy the source data into
 			// the destination.

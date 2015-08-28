@@ -20,24 +20,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 
-import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.eclipse.ice.reactor.GridLocation;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComposite;
 import org.eclipse.ice.reactor.LWRData;
 import org.eclipse.ice.reactor.LWRDataProvider;
-import org.eclipse.ice.reactor.LWRGridManager;
 import org.eclipse.ice.reactor.LWRRod;
 import org.eclipse.ice.reactor.pwr.PWRAssembly;
 import org.junit.AfterClass;
@@ -59,7 +48,8 @@ public class PWRAssemblyTester {
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
-		// System.setProperty("java.library.path", "/home/Scott Forest Hull II/usr/local/lib64");
+		// System.setProperty("java.library.path", "/home/Scott Forest Hull
+		// II/usr/local/lib64");
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
@@ -170,7 +160,8 @@ public class PWRAssemblyTester {
 		// Local Declarations
 		int assemblySize = 17;
 		PWRAssembly assembly = new PWRAssembly(assemblySize);
-		LWRRod testComponent = new LWRRod(), testComponent2 = new LWRRod(), testComponent3 = new LWRRod();
+		LWRRod testComponent = new LWRRod(), testComponent2 = new LWRRod(),
+				testComponent3 = new LWRRod();
 		String testComponentName = "Bob";
 		String testComponentName2 = "Bill!";
 		int rowLoc1 = 5, colLoc1 = 5;
@@ -250,8 +241,8 @@ public class PWRAssemblyTester {
 
 		// The above erroneous settings does not change the original location of
 		// the first, valid set
-		assertTrue(testComponent.equals(assembly
-				.getLWRRodByName(testComponentName)));
+		assertTrue(testComponent
+				.equals(assembly.getLWRRodByName(testComponentName)));
 
 		// Check invalid overwrite of location:
 		testComponent2.setName(testComponentName2);
@@ -261,28 +252,28 @@ public class PWRAssemblyTester {
 				rowLoc1, colLoc1));
 
 		// Check that it is the first, but not second
-		assertTrue(testComponent.equals(assembly
-				.getLWRRodByName(testComponentName)));
+		assertTrue(testComponent
+				.equals(assembly.getLWRRodByName(testComponentName)));
 
 		// Add it in there
 		assertTrue(assembly.addLWRRod(testComponent2));
 
 		// Show that you can have at least 2 components in there
-		assertTrue(assembly.setLWRRodLocation(testComponent2.getName(),
-				rowLoc2, colLoc2));
+		assertTrue(assembly.setLWRRodLocation(testComponent2.getName(), rowLoc2,
+				colLoc2));
 
 		// Check values - see the components are different and they reside in
 		// the table correctly
-		assertTrue(testComponent.equals(assembly
-				.getLWRRodByName(testComponentName)));
-		assertTrue(testComponent2.equals(assembly
-				.getLWRRodByName(testComponentName2)));
+		assertTrue(testComponent
+				.equals(assembly.getLWRRodByName(testComponentName)));
+		assertTrue(testComponent2
+				.equals(assembly.getLWRRodByName(testComponentName2)));
 
 		// Check the locations
-		assertTrue(testComponent.equals(assembly.getLWRRodByLocation(rowLoc1,
-				colLoc1)));
-		assertTrue(testComponent2.equals(assembly.getLWRRodByLocation(rowLoc2,
-				colLoc2)));
+		assertTrue(testComponent
+				.equals(assembly.getLWRRodByLocation(rowLoc1, colLoc1)));
+		assertTrue(testComponent2
+				.equals(assembly.getLWRRodByLocation(rowLoc2, colLoc2)));
 
 		// Check the names, should contain 2!
 		assertEquals(2, assembly.getLWRRodNames().size());
@@ -307,16 +298,16 @@ public class PWRAssemblyTester {
 		assertFalse(assembly.addLWRRod(testComponent3));
 
 		// Check that the object has not been overwritten
-		assertTrue(testComponent.equals(assembly
-				.getLWRRodByName(testComponentName)));
-		assertFalse(testComponent3.equals(assembly
-				.getLWRRodByName(testComponentName)));
+		assertTrue(testComponent
+				.equals(assembly.getLWRRodByName(testComponentName)));
+		assertFalse(testComponent3
+				.equals(assembly.getLWRRodByName(testComponentName)));
 
 		// Test to remove components from the assembly
 		assertFalse(assembly.removeLWRRod(null));
 		assertFalse(assembly.removeLWRRod(""));
-		assertFalse(assembly
-				.removeLWRRod("!--+ANamETHaTDoESNOTEXIST19674376393<><(@#*)%^"));
+		assertFalse(assembly.removeLWRRod(
+				"!--+ANamETHaTDoESNOTEXIST19674376393<><(@#*)%^"));
 
 		// Remove the first component
 		assertTrue(assembly.removeLWRRod(testComponent.getName()));
@@ -328,14 +319,14 @@ public class PWRAssemblyTester {
 		assertEquals(1, assembly.getNumberOfLWRRods());
 
 		// It can now be overridden!
-		assertTrue(assembly.setLWRRodLocation(testComponent2.getName(),
-				rowLoc1, colLoc1));
+		assertTrue(assembly.setLWRRodLocation(testComponent2.getName(), rowLoc1,
+				colLoc1));
 
 		// Show that the component's names can NOT overwrite each others
 		// locations
 		assertTrue(assembly.addLWRRod(testComponent));
-		assertFalse(assembly.setLWRRodLocation(testComponent.getName(),
-				rowLoc1, colLoc1));
+		assertFalse(assembly.setLWRRodLocation(testComponent.getName(), rowLoc1,
+				colLoc1));
 
 		// Check the size, the respective locations
 		assertEquals(testComponent2.getName(),
@@ -389,8 +380,8 @@ public class PWRAssemblyTester {
 		// It is equal to the default rodComposite for many of the composite
 		// getters
 		assertTrue(rodComposite.equals(assembly.getComponent(1)));
-		assertTrue(rodComposite.equals(assembly.getComponent(rodComposite
-				.getName())));
+		assertTrue(rodComposite
+				.equals(assembly.getComponent(rodComposite.getName())));
 		assertTrue(compNames.equals(assembly.getComponentNames()));
 		assertTrue(components.equals(assembly.getComponents()));
 
@@ -502,7 +493,8 @@ public class PWRAssemblyTester {
 
 		// Check that equals() is Transitive
 		// x.equals(y) = true, y.equals(z) = true => x.equals(z) = true
-		if (object.equals(equalObject) && equalObject.equals(transitiveObject)) {
+		if (object.equals(equalObject)
+				&& equalObject.equals(transitiveObject)) {
 			assertTrue(object.equals(transitiveObject));
 		} else {
 			fail();
@@ -511,12 +503,12 @@ public class PWRAssemblyTester {
 		// Check the Consistent nature of equals()
 		assertTrue(object.equals(equalObject) && object.equals(equalObject)
 				&& object.equals(equalObject));
-		assertTrue(!object.equals(unEqualObject)
-				&& !object.equals(unEqualObject)
-				&& !object.equals(unEqualObject));
+		assertTrue(
+				!object.equals(unEqualObject) && !object.equals(unEqualObject)
+						&& !object.equals(unEqualObject));
 
 		// Assert checking equality with null value returns false
-		assertFalse(object==null);
+		assertFalse(object == null);
 
 		// Assert that two equal objects have the same hashcode
 		assertTrue(object.equals(equalObject)
@@ -573,215 +565,6 @@ public class PWRAssemblyTester {
 
 	/**
 	 * <p>
-	 * This operation checks the HDF5 writing operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Writeables() {
-
-		// Local Declarations
-		int size = 5;
-		PWRAssembly assembly = new PWRAssembly(size);
-		String name = "Bob the Builder";
-		String description = "Can he fix it?";
-		int id = 4;
-		HDF5LWRTagType tag = assembly.getHDF5LWRTag();
-		Attribute attribute = null;
-		String attributeValue = null;
-		LWRRod rod1 = new LWRRod("Rod1");
-		LWRRod rod2 = new LWRRod("Rod2");
-		LWRRod rod3 = new LWRRod("Rod3");
-		GridLocation loc1 = new GridLocation(0, 0);
-		GridLocation loc2 = new GridLocation(2, 0);
-		GridLocation loc3 = new GridLocation(0, 3);
-		double rodPitch = 4;
-		String testFileName = "testWrite.h5";
-
-		// Setup duplicate manager for comparison testing
-		LWRGridManager manager = new LWRGridManager(size);
-		manager.setName("LWRRod Grid");
-		manager.addComponent(rod1, loc1);
-		manager.addComponent(rod2, loc2);
-		manager.addComponent(rod3, loc3);
-
-		// Setup assembly
-		assembly.setName(name);
-		assembly.setId(id);
-		assembly.setDescription(description);
-		assembly.addLWRRod(rod1);
-		assembly.addLWRRod(rod2);
-		assembly.addLWRRod(rod3);
-		assembly.setRodPitch(rodPitch);
-		// Setup duplicate for assembly's grid location
-		assembly.setLWRRodLocation(rod1.getName(), loc1.getRow(),
-				loc1.getColumn());
-		assembly.setLWRRodLocation(rod2.getName(), loc2.getRow(),
-				loc2.getColumn());
-		assembly.setLWRRodLocation(rod3.getName(), loc3.getRow(),
-				loc3.getColumn());
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ testFileName);
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			// Fail here
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Check to see if it has any children
-		assertNotNull(assembly.getWriteableChildren());
-		// Check Children
-		assertEquals(2, assembly.getWriteableChildren().size());
-		assertTrue(rod3.equals(assembly.getWriteableChildren().get(0)
-				.getWriteableChildren().get(0)));
-		assertTrue(rod2.equals(assembly.getWriteableChildren().get(0)
-				.getWriteableChildren().get(1)));
-		assertTrue(rod1.equals(assembly.getWriteableChildren().get(0)
-				.getWriteableChildren().get(2)));
-		LWRGridManager otherManager = (LWRGridManager) assembly
-				.getWriteableChildren().get(1);
-		assertTrue(manager.equals(otherManager));
-
-		// Check writing attributes
-		H5Group h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		// Pass the group and file to the writer for attributes
-		// See that it passes
-		assertTrue(assembly.writeAttributes(h5File, h5Group));
-
-		// Close group and then reopen
-		try {
-			h5File.close();
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Get the group again
-		h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-
-		// Check attributes
-		assertEquals("/", h5Group.getName());
-
-		try {
-			// Show that there are no other groups made at this time
-			assertEquals(0, h5Group.getMemberList().size());
-
-			// Check the meta data
-			assertEquals(6, h5Group.getMetadata().size());
-
-			// Check String attribute - HDF5LWRTag
-			attribute = (Attribute) h5Group.getMetadata().get(0);
-			assertEquals(attribute.getName(), "HDF5LWRTag");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(tag.toString(), attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - description
-			attribute = (Attribute) h5Group.getMetadata().get(1);
-			assertEquals(attribute.getName(), "description");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(description, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - id
-			attribute = (Attribute) h5Group.getMetadata().get(2);
-			assertEquals(attribute.getName(), "id");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(id, ((int[]) attribute.getValue())[0]);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - name
-			attribute = (Attribute) h5Group.getMetadata().get(3);
-			assertEquals(attribute.getName(), "name");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Double Attribute - rodPitch
-			attribute = (Attribute) h5Group.getMetadata().get(4);
-			assertEquals(attribute.getName(), "rodPitch");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_FLOAT);
-			assertEquals(rodPitch, ((double[]) attribute.getValue())[0], 1.2);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - size
-			attribute = (Attribute) h5Group.getMetadata().get(5);
-			assertEquals(attribute.getName(), "size");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(size, ((int[]) attribute.getValue())[0]);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		// Make sure the writeAttributes fail for invalid stuff
-		assertFalse(assembly.writeAttributes(null, h5Group));
-		assertFalse(assembly.writeAttributes(h5File, null));
-
-		// Check dataSet.
-		assertFalse(assembly.writeDatasets(null, null));
-
-		// Check Group Creation
-		H5Group group = assembly.createGroup(h5File, h5Group);
-		// See that the previous group has a group
-		assertEquals(1, h5Group.getMemberList().size());
-		// Check that it has the same name as the root assembly
-		assertEquals(assembly.getName(), h5Group.getMemberList().get(0)
-				.toString());
-		// Check that the returned group is a Group but no members
-		assertEquals(0, group.getMemberList().size());
-		assertEquals(0, ((Group) h5Group.getMemberList().get(0))
-				.getMemberList().size());
-
-		// Close that h5 file!
-		try {
-			h5File.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Delete the file once you are done
-		dataFile.delete();
-
-	}
-
-	/**
-	 * <p>
 	 * Removes the test.h5 file after the tests fails (to keep the workspace
 	 * clean).
 	 * </p>
@@ -798,164 +581,6 @@ public class PWRAssemblyTester {
 		if (dataFile.exists()) {
 			dataFile.delete();
 		}
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the HDF5 readable operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Readables() {
-
-		// Local Declarations
-		int size = 5;
-		PWRAssembly component = new PWRAssembly(size);
-		PWRAssembly newComponent = new PWRAssembly(-1);
-		String name = "Bob the Builder";
-		String description = "Can he fix it?";
-		int id = 4;
-		HDF5LWRTagType tag = component.getHDF5LWRTag();
-		H5Group subGroup = null;
-		LWRRod rod1 = new LWRRod("Rod1");
-		LWRRod rod2 = new LWRRod("Rod2");
-		LWRRod rod3 = new LWRRod("Rod3");
-		GridLocation loc1 = new GridLocation(0, 0);
-		GridLocation loc2 = new GridLocation(2, 0);
-		GridLocation loc3 = new GridLocation(0, 3);
-		double rodPitch = 4;
-
-		// Setup Component
-		component.setName(name);
-		component.setId(id);
-		component.setDescription(description);
-		component.setRodPitch(rodPitch);
-
-		component.addLWRRod(rod1);
-		component.addLWRRod(rod2);
-		component.addLWRRod(rod3);
-
-		// Setup duplicate for assembly's grid location
-		component.setLWRRodLocation(rod1.getName(), loc1.getRow(),
-				loc1.getColumn());
-		component.setLWRRodLocation(rod2.getName(), loc2.getRow(),
-				loc2.getColumn());
-		component.setLWRRodLocation(rod3.getName(), loc3.getRow(),
-				loc3.getColumn());
-
-		// Setup GridManager
-		LWRGridManager manager = new LWRGridManager(size);
-		manager.setName("LWRRod Grid");
-		manager.addComponent(rod1, loc1);
-		manager.addComponent(rod2, loc2);
-		manager.addComponent(rod3, loc3);
-
-		// Setup Composite
-		LWRComposite composite = new LWRComposite();
-		composite.setName("LWRRods");
-		composite.setDescription("A Composite that contains many LWRRods.");
-		composite.setId(1);
-		composite.addComponent(rod1);
-		composite.addComponent(rod2);
-		composite.addComponent(rod3);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "test.h5");
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Check Readable Children
-		// assertTrue(component.readChild(null));
-
-		// Setup PWRAssembly with Data in the Group
-
-		H5Group parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		try {
-			// Setup the subGroup
-			subGroup = (H5Group) h5File.createGroup(name, parentH5Group);
-
-			// Setup the subGroup's attributes
-
-			// Setup Tag Attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"HDF5LWRTag", tag.toString());
-
-			// Setup name attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup, "name",
-					name);
-
-			// Setup id attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "id", id);
-
-			// Setup description attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"description", description);
-
-			// Setup size attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "size",
-					size);
-
-			// Setup rodPitch attribute
-			HdfWriterFactory.writeDoubleAttribute(h5File, subGroup, "rodPitch",
-					rodPitch);
-
-			// Close group and then reopen
-			h5File.close();
-			h5File.open();
-			parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-					.getRootNode()).getUserObject();
-
-			// Get the subGroup
-			subGroup = (H5Group) parentH5Group.getMemberList().get(0);
-
-			// Read information
-			assertTrue(newComponent.readAttributes(subGroup));
-			assertFalse(newComponent.readDatasets(null));
-			assertTrue(newComponent.readChild(manager));
-			assertTrue(newComponent.readChild(composite));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Try to break the PWRAssembly.readChild operation
-			assertFalse(newComponent.readChild(null));
-			assertTrue(newComponent.readChild(new LWRGridManager(size)));
-			assertTrue(newComponent.readChild(new LWRComposite()));
-
-			// Show data is not changed
-			assertTrue(component.equals(newComponent));
-
-			// Now, lets try to set an erroneous H5Group with missing data
-			subGroup.getMetadata().remove(1);
-
-			// Run it through
-			assertFalse(newComponent.readAttributes(subGroup));
-			// Check it does not change
-			assertTrue(component.equals(newComponent));
-
-			// Check for nullaries
-			assertFalse(newComponent.readAttributes(null));
-			// Doesn't change anything
-			assertTrue(component.equals(newComponent));
-
-			h5File.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		dataFile.delete();
 
 	}
 
@@ -1022,8 +647,8 @@ public class PWRAssemblyTester {
 				time2);
 
 		// Verify data
-		assertTrue(provider.equals(assembly.getLWRRodDataProviderAtLocation(
-				row1, col1)));
+		assertTrue(provider
+				.equals(assembly.getLWRRodDataProviderAtLocation(row1, col1)));
 
 	}
 }

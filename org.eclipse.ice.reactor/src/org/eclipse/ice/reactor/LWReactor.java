@@ -14,12 +14,7 @@ package org.eclipse.ice.reactor;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 
 /**
  * <p>
@@ -145,21 +140,6 @@ public class LWReactor extends LWRComposite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
-
-		boolean flag = true;
-
-		flag &= super.writeAttributes(h5File, h5Group);
-		flag &= HdfWriterFactory.writeIntegerAttribute(h5File, h5Group, "size",
-				size);
-
-		return flag;
-	}
-
-	/*
 	 * Overrides a method from LWRComposite.
 	 */
 	@Override
@@ -244,32 +224,6 @@ public class LWReactor extends LWRComposite {
 
 		// Return newly instantiated object
 		return reactor;
-
-	}
-
-	/*
-	 * Overrides a method from LWRComponent.
-	 */
-	@Override
-	public boolean readAttributes(H5Group h5Group) {
-
-		// Local Declarations
-		boolean flag = true;
-
-		// Get values
-		Integer size = HdfReaderFactory.readIntegerAttribute(h5Group, "size");
-
-		// Call super
-		flag &= super.readAttributes(h5Group);
-
-		// check values
-		if (size == null || !flag || h5Group == null) {
-			return false;
-		}
-		// If everything is valid, then set data
-		this.size = size.intValue();
-
-		return true;
 
 	}
 

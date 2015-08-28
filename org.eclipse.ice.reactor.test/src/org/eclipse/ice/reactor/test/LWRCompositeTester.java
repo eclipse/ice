@@ -14,22 +14,12 @@ package org.eclipse.ice.reactor.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.net.URI;
 
-import ncsa.hdf.object.Attribute;
-import ncsa.hdf.object.Datatype;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
 import org.eclipse.ice.reactor.HDF5LWRTagType;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComposite;
@@ -52,7 +42,8 @@ public class LWRCompositeTester {
 
 		// Set the path to the library
 		// System.setProperty("java.library.path", "/usr/lib64");
-		// System.setProperty("java.library.path", "/home/Scott Forest Hull II/usr/local/lib64");
+		// System.setProperty("java.library.path", "/home/Scott Forest Hull
+		// II/usr/local/lib64");
 		// System.setProperty("java.library.path",
 		// "/home/ICE/hdf-java/lib/linux");
 
@@ -95,7 +86,9 @@ public class LWRCompositeTester {
 		// Local Declarations
 		int compositeSize = 17;
 		LWRComposite composite = new LWRComposite();
-		LWRComponent testComponent = new LWRComponent(), testComponent2 = new LWRComponent(), testComponent3 = new LWRComponent();
+		LWRComponent testComponent = new LWRComponent(),
+				testComponent2 = new LWRComponent(),
+				testComponent3 = new LWRComponent();
 		String testComponentName = "Bob";
 		String testComponentName2 = "Bill!";
 		int rowLoc1 = 5, colLoc1 = 5;
@@ -127,8 +120,8 @@ public class LWRCompositeTester {
 		composite.addComponent(testComponent);
 
 		// Check the getting of a component
-		assertTrue(testComponent.equals(composite
-				.getComponent(testComponentName)));
+		assertTrue(testComponent
+				.equals(composite.getComponent(testComponentName)));
 
 		// Add it in there
 		composite.addComponent(testComponent2);
@@ -136,17 +129,17 @@ public class LWRCompositeTester {
 		// Check there are two in there, with separate names
 		assertEquals(2, composite.getComponents().size());
 		assertEquals(2, composite.getComponentNames().size());
-		assertEquals(testComponent.getName(), composite.getComponentNames()
-				.get(0));
-		assertEquals(testComponent2.getName(), composite.getComponentNames()
-				.get(1));
+		assertEquals(testComponent.getName(),
+				composite.getComponentNames().get(0));
+		assertEquals(testComponent2.getName(),
+				composite.getComponentNames().get(1));
 
 		// Check values - see the components are different and they reside in
 		// the table correctly
-		assertTrue(testComponent.equals(composite
-				.getComponent(testComponentName)));
-		assertTrue(testComponent2.equals(composite.getComponent(testComponent2
-				.getName())));
+		assertTrue(testComponent
+				.equals(composite.getComponent(testComponentName)));
+		assertTrue(testComponent2
+				.equals(composite.getComponent(testComponent2.getName())));
 
 		// Check the names, should contain 2!
 		assertEquals(2, composite.getComponentNames().size());
@@ -170,16 +163,16 @@ public class LWRCompositeTester {
 		composite.addComponent(testComponent3);
 
 		// Check that the object has not been overwritten
-		assertTrue(testComponent.equals(composite
-				.getComponent(testComponentName)));
-		assertFalse(testComponent3.equals(composite
-				.getComponent(testComponentName)));
+		assertTrue(testComponent
+				.equals(composite.getComponent(testComponentName)));
+		assertFalse(testComponent3
+				.equals(composite.getComponent(testComponentName)));
 
 		// Test to remove components from the composite
 		composite.removeComponent(null);
 		composite.removeComponent("");
-		composite
-				.removeComponent("!--+ANamETHaTDoESNOTEXIST19674376393<><(@#*)%^");
+		composite.removeComponent(
+				"!--+ANamETHaTDoESNOTEXIST19674376393<><(@#*)%^");
 
 		// Nothing was removed
 		// Check the names, should contain 2!
@@ -256,7 +249,8 @@ public class LWRCompositeTester {
 
 		// Check that equals() is Transitive
 		// x.equals(y) = true, y.equals(z) = true => x.equals(z) = true
-		if (object.equals(equalObject) && equalObject.equals(transitiveObject)) {
+		if (object.equals(equalObject)
+				&& equalObject.equals(transitiveObject)) {
 			assertTrue(object.equals(transitiveObject));
 		} else {
 			fail();
@@ -265,12 +259,12 @@ public class LWRCompositeTester {
 		// Check the Consistent nature of equals()
 		assertTrue(object.equals(equalObject) && object.equals(equalObject)
 				&& object.equals(equalObject));
-		assertTrue(!object.equals(unEqualObject)
-				&& !object.equals(unEqualObject)
-				&& !object.equals(unEqualObject));
+		assertTrue(
+				!object.equals(unEqualObject) && !object.equals(unEqualObject)
+						&& !object.equals(unEqualObject));
 
 		// Assert checking equality with null value returns false
-		assertFalse(object==null);
+		assertFalse(object == null);
 
 		// Assert that two equal objects have the same hashcode
 		assertTrue(object.equals(equalObject)
@@ -330,274 +324,6 @@ public class LWRCompositeTester {
 
 		// Show that nothing as changed
 		assertTrue(object.equals(copyObject));
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the HDF5 writing operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Writeables() {
-
-		// Local Declarations
-		LWRComposite composite = new LWRComposite();
-		String name = "Bob the Builder";
-		String description = "Can he fix it?";
-		int id = 4;
-		HDF5LWRTagType tag = composite.getHDF5LWRTag();
-		Attribute attribute = null;
-		String attributeValue = null;
-		LWRComponent component1 = new LWRComponent("Component 1");
-		LWRComponent component2 = new LWRComponent("Component 2");
-		String testFileName = "testWrite.h5";
-
-		// Setup composite
-		composite.setName(name);
-		composite.setId(id);
-		composite.setDescription(description);
-		composite.addComponent(component1);
-		composite.addComponent(component2);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ testFileName);
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Check to see if it has any children
-		assertNotNull(composite.getWriteableChildren());
-		// Check Children
-		assertEquals(composite.getComponents().size(), composite
-				.getWriteableChildren().size());
-		assertTrue(component2.equals(composite.getWriteableChildren().get(0)));
-		assertTrue(component1.equals(composite.getWriteableChildren().get(1)));
-
-		// Check writing attributes
-		H5Group h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		// Pass the group and file to the writer for attributes
-		// See that it passes
-		assertTrue(composite.writeAttributes(h5File, h5Group));
-
-		// Close group and then reopen
-		try {
-			h5File.close();
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-
-		// Get the group again
-		h5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-
-		// Check attributes
-		assertEquals("/", h5Group.getName());
-
-		try {
-			// Show that there are no other groups made at this time
-			assertEquals(0, h5Group.getMemberList().size());
-
-			// Check the meta data
-			assertEquals(4, h5Group.getMetadata().size());
-
-			// Check String attribute - HDF5LWRTag
-			attribute = (Attribute) h5Group.getMetadata().get(0);
-			assertEquals(attribute.getName(), "HDF5LWRTag");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(tag.toString(), attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - description
-			attribute = (Attribute) h5Group.getMetadata().get(1);
-			assertEquals(attribute.getName(), "description");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(description, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check Integer Attribute - id
-			attribute = (Attribute) h5Group.getMetadata().get(2);
-			assertEquals(attribute.getName(), "id");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_INTEGER);
-			assertEquals(id, ((int[]) attribute.getValue())[0]);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-			// Check String Attribute - name
-			attribute = (Attribute) h5Group.getMetadata().get(3);
-			assertEquals(attribute.getName(), "name");
-			assertEquals(attribute.getType().getDatatypeClass(),
-					Datatype.CLASS_STRING);
-			attributeValue = ((String[]) attribute.getValue())[0];
-			assertEquals(name, attributeValue);
-			// Reset Values
-			attribute = null;
-			attributeValue = null;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		// Make sure the writeAttributes fail for invalid stuff
-		assertFalse(composite.writeAttributes(null, h5Group));
-		assertFalse(composite.writeAttributes(h5File, null));
-
-		// Check Group Creation
-		H5Group group = composite.createGroup(h5File, h5Group);
-		// See that the previous group has a group
-		assertEquals(1, h5Group.getMemberList().size());
-		// Check that it has the same name as the root composite
-		assertEquals(composite.getName(), h5Group.getMemberList().get(0)
-				.toString());
-		// Check that the returned group is a Group but no members
-		assertEquals(0, group.getMemberList().size());
-		assertEquals(0, ((Group) h5Group.getMemberList().get(0))
-				.getMemberList().size());
-
-		// Close that h5 file!
-		try {
-			h5File.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			dataFile.delete();
-			fail();
-		}
-		// Delete the file once you are done
-		dataFile.delete();
-
-	}
-
-	/**
-	 * <p>
-	 * This operation checks the HDF5 readable operations.
-	 * </p>
-	 * 
-	 */
-	@Test
-	public void checkHDF5Readables() {
-
-		// Local Declarations
-		LWRComposite component = new LWRComposite();
-		LWRComposite newComponent = new LWRComposite();
-		String name = "Fancy composite";
-		String description = "It has stuff";
-		int id = 4;
-		HDF5LWRTagType tag = component.getHDF5LWRTag();
-		H5Group subGroup = null;
-		LWRComponent c1 = new LWRComponent("Component1"), c2 = new LWRComponent(
-				"Component2");
-
-		// Setup composite
-		component.setName(name);
-		component.setId(id);
-		component.setDescription(description);
-		component.addComponent(c1);
-		component.addComponent(c2);
-
-		// Setup the HDF5 File
-		String separator = System.getProperty("file.separator");
-		File dataFile = new File(System.getProperty("user.dir") + separator
-				+ "test.h5");
-		URI uri = dataFile.toURI();
-		H5File h5File = HdfFileFactory.createH5File(uri);
-		try {
-			h5File.open();
-		} catch (Exception e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		// Setup LWRComponent with Data in the Group
-
-		H5Group parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-				.getRootNode()).getUserObject();
-		try {
-			// Setup the subGroup
-			subGroup = (H5Group) h5File.createGroup(name, parentH5Group);
-
-			// Setup the subGroup's attributes
-
-			// Setup Tag Attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"HDF5LWRTag", tag.toString());
-
-			// Setup name attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup, "name",
-					name);
-
-			// Setup id attribute
-			HdfWriterFactory.writeIntegerAttribute(h5File, subGroup, "id", id);
-
-			// Setup description attribute
-			HdfWriterFactory.writeStringAttribute(h5File, subGroup,
-					"description", description);
-
-			// Close group and then reopen
-			h5File.close();
-			h5File.open();
-			parentH5Group = (H5Group) ((javax.swing.tree.DefaultMutableTreeNode) h5File
-					.getRootNode()).getUserObject();
-
-			// Get the subGroup
-			subGroup = (H5Group) parentH5Group.getMemberList().get(0);
-
-			// Read information
-			assertTrue(newComponent.readAttributes(subGroup));
-			assertFalse(newComponent.readDatasets(null));
-			assertTrue(newComponent.readChild(c1));
-			assertTrue(newComponent.readChild(c2));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Try to break the readChild operation
-			assertFalse(newComponent.readChild(null));
-
-			// Check with setup component
-			assertTrue(component.equals(newComponent));
-
-			// Now, lets try to set an erroneous H5Group with missing data
-			subGroup.getMetadata().remove(1);
-
-			// Run it through
-			assertFalse(newComponent.readAttributes(subGroup));
-			// Check it does not change
-			assertTrue(component.equals(newComponent));
-
-			// Check for nullaries
-			assertFalse(newComponent.readAttributes(null));
-			// Doesn't change anything
-			assertTrue(component.equals(newComponent));
-
-			// Close the h5File.
-			h5File.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fail();
-		}
 
 	}
 
