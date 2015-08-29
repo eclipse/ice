@@ -253,8 +253,8 @@ public class BatMLModel extends Item {
 			emfComp.setId(1);
 		} else {
 			emfComp = new EMFComponent();
-			emfComp.setName("Could not find BatML input for model creation!");
-			emfComp.setDescription("");
+			emfComp.setName("BatML Model Editor");
+			emfComp.setDescription("Could not find BatML input for model creation!");
 			emfComp.setId(1);
 		}
 
