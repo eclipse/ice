@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" deactivate="stop" immediate="false" name="org.eclipse.ice.reactorAnalyzer">
+   <implementation class="org.eclipse.ice.reactorAnalyzer.ReactorAnalyzerBuilder"/>
+   <reference bind="addAnalysisTool" cardinality="0..n" interface="org.eclipse.ice.analysistool.IAnalysisTool" name="IAnalysisTool" policy="dynamic"/>
+   <service>
+      <provide interface="org.eclipse.ice.item.ItemBuilder"/>
+   </service>
+</scr:component>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: FileSimulation
+Bundle-SymbolicName: org.eclipse.ice.filesimulation
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.datastructures.form,
+ org.eclipse.ice.item,
+ org.eclipse.ice.item.action,
+ org.eclipse.ice.item.jobLauncher
+Service-Component: OSGi-INF/filesimulation.xml
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
+ org.eclipse.ice.datastructures,
+ org.eclipse.ice.item;bundle-version="2.0.0"
+Bundle-Vendor: Oak Ridge National Laboratory

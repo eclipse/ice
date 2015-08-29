@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Poly
+Bundle-SymbolicName: org.eclipse.ice.poly;singleton:=true
+Bundle-Version: 2.1.7.20150825
+Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.ice.item,
+ org.eclipse.ice.item.jobLauncher,
+ org.slf4j;version="1.7.2"
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.10.0",
+ org.eclipse.ice.datastructures
+Service-Component: OSGI-INF/polyComponent.xml

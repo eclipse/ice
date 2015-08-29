@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <!-- Perspective -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.ice.reflectivity.ui.ReflectivityPerspective"
+            id="org.eclipse.ice.reflectivity.ReflectivityPerspective"
+            name="Reflectivity">
+      </perspective>
+   </extension>
+   <!-- Editor -->
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.reflectivity.ui.ReflectivityFormEditor"
+            default="false"
+            id="org.eclipse.ice.reflectivity.ui.ReflectivityFormEditor"
+            name="ReflectivityEditor">
+      </editor>
+   </extension>
+   <!--Custom Properties View-->
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.eclipse.ice.reflectivity.ui.ReflectivityFormEditor"
+            tabDescriptorProvider="org.eclipse.ice.reflectivity.ui.ReflectivityTabDescriptorProvider">
+         <propertyCategory
+               category="Reflectivity"></propertyCategory>
+      </propertyContributor>
+   </extension>
+   <!--Layout for the Reflectivity Perspective-->
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ice.reflectivity.ReflectivityPerspective">
+            <view
+            	closeable="false"
+            	id="org.eclipse.ice.client.common.ItemViewer"
+            	ratio="0.25f"
+            	relationship="left"
+            	relative="org.eclipse.ui.editorss"
+            	visible="true">
+            </view>
+            <view
+            	closeable="false"
+            	id="org.eclipse.ice.client.widgets.ICEResourceView"
+            	minimized="false"
+            	relationship="stack"
+            	relative="org.eclipse.ice.client.common.ItemViewer"
+            	visible="true">
+            </view>
+            <view
+            	closeable="false"
+            	id="org.eclipse.ui.views.PropertySheet"
+            	relationship="bottom"
+            	relative="org.eclipse.ui.editorss"
+            	visible="true">
+            </view>         	
+      </perspectiveExtension>
+   </extension>
+   
+   
+
+</plugin>

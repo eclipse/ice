@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.ice.io.ioservice">
-   <implementation class="org.eclipse.ice.io.serializable.IOService"/>
-   <reference bind="addReader" cardinality="0..n" interface="org.eclipse.ice.io.serializable.IReader" name="IReader" policy="dynamic"/>
-   <reference bind="addWriter" cardinality="0..n" interface="org.eclipse.ice.io.serializable.IWriter" name="IWriter" policy="dynamic"/>
-   <service>
-      <provide interface="org.eclipse.ice.io.serializable.IOService"/>
-   </service>
-</scr:component>
