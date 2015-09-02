@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.perspective.internal;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.iclient.IClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,25 @@ public class ReactorClientHolder {
 	 * Retrieve the reference to the client
 	 */
 	public static IClient getClient() {
+		// If the client has not been found yet, we need to get it from the
+		// extension registry.
+		if (client == null) {
+			// Get the extension points with the client ID.
+			IConfigurationElement[] elements = Platform.getExtensionRegistry()
+					.getConfigurationElementsFor(
+							"org.eclipse.ice.client.clientInstance");
+			// If the extension was found, we need to get its IClient instance.
+			if (elements.length > 0) {
+				IConfigurationElement element = elements[0];
+				try {
+					client = (IClient) element
+							.createExecutableExtension("class");
+				} catch (CoreException e) {
+					logger.error(ReactorClientHolder.class.getName()
+							+ " error: " + "ICEClient extension not found.", e);
+				}
+			}
+		}
 		return client;
 	}
 
