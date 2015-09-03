@@ -6,9 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.core.iCore;
 
@@ -19,100 +18,67 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.item.Item;
 
 /**
- * <p>
  * An interface designed for item persistence within ICE.
- * </p>
  * 
- * @author Scott Forest Hull II
+ * @author Jay Jay Billings, Scott Forest Hull II
  */
 public interface IPersistenceProvider {
+
 	/**
-	 * <p>
 	 * Persists an item. Returns true if the operation was successful. False
-	 * otherwise.
-	 * </p>
+	 * otherwise. The Item is persisted to the project retrieved by calling
+	 * Item.getProject(), which may not be the same as the default project.
 	 * 
 	 * @param item
-	 *            <p>
 	 *            The item to be persisted.
-	 *            </p>
-	 * @return
-	 * 		<p>
-	 *         Returns true if the operation was successful. False otherwise.
-	 *         </p>
+	 * @return Returns true if the operation was successful. False otherwise.
 	 */
 	public boolean persistItem(Item item);
 
 	/**
-	 * <p>
 	 * Loads the specified item keyed on the ID. Returns the item, or null if an
 	 * error was encountered.
-	 * </p>
 	 * 
 	 * @param itemID
-	 *            <p>
 	 *            The item's ID.
-	 *            </p>
-	 * @return
-	 * 		<p>
-	 *         The returned item.
-	 *         </p>
+	 * @return The returned item.
 	 */
 	public Item loadItem(int itemID);
 
 	/**
-	 * <p>
 	 * Deletes an item from the persistence provider. Returns true if the
 	 * operation was successful. False otherwise.
-	 * </p>
 	 * 
 	 * @param item
-	 *            <p>
 	 *            The item to be deleted.
-	 *            </p>
-	 * @return
-	 * 		<p>
-	 *         True if successful. False otherwise.
-	 *         </p>
+	 * @return True if successful. False otherwise.
 	 */
 	public boolean deleteItem(Item item);
 
 	/**
-	 * <p>
 	 * Updates an item in the persistence unit.
-	 * </p>
 	 * 
 	 * @param item
-	 *            <p>
 	 *            The item to be updated.
-	 *            </p>
-	 * @return
-	 * 		<p>
-	 *         Returns true if successful. False otherwise.
-	 *         </p>
+	 * @return Returns true if successful. False otherwise.
 	 */
 	public boolean updateItem(Item item);
 
 	/**
-	 * <p>
 	 * Returns all the Items in the persistence piece.
-	 * </p>
 	 * 
-	 * @return
-	 * 		<p>
-	 *         The list of items.
-	 *         </p>
+	 * @return The list of items.
 	 */
 	public ArrayList<Item> loadItems();
 
 	/**
-	 * <p>
 	 * Attempts to load the IResource as an Item. Returns the item, or null if
 	 * an error was encountered.
-	 * </p>
 	 * 
-	 * @param IResource the IResource that contains an Item.
-	 * @return The returned item or null if the IResource was not an IFile (for now).
+	 * @param IResource
+	 *            the IResource that contains an Item.
+	 * @return The returned item or null if the IResource was not an IFile (for
+	 *         now).
 	 */
 	public Item loadItem(IResource itemResource) throws IOException;
 }

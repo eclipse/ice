@@ -65,6 +65,11 @@ public class XMLPersistenceProviderTester {
 	private static IProject project;
 
 	/**
+	 * The other Eclipse project used in the test.
+	 */
+	private static IProject otherProject;
+
+	/**
 	 * The XMLPersistenceProvider that will be tested.
 	 */
 	private static XMLPersistenceProvider xmlpp;
@@ -81,63 +86,8 @@ public class XMLPersistenceProviderTester {
 	@BeforeClass
 	static public void setup() {
 
-		// Local Declarations
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		URI defaultProjectLocation = null;
-		String projectName = "itemDB";
-		String separator = System.getProperty("file.separator");
-		String userDir = System.getProperty("user.home") + separator
-				+ "ICETests" + separator + "persistenceData";
-		String filePath = userDir + separator + "bison.yaml";
-		String projectPath = userDir + separator + projectName;
-
-		// Debug information
-		System.out.println("MOOSE Test Data File: " + filePath);
-
-		// Setup the project
-		try {
-			// Get the project handle
-			project = workspaceRoot.getProject(projectName);
-			// If the project does not exist, create it
-			if (!project.exists()) {
-				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(projectPath).toURI());
-				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription(projectName);
-				// Set the location of the project
-				desc.setLocationURI(defaultProjectLocation);
-				// Create the project
-				project.create(desc, null);
-			}
-			// Open the project if it is not already open
-			if (project.exists() && !project.isOpen()) {
-				project.open(null);
-			}
-			// Setup the project directory
-			IFolder mooseFolder = project.getFolder("MOOSE");
-			if (!mooseFolder.exists()) {
-				// Create the directory
-				mooseFolder.create(true, true, null);
-				// Create the File handle and input stream
-				IPath moosePath = new Path(filePath);
-				File mooseFile = moosePath.toFile();
-				FileInputStream mooseStream = new FileInputStream(mooseFile);
-				// Create the Eclipse workspace file
-				IFile mooseEFSFile = mooseFolder.getFile("bison.yaml");
-				mooseEFSFile.create(mooseStream, true, null);
-			}
-			// Refresh the workspace
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-		} catch (CoreException e) {
-			// Catch exception for creating the project
-			e.printStackTrace();
-			fail();
-		} catch (FileNotFoundException e) {
-			// Catch exception for failing to load the file
-			e.printStackTrace();
-			fail();
-		}
+		project = createProject("itemDB");
+		otherProject = createProject("otherItemDB");
 
 		// Setup the XMLPersistenceProvider
 		xmlpp = new XMLPersistenceProvider(project);
@@ -147,10 +97,9 @@ public class XMLPersistenceProviderTester {
 		xmlpp.addBuilder(new MOOSEModelBuilder());
 		xmlpp.addBuilder(new VibeLauncherBuilder());
 
-		// Add a Class Provider so that we can persist the forms. 
+		// Add a Class Provider so that we can persist the forms.
 		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
-		
-		
+
 		try {
 			// Start the service
 			xmlpp.start();
@@ -163,14 +112,65 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
+	 * This operation creates a project that is used during the persistence and
+	 * loading tests.
+	 * 
+	 * @param projectName
+	 *            The name for the new project.
+	 * @return The new Eclipse project.
+	 */
+	private static IProject createProject(String projectName) {
+
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		URI defaultProjectLocation = null;
+		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "persistenceData";
+		String projectPath = userDir + separator + projectName;
+		IProject createdProject = null;
+
+		// Setup the project
+		try {
+			// Get the project handle
+			createdProject = workspaceRoot.getProject(projectName);
+			// If the project does not exist, create it
+			if (!createdProject.exists()) {
+				// Set the location as ${workspace_loc}/ItemTesterWorkspace
+				defaultProjectLocation = (new File(projectPath).toURI());
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(projectName);
+				// Set the location of the project
+				desc.setLocationURI(defaultProjectLocation);
+				// Create the project
+				createdProject.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (createdProject.exists() && !createdProject.isOpen()) {
+				createdProject.open(null);
+			}
+			// Refresh the workspace
+			createdProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			e.printStackTrace();
+			fail();
+		}
+
+		return createdProject;
+	}
+
+	/**
 	 * This operation cleans up after the test and removes the project space.
 	 */
 	@AfterClass
 	static public void teardown() {
 
-		// Delete the project.
+		// Delete the projects.
 		try {
 			project.delete(true, null);
+			otherProject.delete(true, null);
 		} catch (CoreException e) {
 			// Complain
 			e.printStackTrace();
@@ -187,16 +187,18 @@ public class XMLPersistenceProviderTester {
 	 * 
 	 * @param name
 	 *            the name that the resource should have
+	 * @param projectToCheck
+	 *            The project to check
 	 * @return true if the file was found, false if not
 	 */
-	private boolean checkPersistedFile(String name) {
+	private boolean checkPersistedFile(String name, IProject projectToCheck) {
 
 		System.out.println("XMLPersistenceProviderTester Message: "
 				+ "Searching for " + name);
 
 		try {
 			// Get the list of resources
-			IResource[] resources = project.members();
+			IResource[] resources = projectToCheck.members();
 			// Check the list and make sure the file was stored
 			for (IResource resource : resources) {
 				System.out.println("XMLPersistenceProviderTester Message: "
@@ -257,13 +259,13 @@ public class XMLPersistenceProviderTester {
 		pause(2);
 
 		// Check the project space to make sure it was persisted
-		assertTrue(checkPersistedFile(name));
+		assertTrue(checkPersistedFile(name, project));
 
 		// Update the file
 		assertTrue(xmlpp.updateItem(item));
 
 		// Check the project space to make sure it was not deleted or something
-		assertTrue(checkPersistedFile(name));
+		assertTrue(checkPersistedFile(name, project));
 
 		// Wait while the file is persisted. The MOOSE Model takes about a half
 		// a second, but lets wait two.
@@ -280,7 +282,21 @@ public class XMLPersistenceProviderTester {
 
 		// Check the project space to make sure it was persisted
 		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
-		assertTrue(checkPersistedFile(name));
+		assertTrue(checkPersistedFile(name, project));
+
+		// Check persistence into the second project
+		item = builder.build(otherProject);
+		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
+
+		// Persist it
+		assertTrue(xmlpp.persistItem(item));
+
+		// Wait while the file is persisted. The MOOSE Model takes about a half
+		// a second, but lets wait two.
+		pause(2);
+
+		// Check the project space to make sure it was persisted
+		assertTrue(checkPersistedFile(name, otherProject));
 
 		return;
 	}
@@ -349,7 +365,7 @@ public class XMLPersistenceProviderTester {
 
 		// Check the project and make sure it is gone
 		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
-		assertFalse(checkPersistedFile(name));
+		assertFalse(checkPersistedFile(name, project));
 
 		// Add a CAEBAT KVPair item, which has a hyphenated name, to make sure
 		// the the provider can handle it.
@@ -368,6 +384,25 @@ public class XMLPersistenceProviderTester {
 			}
 		}
 		assertEquals(1, passedCount);
+
+		// Check loading from the other project. Create a new Item.
+		item = builder.build(otherProject);
+		// Persist it
+		item.setId(3);
+		assertTrue(xmlpp.persistItem(item));
+
+		// Wait while the file is persisted. The MOOSE Model takes about a half
+		// a second, but lets wait two.
+		pause(2);
+
+		// Load the Item and check it
+		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
+		loadedItem = xmlpp.loadItem(otherProject.getFile(name));
+		assertNotNull(loadedItem);
+		// Set the project so that the Items will match. Recall that serialized
+		// Items do not store their project info!
+		loadedItem.setProject(otherProject);
+		assertEquals(item, loadedItem);
 
 		return;
 	}
@@ -444,8 +479,8 @@ public class XMLPersistenceProviderTester {
 		// Read the Form back in with the provider
 		Form loadedForm = xmlpp.read(file);
 		assertNotNull(loadedForm);
-		assertEquals(loadedForm,form);
-		
+		assertEquals(loadedForm, form);
+
 		return;
 	}
 

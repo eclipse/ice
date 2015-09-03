@@ -52,9 +52,10 @@ import org.slf4j.LoggerFactory;
  * marshalling routines available on the Item. It stores all of the Items in an
  * Eclipse project and uses the ResourcePlugin to manage that space.
  * 
- * It stores items in the workspace in a project called "itemDB" and uses
- * <itemName>_<itemId>.xml for the file names. White space in the item name is
- * replaced with underscores.
+ * It stores items in the workspace in a project called "itemDB" by default. It
+ * uses <itemName>_<itemId>.xml for the file names. White space in the item name
+ * is replaced with underscores. Items may be stored and loaded from other
+ * projects by using the appropriate call.
  * 
  * All of the operations performed by this class except for those that load
  * Items are handled on a separate, non-blocking thread. Loading operations are
@@ -500,8 +501,10 @@ public class XMLPersistenceProvider
 					// Setup the file name
 					name = currentTask.item.getName().replaceAll("\\s+", "_")
 							+ "_" + currentTask.item.getId() + ".xml";
-					// Get the file in the project
-					file = project.getFile(name);
+					// Get the file from the project registered with the Item.
+					// This may change depending on whether or not this Item was
+					// created in the default project.
+					file = currentTask.item.getProject().getFile(name);
 				}
 				// Process persists
 				if ("persist".equals(currentTask.task)
