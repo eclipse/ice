@@ -252,8 +252,8 @@ public class MOOSE extends Item {
 		// If the Model finished correctly, clear the old
 		// file entries and load new ones.
 		if (status.equals(FormStatus.ReadyToProcess)) {
-			clearModelFiles();
-			loadFileEntries();
+			//clearModelFiles();
+		//	loadFileEntries();
 		}
 
 		// Register this Item as a listener to the Variables block
@@ -362,7 +362,7 @@ public class MOOSE extends Item {
 
 			// Update the MooseLauncher's set of input files...
 			mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));
-			for (Entry e : modelFiles.retrieveAllEntries()) {
+			for (Entry e : getFileEntries()) {
 				Entry launcherFile = launcherFiles.retrieveEntry(e.getName());
 				if (launcherFile != null) {
 					launcherFile.setValue(e.getValue());
@@ -512,7 +512,7 @@ public class MOOSE extends Item {
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
-		loadFileEntries();
+		//loadFileEntries();
 
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
@@ -581,7 +581,7 @@ public class MOOSE extends Item {
 			// and we need to sync up the tree with it.
 
 			// Grab the DataComponent
-			if (fileEntryTreeMapping.containsKey(entry.getName())) {
+			/*if (fileEntryTreeMapping.containsKey(entry.getName())) {
 				DataComponent data = (DataComponent) fileEntryTreeMapping.get(entry.getName()).getDataNodes().get(0);
 
 				// If not null, loop over the Entries til we find
@@ -602,7 +602,7 @@ public class MOOSE extends Item {
 						}
 					}
 				}
-			}
+			}*/
 		}
 
 	}
@@ -630,8 +630,10 @@ public class MOOSE extends Item {
 	 * This method searches the Model input tree and locates all file Entries
 	 * and loads them on the Model File DataComponent.
 	 */
-	protected void loadFileEntries() {
+	private ArrayList<Entry> getFileEntries() {
+	//protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
+		ArrayList<Entry> files = new ArrayList<Entry>();
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(modelTree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
@@ -648,59 +650,61 @@ public class MOOSE extends Item {
 									.matches(mooseLauncher.getFileDependenciesSearchString())) {
 
 						Entry clonedEntry = (Entry) e.clone();
+						files.add(clonedEntry);
 
-						// If this Entry does not have a very descriptive
-						// name
-						// we should reset its name to the block it belongs
-						// to
-						if ("file".equals(clonedEntry.getName().toLowerCase())
-								|| "data_file".equals(clonedEntry.getName().toLowerCase())) {
-							clonedEntry.setName(child.getName());
-						}
 
-						if (!clonedEntry.getValueType().equals(AllowedValueType.File)) {
-							mooseModel.convertToFileEntry(clonedEntry);
-
-						}
-
-						// Setup allowed values correctly
-						String extension = FilenameUtils
-								.getExtension(project.getFile(clonedEntry.getValue()).getLocation().toOSString());
-
-						// Create a new content provider with the new file
-						// in the allowed values list
-						IEntryContentProvider prov = new BasicEntryContentProvider();
-						ArrayList<String> valueList = clonedEntry.getAllowedValues();
-
-						for (String file : getProjectFileNames(extension)) {
-							if (!valueList.contains(file)) {
-								valueList.add(file);
-							}
-						}
-						prov.setAllowedValueType(AllowedValueType.File);
-
-						// Finish setting the allowed values and default
-						// value
-						prov.setAllowedValues(valueList);
-
-						// Set the new provider
-						clonedEntry.setContentProvider(prov);
-
-						// Set the value
-						clonedEntry.setValue(e.getValue());
-
-						fileEntryTreeMapping.put(clonedEntry.getName(), child);
-
-						clonedEntry.register(this);
-
-						// Add it to the list of model files.
-						modelFiles.addEntry(clonedEntry);
+//						// If this Entry does not have a very descriptive
+//						// name
+//						// we should reset its name to the block it belongs
+//						// to
+//						if ("file".equals(clonedEntry.getName().toLowerCase())
+//								|| "data_file".equals(clonedEntry.getName().toLowerCase())) {
+//							clonedEntry.setName(child.getName());
+//						}
+//
+//						if (!clonedEntry.getValueType().equals(AllowedValueType.File)) {
+//							mooseModel.convertToFileEntry(clonedEntry);
+//
+//						}
+//
+//						// Setup allowed values correctly
+//						String extension = FilenameUtils
+//								.getExtension(project.getFile(clonedEntry.getValue()).getLocation().toOSString());
+//
+//						// Create a new content provider with the new file
+//						// in the allowed values list
+//						IEntryContentProvider prov = new BasicEntryContentProvider();
+//						ArrayList<String> valueList = clonedEntry.getAllowedValues();
+//
+//						for (String file : getProjectFileNames(extension)) {
+//							if (!valueList.contains(file)) {
+//								valueList.add(file);
+//							}
+//						}
+//						prov.setAllowedValueType(AllowedValueType.File);
+//
+//						// Finish setting the allowed values and default
+//						// value
+//						prov.setAllowedValues(valueList);
+//
+//						// Set the new provider
+//						clonedEntry.setContentProvider(prov);
+//
+//						// Set the value
+//						clonedEntry.setValue(e.getValue());
+//
+//						fileEntryTreeMapping.put(clonedEntry.getName(), child);
+//
+//						clonedEntry.register(this);
+//
+//						// Add it to the list of model files.
+//						modelFiles.addEntry(clonedEntry);
 					}
 				}
 			}
 		}
 
-		return;
+		return files;
 	}
 
 	/*
