@@ -1358,7 +1358,6 @@ public class Item
 	 *            The Eclipse Platform IProject that should be referenced for
 	 *            project space information by this Item.
 	 */
-	@XmlTransient()
 	public void setProject(IProject projectSpace) {
 
 		// Set the project so long as it is not null
