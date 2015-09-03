@@ -40,7 +40,8 @@ public class JME3MeshVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -48,7 +49,8 @@ public class JME3MeshVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {
@@ -56,7 +58,8 @@ public class JME3MeshVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractVizService#createPlot(java.net.URI)
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
@@ -64,7 +67,8 @@ public class JME3MeshVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject)
 	 */
 	@Override
 	public IVizCanvas createCanvas(IVizObject object) throws Exception {
@@ -78,7 +82,8 @@ public class JME3MeshVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {

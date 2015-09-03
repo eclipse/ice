@@ -44,7 +44,8 @@ public class FakeVizConnectionListener implements IVizConnectionListener<FakeCli
 	private final AtomicInteger notifyCount = new AtomicInteger();
 
 	/*
-	 * Implements a method from IVizConnectionListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionListener#connectionStateChanged(org.eclipse.ice.viz.service.connections.IVizConnection, org.eclipse.ice.viz.service.connections.ConnectionState, java.lang.String)
 	 */
 	@Override
 	public void connectionStateChanged(IVizConnection<FakeClient> connection, ConnectionState state, String message) {

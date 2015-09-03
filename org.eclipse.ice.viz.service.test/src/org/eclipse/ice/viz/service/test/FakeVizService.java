@@ -46,7 +46,8 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -54,7 +55,8 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {
@@ -63,7 +65,8 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#createPlot(java.net.URI)
 	 */
 	@Override
 	public IPlot createPlot(URI file) throws Exception {
@@ -72,7 +75,8 @@ public class FakeVizService implements IVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getSupportedExtensions()
 	 */
 	@Override
 	public Set<String> getSupportedExtensions() {
