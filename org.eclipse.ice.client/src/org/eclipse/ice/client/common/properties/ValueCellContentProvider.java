@@ -35,8 +35,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * @author Jordan H. Deyton
  * 
  */
-public class ValueCellContentProvider extends TreePropertyCellContentProvider
-		implements IComboCellContentProvider {
+public class ValueCellContentProvider extends TreePropertyCellContentProvider implements IComboCellContentProvider {
 
 	/**
 	 * Gets the value of a {@link TreeProperty}.
@@ -84,8 +83,7 @@ public class ValueCellContentProvider extends TreePropertyCellContentProvider
 			// For the "type" property, set the containing tree's type.
 			if (property.isAdaptiveType()) {
 				String type = value.toString().trim();
-				AdaptiveTreeComposite tree = (AdaptiveTreeComposite) property
-						.getTree();
+				AdaptiveTreeComposite tree = (AdaptiveTreeComposite) property.getTree();
 				// If the type is different, mark the flag and set the new type.
 				if (changed = !type.equals(tree.getType())) {
 					tree.setType(type);
@@ -114,8 +112,8 @@ public class ValueCellContentProvider extends TreePropertyCellContentProvider
 			// The property has multiple allowed values if it is the "type"
 			// property (for the type of AdaptiveTreeComposite) or if the
 			// wrapped Entry has a discrete allowed value type.
-			requiresCombo = property.isAdaptiveType()
-					|| property.getEntry().getValueType() == AllowedValueType.Discrete;
+			requiresCombo = property.isAdaptiveType() || property.getEntry().getValueType() == AllowedValueType.Discrete
+					|| property.getEntry().getValueType() == AllowedValueType.File;
 		}
 
 		return requiresCombo;
@@ -136,7 +134,7 @@ public class ValueCellContentProvider extends TreePropertyCellContentProvider
 			Entry entry = property.getEntry();
 
 			// If it's a discrete Entry, get the allowed value types.
-			if (entry.getValueType() == AllowedValueType.Discrete) {
+			if (entry.getValueType() == AllowedValueType.Discrete || entry.getValueType() == AllowedValueType.File) {
 				allowedValues = entry.getAllowedValues();
 			}
 			// If it's the "type" property, get the adaptive tree types.

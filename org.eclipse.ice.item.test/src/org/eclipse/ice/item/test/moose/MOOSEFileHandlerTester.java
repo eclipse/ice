@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.ice.item.utilities.moose.Parameter;
@@ -85,6 +86,7 @@ public class MOOSEFileHandlerTester {
 		// And it should also have a couple of exemplar children
 		assertTrue(blocks.get(0).hasChildExemplars());
 		assertEquals(2, blocks.get(0).getChildExemplars().size());
+		
 
 		System.out.println("MOOSEFileHandlerTester Message: "
 				+ "Checking medium sized file.");
@@ -103,7 +105,7 @@ public class MOOSEFileHandlerTester {
 		// Check the blocks
 		assertNotNull(blocks);
 		assertEquals(4, blocks.size());
-
+		
 		System.out.println("MOOSEFileHandlerTester Message: "
 				+ "Checking large sized file.");
 
@@ -115,7 +117,7 @@ public class MOOSEFileHandlerTester {
 		}
 
 		for (TreeComposite block : blocks) {
-			System.out.println("Block name = " + block.getName());
+			//System.out.println("Block name = " + block.getName());
 		}
 
 		// Check the blocks
@@ -125,6 +127,7 @@ public class MOOSEFileHandlerTester {
 		// Verify blocks 17 and 23 are actually AdaptiveTreeComposites
 		assertTrue(blocks.get(17) instanceof AdaptiveTreeComposite);
 		assertTrue(blocks.get(23) instanceof AdaptiveTreeComposite);
+
 
 		return;
 
