@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.core.test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.item.Item;
 
@@ -192,6 +194,12 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 * @see IPersistenceProvider#getClassForItemId(int itemID)
 	 */
 	public Class getClassForItemId(int itemID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Item loadItem(IResource itemResource) throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}
