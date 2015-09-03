@@ -76,8 +76,8 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  * 
  */
-public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
-		IReader, IWriter {
+public class XMLPersistenceProvider
+		implements IPersistenceProvider, Runnable, IReader, IWriter {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -221,9 +221,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 				// Only add the resources that are xml files with the format
 				// that we expect. This uses a regular expression that checks
 				// for <itemName>_<itemId>.xml.
-				if (resource.getType() == IResource.FILE
-						&& resource.getName().matches(
-								"^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
+				if (resource.getType() == IResource.FILE && resource.getName()
+						.matches("^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
 					names.add(resource.getName());
 				}
 			}
@@ -238,7 +237,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 				String nameMinusExt = nameParts[0];
 				// Get the id from the end
 				String[] nameMinusExtParts = nameMinusExt.split("_");
-				String idString = nameMinusExtParts[nameMinusExtParts.length - 1];
+				String idString = nameMinusExtParts[nameMinusExtParts.length
+						- 1];
 				id = Integer.valueOf(idString);
 				// Put the info in the map
 				itemIdMap.put(id, name);
@@ -246,7 +246,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return;
@@ -282,7 +282,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (CoreException e) {
 			// Catch exception for creating the project
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
@@ -382,7 +382,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// Complain if something interrupts naptime!
-						logger.error(getClass().getName() + " Exception!",e);
+						logger.error(getClass().getName() + " Exception!", e);
 					}
 					// Increment the counter
 					counter++;
@@ -443,7 +443,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			marshaller.marshal(obj, outputStream);
 		} catch (JAXBException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			logger.info("XMLPersistenceProvider Message: "
 					+ "Failed to execute persistence task for " + obj);
 		}
@@ -474,7 +474,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (CoreException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 		return;
 	}
@@ -527,10 +527,10 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			}
 		} catch (InterruptedException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (CoreException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return;
@@ -554,7 +554,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 				processTask(currentTask);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -573,7 +573,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	 * @return True if the task was submitted, false if there was some exception
 	 *         or the Item was null.
 	 */
-	private boolean submitTask(Item item, String taskName, Form form, IFile file) {
+	private boolean submitTask(Item item, String taskName, Form form,
+			IFile file) {
 
 		// Local Declarations
 		boolean retVal = true;
@@ -613,14 +614,12 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 		return retVal;
 	}
 
-	/**
-	 * This operation persists the Item. It logs the persist order with the
-	 * queue and only returns false if an exception is thrown.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param item
-	 *            The Item to persist.
-	 * @return true if the Item was queued for persistence, false if an
-	 *         exception was caught.
+	 * @see
+	 * org.eclipse.ice.core.iCore.IPersistenceProvider#persistItem(org.eclipse.
+	 * ice.item.Item)
 	 */
 	@Override
 	public boolean persistItem(Item item) {
@@ -629,42 +628,62 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	}
 
 	/**
-	 * This operation loads the Item. It logs the load order with the queue and
-	 * only returns false if an exception is thrown.
+	 * This operation loads an Item from an IFile resource.
 	 * 
-	 * @param itemID
-	 *            id of the Item to load.
-	 * @return The loaded Item or null if it could not be loaded.
+	 * @param file
+	 *            The IFile that should be loaded as an Item from XML.
+	 * @return the Item
 	 */
-	@Override
-	public Item loadItem(int itemID) {
-
-		// Local Declarations
+	public Item loadItem(IFile file) {
 		Item item = null;
-		String fileName;
 
 		try {
-			// If the map contains the item, load it.
-			fileName = itemIdMap.get(itemID);
-			if (fileName != null) {
-				// Create the unmarshaller and load the item
-				Unmarshaller unmarshaller = context.createUnmarshaller();
-				item = (Item) unmarshaller.unmarshal(project.getFile(fileName)
-						.getContents());
-			}
+			// Create the unmarshaller and load the item
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			item = (Item) unmarshaller.unmarshal(file.getContents());
 		} catch (CoreException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			// Null out the Item so that it can't be returned uninitialized
 			item = null;
 		} catch (JAXBException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			// Null out the Item so that it can't be returned uninitialized
 			item = null;
 		}
 
 		return item;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.core.iCore.IPersistenceProvider#loadItem(int)
+	 */
+	@Override
+	public Item loadItem(int itemID) {
+
+		// Get the file name from the map that stores the ids of the items in
+		// the default project.
+		String fileName = itemIdMap.get(itemID);
+
+		// Delegate the load to the IFile version of this call
+		return loadItem(project.getFile(fileName));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.core.iCore.IPersistenceProvider#loadItem(org.eclipse.core
+	 * .resources.IResource)
+	 */
+	@Override
+	public Item loadItem(IResource itemResource) {
+		// If the IResource is an IFile, load it and otherwise return null.
+		return (itemResource instanceof IFile) ? loadItem((IFile) itemResource)
+				: null;
 	}
 
 	/**
@@ -726,9 +745,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.io.serializable.IWriter#write(org.eclipse.ice.datastructures
-	 * .form.Form, java.net.URI)
+	 * @see org.eclipse.ice.io.serializable.IWriter#write(org.eclipse.ice.
+	 * datastructures .form.Form, java.net.URI)
 	 */
 	@Override
 	public void write(Form formToWrite, IFile file) {
@@ -751,7 +769,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 							+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
@@ -782,10 +800,10 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 			form = (Form) unmarshaller.unmarshal(file.getContents());
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return form;
@@ -805,7 +823,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable,
 							+ "IReader.findAll() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 		return null;
 	}

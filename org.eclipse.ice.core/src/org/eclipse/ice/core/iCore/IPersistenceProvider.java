@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.core.iCore;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.item.Item;
 
 /**
@@ -34,7 +36,8 @@ public interface IPersistenceProvider {
 	 *            <p>
 	 *            The item to be persisted.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         Returns true if the operation was successful. False otherwise.
 	 *         </p>
 	 */
@@ -50,7 +53,8 @@ public interface IPersistenceProvider {
 	 *            <p>
 	 *            The item's ID.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The returned item.
 	 *         </p>
 	 */
@@ -66,7 +70,8 @@ public interface IPersistenceProvider {
 	 *            <p>
 	 *            The item to be deleted.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if successful. False otherwise.
 	 *         </p>
 	 */
@@ -81,7 +86,8 @@ public interface IPersistenceProvider {
 	 *            <p>
 	 *            The item to be updated.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         Returns true if successful. False otherwise.
 	 *         </p>
 	 */
@@ -92,9 +98,21 @@ public interface IPersistenceProvider {
 	 * Returns all the Items in the persistence piece.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The list of items.
 	 *         </p>
 	 */
 	public ArrayList<Item> loadItems();
+
+	/**
+	 * <p>
+	 * Attempts to load the IResource as an Item. Returns the item, or null if
+	 * an error was encountered.
+	 * </p>
+	 * 
+	 * @param IResource the IResource that contains an Item.
+	 * @return The returned item or null if the IResource was not an IFile (for now).
+	 */
+	public Item loadItem(IResource itemResource) throws IOException;
 }
