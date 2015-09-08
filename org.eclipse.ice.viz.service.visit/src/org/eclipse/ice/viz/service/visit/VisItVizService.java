@@ -54,7 +54,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionManager()
 	 */
 	@Override
 	protected IVizConnectionManager<VisItSwtConnection> createConnectionManager() {
@@ -62,7 +63,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionPlot()
 	 */
 	@Override
 	protected ConnectionPlot<VisItSwtConnection> createConnectionPlot() {
@@ -70,7 +72,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	}
 
 	/*
-	 * Implements an abstract method from AbstractVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -90,7 +93,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#getConnectionPreferencesNodeId()
 	 */
 	@Override
 	protected String getConnectionPreferencesNodeId() {
@@ -98,7 +102,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -106,7 +111,8 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {

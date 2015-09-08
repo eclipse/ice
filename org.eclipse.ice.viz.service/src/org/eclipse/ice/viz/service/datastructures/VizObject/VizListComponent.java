@@ -337,7 +337,8 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see ca.odell.glazedlists.TransformedList#isWritable()
 	 */
 	@Override
 	protected boolean isWritable() {
@@ -345,7 +346,8 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	}
 
 	/*
-	 * Implements a method from Identifiable.
+	 * (non-Javadoc)
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -429,7 +431,8 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	}
 
 	/*
-	 * Implements a method from WritableTableFormat.
+	 * (non-Javadoc)
+	 * @see ca.odell.glazedlists.gui.WritableTableFormat#setColumnValue(java.lang.Object, java.lang.Object, int)
 	 */
 	@Override
 	public T setColumnValue(T baseObject, Object editedValue, int column) {

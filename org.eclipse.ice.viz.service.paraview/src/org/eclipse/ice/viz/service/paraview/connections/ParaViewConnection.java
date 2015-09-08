@@ -29,7 +29,8 @@ import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 public class ParaViewConnection extends VizConnection<IParaViewWebClient> {
 
 	/*
-	 * Implements an abstract method from VizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.VizConnection#connectToWidget()
 	 */
 	@Override
 	protected IParaViewWebClient connectToWidget() {
@@ -62,7 +63,8 @@ public class ParaViewConnection extends VizConnection<IParaViewWebClient> {
 	}
 
 	/*
-	 * Implements an abstract method from VizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.VizConnection#disconnectFromWidget(java.lang.Object)
 	 */
 	@Override
 	protected boolean disconnectFromWidget(IParaViewWebClient widget) {

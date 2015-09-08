@@ -82,7 +82,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#draw(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
@@ -94,7 +95,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -102,7 +104,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getDataSource()
 	 */
 	@Override
 	public URI getDataSource() {
@@ -110,7 +113,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#getDependentSeries(java.lang.String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -125,7 +129,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#getIndependentSeries()
 	 */
 	@Override
 	public ISeries getIndependentSeries() {
@@ -133,7 +138,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
 	 */
 	@Override
 	public int getNumberOfAxes() {
@@ -141,7 +147,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#getPlotTitle()
 	 */
 	@Override
 	public String getPlotTitle() {
@@ -149,7 +156,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getProperties()
 	 */
 	@Override
 	public Map<String, String> getProperties() {
@@ -157,7 +165,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getSourceHost()
 	 */
 	@Override
 	public String getSourceHost() {
@@ -165,7 +174,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#isSourceRemote()
 	 */
 	@Override
 	public boolean isSourceRemote() {
@@ -173,7 +183,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#redraw()
 	 */
 	@Override
 	public void redraw() {
@@ -203,7 +214,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#setIndependentSeries(org.eclipse.ice.viz.service.ISeries)
 	 */
 	@Override
 	public void setIndependentSeries(ISeries series) {
@@ -212,7 +224,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IPlot#setPlotTitle(java.lang.String)
 	 */
 	@Override
 	public void setPlotTitle(String title) {
@@ -221,7 +234,8 @@ public class FakePlot implements IPlot {
 	}
 
 	/*
-	 * Implements a method from IVizCanvas.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#setProperties(java.util.Map)
 	 */
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {

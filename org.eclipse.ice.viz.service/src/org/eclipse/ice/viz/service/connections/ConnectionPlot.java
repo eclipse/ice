@@ -57,7 +57,8 @@ public abstract class ConnectionPlot<T> extends AbstractPlot
 	private ConnectionPlotComposite<T> plotComposite;
 
 	/*
-	 * Implements a method from IVizConnectionListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionListener#connectionStateChanged(org.eclipse.ice.viz.service.connections.IVizConnection, org.eclipse.ice.viz.service.connections.ConnectionState, java.lang.String)
 	 */
 	@Override
 	public void connectionStateChanged(IVizConnection<T> connection,
@@ -77,7 +78,8 @@ public abstract class ConnectionPlot<T> extends AbstractPlot
 			Composite parent);
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#draw(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
@@ -191,7 +193,8 @@ public abstract class ConnectionPlot<T> extends AbstractPlot
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#setDataSource(java.net.URI)
 	 */
 	@Override
 	public boolean setDataSource(URI uri) throws Exception {

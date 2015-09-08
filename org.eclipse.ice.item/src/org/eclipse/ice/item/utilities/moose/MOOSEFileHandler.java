@@ -733,7 +733,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/*
-	 * Implements a method from IWriter.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources.IFile, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void replace(IFile file, String regex, String value) {

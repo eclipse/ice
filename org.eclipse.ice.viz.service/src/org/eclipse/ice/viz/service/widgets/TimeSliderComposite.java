@@ -680,7 +680,8 @@ public class TimeSliderComposite extends Composite {
 	}
 
 	/*
-	 * Overrides a method from Widget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.widgets.Widget#dispose()
 	 */
 	@Override
 	public void dispose() {
@@ -912,7 +913,8 @@ public class TimeSliderComposite extends Composite {
 	}
 
 	/*
-	 * Overrides a method from Control.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.widgets.Control#setBackground(org.eclipse.swt.graphics.Color)
 	 */
 	@Override
 	public void setBackground(Color color) {

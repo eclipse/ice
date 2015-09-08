@@ -114,7 +114,8 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	}
 
 	/*
-	 * Implements a method from ControlListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.events.ControlListener#controlMoved(org.eclipse.swt.events.ControlEvent)
 	 */
 	@Override
 	public void controlMoved(ControlEvent e) {
@@ -122,7 +123,8 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	}
 
 	/*
-	 * Implements a method from ControlListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.events.ControlListener#controlResized(org.eclipse.swt.events.ControlEvent)
 	 */
 	@Override
 	public void controlResized(ControlEvent e) {
@@ -133,7 +135,8 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	}
 
 	/*
-	 * Overrides a method from Widget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.widgets.Widget#dispose()
 	 */
 	@Override
 	public void dispose() {
@@ -144,7 +147,8 @@ public class ParaViewCanvas extends Canvas implements PaintListener, ControlList
 	}
 
 	/*
-	 * Implements a method from PaintListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.events.PaintListener#paintControl(org.eclipse.swt.events.PaintEvent)
 	 */
 	@Override
 	public void paintControl(PaintEvent e) {

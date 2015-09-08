@@ -59,8 +59,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 		requestExecutor = null;
 	}
 
-	/*
-	 * Implements a method from ParaViewWebClient.
+	/**
+	 * 
 	 */
 	private JsonObject makeRequest(String method, JsonObject content) {
 		if (requestExecutor == null) {
@@ -127,7 +127,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	}
 
 	/*
-	 * Implements a method from ParaViewWebClient.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient#connect(java.lang.String)
 	 */
 	@Override
 	public Future<Boolean> connect(String url) {
@@ -171,7 +172,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	}
 
 	/*
-	 * Implements a method from ParaViewWebClient.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient#disconnect()
 	 */
 	@Override
 	public Future<Boolean> disconnect() {
@@ -188,7 +190,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	}
 
 	/*
-	 * Implements a method from ParaViewWebClient.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient#render(int, int, int, int)
 	 */
 	@Override
 	public Future<JsonObject> render(int viewId, int quality, int width, int height) {
@@ -224,7 +227,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	}
 
 	/*
-	 * Implements a method from ParaViewWebClient.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient#event(int, double, double, java.lang.String, boolean[])
 	 */
 	@Override
 	public Future<JsonObject> event(int viewId, double x, double y, String action, boolean[] mouseState) {
@@ -262,7 +266,8 @@ public class HttpParaViewWebClient implements IParaViewWebClient {
 	}
 
 	/*
-	 * Implements a method from ParaViewWebClient.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient#call(java.lang.String, com.google.gson.JsonArray)
 	 */
 	@Override
 	public Future<JsonObject> call(String method, JsonArray args) {

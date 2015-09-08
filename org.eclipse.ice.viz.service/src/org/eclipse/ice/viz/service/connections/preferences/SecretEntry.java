@@ -79,7 +79,8 @@ public class SecretEntry extends VizEntry {
 	}
 
 	/*
-	 * Overrides a method from Entry.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizEntry#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -87,7 +88,8 @@ public class SecretEntry extends VizEntry {
 	}
 
 	/*
-	 * Overrides a method from Entry.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizEntry#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object object) {
@@ -111,7 +113,8 @@ public class SecretEntry extends VizEntry {
 	}
 
 	/*
-	 * Overrides a method from Entry.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizEntry#hashCode()
 	 */
 	@Override
 	public int hashCode() {

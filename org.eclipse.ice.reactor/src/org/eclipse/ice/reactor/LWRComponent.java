@@ -370,7 +370,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Identifiable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setId(int)
 	 */
 	@Override
 	public void setId(int id) {
@@ -386,7 +387,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Identifiable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -395,7 +397,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Identifiable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getId()
 	 */
 	@Override
 	public int getId() {
@@ -404,7 +407,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Identifiable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setName(java.lang.String)
 	 */
 	@Override
 	public void setName(String name) {
@@ -422,7 +426,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Identifiable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getName()
 	 */
 	@Override
 	public String getName() {
@@ -431,7 +436,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Identifiable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setDescription(java.lang.String)
 	 */
 	@Override
 	public void setDescription(String description) {
@@ -509,7 +515,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IUpdateable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#update(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void update(String updatedKey, String newValue) {
@@ -519,7 +526,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IUpdateable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#register(org.eclipse.ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
 	public void register(IUpdateableListener listener) {
@@ -530,7 +538,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from Component.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Component#accept(org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor)
 	 */
 	@Override
 	public void accept(IComponentVisitor visitor) {
@@ -541,7 +550,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IReactorComponent.
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
@@ -549,7 +559,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getFeatureList()
 	 */
 	@Override
 	public ArrayList<String> getFeatureList() {
@@ -585,7 +596,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getNumberOfTimeSteps()
 	 */
 	@Override
 	public int getNumberOfTimeSteps() {
@@ -594,7 +606,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#setTime(double)
 	 */
 	@Override
 	public void setTime(double step) {
@@ -606,7 +619,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getDataAtCurrentTime(java.lang.String)
 	 */
 	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
@@ -634,7 +648,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getSourceInfo()
 	 */
 	@Override
 	public String getSourceInfo() {
@@ -644,7 +659,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getFeaturesAtCurrentTime()
 	 */
 	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
@@ -670,7 +686,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getTimes()
 	 */
 	@Override
 	public ArrayList<Double> getTimes() {
@@ -692,7 +709,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getTimeStep(double)
 	 */
 	@Override
 	public int getTimeStep(double time) {
@@ -718,7 +736,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getTimeUnits()
 	 */
 	@Override
 	public String getTimeUnits() {
@@ -728,7 +747,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfWriteable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfWriteable#createGroup(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public H5Group createGroup(H5File h5File, H5Group parentH5Group) {
@@ -742,7 +762,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfWriteable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfWriteable#getWriteableChildren()
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -750,7 +771,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfWriteable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfWriteable#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -770,7 +792,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfWriteable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfWriteable#writeDatasets(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
@@ -915,7 +938,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfReadable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfReadable#readChild(org.eclipse.ice.io.hdf.IHdfReadable)
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -923,7 +947,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfReadable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfReadable#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -953,7 +978,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IHdfReadable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.io.hdf.IHdfReadable#readDatasets(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readDatasets(H5Group h5Group) {
@@ -1208,7 +1234,8 @@ public class LWRComponent implements IReactorComponent, IDataProvider,
 	}
 
 	/*
-	 * Implements method from IUpdateable.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#unregister(org.eclipse.ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
 	public void unregister(IUpdateableListener listener) {
