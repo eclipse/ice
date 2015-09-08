@@ -81,7 +81,8 @@ public class CSVPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -90,7 +91,8 @@ public class CSVPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -274,7 +276,8 @@ public class CSVPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#redraw()
 	 */
 	@Override
 	public void redraw() {
@@ -285,7 +288,8 @@ public class CSVPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#setDataSource(java.net.URI)
 	 */
 	@Override
 	public boolean setDataSource(URI uri) throws Exception {

@@ -325,7 +325,8 @@ public class LWRData implements IData {
 	}
 
 	/*
-	 * Implements a method from IData.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IData#getPosition()
 	 */
 	@Override
 	public ArrayList<Double> getPosition() {
@@ -334,7 +335,8 @@ public class LWRData implements IData {
 	}
 
 	/*
-	 * Implements a method from IData.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IData#getValue()
 	 */
 	@Override
 	public double getValue() {
@@ -343,7 +345,8 @@ public class LWRData implements IData {
 	}
 
 	/*
-	 * Implements a method from IData.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IData#getUncertainty()
 	 */
 	@Override
 	public double getUncertainty() {
@@ -352,7 +355,8 @@ public class LWRData implements IData {
 	}
 
 	/*
-	 * Implements a method from IData.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IData#getUnits()
 	 */
 	@Override
 	public String getUnits() {
@@ -361,7 +365,8 @@ public class LWRData implements IData {
 	}
 
 	/*
-	 * Implements a method from IData.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IData#getFeature()
 	 */
 	@Override
 	public String getFeature() {

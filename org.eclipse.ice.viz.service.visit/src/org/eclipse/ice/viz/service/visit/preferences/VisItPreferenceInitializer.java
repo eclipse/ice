@@ -23,7 +23,8 @@ import org.eclipse.ice.viz.service.preferences.AbstractVizPreferenceInitializer;
 public class VisItPreferenceInitializer extends AbstractVizPreferenceInitializer {
 
 	/*
-	 * Implements a method from AbstractPreferenceInitializer.
+	 * (non-Javadoc)
+	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	@Override
 	public void initializeDefaultPreferences() {

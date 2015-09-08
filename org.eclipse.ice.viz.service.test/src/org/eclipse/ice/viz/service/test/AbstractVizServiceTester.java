@@ -225,7 +225,8 @@ public class AbstractVizServiceTester {
 		public final Set<String> supportedExtensions = new HashSet<String>();
 
 		/*
-		 * Implements a method from IVizService.
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizService#getName()
 		 */
 		@Override
 		public String getName() {
@@ -233,7 +234,8 @@ public class AbstractVizServiceTester {
 		}
 
 		/*
-		 * Implements a method from IVizService.
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 		 */
 		@Override
 		public String getVersion() {
@@ -241,7 +243,8 @@ public class AbstractVizServiceTester {
 		}
 
 		/*
-		 * Implements an abstract method from AbstractVizService.
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 		 */
 		@Override
 		protected Set<String> findSupportedExtensions() {

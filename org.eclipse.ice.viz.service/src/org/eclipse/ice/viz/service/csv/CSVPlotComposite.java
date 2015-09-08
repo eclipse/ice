@@ -57,7 +57,8 @@ public class CSVPlotComposite extends PlotComposite {
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#createPlotContent(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
 	protected Composite createPlotContent(Composite parent, int style)
@@ -75,7 +76,8 @@ public class CSVPlotComposite extends PlotComposite {
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#disposePlotContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected void disposePlotContent(Composite plotContent) {
@@ -91,7 +93,8 @@ public class CSVPlotComposite extends PlotComposite {
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#getPlotActions()
 	 */
 	@Override
 	protected List<VizActionTree> getPlotActions() {
@@ -118,7 +121,8 @@ public class CSVPlotComposite extends PlotComposite {
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#hideSeries(org.eclipse.ice.viz.service.ISeries)
 	 */
 	@Override
 	protected void hideSeries(ISeries series) throws Exception {
@@ -133,7 +137,8 @@ public class CSVPlotComposite extends PlotComposite {
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#showSeries(org.eclipse.ice.viz.service.ISeries)
 	 */
 	@Override
 	protected void showSeries(ISeries series) throws Exception {
@@ -147,7 +152,8 @@ public class CSVPlotComposite extends PlotComposite {
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#updatePlotContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected void updatePlotContent(Composite plotContent) throws Exception {

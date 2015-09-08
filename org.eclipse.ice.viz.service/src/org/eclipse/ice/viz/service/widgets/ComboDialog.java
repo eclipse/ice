@@ -132,7 +132,8 @@ public class ComboDialog extends Dialog {
 	}
 
 	/*
-	 * Overrides a method from Dialog.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
 	 */
 	@Override
 	protected void cancelPressed() {
@@ -143,7 +144,8 @@ public class ComboDialog extends Dialog {
 	}
 
 	/*
-	 * Overrides a method from Dialog.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
@@ -162,7 +164,8 @@ public class ComboDialog extends Dialog {
 	}
 
 	/*
-	 * Overrides a method from Dialog.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
@@ -268,7 +271,8 @@ public class ComboDialog extends Dialog {
 	}
 
 	/*
-	 * Overrides a method from Dialog.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
 	protected void okPressed() {

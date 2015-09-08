@@ -79,7 +79,8 @@ public abstract class AbstractVizPreferencePage extends FieldEditorPreferencePag
 	}
 
 	/*
-	 * Overrides a method from PreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.preference.PreferencePage#doGetPreferenceStore()
 	 */
 	@Override
 	protected IPreferenceStore doGetPreferenceStore() {
@@ -99,7 +100,8 @@ public abstract class AbstractVizPreferencePage extends FieldEditorPreferencePag
 	}
 
 	/*
-	 * Overrides a method from PreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {

@@ -37,7 +37,8 @@ public abstract class AbstractSeries implements ISeries {
 	private ISeriesStyle style = null;
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getBounds()
 	 */
 	@Override
 	public double[] getBounds() {
@@ -45,7 +46,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getCategory()
 	 */
 	@Override
 	public String getCategory() {
@@ -53,7 +55,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getDataPoints()
 	 */
 	@Override
 	public Object[] getDataPoints() {
@@ -61,7 +64,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getLabel()
 	 */
 	@Override
 	public String getLabel() {
@@ -69,7 +73,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getParentSeries()
 	 */
 	@Override
 	public ISeries getParentSeries() {
@@ -77,7 +82,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getStyle()
 	 */
 	@Override
 	public ISeriesStyle getStyle() {
@@ -85,7 +91,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getTime()
 	 */
 	@Override
 	public double getTime() {
@@ -93,7 +100,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#isEnabled()
 	 */
 	@Override
 	public boolean isEnabled() {
@@ -101,7 +109,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setEnabled(boolean)
 	 */
 	@Override
 	public void setEnabled(boolean enable) {
@@ -109,7 +118,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setLabel(java.lang.String)
 	 */
 	@Override
 	public void setLabel(String label) {
@@ -117,7 +127,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setStyle(org.eclipse.ice.viz.service.ISeriesStyle)
 	 */
 	@Override
 	public void setStyle(ISeriesStyle style) {
@@ -125,7 +136,8 @@ public abstract class AbstractSeries implements ISeries {
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setTime(double)
 	 */
 	@Override
 	public void setTime(double time) {

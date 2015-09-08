@@ -74,7 +74,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Implements a method from IVizConnectionListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionListener#connectionStateChanged(org.eclipse.ice.viz.service.connections.IVizConnection, org.eclipse.ice.viz.service.connections.ConnectionState, java.lang.String)
 	 */
 	@Override
 	public void connectionStateChanged(IVizConnection<T> connection,
@@ -84,7 +85,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#createInfoContent(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
 	protected Composite createInfoContent(Composite parent, int style) {
@@ -134,7 +136,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#createPlotContent(org.eclipse.swt.widgets.Composite, int)
 	 */
 	@Override
 	protected final Composite createPlotContent(Composite parent, int style)
@@ -170,7 +173,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#disposeInfoContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected void disposeInfoContent(Composite infoContent) {
@@ -181,7 +185,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#disposePlotContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected final void disposePlotContent(Composite plotContent) {
@@ -239,7 +244,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	protected abstract String getConnectionPreferencePageID();
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#hideSeries(org.eclipse.ice.viz.service.ISeries)
 	 */
 	@Override
 	protected final void hideSeries(ISeries series) throws Exception {
@@ -327,7 +333,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#setPlot(org.eclipse.ice.viz.service.IPlot)
 	 */
 	@Override
 	public boolean setPlot(IPlot plot) {
@@ -335,7 +342,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#showSeries(org.eclipse.ice.viz.service.ISeries)
 	 */
 	@Override
 	protected final void showSeries(ISeries series) throws Exception {
@@ -367,7 +375,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#updateInfoContent(org.eclipse.swt.widgets.Composite, java.lang.String)
 	 */
 	@Override
 	protected void updateInfoContent(Composite infoContent, String message) {
@@ -379,7 +388,8 @@ public abstract class ConnectionPlotComposite<T> extends PlotComposite
 	}
 
 	/*
-	 * Overrides a method from PlotComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#updatePlotContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected final void updatePlotContent(Composite plotContent)
