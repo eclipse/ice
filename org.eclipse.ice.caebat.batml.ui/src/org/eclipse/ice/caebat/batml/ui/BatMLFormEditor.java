@@ -32,7 +32,7 @@ public class BatMLFormEditor extends ICEFormEditor {
 	/**
 	 * ID for Eclipse, used for the bundle's editor extension point.
 	 */
-	public static final String ID = "org.eclipse.ice.reflectivity.ui.ReflectivityFormEditor";
+	public static final String ID = "org.eclipse.ice.reflectivity.ui.BatMLFormEditor";
 
 	/*
 	 * (non-Javadoc)
@@ -45,7 +45,8 @@ public class BatMLFormEditor extends ICEFormEditor {
 		// Loop over the DataComponents and get them into the map. This is the
 		// same process as for the regular ICEFormEditor
 		for (Component i : iceDataForm.getComponents()) {
-			logger.info("ICEFormEditor Message: Adding component "
+			//logger.info
+			System.out.println("ICEFormEditor Message: Adding component "
 					+ i.getName() + " " + i.getId());
 			i.accept(this);
 		}

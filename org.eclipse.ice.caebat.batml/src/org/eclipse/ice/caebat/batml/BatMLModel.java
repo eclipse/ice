@@ -43,7 +43,7 @@ import org.eclipse.ice.item.ItemType;
  *
  * @author Alex McCaskey, Andrew Bennett
  */
-@XmlRootElement(name = "BatMLModel")
+@XmlRootElement(name = "BatML Model")
 public class BatMLModel extends Item {
 
 	/**
@@ -108,7 +108,7 @@ public class BatMLModel extends Item {
 	@Override
 	protected void setupItemInfo() {
 		String desc = "This item builds models based on a BatteryML schema.";
-		setName("BatML Model Builder");
+		setName("BatML Model");
 		setDescription(desc);
 		itemType = ItemType.Model;
 		allowedActions.add(0, "Write to XML");
@@ -176,7 +176,7 @@ public class BatMLModel extends Item {
 		
 		// If this is our first time loading up the form we will probably need to import the schema files
 		if (form.getNumberOfComponents() == 0) {
-			form = new Form();
+
 			String[] schemas = { "BuildingBlockDB.xsd", "MaterialDB.xsd", "PackDB.xsd", "UnitsML-v1.0-csd03.xsd",
 					"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
 					"CellSandwichDB.xsd", "ModuleDB.xsd", "SimulationDB.xsd", "electrical.xml", "DeviceDB.xsd",

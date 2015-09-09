@@ -32,7 +32,7 @@ public class BatMLFormWidgetBuilder implements IFormWidgetBuilder {
 	 * s. This should be the same as the name in the ReflectivityModel item
 	 * class.
 	 */
-	public static final String name = "Reflectivity Model";
+	public static final String name = "BatML Model";
 
 	/**
 	 * This class consumes (references) the {@link IVizServiceFactory} OSGi

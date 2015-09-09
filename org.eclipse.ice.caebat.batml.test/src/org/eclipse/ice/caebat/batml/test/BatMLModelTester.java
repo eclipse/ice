@@ -147,7 +147,7 @@ public class BatMLModelTester {
 		assertEquals(1, form.getComponents().size());
 
 		// Check the name and description of the item and allowedActions
-		assertEquals("BatML Model Builder", batML.getName());
+		assertEquals("BatML Model", batML.getName());
 		assertEquals("This item builds models based on a BatteryML schema.",
 				batML.getDescription());
 
