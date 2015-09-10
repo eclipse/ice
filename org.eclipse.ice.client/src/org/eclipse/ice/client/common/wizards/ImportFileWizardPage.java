@@ -15,9 +15,15 @@ package org.eclipse.ice.client.common.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.client.internal.Client;
-import org.eclipse.ice.client.internal.ItemProcessor;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,8 +34,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the main page for the {@link ImportFileWizard}. It
@@ -41,6 +50,11 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public class ImportFileWizardPage extends WizardPage {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
 	/**
 	 * The files selected in the <code>FileDialog</code> launched by the browse
@@ -72,11 +86,30 @@ public class ImportFileWizardPage extends WizardPage {
 	public ImportFileWizardPage(String pageName) {
 		super(pageName);
 
-		//If a client does not yet exist, create one
-		if (ClientHolder.getClient() == null) {
-			new Client();
-		}
+		// Get the extension registry and retrieve the client.
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		IExtensionPoint point = registry
+				.getExtensionPoint("org.eclipse.ice.client.clientInstance");
+		IExtension[] extensions = point.getExtensions();
+		// Get the configuration element. The extension point can only have one
+		// extension by default, so no need for a loop or check.
+		IConfigurationElement[] elements = extensions[0]
+				.getConfigurationElements();
+		IConfigurationElement element = elements[0];
 
+		// Get the client
+		try {
+			element.createExecutableExtension("class");
+		} catch (CoreException e) {
+			// Otherwise throw an error
+			MessageBox errorMessage = new MessageBox(this.getShell(), ERROR);
+			errorMessage.setMessage("The ICE Client is not available. "
+					+ "Please file a bug report.");
+			errorMessage.open();
+			// Log the error
+			logger.error("ICEClient Extension not found.",e);
+		}
+		
 		setTitle("ICE File Import Wizard");
 		setDescription("Import an input file into ICE.");
 
