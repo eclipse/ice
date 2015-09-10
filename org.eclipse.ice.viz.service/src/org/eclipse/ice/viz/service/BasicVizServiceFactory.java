@@ -64,7 +64,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * Implements a method from IVizServiceFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizServiceFactory#get()
 	 */
 	@Override
 	public IVizService get() {
@@ -72,7 +73,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * Implements a method from IVizServiceFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizServiceFactory#get(java.lang.String)
 	 */
 	@Override
 	public IVizService get(String serviceName) {
@@ -100,7 +102,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * Implements a method from IVizServiceFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizServiceFactory#getServiceNames()
 	 */
 	@Override
 	public String[] getServiceNames() {
@@ -112,7 +115,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * Implements a method from IVizServiceFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizServiceFactory#register(org.eclipse.ice.viz.service.IVizService)
 	 */
 	@Override
 	public void register(IVizService service) {
@@ -161,7 +165,8 @@ public class BasicVizServiceFactory implements IVizServiceFactory {
 	}
 
 	/*
-	 * Implements a method from IVizServiceFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizServiceFactory#unregister(org.eclipse.ice.viz.service.IVizService)
 	 */
 	@Override
 	public void unregister(IVizService service) {

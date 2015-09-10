@@ -252,8 +252,8 @@ public class MOOSE extends Item {
 		// If the Model finished correctly, clear the old
 		// file entries and load new ones.
 		if (status.equals(FormStatus.ReadyToProcess)) {
-			clearModelFiles();
-			loadFileEntries();
+			// clearModelFiles();
+			// loadFileEntries();
 		}
 
 		// Register this Item as a listener to the Variables block
@@ -284,6 +284,7 @@ public class MOOSE extends Item {
 	public FormStatus process(String actionName) {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
+		String treeNode = null, host = "localhost";
 
 		// Set our outputFile as the MooseLauncher's output file
 		// so we can see the streaming output
@@ -292,102 +293,49 @@ public class MOOSE extends Item {
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
 
-			// FIXME WE NEED TO DO A CHECK FOR ALL THE REQUIRED BLOCKS!!!!
-
-			// Add the ICEUpdater tree block to Outputs
-			TreeComposite outputs = getTreeByName("Outputs");
-			TreeComposite postProcessors = getTreeByName("Postprocessors");
-
-			// First check to see if we have any post processors to
-			// watch for.
-			if (postProcessors.isActive() && postProcessors.getNumberOfChildren() > 0) {
-
-				// If we do, we should add an ICEUpdater
-				boolean iNeedUpdater = true;
-
-				// If we already have one, then we shouldn't add another one
-				for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
-					if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
-
-						// But if the current one is not configured correctly
-						// then we should add a new one, Here we make sure the
-						// Item Id is correct...
-						TreeComposite iceUpdater = outputs.getChildAtIndex(i);
-						DataComponent data = (DataComponent) iceUpdater.getDataNodes().get(0);
-						Entry itemIdEntry = data.retrieveEntry("item_id");
-						if (Integer.valueOf(itemIdEntry.getValue()) != getId()) {
-							itemIdEntry.setValue(String.valueOf(getId()));
-						}
-
-						// Now we have a valid ICEUpdater, so we don't need
-						// to create a new one.
-						iNeedUpdater = false;
-						break;
-					}
-				}
-
-				if (iNeedUpdater) {
-					for (int i = 0; i < outputs.getChildExemplars().size(); i++) {
-						if ("ICEUpdater".equals(outputs.getChildExemplars().get(i).getName())) {
-							TreeComposite updater = (TreeComposite) outputs.getChildExemplars().get(i).clone();
-							outputs.setNextChild(updater);
-
-							DataComponent data = (DataComponent) updater.getDataNodes().get(0);
-							data.retrieveEntry("item_id").setValue(String.valueOf(getId()));
-							data.retrieveEntry("url").setValue("http://localhost:"
-									+ System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/ice/update");
-							updater.setActive(true);
-							updater.setActiveDataNode(data);
-							break;
-						}
-					}
-				}
+			// Validate the tree
+			if ((treeNode = validateTree()) != null) {
+				this.throwErrorMessage("Invalid MOOSE Tree", "org.eclipse.ice.item.nuclear.MOOSE", "Could not locate "
+						+ treeNode + " in the MOOSE input tree. Please provide this block before launching again.");
+				return FormStatus.InfoError;
 			}
 
-			// Get a reference to the Launchers files component
-			DataComponent launcherFiles = (DataComponent) mooseLauncher.getForm().getComponent(1);
+			// First and foremost, Get the application URI
+			// and see if it is a remote app or not
+			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
+			boolean isRemote = "ssh".equals(appUri.getScheme());
 
-			// Grab the file name the user has specified for the input file
-			String fileName = modelFiles.retrieveEntry("Output File Name").getValue();
+			// Change the host name if we are remote
+			if (isRemote) {
+				IRemoteConnection remoteConnection = mooseLauncher.getRemoteConnection(appUri.getHost());
+				host = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
+			}
 
-			// Write the Moose file if it doesn't exist
-			retStatus = mooseModel.process("Write MOOSE File");
-			if (!retStatus.equals(FormStatus.Processed)) {
+			// Get an ICEUpdater, this will return null if the user does not
+			// want this feature
+			createICEUpdaterBlock(host);
+
+			// Populate the MOOSELaunchers files list, check for error.
+			retStatus = populateListOfLauncherFiles();
+			if (retStatus != FormStatus.ReadyToProcess) {
 				return retStatus;
 			}
 
-			// Set the value of the input file to the user-specified
-			// file name
-			launcherFiles.retrieveEntry("Input File").setValue(fileName);
+			// Configure the execute string
+			if (isRemote) {
 
-			// Update the MooseLauncher's set of input files...
-			mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));
-			for (Entry e : modelFiles.retrieveAllEntries()) {
-				Entry launcherFile = launcherFiles.retrieveEntry(e.getName());
-				if (launcherFile != null) {
-					launcherFile.setValue(e.getValue());
-				}
-			}
-
-			// Get the application URI
-			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
-
-			// Check if we're local or remote
-			if ("ssh".equals(appUri.getScheme())) {
-
+				// Set the remote executable string
 				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
 						appUri.getRawPath() + " -i ${inputFile} --no-color");
 
 				// Setup the hosts table to use the remote host
 				TableComponent hostsTable = (TableComponent) mooseLauncher.getForm()
 						.getComponent(JobLauncherForm.parallelId + 1);
-				IRemoteConnection remoteConnection = mooseLauncher.getRemoteConnection(appUri.getHost());
-				String hostname = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
 				int index = hostsTable.addRow();
 				ArrayList<Entry> row = hostsTable.getRow(index);
 				ArrayList<Integer> selected = new ArrayList<Integer>();
 				selected.add(new Integer(index));
-				row.get(0).setValue(hostname);
+				row.get(0).setValue(host);
 				hostsTable.setSelectedRows(selected);
 
 			} else {
@@ -423,7 +371,7 @@ public class MOOSE extends Item {
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							logger.error(getClass().getName() + " Exception!",e);
+							logger.error(getClass().getName() + " Exception!", e);
 						}
 
 						// Set the status
@@ -440,22 +388,140 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This method just clears the Model Files DataComponent of its Entries so
-	 * that we can populate it with new Entries.
+	 * 
+	 * @return
 	 */
-	private void clearModelFiles() {
+	private FormStatus populateListOfLauncherFiles() {
+		// Get a reference to the Launchers files component
+		DataComponent launcherFiles = (DataComponent) mooseLauncher.getForm().getComponent(1);
 
-		ArrayList<String> toBeRemoved = new ArrayList<String>();
-		for (Entry e : modelFiles.retrieveAllEntries()) {
-			String name = e.getName();
-			if (!"MOOSE-Based Application".equals(name) && !"Output File Name".equals(name)) {
-				toBeRemoved.add(name);
+		// Grab the file name the user has specified for the input file
+		String fileName = modelFiles.retrieveEntry("Output File Name").getValue();
+
+		// Write the Moose file if it doesn't exist
+		FormStatus retStatus = mooseModel.process("Write MOOSE File");
+		if (!retStatus.equals(FormStatus.Processed)) {
+			return retStatus;
+		}
+
+		// Set the value of the input file to the user-specified
+		// file name
+		launcherFiles.retrieveEntry("Input File").setValue(fileName);
+
+		// Update the MooseLauncher's set of input files...
+		mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));
+		for (Entry e : getFileEntries()) {
+			Entry launcherFile = launcherFiles.retrieveEntry(e.getName());
+			if (launcherFile != null) {
+				launcherFile.setValue(e.getValue());
 			}
 		}
 
-		for (String e : toBeRemoved) {
-			modelFiles.deleteEntry(e);
+		return FormStatus.ReadyToProcess;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	private String validateTree() {
+		String[] expectedBlocks = new String[] { "Mesh", "Variables", "Kernels", "Outputs", "Executioner", "BCs" };
+
+		for (String block : expectedBlocks) {
+			TreeComposite tree = getTreeByName(block);
+			if (tree == null || !tree.isActive()) {
+				return block;
+			}
 		}
+
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param isRemote
+	 * @return
+	 */
+	private void createICEUpdaterBlock(String host) {
+
+		// Add the ICEUpdater tree block to Outputs
+		TreeComposite outputs = getTreeByName("Outputs");
+		TreeComposite postProcessors = getTreeByName("Postprocessors");
+		TreeComposite iceUpdater = null;
+		boolean display = false, iNeedUpdater = true;
+
+		// Do nothing if we don't have postprocessors
+		if (postProcessors == null || !postProcessors.isActive() || postProcessors.getNumberOfChildren() < 1) {
+			return;
+		}
+
+		// If we do, see if the user checked any to be displayed
+		DataComponent displayPPs = (DataComponent) form.getComponent(MOOSE.ppDataId);
+		for (Entry e : displayPPs.retrieveAllEntries()) {
+			if (e.getValue().equals("yes")) {
+				display = true;
+				break;
+			}
+		}
+
+		// If we want postprocessors displayed then add the ICEUpdater
+		if (display) {
+
+			// If one already exists in the tree, then we shouldn't add another
+			// one
+			for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
+				if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
+
+					// Check that the current one is configured correctly
+					iceUpdater = outputs.getChildAtIndex(i);
+					DataComponent data = (DataComponent) iceUpdater.getDataNodes().get(0);
+					Entry itemIdEntry = data.retrieveEntry("item_id");
+					if (Integer.valueOf(itemIdEntry.getValue()) != getId()) {
+						itemIdEntry.setValue(String.valueOf(getId()));
+					}
+					data.retrieveEntry("url").setValue("http://" + host + ":"
+							+ System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/ice/update");
+					// Now we have a valid ICEUpdater, so we don't need
+					// to create a new one.
+					iNeedUpdater = false;
+					break;
+				}
+			}
+
+			// If we didnt find one, the iNeedUpdater should be true
+			if (iNeedUpdater) {
+				for (int i = 0; i < outputs.getChildExemplars().size(); i++) {
+					if ("ICEUpdater".equals(outputs.getChildExemplars().get(i).getName())) {
+
+						// Create a new one
+						iceUpdater = (TreeComposite) outputs.getChildExemplars().get(i).clone();
+						outputs.setNextChild(iceUpdater);
+
+						// Set the pertinent data
+						DataComponent data = (DataComponent) iceUpdater.getDataNodes().get(0);
+						data.retrieveEntry("item_id").setValue(String.valueOf(getId()));
+						data.retrieveEntry("url").setValue("http://" + host + ":"
+								+ System.getProperty("org.eclipse.equinox.http.jetty.http.port") + "/ice/update");
+						iceUpdater.setActive(true);
+						iceUpdater.setActiveDataNode(data);
+						break;
+					}
+				}
+			}
+		} else {
+			// if there was already an ICEUpdater block, remove it
+			// If we already have one, then we shouldn't add another one
+			for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
+				if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
+					// Remove the existing
+					outputs.removeChild(outputs.getChildAtIndex(i));
+					break;
+				}
+			}
+		}
+
+		// Return it, whether null or not, clients should check
+		return;
 	}
 
 	/**
@@ -512,7 +578,7 @@ public class MOOSE extends Item {
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
-		loadFileEntries();
+		// loadFileEntries();
 
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
@@ -581,28 +647,24 @@ public class MOOSE extends Item {
 			// and we need to sync up the tree with it.
 
 			// Grab the DataComponent
-			if (fileEntryTreeMapping.containsKey(entry.getName())) {
-				DataComponent data = (DataComponent) fileEntryTreeMapping.get(entry.getName()).getDataNodes().get(0);
-
-				// If not null, loop over the Entries til we find
-				// the file Entry.
-				if (data != null) {
-					for (Entry e : data.retrieveAllEntries()) {
-
-						// If the Entry's tag is "false" it is a commented
-						// out
-						// parameter.
-						if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
-								&& (e.getName() + " = " + e.getValue())
-										.matches(mooseLauncher.getFileDependenciesSearchString())) {
-
-							// Set the value of the tree's file entry.
-							e.setValue(entry.getValue());
-							break;
-						}
-					}
-				}
-			}
+			/*
+			 * if (fileEntryTreeMapping.containsKey(entry.getName())) {
+			 * DataComponent data = (DataComponent)
+			 * fileEntryTreeMapping.get(entry.getName()).getDataNodes().get(0);
+			 * 
+			 * // If not null, loop over the Entries til we find // the file
+			 * Entry. if (data != null) { for (Entry e :
+			 * data.retrieveAllEntries()) {
+			 * 
+			 * // If the Entry's tag is "false" it is a commented // out //
+			 * parameter. if (!"false".equals(e.getTag()) && e.getValue() !=
+			 * null && !e.getValue().isEmpty() && (e.getName() + " = " +
+			 * e.getValue())
+			 * .matches(mooseLauncher.getFileDependenciesSearchString())) {
+			 * 
+			 * // Set the value of the tree's file entry.
+			 * e.setValue(entry.getValue()); break; } } } }
+			 */
 		}
 
 	}
@@ -630,8 +692,10 @@ public class MOOSE extends Item {
 	 * This method searches the Model input tree and locates all file Entries
 	 * and loads them on the Model File DataComponent.
 	 */
-	protected void loadFileEntries() {
+	private ArrayList<Entry> getFileEntries() {
+		// protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
+		ArrayList<Entry> files = new ArrayList<Entry>();
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(modelTree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
@@ -648,59 +712,68 @@ public class MOOSE extends Item {
 									.matches(mooseLauncher.getFileDependenciesSearchString())) {
 
 						Entry clonedEntry = (Entry) e.clone();
+						files.add(clonedEntry);
 
-						// If this Entry does not have a very descriptive
-						// name
-						// we should reset its name to the block it belongs
-						// to
-						if ("file".equals(clonedEntry.getName().toLowerCase())
-								|| "data_file".equals(clonedEntry.getName().toLowerCase())) {
-							clonedEntry.setName(child.getName());
-						}
-
-						if (!clonedEntry.getValueType().equals(AllowedValueType.File)) {
-							mooseModel.convertToFileEntry(clonedEntry);
-
-						}
-
-						// Setup allowed values correctly
-						String extension = FilenameUtils
-								.getExtension(project.getFile(clonedEntry.getValue()).getLocation().toOSString());
-
-						// Create a new content provider with the new file
-						// in the allowed values list
-						IEntryContentProvider prov = new BasicEntryContentProvider();
-						ArrayList<String> valueList = clonedEntry.getAllowedValues();
-
-						for (String file : getProjectFileNames(extension)) {
-							if (!valueList.contains(file)) {
-								valueList.add(file);
-							}
-						}
-						prov.setAllowedValueType(AllowedValueType.File);
-
-						// Finish setting the allowed values and default
-						// value
-						prov.setAllowedValues(valueList);
-
-						// Set the new provider
-						clonedEntry.setContentProvider(prov);
-
-						// Set the value
-						clonedEntry.setValue(e.getValue());
-
-						fileEntryTreeMapping.put(clonedEntry.getName(), child);
-
-						clonedEntry.register(this);
-
-						// Add it to the list of model files.
-						modelFiles.addEntry(clonedEntry);
+						// // If this Entry does not have a very descriptive
+						// // name
+						// // we should reset its name to the block it belongs
+						// // to
+						// if
+						// ("file".equals(clonedEntry.getName().toLowerCase())
+						// ||
+						// "data_file".equals(clonedEntry.getName().toLowerCase()))
+						// {
+						// clonedEntry.setName(child.getName());
+						// }
+						//
+						// if
+						// (!clonedEntry.getValueType().equals(AllowedValueType.File))
+						// {
+						// mooseModel.convertToFileEntry(clonedEntry);
+						//
+						// }
+						//
+						// // Setup allowed values correctly
+						// String extension = FilenameUtils
+						// .getExtension(project.getFile(clonedEntry.getValue()).getLocation().toOSString());
+						//
+						// // Create a new content provider with the new file
+						// // in the allowed values list
+						// IEntryContentProvider prov = new
+						// BasicEntryContentProvider();
+						// ArrayList<String> valueList =
+						// clonedEntry.getAllowedValues();
+						//
+						// for (String file : getProjectFileNames(extension)) {
+						// if (!valueList.contains(file)) {
+						// valueList.add(file);
+						// }
+						// }
+						// prov.setAllowedValueType(AllowedValueType.File);
+						//
+						// // Finish setting the allowed values and default
+						// // value
+						// prov.setAllowedValues(valueList);
+						//
+						// // Set the new provider
+						// clonedEntry.setContentProvider(prov);
+						//
+						// // Set the value
+						// clonedEntry.setValue(e.getValue());
+						//
+						// fileEntryTreeMapping.put(clonedEntry.getName(),
+						// child);
+						//
+						// clonedEntry.register(this);
+						//
+						// // Add it to the list of model files.
+						// modelFiles.addEntry(clonedEntry);
 					}
 				}
 			}
 		}
 
-		return;
+		return files;
 	}
 
 	/*
@@ -775,7 +848,7 @@ public class MOOSE extends Item {
 				}
 
 			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 

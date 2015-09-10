@@ -63,7 +63,8 @@ public class RodClusterAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -75,7 +76,8 @@ public class RodClusterAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -103,7 +105,8 @@ public class RodClusterAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -120,7 +123,8 @@ public class RodClusterAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

@@ -15,6 +15,9 @@ package org.eclipse.ice.client.common.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.ice.client.internal.Client;
+import org.eclipse.ice.client.internal.ItemProcessor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -68,6 +71,11 @@ public class ImportFileWizardPage extends WizardPage {
 	 */
 	public ImportFileWizardPage(String pageName) {
 		super(pageName);
+
+		//If a client does not yet exist, create one
+		if (ClientHolder.getClient() == null) {
+			new Client();
+		}
 
 		setTitle("ICE File Import Wizard");
 		setDescription("Import an input file into ICE.");

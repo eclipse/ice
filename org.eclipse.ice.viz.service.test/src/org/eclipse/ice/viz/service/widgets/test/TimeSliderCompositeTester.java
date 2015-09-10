@@ -105,7 +105,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	private final static double epsilon = 1e-5;
 
 	/*
-	 * Overrides a method from AbstractSWTTester.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#beforeEachTest()
 	 */
 	@Override
 	public void beforeEachTest() {
@@ -167,7 +168,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 	}
 
 	/*
-	 * Overrides a method from AbstractSWTTester.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#afterEachTest()
 	 */
 	@Override
 	public void afterEachTest() {
@@ -1964,7 +1966,8 @@ public class TimeSliderCompositeTester extends AbstractSWTTester {
 		private static final long THRESHOLD = 3000;
 
 		/*
-		 * Overrides a method from SelectionAdapter.
+		 * (non-Javadoc)
+		 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 		 */
 		@Override
 		public void widgetSelected(SelectionEvent e) {

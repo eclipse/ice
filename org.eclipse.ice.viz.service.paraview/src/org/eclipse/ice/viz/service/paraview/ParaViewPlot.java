@@ -174,7 +174,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Overrides a method from ConnectionPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#connectionStateChanged(org.eclipse.ice.viz.service.connections.IVizConnection, org.eclipse.ice.viz.service.connections.ConnectionState, java.lang.String)
 	 */
 	@Override
 	public void connectionStateChanged(
@@ -187,7 +188,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#createPlotComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected ConnectionPlotComposite<IParaViewWebClient> createPlotComposite(
@@ -225,7 +227,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -233,7 +236,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -366,7 +370,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Overrides a method from ConnectionPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#setConnection(org.eclipse.ice.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	public boolean setConnection(IVizConnection<IParaViewWebClient> connection)
@@ -380,7 +385,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Overrides a method from ConnectionPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#setDataSource(java.net.URI)
 	 */
 	@Override
 	public boolean setDataSource(URI uri) throws Exception {
@@ -393,7 +399,8 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#setIndependentSeries(org.eclipse.ice.viz.service.ISeries)
 	 */
 	@Override
 	public void setIndependentSeries(ISeries series) {

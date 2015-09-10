@@ -42,8 +42,7 @@ public class PlotDialogProvider {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(PlotEditor.class);
+	private static final Logger logger = LoggerFactory.getLogger(PlotEditor.class);
 
 	/**
 	 * A lexicographically ordered map of successfully created plots keyed on
@@ -67,8 +66,7 @@ public class PlotDialogProvider {
 	 */
 	private void createPlots(URI uri) {
 		// Get the VizServiceFactory and all Viz Services
-		IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder
-				.getFactory();
+		IVizServiceFactory factory = (BasicVizServiceFactory) VizServiceFactoryHolder.getFactory();
 
 		// Initialize a map of created plots for all viz services.
 		for (String vizServiceName : factory.getServiceNames()) {
@@ -78,10 +76,11 @@ public class PlotDialogProvider {
 			if (service != null) {
 				try {
 					IPlot newPlot = service.createPlot(uri);
-					allPlots.put(vizServiceName, newPlot);
+					if (newPlot != null) {
+						allPlots.put(vizServiceName, newPlot);
+					}
 				} catch (Exception e) {
-					logger.debug("The viz service \"" + vizServiceName
-							+ "\" could not create a plot for the file \""
+					logger.debug("The viz service \"" + vizServiceName + "\" could not create a plot for the file \""
 							+ uri.getPath() + "\".");
 				}
 			}
@@ -154,8 +153,7 @@ public class PlotDialogProvider {
 				result = Window.OK;
 			} else {
 				// Get the viz service names.
-				List<String> vizServiceNames = new ArrayList<String>(
-						allPlots.keySet());
+				List<String> vizServiceNames = new ArrayList<String>(allPlots.keySet());
 
 				// Create a dialog to allow the user to select from the
 				// available viz services.
@@ -163,8 +161,7 @@ public class PlotDialogProvider {
 				// Set up the dialog's data.
 				dialog.setTitle("Open a Visualization");
 				dialog.setInfoText("There are multiple available visualization "
-						+ "services that can render the selected file. Please "
-						+ "select one from the list below.");
+						+ "services that can render the selected file. Please " + "select one from the list below.");
 				dialog.setAllowedValues(vizServiceNames);
 				dialog.setInitialValue(vizServiceNames.get(0));
 

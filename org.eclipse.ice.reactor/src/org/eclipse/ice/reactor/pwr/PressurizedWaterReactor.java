@@ -258,7 +258,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#getSize()
 	 */
 	@Override
 	public int getSize() {
@@ -338,7 +339,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -385,7 +387,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -400,7 +403,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -431,7 +435,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWRComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComposite#getWriteableChildren()
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -456,7 +461,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWRComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComposite#readChild(org.eclipse.ice.io.hdf.IHdfReadable)
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -556,7 +562,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -645,7 +652,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -662,7 +670,8 @@ public class PressurizedWaterReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {
