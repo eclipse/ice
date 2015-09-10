@@ -13,8 +13,10 @@
 package org.eclipse.ice.viz;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.net.URI;
 
 import org.eclipse.ice.viz.service.PlotEditor;
 import org.eclipse.ice.viz.service.PlotEditorInput;
@@ -22,9 +24,9 @@ import org.eclipse.ice.viz.service.csv.CSVPlot;
 import org.eclipse.ice.viz.service.csv.CSVProxyPlot;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizListComponent;
 import org.eclipse.ice.viz.service.datastructures.resource.IResource;
 import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.ice.viz.service.datastructures.resource.VizResourceComponent;
 import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.IToolBarManager;
@@ -50,8 +52,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ca.odell.glazedlists.AbstractEventList;
-
 /**
  * This class extends the ViewPart class and provides a view in the
  * Visualization Perspective to look at the files that are currently available
@@ -63,8 +63,8 @@ import ca.odell.glazedlists.AbstractEventList;
  * @author Kasper Gammeltoft- Changed functionality to use the
  *         {@link PlotEditor}
  */
-public class VizFileViewer extends ViewPart
-		implements IVizUpdateableListener, ISelectionChangedListener {
+public class VizFileViewer extends ViewPart implements IVizUpdateableListener,
+		ISelectionChangedListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -122,8 +122,8 @@ public class VizFileViewer extends ViewPart
 
 		// Initialize the ListViewer. Disable multi-selection by specifying the
 		// default style bits except for SWT.MULTI.
-		fileTreeViewer = new TreeViewer(parent,
-				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		fileTreeViewer = new TreeViewer(parent, SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER);
 		fileTreeViewer.addSelectionChangedListener(this);
 
 		// Create content and label providers.
@@ -177,8 +177,8 @@ public class VizFileViewer extends ViewPart
 					if (lastIndex > -1) {
 						IResource resource = resourceComponent.getResources()
 								.get(lastIndex);
-						fileTreeViewer.setSelection(
-								new StructuredSelection(resource), true);
+						fileTreeViewer.setSelection(new StructuredSelection(
+								resource), true);
 					}
 
 				}
@@ -340,7 +340,28 @@ public class VizFileViewer extends ViewPart
 						// If we didn't have VizResourc children, then check
 						// that we
 						// have file names to return
-						return resource.getFileSet();
+						ArrayList<IVizResource> children = new ArrayList<IVizResource>();
+						for (String filePath : resource.getFileSet()) {
+							File file = new File(filePath);
+
+							// Try to construct an ICEResource from the File,
+							// then add it to
+							// the viewer.
+							try {
+								IVizResource childResource = new VisualizationResource(
+										file);
+								childResource.setHost("localhost");
+								children.add(childResource);
+							} catch (IOException e) {
+								System.err
+										.println("AddLocalFileAction error: Failed to "
+												+ "create an ICEResource for the file at \""
+												+ filePath + "\".");
+								logger.error(getClass().getName()
+										+ " Exception!", e);
+							}
+						}
+						return children.toArray();
 					}
 				}
 
@@ -363,7 +384,11 @@ public class VizFileViewer extends ViewPart
 					styledStr.append(resource.getName());
 
 					String host = resource.getHost();
-					String path = resource.getPath().getPath();
+					URI pathFile = resource.getPath();
+					String path = null;
+					if (pathFile != null) {
+						pathFile.getPath();
+					}
 
 					// Get the host from the resource and append it to the tree
 					// entry String grayed-out and enclosed in square brackets.
@@ -493,45 +518,50 @@ public class VizFileViewer extends ViewPart
 
 					// Get the file from the resource
 					File file = vizResource.getContents();
-					fileName = file.getAbsolutePath();
-					// If it is a CSV file, then open it here
-					if (fileName.matches(".*\\.csv$")) {
-						try {
-							// FIXME This should be using the IVizService from
-							// OSGi instead of instantiating a CSVPlot.
-							CSVPlot dataPlot = new CSVPlot();
-							dataPlot.setDataSource(file.toURI());
-							CSVProxyPlot plot = new CSVProxyPlot();
-							plot.setSource(dataPlot);
-							page.openEditor(new PlotEditorInput(plot),
-									PlotEditor.ID);
-						} catch (Exception e) {
-							logger.error("Could not open editor for CSV file: "
-									+ file.getAbsolutePath(), e);
-						}
-					}
-					// If the file is something else...
-					else {
-						// Show the VisIt Plot Viewer
-						try {
-							getSite().getWorkbenchWindow().getActivePage()
-									.showView(VisitPlotViewer.ID);
-							// Get the views of the this page
-							IViewReference[] refs = getSite()
-									.getWorkbenchWindow().getActivePage()
-									.getViewReferences();
-							// Get the VisIt Plot Viewer and set its resource
-							for (IViewReference ref : refs) {
-								if ("VisIt Plot Viewer"
-										.equals(ref.getPartName())) {
-									VisitPlotViewer view = (VisitPlotViewer) ref
-											.getView(false);
-									view.setResource(vizResource);
-								}
+					if (file != null) {
+						fileName = file.getAbsolutePath();
+						// If it is a CSV file, then open it here
+						if (fileName.matches(".*\\.csv$")) {
+							try {
+								// FIXME This should be using the IVizService
+								// from
+								// OSGi instead of instantiating a CSVPlot.
+								CSVPlot dataPlot = new CSVPlot();
+								dataPlot.setDataSource(file.toURI());
+								CSVProxyPlot plot = new CSVProxyPlot();
+								plot.setSource(dataPlot);
+								page.openEditor(new PlotEditorInput(plot),
+										PlotEditor.ID);
+							} catch (Exception e) {
+								logger.error(
+										"Could not open editor for CSV file: "
+												+ file.getAbsolutePath(), e);
 							}
-						} catch (PartInitException e) {
-							logger.error(getClass().getName() + " Exception!",
-									e);
+						}
+						// If the file is something else...
+						else {
+							// Show the VisIt Plot Viewer
+							try {
+								getSite().getWorkbenchWindow().getActivePage()
+										.showView(VisitPlotViewer.ID);
+								// Get the views of the this page
+								IViewReference[] refs = getSite()
+										.getWorkbenchWindow().getActivePage()
+										.getViewReferences();
+								// Get the VisIt Plot Viewer and set its
+								// resource
+								for (IViewReference ref : refs) {
+									if ("VisIt Plot Viewer".equals(ref
+											.getPartName())) {
+										VisitPlotViewer view = (VisitPlotViewer) ref
+												.getView(false);
+										view.setResource(vizResource);
+									}
+								}
+							} catch (PartInitException e) {
+								logger.error(getClass().getName()
+										+ " Exception!", e);
+							}
 						}
 					}
 				}
