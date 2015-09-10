@@ -59,15 +59,6 @@ public class JME3MeshVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractVizService#createPlot(java.net.URI)
-	 */
-	@Override
-	public IPlot createPlot(URI file) throws Exception {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.eclipse.ice.viz.service.AbstractVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject)
 	 */
 	@Override

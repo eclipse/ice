@@ -52,6 +52,7 @@ import org.junit.Test;
  *         new usage of <code>ISeries</code>.
  *
  */
+@Ignore
 public class PlotGridCompositeTester extends AbstractSWTTester {
 
 	/**
