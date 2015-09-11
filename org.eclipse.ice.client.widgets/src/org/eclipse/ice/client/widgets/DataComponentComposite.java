@@ -43,7 +43,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * This class is an SWT Composite that is specialized to render ICE
  * DataComponents. It can take a message manager for posting messages and it can
  * be configured to post save events.
- * 
+ *
  * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz
  */
 public class DataComponentComposite extends Composite implements
@@ -100,7 +100,7 @@ public class DataComponentComposite extends Composite implements
 
 	/**
 	 * The constructor.
-	 * 
+	 *
 	 * @param comp
 	 *            The DataComponent shown in the composite.
 	 * @param parentComposite
@@ -185,7 +185,7 @@ public class DataComponentComposite extends Composite implements
 			EntryComposite entryComp = entryMap.get(i);
 			if (entryComp != null
 					&& !entry.getValue().equals(entryComp.entry.getValue())) {
-				entry.setValue(entryComp.entry.getValue());
+				entryComp.entry.setValue(entry.getValue());
 			}
 		}
 
@@ -247,7 +247,7 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * This operation sets the DataComponent that should be rendered, updated
 	 * and monitored by the composite.
-	 * 
+	 *
 	 * @param component
 	 *            The DataComponent
 	 */
@@ -291,7 +291,7 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * This operation retrieves the DataComponent that is currently rendered,
 	 * updated and monitored by the composite.
-	 * 
+	 *
 	 * @return The DataComponent
 	 */
 	public DataComponent getDataComponent() {
@@ -378,7 +378,7 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * This operation creates an EntryComposite for an Entry and adds that Entry
 	 * to the EntryMap.
-	 * 
+	 *
 	 * @param entry
 	 *            The Entry for which the Control should be created.
 	 * @param index
@@ -485,7 +485,7 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * This operation removes an Entry and its associated SWT Control from the
 	 * composite.
-	 * 
+	 *
 	 * @param index
 	 *            The index of the EntryComposite in the entryMap that will be
 	 *            removed.
@@ -506,7 +506,7 @@ public class DataComponentComposite extends Composite implements
 	 * is required for the following reason: when there are no Entries, a label
 	 * is displayed. A different layout is necessary to display the label by
 	 * itself.
-	 * 
+	 *
 	 * @param layout
 	 *            The new layout.
 	 */
@@ -527,7 +527,7 @@ public class DataComponentComposite extends Composite implements
 	/**
 	 * This operation sets the message manager that should be used by this
 	 * composite and its children to post messages.
-	 * 
+	 *
 	 * @param manager
 	 *            The message manager.
 	 */
@@ -548,7 +548,7 @@ public class DataComponentComposite extends Composite implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
 	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
@@ -558,7 +558,7 @@ public class DataComponentComposite extends Composite implements
 
 		// When the DataComponent has updated, refresh on the Eclipse UI thread.
 		if (component == dataComp) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 				@Override
 				public void run() {
 					if (!DataComponentComposite.this.isDisposed()) {
