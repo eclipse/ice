@@ -185,7 +185,11 @@ public class DataComponentComposite extends Composite implements
 			EntryComposite entryComp = entryMap.get(i);
 			if (entryComp != null
 					&& !entry.getValue().equals(entryComp.entry.getValue())) {
-				entryComp.entry.setValue(entry.getValue());
+				// Reset the reference to the Entry because depending on the way
+				// its value was updated it could be an entirely new Entry
+				// (reset vs. cloned/destructive copy).
+				entryComp.entry = entry;
+				entryComp.refresh();
 			}
 		}
 
