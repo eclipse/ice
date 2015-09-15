@@ -205,7 +205,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />
