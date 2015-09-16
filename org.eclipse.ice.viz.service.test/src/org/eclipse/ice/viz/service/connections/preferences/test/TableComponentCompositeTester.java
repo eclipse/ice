@@ -11,43 +11,19 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences.test;
 
-import static org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable.syncExec;
-import static org.junit.Assert.fail;
-
-import java.io.File;
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
-import org.eclipse.ice.viz.service.BasicVizServiceFactory;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.connections.preferences.TableComponentComposite;
-import org.eclipse.ice.viz.service.csv.CSVVizService;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
-import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
-import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
-import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
+import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.eclipse.swtbot.swt.finder.results.VoidResult;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -70,6 +46,12 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 	private static VizTableComponent table;
 
 	private static SWTBot bot;
+
+	// @Override
+	// public void beforeAllTests(){
+	// // Get the bot
+	// bot = getBot();
+	// }
 
 	@Override
 	public void beforeEachTest() {
@@ -115,6 +97,8 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		// getShell().setSize(p.x - 1000, p.y);
 
 		// testComposite.layout(true,true);
+
+		bot = getBot();
 	}
 
 	/**
@@ -124,21 +108,19 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 	 */
 	@Test
 	public void checkAddRow() throws InterruptedException {
-		// Get the bot
-		bot = getBot();
-		// SWTBotPreferences.PLAYBACK_DELAY = 9999;
-
 		// Press the add row button
 		bot.button(0).click();
 
 		// Get the table's first row
 		ArrayList<VizEntry> row = table.getRow(0);
 
-		// The row should have one entry with the default value. Indexing starts
-		// at 1 because row 0 is the column header template.
+		// The row should have one entry with the default value.
 		assertNotNull(row);
 		assertEquals(row.size(), 1);
 		assertTrue(row.get(0).getValue().equals("new item"));
+
+		// The row on the graphical table should contain the same string.
+		assertTrue(bot.table(0).cell(0, 0).contains("new item"));
 
 		// The second row should not exist yet.
 		assertNull(table.getRow(1));
@@ -159,6 +141,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		row = table.getRow(3);
 		assertEquals(row.size(), 1);
 		assertTrue(row.get(0).getValue().equals("new item"));
+		assertTrue(bot.table(0).cell(3, 0).contains("new item"));
 
 		return;
 	}
@@ -168,7 +151,47 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 	 */
 	@Test
 	public void checkRemoveRow() {
-		// fail("Not implemented.");
+		// The table starts off empty, the remove row button should be disabled
+		assertFalse(bot.button(1).isEnabled());
+
+		// SWTBotPreferences.PLAYBACK_DELAY = 9999;
+
+		// Add a row
+		bot.button(0).click();
+
+		// Remove button should still be disabled until the row is clicked
+		assertFalse(bot.button(1).isEnabled());
+		bot.table(0).click(0, 0);
+		bot.table(0).click(0, 0);
+		bot.button(1).click();
+
+		// The table should be empty
+		assertNull(table.getRow(0));
+
+		// The row on the graphical table should also be empty
+		assertEquals(bot.table(0).rowCount(), 0);
+
+		// The button should be disabled again
+		assertFalse(bot.button(1).isEnabled());
+
+		// Try a series of clicks that should end with the table being empty
+		// again.
+		bot.button(0).click();
+		bot.button(0).click();
+		bot.button(0).click();
+		bot.table(0).click(2, 0);
+		bot.button(1).click();
+		bot.table(0).click(0, 0);
+		bot.button(1).click();
+		bot.button(0).click();
+		bot.table(0).click(1, 0);
+		bot.button(1).click();
+		bot.table(0).click(0, 0);
+		bot.button(1).click();
+
+		assertNull(table.getRow(0));
+		assertEquals(bot.table(0).rowCount(), 0);
+		assertFalse(bot.button(1).isEnabled());
 	}
 
 	/**
@@ -177,7 +200,53 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 	 */
 	@Test
 	public void checkSetEntryValue() {
-		// fail("Not implemented.");
+		KeyStroke enter = KeyStroke.getInstance(SWT.LF);
+
+		//SWTBotPreferences.PLAYBACK_DELAY = 999;
+		
+		// Add a row
+		bot.button(0).click();
+		// try {
+		// bot.wait(50);
+		// } catch (InterruptedException e) {
+		// fail("Error while SWTBot attempted to wait");
+		// }
+		int i = 0;
+		while (bot.table(0).rowCount() == 0) {
+			i++;
+			if (i != 500) {
+				continue;
+			}
+			fail("No rows found in table");
+
+		}
+
+		// Edit the first row's entry
+		bot.table(0).click(0, 0);
+		bot.text("new item").setText("edited item");
+		bot.table(0).pressShortcut(enter);
+		assertTrue(bot.table(0).cell(0, 0).contains("edited item"));
+		assertTrue(table.getRow(0).get(0).getValue().equals("edited item"));
+
+		// Makes sure changes aren't maintained when removing and replacing a
+		// row.
+		bot.button(1).click();
+		bot.button(0).click();
+		assertTrue(bot.table(0).cell(0, 0).contains("new item"));
+		assertTrue(table.getRow(0).get(0).getValue().equals("new item"));
+		
+		//Try editing when there are multiple rows.
+		//TODO writing in wrong cell here.
+		bot.button(0).click();
+		bot.button(0).click();
+		bot.button(0).click();
+		bot.table(0).click(0, 0);
+		bot.text("new item").setText("edited item");
+		bot.table(0).pressShortcut(enter);
+		assertTrue(bot.table(0).cell(0, 0).contains("edited item"));
+		assertTrue(table.getRow(0).get(0).getValue().equals("edited item"));
+
+		
 	}
 
 }
