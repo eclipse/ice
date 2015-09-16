@@ -14,6 +14,8 @@
 
 import os
 import sys
+import glob
+import platform
 import unittest
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + \
@@ -31,10 +33,35 @@ class TestICEInstaller(unittest.TestCase):
         pass
 
     def test_options(self):
-        pass
+        """ Tests Install_ICE.parse_args """        
+        print("")
+        print("----------------------------------------------------------------------")
+        print("Testing argument parsing...")
+        opts = Install_ICE.parse_args(['-u'])
+        self.assertEqual(opts.update, ['ICE', 'VisIt', 'HDFJava'])
+
+        opts = Install_ICE.parse_args(['-u', 'VisIt'])
+        self.assertEqual(opts.update, ['VisIt'])
+
+        opts = Install_ICE.parse_args(['-u', 'HDFJava', 'ICE'])
+        self.assertEqual(opts.update, ['HDFJava', 'ICE'])
+
+        opts = Install_ICE.parse_args(['-p', '/home/user/ICE', '-u'])
+        self.assertEqual(opts.update, ['ICE', 'VisIt', 'HDFJava'])
+        self.assertEqual(opts.prefix, '/home/user/ICE')
 
     def test_download(self):
-        pass
+        """ Tests Install_ICE.download_packages """
+        print("")
+        print("----------------------------------------------------------------------")
+        print("  Testing package downloads...")
+        opts = Install_ICE.parse_args(['-u', 'HDFJava'])
+        arch_type = platform.machine()
+        os_type = platform.system()
+
+        Install_ICE.download_packages(opts, os_type, arch_type)
+        self.assertEqual(len(glob.glob("HDFView*")), 1)
+        [os.remove(f) for f in glob.glob("HDFView*")]
 
     def test_unpack(self):
         pass
@@ -48,3 +75,4 @@ class TestICEInstaller(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
