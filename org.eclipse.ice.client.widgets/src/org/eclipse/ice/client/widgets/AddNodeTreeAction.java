@@ -118,11 +118,30 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 			for (TreeComposite exemplar : exemplars) {
 				exemplarMap.put(exemplar.getName(), exemplar);
 			}
+
 			// Create a selection dialog so that they can make a choice
 			IWorkbench bench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = bench.getActiveWorkbenchWindow();
 			TreeNodeFilteredItemsSelectionDialog addNodeDialog = new TreeNodeFilteredItemsSelectionDialog(
 					window.getShell(), true, exemplarMap.keySet());
+
+			// Set up the Details Label Provider to return the
+			// TreeComposites Description
+			addNodeDialog.setDetailsLabelProvider(new LabelProvider() {
+				@Override
+				public String getText(Object element) {
+					if (element == null) {
+						return "";
+					} else {
+						String text = exemplarMap.get(element.toString()).getDescription();
+						if (text.isEmpty()) {
+							return element.toString();
+						} else {
+							return "\n" + text; // FIXME not sure why we need a \n...
+						}
+					}
+				}
+			});
 			addNodeDialog.setInitialSelections(exemplarMap.keySet().toArray());
 			addNodeDialog.setTitle("Child Selector");
 			addNodeDialog.setMessage("Select a new child from the list");

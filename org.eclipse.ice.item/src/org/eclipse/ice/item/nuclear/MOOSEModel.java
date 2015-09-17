@@ -902,7 +902,7 @@ public class MOOSEModel extends Item {
 
 			// While we're here, append a blank exemplar to the tree (so the
 			// user can create custom blocks)
-			addBlankChildExemplar(tree);
+			//addBlankChildExemplar(tree);
 
 			// If the next tree in the stack is a top-level tree,
 			// clear the path name
