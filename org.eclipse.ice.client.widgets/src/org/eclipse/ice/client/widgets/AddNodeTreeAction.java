@@ -97,7 +97,7 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 
 		if (canAddNode(tree)) {
 
-			HashMap<String, TreeComposite> exemplarMap;
+			final HashMap<String, TreeComposite> exemplarMap;
 			ArrayList<TreeComposite> exemplars = null;
 
 			// Get the exemplar children and put them in the map
