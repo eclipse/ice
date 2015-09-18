@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -240,7 +239,7 @@ public class ICEResourcePage extends ICEFormPage
 	public void showResource(ICEResource resource) throws PartInitException {
 
 		// TODO Do this off the UI thread.
-
+		
 		// TODO This method has several return statements, making it a little
 		// hard to read. It should be updated and simplified.
 
@@ -330,7 +329,6 @@ public class ICEResourcePage extends ICEFormPage
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Gets the resource's key for use in the plot maps.
 	 *
 	 * @param resource
@@ -473,29 +471,17 @@ public class ICEResourcePage extends ICEFormPage
 	public void update(IUpdateable component) {
 
 		if (component != null && component == resourceComponent) {
-
-			// Get a local copy of the ResouceComponent.
-			ResourceComponent resourceComponent = (ResourceComponent) component;
-
 			// TODO Do we want to remove any IPlots associated with VizResources
 			// that are no longer available, or should we just let the user
 			// close them out?
 
-			// // Create plots for any VizResources in the ResourceComponent
-			// that
-			// // do not already have plots.
-			for (ICEResource resource : resourceComponent.getResources()) {
-				if (resource instanceof VizResource) {
-					resource.register(this);
-				}
-			}
 		} else if (component != null && component instanceof VizResource) {
 			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
 
 			// Refresh all plots in the grid associated with the resource.
 			plotGridComposite.refreshPlots(resource.getPath());
-
+			
 			// Layout the composite on the UI thread.
 			if (pageComposite != null) {
 				pageComposite.getDisplay().asyncExec(new Runnable() {

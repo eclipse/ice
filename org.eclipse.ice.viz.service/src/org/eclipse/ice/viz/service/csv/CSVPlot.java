@@ -82,6 +82,7 @@ public class CSVPlot extends AbstractPlot {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.AbstractPlot#getCategories()
 	 */
 	@Override
@@ -92,7 +93,10 @@ public class CSVPlot extends AbstractPlot {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang
+	 * .String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -151,8 +155,8 @@ public class CSVPlot extends AbstractPlot {
 
 				// Force the loading thread to report unhandled exceptions to
 				// this thread's exception handler.
-				loadingThread.setUncaughtExceptionHandler(
-						Thread.currentThread().getUncaughtExceptionHandler());
+				loadingThread.setUncaughtExceptionHandler(Thread
+						.currentThread().getUncaughtExceptionHandler());
 
 				// Start the thread
 				loadingThread.start();
@@ -214,9 +218,10 @@ public class CSVPlot extends AbstractPlot {
 
 		} catch (IOException e) {
 			// Complain
-			logger.error(getClass().getName()
-					+ " Exception! Could not read in data from file: "
-					+ file.getName() + ".", e);
+			logger.error(
+					getClass().getName()
+							+ " Exception! Could not read in data from file: "
+							+ file.getName() + ".", e);
 		}
 
 		if (!lines.isEmpty()) {
@@ -253,16 +258,20 @@ public class CSVPlot extends AbstractPlot {
 				}
 			}
 
-			// Just set the first series as the independent series for now
-			setIndependentSeries(series[0]);
-
+			//If the independent series has not been set, use the default value
+			if (getIndependentSeries() == null) {
+				// Just set the first series as the independent series for now
+				setIndependentSeries(series[0]);
+			}
+			
 			// Add the rest of the series as dependent series
 			List<ISeries> dependentSeries = new ArrayList<ISeries>(
-					series.length - 1);
+					series.length);
 			dataSeries.put(IPlot.DEFAULT_CATEGORY, dependentSeries);
 			for (int i = 1; i < series.length; i++) {
 				dependentSeries.add(series[i]);
 			}
+			dependentSeries.add(series[0]);
 
 		}
 
@@ -277,6 +286,7 @@ public class CSVPlot extends AbstractPlot {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.AbstractPlot#redraw()
 	 */
 	@Override
@@ -289,6 +299,7 @@ public class CSVPlot extends AbstractPlot {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.AbstractPlot#setDataSource(java.net.URI)
 	 */
 	@Override
