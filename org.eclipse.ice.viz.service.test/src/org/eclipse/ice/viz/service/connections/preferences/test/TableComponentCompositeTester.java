@@ -47,12 +47,6 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 
 	private static SWTBot bot;
 
-	// @Override
-	// public void beforeAllTests(){
-	// // Get the bot
-	// bot = getBot();
-	// }
-
 	@Override
 	public void beforeEachTest() {
 		super.beforeAllTests();
@@ -63,16 +57,8 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 						SWT.NONE);
 			}
 		});
+		
 		// Create the composite that will be tested.
-		// Display display = new Display();
-		// Shell shell = new Shell(display);
-		// syncExec(new Runnable() {
-		// @Override
-		// public void run() {
-		// testComposite = new TableComponentComposite(shell, SWT.NONE);
-		// }
-		// });
-		// testComposite = new TableComponentComposite(shell, SWT.NONE);
 		table = new VizTableComponent();
 		ArrayList<VizEntry> template = new ArrayList<VizEntry>();
 		template.add(new VizEntry() {
@@ -84,6 +70,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		table.setRowTemplate(template);
 		testComposite.setTableComponent(table);
 
+		//Things won't display in this window unless it is resized.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -92,11 +79,6 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 				getShell().layout();
 			}
 		});
-		// getShell().layout();
-		// Point p = getShell().getSize();
-		// getShell().setSize(p.x - 1000, p.y);
-
-		// testComposite.layout(true,true);
 
 		bot = getBot();
 	}
@@ -120,6 +102,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		assertTrue(row.get(0).getValue().equals("new item"));
 
 		// The row on the graphical table should contain the same string.
+		bot.table(0).getTableItem(0); // Wait until row 0 exists
 		assertTrue(bot.table(0).cell(0, 0).contains("new item"));
 
 		// The second row should not exist yet.
@@ -161,7 +144,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 
 		// Remove button should still be disabled until the row is clicked
 		assertFalse(bot.button(1).isEnabled());
-		bot.table(0).click(0, 0);
+		bot.table(0).getTableItem(0); // Wait until row 0 exists
 		bot.table(0).click(0, 0);
 		bot.button(1).click();
 
@@ -179,11 +162,13 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		bot.button(0).click();
 		bot.button(0).click();
 		bot.button(0).click();
+		bot.table(0).getTableItem(2); // Wait until row 0 exists
 		bot.table(0).click(2, 0);
 		bot.button(1).click();
 		bot.table(0).click(0, 0);
 		bot.button(1).click();
 		bot.button(0).click();
+		bot.table(0).getTableItem(1); // Wait until row 0 exists
 		bot.table(0).click(1, 0);
 		bot.button(1).click();
 		bot.table(0).click(0, 0);
@@ -201,27 +186,13 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 	@Test
 	public void checkSetEntryValue() {
 		KeyStroke enter = KeyStroke.getInstance(SWT.LF);
-
-		//SWTBotPreferences.PLAYBACK_DELAY = 999;
 		
 		// Add a row
 		bot.button(0).click();
-		// try {
-		// bot.wait(50);
-		// } catch (InterruptedException e) {
-		// fail("Error while SWTBot attempted to wait");
-		// }
-		int i = 0;
-		while (bot.table(0).rowCount() == 0) {
-			i++;
-			if (i != 500) {
-				continue;
-			}
-			fail("No rows found in table");
 
-		}
 
 		// Edit the first row's entry
+		bot.table(0).getTableItem(0); // Wait until row 0 exists
 		bot.table(0).click(0, 0);
 		bot.text("new item").setText("edited item");
 		bot.table(0).pressShortcut(enter);
@@ -232,6 +203,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		// row.
 		bot.button(1).click();
 		bot.button(0).click();
+		bot.table(0).getTableItem(0); // Wait until row 0 exists
 		assertTrue(bot.table(0).cell(0, 0).contains("new item"));
 		assertTrue(table.getRow(0).get(0).getValue().equals("new item"));
 		
