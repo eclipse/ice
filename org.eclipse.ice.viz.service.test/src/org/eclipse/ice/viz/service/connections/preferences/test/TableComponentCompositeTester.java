@@ -126,6 +126,9 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		assertTrue(row.get(0).getValue().equals("new item"));
 		assertTrue(bot.table(0).cell(3, 0).contains("new item"));
 
+		// Close the window
+		bot.activeShell().close();
+		
 		return;
 	}
 
@@ -174,9 +177,15 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		bot.table(0).click(0, 0);
 		bot.button(1).click();
 
+		// Make sure the row count is correct
 		assertNull(table.getRow(0));
 		assertEquals(bot.table(0).rowCount(), 0);
 		assertFalse(bot.button(1).isEnabled());
+		
+		// Close the window
+		bot.activeShell().close();
+		
+		return;
 	}
 
 	/**
@@ -218,7 +227,10 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		assertTrue(bot.table(0).cell(0, 0).contains("edited item"));
 		assertTrue(table.getRow(0).get(0).getValue().equals("edited item"));
 
+		// Close the window
+		bot.activeShell().close();
 		
+		return;
 	}
 
 }
