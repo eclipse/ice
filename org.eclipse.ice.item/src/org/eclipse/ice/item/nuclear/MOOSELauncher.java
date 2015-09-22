@@ -409,7 +409,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// exist in the project space.
 		DataComponent files = (DataComponent) form
 				.getComponent(JobLauncherForm.filesId);
-		refreshProjectSpace();
+		
+		/*refreshProjectSpace();
 
 		// Loop over all file entries and make sure they exist
 		for (final Entry entry : files.retrieveAllEntries()) {
@@ -440,7 +441,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 				return FormStatus.InfoError;
 			}
 
-		}
+		}*/
 
 		// Run the job launchers process method.
 		return super.process(actionName);

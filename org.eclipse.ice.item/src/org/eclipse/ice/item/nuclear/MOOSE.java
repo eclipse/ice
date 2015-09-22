@@ -12,9 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.nio.file.Paths;
@@ -25,7 +28,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
@@ -177,7 +184,8 @@ public class MOOSE extends Item {
 		// Create the Postprocessors DataComponent
 		postProcessorsData = new DataComponent();
 		postProcessorsData.setName("Show Postprocessors?");
-		postProcessorsData.setDescription("Enable the Postprocessors you would like to monitor in real time.");
+		postProcessorsData.setDescription("Enable the Postprocessors you would like to monitor in real time. "
+				+ "Plots will display at launch if the ICEUpdater Output block is available in your MOOSE installation.");
 		postProcessorsData.setId(MOOSE.ppDataId);
 		form.addComponent(postProcessorsData);
 
@@ -249,13 +257,6 @@ public class MOOSE extends Item {
 		// Tell the model to review its entries
 		FormStatus status = mooseModel.reviewEntries(preparedForm);
 
-		// If the Model finished correctly, clear the old
-		// file entries and load new ones.
-		if (status.equals(FormStatus.ReadyToProcess)) {
-			// clearModelFiles();
-			// loadFileEntries();
-		}
-
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
@@ -293,17 +294,14 @@ public class MOOSE extends Item {
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
 
-			// Validate the tree
-			if ((treeNode = validateTree()) != null) {
-				this.throwErrorMessage("Invalid MOOSE Tree", "org.eclipse.ice.item.nuclear.MOOSE", "Could not locate "
-						+ treeNode + " in the MOOSE input tree. Please provide this block before launching again.");
-				return FormStatus.InfoError;
-			}
-
 			// First and foremost, Get the application URI
 			// and see if it is a remote app or not
 			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 			boolean isRemote = "ssh".equals(appUri.getScheme());
+
+			if (!fullTreeValidation(appUri, isRemote)) {
+				return FormStatus.InfoError;
+			}
 
 			// Change the host name if we are remote
 			if (isRemote) {
@@ -387,6 +385,16 @@ public class MOOSE extends Item {
 		return retStatus;
 	}
 
+	private boolean fullTreeValidation(URI uri, boolean isRemote) {
+		IRemoteConnection remoteConnection = null;
+		if (isRemote) {
+			remoteConnection = mooseLauncher.getRemoteConnection(uri.getHost());
+		}
+		
+		CheckMooseInputAction checkInput = new CheckMooseInputAction(modelTree, modelFiles, project, remoteConnection);
+		return checkInput.execute(null) == FormStatus.ReadyToProcess ? true : false;
+	}
+
 	/**
 	 * 
 	 * @return
@@ -422,23 +430,6 @@ public class MOOSE extends Item {
 
 	/**
 	 * 
-	 * @return
-	 */
-	private String validateTree() {
-		String[] expectedBlocks = new String[] { "Mesh", "Variables", "Kernels", "Outputs", "Executioner", "BCs" };
-
-		for (String block : expectedBlocks) {
-			TreeComposite tree = getTreeByName(block);
-			if (tree == null || !tree.isActive()) {
-				return block;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * 
 	 * @param isRemote
 	 * @return
 	 */
@@ -448,10 +439,19 @@ public class MOOSE extends Item {
 		TreeComposite outputs = getTreeByName("Outputs");
 		TreeComposite postProcessors = getTreeByName("Postprocessors");
 		TreeComposite iceUpdater = null;
-		boolean display = false, iNeedUpdater = true;
+		boolean display = false, iNeedUpdater = true, updaterExists = false;
+
+		// Check that we have a moose install that even has the ICEUpdater...
+		for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
+			if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
+				updaterExists = true;
+				break;
+			}
+		}
 
 		// Do nothing if we don't have postprocessors
-		if (postProcessors == null || !postProcessors.isActive() || postProcessors.getNumberOfChildren() < 1) {
+		if (postProcessors == null || !postProcessors.isActive() || postProcessors.getNumberOfChildren() < 1
+				|| !updaterExists) {
 			return;
 		}
 
@@ -638,33 +638,6 @@ public class MOOSE extends Item {
 			});
 			varThread.start();
 
-		} else if (updateable instanceof Entry) {
-
-			Entry entry = (Entry) updateable;
-
-			// If we get here, then we have a file Entry that
-			// has been changed on the modelFiles component
-			// and we need to sync up the tree with it.
-
-			// Grab the DataComponent
-			/*
-			 * if (fileEntryTreeMapping.containsKey(entry.getName())) {
-			 * DataComponent data = (DataComponent)
-			 * fileEntryTreeMapping.get(entry.getName()).getDataNodes().get(0);
-			 * 
-			 * // If not null, loop over the Entries til we find // the file
-			 * Entry. if (data != null) { for (Entry e :
-			 * data.retrieveAllEntries()) {
-			 * 
-			 * // If the Entry's tag is "false" it is a commented // out //
-			 * parameter. if (!"false".equals(e.getTag()) && e.getValue() !=
-			 * null && !e.getValue().isEmpty() && (e.getName() + " = " +
-			 * e.getValue())
-			 * .matches(mooseLauncher.getFileDependenciesSearchString())) {
-			 * 
-			 * // Set the value of the tree's file entry.
-			 * e.setValue(entry.getValue()); break; } } } }
-			 */
 		}
 
 	}
@@ -713,61 +686,6 @@ public class MOOSE extends Item {
 
 						Entry clonedEntry = (Entry) e.clone();
 						files.add(clonedEntry);
-
-						// // If this Entry does not have a very descriptive
-						// // name
-						// // we should reset its name to the block it belongs
-						// // to
-						// if
-						// ("file".equals(clonedEntry.getName().toLowerCase())
-						// ||
-						// "data_file".equals(clonedEntry.getName().toLowerCase()))
-						// {
-						// clonedEntry.setName(child.getName());
-						// }
-						//
-						// if
-						// (!clonedEntry.getValueType().equals(AllowedValueType.File))
-						// {
-						// mooseModel.convertToFileEntry(clonedEntry);
-						//
-						// }
-						//
-						// // Setup allowed values correctly
-						// String extension = FilenameUtils
-						// .getExtension(project.getFile(clonedEntry.getValue()).getLocation().toOSString());
-						//
-						// // Create a new content provider with the new file
-						// // in the allowed values list
-						// IEntryContentProvider prov = new
-						// BasicEntryContentProvider();
-						// ArrayList<String> valueList =
-						// clonedEntry.getAllowedValues();
-						//
-						// for (String file : getProjectFileNames(extension)) {
-						// if (!valueList.contains(file)) {
-						// valueList.add(file);
-						// }
-						// }
-						// prov.setAllowedValueType(AllowedValueType.File);
-						//
-						// // Finish setting the allowed values and default
-						// // value
-						// prov.setAllowedValues(valueList);
-						//
-						// // Set the new provider
-						// clonedEntry.setContentProvider(prov);
-						//
-						// // Set the value
-						// clonedEntry.setValue(e.getValue());
-						//
-						// fileEntryTreeMapping.put(clonedEntry.getName(),
-						// child);
-						//
-						// clonedEntry.register(this);
-						//
-						// // Add it to the list of model files.
-						// modelFiles.addEntry(clonedEntry);
 					}
 				}
 			}
@@ -862,21 +780,23 @@ public class MOOSE extends Item {
 	 * @param ppTree
 	 */
 	private void setupPostprocessorData(TreeComposite ppTree) {
-		postProcessorsData.clearEntries();
+		// postProcessorsData.clearEntries();
 		for (int i = 0; i < ppTree.getNumberOfChildren(); i++) {
-			Entry ppEntry = new Entry() {
-				@Override
-				public void setup() {
-					allowedValueType = AllowedValueType.Discrete;
-					allowedValues.add("yes");
-					allowedValues.add("no");
-					defaultValue = "no";
-				}
-			};
-			ppEntry.setName(ppTree.getChildAtIndex(i).getName());
-			ppEntry.setDescription("Select whether this Postprocessor should be displayed in real-time.");
-			ppEntry.setId(i);
-			postProcessorsData.addEntry(ppEntry);
+			if (!postProcessorsData.contains(ppTree.getChildAtIndex(i).getName())) {
+				Entry ppEntry = new Entry() {
+					@Override
+					public void setup() {
+						allowedValueType = AllowedValueType.Discrete;
+						allowedValues.add("yes");
+						allowedValues.add("no");
+						defaultValue = "no";
+					}
+				};
+				ppEntry.setName(ppTree.getChildAtIndex(i).getName());
+				ppEntry.setDescription("Select whether this Postprocessor should be displayed in real-time.");
+				ppEntry.setId(i);
+				postProcessorsData.addEntry(ppEntry);
+			}
 		}
 	}
 
