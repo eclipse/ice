@@ -629,7 +629,8 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/*
-	 * Overrides a method from Control.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.widgets.Control#setBackground(org.eclipse.swt.graphics.Color)
 	 */
 	@Override
 	public void setBackground(Color color) {

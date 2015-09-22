@@ -169,7 +169,7 @@
       <extension point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.eclipse.ice.client.widgets.TreeCompositeViewer">
          <propertySection
-               class="org.eclipse.ice.clientwidgets.TreePropertySection"
+               class="org.eclipse.ice.client.widgets.TreePropertySection"
                id="DataSection"
                tab="TreeViewer.Data">
             <input type="org.eclipse.ice.datastructures.form.TreeComposite"/>
@@ -202,7 +202,7 @@
     <propertySections
           contributorId="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer">
        <propertySection
-             class="org.eclipse.ice.clientwidgets.TreePropertySection"
+             class="org.eclipse.ice.client.widgets.TreePropertySection"
              id="DataSection"
              tab="TreeViewer.Data">
           <input

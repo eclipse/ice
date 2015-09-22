@@ -43,7 +43,8 @@ public class ProxySeries extends AbstractSeries {
 	private ISeries source;
 
 	/*
-	 * Overrides a method from AbstractSeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractSeries#getBounds()
 	 */
 	@Override
 	public double[] getBounds() {
@@ -51,7 +52,8 @@ public class ProxySeries extends AbstractSeries {
 	}
 
 	/*
-	 * Overrides a method from AbstractSeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractSeries#getCategory()
 	 */
 	@Override
 	public String getCategory() {
@@ -59,7 +61,8 @@ public class ProxySeries extends AbstractSeries {
 	}
 
 	/*
-	 * Overrides a method from AbstractSeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractSeries#getDataPoints()
 	 */
 	@Override
 	public Object[] getDataPoints() {
@@ -67,7 +70,8 @@ public class ProxySeries extends AbstractSeries {
 	}
 
 	/*
-	 * Overrides a method from AbstractSeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractSeries#getParentSeries()
 	 */
 	@Override
 	public ISeries getParentSeries() {
@@ -76,7 +80,8 @@ public class ProxySeries extends AbstractSeries {
 	}
 
 	/*
-	 * Overrides a method from AbstractSeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractSeries#getTime()
 	 */
 	@Override
 	public double getTime() {
@@ -109,7 +114,8 @@ public class ProxySeries extends AbstractSeries {
 	}
 
 	/*
-	 * Overrides a method from AbstractSeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractSeries#setTime(double)
 	 */
 	@Override
 	public void setTime(double time) {

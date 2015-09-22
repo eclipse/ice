@@ -106,7 +106,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements method from IObservableWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerUpdateListener(org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener)
 	 */
 	@Override
 	public void registerUpdateListener(IUpdateEventListener listener) {
@@ -118,7 +119,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements a method from IObservableWidget.
+	 *(non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerProcessListener(org.eclipse.ice.iclient.uiwidgets.IProcessEventListener)
 	 */
 	@Override
 	public void registerProcessListener(IProcessEventListener listener) {
@@ -130,7 +132,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements a method from IObservableWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerResourceProvider(org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider)
 	 */
 	@Override
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
@@ -142,7 +145,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements method from IObservableWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyUpdateListeners()
 	 */
 	@Override
 	public void notifyUpdateListeners() {
@@ -154,7 +158,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements method from IObservableWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyProcessListeners(java.lang.String)
 	 */
 	@Override
 	public void notifyProcessListeners(String process) {
@@ -166,7 +171,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements method from IObservableWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyCancelListeners(java.lang.String)
 	 */
 	@Override
 	public void notifyCancelListeners(String process) {
@@ -177,7 +183,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements a method from IFormWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#setForm(org.eclipse.ice.datastructures.form.Form)
 	 */
 	@Override
 	public void setForm(Form form) {
@@ -185,7 +192,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements a method from IFormWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#getForm()
 	 */
 	@Override
 	public Form getForm() {
@@ -227,7 +235,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements a method from IFormWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#updateStatus(java.lang.String)
 	 */
 	@Override
 	public void updateStatus(String statusMessage) {
@@ -238,7 +247,8 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 * Implements a method from IFormWidget.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#disable(boolean)
 	 */
 	@Override
 	public void disable(boolean state) {

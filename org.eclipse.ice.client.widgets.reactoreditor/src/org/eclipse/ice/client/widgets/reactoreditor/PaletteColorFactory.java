@@ -83,7 +83,8 @@ public class PaletteColorFactory extends AbstractColorFactory {
 	}
 
 	/*
-	 * Overrides a method from AbstractColorFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.reactoreditor.AbstractColorFactory#createColor(org.eclipse.swt.widgets.Display, int)
 	 */
 	@Override
 	public Color createColor(Display display, int hex) {
@@ -93,7 +94,8 @@ public class PaletteColorFactory extends AbstractColorFactory {
 	}
 
 	/*
-	 * Implements a method from IColorFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.reactoreditor.IColorFactory#findColor(double)
 	 */
 	@Override
 	public int findColor(double value) {

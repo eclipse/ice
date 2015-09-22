@@ -490,7 +490,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -498,7 +499,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
 	 */
 	@Override
 	public void doSaveAs() {
@@ -552,7 +554,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -566,7 +569,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#isDirty()
 	 */
 	@Override
 	public boolean isDirty() {
@@ -574,7 +578,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
@@ -688,7 +693,8 @@ public class CSVPlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override
 	public void setFocus() {

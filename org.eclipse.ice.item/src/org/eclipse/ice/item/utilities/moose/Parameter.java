@@ -292,9 +292,8 @@ public class Parameter {
 			protected void setup() {
 				// If the type is discrete (MooseEnum) and the options list
 				// isn't empty
-				if ((("MooseEnum").equals(Parameter.this.cpp_type) || ("MultiMooseEnum")
-						.equals(Parameter.this.cpp_type))
-						&& options != null
+				if ((("MooseEnum").equals(Parameter.this.cpp_type)
+						|| ("MultiMooseEnum").equals(Parameter.this.cpp_type)) && options != null
 						&& !options.isEmpty()) {
 					// Limit the type to discrete values
 					allowedValueType = AllowedValueType.Discrete;
@@ -302,8 +301,7 @@ public class Parameter {
 					allowedValues = options;
 					// Set the default value, descri
 					String value = Parameter.this.getDefault();
-					defaultValue = (allowedValues.contains(value) ? value
-							: allowedValues.get(0));
+					defaultValue = (allowedValues.contains(value) ? value : allowedValues.get(0));
 				}
 				// If the value type is boolean
 				else if (("bool").equals(Parameter.this.cpp_type)) {
@@ -313,9 +311,19 @@ public class Parameter {
 					allowedValues.add("true");
 					allowedValues.add("false");
 					// Set the default value and description
-					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false"
-							: "true";
-				} 
+					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false" : "true";
+				} else
+					if ("FileName".equals(Parameter.this.cpp_type) || "MeshFileName".equals(Parameter.this.cpp_type)) {
+					// Here we have the mesh file name, so let's make this a
+					// file entry
+					allowedValueType = AllowedValueType.File;
+					if (options != null) {
+						allowedValues = options;
+						// Set the default value, descri
+						String value = Parameter.this.getDefault();
+						defaultValue = (allowedValues.contains(value) ? value : allowedValues.get(0));
+					}
+				}
 				// Otherwise, for all other parameters
 				else {
 					allowedValueType = AllowedValueType.Undefined;

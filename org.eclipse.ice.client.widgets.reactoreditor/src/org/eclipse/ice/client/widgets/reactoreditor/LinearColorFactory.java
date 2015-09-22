@@ -164,7 +164,8 @@ public class LinearColorFactory extends AbstractColorFactory {
 	}
 
 	/*
-	 * Implements a method from IColorFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.reactoreditor.IColorFactory#findColor(double)
 	 */
 	@Override
 	public int findColor(double value) {

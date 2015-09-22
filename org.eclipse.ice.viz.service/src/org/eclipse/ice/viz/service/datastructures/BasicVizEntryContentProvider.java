@@ -201,7 +201,8 @@ public class BasicVizEntryContentProvider extends VizObject implements
 	}
 
 	/*
-	 * Overrides a method from ICEObject.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.VizObject#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherProvider) {

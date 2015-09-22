@@ -199,7 +199,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#getConnection(java.lang.String)
 	 */
 	@Override
 	public IVizConnection<T> getConnection(String name) {
@@ -217,7 +218,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#getConnections()
 	 */
 	@Override
 	public Set<String> getConnections() {
@@ -225,7 +227,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#getConnectionsForHost(java.lang.String)
 	 */
 	@Override
 	public Set<String> getConnectionsForHost(String host)
@@ -269,7 +272,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#setPreferenceStore(org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore, java.lang.String)
 	 */
 	@Override
 	public void setPreferenceStore(CustomScopedPreferenceStore store,

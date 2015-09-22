@@ -69,7 +69,8 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements an IVizCanvas function
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getNumberOfAxes()
 	 */
 	@Override
 	public int getNumberOfAxes() {
@@ -78,7 +79,8 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements a IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#draw(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
@@ -138,7 +140,8 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements an IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#redraw()
 	 */
 	@Override
 	public void redraw() {
@@ -153,7 +156,8 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements an IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getProperties()
 	 */
 	@Override
 	public Map<String, String> getProperties() {
@@ -161,14 +165,16 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements an IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#setProperties(java.util.Map)
 	 */
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {
 	}
 
 	/*
-	 * Implements an IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getDataSource()
 	 */
 	@Override
 	public URI getDataSource() {
@@ -176,7 +182,8 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements an IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#getSourceHost()
 	 */
 	@Override
 	public String getSourceHost() {
@@ -184,7 +191,8 @@ public class JME3MeshCanvas implements IVizCanvas {
 	}
 
 	/*
-	 * Implements an IVizCanvas method
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizCanvas#isSourceRemote()
 	 */
 	@Override
 	public boolean isSourceRemote() {

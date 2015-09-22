@@ -97,7 +97,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Overrides a method from Object.
+	 * (non-Javadoc)
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -128,7 +129,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Overrides a method from AbstractEventList.
+	 * (non-Javadoc)
+	 * @see ca.odell.glazedlists.AbstractEventList#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object other) {
@@ -161,7 +163,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getBounds()
 	 */
 	@Override
 	public double[] getBounds() {
@@ -201,7 +204,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getDataPoints()
 	 */
 	@Override
 	public Object[] getDataPoints() {
@@ -209,7 +213,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getLabel()
 	 */
 	@Override
 	public String getLabel() {
@@ -217,7 +222,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getParentSeries()
 	 */
 	@Override
 	public ISeries getParentSeries() {
@@ -225,7 +231,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getStyle()
 	 */
 	@Override
 	public ISeriesStyle getStyle() {
@@ -233,7 +240,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#getTime()
 	 */
 	@Override
 	public double getTime() {
@@ -250,7 +258,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Overrides a method from AbstractEventList.
+	 * (non-Javadoc)
+	 * @see ca.odell.glazedlists.AbstractEventList#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -269,7 +278,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#isEnabled()
 	 */
 	@Override
 	public boolean isEnabled() {
@@ -277,7 +287,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Overrides a method from TransformedList.
+	 * (non-Javadoc)
+	 * @see ca.odell.glazedlists.TransformedList#isWritable()
 	 */
 	@Override
 	protected boolean isWritable() {
@@ -285,7 +296,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Overrides a method from TransformedList.
+	 * (non-Javadoc)
+	 * @see ca.odell.glazedlists.TransformedList#listChanged(ca.odell.glazedlists.event.ListEvent)
 	 */
 	@Override
 	public void listChanged(ListEvent<Double> listChanges) {
@@ -305,7 +317,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setLabel(java.lang.String)
 	 */
 	@Override
 	public void setLabel(String label) {
@@ -323,7 +336,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setStyle(org.eclipse.ice.viz.service.ISeriesStyle)
 	 */
 	@Override
 	public void setStyle(ISeriesStyle style) {
@@ -331,7 +345,8 @@ public class CSVSeries extends TransformedList<Double, Double>
 	}
 
 	/*
-	 * Implements a method from ISeries.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.ISeries#setTime(double)
 	 */
 	@Override
 	public void setTime(double time) {

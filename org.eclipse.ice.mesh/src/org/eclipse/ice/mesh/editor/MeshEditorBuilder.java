@@ -44,7 +44,8 @@ public class MeshEditorBuilder extends AbstractItemBuilder {
 	}
 	
 	/*
-	 * Implements a method from ItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {

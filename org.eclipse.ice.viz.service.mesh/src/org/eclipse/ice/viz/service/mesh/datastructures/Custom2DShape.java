@@ -264,7 +264,8 @@ public class Custom2DShape extends VizObject {
 	}
 
 	/*
-	 * Overrides a super class method.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.VizObject#update(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void update(String updatedKey, String newValue) {
