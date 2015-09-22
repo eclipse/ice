@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mars" sequenceNumber="166">
+<?pde version="3.8"?><target name="mars" sequenceNumber="171">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.log4j.source" version="1.2.15.v201012070815"/>
@@ -102,7 +102,6 @@
 <unit id="org.eclipse.cdt.managedbuilder.llvm.feature.group" version="8.7.0.201506070905"/>
 <unit id="org.eclipse.tm.terminal.view.rse.feature.feature.group" version="4.0.0.201506040610"/>
 <unit id="org.eclipse.cdt.feature.group" version="8.7.0.201506070905"/>
-<unit id="org.eclipse.linuxtools.callgraph.feature.feature.group" version="4.0.0.201506101754"/>
 <unit id="org.eclipse.cdt.docker.launcher.feature.group" version="8.7.0.201506070905"/>
 <unit id="org.eclipse.cdt.testsrunner.feature.feature.group" version="8.7.0.201506070905"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="2.11.0.v20150601-0402"/>
