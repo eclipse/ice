@@ -247,14 +247,11 @@ public class CheckMooseInputAction extends Action {
 				ProcessBuilder builder = new ProcessBuilder(checkInputCmd)
 						.directory(new File(project.getLocation().toOSString()));
 				builder.redirectErrorStream(true);
-				System.out.println("COMMAND: " + builder.command());
 				Process checkInputProcess = builder.start();
-				System.out.println("Starting the local process");
 
 				BufferedReader input = new BufferedReader(new InputStreamReader(checkInputProcess.getInputStream()));
 				while ((line = input.readLine()) != null) {
-					System.out.println(line);
-					checkInputString += line;
+					checkInputString += line + "\n";
 				}
 				input.close();
 
@@ -265,17 +262,17 @@ public class CheckMooseInputAction extends Action {
 				return status;
 			}
 
-			System.out.println("STRING IS " + checkInputString);
-
+			// Check for any errors
 			if (checkInputString.contains("ERROR")) {
-				checkInputString = checkInputString.substring(checkInputString.indexOf("*** ERROR ***"),
-						checkInputString.length());
-				throwErrorMessage("MOOSE Tree Validation", "org.eclipse.ice.item.nuclear.moose", "error",
-						checkInputString);
+				String errorString = checkInputString.substring(checkInputString.indexOf("*** ERROR ***"),
+						checkInputString.indexOf("Stack"));
+				errorString = "-------------- Error Summary --------------\n" + errorString.trim()
+						+ "\n----------------------------------------------";
+				throwErrorMessage("MOOSE Tree Validation", "org.eclipse.ice.item.nuclear.moose", errorString,
+						"\n--------- Full Moose Stack Trace ---------\n" + checkInputString.trim());
 				status = FormStatus.InfoError;
 				return status;
 			}
-
 		}
 
 		// If we make it here, then we should be good with ReadyToProcess
@@ -314,6 +311,14 @@ public class CheckMooseInputAction extends Action {
 		return files;
 	}
 
+	/**
+	 * This method is invoked before the check-input capability to 
+	 * verify that we have any files we may need for the simulation. 
+	 * Moose will throw an error before any input validation 
+	 * occurs if it can't find a file. 
+	 * 
+	 * @return
+	 */
 	private boolean validateFileEntries() {
 		refreshProjectSpace();
 

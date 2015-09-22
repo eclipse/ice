@@ -299,6 +299,8 @@ public class MOOSE extends Item {
 			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 			boolean isRemote = "ssh".equals(appUri.getScheme());
 
+			// Validate the Tree, this will also make 
+			// sure all required files are in the workspace
 			if (!fullTreeValidation(appUri, isRemote)) {
 				return FormStatus.InfoError;
 			}
@@ -311,6 +313,7 @@ public class MOOSE extends Item {
 
 			// Get an ICEUpdater, this will return null if the user does not
 			// want this feature
+			// FIXME SHOULD THIS HAPPEN BEFORE TREE VALIDATION??
 			createICEUpdaterBlock(host);
 
 			// Populate the MOOSELaunchers files list, check for error.
@@ -385,18 +388,33 @@ public class MOOSE extends Item {
 		return retStatus;
 	}
 
+	/**
+	 * This private utility method is invoked before all 
+	 * job launches to verify that the constructed MOOSE tree is 
+	 * valid. 
+	 * 
+	 * @param uri
+	 * @param isRemote
+	 * @return
+	 */
 	private boolean fullTreeValidation(URI uri, boolean isRemote) {
+		// Initialize the connection to null, 
+		// it should remain null if this is a local launch
 		IRemoteConnection remoteConnection = null;
+		
+		// Get the remote connection if the app is hosted remotely
 		if (isRemote) {
 			remoteConnection = mooseLauncher.getRemoteConnection(uri.getHost());
 		}
 		
+		// Create and execute the CheckMooseInputAction!
 		CheckMooseInputAction checkInput = new CheckMooseInputAction(modelTree, modelFiles, project, remoteConnection);
 		return checkInput.execute(null) == FormStatus.ReadyToProcess ? true : false;
 	}
 
 	/**
-	 * 
+	 * This method is used in the job launch mechanism to 
+	 * collect all required files for the MooseLauncher 
 	 * @return
 	 */
 	private FormStatus populateListOfLauncherFiles() {
@@ -429,6 +447,10 @@ public class MOOSE extends Item {
 	}
 
 	/**
+	 * This private method is used to create a new ICEUpdater 
+	 * block for the launch. It checks to see if one can, or even 
+	 * should be created, and then creates it, configures it, and 
+	 * adds it to the tree. 
 	 * 
 	 * @param isRemote
 	 * @return
