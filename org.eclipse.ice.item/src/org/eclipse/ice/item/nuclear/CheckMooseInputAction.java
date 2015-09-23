@@ -15,6 +15,7 @@ package org.eclipse.ice.item.nuclear;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ public class CheckMooseInputAction extends Action {
 		IRemoteProcess checkInputRemoteJob = null;
 		MOOSEFileHandler writer = new MOOSEFileHandler();
 		Form tempForm = new Form();
+		InputStream inputStream = null;
 		String checkInputString = "", line;
 		status = FormStatus.ReadyToProcess;
 		IFile inputFile = project.getFile(appComponent.retrieveEntry("Output File Name").getValue());
@@ -199,35 +201,9 @@ public class CheckMooseInputAction extends Action {
 					}
 				}
 
-				// Get the output
-				try {
-					// Read the output from the process
-					BufferedReader input = new BufferedReader(
-							new InputStreamReader(checkInputRemoteJob.getInputStream()));
-					while ((line = input.readLine()) != null) {
-						System.out.println(line);
-						checkInputString += line + "\n";
-					}
-
-					input.close();
-
-					// Check for any errors
-					if (checkInputString.contains("ERROR")) {
-						String errorString = checkInputString.substring(checkInputString.indexOf("*** ERROR ***"),
-								checkInputString.indexOf("Stack"));
-						errorString = "-------------- Error Summary --------------\n" + errorString.trim()
-								+ "\n----------------------------------------------";
-						throwErrorMessage("MOOSE Tree Validation", "org.eclipse.ice.item.nuclear.moose", errorString,
-								"\n--------- Full Moose Stack Trace ---------\n" + checkInputString.trim());
-						status = FormStatus.InfoError;
-						return status;
-					}
-
-				} catch (IOException e) {
-					logger.error(getClass().getName() + " Exception!", e);
-					status = FormStatus.InfoError;
-					return status;
-				}
+				// Get the InputStream - this contains standard out 
+				// and standard err
+				inputStream = checkInputRemoteJob.getInputStream();
 
 			}
 
@@ -249,11 +225,9 @@ public class CheckMooseInputAction extends Action {
 				builder.redirectErrorStream(true);
 				Process checkInputProcess = builder.start();
 
-				BufferedReader input = new BufferedReader(new InputStreamReader(checkInputProcess.getInputStream()));
-				while ((line = input.readLine()) != null) {
-					checkInputString += line + "\n";
-				}
-				input.close();
+				// Get the InputStream from the process - this contains 
+				// standard out and standard err
+				inputStream = checkInputProcess.getInputStream();
 
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -261,6 +235,21 @@ public class CheckMooseInputAction extends Action {
 				status = FormStatus.InfoError;
 				return status;
 			}
+
+		}
+
+		// Now we have an InputStream from either a local or 
+		// remote launch - let's get the text from that stream
+		// and analyze it for errors. 
+		try {
+			// Read the output from the process
+			BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
+			while ((line = input.readLine()) != null) {
+				checkInputString += line + "\n";
+			}
+
+			// Close the stream
+			input.close();
 
 			// Check for any errors
 			if (checkInputString.contains("ERROR")) {
@@ -273,8 +262,12 @@ public class CheckMooseInputAction extends Action {
 				status = FormStatus.InfoError;
 				return status;
 			}
-		}
 
+		} catch (IOException e) {
+			logger.error(getClass().getName() + " Exception!", e);
+			status = FormStatus.InfoError;
+			return status;
+		}
 		// If we make it here, then we should be good with ReadyToProcess
 		return status;
 	}
@@ -312,10 +305,9 @@ public class CheckMooseInputAction extends Action {
 	}
 
 	/**
-	 * This method is invoked before the check-input capability to 
-	 * verify that we have any files we may need for the simulation. 
-	 * Moose will throw an error before any input validation 
-	 * occurs if it can't find a file. 
+	 * This method is invoked before the check-input capability to verify that
+	 * we have any files we may need for the simulation. Moose will throw an
+	 * error before any input validation occurs if it can't find a file.
 	 * 
 	 * @return
 	 */

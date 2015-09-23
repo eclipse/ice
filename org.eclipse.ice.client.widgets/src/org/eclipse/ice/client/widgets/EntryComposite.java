@@ -13,6 +13,9 @@
 package org.eclipse.ice.client.widgets;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +34,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.window.Window;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.ui.dialogs.RemoteResourceBrowser;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -626,8 +630,14 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 						// Get the selected Resource
 						IFileStore fs = browser.getResource();
 
-						// Set the value as the remote URI string
-						entryValue = fs.toURI().toString();
+						// Get the hostname
+						String hostName = browser.getConnection().getService(
+									IRemoteConnectionHostService.class)
+									.getHostname();
+						
+						// Set up the entry value
+						URI uri = fs.toURI();
+						entryValue = uri.getScheme() + "://" + hostName + uri.getPath();
 						
 					} else {
 						// If Local, just open up a file browser

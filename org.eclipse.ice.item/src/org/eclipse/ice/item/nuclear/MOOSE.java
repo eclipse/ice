@@ -285,7 +285,7 @@ public class MOOSE extends Item {
 	public FormStatus process(String actionName) {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
-		String treeNode = null, host = "localhost";
+		String host = "localhost";
 
 		// Set our outputFile as the MooseLauncher's output file
 		// so we can see the streaming output
@@ -653,6 +653,14 @@ public class MOOSE extends Item {
 
 				@Override
 				public void run() {
+					// Sleep this thread for a second 
+					// to avoid any concurrent modifications 
+					// of the tree
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					new MOOSEFileHandler().setupVariables(modelTree);
 					new MOOSEFileHandler().setupAuxVariables(modelTree);
 				}
