@@ -16,7 +16,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -278,6 +280,7 @@ public class MOOSE extends Item {
 			// Validate the Tree, this will also make
 			// sure all required files are in the workspace
 			if (!fullTreeValidation(appUri, isRemote)) {
+				logger.error("Moose Input Tree could not be validated. See error log for details.");
 				return FormStatus.InfoError;
 			}
 
@@ -290,10 +293,21 @@ public class MOOSE extends Item {
 			// Get an ICEUpdater, this will return null if the user does not
 			// want this feature
 			// FIXME SHOULD THIS HAPPEN BEFORE TREE VALIDATION??
-			createICEUpdaterBlock(host);
+			String thisHost = "";
+			try {
+				thisHost = InetAddress.getByName(InetAddress.getLocalHost().getHostName()).getHostAddress();
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+				logger.error(this.getClass().getName() + " Exception! ", e);
+
+			}
+			if (!thisHost.isEmpty()) {
+				createICEUpdaterBlock(thisHost);
+			}
 
 			// Populate the MOOSELaunchers files list, check for error.
 			if (populateListOfLauncherFiles() != FormStatus.ReadyToProcess) {
+				logger.error(getClass().getName() + " Error Populating list of files");
 				return FormStatus.InfoError;
 			}
 
@@ -438,8 +452,8 @@ public class MOOSE extends Item {
 		boolean display = false, iNeedUpdater = true, updaterExists = false;
 
 		// Check that we have a moose install that even has the ICEUpdater...
-		for (int i = 0; i < outputs.getNumberOfChildren(); i++) {
-			if ("ICEUpdater".equals(outputs.getChildAtIndex(i).getName())) {
+		for (TreeComposite child : outputs.getChildExemplars()) {
+			if ("ICEUpdater".equals(child.getName())) {
 				updaterExists = true;
 				break;
 			}

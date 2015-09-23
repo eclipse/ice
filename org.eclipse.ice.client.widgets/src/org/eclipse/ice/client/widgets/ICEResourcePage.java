@@ -471,15 +471,23 @@ public class ICEResourcePage extends ICEFormPage
 	public void update(IUpdateable component) {
 
 		if (component != null && component == resourceComponent) {
-			// TODO Do we want to remove any IPlots associated with VizResources
-			// that are no longer available, or should we just let the user
-			// close them out?
+			
+			// Loop through the VizResources and register 
+			// as a listener. ICEResourcePage should listen to 
+			// all VizResources for changes!
+			for (ICEResource resource : resourceComponent.getResources()) {
+				if (resource instanceof VizResource) {
+					resource.register(this);
+				}
+			}
 
 		} else if (component != null && component instanceof VizResource) {
 			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
 
 			// Refresh all plots in the grid associated with the resource.
+			// FIXME FOR SOME REASON THIS IS NOT WORKING FOR MOOSE 
+			// REALTIME UPDATING...
 			plotGridComposite.refreshPlots(resource.getPath());
 			
 			// Layout the composite on the UI thread.
