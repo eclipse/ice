@@ -12,12 +12,20 @@
 # The Python ICE Installer
 # ******************************************************************************
 
+import os
 import sys
-import argparse
+import glob
+import time
+import errno
+import shutil
 import tarfile
 import zipfile
 import urllib2
+import fnmatch
 import platform
+import argparse
+import itertools
+import subprocess
 
 def parse_args(args):
     """ Parse command line arguements and return them. """
@@ -28,22 +36,73 @@ def parse_args(args):
     parser.add_argument('-u', '--update', nargs='*', default=['all'],
             choices=("all", "none", "VisIt", "HDFJava", "ICE"),
             help='The packages to update.  Leave blank to update all available packages.')
-    parser.add_argument('-p', '--prefix', default="",
+    parser.add_argument('-p', '--prefix', default=os.path.abspath(os.path.join(".","ICE")),
             help="The location to download and install ICE.")
+    parser.add_argument("--skip-download", action='store_true',
+                        help='Do not download new packages, use previously downloaded ones.')
+    parser.add_argument('--cleanup', action='store_true',
+                        help='Remove downloaded packages after installation.')
 
     opts = parser.parse_args(args)
-    
+
     # If update option was given blank set it to update everything
     if opts.update == [] or 'all' in opts.update:
         opts.update = ['ICE', 'VisIt', 'HDFJava']
-
     return opts
+
+
+def mkdir_p(path):
+    """ Operates like mkdir -p in a Unix-like system """
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if os.path.exists(path) and os.path.isdir(path):
+            pass
+        else:
+            raise
+
+
+def get_os_and_arch():
+    """ Do some converting and enforcing of OS and architecture settings. """
+    allowed_os = ['Windows', 'Darwin', 'Linux']
+    allowed_arch = ['x86_64', 'x86']
+    arch_type = platform.machine()
+    os_type = platform.system()
+    if arch_type == "AMD64": arch_type = "x86_64"
+    # TODO: Add more processing for different things
+    if os_type not in allowed_os or arch_type not in allowed_arch:
+        print("ERROR: Incorrect architecture or operating system.")
+        exit()
+    return os_type, arch_type
+
+
+def print_header(opts, os_type, arch_type):
+    print("Preparing to install ICE...")
+    print("")
+
+
+def get_package_file(pkg, os_type, arch_type):
+    package_files = {"ICE" : {"Windows" : {"x86_64" : "ice.product-win32.win32.x86_64.zip"     ,
+                                           "x86"    : "ice.product-win32.win32.x86.zip"        },
+                              "Darwin"  : {"x86_64" : "ice.product-macosx.cocoa.x86_64.zip"    ,
+                                           "x86"    : "ice.product-macosx.cocoa.x86.zip"       },
+                              "Linux"   : {"x86_64" : "ice.product-linux.gtk.x86_64.zip"       ,
+                                           "x86"    : "ice.product-linux.gtk.x86.zip"          }},
+                 "VisIt"   : {"Windows" : {"x86_64" : "visit2.9.1_x64.exe"                     ,
+                                           "x86"    : "visit2.9.1.exe"                         },
+                              "Darwin"  : {"x86_64" : "VisIt-2.9.1.dmg"                        },
+                              "Linux"   : {"x86_64" : "visit2_9_1.linux-x86_64-rhel6.tar.gz"   }},
+                 "HDFJava" : {"Windows" : {"x86_64" : "HDFView-2.11-win64-vs2012.zip"          ,
+                                           "x86"    : "HDFView-2.11-win32-vs2012.zip"          },
+                              "Darwin"  : {"x86_64" : "HDFView-2.11.0-Darwin.dmg"                     },
+                              "Linux"   : {"x86_64" : "HDFView-2.11-centos6-x64.tar.gz"        }}}
+    return package_files[pkg][os_type][arch_type]
 
 
 def download_packages(opts, os_type, arch_type):
     """
-    Pull down the appropriate packages for the given run and OS type
-    
+    Pull down the appropriate packages for the given run, OS type, and machine architecture
+
     Args:
         opts: the list of options selected
         os_type: the operating system to download for
@@ -52,64 +111,251 @@ def download_packages(opts, os_type, arch_type):
     packages = opts.update
     if packages == [] or os_type == None or arch_type == None:
         return
-
     package_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
                     "VisIt"   : "http://portal.nersc.gov/project/visit/releases/2.9.1/",
                     "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
-
-    package_files = {"ICE"     : {"Windows" : {"x86_64" : "ice.product-win32.win32.x86_64.zip"     ,
-                                               "x86"    : "ice.product-win32.win32.x86.zip"        },
-                                  "Darwin"  : {"x86_64" : "ice.product-macosx.cocoa.x86_64.zip"    ,
-                                               "x86"    : "ice.product-macosx.cocoa.x86.zip"       },
-                                  "Linux"   : {"x86_64" : "ice.product-linux.gtk.x86_64.zip"       ,
-                                               "x86"    : "ice.product-linux.gtk.x86.zip"          }},
-                     "VisIt"   : {"Windows" : {"x86_64" : "visit2.9.1_x64.zip"                     ,
-                                               "x86"    : "visit2.9.1.zip"                         },
-                                  "Darwin"  : {"x86_64" : "VisIt-2.9.1.dmg"                        },
-                                  "Linux"   : {"x86_64" : "visit2_9_1.linux-x86_64-rhel6.tar.gz"   }},
-                     "HDFJava" : {"Windows" : {"x86_64" : "HDFView-2.11-win64-vs2012.zip"          ,
-                                               "x86"    : "HDFView-2.11-win32-vs2012.zip"          },
-                                  "Darwin"  : {"x86_64" : "HDFView-2.11.0.dmg"                     },
-                                  "Linux"   : {"x86_64" : "HDFView-2.11-centos6-x64.tar.gz"        }}}
-    files = []
+    files = dict()
     for pkg in packages:
-        print "Downloading " + pkg + ":",
-        fname = package_files[pkg][os_type][arch_type]
-        url = package_urls[pkg] + fname
-        u = urllib2.urlopen(url)
-        f = open(fname, 'wb')
-        fsize = int(u.info().getheaders("Content-length")[0])
-        dl_size = 0
-        block = 8192
-        while True:
-            buffer = u.read(block)
-            if not buffer: break
-            dl_size += len(buffer)
-            f.write(buffer)
-            status = r"%5.2f%% complete" % (dl_size * 100. / fsize)
-            status = status + chr(8)*(len(status)+1)
-            print status,
-        print ""
-    
+        fname = get_package_file(pkg, os_type, arch_type)
+        files[pkg] = fname
+        if not opts.skip_download:
+            print "Downloading " + pkg + ":",
+            url = package_urls[pkg] + fname
+            u = urllib2.urlopen(url)
+            f = open(fname, 'wb')
+            fsize = int(u.info().getheaders("Content-length")[0])
+            dl_size = 0
+            block = 8192
+            while True:
+                buffer = u.read(block)
+                if not buffer: break
+                dl_size += len(buffer)
+                f.write(buffer)
+                status = r"%5.2f%% complete" % (dl_size * 100. / fsize)
+                status = status + chr(8)*(len(status)+1)
+                print status,
+            print ""
+    return files
 
-def unpack_packages(opts):
+
+def unzip_package(file_path, out_path):
+    """ Unzips file_path to out_path """
+    print("Unpacking " + file_path + "....")
+    mkdir_p(out_path)
+    if 'Darwin' not in get_os_and_arch():
+        pkg = zipfile.ZipFile(file_path)
+        pkg.extractall(out_path)
+    else:
+        unzip_cmd = ['unzip', '-q', '-o', file_path, '-d', out_path]
+        subprocess.call(unzip_cmd)
+    return out_path
+
+
+def untar_package(file_path, out_path):
+    """ Untars file_path to out_path """
+    print("Unpacking " + file_path + "....")
+    mkdir_p(out_path)
+    pkg = tarfile.open(file_path)
+    dir_name = pkg.getnames()[0]
+    pkg.extractall(out_path)
+    pkg.close()
+    return dir_name
+
+def undmg_package(file_path, out_path):
+    """ Extracts contents of file_path to out_path """
+    print("Unpacking " + file_path + " to " + out_path + "....")
+    mnt_point = os.path.join(out_path, 'mnt')
+    mkdir_p(mnt_point)
+    mount_cmd = ['hdiutil', 'attach', '-mountpoint', mnt_point, file_path]
+    unmount_cmd = ['hdiutil', 'detach', mnt_point]
+    subprocess.Popen(mount_cmd)
+    time.sleep(3)
+    content = find_file(mnt_point, "*.app")
+    if content is None:
+        print "could not find"
+        return
+    print "  Copying " + content + " to " + os.path.join(out_path,content.split(os.sep)[-1]) + "...."
+    if os.path.exists(os.path.join(out_path, content.split(os.sep)[-1])):
+        shutil.rmtree(os.path.join(out_path, content.split(os.sep)[-1]))
+    shutil.copytree(content, out_path + os.sep + content.split(os.sep)[-1])
+    time.sleep(3)
+    subprocess.Popen(unmount_cmd)
+
+
+def unpack_packages(opts, pkg_files):
+    """ Delegates unpacking of packages """
+    dirs = dict()
+    for pkg, archive in pkg_files.iteritems():
+        if archive.endswith(".tar.gz") or archive.endswith(".tgz") or archive.endswith(".tar"):
+            dirs[pkg] = untar_package(archive, opts.prefix)
+        elif archive.endswith(".zip"):
+            dirs[pkg] = unzip_package(archive, opts.prefix)
+        elif archive.endswith(".dmg"):
+            dirs[pkg] = undmg_package(archive, opts.prefix)
+        elif archive.endswith(".exe"):
+            dirs[pkg] = archive
+    return dirs
+
+
+def find_file(dir, fname):
+    """ Warning: this only finds the first file that matches """
+    if fname == "*.app":
+        if glob.glob(os.path.join(dir,fname)):
+            return glob.glob(os.path.join(dir,fname))[0]
+    for root, dirs, files in os.walk(dir):
+        for basename in files:
+            if fnmatch.fnmatch(basename, fname):
+                filename = os.path.join(root, basename)
+                return filename
+    return None
+
+
+def nix_install(opts, pkg_dirs):
+    """ Install packages for *nix """
+    if "HDFJava" in pkg_dirs.keys():
+        print("Installing HDFJava...")
+        install_script = find_file(opts.prefix, "HDFView*.sh")
+        if install_script is not None:
+            install_cmd = [install_script, "--exclude-subdir", "--prefix="+os.path.join(opts.prefix,pkg_dirs['HDFJava'])]
+            subprocess.call(install_cmd)
+
+    hdf_libdir = os.path.dirname(find_file(opts.prefix, "libhdf.a"))
+    if hdf_libdir == None:
+        print("ERROR: Could not find HDF Java libraries.")
+        exit()
+
+    visit_bin_dir = os.path.dirname(find_file(opts.prefix, "visit"))
+    if visit_bin_dir == None:
+        print("ERROR: Could not find VisIt executable.")
+        exit()
+
+    ice_preferences = find_file(opts.prefix, "ICE.ini")
+    if ice_preferences == None:
+        print("ERROR: Could not find ICE preferences directory.")
+        exit()
+    shutil.move(ice_preferences, ice_preferences + ".bak")
+    with open(ice_preferences + ".bak") as infile:
+        filedata = infile.read()
+
+    filedata = filedata.replace("-Dvisit.binpath=@user.home/visit/bin", "-Dvisit.binpath=" +
+                                os.path.join(os.path.abspath(opts.prefix),visit_bin_dir))
+
+    with open(ice_preferences, 'w') as outfile:
+        outfile.write(filedata)
+
+    with open(ice_preferences, 'a') as outfile:
+        outfile.write("-Djava.library.path=" + hdf_libdir)
+
+
+def windows_install(opts, pkg_dirs):
+    """ Install packages for Windows """
+    if "HDFJava" in pkg_dirs.keys():
+        print("Installing HDFJava...")
+        install_script = find_file(opts.prefix, "HDFView*.exe")
+        print install_script
+        install_cmd = [install_script]
+        subprocess.call(install_cmd, shell=True)
+
+    hdf_libdir = os.path.dirname(find_file("C:\\", "libhdf.lib"))
+    if hdf_libdir == None:
+        print("ERROR: Could not find HDF Java libraries.")
+        exit()
+
+    if "VisIt" in pkg_dirs.keys():
+        print("Installing VisIt...")
+        install_script = find_file(os.getcwd(), "visit*.exe")
+        install_cmd = [install_script]
+        subprocess.call(install_cmd)
+
+    visit_bin_dir = os.path.dirname(find_file("C:\\", "visit*.exe"))
+    if visit_bin_dir == None:
+        print("ERROR: Could not find VisIt executable.")
+        exit()
+
+    ice_preferences = find_file(opts.prefix, "ICE.ini")
+    if ice_preferences == None:
+        print("ERROR: Could not find ICE preferences directory.")
+        exit()
+    shutil.move(ice_preferences, ice_preferences + ".bak")
+    with open(ice_preferences + ".bak") as infile:
+        filedata = infile.read()
+
+    filedata = filedata.replace("-Dvisit.binpath=@user.home/visit/bin", "-Dvisit.binpath=" +
+                                os.path.join(os.path.abspath(opts.prefix),visit_bin_dir))
+
+    with open(ice_preferences, 'w') as outfile:
+        outfile.write(filedata)
+
+    with open(ice_preferences, 'a') as outfile:
+        outfile.write("-Djava.library.path=" + hdf_libdir)
+
+
+def linux_post(opts, pkgs):
+    """ Post installation for Linux """
+    mkdir_p(os.path.join(os.path.expanduser("~"), ".local", "share", "applications"))
+    with open(os.path.join(os.path.expanduser("~"), ".local", "share", "applications","ICE.desktop"),'w') as f:
+        f.write("[Desktop Entry]")
+        f.write("Type=Application")
+        f.write("Name=ICE")
+        f.write("Exec=" + os.path.join(opts.prefix, "ICE"))
+        f.write("Comment=Eclipse Integrated Computational Environment")
+        f.write("Icon=" + os.path.join(opts.prefix, "icon.xpm"))
+        f.write("Terminal=true")
+        f.write("Categories=Programming")
+        f.write("")
+
+
+def osx_post(opts, pkgs):
+    """ Post installation for OS X """
+    mkdir_p(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS"))
+    script_path = os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh")
+    visit_libdir = os.path.dirname(find_file(opts.prefix, "libvisit*"))
+    plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', script_path]
+    chmod_cmd= ['chmod', '+x', script_path]
+    lsregister_cmd = ['/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
+                      '-v', '-f', os.path.join(opts.prefix, 'ICE.app')]
+    ln_cmd = ['ln', '-sf', os.path.abspath(os.path.join(opts.prefix, "ICE.app")), os.path.join(os.path.expanduser("~"),'Applications','ICE.app')]
+    with open(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), 'w') as f:
+        f.write('#!/bin/bash')
+        f.write('\nsource ~/.bash_profile')
+        f.write('\nexport DYLD_LIBRARY_PATH=' + os.path.join(opts.prefix, visit_libdir) + ':$DYLD_LIBRARY_PATH')
+        f.write('\nexec `dirname $0`/ICE $0')
+        f.write('\n')
+    ice_preferences = find_file(opts.prefix, 'ICE.ini')
+    with open(ice_preferences, 'a') as f:
+        f.write("\n-Xdock:name=Eclipse ICE")
+    subprocess.Popen(plutil_cmd)
+    subprocess.Popen(chmod_cmd)
+    subprocess.Popen(lsregister_cmd)
+    subprocess.Popen(ln_cmd)
+
+
+
+
+def windows_post(opts, pkgs):
+    """ Post installation for Windows """
     pass
 
-
-def install_packages(opts):
-    pass
 
 
 def main():
     """ Run the full installer. """
     opts = parse_args(sys.argv[1:])
-    arch_type = platform.machine()
-    os_type = platform.system()
+    os_type, arch_type = get_os_and_arch()
 
-    download_packages(opts, os_type, arch_type)
+    install_funct = {"Windows" : windows_install,
+                "Darwin" : nix_install,
+                "Linux" : nix_install}
+    post_funct = {"Windows" : windows_post,
+                  "Darwin" : osx_post,
+                  "Linux" : linux_post}
+
+    print_header(opts, os_type, arch_type)
+    pkg_files = download_packages(opts, os_type, arch_type)
+    pkg_dirs = unpack_packages(opts, pkg_files)
+    install_funct[os_type](opts, pkg_dirs)
+    post_funct[os_type](opts, pkg_dirs)
 
 
-    
 if __name__ == '__main__':
     main()
-

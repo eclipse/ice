@@ -45,6 +45,7 @@ class TestICEInstaller(unittest.TestCase):
 
         opts = Install_ICE.parse_args(['-u', 'HDFJava', 'ICE'])
         self.assertEqual(opts.update, ['HDFJava', 'ICE'])
+        self.assertEqual(opts.prefix, '.')
 
         opts = Install_ICE.parse_args(['-p', '/home/user/ICE', '-u'])
         self.assertEqual(opts.update, ['ICE', 'VisIt', 'HDFJava'])
@@ -60,11 +61,26 @@ class TestICEInstaller(unittest.TestCase):
         os_type = platform.system()
 
         Install_ICE.download_packages(opts, os_type, arch_type)
-        self.assertEqual(len(glob.glob("HDFView*")), 1)
+        n = len(glob.glob("HDFView*"))
         [os.remove(f) for f in glob.glob("HDFView*")]
+        self.assertEqual(n, 1)
+
 
     def test_unpack(self):
-        pass
+        """ Tests Install_ICE.unpack_packages """
+        print("")
+        print("----------------------------------------------------------------------")
+        print("  Testing package downloads...")
+        opts = Install_ICE.parse_args(['-u', 'HDFJava'])
+        arch_type = platform.machine()
+        os_type = platform.system()
+        
+        pkgs = Install_ICE.download_packages(opts, os_type, arch_type)
+        Install_ICE.unpack_packages(opts, pkgs)
+        n = len(glob.glob("HDFView*"))
+        print("Number of files found = " + str(n))
+        self.assertNotEqual(0, n)
+        
 
     def test_install(self):
         pass
