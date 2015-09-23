@@ -12,12 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.nio.file.Paths;
@@ -27,21 +24,14 @@ import java.util.HashMap;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
@@ -107,14 +97,6 @@ public class MOOSE extends Item {
 	private HashMap<String, ICEResource> postProcessorResources;
 
 	/**
-	 * This map keeps track of File Entries in the modelFiles DataComponent and
-	 * their corresponding parent TreeComposites so that we can keep them in
-	 * sync.
-	 */
-	@XmlTransient()
-	private HashMap<String, TreeComposite> fileEntryTreeMapping;
-
-	/**
 	 * Reference to the id of the DataComponent containign the Postprocessors
 	 * the user would like to automatically display.
 	 */
@@ -165,18 +147,11 @@ public class MOOSE extends Item {
 		// Grab an explicit reference to the files component from the Model
 		modelFiles = (DataComponent) form.getComponent(1);
 
-		// Register this Item as a listener to the MOOSE-Based Application
-		// Entry so that if it changes to Remote, we can grab the
-		// IRemoteConnection
-		modelFiles.retrieveEntry("MOOSE-Based Application").register(this);
-
 		// Add the parallel execution component
 		form.addComponent(mooseLauncher.getForm().getComponent(3));
 
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
-
-		fileEntryTreeMapping = new HashMap<String, TreeComposite>();
 
 		// Initialize the postProcessor Mapping
 		postProcessorResources = new HashMap<String, ICEResource>();
@@ -190,7 +165,7 @@ public class MOOSE extends Item {
 		form.addComponent(postProcessorsData);
 
 		TreeComposite ppTree;
-		if ((ppTree = getTreeByName("Postprocessors")) != null) {
+		if ((ppTree = getTopLevelTreeByName("Postprocessors")) != null) {
 			setupPostprocessorData(ppTree);
 		}
 	}
@@ -257,10 +232,10 @@ public class MOOSE extends Item {
 		// Tell the model to review its entries
 		FormStatus status = mooseModel.reviewEntries(preparedForm);
 
-		// Register this Item as a listener to the Variables block
+		// Register this Item as a listener to the Variables block -
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
-		TreeComposite variablesTree = getTreeByName("Variables");
+		TreeComposite variablesTree = getTopLevelTreeByName("Variables");
 
 		if (!registered && variablesTree != null) {
 			variablesTree.register(this);
@@ -268,8 +243,9 @@ public class MOOSE extends Item {
 			registered = true;
 		}
 
+		// Setup the Postprocessor data component
 		TreeComposite ppTree;
-		if ((ppTree = getTreeByName("Postprocessors")) != null) {
+		if ((ppTree = getTopLevelTreeByName("Postprocessors")) != null) {
 			setupPostprocessorData(ppTree);
 		}
 
@@ -299,7 +275,7 @@ public class MOOSE extends Item {
 			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 			boolean isRemote = "ssh".equals(appUri.getScheme());
 
-			// Validate the Tree, this will also make 
+			// Validate the Tree, this will also make
 			// sure all required files are in the workspace
 			if (!fullTreeValidation(appUri, isRemote)) {
 				return FormStatus.InfoError;
@@ -317,9 +293,8 @@ public class MOOSE extends Item {
 			createICEUpdaterBlock(host);
 
 			// Populate the MOOSELaunchers files list, check for error.
-			retStatus = populateListOfLauncherFiles();
-			if (retStatus != FormStatus.ReadyToProcess) {
-				return retStatus;
+			if (populateListOfLauncherFiles() != FormStatus.ReadyToProcess) {
+				return FormStatus.InfoError;
 			}
 
 			// Configure the execute string
@@ -389,32 +364,32 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This private utility method is invoked before all 
-	 * job launches to verify that the constructed MOOSE tree is 
-	 * valid. 
+	 * This private utility method is invoked before all job launches to verify
+	 * that the constructed MOOSE tree is valid.
 	 * 
 	 * @param uri
 	 * @param isRemote
 	 * @return
 	 */
 	private boolean fullTreeValidation(URI uri, boolean isRemote) {
-		// Initialize the connection to null, 
+		// Initialize the connection to null,
 		// it should remain null if this is a local launch
 		IRemoteConnection remoteConnection = null;
-		
+
 		// Get the remote connection if the app is hosted remotely
 		if (isRemote) {
 			remoteConnection = mooseLauncher.getRemoteConnection(uri.getHost());
 		}
-		
+
 		// Create and execute the CheckMooseInputAction!
 		CheckMooseInputAction checkInput = new CheckMooseInputAction(modelTree, modelFiles, project, remoteConnection);
 		return checkInput.execute(null) == FormStatus.ReadyToProcess ? true : false;
 	}
 
 	/**
-	 * This method is used in the job launch mechanism to 
-	 * collect all required files for the MooseLauncher 
+	 * This method is used in the job launch mechanism to collect all required
+	 * files for the MooseLauncher
+	 * 
 	 * @return
 	 */
 	private FormStatus populateListOfLauncherFiles() {
@@ -447,10 +422,9 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This private method is used to create a new ICEUpdater 
-	 * block for the launch. It checks to see if one can, or even 
-	 * should be created, and then creates it, configures it, and 
-	 * adds it to the tree. 
+	 * This private method is used to create a new ICEUpdater block for the
+	 * launch. It checks to see if one can, or even should be created, and then
+	 * creates it, configures it, and adds it to the tree.
 	 * 
 	 * @param isRemote
 	 * @return
@@ -458,8 +432,8 @@ public class MOOSE extends Item {
 	private void createICEUpdaterBlock(String host) {
 
 		// Add the ICEUpdater tree block to Outputs
-		TreeComposite outputs = getTreeByName("Outputs");
-		TreeComposite postProcessors = getTreeByName("Postprocessors");
+		TreeComposite outputs = getTopLevelTreeByName("Outputs");
+		TreeComposite postProcessors = getTopLevelTreeByName("Postprocessors");
 		TreeComposite iceUpdater = null;
 		boolean display = false, iNeedUpdater = true, updaterExists = false;
 
@@ -553,14 +527,16 @@ public class MOOSE extends Item {
 	 */
 	@Override
 	public void loadInput(String input) {
+
+		// Load the model input
 		mooseModel.loadInput(input);
 
+		// Create a new Form
 		form = new Form();
 
+		// Set its ICEObject data
 		String description = "The Multiphysics Object-Oriented Simulation "
 				+ "Environment (MOOSE) is a multiphysics framework developed " + "by Idaho National Laboratory.";
-
-		// Set the model defaults
 		form.setName("MOOSE Workflow");
 		form.setDescription(description);
 		form.setItemID(getId());
@@ -593,23 +569,21 @@ public class MOOSE extends Item {
 		form.addComponent(postProcessorsData);
 
 		TreeComposite ppTree;
-		if ((ppTree = getTreeByName("Postprocessors")) != null) {
+		if ((ppTree = getTopLevelTreeByName("Postprocessors")) != null) {
 			setupPostprocessorData(ppTree);
 		}
 
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
 
-		// loadFileEntries();
-
 		// Register this Item as a listener to the Variables block
 		// this is so we can use the variables to populate things like
 		// kernel variable entries.
-		TreeComposite vars = getTreeByName("Variables");
+		TreeComposite vars = getTopLevelTreeByName("Variables");
 		if (vars != null) {
 			vars.register(this);
 		}
-		TreeComposite aux = getTreeByName("AuxVariables");
+		TreeComposite aux = getTopLevelTreeByName("AuxVariables");
 		if (aux != null) {
 			aux.register(this);
 		}
@@ -653,8 +627,8 @@ public class MOOSE extends Item {
 
 				@Override
 				public void run() {
-					// Sleep this thread for a second 
-					// to avoid any concurrent modifications 
+					// Sleep this thread for a second
+					// to avoid any concurrent modifications
 					// of the tree
 					try {
 						Thread.sleep(1000);
@@ -679,7 +653,7 @@ public class MOOSE extends Item {
 	 * @param name
 	 * @return
 	 */
-	private TreeComposite getTreeByName(String name) {
+	private TreeComposite getTopLevelTreeByName(String name) {
 
 		for (int i = 0; i < modelTree.getNumberOfChildren(); i++) {
 			TreeComposite child = modelTree.getChildAtIndex(i);
@@ -711,8 +685,7 @@ public class MOOSE extends Item {
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
-							&& (e.getName() + " = " + e.getValue())
-									.matches(mooseLauncher.getFileDependenciesSearchString())) {
+							&& e.getValueType() == AllowedValueType.File) {
 
 						Entry clonedEntry = (Entry) e.clone();
 						files.add(clonedEntry);
