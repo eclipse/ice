@@ -308,9 +308,10 @@ def linux_post(opts, pkgs):
 def osx_post(opts, pkgs):
     """ Post installation for OS X """
     mkdir_p(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS"))
+    infoplist_path = os.path.join(opts.prefix, "ICE.app", "Contents", "Info.plist")
     script_path = os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh")
     visit_libdir = os.path.dirname(find_file(opts.prefix, "libvisit*"))
-    plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', script_path]
+    plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', infoplist_path]
     chmod_cmd= ['chmod', '+x', script_path]
     lsregister_cmd = ['/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
                       '-v', '-f', os.path.join(opts.prefix, 'ICE.app')]
