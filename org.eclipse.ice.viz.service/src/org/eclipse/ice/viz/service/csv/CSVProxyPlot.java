@@ -91,6 +91,12 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 			// Create a plot composite.
 			plotComposite = new CSVPlotComposite(parent, SWT.BORDER);
 			plotComposite.setPlot(this);
+			
+			// Make sure the plot data has been loaded
+			while (!((CSVPlot)getSource()).isLoaded()) {
+				Thread.sleep(200);
+			}
+			
 			// Tell it to update based on the new plot.
 			plotComposite.refresh();
 
@@ -153,17 +159,8 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 			reloadSeries();
 		}
 		
-		// If the independent series already exists, return it
-		if (independentProxy != null) {
-			return independentProxy;
-		} else {
-
-			// Create a proxy to the source's independent series and set it as
-			// this proxy's independent series.
-			independentProxy = createProxySeries(super.getIndependentSeries());
-			return independentProxy;
-		}
-
+		// Wrap the source IPlot's independent series and return it. 
+		return createProxySeries(getSource().getIndependentSeries());
 	}
 
 	/*

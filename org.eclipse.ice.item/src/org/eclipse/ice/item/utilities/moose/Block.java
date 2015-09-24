@@ -502,8 +502,8 @@ public class Block {
 									indent, param.toString(), whiteSpaceString,
 									commentString);
 						} else {
-							potString += indent + "# " + param.toString()
-									+ newLine;
+							//potString += indent + "# " + param.toString()
+							//		+ newLine;
 						}
 					}
 				}

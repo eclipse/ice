@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,7 +27,12 @@ import java.util.HashMap;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
@@ -92,13 +98,6 @@ public class MOOSE extends Item {
 	private TreeComposite modelTree;
 
 	/**
-	 * Reference to teh mapping between created Postprocessor VizResources and
-	 * their names.
-	 */
-	@XmlTransient()
-	private HashMap<String, ICEResource> postProcessorResources;
-
-	/**
 	 * Reference to the id of the DataComponent containign the Postprocessors
 	 * the user would like to automatically display.
 	 */
@@ -154,9 +153,6 @@ public class MOOSE extends Item {
 
 		// Get a handle to the model input tree
 		modelTree = (TreeComposite) form.getComponent(2);
-
-		// Initialize the postProcessor Mapping
-		postProcessorResources = new HashMap<String, ICEResource>();
 
 		// Create the Postprocessors DataComponent
 		postProcessorsData = new DataComponent();
@@ -736,10 +732,22 @@ public class MOOSE extends Item {
 
 			// We need the jobLaunch directory to create new VizResources
 			String directory = mooseLauncher.getJobLaunchDirectory();
+			if (directory == null) {
+				return false;
+			}
 
-			// Get a reference to the VizResource file we are going
-			// to create and populate
-			File dataFile = new File(directory + System.getProperty("file.separator") + name + ".csv");
+			// Refresh the project space
+			refreshProjectSpace();
+
+			// Get this job launch folder
+			IFolder jobFolder = project.getFolder("jobs")
+					.getFolder(directory.substring(directory.lastIndexOf("/") + 1, directory.length()));
+			if (!jobFolder.exists()) {
+				return false;
+			}
+
+			// Grab the new Postprocessor CSV file
+			IFile dataFile = jobFolder.getFile(name + ".csv");
 
 			// Get a reference to the ResourceComponent
 			ResourceComponent comp = (ResourceComponent) form.getComponent(3);
@@ -749,40 +757,22 @@ public class MOOSE extends Item {
 				if (!dataFile.exists()) {
 					// If the file hasn't been created yet, we need to create
 					// it and start filling it with post processor data
-					dataFile.createNewFile();
-
-					// Write the new incoming data
-					PrintWriter printWriter = new PrintWriter(new FileOutputStream(dataFile, true));
-					printWriter.write("Time, " + name + "\n");
-					printWriter.write(time + ", " + value + "\n");
-					printWriter.close();
+					String initialData = "Time," + name + "\n" + time + "," + value + "\n";
+					dataFile.create(new ByteArrayInputStream(initialData.getBytes()), true, null);// .createNewFile();
 
 					// Create the VizResource, and add it to the
 					// ResourceComponent
-					ICEResource resource = getResource(dataFile.getAbsolutePath());
+					ICEResource resource = getResource(dataFile.getLocation().toOSString());
 					comp.add(resource);
-
-					// Remember the name of the resource for next time
-					postProcessorResources.put(name, resource);
 
 				} else {
 
 					// Write the data to the existing resource
-					PrintWriter printWriter = new PrintWriter(new FileOutputStream(dataFile, true));
-					printWriter.write(time + ", " + value + "\n");
-
-					// Update the ICEResource
-					ICEResource r = postProcessorResources.get(name);
-
-					// Here we are faking a VizResource notification
-					// by setting the name with its current name
-					r.setName(r.getName());
-
-					// Close the writer
-					printWriter.close();
+					dataFile.appendContents(new ByteArrayInputStream(new String(time + "," + value + "\n").getBytes()),
+							IResource.FORCE, null);
 				}
 
-			} catch (IOException e) {
+			} catch (IOException | CoreException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}

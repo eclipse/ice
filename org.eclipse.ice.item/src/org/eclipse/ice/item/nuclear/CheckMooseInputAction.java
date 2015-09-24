@@ -252,7 +252,7 @@ public class CheckMooseInputAction extends Action {
 			input.close();
 
 			// Check for any errors
-			if (checkInputString.contains("ERROR")) {
+			if (checkInputString.contains("*** ERROR *** ")) {
 				String errorString = checkInputString.substring(checkInputString.indexOf("*** ERROR ***"),
 						checkInputString.indexOf("Stack"));
 				errorString = "-------------- Error Summary --------------\n" + errorString.trim()
