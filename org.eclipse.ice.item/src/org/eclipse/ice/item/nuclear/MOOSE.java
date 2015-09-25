@@ -261,10 +261,6 @@ public class MOOSE extends Item {
 		FormStatus retStatus = FormStatus.InfoError;
 		String host = "localhost";
 
-		// Set our outputFile as the MooseLauncher's output file
-		// so we can see the streaming output
-		outputFile = mooseLauncher.getOutputFile();
-
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
 
@@ -337,6 +333,10 @@ public class MOOSE extends Item {
 
 			// Launch the Moose application
 			retStatus = mooseLauncher.process(actionName);
+
+			// Set our outputFile as the MooseLauncher's output file
+			// so we can see the streaming output
+			outputFile = mooseLauncher.getOutputFile();
 
 		} else if ("Write MOOSE File".equals(actionName)) {
 			// Simply pass this along to the Model
@@ -943,6 +943,18 @@ public class MOOSE extends Item {
 		clone.copy(this);
 
 		return clone;
+	}
+
+
+	/**
+	 * Overriding the default behavior here because 
+	 * the overall process output should be in the 
+	 * to-be-created local job folder. 
+	 * 
+	 */
+	@Override
+	protected void setupOutputFile() {
+		return;
 	}
 
 }

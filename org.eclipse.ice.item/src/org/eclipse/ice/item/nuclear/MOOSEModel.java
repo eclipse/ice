@@ -2036,4 +2036,16 @@ public class MOOSEModel extends Item {
 			return type;
 		}
 	}
+	
+	/**
+	 * Overriding the default behavior here because 
+	 * the overall process output should be in the 
+	 * to-be-created local job folder. 
+	 * 
+	 */
+	@Override
+	protected void setupOutputFile() {
+		return;
+	}
+
 }

@@ -21,7 +21,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -244,6 +246,8 @@ public class JobLauncher extends Item {
 	@XmlTransient()
 	private Job launchJob;
 
+	private IFolder currentJobFolder;
+	
 	/**
 	 * 
 	 */
@@ -385,10 +389,19 @@ public class JobLauncher extends Item {
 
 		// Create the stdout file in the project space
 		if (project != null) {
+
+			// Get the job launch directory
+			if (!currentJobFolder.exists()) {
+				logger.warn(
+						"JobLauncher Warning: Could not get a reference to the current Job Launch Directory. Aborting stderr/stdout file generation.");
+				return;
+			}
+
 			// Create the Eclipse Resources IFile handle for standard out
-			IFile stdOutProjectFile = project.getFile(stdOutFileName);
+			IFile stdOutProjectFile = currentJobFolder.getFile(stdOutFileName);
 			// Create the Eclipse Resources IFile handle for standard error
-			IFile stdErrProjectFile = project.getFile(stdErrFileName);
+			IFile stdErrProjectFile = currentJobFolder.getFile(stdErrFileName);
+			
 			// Create the standard out project file
 			try {
 				// Delete the file if it already exists - we want a clean one
@@ -440,6 +453,10 @@ public class JobLauncher extends Item {
 			} catch (CoreException | IOException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
+			
+			// Create the output File that will be 
+			// streamed to the Console
+			createOutputFile();
 		}
 
 		return;
@@ -898,9 +915,37 @@ public class JobLauncher extends Item {
 					logger.error("JobLauncher Error - Error filling the Action Data Map.");
 					return FormStatus.InfoError;
 				}
+
+				// Here we should create a scratch job directory
+				// in project/jobs
+				IFolder jobsFolder = project.getFolder("jobs");
+				if (!jobsFolder.exists()) {
+					try {
+						jobsFolder.create(true, true, null);
+					} catch (CoreException e) {
+						logger.error("JobLauncher Error: Could not create the " + "jobs directory for job launches.",
+								e);
+						return FormStatus.InfoError;
+					}
+				}
+				
+				currentJobFolder = jobsFolder
+						.getFolder("iceLaunch_" + new SimpleDateFormat("yyyMMddhhmmss").format(new Date()));
+				try {
+					currentJobFolder.create(true, true, null);
+				} catch (CoreException e1) {
+					logger.error("JobLauncher Error: Could not create the current launch job directory.", e1);
+					return FormStatus.InfoError;
+				}
+
+				refreshProjectSpace();
+
+				// Add the Job Launch Directory name to the data map
+				actionDataMap.put("localJobLaunchDirectory", currentJobFolder.getName());
+
 				// Create the output files in the project space
 				createOutputFiles();
-
+				
 				// Launch the action
 				action = new JobLaunchAction();
 
@@ -995,16 +1040,37 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * This method let's clients of the JobLauncher set an existing
-	 * IRemoteConnection for remote job executions. If this connection is
-	 * provided, the JobLauncher will forward it to the JobLaunchAction for use
-	 * in the remote execution.
+	 * Overriding the default behavior here because 
+	 * the overall process output should be in the 
+	 * to-be-created local job folder. 
 	 * 
-	 * @param connection
 	 */
-	// public void setRemoteConnection(IRemoteConnection connection) {
-	// remoteConnection = connection;
-	// }
+	@Override
+	protected void setupOutputFile() {
+		return;
+	}
+
+	private void createOutputFile() {
+		// Setup the output file handle name
+		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_" + getId() + "_processOutput.txt";
+		// Get the file handle from the project space. Note that it may not
+		// actually exist.
+		if (project != null) {
+			// Get the file
+			IFile outputFileHandle = currentJobFolder.getFile(outputFilename);
+			outputFile = outputFileHandle.getLocation().toFile();
+			// Create a new file if it does not already exist
+			try {
+				outputFile.createNewFile();
+			} catch (Exception fileFailException) {
+				logger.info("Item Message: Unable to create output " + "file in workspace. Aborting.");
+				fileFailException.printStackTrace();
+				return;
+			}
+			
+			refreshProjectSpace();
+		}
+	}
 
 	/**
 	 * This operations grabs the information from the stdout and stderr files

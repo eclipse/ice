@@ -84,12 +84,9 @@ public class RemoteFileUploadAction extends Action {
 	 */
 	@Override
 	public FormStatus execute(Dictionary<String, String> dictionary) {
-		// Local Declarations
-		Date currentDate = new Date();
-		SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
 
 		// Set the base name of the working directory.
-		String workingDirectoryBaseName = "iceLaunch_" + shortDate.format(currentDate);
+		String workingDirectoryBaseName = dictionary.get("remoteDir");
 
 		// Get the remote file manager
 		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
@@ -109,9 +106,9 @@ public class RemoteFileUploadAction extends Action {
 
 		// Create the remote working directory and upload required files.
 		try {
-			remoteDirectory = fileStore.getChild(workingDirectoryBaseName).mkdir(EFS.SHALLOW, null);
+			remoteDirectory = fileStore.getChild(workingDirectoryBaseName).mkdir(EFS.NONE, null);
 			logger.info(
-					"JobLaunchAction Message: " + "Created directory on remote system, " + remoteDirectory.getName());
+					"RemoteFileUploadAction Message: " + "Created directory on remote system, " + remoteDirectory.getName());
 
 			// Loop over all of the files in the file table and upload them
 			for (IFile file : filesToUpload) {
@@ -131,8 +128,8 @@ public class RemoteFileUploadAction extends Action {
 				IFileStore localFileStore = EFS.getLocalFileSystem().fromLocalFile(localFile);
 
 				// Copy the local file to the remote file
-				localFileStore.copy(remoteFileStore, EFS.NONE, null);
-				logger.info("JobLaunchAction Message: " + "Uploaded file " + localFile.getName());
+				localFileStore.copy(remoteFileStore, EFS.OVERWRITE, null);
+				logger.info("RemoteFileUploadAction Message: " + "Uploaded file " + localFile.getName());
 			}
 
 		} catch (CoreException e) {
@@ -144,7 +141,7 @@ public class RemoteFileUploadAction extends Action {
 
 		// If we make it here, then we've successfully uploaded 
 		// the files. 
-		status = FormStatus.ReadyToProcess;
+		status = FormStatus.Processing;
 		return status;
 	}
 
@@ -165,6 +162,9 @@ public class RemoteFileUploadAction extends Action {
 		return remoteDirectory.toURI().getRawPath();
 	}
 
+	public IFileStore getRemoteUploadDirectory() {
+		return remoteDirectory;
+	}
 	/**
 	 * Remove the remote directory. 
 	 */

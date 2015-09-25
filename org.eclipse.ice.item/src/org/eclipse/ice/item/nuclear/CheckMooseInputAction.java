@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -109,7 +112,7 @@ public class CheckMooseInputAction extends Action {
 		IRemoteProcess checkInputRemoteJob = null;
 		MOOSEFileHandler writer = new MOOSEFileHandler();
 		Form tempForm = new Form();
-		InputStream inputStream = null;
+		InputStream stdStream = null, errorStream = null;
 		String checkInputString = "", line;
 		status = FormStatus.ReadyToProcess;
 		IFile inputFile = project.getFile(appComponent.retrieveEntry("Output File Name").getValue());
@@ -158,25 +161,34 @@ public class CheckMooseInputAction extends Action {
 			// Do the upload(s) and launch the job if the connection is open
 			if (connection.isOpen()) {
 
+				// Get the file separator on the remote system
+				String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
+
+				Date currentDate = new Date();
+				SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
+				Dictionary<String, String> dataMap = new Hashtable<String, String>();
+				dataMap.put("remoteDir", "ICEJobs" + remoteSeparator + "iceLaunch_" + shortDate.format(currentDate));
+				
 				// Upload the input files
 				RemoteFileUploadAction uploadAction = new RemoteFileUploadAction(files, connection);
-				uploadAction.execute(null);
+				uploadAction.execute(dataMap);
 
 				// Get the IRemoteProcessService
 				processService = connection.getService(IRemoteProcessService.class);
 
 				// Set the working directory to be where the files were uploaded
-				processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
+				//processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
 
 				// Create the process builder for the remote job
 				IRemoteProcessBuilder checkInputProcessBuilder = processService.getProcessBuilder("sh", "-c",
-						appUri.getRawPath() + " --no-color --check-input -i "
+						"cd " + uploadAction.getRemoteUploadDirectoryPath() + " && " + appUri.getRawPath() + " --no-color --check-input -i "
 								+ uploadAction.getRemoteUploadDirectoryPath() + System.getProperty("file.separator")
 								+ inputFile.getName());
 
 				// Do not redirect the streams
-				checkInputProcessBuilder.redirectErrorStream(true);
+				//checkInputProcessBuilder.redirectErrorStream(true);
 
+				logger.info("Remote Connection open - Beginning execution of Moose App with --check-input");
 				// Execute the remote job
 				try {
 					checkInputRemoteJob = checkInputProcessBuilder.start(IRemoteProcessBuilder.FORWARD_X11);
@@ -189,22 +201,11 @@ public class CheckMooseInputAction extends Action {
 					return status;
 				}
 
-				// Monitor the job
-				while (!checkInputRemoteJob.isCompleted()) {
-					// Give it a second
-					try {
-						Thread.currentThread();
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// Complain
-						logger.error(getClass().getName() + " Exception!", e);
-					}
-				}
-
 				// Get the InputStream - this contains standard out 
 				// and standard err
-				inputStream = checkInputRemoteJob.getInputStream();
-
+				errorStream = checkInputRemoteJob.getErrorStream();
+				
+				//uploadAction.deleteUploadRemoteDirectory();
 			}
 
 		} else {
@@ -222,13 +223,13 @@ public class CheckMooseInputAction extends Action {
 				// Launch the process
 				ProcessBuilder builder = new ProcessBuilder(checkInputCmd)
 						.directory(new File(project.getLocation().toOSString()));
-				builder.redirectErrorStream(true);
+				//builder.redirectErrorStream(true);
 				Process checkInputProcess = builder.start();
 
 				// Get the InputStream from the process - this contains 
 				// standard out and standard err
-				inputStream = checkInputProcess.getInputStream();
-
+				errorStream = checkInputProcess.getErrorStream();
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error(getClass().getName() + " Exception!", e);
@@ -243,22 +244,25 @@ public class CheckMooseInputAction extends Action {
 		// and analyze it for errors. 
 		try {
 			// Read the output from the process
-			BufferedReader input = new BufferedReader(new InputStreamReader(inputStream));
-			while ((line = input.readLine()) != null) {
+			BufferedReader error = new BufferedReader(new InputStreamReader(errorStream));
+			while ((line = error.readLine()) != null) {
+				//logger.info("Error: " + line);
 				checkInputString += line + "\n";
 			}
-
-			// Close the stream
-			input.close();
-
+			
+			// Close the streams
+			//input.close();
+			error.close();
+			
+			
 			// Check for any errors
-			if (checkInputString.contains("*** ERROR *** ")) {
-				String errorString = checkInputString.substring(checkInputString.indexOf("*** ERROR ***"),
-						checkInputString.indexOf("Stack"));
-				errorString = "-------------- Error Summary --------------\n" + errorString.trim()
-						+ "\n----------------------------------------------";
+			if (checkInputString.contains("*** ERROR ***")) {
+				int indexOfError = checkInputString.indexOf("*** ERROR ***");
+				String errorString = checkInputString.substring(indexOfError,
+						checkInputString.indexOf("\n", indexOfError+15));
+				errorString = errorString.trim();
 				throwErrorMessage("MOOSE Tree Validation", "org.eclipse.ice.item.nuclear.moose", errorString,
-						"\n--------- Full Moose Stack Trace ---------\n" + checkInputString.trim());
+						checkInputString.trim());
 				status = FormStatus.InfoError;
 				return status;
 			}
@@ -268,8 +272,10 @@ public class CheckMooseInputAction extends Action {
 			status = FormStatus.InfoError;
 			return status;
 		}
+		
 		// If we make it here, then we should be good with ReadyToProcess
 		return status;
+			
 	}
 
 	/**
