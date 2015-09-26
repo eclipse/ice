@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.item.model;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.materials.IMaterialsDatabase;
@@ -52,9 +54,20 @@ public class AbstractModelBuilder extends AbstractItemBuilder {
 	protected void setServices(Item item) {
 		// Give the Item the IMaterialsDatabase service.
 		((Model) item).setMaterialsDatabase(materialsDatabase);
-		
+
 		// Let the base class set any other services.
 		super.setServices(item);
-	}
 
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.item.IMaterialsDatabase");
+
+		System.out.println("Available configuration elements:");
+		for (IConfigurationElement element : elements) {
+			System.out.println("Name" + element.getName());
+
+		}
+
+		return;
+	}
 }
