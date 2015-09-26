@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="proteusModelBuilder"
+         name="Proteus Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.proteus.PROTEUSModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="proteusLauncherBuilder"
+         name="Proteus Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.proteus.PROTEUSLauncherBuilder">
+      </implementation>
+   </extension>
+
+</plugin>

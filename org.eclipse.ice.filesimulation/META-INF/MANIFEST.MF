@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: FileSimulation
-Bundle-SymbolicName: org.eclipse.ice.filesimulation
+Bundle-SymbolicName: org.eclipse.ice.filesimulation;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.datastructures.ICEObject,
