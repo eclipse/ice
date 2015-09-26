@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -209,6 +211,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		vizFactory = factory;
 		Logger staticLogger = LoggerFactory.getLogger(ICEFormEditor.class);
 		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
+		
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+		System.out.println("This is in ICEFormEditor");
+		System.out.println("Available configuration elements");
+		for(IConfigurationElement element : elements){
+			System.out.println(element.getName());
+		}
+		return;
 	}
 
 	/**

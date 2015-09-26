@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.ui;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
@@ -79,6 +81,16 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 	public void setVizServiceFactory(IVizServiceFactory factory) {
 		logger.info("ReflectivityFormWidgetBuilder: Setting Viz Service");
 		this.vizServiceFactory = factory;
+
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+		System.out.println("This is in Reflectivity");
+		System.out.println("Available configuration elements");
+		for(IConfigurationElement element : elements){
+			System.out.println(element.getName());
+		}
+		
+		return;
 	}
 
 	/**
