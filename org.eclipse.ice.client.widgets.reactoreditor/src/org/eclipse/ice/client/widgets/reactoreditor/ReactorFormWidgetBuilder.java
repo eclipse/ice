@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.slf4j.Logger;
@@ -112,6 +114,17 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 		if (registry != null) {
 			this.editorRegistry = registry;
 		}
+
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry");
+		System.out.println(
+				"Available configuration elements(in org.eclipse.ice.client.widgets.reactoreditor.ReactorFormInputFactory.java):");
+		for (IConfigurationElement element : elements) {
+			System.out.println(
+					element.getNamespaceIdentifier() + " " + element.getName());
+		}
+
 		return;
 	}
 }

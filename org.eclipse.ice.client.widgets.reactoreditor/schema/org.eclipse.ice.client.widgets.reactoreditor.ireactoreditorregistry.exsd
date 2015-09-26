@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.ice.client.widgets" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.ice.client.widgets.reactoreditor" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.ice.client.widgets" id="iformwidgetbuilder" name="IForm Widget Builder"/>
+         <meta.schema plugin="org.eclipse.ice.client.widgets.reactoreditor" id="org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry" name="IReactorEditorRegistry"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.client.widgets.IFormWidgetBuilder"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.client.widgets.reactoreditor.IReactorEditorRegistry"/>
                </appinfo>
             </annotation>
          </attribute>
