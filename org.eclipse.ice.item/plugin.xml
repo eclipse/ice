@@ -58,5 +58,19 @@
             class="org.eclipse.ice.item.nuclear.MOOSEBuilder">
       </implementation>
    </extension>
+   <extension
+         id="mooseFileHandler"
+         point="org.eclipse.ice.io.writer">
+      <implementation
+            class="org.eclipse.ice.item.utilities.moose.MOOSEFileHandler">
+      </implementation>
+   </extension>
+   <extension
+         id="mooseFileHandler"
+         point="org.eclipse.ice.io.reader">
+      <implementation
+            class="org.eclipse.ice.item.utilities.moose.MOOSEFileHandler">
+      </implementation>
+   </extension>
 
 </plugin>

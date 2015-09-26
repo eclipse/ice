@@ -197,9 +197,36 @@ public class Core extends Application implements ICore {
 
 		// Start the webservice!
 		startHttpService();
+		
+		
+		debugCheckExtensions();
 
 		return;
 
+	}
+	
+	private void debugCheckExtensions(){
+		Set<String> extensionPoints = new HashSet<String>();
+		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
+		extensionPoints.add("org.eclipse.ice.io.writer");
+		extensionPoints.add("org.eclipse.ice.io.reader");
+		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
+		for(String extensionPointName : extensionPoints) {
+			IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(extensionPointName);
+			System.out.println("##### Extensions for: " + extensionPointName + " #####");
+			if (point != null) {
+				IExtension[] extensions = point.getExtensions();
+				for(IExtension extension: extensions) {
+					System.out.println("--" + extension.getSimpleIdentifier());
+				}
+			}
+			else {
+				System.out.println("Point does not exist");
+			}
+			
+			System.out.println("##### end of " + extensionPointName + " #####");
+		}
+		
 	}
 
 	/**
@@ -234,16 +261,7 @@ public class Core extends Application implements ICore {
 					+ " registered with Core.");
 			itemManager.registerBuilder(itemBuilder);
 		}
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.ice.item.itemBuilder");
-		System.out.println("##### Extensions for: org.eclipse.ice.item.itemBuilder #####");
-		if (point != null) {
-			IExtension[] extensions = point.getExtensions();
-			for(IExtension extension: extensions) {
-				System.out.println(extension.getSimpleIdentifier());
-			}
-		}
 		
-		System.out.println("##### end of list #####");
 		return;
 	}
 
