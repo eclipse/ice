@@ -64,9 +64,9 @@
          id="reflectivityformwidgetbuilder"
          name="Reflectivity Form Widget Builder"
          point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
-      <iformwidgetbuilder
+      <implementation
             class="org.eclipse.ice.reflectivity.ui.ReflectivityFormWidgetBuilder">
-      </iformwidgetbuilder>
+      </implementation>
    </extension>
    
    

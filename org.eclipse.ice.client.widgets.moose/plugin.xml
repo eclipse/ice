@@ -287,9 +287,9 @@
          id="mooseformwidgetbuilder"
          name="MOOSE Form Widget Builder"
          point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
-      <iformwidgetbuilder
+      <implementation
             class="org.eclipse.ice.client.widgets.moose.MOOSEFormWidgetBuilder">
-      </iformwidgetbuilder>
+      </implementation>
    </extension>
       
 </plugin>

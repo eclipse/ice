@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 
 <plugin>
+   <extension-point id="org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry" name="IReactorEditorRegistry" schema="schema/org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry.exsd"/>
 
 
       <extension
@@ -17,9 +18,9 @@
             id="reactorformwidgetbuilder"
             name="Reactor Form Widget Builder"
             point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
-         <iformwidgetbuilder
+         <implementation
                class="org.eclipse.ice.client.widgets.reactoreditor.ReactorFormWidgetBuilder">
-         </iformwidgetbuilder>
+         </implementation>
       </extension>
 
 </plugin>
