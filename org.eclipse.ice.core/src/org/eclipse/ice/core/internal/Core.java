@@ -37,6 +37,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -231,7 +234,16 @@ public class Core extends Application implements ICore {
 					+ " registered with Core.");
 			itemManager.registerBuilder(itemBuilder);
 		}
-
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.ice.item.itemBuilder");
+		System.out.println("##### Extensions for: org.eclipse.ice.item.itemBuilder #####");
+		if (point != null) {
+			IExtension[] extensions = point.getExtensions();
+			for(IExtension extension: extensions) {
+				System.out.println(extension.getSimpleIdentifier());
+			}
+		}
+		
+		System.out.println("##### end of list #####");
 		return;
 	}
 

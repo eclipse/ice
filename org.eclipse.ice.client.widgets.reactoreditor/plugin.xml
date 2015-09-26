@@ -13,5 +13,13 @@
             name="ReactorEditor">
       </editor>
    </extension>
+      <extension
+            id="reactorformwidgetbuilder"
+            name="Reactor Form Widget Builder"
+            point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
+         <iformwidgetbuilder
+               class="org.eclipse.ice.client.widgets.reactoreditor.ReactorFormWidgetBuilder">
+         </iformwidgetbuilder>
+      </extension>
 
 </plugin>

@@ -2,11 +2,11 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="reflectivityModelBuilder"
-         name="Reflectivity Model"
+         id="batMLModelBuilder"
+         name="BatML Model"
          point="org.eclipse.ice.item.itemBuilder">
       <implementation
-            class="org.eclipse.ice.reflectivity.ReflectivityModelBuilder">
+            class="org.eclipse.ice.caebat.batml.BatMLModelBuilder">
       </implementation>
    </extension>
 

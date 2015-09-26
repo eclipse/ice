@@ -283,5 +283,13 @@
          </separator>
       </menuContribution>
    </extension>
+   <extension
+         id="mooseformwidgetbuilder"
+         name="MOOSE Form Widget Builder"
+         point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
+      <iformwidgetbuilder
+            class="org.eclipse.ice.client.widgets.moose.MOOSEFormWidgetBuilder">
+      </iformwidgetbuilder>
+   </extension>
       
 </plugin>
