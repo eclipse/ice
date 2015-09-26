@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
@@ -69,6 +71,17 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	public void setVizServiceFactory(IVizServiceFactory factory) {
 		this.vizServiceFactory = factory;
+
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+		System.out.println("This is in MOOSEFormwidgetBUilder");
+		System.out.println("Available configuration elements");
+		for(IConfigurationElement element : elements){
+			System.out.println(element.getName());
+		}
+		
+		return;
+		
 	}
 
 	/**
