@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vibe
-Bundle-SymbolicName: org.eclipse.ice.vibe
+Bundle-SymbolicName: org.eclipse.ice.vibe;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.io.ips,

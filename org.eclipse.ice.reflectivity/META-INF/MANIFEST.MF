@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Reflectivity
-Bundle-SymbolicName: org.eclipse.ice.reflectivity
+Bundle-SymbolicName: org.eclipse.ice.reflectivity;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Service-Component: OSGI-INF/ReflectivityModelComponent.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
