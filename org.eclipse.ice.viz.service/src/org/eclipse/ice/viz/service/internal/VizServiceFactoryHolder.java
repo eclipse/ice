@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.internal;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 
 /**
@@ -41,6 +43,15 @@ public class VizServiceFactoryHolder {
 	 */
 	public static void setVizServiceFactory(IVizServiceFactory input) {
 		VizServiceFactoryHolder.factory = input;
+
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+		System.out.println("This is in vizServerFactoryHolder");
+		System.out.println("Available configuration elements");
+		for(IConfigurationElement element : elements){
+			System.out.println(element.getName());
+		}
+		
 		return;
 	}
 
