@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 
 <plugin>
+   <extension-point id="org.eclipse.ice.client.widgets.iformwidgetbuilder" name="IForm Widget Builder" schema="schema/iformwidgetbuilder.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
