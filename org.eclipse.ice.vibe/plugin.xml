@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="vibeModelBuilder"
+         name="Vibe Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.vibe.model.VibeModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="vibeLauncherBuilder"
+         name="Vibe Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.vibe.launcher.VibeLauncherBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="vibeKVPairBuilder"
+         name="Vibe Key Value Pair"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.vibe.kvPair.VibeKVPairBuilder">
+      </implementation>
+   </extension>
+
+</plugin>

@@ -50,5 +50,13 @@
             class="org.eclipse.ice.item.nuclear.MOOSEModelBuilder">
       </implementation>
    </extension>
+   <extension
+         id="mooseBuilder"
+         name="MOOSE Workflow"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.nuclear.MOOSEBuilder">
+      </implementation>
+   </extension>
 
 </plugin>
