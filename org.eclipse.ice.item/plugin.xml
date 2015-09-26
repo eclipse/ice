@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="itemBuilder" name="Item Builder" schema="schema/itemBuilder.exsd"/>
+   <extension
+         id="geometryEditorBuilder"
+         name="Geometry Editor"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.geometry.GeometryEditorBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="jobProfileBuilder"
+         name="Job Profile"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.jobprofile.JobProfileBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="mooseLauncherComponent"
+         name="Moose Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.nuclear.MOOSELauncherBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="sharpLauncherBuilder"
+         name="Sharp Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.nuclear.SHARPLauncherBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="sharpModelBuilder"
+         name="Sharp Model Builder"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.nuclear.SHARPModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="mooseModelBuilder"
+         name="Moose Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.item.nuclear.MOOSEModelBuilder">
+      </implementation>
+   </extension>
 
 </plugin>

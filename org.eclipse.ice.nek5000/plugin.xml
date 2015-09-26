@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="nekModelBuilder"
+         name="Nek Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.nek5000.NekModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="nekLauncherBuilder"
+         name="Nek Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.nek5000.NekLauncherBuilder">
+      </implementation>
+   </extension>
+
+</plugin>
