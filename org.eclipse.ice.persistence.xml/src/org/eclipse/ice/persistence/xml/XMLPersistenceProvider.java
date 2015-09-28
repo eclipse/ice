@@ -168,7 +168,7 @@ public class XMLPersistenceProvider
 	JAXBContext context;
 
 	/**
-	 * Empty default constructor. No work to do.
+	 * Default constructor.
 	 */
 	public XMLPersistenceProvider() {
 		classProviders = new ArrayList<IJAXBClassProvider>();

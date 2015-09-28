@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -118,6 +119,7 @@ public class Core extends Application implements ICore {
 	 * be used for persisting Items.
 	 *
 	 */
+	@Inject
 	private IPersistenceProvider provider;
 
 	/**
@@ -197,36 +199,50 @@ public class Core extends Application implements ICore {
 
 		// Start the webservice!
 		startHttpService();
-		
-		
+
+		// Check the currently registered extensions
 		debugCheckExtensions();
 
 		return;
 
 	}
-	
-	private void debugCheckExtensions(){
+
+	private void debugCheckExtensions() {
 		Set<String> extensionPoints = new HashSet<String>();
 		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
 		extensionPoints.add("org.eclipse.ice.io.writer");
 		extensionPoints.add("org.eclipse.ice.io.reader");
 		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
-		for(String extensionPointName : extensionPoints) {
-			IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(extensionPointName);
-			System.out.println("##### Extensions for: " + extensionPointName + " #####");
+		for (String extensionPointName : extensionPoints) {
+			IExtensionPoint point = Platform.getExtensionRegistry()
+					.getExtensionPoint(extensionPointName);
+			System.out.println(
+					"##### Extensions for: " + extensionPointName + " #####");
 			if (point != null) {
 				IExtension[] extensions = point.getExtensions();
-				for(IExtension extension: extensions) {
+				for (IExtension extension : extensions) {
 					System.out.println("--" + extension.getSimpleIdentifier());
+					if ("xmlPersistenceProvider"
+							.equals(extension.getSimpleIdentifier())) {
+						for (IConfigurationElement element : extension
+								.getConfigurationElements()) {
+							try {
+								provider = (IPersistenceProvider) element
+										.createExecutableExtension("class");
+								System.out.println("Success!");
+							} catch (CoreException e) {
+								logger.error("Unable to load extension!", e);
+							}
+						}
+					}
 				}
-			}
-			else {
+			} else {
 				System.out.println("Point does not exist");
 			}
-			
+
 			System.out.println("##### end of " + extensionPointName + " #####");
 		}
-		
+
 	}
 
 	/**
@@ -261,7 +277,7 @@ public class Core extends Application implements ICore {
 					+ " registered with Core.");
 			itemManager.registerBuilder(itemBuilder);
 		}
-		
+
 		return;
 	}
 
@@ -752,6 +768,7 @@ public class Core extends Application implements ICore {
 	 * @param provider
 	 *            The persistence provider.
 	 */
+	@Inject
 	public void setPersistenceProvider(IPersistenceProvider provider) {
 
 		// If the provider is not null, store the reference and log a message.
@@ -867,9 +884,10 @@ public class Core extends Application implements ICore {
 			}
 		} catch (JsonParseException e) {
 			// Log the message
-			System.err.println("Core Message: "
-					+ "JSON parsing failed for message " + messageString);
+			String err = "Core Message: " + "JSON parsing failed for message "
+					+ messageString;
 			logger.error(getClass().getName() + " Exception!", e);
+			logger.error(err);
 		}
 
 		return messages;

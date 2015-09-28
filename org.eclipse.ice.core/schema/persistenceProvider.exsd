@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.ice.core" id="persistenceProvider" name="Persistence Provider"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension point will consume a realization of the IPersitenceProvider interface for the purpose of persisting and loading Items to and from persistence storage.
       </documentation>
    </annotation>
 
@@ -49,7 +49,7 @@
 
    <element name="implementation">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
