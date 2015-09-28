@@ -431,7 +431,7 @@ public class MOOSEModel extends Item {
 				if (remoteConnection != null) {
 					RemoteYamlSyntaxGenerator generator = new RemoteYamlSyntaxGenerator(remoteConnection, mooseFolder,
 							uri.getRawPath());
-					generator.generate();
+					generator.execute(null);
 				}
 
 				String animal = Paths.get(uri.getRawPath()).getFileName().toString();

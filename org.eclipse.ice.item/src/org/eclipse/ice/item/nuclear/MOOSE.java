@@ -283,9 +283,8 @@ public class MOOSE extends Item {
 				host = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
 			}
 
-			// Get an ICEUpdater, this will return null if the user does not
-			// want this feature
-			// FIXME SHOULD THIS HAPPEN BEFORE TREE VALIDATION??
+			// Get an ICEUpdater, this will return null if the 
+			// user does not want this feature
 			String thisHost = "";
 			try {
 				thisHost = InetAddress.getByName(InetAddress.getLocalHost().getHostName()).getHostAddress();
