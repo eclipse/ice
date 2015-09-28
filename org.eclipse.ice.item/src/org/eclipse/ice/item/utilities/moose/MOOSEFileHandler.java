@@ -16,7 +16,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -32,6 +31,7 @@ import java.util.Stack;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -324,21 +324,32 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/**
+	 * This method recursively goes through the Block and gives the list of
+	 * files available in the project to any File Entries.
 	 * 
 	 * @param block
 	 * @param projectDir
 	 */
 	private void setFileEntries(Block block, String projectDir) {
+		// Local Declarations
 		String availableFiles = "";
 
-		// Search the top level's
+		// Search the block with no children
 		if (block.getSubblocks().isEmpty()) {
 			for (Parameter p : block.getParameters()) {
 				if (p.getCpp_type().contains("FileName")) {
 					File[] files = new File(projectDir).listFiles();
 					for (File file : files) {
 						if (!file.isHidden() && !file.isDirectory()) {
-							availableFiles += file.getName() + " ";
+							// If it is a mesh file, only add exodus extensions
+							if (p.getCpp_type().contains("Mesh")) {
+								String extension = FilenameUtils.getExtension(file.getName());
+								if (extension.equals("e") || extension.equals("exo")) {
+									availableFiles += file.getName() + " ";
+								}
+							} else {
+								availableFiles += file.getName() + " ";
+							}
 						}
 					}
 
@@ -346,15 +357,27 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				}
 			}
 		} else {
+			// else loop over all sub blocks
 			for (Block subBlock : block.getSubblocks()) {
 				setFileEntries(subBlock, projectDir);
 			}
+
+			// Once we're through that, we still have to check
+			// the top level block
 			for (Parameter p : block.getParameters()) {
 				if (p.getCpp_type().contains("FileName")) {
 					File[] files = new File(projectDir).listFiles();
 					for (File file : files) {
 						if (!file.isHidden() && !file.isDirectory()) {
-							availableFiles += file.getName() + " ";
+							// If it is a mesh file, only add exodus extensions
+							if (p.getCpp_type().contains("Mesh")) {
+								String extension = FilenameUtils.getExtension(file.getName());
+								if (extension.equals("e") || extension.equals("exo")) {
+									availableFiles += file.getName() + " ";
+								}
+							} else {
+								availableFiles += file.getName() + " ";
+							}
 						}
 					}
 
@@ -399,6 +422,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		File yamlFile = new File(filePath);
 		input = new FileInputStream(yamlFile);
 
+		// Get the project space directory string
 		String projectDir = new File(yamlFile.getParent()).getParent();
 
 		// Load the YAML tree
@@ -734,7 +758,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.resources.IFile, java.lang.String, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.
+	 * resources.IFile, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void replace(IFile file, String regex, String value) {

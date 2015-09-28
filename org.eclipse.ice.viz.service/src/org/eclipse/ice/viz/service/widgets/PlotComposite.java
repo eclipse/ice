@@ -611,10 +611,12 @@ public abstract class PlotComposite extends Composite {
 		} catch (Exception e) {
 			// Log the exception that prevented the plot content from being
 			// thrown.
-			logger.debug(getClass().getName() + "message: " + "Exception "
+			logger.error(getClass().getName() + "message: " + "Exception "
 					+ " thrown while creating/refreshing the plot "
 					+ "content. Showing info composite instead.", e);
 
+			e.printStackTrace();
+			
 			// Update the infoComposite. Create it if necessary.
 			if (infoContent == null) {
 				infoContent = createInfoContent(this, SWT.NONE);
