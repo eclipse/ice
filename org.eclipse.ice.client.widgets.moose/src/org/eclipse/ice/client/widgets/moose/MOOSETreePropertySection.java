@@ -1,14 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan Deyton - Initial API and implementation and/or initial documentation
+ *   Robert Smith, Jordan Deyton - bug 474744
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
@@ -16,10 +15,16 @@ import org.eclipse.ice.client.common.properties.CellColumnLabelProvider;
 import org.eclipse.ice.client.common.properties.DescriptionCellContentProvider;
 import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.ice.client.common.properties.TextCellEditingSupport;
+import org.eclipse.ice.client.common.properties.TreePropertyContentProvider;
 import org.eclipse.ice.client.widgets.TreePropertySection;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 /**
@@ -87,17 +92,17 @@ public class MOOSETreePropertySection extends TreePropertySection {
 
 	/**
 	 * Adds the default and additional columns to the provided
-	 * <code>TableViewer</code>.
+	 * <code>TableViewer</code>. This should only be invoked on
+	 * CheckboxTableViewers.
 	 */
 	@Override
 	protected void addTableViewerColumns(TableViewer tableViewer) {
-
 		if (tableViewer != null) {
 			TableColumn column;
 			ICellContentProvider contentProvider;
 
-			// ---- Create the placeholder CheckBox column. ---- //
-			checkColumn = new TableViewerColumn(tableViewer, SWT.CENTER);
+			// // ---- Create the placeholder CheckBox column. ---- //
+			checkColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
 			column = checkColumn.getColumn();
 			column.setText("Enabled");
 			column.setToolTipText("If checked, the parameter will be written "
@@ -105,10 +110,10 @@ public class MOOSETreePropertySection extends TreePropertySection {
 					+ "will be commented out in the input file.");
 			column.setResizable(true);
 
-			// Create an ICellContentProvider for a column that should have a
-			// checkbox in each cell. Then hook it up to the column as a label
-			// provider and editing support.
-			contentProvider = new CheckboxCellContentProvider(tableViewer) {
+			// Create the check state manager. It also functions as the cell
+			// content provider for the first column.
+			TableCheckStateManager checkStateManager = new TableCheckStateManager(
+					tableViewer) {
 				@Override
 				public boolean setValue(Object element, Object value) {
 					boolean changed = super.setValue(element, value);
@@ -120,11 +125,20 @@ public class MOOSETreePropertySection extends TreePropertySection {
 					return changed;
 				}
 			};
-			checkColumn.setLabelProvider(new CheckboxCellLabelProvider(
-					contentProvider));
-			checkColumn.setEditingSupport(new CheckboxCellEditingSupport(
-					tableViewer, contentProvider));
-			// ------------------------------------------------- //
+
+			// Create a MOOSECheckStateProvider which sets the FormEditor as
+			// dirty when the checkbox's value is changed.
+			contentProvider = checkStateManager;
+
+			// Add a blank label provider. Nothing should appear in the first
+			// column except for the checkboxes.
+			checkColumn.setLabelProvider(
+					new CellColumnLabelProvider(contentProvider));
+
+			// Set the content provider and listener for the CheckBox column
+			CheckboxTableViewer checkedTableViewer = (CheckboxTableViewer) tableViewer;
+			checkedTableViewer.setCheckStateProvider(checkStateManager);
+			checkedTableViewer.addCheckStateListener(checkStateManager);
 
 			// Create the default columns.
 			super.addTableViewerColumns(tableViewer);
@@ -151,13 +165,52 @@ public class MOOSETreePropertySection extends TreePropertySection {
 					return changed;
 				}
 			};
-			descriptionColumn.setLabelProvider(new CellColumnLabelProvider(
-					contentProvider));
-			descriptionColumn.setEditingSupport(new TextCellEditingSupport(
-					tableViewer, contentProvider));
+			descriptionColumn.setLabelProvider(
+					new CellColumnLabelProvider(contentProvider));
+			descriptionColumn.setEditingSupport(
+					new TextCellEditingSupport(tableViewer, contentProvider));
 			// ------------------------------------------------- //
 		}
 
 		return;
+	}
+
+	/**
+	 * Creates the table that displays properties for viewing and editing.
+	 * 
+	 * @param client
+	 *            The client <code>Composite</code> that should contain the
+	 *            table of properties.
+	 * @return The <code>TableViewer</code> for the table of properties.
+	 */
+	@Override
+	protected TableViewer createTableViewer(Composite client) {
+
+		CheckboxTableViewer tableViewer = null;
+
+		if (client != null) {
+			Table table;
+
+			// Create the TableViewer and the underlying Table Control.
+			tableViewer = CheckboxTableViewer.newCheckList(client,
+					SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
+			// Set some properties for the table.
+			table = tableViewer.getTable();
+			table.setHeaderVisible(true);
+			table.setLinesVisible(true);
+
+			// Set up the content provider for the table viewer. Now the table
+			// viewer's input can be set.
+			tableViewer.setContentProvider(new TreePropertyContentProvider());
+
+			// Enable tool tips for the Table's cells.
+			ColumnViewerToolTipSupport.enableFor(tableViewer,
+					ToolTip.NO_RECREATE);
+
+			// Populate the TableViewer with its columns.
+			addTableViewerColumns(tableViewer);
+		}
+
+		return tableViewer;
 	}
 }

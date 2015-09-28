@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.eclipse.ice.viz.service.ISeries;
+import org.eclipse.ice.viz.service.ProxySeries;
 import org.eclipse.ice.viz.service.styles.XYZAxisStyle;
 import org.eclipse.ice.viz.service.styles.XYZPlotStyle;
 
@@ -50,7 +51,7 @@ public class PlotProvider {
 	 * The independent series. All of the other series in the map should be
 	 * plotted with respect to this series.
 	 */
-	private ISeries independentSeries;
+	private ProxySeries independentSeries;
 
 	/**
 	 * The axis style for the x axis, providing the description necessary to
@@ -87,7 +88,7 @@ public class PlotProvider {
 	public PlotProvider(String newPlotTitle) {
 		plotTitle = newPlotTitle;
 		seriesMap = new TreeMap<Double, ArrayList<ISeries>>();
-		independentSeries = new CSVSeries();
+		independentSeries = new ProxySeries();
 		plotStyle = new XYZPlotStyle();
 		xAxisStyle = new XYZAxisStyle();
 		yAxisStyle = new XYZAxisStyle();
@@ -223,7 +224,7 @@ public class PlotProvider {
 	 */
 	public void setIndependentSeries(ISeries indptSeries) {
 		if (indptSeries != null) {
-			independentSeries = indptSeries;
+			independentSeries = (ProxySeries) indptSeries;
 		}
 	}
 
