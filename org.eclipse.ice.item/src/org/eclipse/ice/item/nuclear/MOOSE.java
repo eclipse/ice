@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -94,7 +95,7 @@ public class MOOSE extends Item {
 	/**
 	 * Reference to the Model's input tree.
 	 */
-	@XmlTransient()
+	@XmlElement()
 	private TreeComposite modelTree;
 
 	/**

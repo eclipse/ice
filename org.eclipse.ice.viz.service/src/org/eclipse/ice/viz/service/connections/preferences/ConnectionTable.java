@@ -184,9 +184,10 @@ public class ConnectionTable extends VizTableComponent {
 				+ Integer.toString(PortEntryContentProvider.MIN_PORT) + "-"
 				+ Integer.toString(PortEntryContentProvider.MAX_PORT) + ".");
 		template.add(hostPortEntry);
+		
 		// ---- path ---- //
 		contentProvider = new BasicVizEntryContentProvider();
-		contentProvider.setAllowedValueType(VizAllowedValueType.Undefined);
+		contentProvider.setAllowedValueType(VizAllowedValueType.Executable);
 		VizEntry pathEntry = new VizEntry(contentProvider);
 		pathEntry.setName("Path");
 		pathEntry.setDescription("The full path to the local or remote installation.");

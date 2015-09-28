@@ -26,8 +26,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Jordan Deyton
  *
  */
-public class EntryCellContentProvider implements IVizCellContentProvider,
-		IVizComboCellContentProvider, ISecretCellContentProvider {
+public class EntryCellContentProvider
+		implements IVizCellContentProvider, IVizComboCellContentProvider, ISecretCellContentProvider {
 
 	/**
 	 * The text to display when a cell's element (expected to be an
@@ -153,8 +153,8 @@ public class EntryCellContentProvider implements IVizCellContentProvider,
 	 */
 	@Override
 	public boolean requiresCombo(Object element) {
-		return isValid(element)
-				&& ((VizEntry) element).getValueType() == VizAllowedValueType.Discrete;
+		return isValid(element) && (((VizEntry) element).getValueType() == VizAllowedValueType.Discrete
+				|| ((VizEntry) element).getValueType() == VizAllowedValueType.Executable);
 	}
 
 	/**

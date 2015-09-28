@@ -13,6 +13,8 @@ package org.eclipse.ice.viz.service.visit.connections;
 
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 
@@ -25,7 +27,7 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
  */
 public class VisItConnectionManager
 		extends VizConnectionManager<VisItSwtConnection> {
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#createConnection(java.lang.String, java.lang.String)
