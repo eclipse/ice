@@ -1,4 +1,4 @@
-package org.eclipse.ice.materials.ui.test;
+package org.eclipse.ice.ui.swtbot.test;
 
 import java.io.File;
 import java.util.ArrayList;

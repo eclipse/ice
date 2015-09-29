@@ -1,4 +1,4 @@
-package org.eclipse.ice.materials.ui.test;
+package org.eclipse.ice.ui.swtbot.test;
 
 import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
 
@@ -304,16 +304,16 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 				1);
 		assertEquals(6, cellIntValue);
 
-		// TODO Is a negative value meaningful here?
-		// // Change the amount of americum to a negative number. This change
-		// should be rejected.
-		// customMaterialTable.selectCell(bot, 1, 0);
-		// bot.text("6").typeText("-1");
-		// customMaterialTable.selectCell(bot, 0, 0);
-		// customMaterialTable.selectCell(bot, 1, 0);
-		// cellIntValue = (int)
-		// realCustomMaterialTable.getDataValueByPosition(2, 1);
-		// assertEquals(6, cellIntValue);
+		 
+		 // Change the amount of americum to a negative number. This change
+		 // should be rejected.
+		 customMaterialTable.selectCell(bot, 1, 0);
+		 bot.text("6").typeText("-1");
+		 customMaterialTable.selectCell(bot, 0, 0);
+		 customMaterialTable.selectCell(bot, 1, 0);
+		 cellIntValue = (int)
+		 realCustomMaterialTable.getDataValueByPosition(2, 1);
+		 assertEquals(6, cellIntValue);
 
 		// Edit the amount of americum.
 		customMaterialTable.selectCell(bot, 1, 0);
@@ -416,112 +416,6 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		MaterialsDatabaseServiceHolder.set(realDatabase);
 	}
 
-	/**
-	 * A class which allows an SWTBot to detect and interact with a NatTable.
-	 * 
-	 * @author Robert Smith
-	 *
-	 */
-	@SWTBotWidget(clasz = NatTable.class, preferredName = "nattable", referenceBy = { ReferenceBy.LABEL })
-	private class SWTBotNatTable extends AbstractSWTBot<NatTable> {
-
-		/**
-		 * The default constructor
-		 * 
-		 * @param nattable
-		 *            The NatTable to be wrapped.
-		 * @throws WidgetNotFoundException
-		 *             An exception to be thrown when the SWTBot is unable to
-		 *             find a valid NatTable.
-		 */
-		public SWTBotNatTable(NatTable nattable) throws WidgetNotFoundException {
-			super(nattable);
-		}
-
-		/**
-		 * Gets the row count for the NatTable
-		 * 
-		 * @return The number of rows in the NatTable
-		 */
-		public int rowCount() {
-			int totalRows = syncExec(new IntResult() {
-				public Integer run() {
-					return widget.getRowCount();
-				}
-			});
-
-			// The NatTable counts the top row listing column names in its total
-			// count of rows, so the actual number of items in the table is one
-			// less.
-			return totalRows - 1;
-		}
-
-		public void selectCell(SWTWorkbenchBot bot, final int column,
-				final int row) {
-
-			// Rectangle cell = widget.getBoundsByPosition(column - 1, row - 1);
-			// Point point = widget.toDisplay(cell.x, cell.y);
-
-			Point point = syncExec(new Result<Point>() {
-				public Point run() {
-					Rectangle cell = widget.getBoundsByPosition(column + 1,
-							row + 1);
-					return widget.toDisplay(cell.x + cell.width / 2, cell.y
-							+ cell.height / 2);
-				}
-			});
-
-			Event event = new Event();
-			Display display = bot.getDisplay();
-
-			event.type = SWT.MouseMove;
-			event.x = point.x;
-			event.y = point.y;
-			display.post(event);
-
-			event = new Event();
-			event.type = SWT.MouseDown;
-			event.button = 1;
-			display.post(event);
-			display.post(event);
-
-			event = new Event();
-			event.type = SWT.MouseUp;
-			event.button = 1;
-			display.post(event);
-
-			// notify(SWT.MouseEnter);
-			// notify(SWT.MouseMove);
-			// notify(SWT.Activate);
-			// notify(SWT.FocusIn);
-			// notify(SWT.MouseDown, createMouseEvent(point.x, point.y, 1,
-			// SWT.NONE, 1));
-			// notify(SWT.MouseUp, createMouseEvent(point.x, point.y, 1,
-			// SWT.BUTTON1, 1));
-			// notify(SWT.MouseDown, createMouseEvent(point.x, point.y, 1,
-			// SWT.NONE, 1));
-			// notify(SWT.MouseDoubleClick, createMouseEvent(point.x, point.y,
-			// 1, SWT.BUTTON1, 2));
-			// // notify(SWT.MouseHover);
-			// // notify(SWT.MouseMove);
-			// // notify(SWT.MouseExit);
-			// // notify(SWT.Deactivate);
-			// // notify(SWT.FocusOut);
-
-			// event = new Event();
-			// event.type = SWT.MouseUp;
-			// event.button = 1;
-			// display.post(event);
-			//
-			// event = new Event();
-			// event.type = SWT.MouseDoubleClick;
-			// event.button = 1;
-			// display.post(event);
-			// display.post(event);
-
-			// event.type = SWT.
-		}
-	}
 }
 
 class maximizeableShell extends SWTBotShell {

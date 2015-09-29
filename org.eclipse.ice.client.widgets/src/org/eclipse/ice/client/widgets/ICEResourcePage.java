@@ -23,6 +23,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -31,6 +32,9 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -204,7 +208,13 @@ public class ICEResourcePage extends ICEFormPage
 			// FillLayout so its contents take up all available space.
 			browser = new Browser(parent, SWT.NONE);
 			toolkit.adapt(browser);
-			browser.setLayout(new FillLayout());
+
+			// A Grid Layout must be used, instead of the more natural
+			// FillLayout, in order to avoid a bug in which the browser is
+			// capable of forcing its parent section to resize.
+			browser.setLayout(new GridLayout());
+			browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			browser.layout(true);
 
 			// Display the default-selected Resource from the Resource View in
 			// the browser, or a message.
@@ -239,7 +249,7 @@ public class ICEResourcePage extends ICEFormPage
 	public void showResource(ICEResource resource) throws PartInitException {
 
 		// TODO Do this off the UI thread.
-		
+
 		// TODO This method has several return statements, making it a little
 		// hard to read. It should be updated and simplified.
 
@@ -481,7 +491,7 @@ public class ICEResourcePage extends ICEFormPage
 
 			// Refresh all plots in the grid associated with the resource.
 			plotGridComposite.refreshPlots(resource.getPath());
-			
+
 			// Layout the composite on the UI thread.
 			if (pageComposite != null) {
 				pageComposite.getDisplay().asyncExec(new Runnable() {
