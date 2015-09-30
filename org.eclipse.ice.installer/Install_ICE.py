@@ -38,6 +38,8 @@ def parse_args(args):
             help='The packages to update.  Leave blank to update all available packages.')
     parser.add_argument('-p', '--prefix', default=os.path.abspath(os.path.join(".","ICE")),
             help="The location to download and install ICE.")
+    parser.add_argument("--with-hdfjava", help="The path to an installation of HDFJava")
+    parser.add_argument("--with-visit", help="The path to an installation of VisIt")
     parser.add_argument("--skip-download", action='store_true',
                         help='Do not download new packages, use previously downloaded ones.')
     parser.add_argument('--cleanup', action='store_true',
@@ -48,6 +50,24 @@ def parse_args(args):
     # If update option was given blank set it to update everything
     if opts.update == [] or 'all' in opts.update:
         opts.update = ['ICE', 'VisIt', 'HDFJava']
+
+    if opts.with_hdfjava is not None and 'HDFJava' in opts.update:
+        print("")
+        print("--------------------------- WARNING -----------------------------")
+        print("Options used to install HDFJava and use an existing installation.")
+        print("We will try to use the existing installation.  If this does not work")
+        print("try running again without the --with-hdfjava option.")
+        print("--------------------------- WARNING -----------------------------")
+        print("")
+
+    if opts.with_visit is not None and 'VisIt' in opts.update:
+        print("")
+        print("--------------------------- WARNING -----------------------------")
+        print("Options used to install HDFJava and use an existing installation.")
+        print("We will try to use the existing installation.  If this does not work")
+        print("try running again without the --with-hdfjava option.")
+        print("--------------------------- WARNING -----------------------------")
+        print("")
     return opts
 
 
@@ -79,6 +99,12 @@ def get_os_and_arch():
 def print_header(opts, os_type, arch_type):
     print("Preparing to install ICE...")
     print("")
+    if not opts.skip_download:
+        print("Downloading and installing:")
+    else:
+        print("Installing the following packages:")
+    for pkg in opts.update:
+        print("  " + pkg)    
 
 
 def get_package_file(pkg, os_type, arch_type):
@@ -228,32 +254,57 @@ def nix_install(opts, pkg_dirs):
             install_cmd = [install_script, "--exclude-subdir", "--prefix="+os.path.join(opts.prefix,pkg_dirs['HDFJava'])]
             subprocess.call(install_cmd)
 
-    hdf_libdir = os.path.abspath(find_file(opts.prefix, "libhdf.a"))
-    if hdf_libdir == None:
-        print("ERROR: Could not find HDF Java libraries.")
+    hdf_path = opts.with_hdfjava if opts.with_hdfjava else opts.prefix
+    hdf_libdir = find_file(hdf_path, "libhdf.a")
+    if hdf_libdir is None:
+        print("")
+        print("--------------------------- ERROR -----------------------------")
+        print("Could not find a usable HDFJava library.  Try downloading")
+        print("a fresh copy using this installer by providing the --update")
+        print("option without any arguments")
+        print("--------------------------- ERROR -----------------------------")
+        print("")
         exit()
+    hdf_libdir = os.path.abspath(hdf_libdir)
 
-    visit_bin_dir = os.path.abspath(find_file(opts.prefix, "visit"))
-    if visit_bin_dir == None:
-        print("ERROR: Could not find VisIt executable.")
+    visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
+    print "LOOKING FOR VISIT IN: " + visit_path
+    visit_bin_dir = find_file(visit_path, "visit")
+    if visit_bin_dir is None:
+        print("")
+        print("--------------------------- ERROR -----------------------------")
+        print("Could not find a usable VisIt executable.  Try downloading")
+        print("a fresh copy using this installer by providing the --update")
+        print("option without any arguments")
+        print("--------------------------- ERROR -----------------------------")
+        print("")
         exit()
-
+    visit_bin_dir = os.path.abspath(visit_bin_dir)
+    
     ice_preferences = find_file(opts.prefix, "ICE.ini")
     if ice_preferences == None:
-        print("ERROR: Could not find ICE preferences directory.")
+        print("")
+        print("--------------------------- ERROR -----------------------------")
+        print("Could not find a usable ICE preferences file.  Try downloading")
+        print("a fresh copy using this installer by providing the --update")
+        print("option without any arguments")
+        print("--------------------------- ERROR -----------------------------")
+        print("")
         exit()
+    ice_preferences = os.path.abspath(ice_preferences)    
     shutil.move(ice_preferences, ice_preferences + ".bak")
     with open(ice_preferences + ".bak") as infile:
         filedata = infile.read()
 
-    filedata = filedata.replace("-Dvisit.binpath=@user.home/visit/bin", "-Dvisit.binpath=" +
-                                visit_bin_dir)
-
-    with open(ice_preferences, 'w') as outfile:
-        outfile.write(filedata)
-
-    with open(ice_preferences, 'a') as outfile:
-        outfile.write("-Djava.library.path=" + hdf_libdir)
+    if visit_bin_dir is not None:
+        filedata = filedata.replace("-Dvisit.binpath=@user.home/visit/bin", "-Dvisit.binpath=" +
+                                    visit_bin_dir)
+        with open(ice_preferences, 'w') as outfile:
+            outfile.write(filedata)
+    
+    if hdf_libdir is not None:
+        with open(ice_preferences, 'a') as outfile:
+            outfile.write("-Djava.library.path=" + hdf_libdir)
 
 
 def windows_install(opts, pkg_dirs):
