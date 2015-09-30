@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension-point id="org.eclipse.ice.developer.code" name="Scientific Code" schema="schema/iceDevCode.exsd"/>
+	
+	
+   <extension
+         id="org.eclipse.ice.developer.menu"
+         name="Developer"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            class="org.eclipse.ice.developer.menu.ICEExtensionContributionFactory"
+            locationURI="menu:org.eclipse.ui.main.menu">
+      </menuContribution>
+   </extension>
+   <extension
+         id="org.eclipse.ice.developer.icedev"
+         name="ICE Developer Tooling"
+         point="org.eclipse.ice.developer.code">
+      <code
+            codeCategory="Framework"
+            codeName="ICE"
+            generateDefaultCommands="true"
+            repoURL="https://github.com/eclipse/ice"
+            versionControlType="git">
+      </code>
+   </extension>
+   
+</plugin>

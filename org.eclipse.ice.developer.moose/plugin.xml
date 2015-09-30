@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.ice.developer.moose"
+         name="MOOSE Developer Tooling"
+         point="org.eclipse.ice.developer.code">
+      <code
+            codeCategory="Framework"
+            codeName="MOOSE"
+            generateDefaultCommands="false"
+            repoURL="https://github.com/idaholab/moose"
+            versionControlType="git">
+         <command
+               commandName="Fork the Stork"
+               implementation="org.eclipse.ice.developer.moose.actions.ForkStorkHandler">
+         </command>
+         <command
+               commandName="Clone MOOSE"
+               implementation="org.eclipse.ice.developer.moose.actions.CloneMOOSEHandler">
+         </command>
+         <command
+               commandName="Fork MOOSE"
+               implementation="org.eclipse.ice.developer.moose.actions.ForkMOOSEHandler">
+         </command>
+      </code>
+   </extension>
+
+</plugin>

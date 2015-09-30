@@ -285,14 +285,6 @@
              tooltip="Delete the Selected Item">
        </command>
     </menuContribution>
-    <menuContribution
-          allPopups="false"
-          locationURI="menu:org.eclipse.ui.main.menu">
-       <menu
-             id="iceDevMenu"
-             label="Developer">
-       </menu>
-    </menuContribution>
  </extension>
  <!-- Commands -->
  <extension
