@@ -117,7 +117,8 @@ public class MaterialStackWritableTableFormat implements
 
 	/**
 	 * Sets the column value for the specified material stack and column. Will
-	 * only allow for the amount in the stack to be set.
+	 * only allow for the amount in the stack to be set. It rejects values of
+	 * zero or less, as these are not valid quantities for a material.
 	 *
 	 * @param stack
 	 *            The material stack
@@ -125,10 +126,11 @@ public class MaterialStackWritableTableFormat implements
 	 *            The new value for the amount in the material stack. Should
 	 *            accept int, double, and String values.
 	 * @param column
-	 * 			The column to be changed. Because there is only one column value
-	 * that can be changed, this method only accepts values greater than zero and
-	 * assumes to change the value column. If 0 is given, no action is taken and the
-	 * MaterialStack is not changed.
+	 *            The column to be changed. Because there is only one column
+	 *            value that can be changed, this method only accepts values
+	 *            greater than zero and assumes to change the value column. If 0
+	 *            is given, no action is taken and the MaterialStack is not
+	 *            changed.
 	 */
 	@Override
 	public MaterialStack setColumnValue(MaterialStack stack, Object newValue,
@@ -148,7 +150,12 @@ public class MaterialStackWritableTableFormat implements
 					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
-			stack.setAmount(value);
+
+			// If the value is valid, set it. Otherwise, reuse the previous
+			// amount.
+			if (value > 0) {
+				stack.setAmount(value);
+			}
 		}
 		return stack;
 	}

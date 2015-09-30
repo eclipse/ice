@@ -43,7 +43,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * The {@code ConnectionTable} used by this preference page. It is
 	 * represented by a {@link TableComponentComposite} on the page.
 	 */
-	private ConnectionTable table;
+	protected ConnectionTable table;
 
 	/**
 	 * The default constructor.
@@ -149,7 +149,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * @param table
 	 *            The table to load the current preferences into.
 	 */
-	private void loadPreferences(ConnectionTable table) {
+	protected void loadPreferences(ConnectionTable table) {
 		// Get the preference node for connection preferences.
 		CustomScopedPreferenceStore store = (CustomScopedPreferenceStore) getPreferenceStore();
 		IEclipsePreferences node = store.getNode(getConnectionsPreferenceNodeId());
@@ -200,7 +200,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * @param table
 	 *            The table containing the new connection preferences to store.
 	 */
-	private void savePreferences(ConnectionTable table) {
+	protected void savePreferences(ConnectionTable table) {
 		// Get the preference node for connection preferences.
 		CustomScopedPreferenceStore store = (CustomScopedPreferenceStore) getPreferenceStore();
 		IEclipsePreferences node = store.getNode(getConnectionsPreferenceNodeId());

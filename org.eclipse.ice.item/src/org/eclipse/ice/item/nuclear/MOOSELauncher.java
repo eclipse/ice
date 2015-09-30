@@ -403,45 +403,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 */
 	@Override
 	public FormStatus process(String actionName) {
-
-		// Grab the Files Component so we can check
-		// that all the user specified files
-		// exist in the project space.
-		DataComponent files = (DataComponent) form
-				.getComponent(JobLauncherForm.filesId);
-		refreshProjectSpace();
-
-		// Loop over all file entries and make sure they exist
-		for (final Entry entry : files.retrieveAllEntries()) {
-			try {
-				// Check the entry value validity, if bad throw an exception
-				if (entry.getValue().isEmpty()
-						|| !project.getFile(entry.getValue()).exists()) {
-					throw new Exception(
-							"Error launching the Job, can't find file "
-									+ entry.getValue());
-				}
-			} catch (Exception e) {
-				// Let's catch the Exception in a somewhat graceful way...
-				logger.error(getClass().getName() + " Exception! ", e);
-				String errorMessage = "The MOOSE Application could not be launched because all required files "
-						+ "could not be found in "
-						+ project.getLocation().toOSString()
-						+ ". Please click 'Browse' on the following Entry to import the files.\n\nFile = "
-						+ (entry.getValue().isEmpty() ? entry.getName() : entry
-								.getValue()) + "\n" + e.getMessage();
-
-				// Invoke Item's throwErrorMessage to display a
-				// descriptive error to the user
-				throwErrorMessage("MOOSE Application Launch",
-						"org.eclipse.ice.item.nuclear", errorMessage);
-
-				// Tell the client InfoError.
-				return FormStatus.InfoError;
-			}
-
-		}
-
 		// Run the job launchers process method.
 		return super.process(actionName);
 

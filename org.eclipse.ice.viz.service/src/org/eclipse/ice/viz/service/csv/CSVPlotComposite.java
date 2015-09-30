@@ -119,7 +119,16 @@ public class CSVPlotComposite extends PlotComposite {
 
 		return actions;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#hasInterchangeableSeries()
+	 */
+	@Override
+	protected boolean hasInterchangeableSeries(){
+		return true;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#hideSeries(org.eclipse.ice.viz.service.ISeries)
@@ -157,7 +166,7 @@ public class CSVPlotComposite extends PlotComposite {
 	 */
 	@Override
 	protected void updatePlotContent(Composite plotContent) throws Exception {
-		IPlot plot = getPlot();
+		IPlot plot = (IPlot) getPlot();
 
 		// Apply the basic plot features.
 		plotProvider.setPlotTitle(plot.getPlotTitle());

@@ -8,6 +8,7 @@ Export-Package: org.eclipse.ice.client.common,
  org.eclipse.ice.client.common.internal,
  org.eclipse.ice.client.common.properties,
  org.eclipse.ice.client.common.wizards,
+ org.eclipse.ice.client.internal,
  org.eclipse.ice.iclient,
  org.eclipse.ice.iclient.uiwidgets
 Import-Package: javax.ws.rs.core,
