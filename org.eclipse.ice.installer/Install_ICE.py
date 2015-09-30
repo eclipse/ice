@@ -28,7 +28,7 @@ import itertools
 import subprocess
 
 def parse_args(args):
-    """ Parse command line arguements and return them. """
+    """ Parse command line arguments and return them. """
     parser = argparse.ArgumentParser(description="ICE Installer script.",
                 formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                 fromfile_prefix_chars='@')
@@ -138,7 +138,7 @@ def download_packages(opts, os_type, arch_type):
     return files
 
 
-def unzip_package(file_path, out_path):
+def unzip_package(pkg, file_path, out_path):
     """ Unzips file_path to out_path """
     print("Unpacking " + file_path + "....")
     mkdir_p(out_path)
@@ -151,7 +151,7 @@ def unzip_package(file_path, out_path):
     return out_path
 
 
-def untar_package(file_path, out_path):
+def untar_package(pkg, file_path, out_path):
     """ Untars file_path to out_path """
     print("Unpacking " + file_path + "....")
     mkdir_p(out_path)
@@ -161,23 +161,23 @@ def untar_package(file_path, out_path):
     pkg.close()
     return dir_name
 
-def undmg_package(file_path, out_path):
+def undmg_package(pkg, file_path, out_path):
     """ Extracts contents of file_path to out_path """
     print("Unpacking " + file_path + " to " + out_path + "....")
     mnt_point = os.path.join(out_path, 'mnt')
     mkdir_p(mnt_point)
-    mount_cmd = ['hdiutil', 'attach', '-mountpoint', mnt_point, file_path]
-    unmount_cmd = ['hdiutil', 'detach', mnt_point]
+    mount_cmd = ['hdiutil', 'attach', '-mountpoint', mnt_point, file_path, '-quiet']
+    unmount_cmd = ['hdiutil', 'detach', mnt_point, '-force', '-quiet']
     subprocess.Popen(mount_cmd)
     time.sleep(3)
-    content = find_file(mnt_point, "*.app")
+    content = find_dir(mnt_point, "Resources")
     if content is None:
         print "could not find"
         return
-    print "  Copying " + content + " to " + os.path.join(out_path,content.split(os.sep)[-1]) + "...."
-    if os.path.exists(os.path.join(out_path, content.split(os.sep)[-1])):
-        shutil.rmtree(os.path.join(out_path, content.split(os.sep)[-1]))
-    shutil.copytree(content, out_path + os.sep + content.split(os.sep)[-1])
+    print "  Copying " + content + " to " + os.path.join(out_path,pkg) + "...."
+    if os.path.exists(os.path.join(out_path, pkg)):
+        shutil.rmtree(os.path.join(out_path, pkg))
+    shutil.copytree(content, os.path.join(out_path,pkg))
     time.sleep(3)
     subprocess.Popen(unmount_cmd)
 
@@ -187,11 +187,11 @@ def unpack_packages(opts, pkg_files):
     dirs = dict()
     for pkg, archive in pkg_files.iteritems():
         if archive.endswith(".tar.gz") or archive.endswith(".tgz") or archive.endswith(".tar"):
-            dirs[pkg] = untar_package(archive, opts.prefix)
+            dirs[pkg] = untar_package(pkg, archive, opts.prefix)
         elif archive.endswith(".zip"):
-            dirs[pkg] = unzip_package(archive, opts.prefix)
+            dirs[pkg] = unzip_package(pkg, archive, opts.prefix)
         elif archive.endswith(".dmg"):
-            dirs[pkg] = undmg_package(archive, opts.prefix)
+            dirs[pkg] = undmg_package(pkg, archive, opts.prefix)
         elif archive.endswith(".exe"):
             dirs[pkg] = archive
     return dirs
@@ -210,6 +210,15 @@ def find_file(dir, fname):
     return None
 
 
+def find_dir(dir, dirname):
+    """ Warning: this only finds the first directory that matches """
+    for root, dirs, files in os.walk(dir):
+        for dir in dirs:
+            if fnmatch.fnmatch(dir, dirname):
+                return os.path.join(root, dir)
+    return None
+
+
 def nix_install(opts, pkg_dirs):
     """ Install packages for *nix """
     if "HDFJava" in pkg_dirs.keys():
@@ -219,12 +228,12 @@ def nix_install(opts, pkg_dirs):
             install_cmd = [install_script, "--exclude-subdir", "--prefix="+os.path.join(opts.prefix,pkg_dirs['HDFJava'])]
             subprocess.call(install_cmd)
 
-    hdf_libdir = os.path.dirname(find_file(opts.prefix, "libhdf.a"))
+    hdf_libdir = os.path.abspath(find_file(opts.prefix, "libhdf.a"))
     if hdf_libdir == None:
         print("ERROR: Could not find HDF Java libraries.")
         exit()
 
-    visit_bin_dir = os.path.dirname(find_file(opts.prefix, "visit"))
+    visit_bin_dir = os.path.abspath(find_file(opts.prefix, "visit"))
     if visit_bin_dir == None:
         print("ERROR: Could not find VisIt executable.")
         exit()
@@ -238,7 +247,7 @@ def nix_install(opts, pkg_dirs):
         filedata = infile.read()
 
     filedata = filedata.replace("-Dvisit.binpath=@user.home/visit/bin", "-Dvisit.binpath=" +
-                                os.path.join(os.path.abspath(opts.prefix),visit_bin_dir))
+                                visit_bin_dir)
 
     with open(ice_preferences, 'w') as outfile:
         outfile.write(filedata)
@@ -308,35 +317,30 @@ def linux_post(opts, pkgs):
 def osx_post(opts, pkgs):
     """ Post installation for OS X """
     mkdir_p(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS"))
-    infoplist_path = os.path.join(opts.prefix, "ICE.app", "Contents", "Info.plist")
-    script_path = os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh")
-    visit_libdir = os.path.dirname(find_file(opts.prefix, "libvisit*"))
-    plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', infoplist_path]
-    chmod_cmd= ['chmod', '+x', script_path]
+    script_path = os.path.join(opts.prefix, "ICE.app", "Contents", "Info.plist")
+    visit_libdir = os.path.abspath(find_file(opts.prefix, "libvisit*"))
+    plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', script_path]
     lsregister_cmd = ['/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
                       '-v', '-f', os.path.join(opts.prefix, 'ICE.app')]
     ln_cmd = ['ln', '-sf', os.path.abspath(os.path.join(opts.prefix, "ICE.app")), os.path.join(os.path.expanduser("~"),'Applications','ICE.app')]
     with open(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), 'w') as f:
         f.write('#!/bin/bash')
         f.write('\nsource ~/.bash_profile')
-        f.write('\nexport DYLD_LIBRARY_PATH=' + os.path.join(opts.prefix, visit_libdir) + ':$DYLD_LIBRARY_PATH')
+        f.write('\nexport DYLD_LIBRARY_PATH=' + visit_libdir + ':$DYLD_LIBRARY_PATH')
         f.write('\nexec `dirname $0`/ICE $0')
         f.write('\n')
+    os.chmod(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), 0755)
     ice_preferences = find_file(opts.prefix, 'ICE.ini')
     with open(ice_preferences, 'a') as f:
         f.write("\n-Xdock:name=Eclipse ICE")
     subprocess.Popen(plutil_cmd)
-    subprocess.Popen(chmod_cmd)
     subprocess.Popen(lsregister_cmd)
     subprocess.Popen(ln_cmd)
-
-
 
 
 def windows_post(opts, pkgs):
     """ Post installation for Windows """
     pass
-
 
 
 def main():
