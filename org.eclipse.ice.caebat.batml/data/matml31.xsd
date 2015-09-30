@@ -1,0 +1,3092 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This version:   MatML Version 3.1, matml31.xsd, October 2004
+
+Schema for MatML, an extensible markup language, or XML, developed especially for the management and interchange of materials information. The history of MatML and examples of use are available at http://www.matml.org.
+
+The MatML schema is not subject to copyright in the United States and is in the public domain. The current schema was edited by the Schema Development Working Group (Doug Fleming Chair, Laura Bartolo, Sally Fahrenholz-Mann, Debbie Mies, Craig Seymour) of the MatML Coordinating Committee (Gil Kaufman and Laura Bartolo Co-Chairs), in association with E. F. Begley.
+
+Prior versions: 
+   MatML Version 3.0 Schema in XML Schema Definition language (xsd) format. (December 2002,    Obsolete)
+   Annotated MatML DTD Version 2.0 in plain text format. (March 2001, Obsolete)
+   Annotated MatML DTD Version 1.0 in plain text format. (April 2000, Obsolete)
+
+Prior versions and revision history are available at http://www.matml.org. Prior versions were authored by E.F. Begley on behalf of the MatML Working Group (1999-2001) and the MatML Steering Committee (2002) and are official contributions of the National Institute of Standards and Technology (NIST), an agency of the U.S. Department of Commerce, which are not subject to copyright in the United States.
+
+This work is provided "as is" and the developers make no representations or warranties, express or implied, including but not limited to, warranties of merchantability or fitness for any particular purpose.
+
+"METADATA" is a trademark of the Metadata Company. Any use of the term "metadata" in this document is in a descriptive sense, meaning "data about data." MatML is not in any way affiliated with the Metadata Company.
+********************************************************************************************
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.matml.org" xlmns="http://www.matml.org" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--The main element:-->
+	<xsd:element name="MatML_Doc">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************              MatML_Doc               *************************
+			
+			This element declares the content model for MatML_Doc, topmost in the
+			hierarchy of elements that comprise a document marked up using MatML.
+			Content models describe the relationships of the element and its child
+			elements. MatML_Doc must contain one or more Material elements.
+			
+			Metadata contains descriptions of the data sources, properties,
+			measurement techniques, specimens, and parameters which are
+			referenced when materials property data are encoded using
+			other elements. Metadata may occur once or not at all within the
+			Material element. For more information, see the documentation for the
+			Metadata element.
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Material" type="Material" maxOccurs="unbounded"/>
+				<xsd:element name="Metadata" type="Metadata" minOccurs="0"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<!-- Type definitions follow:-->
+	<xsd:simpleType name="Associate">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************           Associate              *************************
+
+			This element declares the content model for Associate, which contains
+			a string representing a component's associate.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:complexType name="AssociationDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************     AssociationDetails       *************************
+
+			This element declares the content model for AssociationDetails, which
+			contains a description of a relationship of the component to another
+			component in a complex material system such as a composite, weld, or
+			multilayer material. AssociationDetails is composed of the following
+			elements. 
+
+			Associate contains the name of a component's associate. For example,
+			a TiC coating has been placed on AISI 1018 steel coupons. The
+			Associate of the steel, then, is the "titanium carbide coating." Associate
+			must occur once and only once within the AssociationDetails element.
+
+			Relationship contains a description of the relationship between a
+			component and the associate. For example, the associate of the "steel"
+			component is the "titanium carbide coating." The relationship of the "steel"
+			to the "titanium carbide coating" is that the steel is the "substrate" for
+			the coating. Relationship must occur once and only once within the
+			AssociationDetails element.
+
+			Notes contains any additional information concerning the association and
+			may occur once or not at all within the AssociationDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Associate" type="Associate" minOccurs="0"/>
+			<xsd:element name="Relationship" type="Relationship" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="BulkDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         BulkDetails           *************************
+
+			This element declares the content model for BulkDetails, which
+			contains a description of the bulk material and is composed of the
+			following elements.
+
+			Name contains the material's name and has one optional attribute,
+			authority, for identifying an authoritative source of material
+			names. Name must occur once and only once within the BulkDetails
+			element.
+
+			Class contains the material's class and may occur zero or more times
+			within the BulkDetails element.
+
+			Subclass contains the material's subclass(es) and may occur zero 
+			or more times within the BulkDetails element.
+
+			Specification contains the material's specification(s) and has one
+			optional attribute, authority, for identifying an authoritative
+			source of material specifications. Specification may occur zero or
+			more times within the BulkDetails element.
+
+			Source contains the name of the source of the material and may
+			occur once or not at all within the BulkDetails element.
+
+			Form contains the form of the material and may occur once or not at
+			all within the BulkDetails element.  It has an optional element 
+			Geometry, for describing the dimensions of the Component.  For 
+			additional information, see the documentation for the Form type.
+
+			ProcessingDetails contains a description of a processing step for
+			the material and may occur zero or more times within the BulkDetails
+			element. For additional information, see the documentation for the
+			ProcessingDetails element.
+
+			Characterization contains the characterization of the material,
+			including the formula, chemical composition, phase composition, and
+			dimensional details. Characterization may occur once or not at all
+			within the BulkDetails element. For additional information, see the 
+			documentation for the Characterization element.
+
+			PropertyData contains the property data for the material and may occur
+			zero or more times within the BulkDetails element. For additional
+			information, see the documentation for the PropertyData element.
+
+			Notes contains any additional information concerning the bulk material
+			and may occur once or not at all within the BulkDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Class" type="Class" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Subclass" type="Class" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Specification" type="Specification" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Source" type="Source" minOccurs="0"/>
+			<xsd:element name="Form" type="Form" minOccurs="0"/>
+			<xsd:element name="ProcessingDetails" type="ProcessingDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Characterization" type="Characterization" minOccurs="0"/>
+			<xsd:element name="PropertyData" type="PropertyData" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Characterization">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************       Characterization        *************************
+
+			This element declares the content model for Characterization, which
+			contains a description of the chemical composition of the bulk material
+			or component and is composed of the following elements.
+
+			Formula contains a string representation of the chemical formula for
+			the bulk material or component and must occur once and only once
+			within the Characterization element.  For further details see documentation
+			of the Formula element.
+
+			ChemicalComposition contains a description of the compounds and
+			elements that comprise the bulk material or component and may
+			occur once or not at all within the Characterization element. For
+			additional information, see the documentation for the ChemicalComposition
+			element.
+
+			PhaseComposition contains a description of the phases that comprise
+			the bulk material or component and may occur zero or more times
+			within the Characterization element. For additional information, see the
+			documentation for the PhaseComposition element.
+			
+			DimensionalDetails contains information relating to component or bulk
+			material dimensional characteristics such as grain size, porosity,
+			precipitate size and distribution, etc., and may occur zero or more times
+			within the Characterization element. For additional information, see the
+			documentation for the DimensionalDetails element.
+
+			Notes contains any additional information concerning the Characterization
+			and may occur once or not at all within the Characterization element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Formula" type="Formula"/>
+			<xsd:element name="ChemicalComposition" type="ChemicalComposition" minOccurs="0"/>
+			<xsd:element name="PhaseComposition" type="PhaseComposition" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DimensionalDetails" type="DimensionalDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ChemicalComposition">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************    ChemicalComposition    *************************
+
+			This element declares the content model for ChemicalComposition, which
+			contains a detailed description of the compounds and elements that
+			comprise the bulk material or component. ChemicalComposition must
+			contain at least one Compound element or Element element but may
+			contain as many of each element as needed.
+
+			Compound contains a description of a compound. For additional
+			information, see the documentation for the Compound element.
+
+			Element contains a description of an element. For additional information,
+			see the documentation for the Element element.
+	
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice maxOccurs="unbounded">
+			<xsd:element name="Compound" type="Compound"/>
+			<xsd:element name="Element" type="Element"/>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="Class">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************              Class              *************************
+
+			This element declares the content model for Class, which is the material 
+			class to which the Material belongs.
+			
+			The Class can either have a Name or ParentMaterial element:
+			
+			Name contains a string representing the name of the material's class 
+			and may occur only once within the Class element.
+			
+			ParentMaterial is an reference by ID to another Material in the 
+			MatML_Doc and can occur only once in the Class element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:choice>
+				<xsd:element name="Name" type="Name"/>
+				<xsd:element name="ParentMaterial" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:attribute name="id" type="xsd:IDREF" use="required"/>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+			<xsd:element name="ParentSubClass" type="Class" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ComponentDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************     ComponentDetails        *************************
+
+			This element declares the content model for ComponentDetails, which
+			contains a description of a component within the bulk material and has
+			one optional attribute, id, which may be used as an identification
+			specifier for the component and is especially useful for complex
+			systems such as composite laminates.
+ 
+			ComponentDetails is composed of the following elements.
+
+			Name contains the component's name and has one optional attribute,
+			authority, for identifying an authoritative source of component names.
+			Name must occur once and only once within the ComponentDetails
+			type.
+
+			Class contains the component's class and may occur zero or more
+			times within the ComponentDetails element.  For additional information, 
+			see the	documentation for the Class type.
+
+			Subclass contains the component's subclass(es) and may occur zero
+			or more times within the ComponentDetails element. For additional
+			information, see the	documentation for the SubClass type.
+
+			Specification contains the component's specification(s) and has one
+			optional attribute, authority, for identifying an authoritative
+			source of component specifications. Specification may occur zero or
+			more times within the ComponentDetails type.
+
+			Source contains the name of the source of the component and may
+			occur once or not at all within the ComponentDetails type.  For 
+			additional information, see the documentation for the SourceDetails 
+			element.
+
+			Form contains the form of the component and may occur once or not
+			at all within the ComponentDetails type.  It has an optional element 
+			Geometry, for describing the dimensions of the Component.  For 
+			additional information, see the documentation for the Form type.
+
+			ProcessingDetails contains a description of a processing step for
+			the component and may occur zero or more times within the
+			ComponentDetails type. For additional information, see the
+			documentation for the ProcessingDetails element.
+
+			Characterization contains the characterization of the component,
+			including the formula, chemical composition, phase composition, and
+			dimensional details. Characterization may occur once or not at all
+			within the ComponentDetails type. For additional information, see
+			the documentation for the Characterization element.
+
+			PropertyData contains the property data for the component and may
+			occur zero or more times within the ComponentDetails type. For
+			additional information, see the documentation for the PropertyData
+			element.
+
+			AssociationDetails contains a description of a relationship of the
+			component to another component and may occur zero or more times
+			within the ComponentDetails type. For additional information, see
+			the documentation for the AssociationDetails element.
+
+			Notes contains any additional information concerning the component
+			and may occur once or not at all within the ComponentDetails type.
+
+			ComponentDetails contains a description of a component within the
+			component and is used to support encoding of information for
+			complex materials systems such as composites. ComponentDetails
+			may occur zero or more times within a ComponentDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Class" type="Class" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Subclass" type="Class" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Specification" type="Specification" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Source" type="Source" minOccurs="0"/>
+			<xsd:element name="Form" type="Form" minOccurs="0"/>
+			<xsd:element name="ProcessingDetails" type="ProcessingDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Characterization" type="Characterization" minOccurs="0"/>
+			<xsd:element name="PropertyData" type="PropertyData" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="AssociationDetails" type="AssociationDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ComponentDetails" type="ComponentDetails" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="Compound">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         Compound           *************************
+			
+			This element declares the content model for Compound, which contains
+			the elemental description of a chemical compound and is composed the
+			following elements.
+
+			Element contains the description of a chemical element and must occur
+			one or more times within the Compound element. For additional
+			information, see the documentation for the Element element.
+
+			Concentration contains the concentration of the compound and may
+			occur once or not at all within the Compound element. For additional
+			information, see the documentation for the Concentration element.
+			
+			Notes contains any additional information concerning the compound
+			and may occur once or not at all within the Compound element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Element" type="Element" maxOccurs="unbounded"/>
+			<xsd:element name="Concentration" type="Concentration" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Concentration">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************       Concentration        *************************
+
+			This element declares the content model for Concentration and is
+			composed of the following elements.
+
+			Value contains the value of the concentration and has one required
+			attribute, format, for indicating the format of the value.  Value must 
+			occur once and only once within the Concentration element.
+
+			Units contains the units for the value of the concentration and must
+			occur once 	and only once within the Concentration element. For additional
+			information, see the documentation for the Units element.
+
+			Qualifier contains any qualifier pertinent to the value of the concentration
+			(e.g. "min," "max," etc.) and may occur once or not at all within the
+			Concentration element.
+
+			Uncertainty contains the measurement uncertainty(ies) of the data in
+			Data and may occur zero or more times within the Concentration 
+			element. For additional information, see the documentation for the
+			Uncertainty type.
+	
+			Notes contains any additional information concerning the concentration
+			and may occur once or not at all within the Concentration element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Value" type="Value"/>
+			<xsd:element name="Units" type="Units"/>
+			<xsd:element name="Qualifier" type="Qualifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Uncertainty" type="Uncertainty" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="DataFormat">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************       DataFormat       *************************
+
+			This element declares the content model for DataFormat and is
+			composed of the following elements.
+
+			DataFormat is used to indicate the format of a value with which it is associated
+			("float," "integer," "string,", "exponential" or "mixed")
+			
+			"mixed" is only used for a group of data where each individual member of the
+			group can be given a unique format.
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="float"/>
+			<xsd:enumeration value="integer"/>
+			<xsd:enumeration value="string"/>
+			<xsd:enumeration value="exponential"/>
+			<xsd:enumeration value="mixed"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="DimensionalDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************   DimensionalDetails     *************************
+
+			This element declares the content model for DimensionalDetails, which
+			contains a description of a dimensional characteristic (e.g. grain size,
+			porosity, precipitate size and distribution, etc.) of the bulk material or
+			component and is composed of the following elements.
+
+			Name contains the name of the characteristic and has one optional
+			attribute, authority, for identifying an authoritative source of
+			dimensional characteristic names. Name must occur once and only once
+			within the DimensionalDetails element.
+
+			Value contains the value of the dimensional characteristic and has one
+			required attribute, format, for indicating the format of the value.  Value 
+			must occur once and only once within the DimensionalDetails element.
+
+			Units contains the units for the value of the dimensional characteristic
+			and must occur once and only once within the DimensionalDetails
+			element. For additional information, see the documentation for the Units
+			type.
+
+			Qualifier contains any qualifier pertinent to the value of the dimensional
+			characteristic (e.g. "min," "max," etc.) and may occur once or not at all
+			within the DimensionalDetails element.
+
+			Uncertainty contains the measurement uncertainty(ies) of the data in
+			Data and may occur zero or more times within the DimensionalDetails 
+			element. For additional information, see the documentation for the
+			Uncertainty type.
+
+			Notes contains any additional information concerning the dimensional
+			characteristic and may occur once or not at all within the
+			DimensionalDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Value" type="Value"/>
+			<xsd:element name="Units" type="Units"/>
+			<xsd:element name="Qualifier" type="Qualifier" minOccurs="0"/>
+			<xsd:element name="Uncertainty" type="Uncertainty" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Element">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************             Element            *************************
+
+			This element declares the content model for Element and is composed
+			of the following elements.
+
+			Symbol contains the symbol for the chemical element, which is one
+			among those enumerated by the ChemicalElementSymbol datatype.
+			Symbol has one optional attribute, subscript, for indicating the 
+			subscript (formula units) of the chemical element. Symbol must occur
+			once and only once within the Element element. For additional
+			information, see the documentation for the ChemicalElementSymbol
+			datatype.
+
+			Concentration contains the concentration of the element and may occur
+			once or not at all within the Element element. For additional information,
+			see the documentation for the Concentration element.
+
+			Notes contains any additional information concerning the element and
+			may occur once or not at all within the Element element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Symbol">
+				<xsd:annotation>
+					<xsd:documentation>
+
+					*************************       Symbol        *************************
+
+					This element declares the content model for Symbol, which contains
+					the symbol for the chemical element. The entry for Symbol is selected
+					from among the strings enumerated by the ChemicalElementSymbol
+					datatype. Symbol has one optional attribute, subscript, for indicating
+					the subscript (formula units) of the chemical element.
+
+					</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="ChemicalElementSymbol">
+							<xsd:attribute name="subscript" type="xsd:string" use="optional" default="1"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Concentration" type="Concentration" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Form">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************            Form            *************************
+
+			This element declares the content model for Form, which contains a
+			description of the form of the bulk material or component.
+			
+			It also contains an element to describe the geometry of the the form and
+			an element for any notes.  For additional information, see the 
+			documentation for the Geometry element
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Description" type="Name"/>
+			<xsd:element name="Geometry" type="Geometry" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:simpleType name="Formula">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************          Formula           *************************
+
+			Formula contains a string representation of the chemical formula for
+			the bulk material or component and must occur once and only once
+			within the Characterization element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:complexType name="Geometry">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************        Geometry        *************************
+
+			This element declares the content model for Geometry, which contains
+			a description of the geometry of the bulk material, component or 
+			specimen and is composed of the following elements.
+
+			Shape is a string describing the shape of the bulk material or
+			component and must occur once and only once within the Geometry
+			element.
+
+			Dimensions is a string describing the dimensions of the bulk material or 
+			component and may occur once or not at all within the Geometry element.
+
+			Orientation  is a string describing the orientation of the bulk material or 
+			component and may occur once or not at all within the Geometry element.
+
+			Notes contains any additional information concerning the geometry and
+			may occur once or not at all within the Geometry element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Shape" type="xsd:string"/>
+			<xsd:element name="Dimensions" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Orientation" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Glossary">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************      Glossary       *************************
+
+			This element declares the content model for Glossary, which contains
+			descriptions of material and property terms used in the document.
+			Glossary must contain one or more Term elements.
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Term" type="GlossaryTerm" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="GlossaryTerm">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         GlossaryTerm          *************************
+
+			This element declares the content model for GlossaryTerm which is
+			composed of the following elements.
+
+			Name contains the term's name and has one optional attribute,
+			authority, for identifying an authoritative source of terms. Name must
+			occur once and only once within the Term element.
+
+			Definition contains the term's definition and must occur once and only
+			once within the Term element.
+
+			Abbreviation contains the term's abbreviations and may occur zero
+			or more times within the Term element.
+
+			Synonym contains the term's synonyms and may occur zero or more
+			times within the Term element.
+
+			Notes contains any additional information concerning the term and may
+			occur once or not at all within the Term element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Definition" type="xsd:string"/>
+			<xsd:element name="Abbreviation" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Synonym" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Graphs">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************          Graphs           *************************
+
+			This element declares the content model for Graphs, which must contain
+			one or more Graph elements.
+
+			Graph uses the W3C's Scalable Vector Graphics markup language (SVG)
+			for describing two dimensional graphics and allows for three types of
+			graphical objects: vector graphics shapes, images, and text. Graph must
+			occur one or more times within the Graphs element. For more information
+			concerning SVG, see the documentation at http://www.w3.org/TR/SVG/.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:element name="Graph">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:any namespace="http://www.w3.org/2000/svg" processContents="lax" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Material">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                  Material                 *************************
+
+			This element declares the content model for Material, which contains
+			materials data. Material has three optional attributes.
+
+			The first attribute, id, may be used as an identification specifier for the
+			material, which is especially useful for complex systems such as
+			composite laminates.
+
+			The second attribute, layers, may be used to indicate the number of
+			layers in complex systems such as composite laminates.
+
+			The third attribute, local_frame_of_reference, may be used as an
+			identification specifier for the local material orientation relative to the
+			global frame of reference, which is especially useful for complex
+			systems such as anisotropic materials.
+
+			Material is composed of the following elements.
+
+			BulkDetails contains a description of the bulk material and must occur
+			once and only once within the Material element. For additional
+			information, see the documentation for the BulkDetails element.
+
+			ComponentDetails contains a description of a component within the
+			bulk material and may occur zero or more times within the Material
+			element. ComponentDetails may be used to describe complex materials
+			systems such as welds (e.g. the base metal, the heat affected zone,
+			and the weld metal) or composites (e.g. the whiskers, fibers, and
+			matrix of a fiber-reinforced composite material). For additional
+			information, see the documentation for the ComponentDetails
+			element.
+
+			Graphs contains descriptions of two dimensional graphics and may
+			occur once or not at all within the Material element. For additional
+			information, see the documentation for the Graphs element.
+
+			Glossary contains descriptions of the material and property terms
+			used in the document and may occur once or not at all within the
+			Material element. For additional information, see the documentation
+			for the Glossary element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="BulkDetails" type="BulkDetails"/>
+			<xsd:element name="ComponentDetails" type="ComponentDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Graphs" type="Graphs" minOccurs="0"/>
+			<xsd:element name="Glossary" type="Glossary" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="optional"/>
+		<xsd:attribute name="layers" type="xsd:integer" use="optional"/>
+		<xsd:attribute name="local_frame_of_reference" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="Metadata">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                Metadata                 *************************
+
+			This element declares the content model for Metadata, which contains
+			descriptions of authorities, data sources, measurement techniques,
+			parameters, properties, material and component sources, specimens, and
+			test conditions. Metadata is composed of the following elements.
+
+			AuthorityDetails contains a description of authorities referenced from 
+			the Specification and Name elements and may occur zero or more times 
+			within the Metadata element. For additional information, see the 
+			documentation for the AuthorityDetails element.
+
+			DataSourceDetails contains a description of a data source referenced
+			using the PropertyData element and may occur zero or more times within
+			the Metadata element. For additional information, see the documentation
+			for the DataSourceDetails element.
+
+			MeasurementTechniqueDetails contains a description of a measurement
+			technique referenced using the PropertyData element and may occur zero
+			or more times within the Metadata element. For additional information, see
+			the documentation for the MeasurementTechniqueDetails element.
+
+			ParameterDetails contains a description of a parameter referenced using
+			the PropertyData element and may occur zero or more times within the
+			Metadata element. For additional information, see the documentation for
+			the ParameterDetails element.
+
+			PropertyDetails contains a description of a property for which materials
+			data are encoded using the PropertyData element and may occur zero or
+			more times within the Metadata element. For additional information, see the
+			documentation for the PropertyDetails element.
+			
+			SourceDetails contains a description of the source of a material or
+			component referenced using the Source element and may occur zero or 
+			more times within the Metadata element. For additional information, see the 
+			documentation for the SourceDetails element.
+
+			SpecimenDetails contains a description of a specimen referenced using
+			the PropertyData element and may occur zero or more times within the
+			Metadata element. For additional information, see the documentation for
+			the SpecimenDetails element.
+			
+			TestCondtionDetails contains a description of the test condtion(s) 
+			referenced using the PropertyData element and may occur zero or more 
+			times within the	Metadata element. For additional information, see the 
+			documentation for the TestCondtionDetails element.
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="AuthorityDetails" type="AuthorityDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="DataSourceDetails" type="DataSourceDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="MeasurementTechniqueDetails" type="MeasurementTechniqueDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ParameterDetails" type="ParameterDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="PropertyDetails" type="PropertyDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SourceDetails" type="SourceDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="SpecimenDetails" type="SpecimenDetails" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TestConditionDetails" type="TestConditionDetails" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Name">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                  Name                  *************************
+
+			This element declares the content model for Name, which contains a
+			string representing a name and has one optional attribute, authority,
+			for identifying an authoritative source of names in the context in which
+			the Name element is used.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="authority" type="xsd:IDREF" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:simpleType name="Notes">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                  Notes                  *************************
+
+			This element declares the content model for Notes, which contains a
+			string representing descriptive notes.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:complexType name="ParameterValue">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************           ParameterValue         *************************
+
+			This element declares the content model for ParameterValue, which
+			contains the value of a parameter. ParameterValue has two required
+			attributes.
+
+			The first attribute, parameter, references an id attribute specified in a
+			ParameterDetails element so that the descriptive details of the parameter
+			are tied to the value.
+
+			The second attribute, format, indicates the format of the value.  If used, 
+			"mixed" indicates that the not all of the parameter values are of the same
+			type (e.g. a "No Break" value for an otherwise numeric set of Charpy 
+			Izod test results).  If used, then the "format" attribute on each "Data" 
+			item should be individually set.
+
+			ParameterValue  is composed of the following elements.
+
+			Data contains the property data and has one required attribute,
+			format, for indicating the format of the data. Data must occur once and only
+			once within the ParameterValue element.
+
+			Qualifier contains any qualifier(s) pertinent to the data in 
+			ParameterValue(e.g.	"min," "max," etc.) and may occur zero or more times
+			within the PropertyData element.
+
+			Uncertainty contains the measurement uncertainty(ies) of the data in
+			ParameterValue and may occur once or not at all within the ParameterValue
+			element. For additional information, see the documentation for the
+			Uncertainty element.
+
+			Notes contains any additional information concerning the property
+			data and may occur once or not at all within the PropertyData element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Data">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string">
+							<xsd:attribute name="format" type="DataFormat" use="optional"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Uncertainty" type="Uncertainty" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Qualifier" type="Qualifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="parameter" type="xsd:IDREF" use="required"/>
+		<xsd:attribute name="format" type="DataFormat" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="PhaseComposition">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         PhaseComposition         *************************
+			
+			This element declares the content model for PhaseComposition, which
+			contains a description of a phase that comprises the bulk material or
+			component and is composed of the following elements.
+
+			Name contains the name of the phase and has one optional attribute,
+			authority, for identifying an authoritative source of phase names. Name
+			must occur once and only once within the PhaseComposition element.
+
+			Concentration contains the concentration of the phase and may occur
+			once or not at all within the PhaseComposition element. For additional
+			information, see the documentation for the Concentration element.
+
+			PropertyData contains property data for the phase and may occur zero
+			or more times within the PhaseComposition element. For additional
+			information, see the documentation for the PropertyData element.
+
+			Notes contains any additional information concerning the phase and may
+			occur once or not at all within the PhaseComposition element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Concentration" type="Concentration" minOccurs="0"/>
+			<xsd:element name="PropertyData" type="PropertyData" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ProcessingDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         ProcessingDetails       *************************
+
+			This element declares the content model for ProcessingDetails, which
+			contains a description of a processing step for the bulk material or
+			component. ProcessingDetails is composed of the following elements.
+
+			Name contains the name of the processing step and has one optional
+			attribute, authority, for identifying an authoritative source of processing
+			step names. Name must occur once and only once within the
+			ProcessingDetails element.
+
+			ParameterValue contains the value of a parameter under which the
+			processing step occurred and may occur zero or more times within the
+			ProcessingDetails element. For additional information, see the
+			documentation for the ParameterValue element.
+
+			Result is a string that contains a description of the outcome or result of the
+			processing step and may occur once or not at all within the
+			ProcessingDetails element.
+
+			Notes contains any additional information concerning the processing
+			step and may occur once or not at all within the ProcessingDetails
+			element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="ParameterValue" type="ParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Result" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PropertyData">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************            PropertyData            *************************
+
+			This element declares the content model for PropertyData, which
+			contains property data. PropertyData has seven attributes.
+
+			The first attribute, property, is required and references an id attribute
+			specified in a PropertyDetails element so that the descriptive details for
+			the property are tied to the data found in the Data element.
+
+			The second attribute, technique, is optional and references an id attribute
+			Specified in a MeasurementTechniqueDetails element so that the
+			Descriptive details for the measurement technique are tied to the data found
+			In the Data element.
+
+			The third attribute, source, is optional and references an id attribute
+			specified in a DataSourceDetails element so that the descriptive details for
+			the data source are tied to the data found in the Data element.
+
+			The fourth attribute, specimen, is optional and references an id attribute
+			specified in a SpecimenDetails element so that the descriptive details for
+			the specimen are tied to the data found in the Data element.
+			
+			The fifth attribute, test, is optional and references an id attribute
+			specified in a TestCondtionDetails element so that the descriptive details for
+			the test condition(s) are tied to the data found in the Data element.
+			
+			The sixth attribute, delimiter, specifies the delimiter that separates multiple
+			values in the Data, Qualifier, Uncertainty, and ParameterValue 
+			elements.  The default value is a comma (',')
+			
+			The seventh attribute, quote, specifies the string that is used to quote values
+			in the Data, Qualifier, Uncertainty and ParameterValue elements.  The 
+			default value is a null string, which is equivalent to saying that the values
+			are not quoted.
+
+			PropertyData is composed of the following elements.
+
+			Data contains the property data and has one required attribute,
+			format, for indicating the format of the data. Data must occur once and only
+			once within the PropertyData element.
+
+			Qualifier contains any qualifier(s) pertinent to the data in Data (e.g.
+			"min," "max," etc.) and may occur once or not at all within the
+			PropertyData element.
+
+			Uncertainty contains the measurement uncertainty(ies) of the data in
+			Data and may occur once or not at all within the PropertyData
+			element. For additional information, see the documentation for the
+			Uncertainty element.
+
+			ParameterValue contains the value(s) of a parameter under which
+			the data were determined and may occur zero or more times within
+			the 	PropertyData element. For additional information, see the
+			documentation for the ParameterValue element.
+
+			Notes contains any additional information concerning the property
+			data and may occur once or not at all within the PropertyData element.
+
+				Note -	Multiple entries in the Data, Qualifier, Uncertainty Value, and
+						ParameterValue elements must be comma delimited and
+						synchronized across elements, i.e., the number of entries
+						in each of these four elements must be equal.
+
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Data">
+				<xsd:complexType>
+					<xsd:simpleContent>
+						<xsd:extension base="xsd:string">
+							<xsd:attribute name="format" type="DataFormat" use="required"/>
+						</xsd:extension>
+					</xsd:simpleContent>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="Uncertainty" type="Uncertainty" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Qualifier" type="Qualifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ParameterValue" type="ParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="property" type="xsd:IDREF" use="required"/>
+		<xsd:attribute name="technique" type="xsd:IDREF"/>
+		<xsd:attribute name="source" type="xsd:IDREF"/>
+		<xsd:attribute name="specimen" type="xsd:IDREF"/>
+		<xsd:attribute name="test" type="xsd:IDREF"/>
+		<xsd:attribute name="delimiter" default=",">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1"/>
+					<xsd:whiteSpace value="preserve"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="quote" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:simpleType name="Qualifier">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                 Qualifier               *************************
+
+			This element declares the content model for Qualifier, which contains
+			a string representing a qualifier.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:simpleType name="Relationship">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************            Relationship            *************************
+
+			This element declares the content model for Relationship, which
+			contains a string representing the relationship between a component
+			and the associate.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string"/>
+	</xsd:simpleType>
+	<xsd:complexType name="Source">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                 Source                *************************
+			
+			This element declares the content model for Source, which contains
+			an id attribute specified in a SourceDetails element representing 
+			the source of the bulk material or component
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="source" type="xsd:IDREF" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="Specification">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************            Specification             *************************
+
+			This element declares the content model for Specification, which
+			contains a string representing the specification for the bulk material or
+			component and has one optional attribute, authority, for identifying an
+			authoritative source of specifications.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="authority" type="xsd:IDREF" use="optional"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="Uncertainty">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************              Uncertainty             *************************
+
+			This element declares the content model for Uncertainty, which
+			contains a description of the measurement uncertainty of the data.
+			
+			Uncertainty has 1 optional attributes:
+			
+			Name is a description of the nature of the uncertainty value, for example 
+			'6 sigma', 'Gaussian' or '2 std dev.'
+			
+			Uncertainty is composed of the following elements.
+
+			Value contains the value of the uncertainty and has one required
+			attribute, format, for indicating the format of the value. Value must occur 
+			once and only once within the Uncertainty element. 
+
+			Units contains the units for the value of the uncertainty and must occur
+			once and only once within the Uncertainty element. For additional
+			information, see the documentation for the Units element.
+
+			Percentile is a  value indicating the percentage of the data population
+			that have values less than or equal to that expressed by the Uncertainty
+			value.  Percentile can occur sero or more times.  If Percentile is not given
+			then Value is interpreted as being an equal and unspecified deviation 
+			above and below the Property value(s).
+			
+			An uncertainty of 2 standard deviations below  the mean for a 
+			normally distributed dataset would have a uncertainty percentile of 5%,
+			and 2 standard deviations above the mean would be 95%.
+			
+			Notes contains any additional information concerning the uncertainty,
+			such as a description of the evaluation of the uncertainty, and may
+			occur once or not at all within the Uncertainty element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Value" type="Value"/>
+			<xsd:choice>
+				<xsd:element name="Units" type="Units"/>
+				<xsd:element name="Unitless" type="Unitless"/>
+			</xsd:choice>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+			<xsd:element name="Scale" default="Linear" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="Linear"/>
+						<xsd:enumeration value="Logarithmic"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="DistributionType" type="xsd:string" use="optional" default="Normal/Gaussian"/>
+		<xsd:attribute name="Num_Std_Dev" type="xsd:float" use="optional" default="2"/>
+		<xsd:attribute name="Percentile" type="xsd:float" use="optional"/>
+		<xsd:attribute name="ConfidenceLevel" type="xsd:float" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="Unit">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                   Unit                    *************************
+
+			This element declares the content model for Unit, which contains a
+			unit and has two optional attributes.
+
+			The first attribute, power, is used to indicate the exponent for Unit.
+
+			The second attribute, description, is used to describe Unit.
+
+				Note -	Multiple Unit elements are multiplied together to form units.
+						Division is specified by setting the power attribute of Unit
+						equal to "-1." For additional information, see the
+						documentation for the Units element.
+
+			Unit has a choice between two elements:
+			
+			Name is the Name of the unit, and can occur only once in the Unit 
+			element.
+			
+			Currency is the CurrencyCode for the unit, if it is a unit expressing 
+			cost in an ISO 4217 recognised currency.
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice>
+			<xsd:element name="Name" type="xsd:string"/>
+			<xsd:element name="Currency" type="CurrencyCode"/>
+		</xsd:choice>
+		<xsd:attribute name="power" type="xsd:decimal"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="Unitless">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                 Unitless               *************************
+
+			This element declares the content model for Unitless, which is an empty
+			element used whenever a property, parameter, or uncertainty value has
+			no units.
+
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:complexType>
+	<xsd:complexType name="Units">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                   Units                  *************************
+
+			This element declares the content model for Units, which contains units
+			and has four optional attributes.
+
+			The first attribute, system, is used to indicate the units system, such as
+			"SI."
+
+			The second attribute, factor, is used to indicate a constant multiplier in
+			floating point format.
+
+			The third attribute, name, is used to indicate the name of the units
+
+			The fourth attribute, description, is used to describe the units.
+
+			Units is composed of the following elements.
+
+			Unit contains a unit and must occur one or more times within the Units
+			element. For additional information, see the documentation for the Unit
+			element.
+
+				Note -	Multiple Unit elements are multiplied together to form the
+						units. Division is specified by using setting the power
+						attribute of Unit equal to "-1."
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Unit" type="Unit" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="system" type="xsd:string"/>
+		<xsd:attribute name="factor" type="xsd:float"/>
+		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+	</xsd:complexType>
+	<xsd:complexType name="Value">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************                  Value                  *************************
+
+			This element declares the content model for value, which contains a string
+			representing a value. Value has one required attribute, format, for indicating
+			the format of the value.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="format" type="DataFormat" use="required"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<!-- MetaData Type Definitions follow -->
+	<xsd:complexType name="AuthorityDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         AuthorityDetails             *************************
+
+			This element declares the content model for AuthorityDetails, which
+			contains a description of an authority referenced by other elements, such
+			as the Specification and Name elements.  An authority is typically an
+			organisation that is the authoritative source of information about the 
+			element that is referencing it.
+			
+			AuthorityDetails has one required attribute, id, which may be
+			arbitrarily assigned but must be unique among id attributes assigned
+			elsewhere in a MatML document. 
+			
+			AuthorityDetails additionally has two elements, Name and Notes.
+
+			Name contains the name of the Authority.  Name must occur once and 
+			only once within the AuthorityDetails element.
+
+			Notes contains any additional information concerning the parameter and
+			may occur once or not at all within the AuthorityDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="DataSourceDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************        DataSourceDetails          *************************
+
+			This element declares the content model for DataSourceDetails, which
+			contains a description of a data source referenced by the PropertyData
+			element. DataSourceDetails has one required attribute, id, which may be
+			arbitrarily assigned but must be unique among id attributes assigned
+			elsewhere in a MatML document. DataSourceDetails also has one
+			optional attribute, type, for specifying the type of the data source
+			(examples include "unpublished report," "journal," "handbook," etc.)
+			DataSourceDetails is composed of the following elements.
+
+			Name contains the name of the data source and has one optional
+			attribute, authority, for identifying an authoritative source of data
+			source names. Name must occur once and only once within the
+			DataSourceDetails element.
+
+			Notes contains any additional information concerning the data source
+			and may occur once or not at all within the DataSourceDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+		<xsd:attribute name="type" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="MeasurementTechniqueDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			************************* MeasurementTechniqueDetails *************************
+
+			This element declares the content model for MeasurementTechniqueDetails,
+			which contains a description of a measurement technique referenced by
+			the PropertyData element. MeasurementTechniqueDetails has one required
+			attribute, id, which may be arbitrarily assigned but must be unique among
+			id attributes assigned elsewhere in a MatML document.
+			MeasurementTechniqueDetails is composed of the following elements.
+
+			Name contains the name of the measurement technique and has one
+			optional attribute, authority, for identifying an authoritative source of
+			measurement techniques. Name must occur once and only once within the
+			MeasurementTechniqueDetails element.
+
+			Notes contains any additional information concerning the measurement
+			technique, such as a description of the technique, and may occur once or
+			not at all within the MeasurementTechniqueDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="ParameterDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         ParameterDetails           *************************
+
+			This element declares the content model for ParameterDetails, which
+			contains a description of a parameter referenced by the ParameterValue
+			element. ParameterDetails has one required attribute, id, which may be
+			arbitrarily assigned but must be unique among id attributes assigned
+			elsewhere in a MatML document. ParameterDetails is composed of
+			the following elements.
+
+			Name contains the name of the parameter and has one optional attribute,
+			authority, for identifying an authoritative source of parameter names.
+			Name must occur once and only once within the ParameterDetails
+			element.
+
+			Units and Unitless are mutually exclusive elements for describing the
+			parameter's units. Units or Unitless must occur once and only once
+			within the ParameterDetails element. For additional information, see the
+			documentation for the Units and Unitless elements.
+
+			Notes contains any additional information concerning the parameter and
+			may occur once or not at all within the ParameterDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:choice>
+				<xsd:element name="Units" type="Units"/>
+				<xsd:element name="Unitless" type="Unitless"/>
+			</xsd:choice>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="PropertyDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************           PropertyDetails            *************************
+
+			This element declares the content model for PropertyDetails, which
+			contains a description of a property referenced by the PropertyData
+			element. PropertyDetails has one required attribute, id, which may be
+			arbitrarily assigned but must be unique among id attributes assigned 
+			elsewhere in a MatML document. PropertyDetails also has one optional
+			attribute, type, for specifying the type of the property (examples include
+			"thermal," "mechanical," "electrical," etc.) PropertyDetails is composed of
+			the following elements.
+
+			Name contains the name of the property and has one optional attribute,
+			authority, for identifying an authoritative source of property names.
+			Name must occur once and only once within the PropertyDetails
+			element.
+
+			Units and Unitless are mutually exclusive elements for describing the
+			property's units. Units or Unitless must occur once and only once within
+			the PropertyDetails element. For additional information, see the
+			documentation for the Units and Unitless elements.
+
+			Notes contains any additional information concerning the property and
+			may occur once or not at all within the PropertyDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:choice>
+				<xsd:element name="Units" type="Units"/>
+				<xsd:element name="Unitless" type="Unitless"/>
+			</xsd:choice>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+		<xsd:attribute name="type" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="SourceDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************        SourceDetails          *************************
+
+			This element declares the content model for SourceDetails, which
+			contains the name of the source of the component.
+
+			Name contains the name of the source and has one optional
+			attribute, Notes.
+			
+			Notes contains any additional information concerning the data source
+			and may occur once or not at all within the DataSourceDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+		<xsd:attribute name="type" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="SpecimenDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************         SpecimenDetails            *************************
+
+			This element declares the content model for SpecimenDetails, which
+			contains a description of a specimen referenced by the PropertyData
+			element. SpecimenDetails has one required attribute, id, which may be
+			arbitrarily assigned but must be unique among id attributes assigned
+			elsewhere in a MatML document. SpecimenDetails also has one optional
+			attribute, type, for specifying the type of the specimen (examples include
+			"cylindrical," "rectangular," "full cross-section," "pressed," etc.)
+			SpecimenDetails is composed of the following elements.
+
+			SpecimenDetails also has 3 optional elements, Name, Geometry, and Notes.
+			
+			Name contains the name of the specimen and has one optional
+			attribute, authority, for identifying an authoritative source of specimen
+			names. Name may occur once or not at all within the SpecimenDetails
+			element.
+
+			Geometry describes the dimensions of the Component.  For 
+			additional information, see the documentation for the Geometry type. 
+			Geometry may occur once or not at all within the SpecimenDetails
+			element.
+
+			Notes contains any additional information concerning the specimen and
+			may occur once or not at all within the SpecimenDetails element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Name" type="Name" minOccurs="0"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+			<xsd:element name="Geometry" type="Geometry" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+		<xsd:attribute name="type" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="TestConditionDetails">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************       TestConditionDetails        *************************
+			
+			This element declares the content model for TestConditionDetails, which
+			contains a description of the test conditions referenced by the
+			PropertyData element. TestConditionDetails has one required attribute, id,
+			which may be arbitrarily assigned but must be unique among id attributes 
+			assigned elsewhere in a MatML document.
+
+			TestConditionDetails has two optional elements, ParameterValue and
+			Notes.
+			
+			ParameterValue contains the value(s) of a parameter, i.e., a test
+			condition, and may occur zero or more times within
+			the TestConditionDetails element. For additional information, see the
+			documentation for the ParameterValue element.
+
+			Notes contains any additional information concerning the test
+			conditions and may occur once or not at all within the 
+			TestConditionDetails element.
+			
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ParameterValue" type="ParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="Notes" type="Notes" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" use="required"/>
+	</xsd:complexType>
+	<!-- Enumerated type definitions follow:-->
+	<xsd:simpleType name="ChemicalElementSymbol">
+		<xsd:annotation>
+			<xsd:documentation>
+
+			*************************   ChemicalElementSymbol    *************************
+
+			This datatype enumerates the valid strings representing chemical
+			elements, which may be used in the Symbol element.
+
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="H">
+				<xsd:annotation>
+					<xsd:documentation>Hydrogen</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="He">
+				<xsd:annotation>
+					<xsd:documentation>Helium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Li">
+				<xsd:annotation>
+					<xsd:documentation>Lithium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Be">
+				<xsd:annotation>
+					<xsd:documentation>Beryllium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="B">
+				<xsd:annotation>
+					<xsd:documentation>Boron</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="C">
+				<xsd:annotation>
+					<xsd:documentation>Carbon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="N">
+				<xsd:annotation>
+					<xsd:documentation>Nitrogen</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="O">
+				<xsd:annotation>
+					<xsd:documentation>Oxygen</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="F">
+				<xsd:annotation>
+					<xsd:documentation>Fluorine</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ne">
+				<xsd:annotation>
+					<xsd:documentation>Neon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Na">
+				<xsd:annotation>
+					<xsd:documentation>Sodium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Mg">
+				<xsd:annotation>
+					<xsd:documentation>Magnesium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Al">
+				<xsd:annotation>
+					<xsd:documentation>Aluminium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Si">
+				<xsd:annotation>
+					<xsd:documentation>Silicon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="P">
+				<xsd:annotation>
+					<xsd:documentation>Phosphorus</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="S">
+				<xsd:annotation>
+					<xsd:documentation>Sulfur</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cl">
+				<xsd:annotation>
+					<xsd:documentation>Chlorine</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ar">
+				<xsd:annotation>
+					<xsd:documentation>Argon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="K">
+				<xsd:annotation>
+					<xsd:documentation>Potassium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ca">
+				<xsd:annotation>
+					<xsd:documentation>Calcium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Sc">
+				<xsd:annotation>
+					<xsd:documentation>Scandium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ti">
+				<xsd:annotation>
+					<xsd:documentation>Titanium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="V">
+				<xsd:annotation>
+					<xsd:documentation>Vanadium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cr">
+				<xsd:annotation>
+					<xsd:documentation>Chromium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Mn">
+				<xsd:annotation>
+					<xsd:documentation>Manganese</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Fe">
+				<xsd:annotation>
+					<xsd:documentation>Iron</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Co">
+				<xsd:annotation>
+					<xsd:documentation>Cobalt</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ni">
+				<xsd:annotation>
+					<xsd:documentation>Nickel</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cu">
+				<xsd:annotation>
+					<xsd:documentation>Copper</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Zn">
+				<xsd:annotation>
+					<xsd:documentation>Zinc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ga">
+				<xsd:annotation>
+					<xsd:documentation>Gallium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ge">
+				<xsd:annotation>
+					<xsd:documentation>Germanium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="As">
+				<xsd:annotation>
+					<xsd:documentation>Arsenic</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Se">
+				<xsd:annotation>
+					<xsd:documentation>Selenium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Br">
+				<xsd:annotation>
+					<xsd:documentation>Bromine</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Kr">
+				<xsd:annotation>
+					<xsd:documentation>Krypton</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Rb">
+				<xsd:annotation>
+					<xsd:documentation>Rubidium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Sr">
+				<xsd:annotation>
+					<xsd:documentation>Strontium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Y">
+				<xsd:annotation>
+					<xsd:documentation>Yttrium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Zr">
+				<xsd:annotation>
+					<xsd:documentation>Zirconium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Nb">
+				<xsd:annotation>
+					<xsd:documentation>Niobium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Mo">
+				<xsd:annotation>
+					<xsd:documentation>Molybdenum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Tc">
+				<xsd:annotation>
+					<xsd:documentation>Technetium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ru">
+				<xsd:annotation>
+					<xsd:documentation>Ruthenium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Rh">
+				<xsd:annotation>
+					<xsd:documentation>Rhodium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pd">
+				<xsd:annotation>
+					<xsd:documentation>Palladium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ag">
+				<xsd:annotation>
+					<xsd:documentation>Silver</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cd">
+				<xsd:annotation>
+					<xsd:documentation>Cadmium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="In">
+				<xsd:annotation>
+					<xsd:documentation>Indium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Sn">
+				<xsd:annotation>
+					<xsd:documentation>Tin</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Sb">
+				<xsd:annotation>
+					<xsd:documentation>Antimony</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Te">
+				<xsd:annotation>
+					<xsd:documentation>Tellurium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="I">
+				<xsd:annotation>
+					<xsd:documentation>Iodine</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Xe">
+				<xsd:annotation>
+					<xsd:documentation>Xenon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cs">
+				<xsd:annotation>
+					<xsd:documentation>Caesium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ba">
+				<xsd:annotation>
+					<xsd:documentation>Barium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="La">
+				<xsd:annotation>
+					<xsd:documentation>Lanthanum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ce">
+				<xsd:annotation>
+					<xsd:documentation>Cerium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pr">
+				<xsd:annotation>
+					<xsd:documentation>Praseodymium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Nd">
+				<xsd:annotation>
+					<xsd:documentation>Neodymium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pm">
+				<xsd:annotation>
+					<xsd:documentation>Promethium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Sm">
+				<xsd:annotation>
+					<xsd:documentation>Samarium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Eu">
+				<xsd:annotation>
+					<xsd:documentation>Europium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Gd">
+				<xsd:annotation>
+					<xsd:documentation>Gadolinium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Tb">
+				<xsd:annotation>
+					<xsd:documentation>Terbium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Dy">
+				<xsd:annotation>
+					<xsd:documentation>Dysprosium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ho">
+				<xsd:annotation>
+					<xsd:documentation>Holmium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Er">
+				<xsd:annotation>
+					<xsd:documentation>Erbium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Tm">
+				<xsd:annotation>
+					<xsd:documentation>Thulium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Yb">
+				<xsd:annotation>
+					<xsd:documentation>Ytterbium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Lu">
+				<xsd:annotation>
+					<xsd:documentation>Lutetium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Hf">
+				<xsd:annotation>
+					<xsd:documentation>Hafnium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ta">
+				<xsd:annotation>
+					<xsd:documentation>Tantalum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="W">
+				<xsd:annotation>
+					<xsd:documentation>Tungsten</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Re">
+				<xsd:annotation>
+					<xsd:documentation>Rhenium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Os">
+				<xsd:annotation>
+					<xsd:documentation>Osmium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ir">
+				<xsd:annotation>
+					<xsd:documentation>Iridium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pt">
+				<xsd:annotation>
+					<xsd:documentation>Platinum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Au">
+				<xsd:annotation>
+					<xsd:documentation>Gold</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Hg">
+				<xsd:annotation>
+					<xsd:documentation>Mercury</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Tl">
+				<xsd:annotation>
+					<xsd:documentation>Thallium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pb">
+				<xsd:annotation>
+					<xsd:documentation>Lead</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Bi">
+				<xsd:annotation>
+					<xsd:documentation>Bismuth</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Po">
+				<xsd:annotation>
+					<xsd:documentation>Polonium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="At">
+				<xsd:annotation>
+					<xsd:documentation>Astatine</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Rn">
+				<xsd:annotation>
+					<xsd:documentation>Radon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Fr">
+				<xsd:annotation>
+					<xsd:documentation>Francium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ra">
+				<xsd:annotation>
+					<xsd:documentation>Radium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Ac">
+				<xsd:annotation>
+					<xsd:documentation>Actinium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Th">
+				<xsd:annotation>
+					<xsd:documentation>Thorium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pa">
+				<xsd:annotation>
+					<xsd:documentation>Protactinium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="U">
+				<xsd:annotation>
+					<xsd:documentation>Uranium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Np">
+				<xsd:annotation>
+					<xsd:documentation>Neptunium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Pu">
+				<xsd:annotation>
+					<xsd:documentation>Plutonium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Am">
+				<xsd:annotation>
+					<xsd:documentation>Americium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cm">
+				<xsd:annotation>
+					<xsd:documentation>Curium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Bk">
+				<xsd:annotation>
+					<xsd:documentation>Berkelium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Cf">
+				<xsd:annotation>
+					<xsd:documentation>Californium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Es">
+				<xsd:annotation>
+					<xsd:documentation>Einsteinium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Fm">
+				<xsd:annotation>
+					<xsd:documentation>Fermium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Md">
+				<xsd:annotation>
+					<xsd:documentation>Mendelevium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="No">
+				<xsd:annotation>
+					<xsd:documentation>Nobelium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Lr">
+				<xsd:annotation>
+					<xsd:documentation>Lawrencium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Rf">
+				<xsd:annotation>
+					<xsd:documentation>Rutherfordium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Db">
+				<xsd:annotation>
+					<xsd:documentation>Dubnium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Sg">
+				<xsd:annotation>
+					<xsd:documentation>Seaborgium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Bh">
+				<xsd:annotation>
+					<xsd:documentation>Bohrium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Hs">
+				<xsd:annotation>
+					<xsd:documentation>Hassium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Mt">
+				<xsd:annotation>
+					<xsd:documentation>Meitnerium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Uun">
+				<xsd:annotation>
+					<xsd:documentation>Ununnilium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Uuu">
+				<xsd:annotation>
+					<xsd:documentation>Unununium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Uub">
+				<xsd:annotation>
+					<xsd:documentation>Ununbium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Uuq">
+				<xsd:annotation>
+					<xsd:documentation>Ununquadium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Uuh">
+				<xsd:annotation>
+					<xsd:documentation>Ununhexium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="Uuo">
+				<xsd:annotation>
+					<xsd:documentation>Ununoctium</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:simpleType name="CurrencyCode">
+		<xsd:annotation>
+			<xsd:documentation>
+			*************************        ISO4217_CurrencyCode         *************************
+
+			Based on ISO-4217, and taken from paper N699 on http://www.jtc1sc32.org/
+			As of 2003-12-11 permission to use this element has been sought from, but 
+			not yet been granted by, the authors of the paper.
+
+			This element declares the content model for value, which contains a string
+			representing a currency.
+			
+			For the most current updates, refer to 
+			http://www.din.de/gremien/nas/nabd/iso4217ma/codlistp1/en_listp1.html.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:length value="3"/>
+			<xsd:enumeration value="AFA">
+				<xsd:annotation>
+					<xsd:documentation>Afghani</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ALL">
+				<xsd:annotation>
+					<xsd:documentation>Lek</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="AMD">
+				<xsd:annotation>
+					<xsd:documentation>Armenian Dram</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ANG">
+				<xsd:annotation>
+					<xsd:documentation>Netherlands Antillian Guilder</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="AOA">
+				<xsd:annotation>
+					<xsd:documentation>Kwanza</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ARS">
+				<xsd:annotation>
+					<xsd:documentation>Argentine Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ATS">
+				<xsd:annotation>
+					<xsd:documentation>Schilling</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="AUD">
+				<xsd:annotation>
+					<xsd:documentation>Australian Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="AWG">
+				<xsd:annotation>
+					<xsd:documentation>Aruban Guilder</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="AZM">
+				<xsd:annotation>
+					<xsd:documentation>Azerbaijanian Manat</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BAM">
+				<xsd:annotation>
+					<xsd:documentation>Convertible Marks</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BBD">
+				<xsd:annotation>
+					<xsd:documentation>Barbados Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BDT">
+				<xsd:annotation>
+					<xsd:documentation>Taka</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BEF">
+				<xsd:annotation>
+					<xsd:documentation>Belgian Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BGL">
+				<xsd:annotation>
+					<xsd:documentation>Lev</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BGN">
+				<xsd:annotation>
+					<xsd:documentation>Bulgarian Lev</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BHD">
+				<xsd:annotation>
+					<xsd:documentation>Bahraini Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BIF">
+				<xsd:annotation>
+					<xsd:documentation>Burundi Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BMD">
+				<xsd:annotation>
+					<xsd:documentation>Bermudian Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BND">
+				<xsd:annotation>
+					<xsd:documentation>Brunei Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BOB">
+				<xsd:annotation>
+					<xsd:documentation>Boliviano</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BOV">
+				<xsd:annotation>
+					<xsd:documentation>Mvdol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BRL">
+				<xsd:annotation>
+					<xsd:documentation>Brazilian Real</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BSD">
+				<xsd:annotation>
+					<xsd:documentation>Bahamian Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BTN">
+				<xsd:annotation>
+					<xsd:documentation>Ngultrum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BWP">
+				<xsd:annotation>
+					<xsd:documentation>Pula</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BYB">
+				<xsd:annotation>
+					<xsd:documentation>Belarussian Ruble</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BYR">
+				<xsd:annotation>
+					<xsd:documentation>Belarussian Ruble</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="BZD">
+				<xsd:annotation>
+					<xsd:documentation>Belize Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CAD">
+				<xsd:annotation>
+					<xsd:documentation>Canadian Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CDF">
+				<xsd:annotation>
+					<xsd:documentation>Franc Congolais</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CHF">
+				<xsd:annotation>
+					<xsd:documentation>Swiss Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CLF">
+				<xsd:annotation>
+					<xsd:documentation>Unidades de fomento</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CLP">
+				<xsd:annotation>
+					<xsd:documentation>Chilean Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CNY">
+				<xsd:annotation>
+					<xsd:documentation>Yuan Renminbi</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="COP">
+				<xsd:annotation>
+					<xsd:documentation>Colombian Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CRC">
+				<xsd:annotation>
+					<xsd:documentation>Costa Rican Colon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CUP">
+				<xsd:annotation>
+					<xsd:documentation>Cuban Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CVE">
+				<xsd:annotation>
+					<xsd:documentation>Cape Verde Escudo</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CYP">
+				<xsd:annotation>
+					<xsd:documentation>Cyprus Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="CZK">
+				<xsd:annotation>
+					<xsd:documentation>Czech Koruna</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="DEM">
+				<xsd:annotation>
+					<xsd:documentation>Deutsche Mark</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="DJF">
+				<xsd:annotation>
+					<xsd:documentation>Djibouti Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="DKK">
+				<xsd:annotation>
+					<xsd:documentation>Danish Krone</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="DOP">
+				<xsd:annotation>
+					<xsd:documentation>Dominican Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="DZD">
+				<xsd:annotation>
+					<xsd:documentation>Algerian Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="EEK">
+				<xsd:annotation>
+					<xsd:documentation>Kroon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="EGP">
+				<xsd:annotation>
+					<xsd:documentation>Egyptian Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ERN">
+				<xsd:annotation>
+					<xsd:documentation>Nakfa</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ESP">
+				<xsd:annotation>
+					<xsd:documentation>Spanish Peseta</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ETB">
+				<xsd:annotation>
+					<xsd:documentation>Ethiopian Birr</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="EUR">
+				<xsd:annotation>
+					<xsd:documentation>Euro</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="FIM">
+				<xsd:annotation>
+					<xsd:documentation>Markka</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="FJD">
+				<xsd:annotation>
+					<xsd:documentation>Fiji Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="FKP">
+				<xsd:annotation>
+					<xsd:documentation>Falkland Islands Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="FRF">
+				<xsd:annotation>
+					<xsd:documentation>French Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GBP">
+				<xsd:annotation>
+					<xsd:documentation>Pound Sterling</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GEL">
+				<xsd:annotation>
+					<xsd:documentation>Lari</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GHC">
+				<xsd:annotation>
+					<xsd:documentation>Cedi</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GIP">
+				<xsd:annotation>
+					<xsd:documentation>Gibraltar Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GMD">
+				<xsd:annotation>
+					<xsd:documentation>Dalasi</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GNF">
+				<xsd:annotation>
+					<xsd:documentation>Guinea Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GRD">
+				<xsd:annotation>
+					<xsd:documentation>Drachma</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GTQ">
+				<xsd:annotation>
+					<xsd:documentation>Quetzal</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GWP">
+				<xsd:annotation>
+					<xsd:documentation>Guinea-Bissau Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="GYD">
+				<xsd:annotation>
+					<xsd:documentation>Guyana Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="HKD">
+				<xsd:annotation>
+					<xsd:documentation>Hong Kong Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="HNL">
+				<xsd:annotation>
+					<xsd:documentation>Lempira</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="HRK">
+				<xsd:annotation>
+					<xsd:documentation>Croatian kuna</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="HTG">
+				<xsd:annotation>
+					<xsd:documentation>Gourde</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="HUF">
+				<xsd:annotation>
+					<xsd:documentation>Forint</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="IDR">
+				<xsd:annotation>
+					<xsd:documentation>Rupiah</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="IEP">
+				<xsd:annotation>
+					<xsd:documentation>Irish Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ILS">
+				<xsd:annotation>
+					<xsd:documentation>New Israeli Sheqel</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="INR">
+				<xsd:annotation>
+					<xsd:documentation>Indian Rupee</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="IQD">
+				<xsd:annotation>
+					<xsd:documentation>Iraqi Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="IRR">
+				<xsd:annotation>
+					<xsd:documentation>Iranian Rial</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ISK">
+				<xsd:annotation>
+					<xsd:documentation>Iceland Krona</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ITL">
+				<xsd:annotation>
+					<xsd:documentation>Italian Lira</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="JMD">
+				<xsd:annotation>
+					<xsd:documentation>Jamaican Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="JOD">
+				<xsd:annotation>
+					<xsd:documentation>Jordanian Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="JPY">
+				<xsd:annotation>
+					<xsd:documentation>Yen</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KES">
+				<xsd:annotation>
+					<xsd:documentation>Kenyan Shilling</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KGS">
+				<xsd:annotation>
+					<xsd:documentation>Som</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KHR">
+				<xsd:annotation>
+					<xsd:documentation>Riel</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KMF">
+				<xsd:annotation>
+					<xsd:documentation>Comoro Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KPW">
+				<xsd:annotation>
+					<xsd:documentation>North Korean Won</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KRW">
+				<xsd:annotation>
+					<xsd:documentation>Won</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KWD">
+				<xsd:annotation>
+					<xsd:documentation>Kuwaiti Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KYD">
+				<xsd:annotation>
+					<xsd:documentation>Cayman Islands Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="KZT">
+				<xsd:annotation>
+					<xsd:documentation>Tenge</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LAK">
+				<xsd:annotation>
+					<xsd:documentation>Kip</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LBP">
+				<xsd:annotation>
+					<xsd:documentation>Lebanese Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LKR">
+				<xsd:annotation>
+					<xsd:documentation>Sri Lanka Rupee</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LRD">
+				<xsd:annotation>
+					<xsd:documentation>Liberian Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LSL">
+				<xsd:annotation>
+					<xsd:documentation>Loti</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LTL">
+				<xsd:annotation>
+					<xsd:documentation>Lithuanian Litus</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LUF">
+				<xsd:annotation>
+					<xsd:documentation>Luxembourg Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LVL">
+				<xsd:annotation>
+					<xsd:documentation>Latvian Lats</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="LYD">
+				<xsd:annotation>
+					<xsd:documentation>Libyan Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MAD">
+				<xsd:annotation>
+					<xsd:documentation>Moroccan Dirham</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MDL">
+				<xsd:annotation>
+					<xsd:documentation>Moldovan Leu</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MGF">
+				<xsd:annotation>
+					<xsd:documentation>Malagasy Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MKD">
+				<xsd:annotation>
+					<xsd:documentation>Denar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MMK">
+				<xsd:annotation>
+					<xsd:documentation>Kyat</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MNT">
+				<xsd:annotation>
+					<xsd:documentation>Tugrik</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MOP">
+				<xsd:annotation>
+					<xsd:documentation>Pataca</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MRO">
+				<xsd:annotation>
+					<xsd:documentation>Ouguiya</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MTL">
+				<xsd:annotation>
+					<xsd:documentation>Maltese Lira</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MUR">
+				<xsd:annotation>
+					<xsd:documentation>Mauritius Rupee</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MVR">
+				<xsd:annotation>
+					<xsd:documentation>Rufiyaa</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MWK">
+				<xsd:annotation>
+					<xsd:documentation>Kwacha</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MXN">
+				<xsd:annotation>
+					<xsd:documentation>Mexican Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MXV">
+				<xsd:annotation>
+					<xsd:documentation>Mexican Unidad de Inversion (UDI)</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MYR">
+				<xsd:annotation>
+					<xsd:documentation>Malaysian Ringgit</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="MZM">
+				<xsd:annotation>
+					<xsd:documentation>Metical</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NAD">
+				<xsd:annotation>
+					<xsd:documentation>Namibia Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NGN">
+				<xsd:annotation>
+					<xsd:documentation>Naira</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NIO">
+				<xsd:annotation>
+					<xsd:documentation>Cordoba Oro</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NLG">
+				<xsd:annotation>
+					<xsd:documentation>Netherlands Guilder</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NOK">
+				<xsd:annotation>
+					<xsd:documentation>Norwegian Krone</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NPR">
+				<xsd:annotation>
+					<xsd:documentation>Nepalese Rupee</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="NZD">
+				<xsd:annotation>
+					<xsd:documentation>New Zealand Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="OMR">
+				<xsd:annotation>
+					<xsd:documentation>Rial Omani</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PAB">
+				<xsd:annotation>
+					<xsd:documentation>Balboa</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PEN">
+				<xsd:annotation>
+					<xsd:documentation>Nuevo Sol</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PGK">
+				<xsd:annotation>
+					<xsd:documentation>Kina</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PHP">
+				<xsd:annotation>
+					<xsd:documentation>Philippine Peso</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PKR">
+				<xsd:annotation>
+					<xsd:documentation>Pakistan Rupee</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PLN">
+				<xsd:annotation>
+					<xsd:documentation>Zloty</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PTE">
+				<xsd:annotation>
+					<xsd:documentation>Portuguese Escudo</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="PYG">
+				<xsd:annotation>
+					<xsd:documentation>Guarani</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="QAR">
+				<xsd:annotation>
+					<xsd:documentation>Qatari Rial</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ROL">
+				<xsd:annotation>
+					<xsd:documentation>Leu</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="RUB">
+				<xsd:annotation>
+					<xsd:documentation>Russian Ruble</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="RUR">
+				<xsd:annotation>
+					<xsd:documentation>Russian Ruble</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="RWF">
+				<xsd:annotation>
+					<xsd:documentation>Rwanda Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SAR">
+				<xsd:annotation>
+					<xsd:documentation>Saudi Riyal</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SBD">
+				<xsd:annotation>
+					<xsd:documentation>Solomon Islands Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SCR">
+				<xsd:annotation>
+					<xsd:documentation>Seychelles Rupee</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SDD">
+				<xsd:annotation>
+					<xsd:documentation>Sudanese Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SEK">
+				<xsd:annotation>
+					<xsd:documentation>Swedish Krona</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SGD">
+				<xsd:annotation>
+					<xsd:documentation>Singapore Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SHP">
+				<xsd:annotation>
+					<xsd:documentation>Saint Helena Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SIT">
+				<xsd:annotation>
+					<xsd:documentation>Tolar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SKK">
+				<xsd:annotation>
+					<xsd:documentation>Slovak Koruna</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SLL">
+				<xsd:annotation>
+					<xsd:documentation>Leone</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SOS">
+				<xsd:annotation>
+					<xsd:documentation>Somali Shilling</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SRG">
+				<xsd:annotation>
+					<xsd:documentation>Suriname Guilder</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="STD">
+				<xsd:annotation>
+					<xsd:documentation>Dobra</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SVC">
+				<xsd:annotation>
+					<xsd:documentation>El Salvador Colon</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SYP">
+				<xsd:annotation>
+					<xsd:documentation>Syrian Pound</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="SZL">
+				<xsd:annotation>
+					<xsd:documentation>Lilangeni</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="THB">
+				<xsd:annotation>
+					<xsd:documentation>Baht</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TJR">
+				<xsd:annotation>
+					<xsd:documentation>Tajik Ruble</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TMM">
+				<xsd:annotation>
+					<xsd:documentation>Manat</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TND">
+				<xsd:annotation>
+					<xsd:documentation>Tunisian Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TOP">
+				<xsd:annotation>
+					<xsd:documentation>Pa’anga</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TPE">
+				<xsd:annotation>
+					<xsd:documentation>Timor Escudo</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TRL">
+				<xsd:annotation>
+					<xsd:documentation>Turkish Lira</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TTD">
+				<xsd:annotation>
+					<xsd:documentation>Trinidad and Tobago Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TWD">
+				<xsd:annotation>
+					<xsd:documentation>New Taiwan Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="TZS">
+				<xsd:annotation>
+					<xsd:documentation>Tanzanian Shilling</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="UAH">
+				<xsd:annotation>
+					<xsd:documentation>Hryvnia</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="UGX">
+				<xsd:annotation>
+					<xsd:documentation>Uganda Shilling</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="USD">
+				<xsd:annotation>
+					<xsd:documentation>US Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="UYU">
+				<xsd:annotation>
+					<xsd:documentation>Peso Uruguayo</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="UZS">
+				<xsd:annotation>
+					<xsd:documentation>Uzbekistan Sum</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="VEB">
+				<xsd:annotation>
+					<xsd:documentation>Bolivar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="VND">
+				<xsd:annotation>
+					<xsd:documentation>Dong</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="VUV">
+				<xsd:annotation>
+					<xsd:documentation>Vatu</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="WST">
+				<xsd:annotation>
+					<xsd:documentation>Tala</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="XAF">
+				<xsd:annotation>
+					<xsd:documentation>CFA Franc BEAC </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="XCD">
+				<xsd:annotation>
+					<xsd:documentation>East Caribbean Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="XDR">
+				<xsd:annotation>
+					<xsd:documentation>SDR</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="XOF">
+				<xsd:annotation>
+					<xsd:documentation>CFA Franc BCEAO </xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="XPF">
+				<xsd:annotation>
+					<xsd:documentation>CFP Franc</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="YER">
+				<xsd:annotation>
+					<xsd:documentation>Yemeni Rial</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="YUM">
+				<xsd:annotation>
+					<xsd:documentation>Yugoslavian Dinar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ZAR">
+				<xsd:annotation>
+					<xsd:documentation>Rand</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ZMK">
+				<xsd:annotation>
+					<xsd:documentation>Kwacha</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="ZWD">
+				<xsd:annotation>
+					<xsd:documentation>Zimbabwe Dollar</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>
