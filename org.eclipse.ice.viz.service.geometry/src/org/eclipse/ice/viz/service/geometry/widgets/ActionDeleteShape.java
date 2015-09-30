@@ -33,115 +33,113 @@ import org.osgi.framework.FrameworkUtil;
  * @author Andrew P. Belt
  */
 public class ActionDeleteShape extends Action {
-	/**
-	 * <p>
-	 * The current ShapeTreeViewer associated with the DeleteShape action
-	 * </p>
-	 * 
-	 */
-	private ShapeTreeView view;
+    /**
+     * <p>
+     * The current ShapeTreeViewer associated with the DeleteShape action
+     * </p>
+     * 
+     */
+    private ShapeTreeView view;
 
-	/**
-	 * The image descriptor associated with the delete action's icon
-	 */
-	private ImageDescriptor imageDescriptor;
+    /**
+     * The image descriptor associated with the delete action's icon
+     */
+    private ImageDescriptor imageDescriptor;
 
-	/**
-	 * <p>
-	 * Constructor for setting the current ShapeTreeViewer
-	 * </p>
-	 * 
-	 * @param view
-	 *            <p>
-	 *            The current ShapeTreeView
-	 *            </p>
-	 */
-	public ActionDeleteShape(ShapeTreeView view) {
+    /**
+     * <p>
+     * Constructor for setting the current ShapeTreeViewer
+     * </p>
+     * 
+     * @param view
+     *            <p>
+     *            The current ShapeTreeView
+     *            </p>
+     */
+    public ActionDeleteShape(ShapeTreeView view) {
 
-		this.view = view;
+        this.view = view;
 
-		this.setText("Delete Shape");
+        this.setText("Delete Shape");
 
-		// Load the delete.gif ImageDescriptor from the bundle's
-		// `icons` directory
+        // Load the delete.gif ImageDescriptor from the bundle's
+        // `icons` directory
 
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		URL imagePath = BundleUtility.find(bundle, "icons/delete.gif");
-		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
+        Bundle bundle = FrameworkUtil.getBundle(getClass());
+        URL imagePath = BundleUtility.find(bundle, "icons/delete.gif");
+        imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
-	}
+    }
 
-	/**
-	 * Returns the image descriptor associated with the delete action's icon
-	 * 
-	 * @return The ImageDescriptor with the loaded delete.gif file
-	 * @see org.eclipse.jface.action.Action#getImageDescriptor()
-	 */
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return imageDescriptor;
-	}
+    /**
+     * Returns the image descriptor associated with the delete action's icon
+     * 
+     * @return The ImageDescriptor with the loaded delete.gif file
+     * @see org.eclipse.jface.action.Action#getImageDescriptor()
+     */
+    @Override
+    public ImageDescriptor getImageDescriptor() {
+        return imageDescriptor;
+    }
 
-	/**
-	 * <p>
-	 * Runs this action
-	 * </p>
-	 * <p>
-	 * Each action implementation must define the steps needed to carry out this
-	 * action.
-	 * </p>
-	 * 
-	 */
-	@Override
-	public void run() {
+    /**
+     * <p>
+     * Runs this action
+     * </p>
+     * <p>
+     * Each action implementation must define the steps needed to carry out this
+     * action.
+     * </p>
+     * 
+     */
+    @Override
+    public void run() {
 
-		// Get the tree paths of the current selection
+        // Get the tree paths of the current selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer
-				.getSelection();
-		TreePath[] paths = selection.getPaths();
+        ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
+        TreePath[] paths = selection.getPaths();
 
-		Geometry geometry = (Geometry) view.treeViewer
-				.getInput();
+        Geometry geometry = (Geometry) view.treeViewer.getInput();
 
-		// Loop through each TreePath
+        // Loop through each TreePath
 
-		for (TreePath path : paths) {
+        for (TreePath path : paths) {
 
-			Object selectedObject = path.getLastSegment();
+            Object selectedObject = path.getLastSegment();
 
-			// Check if the selected object is an IShape
+            // Check if the selected object is an IShape
 
-			if (selectedObject instanceof IShape) {
+            if (selectedObject instanceof IShape) {
 
-				IShape selectedShape = (IShape) selectedObject;
-				IShape parentShape = selectedShape.getParent();
+                IShape selectedShape = (IShape) selectedObject;
+                IShape parentShape = selectedShape.getParent();
 
-				if (parentShape instanceof ComplexShape) {
+                if (parentShape instanceof ComplexShape) {
 
-					// Remove the selected shape from the parent
+                    // Remove the selected shape from the parent
 
-					ComplexShape parentComplexShape = (ComplexShape) parentShape;
+                    ComplexShape parentComplexShape = (ComplexShape) parentShape;
 
-					synchronized (geometry) {
-						parentComplexShape.removeShape(selectedShape);
-					}
+                    synchronized (geometry) {
+                        parentComplexShape.removeShape(selectedShape);
+                    }
 
-					view.treeViewer.refresh(parentShape);
-				}
+                    view.treeViewer.refresh(parentShape);
+                }
 
-				else if (parentShape == null) {
+                else if (parentShape == null) {
 
-					// The parent shape may be the root GeometryComponent,
-					// so try removing it from there.
+                    // The parent shape may be the root GeometryComponent,
+                    // so try removing it from there.
 
-					synchronized (geometry) {
-						geometry.removeShape(selectedShape);
-					}
-					view.treeViewer.refresh();
-				}
-			}
-		}
+                    synchronized (geometry) {
+                        geometry.removeShape(selectedShape);
+                    }
+                    view.treeViewer.refresh();
+                }
+            }
+        }
 
-	}
+    }
 }

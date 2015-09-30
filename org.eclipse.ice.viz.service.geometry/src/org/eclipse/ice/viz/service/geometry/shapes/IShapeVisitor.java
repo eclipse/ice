@@ -21,21 +21,21 @@ package org.eclipse.ice.viz.service.geometry.shapes;
  * @author Jay Jay Billings
  */
 public interface IShapeVisitor {
-	/**
-	 * <p>
-	 * Visits an IShapeVisitor as a ComplexShape
-	 * </p>
-	 * 
-	 * @param complexShape
-	 */
-	public void visit(ComplexShape complexShape);
+    /**
+     * <p>
+     * Visits an IShapeVisitor as a ComplexShape
+     * </p>
+     * 
+     * @param complexShape
+     */
+    public void visit(ComplexShape complexShape);
 
-	/**
-	 * <p>
-	 * Visits an IShapeVisitor as a PrimitiveShape
-	 * </p>
-	 * 
-	 * @param primitiveShape
-	 */
-	public void visit(PrimitiveShape primitiveShape);
+    /**
+     * <p>
+     * Visits an IShapeVisitor as a PrimitiveShape
+     * </p>
+     * 
+     * @param primitiveShape
+     */
+    public void visit(PrimitiveShape primitiveShape);
 }

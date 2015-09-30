@@ -39,277 +39,275 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Andrew P. Belt
  */
-public class ShapeTreeView extends ViewPart implements
-		ISelectionChangedListener {
+public class ShapeTreeView extends ViewPart implements ISelectionChangedListener {
 
-	/**
-	 * <p>
-	 * The currently displayed GeometryComponent
-	 * </p>
-	 * 
-	 */
-	private Geometry geometry;
+    /**
+     * <p>
+     * The currently displayed GeometryComponent
+     * </p>
+     * 
+     */
+    private Geometry geometry;
 
-	/**
-	 * <p>
-	 * The main TreeViewer occupying the entire space of the view
-	 * </p>
-	 * 
-	 */
-	TreeViewer treeViewer;
+    /**
+     * <p>
+     * The main TreeViewer occupying the entire space of the view
+     * </p>
+     * 
+     */
+    TreeViewer treeViewer;
 
-	/**
-	 * Eclipse view ID
-	 */
-	public static final String ID = "org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView";
+    /**
+     * Eclipse view ID
+     */
+    public static final String ID = "org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView";
 
-	/**
-	 * A list of shapes of the last selection event
-	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+    /**
+     * A list of shapes of the last selection event
+     */
+    private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
 
-	// The actions for manipulating shapes
-	private DropdownAction addPrimitiveShapes;
-	private DropdownAction addComplexShapes;
-	private Action duplicateShapes;
-	private Action replicateShapes;
-	private Action deleteShape;
+    // The actions for manipulating shapes
+    private DropdownAction addPrimitiveShapes;
+    private DropdownAction addComplexShapes;
+    private Action duplicateShapes;
+    private Action replicateShapes;
+    private Action deleteShape;
 
-	/**
-	 * <p>
-	 * Creates the SWT controls for this ShapeTreeView
-	 * </p>
-	 * 
-	 * @param parent
-	 *            <p>
-	 *            The parent Composite
-	 *            </p>
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
+    /**
+     * <p>
+     * Creates the SWT controls for this ShapeTreeView
+     * </p>
+     * 
+     * @param parent
+     *            <p>
+     *            The parent Composite
+     *            </p>
+     */
+    @Override
+    public void createPartControl(Composite parent) {
 
-		// Create the actions
+        // Create the actions
 
-		createActions();
+        createActions();
 
-		// Make a TreeViewer and add a content provider to it
+        // Make a TreeViewer and add a content provider to it
 
-		treeViewer = new TreeViewer(parent);
+        treeViewer = new TreeViewer(parent);
 
-		ShapeTreeContentProvider contentProvider = new ShapeTreeContentProvider();
-		treeViewer.setContentProvider(contentProvider);
+        ShapeTreeContentProvider contentProvider = new ShapeTreeContentProvider();
+        treeViewer.setContentProvider(contentProvider);
 
-		// Add label provider to TreeViewer
+        // Add label provider to TreeViewer
 
-		ShapeTreeLabelProvider labelProvider = new ShapeTreeLabelProvider();
-		treeViewer.setLabelProvider(labelProvider);
+        ShapeTreeLabelProvider labelProvider = new ShapeTreeLabelProvider();
+        treeViewer.setLabelProvider(labelProvider);
 
-		// Add selection listener to TreeViewer
+        // Add selection listener to TreeViewer
 
-		treeViewer.addSelectionChangedListener(this);
+        treeViewer.addSelectionChangedListener(this);
 
-	}
+    }
 
-	/**
-	 * <p>
-	 * Creates actions required for manipulating the ShapeTreeView and adds them
-	 * to the view's toolbar
-	 * </p>
-	 * 
-	 */
-	private void createActions() {
+    /**
+     * <p>
+     * Creates actions required for manipulating the ShapeTreeView and adds them
+     * to the view's toolbar
+     * </p>
+     * 
+     */
+    private void createActions() {
 
-		// Get the toolbar
+        // Get the toolbar
 
-		IActionBars actionBars = getViewSite().getActionBars();
-		IToolBarManager toolbarManager = actionBars.getToolBarManager();
+        IActionBars actionBars = getViewSite().getActionBars();
+        IToolBarManager toolbarManager = actionBars.getToolBarManager();
 
-		// Create the add shapes menu managers
+        // Create the add shapes menu managers
 
-		addPrimitiveShapes = new DropdownAction("Add Primitives");
-		addComplexShapes = new DropdownAction("Add Complex");
+        addPrimitiveShapes = new DropdownAction("Add Primitives");
+        addComplexShapes = new DropdownAction("Add Complex");
 
-		// Add the PrimitiveShape actions
+        // Add the PrimitiveShape actions
 
-		Action addSphere = new ActionAddShape(this, ShapeType.Sphere);
-		addPrimitiveShapes.addAction(addSphere);
+        Action addSphere = new ActionAddShape(this, ShapeType.Sphere);
+        addPrimitiveShapes.addAction(addSphere);
 
-		Action addCube = new ActionAddShape(this, ShapeType.Cube);
-		addPrimitiveShapes.addAction(addCube);
+        Action addCube = new ActionAddShape(this, ShapeType.Cube);
+        addPrimitiveShapes.addAction(addCube);
 
-		Action addCylinder = new ActionAddShape(this, ShapeType.Cylinder);
-		addPrimitiveShapes.addAction(addCylinder);
+        Action addCylinder = new ActionAddShape(this, ShapeType.Cylinder);
+        addPrimitiveShapes.addAction(addCylinder);
 
-		Action addTube = new ActionAddShape(this, ShapeType.Tube);
-		addPrimitiveShapes.addAction(addTube);
+        Action addTube = new ActionAddShape(this, ShapeType.Tube);
+        addPrimitiveShapes.addAction(addTube);
 
-		// Add the ComplexShape actions
+        // Add the ComplexShape actions
 
-		Action addUnion = new ActionAddShape(this, OperatorType.Union);
-		addComplexShapes.addAction(addUnion);
+        Action addUnion = new ActionAddShape(this, OperatorType.Union);
+        addComplexShapes.addAction(addUnion);
 
-		Action addIntersection = new ActionAddShape(this,
-				OperatorType.Intersection);
-		addIntersection.setEnabled(false);
-		addComplexShapes.addAction(addIntersection);
+        Action addIntersection = new ActionAddShape(this, OperatorType.Intersection);
+        addIntersection.setEnabled(false);
+        addComplexShapes.addAction(addIntersection);
 
-		Action addComplement = new ActionAddShape(this, OperatorType.Complement);
-		addComplement.setEnabled(false);
-		addComplexShapes.addAction(addComplement);
+        Action addComplement = new ActionAddShape(this, OperatorType.Complement);
+        addComplement.setEnabled(false);
+        addComplexShapes.addAction(addComplement);
 
-		// Add the Duplicate Shapes action
+        // Add the Duplicate Shapes action
 
-		duplicateShapes = new ActionDuplicateShape(this);
+        duplicateShapes = new ActionDuplicateShape(this);
 
-		// Add the Replicate action
+        // Add the Replicate action
 
-		replicateShapes = new ActionReplicateShape(this);
+        replicateShapes = new ActionReplicateShape(this);
 
-		// Add the DeleteShape action
+        // Add the DeleteShape action
 
-		deleteShape = new ActionDeleteShape(this);
+        deleteShape = new ActionDeleteShape(this);
 
-		// Add the top level menus to the toolbar
-		toolbarManager.add(addPrimitiveShapes);
-		toolbarManager.add(addComplexShapes);
-		toolbarManager.add(duplicateShapes);
-		toolbarManager.add(replicateShapes);
-		toolbarManager.add(deleteShape);
+        // Add the top level menus to the toolbar
+        toolbarManager.add(addPrimitiveShapes);
+        toolbarManager.add(addComplexShapes);
+        toolbarManager.add(duplicateShapes);
+        toolbarManager.add(replicateShapes);
+        toolbarManager.add(deleteShape);
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param geometry
-	 */
-	public void setGeometry(Geometry geometry) {
+    /**
+     * 
+     * @param geometry
+     */
+    public void setGeometry(Geometry geometry) {
 
-		this.geometry = geometry;
+        this.geometry = geometry;
 
-		// Set the TreeViewer's input
+        // Set the TreeViewer's input
 
-		this.treeViewer.setInput(geometry);
+        this.treeViewer.setInput(geometry);
 
-	}
+    }
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IWorkbenchPart#setFocus()
-	 */
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
+    /**
+     * (non-Javadoc)
+     * 
+     * @see IWorkbenchPart#setFocus()
+     */
+    @Override
+    public void setFocus() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * Updates the disabled state of the action icons and the state of the
-	 * TransformationView
-	 */
-	@Override
-	public void selectionChanged(SelectionChangedEvent event) {
+    /**
+     * Updates the disabled state of the action icons and the state of the
+     * TransformationView
+     */
+    @Override
+    public void selectionChanged(SelectionChangedEvent event) {
 
-		// Get the current selection
+        // Get the current selection
 
-		ITreeSelection selection = (ITreeSelection) event.getSelection();
-		TreePath[] paths = selection.getPaths();
+        ITreeSelection selection = (ITreeSelection) event.getSelection();
+        TreePath[] paths = selection.getPaths();
 
-		// Get the TransformationView
+        // Get the TransformationView
 
-		TransformationView transformationView = (TransformationView) getSite()
-				.getPage().findView(TransformationView.ID);
+        TransformationView transformationView = (TransformationView) getSite().getPage()
+                .findView(TransformationView.ID);
 
-		if (paths.length == 1) {
+        if (paths.length == 1) {
 
-			// Only one item is selected
+            // Only one item is selected
 
-			Object selectedObject = paths[0].getLastSegment();
+            Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+            if (selectedObject instanceof IShape) {
+                IShape selectedShape = (IShape) selectedObject;
 
-				// Set the TransformationView's shape
+                // Set the TransformationView's shape
 
-				if (transformationView != null) {
-					transformationView.setShape(selectedShape);
-				}
-				// Enable/disable action buttons
+                if (transformationView != null) {
+                    transformationView.setShape(selectedShape);
+                }
+                // Enable/disable action buttons
 
-				addPrimitiveShapes.setEnabled(true);
-				addComplexShapes.setEnabled(true);
-				duplicateShapes.setEnabled(true);
-				replicateShapes.setEnabled(true);
-				deleteShape.setEnabled(true);
-			} else if (selectedObject instanceof BlankShape) {
+                addPrimitiveShapes.setEnabled(true);
+                addComplexShapes.setEnabled(true);
+                duplicateShapes.setEnabled(true);
+                replicateShapes.setEnabled(true);
+                deleteShape.setEnabled(true);
+            } else if (selectedObject instanceof BlankShape) {
 
-				// Enable/disable action buttons
+                // Enable/disable action buttons
 
-				addPrimitiveShapes.setEnabled(true);
-				addComplexShapes.setEnabled(true);
-				duplicateShapes.setEnabled(false);
-				replicateShapes.setEnabled(false);
-				deleteShape.setEnabled(false);
+                addPrimitiveShapes.setEnabled(true);
+                addComplexShapes.setEnabled(true);
+                duplicateShapes.setEnabled(false);
+                replicateShapes.setEnabled(false);
+                deleteShape.setEnabled(false);
 
-				// Set the TransformationView to a blank state
+                // Set the TransformationView to a blank state
 
-				if (transformationView != null) {
-					transformationView.setShape(null);
-				}
-			}
-		} else {
+                if (transformationView != null) {
+                    transformationView.setShape(null);
+                }
+            }
+        } else {
 
-			// Multiple or zero items are selected
+            // Multiple or zero items are selected
 
-			if (transformationView != null) {
-				transformationView.setShape(null);
-			}
-			if (paths.length > 1) {
+            if (transformationView != null) {
+                transformationView.setShape(null);
+            }
+            if (paths.length > 1) {
 
-				// Multiple items are selected.
+                // Multiple items are selected.
 
-				// Enable/disable action buttons
+                // Enable/disable action buttons
 
-				addPrimitiveShapes.setEnabled(false);
-				addComplexShapes.setEnabled(false);
-				duplicateShapes.setEnabled(true);
-				replicateShapes.setEnabled(false);
-				deleteShape.setEnabled(true);
-			} else {
+                addPrimitiveShapes.setEnabled(false);
+                addComplexShapes.setEnabled(false);
+                duplicateShapes.setEnabled(true);
+                replicateShapes.setEnabled(false);
+                deleteShape.setEnabled(true);
+            } else {
 
-				// Zero items are selected
+                // Zero items are selected
 
-				// Enable/disable action buttons
+                // Enable/disable action buttons
 
-				addPrimitiveShapes.setEnabled(true);
-				addComplexShapes.setEnabled(true);
-				duplicateShapes.setEnabled(false);
-				replicateShapes.setEnabled(false);
-				deleteShape.setEnabled(false);
-			}
-		}
+                addPrimitiveShapes.setEnabled(true);
+                addComplexShapes.setEnabled(true);
+                duplicateShapes.setEnabled(false);
+                replicateShapes.setEnabled(false);
+                deleteShape.setEnabled(false);
+            }
+        }
 
-		// Edit the shapes' selection property
+        // Edit the shapes' selection property
 
-		for (IShape selectedShape : selectedShapes) {
-			selectedShape.removeProperty("selected");
-		}
+        for (IShape selectedShape : selectedShapes) {
+            selectedShape.removeProperty("selected");
+        }
 
-		// Update the list of last-selected shapes
+        // Update the list of last-selected shapes
 
-		selectedShapes.clear();
+        selectedShapes.clear();
 
-		for (TreePath path : paths) {
-			Object selectedObject = path.getLastSegment();
+        for (TreePath path : paths) {
+            Object selectedObject = path.getLastSegment();
 
-			// Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
+            // Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
 
-			if (selectedObject instanceof IShape) {
+            if (selectedObject instanceof IShape) {
 
-				IShape selectedShape = (IShape) selectedObject;
-				selectedShape.setProperty("selected", "true");
-				selectedShapes.add(selectedShape);
-			}
-		}
-	}
+                IShape selectedShape = (IShape) selectedObject;
+                selectedShape.setProperty("selected", "true");
+                selectedShapes.add(selectedShape);
+            }
+        }
+    }
 }
