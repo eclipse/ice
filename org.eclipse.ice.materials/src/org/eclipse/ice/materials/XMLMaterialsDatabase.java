@@ -84,7 +84,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	 * The list of materials loaded from the database. They are stored as a
 	 * Hashtable for fast, sychronized manipulation.
 	 */
-	Hashtable<String, Material> materialsMap;
+	protected Hashtable<String, Material> materialsMap;
 
 	/**
 	 * The service tracker to track the LoggingService.

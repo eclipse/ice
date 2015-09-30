@@ -47,7 +47,8 @@ public class BWReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -58,7 +59,8 @@ public class BWReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -86,7 +88,8 @@ public class BWReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWReactor.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWReactor#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -103,7 +106,8 @@ public class BWReactor extends LWReactor {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

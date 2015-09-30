@@ -1,0 +1,1613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Basic common data types
+
+    The schema is used for basic data types. The content uses data
+    type names similar to AniML from http://animl.sourceforge.net/
+
+    Copyright (c) 2012 UT-Battelle, LLC All rights reserved.
+    Redistribution and use, with or without modification, are permitted
+    provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    - Collection of administrative costs for redistribution of the source
+    code or binary form is allowed. However, collection of a royalty or
+    other fee in excess of good faith amount for cost recovery for such
+    redistribution is prohibited.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER, THE DOE, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+    OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+    USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+-->
+
+<xsd:schema 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+   xmlns="BatteryML:2.0"
+   targetNamespace="BatteryML:2.0"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified" version="2.0">
+
+  <!--Simple Types-->
+
+  <!--Single Value Types:
+      Int32Type
+      Int64Type
+      NonNegativeIntType
+      PositiveIntType
+      NonNegativeInt32Type
+      NonNegativeInt64Type
+      Float32Type
+      Float64Type
+      StringType
+      ShortStringType
+      ShortTokenType
+      ShortNameType
+      BooleanType
+      DateTimeType
+      Encoded64Type
+      EmbeddedXMLType
+    -->
+  <!--Single Value Elements
+      Int32
+      Int64
+      NonNegativeInt
+      PositiveInt
+      NonNegativeInt32
+      NonNegativeInt64
+      Float32
+      Float64
+      String
+      ShortString
+      ShortToken
+      ShortName
+      Boolean
+      DateTime
+      Encoded64
+      EmbeddedXML
+    -->
+  <!--List Value Types:
+      Int32ListType
+      Int64ListType
+      PositiveIntListType
+      NonNegativeIntListType
+      NonNegativeInt32ListType
+      NonNegativeInt64ListType
+      Float32ListType
+      Float64ListType
+      ShortNameListType
+      BooleanListType
+      DateTimeListType
+    -->
+  <!--List Value Elements
+      Int32List
+      Int64List
+      PositiveIntList
+      NonNegativeIntList
+      NonNegativeInt32List
+      NonNegativeInt64List
+      Float32List
+      Float64List
+      ShortNameList
+      BooleanList
+      DateTimeList
+    -->
+
+  <!--Complex Types-->
+
+  <!--
+      AnyValueType
+      AnyNumericValueType
+      AnyCounterValueType
+      AnySingleValueType
+      AnySingleNumericValueType
+      AnySingleCounterValueType
+
+      AnyListValueType
+      AnyListNumericValueType
+      AnyListCounterValueType
+      AnySingleListValueType
+      AnySingleListNumericValueType
+      AnySingleListCounterValueType
+    -->
+
+  <xsd:element name="BasicDataTypesML_Doc">
+    <xsd:annotation>
+      <xsd:documentation>
+	For testing.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:any     namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Simple Type Definitions-->
+
+  <!--Simple Types, Single Values-->
+
+  <xsd:element name="Int32" type="Int32Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Int32Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:int"/>
+  </xsd:simpleType>
+
+  <xsd:element name="Int64" type="Int64Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual long integer value (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Int64Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual long integer value (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:long"/>
+  </xsd:simpleType>
+
+  <xsd:element name="NonNegativeInt" type="NonNegativeIntType">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="NonNegativeIntType">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative Integer Value (32 bits, signed)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="NonNegativeInt32Type"/>
+  </xsd:simpleType>
+
+  <xsd:element name="PositiveInt" type="PositiveIntType">
+    <xsd:annotation>
+      <xsd:documentation>Individual positive integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="PositiveIntType">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative Integer Value (32 bits, signed)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="NonNegativeIntType">
+      <xsd:minInclusive value="1"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="NonNegativeInt32" type="NonNegativeInt32Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="NonNegativeInt32Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative Integer Value (32 bits, signed)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:unsignedInt"/>
+  </xsd:simpleType>
+
+  <xsd:element name="NonNegativeInt64" type="NonNegativeInt64Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative long integer value (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="NonNegativeInt64Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual non-negative Integer Value (32 bits, signed)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:unsignedLong"/>
+  </xsd:simpleType>
+
+  <xsd:element name="Float32" type="Float32Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual 32-bit floating point value.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Float32Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual 32-bit floating point value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:float"/>
+  </xsd:simpleType>
+
+  <xsd:element name="Float64" type="Float64Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual 64-bit floating point value.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Float64Type">
+    <xsd:annotation>
+      <xsd:documentation>Individual 64-bit floating point value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:double"/>
+  </xsd:simpleType>
+
+  <xsd:element name="String" type="StringType">
+    <xsd:annotation>
+      <xsd:documentation>Individual string value.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="StringType">
+    <xsd:annotation>
+      <xsd:documentation>Individual string value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:element name="ShortString" type="ShortStringType">
+    <xsd:annotation>
+      <xsd:documentation>Individual string value, limited to 1024 characters.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="ShortStringType">
+    <xsd:annotation>
+      <xsd:documentation>String with up to 1024 characters</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="1024"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="ShortToken" type="ShortTokenType">
+    <xsd:annotation>
+      <xsd:documentation>Individual token value, limited to 1024 characters.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="ShortTokenType">
+    <xsd:annotation>
+      <xsd:documentation>Token with up to 1024 characters</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:token">
+      <xsd:maxLength value="1024"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="ShortName" type="ShortNameType">
+    <xsd:annotation>
+      <xsd:documentation>Individual name value, limited to 1024 characters.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="ShortNameType">
+    <xsd:annotation>
+      <xsd:documentation>Name with up to 1024 characters</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:Name">
+      <xsd:maxLength value="1024"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="Boolean" type="BooleanType">
+    <xsd:annotation>
+      <xsd:documentation>Individual boolean value.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="BooleanType">
+    <xsd:annotation>
+      <xsd:documentation>Individual boolean value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:boolean"/>
+  </xsd:simpleType>
+
+  <xsd:element name="DateTime" type="DateTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Individual ISO date/time value.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="DateTimeType">
+    <xsd:annotation>
+      <xsd:documentation>Individual ISO date/time value.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:dateTime"/>
+  </xsd:simpleType>
+
+  <xsd:element name="Encoded64" type="Encoded64Type">
+    <xsd:annotation>
+      <xsd:documentation>Base 64 encoded data.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Encoded64Type">
+    <xsd:annotation>
+      <xsd:documentation>Base 64 encoded PNG image.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:base64Binary"/>
+  </xsd:simpleType>
+
+  <xsd:element name="EmbeddedXML" type="EmbeddedXMLType">
+    <xsd:annotation>
+      <xsd:documentation>Value governed by a different XML Schema.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="EmbeddedXMLType">
+    <xsd:annotation>
+      <xsd:documentation>Value governed by a different XML Schema.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <!--Simple Types, Lists-->
+
+  <xsd:element name="Int32List" type="Int32ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Int32ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of integer value (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="Int32Type"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="Int64List" type="Int64ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of long integer value (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Int64ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of long integer values (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="Int64Type"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="NonNegativeIntList" type="NonNegativeIntListType">
+    <xsd:annotation>
+      <xsd:documentation>List of non-negative integer values (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="NonNegativeIntListType">
+    <xsd:annotation>
+      <xsd:documentation>List of non-negative integer values (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="NonNegativeIntType"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="PositiveIntList" type="PositiveIntListType">
+    <xsd:annotation>
+      <xsd:documentation>List of positive positive integer values (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="PositiveIntListType">
+    <xsd:annotation>
+      <xsd:documentation>List of positive integer values (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="PositiveIntType"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="NonNegativeInt32List" type="NonNegativeInt32ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of non-negative integer values (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="NonNegativeInt32ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of non-negative integer values (32 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="NonNegativeInt32Type"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="NonNegativeInt64List" type="NonNegativeInt64ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of non-negative long integer values (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="NonNegativeInt64ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of non-negative long integer values (64 bits, signed).</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="NonNegativeInt64Type"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="Float32List" type="Float32ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of 32-bit floating point values.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Float32ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of 32-bit floating point values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="xsd:float"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="Float64List" type="Float64ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of 64-bit floating point values.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="Float64ListType">
+    <xsd:annotation>
+      <xsd:documentation>List of 64-bit floating point values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="xsd:double"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="ShortNameList" type="ShortNameListType">
+    <xsd:annotation>
+      <xsd:documentation>List of short name values, limited to 1024 characters.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="ShortNameListType">
+    <xsd:annotation>
+      <xsd:documentation>Name with up to 1024 characters</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="xsd:Name">
+	  <xsd:maxLength value="1024"/>
+	</xsd:restriction>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="BooleanList" type="BooleanListType">
+    <xsd:annotation>
+      <xsd:documentation>List of boolean values.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="BooleanListType">
+    <xsd:annotation>
+      <xsd:documentation>List of boolean values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="xsd:boolean"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:element name="DateTimeList" type="DateTimeListType">
+    <xsd:annotation>
+      <xsd:documentation>List of ISO date/time values.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="DateTimeListType">
+    <xsd:annotation>
+      <xsd:documentation>List of ISO date/time values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="xsd:dateTime"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <!-- Complex Type Definitions-->
+
+  <!--Base Complex Type for Restriction-->
+  <xsd:complexType name="AnyValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all series values. Can have multiple elements. To be restricted.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice maxOccurs="unbounded">
+	<xsd:element ref="Int32"/>
+	<xsd:element ref="Int64"/>
+	<xsd:element ref="PositiveInt"/>
+	<xsd:element ref="NonNegativeInt"/>
+	<xsd:element ref="NonNegativeInt32"/>
+	<xsd:element ref="NonNegativeInt64"/>
+	<xsd:element ref="Float32"/>
+	<xsd:element ref="Float64"/>
+	<xsd:element ref="String"/>
+	<xsd:element ref="ShortString"/>
+	<xsd:element ref="ShortToken"/>
+	<xsd:element ref="ShortName"/>
+	<xsd:element ref="Boolean"/>
+	<xsd:element ref="DateTime"/>
+	<xsd:element ref="Encoded64"/>
+	<xsd:element ref="EmbeddedXML"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnyNumericValueType">
+    <xsd:annotation>
+      <xsd:documentation>Elements for numeric series values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="unbounded">
+	    <xsd:element ref="Int32"/>
+	    <xsd:element ref="Int64"/>
+	    <xsd:element ref="PositiveInt"/>
+	    <xsd:element ref="NonNegativeInt"/>
+	    <xsd:element ref="NonNegativeInt32"/>
+	    <xsd:element ref="NonNegativeInt64"/>
+	    <xsd:element ref="Float32"/>
+	    <xsd:element ref="Float64"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="AnyCounterValueType">
+    <xsd:annotation>
+      <xsd:documentation>Elements for counter series values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyNumericValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="unbounded">
+	    <xsd:element ref="PositiveInt"/>
+	    <xsd:element ref="NonNegativeInt"/>
+	    <xsd:element ref="NonNegativeInt32"/>
+	    <xsd:element ref="NonNegativeInt64"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+  
+
+<!--Unrestricted Complex Single Value-Based Types: Derived from Base Complex Value Type-->
+
+  <xsd:complexType name="AnySingleValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all single values. To be restricted.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="1">
+	    <xsd:element ref="Int32"/>
+	    <xsd:element ref="Int64"/>
+	    <xsd:element ref="PositiveInt"/>
+	    <xsd:element ref="NonNegativeInt"/>
+	    <xsd:element ref="NonNegativeInt32"/>
+	    <xsd:element ref="NonNegativeInt64"/>
+	    <xsd:element ref="Float32"/>
+	    <xsd:element ref="Float64"/>
+	    <xsd:element ref="String"/>
+	    <xsd:element ref="ShortString"/>
+	    <xsd:element ref="ShortToken"/>
+	    <xsd:element ref="ShortName"/>
+	    <xsd:element ref="Boolean"/>
+	    <xsd:element ref="DateTime"/>
+	    <xsd:element ref="Encoded64"/>
+	    <xsd:element ref="EmbeddedXML"/>
+	    <xsd:element ref="ChemicalElementSymbol"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnySingleNumericValueType">
+    <xsd:annotation>
+      <xsd:documentation>Elements for numeric single values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyNumericValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="1">
+	    <xsd:element ref="Int32"/>
+	    <xsd:element ref="Int64"/>
+	    <xsd:element ref="PositiveInt"/>
+	    <xsd:element ref="NonNegativeInt"/>
+	    <xsd:element ref="NonNegativeInt32"/>
+	    <xsd:element ref="NonNegativeInt64"/>
+	    <xsd:element ref="Float32"/>
+	    <xsd:element ref="Float64"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnySingleCounterValueType">
+    <xsd:annotation>
+      <xsd:documentation>Elements for single counter values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyCounterValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="1">
+	    <xsd:element ref="PositiveInt"/>
+	    <xsd:element ref="NonNegativeInt"/>
+	    <xsd:element ref="NonNegativeInt32"/>
+	    <xsd:element ref="NonNegativeInt64"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+<!-- Complex Types List Values-->
+
+  <xsd:complexType name="AnyListValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all list series values. Can have multiple elements. To be restricted.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice maxOccurs="unbounded">
+	<xsd:element ref="Int32List"/>
+	<xsd:element ref="Int64List"/>
+	<xsd:element ref="PositiveIntList"/>
+	<xsd:element ref="NonNegativeIntList"/>
+	<xsd:element ref="NonNegativeInt32List"/>
+	<xsd:element ref="NonNegativeInt64List"/>
+	<xsd:element ref="Float32List"/>
+	<xsd:element ref="Float64List"/>
+	<xsd:element ref="ShortNameList"/>
+	<xsd:element ref="BooleanList"/>
+	<xsd:element ref="DateTimeList"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnyListNumericValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all numeric list values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyListValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="unbounded">
+	    <xsd:element ref="Int32List"/>
+	    <xsd:element ref="Int64List"/>
+	    <xsd:element ref="PositiveIntList"/>
+	    <xsd:element ref="NonNegativeIntList"/>
+	    <xsd:element ref="NonNegativeInt32List"/>
+	    <xsd:element ref="NonNegativeInt64List"/>
+	    <xsd:element ref="Float32List"/>
+	    <xsd:element ref="Float64List"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnyListCounterValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all list counter values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnyListNumericValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="unbounded">
+	    <xsd:element ref="PositiveIntList"/>
+	    <xsd:element ref="NonNegativeIntList"/>
+	    <xsd:element ref="NonNegativeInt32List"/>
+	    <xsd:element ref="NonNegativeInt64List"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnySingleListValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all single list values. To be restricted.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice maxOccurs="1">
+	<xsd:element ref="Int32List"/>
+	<xsd:element ref="Int64List"/>
+	<xsd:element ref="PositiveIntList"/>
+	<xsd:element ref="NonNegativeIntList"/>
+	<xsd:element ref="NonNegativeInt32List"/>
+	<xsd:element ref="NonNegativeInt64List"/>
+	<xsd:element ref="Float32List"/>
+	<xsd:element ref="Float64List"/>
+	<xsd:element ref="ShortNameList"/>
+	<xsd:element ref="BooleanList"/>
+	<xsd:element ref="DateTimeList"/>
+      </xsd:choice>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnySingleListNumericValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all single numeric list values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnySingleListValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="1">
+	    <xsd:element ref="Int32List"/>
+	    <xsd:element ref="Int64List"/>
+	    <xsd:element ref="PositiveIntList"/>
+	    <xsd:element ref="NonNegativeIntList"/>
+	    <xsd:element ref="NonNegativeInt32List"/>
+	    <xsd:element ref="NonNegativeInt64List"/>
+	    <xsd:element ref="Float32List"/>
+	    <xsd:element ref="Float64List"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnySingleListCounterValueType">
+    <xsd:annotation>
+      <xsd:documentation>Base type for all single counter list values.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="AnySingleListNumericValueType">
+	<xsd:sequence>
+	  <xsd:choice maxOccurs="1">
+	    <xsd:element ref="PositiveIntList"/>
+	    <xsd:element ref="NonNegativeIntList"/>
+	    <xsd:element ref="NonNegativeInt32List"/>
+	    <xsd:element ref="NonNegativeInt64List"/>
+	  </xsd:choice>
+	</xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="ChemicalElementSymbol" type="ChemicalElementSymbolType">
+    <xsd:annotation>
+      <xsd:documentation>Chemical element symbol.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:simpleType name="ChemicalElementSymbolType">
+    <xsd:annotation>
+      <xsd:documentation>
+	This datatype enumerates the valid strings representing chemical
+	elements.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="H">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Hydrogen
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="He">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Helium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Li">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Lithium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Be">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Beryllium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="B">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Boron
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="C">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Carbon
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="N">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Nitrogen
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="O">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Oxygen
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="F">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Fluorine
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ne">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Neon
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Na">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Sodium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Mg">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Magnesium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Al">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Aluminium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Si">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Silicon
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="P">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Phosphorus
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="S">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Sulfur
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cl">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Chlorine
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ar">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Argon
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="K">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Potassium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ca">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Calcium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Sc">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Scandium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ti">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Titanium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="V">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Vanadium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Chromium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Mn">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Manganese
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Fe">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Iron
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Co">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Cobalt
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ni">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Nickel
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cu">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Copper
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Zn">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Zinc
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ga">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Gallium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ge">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Germanium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="As">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Arsenic
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Se">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Selenium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Br">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Bromine
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Kr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Krypton
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Rb">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Rubidium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Sr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Strontium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Y">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Yttrium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Zr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Zirconium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Nb">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Niobium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Mo">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Molybdenum
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Tc">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Technetium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ru">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ruthenium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Rh">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Rhodium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pd">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Palladium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ag">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Silver
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cd">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Cadmium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="In">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Indium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Sn">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Tin
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Sb">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Antimony
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Te">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Tellurium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="I">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Iodine
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Xe">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Xenon
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cs">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Caesium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ba">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Barium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="La">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Lanthanum
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ce">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Cerium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Praseodymium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Nd">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Neodymium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pm">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Promethium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Sm">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Samarium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Eu">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Europium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Gd">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Gadolinium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Tb">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Terbium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Dy">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Dysprosium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ho">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Holmium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Er">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Erbium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Tm">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Thulium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Yb">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ytterbium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Lu">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Lutetium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Hf">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Hafnium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ta">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Tantalum
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="W">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Tungsten
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Re">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Rhenium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Os">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Osmium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ir">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Iridium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pt">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Platinum
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Au">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Gold
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Hg">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Mercury
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Tl">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Thallium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pb">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Lead
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Bi">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Bismuth
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Po">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Polonium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="At">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Astatine
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Rn">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Radon
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Fr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Francium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ra">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Radium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Ac">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Actinium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Th">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Thorium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pa">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Protactinium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="U">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Uranium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Np">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Neptunium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Pu">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Plutonium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Am">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Americium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cm">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Curium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Bk">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Berkelium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Cf">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Californium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Es">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Einsteinium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Fm">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Fermium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Md">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Mendelevium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="No">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Nobelium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Lr">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Lawrencium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Rf">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Rutherfordium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Db">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Dubnium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Sg">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Seaborgium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Bh">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Bohrium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Hs">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Hassium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Mt">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Meitnerium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Uun">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ununnilium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Uuu">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Unununium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Uub">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ununbium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Uuq">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ununquadium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Uuh">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ununhexium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Uuo">
+	<xsd:annotation>
+	  <xsd:documentation>
+	    Ununoctium
+	  </xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

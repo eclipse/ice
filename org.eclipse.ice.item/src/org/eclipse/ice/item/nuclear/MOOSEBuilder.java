@@ -32,7 +32,7 @@ public class MOOSEBuilder extends AbstractItemBuilder {
 	 */
 	public MOOSEBuilder() {
 		setName("MOOSE Workflow");
-		setType(ItemType.Simulation);
+		setType(ItemType.Application);
 	}
 
 	/**

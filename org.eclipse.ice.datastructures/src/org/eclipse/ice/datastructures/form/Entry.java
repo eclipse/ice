@@ -224,6 +224,14 @@ public class Entry extends ICEObject implements IUpdateable {
 	protected boolean required = false;
 
 	/**
+	 * A convenience function which calls the constructor configured to run
+	 * setup()
+	 */
+	public Entry() {
+		this(true);
+	}
+
+	/**
 	 * A constructor that will create an Entry with only a unique ID and a name.
 	 * Default values are set:
 	 * <ul>
@@ -232,11 +240,18 @@ public class Entry extends ICEObject implements IUpdateable {
 	 * <li>allowedValues = null</li>
 	 * <li>allowedValueType = AllowedValueType.Undefined</li>
 	 * </ul>
-	 * The constructor will call the setup function after setting the default
-	 * values. The setup function can be overridden to tailor the properties of
-	 * the Entry or otherwise overload the behavior of the Entry.
+	 * 
+	 * The constructor may optionally call the setup function after setting the
+	 * default values. The setup function can be overridden to tailor the
+	 * properties of the Entry or otherwise overload the behavior of the Entry.
+	 * Not invoking startup is desirable when the user will invoke it themselves
+	 * at a later point, such as when another constructor calls this one before
+	 * completing the object's initialization itself.
+	 * 
+	 * @param runSetup
+	 *            Whether or not to run the startup() function
 	 */
-	public Entry() {
+	public Entry(boolean runSetup) {
 
 		// Set everything else to the default values
 		objectDescription = "Entry " + this.uniqueId;
@@ -254,7 +269,9 @@ public class Entry extends ICEObject implements IUpdateable {
 		iEntryContentProvider = new BasicEntryContentProvider();
 
 		// Call the setup function to tailor the Entry for the developer
-		setup();
+		if(runSetup){
+			setup();
+		}
 
 		// Set values on BECP
 		iEntryContentProvider.setAllowedValues(this.allowedValues);
@@ -295,6 +312,9 @@ public class Entry extends ICEObject implements IUpdateable {
 		if (contentProvider != null) {
 			this.iEntryContentProvider = contentProvider;
 		}
+		
+		// Call the setup function to tailor the Entry for the developer
+		setup();
 
 		return;
 	}

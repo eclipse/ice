@@ -47,8 +47,17 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	 */
 	private boolean loaded = false;
 
+	/**
+	 * A proxy of the series serving as this Plot's independent series.
+	 */
+	private ProxySeries independentProxy = null;
+
 	/*
-	 * Overrides a method from ProxyPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.ProxyPlot#createProxySeries(org.eclipse.ice
+	 * .viz.service.ISeries)
 	 */
 	@Override
 	protected ProxySeries createProxySeries(ISeries source) {
@@ -59,7 +68,11 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractPlot#draw(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
@@ -75,10 +88,15 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 						"IPlot error: "
 								+ "Cannot draw plot in a disposed Composite.");
 			}
-
 			// Create a plot composite.
 			plotComposite = new CSVPlotComposite(parent, SWT.BORDER);
 			plotComposite.setPlot(this);
+			
+			// Make sure the plot data has been loaded
+			while (!((CSVPlot)getSource()).isLoaded()) {
+				Thread.sleep(200);
+			}
+			
 			// Tell it to update based on the new plot.
 			plotComposite.refresh();
 
@@ -100,7 +118,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from ProxyPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.ProxyPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -112,7 +132,11 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from ProxyPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.ProxyPlot#getDependentSeries(java.lang.String
+	 * )
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -124,7 +148,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getIndependentSeries()
 	 */
 	@Override
 	public ISeries getIndependentSeries() {
@@ -132,11 +158,17 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		if (!loaded) {
 			reloadSeries();
 		}
-		return super.getIndependentSeries();
+		
+		// Wrap the source IPlot's independent series and return it. 
+		return createProxySeries(getSource().getIndependentSeries());
 	}
 
 	/*
-	 * Implements a method from IPlotListener.
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IPlotListener#plotUpdated(org.eclipse.ice
+	 * .viz.service.IPlot, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void plotUpdated(IPlot plot, String key, String value) {
@@ -150,7 +182,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#redraw()
 	 */
 	@Override
 	public void redraw() {
@@ -164,7 +198,9 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from ProxyPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.ProxyPlot#reloadSeries()
 	 */
 	@Override
 	protected void reloadSeries() {
@@ -198,7 +234,26 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	}
 
 	/*
-	 * Overrides a method from ProxyPlot.
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractPlot#setIndependentSeries(org.eclipse
+	 * .ice.viz.service.ISeries)
+	 */
+	@Override
+	public void setIndependentSeries(ISeries series) {
+		super.setIndependentSeries(series);
+		independentProxy = createProxySeries(series);
+		loaded = false;
+		getSource().redraw();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.ProxyPlot#setSource(org.eclipse.ice.viz.service
+	 * .IPlot)
 	 */
 	@Override
 	public void setSource(IPlot source) {

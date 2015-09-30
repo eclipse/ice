@@ -100,7 +100,7 @@ public abstract class VizConnectionManager<T>
 	 *            come straight from the {@link #preferenceStore}.
 	 */
 	private void addConnection(String name, String preferences) {
-		logger.debug("VizConnectionManager message: " + "Adding connection \""
+		logger.info("VizConnectionManager message: " + "Adding connection \""
 				+ name + "\" using the preference string \"" + preferences
 				+ "\".");
 
@@ -116,7 +116,7 @@ public abstract class VizConnectionManager<T>
 			connection.setName(name);
 			connection.setHost(split[0]);
 			connection.setPort(Integer.parseInt(split[1]));
-			connection.setPath(split[2]);
+			connection.setPath(split[2].split(";")[0]);
 
 			// Add the connection to the map of connections by name.
 			connectionsByName.put(name, connection);
@@ -199,7 +199,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#getConnection(java.lang.String)
 	 */
 	@Override
 	public IVizConnection<T> getConnection(String name) {
@@ -217,7 +218,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#getConnections()
 	 */
 	@Override
 	public Set<String> getConnections() {
@@ -225,7 +227,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#getConnectionsForHost(java.lang.String)
 	 */
 	@Override
 	public Set<String> getConnectionsForHost(String host)
@@ -269,7 +272,8 @@ public abstract class VizConnectionManager<T>
 	}
 
 	/*
-	 * Implements a method from IVizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnectionManager#setPreferenceStore(org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore, java.lang.String)
 	 */
 	@Override
 	public void setPreferenceStore(CustomScopedPreferenceStore store,

@@ -20,12 +20,10 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ListDialog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
@@ -51,8 +49,7 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 
 		// Set the image to be the green plus button.
 		Bundle bundle = FrameworkUtil.getBundle(AddNodeTreeAction.class);
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "add.png");
+		Path imagePath = new Path("icons" + System.getProperty("file.separator") + "add.png");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		setImageDescriptor(ImageDescriptor.createFromURL(imageURL));
 
@@ -77,7 +74,7 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 	public void run() {
 		addToNode(getSelectedNode());
 	}
-	
+
 	/**
 	 * Determines whether or not a child node can be added to a TreeComposite.
 	 * 
@@ -100,7 +97,7 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 
 		if (canAddNode(tree)) {
 
-			HashMap<String, TreeComposite> exemplarMap;
+			final HashMap<String, TreeComposite> exemplarMap;
 			ArrayList<TreeComposite> exemplars = null;
 
 			// Get the exemplar children and put them in the map
@@ -110,28 +107,48 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 			for (TreeComposite exemplar : exemplars) {
 				exemplarMap.put(exemplar.getName(), exemplar);
 			}
+
 			// Create a selection dialog so that they can make a choice
 			IWorkbench bench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = bench.getActiveWorkbenchWindow();
-			ListDialog addNodeDialog = new ListDialog(window.getShell());
-			addNodeDialog.setAddCancelButton(true);
-			addNodeDialog.setContentProvider(new ArrayContentProvider());
-			addNodeDialog.setLabelProvider(new LabelProvider());
-			addNodeDialog.setInput(exemplarMap.keySet().toArray());
+			TreeNodeFilteredItemsSelectionDialog addNodeDialog = new TreeNodeFilteredItemsSelectionDialog(
+					window.getShell(), true, exemplarMap.keySet());
+
+			// Set up the Details Label Provider to return the
+			// TreeComposites Description
+			addNodeDialog.setDetailsLabelProvider(new LabelProvider() {
+				@Override
+				public String getText(Object element) {
+					if (element == null) {
+						return "";
+					} else {
+						String text = exemplarMap.get(element.toString()).getDescription();
+						if (text.isEmpty()) {
+							return element.toString();
+						} else {
+							return "\n" + text; // FIXME not sure why we need a \n...
+						}
+					}
+				}
+			});
 			addNodeDialog.setInitialSelections(exemplarMap.keySet().toArray());
 			addNodeDialog.setTitle("Child Selector");
 			addNodeDialog.setMessage("Select a new child from the list");
+			addNodeDialog.setInitialPattern("?");
+			addNodeDialog.refresh();
 			addNodeDialog.open();
 
 			if (addNodeDialog.getResult() != null) {
-				// Get the exemplar
-				TreeComposite exemplar = exemplarMap.get(addNodeDialog
-						.getResult()[0]);
-				// Clone it. This lets you pull a sub-class of TreeComposite if
-				// the clone() method is overridden.
-				TreeComposite child = (TreeComposite) exemplar.clone();
-				// Add it to the tree
-				tree.setNextChild(child);
+				for (Object result : addNodeDialog.getResult()) {
+					// Get the exemplar
+					TreeComposite exemplar = exemplarMap.get(result);
+					// Clone it. This lets you pull a sub-class of TreeComposite
+					// if
+					// the clone() method is overridden.
+					TreeComposite child = (TreeComposite) exemplar.clone();
+					// Add it to the tree
+					tree.setNextChild(child);
+				}
 			} else {
 				// Close the list dialog otherwise
 				addNodeDialog.close();

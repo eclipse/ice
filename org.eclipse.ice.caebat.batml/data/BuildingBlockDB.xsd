@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Battery BuildingBlock Database Schema, v 10.08.2012
+
+    Copyright (c) 2012 UT-Battelle, LLC All rights reserved.
+    Redistribution and use, with or without modification, are permitted
+    provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    - Collection of administrative costs for redistribution of the source
+    code or binary form is allowed. However, collection of a royalty or
+    other fee in excess of good faith amount for cost recovery for such
+    redistribution is prohibited.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER, THE DOE, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+    OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+    USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+
+ --> 
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+
+   xmlns="BatteryML:2.0"
+   targetNamespace="BatteryML:2.0"
+
+   elementFormDefault="qualified" 
+   attributeFormDefault="unqualified" version="0.2">
+
+
+  <xsd:element name="BuildingBlockDB_Test_Doc">
+    <xsd:annotation>
+      <xsd:documentation>
+	For testing.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:any     namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+<!-- BuildingBlock database -->
+
+  <xsd:element name="BuildingBlockDB">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main database with component definitions. Definitions can exist
+	only in BuildingBlockDB. The component definitions are referenced from
+	other databases by argument ref that is linked to
+	component id.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:choice minOccurs="0" maxOccurs="unbounded">
+	  <xsd:element ref="BuildingBlock"          minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element ref="BuildingBlockSet"       minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:choice>
+	<xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="OptionalNameGroup"/>
+    </xsd:complexType>
+    <xsd:key name="BuildingBlockIdKey">
+      <xsd:selector xpath="./BuildingBlock | ./BuildingBlockSet"/>
+      <xsd:field xpath="@id"/>
+    </xsd:key>
+  </xsd:element>
+
+  <xsd:element name="BuildingBlock" type="BuildingBlockDBEntryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	BuildingBlock element in BuildingBlockDB.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="BuildingBlockAbstractType"  abstract="true">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of component type. Contains all the hierarchical
+	components of the component instance.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:sequence>
+      <xsd:element ref="BuildingBlock"          minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:choice minOccurs="0">
+<!--
+	<xsd:element name="Model"           type="BuildingBlockModelType"   minOccurs="0"/>
+-->
+	<xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	<xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+      </xsd:choice>
+      <xsd:element ref="Parameters"         minOccurs="0"/>
+      <xsd:any     namespace="##other"          minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+      <xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+    <xsd:attribute name="id"    type="ShortNameType"  use="optional"/>
+    <xsd:attribute name="type"  type="BuildingBlockTypeType"    use="optional"/>
+    <xsd:attribute name="idref" type="ShortNameType"  use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="BuildingBlockDBEntryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of component type. Contains all the hierarchical
+	components of the component instance.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexContent>
+      <xsd:restriction base="BuildingBlockAbstractType">
+	<xsd:sequence>
+	  <xsd:element ref="BuildingBlock"          minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:choice minOccurs="0">
+	    <xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	    <xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+	  </xsd:choice>
+	  <xsd:element ref="Parameters"        minOccurs="0"/>
+	  <xsd:any     namespace="##other"         minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+	  <xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+	<xsd:attribute name="id"    type="ShortNameType"  use="required"/>
+	<xsd:attribute name="type"  type="BuildingBlockTypeType"    use="required"/>
+	<xsd:attribute name="idref" type="ShortNameType"  use="prohibited"/>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="BuildingBlockRefType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of battery component type referring to the entry in the component database.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexContent>
+      <xsd:restriction base="BuildingBlockAbstractType">
+	<xsd:sequence>
+	  <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="name"  type="ShortTokenType" use="prohibited"/>
+	<xsd:attribute name="id"    type="ShortNameType"  use="prohibited"/>
+	<xsd:attribute name="type"  type="BuildingBlockTypeType"    use="prohibited"/>
+	<xsd:attribute name="idref" type="ShortNameType"  use="required"/>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="BuildingBlockSet">
+    <xsd:annotation>
+      <xsd:documentation>
+	BuildingBlock set element in BuildingBlockDB.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="BuildingBlock"     type="BuildingBlockRefType" minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element name="BuildingBlockSet"  type="BuildingBlockRefType" minOccurs="0" maxOccurs="unbounded"/>
+
+	<xsd:choice minOccurs="0">
+	  <xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	  <xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+	</xsd:choice>
+	<xsd:element ref="Parameters"        minOccurs="0"/>
+	<xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+      <xsd:attribute name="id"    type="ShortNameType"  use="required"/>
+    </xsd:complexType>
+    <xsd:key name="BuildingBlockSetIdKey">
+      <xsd:selector xpath="./BuildingBlock | ./BuildingBlockSet"/>
+      <xsd:field xpath="@idref"/>
+    </xsd:key>
+  </xsd:element>
+
+
+
+  <xsd:complexType name="BuildingBlockModelType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Model reference to the model specification in the ModelDB.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="idref" type="ShortNameType"  use="required"/>
+  </xsd:complexType>
+
+  <xsd:simpleType  name="BuildingBlockTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+	BuildingBlock type battery. Single choice.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortTokenType">
+
+      <xsd:enumeration value="Current Collector">
+	<xsd:annotation>
+	  <xsd:documentation>Current Collector.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Current Collector Positive">
+	<xsd:annotation>
+	  <xsd:documentation>Current Collector Positive.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Current Collector Negative">
+	<xsd:annotation>
+	  <xsd:documentation>Current Collector Negative.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Current Collector Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Current Collector Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Current Collector Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Current Collector Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Active Material">
+	<xsd:annotation>
+	  <xsd:documentation>Active Material.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Active Material Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Active Material Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Active Material Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Active Material Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Separator">
+	<xsd:annotation>
+	  <xsd:documentation>Separator.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Coating">
+	<xsd:annotation>
+	  <xsd:documentation>Coating.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Coating Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Coating Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Coating Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Coating Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Electrolyte">
+	<xsd:annotation>
+	  <xsd:documentation>Electrolyte.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Solvent">
+	<xsd:annotation>
+	  <xsd:documentation>Solvent.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Salt">
+	<xsd:annotation>
+	  <xsd:documentation>Salt.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Additives">
+	<xsd:annotation>
+	  <xsd:documentation>Additives.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Binder">
+	<xsd:annotation>
+	  <xsd:documentation>Binder.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Binder Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Binder Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Binder Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Binder Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Conductivity Aid">
+	<xsd:annotation>
+	  <xsd:documentation>Conductivity Aid.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Conductivity Aid Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Conductivity Aid Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Conductivity Aid Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Conductivity Aid Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Tape">
+	<xsd:annotation>
+	  <xsd:documentation>Bonding Tape.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Tab">
+	<xsd:annotation>
+	  <xsd:documentation>Tab.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Tab Anode">
+	<xsd:annotation>
+	  <xsd:documentation>Tab Anode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Tab Cathode">
+	<xsd:annotation>
+	  <xsd:documentation>Tab Cathode.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Insulation">
+	<xsd:annotation>
+	  <xsd:documentation>Insulation.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Coolant">
+	<xsd:annotation>
+	  <xsd:documentation>Coolant.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="BuildingBlockAssembly">
+	<xsd:annotation>
+	  <xsd:documentation>BuildingBlock assembly.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Cell">
+	<xsd:annotation>
+	  <xsd:documentation>Cell.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="BuildingBlockOther">
+	<xsd:annotation>
+	  <xsd:documentation>Other component type.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+
+
+</xsd:schema>

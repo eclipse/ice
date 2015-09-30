@@ -156,7 +156,8 @@ public abstract class AbstractVizService implements IVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getSupportedExtensions()
 	 */
 	@Override
 	public Set<String> getSupportedExtensions() {

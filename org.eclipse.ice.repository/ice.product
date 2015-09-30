@@ -172,6 +172,31 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ptp.rm.jaxb.contrib" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ptp.rm.slurm" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ice" version="2.1.7.20150825"/>
+      <feature id="org.eclipse.cdt.bupc" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.core.lrparser.feature" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.core.parser.upc.feature" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.docker.launcher" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gdb.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.build.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.debug.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.dsf.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.multicorevisualizer" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.managedbuilder.llvm" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.msw" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.native.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.platform.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.qt" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.sdk" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.testsrunner.feature" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.xlc.feature" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.linuxtools.cdt.libhover.feature" version="4.0.0.201506101754"/>
+      <feature id="org.eclipse.dltk.core" version="5.2.0.201505210948"/>
+      <feature id="org.eclipse.dltk.core.index" version="5.2.0.201505210948"/>
+      <feature id="org.eclipse.dltk.itcl" version="5.2.0.201505210948"/>
+      <feature id="org.eclipse.dltk.ruby" version="5.2.0.201505210948"/>
+      <feature id="org.eclipse.dltk.tcl" version="5.2.0.201505210948"/>
+      <feature id="org.eclipse.dltk.xotcl" version="5.2.0.201505210948"/>
+      <feature id="org.eclipse.recommenders.rcp.feature" version="2.2.0.v20150609-1848"/>
    </features>
 
    <configurations>
@@ -205,7 +230,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />

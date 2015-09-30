@@ -149,7 +149,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -179,7 +180,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -231,7 +233,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -248,7 +251,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#getWriteableChildren()
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -270,7 +274,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readChild(org.eclipse.ice.io.hdf.IHdfReadable)
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -295,7 +300,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Implements a method from Composite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Composite#addComponent(org.eclipse.ice.datastructures.ICEObject.Component)
 	 */
 	@Override
 	public void addComponent(Component child) {
@@ -312,7 +318,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Implements a method from Composite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Composite#removeComponent(int)
 	 */
 	@Override
 	public void removeComponent(int childId) {
@@ -340,7 +347,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Implements a method from Composite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Composite#getComponent(int)
 	 */
 	@Override
 	public Component getComponent(int childId) {
@@ -371,7 +379,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Implements a method from Composite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Composite#getNumberOfComponents()
 	 */
 	@Override
 	public int getNumberOfComponents() {
@@ -381,7 +390,8 @@ public class LWRComposite extends LWRComponent implements Composite {
 	}
 
 	/*
-	 * Implements a method from Composite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.Composite#getComponents()
 	 */
 	@Override
 	public ArrayList<Component> getComponents() {

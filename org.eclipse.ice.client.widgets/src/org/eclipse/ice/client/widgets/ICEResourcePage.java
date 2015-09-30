@@ -14,9 +14,14 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -24,6 +29,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
@@ -32,6 +38,9 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -58,7 +67,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  *
  */
 public class ICEResourcePage extends ICEFormPage
-		implements ISelectionListener, IUpdateableListener {
+		implements ISelectionListener, IUpdateableListener, IResourceChangeListener {
 
 	/**
 	 * The ResourceComponent drawn by this page.
@@ -123,6 +132,7 @@ public class ICEResourcePage extends ICEFormPage
 		String[] extensions = { "txt", "sh", "i", "csv" };
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
 
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
 		return;
 	}
 
@@ -142,8 +152,7 @@ public class ICEResourcePage extends ICEFormPage
 
 		// Try to show the Resource View.
 		try {
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(ICEResourceView.ID);
+			getSite().getWorkbenchWindow().getActivePage().showView(ICEResourceView.ID);
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
@@ -156,15 +165,13 @@ public class ICEResourcePage extends ICEFormPage
 		// Register the page with the SelectionService as a listener. Note that
 		// this call can be updated to only listen for selections from a
 		// particular part.
-		getSite().getWorkbenchWindow().getSelectionService()
-				.addSelectionListener(this);
+		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 		// If the page is disposed, then this should be removed as a selection
 		// listener.
 		pageComposite.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent event) {
-				getSite().getWorkbenchWindow().getSelectionService()
-						.removeSelectionListener(ICEResourcePage.this);
+				getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(ICEResourcePage.this);
 			}
 		});
 
@@ -178,8 +185,7 @@ public class ICEResourcePage extends ICEFormPage
 		toolkit.adapt(plotGridComposite);
 
 		// Set the workbench page reference
-		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-				.getActivePage();
+		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
 		return;
 	}
@@ -205,20 +211,22 @@ public class ICEResourcePage extends ICEFormPage
 			// FillLayout so its contents take up all available space.
 			browser = new Browser(parent, SWT.NONE);
 			toolkit.adapt(browser);
-			browser.setLayout(new FillLayout());
+
+			// A Grid Layout must be used, instead of the more natural
+			// FillLayout, in order to avoid a bug in which the browser is
+			// capable of forcing its parent section to resize.
+			browser.setLayout(new GridLayout());
+			browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			browser.layout(true);
 
 			// Display the default-selected Resource from the Resource View in
 			// the browser, or a message.
 			if (!resourceComponent.isEmpty()) {
-				browser.setText("<html><body>"
-						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">Select a resource to view</p>"
-						+ "</body></html>");
+				browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>" + "</body></html>");
 			} else {
-				browser.setText("<html><body>"
-						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">No resources available</p>"
-						+ "</body></html>");
+				browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">No resources available</p>" + "</body></html>");
 			}
 		} catch (SWTError e) {
 			logger.error(getClass().getName() + " Exception! ", e);
@@ -251,10 +259,8 @@ public class ICEResourcePage extends ICEFormPage
 			Control topControl = stackLayout.topControl;
 			if (topControl != browser) {
 				// Update the browser.
-				browser.setText("<html><body>"
-						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">Select a resource to view</p>"
-						+ "</body></html>");
+				browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>" + "</body></html>");
 				stackLayout.topControl = browser;
 				pageComposite.layout();
 
@@ -300,14 +306,11 @@ public class ICEResourcePage extends ICEFormPage
 		// text editor
 		if (useEditor) {
 			// Get the content of the file
-			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem()
-					.getStore(resource.getPath());
-			FileStoreEditorInput editorInput = new FileStoreEditorInput(
-					fileOnLocalDisk);
+			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(resource.getPath());
+			FileStoreEditorInput editorInput = new FileStoreEditorInput(fileOnLocalDisk);
 
 			// Open the contents in the text editor
-			IWorkbenchWindow window = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow();
+			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();
 			page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
 		}
@@ -315,8 +318,7 @@ public class ICEResourcePage extends ICEFormPage
 		// If the Resource is a regular Resource or cannot be rendered via
 		// the VizServices or a text editor, try to open it in the browser
 		// as a last resort.
-		if (useBrowser && !useEditor && browser != null
-				&& !browser.isDisposed()) {
+		if (useBrowser && !useEditor && browser != null && !browser.isDisposed()) {
 			// Update the browser.
 			browser.setUrl(path);
 			stackLayout.topControl = browser;
@@ -330,7 +332,6 @@ public class ICEResourcePage extends ICEFormPage
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Gets the resource's key for use in the plot maps.
 	 *
 	 * @param resource
@@ -352,15 +353,13 @@ public class ICEResourcePage extends ICEFormPage
 		if (workbenchPage != null) {
 
 			// Reactivate the editor tab if it's not in the front
-			if (getEditor() != null
-					&& workbenchPage.getActiveEditor() != getEditor()) {
+			if (getEditor() != null && workbenchPage.getActiveEditor() != getEditor()) {
 				workbenchPage.activate(getEditor());
 			}
 		} else {
 
 			// Set the workbench page and try activating the editor again
-			workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage();
+			workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 			activateEditor();
 		}
 
@@ -403,10 +402,8 @@ public class ICEResourcePage extends ICEFormPage
 					@Override
 					public void run() {
 						// Clear the browser and make it the top widget.
-						browser.setText("<html><body>"
-								+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-								+ "align=\"center\">No resources available</p>"
-								+ "</body></html>");
+						browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
+								+ "align=\"center\">No resources available</p>" + "</body></html>");
 						stackLayout.topControl = browser;
 						pageComposite.layout();
 
@@ -472,39 +469,24 @@ public class ICEResourcePage extends ICEFormPage
 	@Override
 	public void update(IUpdateable component) {
 
-		if (component != null && component == resourceComponent) {
-
-			// Get a local copy of the ResouceComponent.
-			ResourceComponent resourceComponent = (ResourceComponent) component;
-
-			// TODO Do we want to remove any IPlots associated with VizResources
-			// that are no longer available, or should we just let the user
-			// close them out?
-
-			// // Create plots for any VizResources in the ResourceComponent
-			// that
-			// // do not already have plots.
-			for (ICEResource resource : resourceComponent.getResources()) {
-				if (resource instanceof VizResource) {
-					resource.register(this);
-				}
-			}
-		} else if (component != null && component instanceof VizResource) {
+		if (component != null && component instanceof VizResource) {
 			// Cast to a VizResource
 			final VizResource resource = (VizResource) component;
 
-			// Refresh all plots in the grid associated with the resource.
-			plotGridComposite.refreshPlots(resource.getPath());
+			if (plotGridComposite != null && !plotGridComposite.isDisposed()) {
+				// Refresh all plots in the grid associated with the resource.
+				plotGridComposite.refreshPlots(resource.getPath());
 
-			// Layout the composite on the UI thread.
-			if (pageComposite != null) {
-				pageComposite.getDisplay().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						pageComposite.layout();
-						activateEditor();
-					}
-				});
+				// Layout the composite on the UI thread.
+				if (pageComposite != null && !pageComposite.isDisposed()) {
+					pageComposite.getDisplay().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							pageComposite.layout();
+							activateEditor();
+						}
+					});
+				}
 			}
 
 		}
@@ -523,5 +505,42 @@ public class ICEResourcePage extends ICEFormPage
 		// This method should be used if we need to respond to the current
 		// selection. Note that the current selection can change based on the
 		// currently active view/part.
+		return;
+	}
+
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
+			try {
+				event.getDelta().accept(new IResourceDeltaVisitor() {
+					public boolean visit(IResourceDelta delta) throws CoreException {
+						// System.out.println("Name: " +
+						// delta.getResource().getName());
+						for (ICEResource r : ICEResourcePage.this.resourceComponent.getResources()) {
+							if (delta.getResource().getName().equals(r.getName())) {
+								ICEResourcePage.this.update(r);
+							}
+						}
+						return true;
+					}
+				});
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Return true if the provided ICEResource has already been displayed.
+	 * 
+	 * @param r
+	 * @return
+	 */
+	public boolean isResourceDisplayed(ICEResource r) {
+		if (plotGridComposite != null) {
+			return plotGridComposite.contains(r.getPath());
+		} else {
+			return false;
+		}
 	}
 }

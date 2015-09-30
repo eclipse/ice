@@ -629,7 +629,8 @@ public class PlotGridComposite extends Composite {
 	}
 
 	/*
-	 * Overrides a method from Control.
+	 * (non-Javadoc)
+	 * @see org.eclipse.swt.widgets.Control#setBackground(org.eclipse.swt.graphics.Color)
 	 */
 	@Override
 	public void setBackground(Color color) {
@@ -652,5 +653,21 @@ public class PlotGridComposite extends Composite {
 		}
 
 		return;
+	}
+
+	/**
+	 * Return true if the given URI has already been 
+	 * plotted and thus is contained in this PlotGridComposite. 
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	public boolean contains(URI uri) {
+		for (IPlot plot : plots) {
+			if (plot.getDataSource().equals(uri)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

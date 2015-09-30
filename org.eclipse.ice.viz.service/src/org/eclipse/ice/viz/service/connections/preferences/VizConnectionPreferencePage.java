@@ -43,7 +43,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * The {@code ConnectionTable} used by this preference page. It is
 	 * represented by a {@link TableComponentComposite} on the page.
 	 */
-	private ConnectionTable table;
+	protected ConnectionTable table;
 
 	/**
 	 * The default constructor.
@@ -97,7 +97,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	}
 
 	/*
-	 * Implements an abstract method from FieldEditorPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	@Override
 	protected void createFieldEditors() {
@@ -122,7 +123,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	protected abstract String getConnectionsPreferenceNodeId();
 
 	/*
-	 * Overrides a method from AbstractVizPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.preferences.AbstractVizPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
@@ -147,7 +149,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * @param table
 	 *            The table to load the current preferences into.
 	 */
-	private void loadPreferences(ConnectionTable table) {
+	protected void loadPreferences(ConnectionTable table) {
 		// Get the preference node for connection preferences.
 		CustomScopedPreferenceStore store = (CustomScopedPreferenceStore) getPreferenceStore();
 		IEclipsePreferences node = store.getNode(getConnectionsPreferenceNodeId());
@@ -176,7 +178,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	}
 
 	/*
-	 * Overrides a method from FieldEditorPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
 	 */
 	@Override
 	public boolean performOk() {
@@ -197,7 +200,7 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	 * @param table
 	 *            The table containing the new connection preferences to store.
 	 */
-	private void savePreferences(ConnectionTable table) {
+	protected void savePreferences(ConnectionTable table) {
 		// Get the preference node for connection preferences.
 		CustomScopedPreferenceStore store = (CustomScopedPreferenceStore) getPreferenceStore();
 		IEclipsePreferences node = store.getNode(getConnectionsPreferenceNodeId());

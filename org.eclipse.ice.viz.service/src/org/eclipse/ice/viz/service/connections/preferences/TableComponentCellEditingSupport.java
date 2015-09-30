@@ -78,7 +78,8 @@ public class TableComponentCellEditingSupport extends EditingSupport {
 	}
 
 	/*
-	 * Overrides a method from EditingSupport.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.EditingSupport#canEdit(java.lang.Object)
 	 */
 	@Override
 	protected boolean canEdit(Object element) {
@@ -98,7 +99,8 @@ public class TableComponentCellEditingSupport extends EditingSupport {
 	}
 
 	/*
-	 * Overrides a method from EditingSupport.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.EditingSupport#getCellEditor(java.lang.Object)
 	 */
 	@Override
 	protected CellEditor getCellEditor(Object element) {
@@ -119,7 +121,8 @@ public class TableComponentCellEditingSupport extends EditingSupport {
 	}
 
 	/*
-	 * Overrides a method from EditingSupport.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.EditingSupport#getValue(java.lang.Object)
 	 */
 	@Override
 	protected Object getValue(Object element) {
@@ -139,7 +142,8 @@ public class TableComponentCellEditingSupport extends EditingSupport {
 	}
 
 	/*
-	 * Overrides a method from EditingSupport.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.EditingSupport#setValue(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	protected void setValue(Object element, Object value) {

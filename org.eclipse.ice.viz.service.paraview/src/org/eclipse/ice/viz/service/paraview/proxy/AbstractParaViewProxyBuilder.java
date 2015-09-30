@@ -51,7 +51,8 @@ public abstract class AbstractParaViewProxyBuilder
 	protected abstract IParaViewProxy createConcreteProxy(URI uri);
 
 	/*
-	 * Implements a method from IParaViewProxyBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder#createProxy(java.net.URI)
 	 */
 	@Override
 	public IParaViewProxy createProxy(URI uri)
@@ -112,7 +113,8 @@ public abstract class AbstractParaViewProxyBuilder
 	protected abstract Set<String> findExtensions();
 
 	/*
-	 * Implements a method from IParaViewProxyBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder#getExtensions()
 	 */
 	@Override
 	public Set<String> getExtensions() {

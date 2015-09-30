@@ -216,7 +216,8 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from Ring.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.Ring#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -245,7 +246,8 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from Ring.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.Ring#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -286,7 +288,8 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from Ring.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.Ring#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -302,7 +305,8 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from Ring.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.Ring#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -316,7 +320,8 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from Ring.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.Ring#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -344,7 +349,8 @@ public class Tube extends Ring {
 	}
 
 	/*
-	 * Overrides a method from Ring.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.Ring#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -46,7 +47,7 @@ public class ComboCellEditingSupport extends TextCellEditingSupport {
 	 * is used to restrict displayed values to a set of allowed values from the
 	 * {@link #contentProvider}.
 	 */
-	private final ComboBoxCellEditor comboCell;
+	private ComboBoxCellEditor comboCell;
 
 	/**
 	 * A Map used to quickly look up an index of an element's value in its list
@@ -54,6 +55,11 @@ public class ComboCellEditingSupport extends TextCellEditingSupport {
 	 * requires a <code>Combo</code>.
 	 */
 	private final Map<String, Integer> valueMap;
+
+	/**
+	 * 
+	 */
+	private Composite parent;
 
 	/**
 	 * Overrides the default {@link ICellContentProvider} to gain access to the
@@ -74,20 +80,14 @@ public class ComboCellEditingSupport extends TextCellEditingSupport {
 	 *            <code>EditingSupport</code> are passed to this content
 	 *            provider.
 	 */
-	public ComboCellEditingSupport(ColumnViewer viewer,
-			IComboCellContentProvider contentProvider) {
+	public ComboCellEditingSupport(ColumnViewer viewer, IComboCellContentProvider contentProvider) {
 		super(viewer, contentProvider);
 
 		// Store a reference to the IComboCellContentProvider.
 		this.contentProvider = contentProvider;
 
 		// Get the viewer's Composite so we can create the CellEditors.
-		Composite parent = (Composite) viewer.getControl();
-
-		// Create the ComboBoxCellEditor.
-		comboCell = new ComboBoxCellEditor(parent, new String[] {},
-				SWT.DROP_DOWN | SWT.READ_ONLY);
-		comboCell.getControl().setBackground(parent.getBackground());
+		parent = (Composite) viewer.getControl();
 
 		// Create a HashMap to contain values for discrete Entry values.
 		valueMap = new HashMap<String, Integer>();
@@ -108,11 +108,23 @@ public class ComboCellEditingSupport extends TextCellEditingSupport {
 
 		// For elements that need a Combo, use the ComboBoxCellEditor.
 		if (contentProvider.requiresCombo(element)) {
+
+			TreeProperty property = (TreeProperty) element;
+
+			boolean isFile = property.getEntry().getValueType() == AllowedValueType.File;
+
+			if (isFile) {
+				comboCell = new FileComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN | SWT.READ_ONLY, this, property);
+			} else {
+				// Create the ComboBoxCellEditor.
+				comboCell = new ComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN | SWT.READ_ONLY);
+			}
+
+			comboCell.getControl().setBackground(parent.getBackground());
 			editor = comboCell;
 
 			// Update the Combo's items.
-			List<String> allowedValues = contentProvider
-					.getAllowedValues(element);
+			List<String> allowedValues = contentProvider.getAllowedValues(element);
 			String[] items = new String[allowedValues.size()];
 			comboCell.setItems(allowedValues.toArray(items));
 

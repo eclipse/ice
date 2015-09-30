@@ -1469,40 +1469,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>190Pt</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>2.68E15</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>1900.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>9.0</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>152.0</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>178Hf</name>
         <properties>
             <entry>
@@ -1532,6 +1498,40 @@
             <entry>
                 <key>Abs xs</key>
                 <value>84.0</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>190Pt</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>2.68E15</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>1900.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>9.0</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>152.0</value>
             </entry>
         </properties>
         <components/>
@@ -1605,40 +1605,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>206Pb</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>4.88E11</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>2060.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>9.22</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>0.03</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ce</name>
         <properties>
             <entry>
@@ -1672,6 +1638,40 @@
             <entry>
                 <key>Abs xs</key>
                 <value>0.63</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>206Pb</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>4.88E11</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>2060.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>9.22</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>0.03</value>
             </entry>
         </properties>
         <components/>
@@ -2067,40 +2067,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>190Os</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>2.31E14</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>1900.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>11.0</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>13.1</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>145Nd</name>
         <properties>
             <entry>
@@ -2130,6 +2096,40 @@
             <entry>
                 <key>Abs xs</key>
                 <value>42.0</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>190Os</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>2.31E14</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>1900.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>11.0</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>13.1</value>
             </entry>
         </properties>
         <components/>
@@ -2283,6 +2283,56 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>Zn</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.077</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>65.77</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>5.68E13</value>
+            </entry>
+            <entry>
+                <key>mminc (Ang^-1)</key>
+                <value>7.09E12</value>
+            </entry>
+            <entry>
+                <key>Material ID</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Scattering Length Density (A^-2)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>65.38</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>5.68</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>7.14</value>
+            </entry>
+            <entry>
+                <key>Thickness (A)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>1.11</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>199Hg</name>
         <properties>
             <entry>
@@ -2317,44 +2367,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>Zn</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.077</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>65.77</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>5.68E13</value>
-            </entry>
-            <entry>
-                <key>mminc (Ang^-1)</key>
-                <value>7.09E12</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>65.38</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>5.68</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>7.14</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>1.11</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Au</name>
         <properties>
             <entry>
@@ -2384,6 +2396,10 @@
             <entry>
                 <key>Dens (g/cm^3)</key>
                 <value>18.88</value>
+            </entry>
+            <entry>
+                <key>Thickness (A)</key>
+                <value>5.0</value>
             </entry>
             <entry>
                 <key>Abs xs</key>
@@ -2496,6 +2512,10 @@
                 <value>0.0</value>
             </entry>
             <entry>
+                <key>Thickness (A)</key>
+                <value>4.0</value>
+            </entry>
+            <entry>
                 <key>Abs xs</key>
                 <value>0.675</value>
             </entry>
@@ -2598,6 +2618,10 @@
                 <value>0.0</value>
             </entry>
             <entry>
+                <key>Thickness (A)</key>
+                <value>3.0</value>
+            </entry>
+            <entry>
                 <key>Abs xs</key>
                 <value>75.3</value>
             </entry>
@@ -2634,6 +2658,10 @@
             <entry>
                 <key>Dens (g/cm^3)</key>
                 <value>2.7</value>
+            </entry>
+            <entry>
+                <key>Thickness (A)</key>
+                <value>2.0</value>
             </entry>
             <entry>
                 <key>Abs xs</key>
@@ -2677,40 +2705,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>205Tl</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.007</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>1.7E12</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>2.06E11</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>2050.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>9.52</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>0.104</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Ag</name>
         <properties>
             <entry>
@@ -2740,6 +2734,10 @@
             <entry>
                 <key>Dens (g/cm^3)</key>
                 <value>10.5</value>
+            </entry>
+            <entry>
+                <key>Thickness (A)</key>
+                <value>1.0</value>
             </entry>
             <entry>
                 <key>Abs xs</key>
@@ -2778,6 +2776,40 @@
             <entry>
                 <key>Abs xs</key>
                 <value>3.4</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>205Tl</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.007</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>1.7E12</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>2.06E11</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>2050.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>9.52</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>0.104</value>
             </entry>
         </properties>
         <components/>
@@ -4064,6 +4096,10 @@
                 <value>2.18E13</value>
             </entry>
             <entry>
+                <key>Material ID</key>
+                <value>556.0</value>
+            </entry>
+            <entry>
                 <key>M (amu)</key>
                 <value>1380.0</value>
             </entry>
@@ -5316,6 +5352,10 @@
                 <value>0.0</value>
             </entry>
             <entry>
+                <key>mminc (Ang^-1)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
                 <key>M (amu)</key>
                 <value>1740.0</value>
             </entry>
@@ -6062,6 +6102,10 @@
                 <value>1.15E14</value>
             </entry>
             <entry>
+                <key>mminc (Ang^-1)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
                 <key>M (amu)</key>
                 <value>110.0</value>
             </entry>
@@ -6153,44 +6197,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>Re</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.9</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>66.4</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>1.61E15</value>
-            </entry>
-            <entry>
-                <key>mminc (Ang^-1)</key>
-                <value>2.91E13</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>186.2</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>9.2</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>20.53</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>89.7</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>24Mg</name>
         <properties>
             <entry>
@@ -6254,6 +6260,44 @@
             <entry>
                 <key>Abs xs</key>
                 <value>0.12</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>Re</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.9</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>66.4</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>1.61E15</value>
+            </entry>
+            <entry>
+                <key>mminc (Ang^-1)</key>
+                <value>2.91E13</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>186.2</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>9.2</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>20.53</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>89.7</value>
             </entry>
         </properties>
         <components/>
@@ -7031,6 +7075,40 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>155Gd</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>25.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>1.32E18</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>9.71E14</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>1550.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>6.0</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>61100.0</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Pb</name>
         <properties>
             <entry>
@@ -7064,40 +7142,6 @@
             <entry>
                 <key>Abs xs</key>
                 <value>0.171</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>155Gd</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>25.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>1.32E18</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>9.71E14</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>1550.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>6.0</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>61100.0</value>
             </entry>
         </properties>
         <components/>
@@ -7375,6 +7419,40 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>94Mo</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>5.34E11</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>940.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>6.8</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>0.015</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Os</name>
         <properties>
             <entry>
@@ -7408,40 +7486,6 @@
             <entry>
                 <key>Abs xs</key>
                 <value>16.0</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>94Mo</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>5.34E11</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>940.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>6.8</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>0.015</value>
             </entry>
         </properties>
         <components/>
@@ -8321,40 +8365,6 @@
         <components/>
     </ListElement>
     <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
-        <name>203Tl</name>
-        <properties>
-            <entry>
-                <key>Inc xs</key>
-                <value>0.14</value>
-            </entry>
-            <entry>
-                <key>Dens (at/nm^3)</key>
-                <value>1.88E14</value>
-            </entry>
-            <entry>
-                <key>mmabs/l (Ang^-2)</key>
-                <value>4.15E12</value>
-            </entry>
-            <entry>
-                <key>M (amu)</key>
-                <value>2030.0</value>
-            </entry>
-            <entry>
-                <key>Coh b</key>
-                <value>6.99</value>
-            </entry>
-            <entry>
-                <key>Dens (g/cm^3)</key>
-                <value>0.0</value>
-            </entry>
-            <entry>
-                <key>Abs xs</key>
-                <value>11.4</value>
-            </entry>
-        </properties>
-        <components/>
-    </ListElement>
-    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
         <name>Mn</name>
         <properties>
             <entry>
@@ -8388,6 +8398,40 @@
             <entry>
                 <key>Abs xs</key>
                 <value>13.3</value>
+            </entry>
+        </properties>
+        <components/>
+    </ListElement>
+    <ListElement xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="material">
+        <name>203Tl</name>
+        <properties>
+            <entry>
+                <key>Inc xs</key>
+                <value>0.14</value>
+            </entry>
+            <entry>
+                <key>Dens (at/nm^3)</key>
+                <value>1.88E14</value>
+            </entry>
+            <entry>
+                <key>mmabs/l (Ang^-2)</key>
+                <value>4.15E12</value>
+            </entry>
+            <entry>
+                <key>M (amu)</key>
+                <value>2030.0</value>
+            </entry>
+            <entry>
+                <key>Coh b</key>
+                <value>6.99</value>
+            </entry>
+            <entry>
+                <key>Dens (g/cm^3)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>Abs xs</key>
+                <value>11.4</value>
             </entry>
         </properties>
         <components/>
@@ -8821,6 +8865,10 @@
             </entry>
             <entry>
                 <key>mmabs/l (Ang^-2)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
+                <key>mminc (Ang^-1)</key>
                 <value>0.0</value>
             </entry>
             <entry>
@@ -10016,6 +10064,10 @@
                 <value>0.0</value>
             </entry>
             <entry>
+                <key>Thickness (A)</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
                 <key>Abs xs</key>
                 <value>7.57</value>
             </entry>
@@ -10932,6 +10984,10 @@
                 <value>5.01E11</value>
             </entry>
             <entry>
+                <key>Material ID</key>
+                <value>0.0</value>
+            </entry>
+            <entry>
                 <key>M (amu)</key>
                 <value>12.011</value>
             </entry>
@@ -10942,6 +10998,10 @@
             <entry>
                 <key>Dens (g/cm^3)</key>
                 <value>2.25</value>
+            </entry>
+            <entry>
+                <key>Thickness (A)</key>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>Abs xs</key>
@@ -10968,6 +11028,10 @@
             <entry>
                 <key>mminc (Ang^-1)</key>
                 <value>9.47E14</value>
+            </entry>
+            <entry>
+                <key>Scattering Length Density (A^-2)</key>
+                <value>0.0</value>
             </entry>
             <entry>
                 <key>M (amu)</key>

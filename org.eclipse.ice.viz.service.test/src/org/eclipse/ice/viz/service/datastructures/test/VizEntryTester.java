@@ -393,6 +393,24 @@ public class VizEntryTester {
 		assertNotNull(entry.getErrorMessage());
 		assertEquals("'null' is an unacceptable value. The value must be "
 				+ "one of 0.0 or 1.0.", entry.getErrorMessage());
+		
+		// Check that setup is not run when the constructor specifies that it should be skipped
+		entry = new VizEntry(false) {
+
+			@Override
+			protected void setup() {
+				allowedValues = new ArrayList<String>(2);
+				allowedValues.add("1");
+				allowedValues.add("4");
+				this.defaultValue = "2";
+				this.allowedValueType = VizAllowedValueType.Continuous;
+			}
+		};
+		
+		//Check if setup() changed entry's value type from the default Undefined.
+		assertEquals(VizAllowedValueType.Undefined, entry.getValueType());
+		
+		
 
 		return;
 	}

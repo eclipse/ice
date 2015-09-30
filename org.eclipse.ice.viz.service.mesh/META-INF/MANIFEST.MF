@@ -4,7 +4,6 @@ Bundle-Name: Mesh Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.mesh;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Service-Component: OSGI-INF/vizService.xml
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory

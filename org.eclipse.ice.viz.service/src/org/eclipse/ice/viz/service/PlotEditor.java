@@ -125,7 +125,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Overrides a method from WorkbenchPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
@@ -331,7 +332,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Implements an abstract method from EditorPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -339,7 +341,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Implements an abstract method from EditorPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
 	 */
 	@Override
 	public void doSaveAs() {
@@ -365,7 +368,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Implements an abstract method from EditorPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -375,7 +379,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Implements an abstract method from EditorPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#isDirty()
 	 */
 	@Override
 	public boolean isDirty() {
@@ -383,7 +388,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Implements an abstract method from EditorPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
@@ -391,7 +397,8 @@ public class PlotEditor extends EditorPart {
 	}
 
 	/*
-	 * Implements a method from WorkbenchPart.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override
 	public void setFocus() {

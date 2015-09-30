@@ -51,7 +51,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	public static final String ID = "org.eclipse.ice.client.widgets.EMFTreeCompositeViewer";
 
 	/**
-	 * A reference to the currently active MOOSEFormEditor.
+	 * A reference to the currently active FormEditor.
 	 */
 	private IWorkbenchPartReference activeEditorRef;
 
@@ -81,7 +81,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 
 		// Call TreeCompositeViewer's createPartControl method
 		super.createPartControl(parent);
-
+		/*
 		// Change the add and delete child actions to listen for selections from
 		// the EMFTreeCompositeViewer.
 		addAction.setPartId(EMFTreeCompositeViewer.ID);
@@ -100,7 +100,7 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		Control control = treeViewer.getControl();
 		Menu menu = menuManager.createContextMenu(control);
 		control.setMenu(menu);
-
+		*/
 		// Register with the PartService to tell which MOOSEModelBuilder is the
 		// most recently activated one.
 		getSite().getWorkbenchWindow().getPartService().addPartListener(this);
