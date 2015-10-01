@@ -8,16 +8,14 @@
       <code
             codeCategory="Framework"
             codeName="MOOSE"
-            generateDefaultCommands="false"
-            repoURL="https://github.com/idaholab/moose"
-            versionControlType="git">
+            repoURL="https://github.com/idaholab/moose">
          <command
                commandName="Fork the Stork"
                implementation="org.eclipse.ice.developer.moose.actions.ForkStorkHandler">
          </command>
          <command
                commandName="Clone MOOSE"
-               implementation="org.eclipse.ice.developer.moose.actions.CloneMOOSEHandler">
+               implementation="org.eclipse.ice.developer.actions.GitHubCloneHandler">
          </command>
          <command
                commandName="Fork MOOSE"

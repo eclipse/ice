@@ -21,9 +21,11 @@
       <code
             codeCategory="Framework"
             codeName="ICE"
-            generateDefaultCommands="true"
-            repoURL="https://github.com/eclipse/ice"
-            versionControlType="git">
+            repoURL="https://github.com/eclipse/ice">
+         <command
+               commandName="Clone ICE"
+               implementation="org.eclipse.ice.developer.actions.GitHubCloneHandler">
+         </command>
       </code>
    </extension>
    

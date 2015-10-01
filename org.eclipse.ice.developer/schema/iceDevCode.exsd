@@ -82,32 +82,10 @@
                </restriction>
             </simpleType>
          </attribute>
-         <attribute name="versionControlType">
-            <annotation>
-               <documentation>
-                  The type of version control this code uses.
-               </documentation>
-            </annotation>
-            <simpleType>
-               <restriction base="string">
-                  <enumeration value="git">
-                  </enumeration>
-                  <enumeration value="svn">
-                  </enumeration>
-               </restriction>
-            </simpleType>
-         </attribute>
          <attribute name="codeName" type="string" use="required">
             <annotation>
                <documentation>
                   The name of the code. This will be the display name in the Developer menu.
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="generateDefaultCommands" type="boolean" use="required">
-            <annotation>
-               <documentation>
-                  This boolean is for indicating if this extension point wants to use the default git clone and fork actions.
                </documentation>
             </annotation>
          </attribute>
