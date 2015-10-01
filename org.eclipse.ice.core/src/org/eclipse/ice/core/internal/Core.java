@@ -114,12 +114,16 @@ public class Core extends Application implements ICore {
 	private HttpService httpService;
 
 	/**
+	 * The string identifying the persistence provider extension point.
+	 */
+	public static final String providerID = "org.eclipse.ice.core.persistenceProvider";
+
+	/**
 	 * The persistence provided by the osgi. This piece is set by the
 	 * setPersistenceProvider method. This piece is passed to the ItemManager to
 	 * be used for persisting Items.
 	 *
 	 */
-	@Inject
 	private IPersistenceProvider provider;
 
 	/**
@@ -189,9 +193,26 @@ public class Core extends Application implements ICore {
 
 		logger.info("ICore Message: Component context set!");
 
-		// Setup the persistence provider for the ItemManager. The ItemManager
-		// will check them, so just pass the references regardless of whether or
-		// not the OSGi actually set the services.
+		// Get the persistence provider from the extension registry.
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(providerID);
+		if (point != null) {
+			// We only need one persistence provider, so just pull the
+			// configuration element for the first one available.
+			IConfigurationElement element = point.getConfigurationElements()[0];
+			try {
+				provider = (IPersistenceProvider) element
+						.createExecutableExtension("class");
+				System.out.println("Success!");
+			} catch (CoreException e) {
+				logger.error("Unable to load extension!", e);
+			}
+		} else {
+			logger.error("Extension Point " + providerID + "does not exist");
+		}
+
+		// Setup the persistence provider for the ItemManager so that it can
+		// load items.
 		itemManager.setPersistenceProvider(provider);
 
 		// Tell the ItemManager to suit up. It's time to rock and roll.
@@ -222,19 +243,6 @@ public class Core extends Application implements ICore {
 				IExtension[] extensions = point.getExtensions();
 				for (IExtension extension : extensions) {
 					System.out.println("--" + extension.getSimpleIdentifier());
-					if ("xmlPersistenceProvider"
-							.equals(extension.getSimpleIdentifier())) {
-						for (IConfigurationElement element : extension
-								.getConfigurationElements()) {
-							try {
-								provider = (IPersistenceProvider) element
-										.createExecutableExtension("class");
-								System.out.println("Success!");
-							} catch (CoreException e) {
-								logger.error("Unable to load extension!", e);
-							}
-						}
-					}
 				}
 			} else {
 				System.out.println("Point does not exist");
@@ -321,10 +329,11 @@ public class Core extends Application implements ICore {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.ICore#createItem(java.lang.String,
 	 * org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	public String createItem(String itemType, IProject project) {
 
 		// Local Declarations
