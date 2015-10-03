@@ -50,9 +50,11 @@ import org.slf4j.LoggerFactory;
 /**
  * This class implements the IPersistenceProvider interface using the native XML
  * marshalling routines available on the Item. It stores all of the Items in an
- * Eclipse project and uses the ResourcePlugin to manage that space.
+ * Eclipse project and uses the ResourcePlugin to manage that space. Note: The
+ * default project must be set by a client! Clients should always make sure that
+ * getDefaultProject() does not return null when using this class.
  * 
- * It stores items in the workspace in a project called "itemDB" by default. It
+ * It stores items in the workspace in the default project provided by clients. It
  * uses <itemName>_<itemId>.xml for the file names. White space in the item name
  * is replaced with underscores. Items may be stored and loaded from other
  * projects by using the appropriate call.
@@ -839,6 +841,28 @@ public class XMLPersistenceProvider
 	@Override
 	public String getReaderType() {
 		return "xml";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.core.iCore.IPersistenceProvider#setDefaultProject(org.
+	 * eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void setDefaultProject(IProject project) {
+		this.project = project;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.core.iCore.IPersistenceProvider#getDefaultProject()
+	 */
+	@Override
+	public IProject getDefaultProject() {
+		return project;
 	}
 
 }

@@ -14,15 +14,39 @@ package org.eclipse.ice.core.iCore;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.item.Item;
 
 /**
  * An interface designed for item persistence within ICE.
  * 
+ * Implementations of this interface should be provided with default projects to
+ * use for storage, if they choose. Clients should always make sure that
+ * getDefaultProject() does not return null when using implementations of this
+ * interface.
+ * 
  * @author Jay Jay Billings, Scott Forest Hull II
  */
 public interface IPersistenceProvider {
+
+	/**
+	 * This operation sets the default project that the provider should use for
+	 * any operations related to the workspace if such a default project is
+	 * required. This could include retrieving or writing resources, among other
+	 * things.
+	 * 
+	 * @param project
+	 *            The default project that should be used.
+	 */
+	public void setDefaultProject(IProject project);
+
+	/**
+	 * This operation returns the default project that is used by the provider.
+	 * 
+	 * @return The default project.
+	 */
+	public IProject getDefaultProject();
 
 	/**
 	 * Persists an item. Returns true if the operation was successful. False

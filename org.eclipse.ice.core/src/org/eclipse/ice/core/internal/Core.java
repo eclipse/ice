@@ -36,6 +36,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -113,6 +114,13 @@ public class Core extends Application implements ICore {
 	 */
 	private HttpService httpService;
 
+	String id = "org.eclipse.ice.item.itemBuilder";
+
+	/**
+	 * The string identifying the Item Builder extension point.
+	 */
+	public static final String builderID = "org.eclipse.ice.item.itemBuilder";
+
 	/**
 	 * The string identifying the persistence provider extension point.
 	 */
@@ -186,7 +194,7 @@ public class Core extends Application implements ICore {
 	 * @param context
 	 *            The bundle context for this OSGi bundle.
 	 */
-	public void start(ComponentContext context) {
+	public void start(ComponentContext context) throws CoreException {
 
 		// Store the component's context
 		componentContext = context;
@@ -200,13 +208,9 @@ public class Core extends Application implements ICore {
 			// We only need one persistence provider, so just pull the
 			// configuration element for the first one available.
 			IConfigurationElement element = point.getConfigurationElements()[0];
-			try {
-				provider = (IPersistenceProvider) element
-						.createExecutableExtension("class");
-				System.out.println("Success!");
-			} catch (CoreException e) {
-				logger.error("Unable to load extension!", e);
-			}
+			provider = (IPersistenceProvider) element
+					.createExecutableExtension("class");
+			System.out.println("Success!");
 		} else {
 			logger.error("Extension Point " + providerID + "does not exist");
 		}
@@ -214,6 +218,24 @@ public class Core extends Application implements ICore {
 		// Setup the persistence provider for the ItemManager so that it can
 		// load items.
 		itemManager.setPersistenceProvider(provider);
+
+		// Load up the
+		ItemBuilder builder = null;
+		point = Platform.getExtensionRegistry().getExtensionPoint(id);
+
+		// If the point is available, create all the builders and load them into
+		// the Item Manager.
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			for (int i = 0; i < elements.length; i++) {
+				builder = (ItemBuilder) elements[i]
+						.createExecutableExtension("class");
+				// Register with the ItemManager
+				itemManager.registerBuilder(builder);
+			}
+		} else {
+			logger.error("Extension Point " + id + "does not exist");
+		}
 
 		// Tell the ItemManager to suit up. It's time to rock and roll.
 		itemManager.loadItems(projectTable.get("defaultUser"));
@@ -323,7 +345,10 @@ public class Core extends Application implements ICore {
 	 */
 	@Override
 	public String createItem(String itemType) {
-		return createItem(itemType, projectTable.get("defaultUser"));
+		// This operation retrieves the default "itemDB
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject("itemDB");
+		return createItem(itemType, project);
 
 	}
 
