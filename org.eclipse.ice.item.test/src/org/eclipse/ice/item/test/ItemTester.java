@@ -904,7 +904,6 @@ public class ItemTester implements ItemListener {
 		assertNull(item.getOutputFile());
 		item.setProject(project);
 		assertTrue(item.hasProject());
-		assertEquals(project,item.getProject());
 
 		// Make sure that calling the setter with null does not re-set or
 		// overwrite the project (Item.hasProject() should still return true)

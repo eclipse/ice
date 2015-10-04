@@ -286,8 +286,8 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "Item")
-public class Item
-		implements IComponentVisitor, Identifiable, IUpdateableListener {
+public class Item implements IComponentVisitor, Identifiable,
+		IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -310,7 +310,8 @@ public class Item
 	 * The Item's Form.
 	 */
 	@XmlAnyElement()
-	@XmlElementRefs(value = { @XmlElementRef(name = "Form", type = Form.class),
+	@XmlElementRefs(value = {
+			@XmlElementRef(name = "Form", type = Form.class),
 			@XmlElementRef(name = "JobLauncherForm", type = JobLauncherForm.class) })
 	protected Form form;
 
@@ -523,8 +524,9 @@ public class Item
 			form.setId(getId());
 			form.markReady(true);
 		} else {
-			throw new RuntimeException("Form cannot be null in constructor for "
-					+ this.getClass().getName());
+			throw new RuntimeException(
+					"Form cannot be null in constructor for "
+							+ this.getClass().getName());
 		}
 
 		// Setup the output file handle.
@@ -796,8 +798,7 @@ public class Item
 
 		// Local Declarations
 		FormStatus retVal = FormStatus.InfoError;
-		boolean idsMatch = false, namesMatch = false, descMatch = false,
-				itemIdsMatch = false;
+		boolean idsMatch = false, namesMatch = false, descMatch = false, itemIdsMatch = false;
 		Form actionForm = null;
 
 		// Only accept the submission if the Item is enabled
@@ -812,16 +813,16 @@ public class Item
 		if (!status.equals(FormStatus.NeedsInfo)) {
 			idsMatch = preparedForm.getId() == form.getId();
 			namesMatch = preparedForm.getName().equals(form.getName());
-			descMatch = preparedForm.getDescription()
-					.equals(form.getDescription());
+			descMatch = preparedForm.getDescription().equals(
+					form.getDescription());
 			itemIdsMatch = preparedForm.getItemID() == form.getItemID();
 		} else {
 			// Otherwise check the Action's Form
 			actionForm = action.getForm();
 			idsMatch = preparedForm.getId() == actionForm.getId();
 			namesMatch = preparedForm.getName().equals(actionForm.getName());
-			descMatch = preparedForm.getDescription()
-					.equals(actionForm.getDescription());
+			descMatch = preparedForm.getDescription().equals(
+					actionForm.getDescription());
 			itemIdsMatch = preparedForm.getItemID() == actionForm.getItemID();
 		}
 
@@ -859,8 +860,8 @@ public class Item
 					+ namesMatch);
 			System.err.println("Item " + getId()
 					+ " Message: Matching Descriptions..." + descMatch);
-			System.err.println("Item " + getId()
-					+ " Message: Matching Item Ids..." + itemIdsMatch);
+			System.err.println("Item " + getId() + " Message: Matching Item Ids..."
+					+ itemIdsMatch);
 		}
 
 		// Set the status
@@ -910,8 +911,8 @@ public class Item
 		IFile outputFile = null;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		Hashtable<String, String> propsDictionary = null;
-		String filename = (form.getName() + "_" + form.getId())
-				.replaceAll("\\s+", "_");
+		String filename = (form.getName() + "_" + form.getId()).replaceAll(
+				"\\s+", "_");
 
 		// Make sure the action is allowed and that the Item is enabled
 		if (allowedActions.contains(actionName) && enabled) {
@@ -935,8 +936,8 @@ public class Item
 					// Setup the dictionary
 					propsDictionary = new Hashtable<String, String>();
 					// Set the output file name
-					propsDictionary.put("iceTaggedOutputFileName",
-							outputFile.getLocationURI().getPath());
+					propsDictionary.put("iceTaggedOutputFileName", outputFile
+							.getLocationURI().getPath());
 					// Add the key-value pairs
 					for (Entry i : entryList) {
 						// Use tags if they are available
@@ -945,8 +946,8 @@ public class Item
 						} else {
 							// Otherwise just use the Entry's name
 							propsDictionary.put(i.getName(), i.getValue());
-							logger.info("Item Message: Processing value "
-									+ i.getTag() + " = " + i.getValue());
+							logger.info("Item Message: Processing value " + i.getTag()
+									+ " = " + i.getValue());
 						}
 					}
 					// Write the file. This will always overwrite an existing
@@ -959,7 +960,7 @@ public class Item
 					notifyListenersOfProjectChange();
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					logger.error(getClass().getName() + " Exception!", e);
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 
 			}
@@ -1211,8 +1212,10 @@ public class Item
 		// If objectName is null, add 0, otherwise add String.hashcode()
 		hash = 31 * hash
 				+ (null == this.itemName ? 0 : this.itemName.hashCode());
-		hash = 31 * hash + (null == this.itemDescription ? 0
-				: this.itemDescription.hashCode());
+		hash = 31
+				* hash
+				+ (null == this.itemDescription ? 0 : this.itemDescription
+						.hashCode());
 
 		if (this.allowedActions != null) {
 			hash += 31 * this.allowedActions.hashCode();
@@ -1322,8 +1325,8 @@ public class Item
 					// Clear out comments
 					String[] typeStringWithoutComments = i.split("\\s+");
 					// Split on equals and parse the type
-					itemType = ItemType.valueOf(
-							typeStringWithoutComments[0].split("=")[1].trim());
+					itemType = ItemType.valueOf(typeStringWithoutComments[0]
+							.split("=")[1].trim());
 					break;
 				}
 			}
@@ -1358,7 +1361,6 @@ public class Item
 	 *            The Eclipse Platform IProject that should be referenced for
 	 *            project space information by this Item.
 	 */
-	@XmlTransient()
 	public void setProject(IProject projectSpace) {
 
 		// Set the project so long as it is not null
@@ -1371,17 +1373,6 @@ public class Item
 		// FIXME - SHOULD THIS ONLY BE ALLOWED TO BE CALLED ONCE??? ~JJB
 		// 20120502 14:01
 
-	}
-
-	/**
-	 * This operation returns the Eclipse Project that is used to manage the
-	 * Item and its associated data.
-	 * 
-	 * @return The Eclipse Project that manages the Item. 
-	 */
-	@XmlTransient()
-	public IProject getProject() {
-		return project;
 	}
 
 	/**
@@ -1525,7 +1516,7 @@ public class Item
 			} catch (CoreException e) {
 				// Complain
 				logger.info("Item Message: " + "Unable to load project files!");
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1599,7 +1590,7 @@ public class Item
 					folder.create(true, true, null);
 				} catch (CoreException e) {
 					// Complain
-					logger.error(getClass().getName() + " Exception!", e);
+					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
 		}
@@ -1618,7 +1609,7 @@ public class Item
 			try {
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} catch (CoreException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1720,8 +1711,7 @@ public class Item
 	 *         file at /path/to/file.txt, this list contains the element
 	 *         file.txt
 	 */
-	protected ArrayList<String> getFiles(String directory,
-			String fileExtension) {
+	protected ArrayList<String> getFiles(String directory, String fileExtension) {
 
 		// Local Declarations
 		ArrayList<String> files = new ArrayList<String>();
@@ -1783,7 +1773,7 @@ public class Item
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 
@@ -1820,7 +1810,7 @@ public class Item
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 		return;
@@ -1843,9 +1833,10 @@ public class Item
 				Files.walkFileTree(Paths.get(directory),
 						new SimpleFileVisitor<Path>() {
 							@Override
-							public FileVisitResult visitFile(Path file,
+							public FileVisitResult visitFile(
+									Path file,
 									java.nio.file.attribute.BasicFileAttributes attrs)
-											throws IOException {
+									throws IOException {
 								Files.delete(file);
 								return FileVisitResult.CONTINUE;
 							}
@@ -1862,7 +1853,7 @@ public class Item
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.error(getClass().getName() + " Exception!",e);
 			}
 		}
 	}
@@ -1938,8 +1929,8 @@ public class Item
 				}
 				String destFileName = (pathSteps == null ? fileName
 						: pathSteps[pathSteps.length - 1]);
-				copyDirectory(sourceDir + separator + fileName,
-						destinationDir + separator + destFileName);
+				copyDirectory(sourceDir + separator + fileName, destinationDir
+						+ separator + destFileName);
 			}
 		}
 	}
