@@ -268,7 +268,6 @@ def nix_install(opts, pkg_dirs):
     hdf_libdir = os.path.abspath(hdf_libdir)
 
     visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
-    print "LOOKING FOR VISIT IN: " + visit_path
     visit_bin_dir = find_file(visit_path, "visit")
     if visit_bin_dir is None:
         print("")
@@ -317,7 +316,7 @@ def windows_install(opts, pkg_dirs):
         subprocess.call(install_cmd, shell=True)
 
     hdf_libdir = os.path.dirname(find_file("C:\\", "libhdf.lib"))
-    if hdf_libdir == None:
+    if hdf_libdir is None:
         print("ERROR: Could not find HDF Java libraries.")
         exit()
 
@@ -328,12 +327,12 @@ def windows_install(opts, pkg_dirs):
         subprocess.call(install_cmd)
 
     visit_bin_dir = os.path.dirname(find_file("C:\\", "visit*.exe"))
-    if visit_bin_dir == None:
+    if visit_bin_dir is None:
         print("ERROR: Could not find VisIt executable.")
         exit()
 
     ice_preferences = find_file(opts.prefix, "ICE.ini")
-    if ice_preferences == None:
+    if ice_preferences is None:
         print("ERROR: Could not find ICE preferences directory.")
         exit()
     shutil.move(ice_preferences, ice_preferences + ".bak")
@@ -352,17 +351,25 @@ def windows_install(opts, pkg_dirs):
 
 def linux_post(opts, pkgs):
     """ Post installation for Linux """
-    mkdir_p(os.path.join(os.path.expanduser("~"), ".local", "share", "applications"))
-    with open(os.path.join(os.path.expanduser("~"), ".local", "share", "applications","ICE.desktop"),'w') as f:
+    print("Generating desktop file for ICE...")
+    with open(os.path.join(opts.prefix,"splash.bmp"),'wb') as f:
+        f.write(urllib2.urlopen('https://raw.githubusercontent.com/eclipse/ice/master/org.eclipse.ice.client.rcp/splash.bmp').read())
+    if 'SUDO_USER' in os.environ:
+        user = os.environ['SUDO_USER']
+        os.chmod(os.path.join(opts.prefix, "ICE"), 0755)
+    else:
+        user = os.environ['USER']
+    mkdir_p(os.path.join('/home', user, ".local", "share", "applications"))
+    with open(os.path.join('/home', user, ".local", "share", "applications","ICE.desktop"),'w') as f:
         f.write("[Desktop Entry]")
-        f.write("Type=Application")
-        f.write("Name=ICE")
-        f.write("Exec=" + os.path.join(opts.prefix, "ICE"))
-        f.write("Comment=Eclipse Integrated Computational Environment")
-        f.write("Icon=" + os.path.join(opts.prefix, "icon.xpm"))
-        f.write("Terminal=true")
-        f.write("Categories=Programming")
-        f.write("")
+        f.write("\nType=Application")
+        f.write("\nName=ICE")
+        f.write("\nExec=" + os.path.join(opts.prefix, "ICE"))
+        f.write("\nComment=Eclipse Integrated Computational Environment")
+        f.write("\nIcon=" + os.path.join(opts.prefix, "splash.bmp"))
+        f.write("\nTerminal=true")
+        f.write("\nCategories=Programming")
+        f.write("\n")
 
 
 def osx_post(opts, pkgs):

@@ -126,9 +126,6 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		assertTrue(row.get(0).getValue().equals("new item"));
 		assertTrue(bot.table(0).cell(3, 0).contains("new item"));
 
-		// Close the window
-		bot.activeShell().close();
-		
 		return;
 	}
 
@@ -182,9 +179,6 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		assertEquals(bot.table(0).rowCount(), 0);
 		assertFalse(bot.button(1).isEnabled());
 		
-		// Close the window
-		bot.activeShell().close();
-		
 		return;
 	}
 
@@ -217,20 +211,28 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		assertTrue(table.getRow(0).get(0).getValue().equals("new item"));
 		
 		//Try editing when there are multiple rows.
-		//TODO writing in wrong cell here.
 		bot.button(0).click();
 		bot.button(0).click();
 		bot.button(0).click();
-		bot.table(0).click(0, 0);
+		bot.table(0).click(2, 0);
 		bot.text("new item").setText("edited item");
 		bot.table(0).pressShortcut(enter);
-		assertTrue(bot.table(0).cell(0, 0).contains("edited item"));
-		assertTrue(table.getRow(0).get(0).getValue().equals("edited item"));
-
-		// Close the window
-		bot.activeShell().close();
+		assertTrue(bot.table(0).cell(2, 0).contains("edited item"));
+		assertTrue(table.getRow(2).get(0).getValue().equals("edited item"));
 		
 		return;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#afterEachTest()
+	 */
+	@Override
+	public void afterEachTest(){
+		super.afterEachTest();
+		
+		// Close the window
+		bot.activeShell().close();
 	}
 
 }
