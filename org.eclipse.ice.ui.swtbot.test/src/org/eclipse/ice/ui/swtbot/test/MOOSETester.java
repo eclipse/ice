@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.ui.swtbot.test;
 
 import org.eclipse.ice.client.widgets.test.utils.AbstractWorkbenchTester;
@@ -125,7 +135,7 @@ public class MOOSETester extends AbstractWorkbenchTester {
 		assertTrue(bot.clabel(0).getText().equals(
 				"The Form contains an error and cannot be processed."));
 
-		//See if the tab can be changed
+		// See if the tab can be changed
 		bot.cTabItem("Mesh and Output Files").activate();
 
 	}

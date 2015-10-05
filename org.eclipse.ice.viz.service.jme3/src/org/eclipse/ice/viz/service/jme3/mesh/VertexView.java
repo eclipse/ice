@@ -117,6 +117,7 @@ public class VertexView extends AbstractMeshView {
 	 *            </p>
 	 */
 	public void copy(VertexView view) {
+		super.copy(view);
 	}
 
 	/**
@@ -130,6 +131,14 @@ public class VertexView extends AbstractMeshView {
 	 */
 	@Override
 	public Object clone() {
-		return null;
+		//Create a new VertexView, initialized with this object's data
+		VertexView object = new VertexView(geometry.getName(), geometry.getMaterial());
+		
+		//Clone this object
+		object.copy(this);
+		
+		return object;
+		
+		
 	}
 }

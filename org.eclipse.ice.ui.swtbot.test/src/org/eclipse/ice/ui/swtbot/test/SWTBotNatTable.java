@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.ui.swtbot.test;
 
 import org.eclipse.nebula.widgets.nattable.NatTable;
@@ -54,12 +64,17 @@ public class SWTBotNatTable extends AbstractSWTBot<NatTable> {
 		return totalRows - 1;
 	}
 
+	/**
+	 * Clicks on the specified cell in the NatTable.
+	 * 
+	 * @param bot The SWTBot which is running the tests.
+	 * @param column The target column.
+	 * @param row The target row.
+	 */
 	public void selectCell(SWTWorkbenchBot bot, final int column,
 			final int row) {
 
-		// Rectangle cell = widget.getBoundsByPosition(column - 1, row - 1);
-		// Point point = widget.toDisplay(cell.x, cell.y);
-
+		//Get the cell's position.
 		Point point = syncExec(new Result<Point>() {
 			public Point run() {
 				Rectangle cell = widget.getBoundsByPosition(column + 1,
@@ -72,17 +87,20 @@ public class SWTBotNatTable extends AbstractSWTBot<NatTable> {
 		Event event = new Event();
 		Display display = bot.getDisplay();
 
+		//Move the mouse to the cell
 		event.type = SWT.MouseMove;
 		event.x = point.x;
 		event.y = point.y;
 		display.post(event);
 
+		//Click
 		event = new Event();
 		event.type = SWT.MouseDown;
 		event.button = 1;
 		display.post(event);
 		display.post(event);
 
+		//Unclick
 		event = new Event();
 		event.type = SWT.MouseUp;
 		event.button = 1;
