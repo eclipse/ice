@@ -366,6 +366,7 @@ public class Edge extends VizObject implements IVizUpdateableListener, IMeshPart
 		if (this == otherObject) {
 			equals = true;
 		}
+
 		// Check the information stored in the other object.
 		else if (otherObject != null && otherObject instanceof Edge) {
 

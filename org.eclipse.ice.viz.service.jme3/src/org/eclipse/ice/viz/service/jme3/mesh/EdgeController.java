@@ -131,14 +131,36 @@ public class EdgeController extends AbstractMeshController {
 	 *            <p>
 	 *            The other object that should be compared with this one.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
-		// TODO Auto-generated method stub
-		return false;
+
+		// Check if they are the same reference.
+		if (this == otherObject) {
+			return true;
+		}
+
+		// Check if the other object is an EdgeController.
+		if (!(otherObject instanceof EdgeController)) {
+			return false;
+		}
+
+		// Caste the other object
+		EdgeController otherController = (EdgeController) otherObject;
+
+		// Check if the models are the same. It is impossible to check if
+		// EdgeViews are equal, but we can assume that, if their models are,
+		// they will be as well.
+		if (!(model.equals(otherController.model))) {
+			return false;
+		}
+
+		// Everything is the same, so return true
+		return true;
 	}
 
 	/**
@@ -146,14 +168,14 @@ public class EdgeController extends AbstractMeshController {
 	 * This operation returns the hash value of the Edge.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
 	@Override
 	public int hashCode() {
-		// TODO Auto-generated method stub
-		return 0;
+		return view.hashCode() + model.hashCode();
 	}
 
 	/**
@@ -169,7 +191,14 @@ public class EdgeController extends AbstractMeshController {
 	 */
 	@Override
 	public void copy(AbstractMeshController controller) {
-		// TODO Auto-generated method stub
+		super.copy(controller);
+		
+		//Cast the controller
+		EdgeController castController = (EdgeController) controller;
+		
+		//Clone the view and model
+		view = (EdgeView) castController.view.clone();
+		model = (Edge) castController.model.clone();
 
 	}
 
@@ -178,7 +207,8 @@ public class EdgeController extends AbstractMeshController {
 	 * This operation returns a clone of the Edge using a deep copy.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new clone.
 	 *         </p>
 	 */
