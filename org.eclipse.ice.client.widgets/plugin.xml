@@ -83,6 +83,13 @@
                restorable="true">
          </view>
       </extension>
+      <extension point="org.eclipse.ui.views">
+      	<stickyView
+      		id="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer"
+      		location="RIGHT"
+      		moveable="true"
+      		closeable="true"/>
+      </extension>
       <!-- Perspective definition -->
       <extension
             point="org.eclipse.ui.perspectives">

@@ -1448,7 +1448,7 @@ public class Item
 	/**
 	 * This operation instantiates the output file.
 	 */
-	private void setupOutputFile() {
+	protected void setupOutputFile() {
 
 		// Setup the output file handle name
 		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_"

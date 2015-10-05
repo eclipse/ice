@@ -124,7 +124,8 @@ public class VertexController extends AbstractMeshController {
 	 * Gets the current location from the model.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The current location of the Vertex.
 	 *         </p>
 	 */
@@ -158,7 +159,8 @@ public class VertexController extends AbstractMeshController {
 	 *            <p>
 	 *            The other object that should be compared with this one.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
@@ -173,13 +175,15 @@ public class VertexController extends AbstractMeshController {
 			equals = true;
 		}
 		// Check the information stored in the other object.
-		else if (otherObject != null && otherObject instanceof VertexController) {
+		else if (otherObject != null
+				&& otherObject instanceof VertexController) {
 
 			// We can now cast the other object.
 			VertexController controller = (VertexController) otherObject;
 
 			// Compare the values between the two objects.
-			equals = (super.equals(otherObject) && view.equals(controller.view));
+			equals = (super.equals(otherObject)
+					&& view.equals(controller.view));
 
 			// The model is already handled by AbstractMeshController.
 		}
@@ -192,7 +196,8 @@ public class VertexController extends AbstractMeshController {
 	 * This operation returns the hash value of the VertexController.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
@@ -202,8 +207,10 @@ public class VertexController extends AbstractMeshController {
 		// Static hash.
 		int hash = super.hashCode();
 
-		// Add local hashes.
-		hash = 31 * hash + view.hashCode();
+		// The view cannot provide a consistent hash code, as it and its
+		// superclasses have no member variables which have overridden
+		// hashCode() functions themselves.
+
 		// The model is already handled by AbstractMeshController.
 
 		return hash;
@@ -253,7 +260,8 @@ public class VertexController extends AbstractMeshController {
 	 * This operation returns a clone of the VertexController using a deep copy.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new clone.
 	 *         </p>
 	 */

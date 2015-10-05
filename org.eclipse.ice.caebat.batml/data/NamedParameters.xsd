@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Data types for named parameters, v 10.08.2012
+
+    Uses common basic data types schema for the data values. Units for
+    Parameter elements are specified either by referencing CAEBAT_Unit
+    element ids or by UnitsML.
+
+    Copyright (c) 2012 UT-Battelle, LLC All rights reserved.
+    Redistribution and use, with or without modification, are permitted
+    provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    - Collection of administrative costs for redistribution of the source
+    code or binary form is allowed. However, collection of a royalty or
+    other fee in excess of good faith amount for cost recovery for such
+    redistribution is prohibited.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER, THE DOE, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+    OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+    USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+-->
+
+<xsd:schema 
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+
+   xmlns:unitsml="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-1.0"
+
+   xmlns="BatteryML:2.0"
+   targetNamespace="BatteryML:2.0"
+
+   elementFormDefault="qualified" 
+   attributeFormDefault="unqualified" version="1.0">
+
+  <xsd:import schemaLocation="UnitsML-v1.0-csd03.xsd"      namespace="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-1.0" />
+
+<!--
+  <xsd:import schemaLocation="common_basic_data_types.xsd" namespace="CommonBasicDataTypes:ML:1.0" />
+  <xsd:import  schemaLocation="UnitsDB.xsd"                 namespace="Battery:Units"/>
+-->
+  <xsd:include schemaLocation="common_basic_data_types.xsd"/>
+
+  <xsd:element name="NamedParametersML_Doc">
+    <xsd:annotation>
+      <xsd:documentation>
+	Container used for testing consistency of the XSD schema. The
+	element is not used in the actual XML instance documents.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:any     namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="IndexIntType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Index as integer value (64 bits, signed). Used for indexing
+	the data types.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="Int64Type"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="IndexIntListType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Index as list integer value.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="IndexIntType"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="IndexNameType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Index as name value (no spaces).
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortNameType"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="IndexNameListType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Index as list integer value.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:list>
+      <xsd:simpleType>
+	<xsd:restriction base="IndexNameType"/>
+      </xsd:simpleType>
+    </xsd:list>
+  </xsd:simpleType>
+
+  <!--Attribute Groups -->
+
+  <!-- -->
+  <!--AttributeGroup for name. Used as a attribute group so that it can be replaced at a single location.-->
+  <xsd:attributeGroup name="OptionalNameGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Name attribute group. Optional attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="name" type="ShortTokenType" use="optional"/>
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="RequiredNameGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Name attribute group. Required attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="name" type="ShortTokenType" use="required"/>
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="OptionalIdGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Id attribute. No spaces. Optional attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="id" type="ShortNameType" use="optional"/>
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="RequiredIdGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Id attribute. No spaces. Required attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="id" type="ShortNameType" use="required"/>
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="OptionalTypeGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Type attribute. Optional attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="type" type="ShortTokenType" use="optional"/>
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="RequiredTypeGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Type attribute. Required attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="type" type="ShortTokenType" use="required"/>
+  </xsd:attributeGroup>
+
+  <!--AttributeGroup for 3 value index data-->
+  <xsd:attributeGroup name="IndexGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Start and end index for the set of values.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="start" type="IndexIntType" use="optional">
+      <xsd:annotation>
+	<xsd:documentation>
+	  Zero-based index of the first entry in the element.
+	</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="end"   type="IndexIntType" use="optional">
+      <xsd:annotation>
+	<xsd:documentation>
+	  Zero-based index of the last entry in the element.
+	</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+    <xsd:attribute name="increment" type="PositiveIntType" use="optional">
+      <xsd:annotation>
+	<xsd:documentation>
+	  Index increment in the element.
+	</xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
+  </xsd:attributeGroup>
+
+  <!--AttributeGroup for length of data-->
+  <xsd:attributeGroup name="LengthGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Number of elements in the list container.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="length" type="NonNegativeIntType" use="optional"/>
+  </xsd:attributeGroup>
+
+  <!--AttributeGroup for count of data-->
+  <xsd:attributeGroup name="OptionalCountGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Number of elements in the container at the element root level.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:attribute name="count" type="NonNegativeIntType" use="optional"/>
+  </xsd:attributeGroup>
+
+  <!--Element Groups-->
+
+  <!--Element group for description of data-->
+
+  <xsd:group name="ElementInfoGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Description of elements in the parent element container.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Description"   type="StringType" minOccurs="0"/>
+      <xsd:element name="Comment"       type="StringType" minOccurs="0"/>
+      <xsd:element name="Documentation" type="EmbeddedXMLType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="IndexIntBoundsGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Integer index for auto-incrementation.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Start"     type="IndexIntType"        minOccurs="0"/>
+      <xsd:element name="End"       type="IndexIntType"        minOccurs="0"/>
+      <xsd:element name="Increment" type="PositiveIntType" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:group>
+
+<!--  
+  <xsd:group name="ParameterGroup">
+    <xsd:annotation>
+      <xsd:documentation>
+	Description of elements in the parent element container.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element ref="ParameterSet" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="Parameter"    minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:group>
+-->
+
+  <xsd:element name="Parameters"  type="ParametersType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Container for Parameter and ParameterSet entries with enforced uniqueness on id-s
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:unique name="ParameterIdKey">
+      <xsd:selector xpath="./*"/>
+      <xsd:field xpath="@id"/>
+    </xsd:unique>
+  </xsd:element>
+
+  <xsd:complexType name="ParametersType">
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element name="ParameterSet" type="ParameterSetType" minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element name="Parameter"    type="ParameterType"    minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="Variables"  type="VariablesType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Container for Variable and VariableSet entries with enforced uniqueness on id-s
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:unique name="VariableIdKey">
+      <xsd:selector xpath="./*"/>
+      <xsd:field xpath="@id"/>
+    </xsd:unique>
+  </xsd:element>
+
+  <xsd:complexType name="VariablesType">
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element name="VariableSet" type="ParameterSetType" minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element name="Variable"    type="ParameterType"    minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!--Elements-->
+
+  <xsd:element name="Index">
+    <xsd:annotation>
+      <xsd:documentation>
+	Index associated to data in the container.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:choice>
+	  <xsd:group   ref="IndexIntBoundsGroup"/>
+	  <xsd:element name="IntegerList" type="IndexIntListType"/>
+	  <xsd:element name="NameList"    type="IndexNameListType"/>
+	  <xsd:element name="Encoded"     type="Encoded64Type"/>
+<!--      <xsd:element ref="Index"/> -->
+	</xsd:choice>
+	<xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="OptionalNameGroup"/>
+      <xsd:attributeGroup ref="RequiredIdGroup"/>
+      <xsd:attributeGroup ref="OptionalCountGroup"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="Vector" type="VectorType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Generic vector element. To be restricted.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="VectorType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Type for generic vector element. To be restricted.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:any namespace="##any" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+    <xsd:attributeGroup ref="OptionalCountGroup"/>
+  </xsd:complexType>
+
+  <xsd:element name="Map">
+    <xsd:annotation>
+      <xsd:documentation>
+	Generic map element with attribute keys (name, id) for
+	enforcing uniqueness. To be restricted.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Item" type="MapItemType" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="OptionalNameGroup"/>
+      <xsd:attributeGroup ref="RequiredIdGroup"/>
+      <xsd:attributeGroup ref="OptionalCountGroup"/>
+    </xsd:complexType>
+    <xsd:unique name="NameIdKey">
+      <xsd:selector xpath="Item"/>
+      <xsd:field xpath="@id"/>
+    </xsd:unique>
+  </xsd:element>
+  
+  <xsd:complexType name="MapType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Generic map element type with attribute keys (name, id) for
+	uniqueness. To be restricted.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element ref="Map"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="MapItemType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Generic map item element type with attribute keys (name, id)
+	for uniqueness. To be restricted.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:any namespace="##any" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="RequiredNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+    <xsd:attributeGroup ref="OptionalCountGroup"/>
+  </xsd:complexType>
+
+  <!-- Basic parameter value data types -->
+
+  <xsd:element name="Parameter" type="ParameterType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Basic Name/Value pair.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="ParameterType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Basic Name/Value pair type
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice>
+	<xsd:element name="Scalar"      type="AnySingleValueType"/>
+	<xsd:element name="List"        type="AnySingleListValueType"/>
+	<xsd:element name="Sequence"    type="AnyValueType"/>
+	<xsd:element ref="Vector"/>
+	<xsd:element ref="Map"/>
+	<xsd:element ref="Index"/>
+	<xsd:element ref="Function"/>
+	<xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+      </xsd:choice>
+      <xsd:choice>
+	<xsd:element ref="unitsml:UnitsML" minOccurs="0" />
+	<xsd:element name="CAEBAT_Unit" type="UnitsType" minOccurs="0" />
+	<xsd:element name="Unit" type="ShortStringType" minOccurs="0" />
+      </xsd:choice>
+      <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+  </xsd:complexType>
+
+  <xsd:element name="ParameterSet" type="ParameterSetType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Basic container for Name/Value pairs set.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:unique name="NameIdKey-1">
+      <xsd:selector xpath="./*"/>
+      <xsd:field xpath="@id"/>
+    </xsd:unique>
+  </xsd:element>
+
+  <xsd:complexType name="ParameterSetType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Type for basic container for Name/Value pairs.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element ref="Parameter"          minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element ref="ParameterSet"       minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+  </xsd:complexType>
+
+  <!-- Basic category data types -->
+
+  <xsd:element name="Category" type="CategoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Category element.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="CategoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Category element type.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element ref="Parameters"        minOccurs="0"/>
+      <xsd:element ref="PropertyType"      minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+      <xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="CategoryNoIdType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Category element type without id attribute.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element ref="Parameters"        minOccurs="0"/>
+      <xsd:element ref="PropertyType"      minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+      <xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+  </xsd:complexType>
+
+  <xsd:element name="CategorySet" type="CategorySetType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Container for category and category set.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:unique name="NameIdKey-2">
+      <xsd:selector xpath="./*"/>
+      <xsd:field xpath="@id"/>
+    </xsd:unique>
+  </xsd:element>
+
+  <xsd:complexType name="CategorySetType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Type for container for category set.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element ref="Category"          minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="CategorySet"       minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="PropertyType"      minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="AnyCategoryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Container for any category set.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element ref="Category"          minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element ref="CategorySet"       minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:group     ref="ElementInfoGroup"  minOccurs="0"/>
+      <xsd:any namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!-- Model definition -->
+
+  <xsd:element name="Definition" type="DefinitionType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Definition element.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="DefinitionType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main model definition container type.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:sequence>
+      <xsd:element ref="Parameters"        minOccurs="0"/>
+<!--
+      <xsd:element ref="NamedParameter" minOccurs="0"/>
+-->
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+	<xsd:element ref="Category"     minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element ref="CategorySet"  minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:choice>
+      <xsd:any     namespace="##other" minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+      <xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+<!--
+  <xsd:element name="NamedParameter" type="NamedParameterType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Type element.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:simpleType name="NamedParameterType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main model type definition container.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortTokenType"/>
+  </xsd:simpleType>
+-->
+
+
+  <xsd:element name="PropertyType"       type="PropertyTypeType">
+    <xsd:annotation>
+      <xsd:documentation>Property type container.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:simpleType  name="PropertyTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Property type group. Single choice.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortTokenType">
+
+      <xsd:enumeration value="Composition">
+	<xsd:annotation>
+	  <xsd:documentation>Composition.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Physical">
+	<xsd:annotation>
+	  <xsd:documentation>Physical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Chemical">
+	<xsd:annotation>
+	  <xsd:documentation>Chemical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Electrical">
+	<xsd:annotation>
+	  <xsd:documentation>Electrical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Interfacial">
+	<xsd:annotation>
+	  <xsd:documentation>Electrical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Bulk">
+	<xsd:annotation>
+	  <xsd:documentation>Electrical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Surface">
+	<xsd:annotation>
+	  <xsd:documentation>Surface property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Line">
+	<xsd:annotation>
+	  <xsd:documentation>Line property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Point">
+	<xsd:annotation>
+	  <xsd:documentation>Point property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Thermodynamics">
+	<xsd:annotation>
+	  <xsd:documentation>Thermodynamics property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Kinetics">
+	<xsd:annotation>
+	  <xsd:documentation>Kinetics property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Transport">
+	<xsd:annotation>
+	  <xsd:documentation>Transport property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Thermal">
+	<xsd:annotation>
+	  <xsd:documentation>Thermal property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Mechanical">
+	<xsd:annotation>
+	  <xsd:documentation>Mechanical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Geometrical">
+	<xsd:annotation>
+	  <xsd:documentation>Geometrical property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Cost">
+	<xsd:annotation>
+	  <xsd:documentation>Cost property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Coupling">
+	<xsd:annotation>
+	  <xsd:documentation>Coupling between properties.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="PropertyOther">
+	<xsd:annotation>
+	  <xsd:documentation>Other property.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="Functions"  type="FunctionsType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Container for Function entries with enforced uniqueness on id-s
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:unique name="FunctionIdKey">
+      <xsd:selector xpath="./*"/>
+      <xsd:field xpath="@id"/>
+    </xsd:unique>
+  </xsd:element>
+
+  <xsd:complexType name="FunctionsType">
+    <xsd:sequence>
+      <xsd:element name="Function"    type="FunctionType"    minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="Function" type="FunctionType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Basic function type.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="FunctionType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Basic function type
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="NParameters" type="NonNegativeIntType"/>
+      <xsd:element name="NVariables"  type="NonNegativeIntType"/>
+      <xsd:element ref="Parameters" />
+      <xsd:element ref="Variables"/>
+      <xsd:element ref="FunctionType"/>
+      <xsd:choice>
+	<xsd:element ref="unitsml:UnitsML" minOccurs="0" />
+	<xsd:element name="CAEBAT_Unit" type="UnitsType" minOccurs="0" />
+	<xsd:element name="Unit" type="ShortStringType" minOccurs="0" />
+      </xsd:choice>
+      <xsd:element   name="Mathform" type="ShortStringType" minOccurs="0" />
+      <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="OptionalNameGroup"/>
+    <xsd:attributeGroup ref="RequiredIdGroup"/>
+  </xsd:complexType>
+
+  <xsd:element name="FunctionType"       type="FunctionTypeType">
+    <xsd:annotation>
+      <xsd:documentation>Function type container. Will be expanded.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:simpleType  name="FunctionTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Function type group. Single choice.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortTokenType">
+
+      <xsd:enumeration value="Polynomial">
+	<xsd:annotation>
+	  <xsd:documentation>Polynomial.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Polynomial_Exponential">
+	<xsd:annotation>
+	  <xsd:documentation>Polynomial Exponential</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Product">
+	<xsd:annotation>
+	  <xsd:documentation>Product.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Quotient">
+	<xsd:annotation>
+	  <xsd:documentation>Product.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Sum">
+	<xsd:annotation>
+	  <xsd:documentation>Sum.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Subtraction">
+	<xsd:annotation>
+	  <xsd:documentation>Subtraction.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Butler_Volmer_Kinetics">
+	<xsd:annotation>
+	  <xsd:documentation>Butler-Volmer Kinetics.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Linear Kinetics">
+	<xsd:annotation>
+	  <xsd:documentation>Linear Kinetics.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Arrhenius">
+	<xsd:annotation>
+	  <xsd:documentation>Arrhenius Formula.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="FunctionOther">
+	<xsd:annotation>
+	  <xsd:documentation>Other function type.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+      
+    </xsd:restriction>
+  </xsd:simpleType>
+
+<!--
+    Insert UnitsTesd.xsd for testing at version upgrade.
+-->
+
+</xsd:schema>

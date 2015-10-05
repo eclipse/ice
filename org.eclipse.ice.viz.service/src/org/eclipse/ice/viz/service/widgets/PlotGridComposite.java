@@ -654,4 +654,20 @@ public class PlotGridComposite extends Composite {
 
 		return;
 	}
+
+	/**
+	 * Return true if the given URI has already been 
+	 * plotted and thus is contained in this PlotGridComposite. 
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	public boolean contains(URI uri) {
+		for (IPlot plot : plots) {
+			if (plot.getDataSource().equals(uri)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

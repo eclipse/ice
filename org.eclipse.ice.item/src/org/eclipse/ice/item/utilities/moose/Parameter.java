@@ -312,7 +312,8 @@ public class Parameter {
 					allowedValues.add("false");
 					// Set the default value and description
 					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false" : "true";
-				} else if ("MeshFileName".equals(Parameter.this.cpp_type)) {
+				} else
+					if ("FileName".equals(Parameter.this.cpp_type) || "MeshFileName".equals(Parameter.this.cpp_type)) {
 					// Here we have the mesh file name, so let's make this a
 					// file entry
 					allowedValueType = AllowedValueType.File;

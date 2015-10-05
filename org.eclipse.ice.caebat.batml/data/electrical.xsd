@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Battery Schema, v 12.18.2012 Copyright (c) 2012 UT-Battelle, LLC All 
+	rights reserved. Redistribution and use, with or without modification, are 
+	permitted provided that the following conditions are met: - Redistributions 
+	of source code must retain the above copyright notice, this list of conditions 
+	and the following disclaimer. - Redistributions in binary form must reproduce 
+	the above copyright notice, this list of conditions and the following disclaimer 
+	in the documentation and/or other materials provided with the distribution. 
+	- Collection of administrative costs for redistribution of the source code 
+	or binary form is allowed. However, collection of a royalty or other fee 
+	in excess of good faith amount for cost recovery for such redistribution 
+	is prohibited. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
+	TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+	PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER, THE DOE, 
+	OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+	EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+	OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+	STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+	OF SUCH DAMAGE. -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+
+	xmlns="BatteryML:2.0" targetNamespace="BatteryML:2.0"
+
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="0.2">
+
+	<xsd:include schemaLocation="NamedParameters.xsd" />
+	<xsd:include schemaLocation="UnitsDB.xsd" />
+	<xsd:include schemaLocation="ModelDB.xsd" />
+	<xsd:include schemaLocation="BuildingBlockDB.xsd" />
+	<xsd:include schemaLocation="CellSandwichDB.xsd" />
+	<xsd:include schemaLocation="CellDB.xsd" />
+	<xsd:include schemaLocation="ModuleDB.xsd" />
+	<xsd:include schemaLocation="PackDB.xsd" />
+	<xsd:include schemaLocation="PartDB.xsd" />
+	<xsd:include schemaLocation="DeviceDB.xsd" />
+	<xsd:include schemaLocation="SimulationDB.xsd" />
+	<xsd:include schemaLocation="MaterialDB.xsd" />
+
+	<xsd:element name="BatteryML_Test_Doc">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:any namespace="##targetNamespace" minOccurs="0"
+					maxOccurs="unbounded" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="BatteryML_Doc">
+		<xsd:complexType>
+			<xsd:all minOccurs="0">
+				<xsd:element ref="BuildingBlockDB" minOccurs="0" />
+				<xsd:element ref="CellSandwichDB" minOccurs="0" />
+				<xsd:element ref="CellDB" minOccurs="0" />
+				<xsd:element ref="ModuleDB" minOccurs="0" />
+				<xsd:element ref="PackDB" minOccurs="0" />
+				<xsd:element ref="PartDB" minOccurs="0" />
+				<xsd:element ref="DeviceDB" minOccurs="0" />
+
+				<xsd:element ref="ModelDB" minOccurs="0" />
+				<xsd:element ref="UnitsDB" minOccurs="0" />
+				<xsd:element ref="SimulationDB" minOccurs="0" />
+
+				<xsd:element name="Description" type="StringType"
+					minOccurs="0" />
+				<xsd:element name="Comment" type="StringType" minOccurs="0" />
+				<xsd:element name="Documentation" type="EmbeddedXMLType"
+					minOccurs="0" />
+			</xsd:all>
+			<xsd:attributeGroup ref="OptionalNameGroup" />
+		</xsd:complexType>
+	</xsd:element>
+
+
+</xsd:schema>

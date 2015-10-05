@@ -519,7 +519,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 	 */
 	@Override
 	public ArrayList<Identifiable> getItems() {
-		getCore();
 		return getCore().getItemList();
 	}
 

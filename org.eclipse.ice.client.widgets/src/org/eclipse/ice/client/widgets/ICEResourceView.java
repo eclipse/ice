@@ -513,6 +513,7 @@ public class ICEResourceView extends PlayableViewPart
 		// If it's valid, try to display it on the ResourcePage
 		if (selectedResource != null) {
 			try {
+				resourcePage.getEditor().setActivePage(resourcePage.getId());
 				resourcePage.showResource(selectedResource);
 			} catch (PartInitException e) {
 				logger.error(getClass().getName() + " Exception!", e);
