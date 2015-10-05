@@ -22,7 +22,7 @@
          name="XML Persistence Provider"
          point="org.eclipse.ice.core.persistenceProvider">
       <implementation
-            class="org.eclipse.ice.persistence.xml.XmlPersistenceExtensionFactory">
+            class="org.eclipse.ice.persistence.xml.XMLPersistenceExtensionFactory">
       </implementation>
    </extension>
 

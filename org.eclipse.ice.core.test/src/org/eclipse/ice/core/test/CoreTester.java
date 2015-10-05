@@ -69,9 +69,10 @@ public class CoreTester {
 
 	/**
 	 * This operation configures the core.
+	 * @throws CoreException 
 	 */
 	@Before
-	public void BeforeClass() {
+	public void BeforeClass() throws CoreException {
 
 		// Local Declarations
 		File testDir = new File(".");

@@ -33,14 +33,14 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  *
  */
-public class XmlPersistenceExtensionFactory
+public class XMLPersistenceExtensionFactory
 		implements IExecutableExtensionFactory {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
-			.getLogger(XmlPersistenceExtensionFactory.class);
+			.getLogger(XMLPersistenceExtensionFactory.class);
 
 	/**
 	 * The XMLPersistenceProvider.
@@ -50,7 +50,7 @@ public class XmlPersistenceExtensionFactory
 	/**
 	 * The constructor
 	 */
-	public XmlPersistenceExtensionFactory() {
+	public XMLPersistenceExtensionFactory() {
 		// Nothing to do
 	}
 
