@@ -89,6 +89,13 @@
                </documentation>
             </annotation>
          </attribute>
+         <attribute name="branch" type="string">
+            <annotation>
+               <documentation>
+                  This attribute is to specify a branch other than master to initially check out.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

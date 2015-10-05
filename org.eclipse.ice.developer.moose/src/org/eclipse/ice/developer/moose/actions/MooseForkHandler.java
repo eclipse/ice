@@ -18,14 +18,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * This handler triggers the "Clone MOOSE" action.
+ * This handler triggers the "Fork MOOSE" action.
  * 
  * TODO Update this documentation with more appropriate details.
  * 
  * @author Alex McCaskey
  *
  */
-public class CloneMOOSEHandler extends AbstractHandler {
+public class MooseForkHandler extends AbstractHandler {
 
 	/*
 	 * (non-Javadoc)

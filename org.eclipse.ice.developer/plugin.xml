@@ -19,12 +19,17 @@
          name="ICE Developer Tooling"
          point="org.eclipse.ice.developer.code">
       <code
+            branch="next"
             codeCategory="Framework"
             codeName="ICE"
             repoURL="https://github.com/eclipse/ice">
          <command
                commandName="Clone ICE"
-               implementation="org.eclipse.ice.developer.actions.GitHubCloneHandler">
+               implementation="org.eclipse.ice.developer.actions.ICECloneHandler">
+         </command>
+         <command
+               commandName="Build ICE"
+               implementation="org.eclipse.ice.developer.actions.BuildICEHandler">
          </command>
       </code>
    </extension>

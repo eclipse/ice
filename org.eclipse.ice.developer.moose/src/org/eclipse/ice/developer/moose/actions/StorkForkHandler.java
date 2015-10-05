@@ -62,6 +62,7 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.ice.developer.moose.nature.MooseNature;
+import org.eclipse.ice.developer.moose.wizards.ForkStorkWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -81,12 +82,12 @@ import org.slf4j.LoggerFactory;
  * @author Alex McCaskey
  *
  */
-public class ForkStorkHandler extends AbstractHandler {
+public class StorkForkHandler extends AbstractHandler {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ForkStorkHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(StorkForkHandler.class);
 
 	/**
 	 * (non-Javadoc)
