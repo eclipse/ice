@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.ui.swtbot.test;
 
 import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
@@ -215,27 +225,26 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 						widget = widget.getParent();
 					}
 
-					//Move the mouse to the tabItem.
+					// Move the mouse to the tabItem.
 					event.type = SWT.MouseMove;
 					event.x = x;
 					event.y = y;
 					display.post(event);
 
-					//Click
+					// Click
 					event = new Event();
 					event.type = SWT.MouseDown;
 					event.button = 1;
 					display.post(event);
 					display.post(event);
 
-					//Unclick
+					// Unclick
 					event = new Event();
 					event.type = SWT.MouseUp;
 					event.button = 1;
 					display.post(event);
 				}
 			}
-			// }
 		});
 	}
 
