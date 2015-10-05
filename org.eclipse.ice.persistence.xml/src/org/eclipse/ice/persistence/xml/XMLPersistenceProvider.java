@@ -256,40 +256,6 @@ public class XMLPersistenceProvider
 	}
 
 	/**
-	 * This operation is responsible for creating the project space used by the
-	 * XMLPersistenceProvider.
-	 */
-	private void createProjectSpace() {
-
-		// Local Declarations
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		String projectName = "itemDB";
-		System.getProperty("file.separator");
-
-		try {
-			// Get the project handle
-			project = workspaceRoot.getProject(projectName);
-			// If the project does not exist, create it
-			if (!project.exists()) {
-				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription(projectName);
-				// Create the project
-				project.create(desc, null);
-			}
-			// Open the project if it is not already open
-			if (project.exists() && !project.isOpen()) {
-				project.open(null);
-				// Refresh the project in case users manipulated files.
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-		} catch (CoreException e) {
-			// Catch exception for creating the project
-			logger.error(getClass().getName() + " Exception!", e);
-		}
-	}
-
-	/**
 	 * This operation creates the JAXBContext used by the provider to create XML
 	 * (un)marshallers.
 	 * 
@@ -335,17 +301,8 @@ public class XMLPersistenceProvider
 		// Debug information
 		logger.info("XMLPersistenceProvider Message: " + "Starting Provider!");
 
-		// Setup the project if needed. Setup may not be needed if the
-		// alternative constructor was used.
-		if (project == null) {
-			createProjectSpace();
-		}
-
 		// Create the JAXB context
 		createJAXBContext();
-
-		// Get the names and ids for all of the Items that have been persisted.
-		loadItemIdMap();
 
 		// Start the event loop
 		runFlag.set(true);
@@ -853,6 +810,9 @@ public class XMLPersistenceProvider
 	@Override
 	public void setDefaultProject(IProject project) {
 		this.project = project;
+
+		// Get the names and ids for all of the Items that have been persisted.
+		loadItemIdMap();
 	}
 
 	/*

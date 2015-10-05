@@ -110,6 +110,12 @@ public class Core extends Application implements ICore {
 	private Hashtable<String, IProject> projectTable;
 
 	/**
+	 * This is the default database where Items are stored. It is passed to both
+	 * the ItemManager and the IPersistenceProvider.
+	 */
+	private IProject itemDBProject;
+
+	/**
 	 * The OSGi HTTP Service used by the Core to publish itself.
 	 */
 	private HttpService httpService;
@@ -186,7 +192,41 @@ public class Core extends Application implements ICore {
 
 		return;
 	}
+	/**
+	 * This operation is responsible for creating the project space used by the
+	 * IPersistenceProvider.
+	 */
+	private void createItemDBProjectSpace() {
 
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		String projectName = "itemDB";
+		System.getProperty("file.separator");
+
+		try {
+			// Get the project handle
+			itemDBProject = workspaceRoot.getProject(projectName);
+			// If the project does not exist, create it
+			if (!itemDBProject.exists()) {
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(projectName);
+				// Create the project
+				itemDBProject.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (itemDBProject.exists() && !itemDBProject.isOpen()) {
+				itemDBProject.open(null);
+				// Refresh the project in case users manipulated files.
+				itemDBProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			logger.error(getClass().getName() + " Exception!", e);
+		}
+	}
+	
+	
 	/**
 	 * This operation starts the Core, sets the component context and starts the
 	 * web client if the HTTP service is available.
@@ -237,8 +277,12 @@ public class Core extends Application implements ICore {
 			logger.error("Extension Point " + id + "does not exist");
 		}
 
+		// Set the default project on the Persistence Provider
+		createItemDBProjectSpace();
+		provider.setDefaultProject(itemDBProject);
+
 		// Tell the ItemManager to suit up. It's time to rock and roll.
-		itemManager.loadItems(projectTable.get("defaultUser"));
+		itemManager.loadItems(itemDBProject);
 
 		// Start the webservice!
 		startHttpService();
