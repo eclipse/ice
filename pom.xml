@@ -89,6 +89,8 @@
 		<module>org.eclipse.ice.client.rcp</module>
 		<module>org.eclipse.ice.datastructures</module>
 		<module>org.eclipse.ice.datastructures.test</module>
+		<module>org.eclipse.ice.developer</module>
+		<module>org.eclipse.ice.developer.moose</module>
 		<module>org.eclipse.ice.core</module>
 		<module>org.eclipse.ice.core.test</module>
 		<module>org.eclipse.ice.item</module>

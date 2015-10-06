@@ -76,6 +76,15 @@
                   commandId="org.eclipse.ice.materials.ui.EditDatabaseCommand"
                   label="Edit Materials Database"
                   style="push">
+                  <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeWorkbenchWindow.activePerspective">
+                     <equals
+                           value="org.eclipse.ice.client.widgets.perspective">
+                     </equals>
+                  </with>
+               </visibleWhen>
             </command>
          </toolbar>
       </menuContribution>
