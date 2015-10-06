@@ -18,10 +18,6 @@
                commandName="Clone MOOSE"
                implementation="org.eclipse.ice.developer.moose.actions.MooseCloneHandler">
          </command>
-         <command
-               commandName="Fork MOOSE"
-               implementation="org.eclipse.ice.developer.moose.actions.MooseForkHandler">
-         </command>
       </code>
    </extension>
 
