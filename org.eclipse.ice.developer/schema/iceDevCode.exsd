@@ -75,9 +75,9 @@
             </annotation>
             <simpleType>
                <restriction base="string">
-                  <enumeration value="Framework">
+                  <enumeration value="ICE">
                   </enumeration>
-                  <enumeration value="Physics">
+                  <enumeration value="Framework">
                   </enumeration>
                </restriction>
             </simpleType>
@@ -106,6 +106,9 @@
          </documentation>
       </annotation>
       <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="parameter"/>
+         </sequence>
          <attribute name="commandName" type="string" use="required">
             <annotation>
                <documentation>
@@ -121,6 +124,25 @@
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.eclipse.core.commands.AbstractHandler:"/>
                </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>

@@ -33,5 +33,24 @@
          </command>
       </code>
    </extension>
+   <extension
+         id="org.eclipse.ice.developer.icetests"
+         name="ICE Tests"
+         point="org.eclipse.ice.developer.code">
+      <code
+            branch="master"
+            codeCategory="ICE"
+            codeName="ICE Tests"
+            repoURL="https://github.com/jayjaybillings/ICETests">
+         <command
+               commandName="Clone ICETests to user.home"
+               implementation="org.eclipse.ice.developer.actions.GitCloneHandler">
+            <parameter
+                  name="cloneDirectory"
+                  value="@user.home">
+            </parameter>
+         </command>
+      </code>
+   </extension>
    
 </plugin>

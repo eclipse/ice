@@ -13,6 +13,7 @@ package org.eclipse.ice.developer.actions;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -25,7 +26,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.egit.core.RepositoryUtil;
 import org.eclipse.egit.core.op.CloneOperation;
+import org.eclipse.egit.core.securestorage.UserPasswordCredentials;
+import org.eclipse.egit.ui.Activator;
+import org.eclipse.egit.ui.internal.SecureStoreUtils;
+import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jgit.transport.URIish;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,11 +64,10 @@ public class GitCloneHandler extends AbstractHandler {
 	protected Map handlerParameters;
 
 	/**
-	 * Reference to the location that this handler should 
-	 * clone the repo to. 
+	 * Reference to the location that this handler should clone the repo to.
 	 */
 	protected File cloneLocation;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,11 +94,22 @@ public class GitCloneHandler extends AbstractHandler {
 		// Get the name of the repository
 		String repoName = repo.substring(repo.lastIndexOf("/") + 1, repo.length());
 
-		// Get the initial branch to check out. 
-		String branch = handlerParameters.get("branchID") == null ? "master" : (String) handlerParameters.get("branchID");
-		
-		// See if we have been given a cloneDirectory parameter. 
-		String directory = (String) handlerParameters.get("cloneDirectory");
+		// Get the initial branch to check out.
+		String branch = handlerParameters.get("branchID") == null ? "master"
+				: (String) handlerParameters.get("branchID");
+
+		// See if we have been given a cloneDirectory parameter.
+		String directory = (String) handlerParameters.get("cloneDirectoryID");
+
+		// Get the user provided directory
+		if (directory != null) {
+			if (directory.startsWith("@")) {
+				directory = new File(System.getProperty(directory.replace("@", ""))).isDirectory()
+						? System.getProperty(directory.replace("@", "")) : null;
+			} else {
+				directory = new File(directory).isDirectory() ? directory : null;
+			}
+		}
 
 		// If not, then clone this repo to the current Workspace.
 		if (directory == null) {
@@ -123,7 +139,14 @@ public class GitCloneHandler extends AbstractHandler {
 					cloneOperation = new CloneOperation(new URIish(repo), true, null, cloneLocation, branch, "origin",
 							100);
 					addPostCloneTasks();
+					try {
+						UserPasswordCredentials credentials = SecureStoreUtils.getCredentials(new URIish(repo));
+					} catch (StorageException e) {
+						e.printStackTrace();
+					}
 					cloneOperation.run(monitor);
+					final RepositoryUtil util = Activator.getDefault().getRepositoryUtil();
+					util.addConfiguredRepository(cloneOperation.getGitDir());
 				} catch (URISyntaxException | InvocationTargetException | InterruptedException e) {
 					e.printStackTrace();
 					String message = "Git clone operation failed with the following stacktrace:\n" + e.getMessage();
@@ -149,7 +172,6 @@ public class GitCloneHandler extends AbstractHandler {
 	 * GitCloneHandler's cloneOperation attribute.
 	 */
 	protected void addPostCloneTasks() {
-		return;
 	}
 
 }

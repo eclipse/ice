@@ -107,9 +107,9 @@ public class ICEExtensionContributionFactory extends ExtensionContributionFactor
 		registry = Platform.getExtensionRegistry();
 
 		// Create the ICE Menu here so it's first in the list
-		MenuManager ice = new MenuManager("ICE", "ICEID");
-		categoryMenus.put("ICE", ice);
-		developerMenu.add(ice);
+		//MenuManager ice = new MenuManager("ICE", "ICEID");
+		//categoryMenus.put("ICE", ice);
+		//developerMenu.add(ice);
 
 		// Create the category sub-menus
 		for (CodeCategory c : CodeCategory.values()) {
@@ -270,6 +270,41 @@ public class ICEExtensionContributionFactory extends ExtensionContributionFactor
 				}
 			});
 		}
+		
+		// The given command could have added parameters... 
+		// Add them here
+		for (IConfigurationElement e : element.getChildren("parameter")) {
+		//	generateParameters(e);
+			String value = e.getAttribute("value");
+			String name = e.getAttribute("name");
+			parameters.add(new IParameter() {
+				@Override
+				public String getId() {
+					return name + "ID";
+				}
+				@Override
+				public String getName() {
+					return value;
+				}
+				@Override
+				public IParameterValues getValues() throws ParameterValuesException {
+					return new IParameterValues() {
+						@Override
+						public Map getParameterValues() {
+							HashMap<String, String> map = new HashMap<String, String>();
+							map.put(getId(), getName());
+							return map;
+						};
+					};
+				}
+				@Override
+				public boolean isOptional() {
+					return false;
+				}
+			});
+		
+			
+		}
 	}
 
 	/**
@@ -281,6 +316,8 @@ public class ICEExtensionContributionFactory extends ExtensionContributionFactor
 	 */
 	private enum CodeCategory {
 
+		ICE, 
+		
 		Framework,
 
 		Nuclear,
