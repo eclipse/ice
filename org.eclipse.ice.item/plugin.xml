@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="IMaterialsDatabase" name="Material Database" schema="schema/IMaterialsDatabase.exsd"/>
    <extension-point id="itemBuilder" name="Item Builder" schema="schema/itemBuilder.exsd"/>
+   <extension-point id="compositeItemBuilder" name="Composite Item Builder" schema="schema/compositeItemBuilder.exsd"/>
    <extension
          id="geometryEditorBuilder"
          name="Geometry Editor"
