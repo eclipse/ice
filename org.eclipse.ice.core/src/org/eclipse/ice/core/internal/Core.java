@@ -192,6 +192,7 @@ public class Core extends Application implements ICore {
 
 		return;
 	}
+
 	/**
 	 * This operation is responsible for creating the project space used by the
 	 * IPersistenceProvider.
@@ -225,8 +226,7 @@ public class Core extends Application implements ICore {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
-	
-	
+
 	/**
 	 * This operation starts the Core, sets the component context and starts the
 	 * web client if the HTTP service is available.
@@ -244,13 +244,14 @@ public class Core extends Application implements ICore {
 		// Get the persistence provider from the extension registry.
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint(providerID);
-		if (point != null) {
+		// Retrieve the provider from the registry and set it if one has not
+		// already been set.
+		if (point != null && provider == null) {
 			// We only need one persistence provider, so just pull the
 			// configuration element for the first one available.
 			IConfigurationElement element = point.getConfigurationElements()[0];
-			provider = (IPersistenceProvider) element
-					.createExecutableExtension("class");
-			System.out.println("Success!");
+			setPersistenceProvider((IPersistenceProvider) element
+					.createExecutableExtension("class"));
 		} else {
 			logger.error("Extension Point " + providerID + "does not exist");
 		}
@@ -270,8 +271,8 @@ public class Core extends Application implements ICore {
 			for (int i = 0; i < elements.length; i++) {
 				builder = (ItemBuilder) elements[i]
 						.createExecutableExtension("class");
-				// Register with the ItemManager
-				itemManager.registerBuilder(builder);
+				// Register the builder
+				registerItem(builder);
 			}
 		} else {
 			logger.error("Extension Point " + id + "does not exist");

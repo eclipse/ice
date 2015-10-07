@@ -69,7 +69,8 @@ public class CoreTester {
 
 	/**
 	 * This operation configures the core.
-	 * @throws CoreException 
+	 * 
+	 * @throws CoreException
 	 */
 	@Before
 	public void BeforeClass() throws CoreException {
@@ -114,7 +115,8 @@ public class CoreTester {
 		// Make sure the list of available builders contains the 2 fake items.
 		List<String> availableBuilders = fakeItemManager.getAvailableBuilders();
 		assertNotNull(availableBuilders);
-		assertEquals(2, availableBuilders.size());
+		assertTrue(availableBuilders.contains(fakeModuleBuilder.getItemName()));
+		assertTrue(availableBuilders.contains(fakeGeometryBuilder.getItemName()));
 
 		// NOTE: The below code has to loop over the list of available builders
 		// because the underlying list is NOT ordered.
@@ -125,8 +127,10 @@ public class CoreTester {
 		for (int i = 0; !found && i < availableBuilders.size(); i++) {
 			found = testItemName.equals(availableBuilders.get(i));
 		}
-		assertTrue("ItemManagerTester: " + "FakeModuleBuilder with name "
-				+ testItemName + " not found in available builders!", found);
+		assertTrue(
+				"ItemManagerTester: " + "FakeModuleBuilder with name "
+						+ testItemName + " not found in available builders!",
+				found);
 
 		// Make sure the available builders includes the fake geometry builder.
 		found = false;
@@ -134,8 +138,10 @@ public class CoreTester {
 		for (int i = 0; !found && i < availableBuilders.size(); i++) {
 			found = testItemName.equals(availableBuilders.get(i));
 		}
-		assertTrue("ItemManagerTester: " + "FakeGeometryBuilder with name "
-				+ testItemName + " not found in available builders!", found);
+		assertTrue(
+				"ItemManagerTester: " + "FakeGeometryBuilder with name "
+						+ testItemName + " not found in available builders!",
+				found);
 
 		// Register the CompositeItemBuilder
 		iCECore.registerCompositeItem(fakeCompositeBuilder);
@@ -168,10 +174,6 @@ public class CoreTester {
 		FakeModuleBuilder fakeModuleBuilder = new FakeModuleBuilder();
 		String name = fakeModuleBuilder.getItemName();
 		ArrayList<String> types = new ArrayList<String>();
-
-		// Check the available Item types before registration to make sure that
-		// the list is empty
-		assertTrue(iCECore.getAvailableItemTypes().getList() == null);
 
 		// Register the ItemBuilders
 		iCECore.registerItem(fakeModuleBuilder);
@@ -220,8 +222,8 @@ public class CoreTester {
 		}
 		// Make sure that there are no items
 		assertEquals(0, iCECore.getItemList().size());
-		System.out.println("Num ITEMS after delete = "
-				+ iCECore.getItemList().size());
+		System.out.println(
+				"Num ITEMS after delete = " + iCECore.getItemList().size());
 
 		return;
 	}
@@ -253,8 +255,8 @@ public class CoreTester {
 		// This class has a special implementation of reviewEntries that
 		// makes testing easier. Adding two data components will make it pass
 		// its review, but adding any more will cause it to fail.
-		testItemId = Integer.parseInt(iCECore.createItem(fakeGeometryBuilder
-				.getItemName()));
+		testItemId = Integer.parseInt(
+				iCECore.createItem(fakeGeometryBuilder.getItemName()));
 		assertTrue(testItemId > 0);
 
 		// Get the Form and make sure it is not null
@@ -326,8 +328,8 @@ public class CoreTester {
 		// This class has a special implementation of reviewEntries that
 		// makes testing easier. Adding two data components will make it pass
 		// its review, but adding any more will cause it to fail.
-		testItemId = Integer.parseInt(iCECore.createItem(fakeGeometryBuilder
-				.getItemName()));
+		testItemId = Integer.parseInt(
+				iCECore.createItem(fakeGeometryBuilder.getItemName()));
 		assertTrue(testItemId > 0);
 
 		// Direct the Core to process the Item
@@ -343,10 +345,10 @@ public class CoreTester {
 
 		// Setup the name of the output file. According to the documentation it
 		// should be at <itemName>_<itemId>_processOutput.txt.
-		String outputFilename = fakeItem.getName().replaceAll("\\s+", "_")
-				+ "_" + fakeItem.getId() + "_processOutput.txt";
-		System.out
-				.println("CoreTester message: Looking for (shortened) output file name \""
+		String outputFilename = fakeItem.getName().replaceAll("\\s+", "_") + "_"
+				+ fakeItem.getId() + "_processOutput.txt";
+		System.out.println(
+				"CoreTester message: Looking for (shortened) output file name \""
 						+ outputFilename + "\"");
 		// Get the output file handle
 		File outputFile = iCECore.getItemOutputFile(testItemId);
@@ -407,8 +409,8 @@ public class CoreTester {
 		assertNotNull(types);
 
 		// Create an Item
-		testItemId = Integer.parseInt(iCECore.createItem(fakeGeometryBuilder
-				.getItemName()));
+		testItemId = Integer.parseInt(
+				iCECore.createItem(fakeGeometryBuilder.getItemName()));
 
 		// Create a test file
 		File testFile = new File("testFile.test");
@@ -477,21 +479,15 @@ public class CoreTester {
 		// Local Declarations
 		FakeGeometryBuilder fakeGeometryBuilder = new FakeGeometryBuilder();
 
-		// Check the available Item types before registration to make sure that
-		// the list is empty
-		assertTrue(iCECore.getAvailableItemTypes().getList() == null);
-
 		// Register the ItemBuilders
 		iCECore.registerItem(fakeGeometryBuilder);
 
 		// Create an Item
-		int id = Integer.parseInt(iCECore.createItem(fakeGeometryBuilder
-				.getItemName()));
+		int id = Integer.parseInt(
+				iCECore.createItem(fakeGeometryBuilder.getItemName()));
 
 		// A message from some of the Updater tests
-		String msg = "post={\"item_id\":\""
-				+ id
-				+ "\", "
+		String msg = "post={\"item_id\":\"" + id + "\", "
 				+ "\"client_key\":\"1234567890ABCDEFGHIJ1234567890ABCDEFGHIJ\", "
 				+ "\"posts\":[{\"type\":\"UPDATER_STARTED\",\"message\":\"\"},"
 				+ "{\"type\":\"FILE_MODIFIED\","
@@ -609,8 +605,8 @@ public class CoreTester {
 		String separator = System.getProperty("file.separator");
 
 		// Setup the project space so that the output file can be checked.
-		System.out.println("CoreTester Workspace Root = "
-				+ workspaceRoot.getLocation());
+		System.out.println(
+				"CoreTester Workspace Root = " + workspaceRoot.getLocation());
 		System.out.println("Constructing project " + name);
 		try {
 			// Get the project handle
@@ -619,7 +615,7 @@ public class CoreTester {
 			if (!project.exists()) {
 				defaultProjectLocation = (new File(
 						System.getProperty("user.dir") + separator + name))
-						.toURI();
+								.toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(name);

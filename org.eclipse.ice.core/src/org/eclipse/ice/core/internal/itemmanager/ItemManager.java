@@ -337,8 +337,8 @@ public class ItemManager implements ItemListener {
 		// Make sure the builder is not null and add it to the list, if it's not
 		// there already.
 		if (builder != null
-				&& !this.itemBuilderList.containsKey(builder.getItemName())) {
-			this.itemBuilderList.put(builder.getItemName(), builder);
+				&& !itemBuilderList.containsKey(builder.getItemName())) {
+			itemBuilderList.put(builder.getItemName(), builder);
 			// Notify the composite Items of the updated builder list
 			for (ICompositeItemBuilder compositeBuilder : compositeBuilders) {
 				compositeBuilder.addBuilders(new ArrayList<ItemBuilder>(
