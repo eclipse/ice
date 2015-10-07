@@ -25,5 +25,17 @@
             class="org.eclipse.ice.persistence.xml.XMLPersistenceExtensionFactory">
       </implementation>
    </extension>
-
+ <extension
+       id="org.eclipse.ice.persistence.xml.contentTypes"
+       name="ICE XML Content Type"
+       point="org.eclipse.core.contenttype.contentTypes">
+    <content-type
+          base-type="org.eclipse.core.runtime.xml"
+          describer="org.eclipse.ice.persistence.xml.XMLFormContentDescriber"
+          file-extensions="xml"
+          id="org.eclipse.ice.persistence.xml.contentType.Form"
+          name="ICE Form"
+          priority="normal">
+    </content-type>
+ </extension>
 </plugin>
