@@ -185,104 +185,6 @@
          </menu>
       </menuContribution>
    </extension>
-   
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.MOOSEActionHandler"
-            id="org.eclipse.ice.client.widgets.moose.commands.MOOSEAction"
-            name="Default MOOSE DropDown Action">
-      </command>
-     <!-- <command
-            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.GenerateYAMLHandler"
-            description="Generates YAML and Action Syntax files"
-            id="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML"
-            name="Generate MOOSE YAML and Action Syntax">
-      </command>-->
-      <command
-            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.ForkStorkHandler"
-            description="Forks the Stork"
-            id="org.eclipse.ice.client.widgets.moose.commands.ForkStork"
-            name="MOOSE Fork the Stork">
-      </command>
-      <command
-            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.CloneMOOSEHandler"
-            description="Clones MOOSE"
-            id="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE"
-            name="Clone MOOSE">
-      </command>
-      <command
-            defaultHandler="org.eclipse.ice.client.widgets.moose.actions.ForkMOOSEHandler"
-            description="Forks MOOSE"
-            id="org.eclipse.ice.client.widgets.moose.commands.ForkMOOSE"
-            name="Fork MOOSE">
-      </command>
-   </extension>
-      
-      
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
-         <toolbar
-               id="org.eclipse.ice.client.widgets.toolbar">
-            <command
-                  commandId="org.eclipse.ice.client.widgets.moose.commands.MOOSEAction"
-                  id="org.eclipse.ice.client.widgets.moose.commands.MOOSEAction.toolItem"
-                  label="MOOSE Actions"
-                  style="pulldown"
-                  tooltip="Click the arrow to the right to view available MOOSE Actions.">
-               <visibleWhen
-                     checkEnabled="false">
-                  <with
-                        variable="activeWorkbenchWindow.activePerspective">
-                     <equals
-                           value="org.eclipse.ice.widgets.moose.MOOSEPerspective">
-                     </equals>
-                  </with>
-               </visibleWhen>
-            </command>
-         </toolbar>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:org.eclipse.ice.client.widgets.moose.commands.MOOSEAction.toolItem">
-         <!--<command
-               commandId="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML"
-               icon="icons/file_obj.gif"
-               id="org.eclipse.ice.client.widgets.moose.commands.GenerateYAML.menuItem"
-               label="Generate YAML and Action Syntax"
-               style="push"
-               tooltip="Generates MOOSE YAML and Action Syntax files">
-         </command>-->
-         <command
-               commandId="org.eclipse.ice.client.widgets.moose.commands.ForkStork"
-               id="org.eclipse.ice.client.widgets.moose.commands.ForkStork.menuItem"
-               label="MOOSE Fork the Stork"
-               style="push"
-               tooltip="Forks the Stork">
-         </command>
-         <command
-               commandId="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE"
-               id="org.eclipse.ice.client.widgets.moose.commands.CloneMOOSE.menuItem"
-               label="Clone MOOSE"
-               style="push"
-               tooltip="Clones MOOSE">
-         </command>
-         <command
-               commandId="org.eclipse.ice.client.widgets.moose.commands.ForkMOOSE"
-               id="org.eclipse.ice.client.widgets.moose.commands.ForkMOOSE.menuItem"
-               label="Fork MOOSE"
-               style="push"
-               tooltip="Forks MOOSE">
-         </command>
-         <separator
-               name="additions"
-               visible="false">
-         </separator>
-      </menuContribution>
-   </extension>
    <extension
          id="mooseformwidgetbuilder"
          name="MOOSE Form Widget Builder"
@@ -290,6 +192,6 @@
       <implementation
             class="org.eclipse.ice.client.widgets.moose.MOOSEFormWidgetBuilder">
       </implementation>
-   </extension>
-      
+   </extension> 
+        
 </plugin>
