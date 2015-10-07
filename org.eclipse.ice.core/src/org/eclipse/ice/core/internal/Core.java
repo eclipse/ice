@@ -297,9 +297,11 @@ public class Core extends Application implements ICore {
 	private void debugCheckExtensions() {
 		Set<String> extensionPoints = new HashSet<String>();
 		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
+		extensionPoints.add("org.eclipse.ice.item.compositeItemBuilder");
 		extensionPoints.add("org.eclipse.ice.io.writer");
 		extensionPoints.add("org.eclipse.ice.io.reader");
 		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
+		extensionPoints.add("org.eclipse.ice.datastructures.jaxbClassProvider");
 		for (String extensionPointName : extensionPoints) {
 			IExtensionPoint point = Platform.getExtensionRegistry()
 					.getExtensionPoint(extensionPointName);
