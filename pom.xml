@@ -92,7 +92,7 @@
 		<module>org.eclipse.ice.core</module>
 		<module>org.eclipse.ice.core.test</module>
 		<module>org.eclipse.ice.item</module>
-		<module>org.eclipse.ice.item.test</module>
+		<!--  <module>org.eclipse.ice.item.test</module> -->
 		<module>org.eclipse.ice.persistence.xml</module>
 		<module>org.eclipse.ice.persistence.xml.test</module>
 		<module>org.eclipse.ice.io</module>

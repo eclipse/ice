@@ -156,7 +156,8 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	}
 
 	/*
-	 * Implements a method from IPartSelectionListener.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {

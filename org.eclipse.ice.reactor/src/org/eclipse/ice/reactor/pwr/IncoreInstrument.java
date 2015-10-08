@@ -116,7 +116,8 @@ public class IncoreInstrument extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#getWriteableChildren()
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -138,7 +139,8 @@ public class IncoreInstrument extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readChild(org.eclipse.ice.io.hdf.IHdfReadable)
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -164,7 +166,8 @@ public class IncoreInstrument extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -195,7 +198,8 @@ public class IncoreInstrument extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -237,7 +241,8 @@ public class IncoreInstrument extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -254,7 +259,8 @@ public class IncoreInstrument extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

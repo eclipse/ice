@@ -11,7 +11,6 @@ Import-Package: gov.lbnl.visit.swt,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.datastructures,
  org.eclipse.ice.viz.service.datastructures.VizObject,
- org.eclipse.ice.viz.service.geometry.viewer.factory,
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2",
  visit.java.client

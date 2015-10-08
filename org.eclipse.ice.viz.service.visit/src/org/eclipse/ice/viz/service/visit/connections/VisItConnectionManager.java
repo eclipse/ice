@@ -13,6 +13,8 @@ package org.eclipse.ice.viz.service.visit.connections;
 
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 
@@ -25,9 +27,10 @@ import gov.lbnl.visit.swt.VisItSwtConnection;
  */
 public class VisItConnectionManager
 		extends VizConnectionManager<VisItSwtConnection> {
-
+	
 	/*
-	 * Implements an abstract method from VizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#createConnection(java.lang.String, java.lang.String)
 	 */
 	@Override
 	protected VizConnection<VisItSwtConnection> createConnection(String name,
@@ -60,7 +63,8 @@ public class VisItConnectionManager
 	}
 
 	/*
-	 * Overrides a method from VizConnectionManager.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#updateConnectionPreferences(org.eclipse.ice.viz.service.connections.VizConnection, java.lang.String)
 	 */
 	@Override
 	protected boolean updateConnectionPreferences(

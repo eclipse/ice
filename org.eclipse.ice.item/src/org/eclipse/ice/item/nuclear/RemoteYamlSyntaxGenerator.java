@@ -16,11 +16,14 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Dictionary;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.action.Action;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
@@ -37,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Alex McCaskey
  *
  */
-public class RemoteYamlSyntaxGenerator {
+public class RemoteYamlSyntaxGenerator extends Action {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -82,7 +85,8 @@ public class RemoteYamlSyntaxGenerator {
 	 *
 	 * @param monitor
 	 */
-	public IStatus generate() {
+	public FormStatus execute(Dictionary<String, String> map) {
+	//public IStatus generate() {
 
 		// Local Declarations
 		IRemoteProcessService processService = null;
@@ -98,8 +102,8 @@ public class RemoteYamlSyntaxGenerator {
 			// Print diagnostic information and fail
 			logger.error(getClass().getName() + " Exception!",e);
 			String errorMessage = "Could not create connection to remote machine.";
-			return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear", 1,
-					errorMessage, null);
+			return FormStatus.InfoError; //new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear", 1,
+					//errorMessage, null);
 		}
 
 		// Do the upload(s) and launch the job if the connection is open
@@ -142,8 +146,8 @@ public class RemoteYamlSyntaxGenerator {
 				// Print diagnostic information and fail
 				logger.error(getClass().getName() + " Exception!",e);
 				String errorMessage = "Could not execute YAML/Syntax generation on remote machine.";
-				return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
-						1, errorMessage, null);
+				return FormStatus.InfoError;// new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
+						//1, errorMessage, null);
 			}
 
 			// Monitor the job
@@ -196,13 +200,19 @@ public class RemoteYamlSyntaxGenerator {
 			} catch (IOException e) {
 				logger.error(getClass().getName() + " Exception!",e);
 				String errorMessage = "Could not create write files locally.";
-				return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
-						1, errorMessage, null);
+				return FormStatus.InfoError;// new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
+						//1, errorMessage, null);
 			}
 
 		}
 
-		return Status.OK_STATUS;
+		return FormStatus.Processed;// Status.OK_STATUS;
+	}
+
+	@Override
+	public FormStatus cancel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

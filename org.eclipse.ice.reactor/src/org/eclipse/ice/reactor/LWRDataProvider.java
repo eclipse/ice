@@ -349,7 +349,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getFeatureList()
 	 */
 	@Override
 	public ArrayList<String> getFeatureList() {
@@ -385,7 +386,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getNumberOfTimeSteps()
 	 */
 	@Override
 	public int getNumberOfTimeSteps() {
@@ -394,7 +396,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#setTime(double)
 	 */
 	@Override
 	public void setTime(double step) {
@@ -405,7 +408,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getDataAtCurrentTime(java.lang.String)
 	 */
 	@Override
 	public ArrayList<IData> getDataAtCurrentTime(String feature) {
@@ -433,7 +437,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getSourceInfo()
 	 */
 	@Override
 	public String getSourceInfo() {
@@ -443,7 +448,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getFeaturesAtCurrentTime()
 	 */
 	@Override
 	public ArrayList<String> getFeaturesAtCurrentTime() {
@@ -469,7 +475,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getTimes()
 	 */
 	@Override
 	public ArrayList<Double> getTimes() {
@@ -491,7 +498,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getTimeStep(double)
 	 */
 	@Override
 	public int getTimeStep(double time) {
@@ -517,7 +525,8 @@ public class LWRDataProvider implements IDataProvider {
 	}
 
 	/*
-	 * Implements a method from IDataProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IDataProvider#getTimeUnits()
 	 */
 	@Override
 	public String getTimeUnits() {
