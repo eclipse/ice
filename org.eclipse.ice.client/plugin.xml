@@ -58,7 +58,7 @@
        point="org.eclipse.ui.editors">
     <editor
           class="org.eclipse.ice.client.internal.Client"
-          default="true"
+          default="false"
           extensions="xml"
           id="org.eclipse.ice.client.Editor"
           name="ICE Editor">
