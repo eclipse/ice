@@ -135,7 +135,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 * geometry.
 	 * </p>
 	 * 
-	 * @param managedForm
+	 * @param managedForm the managed form that handles the page
 	 */
 	@Override
 	public void createFormContent(IManagedForm managedForm) {
