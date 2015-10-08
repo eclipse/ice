@@ -72,7 +72,8 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements an abstract method from AbstractVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -82,7 +83,8 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -90,7 +92,8 @@ public class CSVVizService extends AbstractVizService {
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {

@@ -66,7 +66,8 @@ public class ParaViewVizService
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionManager()
 	 */
 	@Override
 	protected IVizConnectionManager<IParaViewWebClient> createConnectionManager() {
@@ -74,7 +75,8 @@ public class ParaViewVizService
 		// ParaViewConnection.
 		return new VizConnectionManager<IParaViewWebClient>() {
 			/*
-			 * Implements an abstract method from VizConnection.
+			 * (non-Javadoc)
+			 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#createConnection(java.lang.String, java.lang.String)
 			 */
 			@Override
 			protected VizConnection<IParaViewWebClient> createConnection(
@@ -85,7 +87,8 @@ public class ParaViewVizService
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionPlot()
 	 */
 	@Override
 	protected ConnectionPlot<IParaViewWebClient> createConnectionPlot() {
@@ -93,7 +96,8 @@ public class ParaViewVizService
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -102,7 +106,8 @@ public class ParaViewVizService
 	}
 
 	/*
-	 * Implements an abstract method from ConnectionVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#getConnectionPreferencesNodeId()
 	 */
 	@Override
 	protected String getConnectionPreferencesNodeId() {
@@ -110,7 +115,8 @@ public class ParaViewVizService
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -128,7 +134,8 @@ public class ParaViewVizService
 	}
 
 	/*
-	 * Implements a method from IVizService.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {

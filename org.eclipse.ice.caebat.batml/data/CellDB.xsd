@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Battery Cell Schema, v 09.19.2012
+
+    Copyright (c) 2012 UT-Battelle, LLC All rights reserved.
+    Redistribution and use, with or without modification, are permitted
+    provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    - Collection of administrative costs for redistribution of the source
+    code or binary form is allowed. However, collection of a royalty or
+    other fee in excess of good faith amount for cost recovery for such
+    redistribution is prohibited.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER, THE DOE, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+    OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+    USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+
+ --> 
+<xsd:schema    	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+
+   xmlns="BatteryML:2.0"
+   targetNamespace="BatteryML:2.0"
+
+   elementFormDefault="qualified" 
+   attributeFormDefault="unqualified" version="0.2">
+
+  <xsd:element name="CellDB_Test_Doc">
+    <xsd:annotation>
+      <xsd:documentation>
+	Element used for testing consistency of schema document. Not
+	to be used in XML battery instance documents.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:any     namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+<!-- Cell database -->
+
+  <xsd:element name="CellDB">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main database with cell definitions. Definitions can exist
+	only in CellDB. The cell definitions are referenced from
+	other databases by argument ref that is linked to
+	cell id.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element ref="Cell"          minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element ref="CellSet"       minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="OptionalNameGroup"/>
+    </xsd:complexType>
+    <xsd:key name="CellIdKey">
+      <xsd:selector xpath="./Cell | ./CellSet"/>
+      <xsd:field xpath="@id"/>
+    </xsd:key>
+  </xsd:element>
+
+  <xsd:element name="Cell" type="CellDBEntryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Cell element in CellDB.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="CellAbstractType"  abstract="true">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of cell type. Contains all the hierarchical
+	cells of the cell instance.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:sequence>
+
+      <xsd:element name="CellSandwich" type="CellSandwichRefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="CellSandwichSet"       minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="BuildingBlock"    type="BuildingBlockRefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="BuildingBlockSet"       minOccurs="0" maxOccurs="unbounded"/>
+
+      <xsd:choice minOccurs="0">
+	<xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	<xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+      </xsd:choice>
+      <xsd:element ref="Parameters"         minOccurs="0"/>
+      <xsd:any     namespace="##other"          minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+      <xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+    <xsd:attribute name="id"    type="ShortNameType"  use="optional"/>
+    <xsd:attribute name="type"  type="CellTypeType"     use="optional"/>
+    <xsd:attribute name="idref" type="ShortNameType"  use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="CellDBEntryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of cell type. Contains all the hierarchical
+	cells of the cell instance.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexContent>
+      <xsd:restriction base="CellAbstractType">
+	<xsd:sequence>
+
+	  <xsd:element name="CellSandwich" type="CellSandwichRefType" minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element ref="CellSandwichSet"       minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element name="BuildingBlock"    type="BuildingBlockRefType" minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element ref="BuildingBlockSet"       minOccurs="0" maxOccurs="unbounded"/>
+
+	  <xsd:choice minOccurs="0">
+	    <xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	    <xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+	  </xsd:choice>
+	  <xsd:element ref="Parameters"        minOccurs="0"/>
+	  <xsd:any     namespace="##other"         minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+	  <xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+	<xsd:attribute name="id"    type="ShortNameType"  use="required"/>
+	<xsd:attribute name="type"  type="CellTypeType"     use="optional"/>
+	<xsd:attribute name="idref" type="ShortNameType"  use="prohibited"/>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="CellRefType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of battery cell type referring to the entry in the cell database.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexContent>
+      <xsd:restriction base="CellAbstractType">
+	<xsd:sequence>
+	  <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="name"  type="ShortTokenType" use="prohibited"/>
+	<xsd:attribute name="id"    type="ShortNameType"  use="prohibited"/>
+	<xsd:attribute name="type"  type="CellTypeType"    use="prohibited"/>
+	<xsd:attribute name="idref" type="ShortNameType"  use="required"/>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="CellSet">
+    <xsd:annotation>
+      <xsd:documentation>
+	Cell set element in CellDB.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="Cell"    type="CellRefType" minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:choice minOccurs="0">
+	  <xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	  <xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+	</xsd:choice>
+	<xsd:element ref="Parameters"         minOccurs="0"/>
+	<xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+      <xsd:attribute name="id"    type="ShortNameType"  use="required"/>
+    </xsd:complexType>
+    <xsd:key name="CellSetIdKey">
+      <xsd:selector xpath="./Cell"/>
+      <xsd:field xpath="@idref"/>
+    </xsd:key>
+  </xsd:element>
+
+  <xsd:simpleType  name="CellTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Cell type model. Single choice.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortTokenType">
+
+      <xsd:enumeration value="Cylindrical">
+	<xsd:annotation>
+	  <xsd:documentation>Dual foil model.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Prismatic">
+	<xsd:annotation>
+	  <xsd:documentation>RC.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="Stacked">
+	<xsd:annotation>
+	  <xsd:documentation>NTG.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+      <xsd:enumeration value="CellOther">
+	<xsd:annotation>
+	  <xsd:documentation>Other cell type.</xsd:documentation>
+	</xsd:annotation>
+      </xsd:enumeration>
+
+    </xsd:restriction>
+  </xsd:simpleType>
+ 
+</xsd:schema>

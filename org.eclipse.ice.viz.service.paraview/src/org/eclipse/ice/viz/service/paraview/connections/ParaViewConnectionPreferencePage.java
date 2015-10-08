@@ -25,7 +25,8 @@ import org.eclipse.ui.IWorkbench;
 public class ParaViewConnectionPreferencePage extends VizConnectionPreferencePage {
 
 	/*
-	 * Implements an abstract method from VizConnectionPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#getConnectionsPreferenceNodeId()
 	 */
 	@Override
 	protected String getConnectionsPreferenceNodeId() {
@@ -33,7 +34,8 @@ public class ParaViewConnectionPreferencePage extends VizConnectionPreferencePag
 	}
 
 	/*
-	 * Overrides a method from VizConnectionPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {

@@ -68,7 +68,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#getImage(java.lang.Object)
 	 */
 	@Override
 	public Image getImage(Object element) {
@@ -97,7 +98,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#getText(java.lang.Object)
 	 */
 	@Override
 	public String getText(Object element) {
@@ -112,7 +114,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#getToolTipText(java.lang.Object)
 	 */
 	@Override
 	public String getToolTipText(Object element) {
@@ -127,7 +130,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#getValue(java.lang.Object)
 	 */
 	@Override
 	public Object getValue(Object element) {
@@ -135,7 +139,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#isEnabled(java.lang.Object)
 	 */
 	@Override
 	public boolean isEnabled(Object element) {
@@ -143,7 +148,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#isValid(java.lang.Object)
 	 */
 	@Override
 	public boolean isValid(Object element) {
@@ -151,7 +157,8 @@ public class TableComponentCellContentProvider implements IVizCellContentProvide
 	}
 
 	/*
-	 * Implements a method from ICellContentProvider.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.IVizCellContentProvider#setValue(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public boolean setValue(Object element, Object value) {

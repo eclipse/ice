@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <!-- Perspective -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.ice.caebat.batml.ui.BatMLPerspective"
+            id="org.eclipse.ice.caebat.batml.BatMLPerspective"
+            name="BatML">
+      </perspective>
+   </extension>
+   <!-- Editor -->
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.caebat.batml.ui.BatMLFormEditor"
+            default="false"
+            id="org.eclipse.ice.caebat.batml.ui.BatMLFormEditor"
+            name="BatMLEditor">
+      </editor>
+   </extension>
+   <!--Custom Properties View-->
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.eclipse.ice.caebat.batml.ui.BatMLFormEditor"
+            tabDescriptorProvider="org.eclipse.ice.caebat.batml.ui.BatMLTabDescriptorProvider">
+         <propertyCategory
+               category="BatML"></propertyCategory>
+      </propertyContributor>
+   </extension>
+   <!--Layout for the BatML Perspective-->
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ice.caebat.batml.BatMLPerspective">
+            <view
+            	closeable="false"
+            	id="org.eclipse.ice.client.common.ItemViewer"
+            	ratio="0.25f"
+            	relationship="left"
+            	relative="org.eclipse.ui.editors"
+            	visible="true">
+            </view>
+            <view
+            	closeable="false"
+            	id="org.eclipse.ice.client.widgets.ICEResourceView"
+            	minimized="false"
+            	relationship="stack"
+            	relative="org.eclipse.ice.client.common.ItemViewer"
+            	visible="true">
+            </view>
+            <view
+            	closeable="false"
+            	id="org.eclipse.ui.views.PropertySheet"
+            	relationship="bottom"
+            	relative="org.eclipse.ui.editors"
+            	visible="true">
+            </view>         	
+      </perspectiveExtension>
+   </extension>
+   
+   
+
+</plugin>

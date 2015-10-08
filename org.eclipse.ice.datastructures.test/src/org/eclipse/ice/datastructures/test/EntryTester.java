@@ -32,6 +32,8 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
+import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.junit.Test;
 
 /**
@@ -393,6 +395,23 @@ public class EntryTester {
 		assertNotNull(entry.getErrorMessage());
 		assertEquals("'null' is an unacceptable value. The value must be "
 				+ "one of 0.0 or 1.0.", entry.getErrorMessage());
+		
+		// Check that setup is not run when the constructor specifies that it should be skipped
+		entry = new Entry(false) {
+
+			@Override
+			protected void setup() {
+				allowedValues = new ArrayList<String>(2);
+				allowedValues.add("1");
+				allowedValues.add("4");
+				this.defaultValue = "2";
+				this.allowedValueType = AllowedValueType.Continuous;
+			}
+		};
+		
+		//Check if setup() changed entry's value type from the default Undefined.
+		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		
 
 		return;
 	}

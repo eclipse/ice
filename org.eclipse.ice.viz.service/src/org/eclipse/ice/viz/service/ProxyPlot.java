@@ -99,7 +99,8 @@ public abstract class ProxyPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -108,7 +109,8 @@ public abstract class ProxyPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDataSource()
 	 */
 	@Override
 	public URI getDataSource() {
@@ -117,7 +119,8 @@ public abstract class ProxyPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -131,7 +134,8 @@ public abstract class ProxyPlot extends AbstractPlot {
 	}
 
 	/*
-	 * Overrides a method from AbstractPlot.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.AbstractPlot#getNumberOfAxes()
 	 */
 	@Override
 	public int getNumberOfAxes() {

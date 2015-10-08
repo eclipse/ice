@@ -63,7 +63,8 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory#createProxy(java.net.URI)
 	 */
 	@Override
 	public IParaViewProxy createProxy(URI uri)
@@ -99,7 +100,8 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory#getExtensions()
 	 */
 	@Override
 	public Set<String> getExtensions() {
@@ -107,7 +109,8 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory#registerProxyBuilder(org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder)
 	 */
 	@Override
 	public boolean registerProxyBuilder(IParaViewProxyBuilder builder) {
@@ -150,7 +153,8 @@ public class ParaViewProxyFactory implements IParaViewProxyFactory {
 	}
 
 	/*
-	 * Implements a method from IParaViewProxyFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory#unregisterProxyBuilder(org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder)
 	 */
 	@Override
 	public boolean unregisterProxyBuilder(IParaViewProxyBuilder builder) {

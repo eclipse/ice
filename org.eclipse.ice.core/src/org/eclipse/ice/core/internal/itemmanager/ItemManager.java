@@ -938,6 +938,10 @@ public class ItemManager implements ItemListener {
 			if (tmpItem != null) {
 				status = tmpItem.process(actionName);
 			}
+		} else {
+			logger.info("ItemManager Message: Could not process the item because "
+					+ "the itemId was not greater than 0 or the "
+					+ "actionName was null. Returning status = " + status.toString());
 		}
 
 		return status;

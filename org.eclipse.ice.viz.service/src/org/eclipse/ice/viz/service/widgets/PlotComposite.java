@@ -53,14 +53,11 @@ import org.slf4j.LoggerFactory;
  * <ol>
  * <li>{@link #createPlotContent(Composite, int)} - fill the composite with
  * customized content</li>
- * <li>{@link #updatePlotContent(Composite)} - refresh the customized content
- * </li>
- * <li>{@link #disposePlotContent(Composite)} - clear the customized content
- * </li>
+ * <li>{@link #updatePlotContent(Composite)} - refresh the customized content</li>
+ * <li>{@link #disposePlotContent(Composite)} - clear the customized content</li>
  * <li>{@link #showSeries(ISeries)} - add the selected series to the custom
  * content</li>
- * <li>{@link #hideSeries(ISeries)} - remove the series from the custom content
- * </li>
+ * <li>{@link #hideSeries(ISeries)} - remove the series from the custom content</li>
  * </ol>
  * <p>
  * The life-cycle of these method calls can be found in
@@ -137,6 +134,7 @@ public abstract class PlotComposite extends Composite {
 	 * The image to display in the {@link #iconLabel}.
 	 */
 	protected Image infoIcon;
+
 	// ------------------------------ //
 
 	/**
@@ -275,19 +273,19 @@ public abstract class PlotComposite extends Composite {
 
 		// Create an info label with an image.
 		iconLabel = new Label(infoComposite, SWT.NONE);
-		iconLabel.setLayoutData(
-				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		iconLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+				false, false));
 
 		// Create a Composite to contain the info message.
 		Composite msgComposite = new Composite(infoComposite, SWT.NONE);
-		msgComposite.setLayoutData(
-				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+		msgComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
+				false, false));
 		msgComposite.setLayout(new GridLayout(1, false));
 
 		// Create an info label with informative text.
 		msgLabel = new Label(msgComposite, SWT.NONE);
-		msgLabel.setLayoutData(
-				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		msgLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+				false));
 
 		return infoComposite;
 	}
@@ -457,12 +455,10 @@ public abstract class PlotComposite extends Composite {
 		actions.add(new VizActionTree(new Action("Select series...") {
 			@Override
 			public void run() {
-				if (provider.openDialog(getShell(), getPlot(),
-						multi) == Window.OK) {
+				if (provider.openDialog(getShell(), getPlot(), multi) == Window.OK) {
 					boolean changed = false;
 					// Disable all unselected series.
-					for (Object element : provider
-							.getUnselectedLeafElements()) {
+					for (Object element : provider.getUnselectedLeafElements()) {
 						if (element instanceof ISeries) {
 							try {
 								((ISeries) element).setEnabled(false);
@@ -491,6 +487,42 @@ public abstract class PlotComposite extends Composite {
 				return;
 			}
 		}));
+
+		// TODO This only covers the case where there is one set of series. We
+		// may eventually need code to handle the case where there is one set of
+		// possible independent series and a different set of possible dependent
+		// ones.
+		// If the plot has interchangeable series, add an option to set the independent series.
+		if (hasInterchangeableSeries()) {
+			// Create an action to open the dialog. If any were added or removed
+			// from the selection, add or remove them from the plot rendering.
+			actions.add(new VizActionTree(new Action(
+					"Set independent series...") {
+				@Override
+				public void run() {
+					if (provider.openDialog(getShell(), getPlot(), false) == Window.OK) {
+						boolean changed = false;
+						// Enable all selected series.
+						for (Object element : provider
+								.getAllSelectedLeafElements()) {
+							if (element instanceof ISeries) {
+								try {
+									plot.setIndependentSeries((ISeries) element);
+									changed = true;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}
+						// If plots were updated, refresh the composite.
+						if (changed) {
+							refresh();
+						}
+					}
+					return;
+				}
+			}));
+		}
 
 		return actions;
 	}
@@ -525,6 +557,17 @@ public abstract class PlotComposite extends Composite {
 	}
 
 	/**
+	 * Returns whether or not the plot can substitute one of its dependents
+	 * series for the independents series and vis versa.
+	 * 
+	 * @return False (default) if the set of independent and dependent series is
+	 *         disjoint. True if they are identical.
+	 */
+	protected boolean hasInterchangeableSeries() {
+		return false;
+	}
+
+	/**
 	 * Gets whether or not the series is plotted. This is a faster short-cut
 	 * than testing containment in the list returned by
 	 * {@link #getPlottedSeries()}.
@@ -543,7 +586,6 @@ public abstract class PlotComposite extends Composite {
 	 * whether the plot can be rendered.
 	 */
 	protected void performRefresh() {
-
 		// Get the StackLayout from the plot Composite.
 		StackLayout stackLayout = (StackLayout) getLayout();
 
@@ -569,15 +611,24 @@ public abstract class PlotComposite extends Composite {
 		} catch (Exception e) {
 			// Log the exception that prevented the plot content from being
 			// thrown.
-			logger.debug(getClass().getName() + "message: " + "Exception "
+			logger.error(getClass().getName() + "message: " + "Exception "
 					+ " thrown while creating/refreshing the plot "
 					+ "content. Showing info composite instead.", e);
 
+			e.printStackTrace();
+			
 			// Update the infoComposite. Create it if necessary.
 			if (infoContent == null) {
 				infoContent = createInfoContent(this, SWT.NONE);
 			}
-			updateInfoContent(infoContent, e.getMessage());
+
+			// Get the message to display
+			String message = e.getMessage();
+			if (message == null) {
+				message = "";
+			}
+
+			updateInfoContent(infoContent, message);
 
 			// Dispose the plotComposite.
 			if (plotContent != null && !plotContent.isDisposed()) {
@@ -680,10 +731,11 @@ public abstract class PlotComposite extends Composite {
 		// Set the message and icon based on the state of the connection.
 		final Display display = infoContent.getDisplay();
 		// If there's no icon set, default to something useful.
-		final Image image = (infoIcon != null ? infoIcon
-				: display.getSystemImage(SWT.ICON_WARNING));
+		final Image image = (infoIcon != null ? infoIcon : display
+				.getSystemImage(SWT.ICON_WARNING));
 
 		// Update the contents of the infoComposite's widgets.
+
 		iconLabel.setImage(image);
 		msgLabel.setText(message);
 
@@ -720,7 +772,6 @@ public abstract class PlotComposite extends Composite {
 
 		// Note that if an exception is thrown while showing/hiding series, it
 		// triggers a failure, which exposes the informational composite.
-
 		Queue<ISeries> addedSeries = new LinkedList<ISeries>();
 		Set<ISeries> removedSeries = new HashSet<ISeries>(plottedSeries);
 

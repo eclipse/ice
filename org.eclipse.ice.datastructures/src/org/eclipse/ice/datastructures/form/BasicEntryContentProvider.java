@@ -201,7 +201,8 @@ public class BasicEntryContentProvider extends ICEObject implements
 	}
 
 	/*
-	 * Overrides a method from ICEObject.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.ICEObject#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherProvider) {

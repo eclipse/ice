@@ -65,8 +65,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings
  */
-public class Client implements IUpdateEventListener, IProcessEventListener,
-		ISimpleResourceProvider, IWidgetClosedListener, IClient {
+public class Client implements IUpdateEventListener, IProcessEventListener, ISimpleResourceProvider,
+		IWidgetClosedListener, IClient {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -164,21 +164,18 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// posted to the IFormWidget based on the status of the process.
 		statusMessageMap.put(FormStatus.Processed, "Done!");
 		statusMessageMap.put(FormStatus.Processing, "Processing Form...");
-		statusMessageMap.put(FormStatus.InfoError,
-				"The Form contains an error" + " and cannot be processed.");
+		statusMessageMap.put(FormStatus.InfoError, "The Form contains an error" + " and cannot be processed.");
 		statusMessageMap.put(FormStatus.ReadyToProcess, "Ready to process.");
 		statusMessageMap.put(FormStatus.NeedsInfo,
-				"The Form requires additional information before "
-						+ "it can be processed.");
+				"The Form requires additional information before " + "it can be processed.");
 		statusMessageMap.put(FormStatus.InReview, "In review...");
-		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
-				+ "processed or updated. It should be considered read-only.");
+		statusMessageMap.put(FormStatus.Unacceptable,
+				"This Form will not be " + "processed or updated. It should be considered read-only.");
 
 		// Get the widgets factory service by using the Workbench. This is a
 		// good way to do it that prevents the ResourcesPlugin from being called
 		// prematurely.
-		IWidgetFactory factory = PlatformUI.getWorkbench()
-				.getService(IWidgetFactory.class);
+		IWidgetFactory factory = PlatformUI.getWorkbench().getService(IWidgetFactory.class);
 		setUIWidgetFactory(factory);
 
 		// Set the reference to this in the Singleton for the widget classes to
@@ -267,8 +264,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			processorThread.start();
 		} else {
 			// Otherwise notify the use that the Item is invalid
-			throwSimpleError("IClient Message: "
-					+ "Item has no parent widget in this client.");
+			throwSimpleError("IClient Message: " + "Item has no parent widget in this client.");
 		}
 	}
 
@@ -340,8 +336,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (itemId > 0) {// FIXME Status check!
 			loadItem(itemId);
 		} else if (itemId <= 0) {
-			throwSimpleError(
-					"Unable to load Item " + itemType + " after creating it.");
+			throwSimpleError("Unable to load Item " + itemType + " after creating it.");
 		}
 	}
 
@@ -358,8 +353,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		if (iWidgetFactory != null) {
 			logger.info("IClient Message: Widget Factory set!");
 		} else {
-			logger.info(
-					"IClient Message: " + "Widget Factory set, but is null.");
+			logger.info("IClient Message: " + "Widget Factory set, but is null.");
 		}
 		return;
 	}
@@ -388,23 +382,19 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			formWidget.display();
 			// Set the initial status of the Form
 			formStatus = getCore().getItemStatus(itemId);
-			formWidget.updateStatus(
-					statusMessageMap.get(iCore.getItemStatus(itemId)));
+			formWidget.updateStatus(statusMessageMap.get(iCore.getItemStatus(itemId)));
 			// If the FormStatus signifies that the Form is absolutely
 			// unacceptable, then the user should be warned.
 			if (formStatus.equals(FormStatus.Unacceptable)) {
 				formWidget.disable(true);
-				throwSimpleError(
-						"This Form has been set to a read-only mode by "
-								+ "ICE. Please be advised that it can not be upated"
-								+ " or processed.");
+				throwSimpleError("This Form has been set to a read-only mode by "
+						+ "ICE. Please be advised that it can not be upated" + " or processed.");
 			}
 			// Register for updates
 			formWidget.registerUpdateListener(this);
 			formWidget.registerProcessListener(this);
 			formWidget.registerResourceProvider(this);
-			logger.info("IClient Message: Loaded Item " + itemId + ", "
-					+ form.getName());
+			logger.info("IClient Message: Loaded Item " + itemId + ", " + form.getName());
 			// Store the widget in the table of FormWidgets
 			formWidgetTable.put(itemId, formWidget);
 		} else {
@@ -478,14 +468,12 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			}
 			// Process the item
 			if (itemForm != null) {
-				logger.info("IClient Message: Processing Item " + itemId + ", "
-						+ itemForm.getName());
+				logger.info("IClient Message: Processing Item " + itemId + ", " + itemForm.getName());
 				processItem(formWidgetTable.get(itemId), actionName);
 			}
 		} else if (itemId < 0 || itemForm == null) {
 			// Otherwise notify the use that the Item is invalid
-			throwSimpleError("The Item id is invalid. "
-					+ "Please double check it and try again "
+			throwSimpleError("The Item id is invalid. " + "Please double check it and try again "
 					+ "or notify your systems administrator.");
 		}
 		return;
@@ -531,7 +519,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 */
 	@Override
 	public ArrayList<Identifiable> getItems() {
-		getCore();
 		return getCore().getItemList();
 	}
 
@@ -583,26 +570,22 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 
 			// Update the Form if needed, skip FormStatus.InReview for now.
 			// FIXME! - need FormStatus.InReview
-			if (!status.equals(FormStatus.InfoError)
-					&& !status.equals(FormStatus.Unacceptable)) {
+			if (!status.equals(FormStatus.InfoError) && !status.equals(FormStatus.Unacceptable)) {
 				form = getCore().getItem(formId);
 				// Update the status of the Item update
 				if (formWidgetTable.containsKey(form.getItemID())) {
 					String statusMessage = statusMessageMap.get(status);
-					formWidgetTable.get(form.getItemID())
-							.updateStatus(statusMessage);
+					formWidgetTable.get(form.getItemID()).updateStatus(statusMessage);
 				}
 			} else {
 				// Notify the user that there is some invalid information in the
 				// Form
-				throwSimpleError("Form contains invalid information. "
-						+ "Please review it for completeness and "
+				throwSimpleError("Form contains invalid information. " + "Please review it for completeness and "
 						+ "accuracy and resubmit.");
 			}
 		} else {
 			// Otherwise let the user know
-			throwSimpleError("Fatal Error: "
-					+ "Form returned to Client can not be null!");
+			throwSimpleError("Fatal Error: " + "Form returned to Client can not be null!");
 		}
 
 		return;
@@ -657,8 +640,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			// Display the widget
 			textEditor.display();
 		} else {
-			throwSimpleError("The resource that you asked to load does not "
-					+ "exist or is erroneously linked.");
+			throwSimpleError("The resource that you asked to load does not " + "exist or is erroneously linked.");
 		}
 	}
 

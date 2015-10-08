@@ -183,7 +183,7 @@ public class VibeModel extends Item {
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
-				IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter"); //new IPSWriter();
+				IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);

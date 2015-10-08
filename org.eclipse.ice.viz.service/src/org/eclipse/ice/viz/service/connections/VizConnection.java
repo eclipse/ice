@@ -230,7 +230,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#addListener(org.eclipse.ice.viz.service.connections.IVizConnectionListener)
 	 */
 	@Override
 	public boolean addListener(IVizConnectionListener<T> listener) {
@@ -382,7 +383,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	protected abstract boolean disconnectFromWidget(T widget);
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -390,7 +392,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getHost()
 	 */
 	@Override
 	public String getHost() {
@@ -398,7 +401,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getName()
 	 */
 	@Override
 	public String getName() {
@@ -406,7 +410,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getPath()
 	 */
 	@Override
 	public String getPath() {
@@ -414,7 +419,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getPort()
 	 */
 	@Override
 	public int getPort() {
@@ -422,22 +428,25 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getProperties()
 	 */
 	@Override
 	public Map<String, String> getProperties() {
 		return new HashMap<String, String>(properties);
 	}
 
-	/**
-	 * Implements a method from IVizConnection.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getProperty(java.lang.String)
 	 */
 	public String getProperty(String value) {
 		return properties.get(value);
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getState()
 	 */
 	@Override
 	public ConnectionState getState() {
@@ -445,7 +454,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getStatusMessage()
 	 */
 	@Override
 	public String getStatusMessage() {
@@ -453,7 +463,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#getWidget()
 	 */
 	@Override
 	public T getWidget() {
@@ -561,7 +572,8 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 	}
 
 	/*
-	 * Implements a method from IVizConnection.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.IVizConnection#removeListener(org.eclipse.ice.viz.service.connections.IVizConnectionListener)
 	 */
 	@Override
 	public boolean removeListener(IVizConnectionListener<T> listener) {

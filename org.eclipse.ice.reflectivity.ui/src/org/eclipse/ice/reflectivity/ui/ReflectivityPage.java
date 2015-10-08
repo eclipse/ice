@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.ice.client.widgets.ElementSourceDialog;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
+import org.eclipse.ice.client.widgets.ICEResourceView;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -40,12 +41,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.ManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -181,6 +185,7 @@ public class ReflectivityPage extends ICEResourcePage
 		Section listSection = formToolkit.createSection(sashForm,
 				Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 						| Section.EXPANDED | Section.COMPACT);
+		
 		listSection.setLayout(new GridLayout(1, false));
 		listSection.setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -259,6 +264,14 @@ public class ReflectivityPage extends ICEResourcePage
 
 		// Create the resource form page contents
 		super.createFormContent(resourceForm);
+		
+		//Open the properties view and set the focuse on this view to force the correct properties to display. 
+		try {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.propertiesView");
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+		setFocus();
 
 		return;
 
@@ -320,7 +333,10 @@ public class ReflectivityPage extends ICEResourcePage
 							list.getReadWriteLock().writeLock().unlock();
 						}
 					}
+					
 				}
+				
+				listTable.getTable().refresh();
 			}
 
 			@Override
@@ -361,6 +377,8 @@ public class ReflectivityPage extends ICEResourcePage
 						}
 					}
 				}
+				
+				listTable.getTable().refresh();
 			}
 
 		});
@@ -416,6 +434,8 @@ public class ReflectivityPage extends ICEResourcePage
 						}
 
 					}
+					
+					listTable.getTable().refresh();
 				}
 			}
 
@@ -471,6 +491,8 @@ public class ReflectivityPage extends ICEResourcePage
 							listTable.setSelection(selected);
 						}
 					}
+					
+					listTable.getTable().refresh();
 				}
 			}
 
@@ -495,6 +517,8 @@ public class ReflectivityPage extends ICEResourcePage
 					list.clear();
 					list.getReadWriteLock().writeLock().unlock();
 				}
+				
+				listTable.getTable().refresh();
 			}
 
 		});
@@ -654,5 +678,7 @@ public class ReflectivityPage extends ICEResourcePage
 	public void setSelection(ISelection selection) {
 		// Do nothing, as we do not want this capability
 	}
+	
+	
 
 }

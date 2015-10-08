@@ -186,7 +186,8 @@ public class TreeSelectionDialogProvider {
 		CheckedTreeSelectionDialog treeDialog = new CheckedTreeSelectionDialog(
 				shell, labelProvider, contentProvider) {
 			/*
-			 * Overrides a method from CheckedTreeSelectionDialog.
+			 * (non-Javadoc)
+			 * @see org.eclipse.ui.dialogs.CheckedTreeSelectionDialog#createSelectionButtons(org.eclipse.swt.widgets.Composite)
 			 */
 			@Override
 			protected Composite createSelectionButtons(Composite composite) {
@@ -215,7 +216,8 @@ public class TreeSelectionDialogProvider {
 			}
 
 			/*
-			 * Overrides a method from CheckedTreeSelectionDialog.
+			 * (non-Javadoc)
+			 * @see org.eclipse.ui.dialogs.CheckedTreeSelectionDialog#createTreeViewer(org.eclipse.swt.widgets.Composite)
 			 */
 			@Override
 			protected CheckboxTreeViewer createTreeViewer(Composite parent) {
@@ -316,7 +318,8 @@ public class TreeSelectionDialogProvider {
 		ElementTreeSelectionDialog treeDialog = new ElementTreeSelectionDialog(
 				shell, labelProvider, contentProvider) {
 			/*
-			 * Overrides a method from ElementTreeSelectionDialog.
+			 * (non-Javadoc)
+			 * @see org.eclipse.ui.dialogs.ElementTreeSelectionDialog#createTreeViewer(org.eclipse.swt.widgets.Composite)
 			 */
 			@Override
 			protected TreeViewer createTreeViewer(Composite parent) {

@@ -407,7 +407,8 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -421,7 +422,8 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#writeDatasets(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeDatasets(H5File h5File, H5Group h5Group) {
@@ -514,7 +516,8 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readDatasets(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readDatasets(H5Group h5Group) {
@@ -577,7 +580,8 @@ public class GridLabelProvider extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {

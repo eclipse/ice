@@ -27,7 +27,8 @@ public class MaterialsPerspective implements IPerspectiveFactory {
 	public static final String ID = "org.eclipse.ice.materials.perspectives.MaterialsPerspective";
 
 	/*
-	 * Implements a method from IPerspectiveFactory.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
 	 */
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
