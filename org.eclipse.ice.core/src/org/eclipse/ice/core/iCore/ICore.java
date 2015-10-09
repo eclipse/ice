@@ -73,17 +73,6 @@ public interface ICore {
 	public void disconnect(int uniqueClientId);
 
 	/**
-	 * This operation retrieves the workspace file system available to the
-	 * ICEUser. It returns a Form that contains the directory structure.
-	 *
-	 * @param uniqueClientID
-	 *            The unique ID of the Client calling the operation.
-	 * @return A Form that contains a description of the workspace file system
-	 *         available to the ICEUser.
-	 */
-	public Form getFileSystem(int uniqueClientID);
-
-	/**
 	 * This operation registers an ItemBuilder and thereby a particular Item
 	 * class with the Core. This operation is primarily used by the underlying
 	 * OSGi framework to publish available Item types to ICE.

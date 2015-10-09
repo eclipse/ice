@@ -43,8 +43,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +69,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Client extends EditorPart
 		implements IUpdateEventListener, IProcessEventListener,
-		ISimpleResourceProvider, IWidgetClosedListener, IClient {
+ ISimpleResourceProvider, IWidgetClosedListener,
+		IClient, BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -144,6 +147,12 @@ public class Client extends EditorPart
 	private ServiceReference<ICore> iCoreServiceRef;
 
 	/**
+	 * This is the service registration used to register the Client as a service
+	 * of the OSGi framework.
+	 */
+	private ServiceRegistration<IClient> registration;
+
+	/**
 	 * <p>
 	 * The Constructor
 	 * </p>
@@ -173,12 +182,6 @@ public class Client extends EditorPart
 		statusMessageMap.put(FormStatus.Unacceptable,
 				"This Form will not be " + "processed or updated. It should be considered read-only.");
 
-		// Get the widgets factory service by using the Workbench. This is a
-		// good way to do it that prevents the ResourcesPlugin from being called
-		// prematurely.
-		IWidgetFactory factory = PlatformUI.getWorkbench().getService(IWidgetFactory.class);
-		setUIWidgetFactory(factory);
-
 		// Set the reference to this in the Singleton for the widget classes to
 		// retrieve as needed.
 		ClientHolder.setClient(this);
@@ -191,32 +194,64 @@ public class Client extends EditorPart
 	 * @param context
 	 *            the bundle's context from the OSGi
 	 */
-	public void start(BundleContext context) {
+	@Override
+	public void start(BundleContext context) throws Exception {
+
+		// Store the bundle context
 		this.context = context;
+
+		// Acquire the Core service if it is available
+		iCoreServiceRef = context.getServiceReference(ICore.class);
+		if (iCoreServiceRef != null) {
+			logger.info("Retrieving ICore for the client.");
+			iCore = context.getService(iCoreServiceRef);
+			logger.info("Core service set.");
+		} else {
+			// Failure to get the core is a catastrophic error.
+			logger.error("Unable to access core!.");
+		}
+
+		// Get the widgets factory service by using the Workbench. This is a
+		// good way to do it that prevents the ResourcesPlugin from being called
+		// prematurely.
+		IWidgetFactory factory = PlatformUI.getWorkbench()
+				.getService(IWidgetFactory.class);
+		setUIWidgetFactory(factory);
+
+		// I realize how hilarious it is to use two different mechanisms for
+		// acquiring services here. FIXME! This is just testing for now.
+
+		// Register this class as a service with the framework.
+		registration = context.registerService(IClient.class, this, null);
+
+		return;
 	}
 
 	/**
 	 * This operation releases the ICore service references and stops the Client
 	 * service.
+	 *
+	 * @param context
+	 *            the bundle's context from the OSGi
 	 */
-	public void stop() {
+	@Override
+	public void stop(BundleContext context) throws Exception {
+
 		// Release the service reference
 		if (iCoreServiceRef != null) {
 			context.ungetService(iCoreServiceRef);
 		}
+
+		// Unregister this service from the framework
+		registration.unregister();
+
+		return;
 	}
 
 	/**
 	 * This operation grabs and sets the iCore if it is not already available.
 	 */
 	public ICore getCore() {
-
-		if (iCore == null) {
-			logger.info("IClient Message: Retrieving ICore for the client.");
-			iCore = PlatformUI.getWorkbench().getService(ICore.class);
-			logger.info("IClient Message: Core service set.");
-		}
-
 		return iCore;
 	}
 

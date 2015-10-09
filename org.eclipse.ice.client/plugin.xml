@@ -51,7 +51,7 @@
        name="ICE Client"
        point="org.eclipse.ice.client.clientInstance">
     <client
-          class="org.eclipse.ice.client.internal.Client">
+          class="org.eclipse.ice.client.internal.ClientExtensionFactory">
     </client>
  </extension>
  <extension

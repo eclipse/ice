@@ -40,3 +40,5 @@ Require-Bundle: org.eclipse.equinox.http.jetty;bundle-version="2.0.100",
  org.eclipse.equinox.servletbridge;bundle-version="1.2.100"
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.eclipse.ice.core.internal.Core
+Eclipse-LazyStart: true

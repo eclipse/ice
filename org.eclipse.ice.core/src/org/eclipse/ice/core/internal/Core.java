@@ -36,7 +36,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -58,7 +57,10 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -85,7 +87,7 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  * @author Jay Jay Billings
  */
 @ApplicationPath("/ice")
-public class Core extends Application implements ICore {
+public class Core extends Application implements ICore, BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -102,7 +104,7 @@ public class Core extends Application implements ICore {
 	 * The component context for the ICE Core OSGi component.
 	 *
 	 */
-	private ComponentContext componentContext;
+	private BundleContext bundleContext;
 
 	/**
 	 * The master table of IProject Eclipse projects, keyed by username.
@@ -116,11 +118,14 @@ public class Core extends Application implements ICore {
 	private IProject itemDBProject;
 
 	/**
+	 * The ServiceReference used to track the HTTP service.
+	 */
+	private ServiceReference<HttpService> httpServiceRef;
+
+	/**
 	 * The OSGi HTTP Service used by the Core to publish itself.
 	 */
 	private HttpService httpService;
-
-	String id = "org.eclipse.ice.item.itemBuilder";
 
 	/**
 	 * The string identifying the Item Builder extension point.
@@ -145,6 +150,12 @@ public class Core extends Application implements ICore {
 	 * True if locked, false if not.
 	 */
 	private AtomicBoolean updateLock;
+
+	/**
+	 * This is the service registration used to register the Core as a service
+	 * of the OSGi framework.
+	 */
+	private ServiceRegistration<ICore> registration;
 
 	/**
 	 * An alternative constructor that allows the Core to be constructed with a
@@ -234,10 +245,11 @@ public class Core extends Application implements ICore {
 	 * @param context
 	 *            The bundle context for this OSGi bundle.
 	 */
-	public void start(ComponentContext context) throws CoreException {
+	@Override
+	public void start(BundleContext context) throws CoreException {
 
 		// Store the component's context
-		componentContext = context;
+		bundleContext = context;
 
 		logger.info("ICore Message: Component context set!");
 
@@ -262,7 +274,7 @@ public class Core extends Application implements ICore {
 
 		// Load up the
 		ItemBuilder builder = null;
-		point = Platform.getExtensionRegistry().getExtensionPoint(id);
+		point = Platform.getExtensionRegistry().getExtensionPoint(builderID);
 
 		// If the point is available, create all the builders and load them into
 		// the Item Manager.
@@ -275,7 +287,7 @@ public class Core extends Application implements ICore {
 				registerItem(builder);
 			}
 		} else {
-			logger.error("Extension Point " + id + "does not exist");
+			logger.error("Extension Point " + builderID + "does not exist");
 		}
 
 		// Set the default project on the Persistence Provider
@@ -291,8 +303,29 @@ public class Core extends Application implements ICore {
 		// Check the currently registered extensions
 		debugCheckExtensions();
 
+		// Register this class as a service with the framework.
+		registration = context.registerService(ICore.class, this, null);
+
 		return;
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	@Override
+	public void stop(BundleContext context) throws Exception {
+		// Update everything in the ItemManager that requires it
+		itemManager.persistItems();
+
+		// Unregister with the HTTP Service
+		bundleContext.ungetService(httpServiceRef);
+
+		// Unregister this service from the framework
+		registration.unregister();
 	}
 
 	private void debugCheckExtensions() {
@@ -320,24 +353,6 @@ public class Core extends Application implements ICore {
 			System.out.println("##### end of " + extensionPointName + " #####");
 		}
 
-	}
-
-	/**
-	 * This operation stops the Core.
-	 */
-	public void stop() {
-		// Update everything in the ItemManager that requires it
-		itemManager.persistItems();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see ICore#getFileSystem(int uniqueClientID)
-	 */
-	@Override
-	public Form getFileSystem(int uniqueClientID) {
-		return new Form();
 	}
 
 	/*
@@ -706,7 +721,6 @@ public class Core extends Application implements ICore {
 	 *            The HTTP service.
 	 */
 	public void setHttpService(HttpService service) {
-
 		// Set the webservice reference
 		httpService = service;
 		logger.info("ICore Message: Web service set!");
@@ -716,11 +730,18 @@ public class Core extends Application implements ICore {
 	 * Private method used by Core.start() method to start the HttpService.
 	 */
 	private void startHttpService() {
+
+		// Grab the service reference and the service
+		httpServiceRef = bundleContext.getServiceReference(HttpService.class);
+
 		// If it is good to go, start up the webserver
-		if (httpService != null) {
+		if (httpServiceRef != null) {
 
 			// Local Declaration
 			Dictionary<String, String> servletParams = new Hashtable<String, String>();
+
+			/// Get the service
+			httpService = bundleContext.getService(httpServiceRef);
 
 			// Set the parameters
 			servletParams.put("javax.ws.rs.Application", Core.class.getName());
@@ -729,8 +750,8 @@ public class Core extends Application implements ICore {
 			try {
 				// Get the bundle
 				Bundle bundle = null;
-				if (componentContext != null) {
-					bundle = componentContext.getBundleContext().getBundle();
+				if (bundleContext != null) {
+					bundle = bundleContext.getBundle();
 				} else {
 					logger.info("ICore Message: "
 							+ "ICE Core ComponentContext was null! No web service started.");
@@ -764,6 +785,8 @@ public class Core extends Application implements ICore {
 			logger.info("ICore Message: ICE Core Server loaded, but "
 					+ "without webservice.");
 		}
+
+		return;
 	}
 
 	/**

@@ -508,22 +508,6 @@ public class CoreTester {
 	}
 
 	/**
-	 * <p>
-	 * checkFS() checks Core's ability to return a valid file system
-	 * representation.
-	 * </p>
-	 *
-	 */
-	@Test
-	public void checkFS() {
-
-		// Assert getFileSystem returns a valid Form
-		assertNotNull(this.iCECore.getFileSystem(1));
-
-		return;
-	}
-
-	/**
 	 * This operation checks the Core's ability to make a client connection with
 	 * a given username, password, and Client ID.
 	 *

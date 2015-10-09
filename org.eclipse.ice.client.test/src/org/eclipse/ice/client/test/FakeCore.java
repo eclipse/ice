@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
@@ -26,7 +27,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
-import org.eclipse.core.resources.IProject;
 
 /**
  * <p>
@@ -218,17 +218,6 @@ public class FakeCore implements ICore {
 	public void disconnect(int uniqueClientId) {
 		// TODO Auto-generated method stub
 
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ICore#getFileSystem(int uniqueClientID)
-	 */
-	@Override
-	public Form getFileSystem(int uniqueClientID) {
-		// TODO Auto-generated method stub
-		return new Form();
 	}
 
 	/**

@@ -18,20 +18,20 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -258,17 +258,6 @@ public class RemoteCoreProxy implements ICore {
 	public void disconnect(int uniqueClientId) {
 		// TODO Auto-generated method stub
 
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ICore#getFileSystem(int uniqueClientID)
-	 */
-	@Override
-	public Form getFileSystem(int uniqueClientID) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
