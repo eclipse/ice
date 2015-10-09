@@ -540,18 +540,4 @@ public class ClientTester {
 
 	}
 
-	/**
-	 * <p>
-	 * checkFS() checks that a valid file system representation is returned from
-	 * Core.
-	 * </p>
-	 *
-	 */
-	@Test
-	public void checkFS() {
-		// Assert that getFileSystem returns a valid ICEObject
-		assertNotNull(iCEClient.getFileSystem());
-		return;
-	}
-
 }

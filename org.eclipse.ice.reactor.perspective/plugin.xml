@@ -2,6 +2,8 @@
 <?eclipse version="3.4"?>
 
 <plugin>
+   <extension-point id="IHdfIORegistry" name="IHdf IO Registry" schema="schema/IHdfIORegistry.exsd"/>
+   <extension-point id="IAnalysisWidgetRegistry" name="IAnalysis Widget Registry" schema="schema/IAnalysisWidgetRegistry.exsd"/>
           <extension
          id="product"
          point="org.eclipse.core.runtime.products">

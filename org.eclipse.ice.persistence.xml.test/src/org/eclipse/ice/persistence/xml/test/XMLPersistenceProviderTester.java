@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package xmlpp.test;
+package org.eclipse.ice.persistence.xml.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

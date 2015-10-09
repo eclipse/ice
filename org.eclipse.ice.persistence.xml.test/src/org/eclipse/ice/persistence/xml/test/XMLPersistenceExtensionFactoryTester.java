@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
-package xmlpp.test;
+package org.eclipse.ice.persistence.xml.test;
 
 import static org.junit.Assert.*;
 

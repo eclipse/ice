@@ -66,6 +66,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.slf4j.Logger;
@@ -211,12 +212,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		vizFactory = factory;
 		Logger staticLogger = LoggerFactory.getLogger(ICEFormEditor.class);
 		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
-		
+
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.viz.service.IVizServiceFactory");
 		System.out.println("This is in ICEFormEditor");
 		System.out.println("Available configuration elements");
-		for(IConfigurationElement element : elements){
+		for (IConfigurationElement element : elements) {
 			System.out.println(element.getName());
 		}
 		return;
@@ -994,70 +996,77 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	protected void addPages() {
 
 		// Local Declaration
-		ArrayList<ICEFormPage> formPages = new ArrayList<ICEFormPage>();
+		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
-		// Loop over the DataComponents and get them into the map
-		for (Component i : iceDataForm.getComponents()) {
-			logger.info("ICEFormEditor Message: Adding component " + i.getName()
-					+ " " + i.getId());
-			i.accept(this);
-		}
+		// Load data pages if they are available.
+		if (!iceDataForm.getComponents().isEmpty()) {
 
-		// Create pages for the DataComponents and add them to the list
-		if (!(componentMap.get("data").isEmpty())
-				|| !(componentMap.get("table").isEmpty())
-				|| !(componentMap.get("matrix").isEmpty())) {
-			formPages.addAll(createDataTableAndMatrixComponentPages());
-		}
-
-		// Create pages for the MasterDetailsComponents
-		if (!(componentMap.get("masterDetails").isEmpty())) {
-			formPages.addAll(createMasterDetailsComponentPages());
-		}
-
-		// Create the page for GeometryComponents
-		if (!(componentMap.get("geometry").isEmpty())) {
-			formPages.add(createGeometryPage());
-		}
-
-		// Create the page for MeshComponents
-		if (!(componentMap.get("mesh").isEmpty())) {
-			formPages.add(createMeshPage());
-		}
-
-		// Create pages for the EMF components
-		if (componentMap.get("emf").size() > 0) {
-			for (ICEFormPage p : createEMFSectionPages()) {
-				formPages.add(p);
+			// Loop over the components and get them into the map
+			for (Component i : iceDataForm.getComponents()) {
+				logger.info("ICEFormEditor Message: Adding component "
+						+ i.getName() + " " + i.getId());
+				i.accept(this);
 			}
-		}
 
-		// Create pages for list components
-		if (componentMap.get("list").size() > 0) {
-			for (ICEFormPage p : createListSectionPages()) {
-				formPages.add(p);
+			// Create pages for the DataComponents and add them to the list
+			if (!(componentMap.get("data").isEmpty())
+					|| !(componentMap.get("table").isEmpty())
+					|| !(componentMap.get("matrix").isEmpty())) {
+				formPages.addAll(createDataTableAndMatrixComponentPages());
 			}
+
+			// Create pages for the MasterDetailsComponents
+			if (!(componentMap.get("masterDetails").isEmpty())) {
+				formPages.addAll(createMasterDetailsComponentPages());
+			}
+
+			// Create the page for GeometryComponents
+			if (!(componentMap.get("geometry").isEmpty())) {
+				formPages.add(createGeometryPage());
+			}
+
+			// Create the page for MeshComponents
+			if (!(componentMap.get("mesh").isEmpty())) {
+				formPages.add(createMeshPage());
+			}
+
+			// Create pages for the EMF components
+			if (componentMap.get("emf").size() > 0) {
+				for (ICEFormPage p : createEMFSectionPages()) {
+					formPages.add(p);
+				}
+			}
+
+			// Create pages for list components
+			if (componentMap.get("list").size() > 0) {
+				for (ICEFormPage p : createListSectionPages()) {
+					formPages.add(p);
+				}
+			}
+
+			// Set the TreeCompositeViewer Input
+			setTreeCompositeViewerInput();
+
+			// Create the page for Reactors
+			if (!(componentMap.get("reactor").isEmpty())) {
+				logger.info("ICEFormEditor Message: "
+						+ componentMap.get("reactor").size()
+						+ " IReactorComponents not rendered.");
+			}
+
+			// Create the page for ResourceComponents. This one should always be
+			// last on the list!
+			if (!(componentMap.get("output").isEmpty())) {
+				formPages.add(createResourcePage());
+			}
+		} else {
+			// Otherwise throw up a nice empty page explaining the problem.
+			formPages.add(createEmptyErrorPage());
 		}
-
-		// Set the TreeCompositeViewer Input
-		setTreeCompositeViewerInput();
-
-		// Create the page for Reactors
-		if (!(componentMap.get("reactor").isEmpty())) {
-			logger.info("ICEFormEditor Message: "
-					+ componentMap.get("reactor").size()
-					+ " IReactorComponents not rendered.");
-		}
-
-		// Create the page for ResourceComponents. This one should always be
-		// last on the list!
-		if (!(componentMap.get("output").isEmpty())) {
-			formPages.add(createResourcePage());
-		}
-
+		
 		// Add the Pages
 		try {
-			for (ICEFormPage i : formPages) {
+			for (IFormPage i : formPages) {
 				addPage(i);
 			}
 		} catch (PartInitException e) {
@@ -1066,6 +1075,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		return;
 
+	}
+
+	/**
+	 * This operation creates an empty FormPage explaining that there has been
+	 * an error and no data is available.
+	 * 
+	 * @return the empty page
+	 */
+	private IFormPage createEmptyErrorPage() {
+		return new ErrorMessageFormPage(this, "Error Page", "Error Page");
 	}
 
 	/**
