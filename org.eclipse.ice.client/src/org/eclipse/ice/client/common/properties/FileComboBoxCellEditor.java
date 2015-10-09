@@ -1,7 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.common.properties;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,9 +21,7 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.iclient.IClient;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusEvent;
@@ -32,13 +41,16 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 
+/**
+ * The FileComboBoxCellEditor is a ComboBoxCellEditor that also adds a 
+ * file browse button to the combo widget. It lists available file 
+ * items but also let's a user browse to another and import it into the list.  
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 
-	/**
-	 * Image registry key for three dot image (value
-	 * <code>"cell_editor_dots_button_image"</code>).
-	 */
-	public static final String CELL_EDITOR_IMG_DOTS_BUTTON = "cell_editor_dots_button_image";//$NON-NLS-1$
 
 	/**
 	 * Listens for 'focusLost' events and fires the 'apply' event as long as the
@@ -57,37 +69,36 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 	private CCombo contents;
 
 	/**
-	 * The label that gets reused by <code>updateLabel</code>.
-	 */
-	private Label defaultLabel;
-
-	/**
-	 * The value of this cell editor; initially <code>null</code>.
-	 */
-	private Object value = null;
-
-	/**
 	 * The button.
 	 */
 	private Button button;
 
+	/**
+	 * Reference to the editing support using this cell editor
+	 */
 	private ComboCellEditingSupport support;
 
+	/**
+	 * Reference to the property this editor corresponds to.
+	 */
 	private TreeProperty element;
 
 	/**
+	 * The Constructor
 	 */
 	public FileComboBoxCellEditor() {
 		super();
 	}
 
 	/**
+	 * The Constructor, takes the list of items to display
 	 */
 	public FileComboBoxCellEditor(Composite parent, String[] items) {
 		super(parent, items, SWT.NONE);
 	}
 
 	/**
+	 * The Constructor, takes the items, editing support, and property
 	 */
 	public FileComboBoxCellEditor(Composite parent, String[] items, int style, ComboCellEditingSupport supp,
 			TreeProperty element) {
@@ -96,22 +107,29 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 		this.element = element;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ComboBoxCellEditor#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
 	protected Control createControl(Composite parent) {
 		Font font = parent.getFont();
 		Color bg = parent.getBackground();
 
+		// Create the editor composite
 		editor = new Composite(parent, getStyle());
 		editor.setFont(font);
 		editor.setBackground(bg);
 		editor.setLayout(new DialogCellLayout());
 
-		contents = (CCombo) createContents(editor);
-		// updateContents(value);
+		// Create the contents
+		contents = (CCombo) super.createControl(editor);
 
+		// Create the Browse Button
 		button = createButton(editor);
 		button.setFont(font);
 
+		// Add a escape key listener
 		button.addKeyListener(new KeyAdapter() {
 
 			@Override
@@ -122,8 +140,10 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 			}
 		});
 
+		// Add the focus listener
 		button.addFocusListener(getButtonFocusListener());
 
+		// Add the button listener to throw up the file browser
 		button.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -132,10 +152,11 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 				// to lose focus when the dialog opens
 				button.removeFocusListener(getButtonFocusListener());
 
+				// Get the IClient so we can do the import
 				IClient client = ClientHolder.getClient();
+				
+				// Open the file browser and get the selection
 				String newValue = (String) openDialogBox(editor);
-
-				System.out.println("THE NEW FILE: " + newValue);
 
 				// Re-add the listener once the dialog closes
 				button.addFocusListener(getButtonFocusListener());
@@ -181,19 +202,18 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 		return editor;
 	}
 
+	/**
+	 * Open the dialog box for the button. 
+	 * 
+	 * @param cellEditorWindow
+	 * @return
+	 */
 	protected Object openDialogBox(Control cellEditorWindow) {
 
 		FileDialog fileDialog = new FileDialog(cellEditorWindow.getShell());
 		fileDialog.setText("Select a file to import into ICE workspace");
 		return fileDialog.open();
 
-		// InputDialog dialog = new InputDialog(cellEditorWindow.getShell(), "",
-		// "", "", null);
-		// if (dialog.open() == Window.OK) {
-		// return dialog.getValue();
-		// } else {
-		// return null;
-		// }
 	}
 
 	/**
@@ -212,25 +232,6 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 		Button result = new Button(parent, SWT.DOWN);
 		result.setText("..."); //$NON-NLS-1$
 		return result;
-	}
-
-	/**
-	 * Creates the controls used to show the value of this cell editor.
-	 * <p>
-	 * The default implementation of this framework method creates a label
-	 * widget, using the same font and background color as the parent control.
-	 * </p>
-	 * <p>
-	 * Subclasses may reimplement. If you reimplement this method, you should
-	 * also reimplement <code>updateContents</code>.
-	 * </p>
-	 *
-	 * @param cell
-	 *            the control for this cell editor
-	 * @return the underlying control
-	 */
-	protected Control createContents(Composite cell) {
-		return super.createControl(cell);
 	}
 
 	/**

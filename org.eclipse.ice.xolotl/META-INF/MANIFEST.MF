@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Xolotl
-Bundle-SymbolicName: org.eclipse.ice.xolotl
+Bundle-SymbolicName: org.eclipse.ice.xolotl;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

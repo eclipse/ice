@@ -42,6 +42,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -1448,7 +1449,7 @@ public class Item
 	/**
 	 * This operation instantiates the output file.
 	 */
-	private void setupOutputFile() {
+	protected void setupOutputFile() {
 
 		// Setup the output file handle name
 		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_"
@@ -1458,7 +1459,8 @@ public class Item
 		if (project != null) {
 			// Get the file
 			IFile outputFileHandle = project.getFile(outputFilename);
-			outputFile = outputFileHandle.getLocation().toFile();
+			IPath location = outputFileHandle.getLocation();
+			outputFile = location.toFile();
 			// Create a new file if it does not already exist
 			try {
 				outputFile.createNewFile();

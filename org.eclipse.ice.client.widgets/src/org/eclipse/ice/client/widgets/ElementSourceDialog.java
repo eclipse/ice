@@ -265,5 +265,13 @@ public class ElementSourceDialog<T> extends Dialog {
 	public T getSelection() {
 		return selection;
 	}
+	
+	/**
+	 * Override the superclass method to force the shell to always be resizeable.
+	 */
+	@Override
+	protected int getShellStyle(){
+		return super.getShellStyle() | SWT.RESIZE;
+	}
 
 }

@@ -50,9 +50,11 @@ import org.slf4j.LoggerFactory;
 /**
  * This class implements the IPersistenceProvider interface using the native XML
  * marshalling routines available on the Item. It stores all of the Items in an
- * Eclipse project and uses the ResourcePlugin to manage that space.
+ * Eclipse project and uses the ResourcePlugin to manage that space. Note: The
+ * default project must be set by a client! Clients should always make sure that
+ * getDefaultProject() does not return null when using this class.
  * 
- * It stores items in the workspace in a project called "itemDB" by default. It
+ * It stores items in the workspace in the default project provided by clients. It
  * uses <itemName>_<itemId>.xml for the file names. White space in the item name
  * is replaced with underscores. Items may be stored and loaded from other
  * projects by using the appropriate call.
@@ -168,7 +170,7 @@ public class XMLPersistenceProvider
 	JAXBContext context;
 
 	/**
-	 * Empty default constructor. No work to do.
+	 * Default constructor.
 	 */
 	public XMLPersistenceProvider() {
 		classProviders = new ArrayList<IJAXBClassProvider>();
@@ -254,40 +256,6 @@ public class XMLPersistenceProvider
 	}
 
 	/**
-	 * This operation is responsible for creating the project space used by the
-	 * XMLPersistenceProvider.
-	 */
-	private void createProjectSpace() {
-
-		// Local Declarations
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		String projectName = "itemDB";
-		System.getProperty("file.separator");
-
-		try {
-			// Get the project handle
-			project = workspaceRoot.getProject(projectName);
-			// If the project does not exist, create it
-			if (!project.exists()) {
-				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription(projectName);
-				// Create the project
-				project.create(desc, null);
-			}
-			// Open the project if it is not already open
-			if (project.exists() && !project.isOpen()) {
-				project.open(null);
-				// Refresh the project in case users manipulated files.
-				project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-		} catch (CoreException e) {
-			// Catch exception for creating the project
-			logger.error(getClass().getName() + " Exception!", e);
-		}
-	}
-
-	/**
 	 * This operation creates the JAXBContext used by the provider to create XML
 	 * (un)marshallers.
 	 * 
@@ -333,17 +301,8 @@ public class XMLPersistenceProvider
 		// Debug information
 		logger.info("XMLPersistenceProvider Message: " + "Starting Provider!");
 
-		// Setup the project if needed. Setup may not be needed if the
-		// alternative constructor was used.
-		if (project == null) {
-			createProjectSpace();
-		}
-
 		// Create the JAXB context
 		createJAXBContext();
-
-		// Get the names and ids for all of the Items that have been persisted.
-		loadItemIdMap();
 
 		// Start the event loop
 		runFlag.set(true);
@@ -839,6 +798,31 @@ public class XMLPersistenceProvider
 	@Override
 	public String getReaderType() {
 		return "xml";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.core.iCore.IPersistenceProvider#setDefaultProject(org.
+	 * eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void setDefaultProject(IProject project) {
+		this.project = project;
+
+		// Get the names and ids for all of the Items that have been persisted.
+		loadItemIdMap();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.core.iCore.IPersistenceProvider#getDefaultProject()
+	 */
+	@Override
+	public IProject getDefaultProject() {
+		return project;
 	}
 
 }

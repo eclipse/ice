@@ -20,6 +20,12 @@ import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.ice.viz.service.test.FakeVizService;
 import org.junit.Test;
 
+/**
+ * A class which tests the functionality of the VizServiceFactoryHolder.
+ * 
+ * @author Robert Smith
+ *
+ */
 public class VizServiceFactoryHolderTester {
 
 	/**
@@ -58,18 +64,29 @@ public class VizServiceFactoryHolderTester {
 	private class FakeVizServiceFactory implements IVizServiceFactory {
 		private IVizService service;
 
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizServiceFactory#register(org.eclipse.ice.viz.service.IVizService)
+		 */
 		@Override
 		public void register(IVizService newService) {
-			// TODO Auto-generated method stub
 			service = newService;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizServiceFactory#unregister(org.eclipse.ice.viz.service.IVizService)
+		 */
 		@Override
 		public void unregister(IVizService service) {
 			// TODO Auto-generated method stub
 
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizServiceFactory#getServiceNames()
+		 */
 		@Override
 		public String[] getServiceNames() {
 			// TODO Auto-generated method stub
@@ -78,12 +95,20 @@ public class VizServiceFactoryHolderTester {
 			return serviceNames;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizServiceFactory#get(java.lang.String)
+		 */
 		@Override
 		public IVizService get(String serviceName) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizServiceFactory#get()
+		 */
 		@Override
 		public IVizService get() {
 			// TODO Auto-generated method stub

@@ -110,29 +110,29 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.ecf.core.feature"/>
-      <feature id="org.eclipse.rcp" version="4.5.0.v20150603-2331"/>
-      <feature id="org.eclipse.platform" version="4.5.0.v20150603-2358"/>
-      <feature id="org.eclipse.equinox.p2.discovery.feature" version="1.0.300.v20150430-1836"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" version="2.2.100.v20150601-1708"/>
-      <feature id="org.eclipse.equinox.server.p2" version="1.2.200.v20150527-1706"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.platform"/>
+      <feature id="org.eclipse.equinox.p2.discovery.feature"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
+      <feature id="org.eclipse.equinox.server.p2"/>
       <feature id="org.eclipse.help"/>
-      <feature id="org.eclipse.cdt" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.jdt" version="3.11.0.v20150603-2000"/>
-      <feature id="org.eclipse.cdt.autotools" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt"/>
+      <feature id="org.eclipse.jdt"/>
+      <feature id="org.eclipse.cdt.autotools"/>
       <feature id="org.eclipse.cdt.gnu.dsf"/>
       <feature id="org.eclipse.cdt.gnu.build"/>
       <feature id="org.eclipse.cdt.platform"/>
       <feature id="org.eclipse.cdt.native"/>
       <feature id="org.eclipse.cdt.gnu.debug"/>
       <feature id="org.eclipse.cdt.gdb"/>
-      <feature id="org.eclipse.ease.feature" version="0.2.0.201504281226"/>
-      <feature id="org.eclipse.ease.javascript.feature" version="0.2.0.201504281226"/>
-      <feature id="org.eclipse.ease.modules.charting.feature" version="0.2.0.201504281229"/>
-      <feature id="org.eclipse.ease.modules.feature" version="0.2.0.201504281229"/>
-      <feature id="org.eclipse.ease.modules.team.svn.feature" version="0.2.0.201504281229"/>
-      <feature id="org.eclipse.ease.python.feature" version="0.2.0.201504281226"/>
-      <feature id="org.eclipse.ease.ui.feature" version="0.2.0.201505111426"/>
-      <feature id="org.eclipse.epp.mpc" version="1.4.0.v20150618-1659"/>
+      <feature id="org.eclipse.ease.feature"/>
+      <feature id="org.eclipse.ease.javascript.feature"/>
+      <feature id="org.eclipse.ease.modules.charting.feature"/>
+      <feature id="org.eclipse.ease.modules.feature"/>
+      <feature id="org.eclipse.ease.modules.team.svn.feature"/>
+      <feature id="org.eclipse.ease.python.feature"/>
+      <feature id="org.eclipse.ease.ui.feature"/>
+      <feature id="org.eclipse.epp.mpc"/>
       <feature id="org.eclipse.remote" version="2.0.0.201506061609"/>
       <feature id="org.eclipse.pde" version="3.11.0.v20150603-2000"/>
       <feature id="org.eclipse.wst.common_core.feature" version="3.7.0.v201505132009"/>
@@ -172,6 +172,61 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ptp.rm.jaxb.contrib" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ptp.rm.slurm" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ice" version="2.1.7.20150825"/>
+      <feature id="org.eclipse.cdt.bupc" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.core.lrparser.feature" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.core.parser.upc.feature" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.docker.launcher" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gdb.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.build.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.debug.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.dsf.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.gnu.multicorevisualizer" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.managedbuilder.llvm" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.msw" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.native.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.cdt.platform.source"/>
+      <feature id="org.eclipse.cdt.qt"/>
+      <feature id="org.eclipse.cdt.sdk"/>
+      <feature id="org.eclipse.cdt.testsrunner.feature"/>
+      <feature id="org.eclipse.cdt.xlc.feature"/>
+      <feature id="org.eclipse.linuxtools.cdt.libhover.feature"/>
+      <feature id="org.eclipse.dltk.core"/>
+      <feature id="org.eclipse.dltk.core.index"/>
+      <feature id="org.eclipse.dltk.itcl"/>
+      <feature id="org.eclipse.dltk.ruby"/>
+      <feature id="org.eclipse.dltk.tcl"/>
+      <feature id="org.eclipse.dltk.xotcl"/>
+      <feature id="org.eclipse.recommenders.rcp.feature"/>
+      <feature id="org.eclipse.mylyn.bugzilla_feature"/>
+      <feature id="org.eclipse.mylyn.commons"/>
+      <feature id="org.eclipse.mylyn.commons.identity"/>
+      <feature id="org.eclipse.mylyn.commons.notifications"/>
+      <feature id="org.eclipse.mylyn.commons.repositories"/>
+      <feature id="org.eclipse.mylyn.context_feature"/>
+      <feature id="org.eclipse.mylyn.discovery"/>
+      <feature id="org.eclipse.mylyn.github.feature"/>
+      <feature id="org.eclipse.mylyn.ide_feature"/>
+      <feature id="org.eclipse.mylyn.java_feature"/>
+      <feature id="org.eclipse.mylyn.monitor"/>
+      <feature id="org.eclipse.mylyn.pde_feature"/>
+      <feature id="org.eclipse.mylyn.tasks.ide"/>
+      <feature id="org.eclipse.mylyn.team_feature"/>
+      <feature id="org.eclipse.mylyn.wikitext_feature"/>
+      <feature id="org.eclipse.mylyn_feature"/>
+      <feature id="org.eclipse.egit"/>
+      <feature id="org.eclipse.aether.maven.feature"/>
+      <feature id="org.eclipse.photran.xlf"/>
+      <feature id="org.eclipse.tm.terminal.view.feature"/>
+      <feature id="org.eclipse.aether.feature"/>
+      <feature id="org.eclipse.aether.transport.file.feature"/>
+      <feature id="org.eclipse.jgit"/>
+      <feature id="org.eclipse.aether.connector.basic.feature"/>
+      <feature id="org.eclipse.tm.terminal.connector.remote.feature"/>
+      <feature id="org.eclipse.photran"/>
+      <feature id="org.eclipse.photran.intel"/>
+      <feature id="org.eclipse.aether.transport.http.feature"/>
+      <feature id="org.eclipse.tm.terminal.control.feature"/>
+      <feature id="org.eclipse.m2e.feature"/>
    </features>
 
    <configurations>
@@ -198,6 +253,8 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.core" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.developer.moose" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.item" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.kdd" autoStart="true" startLevel="0" />

@@ -85,13 +85,25 @@ public class EdgeView extends AbstractMeshView {
 	 *            <p>
 	 *            The other object that should be compared with this one.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the objects are equal, false otherwise.
 	 *         </p>
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
-		// TODO Auto-generated method stub
+
+		// Check if they are the same reference.
+		if (this == otherObject) {
+			return true;
+		}
+
+		// There is nothing else to check, except the line class variable.
+		// However, Line does not override equals, and so the only way two lines
+		// are equal is if they have the same reference. However, each EdgeView
+		// creates its own Line during construction, which can never be
+		// replaced. Thus, we must assume all Lines are different, and thus that
+		// all EdgeViews are different.
 		return false;
 	}
 
@@ -100,7 +112,8 @@ public class EdgeView extends AbstractMeshView {
 	 * This operation returns the hash value of the VertexController.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode of the object.
 	 *         </p>
 	 */
@@ -122,8 +135,11 @@ public class EdgeView extends AbstractMeshView {
 	 *            </p>
 	 */
 	public void copy(EdgeView view) {
-		// TODO Auto-generated method stub
+		super.copy(view);
 
+		//Clone the line
+		line = (Line) view.line.clone();
+		
 	}
 
 	/**
@@ -131,13 +147,21 @@ public class EdgeView extends AbstractMeshView {
 	 * This operation returns a clone of the VertexController using a deep copy.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new clone.
 	 *         </p>
 	 */
 	@Override
 	public Object clone() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		//Create the new EdgeView using the same starting data as this object.
+		EdgeView object = new EdgeView(geometry.getName(), geometry.getMaterial());
+		
+		//Copy this object into the new one
+		object.copy(this);
+		
+		//Return the cloned object
+		return object;
 	}
 }

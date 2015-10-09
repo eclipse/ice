@@ -85,6 +85,14 @@
          </view>
       </perspectiveExtension>
    </extension>
+    <extension
+          id="reactoreditorregistry"
+          name="Reactor Editor Registry"
+          point="org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry">
+       <implementation
+             class="org.eclipse.ice.reactor.perspective.internal.ReactorEditorRegistry">
+       </implementation>
+    </extension>
 <!--
    <extension
          point="org.eclipse.ui.menus">

@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.eclipse.ice.viz.service.paraview.ParaViewPlot;
+import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -54,10 +56,14 @@ public class ParaViewPlotTester {
 	 * 
 	 * @see ParaViewPlot#getNumberOfAxes()
 	 */
-	@Ignore
 	@Test
 	public void checkNumberOfAxes() {
-		fail("Not implemented.");
+		//Create the plot
+		ParaViewVizService service = new ParaViewVizService();
+		ParaViewPlot plot = new ParaViewPlot(service);
+		
+		//A ParaView plot should not have axes. 
+		assertEquals(0, plot.getNumberOfAxes());
 	}
 
 	/**

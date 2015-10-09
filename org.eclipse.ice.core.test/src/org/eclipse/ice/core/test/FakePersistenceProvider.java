@@ -15,6 +15,7 @@ package org.eclipse.ice.core.test;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.item.Item;
@@ -200,6 +201,18 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 
 	@Override
 	public Item loadItem(IResource itemResource) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDefaultProject(IProject project) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IProject getDefaultProject() {
 		// TODO Auto-generated method stub
 		return null;
 	}

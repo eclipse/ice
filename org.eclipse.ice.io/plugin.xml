@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="reader" name="Reader" schema="schema/IReader.exsd"/>
+   <extension-point id="writer" name="Writer" schema="schema/IWriter.exsd"/>
+
+</plugin>

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Reflectivity
-Bundle-SymbolicName: org.eclipse.ice.reflectivity
+Bundle-SymbolicName: org.eclipse.ice.reflectivity;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Service-Component: OSGI-INF/ReflectivityModelComponent.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -13,6 +13,9 @@ Import-Package: org.apache.commons.math;version="2.1.0",
  org.eclipse.ice.item,
  org.eclipse.ice.item.model,
  org.eclipse.ice.materials,
+ org.eclipse.jface.dialogs,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
  org.eclipse.ui.forms.widgets,
  org.slf4j;version="1.7.2"
 Require-Bundle: org.eclipse.ice.datastructures,

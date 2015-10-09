@@ -2,6 +2,7 @@
 <?eclipse version="3.4"?>
 
 <plugin>
+   <extension-point id="org.eclipse.ice.client.widgets.iformwidgetbuilder" name="IForm Widget Builder" schema="schema/iformwidgetbuilder.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -81,6 +82,13 @@
                name="Mesh Elements"
                restorable="true">
          </view>
+      </extension>
+      <extension point="org.eclipse.ui.views">
+      	<stickyView
+      		id="org.eclipse.ice.client.widgets.EMFTreeCompositeViewer"
+      		location="RIGHT"
+      		moveable="true"
+      		closeable="true"/>
       </extension>
       <!-- Perspective definition -->
       <extension

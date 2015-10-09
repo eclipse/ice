@@ -431,7 +431,7 @@ public class MOOSEModel extends Item {
 				if (remoteConnection != null) {
 					RemoteYamlSyntaxGenerator generator = new RemoteYamlSyntaxGenerator(remoteConnection, mooseFolder,
 							uri.getRawPath());
-					generator.generate();
+					generator.execute(null);
 				}
 
 				String animal = Paths.get(uri.getRawPath()).getFileName().toString();
@@ -902,7 +902,7 @@ public class MOOSEModel extends Item {
 
 			// While we're here, append a blank exemplar to the tree (so the
 			// user can create custom blocks)
-			addBlankChildExemplar(tree);
+			//addBlankChildExemplar(tree);
 
 			// If the next tree in the stack is a top-level tree,
 			// clear the path name
@@ -2036,4 +2036,16 @@ public class MOOSEModel extends Item {
 			return type;
 		}
 	}
+	
+	/**
+	 * Overriding the default behavior here because 
+	 * the overall process output should be in the 
+	 * to-be-created local job folder. 
+	 * 
+	 */
+	@Override
+	protected void setupOutputFile() {
+		return;
+	}
+
 }

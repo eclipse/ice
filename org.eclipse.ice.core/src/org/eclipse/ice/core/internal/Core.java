@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -35,8 +36,12 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -105,9 +110,27 @@ public class Core extends Application implements ICore {
 	private Hashtable<String, IProject> projectTable;
 
 	/**
+	 * This is the default database where Items are stored. It is passed to both
+	 * the ItemManager and the IPersistenceProvider.
+	 */
+	private IProject itemDBProject;
+
+	/**
 	 * The OSGi HTTP Service used by the Core to publish itself.
 	 */
 	private HttpService httpService;
+
+	String id = "org.eclipse.ice.item.itemBuilder";
+
+	/**
+	 * The string identifying the Item Builder extension point.
+	 */
+	public static final String builderID = "org.eclipse.ice.item.itemBuilder";
+
+	/**
+	 * The string identifying the persistence provider extension point.
+	 */
+	public static final String providerID = "org.eclipse.ice.core.persistenceProvider";
 
 	/**
 	 * The persistence provided by the osgi. This piece is set by the
@@ -171,31 +194,131 @@ public class Core extends Application implements ICore {
 	}
 
 	/**
+	 * This operation is responsible for creating the project space used by the
+	 * IPersistenceProvider.
+	 */
+	private void createItemDBProjectSpace() {
+
+		// Local Declarations
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		String projectName = "itemDB";
+		System.getProperty("file.separator");
+
+		try {
+			// Get the project handle
+			itemDBProject = workspaceRoot.getProject(projectName);
+			// If the project does not exist, create it
+			if (!itemDBProject.exists()) {
+				// Create the project description
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(projectName);
+				// Create the project
+				itemDBProject.create(desc, null);
+			}
+			// Open the project if it is not already open
+			if (itemDBProject.exists() && !itemDBProject.isOpen()) {
+				itemDBProject.open(null);
+				// Refresh the project in case users manipulated files.
+				itemDBProject.refreshLocal(IResource.DEPTH_INFINITE, null);
+			}
+		} catch (CoreException e) {
+			// Catch exception for creating the project
+			logger.error(getClass().getName() + " Exception!", e);
+		}
+	}
+
+	/**
 	 * This operation starts the Core, sets the component context and starts the
 	 * web client if the HTTP service is available.
 	 *
 	 * @param context
 	 *            The bundle context for this OSGi bundle.
 	 */
-	public void start(ComponentContext context) {
+	public void start(ComponentContext context) throws CoreException {
 
 		// Store the component's context
 		componentContext = context;
 
 		logger.info("ICore Message: Component context set!");
 
-		// Setup the persistence provider for the ItemManager. The ItemManager
-		// will check them, so just pass the references regardless of whether or
-		// not the OSGi actually set the services.
+		// Get the persistence provider from the extension registry.
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(providerID);
+		// Retrieve the provider from the registry and set it if one has not
+		// already been set.
+		if (point != null && provider == null) {
+			// We only need one persistence provider, so just pull the
+			// configuration element for the first one available.
+			IConfigurationElement element = point.getConfigurationElements()[0];
+			setPersistenceProvider((IPersistenceProvider) element
+					.createExecutableExtension("class"));
+		} else {
+			logger.error("Extension Point " + providerID + "does not exist");
+		}
+
+		// Setup the persistence provider for the ItemManager so that it can
+		// load items.
 		itemManager.setPersistenceProvider(provider);
 
+		// Load up the
+		ItemBuilder builder = null;
+		point = Platform.getExtensionRegistry().getExtensionPoint(id);
+
+		// If the point is available, create all the builders and load them into
+		// the Item Manager.
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			for (int i = 0; i < elements.length; i++) {
+				builder = (ItemBuilder) elements[i]
+						.createExecutableExtension("class");
+				// Register the builder
+				registerItem(builder);
+			}
+		} else {
+			logger.error("Extension Point " + id + "does not exist");
+		}
+
+		// Set the default project on the Persistence Provider
+		createItemDBProjectSpace();
+		provider.setDefaultProject(itemDBProject);
+
 		// Tell the ItemManager to suit up. It's time to rock and roll.
-		itemManager.loadItems(projectTable.get("defaultUser"));
+		itemManager.loadItems(itemDBProject);
 
 		// Start the webservice!
 		startHttpService();
 
+		// Check the currently registered extensions
+		debugCheckExtensions();
+
 		return;
+
+	}
+
+	private void debugCheckExtensions() {
+		Set<String> extensionPoints = new HashSet<String>();
+		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
+		extensionPoints.add("org.eclipse.ice.item.compositeItemBuilder");
+		extensionPoints.add("org.eclipse.ice.io.writer");
+		extensionPoints.add("org.eclipse.ice.io.reader");
+		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
+		extensionPoints.add("org.eclipse.ice.datastructures.jaxbClassProvider");
+		for (String extensionPointName : extensionPoints) {
+			IExtensionPoint point = Platform.getExtensionRegistry()
+					.getExtensionPoint(extensionPointName);
+			System.out.println(
+					"##### Extensions for: " + extensionPointName + " #####");
+			if (point != null) {
+				IExtension[] extensions = point.getExtensions();
+				for (IExtension extension : extensions) {
+					System.out.println("--" + extension.getSimpleIdentifier());
+				}
+			} else {
+				System.out.println("Point does not exist");
+			}
+
+			System.out.println("##### end of " + extensionPointName + " #####");
+		}
 
 	}
 
@@ -269,16 +392,20 @@ public class Core extends Application implements ICore {
 	 */
 	@Override
 	public String createItem(String itemType) {
-		return createItem(itemType, projectTable.get("defaultUser"));
+		// This operation retrieves the default "itemDB
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject("itemDB");
+		return createItem(itemType, project);
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.ICore#createItem(java.lang.String,
 	 * org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	public String createItem(String itemType, IProject project) {
 
 		// Local Declarations
@@ -722,6 +849,7 @@ public class Core extends Application implements ICore {
 	 * @param provider
 	 *            The persistence provider.
 	 */
+	@Inject
 	public void setPersistenceProvider(IPersistenceProvider provider) {
 
 		// If the provider is not null, store the reference and log a message.
@@ -837,9 +965,10 @@ public class Core extends Application implements ICore {
 			}
 		} catch (JsonParseException e) {
 			// Log the message
-			System.err.println("Core Message: "
-					+ "JSON parsing failed for message " + messageString);
+			String err = "Core Message: " + "JSON parsing failed for message "
+					+ messageString;
 			logger.error(getClass().getName() + " Exception!", e);
+			logger.error(err);
 		}
 
 		return messages;

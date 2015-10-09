@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Battery Pack Schema, v 09.19.2012
+
+    Copyright (c) 2012 UT-Battelle, LLC All rights reserved.
+    Redistribution and use, with or without modification, are permitted
+    provided that the following conditions are met:
+
+    - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+
+    - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+    - Collection of administrative costs for redistribution of the source
+    code or binary form is allowed. However, collection of a royalty or
+    other fee in excess of good faith amount for cost recovery for such
+    redistribution is prohibited.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER, THE DOE, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+    OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+    TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+    USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGE.
+
+--> 
+<xsd:schema
+
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns="BatteryML:2.0"
+   targetNamespace="BatteryML:2.0"
+
+   elementFormDefault="qualified" 
+   attributeFormDefault="unqualified" version="0.2">
+
+  <xsd:element name="PackDB_Test_Doc">
+    <xsd:annotation>
+      <xsd:documentation>
+	For testing.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:any     namespace="##targetNamespace" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+<!-- Pack database -->
+
+  <xsd:element name="PackDB">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main database with pack definitions. Definitions can exist
+	only in PackDB. The pack definitions are referenced from
+	other databases by argument ref that is linked to
+	pack id.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element ref="Pack"          minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:element ref="PackSet"       minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attributeGroup ref="OptionalNameGroup"/>
+    </xsd:complexType>
+    <xsd:key name="PackIdKey">
+      <xsd:selector xpath="./Pack | ./PackSet"/>
+      <xsd:field xpath="@id"/>
+    </xsd:key>
+  </xsd:element>
+
+  <xsd:element name="Pack" type="PackDBEntryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Pack element in PackDB.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="PackAbstractType"  abstract="true">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of pack type. Contains all the hierarchical
+	packs of the pack instance.
+      </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:sequence>
+
+      <xsd:element name="Module" type="ModuleRefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="ModuleSet"       minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="Cell" type="CellRefType" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="CellSet"                 minOccurs="0" maxOccurs="unbounded"/>
+
+      <xsd:choice minOccurs="0">
+	<xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	<xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+      </xsd:choice>
+      <xsd:element ref="Parameters"         minOccurs="0"/>
+      <xsd:any     namespace="##other"          minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+      <xsd:group   ref="ElementInfoGroup"   minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+    <xsd:attribute name="id"    type="ShortNameType"  use="optional"/>
+    <xsd:attribute name="type"  type="PackTypeType"     use="optional"/>
+    <xsd:attribute name="idref" type="ShortNameType"  use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="PackDBEntryType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of pack type. Contains all the hierarchical
+	packs of the pack instance.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexContent>
+      <xsd:restriction base="PackAbstractType">
+	<xsd:sequence>
+
+	  <xsd:element name="Module" type="ModuleRefType" minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element ref="ModuleSet"       minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element name="Cell" type="CellRefType" minOccurs="0" maxOccurs="unbounded"/>
+	  <xsd:element ref="CellSet"                 minOccurs="0" maxOccurs="unbounded"/>
+
+	  <xsd:choice minOccurs="0">
+	    <xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	    <xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+	  </xsd:choice>
+	  <xsd:element ref="Parameters"        minOccurs="0"/>
+	  <xsd:any     namespace="##other"         minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+	  <xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+	<xsd:attribute name="id"    type="ShortNameType"  use="required"/>
+	<xsd:attribute name="type"  type="PackTypeType"     use="optional"/>
+	<xsd:attribute name="idref" type="ShortNameType"  use="prohibited"/>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="PackRefType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Main instance of battery pack type referring to the entry in the pack database.
+      </xsd:documentation>
+    </xsd:annotation>
+    
+    <xsd:complexContent>
+      <xsd:restriction base="PackAbstractType">
+	<xsd:sequence>
+	  <xsd:group     ref="ElementInfoGroup"   minOccurs="0"/>
+	</xsd:sequence>
+	<xsd:attribute name="name"  type="ShortTokenType" use="prohibited"/>
+	<xsd:attribute name="id"    type="ShortNameType"  use="prohibited"/>
+	<xsd:attribute name="type"  type="PackTypeType"    use="prohibited"/>
+	<xsd:attribute name="idref" type="ShortNameType"  use="required"/>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:element name="PackSet">
+    <xsd:annotation>
+      <xsd:documentation>
+	Pack set element in PackDB.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+	<xsd:element name="Pack"    type="PackRefType" minOccurs="0" maxOccurs="unbounded"/>
+	<xsd:choice minOccurs="0">
+	  <xsd:element name="Model"           type="ModelType"   minOccurs="0"/>
+	  <xsd:element name="ModelDefinition" type="DefinitionType" minOccurs="0"/>
+	</xsd:choice>
+	<xsd:element ref="Parameters"         minOccurs="0"/>
+	<xsd:group   ref="ElementInfoGroup"  minOccurs="0"/>
+      </xsd:sequence>
+      <xsd:attribute name="name"  type="ShortTokenType" use="optional"/>
+      <xsd:attribute name="id"    type="ShortNameType"  use="required"/>
+    </xsd:complexType>
+    <xsd:key name="PackSetIdKey">
+      <xsd:selector xpath="./Pack"/>
+      <xsd:field xpath="@idref"/>
+    </xsd:key>
+  </xsd:element>
+
+
+
+  <xsd:simpleType  name="PackTypeType">
+    <xsd:annotation>
+      <xsd:documentation>
+	Pack type model. Single choice.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="ShortTokenType"/>
+  </xsd:simpleType>
+
+</xsd:schema>

@@ -204,7 +204,7 @@ public class CSVPlotTester extends SWTBotGefTestCase {
 
 		// Check the size of the list of dependent series.
 		assertNotNull(seriesList);
-		assertEquals(2, seriesList.size());
+		assertEquals(3, seriesList.size());
 
 		// Check the first series.
 		series = seriesList.get(0);
