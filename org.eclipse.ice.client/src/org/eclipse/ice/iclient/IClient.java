@@ -29,18 +29,6 @@ import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
  * @author Jay Jay Billings
  */
 public interface IClient {
-	/**
-	 * <p>
-	 * This operation retrieves a representation of the file system from the
-	 * Core.
-	 * </p>
-	 *
-	 * @return <p>
-	 *         A hierarchical list of the workspace directories available to the
-	 *         Eclipse User.
-	 *         </p>
-	 */
-	public Object getFileSystem();
 
 	/**
 	 * <p>

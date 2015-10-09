@@ -26,4 +26,5 @@ Import-Package: javax.ws.rs.core,
 Service-Component: OSGI-INF/clientComponent.xml
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.1.7",
  com.sun.jersey;bundle-version="1.17.0",
- org.eclipse.ice.client.compatibility;bundle-version="2.0.0"
+ org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
+ org.eclipse.core.runtime;bundle-version="3.11.0"

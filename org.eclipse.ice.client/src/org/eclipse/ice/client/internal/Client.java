@@ -19,12 +19,7 @@ import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -42,7 +37,12 @@ import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.EditorPart;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -65,8 +65,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings
  */
-public class Client implements IUpdateEventListener, IProcessEventListener, ISimpleResourceProvider,
-		IWidgetClosedListener, IClient {
+public class Client extends EditorPart
+		implements IUpdateEventListener, IProcessEventListener,
+		ISimpleResourceProvider, IWidgetClosedListener, IClient {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -88,7 +89,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 	private ArrayList<IErrorBox> errorBoxWidgets;
 
 	/**
-	 *
+	 * The widget factory used to create widgets.
 	 */
 	private IWidgetFactory iWidgetFactory;
 
@@ -268,7 +269,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		}
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#setCoreService(ICore core)
@@ -279,7 +280,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		iCore = core;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#createItem(String itemType)
@@ -479,7 +480,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#connectToCore(String hostname, int port)
@@ -512,7 +513,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return status;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#getItems()
@@ -522,7 +523,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return getCore().getItemList();
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#deleteItem(int id)
@@ -535,7 +536,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#importFile(URI file)
@@ -549,7 +550,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IUpdateEventListener#formUpdated(Form form)
@@ -592,7 +593,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IProcessEventListener#processSelected(Form form, String process)
@@ -608,7 +609,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IProcessEventListener#cancelRequested(Form form, String process)
@@ -623,7 +624,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see ISimpleResourceProvider#loadResource(ICEResource resource)
@@ -644,7 +645,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		}
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IWidgetClosedListener#closedOK()
@@ -656,7 +657,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IWidgetClosedListener#cancelled()
@@ -668,22 +669,59 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
-	 * @see IClient#getFileSystem()
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
+	 * java.lang.String)
 	 */
-	@Override
-	public Object getFileSystem() {
-		// TODO Auto-generated method stub
-		return getCore().getFileSystem(1);
-	}
-
 	@Override
 	public int importFileAsItem(URI file, String itemType) {
 
 		// Pass the call on to the core
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
+
+	}
+
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void doSaveAs() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
+		throwSimpleError("It's working!");
+	}
+
+	@Override
+	public boolean isDirty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isSaveAsAllowed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void createPartControl(Composite parent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
 
 	}
 
