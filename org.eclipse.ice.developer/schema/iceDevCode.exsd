@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.ice.developer" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.ice.developer" id="org.eclipse.ice.developer.code" name="Scientific Code"/>
+      </appinfo>
+      <documentation>
+         The org.eclipse.ice.developer extension point lets developers easily and efficiently plug in new &quot;developer-related&quot; tasks into ICE. These tasks are added to ICE as sub-menu items for the Developer top-level application Menu. By creating an extension of this extension point, and adding a new &quot;code&quot; to that extension, you can enable default clone and fork actions in the Developer menu for your scientific code. Furthermore, you can add custom commands to the created &quot;code&quot; element that connect to AbstractHandler implementations and are added to the code&apos;s sub-menu in the Developer Menu.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+         <documentation>
+            This extension provides a way to plugin in new developer actions for a scientific code.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice>
+            <element ref="code"/>
+         </choice>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="code">
+      <annotation>
+         <documentation>
+            The code element provides a way to describe the scientific code that should be added to the Developer menu.
+         </documentation>
+      </annotation>
+      <complexType>
+         <choice minOccurs="0" maxOccurs="unbounded">
+            <element ref="command"/>
+         </choice>
+         <attribute name="repoURL" type="string">
+            <annotation>
+               <documentation>
+                  The URL of the code repository, e.g. https://github.com/eclipse/ice.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="codeCategory" use="required">
+            <annotation>
+               <documentation>
+                  The category this code fits into. For example, the MOOSE framework would fit into the Framework category.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="ICE">
+                  </enumeration>
+                  <enumeration value="Framework">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="codeName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The name of the code. This will be the display name in the Developer menu.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="branch" type="string">
+            <annotation>
+               <documentation>
+                  This attribute is to specify a branch other than master to initially check out.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="command">
+      <annotation>
+         <documentation>
+            This element lets users specify custom commands to be embedded in the Developer Menu for this code.
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="unbounded">
+            <element ref="parameter"/>
+         </sequence>
+         <attribute name="commandName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The display name of the command.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="implementation" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The package path of the Java class subclassing AbstractHandler and executing this command.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="org.eclipse.core.commands.AbstractHandler:"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="parameter">
+      <complexType>
+         <attribute name="name" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         2.1.7
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         [Enter API information here.]
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="implementation"/>
+      </appinfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
+
+
+</schema>
