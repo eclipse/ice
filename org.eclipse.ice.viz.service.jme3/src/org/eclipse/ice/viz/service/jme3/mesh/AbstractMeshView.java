@@ -166,6 +166,7 @@ public abstract class AbstractMeshView {
 	 *            </p>
 	 */
 	public void copy(AbstractMeshView view) {
+		geometry = view.geometry.clone();
 	}
 
 	/**

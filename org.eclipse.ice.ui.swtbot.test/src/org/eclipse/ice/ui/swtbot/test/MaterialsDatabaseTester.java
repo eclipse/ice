@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Robert Smith
+ *******************************************************************************/
 package org.eclipse.ice.ui.swtbot.test;
 
 import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
@@ -35,9 +45,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#beforeAllTests
-	 * ()
+	 * @see org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#
+	 * beforeAllTests ()
 	 */
 	@Override
 	public void beforeAllTests() {
@@ -59,6 +68,12 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 		// Close the initial eclipse welcome window
 		bot.viewByTitle("Welcome").close();
+
+		// Open the ICE perspective
+		bot.menu("Window").menu("Perspective").menu("Open Perspective")
+				.menu("Other...").click();
+		bot.table(0).select("ICE");
+		bot.button("OK").click();
 
 		// Open the materials database
 		bot.toolbarButtonWithTooltip("Edit Materials Database").click();
@@ -271,14 +286,14 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 				realCustomMaterialTable);
 
 		// Check that the table has americum and silver in it
-		cellName = (String) realCustomMaterialTable
-				.getDataValueByPosition(1, 1);
+		cellName = (String) realCustomMaterialTable.getDataValueByPosition(1,
+				1);
 		assertTrue("Am".equals(cellName));
 		int cellIntValue = (int) realCustomMaterialTable
 				.getDataValueByPosition(2, 1);
 		assertEquals(1, cellIntValue);
-		cellName = (String) realCustomMaterialTable
-				.getDataValueByPosition(1, 2);
+		cellName = (String) realCustomMaterialTable.getDataValueByPosition(1,
+				2);
 		assertTrue("Ag".equals(cellName));
 		cellIntValue = (int) realCustomMaterialTable.getDataValueByPosition(2,
 				2);
@@ -290,8 +305,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		bot.text("Am").typeText("ignore this input");
 		customMaterialTable.selectCell(bot, 1, 0);
 		customMaterialTable.selectCell(bot, 0, 0);
-		cellName = (String) realCustomMaterialTable
-				.getDataValueByPosition(1, 1);
+		cellName = (String) realCustomMaterialTable.getDataValueByPosition(1,
+				1);
 		assertTrue("Am".equals(cellName));
 
 		// Change the amount of americum to a non-integer. This should be
@@ -304,16 +319,15 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 				1);
 		assertEquals(6, cellIntValue);
 
-		 
-		 // Change the amount of americum to a negative number. This change
-		 // should be rejected.
-		 customMaterialTable.selectCell(bot, 1, 0);
-		 bot.text("6").typeText("-1");
-		 customMaterialTable.selectCell(bot, 0, 0);
-		 customMaterialTable.selectCell(bot, 1, 0);
-		 cellIntValue = (int)
-		 realCustomMaterialTable.getDataValueByPosition(2, 1);
-		 assertEquals(6, cellIntValue);
+		// Change the amount of americum to a negative number. This change
+		// should be rejected.
+		customMaterialTable.selectCell(bot, 1, 0);
+		bot.text("6").typeText("-1");
+		customMaterialTable.selectCell(bot, 0, 0);
+		customMaterialTable.selectCell(bot, 1, 0);
+		cellIntValue = (int) realCustomMaterialTable.getDataValueByPosition(2,
+				1);
+		assertEquals(6, cellIntValue);
 
 		// Edit the amount of americum.
 		customMaterialTable.selectCell(bot, 1, 0);
@@ -339,8 +353,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		bot.sleep(1000);
 
 		// Check that the table has gold in it
-		cellName = (String) realCustomMaterialTable
-				.getDataValueByPosition(1, 3);
+		cellName = (String) realCustomMaterialTable.getDataValueByPosition(1,
+				3);
 		assertTrue("Au".equals(cellName));
 
 		// Delete the silver row
@@ -351,8 +365,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		// There should be just 1 row because this table lacks the extra row
 		// being subtracted from other NatTables
 		assertEquals(1, materialTable.rowCount());
-		cellName = (String) realCustomMaterialTable
-				.getDataValueByPosition(1, 2);
+		cellName = (String) realCustomMaterialTable.getDataValueByPosition(1,
+				2);
 		assertTrue("Au".equals(cellName));
 
 		// Add the custom material
@@ -409,7 +423,10 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#afterAllTests()
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#afterAllTests
+	 * ()
 	 */
 	@Override
 	public void afterAllTests() {

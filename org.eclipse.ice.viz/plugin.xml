@@ -119,6 +119,15 @@
                   id="Launch VisIt Command"
                   label="Launch VisIt"
                   style="push">
+                  <visibleWhen
+                     checkEnabled="false">
+                  <with
+                        variable="activeWorkbenchWindow.activePerspective">
+                     <equals
+                           value="org.eclipse.ice.viz.VisualizationPerspective">
+                     </equals>
+                  </with>
+               </visibleWhen>
             </command>
          </toolbar>
       </menuContribution>
