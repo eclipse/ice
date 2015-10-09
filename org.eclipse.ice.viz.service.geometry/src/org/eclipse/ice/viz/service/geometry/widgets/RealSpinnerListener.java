@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-
 /**
  * <p>
  * Enables the implementer to be notified of changes to a RealSpinner by calling
@@ -22,12 +21,12 @@ package org.eclipse.ice.viz.service.geometry.widgets;
  * @author Andrew P. Belt
  */
 public interface RealSpinnerListener {
-	/**
-	 * <p>
-	 * The function to call when RealSpinner is updated
-	 * </p>
-	 * 
-	 * @param realSpinner
-	 */
-	public void update(RealSpinner realSpinner);
+    /**
+     * <p>
+     * The function to call when RealSpinner is updated
+     * </p>
+     * 
+     * @param realSpinner
+     */
+    public void update(RealSpinner realSpinner);
 }
