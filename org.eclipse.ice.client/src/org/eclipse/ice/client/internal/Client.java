@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.internal.ClientHolder;
@@ -51,11 +52,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * The Client class is a base class for clients of the Core. It's primary
  * function is to manage calls to and from the Core to and from whatever user
  * interface is provided by IWidgetFactory.
- * </p>
  * <p>
  * The Client realizes the IClient interface and is registered as an OSGi
  * service. It requires an implementation of the IWidgetFactory so that it can
@@ -67,7 +66,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings
  */
-public class Client extends EditorPart
+public class Client
 		implements IUpdateEventListener, IProcessEventListener,
  ISimpleResourceProvider, IWidgetClosedListener,
 		IClient, BundleActivator {
@@ -256,13 +255,11 @@ public class Client extends EditorPart
 	}
 
 	/**
-	 * <p>
 	 * This private operation is called by the implementations of
 	 * IClient.processItem() and IProcessEventListener.processSelected(). It
 	 * calls the ICore and directs it to process an Item. This operation
 	 * launches a FormProcessor to handle polling and update the IFormWidget for
 	 * the Item as it is processed by the Core.
-	 * </p>
 	 *
 	 * @param formWidget
 	 *            <p>
@@ -376,7 +373,7 @@ public class Client extends EditorPart
 		}
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#setUIWidgetFactory(IWidgetFactory widgetFactory)
@@ -394,7 +391,7 @@ public class Client extends EditorPart
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#loadItem(int itemId)
@@ -442,7 +439,17 @@ public class Client extends EditorPart
 
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#loadItem(org.eclipse.core.resources.IFile)
+	 */
+	@Override
+	public Form loadItem(IFile itemFile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#throwSimpleError(String error)
@@ -715,48 +722,6 @@ public class Client extends EditorPart
 
 		// Pass the call on to the core
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
-
-	}
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void doSaveAs() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		throwSimpleError("It's working!");
-	}
-
-	@Override
-	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
 
 	}
 

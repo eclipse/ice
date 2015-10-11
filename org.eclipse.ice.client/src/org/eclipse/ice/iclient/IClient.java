@@ -15,27 +15,32 @@ package org.eclipse.ice.iclient;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.eclipse.ice.item.ItemBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * IClient is an interface that must be realized by clients of ICE. It describes
  * the possible interactions between the Eclipse User and ICE.
- * </p>
  *
  * @author Jay Jay Billings
  */
 public interface IClient {
 
 	/**
-	 * <p>
 	 * A setter for the OSGI Core service. This setter is used to register the
 	 * ICore with the client. It should be used to set the service when the
 	 * intention is to run the client in "local-only" mode.
-	 * </p>
 	 *
 	 * @param core
 	 */
@@ -66,152 +71,145 @@ public interface IClient {
 	public int createItem(String selectedItem, IProject project);
 
 	/**
-	 * <p>
 	 * This operation sets the factory that must be used to create widgets for
 	 * the UI system that is used in the client implementation.
-	 * </p>
 	 *
 	 * @param widgetFactory
 	 */
 	public void setUIWidgetFactory(IWidgetFactory widgetFactory);
 
 	/**
-	 * <p>
 	 * This operation loads an Item for editing or review by the user.
-	 * </p>
 	 *
 	 * @param itemId
-	 *            <p>
 	 *            The identification number of the Item that should be loaded.
-	 *            </p>
 	 */
 	public void loadItem(int itemId);
 
 	/**
-	 * <p>
+	 * This operation attempts to load an Item from an IFile reference and
+	 * returns the Form representing it.
+	 * 
+	 * @param itemFile
+	 *            the file that should be loaded as an Item
+	 * @return the Form that represents the Item
+	 */
+	public Form loadItem(IFile itemFile);
+
+	/**
 	 * This operation displays a simple error message for which no response is
 	 * required.
-	 * </p>
 	 *
 	 * @param error
-	 *            <p>
 	 *            The error message.
-	 *            </p>
 	 */
 	public void throwSimpleError(String error);
 
 	/**
-	 * <p>
 	 * This operation returns a list of the available Item types that can be
 	 * created by ICE or null if no Items are available.
-	 * </p>
 	 *
-	 * @return <p>
-	 *         The list of ItemTypes that can be created by ICE.
-	 *         </p>
+	 * @return The list of ItemTypes that can be created by ICE.
 	 */
 	public ArrayList<String> getAvailableItemTypes();
 
 	/**
-	 * <p>
 	 * This operation directs ICE to process the Item with the specified id by
 	 * performing a certain Action.
-	 * </p>
 	 *
 	 * @param itemId
-	 *            <p>
 	 *            The id number of Item that should be processed.
-	 *            </p>
 	 * @param actionName
-	 *            <p>
 	 *            The name of the Action that should be performed for the Item.
-	 *            </p>
 	 */
 	public void processItem(int itemId, String actionName);
 
 	/**
-	 * <p>
 	 * This operation directs the client to connect to the Core at the specified
 	 * remote address and port. If the port is less than or equal to zero, the
 	 * client will default to port 80. If the hostname is null, this operation
 	 * returns false. If the client needs to retrieve a username and password
 	 * from the user, it will request an ExtraInfoWidget that is configured to
 	 * seek a username and password.
-	 * </p>
 	 *
 	 * @param hostname
-	 *            <p>
 	 *            The hostname of the remote ICore.
-	 *            </p>
 	 * @param port
-	 *            <p>
 	 *            The port on which the client should connect to the remote
 	 *            ICore.
-	 *            </p>
-	 * @return <p>
-	 *         True if the client was able to connect to the core and false if
+	 * @return True if the client was able to connect to the core and false if
 	 *         not.
-	 *         </p>
 	 */
 	public boolean connectToCore(String hostname, int port);
 
 	/**
-	 * <p>
 	 * This operation returns a list of ICEObjects that represent the Items
 	 * currently managed by ICE. Each ICEObject contains the name, id and
 	 * description of an Item.
-	 * </p>
 	 *
-	 * @return <p>
-	 *         The list of Identifiables that represents the Items.
-	 *         </p>
+	 * @return The list of Identifiables that represents the Items.
 	 */
 	public ArrayList<Identifiable> getItems();
 
 	/**
-	 * <p>
 	 * This operation directs ICE to delete the specified Item.
-	 * </p>
 	 *
 	 * @param id
-	 *            <p>
 	 *            The identification number of the new Item.
-	 *            </p>
 	 */
 	public void deleteItem(int id);
 
 	/**
-	 * <p>
 	 * This operation directs ICE to import a file into its workspace.
-	 * </p>
 	 *
 	 * @param file
-	 *            <p>
 	 *            The file that should be imported. Nothing will happen if this
 	 *            argument is null.
-	 *            </p>
 	 */
 	public void importFile(URI file);
 
 	/**
-	 * <p>
 	 * This operation direct ICE import a file into its workspace and load that
 	 * file as an input for the specified Item type.
-	 * </p>
 	 *
 	 * @param file
-	 *            <p>
 	 *            The file that should be imported. Nothing will happen if this
 	 *            argument is null.
-	 *            </p>
 	 * @param itemType
-	 *            <p>
 	 *            The type of Item to create.
-	 *            </p>
-	 * @return <p>
-	 *         The identification number given of the newly created Item or -1
+	 * @return The identification number given of the newly created Item or -1
 	 *         if it was unable to create the Item.
-	 *         </p>
 	 */
 	public int importFileAsItem(URI file, String itemType);
+
+	/**
+	 * This operation retrieves all of the ItemBuilders from the
+	 * ExtensionRegistry.
+	 *
+	 * @return The array of ItemBuilders that were found in the registry.
+	 * @throws CoreException
+	 *             This exception is thrown if an extension cannot be loaded.
+	 */
+	public static IClient getClient() throws CoreException {
+		/**
+		 * Logger for handling event messages and other information.
+		 */
+		Logger logger = LoggerFactory.getLogger(ItemBuilder.class);
+
+		IClient client = null;
+		String id = "org.eclipse.ice.client.clientInstance";
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(id);
+
+		// If the point is available, create all the builders and load them into
+		// the array.
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			client = (IClient) elements[0].createExecutableExtension("class");
+		} else {
+			logger.error("Extension Point " + id + "does not exist");
+		}
+
+		return client;
+	}
 }

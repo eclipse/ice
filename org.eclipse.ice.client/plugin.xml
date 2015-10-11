@@ -54,17 +54,4 @@
           class="org.eclipse.ice.client.internal.ClientExtensionFactory">
     </client>
  </extension>
- <extension
-       point="org.eclipse.ui.editors">
-    <editor
-          class="org.eclipse.ice.client.internal.Client"
-          default="false"
-          extensions="xml"
-          id="org.eclipse.ice.client.Editor"
-          name="ICE Editor">
-       <contentTypeBinding
-             contentTypeId="org.eclipse.ice.persistence.xml.contentTypes">
-       </contentTypeBinding>
-    </editor>
- </extension>
 </plugin>

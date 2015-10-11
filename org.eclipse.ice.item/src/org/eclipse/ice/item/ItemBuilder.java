@@ -21,13 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * The ItemBuilder interface is used to register an Item with the ItemManager
  * and to build Items of a specific type. The getItemName() and getItemType()
  * operations provide information that can be used to organize Items and the
  * build() operation encapsulates the logical required to instantiate subclasses
  * of Item.
- * </p>
  * <p>
  * In ICE, this interface is used as a pluggable service in the OSGi framework
  * to provide Items to the Core. ItemBuilders are also registered for serialized
@@ -39,28 +37,20 @@ import org.slf4j.LoggerFactory;
 public interface ItemBuilder {
 
 	/**
-	 * <p>
 	 * This operation returns the short name of the Item that can be constructed
 	 * by this ItemBuilder.
-	 * </p>
 	 *
 	 * @return
-	 * 		<p>
 	 *         The name
-	 *         </p>
 	 */
 	public String getItemName();
 
 	/**
-	 * <p>
 	 * This operation returns the type of Item that can be built by the
 	 * ItemBuilder.
-	 * </p>
 	 *
 	 * @return
-	 * 		<p>
 	 *         The type
-	 *         </p>
 	 */
 	public ItemType getItemType();
 
@@ -75,19 +65,13 @@ public interface ItemBuilder {
 	public boolean isPublishable();
 
 	/**
-	 * <p>
 	 * This operation builds and returns an instance of the Item that can be
 	 * constructed by the ItemBuilder.
-	 * </p>
 	 *
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project that the Item should use for storage.
-	 *            </p>
 	 * @return
-	 * 		<p>
 	 *         The newly created Item.
-	 *         </p>
 	 */
 	public Item build(IProject projectSpace);
 

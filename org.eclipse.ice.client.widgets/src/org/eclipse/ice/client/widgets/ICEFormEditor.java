@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -40,6 +42,7 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
@@ -69,6 +72,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.FileEditorInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -837,19 +841,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	/**
 	 * This operation overrides init so that the ICE Form, passed as an
 	 * IEditorInput, can be stored.
+	 * 
+	 * @param site
+	 *            the site on the workbench where the Form is drawn
+	 * @param input
+	 *            the input for this editor
 	 */
 	@Override
-	public void init(IEditorSite site, IEditorInput input) {
+	public void init(IEditorSite site, IEditorInput input)
+			throws RuntimeException {
 
-		// Check the input and throw an error if the type is wrong
-		if (!(input instanceof ICEFormInput)) {
-			throw new RuntimeException("Input passed to ICEFormEditor.init()"
-					+ " is not of type ICEFormInput.");
-		}
-
-		// Grab the Form and set the part name
-		ICEFormInput = (ICEFormInput) input;
-		iceDataForm = ICEFormInput.getForm();
+		// Set the part name
 		setPartName(input.getName());
 
 		// Set the site
@@ -857,6 +859,30 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Set the input
 		setInput(input);
+
+		// Grab the form from the input or the client depending on the type of
+		// the input. This should only be a temporary switch until we remove the
+		// ICEFormInput and redirect the way the client works.
+		if (input instanceof ICEFormInput) {
+			ICEFormInput = (ICEFormInput) input;
+			iceDataForm = ICEFormInput.getForm();
+		} else if (input instanceof FileEditorInput) {
+			// Grab the file and load the form
+			IFile formFile = ((FileEditorInput) input).getFile();
+			try {
+				IClient client = IClient.getClient();
+				iceDataForm = client.loadItem(formFile);
+				logger.info("IClient and Form loaded.");
+			} catch (CoreException e) {
+				// Complain
+				logger.error("Unable to get IClient instance!", e);
+			}
+		} else {
+			// Throw errors if the type is wrong
+			logger.error("Unable to load Form Editor!");
+			throw new RuntimeException("Input passed to ICEFormEditor.init()"
+					+ " is not of type ICEFormInput or FileEditorInput.");
+		}
 
 		return;
 	}
@@ -1063,7 +1089,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			// Otherwise throw up a nice empty page explaining the problem.
 			formPages.add(createEmptyErrorPage());
 		}
-		
+
 		// Add the Pages
 		try {
 			for (IFormPage i : formPages) {
