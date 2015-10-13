@@ -873,7 +873,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				IClient client = IClient.getClient();
 				iceDataForm = client.loadItem(formFile);
 				logger.info("IClient and Form loaded.");
-				System.out.println("LOADED FORM");
 			} catch (CoreException e) {
 				// Complain
 				logger.error("Unable to get IClient instance!", e);

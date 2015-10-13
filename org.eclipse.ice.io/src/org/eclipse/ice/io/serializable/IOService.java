@@ -14,6 +14,7 @@ package org.eclipse.ice.io.serializable;
 
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.CoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +68,18 @@ public class IOService {
 		templatedReaderMap = new HashMap<String, ITemplatedReader>();
 		writerMap = new HashMap<String, IWriter>();
 		templatedWriterMap = new HashMap<String, ITemplatedWriter>();
+		
+		// Load all services available via extension points. 
+		try {
+			for (IReader r : IReader.getIReaders()) {
+				addReader(r);
+			}
+			for (IWriter w : IWriter.getIWriters()) {
+				addWriter(w);
+			}
+		} catch (CoreException e) {
+			logger.error("Error adding IReaders and IWriters to Item's IOService.", e);
+		}
 	}
 
 	/**

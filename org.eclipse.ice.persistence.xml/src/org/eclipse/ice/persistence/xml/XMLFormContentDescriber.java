@@ -42,8 +42,7 @@ public class XMLFormContentDescriber implements ITextContentDescriber {
 	 * InputStream, org.eclipse.core.runtime.content.IContentDescription)
 	 */
 	@Override
-	public int describe(InputStream contents, IContentDescription description)
-			throws IOException {
+	public int describe(InputStream contents, IContentDescription description) throws IOException {
 		// Just pass the information on to the other operation.
 		InputStreamReader reader = new InputStreamReader(contents);
 		return describe(reader, description);
@@ -69,8 +68,7 @@ public class XMLFormContentDescriber implements ITextContentDescriber {
 	 * Reader, org.eclipse.core.runtime.content.IContentDescription)
 	 */
 	@Override
-	public int describe(Reader contents, IContentDescription description)
-			throws IOException {
+	public int describe(Reader contents, IContentDescription description) throws IOException {
 
 		int retCode = INVALID;
 		BufferedReader bufferedReader = new BufferedReader(contents);
@@ -80,15 +78,15 @@ public class XMLFormContentDescriber implements ITextContentDescriber {
 		// and then check for some common flags.
 		String firstLines = "", nextLine;
 		int counter = 0;
-		while (((nextLine = bufferedReader.readLine()) != null)
-				&& counter < 3) {
+		while (((nextLine = bufferedReader.readLine()) != null) && counter < 3) {
 			firstLines += nextLine;
+			counter++; // AJM - GOOD LORD THIS SENT ME ON A WILD GOOSE CHASE :)
 		}
+		
 		// Check the lines
 		if (firstLines.contains("<?xml version=")) {
-			if (firstLines.contains("itemType=")
-					&& firstLines.contains("builderName=")
-					&& firstLines.contains("</itemBuilderName>")) {
+			if (firstLines.contains("itemType=") && firstLines.contains("builderName=")
+					&& firstLines.contains("<Form")) {
 				retCode = VALID;
 			} else {
 				retCode = INDETERMINATE;
