@@ -284,6 +284,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.geometry.javafx" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.jme3" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
