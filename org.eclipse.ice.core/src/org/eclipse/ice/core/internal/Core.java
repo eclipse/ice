@@ -301,7 +301,7 @@ public class Core extends Application implements ICore, BundleActivator {
 		startHttpService();
 
 		// Check the currently registered extensions
-		debugCheckExtensions();
+		//debugCheckExtensions();
 
 		// Register this class as a service with the framework.
 		registration = context.registerService(ICore.class, this, null);
@@ -339,18 +339,18 @@ public class Core extends Application implements ICore, BundleActivator {
 		for (String extensionPointName : extensionPoints) {
 			IExtensionPoint point = Platform.getExtensionRegistry()
 					.getExtensionPoint(extensionPointName);
-			System.out.println(
+			logger.debug(
 					"##### Extensions for: " + extensionPointName + " #####");
 			if (point != null) {
 				IExtension[] extensions = point.getExtensions();
 				for (IExtension extension : extensions) {
-					System.out.println("--" + extension.getSimpleIdentifier());
+					logger.debug("--" + extension.getSimpleIdentifier());
 				}
 			} else {
-				System.out.println("Point does not exist");
+				logger.debug("Point does not exist");
 			}
 
-			System.out.println("##### end of " + extensionPointName + " #####");
+			logger.debug("##### end of " + extensionPointName + " #####");
 		}
 
 	}

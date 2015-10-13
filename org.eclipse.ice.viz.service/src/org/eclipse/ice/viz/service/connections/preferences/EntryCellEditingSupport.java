@@ -127,7 +127,6 @@ public class EntryCellEditingSupport extends EditingSupport {
 			if (contentProvider.requiresCombo(element)) {
 
 				VizEntry entry = (VizEntry) element;
-				System.out.println("ENTRYCELLEDITING: Trying to get file combo celle ditor");
 
 				boolean isExecutable = entry.getValueType() == VizAllowedValueType.Executable;
 				if (isExecutable) {

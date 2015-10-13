@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: org.eclipse.ice.core;singleton:=true
 Bundle-Version: 2.1.7.20150825
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.ice.core.iCore,
  org.eclipse.ice.core.launcher
 Import-Package: com.google.gson;version="2.2.4",
@@ -30,7 +30,6 @@ Import-Package: com.google.gson;version="2.2.4",
  org.osgi.service.component;version="1.1.0",
  org.osgi.service.http;version="1.2.1",
  org.slf4j;version="1.7.2"
-Service-Component: OSGI-INF/component.xml
 Require-Bundle: org.eclipse.equinox.http.jetty;bundle-version="2.0.100",
  javax.servlet;bundle-version="2.5.0",
  org.eclipse.equinox.http.registry;bundle-version="1.1.100",

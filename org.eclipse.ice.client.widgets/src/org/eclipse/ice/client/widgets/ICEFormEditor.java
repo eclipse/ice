@@ -220,10 +220,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(
 						"org.eclipse.ice.viz.service.IVizServiceFactory");
-		System.out.println("This is in ICEFormEditor");
-		System.out.println("Available configuration elements");
+		staticLogger.info("ICEFormEditor: Available configuration elements");
 		for (IConfigurationElement element : elements) {
-			System.out.println(element.getName());
+			staticLogger.info(element.getName());
 		}
 		return;
 	}
@@ -869,10 +868,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		} else if (input instanceof FileEditorInput) {
 			// Grab the file and load the form
 			IFile formFile = ((FileEditorInput) input).getFile();
+			System.out.println("FILE: " + formFile.getLocation().toOSString());
 			try {
 				IClient client = IClient.getClient();
 				iceDataForm = client.loadItem(formFile);
 				logger.info("IClient and Form loaded.");
+				System.out.println("LOADED FORM");
 			} catch (CoreException e) {
 				// Complain
 				logger.error("Unable to get IClient instance!", e);

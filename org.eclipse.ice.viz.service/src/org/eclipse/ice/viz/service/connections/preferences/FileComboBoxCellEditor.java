@@ -116,7 +116,6 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 		Font font = parent.getFont();
 		Color bg = parent.getBackground();
 
-		System.out.println("Creating the FileCell Combo");
 		// Create the editor composite
 		editor = new Composite(parent, getStyle());
 		editor.setFont(font);

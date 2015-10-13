@@ -62,9 +62,9 @@ public class AbstractModelBuilder extends AbstractItemBuilder {
 				.getConfigurationElementsFor(
 						"org.eclipse.ice.item.IMaterialsDatabase");
 
-		System.out.println("Available configuration elements:");
+		logger.info("Available configuration elements:");
 		for (IConfigurationElement element : elements) {
-			System.out.println("Name" + element.getName());
+			logger.info("Name" + element.getName());
 
 		}
 
