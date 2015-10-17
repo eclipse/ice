@@ -9,13 +9,13 @@
  *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.core.test;
+package org.eclipse.ice.item.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 import org.eclipse.ice.persistence.xml.XMLPersistenceExtensionFactory;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ import org.junit.Test;
 public class IPersistenceProviderTester {
 
 	/**
-	 * Test for {@link org.eclipse.ice.core.IPersistenceProvider.getProvider}.
+	 * Test for {@link org.eclipse.ice.io.IPersistenceProvider.getProvider}.
 	 *
 	 * @throws CoreException
 	 */

@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -29,18 +28,17 @@ import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * The ItemManager is responsible for storing, managing and distributing all
  * instances of the Item class. The ItemManager implements a basic, CRUD-style
  * interface for managing items and contains two static methods to manage
  * dynamic registrations of ItemBuilders from the underlying OSGi framework.
  * This class will only store one instance of each ItemBuilder that is
  * registered with it.
- * </p>
  * <p>
  * The ItemManager will store and retrieve Items to and from a data store if an
  * IPersistenceProvider is set by calling ItemManager.setPersistenceProvider().
@@ -65,19 +63,14 @@ public class ItemManager implements ItemListener {
 	private static final Logger logger = LoggerFactory.getLogger(ItemManager.class);
 
 	/**
-	 * <p>
 	 * This is a list of all of the items that are managed by the ItemManger.
 	 * The key is the Item Id and the value is a reference to the Item.
-	 * </p>
-	 *
 	 */
 	private HashMap<Integer, Item> itemList;
 
 	/**
-	 * <p>
 	 * The list of ItemBuilders that can be used to create items. The keys are
 	 * the names of the builders and the values are the builders.
-	 * </p>
 	 */
 	private HashMap<String, ItemBuilder> itemBuilderList;
 

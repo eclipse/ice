@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 
 /**
  * This is a fake implementation of the persistence interface and it is used for
