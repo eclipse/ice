@@ -6,35 +6,28 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.io.serializable;
+package org.eclipse.ice.item.test;
 
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.CoreException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.eclipse.ice.io.serializable.IIOService;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.ITemplatedReader;
+import org.eclipse.ice.io.serializable.ITemplatedWriter;
+import org.eclipse.ice.io.serializable.IWriter;
 
 /**
- * This class serves as a container for all IReaders and IWriters exposed to the
- * underlying OSGi framework as a Declarative Service. For each interface
- * realization it receives, it loads it into an appropriate mapping that can be
- * queried later by clients of those IO services.
+ * This is a FakeIOService used for testing. It is a copy of the IOService class
+ * that does not pull readers and writers from the service interfaces and does
+ * not use the logger.
  * 
- * @author Alex McCaskey
+ * @author Jay Jay Billings
  *
  */
-public class IOService implements IIOService {
-
-	/**
-	 * Logger for handling event messages and other information.
-	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(IOService.class);
-
+public class FakeIOService implements IIOService {
 	/**
 	 * Reference to the mapping between IReader type Strings and the
 	 * corresponding IReader.
@@ -62,26 +55,14 @@ public class IOService implements IIOService {
 	/**
 	 * The constructor
 	 */
-	public IOService() {
+	public FakeIOService() {
 		// Initialize our containers
 		readerMap = new HashMap<String, IReader>();
 		templatedReaderMap = new HashMap<String, ITemplatedReader>();
 		writerMap = new HashMap<String, IWriter>();
 		templatedWriterMap = new HashMap<String, ITemplatedWriter>();
 
-		// Load all services available via extension points.
-		try {
-			for (IReader r : IReader.getIReaders()) {
-				addReader(r);
-			}
-			for (IWriter w : IWriter.getIWriters()) {
-				addWriter(w);
-			}
-		} catch (CoreException e) {
-			logger.error(
-					"Error adding IReaders and IWriters to Item's IOService.",
-					e);
-		}
+		return;
 	}
 
 	/*
@@ -95,8 +76,6 @@ public class IOService implements IIOService {
 	public void addReader(IReader reader) {
 
 		if (reader != null) {
-			logger.info("[IOService Message] Adding " + reader.getReaderType()
-					+ " reader to the IOService Mapping.");
 			readerMap.put(reader.getReaderType(), reader);
 		}
 
@@ -114,9 +93,6 @@ public class IOService implements IIOService {
 	public void addTemplatedReader(ITemplatedReader templatedReader) {
 
 		if (templatedReader != null) {
-			logger.info("[IOService Message] Adding "
-					+ templatedReader.getReaderType()
-					+ " templated reader to the IOService Mapping.");
 			templatedReaderMap.put(templatedReader.getReaderType(),
 					templatedReader);
 		}
@@ -135,8 +111,6 @@ public class IOService implements IIOService {
 	public void addWriter(IWriter writer) {
 
 		if (writer != null) {
-			logger.info("[IOService Message] Adding " + writer.getWriterType()
-					+ " writer to the IOService Mapping.");
 			writerMap.put(writer.getWriterType(), writer);
 		}
 	}
@@ -152,8 +126,6 @@ public class IOService implements IIOService {
 	public void addTemplatedWriter(ITemplatedWriter writer) {
 
 		if (writer != null) {
-			logger.info("[IOService Message] Adding " + writer.getWriterType()
-					+ " templated writer to the IOService Mapping.");
 			templatedWriterMap.put(writer.getWriterType(), writer);
 		}
 	}

@@ -79,9 +79,7 @@ public interface IReader {
 	 */
 	public static IReader[] getIReaders() throws CoreException {
 
-		/**
-		 * Logger for handling event messages and other information.
-		 */
+		// Logger for handling event messages and other information.
 		Logger logger = LoggerFactory.getLogger(IReader.class);
 
 		IReader[] readers = null;

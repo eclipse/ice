@@ -30,10 +30,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * <p>
  * ClientTester checks the behavior and functionality of Client. It checks for
  * proper location setting and file system querying from Core.
- * </p>
  *
  * @author Jay Jay Billings
  */
@@ -47,11 +45,6 @@ public class ClientTester {
 	 * The fake Core used in the test
 	 */
 	private FakeCore fakeCore;
-
-	/**
-	 * A string for storing locations on the file system.
-	 */
-	private String location;
 
 	/**
 	 * The fake widget factory used in the test
@@ -83,8 +76,7 @@ public class ClientTester {
 		this.iCEClient.setCoreService(fakeCore);
 		this.iCEClient.setUIWidgetFactory(fakeUIWidgetFactory);
 
-		// Set the Location's Path
-		location = System.getProperty("user.home");
+		return;
 	}
 
 	/**
@@ -104,25 +96,25 @@ public class ClientTester {
 		// Check loading more than once
 		for (int i = 1; i < 5; i++) {
 			// Load an Item
-			this.iCEClient.loadItem(i);
+			iCEClient.loadItem(i);
 			// Check the Factory to make sure it was called
-			assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure the FormWidget was displayed
-			testFormWidget = this.fakeUIWidgetFactory.getLastFormWidget();
+			testFormWidget = fakeUIWidgetFactory.getLastFormWidget();
 			assertTrue(testFormWidget.widgetDisplayed());
 		}
 
 		// Reset the Factory
-		this.fakeUIWidgetFactory.reset();
+		fakeUIWidgetFactory.reset();
 
 		// Check that trying to load invalid widgets fails
 		for (int i = -10; i < -5; i++) {
 			// Load an Item
-			this.iCEClient.loadItem(i);
+			iCEClient.loadItem(i);
 			// Check the Factory to make sure it was called
-			assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure an ErrorBoxWidget was displayed
-			textErrorWidget = this.fakeUIWidgetFactory.getLastErrorBoxWidget();
+			textErrorWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
 			if (textErrorWidget instanceof FakeErrorBoxWidget) {
 				assertTrue(textErrorWidget.widgetDisplayed());
 			}
@@ -132,24 +124,21 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client by making sure that errors can be
 	 * dispatched to the UI system to be displayed to the user.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkThrowingErrors() {
 
 		// Reset the Factory
-		this.fakeUIWidgetFactory.reset();
+		fakeUIWidgetFactory.reset();
 
 		// Check loading more than once
 		for (int i = 1; i < 5; i++) {
 			// Load an Item
-			this.iCEClient.throwSimpleError("Throw error " + i + "!");
+			iCEClient.throwSimpleError("Throw error " + i + "!");
 			// Check the Factory to make sure it was called
-			assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure the Widget was displayed
 			FakeErrorBoxWidget testWidget = fakeUIWidgetFactory
 					.getLastErrorBoxWidget();
@@ -162,12 +151,10 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client by creating an Item. It makes sure that
 	 * the Client uses the UIWidgetFactory, uses a UIWidget and registers a
 	 * UIWidgetListener with the UIWidget. Fakes are used for the
 	 * UIWidgetFactory and UIWidget.
-	 * </p>
 	 * <p>
 	 * This operation also checks that getAvailableItemTypes returns the same
 	 * list of available Item types as that in FakeCore: Red, Orange, Yellow,
@@ -183,7 +170,7 @@ public class ClientTester {
 		ArrayList<String> types = new ArrayList<String>();
 
 		// Check the list of available Item types
-		types = this.iCEClient.getAvailableItemTypes();
+		types = iCEClient.getAvailableItemTypes();
 		assertTrue(types.contains("Red"));
 		assertTrue(types.contains("Orange"));
 		assertTrue(types.contains("Yellow"));
@@ -197,38 +184,38 @@ public class ClientTester {
 		assertTrue(itemId > 0);
 
 		// Make sure that the Factory was called to get the Widget
-		assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+		assertTrue(fakeUIWidgetFactory.widgetRequested());
 
 		// Get the FormWidget back since this one is a valid request
-		this.fakeFormWidget = fakeUIWidgetFactory.getLastFormWidget();
+		fakeFormWidget = fakeUIWidgetFactory.getLastFormWidget();
 
 		// Make sure that the FormWidget was called, has a registered listener
 		// and was displayed.
-		assertNotNull(this.fakeFormWidget);
-		assertTrue(this.fakeFormWidget.formRegistered());
-		assertTrue(this.fakeFormWidget.listenerRegistered());
-		assertTrue(this.fakeFormWidget.widgetDisplayed());
+		assertNotNull(fakeFormWidget);
+		assertTrue(fakeFormWidget.formRegistered());
+		assertTrue(fakeFormWidget.listenerRegistered());
+		assertTrue(fakeFormWidget.widgetDisplayed());
 
 		// Create another Item - make sure it is something that can't be
 		// created!
-		itemId = this.iCEClient.createItem("Spray Starch");
+		itemId = iCEClient.createItem("Spray Starch");
 
 		// Check the Item id
 		assertTrue(itemId < 0);
 
 		// Make sure that the Factory was called to get a widget
-		assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+		assertTrue(fakeUIWidgetFactory.widgetRequested());
 
 		// Get the ErrorBoxWidget since this was not valid and an error should
 		// have been displayed
-		this.fakeErrorBoxWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
+		fakeErrorBoxWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
 
 		// Make sure that the FormWidget was called, has a registered listener
 		// and was displayed.
-		assertNotNull(this.fakeErrorBoxWidget);
+		assertNotNull(fakeErrorBoxWidget);
 		// FIXME - Should test for exact string
-		assertNotNull(this.fakeErrorBoxWidget.getErrorString());
-		assertTrue(this.fakeErrorBoxWidget.widgetDisplayed());
+		assertNotNull(fakeErrorBoxWidget.getErrorString());
+		assertTrue(fakeErrorBoxWidget.widgetDisplayed());
 
 		// Get the list of ICEObjects that represents the Items that have been
 		// created and check it. The FakeCore cheats and sends back an ICEObject
@@ -248,17 +235,13 @@ public class ClientTester {
 				+ iCEClient.getItems().size());
 
 		return;
-
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client by insuring that Items and Forms can be
 	 * updated. It calls through the IUpdateWidgetListener interface. Review the
 	 * documentation on the FakeCore class to determine the proper Form ids to
 	 * use for the test.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkItemUpdates() {
@@ -309,12 +292,9 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the ability of the client to correctly handle calls
 	 * through the IProcessEventListener interface and by directly calling
 	 * IClient.processItem().
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkItemProcessing() {
@@ -443,12 +423,9 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the ability of the Client to load Resources when
 	 * signaled to do so by FormWidgets and other classes to which it may
 	 * subscribe.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkResourceLoading() {
@@ -473,11 +450,8 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client to make sure that if the connectToCore()
 	 * operation is called that the Client tries to load an ExtraInfoWidget.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkRemoteConnection() {
@@ -508,11 +482,8 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks that the client can import a file and that it calls
 	 * the Core to do so.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkFileImport() {

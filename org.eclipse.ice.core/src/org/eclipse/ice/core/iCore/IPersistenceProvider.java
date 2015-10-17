@@ -16,7 +16,14 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.ItemBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An interface designed for item persistence within ICE.
@@ -105,4 +112,45 @@ public interface IPersistenceProvider {
 	 *         now).
 	 */
 	public Item loadItem(IResource itemResource) throws IOException;
+
+	/**
+	 * This operation retrieves the persistence from the ExtensionRegistry.
+	 * 
+	 * @return The provider 
+	 * @throws CoreException
+	 *             This exception is thrown if an extension cannot be loaded.
+	 */
+	public static IPersistenceProvider getProvider() throws CoreException {
+
+		// Logger for handling event messages and other information.
+		Logger logger = LoggerFactory.getLogger(IPersistenceProvider.class);
+
+		// The string identifying the persistence provider extension point.
+		String providerID = "org.eclipse.ice.core.persistenceProvider";
+
+		// The provider
+		IPersistenceProvider provider = null;
+		// Get the persistence provider from the extension registry.
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(providerID);
+		// Retrieve the provider from the registry and set it if one has not
+		// already been set.
+		if (point != null) {
+			// We only need one persistence provider, so just pull the
+			// configuration element for the first one available.
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			if (elements.length > 0) {
+				IConfigurationElement element = elements[0];
+				provider = (IPersistenceProvider) element
+						.createExecutableExtension("class");
+			} else {
+				logger.info("No extensions found for IPersistenceProvider.");
+			}
+		} else {
+			logger.error("Extension Point " + providerID + "does not exist");
+		}
+
+		return provider;
+	}
+
 }

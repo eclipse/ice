@@ -28,6 +28,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.ini.INIReader;
 import org.eclipse.ice.io.ini.INIWriter;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.ITemplatedReader;
 import org.eclipse.ice.item.Item;
@@ -73,7 +74,7 @@ public class PROTEUSModel extends Item {
 	/**
 	 * The ioService that tracks readers and writers
 	 */
-	private IOService ioService;
+	private IIOService ioService;
 
 	/**
 	 * <p>

@@ -22,7 +22,7 @@ import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
@@ -997,7 +997,7 @@ public class ItemManager implements ItemListener {
 	 *            The IOService that provides Input/Output capabilities to Items
 	 *            managed by the Core.
 	 */
-	public void setIOService(IOService service) {
+	public void setIOService(IIOService service) {
 		// We need to set the IOService very early and this gets around a weird
 		// bug/feature of OSGi services that aggressively starts the
 		// ResourcesPlugin and results in a crash because the project space has

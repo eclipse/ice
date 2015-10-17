@@ -26,6 +26,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
@@ -55,7 +56,7 @@ public class VibeLauncher extends JobLauncher {
 	 */
 	private String IPS_ROOT;
 
-	private IOService ioService;
+	private IIOService ioService;
 
 	/**
 	 * A nullary constructor that delegates to the project constructor.

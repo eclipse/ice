@@ -51,7 +51,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
@@ -131,11 +131,6 @@ public class Core extends Application implements ICore, BundleActivator {
 	 * The string identifying the Item Builder extension point.
 	 */
 	public static final String builderID = "org.eclipse.ice.item.itemBuilder";
-
-	/**
-	 * The string identifying the persistence provider extension point.
-	 */
-	public static final String providerID = "org.eclipse.ice.core.persistenceProvider";
 
 	/**
 	 * The persistence provided by the osgi. This piece is set by the
@@ -251,30 +246,28 @@ public class Core extends Application implements ICore, BundleActivator {
 		// Store the component's context
 		bundleContext = context;
 
-		logger.info("ICore Message: Component context set!");
+		logger.info("Bundle context set!");
 
-		// Get the persistence provider from the extension registry.
-		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(providerID);
-		// Retrieve the provider from the registry and set it if one has not
-		// already been set.
-		if (point != null && provider == null) {
-			// We only need one persistence provider, so just pull the
-			// configuration element for the first one available.
-			IConfigurationElement element = point.getConfigurationElements()[0];
-			setPersistenceProvider((IPersistenceProvider) element
-					.createExecutableExtension("class"));
-		} else {
-			logger.error("Extension Point " + providerID + "does not exist");
+		// Set the default project on the Persistence Provider
+		createItemDBProjectSpace();
+		// If the provider has not been injected (say for testing) then pull it.
+		if (provider == null) {
+			provider = IPersistenceProvider.getProvider();
+		}
+		// If the provider IS available (since the core can run without it),
+		// configure it and the ItemManager.
+		if (provider != null) {
+			// Configure its default project.
+			provider.setDefaultProject(itemDBProject);
+			// Setup the persistence provider for the ItemManager so that it can
+			// load items.
+			itemManager.setPersistenceProvider(provider);
 		}
 
-		// Setup the persistence provider for the ItemManager so that it can
-		// load items.
-		itemManager.setPersistenceProvider(provider);
-
-		// Load up the
+		// Load up the ItemBuilders
 		ItemBuilder builder = null;
-		point = Platform.getExtensionRegistry().getExtensionPoint(builderID);
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(builderID);
 
 		// If the point is available, create all the builders and load them into
 		// the Item Manager.
@@ -290,10 +283,6 @@ public class Core extends Application implements ICore, BundleActivator {
 			logger.error("Extension Point " + builderID + "does not exist");
 		}
 
-		// Set the default project on the Persistence Provider
-		createItemDBProjectSpace();
-		provider.setDefaultProject(itemDBProject);
-
 		// Tell the ItemManager to suit up. It's time to rock and roll.
 		itemManager.loadItems(itemDBProject);
 
@@ -301,10 +290,12 @@ public class Core extends Application implements ICore, BundleActivator {
 		startHttpService();
 
 		// Check the currently registered extensions
-		//debugCheckExtensions();
+		// debugCheckExtensions();
 
 		// Register this class as a service with the framework.
-		registration = context.registerService(ICore.class, this, null);
+		if (context != null) {
+			registration = context.registerService(ICore.class, this, null);
+		}
 
 		return;
 
@@ -731,59 +722,60 @@ public class Core extends Application implements ICore, BundleActivator {
 	 */
 	private void startHttpService() {
 
-		// Grab the service reference and the service
-		httpServiceRef = bundleContext.getServiceReference(HttpService.class);
+		// The service cannot be started without a valid bundle context since we
+		// are no longer using Declarative Services.
+		if (bundleContext != null) {
+			// Grab the service reference and the service
+			httpServiceRef = bundleContext
+					.getServiceReference(HttpService.class);
 
-		// If it is good to go, start up the webserver
-		if (httpServiceRef != null) {
+			// If it is good to go, start up the webserver
+			if (httpServiceRef != null) {
 
-			// Local Declaration
-			Dictionary<String, String> servletParams = new Hashtable<String, String>();
+				// Local Declaration
+				Dictionary<String, String> servletParams = new Hashtable<String, String>();
 
-			/// Get the service
-			httpService = bundleContext.getService(httpServiceRef);
+				/// Get the service
+				httpService = bundleContext.getService(httpServiceRef);
 
-			// Set the parameters
-			servletParams.put("javax.ws.rs.Application", Core.class.getName());
+				// Set the parameters
+				servletParams.put("javax.ws.rs.Application",
+						Core.class.getName());
 
-			// Register the service
-			try {
-				// Get the bundle
-				Bundle bundle = null;
-				if (bundleContext != null) {
+				// Register the service
+				try {
+					// Get the bundle
+					Bundle bundle = null;
 					bundle = bundleContext.getBundle();
-				} else {
-					logger.info("ICore Message: "
-							+ "ICE Core ComponentContext was null! No web service started.");
-					return;
-				}
+					// Make sure we got a valid bundle
+					if (bundle == null) {
+						logger.info(
+								"ICE Core Bundle was null! No web service started.");
+						return;
+					}
 
-				// Make sure we got a valid bundle
-				if (bundle == null) {
-					logger.info("ICore Message: "
-							+ "ICE Core Bundle was null! No web service started.");
-					return;
+					// Find the root location and the jaas_config file
+					URL resourceURL = bundle.getEntry("");
+					URL configFileURL = bundle.getEntry("jaas_config.txt");
+					// Resolve the URLs to be absolute
+					resourceURL = FileLocator.resolve(resourceURL);
+					configFileURL = FileLocator.resolve(configFileURL);
+					HttpContext httpContext = new BasicAuthSecuredContext(
+							resourceURL, configFileURL,
+							"ICE Core Server Configuration");
+					httpService.registerServlet("/ice",
+							new ServletContainer(this), servletParams,
+							httpContext);
+				} catch (ServletException | NamespaceException
+						| IOException e) {
+					logger.error(getClass().getName() + " Exception!", e);
 				}
-
-				// Find the root location and the jaas_config file
-				URL resourceURL = bundle.getEntry("");
-				URL configFileURL = bundle.getEntry("jaas_config.txt");
-				// Resolve the URLs to be absolute
-				resourceURL = FileLocator.resolve(resourceURL);
-				configFileURL = FileLocator.resolve(configFileURL);
-				HttpContext httpContext = new BasicAuthSecuredContext(
-						resourceURL, configFileURL,
-						"ICE Core Server Configuration");
-				httpService.registerServlet("/ice", new ServletContainer(this),
-						servletParams, httpContext);
-			} catch (ServletException | NamespaceException | IOException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.info("ICE Core Server loaded and web service started!");
+			} else {
+				logger.info("ICE Core Server loaded, but without webservice.");
 			}
-			logger.info("ICore Message: ICE Core Server loaded and web "
-					+ "service started!");
 		} else {
-			logger.info("ICore Message: ICE Core Server loaded, but "
-					+ "without webservice.");
+			logger.info("HTTP Service Unavailable.");
 		}
 
 		return;
@@ -889,7 +881,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	 *            The IOService that provides Input/Output capabilities to Items
 	 *            managed by the Core.
 	 */
-	public void setIOService(IOService service) {
+	public void setIOService(IIOService service) {
 		itemManager.setIOService(service);
 	}
 

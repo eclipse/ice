@@ -17,3 +17,5 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.8.1",
 Export-Package: org.eclipse.ice.persistence.xml
 Service-Component: OSGi-INF/xmlPersistenceProvider.xml
 Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-ActivationPolicy: lazy
+Eclipse-LazyStart: true

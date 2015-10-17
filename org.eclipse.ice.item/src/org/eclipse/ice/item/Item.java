@@ -74,7 +74,7 @@ import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleFo
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.ResourceHandler;
 import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.action.Action;
@@ -443,7 +443,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * Item.
 	 */
 	@XmlTransient()
-	private static IOService ioService;
+	private static IIOService ioService;
 
 	/**
 	 * The IActionFactory that provides the set of Actions that can be used by
@@ -595,7 +595,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * 
 	 * @param service
 	 */
-	public void setIOService(IOService service) {
+	public void setIOService(IIOService service) {
 		if (service != null) {
 			ioService = service;
 		}
@@ -2077,7 +2077,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * 
 	 * @return The IOService instance
 	 */
-	protected IOService getIOService() {
+	protected IIOService getIOService() {
 		return ioService;
 	}
 
