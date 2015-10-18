@@ -199,18 +199,32 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#loadItem(org.eclipse.core.resources.IResource)
+	 */
 	@Override
 	public Item loadItem(IResource itemResource) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		loaded = true;
+		FakeItem item = new FakeItem(null);
+		item.getForm().setName("The Doctor");
+		return item;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#setDefaultProject(org.eclipse.core.resources.IProject)
+	 */
 	@Override
 	public void setDefaultProject(IProject project) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#getDefaultProject()
+	 */
 	@Override
 	public IProject getDefaultProject() {
 		// TODO Auto-generated method stub

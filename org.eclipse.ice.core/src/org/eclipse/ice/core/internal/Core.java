@@ -6,9 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Initial API and implementation and/or initial documentation - 
+ *   Jay Jay Billings, Dasha Gorin, Alexander J. McCaskey, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.core.internal;
 
@@ -556,6 +555,18 @@ public class Core extends Application implements ICore, BundleActivator {
 		return itemManager.cancelItemProcess(itemId, actionName);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.core.iCore.ICore#loadItem(org.eclipse.core.resources.
+	 * IFile)
+	 */
+	@Override
+	public Form loadItem(IFile itemFile) {
+		return itemManager.loadItem(itemFile);
+	}
+
 	/**
 	 * (non-Javadoc)
 	 *
@@ -1033,5 +1044,4 @@ public class Core extends Application implements ICore, BundleActivator {
 		// Unlock the operation and return safely
 		return (updateLock.getAndSet(false)) ? retVal : null;
 	}
-
 }

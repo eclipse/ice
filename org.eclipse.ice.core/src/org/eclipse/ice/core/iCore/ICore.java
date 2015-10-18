@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -163,6 +164,20 @@ public interface ICore {
 	 * @return The status of the Item.
 	 */
 	public FormStatus getItemStatus(Integer id);
+
+	/**
+	 * This operation loads an Item from the file and returns the Form that
+	 * represents it.
+	 * 
+	 * This operation assumes that all necessary checks and determinations have
+	 * been performed by the client, including existence checks and the
+	 * determination that this IFile actually contains an Item.
+	 * 
+	 * @param itemFile
+	 *            The IFile that contains the Item
+	 * @return the Form that represents the Item
+	 */
+	public Form loadItem(IFile itemFile);
 
 	/**
 	 * This operation returns the representational state, a Form, of an Item

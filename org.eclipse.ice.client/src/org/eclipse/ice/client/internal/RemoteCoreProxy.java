@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.MediaType;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
@@ -479,6 +480,12 @@ public class RemoteCoreProxy implements ICore {
 		// This operation is not supported by the remote core proxy and may
 		// never be. As far as I know, there is no way to remotely transfer
 		// IProject instances with using full Java IPC.
+		return null;
+	}
+
+	@Override
+	public Form loadItem(IFile itemFile) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

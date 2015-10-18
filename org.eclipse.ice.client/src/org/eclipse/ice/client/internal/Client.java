@@ -445,8 +445,8 @@ public class Client
 	 */
 	@Override
 	public Form loadItem(IFile itemFile) {
-		// TODO Auto-generated method stub
-		return null;
+		// Just delegate this
+		return getCore().loadItem(itemFile);
 	}
 	
 	/*

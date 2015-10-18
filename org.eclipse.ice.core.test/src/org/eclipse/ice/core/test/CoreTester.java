@@ -33,6 +33,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.core.internal.Core;
 import org.eclipse.ice.core.internal.itemmanager.ItemManager;
+import org.eclipse.ice.core.test.FakeIFile;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
@@ -229,10 +230,31 @@ public class CoreTester {
 	}
 
 	/**
-	 * <p>
+	 * This operation checks the ability of the core to load a single
+	 * Item.
+	 */
+	@Test
+	public void checkSingleItemLoad() {
+		// Reset the fake provider
+		fakePersistenceProvider.reset();
+		// Create a fake file and direct the manager to load it
+		IFile fakeFile = new FakeIFile();
+		Form form = iCECore.loadItem(fakeFile);
+		// The form should not be null since the FakePersistenceProvider creates
+		// an Item.
+		assertNotNull(form);
+		// Make sure the name matches the one in the FakePersistenceProvider and
+		// that the load operation was called.
+		assertEquals("The Doctor", form.getName());
+		assertTrue(fakePersistenceProvider.allLoaded());
+		// Reset the fake provider one more time, just to be polite.
+		fakePersistenceProvider.reset();
+
+		return;
+	}
+	
+	/**
 	 * This operation checks the Core by ensuring that Items can be updated.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkItemUpdates() {
@@ -293,15 +315,12 @@ public class CoreTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Core to make sure that it can process Items. It
 	 * creates a FakeItem through the API and then directs the Core to process
 	 * it. It also checks the final status of the Item using the getItemStatus()
 	 * operation. Finally, it pulls the output file handle from the Item by id
 	 * and confirms that the default name of the file is set according to the
 	 * default in the class documentation.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkItemProcessing() {
@@ -374,11 +393,8 @@ public class CoreTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Core to make sure that it can import files into
 	 * the project space.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkFileImports() {
@@ -510,7 +526,6 @@ public class CoreTester {
 	/**
 	 * This operation checks the Core's ability to make a client connection with
 	 * a given username, password, and Client ID.
-	 *
 	 */
 	@Test
 	public void checkConnection() {

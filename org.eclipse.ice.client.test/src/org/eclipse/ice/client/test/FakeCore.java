@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
@@ -106,6 +107,11 @@ public class FakeCore implements ICore {
 	private boolean deleted = false;
 
 	/**
+	 * Field variable for faking that the Item was loaded
+	 */
+	private boolean loaded = false;	
+	
+	/**
 	 * The Constructor
 	 */
 	public FakeCore() {
@@ -140,6 +146,7 @@ public class FakeCore implements ICore {
 		updateItemCalled = false;
 		imported = false;
 		cancelled = false;
+		loaded = false;
 
 		return;
 
@@ -502,5 +509,15 @@ public class FakeCore implements ICore {
 	public String createItem(String itemType, IProject project) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Form loadItem(IFile itemFile) {
+		loaded = true;
+		return new Form();
+	}
+	
+	public boolean wasLoaded() {
+		return loaded;
 	}
 }

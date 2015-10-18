@@ -597,6 +597,7 @@ public class XMLPersistenceProvider
 	 * @return the Item
 	 */
 	public Item loadItem(IFile file) {
+		
 		Item item = null;
 
 		try {
