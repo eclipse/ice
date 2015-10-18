@@ -868,7 +868,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		} else if (input instanceof FileEditorInput) {
 			// Grab the file and load the form
 			IFile formFile = ((FileEditorInput) input).getFile();
-			System.out.println("FILE: " + formFile.getLocation().toOSString());
 			try {
 				IClient client = IClient.getClient();
 				iceDataForm = client.loadItem(formFile);
