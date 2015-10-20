@@ -520,4 +520,34 @@ public class FakeCore implements ICore {
 	public boolean wasLoaded() {
 		return loaded;
 	}
+
+	@Override
+	public String importFileAsItem(URI file, String itemType, IProject project) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String importFileAsItem(IFile file, String itemType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String importFileAsItem(URI file, String itemType, String projectName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void importFile(URI file, IProject project) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importFile(URI file, String projectName) {
+		// TODO Auto-generated method stub
+		
+	}
 }

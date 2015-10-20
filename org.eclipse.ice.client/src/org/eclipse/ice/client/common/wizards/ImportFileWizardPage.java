@@ -87,6 +87,10 @@ public class ImportFileWizardPage extends WizardPage {
 		super(pageName);
 
 		// Get the extension registry and retrieve the client.
+		
+		
+		// FIXME IClient.getClient()
+		
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry
 				.getExtensionPoint("org.eclipse.ice.client.clientInstance");

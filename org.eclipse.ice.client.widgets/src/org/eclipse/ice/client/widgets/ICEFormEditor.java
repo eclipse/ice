@@ -856,15 +856,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		// Set the site
 		setSite(site);
 
-		// Set the input
-		setInput(input);
-
 		// Grab the form from the input or the client depending on the type of
 		// the input. This should only be a temporary switch until we remove the
 		// ICEFormInput and redirect the way the client works.
 		if (input instanceof ICEFormInput) {
 			ICEFormInput = (ICEFormInput) input;
 			iceDataForm = ICEFormInput.getForm();
+			// Set the input
+			setInput(input);
 		} else if (input instanceof FileEditorInput) {
 			// Grab the file and load the form
 			IFile formFile = ((FileEditorInput) input).getFile();
@@ -872,6 +871,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				IClient client = IClient.getClient();
 				iceDataForm = client.loadItem(formFile);
 				logger.info("IClient and Form loaded.");
+				// Set *correct* input via a little short circuit.
+				ICEFormInput = new ICEFormInput(iceDataForm);
+				setInput(ICEFormInput);
 			} catch (CoreException e) {
 				// Complain
 				logger.error("Unable to get IClient instance!", e);

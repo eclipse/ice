@@ -7,8 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey
  *******************************************************************************/
 package org.eclipse.ice.client.common.wizards;
 
@@ -31,7 +30,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  * it to the workbench import wizards).
  * </p>
  * 
- * @author Jay Jay Billings, Jordan
+ * @author Jay Jay Billings, Jordan Deyton, Alex McCaskey
  * 
  */
 public class ImportItemWizard extends ImportFileWizard {
@@ -55,6 +54,8 @@ public class ImportItemWizard extends ImportFileWizard {
 		super(window);
 	}
 
+	// FIXME init() get project if necessary
+	
 	/*
 	 * (non-Javadoc)
 	 * 
