@@ -19,7 +19,7 @@ import java.io.Reader;
 
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.core.runtime.content.ITextContentDescriber;
+import org.eclipse.ice.datastructures.form.FormTextContentDescriber;
 
 /**
  * This is a content describer for the XML files that are persisted by ICE's
@@ -28,7 +28,13 @@ import org.eclipse.core.runtime.content.ITextContentDescriber;
  * @author Jay Jay Billings
  *
  */
-public class XMLFormContentDescriber implements ITextContentDescriber {
+public class XMLFormContentDescriber implements FormTextContentDescriber { 
+
+	/**
+	 * Reference to the Item's ID
+	 */
+	private int itemID = -1;
+
 	/**
 	 * Constructor
 	 */
@@ -80,20 +86,36 @@ public class XMLFormContentDescriber implements ITextContentDescriber {
 		int counter = 0;
 		while (((nextLine = bufferedReader.readLine()) != null) && counter < 3) {
 			firstLines += nextLine;
-			counter++; // AJM - GOOD LORD THIS SENT ME ON A WILD GOOSE CHASE :)
+			counter++;
 		}
-		
+
 		// Check the lines
 		if (firstLines.contains("<?xml version=")) {
 			if (firstLines.contains("itemType=") && firstLines.contains("builderName=")
 					&& firstLines.contains("<Form")) {
 				retCode = VALID;
+				// Now we know this is an ICE XML Item, so
+				// get a reference to its ID 
+				int index = firstLines.indexOf("itemID=\"");
+				int endIndex = firstLines.indexOf("\"", index + 8);
+				String itemIdString = firstLines.substring(index, endIndex + 1).replace("\"", "");
+				itemID = Integer.valueOf(itemIdString.split("=")[1]);
+				
 			} else {
 				retCode = INDETERMINATE;
 			}
 		}
 
 		return retCode;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.ICETextContentDescriber#getItemID()
+	 */
+	@Override
+	public int getItemID() {
+		return itemID;
 	}
 
 }
