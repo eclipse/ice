@@ -301,12 +301,14 @@ public class Item
 	 */
 	@XmlAttribute()
 	protected ItemType itemType;
+	
 	/**
 	 * The Registry used to manage registration and update events between the
 	 * Item and the various data structures.
 	 */
 	@XmlTransient()
 	protected Registry registry;
+	
 	/**
 	 * The Item's Form.
 	 */
@@ -354,6 +356,7 @@ public class Item
 	 * writes the Form in ICE's native XML format.
 	 */
 	protected String nativeExportActionString = "Export to ICE Native Format";
+	
 	/**
 	 * The string that is used to describe the process by which the Item class
 	 * writes the values of the Entries in the Form to a file using their tags,
@@ -410,6 +413,7 @@ public class Item
 	 */
 	@XmlTransient
 	private boolean enabled = true;
+	
 	/**
 	 * The last status of the Item before it was process or modified. This is
 	 * used, for example, when killing processes or disabling the Item so that
