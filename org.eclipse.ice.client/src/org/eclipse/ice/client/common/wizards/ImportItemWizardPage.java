@@ -14,8 +14,11 @@ package org.eclipse.ice.client.common.wizards;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
-import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -32,9 +35,12 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the main wizard page for importing files into ICE for
@@ -49,18 +55,31 @@ import org.eclipse.swt.widgets.MessageBox;
 public class ImportItemWizardPage extends ImportFileWizardPage {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(ImportItemWizardPage.class);
+
+	/**
 	 * The name of the {@code Item} that was selected from the list of available
 	 * {@code Item}s.
 	 */
 	private String selectedItemType;
 
 	/**
+	 * Reference to the name of the project to 
+	 * use in this Import wizard
+	 */
+	private String selectedProject;
+
+	private Combo projectCombo;
+	
+	/**
 	 * The default constructor.
 	 * 
 	 * @param pageName
 	 *            The name of the page.
 	 */
-	public ImportItemWizardPage(String pageName) {
+	public ImportItemWizardPage(String pageName, String currentProject) {
 		super(pageName);
 
 		setTitle("ICE Item Import Wizard");
@@ -71,6 +90,8 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 		fileDialogStyle = SWT.SINGLE;
 
 		selectedItemType = "";
+
+		selectedProject = currentProject;
 
 		return;
 	}
@@ -96,6 +117,16 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 	}
 
 	/**
+	 * Return the name of the Project specified by the user
+	 * 
+	 * @return
+	 */
+	public String getSelectedProject() {
+		selectedProject = projectCombo.getItems()[projectCombo.getSelectionIndex()];
+		return selectedProject;
+	}
+
+	/**
 	 * Override the default behavior to check that the {@link #selectedItemType}
 	 * is set.
 	 */
@@ -112,7 +143,12 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 	public void createControl(Composite parent) {
 
 		// Get the client.
-		IClient client = ClientHolder.getClient();
+		IClient client = null;
+		try {
+			client = IClient.getClient();
+		} catch (CoreException e) {
+			logger.error("Error getting IClient instance", e);
+		}
 
 		if (client != null) {
 			// Get the list of available Items from the client
@@ -126,9 +162,33 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 			if (parent != null) {
 				GridData gridData;
 
-				// Create a label above the list.
+				// Create a label for the Project Combo
 				Label label = new Label(wizardPageComposite, SWT.NONE);
-				label.setText("Please select an item that this file represents");
+				label.setText("Please select the Project where this Item should be created");
+				
+				// Create the Combo
+				projectCombo = new Combo(wizardPageComposite, SWT.READ_ONLY);
+				gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+				gridData.horizontalSpan = 2;
+				projectCombo.setLayoutData(gridData);
+				
+				// Get a list of all Project Names
+				ArrayList<String> projectNames = new ArrayList<String>();
+				for (IProject p : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+					projectNames.add(p.getName());
+				}
+				
+				// Set the possible 
+				projectCombo.setItems(projectNames.toArray(new String[projectNames.size()]));
+				if (selectedProject != null) {
+					projectCombo.select(projectNames.indexOf(selectedProject));
+				} else {
+					projectCombo.select(0);
+				}
+
+				// Create a label above the list.
+				label = new Label(wizardPageComposite, SWT.NONE);
+				label.setText("Please select an Item that this file represents");
 				gridData = new GridData(SWT.LEFT, SWT.END, false, false);
 				gridData.horizontalSpan = 2;
 				label.setLayoutData(gridData);
@@ -151,8 +211,7 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 				// Add the content provider for the list viewer
 				itemList.setContentProvider(new IStructuredContentProvider() {
 					@Override
-					public void inputChanged(Viewer viewer, Object oldInput,
-							Object newInput) {
+					public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 						// Nothing to do
 					}
 
@@ -172,15 +231,13 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 					@Override
 					public void selectionChanged(SelectionChangedEvent event) {
 						// Get and store the selection
-						String selection = (String) ((IStructuredSelection) event
-								.getSelection()).getFirstElement();
+						String selection = (String) ((IStructuredSelection) event.getSelection()).getFirstElement();
 						if (selection != null) {
 							selectedItemType = selection;
 						}
 						// Validate the file and Item selection to enable
 						// the finish button
-						ImportItemWizardPage.this
-								.setPageComplete(checkSelection());
+						ImportItemWizardPage.this.setPageComplete(checkSelection());
 					}
 				});
 				// Set the input to the list from the client
@@ -210,8 +267,7 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 							// if one exists.
 							else {
 								// Get the next page.
-								IWizardPage nextPage = wizard
-										.getNextPage(ImportItemWizardPage.this);
+								IWizardPage nextPage = wizard.getNextPage(ImportItemWizardPage.this);
 								// If it exists, move to it.
 								if (nextPage != null) {
 									container.showPage(nextPage);
@@ -229,8 +285,7 @@ public class ImportItemWizardPage extends ImportFileWizardPage {
 
 		} else {
 			MessageBox errorMessage = new MessageBox(parent.getShell(), ERROR);
-			errorMessage.setMessage("The ICE Client is not available. "
-					+ "Please file a bug report.");
+			errorMessage.setMessage("The ICE Client is not available. " + "Please file a bug report.");
 		}
 
 		return;

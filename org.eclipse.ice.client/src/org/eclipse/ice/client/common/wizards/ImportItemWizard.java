@@ -14,6 +14,8 @@ package org.eclipse.ice.client.common.wizards;
 import java.io.File;
 
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ImportItemWizardHandler;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.iclient.IClient;
@@ -54,8 +56,6 @@ public class ImportItemWizard extends ImportFileWizard {
 		super(window);
 	}
 
-	// FIXME init() get project if necessary
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -65,10 +65,19 @@ public class ImportItemWizard extends ImportFileWizard {
 	public void addPages() {
 		// Create the main page if necessary.
 		if (page == null) {
-			page = new ImportItemWizardPage("Import a file");
+			page = new ImportItemWizardPage("Import a file", project != null ? project.getName() : null);
 		}
 		// Add the main page.
 		addPage(page);
+	}
+
+	/**
+	 * Set the currently selected project.
+	 * 
+	 * @param proj
+	 */
+	public void setProject(IProject proj) {
+		project = proj;
 	}
 
 	/*
@@ -82,7 +91,13 @@ public class ImportItemWizard extends ImportFileWizard {
 		boolean finished = false;
 
 		// Get the client.
-		IClient client = ClientHolder.getClient();
+		IClient client = null;
+
+		try {
+			client = IClient.getClient();
+		} catch (CoreException e) {
+			logger.error("Could not get a valid IClient reference.", e);
+		}
 
 		// Present a selection dialog if Items are available.
 		if (client != null) {
@@ -95,12 +110,19 @@ public class ImportItemWizard extends ImportFileWizard {
 			// Get the type of Item to create.
 			String itemType = ((ImportItemWizardPage) page).getSelectedItem();
 
+			// Get the name of the Project to import this File to
+			String selectedProject = ((ImportItemWizardPage) page).getSelectedProject();
+			
 			// Import the new Item
-			int id = client.importFileAsItem(file.toURI(), itemType);
-			client.loadItem(id);
+			int id = client.importFileAsItem(file.toURI(), itemType, selectedProject);
 
-			// We've successfully finished the wizard.
-			finished = (id > 0);
+			// Load the Item if successful
+			if (id > 0) {
+				client.loadItem(id);
+				finished = true;
+			} else {
+				finished = false;
+			}
 
 		} else {
 			// Throw an error if the client is not available.
@@ -110,10 +132,8 @@ public class ImportItemWizard extends ImportFileWizard {
 					+ "loaded yet. In rare instances it may indicate a bug in "
 					+ "the plug-in that you are trying to use. If you feel "
 					+ "like you have configured everything properly, feel free "
-					+ "to submit a bug report at niceproject.sourceforge.net "
-					+ "and reference error code #2.";
-			MessageDialog.openError(workbenchWindow.getShell(),
-					"Unable to import files!", msg);
+					+ "to submit a bug report at niceproject.sourceforge.net " + "and reference error code #2.";
+			MessageDialog.openError(workbenchWindow.getShell(), "Unable to import files!", msg);
 		}
 
 		return finished;

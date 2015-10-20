@@ -15,8 +15,10 @@ package org.eclipse.ice.client.common.wizards;
 import java.io.File;
 
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ImportFileWizardHandler;
-import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,13 +26,13 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This class provides a wizard for importing files into the ICE workspace, or
- * <code>/home/user/ICEFiles/default</code>.
- * <p>
- * This wizard should be created either via an {@link IHandler} (for adding it
- * to the workbench <code>ToolBar</code>) or by using an
+ * This class provides a wizard for importing files into ICE projects. This
+ * wizard should be created either via an {@link IHandler} (for adding it to the
+ * workbench <code>ToolBar</code>) or by using an
  * <code>org.eclipse.ui.importWizards</code> extension in the plugin (for adding
  * it to the workbench import wizards).
  * </p>
@@ -41,6 +43,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 public class ImportFileWizard extends Wizard implements IImportWizard {
 
 	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected static final Logger logger = LoggerFactory.getLogger(ImportFileWizard.class);
+
+	/**
 	 * A page containing widgets for importing one or more files.
 	 */
 	protected ImportFileWizardPage page;
@@ -49,6 +56,11 @@ public class ImportFileWizard extends Wizard implements IImportWizard {
 	 * Handle to the workbench window.
 	 */
 	protected IWorkbenchWindow workbenchWindow;
+
+	/**
+	 * The project selected when the wizard was used.
+	 */
+	protected IProject project;
 
 	/**
 	 * A nullary constructor. This is used by the platform. <b>If called from an
@@ -79,6 +91,14 @@ public class ImportFileWizard extends Wizard implements IImportWizard {
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		workbenchWindow = workbench.getActiveWorkbenchWindow();
+
+		// Get and save the project. This just casts to IResource since
+		// IProjects are IResources and doing otherwise would require additional
+		// checks.
+		Object element = selection.getFirstElement();
+		if (element instanceof IResource) {
+			project = ((IResource) element).getProject();
+		}
 	}
 
 	/*
@@ -107,7 +127,13 @@ public class ImportFileWizard extends Wizard implements IImportWizard {
 		boolean finished = false;
 
 		// Get the client.
-		IClient client = ClientHolder.getClient();
+		IClient client = null;
+		try {
+			client = IClient.getClient();
+		} catch (CoreException e) {
+			e.printStackTrace();
+			logger.error("Could not get a reference to the IClient.", e);
+		}
 
 		// Present a selection dialog if Items are available.
 		if (client != null) {
@@ -116,7 +142,11 @@ public class ImportFileWizard extends Wizard implements IImportWizard {
 			String filterPath = page.getFilterPath();
 			for (String name : page.getSelectedFiles()) {
 				File importedFile = new File(filterPath, name);
-				client.importFile(importedFile.toURI());
+				if (project == null) {
+					client.importFile(importedFile.toURI());
+				} else {
+					client.importFile(importedFile.toURI(), project);
+				}
 			}
 			// We've successfully finished the wizard.
 			finished = true;
@@ -129,10 +159,8 @@ public class ImportFileWizard extends Wizard implements IImportWizard {
 					+ "loaded yet. In rare instances it may indicate a bug in "
 					+ "the plug-in that you are trying to use. If you feel "
 					+ "like you have configured everything properly, feel free "
-					+ "to submit a bug report at niceproject.sourceforge.net "
-					+ "and reference error code #2.";
-			MessageDialog.openError(workbenchWindow.getShell(),
-					"Unable to import files!", msg);
+					+ "to submit a bug report at niceproject.sourceforge.net " + "and reference error code #2.";
+			MessageDialog.openError(workbenchWindow.getShell(), "Unable to import files!", msg);
 		}
 
 		return finished;
