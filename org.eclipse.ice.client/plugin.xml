@@ -54,4 +54,21 @@
           class="org.eclipse.ice.client.internal.ClientExtensionFactory">
     </client>
  </extension>
+ <extension
+       point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+    <deleteParticipant
+          class="org.eclipse.ice.client.common.ICEItemDeleteParticipant"
+          id="org.eclipse.ice.client.deleteitemfile"
+          name="Delete Item Action">
+       <enablement>
+       		<with variable="element">
+        	     <adapt type="org.eclipse.core.resources.IResource">
+            	       <test property="org.eclipse.core.resources.extension"
+                	         value="xml">
+                   	</test>
+             	 </adapt>
+       		</with>
+       </enablement>
+    </deleteParticipant>
+ </extension>
 </plugin>

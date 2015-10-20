@@ -21,6 +21,8 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.item,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.core.refactoring.participants,
  org.osgi.framework;version="1.7.0",
  org.slf4j;version="1.7.2"
 Require-Bundle: org.eclipse.ice.datastructures;bundle-version="2.1.7",
