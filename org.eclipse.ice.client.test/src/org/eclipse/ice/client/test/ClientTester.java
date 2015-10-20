@@ -165,8 +165,7 @@ public class ClientTester {
 			// Check the Factory to make sure it was called
 			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure the Widget was displayed
-			FakeErrorBoxWidget testWidget = fakeUIWidgetFactory
-					.getLastErrorBoxWidget();
+			FakeErrorBoxWidget testWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
 			assertNotNull(testWidget);
 			assertTrue(testWidget.widgetDisplayed());
 		}
@@ -256,8 +255,7 @@ public class ClientTester {
 		}
 		// Make sure that there are no items
 		assertEquals(0, iCEClient.getItems().size());
-		System.out.println(
-				"Num ITEMS after delete = " + iCEClient.getItems().size());
+		System.out.println("Num ITEMS after delete = " + iCEClient.getItems().size());
 
 		return;
 	}
@@ -410,8 +408,7 @@ public class ClientTester {
 		assertTrue(fakeUIWidgetFactory.widgetRequested());
 
 		// Retrieve the info widget and get its Form
-		FakeExtraInfoWidget infoWidget = fakeUIWidgetFactory
-				.getLastExtraInfoWidget();
+		FakeExtraInfoWidget infoWidget = fakeUIWidgetFactory.getLastExtraInfoWidget();
 		assertNotNull(infoWidget);
 		Form infoForm = infoWidget.getForm();
 
@@ -434,8 +431,7 @@ public class ClientTester {
 		assertTrue(fakeCore.itemUpdated());
 
 		// Get the streaming text widget and check it
-		FakeStreamingTextWidget textWidget = fakeUIWidgetFactory
-				.getLastStreamingTextWidget();
+		FakeStreamingTextWidget textWidget = fakeUIWidgetFactory.getLastStreamingTextWidget();
 		assertNotNull(textWidget);
 		// Check that the streaming text widget was displayed
 		assertTrue(textWidget.widgetDisplayed());
@@ -532,6 +528,57 @@ public class ClientTester {
 		assertTrue(fakeCore.fileImported());
 		assertTrue(id > 0);
 
+		// Reset the core
+		fakeCore.reset();
+
+		// Check we can import a file to
+		// the given project
+		IProject project = null;
+		iCEClient.importFile(file.toURI(), project);
+		assertTrue(fakeCore.fileImported());
+
+		// Reset the core
+		fakeCore.reset();
+
+		// Check we can import to the project
+		// with given name
+		iCEClient.importFile(file.toURI(), "fakeProject");
+		assertTrue(fakeCore.fileImported());
+
+		// Reset the core
+		fakeCore.reset();
+
+		// Try importing the file as a input file to the project
+		id = iCEClient.importFileAsItem(file.toURI(), "Red", project);
+
+		// Make sure that the file was imported and the item was created
+		assertTrue(fakeCore.fileImported());
+		assertTrue(id > 0);
+
+		// Reset the core
+		fakeCore.reset();
+
+		// Try importing the file as a input file to the project
+		id = iCEClient.importFileAsItem(file.toURI(), "Red", "fakeProject");
+
+		// Make sure that the file was imported and the item was created
+		assertTrue(fakeCore.fileImported());
+		assertTrue(id > 0);
+
+		// Reset the core
+		fakeCore.reset();
+
+		IFile iFile = null;
+		// Try importing the file as a input file to the project
+		id = iCEClient.importFileAsItem(iFile, "Red");
+
+		// Make sure that the file was imported and the item was created
+		assertTrue(fakeCore.fileImported());
+		assertTrue(id > 0);
+
+		// Reset the core
+		fakeCore.reset();
+
 		return;
 
 	}
@@ -582,22 +629,19 @@ public class ClientTester {
 		}
 
 		@Override
-		public void setTeamPrivateMember(boolean isTeamPrivate)
-				throws CoreException {
+		public void setTeamPrivateMember(boolean isTeamPrivate) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void setSessionProperty(QualifiedName key, Object value)
-				throws CoreException {
+		public void setSessionProperty(QualifiedName key, Object value) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void setResourceAttributes(ResourceAttributes attributes)
-				throws CoreException {
+		public void setResourceAttributes(ResourceAttributes attributes) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -609,8 +653,7 @@ public class ClientTester {
 		}
 
 		@Override
-		public void setPersistentProperty(QualifiedName key, String value)
-				throws CoreException {
+		public void setPersistentProperty(QualifiedName key, String value) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -622,8 +665,7 @@ public class ClientTester {
 		}
 
 		@Override
-		public void setLocal(boolean flag, int depth, IProgressMonitor monitor)
-				throws CoreException {
+		public void setLocal(boolean flag, int depth, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -635,8 +677,7 @@ public class ClientTester {
 		}
 
 		@Override
-		public void setDerived(boolean isDerived, IProgressMonitor monitor)
-				throws CoreException {
+		public void setDerived(boolean isDerived, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -654,37 +695,33 @@ public class ClientTester {
 		}
 
 		@Override
-		public void refreshLocal(int depth, IProgressMonitor monitor)
+		public void refreshLocal(int depth, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void move(IProjectDescription description, boolean force, boolean keepHistory, IProgressMonitor monitor)
 				throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void move(IProjectDescription description, boolean force,
-				boolean keepHistory, IProgressMonitor monitor)
-						throws CoreException {
+		public void move(IProjectDescription description, int updateFlags, IProgressMonitor monitor)
+				throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void move(IProjectDescription description, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
+		public void move(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void move(IPath destination, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void move(IPath destination, boolean force,
-				IProgressMonitor monitor) throws CoreException {
+		public void move(IPath destination, boolean force, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -780,15 +817,13 @@ public class ClientTester {
 		}
 
 		@Override
-		public Object getSessionProperty(QualifiedName key)
-				throws CoreException {
+		public Object getSessionProperty(QualifiedName key) throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Map<QualifiedName, Object> getSessionProperties()
-				throws CoreException {
+		public Map<QualifiedName, Object> getSessionProperties() throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -824,15 +859,13 @@ public class ClientTester {
 		}
 
 		@Override
-		public String getPersistentProperty(QualifiedName key)
-				throws CoreException {
+		public String getPersistentProperty(QualifiedName key) throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public Map<QualifiedName, String> getPersistentProperties()
-				throws CoreException {
+		public Map<QualifiedName, String> getPersistentProperties() throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -886,15 +919,13 @@ public class ClientTester {
 		}
 
 		@Override
-		public int findMaxProblemSeverity(String type, boolean includeSubtypes,
-				int depth) throws CoreException {
+		public int findMaxProblemSeverity(String type, boolean includeSubtypes, int depth) throws CoreException {
 			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
-		public IMarker[] findMarkers(String type, boolean includeSubtypes,
-				int depth) throws CoreException {
+		public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -912,22 +943,19 @@ public class ClientTester {
 		}
 
 		@Override
-		public void deleteMarkers(String type, boolean includeSubtypes,
-				int depth) throws CoreException {
+		public void deleteMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void delete(int updateFlags, IProgressMonitor monitor)
-				throws CoreException {
+		public void delete(int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void delete(boolean force, IProgressMonitor monitor)
-				throws CoreException {
+		public void delete(boolean force, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -945,64 +973,57 @@ public class ClientTester {
 		}
 
 		@Override
-		public void copy(IProjectDescription description, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void copy(IProjectDescription description, boolean force,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void copy(IPath destination, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void copy(IPath destination, boolean force,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void clearHistory(IProgressMonitor monitor)
+		public void copy(IProjectDescription description, int updateFlags, IProgressMonitor monitor)
 				throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void accept(IResourceVisitor visitor, int depth, int memberFlags)
+		public void copy(IProjectDescription description, boolean force, IProgressMonitor monitor)
 				throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void accept(IResourceVisitor visitor, int depth,
-				boolean includePhantoms) throws CoreException {
+		public void copy(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void accept(IResourceProxyVisitor visitor, int depth,
-				int memberFlags) throws CoreException {
+		public void copy(IPath destination, boolean force, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void accept(IResourceProxyVisitor visitor, int memberFlags)
-				throws CoreException {
+		public void clearHistory(IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceVisitor visitor, int depth, int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceVisitor visitor, int depth, boolean includePhantoms) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceProxyVisitor visitor, int depth, int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceProxyVisitor visitor, int memberFlags) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -1014,38 +1035,33 @@ public class ClientTester {
 		}
 
 		@Override
-		public void setContents(IFileState source, boolean force,
-				boolean keepHistory, IProgressMonitor monitor)
-						throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setContents(InputStream source, boolean force,
-				boolean keepHistory, IProgressMonitor monitor)
-						throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setContents(IFileState source, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setContents(InputStream source, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void setCharset(String newCharset, IProgressMonitor monitor)
+		public void setContents(IFileState source, boolean force, boolean keepHistory, IProgressMonitor monitor)
 				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -1057,8 +1073,8 @@ public class ClientTester {
 		}
 
 		@Override
-		public void move(IPath destination, boolean force, boolean keepHistory,
-				IProgressMonitor monitor) throws CoreException {
+		public void move(IPath destination, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
@@ -1076,8 +1092,7 @@ public class ClientTester {
 		}
 
 		@Override
-		public IFileState[] getHistory(IProgressMonitor monitor)
-				throws CoreException {
+		public IFileState[] getHistory(IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -1107,8 +1122,7 @@ public class ClientTester {
 		}
 
 		@Override
-		public IContentDescription getContentDescription()
-				throws CoreException {
+		public IContentDescription getContentDescription() throws CoreException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -1132,51 +1146,44 @@ public class ClientTester {
 		}
 
 		@Override
-		public void delete(boolean force, boolean keepHistory,
-				IProgressMonitor monitor) throws CoreException {
+		public void delete(boolean force, boolean keepHistory, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void createLink(URI location, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
+		public void createLink(URI location, int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void createLink(IPath localLocation, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
+		public void createLink(IPath localLocation, int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void create(InputStream source, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
+		public void create(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void create(InputStream source, boolean force,
-				IProgressMonitor monitor) throws CoreException {
+		public void create(InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void appendContents(InputStream source, boolean force,
-				boolean keepHistory, IProgressMonitor monitor)
-						throws CoreException {
+		public void appendContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
 			// TODO Auto-generated method stub
 
 		}
 
 		@Override
-		public void appendContents(InputStream source, int updateFlags,
-				IProgressMonitor monitor) throws CoreException {
+		public void appendContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
 			// TODO Auto-generated method stub
 
 		}

@@ -109,8 +109,8 @@ public class FakeCore implements ICore {
 	/**
 	 * Field variable for faking that the Item was loaded
 	 */
-	private boolean loaded = false;	
-	
+	private boolean loaded = false;
+
 	/**
 	 * The Constructor
 	 */
@@ -124,7 +124,8 @@ public class FakeCore implements ICore {
 	 * This operation returns the status of the last call to process().
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status of the last call to process().
 	 *         </p>
 	 */
@@ -158,7 +159,8 @@ public class FakeCore implements ICore {
 	 * process() that returned FormStatus.NeedsInfo.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the Item was updated, false if not.
 	 *         </p>
 	 */
@@ -171,7 +173,8 @@ public class FakeCore implements ICore {
 	 * True if an output file was retrieved, false if not.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if a file was retrieved, false if not.
 	 *         </p>
 	 */
@@ -196,7 +199,8 @@ public class FakeCore implements ICore {
 	 * a process request.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status of the last call to process().
 	 *         </p>
 	 */
@@ -342,8 +346,7 @@ public class FakeCore implements ICore {
 
 		// Change the name
 		if (form.getId() == 8675309) {
-			System.out.println("FakeCore Message: Failing with "
-					+ "FormStatus.InfoError!");
+			System.out.println("FakeCore Message: Failing with " + "FormStatus.InfoError!");
 			return FormStatus.InfoError;
 		}
 
@@ -364,8 +367,7 @@ public class FakeCore implements ICore {
 	}
 
 	@Override
-	public FormStatus processItem(int itemId, String actionName,
-			int uniqueClientId) {
+	public FormStatus processItem(int itemId, String actionName, int uniqueClientId) {
 
 		// Check the Item id and the action name to make sure they are
 		// acceptable
@@ -382,8 +384,7 @@ public class FakeCore implements ICore {
 		}
 
 		System.out.println("FakeCore Message: Call to process() finished.");
-		System.out.println("Item id = " + itemId + " , actionName = "
-				+ actionName);
+		System.out.println("Item id = " + itemId + " , actionName = " + actionName);
 
 		return lastProcessStatus;
 	}
@@ -403,8 +404,7 @@ public class FakeCore implements ICore {
 		// Set the particular details
 		itemObject.setName("Kathryn Janeway");
 		itemObject.setId(2);
-		itemObject.setDescription("Captain of the starship Voyager. "
-				+ "Not actually #2. #1 on that ship.");
+		itemObject.setDescription("Captain of the starship Voyager. " + "Not actually #2. #1 on that ship.");
 
 		if (!deleted) {
 			// Add the object to the list
@@ -430,8 +430,8 @@ public class FakeCore implements ICore {
 		// Only create this file if the caller is behaving well.
 		if (id > 0) {
 			// Setup the file
-			outputFile = new File(System.getProperty("user.dir")
-					+ System.getProperty("file.separator") + "fakeCoreTestFile");
+			outputFile = new File(
+					System.getProperty("user.dir") + System.getProperty("file.separator") + "fakeCoreTestFile");
 			try {
 				// Create file writing streams
 				FileWriter fstream = new FileWriter(outputFile);
@@ -469,21 +469,6 @@ public class FakeCore implements ICore {
 
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see ICore#importFile(URI file)
-	 */
-	@Override
-	public void importFile(URI file) {
-		if (file != null) {
-			imported = true;
-		} else {
-			System.out.println("FakeCore Message: " + "Imported file is null!");
-		}
-		return;
-	}
-
 	@Override
 	public String importFileAsItem(URI file, String itemType) {
 
@@ -516,38 +501,82 @@ public class FakeCore implements ICore {
 		loaded = true;
 		return new Form();
 	}
-	
+
 	public boolean wasLoaded() {
 		return loaded;
 	}
 
 	@Override
 	public String importFileAsItem(URI file, String itemType, IProject project) {
-		// TODO Auto-generated method stub
-		return null;
+		// Local Declarations
+		String returnString = String.valueOf(0);
+
+		if (file != null && itemType != null) {
+			returnString = String.valueOf(1);
+			imported = true;
+		}
+
+		return returnString;
 	}
 
 	@Override
 	public String importFileAsItem(IFile file, String itemType) {
-		// TODO Auto-generated method stub
-		return null;
+		// Local Declarations
+		String returnString = String.valueOf(0);
+
+		// if (file != null && itemType != null) {
+		returnString = String.valueOf(1);
+		imported = true;
+		// }
+
+		return returnString;
 	}
 
 	@Override
 	public String importFileAsItem(URI file, String itemType, String projectName) {
-		// TODO Auto-generated method stub
-		return null;
+		// Local Declarations
+		String returnString = String.valueOf(0);
+
+		if (file != null && itemType != null) {
+			returnString = String.valueOf(1);
+			imported = true;
+		}
+
+		return returnString;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see ICore#importFile(URI file)
+	 */
+	@Override
+	public void importFile(URI file) {
+		if (file != null) {
+			imported = true;
+		} else {
+			System.out.println("FakeCore Message: " + "Imported file is null!");
+		}
+		return;
 	}
 
 	@Override
 	public void importFile(URI file, IProject project) {
-		// TODO Auto-generated method stub
-		
+		if (file != null) {
+			imported = true;
+		} else {
+			System.out.println("FakeCore Message: " + "Imported file is null!");
+		}
+		return;
 	}
 
 	@Override
 	public void importFile(URI file, String projectName) {
-		// TODO Auto-generated method stub
-		
+		if (file != null) {
+			imported = true;
+		} else {
+			System.out.println("FakeCore Message: " + "Imported file is null!");
+		}
+		return;
 	}
 }

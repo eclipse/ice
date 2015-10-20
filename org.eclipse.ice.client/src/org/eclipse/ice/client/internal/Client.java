@@ -66,10 +66,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings
  */
-public class Client
-		implements IUpdateEventListener, IProcessEventListener,
- ISimpleResourceProvider, IWidgetClosedListener,
-		IClient, BundleActivator {
+public class Client implements IUpdateEventListener, IProcessEventListener, ISimpleResourceProvider,
+		IWidgetClosedListener, IClient, BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -213,8 +211,7 @@ public class Client
 		// Get the widgets factory service by using the Workbench. This is a
 		// good way to do it that prevents the ResourcesPlugin from being called
 		// prematurely.
-		IWidgetFactory factory = PlatformUI.getWorkbench()
-				.getService(IWidgetFactory.class);
+		IWidgetFactory factory = PlatformUI.getWorkbench().getService(IWidgetFactory.class);
 		setUIWidgetFactory(factory);
 
 		// I realize how hilarious it is to use two different mechanisms for
@@ -441,14 +438,16 @@ public class Client
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#loadItem(org.eclipse.core.resources.IFile)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#loadItem(org.eclipse.core.resources.
+	 * IFile)
 	 */
 	@Override
 	public Form loadItem(IFile itemFile) {
 		// Just delegate this
 		return getCore().loadItem(itemFile);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -581,20 +580,6 @@ public class Client
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see IClient#importFile(URI file)
-	 */
-	@Override
-	public void importFile(URI file) {
-
-		// Just forward the call
-		getCore().importFile(file);
-
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
 	 * @see IUpdateEventListener#formUpdated(Form form)
 	 */
 	@Override
@@ -714,6 +699,41 @@ public class Client
 	/*
 	 * (non-Javadoc)
 	 *
+	 * @see IClient#importFile(URI file)
+	 */
+	@Override
+	public void importFile(URI file) {
+
+		// Just forward the call
+		getCore().importFile(file);
+
+		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void importFile(URI file, IProject project) {
+
+		// Just forward the call
+		getCore().importFile(file, project);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, java.lang.String)
+	 */
+	@Override
+	public void importFile(URI file, String projectName) {
+		// Just forward the call
+		getCore().importFile(file, projectName);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
 	 * java.lang.String)
 	 */
@@ -723,6 +743,36 @@ public class Client
 		// Pass the call on to the core
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
 
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public int importFileAsItem(URI file, String itemType, IProject project) {
+		// Pass the call on to the core
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType, project));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(org.eclipse.core.resources.IFile, java.lang.String)
+	 */
+	@Override
+	public int importFileAsItem(IFile file, String itemType) {
+		// Pass the call on to the core
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public int importFileAsItem(URI file, String itemType, String projectName) {
+		// Pass the call on to the core
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType, projectName));
 	}
 
 }

@@ -169,7 +169,29 @@ public interface IClient {
 	public void importFile(URI file);
 
 	/**
-	 * This operation direct ICE import a file into its workspace and load that
+	 * This operation directs ICE to import a file into the provided IProject instance.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param project
+	 *            The IProject instance that this file will be imported into.
+	 */
+	public void importFile(URI file, IProject project);
+	
+	/**
+	 * This operation directs ICE to import a file into the provided IProject name.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param projectName
+	 *            The name of the IProject instance that this file will be imported into.
+	 */
+	public void importFile(URI file, String projectName);
+	
+	/**
+	 * This operation direct ICE import a file into the default project and load that
 	 * file as an input for the specified Item type.
 	 *
 	 * @param file
@@ -181,6 +203,52 @@ public interface IClient {
 	 *         if it was unable to create the Item.
 	 */
 	public int importFileAsItem(URI file, String itemType);
+
+	/**
+	 * This operation direct ICE import a file into the specified IProject and load that
+	 * file as an input for the specified Item type.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param itemType
+	 *            The type of Item to create.
+	 * @param project
+	 * 			  The project instance this file will be imported into.
+	 * @return The identification number given of the newly created Item or -1
+	 *         if it was unable to create the Item.
+	 */
+	public int importFileAsItem(URI file, String itemType, IProject project);
+	
+	/**
+	 * This operation direct ICE import an existing IFile into the its corresponding 
+	 * IProject instance  and load that file as an input for the specified Item type.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param itemType
+	 *            The type of Item to create.
+	 * @return The identification number given of the newly created Item or -1
+	 *         if it was unable to create the Item.
+	 */
+	public int importFileAsItem(IFile file, String itemType);
+
+	/**
+	 * This operation direct ICE import a file into the specified IProject given 
+	 * by the provided projectName and load that file as an input for the specified Item type.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param itemType
+	 *            The type of Item to create.
+	 * @param projectName
+	 * 			  The name of the project instance this file will be imported into.
+	 * @return The identification number given of the newly created Item or -1
+	 *         if it was unable to create the Item.
+	 */
+	public int importFileAsItem(URI file, String itemType, String projectName);
 
 	/**
 	 * This operation retrieves all of the ItemBuilders from the
