@@ -251,6 +251,16 @@ public interface IClient {
 	public int importFileAsItem(URI file, String itemType, String projectName);
 
 	/**
+	 * This operation directs the core to rename the Item given by itemID.
+	 * 
+	 * @param itemID
+	 * 			  The id of the Item.
+	 * @param name
+	 *            The new name of the Item. 
+	 */
+	public void renameItem(int itemID, String name);
+	
+	/**
 	 * This operation retrieves all of the ItemBuilders from the
 	 * ExtensionRegistry.
 	 *

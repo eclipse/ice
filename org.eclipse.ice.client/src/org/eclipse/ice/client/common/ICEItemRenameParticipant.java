@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Initial API and implementation and/or initial documentation - 
  *   Alexander J. McCaskey
  *******************************************************************************/
 package org.eclipse.ice.client.common;
@@ -26,18 +26,18 @@ import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.ltk.core.refactoring.participants.DeleteParticipant;
+import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class subclasses the DeleteParticipant class from the Eclipse Language
- * Toolkit to provide a hook for correctly deleting ICE Item XML files.
+ * This class subclasses the RenameParticipant class from the Eclipse Language
+ * Toolkit to provide a hook for correctly renaming ICE Item XML files.
  * 
  * @author Alex McCaskey
  *
  */
-public class ICEItemDeleteParticipant extends DeleteParticipant {
+public class ICEItemRenameParticipant extends RenameParticipant {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -72,12 +72,12 @@ public class ICEItemDeleteParticipant extends DeleteParticipant {
 
 			// Get the ICE Form Text Content Describer
 			FormTextContentDescriber describer = getFormTextContentDescriber("ICE Form");
-			
+
 			try {
 				// Check if this is an ICE XML File
 				int isValid = describer.describe(itemFile.getContents(), null);
-				
-				// If so, get the itemID and return true to 
+
+				// If so, get the itemID and return true to
 				// indicate we want to participate in the deletion
 				if (isValid == ITextContentDescriber.VALID) {
 					itemID = describer.getItemID();
@@ -89,13 +89,12 @@ public class ICEItemDeleteParticipant extends DeleteParticipant {
 				logger.error("Could not describe the provided file.", e1);
 				return false;
 			}
-			
+
 		}
-		
+
 		// Indicate we don't need to do anythin
 		// with this element
 		return false;
-
 	}
 
 	/*
@@ -118,17 +117,18 @@ public class ICEItemDeleteParticipant extends DeleteParticipant {
 			logger.error("Could not get a reference to the client.", e);
 		}
 
-		// Then use the client to delete the Item.
+		// Then use the client to rename the Item.
 		if (client != null) {
-			client.deleteItem(itemID);
+			String newName = getArguments().getNewName();
+			client.renameItem(itemID, newName.substring(0, newName.lastIndexOf(".")));
 		}
 
 		return null;
 	}
-	
+
 	/**
-	 * This utility method is used to return the correct ITextContentDescriber 
-	 * so we can validate incoming IFiles being deleted as true ICE Item files. 
+	 * This utility method is used to return the correct ITextContentDescriber
+	 * so we can validate incoming IFiles being deleted as true ICE Item files.
 	 * 
 	 * @param type
 	 * @return
@@ -137,11 +137,12 @@ public class ICEItemDeleteParticipant extends DeleteParticipant {
 		// Local Declarations
 		FormTextContentDescriber describer = null;
 		String id = "org.eclipse.core.contenttype.contentTypes";
-		
+
 		// Get the extension point
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(id);
-		
-		// If the point is available, get a reference to the correct ITextContentDescriber
+
+		// If the point is available, get a reference to the correct
+		// ITextContentDescriber
 		if (point != null) {
 			IConfigurationElement[] elements = point.getConfigurationElements();
 			for (IConfigurationElement e : elements) {
@@ -161,29 +162,15 @@ public class ICEItemDeleteParticipant extends DeleteParticipant {
 		return describer;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant#
-	 * getName()
-	 */
 	@Override
 	public String getName() {
-		return "ICE Item Delete Participant";
+		return "ICE Item Rename Participant";
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant#
-	 * checkConditions(org.eclipse.core.runtime.IProgressMonitor,
-	 * org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext)
-	 */
 	@Override
 	public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
 			throws OperationCanceledException {
 		return null;
 	}
+
 }

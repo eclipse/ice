@@ -459,7 +459,7 @@ public class XMLPersistenceProvider
 						|| "delete".equals(currentTask.task)) {
 					// Setup the file name
 					name = currentTask.item.getName().replaceAll("\\s+", "_")
-							+ "_" + currentTask.item.getId() + ".xml";
+							/*+ "_" + currentTask.item.getId()*/ + ".xml";
 					// Get the file from the project registered with the Item.
 					// This may change depending on whether or not this Item was
 					// created in the default project.
@@ -604,18 +604,13 @@ public class XMLPersistenceProvider
 			// Create the unmarshaller and load the item
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			item = (Item) unmarshaller.unmarshal(file.getContents());
-		} catch (CoreException e) {
+		} catch (CoreException | JAXBException e) {
 			// Complain
 			logger.error(getClass().getName() + " Exception!", e);
 			// Null out the Item so that it can't be returned uninitialized
 			item = null;
-		} catch (JAXBException e) {
-			// Complain
-			logger.error(getClass().getName() + " Exception!", e);
-			// Null out the Item so that it can't be returned uninitialized
-			item = null;
-		}
-
+		} 
+		
 		return item;
 	}
 

@@ -1075,4 +1075,13 @@ public class Core extends Application implements ICore, BundleActivator {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.core.iCore.ICore#renameItem(int, java.lang.String)
+	 */
+	@Override
+	public void renameItem(int itemID, String name) {
+		itemManager.renameItem(itemID, name);
+	}
+
 }

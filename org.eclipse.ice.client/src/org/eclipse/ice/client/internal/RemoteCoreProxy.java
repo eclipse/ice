@@ -518,4 +518,10 @@ public class RemoteCoreProxy implements ICore {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void renameItem(int itemID, String name) {
+		// TODO Auto-generated method stub
+		
+	}
 }

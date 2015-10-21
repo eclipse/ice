@@ -775,4 +775,13 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType, projectName));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#renameItem(int, java.lang.String)
+	 */
+	@Override
+	public void renameItem(int itemID, String name) {
+		getCore().renameItem(itemID, name);
+	}
+
 }

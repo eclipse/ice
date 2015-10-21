@@ -92,6 +92,8 @@ public class FakeCore implements ICore {
 	 */
 	private boolean imported;
 
+	private boolean itemNameChanged;
+	
 	/**
 	 * <p>
 	 * True if the client attempted to cancel an Item process request, false
@@ -117,6 +119,7 @@ public class FakeCore implements ICore {
 	public FakeCore() {
 		lastProcessStatus = FormStatus.InfoError;
 		imported = false;
+		itemNameChanged = false;
 	}
 
 	/**
@@ -148,7 +151,8 @@ public class FakeCore implements ICore {
 		imported = false;
 		cancelled = false;
 		loaded = false;
-
+		itemNameChanged = false;
+		
 		return;
 
 	}
@@ -578,5 +582,14 @@ public class FakeCore implements ICore {
 			System.out.println("FakeCore Message: " + "Imported file is null!");
 		}
 		return;
+	}
+	
+	public boolean itemNameChanged() {
+		return itemNameChanged;
+	}
+
+	@Override
+	public void renameItem(int itemID, String name) {
+		itemNameChanged = true;
 	}
 }

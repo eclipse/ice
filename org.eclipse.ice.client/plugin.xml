@@ -71,4 +71,21 @@
        </enablement>
     </deleteParticipant>
  </extension>
+ <extension
+       point="org.eclipse.ltk.core.refactoring.renameParticipants">
+    <renameParticipant
+          class="org.eclipse.ice.client.common.ICEItemRenameParticipant"
+          id="org.eclipse.ice.client.renameitem"
+          name="Rename Item Action">
+        <enablement>
+       		<with variable="element">
+        	     <adapt type="org.eclipse.core.resources.IResource">
+            	       <test property="org.eclipse.core.resources.extension"
+                	         value="xml">
+                   	</test>
+             	 </adapt>
+       		</with>
+       </enablement>
+    </renameParticipant>
+ </extension>
 </plugin>

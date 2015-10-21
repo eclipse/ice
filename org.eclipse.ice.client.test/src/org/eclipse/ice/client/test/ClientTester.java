@@ -261,6 +261,18 @@ public class ClientTester {
 	}
 
 	/**
+	 * Check that the Core gets invoked when we 
+	 * rename an Item. 
+	 */
+	@Test
+	public void checkItemRenaming() {
+		int itemId = iCEClient.createItem("Red");
+		iCEClient.renameItem(itemId, "HELLO");
+		assertTrue(fakeCore.itemNameChanged());
+		fakeCore.reset();
+	}
+
+	/**
 	 * This operation checks the Client by insuring that Items and Forms can be
 	 * updated. It calls through the IUpdateWidgetListener interface. Review the
 	 * documentation on the FakeCore class to determine the proper Form ids to

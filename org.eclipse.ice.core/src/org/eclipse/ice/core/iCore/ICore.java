@@ -394,6 +394,16 @@ public interface ICore {
 	 *            The name of the IProject instance this file will be imported into. 
 	 */
 	public void importFile(URI file, String projectName);
+
+	/**
+	 * This operation directs the core to rename the Item given by itemID.
+	 * 
+	 * @param itemID
+	 * 			  The id of the Item.
+	 * @param name
+	 *            The new name of the Item. 
+	 */
+	public void renameItem(int itemID, String name);
 	
 	/**
 	 * This operation posts a message containing an update to the ICE Item
@@ -415,12 +425,5 @@ public interface ICore {
 	@Consumes("application/x-www-form-urlencoded")
 	@Produces("text/plain")
 	public String postUpdateMessage(String message);
-	
-	
-	// NEED TO ADD
-	// importFile(URI) calls next one with default
-	// importFile(URI, IProject)
-	// importFile(URI, String projectName)
-	//
 	
 }

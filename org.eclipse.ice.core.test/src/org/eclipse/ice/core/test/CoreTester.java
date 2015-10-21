@@ -225,6 +225,40 @@ public class CoreTester {
 	}
 
 	/**
+	 * Check that the Core can correctly rename an Item.
+	 */
+	@Test
+	public void checkItemRenaming() {
+		// Local Declarations
+		FakeGeometryBuilder fakeGeometryBuilder = new FakeGeometryBuilder();
+		FakeModuleBuilder fakeModuleBuilder = new FakeModuleBuilder();
+		String name = fakeModuleBuilder.getItemName();
+		ArrayList<String> types = new ArrayList<String>();
+
+		// Register the ItemBuilders
+		iCECore.registerItem(fakeModuleBuilder);
+		iCECore.registerItem(fakeGeometryBuilder);
+
+		// Clean up any old items hanging around
+		ArrayList<Identifiable> items = iCECore.getItemList();
+		for (Identifiable iceObj : items) {
+			iCECore.deleteItem(String.valueOf(iceObj.getId()));
+		}
+
+		// Check the available Item types after registration
+		types = iCECore.getAvailableItemTypes().getList();
+		assertTrue(types.contains(fakeGeometryBuilder.getItemName()));
+		assertTrue(types.contains(fakeModuleBuilder.getItemName()));
+
+		// Create a new Item
+		int itemId = Integer.parseInt(iCECore.createItem(name));
+
+		iCECore.renameItem(itemId, "NewName");
+		assertTrue("New Name".equals(iCECore.getItem(itemId).getName()));
+		
+	}
+	
+	/**
 	 * This operation checks the ability of the core to load a single Item.
 	 */
 	@Test

@@ -1035,6 +1035,18 @@ public class ItemManager implements ItemListener {
 	}
 
 	/**
+	 * This operation changes the name of the Item with id itemID.
+	 * 
+	 * @param itemID
+	 * 	        The id of the item
+	 * @param name
+	 * 			The new name of the Item.
+	 */
+	public void renameItem(int itemID, String name) {
+		itemList.get(itemID).setName(name);
+	}
+	
+	/**
 	 * This operation configures the IOService that should be used by Items
 	 *
 	 * @param service
