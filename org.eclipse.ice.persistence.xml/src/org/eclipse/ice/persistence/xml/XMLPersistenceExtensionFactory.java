@@ -85,34 +85,5 @@ public class XMLPersistenceExtensionFactory
 		return provider;
 	}
 
-	/**
-	 * This operation pulls the list of JAXB class providers from the registry
-	 * for classes that need custom handling.
-	 *
-	 * @return The list of class providers.
-	 * @throws CoreException
-	 */
-	private IJAXBClassProvider[] getJAXBProviders() throws CoreException {
-
-		IJAXBClassProvider[] jaxbProviders = null;
-		String id = "org.eclipse.ice.item.itemBuilder";
-		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(id);
-
-		// If the point is available, create all the builders and load them into
-		// the array.
-		if (point != null) {
-			IConfigurationElement[] elements = point.getConfigurationElements();
-			jaxbProviders = new IJAXBClassProvider[elements.length];
-			for (int i = 0; i < elements.length; i++) {
-				jaxbProviders[i] = (IJAXBClassProvider) elements[i]
-						.createExecutableExtension("class");
-			}
-		} else {
-			logger.error("Extension Point " + id + "does not exist");
-		}
-
-		return jaxbProviders;
-	}
 
 }

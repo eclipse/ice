@@ -52,6 +52,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.ice.item.Registry;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
@@ -262,8 +263,15 @@ public class Core extends Application implements ICore, BundleActivator {
 			// load items.
 			itemManager.setPersistenceProvider(provider);
 		}
-
+		
+		
 		// Load up the ItemBuilders
+		ItemBuilder [] builders = ItemBuilder.getItemBuilders();
+		for (ItemBuilder builder : builders) {
+		    registerItem(builder);
+		}
+		
+		/** to delete later
 		ItemBuilder builder = null;
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint(builderID);
@@ -281,6 +289,7 @@ public class Core extends Application implements ICore, BundleActivator {
 		} else {
 			logger.error("Extension Point " + builderID + "does not exist");
 		}
+		**/
 
 		// Tell the ItemManager to suit up. It's time to rock and roll.
 		itemManager.loadItems(itemDBProject);
