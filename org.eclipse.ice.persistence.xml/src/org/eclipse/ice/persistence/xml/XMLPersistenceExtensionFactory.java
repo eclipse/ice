@@ -77,7 +77,7 @@ public class XMLPersistenceExtensionFactory
 				logger.error("Unable to start XMLPersistenceProvider", e);
 			}
 		}
-		
+
 		return provider;
 	}
 
