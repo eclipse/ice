@@ -15,6 +15,8 @@ import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
+import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
+import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * start up steps as well as locating the ItemBuilders and JAXBClassProvider
  * interfaces.
  *
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Nick Stanish
  *
  */
 public class XMLPersistenceExtensionFactory
@@ -64,11 +66,11 @@ public class XMLPersistenceExtensionFactory
 			for (ItemBuilder builder : ItemBuilder.getItemBuilders()) {
 				provider.addBuilder(builder);
 			}
-			// Load all the JAXB providers - FIXME! Fix element ID and uncomment
-			// when IJAXBProviders have been added to the registry.
-			// for (IJAXBClassProvider jaxbProvider : getJAXBProviders()) {
-			// provider.registerClassProvider(jaxbProvider);
-			// }
+
+			// Load all the JAXB providers
+			for (IJAXBClassProvider jaxbProvider : IJAXBClassProvider.getJAXBProviders()) {
+				provider.registerClassProvider(jaxbProvider);
+			}
 			try {
 				provider.start();
 				// Start the service
