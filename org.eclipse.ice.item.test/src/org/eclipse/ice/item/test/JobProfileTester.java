@@ -170,7 +170,7 @@ public class JobProfileTester {
 
 		// Check contents of form
 		Form form = launcher.getForm();
-		assertEquals("JobProfile Launcher", form.getName());
+		assertEquals("JobProfile", form.getName());
 		assertEquals("This operation will execute JobProfile",
 				form.getDescription());
 		assertEquals(3, form.getComponents().size());
