@@ -16,7 +16,6 @@ import javax.xml.bind.JAXBException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
 import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
-import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +65,13 @@ public class XMLPersistenceExtensionFactory
 			for (ItemBuilder builder : ItemBuilder.getItemBuilders()) {
 				provider.addBuilder(builder);
 			}
-
-			// Load all the JAXB providers
-			for (IJAXBClassProvider jaxbProvider : IJAXBClassProvider.getJAXBProviders()) {
-				provider.registerClassProvider(jaxbProvider);
+			// Load all the JAXB providers if and only if they are available.
+			IJAXBClassProvider[] jaxbProviders = IJAXBClassProvider
+					.getJAXBProviders();
+			if (jaxbProviders != null && jaxbProviders.length > 0) {
+				for (IJAXBClassProvider jaxbProvider : jaxbProviders) {
+					provider.registerClassProvider(jaxbProvider);
+				}
 			}
 			try {
 				provider.start();

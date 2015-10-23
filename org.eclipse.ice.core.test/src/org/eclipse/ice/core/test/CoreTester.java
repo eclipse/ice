@@ -33,7 +33,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.core.internal.Core;
 import org.eclipse.ice.core.internal.itemmanager.ItemManager;
-import org.eclipse.ice.core.test.FakeIFile;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
@@ -70,7 +69,7 @@ public class CoreTester {
 
 	/**
 	 * This operation configures the core.
-	 * 
+	 *
 	 * @throws CoreException
 	 */
 	@Before
@@ -253,11 +252,12 @@ public class CoreTester {
 		// Create a new Item
 		int itemId = Integer.parseInt(iCECore.createItem(name));
 
-		iCECore.renameItem(itemId, "NewName");
+		// Change the Item name
+		iCECore.renameItem(itemId, "New Name");
 		assertTrue("New Name".equals(iCECore.getItem(itemId).getName()));
-		
+
 	}
-	
+
 	/**
 	 * This operation checks the ability of the core to load a single Item.
 	 */

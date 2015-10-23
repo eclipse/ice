@@ -30,10 +30,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -53,31 +50,31 @@ import org.slf4j.LoggerFactory;
  * Eclipse project and uses the ResourcePlugin to manage that space. Note: The
  * default project must be set by a client! Clients should always make sure that
  * getDefaultProject() does not return null when using this class.
- * 
- * It stores items in the workspace in the default project provided by clients. It
- * uses <itemName>_<itemId>.xml for the file names. White space in the item name
- * is replaced with underscores. Items may be stored and loaded from other
+ *
+ * It stores items in the workspace in the default project provided by clients.
+ * It uses <itemName>_<itemId>.xml for the file names. White space in the item
+ * name is replaced with underscores. Items may be stored and loaded from other
  * projects by using the appropriate call.
- * 
+ *
  * All of the operations performed by this class except for those that load
  * Items are handled on a separate, non-blocking thread. Loading operations are
  * blocking.
- * 
+ *
  * Items that are loaded by the provider are not constructed with a project.
- * 
+ *
  * This provider should always be started AFTER all of the Items are registered
  * with it because registering Items while it is running would require stopping
  * the thread and recreating the JAXB context. That is easiest enough to do, but
  * it won't be implemented here until we get a feature request for it.
- * 
+ *
  * The provider also implements the IReader and IWriter interfaces and is
  * registered with the framework as an XML IO Service. It does not support the
  * find and replace operations from the IReader and IWriter interfaces and it
  * will throw an exception if either is called. In the case of find() it returns
  * null.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class XMLPersistenceProvider
 		implements IPersistenceProvider, Runnable, IReader, IWriter {
@@ -100,9 +97,9 @@ public class XMLPersistenceProvider
 	 * which task should be performed for the given item. Alternatively, if the
 	 * task says "write" the file attribute of the task is used to write the
 	 * Form to the specified IFile to satisfy the IWriter interface.
-	 * 
+	 *
 	 * @author Jay Jay Billings
-	 * 
+	 *
 	 */
 	private static class QueuedTask {
 		/**
@@ -179,7 +176,7 @@ public class XMLPersistenceProvider
 	/**
 	 * An alternative constructor that allows the project space to be set for
 	 * testing.
-	 * 
+	 *
 	 * @param projectSpace
 	 *            The project space that should be used instead of the default.
 	 */
@@ -191,15 +188,14 @@ public class XMLPersistenceProvider
 	/**
 	 * This operation registers an IJAXBClassProvider with the persistence
 	 * provider.
-	 * 
+	 *
 	 * @param provider
 	 *            The IJAXBClassProvider to be used in creation of the
 	 *            JAXBContext.
 	 */
 	public void registerClassProvider(IJAXBClassProvider provider) {
 		if (provider != null) {
-			logger.info("[XMLPersistenceProvider] Adding Class Provider "
-					+ provider.getProviderName());
+			logger.info("Adding Class Provider " + provider.getProviderName());
 			classProviders.add(provider);
 		}
 
@@ -258,7 +254,7 @@ public class XMLPersistenceProvider
 	/**
 	 * This operation creates the JAXBContext used by the provider to create XML
 	 * (un)marshallers.
-	 * 
+	 *
 	 * @throws JAXBException
 	 *             An exception indicating that the JAXB Context could not be
 	 *             created.
@@ -278,9 +274,11 @@ public class XMLPersistenceProvider
 		// classList.add(Material.class);
 
 		// Now add all Classes provided by the registered
-		// IJAXBClassProviders.
-		for (IJAXBClassProvider provider : classProviders) {
-			classList.addAll(provider.getClasses());
+		// IJAXBClassProviders if they are available.
+		if (classProviders.size() > 0) {
+			for (IJAXBClassProvider provider : classProviders) {
+				classList.addAll(provider.getClasses());
+			}
 		}
 
 		// Create new JAXB class context and unmarshaller
@@ -291,7 +289,7 @@ public class XMLPersistenceProvider
 	 * This operation is called to start the XMLPersistenceProvider by the OSGi
 	 * Declarative Services engine. It sets up the project space and starts the
 	 * event loop.
-	 * 
+	 *
 	 * @throws JAXBException
 	 *             An exception indicating that the JAXB Context could not be
 	 *             created.
@@ -361,10 +359,10 @@ public class XMLPersistenceProvider
 
 	/**
 	 * This operation registers an ItemBuilder with the persistence provider.
-	 * 
+	 *
 	 * Every builder registered with the persistence provider is called at least
 	 * once so that class information can be stored about the Items they create.
-	 * 
+	 *
 	 * @param builder
 	 */
 	public void addBuilder(ItemBuilder builder) {
@@ -386,7 +384,7 @@ public class XMLPersistenceProvider
 	/**
 	 * This operation returns an output stream containing the XML representation
 	 * of an Item stored in a QueuedTask.
-	 * 
+	 *
 	 * @param obj
 	 *            the object to write to the stream
 	 * @return the output stream containing the Item as XML
@@ -412,7 +410,7 @@ public class XMLPersistenceProvider
 
 	/**
 	 * This operation writes the specified object to the file in XML.
-	 * 
+	 *
 	 * @param obj
 	 *            The object to be written
 	 * @param file
@@ -441,7 +439,7 @@ public class XMLPersistenceProvider
 
 	/**
 	 * A utility operation for processing tasks in the event loop.
-	 * 
+	 *
 	 * @param currentTask
 	 *            The current task to be processed.
 	 */
@@ -459,7 +457,7 @@ public class XMLPersistenceProvider
 						|| "delete".equals(currentTask.task)) {
 					// Setup the file name
 					name = currentTask.item.getName().replaceAll("\\s+", "_")
-							/*+ "_" + currentTask.item.getId()*/ + ".xml";
+							/* + "_" + currentTask.item.getId() */ + ".xml";
 					// Get the file from the project registered with the Item.
 					// This may change depending on whether or not this Item was
 					// created in the default project.
@@ -524,7 +522,7 @@ public class XMLPersistenceProvider
 
 	/**
 	 * A private utility operation that submits a persistence task to the queue.
-	 * 
+	 *
 	 * @param item
 	 *            The Item that is part of the persistence task.
 	 * @param id
@@ -578,7 +576,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.core.iCore.IPersistenceProvider#persistItem(org.eclipse.
 	 * ice.item.Item)
@@ -591,13 +589,13 @@ public class XMLPersistenceProvider
 
 	/**
 	 * This operation loads an Item from an IFile resource.
-	 * 
+	 *
 	 * @param file
 	 *            The IFile that should be loaded as an Item from XML.
 	 * @return the Item
 	 */
 	public Item loadItem(IFile file) {
-		
+
 		Item item = null;
 
 		try {
@@ -609,14 +607,14 @@ public class XMLPersistenceProvider
 			logger.error(getClass().getName() + " Exception!", e);
 			// Null out the Item so that it can't be returned uninitialized
 			item = null;
-		} 
-		
+		}
+
 		return item;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.IPersistenceProvider#loadItem(int)
 	 */
 	@Override
@@ -632,7 +630,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.core.iCore.IPersistenceProvider#loadItem(org.eclipse.core
 	 * .resources.IResource)
@@ -647,7 +645,7 @@ public class XMLPersistenceProvider
 	/**
 	 * This operation deletes the Item. It logs the delete order with the queue
 	 * and only returns false if an exception is thrown.
-	 * 
+	 *
 	 * @param item
 	 *            Item that should be deleted.
 	 * @return true if the Item was queued for deletion, false if an exception
@@ -662,10 +660,10 @@ public class XMLPersistenceProvider
 	/**
 	 * This operation updates the Item. It logs the update order with the queue
 	 * and only returns false if an exception is thrown.
-	 * 
+	 *
 	 * This operation is identical to calling persistItem() because there is no
 	 * way to do an efficient merge of the XML files.
-	 * 
+	 *
 	 * @param item
 	 *            Item to update.
 	 * @return true if the Item was queued for an update, false if an exception
@@ -679,7 +677,7 @@ public class XMLPersistenceProvider
 
 	/**
 	 * This operation loads all of the Items that this provider can find.
-	 * 
+	 *
 	 * @return A list of all of the Items that this persistence provider was
 	 *         able to load from the project space.
 	 */
@@ -702,7 +700,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.io.serializable.IWriter#write(org.eclipse.ice.
 	 * datastructures .form.Form, java.net.URI)
 	 */
@@ -715,7 +713,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.io.serializable.IWriter#replace(java.net.URI,
 	 * java.lang.String, java.lang.String)
 	 */
@@ -733,7 +731,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.io.serializable.IWriter#getWriterType()
 	 */
 	@Override
@@ -743,7 +741,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.io.serializable.IReader#read(java.net.URI)
 	 */
 	@Override
@@ -769,7 +767,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.io.serializable.IReader#findAll(java.net.URI,
 	 * java.lang.String)
 	 */
@@ -788,7 +786,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.io.serializable.IReader#getReaderType()
 	 */
 	@Override
@@ -798,7 +796,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.core.iCore.IPersistenceProvider#setDefaultProject(org.
 	 * eclipse.core.resources.IProject)
@@ -813,7 +811,7 @@ public class XMLPersistenceProvider
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.IPersistenceProvider#getDefaultProject()
 	 */
 	@Override
