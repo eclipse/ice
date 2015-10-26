@@ -935,7 +935,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	 */
 	@Override
 	public String importFileAsItem(URI file, String itemType) {
-		return importFileAsItem(file, itemType, "default");
+		return importFileAsItem(file, itemType, "itemDB");
 	}
 
 	/**
@@ -998,7 +998,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	public void importFile(URI file) {
 
 		// Simply import the file to the default project
-		importFile(file, "default");
+		importFile(file, "itemDB");
 
 		return;
 	}
