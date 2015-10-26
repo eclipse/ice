@@ -428,7 +428,7 @@ public class CoreTester {
 		FakeGeometryBuilder fakeGeometryBuilder = new FakeGeometryBuilder();
 		IProject project = null;
 
-		project = getProject("default");
+		project = getProject("itemDB");
 
 		// Clean out any old test files
 		try {

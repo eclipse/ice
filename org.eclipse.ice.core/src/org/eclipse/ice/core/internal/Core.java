@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Dasha Gorin, Alexander J. McCaskey, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.core.internal;
@@ -37,7 +37,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
@@ -52,7 +51,6 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
-import org.eclipse.ice.item.Registry;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
@@ -198,39 +196,6 @@ public class Core extends Application implements ICore, BundleActivator {
 	}
 
 	/**
-	 * This operation is responsible for creating the project space used by the
-	 * IPersistenceProvider.
-	 */
-	private void createItemDBProjectSpace() {
-
-		// Local Declarations
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		String projectName = "itemDB";
-		System.getProperty("file.separator");
-
-		try {
-			// Get the project handle
-			itemDBProject = workspaceRoot.getProject(projectName);
-			// If the project does not exist, create it
-			if (!itemDBProject.exists()) {
-				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
-				// Create the project
-				itemDBProject.create(desc, null);
-			}
-			// Open the project if it is not already open
-			if (itemDBProject.exists() && !itemDBProject.isOpen()) {
-				itemDBProject.open(null);
-				// Refresh the project in case users manipulated files.
-				itemDBProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-			}
-		} catch (CoreException e) {
-			// Catch exception for creating the project
-			logger.error(getClass().getName() + " Exception!", e);
-		}
-	}
-
-	/**
 	 * This operation starts the Core, sets the component context and starts the
 	 * web client if the HTTP service is available.
 	 *
@@ -245,8 +210,6 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		logger.info("Bundle context set!");
 
-		// Set the default project on the Persistence Provider
-		createItemDBProjectSpace();
 		// If the provider has not been injected (say for testing) then pull it.
 		if (provider == null) {
 			provider = IPersistenceProvider.getProvider();
@@ -260,31 +223,15 @@ public class Core extends Application implements ICore, BundleActivator {
 			// load items.
 			itemManager.setPersistenceProvider(provider);
 		}
-		
-		
+
+
 		// Load up the ItemBuilders
 		ItemBuilder [] builders = ItemBuilder.getItemBuilders();
 		for (ItemBuilder builder : builders) {
 		    registerItem(builder);
 		}
-		
-		/** to delete later
-		ItemBuilder builder = null;
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(builderID);
 
-		// If the point is available, create all the builders and load them into
-		// the Item Manager.
-		if (point != null) {
-			IConfigurationElement[] elements = point.getConfigurationElements();
-			for (int i = 0; i < elements.length; i++) {
-				builder = (ItemBuilder) elements[i].createExecutableExtension("class");
-				// Register the builder
-				registerItem(builder);
-			}
-		} else {
-			logger.error("Extension Point " + builderID + "does not exist");
-		}
-		**/
+		// FIXME! Register composite items
 
 		// Tell the ItemManager to suit up. It's time to rock and roll.
 		itemManager.loadItems(itemDBProject);
@@ -292,7 +239,8 @@ public class Core extends Application implements ICore, BundleActivator {
 		// Start the webservice!
 		startHttpService();
 
-		// Check the currently registered extensions
+		// Check the currently registered extensions - LEAVE FOR NOW! ~JJB
+		// 20151026 11:15
 		// debugCheckExtensions();
 
 		// Register this class as a service with the framework.
@@ -322,6 +270,13 @@ public class Core extends Application implements ICore, BundleActivator {
 		registration.unregister();
 	}
 
+	/**
+	 * This function is used for logging information on the extensions available
+	 * to the Core.
+	 *
+	 * @deprecated
+	 */
+	@Deprecated
 	private void debugCheckExtensions() {
 		Set<String> extensionPoints = new HashSet<String>();
 		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
@@ -554,7 +509,7 @@ public class Core extends Application implements ICore, BundleActivator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.core.iCore.ICore#loadItem(org.eclipse.core.resources.
 	 * IFile)
@@ -738,8 +693,8 @@ public class Core extends Application implements ICore, BundleActivator {
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = null;
-		String separator = System.getProperty("file.separator");
 		boolean status = true;
+		String defaultProjectName = "itemDB";
 
 		// Print some diagnostic information
 		if (Platform.getInstanceLocation() != null) {
@@ -751,11 +706,12 @@ public class Core extends Application implements ICore, BundleActivator {
 		// support is added.
 		try {
 			// Get the project handle
-			project = workspaceRoot.getProject("default");
+			project = workspaceRoot.getProject(defaultProjectName);
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Create the project description
-				IProjectDescription desc = ResourcesPlugin.getWorkspace().newProjectDescription("default");
+				IProjectDescription desc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription(defaultProjectName);
 				// Create the project
 				project.create(desc, null);
 			}
@@ -770,6 +726,7 @@ public class Core extends Application implements ICore, BundleActivator {
 			}
 			// Add the project to the master table
 			projectTable.put("defaultUser", project);
+			itemDBProject = project;
 		} catch (CoreException e) {
 			// Catch for creating the project
 			logger.error(getClass().getName() + " Exception!", e);
@@ -935,12 +892,12 @@ public class Core extends Application implements ICore, BundleActivator {
 	 */
 	@Override
 	public String importFileAsItem(URI file, String itemType) {
-		return importFileAsItem(file, itemType, "default");
+		return importFileAsItem(file, itemType, "itemDB");
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(java.net.URI,
 	 *      java.lang.String, org.eclipse.core.resources.IProject)
 	 */
@@ -964,14 +921,14 @@ public class Core extends Application implements ICore, BundleActivator {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(org.eclipse.core.resources.IFile,
 	 *      java.lang.String)
 	 */
 	@Override
 	public String importFileAsItem(IFile file, String itemType) {
-		// This is an IFile, meaning it came from an existing 
-		// IProject, call importFileAsItem with the file URI and its 
+		// This is an IFile, meaning it came from an existing
+		// IProject, call importFileAsItem with the file URI and its
 		// corresponding IProject
 		return importFileAsItem(file.getLocationURI(), itemType, file.getProject());
 	}
@@ -984,7 +941,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	public String importFileAsItem(URI file, String itemType, String projectName) {
 		// Get the project associated with the project name
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		
+
 		// Import it as normal
 		return importFileAsItem(file, itemType, project);
 	}
@@ -998,7 +955,7 @@ public class Core extends Application implements ICore, BundleActivator {
 	public void importFile(URI file) {
 
 		// Simply import the file to the default project
-		importFile(file, "default");
+		importFile(file, "itemDB");
 
 		return;
 	}
