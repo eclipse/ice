@@ -72,10 +72,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * This is an subclass of SWT's Composite class made specifically to work with
  * ICE Entries.
- * </p>
  * <p>
  * Changes to this class are broadcasted using SWT's event system. Marking the
  * FormEditor as dirty, for example, should be handled by registering an event
@@ -85,8 +83,8 @@ import org.slf4j.LoggerFactory;
  * The EntryComposite can post messages about its work with an Entry to a
  * IMessageManager if it is set by calling setMessageManager().
  * </p>
- * 
- * @author Gregory M. Lyon, Anna Wojtowicz, Alex McCaskey
+ *
+ * @author Jay Jay Billings, Gregory M. Lyon, Anna Wojtowicz, Alex McCaskey
  */
 public class EntryComposite extends Composite implements IUpdateableListener {
 
@@ -160,7 +158,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 	/**
 	 * The Constructor
-	 * 
+	 *
 	 * @param parent
 	 *            The parent Composite.
 	 * @param style
@@ -227,7 +225,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 
 	/**
 	 * Returns the entry stored on this Composite
-	 * 
+	 *
 	 * @return The Entry rendered by this Composite.
 	 */
 	public Entry getEntry() {
@@ -601,7 +599,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	/**
 	 * This method creates a Local/Remote file browser button for an Entry with
 	 * the Executable AllowedValueType.
-	 * 
+	 *
 	 */
 	private void createExecutableBrowser() {
 		boolean redraw = buttons.isEmpty();
@@ -787,7 +785,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param layout
 	 * @param numAllowedValues
 	 */
@@ -927,7 +925,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	 * This operation sets the Message Manager that should be used by the
 	 * EntryComposite to post messages about the Entry. If the Message Manager
 	 * is not set, the EntryComposite will not attempt to post messages.
-	 * 
+	 *
 	 * @param manager
 	 *            The Message Manager that the EntryComposite should use.
 	 */
@@ -942,7 +940,7 @@ public class EntryComposite extends Composite implements IUpdateableListener {
 	/**
 	 * This operation sets the value of the Entry and, if possible and
 	 * necessary, reports to the message manager.
-	 * 
+	 *
 	 * @param value
 	 */
 	protected void setEntryValue(String value) {
