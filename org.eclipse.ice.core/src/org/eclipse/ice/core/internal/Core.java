@@ -165,7 +165,8 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Set the project location
 		if (!setupProjectLocation()) {
-			throw new RuntimeException("ICore Message: Unable to load workspace!");
+			throw new RuntimeException(
+					"ICore Message: Unable to load workspace!");
 		}
 
 		// Set the update lock
@@ -186,7 +187,8 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Set the project location
 		if (!setupProjectLocation()) {
-			throw new RuntimeException("ICore Message: Unable to load workspace!");
+			throw new RuntimeException(
+					"ICore Message: Unable to load workspace!");
 		}
 
 		// Set the update lock
@@ -224,11 +226,10 @@ public class Core extends Application implements ICore, BundleActivator {
 			itemManager.setPersistenceProvider(provider);
 		}
 
-
 		// Load up the ItemBuilders
-		ItemBuilder [] builders = ItemBuilder.getItemBuilders();
+		ItemBuilder[] builders = ItemBuilder.getItemBuilders();
 		for (ItemBuilder builder : builders) {
-		    registerItem(builder);
+			registerItem(builder);
 		}
 
 		// FIXME! Register composite items
@@ -264,7 +265,9 @@ public class Core extends Application implements ICore, BundleActivator {
 		itemManager.persistItems();
 
 		// Unregister with the HTTP Service
-		bundleContext.ungetService(httpServiceRef);
+		if (httpServiceRef != null) {
+			bundleContext.ungetService(httpServiceRef);
+		}
 
 		// Unregister this service from the framework
 		registration.unregister();
@@ -286,8 +289,10 @@ public class Core extends Application implements ICore, BundleActivator {
 		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
 		extensionPoints.add("org.eclipse.ice.datastructures.jaxbClassProvider");
 		for (String extensionPointName : extensionPoints) {
-			IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(extensionPointName);
-			logger.debug("##### Extensions for: " + extensionPointName + " #####");
+			IExtensionPoint point = Platform.getExtensionRegistry()
+					.getExtensionPoint(extensionPointName);
+			logger.debug(
+					"##### Extensions for: " + extensionPointName + " #####");
 			if (point != null) {
 				IExtension[] extensions = point.getExtensions();
 				for (IExtension extension : extensions) {
@@ -312,7 +317,8 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (itemBuilder != null) {
-			logger.info("ICore Message: Item " + itemBuilder.getItemName() + " registered with Core.");
+			logger.info("ICore Message: Item " + itemBuilder.getItemName()
+					+ " registered with Core.");
 			itemManager.registerBuilder(itemBuilder);
 		}
 
@@ -329,7 +335,8 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Register the builder with the ItemManager so long as it is not null
 		if (builder != null) {
-			logger.info("ICore Message: Composite Item " + builder.getItemName() + " registered with Core.");
+			logger.info("ICore Message: Composite Item " + builder.getItemName()
+					+ " registered with Core.");
 			itemManager.registerCompositeBuilder(builder);
 		}
 
@@ -353,7 +360,8 @@ public class Core extends Application implements ICore, BundleActivator {
 	@Override
 	public String createItem(String itemType) {
 		// This operation retrieves the default "itemDB
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB");
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject("itemDB");
 		return createItem(itemType, project);
 
 	}
@@ -375,7 +383,8 @@ public class Core extends Application implements ICore, BundleActivator {
 		if (itemType != null && project != null) {
 			newItemId = itemManager.createItem(itemType, project);
 		} else {
-			logger.error("Unable to create Item in the core! Type = " + itemType + " , project = " + project);
+			logger.error("Unable to create Item in the core! Type = " + itemType
+					+ " , project = " + project);
 		}
 
 		return String.valueOf(newItemId);
@@ -463,7 +472,8 @@ public class Core extends Application implements ICore, BundleActivator {
 	 * @see ICore#processItem(int itemId, String actionName, int uniqueClientId)
 	 */
 	@Override
-	public FormStatus processItem(int itemId, String actionName, int uniqueClientId) {
+	public FormStatus processItem(int itemId, String actionName,
+			int uniqueClientId) {
 
 		// Local Declarations
 		FormStatus status = FormStatus.InfoError;
@@ -568,15 +578,18 @@ public class Core extends Application implements ICore, BundleActivator {
 					// Grab PSF or XML file
 					if (filename.endsWith(".psf") | filename.endsWith(".xml")) {
 						// Get the file
-						file = project.getFile(currentResource.getProjectRelativePath());
+						file = project.getFile(
+								currentResource.getProjectRelativePath());
 						try {
 							// Load the SerializedItemBuilder
-							builder = new SerializedItemBuilder(file.getContents());
+							builder = new SerializedItemBuilder(
+									file.getContents());
 							// Register the builder
 							itemManager.registerBuilder(builder);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-							logger.error(getClass().getName() + " Exception!", e);
+							logger.error(getClass().getName() + " Exception!",
+									e);
 							status = false;
 						}
 					}
@@ -615,7 +628,8 @@ public class Core extends Application implements ICore, BundleActivator {
 		// are no longer using Declarative Services.
 		if (bundleContext != null) {
 			// Grab the service reference and the service
-			httpServiceRef = bundleContext.getServiceReference(HttpService.class);
+			httpServiceRef = bundleContext
+					.getServiceReference(HttpService.class);
 
 			// If it is good to go, start up the webserver
 			if (httpServiceRef != null) {
@@ -627,7 +641,8 @@ public class Core extends Application implements ICore, BundleActivator {
 				httpService = bundleContext.getService(httpServiceRef);
 
 				// Set the parameters
-				servletParams.put("javax.ws.rs.Application", Core.class.getName());
+				servletParams.put("javax.ws.rs.Application",
+						Core.class.getName());
 
 				// Register the service
 				try {
@@ -636,7 +651,8 @@ public class Core extends Application implements ICore, BundleActivator {
 					bundle = bundleContext.getBundle();
 					// Make sure we got a valid bundle
 					if (bundle == null) {
-						logger.info("ICE Core Bundle was null! No web service started.");
+						logger.info(
+								"ICE Core Bundle was null! No web service started.");
 						return;
 					}
 
@@ -646,10 +662,14 @@ public class Core extends Application implements ICore, BundleActivator {
 					// Resolve the URLs to be absolute
 					resourceURL = FileLocator.resolve(resourceURL);
 					configFileURL = FileLocator.resolve(configFileURL);
-					HttpContext httpContext = new BasicAuthSecuredContext(resourceURL, configFileURL,
+					HttpContext httpContext = new BasicAuthSecuredContext(
+							resourceURL, configFileURL,
 							"ICE Core Server Configuration");
-					httpService.registerServlet("/ice", new ServletContainer(this), servletParams, httpContext);
-				} catch (ServletException | NamespaceException | IOException e) {
+					httpService.registerServlet("/ice",
+							new ServletContainer(this), servletParams,
+							httpContext);
+				} catch (ServletException | NamespaceException
+						| IOException e) {
 					logger.error(getClass().getName() + " Exception!", e);
 				}
 				logger.info("ICE Core Server loaded and web service started!");
@@ -815,11 +835,13 @@ public class Core extends Application implements ICore, BundleActivator {
 			JsonObject messageJsonObject = messageJson.getAsJsonObject();
 
 			// Get the Item id from the json
-			JsonPrimitive itemIdJson = messageJsonObject.getAsJsonPrimitive("item_id");
+			JsonPrimitive itemIdJson = messageJsonObject
+					.getAsJsonPrimitive("item_id");
 			int itemId = itemIdJson.getAsInt();
 
 			// Get the array of posts from the message
-			JsonArray jsonMessagesList = messageJsonObject.getAsJsonArray("posts");
+			JsonArray jsonMessagesList = messageJsonObject
+					.getAsJsonArray("posts");
 
 			// Load the list
 			for (int i = 0; i < jsonMessagesList.size(); i++) {
@@ -834,7 +856,8 @@ public class Core extends Application implements ICore, BundleActivator {
 			}
 		} catch (JsonParseException e) {
 			// Log the message
-			String err = "Core Message: " + "JSON parsing failed for message " + messageString;
+			String err = "Core Message: " + "JSON parsing failed for message "
+					+ messageString;
 			logger.error(getClass().getName() + " Exception!", e);
 			logger.error(err);
 		}
@@ -858,8 +881,9 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// Print the message if debugging is enabled
 		// if (debuggingEnabled) {
-		logger.info("Core Message: " + "Update received with message: " + message);
-		// }
+		logger.info(
+				"Core Message: " + "Update received with message: " + message);
+				// }
 
 		// Only process the message if it exists and is not empty
 		if (message != null && !message.isEmpty() && message.contains("=")) {
@@ -868,7 +892,8 @@ public class Core extends Application implements ICore, BundleActivator {
 			String[] messageParts = message.split("=");
 			if (messageParts.length > 1) {
 				// Get the message object.
-				ArrayList<Message> msgList = buildMessagesFromString(messageParts[1]);
+				ArrayList<Message> msgList = buildMessagesFromString(
+						messageParts[1]);
 				// Post the messages if there are any. Fail otherwise.
 				if (!msgList.isEmpty()) {
 					for (int i = 0; i < msgList.size(); i++) {
@@ -902,7 +927,8 @@ public class Core extends Application implements ICore, BundleActivator {
 	 *      java.lang.String, org.eclipse.core.resources.IProject)
 	 */
 	@Override
-	public String importFileAsItem(URI file, String itemType, IProject project) {
+	public String importFileAsItem(URI file, String itemType,
+			IProject project) {
 		// Local Declarations
 		int newItemId = -1;
 
@@ -913,7 +939,8 @@ public class Core extends Application implements ICore, BundleActivator {
 			importFile(file, project);
 			// Get the name of the file. This is only created to get the short
 			// name of the file. Then create the Item
-			newItemId = itemManager.createItem(new File(file).getName(), itemType, project);
+			newItemId = itemManager.createItem(new File(file).getName(),
+					itemType, project);
 		}
 
 		return String.valueOf(newItemId);
@@ -930,17 +957,22 @@ public class Core extends Application implements ICore, BundleActivator {
 		// This is an IFile, meaning it came from an existing
 		// IProject, call importFileAsItem with the file URI and its
 		// corresponding IProject
-		return importFileAsItem(file.getLocationURI(), itemType, file.getProject());
+		return importFileAsItem(file.getLocationURI(), itemType,
+				file.getProject());
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(java.net.URI, java.lang.String, java.lang.String)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(java.net.URI,
+	 *      java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String importFileAsItem(URI file, String itemType, String projectName) {
+	public String importFileAsItem(URI file, String itemType,
+			String projectName) {
 		// Get the project associated with the project name
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(projectName);
 
 		// Import it as normal
 		return importFileAsItem(file, itemType, project);
@@ -962,24 +994,29 @@ public class Core extends Application implements ICore, BundleActivator {
 
 	/**
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.core.iCore.ICore#importFile(java.net.URI, java.lang.String)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFile(java.net.URI,
+	 *      java.lang.String)
 	 */
 	@Override
 	public void importFile(URI file, String projectName) {
 		// Local Declarations
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(projectName);
 		if (project != null) {
 			importFile(file, project);
 		} else {
-			logger.info(
-					"File could not be imported into project " + projectName + " because the project does not exist.");
+			logger.info("File could not be imported into project " + projectName
+					+ " because the project does not exist.");
 		}
 
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.core.iCore.ICore#importFile(java.net.URI, org.eclipse.core.resources.IProject)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFile(java.net.URI,
+	 *      org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public void importFile(URI file, IProject project) {
@@ -990,7 +1027,8 @@ public class Core extends Application implements ICore, BundleActivator {
 			IFile fileInProject = project.getFile(path.lastSegment());
 			// Get the paths and convert them to strings
 			IPath fullPathInProject = fileInProject.getLocation();
-			String path1 = path.toString(), path2 = fullPathInProject.toString();
+			String path1 = path.toString(),
+					path2 = fullPathInProject.toString();
 			// Remove devices ids and other such things from the path strings
 			path1 = path1.substring(path1.lastIndexOf(":") + 1);
 			path2 = path2.substring(path2.lastIndexOf(":") + 1);
@@ -1006,14 +1044,16 @@ public class Core extends Application implements ICore, BundleActivator {
 						fileInProject.delete(true, null);
 					} catch (CoreException e) {
 						// Complain and don't do anything else.
-						logger.info("Core Message: " + "Unable to import file.");
+						logger.info(
+								"Core Message: " + "Unable to import file.");
 						logger.error(getClass().getName() + " Exception!", e);
 						return;
 					}
 				}
 				try {
 					// Open a stream of the file
-					FileInputStream fileStream = new FileInputStream(new File(file));
+					FileInputStream fileStream = new FileInputStream(
+							new File(file));
 					// Import the file
 					fileInProject.create(fileStream, true, null);
 				} catch (FileNotFoundException e) {
@@ -1033,16 +1073,19 @@ public class Core extends Application implements ICore, BundleActivator {
 
 			// Drop some debug info.
 			if (System.getProperty("DebugICE") != null) {
-				logger.info("Core Message: " + "Imported file " + file.toString());
+				logger.info(
+						"Core Message: " + "Imported file " + file.toString());
 			}
 		} else {
-			logger.info("File could not be imported into project because the File URI was not valid.");
+			logger.info(
+					"File could not be imported into project because the File URI was not valid.");
 		}
 
 	}
 
 	/*
 	 * (non-Javadoc)
+	 *
 	 * @see org.eclipse.ice.core.iCore.ICore#renameItem(int, java.lang.String)
 	 */
 	@Override
