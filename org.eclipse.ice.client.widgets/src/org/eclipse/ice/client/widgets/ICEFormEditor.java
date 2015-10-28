@@ -108,11 +108,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	private boolean dirty = false;
 
 	/**
-	 * The Component Map. This map is used to organize the Components in the
-	 * Form by type. The type is the key and is a string equal to one of "data,"
-	 * "output," "matrix," "masterDetails", "table," "geometry," "shape" or
-	 * "tree," or reactor. The value is a list that stores all components of
-	 * that type. This is a simulated multimap.
+	 * The Component Map. This map must contain the Components in the Form
+	 * organized by type. The type is the key and a string equal to one of
+	 * "data," "output," "matrix," "masterDetails", "table," "geometry,"
+	 * "shape," "tree," "mesh," or "reactor." The value is a list that stores
+	 * all components of that type; DataComponent, ResourceComponent,
+	 * MatrixComponent, MasterDetailsComponent, TableComponent,
+	 * GeometryComponent, ShapeComponent, TreeComponent, MeshComponent,
+	 * ReactorComponent, etc. This is a simulated multimap.
+	 * 
 	 */
 	protected HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
 
@@ -306,6 +310,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createResourcePage() {
 
+		// Need IResourcePageProvider
+
 		// Local Declarations
 		ResourceComponent resourceComponent = null;
 
@@ -343,6 +349,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The Form pages, one for each MasterDetailsComponent.
 	 */
 	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
+
+		// Need IMasterDetailsPageProvider
 
 		// Local Declarations
 		ArrayList<ICEFormPage> masterDetailsPages = new ArrayList<ICEFormPage>();
@@ -403,6 +411,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createGeometryPage() {
 
+		// Need IGeometryPageProvider
+
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(new ICEGeometry());
@@ -433,6 +443,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createMeshPage() {
 
+		// Need IMeshPageProvider
+
 		// Local Declarations
 		MeshComponent meshComponent = new MeshComponent();
 
@@ -460,6 +472,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The ICEFormPages for each EMF Component in the list.
 	 */
 	private ArrayList<ICEFormPage> createEMFSectionPages() {
+
+		// Need IEMFSectionPageProvider
+
 		// Local Declarations
 		EMFComponent emfComponent = null;
 		EMFSectionPage emfPage = null;
@@ -489,6 +504,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The pages.
 	 */
 	private ArrayList<ICEFormPage> createListSectionPages() {
+
+		// Need IListPageProvider
 
 		// Create the list of pages to return
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
@@ -623,6 +640,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
 
+		// Need IHeaderContentsProvider
+
 		// Get a reference to the IManagedForm
 		managedForm = headerForm;
 
@@ -743,6 +762,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 *         {@code null}.
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
+
+		// Need IBasicComponentPageProvider
+
 		// Local Declarations
 		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
 		ArrayList<Component> comps = new ArrayList<Component>();
@@ -869,7 +891,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		}
 
 		iceDataForm.register(this);
-		
+
 		return;
 	}
 
@@ -1003,9 +1025,28 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	@Override
 	protected void addPages() {
-		
+
 		// Local Declaration
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
+
+		// Example code for how this might work in the future
+
+		// Get the providers
+		// IPageProvider [] providers = IPageProvider.getProviders();
+
+		// Search over the providers to find the one with the name that matches
+		// the key (in this case "default).
+		// for (IPageProvider provider : providers) {
+
+		// if ("default".equals(provider.getName())) {
+
+		// Get the pages
+		// IFormPage [] formPages = provider.getPages(componentMap);
+		// break;
+
+		// }
+
+		// }
 
 		// Load data pages if they are available.
 		if (!iceDataForm.getComponents().isEmpty()) {
@@ -1090,6 +1131,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return the empty page
 	 */
 	private IFormPage createEmptyErrorPage() {
+
+		// Need IErrorPageProvider
+
 		return new ErrorMessageFormPage(this, "Error Page", "Error Page");
 	}
 
@@ -1330,7 +1374,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 					managedForm.getForm().getForm().redraw();
 				}
 			});
-			
+
 			return;
 		}
 
