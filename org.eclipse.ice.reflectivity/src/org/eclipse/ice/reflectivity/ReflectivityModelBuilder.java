@@ -19,6 +19,7 @@ import org.eclipse.ice.item.model.AbstractModelBuilder;
 
 /**
  * The ItemBuilder for creating reflectivity models.
+ *
  * @author Jay Jay Billings
  */
 public class ReflectivityModelBuilder extends AbstractModelBuilder {
@@ -27,12 +28,12 @@ public class ReflectivityModelBuilder extends AbstractModelBuilder {
 	 * The name of the builder and the default name of the Item.
 	 */
 	public static final String name = "Reflectivity Model";
-	
+
 	/**
 	 * The type of the Item.
 	 */
 	public static final ItemType type = ItemType.Model;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -40,9 +41,13 @@ public class ReflectivityModelBuilder extends AbstractModelBuilder {
 		setName("Reflectivity Model");
 		setType(ItemType.Model);
 	}
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
+	 *
+	 * @see
+	 * org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.
+	 * resources.IProject)
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {

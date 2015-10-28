@@ -4,4 +4,5 @@
    <implementation class="org.eclipse.ice.core.internal.Core"/>
    <reference bind="registerCompositeItem" cardinality="0..n" interface="org.eclipse.ice.item.ICompositeItemBuilder" name="ICompositeItemBuilder" policy="dynamic" unbind="unregisterItem"/>
    <reference bind="setIOService" cardinality="1..1" interface="org.eclipse.ice.io.serializable.IIOService" name="IIOService" policy="static"/>
+   <reference cardinality="1..1" interface="org.eclipse.ice.materials.IMaterialsDatabase" name="IMaterialsDatabase" policy="static"/>
 </scr:component>

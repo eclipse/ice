@@ -53,7 +53,9 @@ import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.item.model.AbstractModelBuilder;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
+import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -119,6 +121,11 @@ public class Core extends Application implements ICore, BundleActivator {
 	 * The ServiceReference used to track the HTTP service.
 	 */
 	private ServiceReference<HttpService> httpServiceRef;
+
+	/**
+	 * The ServiceReference used to track the Materials Database.
+	 */
+	private ServiceReference<IMaterialsDatabase> matDBServiceRef;
 
 	/**
 	 * The OSGi HTTP Service used by the Core to publish itself.
@@ -234,6 +241,9 @@ public class Core extends Application implements ICore, BundleActivator {
 
 		// FIXME! Register composite items
 
+		// Get and set the Materials Database.
+		getMaterialsDatabase();
+
 		// Tell the ItemManager to suit up. It's time to rock and roll.
 		itemManager.loadItems(itemDBProject);
 
@@ -250,7 +260,21 @@ public class Core extends Application implements ICore, BundleActivator {
 		}
 
 		return;
+	}
 
+	/**
+	 * This operation configures the Materials database.
+	 */
+	private void getMaterialsDatabase() {
+		// Grab the service interface
+		matDBServiceRef = bundleContext
+				.getServiceReference(IMaterialsDatabase.class);
+		// Get the service
+		IMaterialsDatabase database = bundleContext.getService(matDBServiceRef);
+		// This should probably be delegated through the ItemManager.
+		AbstractModelBuilder.setMaterialsDatabase(database);
+
+		return;
 	}
 
 	/*
@@ -267,6 +291,11 @@ public class Core extends Application implements ICore, BundleActivator {
 		// Unregister with the HTTP Service
 		if (httpServiceRef != null) {
 			bundleContext.ungetService(httpServiceRef);
+		}
+
+		// Unregister with the Materials Database service
+		if (matDBServiceRef != null) {
+			bundleContext.ungetService(matDBServiceRef);
 		}
 
 		// Unregister this service from the framework
@@ -637,7 +666,7 @@ public class Core extends Application implements ICore, BundleActivator {
 				// Local Declaration
 				Dictionary<String, String> servletParams = new Hashtable<String, String>();
 
-				/// Get the service
+				// Get the service
 				httpService = bundleContext.getService(httpServiceRef);
 
 				// Set the parameters
