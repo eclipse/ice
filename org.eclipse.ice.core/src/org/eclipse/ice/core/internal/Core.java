@@ -266,13 +266,17 @@ public class Core extends Application implements ICore, BundleActivator {
 	 * This operation configures the Materials database.
 	 */
 	private void getMaterialsDatabase() {
-		// Grab the service interface
-		matDBServiceRef = bundleContext
-				.getServiceReference(IMaterialsDatabase.class);
-		// Get the service
-		IMaterialsDatabase database = bundleContext.getService(matDBServiceRef);
-		// This should probably be delegated through the ItemManager.
-		AbstractModelBuilder.setMaterialsDatabase(database);
+
+		if (bundleContext != null) {
+			// Grab the service interface
+			matDBServiceRef = bundleContext
+					.getServiceReference(IMaterialsDatabase.class);
+			// Get the service
+			IMaterialsDatabase database = bundleContext
+					.getService(matDBServiceRef);
+			// This should probably be delegated through the ItemManager.
+			AbstractModelBuilder.setMaterialsDatabase(database);
+		}
 
 		return;
 	}
