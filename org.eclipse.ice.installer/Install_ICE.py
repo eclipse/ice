@@ -38,6 +38,7 @@ def parse_args(args):
             help='The packages to update.  Leave blank to update all available packages.')
     parser.add_argument('-p', '--prefix', default=os.path.abspath(os.path.join(".","ICE")),
             help="The location to download and install ICE.")
+    parser.add_argument("--unstable", action='store_true', help='Install the unstable nightly version of ICE.')
     parser.add_argument("--with-hdfjava", help="The path to an installation of HDFJava")
     parser.add_argument("--with-visit", help="The path to an installation of VisIt")
     parser.add_argument("--skip-download", action='store_true',
@@ -140,6 +141,8 @@ def download_packages(opts, os_type, arch_type):
     package_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
                     "VisIt"   : "http://portal.nersc.gov/project/visit/releases/2.9.1/",
                     "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
+    if opts.unstable:
+        package_urls['ICE'] = "http://sourceforge.net/projects/niceproject/files/unstable-nightly/ice/"
     files = dict()
     for pkg in packages:
         fname = get_package_file(pkg, os_type, arch_type)
