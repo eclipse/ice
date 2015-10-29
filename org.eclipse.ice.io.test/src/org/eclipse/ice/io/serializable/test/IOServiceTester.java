@@ -43,7 +43,7 @@ public class IOServiceTester {
 	private IIOService service;
 
 	/**
-	 * This method checks that we can give and get valid IReaders and IWriters. 
+	 * This method checks that we can give and get valid IReaders and IWriters.
 	 */
 	@Test
 	public void checkAddGetReaderWriter() {
@@ -92,9 +92,13 @@ public class IOServiceTester {
 
 		};
 
-		// Check that maps were initialized correctly
-		assertEquals(0, service.getNumberOfReaders());
-		assertEquals(0, service.getNumberOfWriters());
+		// Check that maps were initialized correctly. There are six readers
+		// available by default.
+		int numDefaultReaders = 6;
+		assertEquals(numDefaultReaders, service.getNumberOfReaders());
+		// And four writers
+		int numDefaultWriters = 4;
+		assertEquals(numDefaultWriters, service.getNumberOfWriters());
 
 		// Add the reader to the IOService
 		service.addReader(fakeReader);
@@ -102,11 +106,11 @@ public class IOServiceTester {
 		// Make sure it was stored correctly
 		assertNotNull(service.getReader("FakeReader"));
 		assertTrue(fakeReader == service.getReader("FakeReader"));
-		assertEquals(1, service.getNumberOfReaders());
+		assertEquals(numDefaultReaders+1, service.getNumberOfReaders());
 
 		// Make sure adding a null IReader doesn't add anything
 		service.addReader(null);
-		assertEquals(1, service.getNumberOfReaders());
+		assertEquals(numDefaultReaders+1, service.getNumberOfReaders());
 
 		// Test asking for a non-exisitant reader
 		assertNull(service.getReader("SomeOtherReader"));
@@ -116,11 +120,11 @@ public class IOServiceTester {
 
 		assertNotNull(service.getWriter("FakeWriter"));
 		assertTrue(fakeWriter == service.getWriter("FakeWriter"));
-		assertEquals(1, service.getNumberOfWriters());
+		assertEquals(numDefaultWriters+1, service.getNumberOfWriters());
 
 		// Make sure adding a null IWriter doesn't add anything
 		service.addWriter(null);
-		assertEquals(1, service.getNumberOfWriters());
+		assertEquals(numDefaultWriters+1, service.getNumberOfWriters());
 
 		// Test asking for a non-existant writer
 		assertNull(service.getWriter("SomeOtherWriter"));

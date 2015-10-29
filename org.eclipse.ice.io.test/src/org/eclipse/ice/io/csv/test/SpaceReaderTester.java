@@ -29,13 +29,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.io.csv.CSVReader;
 import org.eclipse.ice.io.csv.SpaceDelimitedReader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test class for {@link org.eclipse.ice.io.csv.CSVReader}.
+ * Test class for {@link org.eclipse.ice.io.csv.SpaceDelimitedReader}.
  * 
  * @author Jay Jay Billings
  *
@@ -46,7 +45,7 @@ public class SpaceReaderTester {
 	 * The space-delimited file that will be tested
 	 */
 	private static IFile testFile;
-	
+
 	/**
 	 * The reader that will be tested.
 	 */
@@ -76,7 +75,9 @@ public class SpaceReaderTester {
 					.loadProjectDescription(projectPath);
 			// Get the project handle and create it
 			project = workspaceRoot.getProject(desc.getName());
-			project.create(desc, new NullProgressMonitor());
+			if (!project.exists()) {
+				project.create(desc, new NullProgressMonitor());
+			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
 				project.open(new NullProgressMonitor());
@@ -100,7 +101,7 @@ public class SpaceReaderTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.io.csv.CSVReader#read(org.eclipse.core.resources.IFile)}
+	 * {@link org.eclipse.ice.io.csv.SpaceDelimitedReader#read(org.eclipse.core.resources.IFile)}
 	 * .
 	 * 
 	 * @throws CoreException
@@ -117,40 +118,41 @@ public class SpaceReaderTester {
 		ListComponent<String[]> lines = (ListComponent<String[]>) form
 				.getComponents().get(0);
 		assertTrue(lines.get(0) instanceof String[]);
-		assertEquals(402,lines.size());
+		assertEquals(402, lines.size());
 
 		// Check the first element of the list. The first line of the file is a
 		// comment, so it should be skipped and this should be data.
-		String [] line = lines.get(0);
-		assertEquals(4,line.length);
-		assertEquals("8.14174169E-03",line[0]);
-		assertEquals("0.78066729",line[1]);
-		assertEquals("0.08261301",line[2]);
-		assertEquals("0.000387",line[3]);
+		String[] line = lines.get(0);
+		assertEquals(4, line.length);
+		assertEquals("8.14174169E-03", line[0]);
+		assertEquals("0.78066729", line[1]);
+		assertEquals("0.08261301", line[2]);
+		assertEquals("0.000387", line[3]);
 
 		// Check the last element of the list
-		line = lines.get(lines.size()-1);
-		assertEquals(4,line.length);
-		assertEquals("4.40137332E-01",line[0]);
-		assertEquals("0.00000013",line[1]);
-		assertEquals("0.00000007",line[2]);
-		assertEquals("0.010323",line[3]);
-		
+		line = lines.get(lines.size() - 1);
+		assertEquals(4, line.length);
+		assertEquals("4.40137332E-01", line[0]);
+		assertEquals("0.00000013", line[1]);
+		assertEquals("0.00000007", line[2]);
+		assertEquals("0.010323", line[3]);
+
 		return;
 	}
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.io.csv.CSVReader#findAll(org.eclipse.core.resources.IFile, java.lang.String)}
+	 * {@link org.eclipse.ice.io.csv.SpaceDelimitedReader#findAll(org.eclipse.core.resources.IFile, java.lang.String)}
 	 * .
 	 */
-//	@Test
+	// @Test
 	public void testFindAll() {
 		fail("Not yet implemented");
 	}
 
 	/**
-	 * Test method for {@link org.eclipse.ice.io.csv.CSVReader#getReaderType()}.
+	 * Test method for
+	 * {@link org.eclipse.ice.io.csv.SpaceDelimitedReader#getReaderType()}.
 	 */
 	@Test
 	public void testGetReaderType() {
