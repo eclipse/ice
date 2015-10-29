@@ -50,6 +50,8 @@ public class IOServiceTester {
 
 		// Create a new IOService to test
 		service = new IOService();
+		int numDefaultReaders = service.getNumberOfReaders();
+		int numDefaultWriters = service.getNumberOfWriters();
 
 		// Create a fake IReader realization
 		IReader fakeReader = new IReader() {
@@ -92,12 +94,9 @@ public class IOServiceTester {
 
 		};
 
-		// Check that maps were initialized correctly. There are six readers
-		// available by default.
-		int numDefaultReaders = 6;
+		// Check the number of readers and writers
 		assertEquals(numDefaultReaders, service.getNumberOfReaders());
 		// And four writers
-		int numDefaultWriters = 4;
 		assertEquals(numDefaultWriters, service.getNumberOfWriters());
 
 		// Add the reader to the IOService
