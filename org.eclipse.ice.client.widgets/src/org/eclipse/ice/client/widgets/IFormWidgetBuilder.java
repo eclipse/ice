@@ -1,15 +1,15 @@
 /*******************************************************************************
-* Copyright (c) 2013, 2014 UT-Battelle, LLC.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Initial API and implementation and/or initial documentation - Jay Jay Billings,
-*   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-*   Claire Saunders, Matthew Wang, Anna Wojtowicz
-*******************************************************************************/
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,9 +37,9 @@ public interface IFormWidgetBuilder {
 	 * @return <p>The specialized IFormWidget from the service.</p>
 	 */
 	public IFormWidget build();
-	
 
-/**
+
+	/**
 	 * This operation retrieves all of the IFormWidgetBuilders from the
 	 * ExtensionRegistry.
 	 *
@@ -47,18 +47,18 @@ public interface IFormWidgetBuilder {
 	 * @throws CoreException
 	 *             This exception is thrown if an extension cannot be loaded.
 	 */
-public static IFormWidgetBuilder[] getFormWidgetBuilders() throws CoreException {
+	public static IFormWidgetBuilder[] getFormWidgetBuilders() throws CoreException {
 
-	/**
-	 * Logger for handling event messages and other information.
-	 */
-	Logger logger = LoggerFactory.getLogger(IFormWidgetBuilder.class);
+		/**
+		 * Logger for handling event messages and other information.
+		 */
+		Logger logger = LoggerFactory.getLogger(IFormWidgetBuilder.class);
 
-	IFormWidgetBuilder [] builders = null;
-	String id = "org.eclipse.ice.item.itemBuilder";
-	IExtensionPoint point = Platform.getExtensionRegistry()
-			.getExtensionPoint(id);
-		
+		IFormWidgetBuilder [] builders = null;
+		String id = "org.eclipse.ice.item.itemBuilder";
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(id);
+
 		// If the point is available, create all the builders and load them into
 		// the array.
 		if (point != null) {
