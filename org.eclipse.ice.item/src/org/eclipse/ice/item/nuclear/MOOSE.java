@@ -287,13 +287,14 @@ public class MOOSE extends Item {
 			// user does not want this feature
 			String thisHost = "";
 			try {
-				thisHost = InetAddress.getByName(InetAddress.getLocalHost().getHostName()).getHostAddress();
+				thisHost = InetAddress.getLocalHost().getCanonicalHostName();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 				logger.error(this.getClass().getName() + " Exception! ", e);
 
 			}
 			if (!thisHost.isEmpty()) {
+				System.out.println("Found This Host to be : " + thisHost);
 				createICEUpdaterBlock(thisHost);
 			}
 

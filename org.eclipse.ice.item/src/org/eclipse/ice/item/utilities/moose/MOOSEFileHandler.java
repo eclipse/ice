@@ -435,6 +435,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			logger.info("MOOSEFileHandler Message: File loaded.");
 		}
 
+		// Check we got a valid YAML file
+		if (list == null || list.isEmpty()) {
+			logger.error("Invalid YAML at " + yamlFile.getAbsolutePath());
+			return trees;
+		}
+		
 		// Load the block list. Use YAMLBlocks so that they can be converted to
 		// TreeComposites appropriately.
 		for (int i = 0; i < list.size(); i++) {
