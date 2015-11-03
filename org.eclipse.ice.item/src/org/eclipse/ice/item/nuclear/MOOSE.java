@@ -95,7 +95,7 @@ public class MOOSE extends Item {
 	/**
 	 * Reference to the Model's input tree.
 	 */
-	@XmlElement()
+	@XmlTransient()
 	private TreeComposite modelTree;
 
 	/**
@@ -119,7 +119,15 @@ public class MOOSE extends Item {
 		this(null);
 		mooseModel = new MOOSEModel(null);
 		mooseLauncher = new MOOSELauncher(null);
-		addComponents();
+		modelTree = (TreeComposite) form.getComponent(2);
+		postProcessorsData = (DataComponent) form.getComponent(MOOSE.ppDataId);
+		mooseModel.getForm().addComponent(modelTree);
+		modelFiles = (DataComponent) form.getComponent(1);
+		status = FormStatus.ReadyToProcess;
+		TreeComposite ppTree;
+		if ((ppTree = getTopLevelTreeByName("Postprocessors")) != null) {
+			setupPostprocessorData(ppTree);
+		}
 	}
 
 	/**
@@ -135,7 +143,8 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * 
+	 * This private method add the necessary components 
+	 * to the Form. 
 	 */
 	private void addComponents() {
 		// Loop over all components and add them to this form
