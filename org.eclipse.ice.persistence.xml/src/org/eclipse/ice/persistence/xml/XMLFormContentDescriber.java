@@ -25,7 +25,7 @@ import org.eclipse.ice.datastructures.form.FormTextContentDescriber;
  * This is a content describer for the XML files that are persisted by ICE's
  * default XMLPersistenceProvider.
  *
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Alex McCaskey
  *
  */
 public class XMLFormContentDescriber implements FormTextContentDescriber { 
