@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
-import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -50,10 +48,7 @@ public class EntryCellEditingSupport extends EditingSupport {
 	 * A <code>CellEditor</code> built around a <code>Combo</code> widget. This
 	 * is used to restrict displayed values to a set of allowed values.
 	 */
-	private ComboBoxCellEditor comboCell;
-
-	private Composite parent;
-
+	private final ComboBoxCellEditor comboCell;
 	/**
 	 * A Map used to quickly look up an index of an element's value in its list
 	 * of allowed values. This is used when the {@link #contentProvider}
@@ -82,18 +77,14 @@ public class EntryCellEditingSupport extends EditingSupport {
 		this.contentProvider = contentProvider;
 
 		// Get the viewer's Composite so we can create the CellEditors.
-		parent = (Composite) viewer.getControl();
+		Composite parent = (Composite) viewer.getControl();
 
 		// Create the TextCellEditor.
 		textCell = new TextCellEditor(parent, SWT.LEFT);
 
 		// Create the ComboBoxCellEditor.
-		// comboCell = new ComboBoxCellEditor(parent, new String[] {},
-		// SWT.DROP_DOWN | SWT.READ_ONLY);
-		// comboCell.getControl().setBackground(parent.getBackground());
-
-		// Create the ComboBoxCellEditor.
-
+		comboCell = new ComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN | SWT.READ_ONLY);
+		comboCell.getControl().setBackground(parent.getBackground());
 		// Create a HashMap to contain values for discrete Entry values.
 		valueMap = new HashMap<String, Integer>();
 
@@ -125,17 +116,6 @@ public class EntryCellEditingSupport extends EditingSupport {
 			// If the element requires a Combo, populate the combo cell and
 			// return it.
 			if (contentProvider.requiresCombo(element)) {
-
-				VizEntry entry = (VizEntry) element;
-
-				boolean isExecutable = entry.getValueType() == VizAllowedValueType.Executable;
-				if (isExecutable) {
-					comboCell = new FileComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN, this, entry);
-				} else {
-					comboCell = new ComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN | SWT.READ_ONLY);
-				}
-
-				comboCell.getControl().setBackground(parent.getBackground());
 				editor = comboCell;
 
 				// Update the Combo's items.
