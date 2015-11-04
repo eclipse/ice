@@ -862,6 +862,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				// Set *correct* input via a little short circuit.
 				ICEFormInput = new ICEFormInput(iceDataForm);
 				setInput(ICEFormInput);
+				
+				// Register the client as a listener 
+				// of specific form editor events.
+				registerUpdateListener(IUpdateEventListener.getUpdateEventListener());
+				registerProcessListener(IProcessEventListener.getProcessEventListener());
+				registerResourceProvider(ISimpleResourceProvider.getSimpleResourceProvider());
 			} catch (CoreException e) {
 				// Complain
 				logger.error("Unable to get IClient instance!", e);
@@ -909,7 +915,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 
-		System.out.println("SETTING THE FORM AS NOT DIRTY");
 		// Set the dirty flag
 		setDirty(false);
 
@@ -1270,7 +1275,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Notify the update listeners
 		for (IUpdateEventListener eventListener : updateListeners) {
-			System.out.println("Updating " + eventListener.getClass().toString());
 			eventListener.formUpdated(iceDataForm);
 		}
 
