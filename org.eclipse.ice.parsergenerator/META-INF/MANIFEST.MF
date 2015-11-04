@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Parsergenerator
+Bundle-SymbolicName: org.eclipse.ice.parsergenerator
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.ice.parsergenerator.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ice.item
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.core.internal.resources,
+ org.eclipse.core.resources
