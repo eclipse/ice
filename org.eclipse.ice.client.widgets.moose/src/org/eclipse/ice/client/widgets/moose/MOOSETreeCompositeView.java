@@ -166,7 +166,6 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 		String partId = partRef.getId();
 		IWorkbenchPart part = partRef.getPart(false);
 
-		System.out.println("Printing Stats: " + partId + ", " + MOOSEFormEditor.ID);
 		if (MOOSEFormEditor.ID.equals(partId) && part != editor) {
 
 			// Set the new active editor.
@@ -203,7 +202,6 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 
 		IWorkbenchPart part = partRef.getPart(false);
 
-		System.out.println("Printing Exit Stats: " + part.getTitle() + ", " + (part == editor));
 		if (part == editor) {
 			// Clear the input to the TreeViewer.
 			setInput(new TreeComposite(), null);

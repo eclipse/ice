@@ -74,6 +74,7 @@
 		<module>org.eclipse.ice.client.compatibility</module>
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
+		<module>org.eclipse.ice.client.widgets.moose.test</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.test</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.grid</module>
