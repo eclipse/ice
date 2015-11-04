@@ -21,6 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
+import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -35,13 +37,13 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
@@ -502,30 +504,30 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * stored in the component map.
 	 * 
 	 * @return The pages.
+	 * @throws CoreException 
 	 */
 	private ArrayList<ICEFormPage> createListSectionPages() {
-
-		// Need IListPageProvider
-
 		// Create the list of pages to return
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		try {
+			// get all of the registered ListPageProviders
+			IListPageProvider[] listPageProviders = IListPageProvider.getProviders();
 
-		// Get the lists from the component map
-		ArrayList<Component> lists = componentMap.get("list");
-		// If there are some lists, render sections for them
-		if (lists.size() > 0) {
-			for (int i = 0; i < lists.size(); i++) {
-				ListComponent<?> list = (ListComponent<?>) lists.get(i);
-				// Make sure the list isn't null since that value can be put in
-				// a collection
-				if (list != null) {
-					// Create a new page for the list
-					ListComponentSectionPage page = new ListComponentSectionPage(this, list.getName(), list.getName());
-					page.setList(list);
-					// Add the page to the return list
-					pages.add(page);
+			// Use the default list page provider
+			String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
+			
+			
+			for (IListPageProvider currentProvider : listPageProviders) {
+				if (providerNameToUse.equals(currentProvider.getName())){
+					pages.addAll(currentProvider.getPages(this, componentMap));
+					break;
 				}
 			}
+		
+		
+		} catch (CoreException e) {
+			logger.error("Unable to get ListPageProviders", e);
 		}
 
 		return pages;

@@ -9,7 +9,7 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.client.widgets;
+package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
 import java.util.Map;
