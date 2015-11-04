@@ -61,7 +61,7 @@ public interface IListPageProvider {
 		} else {
 			logger.error("Extension Point " + EXTENSION_POINT_ID + " does not exist");
 		}
-		return null;
+		return listPageProviders;
 	}
 
 	/**

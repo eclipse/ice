@@ -513,16 +513,20 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		try {
 			// get all of the registered ListPageProviders
 			IListPageProvider[] listPageProviders = IListPageProvider.getProviders();
-
-			// Use the default list page provider
-			String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
-			
-			
-			for (IListPageProvider currentProvider : listPageProviders) {
-				if (providerNameToUse.equals(currentProvider.getName())){
-					pages.addAll(currentProvider.getPages(this, componentMap));
-					break;
+			if (listPageProviders != null && listPageProviders.length > 0) {
+					
+				// Use the default list page provider
+				String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
+				
+				
+				for (IListPageProvider currentProvider : listPageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())){
+						pages.addAll(currentProvider.getPages(this, componentMap));
+						break;
+					}
 				}
+			} else {
+				logger.error("No ListPageProviders registered");
 			}
 		
 		
