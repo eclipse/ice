@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * This is an interface for list page providers for Form Editors in ICE that provides
  * the set of list section pages required to draw the UI.
  * 
- * @author Jay Jay Billings
+ * @author Nick Stanish
  *
  */
 public interface IListPageProvider {
@@ -47,7 +47,7 @@ public interface IListPageProvider {
 	 */
 	public static IListPageProvider[] getProviders() throws CoreException {
 		// Logger for handling event messages and other information.
-		Logger logger = LoggerFactory.getLogger(IJAXBClassProvider.class);
+		Logger logger = LoggerFactory.getLogger(IListPageProvider.class);
 		IListPageProvider[] listPageProviders = null;
 		
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
