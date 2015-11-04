@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation -
- *   Jay Jay Billings
+ *   Jay Jay Billings, Alex McCaskey
  *******************************************************************************/
 package org.eclipse.ice.persistence.xml;
 
@@ -28,12 +28,12 @@ import org.eclipse.ice.datastructures.form.FormTextContentDescriber;
  * @author Jay Jay Billings, Alex McCaskey
  *
  */
-public class XMLFormContentDescriber implements FormTextContentDescriber { 
+public class XMLFormContentDescriber implements FormTextContentDescriber {
 
 	/**
 	 * Reference to the Item's ID
 	 */
-	private int itemID = -1;
+	protected int itemID = -1;
 
 	/**
 	 * Constructor
@@ -89,21 +89,23 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 			counter++;
 		}
 
+		// Make sure this is an XML file...
+		if (!firstLines.contains("<?xml version=")) {
+			return retCode;
+		}
+		
 		// Check the lines
-		if (firstLines.contains("<?xml version=")) {
-			if (firstLines.contains("itemType=") && firstLines.contains("builderName=")
-					&& firstLines.contains("<Form")) {
-				retCode = VALID;
-				// Now we know this is an ICE XML Item, so
-				// get a reference to its ID 
-				int index = firstLines.indexOf("itemID=\"");
-				int endIndex = firstLines.indexOf("\"", index + 8);
-				String itemIdString = firstLines.substring(index, endIndex + 1).replace("\"", "");
-				itemID = Integer.valueOf(itemIdString.split("=")[1]);
-				
-			} else {
-				retCode = INDETERMINATE;
-			}
+		if (isValidFile(firstLines)) {
+			retCode = VALID;
+			// Now we know this is an ICE XML Item, so
+			// get a reference to its ID
+			int index = firstLines.indexOf("itemID=\"");
+			int endIndex = firstLines.indexOf("\"", index + 8);
+			String itemIdString = firstLines.substring(index, endIndex + 1).replace("\"", "");
+			itemID = Integer.valueOf(itemIdString.split("=")[1]);
+
+		} else {
+			retCode = INDETERMINATE;
 		}
 
 		return retCode;
@@ -111,11 +113,22 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.persistence.ICETextContentDescriber#getItemID()
 	 */
 	@Override
 	public int getItemID() {
 		return itemID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.form.FormTextContentDescriber#isValidFile(java.lang.String)
+	 */
+	@Override
+	public boolean isValidFile(String lines) {
+		return lines.contains("<?xml version=") && lines.contains("itemType=") && lines.contains("builderName=")
+				&& lines.contains("<Form");
 	}
 
 }

@@ -35,7 +35,7 @@
           file-extensions="xml"
           id="org.eclipse.ice.persistence.xml.contentType.Form"
           name="ICE Form"
-          priority="high">
+          priority="normal">
     </content-type>
  </extension>
 </plugin>
