@@ -1044,6 +1044,7 @@ public class ItemManager implements ItemListener {
 	 */
 	public void renameItem(int itemID, String name) {
 		itemList.get(itemID).setName(name);
+		provider.renameItem(itemList.get(itemID), name);
 	}
 
 	/**

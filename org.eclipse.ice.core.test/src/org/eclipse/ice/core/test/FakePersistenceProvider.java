@@ -230,4 +230,10 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean renameItem(Item item, String newName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

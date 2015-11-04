@@ -67,7 +67,6 @@ public interface ISimpleResourceProvider {
 			logger.error("Extension Point " + id + "does not exist");
 		}
 
-		System.out.println("Returning a valid ISimpleResourceProvider");
 		return provider;
 	}
 }

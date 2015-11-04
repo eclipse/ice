@@ -479,6 +479,8 @@ public class XMLPersistenceProvider
 					// Deal with simple Form write requests from the IWriter
 					// interface.
 					writeFile(currentTask.form, currentTask.file);
+				} else if("rename".equals(currentTask.task)) {
+					itemIdMap.put(currentTask.item.getId(), currentTask.file.getName());
 				}
 			} else {
 				// Otherwise sleep for a bit
@@ -520,6 +522,12 @@ public class XMLPersistenceProvider
 
 	}
 
+	@Override
+	public boolean renameItem(Item item, String newName) {
+		IFile newFile = item.getProject().getFile(newName);
+		return submitTask(item, "rename", item.getForm(), newFile);
+	}
+	
 	/**
 	 * A private utility operation that submits a persistence task to the queue.
 	 *
@@ -545,6 +553,10 @@ public class XMLPersistenceProvider
 			// Setup the task
 			task.item = item;
 			task.task = taskName;
+			
+			if (file != null) {
+				task.file = file;
+			}
 			// Submit the task
 			try {
 				taskQueue.add(task);

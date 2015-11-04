@@ -95,6 +95,14 @@ public interface IPersistenceProvider {
 	public boolean updateItem(Item item);
 
 	/**
+	 * 
+	 * @param item
+	 * @param newName
+	 * @return
+	 */
+	public boolean renameItem(Item item, String newName);
+	
+	/**
 	 * Returns all the Items in the persistence piece.
 	 * 
 	 * @return The list of items.

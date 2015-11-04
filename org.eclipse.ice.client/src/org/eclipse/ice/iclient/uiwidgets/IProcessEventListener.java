@@ -79,7 +79,6 @@ public interface IProcessEventListener {
 			logger.error("Extension Point " + id + "does not exist");
 		}
 
-		System.out.println("Returning a valid IProcessEventListener");
 		return listener;
 	}
 }
