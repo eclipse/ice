@@ -258,7 +258,7 @@ def nix_install(opts, pkg_dirs):
             subprocess.call(install_cmd)
 
     hdf_path = opts.with_hdfjava if opts.with_hdfjava else opts.prefix
-    hdf_libdir = find_file(hdf_path, "libhdf.a")
+    hdf_libdir = os.path.dirname(find_file(hdf_path, "libhdf.a"))
     if hdf_libdir is None:
         print("")
         print("--------------------------- ERROR -----------------------------")
@@ -271,7 +271,7 @@ def nix_install(opts, pkg_dirs):
     hdf_libdir = os.path.abspath(hdf_libdir)
 
     visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
-    visit_bin_dir = find_file(visit_path, "visit")
+    visit_bin_dir = os.path.dirname(find_file(visit_path, "visit"))
     if visit_bin_dir is None:
         print("")
         print("--------------------------- ERROR -----------------------------")
@@ -379,7 +379,7 @@ def osx_post(opts, pkgs):
     """ Post installation for OS X """
     mkdir_p(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS"))
     script_path = os.path.join(opts.prefix, "ICE.app", "Contents", "Info.plist")
-    visit_libdir = os.path.abspath(find_file(opts.prefix, "libvisit*"))
+    visit_libdir = os.path.dirname(find_file(opts.prefix, "libvisit*"))
     plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', script_path]
     lsregister_cmd = ['/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
                       '-v', '-f', os.path.join(opts.prefix, 'ICE.app')]
