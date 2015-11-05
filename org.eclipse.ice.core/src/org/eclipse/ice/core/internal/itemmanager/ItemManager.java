@@ -706,6 +706,7 @@ public class ItemManager implements ItemListener {
 			logger.info("ItemManager Message: Updating all Items with "
 					+ "Persistence Provider.");
 			for (Item item : itemList.values()) {
+				logger.info("ItemManager Message: Persisting " + item.getName());
 				provider.updateItem(item);
 			}
 		}

@@ -25,6 +25,7 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
@@ -257,7 +258,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 						IMessageProvider.WARNING);
 			} else {
 				messageManager.removeMessage("statusUpdate");
-				//messageManager.addMessage("statusUpdate", "Form Saved", null, IMessageProvider.INFORMATION);
+				// messageManager.addMessage("statusUpdate", "Form Saved", null,
+				// IMessageProvider.INFORMATION);
 			}
 		}
 
@@ -734,7 +736,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		form.setHeadClient(headClient);
 
 		// Set Form name
-		form.setText(iceDataForm.getName() + " " + iceDataForm.getId());
+		form.setText(itemName);
 
 		return;
 	}
@@ -826,6 +828,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		return sectionPages;
 	}
 
+	private String itemName;
+
 	/**
 	 * This operation overrides init so that the ICE Form, passed as an
 	 * IEditorInput, can be stored.
@@ -838,8 +842,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws RuntimeException {
 
-		// Set the part name
-		setPartName(input.getName());
+		IClient client = null;
+		try {
+			client = IClient.getClient();
+		} catch (CoreException e1) {
+			e1.printStackTrace();
+		}
 
 		// Set the site
 		setSite(site);
@@ -850,33 +858,50 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		if (input instanceof ICEFormInput) {
 			ICEFormInput = (ICEFormInput) input;
 			iceDataForm = ICEFormInput.getForm();
+
+			// Set the part name to be the file name
+			setPartName(iceDataForm.getName() + ".xml");
+
 			// Set the input
 			setInput(input);
-		} else if (input instanceof FileEditorInput) {
+		} else if (input instanceof FileEditorInput && client != null) {
 			// Grab the file and load the form
 			IFile formFile = ((FileEditorInput) input).getFile();
+			// try {
+			// IClient client = IClient.getClient();
+			iceDataForm = client.loadItem(formFile);
+			logger.info("IClient and Form loaded.");
+			// Set *correct* input via a little short circuit.
+			ICEFormInput = new ICEFormInput(iceDataForm);
+			setInput(ICEFormInput);
+
+			// Set the part name to be the file name
+			setPartName(input.getName());
+
+			// Register the client as a listener
+			// of specific form editor events.
 			try {
-				IClient client = IClient.getClient();
-				iceDataForm = client.loadItem(formFile);
-				logger.info("IClient and Form loaded.");
-				// Set *correct* input via a little short circuit.
-				ICEFormInput = new ICEFormInput(iceDataForm);
-				setInput(ICEFormInput);
-				
-				// Register the client as a listener 
-				// of specific form editor events.
 				registerUpdateListener(IUpdateEventListener.getUpdateEventListener());
 				registerProcessListener(IProcessEventListener.getProcessEventListener());
 				registerResourceProvider(ISimpleResourceProvider.getSimpleResourceProvider());
 			} catch (CoreException e) {
 				// Complain
-				logger.error("Unable to get IClient instance!", e);
+				logger.error("Unable to get register the update, process, or simpleresource implementations!", e);
 			}
+
 		} else {
 			// Throw errors if the type is wrong
 			logger.error("Unable to load Form Editor!");
-			throw new RuntimeException(
-					"Input passed to ICEFormEditor.init()" + " is not of type ICEFormInput or FileEditorInput.");
+			throw new RuntimeException("Input passed to ICEFormEditor.init()"
+					+ " is not of type ICEFormInput or FileEditorInput, or the IClient instance is null.");
+		}
+
+		// Get the Item Name for the Form Header.
+		for (Identifiable i : client.getItems()) {
+			if (iceDataForm.getItemID() == i.getId()) {
+				itemName = i.getClass().getSimpleName() + " Item " + i.getId();
+				break;
+			}
 		}
 
 		iceDataForm.register(this);
@@ -1337,7 +1362,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					managedForm.getForm().getForm().setText(iceDataForm.getName() + " " + iceDataForm.getId());
+					// FIXME WANT THIS TO REMAIN THE ITEM TYPE + ID
+					setPartName(iceDataForm.getName() + ".xml");
 					managedForm.getForm().getForm().redraw();
 				}
 			});

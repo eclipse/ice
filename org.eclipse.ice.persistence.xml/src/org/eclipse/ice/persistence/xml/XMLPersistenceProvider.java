@@ -76,14 +76,12 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  *
  */
-public class XMLPersistenceProvider
-		implements IPersistenceProvider, Runnable, IReader, IWriter {
+public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, IReader, IWriter {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(XMLPersistenceProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(XMLPersistenceProvider.class);
 
 	/**
 	 * An atomic boolean used to manage the event loop. It is set to true when
@@ -125,8 +123,7 @@ public class XMLPersistenceProvider
 	 * The blocking queue that holds all of the persistence tasks that are left
 	 * to be processed.
 	 */
-	ArrayBlockingQueue<QueuedTask> taskQueue = new ArrayBlockingQueue<QueuedTask>(
-			1024);
+	ArrayBlockingQueue<QueuedTask> taskQueue = new ArrayBlockingQueue<QueuedTask>(1024);
 
 	/**
 	 * A private thread on which the event loop is run. The runnable for this
@@ -220,8 +217,8 @@ public class XMLPersistenceProvider
 				// Only add the resources that are xml files with the format
 				// that we expect. This uses a regular expression that checks
 				// for <itemName>_<itemId>.xml.
-				if (resource.getType() == IResource.FILE && resource.getName()
-						.matches("^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
+				if (resource.getType() == IResource.FILE
+						&& resource.getName().matches("^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
 					names.add(resource.getName());
 				}
 			}
@@ -229,15 +226,13 @@ public class XMLPersistenceProvider
 			// Get the ids of all of the items from the file names and map them
 			// to the names.
 			for (String name : names) {
-				logger.info("XMLPersistenceProvider Message: "
-						+ "Found persisted Item at " + name);
+				logger.info("XMLPersistenceProvider Message: " + "Found persisted Item at " + name);
 				// Remove the file extension
 				String[] nameParts = name.split("\\.");
 				String nameMinusExt = nameParts[0];
 				// Get the id from the end
 				String[] nameMinusExtParts = nameMinusExt.split("_");
-				String idString = nameMinusExtParts[nameMinusExtParts.length
-						- 1];
+				String idString = nameMinusExtParts[nameMinusExtParts.length - 1];
 				id = Integer.valueOf(idString);
 				// Put the info in the map
 				itemIdMap.put(id, name);
@@ -367,8 +362,7 @@ public class XMLPersistenceProvider
 	 */
 	public void addBuilder(ItemBuilder builder) {
 
-		logger.info("XMLPersistenceProvider Message: " + "Item "
-				+ builder.getItemName() + " registered.");
+		logger.info("XMLPersistenceProvider Message: " + "Item " + builder.getItemName() + " registered.");
 
 		// Build an Item from this builder and store it so that we can get its
 		// class info later.
@@ -396,14 +390,12 @@ public class XMLPersistenceProvider
 		Marshaller marshaller;
 		try {
 			marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-					Boolean.TRUE);
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.marshal(obj, outputStream);
 		} catch (JAXBException e) {
 			// Complain
 			logger.error(getClass().getName() + " Exception!", e);
-			logger.info("XMLPersistenceProvider Message: "
-					+ "Failed to execute persistence task for " + obj);
+			logger.info("XMLPersistenceProvider Message: " + "Failed to execute persistence task for " + obj);
 		}
 		return outputStream;
 	}
@@ -420,8 +412,7 @@ public class XMLPersistenceProvider
 		// Create an output stream containing the XML.
 		ByteArrayOutputStream outputStream = createXMLStream(obj);
 		// Convert it to an input stream so it can be pushed to file
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(
-				outputStream.toByteArray());
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 		try {
 			// Update the output file if it already exists
 			if (file.exists()) {
@@ -453,8 +444,7 @@ public class XMLPersistenceProvider
 			// Handle the task if it is available
 			if (currentTask != null) {
 				// Get the file name if this is a persist or delete
-				if ("persist".equals(currentTask.task)
-						|| "delete".equals(currentTask.task)) {
+				if ("persist".equals(currentTask.task) || "delete".equals(currentTask.task)) {
 					// Setup the file name
 					name = currentTask.item.getName().replaceAll("\\s+", "_")
 							/* + "_" + currentTask.item.getId() */ + ".xml";
@@ -462,38 +452,54 @@ public class XMLPersistenceProvider
 					// This may change depending on whether or not this Item was
 					// created in the default project.
 					file = currentTask.item.getProject().getFile(name);
+					System.out.println("Persist: Getting file = " + file.getName());
 				}
 				// Process persists
-				if ("persist".equals(currentTask.task)
-						&& !(currentTask.item instanceof ReactorAnalyzer)) {
+				if ("persist".equals(currentTask.task) && !(currentTask.item instanceof ReactorAnalyzer)) {
 					// Send the Item off to be written to the file
 					writeFile(currentTask.item, file);
 					// Update the item id map
 					itemIdMap.put(currentTask.item.getId(), file.getName());
-				} else if ("delete".equals(currentTask.task) && file.exists()) {
+				} else if ("delete".equals(currentTask.task)) {
 					// Handle deletes
-					file.delete(true, null);
+					// Make sure it exists, the platform may have deleted it
+					// first
+					if (file.exists()) {
+						file.delete(true, null);
+					}
 					// Update the item id map
 					itemIdMap.remove(currentTask.item.getId());
 				} else if ("write".equals(currentTask.task)) {
 					// Deal with simple Form write requests from the IWriter
 					// interface.
 					writeFile(currentTask.form, currentTask.file);
-				} else if("rename".equals(currentTask.task)) {
-					itemIdMap.put(currentTask.item.getId(), currentTask.file.getName());
+				} else if ("rename".equals(currentTask.task)) {
+					String oldFile = itemIdMap.get(currentTask.item.getId());
+					if (oldFile != null) {
+						itemIdMap.put(currentTask.item.getId(), currentTask.file.getName());
+						
+						// Sleep for a bit to let the platform delete if it wants
+						Thread.currentThread();
+						Thread.sleep(1000);
+						
+						IProject project = currentTask.item.getProject();
+						IFile oldFileHandle = project.getFile(oldFile);
+						if (oldFileHandle.exists()) {
+							oldFileHandle.move(currentTask.file.getProjectRelativePath(), true, null);
+						}
+						
+					}
+
 				}
 			} else {
 				// Otherwise sleep for a bit
 				Thread.currentThread();
 				Thread.sleep(1000);
 			}
-		} catch (InterruptedException e) {
+		} catch (InterruptedException | CoreException e) {
 			// Complain
 			logger.error(getClass().getName() + " Exception!", e);
-		} catch (CoreException e) {
-			// Complain
-			logger.error(getClass().getName() + " Exception!", e);
-		}
+		} 
 
 		return;
 	}
@@ -522,12 +528,20 @@ public class XMLPersistenceProvider
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.persistence.IPersistenceProvider#renameItem(org.
+	 * eclipse.ice.item.Item, java.lang.String)
+	 */
 	@Override
-	public boolean renameItem(Item item, String newName) {
-		IFile newFile = item.getProject().getFile(newName);
-		return submitTask(item, "rename", item.getForm(), newFile);
+	public void renameItem(Item item, String newName) {
+		IFile newFile = item.getProject().getFile(newName+".xml");
+		submitTask(item, "rename", item.getForm(), newFile);
+		return;
 	}
-	
+
 	/**
 	 * A private utility operation that submits a persistence task to the queue.
 	 *
@@ -541,8 +555,7 @@ public class XMLPersistenceProvider
 	 * @return True if the task was submitted, false if there was some exception
 	 *         or the Item was null.
 	 */
-	private boolean submitTask(Item item, String taskName, Form form,
-			IFile file) {
+	private boolean submitTask(Item item, String taskName, Form form, IFile file) {
 
 		// Local Declarations
 		boolean retVal = true;
@@ -553,7 +566,7 @@ public class XMLPersistenceProvider
 			// Setup the task
 			task.item = item;
 			task.task = taskName;
-			
+
 			if (file != null) {
 				task.file = file;
 			}
@@ -650,8 +663,7 @@ public class XMLPersistenceProvider
 	@Override
 	public Item loadItem(IResource itemResource) {
 		// If the IResource is an IFile, load it and otherwise return null.
-		return (itemResource instanceof IFile) ? loadItem((IFile) itemResource)
-				: null;
+		return (itemResource instanceof IFile) ? loadItem((IFile) itemResource) : null;
 	}
 
 	/**
@@ -733,8 +745,7 @@ public class XMLPersistenceProvider
 	public void replace(IFile file, String regex, String value) {
 		try {
 			throw new OperationNotSupportedException(
-					"XMLPersistenceProvider Error: "
-							+ "IWriter.replace() is not supported.");
+					"XMLPersistenceProvider Error: " + "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
 			logger.error(getClass().getName() + " Exception!", e);
@@ -787,8 +798,7 @@ public class XMLPersistenceProvider
 	public ArrayList<Entry> findAll(IFile file, String regex) {
 		try {
 			throw new OperationNotSupportedException(
-					"XMLPersistenceProvider Error: "
-							+ "IReader.findAll() is not supported.");
+					"XMLPersistenceProvider Error: " + "IReader.findAll() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
 			logger.error(getClass().getName() + " Exception!", e);

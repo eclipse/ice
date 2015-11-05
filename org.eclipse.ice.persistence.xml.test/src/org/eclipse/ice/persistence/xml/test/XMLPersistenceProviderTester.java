@@ -238,6 +238,33 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
+	 * Check that we can rename Items with the persistence provider. 
+	 * 
+	 */
+	@Test
+	public void checkRename() {
+		// Create a MOOSE item
+		MOOSEModelBuilder builder = new MOOSEModelBuilder();
+		Item item = builder.build(project);
+		String name = item.getName().replace(" ", "_") + ".xml";
+
+		// Persist it
+		assertTrue(xmlpp.persistItem(item));
+
+		// Wait while the file is persisted. The MOOSE Model takes about a half
+		// a second, but lets wait two.
+		pause(2);
+
+		xmlpp.renameItem(item, "testItemName");
+		
+		pause(2);
+		
+		assertTrue(project.getFile("testItemName.xml").exists());
+		assertFalse(project.getFile(name).exists());
+		
+	}
+	
+	/**
 	 * This operation checks the ability of the XMLPersistenceProvider to
 	 * persist Items to its project space. It also checks update() since that
 	 * operation is identical to persist().

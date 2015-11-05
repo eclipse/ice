@@ -57,6 +57,8 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 */
 	private volatile boolean deleted = false;
 
+	private volatile boolean renamed = false;
+	
 	/**
 	 * <p>
 	 * This operation returns true if the Items were loaded, false otherwise.
@@ -83,6 +85,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 		persisted = false;
 		updated = false;
 		deleted = false;
+		renamed = false;
 
 	}
 
@@ -232,8 +235,13 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	}
 
 	@Override
-	public boolean renameItem(Item item, String newName) {
+	public void renameItem(Item item, String newName) {
+		renamed = true;
+		return;
+	}
+
+	public boolean itemRenamed() {
 		// TODO Auto-generated method stub
-		return false;
+		return renamed;
 	}
 }
