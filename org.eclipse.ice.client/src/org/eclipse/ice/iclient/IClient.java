@@ -25,7 +25,6 @@ import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
-import org.eclipse.ice.item.ItemBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -261,10 +260,10 @@ public interface IClient {
 	public void renameItem(int itemID, String name);
 	
 	/**
-	 * This operation retrieves all of the ItemBuilders from the
+	 * This operation retrieves the IClient implementation from the
 	 * ExtensionRegistry.
 	 *
-	 * @return The array of ItemBuilders that were found in the registry.
+	 * @return The current default IClient implementation that were found in the registry.
 	 * @throws CoreException
 	 *             This exception is thrown if an extension cannot be loaded.
 	 */
@@ -272,7 +271,7 @@ public interface IClient {
 		/**
 		 * Logger for handling event messages and other information.
 		 */
-		Logger logger = LoggerFactory.getLogger(ItemBuilder.class);
+		Logger logger = LoggerFactory.getLogger(IClient.class);
 
 		IClient client = null;
 		String id = "org.eclipse.ice.client.clientInstance";

@@ -12,16 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.caebat.batml.ui;
 
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ui.PartInitException;
-import org.slf4j.Logger;
 
 /**
  * The custom form editor for the reflectivity model. Should be used instead of

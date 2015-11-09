@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation -
- *   Jay Jay Billings
+ *   Jay Jay Billings, Alex McCaskey
  *******************************************************************************/
 package org.eclipse.ice.persistence.xml;
 
@@ -16,29 +16,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.ice.datastructures.form.FormTextContentDescriber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a content describer for the XML files that are persisted by ICE's
  * default XMLPersistenceProvider.
  *
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Alex McCaskey
  *
  */
-public class XMLFormContentDescriber implements FormTextContentDescriber { 
+public class XMLFormContentDescriber implements FormTextContentDescriber {
+
+	protected static Logger logger = LoggerFactory.getLogger(XMLFormContentDescriber.class);
 
 	/**
 	 * Reference to the Item's ID
 	 */
-	private int itemID = -1;
+	protected int itemID = -1;
 
 	/**
 	 * Constructor
 	 */
 	public XMLFormContentDescriber() {
+
 	}
 
 	/*
@@ -76,8 +83,16 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 	@Override
 	public int describe(Reader contents, IContentDescription description) throws IOException {
 
+		// Local Declarations
 		int retCode = INVALID;
 		BufferedReader bufferedReader = new BufferedReader(contents);
+		List<FormTextContentDescriber> otherICEEditorDescribers = null;
+
+		try {
+			otherICEEditorDescribers = FormTextContentDescriber.getFormTextContentDescribers();
+		} catch (CoreException e) {
+			logger.error("Could not get other FormTextContentDescribers.", e);
+		}
 
 		// The ICE XML files have a very well defined first four lines, although
 		// the attribute values change. Read the first four lines of the text in
@@ -89,21 +104,45 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 			counter++;
 		}
 
-		// Check the lines
-		if (firstLines.contains("<?xml version=")) {
-			if (firstLines.contains("itemType=") && firstLines.contains("builderName=")
-					&& firstLines.contains("<Form")) {
-				retCode = VALID;
-				// Now we know this is an ICE XML Item, so
-				// get a reference to its ID 
-				int index = firstLines.indexOf("itemID=\"");
-				int endIndex = firstLines.indexOf("\"", index + 8);
-				String itemIdString = firstLines.substring(index, endIndex + 1).replace("\"", "");
-				itemID = Integer.valueOf(itemIdString.split("=")[1]);
-				
-			} else {
-				retCode = INDETERMINATE;
+		// Make sure this is an XML file...
+		if (!firstLines.contains("<?xml version=")) {
+			return retCode;
+		}
+
+		// Now we know this is an XML file so
+		// make sure that it is a valid ICEFormEditor
+		if (firstLines.contains("<?xml version=") && firstLines.contains("itemType=")
+				&& firstLines.contains("builderName=") && firstLines.contains("<Form") && isValidFile(firstLines)) {
+			retCode = VALID;
+			// Now we know this is an ICE XML Item, so
+			// get a reference to its ID
+			int index = firstLines.indexOf("itemID=\"");
+			int endIndex = firstLines.indexOf("\"", index + 8);
+			String itemIdString = firstLines.substring(index, endIndex + 1).replace("\"", "");
+			itemID = Integer.valueOf(itemIdString.split("=")[1]);
+
+			// If this is the default ICE Form Editor Describer
+			// make sure there aren't better ones out there for
+			// subclasses of ICE Form Editor
+			if ("XMLFormContentDescriber".equals(getClass().getSimpleName())) {
+				for (FormTextContentDescriber describer : otherICEEditorDescribers) {
+					// Don't use the desriber that is XMLFormContentDescriber
+					if (!describer.getClass().equals(getClass())) {
+						// If true, this describer is better
+						if (describer.isValidFile(firstLines)) {
+							logger.info("The " + describer.getClass().getSimpleName() + " describer is better than "
+									+ getClass().getSimpleName() + " for \n\t" + firstLines);
+							// We've found a better match, so exit
+							// with an INVALID for this describer
+							return INVALID;
+						}
+					}
+				}
 			}
+
+			logger.info(getClass().getSimpleName() + " is the best Describer Fit for \n\t" + firstLines);
+		} else {
+			retCode = INDETERMINATE;
 		}
 
 		return retCode;
@@ -111,11 +150,24 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.persistence.ICETextContentDescriber#getItemID()
 	 */
 	@Override
 	public int getItemID() {
 		return itemID;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.form.FormTextContentDescriber#isValidFile(
+	 * java.lang.String)
+	 */
+	@Override
+	public boolean isValidFile(String lines) {
+		return true;
 	}
 
 }
