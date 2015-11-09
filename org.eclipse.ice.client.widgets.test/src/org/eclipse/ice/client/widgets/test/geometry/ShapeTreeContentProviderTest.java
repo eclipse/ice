@@ -19,7 +19,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider;
@@ -49,19 +48,29 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ShapeType.Cube);
+		// Create a shape
+		ShapeComponent geometryModel = new ShapeComponent();
+		AbstractView geometryView = new AbstractView();
+		Shape geometryShape = new Shape(geometryModel, geometryView);
 
-		ICEShape union1 = new ICEShape(OperatorType.Union);
-		ICEShape complement1 = new ICEShape(OperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
+		Shape sphere1 = (Shape) geometryShape.clone();
+		sphere1.setProperty("Type", ShapeType.Sphere.toString());
+		Shape cube1 = (Shape) geometryShape.clone();
+		cube1.setProperty("Type", ShapeType.Cube.toString());
+
+		Shape union1 = (Shape) geometryShape.clone();
+		union1.setProperty("Operator", OperatorType.Union.toString());
+		Shape complement1 = (Shape) geometryShape.clone();
+		complement1.setProperty("Operator", OperatorType.Complement.toString());
+		Shape intersection1 = (Shape) geometryShape.clone();
+		intersection1.setProperty("Operator", OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
 
-		union1.addShape(sphere1);
-		union1.addShape(complement1);
-		union1.addShape(intersection1);
-		complement1.addShape(cube1);
+		union1.addEntity(sphere1);
+		union1.addEntity(complement1);
+		union1.addEntity(intersection1);
+		complement1.addEntity(cube1);
 
 		// Using the ShapeTreeContentProvider, get and check the children
 		// of all the previously created shapes
@@ -112,19 +121,29 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ShapeType.Cube);
+		// Create a shape
+		ShapeComponent geometryModel = new ShapeComponent();
+		AbstractView geometryView = new AbstractView();
+		Shape geometryShape = new Shape(geometryModel, geometryView);
 
-		ICEShape union1 = new ICEShape(OperatorType.Union);
-		ICEShape complement1 = new ICEShape(OperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
+		Shape sphere1 = (Shape) geometryShape.clone();
+		sphere1.setProperty("Type", ShapeType.Sphere.toString());
+		Shape cube1 = (Shape) geometryShape.clone();
+		cube1.setProperty("Type", ShapeType.Cube.toString());
+
+		Shape union1 = (Shape) geometryShape.clone();
+		union1.setProperty("Operator", OperatorType.Union.toString());
+		Shape complement1 = (Shape) geometryShape.clone();
+		complement1.setProperty("Operator", OperatorType.Complement.toString());
+		Shape intersection1 = (Shape) geometryShape.clone();
+		intersection1.setProperty("Operator", OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
 
-		union1.addShape(sphere1);
-		union1.addShape(complement1);
-		union1.addShape(intersection1);
-		complement1.addShape(cube1);
+		union1.addEntity(sphere1);
+		union1.addEntity(complement1);
+		union1.addEntity(intersection1);
+		complement1.addEntity(cube1);
 
 		// Using the ShapeTreeContentProvider, get and check the children
 		// of all the previously created shapes

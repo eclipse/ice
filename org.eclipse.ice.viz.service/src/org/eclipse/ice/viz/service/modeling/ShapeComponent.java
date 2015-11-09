@@ -11,9 +11,9 @@
 package org.eclipse.ice.viz.service.modeling;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 
 /**
@@ -60,21 +60,25 @@ public class ShapeComponent extends AbstractMeshComponent {
 		notifyListeners();
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#setProperty(java.lang.String, java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#setProperty(
+	 * java.lang.String, java.lang.String)
 	 */
-	public void setProperty(String property, String value){
+	@Override
+	public void setProperty(String property, String value) {
 		super.setProperty(property, value);
-		
-		//Select/deselect all children as well
-		if ("Selected".equals(property)){
-			if(entities.get("Children") != null){
-			for(AbstractController entity : entities.get("Children")){
-				entity.setProperty("Selected", value);
+
+		// Select/deselect all children as well
+		if ("Selected".equals(property)) {
+			if (entities.get("Children") != null) {
+				for (AbstractController entity : entities.get("Children")) {
+					entity.setProperty("Selected", value);
+				}
 			}
-		}
 		}
 	}
 
@@ -124,11 +128,17 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 * 
 	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#clone()
 	 */
+	@Override
 	public Object clone() {
 
 		// Make a new shape component and copy the data into it
 		ShapeComponent clone = new ShapeComponent();
 		clone.copy(this);
+
+		clone.entities = new HashMap<String, List<AbstractController>>();
+		for (AbstractController entity : getEntitiesByCategory("Children")) {
+			clone.addEntity((AbstractController) entity.clone());
+		}
 
 		return clone;
 	}
@@ -140,6 +150,7 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#register(org.
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
 	 */
+	@Override
 	public void register(IVizUpdateableListener listener) {
 
 		// Ignore requests to register own children to prevent circular

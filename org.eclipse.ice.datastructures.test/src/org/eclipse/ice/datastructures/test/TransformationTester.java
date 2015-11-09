@@ -27,7 +27,7 @@ import java.util.Arrays;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
+import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.junit.Test;
 
 /**
@@ -99,8 +99,7 @@ public class TransformationTester {
 		transformation.setRotation(-1.0, 1.2, 5.0);
 
 		double[] expectedRotation = new double[] { -1.0, 1.2, 5.0 };
-		assertTrue(Arrays
-				.equals(expectedRotation, transformation.getRotation()));
+		assertTrue(Arrays.equals(expectedRotation, transformation.getRotation()));
 
 	}
 
@@ -117,17 +116,17 @@ public class TransformationTester {
 		transformation.setTranslation(-1.0, 1.2, 5.0);
 
 		double[] expectedTranslation = new double[] { -1.0, 1.2, 5.0 };
-		assertTrue(Arrays.equals(expectedTranslation,
-				transformation.getTranslation()));
+		assertTrue(Arrays.equals(expectedTranslation, transformation.getTranslation()));
 
 	}
 
 	/**
 	 * This operation checks the ability of the Transformation to persist itself
 	 * to XML and to load itself from an XML input stream.
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * @throws NullPointerException 
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
+	 * @throws NullPointerException
 	 */
 	@Test
 	public void checkLoadingFromXML() throws NullPointerException, JAXBException, IOException {
@@ -153,8 +152,7 @@ public class TransformationTester {
 		xmlHandler.write(transformation, classList, outputStream);
 
 		// convert information inside of outputStream to inputStream
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(
-				outputStream.toByteArray());
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
 		String xmlFile2 = new String(outputStream.toByteArray());
 		System.err.println("File " + xmlFile2);
@@ -212,31 +210,26 @@ public class TransformationTester {
 		assertTrue(component.equals(component));
 
 		// Assert the equals() is Symmetric
-		assertTrue(component.equals(equalComponent)
-				&& equalComponent.equals(component));
+		assertTrue(component.equals(equalComponent) && equalComponent.equals(component));
 
 		// Assert equals() is transitive
-		if (component.equals(equalComponent)
-				&& equalComponent.equals(transitiveComponent)) {
+		if (component.equals(equalComponent) && equalComponent.equals(transitiveComponent)) {
 			assertTrue(component.equals(transitiveComponent));
 		} else {
 			fail();
 		}
 
 		// Assert equals is consistent
-		assertTrue(component.equals(equalComponent)
-				&& component.equals(equalComponent)
+		assertTrue(component.equals(equalComponent) && component.equals(equalComponent)
 				&& component.equals(equalComponent));
-		assertTrue(!component.equals(unEqualComponent)
-				&& !component.equals(unEqualComponent)
+		assertTrue(!component.equals(unEqualComponent) && !component.equals(unEqualComponent)
 				&& !component.equals(unEqualComponent));
 
 		// Assert checking equality with null is false
-		assertFalse(component==null);
+		assertFalse(component == null);
 
 		// Assert that two equal objects return same hashcode
-		assertTrue(component.equals(equalComponent)
-				&& component.hashCode() == equalComponent.hashCode());
+		assertTrue(component.equals(equalComponent) && component.hashCode() == equalComponent.hashCode());
 
 		// Assert that hashcode is consistent
 		assertTrue(component.hashCode() == component.hashCode());
@@ -269,10 +262,8 @@ public class TransformationTester {
 		assertTrue(Arrays.equals(expectedSkew, transformation.getSkew()));
 		assertEquals(expectedSize, transformation.getSize(), 0.0);
 		assertTrue(Arrays.equals(expectedScale, transformation.getScale()));
-		assertTrue(Arrays
-				.equals(expectedRotation, transformation.getRotation()));
-		assertTrue(Arrays.equals(expectedTranslation,
-				transformation.getTranslation()));
+		assertTrue(Arrays.equals(expectedRotation, transformation.getRotation()));
+		assertTrue(Arrays.equals(expectedTranslation, transformation.getTranslation()));
 
 	}
 
