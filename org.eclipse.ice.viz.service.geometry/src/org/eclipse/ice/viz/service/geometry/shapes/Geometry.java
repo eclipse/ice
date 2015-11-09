@@ -47,8 +47,7 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 	 * 
 	 */
 	@XmlAnyElement()
-	@XmlElementRefs(value = {
-			@XmlElementRef(name = "ComplexShape", type = ComplexShape.class),
+	@XmlElementRefs(value = { @XmlElementRef(name = "ComplexShape", type = ComplexShape.class),
 			@XmlElementRef(name = "PrimitiveShape", type = PrimitiveShape.class) })
 	private ArrayList<IShape> shapes;
 
@@ -143,7 +142,8 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 	 * Returns a list of all IShapes stored in the shapes list
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The list of shapes contained in this GeometryComponent container
 	 *         </p>
 	 */
@@ -198,7 +198,8 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 	 * This operation returns the hashcode value of the GeometryComponent.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
@@ -228,7 +229,8 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 	 *            <p>
 	 *            The other ICEObject that should be compared with this one.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
@@ -305,7 +307,7 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 		this.shapes.clear();
 
 		for (IShape shape : iceObject.shapes) {
-			this.shapes.add((IShape) shape.clone());
+			// this.shapes.add((IShape) shape.clone());
 
 			// At least one shape has been added
 			updateComponent = true;
@@ -324,7 +326,8 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 	 * copy.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new clone
 	 *         </p>
 	 */
@@ -468,9 +471,8 @@ public class Geometry extends VizObject implements IVizUpdateable, IVizUpdateabl
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#unregister(org.eclipse
-	 * .ice.datastructures.ICEObject.IUpdateableListener)
+	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateable#unregister(org.
+	 * eclipse .ice.datastructures.ICEObject.IUpdateableListener)
 	 */
 	@Override
 	public void unregister(IVizUpdateableListener listener) {

@@ -20,6 +20,7 @@ import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.ice.viz.service.jme3.geometry.JME3ControllerFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -121,10 +122,10 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 */
 	public void getFocus() {
 
-		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
-				.getWorkbenchWindow().getActivePage()
+		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
-		shapeTreeView.setGeometry(geometryComp.getGeometry().getGeometry());
+		shapeTreeView.setFactory(new JME3ControllerFactory());
+		shapeTreeView.setGeometry(geometryComp.getGeometry());
 
 		return;
 	}
@@ -135,7 +136,8 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 * geometry.
 	 * </p>
 	 * 
-	 * @param managedForm the managed form that handles the page
+	 * @param managedForm
+	 *            the managed form that handles the page
 	 */
 	@Override
 	public void createFormContent(IManagedForm managedForm) {
@@ -146,41 +148,34 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 
 		// Setup the layout and layout data
 		layout.numColumns = 1;
-		form.getBody().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		form.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		form.getBody().setLayout(new FillLayout());
 
 		// Opening the views in order to interact with the geometryEditor
 		try {
 
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(ShapeTreeView.ID);
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(TransformationView.ID);
+			getSite().getWorkbenchWindow().getActivePage().showView(ShapeTreeView.ID);
+			getSite().getWorkbenchWindow().getActivePage().showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Create the geometry composite - get the parent
-		org.eclipse.ui.forms.widgets.Form pageForm = managedForm.getForm()
-				.getForm();
+		org.eclipse.ui.forms.widgets.Form pageForm = managedForm.getForm().getForm();
 		Composite parent = pageForm.getBody();
 
 		// Get JME3 Geometry service from factory
-		IVizServiceFactory factory = ((ICEFormEditor) editor)
-				.getVizServiceFactory();
+		IVizServiceFactory factory = editor.getVizServiceFactory();
 		IVizService service = factory.get("JME3 Geometry Editor");
 
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service.createCanvas(geometryComp
-					.getGeometry().getGeometry());
+			IVizCanvas vizCanvas = service.createCanvas(geometryComp.getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {
-			logger.error(
-					"Error creating Geometry Canvas with Geometry Service.", e);
+			logger.error("Error creating Geometry Canvas with Geometry Service.", e);
 		}
 
 		getFocus();

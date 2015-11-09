@@ -15,5 +15,6 @@ Import-Package: org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.item,
- org.eclipse.ice.reactor
+ org.eclipse.ice.reactor,
+ org.eclipse.ice.viz.service.modeling
 Bundle-Vendor: Oak Ridge National Laboratory

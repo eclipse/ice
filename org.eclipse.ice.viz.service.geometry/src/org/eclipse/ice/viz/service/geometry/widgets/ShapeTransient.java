@@ -14,12 +14,11 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.io.IOException;
 
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.modeling.Shape;
 
 import com.jme3.export.JmeExporter;
 import com.jme3.export.JmeImporter;
 import com.jme3.export.Savable;
-
 
 /**
  * <p>
@@ -41,7 +40,7 @@ public class ShapeTransient implements Savable {
 	 * </p>
 	 * 
 	 */
-	private IShape shape;
+	private Shape shape;
 
 	/**
 	 * <p>
@@ -53,7 +52,7 @@ public class ShapeTransient implements Savable {
 	 *            The associated shape
 	 *            </p>
 	 */
-	public ShapeTransient(IShape shape) {
+	public ShapeTransient(Shape shape) {
 		this.shape = shape;
 	}
 
@@ -62,11 +61,12 @@ public class ShapeTransient implements Savable {
 	 * Returns the associated shape
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The associated shape
 	 *         </p>
 	 */
-	public IShape getShape() {
+	public Shape getShape() {
 		return shape;
 	}
 

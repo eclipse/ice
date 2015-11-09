@@ -35,19 +35,22 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.jme3.geometry.JME3ControllerFactory;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeComponent;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -257,7 +260,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 						IMessageProvider.WARNING);
 			} else {
 				messageManager.removeMessage("statusUpdate");
-				//messageManager.addMessage("statusUpdate", "Form Saved", null, IMessageProvider.INFORMATION);
+				// messageManager.addMessage("statusUpdate", "Form Saved", null,
+				// IMessageProvider.INFORMATION);
 			}
 		}
 
@@ -410,7 +414,10 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new ICEGeometry());
+
+		// TODO Get the right factory from a service, instead of hard coding
+		IControllerFactory factory = new JME3ControllerFactory();
+		geometryComponent.setGeometry((Shape) factory.createController(new ShapeComponent()));
 
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(componentMap.get("geometry").isEmpty())) {

@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really
@@ -47,6 +47,7 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
@@ -56,6 +57,7 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
@@ -66,6 +68,7 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#createPlot(java.net.URI)
 	 */
 	@Override
@@ -76,6 +79,7 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getSupportedExtensions()
 	 */
 	@Override
@@ -85,10 +89,13 @@ public class FakeVizService implements IVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.
+	 * service.datastructures.VizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(IVizObject object) throws Exception {
+	public IVizCanvas createCanvas(AbstractController object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

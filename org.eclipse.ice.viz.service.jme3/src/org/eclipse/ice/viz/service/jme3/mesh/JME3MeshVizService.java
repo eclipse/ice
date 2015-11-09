@@ -12,16 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
-import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 /**
  * A VizService which makes an IVizCanvas for mesh editing, with graphics
@@ -41,6 +38,7 @@ public class JME3MeshVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
@@ -50,6 +48,7 @@ public class JME3MeshVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
@@ -59,13 +58,16 @@ public class JME3MeshVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizService#createCanvas(org.eclipse.
+	 * ice.viz.service.datastructures.VizObject.IVizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(IVizObject object) throws Exception {
+	public IVizCanvas createCanvas(AbstractController object) throws Exception {
 		JME3MeshCanvas canvas = null;
-		
-		//If input is a VizMeshComponent, use it to create a JME3MeshCanvas.
+
+		// If input is a VizMeshComponent, use it to create a JME3MeshCanvas.
 		if (object instanceof VizMeshComponent) {
 			canvas = new JME3MeshCanvas((VizMeshComponent) object);
 		}
@@ -74,7 +76,9 @@ public class JME3MeshVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {

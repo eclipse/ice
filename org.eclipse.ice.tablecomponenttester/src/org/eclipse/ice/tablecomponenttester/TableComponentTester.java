@@ -38,11 +38,13 @@ import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComponentReader;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeComponent;
 import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")
@@ -76,8 +78,7 @@ public class TableComponentTester extends Item {
 		// Set the details of this Item
 		setName("ICE Demonstration Component");
 		setDescription("This component demonstrates the different types of "
-				+ "data structures available in ICE and their visual "
-				+ "representations.");
+				+ "data structures available in ICE and their visual " + "representations.");
 
 		// create a new instance of MasterDetailsComponent
 		mDetailsComp = new MasterDetailsComponent();
@@ -237,8 +238,13 @@ public class TableComponentTester extends Item {
 
 		// ===========================================================================Try
 		// making geometry page
+		// Create a shape
+		ShapeComponent geometryModel = new ShapeComponent();
+		AbstractView geometryView = new AbstractView();
+		Shape geometryShape = new Shape(geometryModel, geometryView);
+
 		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new ICEGeometry());
+		geometryComponent.setGeometry(geometryShape);
 		geometryComponent.setId(108);
 		geometryComponent.setName("ICE Geometry Editor");
 		geometryComponent.setDescription("Create or edit a geometry in 3D.");
@@ -249,9 +255,8 @@ public class TableComponentTester extends Item {
 		// ===== Resource Component Page ===== //
 		resourceComp.setName("Resource component");
 		resourceComp.setId(109);
-		resourceComp
-				.setDescription("This component contains the files, resources "
-						+ "and data available to this plug-in.");
+		resourceComp.setDescription(
+				"This component contains the files, resources " + "and data available to this plug-in.");
 		// Add files from the project space to the Resource Component
 		if (project != null) {
 			try {
@@ -262,8 +267,7 @@ public class TableComponentTester extends Item {
 					if (resources[i].getType() == IResource.FILE) {
 						IFile file = (IFile) resources[i];
 						// Create resource
-						ICEResource iceResource = new ICEResource(new File(
-								file.getRawLocationURI()));
+						ICEResource iceResource = new ICEResource(new File(file.getRawLocationURI()));
 						iceResource.setId(i);
 						iceResource.setName("File " + i);
 						iceResource.setPath(file.getLocationURI());
@@ -334,8 +338,7 @@ public class TableComponentTester extends Item {
 		form.addComponent(parent);
 
 		// Find the ReactorEditor test file - get the bundle first
-		Bundle bundle = Platform
-				.getBundle("org.eclipse.ice.tablecomponenttester");
+		Bundle bundle = Platform.getBundle("org.eclipse.ice.tablecomponenttester");
 		String separator = System.getProperty("file.separator");
 		Path testDataPath = new Path("data" + separator + "test_new.h5");
 		URL testDataURL = FileLocator.find(bundle, testDataPath, null);

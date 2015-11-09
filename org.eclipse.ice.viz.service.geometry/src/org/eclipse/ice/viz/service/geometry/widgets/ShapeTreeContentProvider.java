@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
-import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;
-import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Shape;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -28,8 +28,7 @@ import org.eclipse.jface.viewers.Viewer;
  * 
  * @author Andrew P. Belt
  */
-public class ShapeTreeContentProvider implements ITreeContentProvider,
-		IShapeVisitor {
+public class ShapeTreeContentProvider implements ITreeContentProvider {
 	/**
 	 * <p>
 	 * Temporary variable for setting the return value of getChildren when the
@@ -52,7 +51,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *            <p>
 	 *            The parent IShape element
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The child IShapes
 	 *         </p>
 	 */
@@ -62,18 +62,38 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		// If the element is an IShape, call its accept() operation to
 		// trigger the visit() call
 
-		if (parentElement instanceof IShape) {
+		if (parentElement instanceof Shape) {
 			temporaryChildren = null;
 
 			// Call the parentShape's accept operation to call the appropriate
 			// visit member function in this class
 
-			IShape parentShape = (IShape) parentElement;
-			parentShape.acceptShapeVisitor(this);
+			Shape parentShape = (Shape) parentElement;
+
+			if (parentShape.getProperty("Operator") != null) {
+
+				// IShape is a ComplexShape, so put its children in the
+				// temporary
+				// children field
+
+				temporaryChildren = parentShape.getEntitiesByCategory("Children").toArray();
+
+				// Use a blank state if there are no children to display
+
+				if (temporaryChildren.length == 0) {
+					temporaryChildren = new Object[] { new BlankShape(parentShape) };
+				}
+			} else {
+
+				// IShape is a PrimitiveShape, so it has no children :(
+
+				temporaryChildren = new Object[0];
+			}
 
 			// Return the result of the visit() operation
 
 			return temporaryChildren;
+
 		} else {
 			return null;
 		}
@@ -90,7 +110,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *            <p>
 	 *            The input GeometryComponent
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The child IShapes
 	 *         </p>
 	 */
@@ -98,10 +119,10 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	public Object[] getElements(Object inputElement) {
 
 		// If the element is a GeometryComponent, return its shapes
-		if (inputElement instanceof Geometry) {
+		if (inputElement instanceof AbstractController) {
 			// Return an array of the GeometryComponent's shapes
-			Geometry parentGeometry = (Geometry) inputElement;
-			return parentGeometry.getShapes().toArray();
+			AbstractController parentGeometry = (AbstractController) inputElement;
+			return parentGeometry.getEntitiesByCategory("Children").toArray();
 		} else {
 			return null;
 		}
@@ -117,7 +138,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *            <p>
 	 *            The child IShape
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The parent IShape
 	 *         </p>
 	 */
@@ -126,13 +148,13 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 
 		// Return null if the element is not an IShape
 
-		if (!(element instanceof IShape)) {
+		if (!(element instanceof Shape)) {
 			return null;
 		}
 		// Return the object's parent
 
-		IShape shape = (IShape) element;
-		return shape.getParent();
+		Shape shape = (Shape) element;
+		return shape.getEntitiesByCategory("Parent");
 
 	}
 
@@ -150,7 +172,8 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 	 *            <p>
 	 *            The IShape to check for children
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         Represents whether the element has children
 	 *         </p>
 	 */
@@ -218,7 +241,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		/**
 		 * The shape which "contains" this blank shape object
 		 */
-		private IShape parent;
+		private Shape parent;
 
 		/**
 		 * Initializes the BlankShape with a parent
@@ -226,7 +249,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		 * @param parent
 		 *            The parent shape in the TreeViewer hierarchy
 		 */
-		public BlankShape(IShape parent) {
+		public BlankShape(Shape parent) {
 			this.parent = parent;
 		}
 
@@ -235,43 +258,9 @@ public class ShapeTreeContentProvider implements ITreeContentProvider,
 		 * 
 		 * @return The parent shape
 		 */
-		public IShape getParent() {
+		public Shape getParent() {
 			return parent;
 		}
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShapeVisitor#visit(ComplexShape complexShape)
-	 */
-	@Override
-	public void visit(ComplexShape complexShape) {
-
-		// IShape is a ComplexShape, so put its children in the temporary
-		// children field
-
-		temporaryChildren = complexShape.getShapes().toArray();
-
-		// Use a blank state if there are no children to display
-
-		if (temporaryChildren.length == 0) {
-			temporaryChildren = new Object[] { new BlankShape(complexShape) };
-		}
-
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IShapeVisitor#visit(PrimitiveShape primitiveShape)
-	 */
-	@Override
-	public void visit(PrimitiveShape primitiveShape) {
-
-		// IShape is a PrimitiveShape, so it has no children :(
-
-		temporaryChildren = new Object[0];
-
-	}
 }

@@ -14,11 +14,12 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.ice.viz.service.modeling.Shape;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -39,8 +40,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Andrew P. Belt
  */
-public class ShapeTreeView extends ViewPart implements
-		ISelectionChangedListener {
+public class ShapeTreeView extends ViewPart implements ISelectionChangedListener {
 
 	/**
 	 * <p>
@@ -48,7 +48,7 @@ public class ShapeTreeView extends ViewPart implements
 	 * </p>
 	 * 
 	 */
-	private Geometry geometry;
+	private AbstractController geometry;
 
 	/**
 	 * <p>
@@ -59,6 +59,12 @@ public class ShapeTreeView extends ViewPart implements
 	TreeViewer treeViewer;
 
 	/**
+	 * The factory responsible for creating graphics program specific
+	 * representations of the tree's contents.
+	 */
+	IControllerFactory factory;
+
+	/**
 	 * Eclipse view ID
 	 */
 	public static final String ID = "org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView";
@@ -66,7 +72,7 @@ public class ShapeTreeView extends ViewPart implements
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+	private ArrayList<Shape> selectedShapes = new ArrayList<Shape>();
 
 	// The actions for manipulating shapes
 	private DropdownAction addPrimitiveShapes;
@@ -148,8 +154,7 @@ public class ShapeTreeView extends ViewPart implements
 		Action addUnion = new ActionAddShape(this, OperatorType.Union);
 		addComplexShapes.addAction(addUnion);
 
-		Action addIntersection = new ActionAddShape(this,
-				OperatorType.Intersection);
+		Action addIntersection = new ActionAddShape(this, OperatorType.Intersection);
 		addIntersection.setEnabled(false);
 		addComplexShapes.addAction(addIntersection);
 
@@ -182,7 +187,7 @@ public class ShapeTreeView extends ViewPart implements
 	 * 
 	 * @param geometry
 	 */
-	public void setGeometry(Geometry geometry) {
+	public void setGeometry(AbstractController geometry) {
 
 		this.geometry = geometry;
 
@@ -217,8 +222,8 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Get the TransformationView
 
-		TransformationView transformationView = (TransformationView) getSite()
-				.getPage().findView(TransformationView.ID);
+		TransformationView transformationView = (TransformationView) getSite().getPage()
+				.findView(TransformationView.ID);
 
 		if (paths.length == 1) {
 
@@ -226,8 +231,8 @@ public class ShapeTreeView extends ViewPart implements
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+			if (selectedObject instanceof Shape) {
+				Shape selectedShape = (Shape) selectedObject;
 
 				// Set the TransformationView's shape
 
@@ -291,8 +296,8 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Edit the shapes' selection property
 
-		for (IShape selectedShape : selectedShapes) {
-			selectedShape.removeProperty("selected");
+		for (Shape selectedShape : selectedShapes) {
+			selectedShape.setProperty("Selected", "False");
 		}
 
 		// Update the list of last-selected shapes
@@ -304,12 +309,25 @@ public class ShapeTreeView extends ViewPart implements
 
 			// Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof Shape) {
 
-				IShape selectedShape = (IShape) selectedObject;
-				selectedShape.setProperty("selected", "true");
+				Shape selectedShape = (Shape) selectedObject;
+				selectedShape.setProperty("Selected", "True");
 				selectedShapes.add(selectedShape);
 			}
 		}
+	}
+
+	/**
+	 * Getter method for the factory.
+	 * 
+	 * @return The factory
+	 */
+	public IControllerFactory getFactory() {
+		return factory;
+	}
+
+	public void setFactory(IControllerFactory factory) {
+		this.factory = factory;
 	}
 }

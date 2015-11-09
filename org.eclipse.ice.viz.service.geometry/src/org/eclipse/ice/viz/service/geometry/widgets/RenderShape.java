@@ -68,7 +68,8 @@ public class RenderShape implements IShape {
 	 * Returns the selected state of the shape
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The selected state
 	 *         </p>
 	 */
@@ -100,7 +101,8 @@ public class RenderShape implements IShape {
 	 * implementation.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new material
 	 *         </p>
 	 */
@@ -183,7 +185,8 @@ public class RenderShape implements IShape {
 	 * Returns the alpha value, scaled on [0, 1]
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The alpha value (0 is transparent, 1 is opaque)
 	 *         </p>
 	 */
@@ -193,66 +196,7 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizIdentifiable#setId(int)
-	 */
-	@Override
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizIdentifiable#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizIdentifiable#getId()
-	 */
-	@Override
-	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizIdentifiable#setName(java.lang.String)
-	 */
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizIdentifiable#getName()
-	 */
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizIdentifiable#setDescription(java.lang.String)
-	 */
-	@Override
-	public void setDescription(String description) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -263,6 +207,7 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -289,18 +234,15 @@ public class RenderShape implements IShape {
 
 		// Set the transformation values
 
-		transform.setScale((float) (size * scale[0]),
-				(float) (size * scale[1]), (float) (size * scale[2]));
+		transform.setScale((float) (size * scale[0]), (float) (size * scale[1]), (float) (size * scale[2]));
 
 		// Calculation the rotation from a quaternion
 
 		Quaternion rotationQuat = new Quaternion();
-		rotationQuat.fromAngles((float) rotation[0], (float) rotation[1],
-				(float) rotation[2]);
+		rotationQuat.fromAngles((float) rotation[0], (float) rotation[1], (float) rotation[2]);
 		transform.setRotation(rotationQuat);
 
-		transform.setTranslation((float) translation[0],
-				(float) translation[1], (float) translation[2]);
+		transform.setTranslation((float) translation[0], (float) translation[1], (float) translation[2]);
 
 		return transform;
 
@@ -308,7 +250,9 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#update(java.lang.String, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * update(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void update(String updatedKey, String newValue) {
@@ -317,7 +261,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#register(org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * register(org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener)
 	 */
 	@Override
 	public void register(IVizUpdateableListener listener) {
@@ -327,7 +274,9 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#getTransformation()
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.shapes.IShape#getTransformation()
 	 */
 	@Override
 	public Transformation getTransformation() {
@@ -337,7 +286,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#setTransformation(org.eclipse.ice.viz.service.geometry.shapes.Transformation)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.shapes.IShape#setTransformation(org.
+	 * eclipse.ice.viz.service.geometry.shapes.Transformation)
 	 */
 	@Override
 	public boolean setTransformation(Transformation transformation) {
@@ -346,7 +298,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#getProperty(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.shapes.IShape#getProperty(java.lang.
+	 * String)
 	 */
 	@Override
 	public String getProperty(String key) {
@@ -355,7 +310,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#setProperty(java.lang.String, java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.shapes.IShape#setProperty(java.lang.
+	 * String, java.lang.String)
 	 */
 	@Override
 	public boolean setProperty(String key, String value) {
@@ -364,7 +322,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#removeProperty(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.shapes.IShape#removeProperty(java.
+	 * lang.String)
 	 */
 	@Override
 	public boolean removeProperty(String key) {
@@ -373,6 +334,7 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#getParent()
 	 */
 	@Override
@@ -383,7 +345,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.shapes.IShape#acceptShapeVisitor(org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.shapes.IShape#acceptShapeVisitor(org
+	 * .eclipse.ice.viz.service.geometry.shapes.IShapeVisitor)
 	 */
 	@Override
 	public void acceptShapeVisitor(IShapeVisitor visitor) {
@@ -392,6 +357,7 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -401,7 +367,10 @@ public class RenderShape implements IShape {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#unregister(org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * unregister(org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener)
 	 */
 	@Override
 	public void unregister(IVizUpdateableListener listener) {

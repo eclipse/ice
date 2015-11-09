@@ -20,8 +20,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -37,7 +36,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 public class CSVVizService extends AbstractVizService {
 
 	private final Map<URI, CSVPlot> dataPlots = new HashMap<URI, CSVPlot>();
-	
+
 	/**
 	 * The default constructor.
 	 * <p>
@@ -63,7 +62,7 @@ public class CSVVizService extends AbstractVizService {
 			dataPlot.setDataSource(file);
 			dataPlots.put(file, dataPlot);
 		}
-		
+
 		// Create a proxy to it. The proxy can be drawn anywhere.
 		CSVProxyPlot proxyPlot = new CSVProxyPlot();
 		proxyPlot.setSource(dataPlot);
@@ -73,7 +72,9 @@ public class CSVVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -84,6 +85,7 @@ public class CSVVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
@@ -93,6 +95,7 @@ public class CSVVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
@@ -102,10 +105,13 @@ public class CSVVizService extends AbstractVizService {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.service.datastructures.VizObject)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.
+	 * service.datastructures.VizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(IVizObject object) throws Exception {
+	public IVizCanvas createCanvas(AbstractController object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

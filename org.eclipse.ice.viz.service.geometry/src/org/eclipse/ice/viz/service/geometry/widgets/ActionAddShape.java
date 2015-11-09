@@ -16,14 +16,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.viz.service.geometry.shapes.AbstractShape;
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -123,8 +121,7 @@ public class ActionAddShape extends Action {
 
 		// Create the image descriptor from the file path
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		URL imagePath = BundleUtility.find(bundle,
-				"icons/" + shapeIcons.get(shapeType));
+		URL imagePath = BundleUtility.find(bundle, "icons/" + shapeIcons.get(shapeType));
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
 		return;
@@ -167,8 +164,7 @@ public class ActionAddShape extends Action {
 		// Create the image descriptor from the file path
 
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		URL imagePath = BundleUtility.find(bundle,
-				"icons/" + operatorIcons.get(operatorType));
+		URL imagePath = BundleUtility.find(bundle, "icons/" + operatorIcons.get(operatorType));
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
 	}
@@ -188,8 +184,7 @@ public class ActionAddShape extends Action {
 
 		// Get the selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer
-				.getSelection();
+		ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
 		TreePath[] paths = selection.getPaths();
 
 		// Fail silently if multiple items are selected
@@ -199,8 +194,7 @@ public class ActionAddShape extends Action {
 		}
 		// Get the GeometryComponent from the ShapeTreeView's TreeViewer
 
-		Geometry geometry = (Geometry) view.treeViewer
-				.getInput();
+		AbstractController geometry = (AbstractController) view.treeViewer.getInput();
 
 		if (geometry == null) {
 			return;
@@ -208,7 +202,7 @@ public class ActionAddShape extends Action {
 		// Get the parent shape, regardless of whether an IShape or BlankShape
 		// is selected
 
-		ComplexShape parentComplexShape = null;
+		AbstractController parentComplexShape = null;
 
 		if (paths.length == 1) {
 
@@ -216,18 +210,18 @@ public class ActionAddShape extends Action {
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof Shape) {
 
 				// Get the selected shape's parent
 
-				IShape selectedShape = (IShape) selectedObject;
-				parentComplexShape = (ComplexShape) selectedShape.getParent();
+				Shape selectedShape = (Shape) selectedObject;
+				parentComplexShape = selectedShape.getEntitiesByCategory("Parent").get(0);
 			} else if (selectedObject instanceof BlankShape) {
 
 				// Get the selected blank shape's parent
 
 				BlankShape selectedBlank = (BlankShape) selectedObject;
-				parentComplexShape = (ComplexShape) selectedBlank.getParent();
+				parentComplexShape = selectedBlank.getParent();
 			}
 
 		}
@@ -235,14 +229,14 @@ public class ActionAddShape extends Action {
 		// Add a child shape to either the GeometryComponent or the parent
 		// ComplexShape
 
-		IShape childShape = createShape();
+		Shape childShape = createShape();
 
 		if (parentComplexShape == null) {
 
 			// Add a new shape to the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(childShape);
+				geometry.addEntity(childShape);
 			}
 
 			view.treeViewer.refresh();
@@ -253,7 +247,7 @@ public class ActionAddShape extends Action {
 			// Create a new shape and add it to the parentComplexShape
 
 			synchronized (geometry) {
-				parentComplexShape.addShape(childShape);
+				parentComplexShape.addEntity(childShape);
 			}
 
 			view.treeViewer.refresh(parentComplexShape);
@@ -283,13 +277,14 @@ public class ActionAddShape extends Action {
 	 * Creates a shape corresponding to this Action's ShapeType or OperatorType
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The newly created shape
 	 *         </p>
 	 */
-	public IShape createShape() {
+	public Shape createShape() {
 
-		AbstractShape shape = null;
+		Shape shape = null;
 
 		// Determine which type of shape should be created
 
@@ -297,22 +292,28 @@ public class ActionAddShape extends Action {
 
 			// Instantiate a PrimitiveShape and set its name and ID
 
-			shape = new PrimitiveShape(shapeType);
+			ShapeComponent shapeComponent = new ShapeComponent();
+			shape = (Shape) view.getFactory().createController(shapeComponent);
+
+			shape.setProperty("Type", shapeType.toString());
 
 			currentShapeId++;
-			shape.setName(shapeType.toString());
-			shape.setId(currentShapeId);
+			shape.setProperty("Name", shapeType.toString());
+			shape.setProperty("Id", Integer.toString(currentShapeId));
 		}
 
 		else if (operatorType != null && shapeType == null) {
 
 			// Instantiate a ComplexShape and set its name
 
-			shape = new ComplexShape(operatorType);
+			ShapeComponent shapeComponent = new ShapeComponent();
+			shape = (Shape) view.getFactory().createController(shapeComponent);
+
+			shape.setProperty("Operator", operatorType.toString());
 
 			currentShapeId++;
-			shape.setName(operatorType.toString());
-			shape.setId(currentShapeId);
+			shape.setProperty("Name", operatorType.toString());
+			shape.setProperty("Id", Integer.toString(currentShapeId));
 		}
 
 		// Return the shape

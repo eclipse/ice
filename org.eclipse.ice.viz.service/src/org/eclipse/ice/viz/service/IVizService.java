@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 /**
  * This is a pluggable service interface whereby visualization engines can
@@ -57,7 +58,7 @@ public interface IVizService {
 	 *             An exception indicating that the IVizService could not create
 	 *             a canvas with the given object and giving the reason why.
 	 */
-	public IVizCanvas createCanvas(IVizObject object) throws Exception;
+	public IVizCanvas createCanvas(AbstractController object) throws Exception;
 	
 	/**
 	 * This operation returns the name of the service. The name should be

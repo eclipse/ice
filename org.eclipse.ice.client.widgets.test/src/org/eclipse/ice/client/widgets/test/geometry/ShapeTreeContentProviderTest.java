@@ -19,11 +19,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.form.geometry.ICEShape;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeComponent;
 import org.junit.Test;
 
 /**
@@ -65,8 +67,7 @@ public class ShapeTreeContentProviderTest {
 		// of all the previously created shapes
 
 		Object[] union1Children = shapeProvider.getChildren(union1);
-		Object[] union1ExpectedChildren = new Object[] { sphere1, complement1,
-				intersection1 };
+		Object[] union1ExpectedChildren = new Object[] { sphere1, complement1, intersection1 };
 		assertArrayEquals(union1ExpectedChildren, union1Children);
 
 		Object[] complement1Children = shapeProvider.getChildren(complement1);
@@ -77,8 +78,7 @@ public class ShapeTreeContentProviderTest {
 		// rather than an empty list of children when ShapeProvider.getChildren
 		// is called.
 
-		Object[] intersection1Children = shapeProvider
-				.getChildren(intersection1);
+		Object[] intersection1Children = shapeProvider.getChildren(intersection1);
 		assertEquals(1, intersection1Children.length);
 
 		Object[] sphere1Children = shapeProvider.getChildren(sphere1);
@@ -177,24 +177,28 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ShapeType.Cube);
-		ICEShape union1 = new ICEShape(OperatorType.Union);
-		ICEShape complement1 = new ICEShape(OperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
+		ShapeComponent geometryModel = new ShapeComponent();
+		geometryModel.setProperty("Type", ShapeType.Sphere.toString());
+		AbstractView geometryView = new AbstractView();
+		Shape geometry = new Shape(geometryModel, geometryView);
+
+		Shape sphere1 = (Shape) geometry.clone();
+		Shape cube1 = (Shape) geometry.clone();
+		Shape union1 = (Shape) geometry.clone();
+		Shape complement1 = (Shape) geometry.clone();
+		Shape intersection1 = (Shape) geometry.clone();
 
 		// Put them all in a GeometryComponent
 
-		GeometryComponent geometry = new GeometryComponent();
-		geometry.setGeometry(new ICEGeometry());
-		geometry.getGeometry().addShape(sphere1);
-		geometry.getGeometry().addShape(cube1);
-		geometry.getGeometry().addShape(union1);
-		geometry.getGeometry().addShape(complement1);
-		geometry.getGeometry().addShape(sphere1);
+		GeometryComponent geometryComponent = new GeometryComponent();
+		geometryComponent.setGeometry(geometry);
+		geometryComponent.getGeometry().addEntity(sphere1);
+		geometryComponent.getGeometry().addEntity(cube1);
+		geometryComponent.getGeometry().addEntity(union1);
+		geometryComponent.getGeometry().addEntity(complement1);
+		geometryComponent.getGeometry().addEntity(sphere1);
 
-		Object[] expectedElements = new Object[] { sphere1, cube1, union1,
-				complement1, sphere1 };
+		Object[] expectedElements = new Object[] { sphere1, cube1, union1, complement1, sphere1 };
 		assertArrayEquals(expectedElements, shapeProvider.getElements(geometry));
 
 		// Try getting elements of null and a mistyped object

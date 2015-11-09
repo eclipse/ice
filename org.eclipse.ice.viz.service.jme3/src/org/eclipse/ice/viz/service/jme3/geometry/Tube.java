@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.geometry.shapes;
+package org.eclipse.ice.viz.service.jme3.geometry;
 
 import static com.jme3.util.BufferUtils.createShortBuffer;
 import static com.jme3.util.BufferUtils.createVector2Buffer;
@@ -31,8 +31,9 @@ import com.jme3.scene.mesh.IndexBuffer;
 /**
  * Computes the mesh of a tube to produce a valid JME3 Spatial
  * 
- * Class created by InShadow and revised by kotoko on the JMonkeyEngine forums 
- * http://jmonkeyengine.org/groups/contribution-depot-jme3/forum/topic/tube-from-jme2/
+ * Class created by InShadow and revised by kotoko on the JMonkeyEngine forums
+ * http://jmonkeyengine.org/groups/contribution-depot-jme3/forum/topic/tube-from
+ * -jme2/
  *
  */
 public class Tube extends Mesh {
@@ -85,10 +86,9 @@ public class Tube extends Mesh {
 	 *            amount of tube to be drawn (FastMath.TWO_PI is for whole
 	 *            circle, everything less draws just a part of it).
 	 */
-	public Tube(float outerRadius, float innerRadius, float height,
-			float centralAngle) {
-		this(outerRadius, innerRadius, height, 2, (int) (20 * FastMath
-				.ceil(centralAngle * FastMath.INV_TWO_PI)), centralAngle);
+	public Tube(float outerRadius, float innerRadius, float height, float centralAngle) {
+		this(outerRadius, innerRadius, height, 2, (int) (20 * FastMath.ceil(centralAngle * FastMath.INV_TWO_PI)),
+				centralAngle);
 	}
 
 	/**
@@ -109,10 +109,8 @@ public class Tube extends Mesh {
 	 * @param radialSamples
 	 *            number of triangle samples along the radial.
 	 */
-	public Tube(float outerRadius, float innerRadius, float height,
-			int axisSamples, int radialSamples) {
-		this(outerRadius, innerRadius, height, axisSamples, radialSamples,
-				FastMath.TWO_PI);
+	public Tube(float outerRadius, float innerRadius, float height, int axisSamples, int radialSamples) {
+		this(outerRadius, innerRadius, height, axisSamples, radialSamples, FastMath.TWO_PI);
 	}
 
 	/**
@@ -135,11 +133,10 @@ public class Tube extends Mesh {
 	 *            amount of tube to be drawn (FastMath.TWO_PI is for whole
 	 *            circle, everything less draws just a part of it).
 	 */
-	public Tube(float outerRadius, float innerRadius, float height,
-			int axisSamples, int radialSamples, float centralAngle) {
+	public Tube(float outerRadius, float innerRadius, float height, int axisSamples, int radialSamples,
+			float centralAngle) {
 		super();
-		updateGeometry(outerRadius, innerRadius, height, axisSamples,
-				radialSamples, centralAngle);
+		updateGeometry(outerRadius, innerRadius, height, axisSamples, radialSamples, centralAngle);
 	}
 
 	/**
@@ -203,32 +200,22 @@ public class Tube extends Mesh {
 	 *            amount of tube to be drawn (FastMath.TWO_PI is for whole
 	 *            circle, everything less draws just a part of it).
 	 */
-	public void updateGeometry(float outerRadius, float innerRadius,
-			float height, int axisSamples, int radialSamples, float centralAngle) {
+	public void updateGeometry(float outerRadius, float innerRadius, float height, int axisSamples, int radialSamples,
+			float centralAngle) {
 		this.outerRadius = outerRadius;
 		this.innerRadius = innerRadius;
 		this.height = height;
 		this.axisSamples = axisSamples;
 		this.radialSamples = radialSamples;
-		this.centralAngle = FastMath.normalize(centralAngle, -FastMath.TWO_PI,
-				FastMath.TWO_PI);
+		this.centralAngle = FastMath.normalize(centralAngle, -FastMath.TWO_PI, FastMath.TWO_PI);
 
-		int vertCount = 2 * (axisSamples + 1) * (radialSamples + 1) + 4
-				* (radialSamples + 1) + 4 * (axisSamples + 1);
-		setBuffer(Type.Position, 3,
-				createVector3Buffer(getFloatBuffer(Type.Position), vertCount));
+		int vertCount = 2 * (axisSamples + 1) * (radialSamples + 1) + 4 * (radialSamples + 1) + 4 * (axisSamples + 1);
+		setBuffer(Type.Position, 3, createVector3Buffer(getFloatBuffer(Type.Position), vertCount));
 
-		setBuffer(
-				Type.Normal,
-				3,
-				createVector3Buffer(getFloatBuffer(Type.Normal),
-						getVertexCount()));
+		setBuffer(Type.Normal, 3, createVector3Buffer(getFloatBuffer(Type.Normal), getVertexCount()));
 		setBuffer(Type.TexCoord, 2, createVector2Buffer(getVertexCount()));
 		int triangleCount = 4 * (radialSamples + 1) * (axisSamples + 1);
-		setBuffer(
-				Type.Index,
-				3,
-				createShortBuffer(getShortBuffer(Type.Index), 3 * triangleCount));
+		setBuffer(Type.Index, 3, createShortBuffer(getShortBuffer(Type.Index), 3 * triangleCount));
 
 		setGeometryData();
 		setIndexData();
@@ -259,66 +246,52 @@ public class Tube extends Mesh {
 		// outer cylinder
 		for (int radialCount = 0; radialCount <= radialSamples; radialCount++) {
 			for (int axisCount = 0; axisCount <= axisSamples; axisCount++) {
-				pb.put(cos[radialCount] * outerRadius)
-						.put(axisStep * axisCount - halfHeight)
+				pb.put(cos[radialCount] * outerRadius).put(axisStep * axisCount - halfHeight)
 						.put(sin[radialCount] * outerRadius);
 				nb.put(cos[radialCount]).put(0).put(sin[radialCount]);
-				tb.put((radialSamples - radialCount) * inverseRadial).put(
-						axisTextureStep * axisCount);
+				tb.put((radialSamples - radialCount) * inverseRadial).put(axisTextureStep * axisCount);
 			}
 		}
 		// inner cylinder
 		for (int radialCount = 0; radialCount <= radialSamples; radialCount++) {
 			for (int axisCount = 0; axisCount <= axisSamples; axisCount++) {
-				pb.put(cos[radialCount] * innerRadius)
-						.put(axisStep * axisCount - halfHeight)
+				pb.put(cos[radialCount] * innerRadius).put(axisStep * axisCount - halfHeight)
 						.put(sin[radialCount] * innerRadius);
 				nb.put(-cos[radialCount]).put(0).put(-sin[radialCount]);
-				tb.put(radialCount * inverseRadial).put(
-						axisTextureStep * axisCount);
+				tb.put(radialCount * inverseRadial).put(axisTextureStep * axisCount);
 			}
 		}
 		// bottom edge
 		for (int radialCount = 0; radialCount <= radialSamples; radialCount++) {
-			pb.put(cos[radialCount] * outerRadius).put(-halfHeight)
-					.put(sin[radialCount] * outerRadius);
-			pb.put(cos[radialCount] * innerRadius).put(-halfHeight)
-					.put(sin[radialCount] * innerRadius);
+			pb.put(cos[radialCount] * outerRadius).put(-halfHeight).put(sin[radialCount] * outerRadius);
+			pb.put(cos[radialCount] * innerRadius).put(-halfHeight).put(sin[radialCount] * innerRadius);
 			nb.put(0).put(-1).put(0);
 			nb.put(0).put(-1).put(0);
-			tb.put(0.5f + 0.5f * cos[radialCount]).put(
-					0.5f + 0.5f * sin[radialCount]);
-			tb.put(0.5f + innerOuterRatio * 0.5f * cos[radialCount]).put(
-					0.5f + innerOuterRatio * 0.5f * sin[radialCount]);
+			tb.put(0.5f + 0.5f * cos[radialCount]).put(0.5f + 0.5f * sin[radialCount]);
+			tb.put(0.5f + innerOuterRatio * 0.5f * cos[radialCount])
+					.put(0.5f + innerOuterRatio * 0.5f * sin[radialCount]);
 		}
 		// top edge
 		for (int radialCount = 0; radialCount <= radialSamples; radialCount++) {
-			pb.put(cos[radialCount] * outerRadius).put(halfHeight)
-					.put(sin[radialCount] * outerRadius);
-			pb.put(cos[radialCount] * innerRadius).put(halfHeight)
-					.put(sin[radialCount] * innerRadius);
+			pb.put(cos[radialCount] * outerRadius).put(halfHeight).put(sin[radialCount] * outerRadius);
+			pb.put(cos[radialCount] * innerRadius).put(halfHeight).put(sin[radialCount] * innerRadius);
 			nb.put(0).put(1).put(0);
 			nb.put(0).put(1).put(0);
-			tb.put(0.5f + 0.5f * cos[radialCount]).put(
-					0.5f + 0.5f * sin[radialCount]);
-			tb.put(0.5f + innerOuterRatio * 0.5f * cos[radialCount]).put(
-					0.5f + innerOuterRatio * 0.5f * sin[radialCount]);
+			tb.put(0.5f + 0.5f * cos[radialCount]).put(0.5f + 0.5f * sin[radialCount]);
+			tb.put(0.5f + innerOuterRatio * 0.5f * cos[radialCount])
+					.put(0.5f + innerOuterRatio * 0.5f * sin[radialCount]);
 		}
 		// vertical edges
 		for (int radialCount = 0; radialCount <= radialSamples; radialCount += radialSamples) {
 			for (int axisCount = 0; axisCount <= axisSamples; axisCount++) {
-				pb.put(cos[radialCount] * outerRadius)
-						.put(axisStep * axisCount - halfHeight)
+				pb.put(cos[radialCount] * outerRadius).put(axisStep * axisCount - halfHeight)
 						.put(sin[radialCount] * outerRadius);
-				pb.put(cos[radialCount] * innerRadius)
-						.put(axisStep * axisCount - halfHeight)
+				pb.put(cos[radialCount] * innerRadius).put(axisStep * axisCount - halfHeight)
 						.put(sin[radialCount] * innerRadius);
 				nb.put(cos[radialCount]).put(0).put(sin[radialCount]);
 				nb.put(-cos[radialCount]).put(0).put(-sin[radialCount]);
-				tb.put(radialCount * inverseRadial).put(
-						axisTextureStep * axisCount);
-				tb.put((radialSamples - radialCount) * inverseRadial).put(
-						axisTextureStep * axisCount);
+				tb.put(radialCount * inverseRadial).put(axisTextureStep * axisCount);
+				tb.put((radialSamples - radialCount) * inverseRadial).put(axisTextureStep * axisCount);
 			}
 		}
 
@@ -354,8 +327,7 @@ public class Tube extends Mesh {
 		// inner cylinder
 		for (int radialCount = 0; radialCount < radialSamples; radialCount++) {
 			for (int axisCount = 0; axisCount < axisSamples; axisCount++) {
-				int index0 = innerCylinder + axisCount + axisSamplesPlusOne
-						* radialCount;
+				int index0 = innerCylinder + axisCount + axisSamplesPlusOne * radialCount;
 				int index1 = index0 + 1;
 				int index2 = index0 + axisSamplesPlusOne;
 				int index3 = index2 + 1;

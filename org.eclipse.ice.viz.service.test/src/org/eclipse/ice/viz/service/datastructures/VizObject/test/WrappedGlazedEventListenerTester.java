@@ -49,8 +49,7 @@ public class WrappedGlazedEventListenerTester implements IVizUpdateable, IVizUpd
 	public void checkUpdates() {
 		// Create the WrappedGlazedEventListener and give have it post updates
 		// to the test class.
-		WrappedGlazedEventListener listener = new WrappedGlazedEventListener(
-				this, this);
+		WrappedGlazedEventListener listener = new WrappedGlazedEventListener(this, this);
 
 		// Call the update
 		listener.listChanged(null);
@@ -81,42 +80,6 @@ public class WrappedGlazedEventListenerTester implements IVizUpdateable, IVizUpd
 
 	@Override
 	public void unregister(IVizUpdateableListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setDescription(String description) {
 		// TODO Auto-generated method stub
 
 	}

@@ -12,13 +12,12 @@
 package org.eclipse.ice.viz.service.jme3.geometry;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * This class is an implementation of IVizService which provides a 3D
@@ -46,14 +45,12 @@ public class JME3GeometryVizService extends AbstractVizService {
 	 * @return A new GeometryCanvas containing the geometry.
 	 */
 	@Override
-	public IVizCanvas createCanvas(IVizObject geometry) {
-		if (geometry instanceof Geometry) {
-			JME3GeometryCanvas canvas = new JME3GeometryCanvas(
-					(Geometry) geometry);
+	public IVizCanvas createCanvas(AbstractController geometry) {
+		if (geometry instanceof Shape) {
+			JME3GeometryCanvas canvas = new JME3GeometryCanvas(geometry);
 			return canvas;
 		} else {
-			throw new IllegalArgumentException(
-					"GeometryService can only render geometry viz objects.");
+			throw new IllegalArgumentException("GeometryService can only render geometry viz objects.");
 		}
 	}
 
