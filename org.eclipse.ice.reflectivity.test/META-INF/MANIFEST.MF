@@ -6,12 +6,16 @@ Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.eclipse.ice.item;bundle-version="2.0.0",
- org.eclipse.ice.datastructures
+ org.eclipse.ice.datastructures,
+ org.eclipse.core.runtime;bundle-version="3.11.0"
 Import-Package: org.apache.commons.math;version="2.1.0",
  org.eclipse.core.resources,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.ice.io.csv,
  org.eclipse.ice.materials,
+ org.eclipse.ice.persistence.xml,
+ org.eclipse.ice.persistence.xml.test,
  org.eclipse.ice.reflectivity,
+ org.eclipse.ice.reflectivity.ui,
  org.eclipse.ui.forms.widgets
 Bundle-Vendor: Oak Ridge National Laboratory

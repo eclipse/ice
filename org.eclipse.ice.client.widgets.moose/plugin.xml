@@ -200,12 +200,12 @@
        name="MOOSE XML Content Type"
        point="org.eclipse.core.contenttype.contentTypes">
     <content-type
-          base-type="org.eclipse.ice.persistence.xml.contentType.Form"
+          base-type="org.eclipse.core.runtime.xml"
           describer="org.eclipse.ice.client.widgets.moose.MooseXMLFormContentDescriber"
           file-extensions="xml"
           id="org.eclipse.ice.client.widgets.moose.xml.contentType.Form"
           name="Moose Form"
-          priority="normal">
+          priority="high">
     </content-type>
  </extension>
  
@@ -214,7 +214,7 @@
         point="org.eclipse.ui.editors">
     <editor
           class="org.eclipse.ice.client.widgets.moose.MOOSEFormEditor"
-          default="true"
+          default="false"
           extensions="xml"
           id="org.eclipse.ice.client.widgets.moose.MOOSEFormEditor"
           name="MOOSE Editor">

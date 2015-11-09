@@ -9,18 +9,18 @@
  *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings, Alex McCaskey
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.moose;
+package org.eclipse.ice.reflectivity.ui;
 
 import org.eclipse.ice.persistence.xml.XMLFormContentDescriber;;
 
 /**
  * This is a content describer for the XML files that are persisted by ICE's
- * default XMLPersistenceProvider for a MOOSE Workflow Item.
+ * default XMLPersistenceProvider for a Reflectivity Model Item.
  *
  * @author Alex McCaskey
  *
  */
-public class MooseXMLFormContentDescriber extends XMLFormContentDescriber {
+public class ReflectivityXMLFormContentDescriber extends XMLFormContentDescriber {
 
 	/*
 	 * (non-Javadoc)
@@ -31,7 +31,8 @@ public class MooseXMLFormContentDescriber extends XMLFormContentDescriber {
 	 */
 	@Override
 	public boolean isValidFile(String lines) {
-		return lines.contains("<MOOSE") && lines.contains("MOOSE Workflow");
+		// Make sure it is an XML file and a ReflectivityModel
+		return lines.contains("<ReflectivityModel") && lines.contains("Reflectivity Model");
 	}
 
 }
