@@ -46,8 +46,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz
  */
-public class DataComponentComposite extends Composite implements
-		IUpdateableListener {
+public class DataComponentComposite extends Composite
+		implements IUpdateableListener {
 
 	/**
 	 * This attribute is a reference to an ICE DataComponent that stores the
@@ -108,8 +108,8 @@ public class DataComponentComposite extends Composite implements
 	 * @param style
 	 *            The style in which the composite should be drawn.
 	 */
-	public DataComponentComposite(DataComponent comp,
-			Composite parentComposite, int style) {
+	public DataComponentComposite(DataComponent comp, Composite parentComposite,
+			int style) {
 
 		// Construct the base composite
 		super(parentComposite, style);
@@ -213,7 +213,8 @@ public class DataComponentComposite extends Composite implements
 
 			} else if (entryComp == null && entry.isReady()) {
 
-				// If the EntryComposite hasn't been rendered yet, render it,
+				// If the EntryComposite hasn't been rendered yet, render
+				// it,
 				// and add it to the entryMap
 				renderEntry(entry, i);
 				entryComp = entryMap.get(i);
@@ -229,8 +230,8 @@ public class DataComponentComposite extends Composite implements
 
 					// Re-render Entries only if they've had a new AllowedValue
 					// added
-					if (!entryComp.entry.getAllowedValues().contains(
-							allowedValue)) {
+					if (!entryComp.entry.getAllowedValues()
+							.contains(allowedValue)) {
 						disposeEntry(i);
 						renderEntry(entry, i);
 						entryComp = entryMap.get(i);
@@ -340,8 +341,8 @@ public class DataComponentComposite extends Composite implements
 			// Create the "no parameters" label.
 			emptyLabel = new Label(this, SWT.NONE);
 			emptyLabel.setText("No parameters available.");
-			emptyLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING,
-					true, true));
+			emptyLabel.setLayoutData(
+					new GridData(SWT.FILL, SWT.BEGINNING, true, true));
 
 			// If not debugging, set the default background to white.
 			if (System.getProperty("DebugICE") == null) {
@@ -351,8 +352,8 @@ public class DataComponentComposite extends Composite implements
 				// information to the label's text.
 				emptyLabel.setText(emptyLabel.getText() + "\nDataComponent: "
 						+ (dataComp != null ? dataComp.getName() : "null"));
-				emptyLabel.setBackground(Display.getCurrent().getSystemColor(
-						SWT.COLOR_RED));
+				emptyLabel.setBackground(
+						Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 			}
 		}
 
@@ -391,6 +392,14 @@ public class DataComponentComposite extends Composite implements
 	 */
 	private void renderEntry(Entry entry, int index) {
 
+		// Check the entry map to see if there is already a composite for this
+		// entry. If there is, fail silently.
+		for (EntryComposite entryTemp : entryMap.values()) {
+			if (entryTemp.getEntry().equals(entry)) {
+				return;
+			}
+		}
+
 		// Local Declarations
 		EntryComposite entryComposite = null;
 
@@ -416,8 +425,8 @@ public class DataComponentComposite extends Composite implements
 
 		// Set the LayoutData. The DataComponentComposite has a GridLayout. The
 		// EntryComposite should grab all available horizontal space.
-		entryComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING,
-				true, false));
+		entryComposite.setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		// Set the Listener.
 		entryComposite.addListener(SWT.Selection, entryListener);
 
