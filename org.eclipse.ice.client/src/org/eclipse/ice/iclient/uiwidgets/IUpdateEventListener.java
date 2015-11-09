@@ -63,7 +63,6 @@ public interface IUpdateEventListener {
 			logger.error("Extension Point " + id + "does not exist");
 		}
 
-		System.out.println("Returning a valid IUpdateEventListener");
 		return listener;
 	}
 }
