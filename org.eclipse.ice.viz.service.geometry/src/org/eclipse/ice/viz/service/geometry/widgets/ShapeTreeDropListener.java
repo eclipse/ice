@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-
 /**
  * <p>
  * Handles the drop actions of the ShapeTreeViewer when the user releases the
@@ -22,57 +21,57 @@ package org.eclipse.ice.viz.service.geometry.widgets;
  * @author Jay Jay Billings
  */
 public class ShapeTreeDropListener {
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragEnter(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragEnter(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragLeave(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragLeave(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragOperationChanged(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragOperationChanged(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragOver(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragOver(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void drop(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void drop(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dropAccept(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dropAccept(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }
