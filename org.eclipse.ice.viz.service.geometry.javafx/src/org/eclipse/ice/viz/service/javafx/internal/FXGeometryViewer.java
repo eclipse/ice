@@ -13,7 +13,6 @@ package org.eclipse.ice.viz.service.javafx.internal;
 import org.eclipse.ice.viz.service.geometry.GeometrySelection;
 import org.eclipse.ice.viz.service.geometry.scene.base.GeometryAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.base.ICamera;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
@@ -22,6 +21,7 @@ import org.eclipse.ice.viz.service.javafx.internal.model.geometry.FXGeometryAtta
 import org.eclipse.ice.viz.service.javafx.internal.scene.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.FPSController;
+import org.eclipse.ice.viz.service.modeling.Shape;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -53,290 +53,291 @@ import javafx.scene.shape.DrawMode;
  */
 public class FXGeometryViewer extends GeometryViewer {
 
-    /** The root JavaFX widget that displays content. */
-    private FXCanvas fxCanvas;
+	/** The root JavaFX widget that displays content. */
+	private FXCanvas fxCanvas;
 
-    /**
-     * The internally used root that cannot be modified by clients.
-     */
-    private Group internalRoot;
+	/**
+	 * The internally used root that cannot be modified by clients.
+	 */
+	private Group internalRoot;
 
-    /** The root of the scene as exposed to clients. */
-    private Group root;
+	/** The root of the scene as exposed to clients. */
+	private Group root;
 
-    /** The active scene displayed to the end user. */
-    private Scene scene;
+	/** The active scene displayed to the end user. */
+	private Scene scene;
 
-    /**
-     * The content provider that generates JavaFX scene data from the geometry
-     * editor scene model.
-     */
-    private FXContentProvider contentProvider;
+	/**
+	 * The content provider that generates JavaFX scene data from the geometry
+	 * editor scene model.
+	 */
+	private FXContentProvider contentProvider;
 
-    /** Default camera controller. */
-    private CameraController cameraController;
+	/** Default camera controller. */
+	private CameraController cameraController;
 
-    /** Default camera. */
-    private Camera defaultCamera;
+	/** Default camera. */
+	private Camera defaultCamera;
 
-    /**
-     * <p>
-     * Creates a JavaFX GeometryViewer.
-     * </p>
-     * 
-     * @param parent
-     */
-    public FXGeometryViewer(Composite parent) {
-        super(parent);
+	/**
+	 * <p>
+	 * Creates a JavaFX GeometryViewer.
+	 * </p>
+	 * 
+	 * @param parent
+	 */
+	public FXGeometryViewer(Composite parent) {
+		super(parent);
 
-        renderer = new FXRenderer();
-        renderer.register(GeometryAttachment.class, new FXGeometryAttachmentManager());
-    }
+		renderer = new FXRenderer();
+		renderer.register(GeometryAttachment.class, new FXGeometryAttachmentManager());
+	}
 
-    /**
-     * <p>
-     * Creates an FXCanvas control and initializes a default empty JavaFX scene.
-     * </p>
-     */
-    @Override
-    protected void createControl(Composite parent) {
-        contentProvider = new FXContentProvider();
+	/**
+	 * <p>
+	 * Creates an FXCanvas control and initializes a default empty JavaFX scene.
+	 * </p>
+	 */
+	@Override
+	protected void createControl(Composite parent) {
+		contentProvider = new FXContentProvider();
 
-        fxCanvas = new FXCanvas(parent, SWT.NONE);
+		fxCanvas = new FXCanvas(parent, SWT.NONE);
 
-        // Create the root nodes
-        internalRoot = new Group();
-        root = new Group();
+		// Create the root nodes
+		internalRoot = new Group();
+		root = new Group();
 
-        internalRoot.getChildren().add(root);
+		internalRoot.getChildren().add(root);
 
-        setupSceneInternals(internalRoot);
+		setupSceneInternals(internalRoot);
 
-        scene = new Scene(internalRoot, Color.rgb(24, 30, 31));
+		scene = new Scene(internalRoot, Color.rgb(24, 30, 31));
 
-        // Setup camera and input
-        createDefaultCamera(internalRoot);
-        wireSelectionHandling();
+		// Setup camera and input
+		createDefaultCamera(internalRoot);
+		wireSelectionHandling();
 
-        fxCanvas.setScene(scene);
-    }
+		fxCanvas.setScene(scene);
+	}
 
-    /**
-     * <p>
-     * Creates the current geometry editor camera.
-     * </p>
-     * 
-     * @param parent
-     *            the parent to create the camera on
-     * 
-     */
-    private void createDefaultCamera(Group parent) {
-        PerspectiveCamera perspCamera = new PerspectiveCamera();
-        perspCamera.setNearClip(0.1);
-        perspCamera.setFarClip(2000.0);
-        perspCamera.setFieldOfView(35);
-        perspCamera.setTranslateX(0);
-        perspCamera.setTranslateY(-100);
-        perspCamera.setTranslateZ(-1000);
+	/**
+	 * <p>
+	 * Creates the current geometry editor camera.
+	 * </p>
+	 * 
+	 * @param parent
+	 *            the parent to create the camera on
+	 * 
+	 */
+	private void createDefaultCamera(Group parent) {
+		PerspectiveCamera perspCamera = new PerspectiveCamera();
+		perspCamera.setNearClip(0.1);
+		perspCamera.setFarClip(2000.0);
+		perspCamera.setFieldOfView(35);
+		perspCamera.setTranslateX(0);
+		perspCamera.setTranslateY(-100);
+		perspCamera.setTranslateZ(-1000);
 
-        parent.getChildren().add(perspCamera);
+		parent.getChildren().add(perspCamera);
 
-        // Hacked in camera (for now)
-        FXCameraAttachment cameraAttachment = new FXCameraAttachment(perspCamera);
-        setCamera(cameraAttachment);
-    }
+		// Hacked in camera (for now)
+		FXCameraAttachment cameraAttachment = new FXCameraAttachment(perspCamera);
+		setCamera(cameraAttachment);
+	}
 
-    /**
-     * <p>
-     * Hooks up JavaFX picking with JFace selections.
-     * </p>
-     */
-    private void wireSelectionHandling() {
+	/**
+	 * <p>
+	 * Hooks up JavaFX picking with JFace selections.
+	 * </p>
+	 */
+	private void wireSelectionHandling() {
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
-            FXShape lastSelection = null;
+			FXShape lastSelection = null;
 
-            public void handle(MouseEvent event) {
-                // Pick
-                PickResult pickResult = event.getPickResult();
+			@Override
+			public void handle(MouseEvent event) {
+				// Pick
+				PickResult pickResult = event.getPickResult();
 
-                Node intersectedNode = pickResult.getIntersectedNode();
+				Node intersectedNode = pickResult.getIntersectedNode();
 
-                if (intersectedNode == null) {
-                    return;
-                }
+				if (intersectedNode == null) {
+					return;
+				}
 
-                if (!(intersectedNode instanceof FXShape)) {
-                    return;
-                }
+				if (!(intersectedNode instanceof FXShape)) {
+					return;
+				}
 
-                // Resolve the parent
-                FXShape nodeParent = (FXShape) intersectedNode.getParent();
+				// Resolve the parent
+				FXShape nodeParent = (FXShape) intersectedNode.getParent();
 
-                if (nodeParent == lastSelection) {
-                    return;
-                }
+				if (nodeParent == lastSelection) {
+					return;
+				}
 
-                // Resolve the shape
-                IShape modelShape = (IShape) nodeParent.getProperties().get(IShape.class);
+				// Resolve the shape
+				Shape modelShape = (Shape) nodeParent.getProperties().get(Shape.class);
 
-                if (modelShape == null) {
-                    return;
-                }
+				if (modelShape == null) {
+					return;
+				}
 
-                // Create and set the viewer selection
-                // (event gets fired in parent class)
-                GeometrySelection selection = new GeometrySelection(modelShape);
+				// Create and set the viewer selection
+				// (event gets fired in parent class)
+				GeometrySelection selection = new GeometrySelection(modelShape);
 
-                setSelection(selection);
+				setSelection(selection);
 
-                nodeParent.setSelected(true);
+				nodeParent.setSelected(true);
 
-                if (lastSelection != null) {
-                    lastSelection.setSelected(false);
-                }
+				if (lastSelection != null) {
+					lastSelection.setSelected(false);
+				}
 
-                lastSelection = nodeParent;
-            }
-        });
-    }
+				lastSelection = nodeParent;
+			}
+		});
+	}
 
-    /**
-     * <p>
-     * Creates scene elements that aren't meant to be manipulated by the user
-     * (markers, camera, etc.)
-     * </p>
-     */
-    private void setupSceneInternals(Group parent) {
-        // Create scene plane for frame of reference.
-        Box box = new Box(1000, 0, 1000);
-        box.setMouseTransparent(true);
-        box.setDrawMode(DrawMode.LINE);
-        box.setMaterial(new PhongMaterial(Color.ANTIQUEWHITE));
+	/**
+	 * <p>
+	 * Creates scene elements that aren't meant to be manipulated by the user
+	 * (markers, camera, etc.)
+	 * </p>
+	 */
+	private void setupSceneInternals(Group parent) {
+		// Create scene plane for frame of reference.
+		Box box = new Box(1000, 0, 1000);
+		box.setMouseTransparent(true);
+		box.setDrawMode(DrawMode.LINE);
+		box.setMaterial(new PhongMaterial(Color.ANTIQUEWHITE));
 
-        AmbientLight ambientLight = new AmbientLight(Color.rgb(100, 100, 100));
+		AmbientLight ambientLight = new AmbientLight(Color.rgb(100, 100, 100));
 
-        PointLight light1 = new PointLight(Color.ANTIQUEWHITE);
-        light1.setMouseTransparent(true);
-        light1.setTranslateY(-350);
+		PointLight light1 = new PointLight(Color.ANTIQUEWHITE);
+		light1.setMouseTransparent(true);
+		light1.setTranslateY(-350);
 
-        PointLight light2 = new PointLight(Color.ANTIQUEWHITE);
-        light2.setMouseTransparent(true);
-        light2.setTranslateZ(350);
+		PointLight light2 = new PointLight(Color.ANTIQUEWHITE);
+		light2.setMouseTransparent(true);
+		light2.setTranslateZ(350);
 
-        PointLight light3 = new PointLight(Color.ANTIQUEWHITE);
-        light3.setMouseTransparent(true);
-        light3.setTranslateZ(-350);
+		PointLight light3 = new PointLight(Color.ANTIQUEWHITE);
+		light3.setMouseTransparent(true);
+		light3.setTranslateZ(-350);
 
-        PointLight light4 = new PointLight(Color.ANTIQUEWHITE);
-        light4.setMouseTransparent(true);
-        light4.setTranslateZ(350);
+		PointLight light4 = new PointLight(Color.ANTIQUEWHITE);
+		light4.setMouseTransparent(true);
+		light4.setTranslateZ(350);
 
-        TransformGizmo gizmo = new TransformGizmo(1000);
-        gizmo.showHandles(false);
+		TransformGizmo gizmo = new TransformGizmo(1000);
+		gizmo.showHandles(false);
 
-        parent.getChildren().addAll(gizmo, box, light1, light2, light3, light4, ambientLight);
+		parent.getChildren().addAll(gizmo, box, light1, light2, light3, light4, ambientLight);
 
-    }
+	}
 
-    /**
-     * <p>
-     * Handles recreating the scene when the input changes.
-     * </p>
-     * 
-     * @see Viewer#inputChanged(Object, Object)
-     */
-    @Override
-    protected void inputChanged(Object oldInput, Object newInput) {
-        contentProvider.inputChanged(this, newInput, input);
-    }
+	/**
+	 * <p>
+	 * Handles recreating the scene when the input changes.
+	 * </p>
+	 * 
+	 * @see Viewer#inputChanged(Object, Object)
+	 */
+	@Override
+	protected void inputChanged(Object oldInput, Object newInput) {
+		contentProvider.inputChanged(this, newInput, input);
+	}
 
-    /**
-     * @see GeometryViewer#updateCamera(ICamera)
-     */
-    @Override
-    protected void updateCamera(ICamera camera) {
-        if (!(camera instanceof FXCameraAttachment)) {
-            throw new IllegalArgumentException(Messages.FXGeometryViewer_InvalidCamera);
-        }
+	/**
+	 * @see GeometryViewer#updateCamera(ICamera)
+	 */
+	@Override
+	protected void updateCamera(ICamera camera) {
+		if (!(camera instanceof FXCameraAttachment)) {
+			throw new IllegalArgumentException(Messages.FXGeometryViewer_InvalidCamera);
+		}
 
-        FXCameraAttachment attachment = (FXCameraAttachment) camera;
-        Camera fxCamera = attachment.getFxCamera();
+		FXCameraAttachment attachment = (FXCameraAttachment) camera;
+		Camera fxCamera = attachment.getFxCamera();
 
-        if (fxCamera == null) {
-            throw new NullPointerException(Messages.FXGeometryViewer_NullCamera);
-        }
+		if (fxCamera == null) {
+			throw new NullPointerException(Messages.FXGeometryViewer_NullCamera);
+		}
 
-        cameraController = new FPSController(fxCamera, scene, fxCanvas);
+		cameraController = new FPSController(fxCamera, scene, fxCanvas);
 
-        scene.setCamera(fxCamera);
+		scene.setCamera(fxCamera);
 
-        defaultCamera = fxCamera;
-    }
+		defaultCamera = fxCamera;
+	}
 
-    /**
-     * @see Viewer#getClass()
-     */
-    @Override
-    public Control getControl() {
-        return fxCanvas;
-    }
+	/**
+	 * @see Viewer#getClass()
+	 */
+	@Override
+	public Control getControl() {
+		return fxCanvas;
+	}
 
-    /**
-     * @see Viewer#refresh()
-     */
-    @Override
-    public void refresh() {
+	/**
+	 * @see Viewer#refresh()
+	 */
+	@Override
+	public void refresh() {
 
-    }
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public FXCanvas getFxCanvas() {
-        return fxCanvas;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public FXCanvas getFxCanvas() {
+		return fxCanvas;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public Group getRoot() {
-        return root;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public Group getRoot() {
+		return root;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public Scene getScene() {
-        return scene;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public Scene getScene() {
+		return scene;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    public FXContentProvider getContentProvider() {
-        return contentProvider;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	public FXContentProvider getContentProvider() {
+		return contentProvider;
+	}
 
-    /**
-     * 
-     * @param contentProvider
-     */
-    public void setContentProvider(FXContentProvider contentProvider) {
-        this.contentProvider = contentProvider;
-    }
+	/**
+	 * 
+	 * @param contentProvider
+	 */
+	public void setContentProvider(FXContentProvider contentProvider) {
+		this.contentProvider = contentProvider;
+	}
 
-    public CameraController getCameraController() {
-        return cameraController;
-    }
+	public CameraController getCameraController() {
+		return cameraController;
+	}
 
-    public Camera getDefaultCamera() {
-        return defaultCamera;
-    }
+	public Camera getDefaultCamera() {
+		return defaultCamera;
+	}
 
 }

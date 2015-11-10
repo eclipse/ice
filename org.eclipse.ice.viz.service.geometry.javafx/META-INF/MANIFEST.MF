@@ -23,5 +23,6 @@ Import-Package:
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2"
 Bundle-ClassPath: .
-Export-Package: org.eclipse.ice.viz.service.geometry.viewer.factory
+Export-Package: org.eclipse.ice.viz.service.geometry.viewer.factory,
+ org.eclipse.ice.viz.service.javafx.internal
 
