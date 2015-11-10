@@ -76,15 +76,15 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 	 * Notify all listeners of an update.
 	 */
 	public void notifyListeners() {
-		
+
 		// If the listeners are empty, return
 		if (this.listeners == null || this.listeners.isEmpty()) {
 			return;
 		}
-		
-		//Get a reference to self
+
+		// Get a reference to self
 		final AbstractView self = this;
-		
+
 		// Create a thread object that notifies all listeners
 
 		Thread notifyThread = new Thread() {
@@ -212,8 +212,7 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 
 		// Copy the other view's data members
 		transformation = (Transformation) otherObject.transformation.clone();
-		previousTransformation = (Transformation) otherObject.previousTransformation
-				.clone();
+		previousTransformation = (Transformation) otherObject.previousTransformation.clone();
 
 		// Notify listeners of the change
 		notifyListeners();
