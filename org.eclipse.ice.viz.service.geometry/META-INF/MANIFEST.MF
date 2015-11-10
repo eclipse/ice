@@ -35,7 +35,8 @@ Export-Package: org.eclipse.ice.viz.service.geometry.scene.base,
  org.eclipse.ice.viz.service.geometry.scene.model,
  org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.geometry.viewer,
- org.eclipse.ice.viz.service.geometry.widgets
+ org.eclipse.ice.viz.service.geometry.widgets,
+ org.eclipse.ice.viz.service.javafx.internal
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory

@@ -134,7 +134,6 @@ public class FXGeometryAttachment extends GeometryAttachment {
 			geom.register(new IVizUpdateableListener() {
 				@Override
 				public void update(IVizUpdateable component) {
-					SyncShapes sync = new SyncShapes(fxAttachmentNode);
 
 					/**
 					 * The temporary working list of PrimitiveShapes
@@ -160,7 +159,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 					javafx.application.Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							sync.commit();
+							syncShapes(fxAttachmentNode, primitiveShapes, complexShapes);
 						}
 					});
 				}
@@ -325,8 +324,6 @@ public class FXGeometryAttachment extends GeometryAttachment {
 
 		// Add the new shapes to the node using the AddShapeToNode shape
 		// visitor class
-
-		AddShapeToNode addShape = new AddShapeToNode(parentNode);
 
 		for (Shape primitiveShape : primitiveShapes) {
 			// Local Declarations

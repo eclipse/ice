@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry;
 
-import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
@@ -24,6 +23,7 @@ import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.ice.viz.service.geometry.viewer.IRenderer;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.ice.viz.service.javafx.internal.FXGeometryViewer;
 import org.eclipse.ice.viz.service.modeling.Shape;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -135,15 +135,7 @@ public class GeometryCanvas implements IVizCanvas, IVizUpdateableListener {
 	 */
 	private GeometryViewer materializeViewer(Composite viewerParent) throws Exception {
 		try {
-			Class<?> viewerFactory = Class.forName(GEOMETRY_VIEWER_FACTORY); // $NON-NLS-1$
-
-			if (viewerFactory == null) {
-				throw new Exception(""); //$NON-NLS-1$
-			}
-
-			Object newInstance = viewerFactory.newInstance();
-			Method method = newInstance.getClass().getMethod("createViewer", Composite.class); //$NON-NLS-1$
-			return (GeometryViewer) method.invoke(newInstance, viewerParent);
+			return new FXGeometryViewer(viewerParent);
 
 		} catch (Exception e) {
 			throw new Exception("", e); //$NON-NLS-1$
