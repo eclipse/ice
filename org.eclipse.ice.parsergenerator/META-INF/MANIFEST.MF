@@ -11,3 +11,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.internal.resources,
  org.eclipse.core.resources
+Export-Package: org.eclipse.ice.parsergenerator,
+ org.eclipse.ice.parsergenerator.ebnf
