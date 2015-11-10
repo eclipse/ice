@@ -446,13 +446,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 				// Get the file name if this is a persist or delete
 				if ("persist".equals(currentTask.task) || "delete".equals(currentTask.task)) {
 					// Setup the file name
-					name = currentTask.item.getName().replaceAll("\\s+", "_")
-							/* + "_" + currentTask.item.getId() */ + ".xml";
+					name = currentTask.item.getName().replaceAll("\\s+", "_") + ".xml";
 					// Get the file from the project registered with the Item.
 					// This may change depending on whether or not this Item was
 					// created in the default project.
 					file = currentTask.item.getProject().getFile(name);
-					System.out.println("Persist: Getting file = " + file.getName());
 				}
 				// Process persists
 				if ("persist".equals(currentTask.task) && !(currentTask.item instanceof ReactorAnalyzer)) {
@@ -470,7 +468,6 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 					if (file.exists()) {
 						file.delete(true, null);
 					}
-					System.out.println("Deleting the file " + file.getName() + ", " + currentTask.item.getId());
 					// Update the item id map
 					itemIdMap.remove(currentTask.item.getId());
 				} else if ("write".equals(currentTask.task)) {
