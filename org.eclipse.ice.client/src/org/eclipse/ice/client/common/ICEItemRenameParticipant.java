@@ -69,22 +69,29 @@ public class ICEItemRenameParticipant extends RenameParticipant {
 
 		// If this is an IFile
 		if (itemFile != null) {
-
-			// Get the ICE Form Text Content Describer
-			FormTextContentDescriber describer = getFormTextContentDescriber("ICE Form");
-
 			try {
-				// Check if this is an ICE XML File
-				int isValid = describer.describe(itemFile.getContents(), null);
+				// Get the ICE Form Text Content Describer
+				FormTextContentDescriber describer = null;
+				int isValid = ITextContentDescriber.INVALID;									
 
-				// If so, get the itemID and return true to
-				// indicate we want to participate in the deletion
-				if (isValid == ITextContentDescriber.VALID) {
-					itemID = describer.getItemID();
-					return true;
-				} else {
+				for (FormTextContentDescriber desc : FormTextContentDescriber.getFormTextContentDescribers()) {
+					// Check if this is an ICE XML File
+					isValid = desc.describe(itemFile.getContents(), null);
+					if (isValid == ITextContentDescriber.VALID) {
+						describer = desc;
+						break;
+					}
+				}
+
+				// Make sure we got a valid describer
+				if (describer == null) {
 					return false;
 				}
+				
+				// If so, get the ItemID
+				itemID = describer.getItemID();
+				return true;
+				
 			} catch (IOException | CoreException e1) {
 				logger.error("Could not describe the provided file.", e1);
 				return false;
@@ -126,47 +133,19 @@ public class ICEItemRenameParticipant extends RenameParticipant {
 		return null;
 	}
 
-	/**
-	 * This utility method is used to return the correct ITextContentDescriber
-	 * so we can validate incoming IFiles being deleted as true ICE Item files.
-	 * 
-	 * @param type
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant#getName()
 	 */
-	private FormTextContentDescriber getFormTextContentDescriber(String type) {
-		// Local Declarations
-		FormTextContentDescriber describer = null;
-		String id = "org.eclipse.core.contenttype.contentTypes";
-
-		// Get the extension point
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(id);
-
-		// If the point is available, get a reference to the correct
-		// ITextContentDescriber
-		if (point != null) {
-			IConfigurationElement[] elements = point.getConfigurationElements();
-			for (IConfigurationElement e : elements) {
-				if ("content-type".equals(e.getName()) && type.equals(e.getAttribute("name"))) {
-					try {
-						describer = (FormTextContentDescriber) e.createExecutableExtension("describer");
-					} catch (CoreException e1) {
-						e1.printStackTrace();
-						logger.error("Could not get ITextContentDescriber " + type, e1);
-					}
-				}
-			}
-		} else {
-			logger.error("Extension Point " + id + "does not exist");
-		}
-
-		return describer;
-	}
-
 	@Override
 	public String getName() {
 		return "ICE Item Rename Participant";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant#checkConditions(org.eclipse.core.runtime.IProgressMonitor, org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext)
+	 */
 	@Override
 	public RefactoringStatus checkConditions(IProgressMonitor pm, CheckConditionsContext context)
 			throws OperationCanceledException {

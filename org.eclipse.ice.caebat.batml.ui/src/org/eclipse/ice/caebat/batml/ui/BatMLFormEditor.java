@@ -30,7 +30,7 @@ public class BatMLFormEditor extends ICEFormEditor {
 	/**
 	 * ID for Eclipse, used for the bundle's editor extension point.
 	 */
-	public static final String ID = "org.eclipse.ice.reflectivity.ui.BatMLFormEditor";
+	public static final String ID = "org.eclipse.ice.caebat.batml.ui.BatMLFormEditor";
 
 	/*
 	 * (non-Javadoc)

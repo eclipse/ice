@@ -842,6 +842,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	public void init(IEditorSite site, IEditorInput input) throws RuntimeException {
 
+		// Get the Client Reference
 		IClient client = null;
 		try {
 			client = IClient.getClient();
@@ -904,6 +905,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			}
 		}
 
+		// Register this ICEFormEditor with the provided Form
 		iceDataForm.register(this);
 
 		return;
@@ -1362,7 +1364,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					// FIXME WANT THIS TO REMAIN THE ITEM TYPE + ID
 					setPartName(iceDataForm.getName() + ".xml");
 					managedForm.getForm().getForm().redraw();
 				}

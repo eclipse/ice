@@ -130,8 +130,8 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 					if (!describer.getClass().equals(getClass())) {
 						// If true, this describer is better
 						if (describer.isValidFile(firstLines)) {
-							logger.info("The " + describer.getClass().getSimpleName() + " describer is better than "
-									+ getClass().getSimpleName() + " for \n\t" + firstLines);
+							//logger.info("The " + describer.getClass().getSimpleName() + " describer is better than "
+							//		+ getClass().getSimpleName() + " for \n\t" + firstLines);
 							// We've found a better match, so exit
 							// with an INVALID for this describer
 							return INVALID;
@@ -140,7 +140,7 @@ public class XMLFormContentDescriber implements FormTextContentDescriber {
 				}
 			}
 
-			logger.info(getClass().getSimpleName() + " is the best Describer Fit for \n\t" + firstLines);
+		//	logger.info(getClass().getSimpleName() + " is the best Describer Fit for \n\t" + firstLines);
 		} else {
 			retCode = INDETERMINATE;
 		}

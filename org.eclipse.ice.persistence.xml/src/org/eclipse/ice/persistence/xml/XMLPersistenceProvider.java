@@ -464,9 +464,13 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 					// Handle deletes
 					// Make sure it exists, the platform may have deleted it
 					// first
+					// Sleep for a bit to let the platform delete if it wants
+					Thread.currentThread();
+					Thread.sleep(1000);
 					if (file.exists()) {
 						file.delete(true, null);
 					}
+					System.out.println("Deleting the file " + file.getName() + ", " + currentTask.item.getId());
 					// Update the item id map
 					itemIdMap.remove(currentTask.item.getId());
 				} else if ("write".equals(currentTask.task)) {
