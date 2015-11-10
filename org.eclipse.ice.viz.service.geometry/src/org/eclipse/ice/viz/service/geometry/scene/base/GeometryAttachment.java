@@ -17,7 +17,8 @@ import java.util.List;
 import org.eclipse.ice.viz.service.geometry.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * <p>
@@ -30,232 +31,239 @@ import org.eclipse.ice.viz.service.geometry.shapes.IShape;
  */
 public abstract class GeometryAttachment extends Attachment implements IGeometry {
 
-    /**
-     * Geometry that has been added but has not been integrated as the node
-     * hasn't been attached yet.
-     */
-    private List<Geometry> queuedGeometry;
+	/**
+	 * Geometry that has been added but has not been integrated as the node
+	 * hasn't been attached yet.
+	 */
+	private List<Shape> queuedGeometry;
 
-    /** List of shapes that have been added via Geometry instances. */
-    private List<IShape> shapes;
+	/** List of shapes that have been added via Geometry instances. */
+	private List<Shape> shapes;
 
-    /** */
-    private boolean visible;
+	/** */
+	private boolean visible;
 
-    /** */
-    private boolean enabled;
+	/** */
+	private boolean enabled;
 
-    /** */
-    private boolean immutable;
+	/** */
+	private boolean immutable;
 
-    /** */
-    protected Geometry currentGeom = null;
+	/** */
+	protected Shape currentGeom = null;
 
-    /**
-     * 
-     * @param node
-     */
-    protected void checkNode(INode node) {
-    }
+	/**
+	 * 
+	 * @param node
+	 */
+	protected void checkNode(INode node) {
+	}
 
-    /**
-     * 
-     * @param shape
-     */
-    protected void checkMesh(IShape shape) {
-    }
+	/**
+	 * 
+	 * @param shape
+	 */
+	protected void checkMesh(Shape shape) {
+	}
 
-    /**
-     * @see IGeometry#addGeometry(Geometry)
-     */
-    public void addGeometry(Geometry geom) {
-        if (geom == null) {
-            return;
-        }
+	/**
+	 * @see IGeometry#addGeometry(Geometry)
+	 */
+	@Override
+	public void addGeometry(Shape geom) {
+		if (geom == null) {
+			return;
+		}
 
-        if (currentGeom == geom) {
-            return;
-        } else {
-            currentGeom = geom;
-        }
+		if (currentGeom == geom) {
+			return;
+		} else {
+			currentGeom = geom;
+		}
 
-        if (owner == null) {
-            if (queuedGeometry == null) {
-                queuedGeometry = new ArrayList<>();
-            }
+		if (owner == null) {
+			if (queuedGeometry == null) {
+				queuedGeometry = new ArrayList<>();
+			}
 
-            queuedGeometry.add(geom);
+			queuedGeometry.add(geom);
 
-            return;
-        }
+			return;
+		}
 
-    }
+	}
 
-    /**
-     * @see IGeometry#addShape(Geometry)
-     */
-    public void addShape(IShape shape) {
-        checkMesh(shape);
+	/**
+	 * @see IGeometry#addShape(Geometry)
+	 */
+	@Override
+	public void addShape(Shape shape) {
+		checkMesh(shape);
 
-        if (shapes == null) {
-            shapes = new ArrayList<>();
-        }
+		if (shapes == null) {
+			shapes = new ArrayList<>();
+		}
 
-        shapes.add(shape);
+		shapes.add(shape);
 
-        processShape(shape);
-    }
+		processShape(shape);
+	}
 
-    /**
-     * @see IAttachment#attach(INode)
-     */
-    @Override
-    public void attach(INode owner) {
-        super.attach(owner);
+	/**
+	 * @see IAttachment#attach(INode)
+	 */
+	@Override
+	public void attach(INode owner) {
+		super.attach(owner);
 
-        if (queuedGeometry == null) {
-            return;
-        }
+		if (queuedGeometry == null) {
+			return;
+		}
 
-        for (Geometry geom : queuedGeometry) {
-            for (IShape shape : geom.getShapes()) {
-                addShape(shape);
-            }
-        }
+		for (Shape geom : queuedGeometry) {
+			for (AbstractController shape : geom.getEntities()) {
+				addShape((Shape) shape);
+			}
+		}
 
-        queuedGeometry.clear();
-    }
+		queuedGeometry.clear();
+	}
 
-    /**
-     * @see IAttachment#detach(INode)
-     */
-    @Override
-    public void detach(INode owner) {
-        super.detach(owner);
+	/**
+	 * @see IAttachment#detach(INode)
+	 */
+	@Override
+	public void detach(INode owner) {
+		super.detach(owner);
 
-        if (shapes != null) {
-            shapes.clear();
-        }
+		if (shapes != null) {
+			shapes.clear();
+		}
 
-        if (queuedGeometry != null) {
-            queuedGeometry.clear();
-        }
-    }
+		if (queuedGeometry != null) {
+			queuedGeometry.clear();
+		}
+	}
 
-    /**
-     * <p>
-     * Handles generating renderer specific data from the input model shape.
-     * </p>
-     * 
-     * @param shape
-     *            ICE shape to visualize
-     */
-    protected abstract void processShape(IShape shape);
+	/**
+	 * <p>
+	 * Handles generating renderer specific data from the input model shape.
+	 * </p>
+	 * 
+	 * @param shape
+	 *            ICE shape to visualize
+	 */
+	protected abstract void processShape(Shape shape);
 
-    /**
-     * @see IGeometry#addShape(Geometry)
-     */
-    public void removeShape(IShape shape) {
-        if (shapes == null) {
-            return;
-        }
+	/**
+	 * @see IGeometry#addShape(Geometry)
+	 */
+	@Override
+	public void removeShape(Shape shape) {
+		if (shapes == null) {
+			return;
+		}
 
-        if (!shapes.contains(shape)) {
-            return;
-        }
+		if (!shapes.contains(shape)) {
+			return;
+		}
 
-        shapes.remove(shape);
+		shapes.remove(shape);
 
-        disposeShape(shape);
-    }
+		disposeShape(shape);
+	}
 
-    /**
-     * 
-     * @param shape
-     */
-    protected abstract void disposeShape(IShape shape);
+	/**
+	 * 
+	 * @param shape
+	 */
+	protected abstract void disposeShape(Shape shape);
 
-    /**
-     * 
-     */
-    public boolean hasShape(IShape shape) {
-        if (shapes == null) {
-            return false;
-        }
+	/**
+	 * 
+	 */
+	@Override
+	public boolean hasShape(Shape shape) {
+		if (shapes == null) {
+			return false;
+		}
 
-        return shapes.contains(shape);
-    }
+		return shapes.contains(shape);
+	}
 
-    /**
-     * 
-     */
-    public IShape getShape(int index) {
-        if (shapes == null) {
-            return null;
-        }
+	/**
+	 * 
+	 */
+	@Override
+	public Shape getShape(int index) {
+		if (shapes == null) {
+			return null;
+		}
 
-        return shapes.get(index);
-    }
+		return shapes.get(index);
+	}
 
-    /**
-     * 
-     * @param copy
-     * @return
-     */
-    public List<IShape> getShapes(boolean copy) {
-        if (shapes == null) {
-            return Collections.emptyList();
-        }
+	/**
+	 * 
+	 * @param copy
+	 * @return
+	 */
+	@Override
+	public List<Shape> getShapes(boolean copy) {
+		if (shapes == null) {
+			return Collections.emptyList();
+		}
 
-        if (copy) {
-            return new ArrayList<IShape>(shapes);
-        } else {
-            return shapes;
-        }
-    }
+		if (copy) {
+			return new ArrayList<Shape>(shapes);
+		} else {
+			return shapes;
+		}
+	}
 
-    /**
-     * 
-     */
-    public void clearShapes() {
-        if (shapes == null) {
-            return;
-        }
+	/**
+	 * 
+	 */
+	@Override
+	public void clearShapes() {
+		if (shapes == null) {
+			return;
+		}
 
-        shapes.clear();
-    }
+		shapes.clear();
+	}
 
-    /**
-     */
-    @Override
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
+	/**
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 
-    /**
-     * 
-     */
-    @Override
-    public boolean isVisible() {
-        return visible;
-    }
+	/**
+	 * 
+	 */
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    @Override
-    public boolean isImmutable() {
-        return immutable;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isImmutable() {
+		return immutable;
+	}
 
-    /**
-     * 
-     * @return
-     */
-    @Override
-    public void setImmutable(boolean immutable) {
-        this.immutable = immutable;
-    }
+	/**
+	 * 
+	 * @return
+	 */
+	@Override
+	public void setImmutable(boolean immutable) {
+		this.immutable = immutable;
+	}
 
 }

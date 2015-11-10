@@ -17,14 +17,8 @@ import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
-import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * <p>
@@ -36,49 +30,52 @@ import org.eclipse.ui.PlatformUI;
  */
 public class GeometryVizService extends AbstractVizService {
 
-    /** The name used to lookup this service. */
-    private static final String VIZ_SERVICE_NAME = "ICE Geometry Editor"; //$NON-NLS-1$
+	/** The name used to lookup this service. */
+	private static final String VIZ_SERVICE_NAME = "ICE Geometry Editor"; //$NON-NLS-1$
 
-    /** The version of the service. */
-    private static final String CURRENT_VERSION = "1.0";
+	/** The version of the service. */
+	private static final String CURRENT_VERSION = "1.0";
 
-    /**
-     * <p>
-     * Creates a GeometryCanvas.
-     * </p>
-     * 
-     * @see IVizService#createCanvas(IVizObject)
-     */
-    public IVizCanvas createCanvas(IVizObject geometry) throws Exception {
-        if (geometry instanceof Geometry) {
-            GeometryCanvas canvas = new GeometryCanvas((Geometry) geometry);
+	/**
+	 * <p>
+	 * Creates a GeometryCanvas.
+	 * </p>
+	 * 
+	 * @see IVizService#createCanvas(IVizObject)
+	 */
+	@Override
+	public IVizCanvas createCanvas(AbstractController geometry) throws Exception {
+		if (geometry instanceof Shape) {
+			GeometryCanvas canvas = new GeometryCanvas((Shape) geometry);
 
-            return canvas;
-        } else {
-            throw new IllegalArgumentException(Messages.GeometryVizService_InvalidInput);
-        }
-    }
+			return canvas;
+		} else {
+			throw new IllegalArgumentException(Messages.GeometryVizService_InvalidInput);
+		}
+	}
 
-    /**
-     * @see IVizService#getName()
-     */
-    public String getName() {
-        return VIZ_SERVICE_NAME;
-    }
+	/**
+	 * @see IVizService#getName()
+	 */
+	@Override
+	public String getName() {
+		return VIZ_SERVICE_NAME;
+	}
 
-    /**
-     * @see IVizService#getVersion()
-     */
-    public String getVersion() {
-        return CURRENT_VERSION; // $NON-NLS-1$
-    }
+	/**
+	 * @see IVizService#getVersion()
+	 */
+	@Override
+	public String getVersion() {
+		return CURRENT_VERSION; // $NON-NLS-1$
+	}
 
-    /**
-     * @see AbstractVizService#findSupportedExtensions()
-     */
-    @Override
-    protected Set<String> findSupportedExtensions() {
-        return Collections.emptySet();
-    }
+	/**
+	 * @see AbstractVizService#findSupportedExtensions()
+	 */
+	@Override
+	protected Set<String> findSupportedExtensions() {
+		return Collections.emptySet();
+	}
 
 }

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ice.viz.service.geometry.scene.base.ICamera;
-import org.eclipse.ice.viz.service.geometry.scene.base.IGeometry;
+import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * <p>
@@ -27,40 +27,40 @@ import org.eclipse.ice.viz.service.geometry.scene.base.IGeometry;
  */
 public interface IScene {
 
-    /**
-     * <p>
-     * Returns the scene's root node.
-     * </p>
-     * 
-     * @return an INode that is the top most node in the scene hierarchy.
-     */
-    public INode getRoot();
+	/**
+	 * <p>
+	 * Returns the scene's root node.
+	 * </p>
+	 * 
+	 * @return an INode that is the top most node in the scene hierarchy.
+	 */
+	public INode getRoot();
 
-    /**
-     * <p>
-     * Returns the scene's cameras.
-     * </p>
-     * 
-     * @return a Map of the scene's cameras
-     */
-    public Map<String, ICamera> getCameras();
+	/**
+	 * <p>
+	 * Returns the scene's cameras.
+	 * </p>
+	 * 
+	 * @return a Map of the scene's cameras
+	 */
+	public Map<String, ICamera> getCameras();
 
-    /**
-     * <p>
-     * Returns a Map of all the INode instances in the scene.
-     * </p>
-     * 
-     * @return a Map of all the INode instances in the scene.
-     */
-    public Map<Integer, INode> getNodes();
+	/**
+	 * <p>
+	 * Returns a Map of all the INode instances in the scene.
+	 * </p>
+	 * 
+	 * @return a Map of all the INode instances in the scene.
+	 */
+	public Map<Integer, INode> getNodes();
 
-    /**
-     * <p>
-     * Returns a list of all the {@link Geometry} used in the scene.
-     * </p>
-     * 
-     * @return a List of all the geometry used in the scene.
-     */
-    public List<IGeometry> getGeometry();
+	/**
+	 * <p>
+	 * Returns a list of all the {@link Geometry} used in the scene.
+	 * </p>
+	 * 
+	 * @return a List of all the geometry used in the scene.
+	 */
+	public List<Shape> getGeometry();
 
 }

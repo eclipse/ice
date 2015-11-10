@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.geometry.scene.model.IScene;
+import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * <p>
@@ -27,60 +28,64 @@ import org.eclipse.ice.viz.service.geometry.scene.model.IScene;
  */
 public abstract class GScene implements IScene {
 
-    /** */
-    private INode root;
+	/** */
+	private INode root;
 
-    /** */
-    private Map<String, ICamera> cameras;
+	/** */
+	private Map<String, ICamera> cameras;
 
-    /** */
-    private Map<Integer, INode> nodes;
+	/** */
+	private Map<Integer, INode> nodes;
 
-    /** */
-    private List<IGeometry> geometry;
+	/** */
+	private List<Shape> geometry;
 
-    /**
-     * @see IScene#getRoot()
-     */
-    public INode getRoot() {
-        return root;
-    }
+	/**
+	 * @see IScene#getRoot()
+	 */
+	@Override
+	public INode getRoot() {
+		return root;
+	}
 
-    /**
-     * @see IScene#getCameras()
-     */
-    public Map<String, ICamera> getCameras() {
-        if (cameras == null) {
-            return Collections.emptyMap();
-        }
+	/**
+	 * @see IScene#getCameras()
+	 */
+	@Override
+	public Map<String, ICamera> getCameras() {
+		if (cameras == null) {
+			return Collections.emptyMap();
+		}
 
-        return cameras;
-    }
+		return cameras;
+	}
 
-    /**
-     * @see IScene#getNodes()
-     */
-    public Map<Integer, INode> getNodes() {
-        if (nodes == null) {
-            return Collections.emptyMap();
-        }
+	/**
+	 * @see IScene#getNodes()
+	 */
+	@Override
+	public Map<Integer, INode> getNodes() {
+		if (nodes == null) {
+			return Collections.emptyMap();
+		}
 
-        return nodes;
-    }
+		return nodes;
+	}
 
-    /**
-     * @see IScene#getGeometry()
-     */
-    public List<IGeometry> getGeometry() {
-        if (geometry == null) {
-            return Collections.emptyList();
-        }
+	/**
+	 * @see IScene#getGeometry()
+	 */
+	@Override
+	public List<Shape> getGeometry() {
+		if (geometry == null) {
+			return Collections.emptyList();
+		}
 
-        return geometry;
-    }
+		return geometry;
+	}
 
-    public void setRoot(INode root) {
-        this.root = root;
-    }
+	public void setRoot(INode root) {
+		this.root = root;
+	}
 
 }
