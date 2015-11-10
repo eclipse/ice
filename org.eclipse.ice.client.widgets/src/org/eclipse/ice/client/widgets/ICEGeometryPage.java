@@ -33,7 +33,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * <p>
- * This class is ICEFormPage that displays the GeometryEditor powered by JME3.
+ * This class is ICEFormPage that displays the GeometryEditor powered by JavaFX.
  * It automatically opens the ShapeTreeView and TransformationView to allow the
  * user to add and edit geometry.
  * </p>
@@ -167,7 +167,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 
 		// Get JME3 Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
-		IVizService service = factory.get("JME3 Geometry Editor");
+		IVizService service = factory.get("ICE Geometry Editor");
 
 		// Create and draw geometry canvas
 		try {

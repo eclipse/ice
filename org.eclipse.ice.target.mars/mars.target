@@ -118,5 +118,11 @@
 <unit id="org.eclipse.swtbot.feature.group" version="2.3.0.201506081302"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
+
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+  <unit id="org.eclipse.fx.runtime.min.feature.feature.group" version="2.1.0.201508240501"/>
+  <repository location="http://download.eclipse.org/efxclipse/runtime-shared-released/2.1.0/site/"/>
+</location>
+
 </locations>
 </target>

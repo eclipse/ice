@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Shape;
 import org.eclipse.jface.viewers.IContentProvider;

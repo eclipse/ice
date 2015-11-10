@@ -125,6 +125,7 @@
 		<module>org.eclipse.ice.viz.service</module>
 		<module>org.eclipse.ice.viz.service.test</module>
 		<module>org.eclipse.ice.viz.service.geometry</module>
+		<module>org.eclipse.ice.viz.service.geometry.javafx</module>
 		<module>org.eclipse.ice.viz.service.geometry.test</module>
 		<module>org.eclipse.ice.viz.service.jme3</module>
 		<module>org.eclipse.ice.viz.service.jme3.test</module>
