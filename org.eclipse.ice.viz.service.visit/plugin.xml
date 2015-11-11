@@ -18,4 +18,10 @@
    			class="org.eclipse.ice.viz.service.visit.preferences.VisItPreferenceInitializer">
    		</initializer>
    </extension>
+   <extension
+         point="org.eclipse.ice.viz.service.IVizService">
+      <client
+            class="org.eclipse.ice.viz.service.visit.VisItVizService">
+      </client>
+   </extension>
 </plugin>
