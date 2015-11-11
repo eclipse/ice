@@ -80,7 +80,14 @@ def mkdir_p(path):
         if os.path.exists(path) and os.path.isdir(path):
             pass
         else:
-            raise
+            print("")
+            print("--------------------------- ERROR -----------------------------")
+            print("Cannot create directory " + path + ".  File already exists.")
+            print("Either delete this file, or specify a different installation")
+            print("location by using the --prefix option.")
+            print("--------------------------- ERROR -----------------------------")
+            print("")
+            exit()
 
 
 def get_os_and_arch():
@@ -258,30 +265,36 @@ def nix_install(opts, pkg_dirs):
             subprocess.call(install_cmd)
 
     hdf_path = opts.with_hdfjava if opts.with_hdfjava else opts.prefix
-    hdf_libdir = os.path.dirname(find_file(hdf_path, "libhdf.a"))
+    hdf_libdir = find_file(hdf_path, "libhdf.a")
     if hdf_libdir is None:
         print("")
         print("--------------------------- ERROR -----------------------------")
         print("Could not find a usable HDFJava library.  Try downloading")
         print("a fresh copy using this installer by providing the --update")
+        print("")
+        print("Alternatively you may specify the location of an existing")
+        print("HDFJava installation using the --with-hdfjava option.")
         print("option without any arguments")
         print("--------------------------- ERROR -----------------------------")
         print("")
         exit()
-    hdf_libdir = os.path.abspath(hdf_libdir)
+    hdf_libdir = os.path.abspath(os.path.dirname(hdf_libdir))
 
     visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
-    visit_bin_dir = os.path.dirname(find_file(visit_path, "visit"))
+    visit_bin_dir = find_file(visit_path, "visit")
     if visit_bin_dir is None:
         print("")
         print("--------------------------- ERROR -----------------------------")
         print("Could not find a usable VisIt executable.  Try downloading")
         print("a fresh copy using this installer by providing the --update")
         print("option without any arguments")
+        print("")
+        print("Alternatively you may specify the location of an existing")
+        print("VisIt installation using the --with-visit option.")
         print("--------------------------- ERROR -----------------------------")
         print("")
         exit()
-    visit_bin_dir = os.path.abspath(visit_bin_dir)
+    visit_bin_dir = os.path.abspath(os.path.dirname(visit_bin_dir))
     
     ice_preferences = find_file(opts.prefix, "ICE.ini")
     if ice_preferences == None:
