@@ -7,34 +7,60 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Nick Stanish
  *******************************************************************************/
-package org.eclipse.ice.client.widgets;
+
+package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ui.forms.editor.IFormPage;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This is an interface for page providers for Form Editors in ICE that provides
- * the set of pages required to draw the UI.
+ * This is an interface for list page providers for Form Editors in ICE that provides
+ * the set of list section pages required to draw the UI.
  * 
- * @author Jay Jay Billings
+ * @author Nick Stanish
  *
  */
-public interface IPageProvider {
-
+public interface IListPageProvider {
+	
+	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.listPageProvider";
+	
+	
 	/**
 	 * This is a static interface method that returns all of the currently
-	 * registers IPageProviders.
+	 * registered IListPageProvider.
 	 * 
 	 * @return The available providers
+	 * @throws CoreException 
 	 */
-	public static IPageProvider[] getProviders() {
-		// Add Extensions grabbing code
-		return null;
+	public static IListPageProvider[] getProviders() throws CoreException {
+		// Logger for handling event messages and other information.
+		Logger logger = LoggerFactory.getLogger(IListPageProvider.class);
+		IListPageProvider[] listPageProviders = null;
+		
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
+
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			listPageProviders = new IListPageProvider[elements.length];
+			for (int i = 0; i < elements.length; i++) {
+				listPageProviders[i] = (IListPageProvider) elements[i].createExecutableExtension("class");
+			}
+		} else {
+			logger.error("Extension Point " + EXTENSION_POINT_ID + " does not exist");
+		}
+		return listPageProviders;
 	}
 
 	/**
@@ -48,6 +74,7 @@ public interface IPageProvider {
 	 * This operation directs the provider to create and return all of its pages
 	 * based on the provided set of pages.
 	 * 
+	 * @param formEditor
 	 * @param componentMap
 	 *            This map must contain the Components in the Form organized by
 	 *            type. The type is the key and a string equal to one of "data,"
@@ -60,6 +87,6 @@ public interface IPageProvider {
 	 *            simulated multimap.
 	 * @return the form pages created from the map
 	 */
-	public IFormPage[] getPages(Map<String, ArrayList<Component>> componentMap);
+	public ArrayList<ICEFormPage> getPages(FormEditor formEditor, Map<String, ArrayList<Component>> componentMap);
 
 }
