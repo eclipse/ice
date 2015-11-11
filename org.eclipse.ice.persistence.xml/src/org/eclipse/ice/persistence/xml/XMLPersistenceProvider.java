@@ -464,7 +464,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 					// first
 					// Sleep for a bit to let the platform delete if it wants
 					Thread.currentThread();
-					Thread.sleep(1000);
+					Thread.sleep(100);
 					if (file.exists()) {
 						file.delete(true, null);
 					}
