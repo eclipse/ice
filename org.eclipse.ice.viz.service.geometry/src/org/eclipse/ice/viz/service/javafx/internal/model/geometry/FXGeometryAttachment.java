@@ -145,21 +145,11 @@ public class FXGeometryAttachment extends GeometryAttachment {
 					 */
 					ArrayList<Shape> complexShapes = new ArrayList<Shape>();
 
-					// Add each shape to the correct list
-					for (AbstractController shape : geom.getEntitiesByCategory("Children")) {
-						if (shape.getProperty("Type") != null) {
-							primitiveShapes.add((Shape) shape);
-						}
-
-						else {
-							complexShapes.add((Shape) shape);
-						}
-					}
-
 					javafx.application.Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							syncShapes(fxAttachmentNode, primitiveShapes, complexShapes);
+							syncShapes(fxAttachmentNode,
+									geom.getEntitiesByCategory("Children"));
 						}
 					});
 				}
@@ -188,7 +178,8 @@ public class FXGeometryAttachment extends GeometryAttachment {
 		if (shape.getProperty("Operator") == null) {
 			ShapeType type = ShapeType.valueOf(shape.getProperty("Type"));
 
-			Transform xform = Util.convertTransformation(shape.getTransformation());
+			Transform xform = Util
+					.convertTransformation(shape.getTransformation());
 
 			FXShape fxShape = new FXShape(type);
 
@@ -206,7 +197,8 @@ public class FXGeometryAttachment extends GeometryAttachment {
 
 		// If there is an Operator property, add the shape's children
 		else {
-			for (AbstractController subShape : shape.getEntitiesByCategory("Children")) {
+			for (AbstractController subShape : shape
+					.getEntitiesByCategory("Children")) {
 				processShape((Shape) subShape);
 			}
 		}
@@ -226,7 +218,8 @@ public class FXGeometryAttachment extends GeometryAttachment {
 		fxAttachmentNode.getChildren().remove(node);
 	}
 
-	public void syncShapes(Group parentNode, List<Shape> primitiveShapes, List<Shape> complexShapes) {
+	public void syncShapes(Group parentNode,
+			List<AbstractController> shapeList) {
 
 		// Local Declarations
 		Shape nodeShape = null;
@@ -251,70 +244,24 @@ public class FXGeometryAttachment extends GeometryAttachment {
 
 			// Extract the reference to the child shape if it exists
 			if (childSpatial.getProperties().containsKey(Shape.class)) {
-				nodeShape = (Shape) childSpatial.getProperties().get(Shape.class);
-				primitiveShapeIndex = primitiveShapes.indexOf(nodeShape);
-				complexShapeIndex = complexShapes.indexOf(nodeShape);
+				nodeShape = (Shape) childSpatial.getProperties()
+						.get(Shape.class);
 			}
 
-			// Check if nodeShape is in one of the IShape lists
+			childSpatial.getTransforms().setAll(
+					Util.convertTransformation(nodeShape.getTransformation()));
 
-			if (primitiveShapeIndex >= 0) {
-				// nodeShape is an existing PrimitiveShape
+			// Synchronize each individual child in the ComplexShape
 
-				Shape primitiveShape = primitiveShapes.get(primitiveShapeIndex);
+			List<AbstractController> complexShapeChildren = nodeShape
+					.getEntitiesByCategory("Children");
 
-				// Reset the transformation
-				childSpatial.getTransforms().setAll(Util.convertTransformation(primitiveShape.getTransformation()));
-
-				// Rotate 90 degrees if it's a cylinder
-
-				/*
-				 * if (primitiveShape.getType() == ShapeType.Cylinder) {
-				 * childSpatial.getTransforms().(Math.PI / 2, 0.0f, 0.0f); }
-				 */
-
-				// Remove the shape from the PrimitiveShapes list
-				primitiveShapes.remove(primitiveShapeIndex);
-			}
-
-			else if (complexShapeIndex >= 0) {
-				// nodeShape is an existing ComplexShape
-
-				Shape complexShape = complexShapes.get(complexShapeIndex);
-
-				// Reset the transform
-
-				childSpatial.getTransforms().setAll(Util.convertTransformation(complexShape.getTransformation()));
-
-				// Synchronize each individual child in the ComplexShape
-
-				List<AbstractController> complexShapeChildren = complexShape.getEntitiesByCategory("Children");
-
+			if (!complexShapeChildren.isEmpty()) {
 				// Lists of this shape's children, divided by type
-				List<Shape> childPrimitiveShapes = new ArrayList<Shape>();
-				List<Shape> childComplexShapes = new ArrayList<Shape>();
 
-				// Add each child shape to the appriopriate list
-				for (AbstractController complexShapeChild : complexShapeChildren) {
-					if (complexShapeChild.getProperty("Type") != null) {
-						childPrimitiveShapes.add((Shape) complexShapeChild);
-					} else {
-						childComplexShapes.add((Shape) complexShapeChild);
-					}
-				}
-
-				syncShapes(childNode, childPrimitiveShapes, childComplexShapes);
-
-				// Remove the shape from the ComplexShapes list
-
-				complexShapes.remove(complexShapeIndex);
+				syncShapes(childNode, complexShapeChildren);
 			}
 
-			else {
-				// nodeShape does not exist in one of the IShape lists
-
-				removeNodeIndices.add(childSpatial);
-			}
 		}
 
 		for (Node nodeIndex : removeNodeIndices) {
@@ -324,54 +271,61 @@ public class FXGeometryAttachment extends GeometryAttachment {
 
 		// Add the new shapes to the node using the AddShapeToNode shape
 		// visitor class
+		for (AbstractController shape : shapeList) {
+			if (shape.getProperty("Operator") == null) {
+				// Local Declarations
+				ShapeType shapeType = ShapeType.None;
+				Mesh mesh = null;
 
-		for (Shape primitiveShape : primitiveShapes) {
-			// Local Declarations
-			ShapeType shapeType = ShapeType.None;
-			Mesh mesh = null;
+				// Get the mesh. Since we are only using primitive shapes, we
+				// can
+				// reuse the meshes.
+				shapeType = ShapeType.valueOf(shape.getProperty("Type"));
 
-			// Get the mesh. Since we are only using primitive shapes, we can
-			// reuse the meshes.
-			shapeType = ShapeType.valueOf(primitiveShape.getProperty("Type"));
+				FXShape fxShape = new FXShape(shapeType);
 
-			FXShape shape = new FXShape(shapeType);
+				fxShape.getProperties().put(Shape.class, shape);
+				fxShape.getTransforms().setAll(
+						Util.convertTransformation(shape.getTransformation()));
 
-			shape.getProperties().put(Shape.class, primitiveShape);
-			shape.getTransforms().setAll(Util.convertTransformation(primitiveShape.getTransformation()));
+				// Attach the Geometry to a parent
+				parentNode.getChildren().add(fxShape);
+			}
 
-			// Attach the Geometry to a parent
-			parentNode.getChildren().add(shape);
-		}
+			else {
 
-		for (Shape complexShape : complexShapes) {
+				// Only union operators are currently supported
+				if (OperatorType.valueOf(
+						shape.getProperty("Operator")) == OperatorType.Union) {
 
-			// Only union operators are currently supported
-			if (OperatorType.valueOf(complexShape.getProperty("Operator")) == OperatorType.Union) {
+					// Create a new Node
 
-				// Create a new Node
+					Group complexShapeNode = new Group();
+					complexShapeNode.setId(shape.getProperty("Name"));
 
-				Group complexShapeNode = new Group();
-				complexShapeNode.setId(complexShape.getProperty("Name"));
+					complexShapeNode.getProperties().put(IShape.class, shape);
+					complexShapeNode.getTransforms().setAll(Util
+							.convertTransformation(shape.getTransformation()));
 
-				complexShapeNode.getProperties().put(IShape.class, complexShape);
-				complexShapeNode.getTransforms().setAll(Util.convertTransformation(complexShape.getTransformation()));
+					// Loop through the shapes in the ComplexShape
 
-				// Loop through the shapes in the ComplexShape
+					List<AbstractController> shapes = shape
+							.getEntitiesByCategory("Children");
 
-				List<AbstractController> shapes = complexShape.getEntitiesByCategory("Children");
+					addShapesToNode(complexShapeNode, shapes);
 
-				addShapesToNode(complexShapeNode, shapes);
+					// Attach the Node to a parent
 
-				// Attach the Node to a parent
-
-				parentNode.getChildren().add(complexShapeNode);
+					parentNode.getChildren().add(complexShapeNode);
+				}
 			}
 		}
 	}
 
-	public void addShapesToNode(Group parentNode, List<AbstractController> shapes) {
+	public void addShapesToNode(Group parentNode,
+			List<AbstractController> shapes) {
 		for (AbstractController nativeShape : shapes) {
-			if (nativeShape.getProperty("Type") != null) {
+			if (nativeShape.getProperty("Operator") == null) {
 				// Local Declarations
 				ShapeType shapeType = ShapeType.None;
 				Mesh mesh = null;
@@ -384,7 +338,8 @@ public class FXGeometryAttachment extends GeometryAttachment {
 				FXShape shape = new FXShape(shapeType);
 
 				shape.getProperties().put(Shape.class, nativeShape);
-				shape.getTransforms().setAll(Util.convertTransformation(nativeShape.getTransformation()));
+				shape.getTransforms().setAll(Util.convertTransformation(
+						nativeShape.getTransformation()));
 
 				// Attach the Geometry to a parent
 				parentNode.getChildren().add(shape);
@@ -393,20 +348,24 @@ public class FXGeometryAttachment extends GeometryAttachment {
 			else {
 
 				// Only union operators are currently supported
-				if (OperatorType.valueOf(nativeShape.getProperty("Operator")) == OperatorType.Union) {
+				if (OperatorType.valueOf(nativeShape
+						.getProperty("Operator")) == OperatorType.Union) {
 
 					// Create a new Node
 
 					Group complexShapeNode = new Group();
 					complexShapeNode.setId(nativeShape.getProperty("Name"));
 
-					complexShapeNode.getProperties().put(IShape.class, nativeShape);
+					complexShapeNode.getProperties().put(IShape.class,
+							nativeShape);
 					complexShapeNode.getTransforms()
-							.setAll(Util.convertTransformation(nativeShape.getTransformation()));
+							.setAll(Util.convertTransformation(
+									nativeShape.getTransformation()));
 
 					// Loop through the shapes in the ComplexShape
 
-					List<AbstractController> childShapes = nativeShape.getEntitiesByCategory("Children");
+					List<AbstractController> childShapes = nativeShape
+							.getEntitiesByCategory("Children");
 
 					addShapesToNode(complexShapeNode, childShapes);
 
