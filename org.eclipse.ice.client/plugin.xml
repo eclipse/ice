@@ -51,20 +51,41 @@
        name="ICE Client"
        point="org.eclipse.ice.client.clientInstance">
     <client
-          class="org.eclipse.ice.client.internal.Client">
+          class="org.eclipse.ice.client.internal.ClientExtensionFactory">
     </client>
  </extension>
  <extension
-       point="org.eclipse.ui.editors">
-    <editor
-          class="org.eclipse.ice.client.internal.Client"
-          default="false"
-          extensions="xml"
-          id="org.eclipse.ice.client.Editor"
-          name="ICE Editor">
-       <contentTypeBinding
-             contentTypeId="org.eclipse.ice.persistence.xml.contentTypes">
-       </contentTypeBinding>
-    </editor>
+       point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+    <deleteParticipant
+          class="org.eclipse.ice.client.common.ICEItemDeleteParticipant"
+          id="org.eclipse.ice.client.deleteitemfile"
+          name="Delete Item Action">
+       <enablement>
+       		<with variable="element">
+        	     <adapt type="org.eclipse.core.resources.IResource">
+            	       <test property="org.eclipse.core.resources.extension"
+                	         value="xml">
+                   	</test>
+             	 </adapt>
+       		</with>
+       </enablement>
+    </deleteParticipant>
+ </extension>
+ <extension
+       point="org.eclipse.ltk.core.refactoring.renameParticipants">
+    <renameParticipant
+          class="org.eclipse.ice.client.common.ICEItemRenameParticipant"
+          id="org.eclipse.ice.client.renameitem"
+          name="Rename Item Action">
+        <enablement>
+       		<with variable="element">
+        	     <adapt type="org.eclipse.core.resources.IResource">
+            	       <test property="org.eclipse.core.resources.extension"
+                	         value="xml">
+                   	</test>
+             	 </adapt>
+       		</with>
+       </enablement>
+    </renameParticipant>
  </extension>
 </plugin>

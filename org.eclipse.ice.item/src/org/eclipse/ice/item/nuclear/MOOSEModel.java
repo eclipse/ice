@@ -483,6 +483,7 @@ public class MOOSEModel extends Item {
 			refreshProjectSpace();
 
 			// Get the IReader instance
+			IReader.getIReaders();
 			IReader reader = getReader();
 
 			// Load the tree if the file exists

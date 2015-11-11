@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 
 /**
  * This is a fake implementation of the persistence interface and it is used for
@@ -199,18 +199,32 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#loadItem(org.eclipse.core.resources.IResource)
+	 */
 	@Override
 	public Item loadItem(IResource itemResource) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		loaded = true;
+		FakeItem item = new FakeItem(null);
+		item.getForm().setName("The Doctor");
+		return item;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#setDefaultProject(org.eclipse.core.resources.IProject)
+	 */
 	@Override
 	public void setDefaultProject(IProject project) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#getDefaultProject()
+	 */
 	@Override
 	public IProject getDefaultProject() {
 		// TODO Auto-generated method stub

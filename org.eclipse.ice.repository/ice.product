@@ -133,8 +133,8 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ease.python.feature"/>
       <feature id="org.eclipse.ease.ui.feature"/>
       <feature id="org.eclipse.epp.mpc"/>
-      <feature id="org.eclipse.remote" version="2.0.0.201506061609"/>
-      <feature id="org.eclipse.pde" version="3.11.0.v20150603-2000"/>
+      <feature id="org.eclipse.remote"/>
+      <feature id="org.eclipse.pde"/>
       <feature id="org.eclipse.wst.common_core.feature" version="3.7.0.v201505132009"/>
       <feature id="org.eclipse.wst.common_ui.feature" version="3.7.0.v201505132009"/>
       <feature id="org.eclipse.wst.jsdt.feature" version="1.6.200.v201505071819"/>
@@ -171,19 +171,19 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ptp.rm.ibm.platform.lsf" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ptp.rm.jaxb.contrib" version="9.0.0.201506101404"/>
       <feature id="org.eclipse.ptp.rm.slurm" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ice" version="2.1.7.20150825"/>
-      <feature id="org.eclipse.cdt.bupc" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.core.lrparser.feature" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.core.parser.upc.feature" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.docker.launcher" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.gdb.source" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.gnu.build.source" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.gnu.debug.source" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.gnu.dsf.source" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.gnu.multicorevisualizer" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.managedbuilder.llvm" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.msw" version="8.7.0.201506070905"/>
-      <feature id="org.eclipse.cdt.native.source" version="8.7.0.201506070905"/>
+      <feature id="org.eclipse.ice"/>
+      <feature id="org.eclipse.cdt.bupc"/>
+      <feature id="org.eclipse.cdt.core.lrparser.feature"/>
+      <feature id="org.eclipse.cdt.core.parser.upc.feature"/>
+      <feature id="org.eclipse.cdt.docker.launcher"/>
+      <feature id="org.eclipse.cdt.gdb.source"/>
+      <feature id="org.eclipse.cdt.gnu.build.source"/>
+      <feature id="org.eclipse.cdt.gnu.debug.source"/>
+      <feature id="org.eclipse.cdt.gnu.dsf.source"/>
+      <feature id="org.eclipse.cdt.gnu.multicorevisualizer"/>
+      <feature id="org.eclipse.cdt.managedbuilder.llvm"/>
+      <feature id="org.eclipse.cdt.msw"/>
+      <feature id="org.eclipse.cdt.native.source"/>
       <feature id="org.eclipse.cdt.platform.source"/>
       <feature id="org.eclipse.cdt.qt"/>
       <feature id="org.eclipse.cdt.sdk"/>
@@ -227,6 +227,13 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.aether.transport.http.feature"/>
       <feature id="org.eclipse.tm.terminal.control.feature"/>
       <feature id="org.eclipse.m2e.feature"/>
+      <feature id="org.eclipse.swtbot"/>
+      <feature id="org.eclipse.swtbot.eclipse"/>
+      <feature id="org.eclipse.swtbot.eclipse.gef"/>
+      <feature id="org.eclipse.swtbot.eclipse.test.junit"/>
+      <feature id="org.eclipse.swtbot.forms"/>
+      <feature id="org.eclipse.swtbot.generator.feature"/>
+      <feature id="org.eclipse.swtbot.ide"/>
    </features>
 
    <configurations>
@@ -241,7 +248,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.moose" autoStart="true" startLevel="0" />
@@ -250,7 +256,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.grid" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.lwr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.reactoreditor.sfr" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.core" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
@@ -262,7 +267,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.persistence.xml" autoStart="true" startLevel="5" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />

@@ -15,6 +15,8 @@ package org.eclipse.ice.caebat.batml.ui;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the declarative service that registers the Reflectivity
@@ -26,6 +28,11 @@ import org.eclipse.ice.viz.service.IVizServiceFactory;
  *
  */
 public class BatMLFormWidgetBuilder implements IFormWidgetBuilder {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * The name of the items/forms used to create {@link ReflectivityFormEditor}
@@ -69,7 +76,7 @@ public class BatMLFormWidgetBuilder implements IFormWidgetBuilder {
 	 *            The factory service available through OSGi.
 	 */
 	public void setVizServiceFactory(IVizServiceFactory factory) {
-		System.out.println("ReflectivityFormWidgetBuilder: Setting Viz Service");
+		logger.info("ReflectivityFormWidgetBuilder: Setting Viz Service");
 		this.vizServiceFactory = factory;
 	}
 

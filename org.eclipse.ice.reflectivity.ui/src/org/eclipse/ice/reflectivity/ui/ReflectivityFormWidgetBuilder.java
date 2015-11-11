@@ -84,10 +84,9 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
-		System.out.println("This is in Reflectivity");
-		System.out.println("Available configuration elements");
+		logger.info("ReflectivityFormWidgetBuilder: Available configuration elements");
 		for(IConfigurationElement element : elements){
-			System.out.println(element.getName());
+			logger.info(element.getName());
 		}
 		
 		return;

@@ -39,6 +39,7 @@ import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -117,7 +118,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 		// Register this class as an IOService.
 		// Note: Andrew, what are you doing here?
-		IOService ioService = getIOService();
+		IIOService ioService = getIOService();
 		if (ioService == null) {
 			setIOService(new IOService());
 			ioService = getIOService();

@@ -35,13 +35,11 @@ import org.junit.Test;
 public class XMLFormContentDescriberTester {
 
 	// Load some text from a VIBE KV Pair Item.
-	String xmlForm = "<?xml version=\"1.0\" encoding=\"UTF-8\" "
-			+ "standalone=\"yes\"?><VibeKVPair itemType=\"Model\" "
+	String xmlForm = "<?xml version=\"1.0\" encoding=\"UTF-8\" " + "standalone=\"yes\"?><VibeKVPair itemType=\"Model\" "
 			+ "status=\"2\" builderName=\"VIBE Key-Value Pair\" "
 			+ "description=\"Generate input files for VIBE.\" id=\"1\" "
 			+ "name=\"VIBE Key-Value Pair\"><Form itemID=\"1\" "
-			+ "description=\"Generate input files for VIBE.\" id=\"1\" "
-			+ "name=\"VIBE Key-Value Pair\">"
+			+ "description=\"Generate input files for VIBE.\" id=\"1\" " + "name=\"VIBE Key-Value Pair\">"
 			+ "<componentList></componentList></Form><AllowedActions>Export "
 			+ "to key-value pair output</AllowedActions><itemBuilderName>"
 			+ "VIBE Key-Value Pair</itemBuilderName></VibeKVPair>";
@@ -98,6 +96,28 @@ public class XMLFormContentDescriberTester {
 		}
 
 		return;
+	}
+
+	/**
+	 * Test method for
+	 * @link {@link org.eclipse.ice.persistence.xml.XMLFormContentDescriber#getItemID()}
+	 */
+	@Test
+	public void checkGetItemID() {
+		// Create the describer
+		XMLFormContentDescriber describer = new XMLFormContentDescriber();
+		// Convert the text to an input stream
+		ByteArrayInputStream stream = new ByteArrayInputStream(xmlForm.getBytes());
+		// Check the text
+		try {
+			describer.describe(stream, null);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		// Check that it found the itemID correctly
+		assertEquals(1, describer.getItemID());
 	}
 
 	/**

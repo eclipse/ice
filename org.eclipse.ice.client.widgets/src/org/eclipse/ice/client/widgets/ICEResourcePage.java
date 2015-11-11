@@ -514,8 +514,6 @@ public class ICEResourcePage extends ICEFormPage
 			try {
 				event.getDelta().accept(new IResourceDeltaVisitor() {
 					public boolean visit(IResourceDelta delta) throws CoreException {
-						// System.out.println("Name: " +
-						// delta.getResource().getName());
 						for (ICEResource r : ICEResourcePage.this.resourceComponent.getResources()) {
 							if (delta.getResource().getName().equals(r.getName())) {
 								ICEResourcePage.this.update(r);

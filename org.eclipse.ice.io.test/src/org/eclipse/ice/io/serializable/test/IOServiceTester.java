@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -39,7 +40,7 @@ public class IOServiceTester {
 	/**
 	 * Reference to the IOService to test
 	 */
-	private IOService service;
+	private IIOService service;
 
 	/**
 	 * This method checks that we can give and get valid IReaders and IWriters. 

@@ -4,9 +4,11 @@ Bundle-Name: ClientTest
 Bundle-SymbolicName: org.eclipse.ice.client.test
 Bundle-Version: 2.1.7.20150825
 Fragment-Host: org.eclipse.ice.client;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.client.widgets,
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.ice.client.internal,
+ org.eclipse.ice.client.widgets,
  org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.iclient,
  org.eclipse.ice.item,
  org.eclipse.swt.widgets,
  org.hamcrest.core;version="1.1.0",

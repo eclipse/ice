@@ -86,30 +86,6 @@ public class ImportFileWizardPage extends WizardPage {
 	public ImportFileWizardPage(String pageName) {
 		super(pageName);
 
-		// Get the extension registry and retrieve the client.
-		IExtensionRegistry registry = Platform.getExtensionRegistry();
-		IExtensionPoint point = registry
-				.getExtensionPoint("org.eclipse.ice.client.clientInstance");
-		IExtension[] extensions = point.getExtensions();
-		// Get the configuration element. The extension point can only have one
-		// extension by default, so no need for a loop or check.
-		IConfigurationElement[] elements = extensions[0]
-				.getConfigurationElements();
-		IConfigurationElement element = elements[0];
-
-		// Get the client
-		try {
-			element.createExecutableExtension("class");
-		} catch (CoreException e) {
-			// Otherwise throw an error
-			MessageBox errorMessage = new MessageBox(this.getShell(), ERROR);
-			errorMessage.setMessage("The ICE Client is not available. "
-					+ "Please file a bug report.");
-			errorMessage.open();
-			// Log the error
-			logger.error("ICEClient Extension not found.",e);
-		}
-		
 		setTitle("ICE File Import Wizard");
 		setDescription("Import an input file into ICE.");
 

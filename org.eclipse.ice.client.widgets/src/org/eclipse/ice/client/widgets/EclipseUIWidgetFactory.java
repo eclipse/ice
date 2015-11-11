@@ -85,10 +85,10 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(
 						"org.eclipse.ice.client.widgets.iformwidgetbuilder");
-		System.out.println(
+		logger.info(
 				"Available configuration elements(in org.eclipse.ice.client.widgets.EclipseUIWdigetFactory.java):");
 		for (IConfigurationElement element : elements) {
-			System.out.println(
+			logger.info(
 					element.getNamespaceIdentifier() + " " + element.getName());
 		}
 

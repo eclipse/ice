@@ -14,6 +14,7 @@ package org.eclipse.ice.io.serializable;
 
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.CoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Alex McCaskey
  *
  */
-public class IOService {
+public class IOService implements IIOService {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -67,15 +68,30 @@ public class IOService {
 		templatedReaderMap = new HashMap<String, ITemplatedReader>();
 		writerMap = new HashMap<String, IWriter>();
 		templatedWriterMap = new HashMap<String, ITemplatedWriter>();
+
+		// Load all services available via extension points.
+		try {
+			for (IReader r : IReader.getIReaders()) {
+				addReader(r);
+			}
+			for (IWriter w : IWriter.getIWriters()) {
+				addWriter(w);
+			}
+		} catch (CoreException e) {
+			logger.error(
+					"Error adding IReaders and IWriters to Item's IOService.",
+					e);
+		}
 	}
 
-	/**
-	 * This method is used by the underlying OSGi framework to add available
-	 * IReaders exposed as a Declarative Service.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param reader
-	 *            The IReader realization exposed as a Declarative Service.
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#addReader(org.eclipse.ice.io.
+	 * serializable.IReader)
 	 */
+	@Override
 	public void addReader(IReader reader) {
 
 		if (reader != null) {
@@ -87,14 +103,14 @@ public class IOService {
 		return;
 	}
 
-	/**
-	 * This method is used by the underlying OSGi framework to add available
-	 * ITemplatedReaders exposed as a Declarative Service.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param templatedReader
-	 *            The ITemplatedReader realization exposed as a Declarative
-	 *            Service.
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#addTemplatedReader(org.eclipse
+	 * .ice.io.serializable.ITemplatedReader)
 	 */
+	@Override
 	public void addTemplatedReader(ITemplatedReader templatedReader) {
 
 		if (templatedReader != null) {
@@ -108,13 +124,14 @@ public class IOService {
 		return;
 	}
 
-	/**
-	 * This method is used by the underlying OSGi framework to add available
-	 * IWriters exposed as a Declarative Service.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param writer
-	 *            The IWriter realization exposed as a Declarative Service.
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#addWriter(org.eclipse.ice.io.
+	 * serializable.IWriter)
 	 */
+	@Override
 	public void addWriter(IWriter writer) {
 
 		if (writer != null) {
@@ -124,14 +141,14 @@ public class IOService {
 		}
 	}
 
-	/**
-	 * This method is used by the underlying OSGi framework to add available
-	 * ITemplatedWriters exposed as a Declarative Service.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param writer
-	 *            The ITemplatedWriter realization exposed as a Declarative
-	 *            Service.
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#addTemplatedWriter(org.eclipse
+	 * .ice.io.serializable.ITemplatedWriter)
 	 */
+	@Override
 	public void addTemplatedWriter(ITemplatedWriter writer) {
 
 		if (writer != null) {
@@ -141,13 +158,13 @@ public class IOService {
 		}
 	}
 
-	/**
-	 * Return the IReader realization of type readerType.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param readerType
-	 *            The IReader type to return.
-	 * @return IReader realization
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#getReader(java.lang.String)
 	 */
+	@Override
 	public IReader getReader(String readerType) {
 
 		// Make sure we have this Reader and if so return it
@@ -158,13 +175,14 @@ public class IOService {
 		return null;
 	}
 
-	/**
-	 * Return the ITemplatedReader realization of type readerType.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param readerType
-	 *            The ITemplatedReader type to return.
-	 * @return ITemplatedReader realization
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#getTemplatedReader(java.lang.
+	 * String)
 	 */
+	@Override
 	public ITemplatedReader getTemplatedReader(String readerType) {
 
 		// Make sure we have this Reader and if so return it
@@ -175,13 +193,13 @@ public class IOService {
 		return null;
 	}
 
-	/**
-	 * Return the IWriter realization of type writerType.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param writerType
-	 *            The IWriter type to return.
-	 * @return IWriter realization
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#getWriter(java.lang.String)
 	 */
+	@Override
 	public IWriter getWriter(String writerType) {
 
 		// Make sure we have this Writer and if so return it
@@ -192,13 +210,14 @@ public class IOService {
 		return null;
 	}
 
-	/**
-	 * Return the ITemplatedWriter realization of type writerType.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param writerType
-	 *            The ITemplatedWriter type to return.
-	 * @return ITemplatedWriter realization
+	 * @see
+	 * org.eclipse.ice.io.serializable.IIOService#getTemplatedWriter(java.lang.
+	 * String)
 	 */
+	@Override
 	public ITemplatedWriter getTemplatedWriter(String writerType) {
 
 		// Make sure we have this Writer and if so return it
@@ -209,20 +228,22 @@ public class IOService {
 		return null;
 	}
 
-	/**
-	 * Return the total number of stored IReader realizations.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The number of IReaders.
+	 * @see org.eclipse.ice.io.serializable.IIOService#getNumberOfReaders()
 	 */
+	@Override
 	public int getNumberOfReaders() {
 		return readerMap.size();
 	}
 
-	/**
-	 * Return the total number of stored IWriter realizations.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The number of IWriters.
+	 * @see org.eclipse.ice.io.serializable.IIOService#getNumberOfWriters()
 	 */
+	@Override
 	public int getNumberOfWriters() {
 		return writerMap.size();
 	}

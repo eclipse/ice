@@ -6,7 +6,7 @@
          name="XML Persistence Writer"
          point="org.eclipse.ice.io.writer">
       <implementation
-            class="org.eclipse.ice.persistence.xml.XMLPersistenceProvider">
+            class="org.eclipse.ice.persistence.xml.XMLPersistenceExtensionFactory">
       </implementation>
    </extension>
    <extension
@@ -14,7 +14,7 @@
          name="XML Persistence Reader"
          point="org.eclipse.ice.io.reader">
       <implementation
-            class="org.eclipse.ice.persistence.xml.XMLPersistenceProvider">
+            class="org.eclipse.ice.persistence.xml.XMLPersistenceExtensionFactory">
       </implementation>
    </extension>
    <extension

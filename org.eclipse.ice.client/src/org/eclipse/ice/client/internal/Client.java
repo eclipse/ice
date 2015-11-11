@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.internal.ClientHolder;
@@ -43,17 +44,17 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * The Client class is a base class for clients of the Core. It's primary
  * function is to manage calls to and from the Core to and from whatever user
  * interface is provided by IWidgetFactory.
- * </p>
  * <p>
  * The Client realizes the IClient interface and is registered as an OSGi
  * service. It requires an implementation of the IWidgetFactory so that it can
@@ -65,9 +66,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings
  */
-public class Client extends EditorPart
-		implements IUpdateEventListener, IProcessEventListener,
-		ISimpleResourceProvider, IWidgetClosedListener, IClient {
+public class Client implements IUpdateEventListener, IProcessEventListener, ISimpleResourceProvider,
+		IWidgetClosedListener, IClient, BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -144,6 +144,12 @@ public class Client extends EditorPart
 	private ServiceReference<ICore> iCoreServiceRef;
 
 	/**
+	 * This is the service registration used to register the Client as a service
+	 * of the OSGi framework.
+	 */
+	private ServiceRegistration<IClient> registration;
+
+	/**
 	 * <p>
 	 * The Constructor
 	 * </p>
@@ -173,12 +179,6 @@ public class Client extends EditorPart
 		statusMessageMap.put(FormStatus.Unacceptable,
 				"This Form will not be " + "processed or updated. It should be considered read-only.");
 
-		// Get the widgets factory service by using the Workbench. This is a
-		// good way to do it that prevents the ResourcesPlugin from being called
-		// prematurely.
-		IWidgetFactory factory = PlatformUI.getWorkbench().getService(IWidgetFactory.class);
-		setUIWidgetFactory(factory);
-
 		// Set the reference to this in the Singleton for the widget classes to
 		// retrieve as needed.
 		ClientHolder.setClient(this);
@@ -191,43 +191,72 @@ public class Client extends EditorPart
 	 * @param context
 	 *            the bundle's context from the OSGi
 	 */
-	public void start(BundleContext context) {
+	@Override
+	public void start(BundleContext context) throws Exception {
+
+		// Store the bundle context
 		this.context = context;
+
+		// Acquire the Core service if it is available
+		iCoreServiceRef = context.getServiceReference(ICore.class);
+		if (iCoreServiceRef != null) {
+			logger.info("Retrieving ICore for the client.");
+			iCore = context.getService(iCoreServiceRef);
+			logger.info("Core service set.");
+		} else {
+			// Failure to get the core is a catastrophic error.
+			logger.error("Unable to access core!.");
+		}
+
+		// Get the widgets factory service by using the Workbench. This is a
+		// good way to do it that prevents the ResourcesPlugin from being called
+		// prematurely.
+		IWidgetFactory factory = PlatformUI.getWorkbench().getService(IWidgetFactory.class);
+		setUIWidgetFactory(factory);
+
+		// I realize how hilarious it is to use two different mechanisms for
+		// acquiring services here. FIXME! This is just testing for now.
+
+		// Register this class as a service with the framework.
+		registration = context.registerService(IClient.class, this, null);
+
+		return;
 	}
 
 	/**
 	 * This operation releases the ICore service references and stops the Client
 	 * service.
+	 *
+	 * @param context
+	 *            the bundle's context from the OSGi
 	 */
-	public void stop() {
+	@Override
+	public void stop(BundleContext context) throws Exception {
+
 		// Release the service reference
 		if (iCoreServiceRef != null) {
 			context.ungetService(iCoreServiceRef);
 		}
+
+		// Unregister this service from the framework
+		registration.unregister();
+
+		return;
 	}
 
 	/**
 	 * This operation grabs and sets the iCore if it is not already available.
 	 */
 	public ICore getCore() {
-
-		if (iCore == null) {
-			logger.info("IClient Message: Retrieving ICore for the client.");
-			iCore = PlatformUI.getWorkbench().getService(ICore.class);
-			logger.info("IClient Message: Core service set.");
-		}
-
 		return iCore;
 	}
 
 	/**
-	 * <p>
 	 * This private operation is called by the implementations of
 	 * IClient.processItem() and IProcessEventListener.processSelected(). It
 	 * calls the ICore and directs it to process an Item. This operation
 	 * launches a FormProcessor to handle polling and update the IFormWidget for
 	 * the Item as it is processed by the Core.
-	 * </p>
 	 *
 	 * @param formWidget
 	 *            <p>
@@ -341,7 +370,7 @@ public class Client extends EditorPart
 		}
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#setUIWidgetFactory(IWidgetFactory widgetFactory)
@@ -359,7 +388,7 @@ public class Client extends EditorPart
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#loadItem(int itemId)
@@ -407,7 +436,19 @@ public class Client extends EditorPart
 
 	}
 
-	/**
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#loadItem(org.eclipse.core.resources.
+	 * IFile)
+	 */
+	@Override
+	public Form loadItem(IFile itemFile) {
+		// Just delegate this
+		return getCore().loadItem(itemFile);
+	}
+
+	/*
 	 * (non-Javadoc)
 	 *
 	 * @see IClient#throwSimpleError(String error)
@@ -539,20 +580,6 @@ public class Client extends EditorPart
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see IClient#importFile(URI file)
-	 */
-	@Override
-	public void importFile(URI file) {
-
-		// Just forward the call
-		getCore().importFile(file);
-
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
 	 * @see IUpdateEventListener#formUpdated(Form form)
 	 */
 	@Override
@@ -672,6 +699,41 @@ public class Client extends EditorPart
 	/*
 	 * (non-Javadoc)
 	 *
+	 * @see IClient#importFile(URI file)
+	 */
+	@Override
+	public void importFile(URI file) {
+
+		// Just forward the call
+		getCore().importFile(file);
+
+		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void importFile(URI file, IProject project) {
+
+		// Just forward the call
+		getCore().importFile(file, project);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, java.lang.String)
+	 */
+	@Override
+	public void importFile(URI file, String projectName) {
+		// Just forward the call
+		getCore().importFile(file, projectName);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
 	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
 	 * java.lang.String)
 	 */
@@ -682,47 +744,44 @@ public class Client extends EditorPart
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
 
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, org.eclipse.core.resources.IProject)
+	 */
 	@Override
-	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
+	public int importFileAsItem(URI file, String itemType, IProject project) {
+		// Pass the call on to the core
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType, project));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(org.eclipse.core.resources.IFile, java.lang.String)
+	 */
 	@Override
-	public void doSaveAs() {
-		// TODO Auto-generated method stub
-
+	public int importFileAsItem(IFile file, String itemType) {
+		// Pass the call on to the core
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, java.lang.String)
+	 */
 	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		throwSimpleError("It's working!");
+	public int importFileAsItem(URI file, String itemType, String projectName) {
+		// Pass the call on to the core
+		return Integer.valueOf(getCore().importFileAsItem(file, itemType, projectName));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#renameItem(int, java.lang.String)
+	 */
 	@Override
-	public boolean isDirty() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
+	public void renameItem(int itemID, String name) {
+		getCore().renameItem(itemID, name);
 	}
 
 }

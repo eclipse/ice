@@ -118,10 +118,10 @@ public class ReactorFormWidgetBuilder implements IFormWidgetBuilder {
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(
 						"org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry");
-		System.out.println(
+		logger.info(
 				"Available configuration elements(in org.eclipse.ice.client.widgets.reactoreditor.ReactorFormInputFactory.java):");
 		for (IConfigurationElement element : elements) {
-			System.out.println(
+			logger.info(
 					element.getNamespaceIdentifier() + " " + element.getName());
 		}
 

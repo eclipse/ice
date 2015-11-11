@@ -20,15 +20,33 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.ice.core.internal.itemmanager.ItemManager;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -143,8 +161,8 @@ public class ItemManagerTester {
 		for (int i = 0; !found && i < availableBuilders.size(); i++) {
 			found = testItemName.equals(availableBuilders.get(i));
 		}
-		assertTrue("ItemManagerTester: " + "FakeModuleBuilder with name "
-				+ testItemName + " not found in available builders!", found);
+		assertTrue("ItemManagerTester: " + "FakeModuleBuilder with name " + testItemName
+				+ " not found in available builders!", found);
 
 		// Make sure the available builders includes the fake geometry builder.
 		found = false;
@@ -152,15 +170,13 @@ public class ItemManagerTester {
 		for (int i = 0; !found && i < availableBuilders.size(); i++) {
 			found = testItemName.equals(availableBuilders.get(i));
 		}
-		assertTrue("ItemManagerTester: " + "FakeGeometryBuilder with name "
-				+ testItemName + " not found in available builders!", found);
+		assertTrue("ItemManagerTester: " + "FakeGeometryBuilder with name " + testItemName
+				+ " not found in available builders!", found);
 
 		// Get the builders by type, Geometry first
 		assertNotNull(itemManager.getAvailableBuilders(ItemType.Geometry));
-		assertEquals(1, itemManager.getAvailableBuilders(ItemType.Geometry)
-				.size());
-		testItemName = itemManager.getAvailableBuilders(ItemType.Geometry).get(
-				0);
+		assertEquals(1, itemManager.getAvailableBuilders(ItemType.Geometry).size());
+		testItemName = itemManager.getAvailableBuilders(ItemType.Geometry).get(0);
 		assertEquals(testItemName, fakeGeometryBuilder.getItemName());
 		// Now Modules
 		availableBuilders = itemManager.getAvailableBuilders(ItemType.Module);
@@ -213,12 +229,10 @@ public class ItemManagerTester {
 		fakePersistenceProvider.reset();
 
 		// Print the test directory for reference.
-		System.out.println("Current test directory = "
-				+ System.getProperty("user.dir"));
+		System.out.println("Current test directory = " + System.getProperty("user.dir"));
 
 		// Create an Item
-		itemId = itemManager
-				.createItem(fakeGeometryBuilder.getItemName(), null);
+		itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
 
 		// Make sure the id changed - it shouldn't be 99999 anymore!
 		assertTrue(itemId < 99999 && itemId > 0);
@@ -234,13 +248,47 @@ public class ItemManagerTester {
 
 		// Test input file loading support
 		itemId = 0; // Zero the id to make sure it changed
-		itemId = itemManager.createItem("test.input",
-				fakeGeometryBuilder.getItemName(), null);
+		itemId = itemManager.createItem("test.input", fakeGeometryBuilder.getItemName(), null);
 
 		// Make sure the id changed
 		assertTrue(itemId > 0);
 		FakeItem testItem = fakeGeometryBuilder.getLastFakeItem();
 		assertTrue(testItem.wasLoaded());
+
+		return;
+	}
+
+	/**
+	 * This operation checks that the ItemManager can rename and Item.
+	 */
+	@Test
+	public void checkItemRename() {
+		// Create an Item
+		int itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
+		itemManager.renameItem(itemId, "New Name");
+		assertTrue("New Name".equals(itemManager.retrieveItem(itemId).getName()));
+	}
+
+	/**
+	 * This operation checks the ability of the ItemManager to load a single
+	 * Item.
+	 */
+	@Test
+	public void checkSingleItemLoad() {
+		// Reset the fake provider
+		fakePersistenceProvider.reset();
+		// Create a fake file and direct the manager to load it
+		IFile fakeFile = new FakeIFile();
+		Form form = itemManager.loadItem(fakeFile);
+		// The form should not be null since the FakePersistenceProvider creates
+		// an Item.
+		assertNotNull(form);
+		// Make sure the name matches the one in the FakePersistenceProvider and
+		// that the load operation was called.
+		assertEquals("The Doctor", form.getName());
+		assertTrue(fakePersistenceProvider.allLoaded());
+		// Reset the fake provider one more time, just to be polite.
+		fakePersistenceProvider.reset();
 
 		return;
 	}
@@ -261,10 +309,8 @@ public class ItemManagerTester {
 		Form forms[] = { new Form(), new Form() };
 
 		// Create a couple of Items
-		itemIds[0] = itemManager.createItem(fakeGeometryBuilder.getItemName(),
-				null);
-		itemIds[1] = itemManager.createItem(fakeModuleBuilder.getItemName(),
-				null);
+		itemIds[0] = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
+		itemIds[1] = itemManager.createItem(fakeModuleBuilder.getItemName(), null);
 		assertTrue(itemIds[0] != 99998 && itemIds[0] > 0);
 		assertTrue(itemIds[0] != 99999 && itemIds[1] > 0);
 
@@ -308,10 +354,8 @@ public class ItemManagerTester {
 		ArrayList<Identifiable> allItems = new ArrayList<Identifiable>();
 
 		// Add a couple extra Items
-		itemIds[0] = this.itemManager.createItem(
-				this.fakeGeometryBuilder.getItemName(), null);
-		itemIds[1] = this.itemManager.createItem(
-				this.fakeModuleBuilder.getItemName(), null);
+		itemIds[0] = this.itemManager.createItem(this.fakeGeometryBuilder.getItemName(), null);
+		itemIds[1] = this.itemManager.createItem(this.fakeModuleBuilder.getItemName(), null);
 
 		// Grab the list of Items
 		allItems = this.itemManager.retrieveItemList();
@@ -347,8 +391,7 @@ public class ItemManagerTester {
 		String type = "FILE_UPDATED", content = "Starfleet Academy";
 
 		// Create a FakeGeometry. This will return an instance of FakeItem.
-		itemId = itemManager
-				.createItem(fakeGeometryBuilder.getItemName(), null);
+		itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
 
 		// Get the Form and add two new DataComponents.
 		testForm = itemManager.retrieveItem(itemId);
@@ -406,7 +449,6 @@ public class ItemManagerTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the ItemManager to make sure that it can process
 	 * Items. It creates a FakeItem with the ItemManager and then directs the
 	 * ItemManager to process it. It checks both the returned status and the
@@ -414,8 +456,6 @@ public class ItemManagerTester {
 	 * checks the status using getItemStatus(). Finally, it pulls the output
 	 * file handle from the Item by id and confirms that the default name of the
 	 * file is set according to the default in the class documentation.
-	 * </p>
-	 * 
 	 */
 	@Test
 	public void checkItemProcessing() {
@@ -436,8 +476,7 @@ public class ItemManagerTester {
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
 				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ "itemManagerTesterWorkspace")).toURI();
+						System.getProperty("user.dir") + separator + "itemManagerTesterWorkspace")).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription("itemManagerTesterWorkspace");
@@ -457,8 +496,7 @@ public class ItemManagerTester {
 		}
 
 		// Create a FakeGeometry. This will return an instance of FakeItem.
-		itemId = itemManager
-				.createItem(fakeGeometryBuilder.getItemName(), null);
+		itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
 
 		// Get the FakeItem
 		fakeItem = fakeGeometryBuilder.getLastFakeItem();
@@ -490,11 +528,10 @@ public class ItemManagerTester {
 
 		// Setup the name of the output file. According to the documentation it
 		// should be at <itemName>_<itemId>_processOutput.txt.
-		String outputFilename = fakeItem.getName().replaceAll("\\s+", "_")
-				+ "_" + fakeItem.getId() + "_processOutput.txt";
-		System.out
-				.println("ItemManagerTester message: Looking for (shortened) output file name \""
-						+ outputFilename + "\"");
+		String outputFilename = fakeItem.getName().replaceAll("\\s+", "_") + "_" + fakeItem.getId()
+				+ "_processOutput.txt";
+		System.out.println(
+				"ItemManagerTester message: Looking for (shortened) output file name \"" + outputFilename + "\"");
 		// Get the output file handle
 		File outputFile = itemManager.getOutputFile(itemId);
 		// Make sure it is not null
@@ -503,9 +540,7 @@ public class ItemManagerTester {
 		// the file is stored, as long as the name is properly set for now. That
 		// means that the Item has created the file handle per the spec.
 		String retOutputName = outputFile.getAbsolutePath();
-		System.out
-				.println("ItemManagerTester message: Returned Output File Name = "
-						+ retOutputName);
+		System.out.println("ItemManagerTester message: Returned Output File Name = " + retOutputName);
 		assertTrue(outputFile.getAbsolutePath().contains(outputFilename));
 
 		// Check canceling by putting the fake item into a persistent
@@ -519,11 +554,8 @@ public class ItemManagerTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks that the ItemManager loads and persists all Items
 	 * from and to the persistence provider when requested.
-	 * </p>
-	 * 
 	 */
 	@Test
 	public void checkMassItemManagement() {
@@ -535,14 +567,12 @@ public class ItemManagerTester {
 		itemManager.loadItems(null);
 
 		// Create an Item
-		int itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(),
-				null);
+		int itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
 		// Make sure the Item id is 2 since the FakePersistenceProvider provides
 		// Items with ids 1 and 3
 		assertEquals(2, itemId);
 		// Create an Item
-		itemId = itemManager
-				.createItem(fakeGeometryBuilder.getItemName(), null);
+		itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
 		// Make sure the Item id is 4 since the FakePersistenceProvider provides
 		// Items with ids 1 and 3 and we just created one with id 2.
 		assertEquals(4, itemId);
@@ -562,4 +592,5 @@ public class ItemManagerTester {
 		return;
 
 	}
+
 }

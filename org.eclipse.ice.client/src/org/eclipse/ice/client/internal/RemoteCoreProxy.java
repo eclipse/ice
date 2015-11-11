@@ -18,20 +18,21 @@ import java.util.ArrayList;
 
 import javax.ws.rs.core.MediaType;
 
-import org.eclipse.ice.core.iCore.ICore;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -263,17 +264,6 @@ public class RemoteCoreProxy implements ICore {
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see ICore#getFileSystem(int uniqueClientID)
-	 */
-	@Override
-	public Form getFileSystem(int uniqueClientID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
 	 * @see ICore#registerItem(ItemBuilder itemBuilder)
 	 */
 	@Override
@@ -491,5 +481,47 @@ public class RemoteCoreProxy implements ICore {
 		// never be. As far as I know, there is no way to remotely transfer
 		// IProject instances with using full Java IPC.
 		return null;
+	}
+
+	@Override
+	public Form loadItem(IFile itemFile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String importFileAsItem(URI file, String itemType, IProject project) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String importFileAsItem(IFile file, String itemType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String importFileAsItem(URI file, String itemType, String projectName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void importFile(URI file, IProject project) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importFile(URI file, String projectName) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void renameItem(int itemID, String name) {
+		// TODO Auto-generated method stub
+		
 	}
 }

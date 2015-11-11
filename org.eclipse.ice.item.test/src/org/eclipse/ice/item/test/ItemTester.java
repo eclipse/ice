@@ -45,6 +45,7 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -52,6 +53,7 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -115,7 +117,8 @@ public class ItemTester implements ItemListener {
 		PSFForm.add(" \n");
 		PSFForm.add("#The DataComponents block - it must come first!\n");
 		PSFForm.add("group=Assembly\n");
-		PSFForm.add("groupDescription=Relevant quantities for modeling a full assembly\n");
+		PSFForm.add(
+				"groupDescription=Relevant quantities for modeling a full assembly\n");
 		PSFForm.add("\n");
 		PSFForm.add("#The Entry blocks will appear below this line");
 		PSFForm.add("\n");
@@ -154,7 +157,8 @@ public class ItemTester implements ItemListener {
 		PSFForm.add("group=Assembly\n");
 		PSFForm.add("  \t  \n");
 		PSFForm.add("name=Full Assembly Flag\n");
-		PSFForm.add("description=True if a full assembly should be modeled, false if not\n");
+		PSFForm.add(
+				"description=True if a full assembly should be modeled, false if not\n");
 		PSFForm.add("defaultValue=false\n");
 		PSFForm.add("allowedValueType=Discrete\n");
 		PSFForm.add("allowedValue=true\n");
@@ -453,7 +457,8 @@ public class ItemTester implements ItemListener {
 		copyItem.copy(item);
 
 		// check contents
-		assertEquals(item.getAvailableActions(), copyItem.getAvailableActions());
+		assertEquals(item.getAvailableActions(),
+				copyItem.getAvailableActions());
 		assertEquals(item.getDescription(), copyItem.getDescription());
 		assertTrue(item.getForm().equals(copyItem.getForm()));
 		assertEquals(item.getId(), copyItem.getId());
@@ -465,7 +470,8 @@ public class ItemTester implements ItemListener {
 		copyItem.copy(null);
 
 		// check contents - nothing has changed
-		assertEquals(item.getAvailableActions(), copyItem.getAvailableActions());
+		assertEquals(item.getAvailableActions(),
+				copyItem.getAvailableActions());
 		assertEquals(item.getDescription(), copyItem.getDescription());
 		assertTrue(item.getForm().equals(copyItem.getForm()));
 		assertEquals(item.getId(), copyItem.getId());
@@ -484,8 +490,8 @@ public class ItemTester implements ItemListener {
 	 * @throws NullPointerException
 	 */
 	@Test
-	public void checkXMLPersistence() throws NullPointerException,
-			JAXBException, IOException {
+	public void checkXMLPersistence()
+			throws NullPointerException, JAXBException, IOException {
 		/*
 		 * The following sets of operations will be used to test the
 		 * "read and write" portion of the Item. It will demonstrate the
@@ -616,8 +622,8 @@ public class ItemTester implements ItemListener {
 		// Load the SerializedItem from the PSF string
 		Item testItem = new Item(null);
 		try {
-			testItem.loadFromPSF(new ByteArrayInputStream(psfItemString
-					.getBytes()));
+			testItem.loadFromPSF(
+					new ByteArrayInputStream(psfItemString.getBytes()));
 		} catch (IOException e) {
 			// Fail if it can't load
 			fail();
@@ -687,7 +693,7 @@ public class ItemTester implements ItemListener {
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(Item.class);
 		classList.addAll(new ICEJAXBClassProvider().getClasses());
-		
+
 		// Setup the project
 		try {
 			// Get the project handle
@@ -719,12 +725,9 @@ public class ItemTester implements ItemListener {
 		// Create the Item
 		item = new TestItem(project);
 		// Configure the IOService for the Item
-		IOService ioService = new IOService();
-		XMLPersistenceProvider xmlpp = new XMLPersistenceProvider(project);
-		xmlpp.addBuilder(new TestItemBuilder());
-		xmlpp.registerClassProvider(new ICEJAXBClassProvider());
-		xmlpp.start();
-		ioService.addWriter(xmlpp);
+		IIOService ioService = new FakeIOService();
+		FakeIWriter xmlWriter = new FakeIWriter("xml");
+		ioService.addWriter(xmlWriter);
 		item.setIOService(ioService);
 
 		// Get the available actions. They should be
@@ -738,8 +741,7 @@ public class ItemTester implements ItemListener {
 		assertTrue(actions.contains("Export to key-value pair output"));
 
 		// Try writing to an action not in the list and make sure it fails
-		assertEquals(
-				FormStatus.InfoError,
+		assertEquals(FormStatus.InfoError,
 				item.process("Go to the gym because "
 						+ "you've been working too long and you need to exercise "
 						+ "your shoulder."));
@@ -755,40 +757,18 @@ public class ItemTester implements ItemListener {
 		// Direct the Item to write the Form to XML
 		assertEquals(FormStatus.Processed,
 				item.process("Export to ICE Native Format"));
-		// Pause the thread so it can have some time to write the file
-		try {
-			Thread.currentThread().sleep(2000);
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
+		// Make sure the fake writer was called.
+		assertTrue(xmlWriter.written);
 
-		// Get the file that was written when the Item was processed, make sure
-		// it exists, load it and compare to the original form.
-		filename = (form.getName() + "_" + form.getId() + ".xml").replaceAll(
-				"\\s+", "_");
-		IFile formXMLFile = project.getFile(filename);
-		assertTrue(formXMLFile.exists());
-		Form loadedForm = (Form) xmlHandler.read(classList,
-				formXMLFile.getContents());
-		assertEquals(form, loadedForm);
-
-		// Delete the file
-		try {
-			formXMLFile.delete(true, null);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-
+		// ----- This should be replaced to use a FakeIWriter
+		
 		// Direct the Item to write the Form to a key-value pair output
 		assertEquals(FormStatus.Processed,
 				item.process("Export to key-value pair output"));
 
 		// Get the file, make sure it exists, load it and check it out
-		filename = (form.getName() + "_" + form.getId() + ".dat").replaceAll(
-				"\\s+", "_");
+		filename = (form.getName() + "_" + form.getId() + ".dat")
+				.replaceAll("\\s+", "_");
 		IFile formDatFile = project.getFile(filename);
 		assertTrue(formDatFile.exists());
 		Properties formDatProps = new Properties();
@@ -807,7 +787,7 @@ public class ItemTester implements ItemListener {
 
 		// Delete the file
 		try {
-			formXMLFile.delete(true, null);
+			formDatFile.delete(true, null);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -819,8 +799,8 @@ public class ItemTester implements ItemListener {
 		// <itemName>_<itemId>_processOutput.txt.
 		String outputFilename = item.getName().replaceAll("\\s+", "_") + "_"
 				+ item.getId() + "_processOutput.txt";
-		System.out
-				.println("ItemTester message: Looking for (shortened) output file name \""
+		System.out.println(
+				"ItemTester message: Looking for (shortened) output file name \""
 						+ outputFilename + "\"");
 		// Get the output file handle
 		File outputFile = item.getOutputFile();
@@ -866,9 +846,8 @@ public class ItemTester implements ItemListener {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = new File(
-						System.getProperty("user.dir") + separator
-								+ "itemTesterWorkspace").toURI();
+				defaultProjectLocation = new File(System.getProperty("user.dir")
+						+ separator + "itemTesterWorkspace").toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription("itemTesterWorkspace");
@@ -904,7 +883,7 @@ public class ItemTester implements ItemListener {
 		assertNull(item.getOutputFile());
 		item.setProject(project);
 		assertTrue(item.hasProject());
-		assertEquals(project,item.getProject());
+		assertEquals(project, item.getProject());
 
 		// Make sure that calling the setter with null does not re-set or
 		// overwrite the project (Item.hasProject() should still return true)
@@ -995,8 +974,8 @@ public class ItemTester implements ItemListener {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/itemTesterWorkspace
-				defaultProjectLocation = (new File(userDir + separator
-						+ projectName)).toURI();
+				defaultProjectLocation = (new File(
+						userDir + separator + projectName)).toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription(projectName);
@@ -1097,8 +1076,8 @@ public class ItemTester implements ItemListener {
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
 				defaultProjectLocation = new File(
-						System.getProperty("user.home") + separator
-								+ "ICETests" + separator + "itemData").toURI();
+						System.getProperty("user.home") + separator + "ICETests"
+								+ separator + "itemData").toURI();
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
 						.newProjectDescription("itemData");
@@ -1122,8 +1101,8 @@ public class ItemTester implements ItemListener {
 		assertTrue(testItem.hasProject());
 
 		// Verify that Item.getFiles() works as expected
-		ArrayList<String> files = testItem.getYAMLFiles(project.getLocation()
-				.toOSString());
+		ArrayList<String> files = testItem
+				.getYAMLFiles(project.getLocation().toOSString());
 		assertNotNull(files);
 		assertEquals(3, files.size());
 		assertTrue(files.contains("bison.yaml"));
@@ -1132,8 +1111,8 @@ public class ItemTester implements ItemListener {
 
 		// Give it something that is not a directory and make sure we
 		// get no files
-		files = testItem.getYAMLFiles(project.getLocation().toOSString()
-				+ separator + "bison.yaml");
+		files = testItem.getYAMLFiles(
+				project.getLocation().toOSString() + separator + "bison.yaml");
 		assertTrue(files.isEmpty());
 
 		// Create a new temp directory
@@ -1149,34 +1128,34 @@ public class ItemTester implements ItemListener {
 		// Now let's check that we can move files from one place to another
 		// The test here is that the move operation makes a new file in the
 		// target and deletes the file in the source
-		testItem.moveTestFile(project.getLocation().toOSString(), tempDir
-				.getLocation().toOSString(), "bison.yaml");
+		testItem.moveTestFile(project.getLocation().toOSString(),
+				tempDir.getLocation().toOSString(), "bison.yaml");
 		assertFalse(project.getFile("bison.yaml").exists());
 		assertTrue(tempDir.getFile("bison.yaml").exists());
 
 		// Move it back to keep our workspace pristine for other item tests
-		testItem.moveTestFile(tempDir.getLocation().toOSString(), project
-				.getLocation().toOSString(), "bison.yaml");
+		testItem.moveTestFile(tempDir.getLocation().toOSString(),
+				project.getLocation().toOSString(), "bison.yaml");
 		assertTrue(project.getFile("bison.yaml").exists());
 		assertFalse(tempDir.getFile("bison.yaml").exists());
 
 		// Check that we can copy, that is a new copied file is created
 		// in the target and the source file is left intact
-		testItem.copyTestFile(project.getLocation().toOSString(), tempDir
-				.getLocation().toOSString(), "bison.yaml");
+		testItem.copyTestFile(project.getLocation().toOSString(),
+				tempDir.getLocation().toOSString(), "bison.yaml");
 		assertTrue(project.getFile("bison.yaml").exists());
 		assertTrue(tempDir.getFile("bison.yaml").exists());
 
 		// Make sure we can move multiple files at time
-		testItem.moveMultipleFiles(project.getLocation().toOSString(), tempDir
-				.getLocation().toOSString(), ".yaml");
+		testItem.moveMultipleFiles(project.getLocation().toOSString(),
+				tempDir.getLocation().toOSString(), ".yaml");
 		assertTrue(tempDir.getFile("bison.yaml").exists());
 		assertTrue(tempDir.getFile("bison_short.yaml").exists());
 		assertTrue(tempDir.getFile("bison_medium.yaml").exists());
 
 		// Let's check copying multiple files
-		testItem.copyMultipleFiles(tempDir.getLocation().toOSString(), project
-				.getLocation().toOSString(), ".yaml");
+		testItem.copyMultipleFiles(tempDir.getLocation().toOSString(),
+				project.getLocation().toOSString(), ".yaml");
 		assertTrue(project.getFile("bison.yaml").exists());
 		assertTrue(project.getFile("bison_short.yaml").exists());
 		assertTrue(project.getFile("bison_medium.yaml").exists());
@@ -1200,7 +1179,7 @@ public class ItemTester implements ItemListener {
 				+ project.getFolder("Directory").getName();
 		String destPath = project.getLocation().toOSString() + separator
 				+ project.getFolder("newDirectory").getName();
-		testItem.	copyTestDirectory(srcPath, destPath);
+		testItem.copyTestDirectory(srcPath, destPath);
 
 		// Make sure all of the files were copied, then delete them all
 		ArrayList<File> copiedFiles = new ArrayList<File>();
@@ -1236,7 +1215,7 @@ public class ItemTester implements ItemListener {
 	@Test
 	public void checkIOService() {
 		TestItem testItem = new TestItem(null);
-		IOService service = new IOService();
+		IIOService service = new FakeIOService();
 
 		// Create a fake IReader realization
 		IReader fakeReader = new IReader() {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.eclipse.ice.client.widgets">
    <implementation class="org.eclipse.ice.client.widgets.EclipseUIWidgetFactory"/>
+   <reference bind="registerFormWidgetBuilder" cardinality="0..n" interface="org.eclipse.ice.client.widgets.IFormWidgetBuilder" name="IFormWidgetBuilder" policy="dynamic"/>
    <service>
       <provide interface="org.eclipse.ice.iclient.uiwidgets.IWidgetFactory"/>
    </service>
-   <reference bind="registerFormWidgetBuilder" cardinality="0..n" interface="org.eclipse.ice.client.widgets.IFormWidgetBuilder" name="IFormWidgetBuilder" policy="dynamic"/>
 </scr:component>

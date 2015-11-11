@@ -248,8 +248,7 @@ public class XMLPersistenceProviderTester {
 		// Create a MOOSE item
 		MOOSEModelBuilder builder = new MOOSEModelBuilder();
 		Item item = builder.build(project);
-		String name = item.getName().replace(" ", "_") + "_" + item.getId()
-				+ ".xml";
+		String name = item.getName().replace(" ", "_") + ".xml";
 
 		// Persist it
 		assertTrue(xmlpp.persistItem(item));
@@ -281,12 +280,15 @@ public class XMLPersistenceProviderTester {
 		pause(2);
 
 		// Check the project space to make sure it was persisted
-		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
+		name = item.getName().replace(" ", "_") + ".xml";
 		assertTrue(checkPersistedFile(name, project));
+
+		// Delete the file
+		xmlpp.deleteItem(item);
 
 		// Check persistence into the second project
 		item = builder.build(otherProject);
-		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
+		name = item.getName().replace(" ", "_") + ".xml";
 
 		// Persist it
 		assertTrue(xmlpp.persistItem(item));
@@ -297,6 +299,9 @@ public class XMLPersistenceProviderTester {
 
 		// Check the project space to make sure it was persisted
 		assertTrue(checkPersistedFile(name, otherProject));
+
+		// Delete the file
+		xmlpp.deleteItem(item);
 
 		return;
 	}
@@ -333,38 +338,24 @@ public class XMLPersistenceProviderTester {
 		loadedItem.setProject(project);
 		assertEquals(item, loadedItem);
 
-		// Change the id of the item and persist it so that it shows up in the
-		// project space as a different item
-		item.setId(4);
-		assertTrue(xmlpp.persistItem(item));
-
-		// Wait while the file is persisted. The MOOSE Model takes about a half
-		// a second, but lets wait two.
-		pause(2);
-
 		// Now load "both" of the Items by calling load all
 		ArrayList<Item> items = xmlpp.loadItems();
 		assertNotNull(items);
 
 		// Check the list
-		for (Item listItem : items) {
-			// Look for the correct name and item ids
-			if (listItem.getName().equals(MOOSEModelBuilder.name)
-					&& (listItem.getId() == 3 || listItem.getId() == 4)) {
-				passedCount++;
-			}
-		}
-		assertEquals(2, passedCount);
+		Item listItem = items.get(0);
+			// Look for the correct name and item id
+		assertEquals(listItem.getName(),MOOSEModelBuilder.name);
+		assertEquals(listItem.getId(),3);
 
-		// Delete the item with id = 3
-		item.setId(3);
+		// Delete the item
 		assertTrue(xmlpp.deleteItem(item));
 
 		// Wait while the file is deleted.
 		pause(2);
 
 		// Check the project and make sure it is gone
-		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
+		name = item.getName().replace(" ", "_") + ".xml";
 		assertFalse(checkPersistedFile(name, project));
 
 		// Add a CAEBAT KVPair item, which has a hyphenated name, to make sure
@@ -374,16 +365,13 @@ public class XMLPersistenceProviderTester {
 		assertTrue(xmlpp.persistItem(vibeItem));
 		pause(2);
 		items = xmlpp.loadItems();
-		// Check the list
-		passedCount = 0;
-		for (Item listItem : items) {
-			// Look for the correct name and item ids
-			if (listItem.getName().equals("VIBE Launcher")
-					&& listItem.getId() == 5) {
-				passedCount++;
-			}
-		}
-		assertEquals(1, passedCount);
+		assertEquals(1,items.size());
+		listItem = items.get(0);
+		assertEquals(vibeItem.getName(),listItem.getName());
+		
+		// Delete the Item
+		xmlpp.deleteItem(vibeItem);
+		pause(2);
 
 		// Check loading from the other project. Create a new Item.
 		item = builder.build(otherProject);
@@ -396,7 +384,7 @@ public class XMLPersistenceProviderTester {
 		pause(2);
 
 		// Load the Item and check it
-		name = item.getName().replace(" ", "_") + "_" + item.getId() + ".xml";
+		name = item.getName().replace(" ", "_") + ".xml";
 		loadedItem = xmlpp.loadItem(otherProject.getFile(name));
 		assertNotNull(loadedItem);
 		// Set the project so that the Items will match. Recall that serialized

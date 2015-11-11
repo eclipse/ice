@@ -74,7 +74,7 @@ import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleFo
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.ResourceHandler;
 import org.eclipse.ice.datastructures.resource.VizResource;
-import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.action.Action;
@@ -287,8 +287,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Anna Wojtowicz
  */
 @XmlRootElement(name = "Item")
-public class Item
-		implements IComponentVisitor, Identifiable, IUpdateableListener {
+public class Item implements IComponentVisitor, Identifiable, IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -301,12 +300,14 @@ public class Item
 	 */
 	@XmlAttribute()
 	protected ItemType itemType;
+
 	/**
 	 * The Registry used to manage registration and update events between the
 	 * Item and the various data structures.
 	 */
 	@XmlTransient()
 	protected Registry registry;
+
 	/**
 	 * The Item's Form.
 	 */
@@ -354,6 +355,7 @@ public class Item
 	 * writes the Form in ICE's native XML format.
 	 */
 	protected String nativeExportActionString = "Export to ICE Native Format";
+
 	/**
 	 * The string that is used to describe the process by which the Item class
 	 * writes the values of the Entries in the Form to a file using their tags,
@@ -410,6 +412,7 @@ public class Item
 	 */
 	@XmlTransient
 	private boolean enabled = true;
+
 	/**
 	 * The last status of the Item before it was process or modified. This is
 	 * used, for example, when killing processes or disabling the Item so that
@@ -444,7 +447,7 @@ public class Item
 	 * Item.
 	 */
 	@XmlTransient()
-	private static IOService ioService;
+	private static IIOService ioService;
 
 	/**
 	 * The IActionFactory that provides the set of Actions that can be used by
@@ -524,8 +527,7 @@ public class Item
 			form.setId(getId());
 			form.markReady(true);
 		} else {
-			throw new RuntimeException("Form cannot be null in constructor for "
-					+ this.getClass().getName());
+			throw new RuntimeException("Form cannot be null in constructor for " + this.getClass().getName());
 		}
 
 		// Setup the output file handle.
@@ -597,7 +599,7 @@ public class Item
 	 * 
 	 * @param service
 	 */
-	public void setIOService(IOService service) {
+	public void setIOService(IIOService service) {
 		if (service != null) {
 			ioService = service;
 		}
@@ -670,6 +672,9 @@ public class Item
 
 		if (name != null) {
 			itemName = name;
+			if (form != null) {
+				form.setName(itemName);
+			}
 		}
 
 	}
@@ -723,16 +728,12 @@ public class Item
 			otherItem = (Item) otherObject;
 		}
 		// Check names, ids, descriptions and types
-		retVal = (uniqueId == otherItem.uniqueId)
-				&& (itemName.equals(otherItem.itemName))
+		retVal = (uniqueId == otherItem.uniqueId) && (itemName.equals(otherItem.itemName))
 				&& (itemDescription.equals(otherItem.itemDescription))
 				// && (this.DB_ID == otherItem.DB_ID)
-				&& (itemType.equals(otherItem.itemType))
-				&& (allowedActions.equals(otherItem.allowedActions))
-				&& (form.equals(otherItem.form))
-				&& (project == otherItem.project)
-				&& (this.status.equals(otherItem.status))
-				&& (this.builderName.equals(otherItem.builderName));
+				&& (itemType.equals(otherItem.itemType)) && (allowedActions.equals(otherItem.allowedActions))
+				&& (form.equals(otherItem.form)) && (project == otherItem.project)
+				&& (this.status.equals(otherItem.status)) && (this.builderName.equals(otherItem.builderName));
 
 		return retVal;
 
@@ -797,8 +798,7 @@ public class Item
 
 		// Local Declarations
 		FormStatus retVal = FormStatus.InfoError;
-		boolean idsMatch = false, namesMatch = false, descMatch = false,
-				itemIdsMatch = false;
+		boolean idsMatch = false, namesMatch = false, descMatch = false, itemIdsMatch = false;
 		Form actionForm = null;
 
 		// Only accept the submission if the Item is enabled
@@ -813,16 +813,14 @@ public class Item
 		if (!status.equals(FormStatus.NeedsInfo)) {
 			idsMatch = preparedForm.getId() == form.getId();
 			namesMatch = preparedForm.getName().equals(form.getName());
-			descMatch = preparedForm.getDescription()
-					.equals(form.getDescription());
+			descMatch = preparedForm.getDescription().equals(form.getDescription());
 			itemIdsMatch = preparedForm.getItemID() == form.getItemID();
 		} else {
 			// Otherwise check the Action's Form
 			actionForm = action.getForm();
 			idsMatch = preparedForm.getId() == actionForm.getId();
 			namesMatch = preparedForm.getName().equals(actionForm.getName());
-			descMatch = preparedForm.getDescription()
-					.equals(actionForm.getDescription());
+			descMatch = preparedForm.getDescription().equals(actionForm.getDescription());
 			itemIdsMatch = preparedForm.getItemID() == actionForm.getItemID();
 		}
 
@@ -852,16 +850,11 @@ public class Item
 				retVal = action.submitForm(preparedForm);
 			}
 		} else {
-			System.err.println("Item " + getId() + " Message: Something is "
-					+ "wrong with the submitted form.");
-			System.err.println("Item " + getId() + " Message: Matching Ids... "
-					+ idsMatch);
-			System.err.println("Item " + getId() + " Message: Matching Names..."
-					+ namesMatch);
-			System.err.println("Item " + getId()
-					+ " Message: Matching Descriptions..." + descMatch);
-			System.err.println("Item " + getId()
-					+ " Message: Matching Item Ids..." + itemIdsMatch);
+			logger.error("Item " + getId() + " Message: Something is " + "wrong with the submitted form.");
+			logger.error("Item " + getId() + " Message: Matching Ids... " + idsMatch);
+			logger.error("Item " + getId() + " Message: Matching Names..." + namesMatch);
+			logger.error("Item " + getId() + " Message: Matching Descriptions..." + descMatch);
+			logger.error("Item " + getId() + " Message: Matching Item Ids..." + itemIdsMatch);
 		}
 
 		// Set the status
@@ -911,8 +904,7 @@ public class Item
 		IFile outputFile = null;
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		Hashtable<String, String> propsDictionary = null;
-		String filename = (form.getName() + "_" + form.getId())
-				.replaceAll("\\s+", "_");
+		String filename = (form.getName() + "_" + form.getId()).replaceAll("\\s+", "_");
 
 		// Make sure the action is allowed and that the Item is enabled
 		if (allowedActions.contains(actionName) && enabled) {
@@ -936,8 +928,7 @@ public class Item
 					// Setup the dictionary
 					propsDictionary = new Hashtable<String, String>();
 					// Set the output file name
-					propsDictionary.put("iceTaggedOutputFileName",
-							outputFile.getLocationURI().getPath());
+					propsDictionary.put("iceTaggedOutputFileName", outputFile.getLocationURI().getPath());
 					// Add the key-value pairs
 					for (Entry i : entryList) {
 						// Use tags if they are available
@@ -946,8 +937,7 @@ public class Item
 						} else {
 							// Otherwise just use the Entry's name
 							propsDictionary.put(i.getName(), i.getValue());
-							logger.info("Item Message: Processing value "
-									+ i.getTag() + " = " + i.getValue());
+							logger.info("Item Message: Processing value " + i.getTag() + " = " + i.getValue());
 						}
 					}
 					// Write the file. This will always overwrite an existing
@@ -1029,8 +1019,7 @@ public class Item
 		// it.
 		if (!enabled) {
 			return FormStatus.Unacceptable;
-		} else if (status.equals(FormStatus.NeedsInfo)
-				|| status.equals(FormStatus.Processing) && action != null) {
+		} else if (status.equals(FormStatus.NeedsInfo) || status.equals(FormStatus.Processing) && action != null) {
 			// Determine if the status is currently dictated by the Action. If
 			// the Action is currently running, then the Item will be in either
 			// one of the FormStatus.NeedsInfo or FormStatus.Processing states.
@@ -1129,8 +1118,7 @@ public class Item
 		// Update the values of the Entries in the Registry
 		for (Entry entry : entryList) {
 			if (registry.containsKey(entry.getName())) {
-				updateStatus = registry.updateValue(entry.getName(),
-						entry.getValue());
+				updateStatus = registry.updateValue(entry.getName(), entry.getValue());
 			}
 		}
 
@@ -1210,10 +1198,8 @@ public class Item
 		// Compute hash code from Item data
 		hash = 31 * hash + this.uniqueId;
 		// If objectName is null, add 0, otherwise add String.hashcode()
-		hash = 31 * hash
-				+ (null == this.itemName ? 0 : this.itemName.hashCode());
-		hash = 31 * hash + (null == this.itemDescription ? 0
-				: this.itemDescription.hashCode());
+		hash = 31 * hash + (null == this.itemName ? 0 : this.itemName.hashCode());
+		hash = 31 * hash + (null == this.itemDescription ? 0 : this.itemDescription.hashCode());
 
 		if (this.allowedActions != null) {
 			hash += 31 * this.allowedActions.hashCode();
@@ -1247,8 +1233,7 @@ public class Item
 		this.itemName = otherItem.itemName;
 		this.itemDescription = otherItem.itemDescription;
 		this.action = otherItem.action;
-		this.allowedActions = (ArrayList<String>) otherItem.allowedActions
-				.clone();
+		this.allowedActions = (ArrayList<String>) otherItem.allowedActions.clone();
 		this.form.copy(otherItem.form); // Deep copy form.
 		this.itemType = otherItem.itemType;
 		this.project = otherItem.project;
@@ -1323,14 +1308,12 @@ public class Item
 					// Clear out comments
 					String[] typeStringWithoutComments = i.split("\\s+");
 					// Split on equals and parse the type
-					itemType = ItemType.valueOf(
-							typeStringWithoutComments[0].split("=")[1].trim());
+					itemType = ItemType.valueOf(typeStringWithoutComments[0].split("=")[1].trim());
 					break;
 				}
 			}
 		} else {
-			throw new IOException(
-					"PSF cannot be loaded from a null InputStream!");
+			throw new IOException("PSF cannot be loaded from a null InputStream!");
 		}
 	}
 
@@ -1377,7 +1360,7 @@ public class Item
 	 * This operation returns the Eclipse Project that is used to manage the
 	 * Item and its associated data.
 	 * 
-	 * @return The Eclipse Project that manages the Item. 
+	 * @return The Eclipse Project that manages the Item.
 	 */
 	@XmlTransient()
 	public IProject getProject() {
@@ -1452,8 +1435,7 @@ public class Item
 	protected void setupOutputFile() {
 
 		// Setup the output file handle name
-		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_"
-				+ getId() + "_processOutput.txt";
+		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_" + getId() + "_processOutput.txt";
 		// Get the file handle from the project space. Note that it may not
 		// actually exist.
 		if (project != null) {
@@ -1465,8 +1447,7 @@ public class Item
 			try {
 				outputFile.createNewFile();
 			} catch (Exception fileFailException) {
-				logger.info("Item Message: Unable to create output "
-						+ "file in workspace. Aborting.");
+				logger.info("Item Message: Unable to create output " + "file in workspace. Aborting.");
 				fileFailException.printStackTrace();
 				return;
 			}
@@ -1690,8 +1671,8 @@ public class Item
 		// Check if the file is in the default workspace. If it is, get the
 		// fully qualified path
 		if (project != null) {
-			defaultFilePath = project.getLocation().toOSString()
-					+ System.getProperty("file.separator") + file.getValue();
+			defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
+					+ file.getValue();
 		}
 		File defaultFile = new File(defaultFilePath);
 		if (defaultFile != null && defaultFile.exists()) {
@@ -1721,8 +1702,7 @@ public class Item
 	 *         file at /path/to/file.txt, this list contains the element
 	 *         file.txt
 	 */
-	protected ArrayList<String> getFiles(String directory,
-			String fileExtension) {
+	protected ArrayList<String> getFiles(String directory, String fileExtension) {
 
 		// Local Declarations
 		ArrayList<String> files = new ArrayList<String>();
@@ -1734,8 +1714,7 @@ public class Item
 		if (Files.isDirectory(Paths.get(directory))) {
 			// Read through the directory searching for files with the
 			// given file extension.
-			try (DirectoryStream<Path> directoryStream = Files
-					.newDirectoryStream(Paths.get(directory))) {
+			try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(directory))) {
 				for (Path path : directoryStream) {
 					if (path.toString().endsWith(fileExtension)) {
 						files.add(path.toFile().getName());
@@ -1767,8 +1746,7 @@ public class Item
 	 * @param fileName
 	 *            The name of the file to be copied.
 	 */
-	protected void copyFile(String sourceDir, String destinationDir,
-			String fileName) {
+	protected void copyFile(String sourceDir, String destinationDir, String fileName) {
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -1779,8 +1757,7 @@ public class Item
 				// Try to copy the file from the source directory to the target
 				// directory. This leaves the source file intact.
 				Files.copy(Paths.get(sourceDir + separator + fileName),
-						Paths.get(destinationDir + separator + fileName),
-						StandardCopyOption.REPLACE_EXISTING);
+						Paths.get(destinationDir + separator + fileName), StandardCopyOption.REPLACE_EXISTING);
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
@@ -1805,8 +1782,7 @@ public class Item
 	 * @param fileName
 	 *            The name of the file to be moved.
 	 */
-	protected void moveFile(String sourceDir, String destinationDir,
-			String fileName) {
+	protected void moveFile(String sourceDir, String destinationDir, String fileName) {
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
@@ -1816,8 +1792,7 @@ public class Item
 			try {
 				// Move the file, this deletes the file in sourceDir.
 				Files.move(Paths.get(sourceDir + separator + fileName),
-						Paths.get(destinationDir + separator + fileName),
-						StandardCopyOption.REPLACE_EXISTING);
+						Paths.get(destinationDir + separator + fileName), StandardCopyOption.REPLACE_EXISTING);
 				// Refresh the Project just in case
 				refreshProjectSpace();
 			} catch (IOException e) {
@@ -1841,24 +1816,21 @@ public class Item
 			try {
 
 				// Walk the directory tree, deleting all the files it contains.
-				Files.walkFileTree(Paths.get(directory),
-						new SimpleFileVisitor<Path>() {
-							@Override
-							public FileVisitResult visitFile(Path file,
-									java.nio.file.attribute.BasicFileAttributes attrs)
-											throws IOException {
-								Files.delete(file);
-								return FileVisitResult.CONTINUE;
-							}
+				Files.walkFileTree(Paths.get(directory), new SimpleFileVisitor<Path>() {
+					@Override
+					public FileVisitResult visitFile(Path file, java.nio.file.attribute.BasicFileAttributes attrs)
+							throws IOException {
+						Files.delete(file);
+						return FileVisitResult.CONTINUE;
+					}
 
-							@Override
-							public FileVisitResult postVisitDirectory(Path dir,
-									IOException exc) throws IOException {
-								Files.delete(dir);
-								return FileVisitResult.CONTINUE;
-							}
+					@Override
+					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+						Files.delete(dir);
+						return FileVisitResult.CONTINUE;
+					}
 
-						});
+				});
 
 				// Refresh the Project just in case
 				refreshProjectSpace();
@@ -1880,8 +1852,7 @@ public class Item
 	 * @param fileExtension
 	 *            The file extension that the Item should search for.
 	 */
-	protected void moveFiles(String sourceDir, String destinationDir,
-			String fileExtension) {
+	protected void moveFiles(String sourceDir, String destinationDir, String fileExtension) {
 		for (String fileName : getFiles(sourceDir, fileExtension)) {
 			moveFile(sourceDir, destinationDir, fileName);
 		}
@@ -1901,8 +1872,7 @@ public class Item
 	 * @param fileExtension
 	 *            The file extension that the Item should search for.
 	 */
-	protected void copyFiles(String sourceDir, String destinationDir,
-			String fileExtension) {
+	protected void copyFiles(String sourceDir, String destinationDir, String fileExtension) {
 		for (String fileName : getFiles(sourceDir, fileExtension)) {
 			copyFile(sourceDir, destinationDir, fileName);
 		}
@@ -1937,10 +1907,8 @@ public class Item
 				if (fileName.contains(separator)) {
 					pathSteps = fileName.split(separator);
 				}
-				String destFileName = (pathSteps == null ? fileName
-						: pathSteps[pathSteps.length - 1]);
-				copyDirectory(sourceDir + separator + fileName,
-						destinationDir + separator + destFileName);
+				String destFileName = (pathSteps == null ? fileName : pathSteps[pathSteps.length - 1]);
+				copyDirectory(sourceDir + separator + fileName, destinationDir + separator + destFileName);
 			}
 		}
 	}
@@ -2009,8 +1977,7 @@ public class Item
 
 		// If the passed parameter is not null, not an empty string, and the
 		// builder name has not been set.
-		if (builderName != null && !(builderName.trim().isEmpty())
-				&& (this.builderName.isEmpty())) {
+		if (builderName != null && !(builderName.trim().isEmpty()) && (this.builderName.isEmpty())) {
 
 			// Set the name
 			this.builderName = builderName;
@@ -2090,8 +2057,7 @@ public class Item
 	 * @param packageLocation
 	 * @param errorMessage
 	 */
-	protected void throwErrorMessage(String title, String packageLocation,
-			String errorMessage) {
+	protected void throwErrorMessage(String title, String packageLocation, String errorMessage) {
 		// Local Declarations
 		final String location = packageLocation;
 		final String message = errorMessage;
@@ -2118,7 +2084,7 @@ public class Item
 	 * 
 	 * @return The IOService instance
 	 */
-	protected IOService getIOService() {
+	protected IIOService getIOService() {
 		return ioService;
 	}
 
