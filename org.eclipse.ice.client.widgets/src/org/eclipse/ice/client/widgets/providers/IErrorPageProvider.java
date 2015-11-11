@@ -19,48 +19,48 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.IFormPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is an interface for list page providers for Form Editors in ICE that provides
- * the set of list section pages required to draw the UI.
+ * This is an interface for error page providers for Form Editors in ICE that provides
+ * the error pages required to draw the UI.
  * 
  * @author Nick Stanish
  *
  */
-public interface IListPageProvider {
+public interface IErrorPageProvider {
 	
-	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.listPageProvider";
+	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.errorPageProvider";
 	
 	
 	/**
 	 * This is a static interface method that returns all of the currently
-	 * registered IListPageProvider.
+	 * registered IErrorPageProvider.
 	 * 
 	 * @return The available providers
 	 * @throws CoreException 
 	 */
-	public static IListPageProvider[] getProviders() throws CoreException {
+	public static IErrorPageProvider[] getProviders() throws CoreException {
 		// Logger for handling event messages and other information.
-		Logger logger = LoggerFactory.getLogger(IListPageProvider.class);
-		IListPageProvider[] listPageProviders = null;
+		Logger logger = LoggerFactory.getLogger(IErrorPageProvider.class);
+		IErrorPageProvider[] errorPageProviders = null;
 		
 		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(EXTENSION_POINT_ID);
 
 		if (point != null) {
 			IConfigurationElement[] elements = point.getConfigurationElements();
-			listPageProviders = new IListPageProvider[elements.length];
+			errorPageProviders = new IErrorPageProvider[elements.length];
 			for (int i = 0; i < elements.length; i++) {
-				listPageProviders[i] = (IListPageProvider) elements[i].createExecutableExtension("class");
+				errorPageProviders[i] = (IErrorPageProvider) elements[i].createExecutableExtension("class");
 			}
 		} else {
 			logger.error("Extension Point " + EXTENSION_POINT_ID + " does not exist");
 		}
-		return listPageProviders;
+		return errorPageProviders;
 	}
 
 	/**
@@ -87,6 +87,6 @@ public interface IListPageProvider {
 	 *            simulated multimap.
 	 * @return the form pages created from the map
 	 */
-	public ArrayList<ICEFormPage> getPages(FormEditor formEditor, Map<String, ArrayList<Component>> componentMap);
+	public IFormPage getPage(FormEditor formEditor, Map<String, ArrayList<Component>> componentMap);
 
 }

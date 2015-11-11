@@ -21,7 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
+import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
@@ -1138,9 +1140,33 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private IFormPage createEmptyErrorPage() {
 
-		// Need IErrorPageProvider
+		IFormPage page = null;
 
-		return new ErrorMessageFormPage(this, "Error Page", "Error Page");
+		try {
+			// get all of the registered ListPageProviders
+			IErrorPageProvider[] errorPageProviders = IErrorPageProvider.getProviders();
+			if (errorPageProviders != null && errorPageProviders.length > 0) {
+
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+
+
+				for (IErrorPageProvider currentProvider : errorPageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())){
+						page = currentProvider.getPage(this, componentMap);
+						break;
+					}
+				}
+			} else {
+				logger.error("No ErrorPageProviders registered");
+			}
+
+		} catch (CoreException e) {
+			logger.error("Unable to get ErrorPageProviders", e);
+		}
+
+		return page;
+
 	}
 
 	/**
