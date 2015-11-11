@@ -21,20 +21,44 @@ import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
- * <p>This interface can be realized by client developers to customize the way that the EclipseUIWidgetFactory renders Forms for the user. Realizations of this interface should be registered as an OSGi Declarative service.</p><p>IFormWidgetBuilders must provide the name of the Form that they are meant to render. This requires that a Form with that name exist for the IFormWidget that the Builder creates to work properly. Thus, if no Form with the target name does not exist, the Builder should never be called.</p>
+/**
+ * <p>
+ * This interface can be realized by client developers to customize the way that
+ * the EclipseUIWidgetFactory renders Forms for the user. Realizations of this
+ * interface should be registered as an OSGi Declarative service.
+ * </p>
+ * <p>
+ * IFormWidgetBuilders must provide the name of the Form that they are meant to
+ * render. This requires that a Form with that name exist for the IFormWidget
+ * that the Builder creates to work properly. Thus, if no Form with the target
+ * name does not exist, the Builder should never be called.
+ * </p>
+ * 
  * @author Jay Jay Billings
  */
 public interface IFormWidgetBuilder {
-	/** 
-	 * <p>This operation returns the name of the target Form that the Builder will render.</p>
-	 * @return <p>The name of the Form.</p>
+	/**
+	 * <p>
+	 * This operation returns the name of the target Form that the Builder will
+	 * render.
+	 * </p>
+	 * 
+	 * @return
+	 * 		<p>
+	 *         The name of the Form.
+	 *         </p>
 	 */
 	public String getTargetFormName();
 
-	/** 
-	 * <p>This operation builds the IFormWidget.</p>
-	 * @return <p>The specialized IFormWidget from the service.</p>
+	/**
+	 * <p>
+	 * This operation builds the IFormWidget.
+	 * </p>
+	 * 
+	 * @return
+	 * 		<p>
+	 *         The specialized IFormWidget from the service.
+	 *         </p>
 	 */
 	public IFormWidget build();
 

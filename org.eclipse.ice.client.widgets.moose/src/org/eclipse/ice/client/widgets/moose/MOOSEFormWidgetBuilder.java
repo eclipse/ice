@@ -37,7 +37,11 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	public static final String name = "MOOSE Workflow";
 
+	/**
+	 * The logging utility for this class.
+	 */
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	/**
 	 * This class consumes (references) the {@link IVizServiceFactory} OSGi
 	 * service. The factory should be passed down to the MOOSEFormEditor.

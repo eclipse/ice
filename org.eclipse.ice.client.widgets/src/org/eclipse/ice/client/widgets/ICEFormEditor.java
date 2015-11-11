@@ -21,6 +21,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider;
+import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
+import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
+import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -35,13 +39,13 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
@@ -108,11 +112,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	private boolean dirty = false;
 
 	/**
-	 * The Component Map. This map is used to organize the Components in the
-	 * Form by type. The type is the key and is a string equal to one of "data,"
-	 * "output," "matrix," "masterDetails", "table," "geometry," "shape" or
-	 * "tree," or reactor. The value is a list that stores all components of
-	 * that type. This is a simulated multimap.
+	 * The Component Map. This map must contain the Components in the Form
+	 * organized by type. The type is the key and a string equal to one of
+	 * "data," "output," "matrix," "masterDetails", "table," "geometry,"
+	 * "shape," "tree," "mesh," or "reactor." The value is a list that stores
+	 * all components of that type; DataComponent, ResourceComponent,
+	 * MatrixComponent, MasterDetailsComponent, TableComponent,
+	 * GeometryComponent, ShapeComponent, TreeComponent, MeshComponent,
+	 * ReactorComponent, etc. This is a simulated multimap.
+	 * 
 	 */
 	protected HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
 
@@ -306,6 +314,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createResourcePage() {
 
+		// Need IResourcePageProvider
+
 		// Local Declarations
 		ResourceComponent resourceComponent = null;
 
@@ -343,6 +353,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The Form pages, one for each MasterDetailsComponent.
 	 */
 	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
+
+		// Need IMasterDetailsPageProvider
 
 		// Local Declarations
 		ArrayList<ICEFormPage> masterDetailsPages = new ArrayList<ICEFormPage>();
@@ -403,6 +415,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createGeometryPage() {
 
+		// Need IGeometryPageProvider
+
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(new ICEGeometry());
@@ -433,6 +447,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createMeshPage() {
 
+		// Need IMeshPageProvider
+
 		// Local Declarations
 		MeshComponent meshComponent = new MeshComponent();
 
@@ -460,6 +476,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The ICEFormPages for each EMF Component in the list.
 	 */
 	private ArrayList<ICEFormPage> createEMFSectionPages() {
+
+		// Need IEMFSectionPageProvider
+
 		// Local Declarations
 		EMFComponent emfComponent = null;
 		EMFSectionPage emfPage = null;
@@ -487,28 +506,34 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * stored in the component map.
 	 * 
 	 * @return The pages.
+	 * @throws CoreException 
 	 */
 	private ArrayList<ICEFormPage> createListSectionPages() {
-
 		// Create the list of pages to return
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		// Get the lists from the component map
-		ArrayList<Component> lists = componentMap.get("list");
-		// If there are some lists, render sections for them
-		if (lists.size() > 0) {
-			for (int i = 0; i < lists.size(); i++) {
-				ListComponent<?> list = (ListComponent<?>) lists.get(i);
-				// Make sure the list isn't null since that value can be put in
-				// a collection
-				if (list != null) {
-					// Create a new page for the list
-					ListComponentSectionPage page = new ListComponentSectionPage(this, list.getName(), list.getName());
-					page.setList(list);
-					// Add the page to the return list
-					pages.add(page);
+		
+		try {
+			// get all of the registered ListPageProviders
+			IListPageProvider[] listPageProviders = IListPageProvider.getProviders();
+			if (listPageProviders != null && listPageProviders.length > 0) {
+					
+				// Use the default list page provider
+				String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
+				
+				
+				for (IListPageProvider currentProvider : listPageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())){
+						pages.addAll(currentProvider.getPages(this, componentMap));
+						break;
+					}
 				}
+			} else {
+				logger.error("No ListPageProviders registered");
 			}
+		
+		
+		} catch (CoreException e) {
+			logger.error("Unable to get ListPageProviders", e);
 		}
 
 		return pages;
@@ -622,6 +647,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
+
+		// Need IHeaderContentsProvider
 
 		// Get a reference to the IManagedForm
 		managedForm = headerForm;
@@ -743,6 +770,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 *         {@code null}.
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
+
+		// Need IBasicComponentPageProvider
+
 		// Local Declarations
 		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
 		ArrayList<Component> comps = new ArrayList<Component>();
@@ -869,7 +899,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		}
 
 		iceDataForm.register(this);
-		
+
 		return;
 	}
 
@@ -1007,6 +1037,25 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		// Local Declaration
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
+		// Example code for how this might work in the future
+
+		// Get the providers
+		// IPageProvider [] providers = IPageProvider.getProviders();
+
+		// Search over the providers to find the one with the name that matches
+		// the key (in this case "default).
+		// for (IPageProvider provider : providers) {
+
+		// if ("default".equals(provider.getName())) {
+
+		// Get the pages
+		// IFormPage [] formPages = provider.getPages(componentMap);
+		// break;
+
+		// }
+
+		// }
+
 		// Load data pages if they are available.
 		if (!iceDataForm.getComponents().isEmpty()) {
 
@@ -1090,7 +1139,34 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return the empty page
 	 */
 	private IFormPage createEmptyErrorPage() {
-		return new ErrorMessageFormPage(this, "Error Page", "Error Page");
+
+		IFormPage page = null;
+
+		try {
+			// get all of the registered ListPageProviders
+			IErrorPageProvider[] errorPageProviders = IErrorPageProvider.getProviders();
+			if (errorPageProviders != null && errorPageProviders.length > 0) {
+
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+
+
+				for (IErrorPageProvider currentProvider : errorPageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())){
+						page = currentProvider.getPage(this, componentMap);
+						break;
+					}
+				}
+			} else {
+				logger.error("No ErrorPageProviders registered");
+			}
+
+		} catch (CoreException e) {
+			logger.error("Unable to get ErrorPageProviders", e);
+		}
+
+		return page;
+
 	}
 
 	/**
@@ -1330,7 +1406,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 					managedForm.getForm().getForm().redraw();
 				}
 			});
-			
+
 			return;
 		}
 

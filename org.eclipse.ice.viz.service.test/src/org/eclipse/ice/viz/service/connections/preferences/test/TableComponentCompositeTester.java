@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
- *   
+ *
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences.test;
 
@@ -24,7 +24,6 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,7 +31,7 @@ import org.junit.runner.RunWith;
  * This class performs automated UI tests on the {@link TableComponentComposite}
  * . In particular, it tests the composite's ability to add, remove, and update
  * rows in the associated {@link TableComponent}.
- * 
+ *
  * @author Jordan Deyton
  * @author Robert Smith
  *
@@ -86,7 +85,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 
 	/**
 	 * Check that rows can be added and that the underlying table is updated.
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	@Test
@@ -140,7 +139,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 		// The table starts off empty, the remove row button should be disabled
 		assertFalse(bot.button(1).isEnabled());
 
-		// SWTBotPreferences.PLAYBACK_DELAY = 9999;
+		SWTBotPreferences.PLAYBACK_DELAY = 50;
 
 		// Add a row
 		bot.button(0).click();
@@ -266,7 +265,7 @@ public class TableComponentCompositeTester extends AbstractSWTTester {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester#afterEachTest
 	 * ()
