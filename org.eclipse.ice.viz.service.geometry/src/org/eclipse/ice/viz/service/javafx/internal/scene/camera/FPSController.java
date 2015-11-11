@@ -101,8 +101,10 @@ public class FPSController extends CameraController {
         this.camera = camera;
         this.scene = scene;
         this.canvas = canvas;
+        
+        final Camera finalCamera = camera;
 
-        Group xform = (Group) camera.getParent();
+        final Group xform = (Group) camera.getParent();
 
         Rotate x = new Rotate();
         x.setAxis(Rotate.X_AXIS);
@@ -151,12 +153,12 @@ public class FPSController extends CameraController {
                     affine.appendTranslation(moveVec.getX(), moveVec.getY(), moveVec.getZ());
                 }
     
-                camera.getTransforms().setAll(affine);
+                finalCamera.getTransforms().setAll(affine);
     
                 if (keyCode == KeyCode.SPACE) {
-                    camera.setTranslateY(camera.getTranslateY() - speed);
+                    finalCamera.setTranslateY(finalCamera.getTranslateY() - speed);
                 } else if (keyCode == KeyCode.C) {
-                    camera.setTranslateY(camera.getTranslateY() + speed);
+                    finalCamera.setTranslateY(finalCamera.getTranslateY() + speed);
                 }
               }
             });
@@ -183,7 +185,7 @@ public class FPSController extends CameraController {
                         affine.appendRotation((-mouseDeltaY % 360) * 0.1f, new Point3D(0, 0, 0), Rotate.X_AXIS);
                         affine.appendRotation((mouseDeltaX % 360) * 0.1f, new Point3D(0, 0, 0), Rotate.Y_AXIS);
         
-                        camera.getTransforms().setAll(affine);
+                        finalCamera.getTransforms().setAll(affine);
                     }
                 }
             });

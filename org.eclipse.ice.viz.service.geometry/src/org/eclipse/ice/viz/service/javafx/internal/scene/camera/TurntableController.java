@@ -84,14 +84,17 @@ public class TurntableController extends CameraController {
         this.camera = camera;
         this.scene = scene;
         this.canvas = canvas;
+        
+        final Camera finalCamera = camera;
+        final Scene finalScene = scene;
 
-        Affine affine = new Affine();
+        final Affine affine = new Affine();
 
         scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
             public void handle(MouseEvent arg0) {
-                width = scene.getWidth();
-                height = scene.getHeight();
+                width = finalScene.getWidth();
+                height = finalScene.getHeight();
 
                 startX = arg0.getSceneX();
                 startY = arg0.getSceneY();
@@ -147,12 +150,12 @@ public class TurntableController extends CameraController {
                     double speedModifier = 0.005f;
 
                     Rotate ry = new Rotate(speedModifier * -(arg0.getY() - startY), xAxis);
-                    camera.getTransforms().add(ry);
+                    finalCamera.getTransforms().add(ry);
 
                     Rotate rx = new Rotate(speedModifier * (arg0.getX() - startX), yAxis);
                     Transform createConcatenation = rx.createConcatenation(ry);
 
-                    camera.getTransforms().add(createConcatenation);
+                    finalCamera.getTransforms().add(createConcatenation);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

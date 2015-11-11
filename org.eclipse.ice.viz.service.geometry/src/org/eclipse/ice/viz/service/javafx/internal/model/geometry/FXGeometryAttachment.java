@@ -131,25 +131,17 @@ public class FXGeometryAttachment extends GeometryAttachment {
 		}
 
 		if (!knownGeometry.contains(geom)) {
+			final Shape finalGeom = geom;
+			
 			geom.register(new IVizUpdateableListener() {
 				@Override
 				public void update(IVizUpdateable component) {
-
-					/**
-					 * The temporary working list of PrimitiveShapes
-					 */
-					ArrayList<Shape> primitiveShapes = new ArrayList<Shape>();
-
-					/**
-					 * The temporary working list of ComplexShapes
-					 */
-					ArrayList<Shape> complexShapes = new ArrayList<Shape>();
 
 					javafx.application.Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
 							syncShapes(fxAttachmentNode,
-									geom.getEntitiesByCategory("Children"));
+									finalGeom.getEntitiesByCategory("Children"));
 						}
 					});
 				}

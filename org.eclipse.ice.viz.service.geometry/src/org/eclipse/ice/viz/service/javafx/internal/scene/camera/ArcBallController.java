@@ -79,13 +79,16 @@ public class ArcBallController extends CameraController {
         this.camera = camera;
         this.scene = scene;
         this.canvas = canvas;
+        
+        final Camera finalCamera = camera;
+        final Scene finalScene = scene;
 
         scene.setOnScroll(new EventHandler<ScrollEvent>() {
 
             public void handle(ScrollEvent event) {
-                double translateX = -camera.getTranslateX();
-                double translateY = -camera.getTranslateY();
-                double translateZ = -camera.getTranslateZ();
+                double translateX = -finalCamera.getTranslateX();
+                double translateY = -finalCamera.getTranslateY();
+                double translateZ = -finalCamera.getTranslateZ();
 
                 double deltaY = event.getDeltaY();
 
@@ -100,22 +103,22 @@ public class ArcBallController extends CameraController {
                 // Final zoom scaling coefficient
                 Point3D scaledMovementCof = normalize.multiply(zoomSpeed);
 
-                double currentX = camera.getTranslateX();
-                double currentY = camera.getTranslateY();
-                double currentZ = camera.getTranslateZ();
+                double currentX = finalCamera.getTranslateX();
+                double currentY = finalCamera.getTranslateY();
+                double currentZ = finalCamera.getTranslateZ();
 
                 double zoomX = scaledMovementCof.getX();
                 double zoomY = scaledMovementCof.getY();
                 double zoomZ = scaledMovementCof.getZ();
 
                 if (deltaY < 0) {
-                    camera.setTranslateX(currentX + zoomX);
-                    camera.setTranslateY(currentY + zoomY);
-                    camera.setTranslateZ(currentZ + zoomZ);
+                    finalCamera.setTranslateX(currentX + zoomX);
+                    finalCamera.setTranslateY(currentY + zoomY);
+                    finalCamera.setTranslateZ(currentZ + zoomZ);
                 } else {
-                    camera.setTranslateX(currentX - zoomX);
-                    camera.setTranslateY(currentY - zoomY);
-                    camera.setTranslateZ(currentZ - zoomZ);
+                    finalCamera.setTranslateX(currentX - zoomX);
+                    finalCamera.setTranslateY(currentY - zoomY);
+                    finalCamera.setTranslateZ(currentZ - zoomZ);
                 }
             }
         });
@@ -124,13 +127,13 @@ public class ArcBallController extends CameraController {
 
             public void handle(MouseEvent arg0) {
 
-                width = scene.getWidth();
-                height = scene.getHeight();
+                width = finalScene.getWidth();
+                height = finalScene.getHeight();
 
                 sphereRadius = Math.min(width / 2.0d, height / 2.0d);
 
-                double startX = arg0.getSceneX() - (scene.getWidth() / 2.0d);
-                double startY = (scene.getHeight() / 2.0d) - arg0.getSceneY();
+                double startX = arg0.getSceneX() - (finalScene.getWidth() / 2.0d);
+                double startY = (finalScene.getHeight() / 2.0d) - arg0.getSceneY();
 
                 startRot = CamUtil.pointToSphere(-startX, startY, sphereRadius).normalize();
                 currentRot = startRot;
@@ -150,8 +153,8 @@ public class ArcBallController extends CameraController {
 
         scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent arg0) {
-                double dragX = arg0.getSceneX() - (scene.getWidth() / 2.0d);
-                double dragY = (scene.getHeight() / 2.0d) - arg0.getSceneY();
+                double dragX = arg0.getSceneX() - (finalScene.getWidth() / 2.0d);
+                double dragY = (finalScene.getHeight() / 2.0d) - arg0.getSceneY();
 
                 currentRot = CamUtil.pointToSphere(-dragX, dragY, sphereRadius).normalize();
 
@@ -170,21 +173,21 @@ public class ArcBallController extends CameraController {
                 Point3D pivot = new Point3D(0, 0, 0);
                 Rotate rotation = new Rotate(angle * 0.1d, pivot.getX(), pivot.getY(), pivot.getZ(), invRotAxis);
 
-                if (camera.getTransforms().size() > 0) {
-                    Transform totalRot = camera.getTransforms().get(0).createConcatenation(rotation);
-                    camera.getTransforms().setAll(totalRot);
+                if (finalCamera.getTransforms().size() > 0) {
+                    Transform totalRot = finalCamera.getTransforms().get(0).createConcatenation(rotation);
+                    finalCamera.getTransforms().setAll(totalRot);
                 } else {
-                    camera.getTransforms().add(rotation);
+                    finalCamera.getTransforms().add(rotation);
                 }
 
-                double translateX = camera.getTranslateX();
-                double translateY = camera.getTranslateY();
-                double translateZ = camera.getTranslateZ();
+                double translateX = finalCamera.getTranslateX();
+                double translateY = finalCamera.getTranslateY();
+                double translateZ = finalCamera.getTranslateZ();
 
                 Affine lookAt = CamUtil.lookAt(new Point3D(0, 0, 0), new Point3D(translateX, translateY, translateZ),
                         new Point3D(0, 1, 0));
 
-                camera.getTransforms().add(lookAt);
+                finalCamera.getTransforms().add(lookAt);
             }
         });
 
