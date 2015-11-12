@@ -133,11 +133,9 @@ public class FXGeometryAttachment extends GeometryAttachment {
 
 							for (AbstractController child : geom
 									.getEntities()) {
-								if (!fxAttachmentNode.getChildren()
-										.contains(child)) {
-									fxAttachmentNode.getChildren().add(
-											(Group) child.getRepresentation());
-								}
+								fxAttachmentNode.getChildren()
+										.add((Group) child.getRepresentation());
+
 							}
 						}
 					});

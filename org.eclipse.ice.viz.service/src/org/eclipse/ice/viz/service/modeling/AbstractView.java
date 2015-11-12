@@ -69,6 +69,11 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 	 */
 	public void setTransformation(Transformation newTransformation) {
 		transformation = newTransformation;
+
+		// Mimic an update notification from the new transformation
+		update(transformation);
+
+		// Notify own listeners of the change
 		notifyListeners();
 	}
 

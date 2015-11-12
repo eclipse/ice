@@ -67,11 +67,6 @@ public class FXShapeView extends AbstractView {
 	public FXShapeView(ShapeComponent model) {
 		super();
 
-		// Create the gizmo
-		gizmo = new TransformGizmo(100);
-		gizmo.showHandles(false);
-		gizmo.setVisible(false);
-
 		// Initialize the JavaFX ndoe
 		node = new Group();
 		node.setId(model.getProperty("Name"));
@@ -79,10 +74,19 @@ public class FXShapeView extends AbstractView {
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
+		// Create a gizmo with axis for the root node
+		if ("True".equals(model.getProperty("Root"))) {
+			gizmo = new TransformGizmo(100);
+			gizmo.showHandles(false);
+		} else {
+			gizmo = new TransformGizmo(0);
+		}
+
+		gizmo.setVisible(false);
+		node.getChildren().add(gizmo);
+
 		// Create a Shape3D for the model
 		createShape(ShapeType.valueOf(model.getProperty("Type")));
-
-		node.getChildren().add(gizmo);
 
 	}
 
@@ -122,6 +126,7 @@ public class FXShapeView extends AbstractView {
 				Box box = new Box(50, 50, 50);
 				defaultMaterial = new PhongMaterial(Color.rgb(50, 50, 255));
 				defaultMaterial.setSpecularColor(Color.WHITE);
+				box.setMaterial(defaultMaterial);
 				shape = box;
 			}
 
@@ -165,6 +170,7 @@ public class FXShapeView extends AbstractView {
 
 				defaultMaterial = new PhongMaterial(Color.rgb(0, 131, 157));
 				defaultMaterial.setSpecularColor(Color.WHITE);
+				tube.setMaterial(defaultMaterial);
 				shape = tube;
 			}
 
@@ -227,7 +233,7 @@ public class FXShapeView extends AbstractView {
 			// Create the shape if neccesary
 			createShape(ShapeType.valueOf(model.getProperty("Type")));
 
-			// Convert the model's property to a boolean
+			// Convert the model's selected property to a boolean
 			Boolean newSelected = "True".equals(model.getProperty("Selected"));
 
 			// If the selected property has changed, update

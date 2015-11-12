@@ -98,10 +98,38 @@ public class FXShapeController extends Shape {
 		if (operator != null && OperatorType.valueOf(
 				parent.getProperty("Operator")) == OperatorType.Union) {
 			((Group) parent.getRepresentation()).getChildren()
-					.remove(view.getRepresentation());
+					.add((Group) view.getRepresentation());
 		}
 
 		super.setParent(parent);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void copy(AbstractController source) {
+		super.copy(source);
+
+		List<AbstractController> parentList = model
+				.getEntitiesByCategory("Parent");
+		if (!parentList.isEmpty()) {
+			parentList.get(0).addEntity(this);
+
+			// AbstractController parent = model.getEntitiesByCategory("Parent")
+			// .get(0);
+			// String operator = parent.getProperty("Operator");
+			// if (operator != null && OperatorType.valueOf(
+			// parent.getProperty("Operator")) == OperatorType.Union) {
+			// ((Group) parent.getRepresentation()).getChildren()
+			// .add((Group) view.getRepresentation());
+			// }
+		}
+
 	}
 
 }
