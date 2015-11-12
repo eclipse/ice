@@ -109,7 +109,11 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 		// Use a service to create the FormWidget if possible
 		if (widgetBuildersMap.containsKey(formName)) {
 			widget = widgetBuildersMap.get(formName).build();
+		} else if ("org.eclipse.ice.client.widgets.FileFormWidget".equals(formName)) {
+			// This is used when IFiles are loaded as Items.
+			return new FileFormWidget();
 		} else {
+		
 			// Otherwise just create a "regular" FormWidget
 			widget = new EclipseFormWidget();
 		}

@@ -394,8 +394,11 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			public void run() {
 				// Post the message to the update manager
 				if (getHeaderForm() != null) {
+					logger.info("Setting the new Status Message ");
 					final IMessageManager messageManager = getHeaderForm().getMessageManager();
 					messageManager.addMessage("statusUpdate", message, null, IMessageProvider.INFORMATION);
+				} else {
+					logger.info("GetHeaderForm() Returned null");
 				}
 			}
 		});
@@ -861,15 +864,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			iceDataForm = ICEFormInput.getForm();
 
 			// Set the part name to be the file name
-			setPartName(iceDataForm.getName() + ".xml");
+			setPartName(iceDataForm.getName().replaceAll("\\s+", "_") + ".xml");
 
 			// Set the input
 			setInput(input);
 		} else if (input instanceof FileEditorInput && client != null) {
 			// Grab the file and load the form
 			IFile formFile = ((FileEditorInput) input).getFile();
-			// try {
-			// IClient client = IClient.getClient();
 			iceDataForm = client.loadItem(formFile);
 			logger.info("IClient and Form loaded.");
 			// Set *correct* input via a little short circuit.
@@ -1318,10 +1319,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Make sure the process is not null
 		if (process != null) {
+			logger.info("Notifying the ProcessEventListeners! There are " + processListeners.size() + " of them.");
 			// Notify the process listeners
 			for (IProcessEventListener listener : processListeners) {
 				listener.processSelected(iceDataForm, process);
 			}
+		} else {
+			logger.info("Process was null!");
 		}
 
 		return;

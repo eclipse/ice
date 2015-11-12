@@ -468,6 +468,7 @@ public class MOOSE extends Item {
 		// Do nothing if we don't have postprocessors
 		if (postProcessors == null || !postProcessors.isActive() || postProcessors.getNumberOfChildren() < 1
 				|| !updaterExists) {
+			logger.info("Could not find valid Postprocessors in the tree. No ICEUpdater will be added.");
 			return;
 		}
 
@@ -534,6 +535,7 @@ public class MOOSE extends Item {
 					break;
 				}
 			}
+			logger.info("Removing ICEUpdater from tree, could not find active Postprocessors on the form.");
 		}
 
 		// Return it, whether null or not, clients should check

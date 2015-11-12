@@ -293,6 +293,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 			processorThread = new Thread(processor);
 			processorThread.start();
 		} else {
+
 			// Otherwise notify the use that the Item is invalid
 			throwSimpleError("IClient Message: " + "Item has no parent widget in this client.");
 		}
@@ -445,7 +446,21 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 	@Override
 	public Form loadItem(IFile itemFile) {
 		// Just delegate this
-		return getCore().loadItem(itemFile);
+		Form form = getCore().loadItem(itemFile);
+		
+		// Create a IFormWidget for this IFile
+		IFormWidget widget = iWidgetFactory.getFormWidget("org.eclipse.ice.client.widgets.FileFormWidget");
+		
+		// Give the widget the Form
+		widget.setForm(form);
+		
+		// Set the initial form status
+		widget.updateStatus(statusMessageMap.get(getCore().getItemStatus(form.getItemID())));
+	
+		// Update the formWidgetTable
+		formWidgetTable.put(form.getItemID(), widget);
+		
+		return form;
 	}
 
 	/*
@@ -514,7 +529,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 				processItem(formWidgetTable.get(itemId), actionName);
 			}
 		} else if (itemId < 0 || itemForm == null) {
-			// Otherwise notify the use that the Item is invalid
+			// Otherwise notify the user that the Item is invalid
 			throwSimpleError("The Item id is invalid. " + "Please double check it and try again "
 					+ "or notify your systems administrator.");
 		}
@@ -628,6 +643,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 	@Override
 	public void processSelected(Form form, String process) {
 
+		logger.info("Process = " + process + ", form is " + form.getItemID());
 		// Forward the request to process the form on to the Core. The
 		// actual processing is done by the Item that is represented by the
 		// Form, so send the ItemID along.
@@ -712,7 +728,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, org.eclipse.core.resources.IProject)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI,
+	 * org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public void importFile(URI file, IProject project) {
@@ -723,7 +741,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI,
+	 * java.lang.String)
 	 */
 	@Override
 	public void importFile(URI file, String projectName) {
@@ -744,10 +764,12 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, org.eclipse.core.resources.IProject)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
+	 * java.lang.String, org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public int importFileAsItem(URI file, String itemType, IProject project) {
@@ -757,7 +779,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(org.eclipse.core.resources.IFile, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(org.eclipse.core.
+	 * resources.IFile, java.lang.String)
 	 */
 	@Override
 	public int importFileAsItem(IFile file, String itemType) {
@@ -767,7 +791,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public int importFileAsItem(URI file, String itemType, String projectName) {
@@ -777,6 +803,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.iclient.IClient#renameItem(int, java.lang.String)
 	 */
 	@Override
