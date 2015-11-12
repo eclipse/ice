@@ -246,10 +246,16 @@ public class JobLauncher extends Item {
 	@XmlTransient()
 	private Job launchJob;
 
+	/**
+	 * Reference to the job IFolder containing the job 
+	 * launch files. 
+	 */
+	@XmlTransient()
 	private IFolder currentJobFolder;
 	
 	/**
-	 * 
+	 * Reference to the object responsible for returning 
+	 * all IRemoteServices. 
 	 */
 	@XmlTransient()
 	private static IRemoteServicesManager remoteManager;
