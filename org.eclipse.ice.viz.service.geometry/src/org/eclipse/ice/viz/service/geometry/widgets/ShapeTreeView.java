@@ -14,6 +14,7 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.viz.service.geometry.shapes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
@@ -40,7 +41,8 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Andrew P. Belt
  */
-public class ShapeTreeView extends ViewPart implements ISelectionChangedListener {
+public class ShapeTreeView extends ViewPart
+		implements ISelectionChangedListener {
 
 	/**
 	 * <p>
@@ -93,6 +95,10 @@ public class ShapeTreeView extends ViewPart implements ISelectionChangedListener
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
+
+		// TODO Remove and consume the factory service through OSGI once the
+		// JavaFX implementation is moved ot its own package
+		factory = new FXShapeControllerFactory();
 
 		// Create the actions
 
@@ -154,11 +160,13 @@ public class ShapeTreeView extends ViewPart implements ISelectionChangedListener
 		Action addUnion = new ActionAddShape(this, OperatorType.Union);
 		addComplexShapes.addAction(addUnion);
 
-		Action addIntersection = new ActionAddShape(this, OperatorType.Intersection);
+		Action addIntersection = new ActionAddShape(this,
+				OperatorType.Intersection);
 		addIntersection.setEnabled(false);
 		addComplexShapes.addAction(addIntersection);
 
-		Action addComplement = new ActionAddShape(this, OperatorType.Complement);
+		Action addComplement = new ActionAddShape(this,
+				OperatorType.Complement);
 		addComplement.setEnabled(false);
 		addComplexShapes.addAction(addComplement);
 
@@ -222,8 +230,8 @@ public class ShapeTreeView extends ViewPart implements ISelectionChangedListener
 
 		// Get the TransformationView
 
-		TransformationView transformationView = (TransformationView) getSite().getPage()
-				.findView(TransformationView.ID);
+		TransformationView transformationView = (TransformationView) getSite()
+				.getPage().findView(TransformationView.ID);
 
 		if (paths.length == 1) {
 
@@ -327,7 +335,15 @@ public class ShapeTreeView extends ViewPart implements ISelectionChangedListener
 		return factory;
 	}
 
+	/**
+	 * Setter method for the factory
+	 * 
+	 * @param factory
+	 *            The new factory to store in this view
+	 */
 	public void setFactory(IControllerFactory factory) {
-		this.factory = factory;
+		// TODO Uncomment after the JavaFX implementation is moved to its own
+		// package
+		// this.factory = factory;
 	}
 }

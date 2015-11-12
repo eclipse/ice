@@ -27,7 +27,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
  * 
  * @author Robert Smith
  */
-public class AbstractMeshComponent implements IVizUpdateableListener, IVizUpdateable {
+public class AbstractMeshComponent
+		implements IVizUpdateableListener, IVizUpdateable {
 
 	/**
 	 * The mesh's type, which defines how the part internally stores its data.
@@ -116,7 +117,8 @@ public class AbstractMeshComponent implements IVizUpdateableListener, IVizUpdate
 	 * @param type
 	 *            The mesh's type
 	 */
-	public AbstractMeshComponent(List<AbstractController> entities, MeshType type) {
+	public AbstractMeshComponent(List<AbstractController> entities,
+			MeshType type) {
 		// Create a list of entities
 		this.entities = new HashMap<String, List<AbstractController>>();
 
@@ -161,8 +163,10 @@ public class AbstractMeshComponent implements IVizUpdateableListener, IVizUpdate
 
 			// For each category, create an entry and add it to the map
 			for (String category : input.keySet()) {
-				List<AbstractController> tempList = (List<AbstractController>) input.get(category);
-				entities.put(category, (List<AbstractController>) input.get(category));
+				List<AbstractController> tempList = (List<AbstractController>) input
+						.get(category);
+				entities.put(category,
+						(List<AbstractController>) input.get(category));
 			}
 		}
 
@@ -198,23 +202,24 @@ public class AbstractMeshComponent implements IVizUpdateableListener, IVizUpdate
 		// Get a reference to self
 		final AbstractMeshComponent self = this;
 
-		final List<IVizUpdateableListener> localListeners = new ArrayList<IVizUpdateableListener>(listeners);
+		final List<IVizUpdateableListener> localListeners = new ArrayList<IVizUpdateableListener>(
+				listeners);
 
-		// Create a thread object that notifies all listeners
-
-		Thread notifyThread = new Thread() {
-
-			@Override
-			public void run() {
-				// Loop over all listeners and update them
-				for (int i = 0; i < localListeners.size(); i++) {
-					localListeners.get(i).update(self);
-				}
-			}
-		};
-
-		// Start the thread
-		notifyThread.start();
+		// // Create a thread object that notifies all listeners
+		//
+		// Thread notifyThread = new Thread() {
+		//
+		// @Override
+		// public void run() {
+		// Loop over all listeners and update them
+		for (int i = 0; i < localListeners.size(); i++) {
+			localListeners.get(i).update(self);
+		}
+		// }
+		// };
+		//
+		// // Start the thread
+		// notifyThread.start();
 	}
 
 	/**
@@ -322,7 +327,8 @@ public class AbstractMeshComponent implements IVizUpdateableListener, IVizUpdate
 	 * @param category
 	 *            The new entity's category
 	 */
-	public void addEntityByCategory(AbstractController newEntity, String category) {
+	public void addEntityByCategory(AbstractController newEntity,
+			String category) {
 
 		// Get the entities for the given category
 		List<AbstractController> catList = entities.get(category);
@@ -422,7 +428,8 @@ public class AbstractMeshComponent implements IVizUpdateableListener, IVizUpdate
 
 		// Copy each of the other component's data members
 		type = otherObject.type;
-		entities = new HashMap<String, List<AbstractController>>(otherObject.entities);
+		entities = new HashMap<String, List<AbstractController>>(
+				otherObject.entities);
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change

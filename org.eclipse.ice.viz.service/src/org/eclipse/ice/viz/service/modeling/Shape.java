@@ -21,10 +21,10 @@ public class Shape extends AbstractController {
 	/**
 	 * THe nullary constructor
 	 */
-	public Shape(){
+	public Shape() {
 		super();
 	}
-	
+
 	/**
 	 * The default constructor.
 	 * 
@@ -37,6 +37,24 @@ public class Shape extends AbstractController {
 		super(model, view);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#removeEntity(org.
+	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void removeEntity(AbstractController entity) {
+		super.removeEntity(entity);
+
+		// If this was the entity's parent, remove it
+		if (entity instanceof Shape
+				&& entity.getEntitiesByCategory("Parent").contains(this)) {
+			entity.removeEntity(this);
+		}
+	}
+
 	/**
 	 * Set the shape's parent shape. Shapes can have at most one parent, and
 	 * this operation will remove any existing parent.
@@ -47,22 +65,23 @@ public class Shape extends AbstractController {
 	public void setParent(Shape parent) {
 		((ShapeComponent) model).setParent(parent);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
 	 */
 	@Override
-	public Object clone(){
-		
-		//Create a new shape from clones of the model and view
+	public Object clone() {
+
+		// Create a new shape from clones of the model and view
 		ShapeComponent cloneComponent = (ShapeComponent) model.clone();
 		AbstractView cloneView = (AbstractView) view.clone();
 		Shape clone = new Shape(cloneComponent, cloneView);
-		
-		//Copy any other data into the clone
+
+		// Copy any other data into the clone
 		clone.copy(this);
-		
+
 		return clone;
 	}
 }

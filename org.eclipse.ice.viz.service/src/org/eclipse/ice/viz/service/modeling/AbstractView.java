@@ -30,7 +30,7 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 	 * reflect how the graphics program is currently displaying the part. For
 	 * that, see previousTransformation.
 	 */
-	private Transformation transformation;
+	protected Transformation transformation;
 
 	/**
 	 * The last transformation which was applied by the rendering engine.
@@ -85,21 +85,21 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 		// Get a reference to self
 		final AbstractView self = this;
 
-		// Create a thread object that notifies all listeners
-
-		Thread notifyThread = new Thread() {
-
-			@Override
-			public void run() {
-				// Loop over all listeners and update them
-				for (int i = 0; i < listeners.size(); i++) {
-					listeners.get(i).update(self);
-				}
-			}
-		};
-
-		// Start the thread
-		notifyThread.start();
+		// // Create a thread object that notifies all listeners
+		//
+		// Thread notifyThread = new Thread() {
+		//
+		// @Override
+		// public void run() {
+		// Loop over all listeners and update them
+		for (int i = 0; i < listeners.size(); i++) {
+			listeners.get(i).update(self);
+		}
+		// }
+		// };
+		//
+		// // Start the thread
+		// notifyThread.start();
 	}
 
 	/**
@@ -212,7 +212,8 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 
 		// Copy the other view's data members
 		transformation = (Transformation) otherObject.transformation.clone();
-		previousTransformation = (Transformation) otherObject.previousTransformation.clone();
+		previousTransformation = (Transformation) otherObject.previousTransformation
+				.clone();
 
 		// Notify listeners of the change
 		notifyListeners();

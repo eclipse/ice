@@ -99,21 +99,21 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 		// Get a reference to self
 		final AbstractController self = this;
 
-		// Create a thread object that notifies all listeners
-
-		Thread notifyThread = new Thread() {
-
-			@Override
-			public void run() {
+//		// Create a thread object that notifies all listeners
+//
+//		Thread notifyThread = new Thread() {
+//
+//			@Override
+//			public void run() {
 				// Loop over all listeners and update them
 				for (int i = 0; i < listeners.size(); i++) {
 					listeners.get(i).update(self);
 				}
-			}
-		};
+//			}
+//		};
 
-		// Start the thread
-		notifyThread.start();
+//		// Start the thread
+//		notifyThread.start();
 	}
 
 	/**
