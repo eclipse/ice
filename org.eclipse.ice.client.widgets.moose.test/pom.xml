@@ -6,11 +6,13 @@
 	<parent>
 		<groupId>ICE</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
-		<relativePath>../${pom-filename}</relativePath>
 		<version>2.1.7.20150825</version>
+		<relativePath>../${pom-filename}</relativePath>
 	</parent>
 	<groupId>ICE</groupId>
-	<artifactId>org.eclipse.ice.caebat.batml.ui</artifactId>
-	<version>2.1.7.20150825</version>
+	<artifactId>org.eclipse.ice.client.widgets.moose.test</artifactId>
 	<packaging>eclipse-plugin</packaging>
+	<properties>
+		<sonar.skip>true</sonar.skip>
+	</properties>
 </project>

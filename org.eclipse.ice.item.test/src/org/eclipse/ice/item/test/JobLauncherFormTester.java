@@ -493,7 +493,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// Local Declarations
 		JobLauncherForm jobForm = new JobLauncherForm();
-		JobLauncherForm loadedForm = new JobLauncherForm();
+		Form loadedForm = new JobLauncherForm();
 		ArrayList<String> actions = new ArrayList<String>();
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
@@ -518,7 +518,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		xmlHandler.write(jobForm, classList, outputStream);
 
 		// Load an Item from the first
-		loadedForm = (JobLauncherForm) xmlHandler.read(classList, new ByteArrayInputStream(outputStream
+		loadedForm = (Form) xmlHandler.read(classList, new ByteArrayInputStream(outputStream
 				.toByteArray()));
 		// Make sure they match
 		assertTrue(jobForm.equals(loadedForm));

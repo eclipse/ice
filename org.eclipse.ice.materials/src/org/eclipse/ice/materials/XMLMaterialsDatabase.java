@@ -30,9 +30,9 @@ import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.component.ComponentContext;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,8 @@ import ca.odell.glazedlists.gui.TableFormat;
  * @author Jay Jay Billings
  *
  */
-public class XMLMaterialsDatabase implements IMaterialsDatabase {
+public class XMLMaterialsDatabase
+		implements IMaterialsDatabase, BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -87,9 +88,10 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	protected Hashtable<String, Material> materialsMap;
 
 	/**
-	 * The service tracker to track the LoggingService.
+	 * The service registration to publish and unpublish this class as an
+	 * IMaterialsDatabase service.
 	 */
-	ServiceTracker logTracker;
+	private ServiceRegistration<IMaterialsDatabase> registration;
 
 	/**
 	 * The constructor
@@ -206,7 +208,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 				materialsMap.put(material.getName(), material);
 			}
 		} catch (JAXBException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
@@ -226,7 +228,7 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 			jaxbMarshaller.marshal(materialsList, userDatabase);
 		} catch (JAXBException e) {
 			System.err.println("XMLMaterialDatabase: Error writing database!");
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
@@ -253,23 +255,16 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 		// Create the JAXB context to manipulate the files
 		try {
-			jaxbContext = JAXBContext
-					.newInstance(ICEList.class, Material.class, MaterialStack.class);
+			jaxbContext = JAXBContext.newInstance(ICEList.class, Material.class,
+					MaterialStack.class);
 		} catch (JAXBException e) {
 			// Complain to the logger service
-			if (logger != null) {
-				logger.error("Unable to initialize JAXB!",
-						e);
-			} else {
-				logger.error(getClass().getName() + " Exception!",e);
-			}
+			logger.error("Unable to initialize JAXB!", e);
 		}
 
 		// Choose which database to load
 		if (userDatabase.exists()) {
-			if (logger != null) {
-				logger.info("Loading user-modified database.");
-			}
+			logger.info("Loading user-modified database.");
 			fileToLoad = userDatabase;
 		} else {
 			fileToLoad = defaultDatabase;
@@ -277,10 +272,9 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 
 		// Load it up and throw some info in the log
 		loadDatabase(fileToLoad);
-		if (logger != null) {
-			logger.info("Started!");
-		}
+		logger.info("Started!");
 
+		return;
 	}
 
 	/**
@@ -290,30 +284,34 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 	 * @param context
 	 *            The component context
 	 */
-	public void start(ComponentContext context) {
+	@Override
+	public void start(BundleContext context) {
 
 		try {
-			// Get the file URLs from from the bundle
-			BundleContext bundleContext = context.getBundleContext();
-			Bundle bundle = bundleContext.getBundle();
-			URL userDBURL = bundle.getEntry("data/userMatDB.xml");
-			URL defaultDBURL = bundle.getEntry("data/defaultMatDB.xml");
-			// Set the file references by converting the bundle:// URLs to
-			// file:// URLs.
-			userDatabase = new File(FileLocator.toFileURL(userDBURL).getPath());
-			defaultDatabase = new File(FileLocator.toFileURL(defaultDBURL)
-					.getPath());
+			if (context != null) {
+				Bundle bundle = context.getBundle();
+				URL userDBURL = bundle.getEntry("data/userMatDB.xml");
+				URL defaultDBURL = bundle.getEntry("data/defaultMatDB.xml");
+				// Set the file references by converting the bundle:// URLs to
+				// file:// URLs.
+				userDatabase = new File(
+						FileLocator.toFileURL(userDBURL).getPath());
+				defaultDatabase = new File(
+						FileLocator.toFileURL(defaultDBURL).getPath());
 
-			// Once the files are set, just call the other start operation
-			start();
+				// Once the files are set, just call the other start operation
+				start();
+
+				// Register the service
+				registration = context.registerService(IMaterialsDatabase.class,
+						this, null);
+			}
 		} catch (IOException e) {
 			// Complain
-			if (logger != null) {
-				logger.error("Unable to start the XMLPersistence service!", e);
-			} else {
-				logger.error(getClass().getName() + " Exception!",e);
-			}
+			logger.error("Unable to start the XMLPersistence service!", e);
 		}
+
+		return;
 	}
 
 	/**
@@ -324,10 +322,27 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 		// Write the database
 		writeDatabase();
 
-		if (logger != null) {
-			logger.info("Service stopped!");
-		}
+		logger.info("Service stopped!");
 
+		return;
+	}
+
+	/**
+	 * This operation stops the service and unregisters it.
+	 *
+	 * @param context
+	 *            the OSGi bundle context
+	 */
+	@Override
+	public void stop(BundleContext context) {
+
+		// Stop the service
+		stop();
+
+		// Unregister this service from the framework
+		registration.unregister();
+
+		return;
 	}
 
 	/*
@@ -361,8 +376,8 @@ public class XMLMaterialsDatabase implements IMaterialsDatabase {
 			// Get the properties off the map. Pulling back the array is more
 			// efficient than getting an iterator. I think...
 			Material[] emptyArray = {};
-			Map<String, Double> props = materialsMap.values().toArray(
-					emptyArray)[0].getProperties();
+			Map<String, Double> props = materialsMap.values()
+					.toArray(emptyArray)[0].getProperties();
 			ArrayList<String> propNames = new ArrayList<String>(props.keySet());
 			// Initialize the table format
 			format = new MaterialWritableTableFormat(propNames);

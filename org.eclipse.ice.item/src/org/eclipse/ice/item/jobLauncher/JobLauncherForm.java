@@ -57,7 +57,7 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
  * 
  * @author Jay Jay Billings
  */
-@XmlRootElement(name = "form")
+@XmlRootElement(name = "Form")
 public class JobLauncherForm extends Form {
 
 	/**

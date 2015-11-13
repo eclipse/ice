@@ -3,5 +3,53 @@
 <plugin>
    <extension-point id="reader" name="Reader" schema="schema/IReader.exsd"/>
    <extension-point id="writer" name="Writer" schema="schema/IWriter.exsd"/>
+   <extension
+         id="org.eclipse.ice.io.spaceReader"
+         name="Space-delimited reader"
+         point="org.eclipse.ice.io.reader">
+      <implementation
+            class="org.eclipse.ice.io.csv.SpaceDelimitedReader">
+      </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.io.csvReader"
+         name="CSV Reader"
+         point="org.eclipse.ice.io.reader">
+      <implementation
+            class="org.eclipse.ice.io.csv.CSVReader">
+      </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.io.iniReader"
+         name="INI Reader"
+         point="org.eclipse.ice.io.reader">
+      <implementation
+            class="org.eclipse.ice.io.ini.INIReader">
+      </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.io.IPSReader"
+         name="IPS Reader"
+         point="org.eclipse.ice.io.reader">
+      <implementation
+            class="org.eclipse.ice.io.ips.IPSReader">
+      </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.io.INIWriter"
+         name="INI Writer"
+         point="org.eclipse.ice.io.writer">
+      <implementation
+            class="org.eclipse.ice.io.ini.INIWriter">
+      </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.io.IPSWriter"
+         name="IPS Writer"
+         point="org.eclipse.ice.io.writer">
+      <implementation
+            class="org.eclipse.ice.io.ips.IPSWriter">
+      </implementation>
+   </extension>
 
 </plugin>

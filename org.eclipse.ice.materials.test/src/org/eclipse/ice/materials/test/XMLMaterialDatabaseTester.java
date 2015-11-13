@@ -42,9 +42,9 @@ import ca.odell.glazedlists.gui.TableFormat;
  * to perform various functions with order-independent tesst, this class only
  * has one large operation that tests everything in a way that should be
  * consistent with the intended use of the service.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class XMLMaterialDatabaseTester {
 
@@ -212,10 +212,10 @@ public class XMLMaterialDatabaseTester {
 
 			// Check the implementation of IElementSource provided by
 			// the database. Make sure the EventList is correct.
-			assertEquals(reloadedMaterials.size(), database.getElements()
-					.size());
-			assertEquals(reloadedMaterials.get(0), database.getElements()
-					.get(0));
+			assertEquals(reloadedMaterials.size(),
+					database.getElements().size());
+			assertEquals(reloadedMaterials.get(0),
+					database.getElements().get(0));
 			// The table format is checked in detail in its own test, so just
 			// make sure it isn't null and that it is the right type.
 			TableFormat format = database.getTableFormat();

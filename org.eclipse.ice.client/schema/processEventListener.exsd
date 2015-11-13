@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.ice.item" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.ice.client" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.ice.item" id="IMaterialsDatabase" name="Material Database"/>
+         <meta.schema plugin="org.eclipse.ice.client" id="processEventListener" name="IProcessEventListener"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -17,8 +17,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="Implementation" minOccurs="1" maxOccurs="unbounded"/>
+         <choice>
+            <element ref="processEventListener"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="Implementation">
+   <element name="processEventListener">
       <complexType>
-         <attribute name="Class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.materials.IMaterialsDatabase"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.iclient.uiwidgets.IProcessEventListener"/>
                </appinfo>
             </annotation>
          </attribute>

@@ -74,7 +74,9 @@ public class CSVReaderTester {
 					.loadProjectDescription(projectPath);
 			// Get the project handle and create it
 			project = workspaceRoot.getProject(desc.getName());
-			project.create(desc, new NullProgressMonitor());
+			if (!project.exists()) {
+				project.create(desc, new NullProgressMonitor());
+			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
 				project.open(new NullProgressMonitor());

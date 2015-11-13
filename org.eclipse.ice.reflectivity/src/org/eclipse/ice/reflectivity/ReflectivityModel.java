@@ -32,6 +32,8 @@ import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.csv.CSVReader;
+import org.eclipse.ice.io.csv.SpaceDelimitedReader;
+import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.model.Model;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
@@ -200,7 +202,8 @@ public class ReflectivityModel extends Model {
 			IFile userDataFile = project.getFile(fileName);
 
 			// Get the reader and read in the values.
-			Form dataForm = new CSVReader().read(userDataFile);
+			Form dataForm = getIOService().getReader("space-delimited")
+					.read(userDataFile);
 			ListComponent<String[]> userData = (ListComponent<String[]>) dataForm
 					.getComponent(1);
 

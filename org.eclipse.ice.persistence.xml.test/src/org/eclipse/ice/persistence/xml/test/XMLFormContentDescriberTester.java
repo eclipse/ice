@@ -34,16 +34,22 @@ import org.junit.Test;
  */
 public class XMLFormContentDescriberTester {
 
-	// Load some text from a VIBE KV Pair Item.
-	String xmlForm = "<?xml version=\"1.0\" encoding=\"UTF-8\" " + "standalone=\"yes\"?><VibeKVPair itemType=\"Model\" "
-			+ "status=\"2\" builderName=\"VIBE Key-Value Pair\" "
-			+ "description=\"Generate input files for VIBE.\" id=\"1\" "
-			+ "name=\"VIBE Key-Value Pair\"><Form itemID=\"1\" "
-			+ "description=\"Generate input files for VIBE.\" id=\"1\" " + "name=\"VIBE Key-Value Pair\">"
-			+ "<componentList></componentList></Form><AllowedActions>Export "
-			+ "to key-value pair output</AllowedActions><itemBuilderName>"
-			+ "VIBE Key-Value Pair</itemBuilderName></VibeKVPair>";
-
+	/**
+	 * This method is used to return a valid Form XML string.
+	 * 
+	 * @return
+	 */
+	protected String getForm() {
+		return "<?xml version=\"1.0\" encoding=\"UTF-8\" " + "standalone=\"yes\"?><VibeKVPair itemType=\"Model\" "
+				+ "status=\"2\" builderName=\"VIBE Key-Value Pair\" "
+				+ "description=\"Generate input files for VIBE.\" id=\"1\" "
+				+ "name=\"VIBE Key-Value Pair\"><Form itemID=\"1\" "
+				+ "description=\"Generate input files for VIBE.\" id=\"1\" " + "name=\"VIBE Key-Value Pair\">"
+				+ "<componentList></componentList></Form><AllowedActions>Export "
+				+ "to key-value pair output</AllowedActions><itemBuilderName>"
+				+ "VIBE Key-Value Pair</itemBuilderName></VibeKVPair>";
+	}
+	
 	/**
 	 * Test method for
 	 * {@link org.eclipse.ice.persistence.xml.XMLFormContentDescriber#describe(java.io.InputStream, org.eclipse.core.runtime.content.IContentDescription)}
@@ -60,7 +66,7 @@ public class XMLFormContentDescriberTester {
 	public void testDescribe() throws IOException {
 
 		// Test with valid text.
-		assertEquals(ITextContentDescriber.VALID, runTest(xmlForm));
+		assertEquals(ITextContentDescriber.VALID, runTest(getForm()));
 
 		return;
 	}
@@ -107,7 +113,7 @@ public class XMLFormContentDescriberTester {
 		// Create the describer
 		XMLFormContentDescriber describer = new XMLFormContentDescriber();
 		// Convert the text to an input stream
-		ByteArrayInputStream stream = new ByteArrayInputStream(xmlForm.getBytes());
+		ByteArrayInputStream stream = new ByteArrayInputStream(getForm().getBytes());
 		// Check the text
 		try {
 			describer.describe(stream, null);
@@ -129,7 +135,7 @@ public class XMLFormContentDescriberTester {
 	 * @throws IOException
 	 *             This exception is thrown if there is an IO error.
 	 */
-	private int runTest(String text) throws IOException {
+	protected int runTest(String text) throws IOException {
 
 		// Create the describer
 		XMLFormContentDescriber describer = new XMLFormContentDescriber();
