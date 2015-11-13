@@ -120,6 +120,8 @@ public class FXGeometryAttachment extends GeometryAttachment {
 		}
 
 		if (!knownGeometry.contains(geom)) {
+			final Shape finalGeom = geom;
+
 			geom.register(new IVizUpdateableListener() {
 				@Override
 				public void update(IVizUpdateable component) {
