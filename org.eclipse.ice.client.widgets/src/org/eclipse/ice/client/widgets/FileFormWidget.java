@@ -19,6 +19,9 @@ import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 
 /**
+ * The FileFormWidget is a realization of the IFormWidget to 
+ * be used when the Item being displayed is from an IFile. It 
+ * wraps the Form and updates status'
  * 
  * @author Alex McCaskey
  *
@@ -26,36 +29,43 @@ import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 public class FileFormWidget implements IFormWidget {
 
 	/**
-	 * 
+	 * Reference to the Form for the displayed Item.
 	 */
 	private Form form;
 
 	/**
-	 * 
+	 * Reference to the ICEFormEditor for this Form 
+	 * and Item
 	 */
 	private ICEFormEditor editor;
 
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#setForm(org.eclipse.ice.datastructures.form.Form)
 	 */
-	public FileFormWidget() {
-
-	}
-
 	@Override
 	public void setForm(Form form) {
 		this.form = form;
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#getForm()
+	 */
 	@Override
 	public Form getForm() {
 		return form;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#updateStatus(java.lang.String)
+	 */
 	@Override
 	public void updateStatus(String statusMessage) {
 //		// Sync with the display
+		// FIXME THIS DOES NOT WORK...
 //		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 //			@Override
 //			public void run() {
@@ -87,36 +97,76 @@ public class FileFormWidget implements IFormWidget {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerUpdateListener(org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener)
+	 */
 	@Override
 	public void registerUpdateListener(IUpdateEventListener listener) {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerProcessListener(org.eclipse.ice.iclient.uiwidgets.IProcessEventListener)
+	 */
 	@Override
 	public void registerProcessListener(IProcessEventListener listener) {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerResourceProvider(org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider)
+	 */
 	@Override
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyUpdateListeners()
+	 */
 	@Override
 	public void notifyUpdateListeners() {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyProcessListeners(java.lang.String)
+	 */
 	@Override
 	public void notifyProcessListeners(String process) {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyCancelListeners(java.lang.String)
+	 */
 	@Override
 	public void notifyCancelListeners(String process) {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#display()
+	 */
 	@Override
 	public void display() {
+		// Do nothing
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#disable(boolean)
+	 */
 	@Override
 	public void disable(boolean state) {
+		// Do nothing
 	}
 
 }
