@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -258,6 +259,13 @@ public interface IClient {
 	 *            The new name of the Item. 
 	 */
 	public void renameItem(int itemID, String name);
+	
+	/**
+	 * This operation adds a new IFormWidget to the IClient.
+	 * 
+	 * @param widget IFormWidget to be used and displayed
+	 */
+	public void addFormWidget(IFormWidget widget);
 	
 	/**
 	 * This operation retrieves the IClient implementation from the

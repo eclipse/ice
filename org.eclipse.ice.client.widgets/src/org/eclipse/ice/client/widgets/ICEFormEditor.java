@@ -876,6 +876,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			ICEFormInput = new ICEFormInput(iceDataForm);
 			setInput(ICEFormInput);
 
+			// Set the IFormWidget on the IClient
+			client.addFormWidget(new EclipseFormWidget(this));
+
 			// Set the part name to be the file name
 			setPartName(input.getName());
 
