@@ -59,6 +59,20 @@ public class FXShapeView extends AbstractView {
 	private boolean selected;
 
 	/**
+	 * The nullary constructor.
+	 */
+	public FXShapeView() {
+		super();
+
+		// Instantiate the class variables
+		node = new Group();
+		gizmo = new TransformGizmo(0);
+		gizmo.setVisible(false);
+		node.getChildren().add(gizmo);
+
+	}
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param model
@@ -226,8 +240,11 @@ public class FXShapeView extends AbstractView {
 	@Override
 	public void refresh(AbstractMeshComponent model) {
 
-		// Complex shapes have nothing to refresh, as their children will handle
-		// their own views.
+		// Set the node's transformation
+		node.getTransforms().setAll(Util.convertTransformation(transformation));
+
+		// Complex shapes have nothing else to refresh, as their children will
+		// handle their own views.
 		if (model.getProperty("Operator") == null) {
 
 			// Create the shape if neccesary
@@ -255,6 +272,19 @@ public class FXShapeView extends AbstractView {
 				}
 			}
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 */
+	@Override
+	public Object clone() {
+		FXShapeView clone = new FXShapeView();
+		clone.copy(this);
+		clone.update(clone.transformation);
+		return clone;
 	}
 
 	@Override

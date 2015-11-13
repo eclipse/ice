@@ -75,13 +75,34 @@ public class Shape extends AbstractController {
 	public Object clone() {
 
 		// Create a new shape from clones of the model and view
-		ShapeComponent cloneComponent = (ShapeComponent) model.clone();
-		AbstractView cloneView = (AbstractView) view.clone();
-		Shape clone = new Shape(cloneComponent, cloneView);
+		Shape clone = new Shape();
 
 		// Copy any other data into the clone
 		clone.copy(this);
 
 		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void copy(AbstractController source) {
+
+		// Create the model and give it a reference to this
+		model = new ShapeComponent();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(source.model);
+		view = (AbstractView) source.view.clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
 	}
 }

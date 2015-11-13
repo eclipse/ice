@@ -42,6 +42,8 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 */
 	public void setParent(Shape parent) {
 
+		notifyLock.set(true);
+
 		// Get the current list of parents
 		List<AbstractController> parentList = getEntitiesByCategory("Parent");
 
@@ -57,6 +59,7 @@ public class ShapeComponent extends AbstractMeshComponent {
 
 		// Register the parent as a listener and fire an update notification
 		register(parent);
+		notifyLock.set(false);
 		notifyListeners();
 
 	}
@@ -103,7 +106,8 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 * AbstractController, java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController newEntity, String category) {
+	public void addEntityByCategory(AbstractController newEntity,
+			String category) {
 
 		// If the category is not parent, add the entity normally
 		if (category != "Parent") {
@@ -135,12 +139,30 @@ public class ShapeComponent extends AbstractMeshComponent {
 		ShapeComponent clone = new ShapeComponent();
 		clone.copy(this);
 
-		clone.entities = new HashMap<String, List<AbstractController>>();
-		for (AbstractController entity : getEntitiesByCategory("Children")) {
-			clone.addEntity((AbstractController) entity.clone());
+		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#copy(org.
+	 * eclipse.ice.viz.service.modeling.AbstractMeshComponent)
+	 */
+	@Override
+	public void copy(AbstractMeshComponent source) {
+
+		// Copy the map of entities
+		entities = new HashMap<String, List<AbstractController>>();
+
+		// Copy each child in the entities map
+		List<AbstractController> children = source.entities.get("Children");
+		if (children != null) {
+			for (AbstractController entity : children) {
+				addEntity((AbstractController) entity.clone());
+			}
 		}
 
-		return clone;
+		super.copy(source);
 	}
 
 	/*
@@ -155,7 +177,8 @@ public class ShapeComponent extends AbstractMeshComponent {
 
 		// Ignore requests to register own children to prevent circular
 		// observation
-		if (entities.get("Children") == null || !entities.get("Children").contains(listener)) {
+		if (entities.get("Children") == null
+				|| !entities.get("Children").contains(listener)) {
 			super.register(listener);
 		}
 	}

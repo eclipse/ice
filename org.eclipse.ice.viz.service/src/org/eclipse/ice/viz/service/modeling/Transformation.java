@@ -101,6 +101,31 @@ public class Transformation extends VizObject {
 	}
 
 	/**
+	 * Combines the Transformation with another, summing each individual value
+	 * from the other Transformation with its own data members.
+	 * 
+	 * @param other
+	 *            The Transformation to add to this one
+	 */
+	public void add(Transformation other) {
+
+		// Add each value from the other transformation to this one
+		size = size + other.size;
+		rotation[0] = rotation[0] + other.rotation[0];
+		scale[0] = scale[0] + other.scale[0];
+		skew[0] = skew[0] + other.skew[0];
+		translation[0] = translation[0] + other.translation[0];
+		rotation[1] = rotation[1] + other.rotation[1];
+		scale[1] = scale[1] + other.scale[1];
+		skew[1] = skew[1] + other.skew[1];
+		translation[1] = translation[1] + other.translation[1];
+		rotation[2] = rotation[2] + other.rotation[2];
+		scale[2] = scale[2] + other.scale[2];
+		skew[2] = skew[2] + other.skew[2];
+		translation[2] = translation[2] + other.translation[2];
+	}
+
+	/**
 	 * <p>
 	 * Returns an array of the 3 skew values
 	 * </p>

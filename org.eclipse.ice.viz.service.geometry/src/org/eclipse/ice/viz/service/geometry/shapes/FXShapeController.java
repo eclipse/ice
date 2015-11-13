@@ -12,6 +12,7 @@ package org.eclipse.ice.viz.service.geometry.shapes;
 
 import java.util.List;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Shape;
@@ -51,6 +52,23 @@ public class FXShapeController extends Shape {
 				this);
 	}
 
+	/**
+	 * Recursively refresh every descendant
+	 */
+	public void refreshRecursive() {
+
+		notifyLock.set(true);
+		refresh();
+
+		// Refresh for child
+		for (AbstractController child : model
+				.getEntitiesByCategory("Children")) {
+			((FXShapeController) child).refreshRecursive();
+		}
+
+		notifyLock.set(false);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -83,10 +101,12 @@ public class FXShapeController extends Shape {
 	public void setParent(Shape parent) {
 
 		// If the shape already has a parent, remove this shape's JavaFX node
-		// from the parent's JavaFX node.
+		// from the parent's JavaFX node. Ignore this step for the root shape,
+		// which has no associated node
 		List<AbstractController> parentList = model
 				.getEntitiesByCategory("Parent");
-		if (!parentList.isEmpty()) {
+		if (!parentList.isEmpty()
+				&& !"True".equals(parent.getProperty("Root"))) {
 			((Group) parentList.get(0).getRepresentation()).getChildren()
 					.remove(view.getRepresentation());
 		}
@@ -107,29 +127,154 @@ public class FXShapeController extends Shape {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.Shape#clone()
+	 */
+	@Override
+	public Object clone() {
+		// Create a new shape from clones of the model and view
+		FXShapeController clone = new FXShapeController();
+
+		// Copy any other data into the clone
+		clone.copy(this);
+
+		// Add each child shape's JavaFX node as a child to the clone's JavaFX
+		// node
+		for (AbstractController child : clone
+				.getEntitiesByCategory("Children")) {
+			((Group) clone.getRepresentation()).getChildren()
+					.add((Group) child.getRepresentation());
+		}
+
+		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see
 	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
 	 * ice.viz.service.modeling.AbstractController)
 	 */
 	@Override
 	public void copy(AbstractController source) {
-		super.copy(source);
 
-		List<AbstractController> parentList = model
-				.getEntitiesByCategory("Parent");
-		if (!parentList.isEmpty()) {
-			parentList.get(0).addEntity(this);
+		// Create the model and give it a reference to this
+		model = new ShapeComponent();
+		model.setController(this);
 
-			// AbstractController parent = model.getEntitiesByCategory("Parent")
-			// .get(0);
-			// String operator = parent.getProperty("Operator");
-			// if (operator != null && OperatorType.valueOf(
-			// parent.getProperty("Operator")) == OperatorType.Union) {
-			// ((Group) parent.getRepresentation()).getChildren()
-			// .add((Group) view.getRepresentation());
-			// }
+		// For simple objects, copy the model and create a new view based on the
+		// copy
+		if (source.getProperty("Operator") == null) {
+			model.copy(source.getModel());
+			view = new FXShapeView((ShapeComponent) model);
+			view.copy(source.getView());
 		}
 
+		// If the object is complex, create the view first so that cloned
+		// children can be collected under this object's JavaFX node.
+		else {
+			view = new FXShapeView();
+			model.copy(source.getModel());
+			view.copy(source.getView());
+		}
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
+
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#addEntity(org.
+	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void addEntity(AbstractController entity) {
+		super.addEntity(entity);
+
+		// Add the new child's JavaFX node as a child of this object's node
+		Group node = (Group) view.getRepresentation();
+		Group childNode = (Group) entity.getRepresentation();
+
+		if (!node.getChildren().contains(childNode)) {
+			node.getChildren().add(childNode);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#
+	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
+	 * AbstractController, java.lang.String)
+	 */
+	@Override
+	public void addEntityByCategory(AbstractController entity,
+			String category) {
+		super.addEntityByCategory(entity, category);
+
+		// For children, add the new child's JavaFX node as a child of this
+		// object's node
+		Group node = (Group) view.getRepresentation();
+		Group childNode = (Group) entity.getRepresentation();
+
+		if (!node.getChildren().contains(childNode)) {
+			node.getChildren().add(childNode);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#update(org.
+	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable)
+	 */
+	@Override
+	public void update(IVizUpdateable component) {
+
+		// If the view updated, recursively refresh all children
+		if (component == view) {
+			refreshRecursive();
+		}
+
+		super.update(component);
+	}
+
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// *
+	// org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	// * ice.viz.service.modeling.AbstractController)
+	// */
+	// @Override
+	// public void copy(AbstractController source) {
+	// super.copy(source);
+	//
+	// List<AbstractController> parentList = model
+	// .getEntitiesByCategory("Parent");
+	// if (!parentList.isEmpty()) {
+	// parentList.get(0).addEntity(this);
+	//
+	// // AbstractController parent = model.getEntitiesByCategory("Parent")
+	// // .get(0);
+	// // String operator = parent.getProperty("Operator");
+	// // if (operator != null && OperatorType.valueOf(
+	// // parent.getProperty("Operator")) == OperatorType.Union) {
+	// // ((Group) parent.getRepresentation()).getChildren()
+	// // .add((Group) view.getRepresentation());
+	// // }
+	// }
+	//
+	// for (AbstractController shape : model
+	// .getEntitiesByCategory("Children")) {
+	// model.addEntity((AbstractController) shape.clone());
+	// }
+	//
+	// }
 
 }

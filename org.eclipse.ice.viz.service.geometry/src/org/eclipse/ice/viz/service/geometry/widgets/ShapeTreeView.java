@@ -97,7 +97,7 @@ public class ShapeTreeView extends ViewPart
 	public void createPartControl(Composite parent) {
 
 		// TODO Remove and consume the factory service through OSGI once the
-		// JavaFX implementation is moved ot its own package
+		// JavaFX implementation is moved to its own package
 		factory = new FXShapeControllerFactory();
 
 		// Create the actions

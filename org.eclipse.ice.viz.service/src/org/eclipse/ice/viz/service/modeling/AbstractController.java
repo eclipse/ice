@@ -34,7 +34,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
  * 
  * @author Robert Smith
  */
-public class AbstractController implements IVizUpdateable, IVizUpdateableListener {
+public class AbstractController
+		implements IVizUpdateable, IVizUpdateableListener {
 
 	/**
 	 * The internal representation of this part.
@@ -51,7 +52,18 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 	 */
 	private AtomicBoolean disposed;
 
+	/**
+	 * The list of object registered to lsiten for updates from this one.
+	 */
 	private List<IVizUpdateableListener> listeners;
+
+	/**
+	 * Set when the object knows that it will be sending a notification in the
+	 * future. When set, the object should refuse to forward notifications to
+	 * any listeners, instead firing an update only when all known pending
+	 * changes are resolved.
+	 */
+	protected AtomicBoolean notifyLock;
 
 	/**
 	 * The default constructor.
@@ -60,6 +72,7 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 		disposed = new AtomicBoolean();
 		disposed.set(false);
 		listeners = new ArrayList<IVizUpdateableListener>();
+		notifyLock = new AtomicBoolean();
 	}
 
 	/**
@@ -77,6 +90,7 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 		disposed = new AtomicBoolean();
 		disposed.set(false);
 		listeners = new ArrayList<IVizUpdateableListener>();
+		notifyLock = new AtomicBoolean();
 
 		// Give model a reference to its controller
 		model.setController(this);
@@ -91,29 +105,33 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 	 */
 	public void notifyListeners() {
 
-		// If the listeners are empty, return
-		if (this.listeners == null || this.listeners.isEmpty()) {
-			return;
+		// Block notifications while the lock is set
+		if (!notifyLock.get()) {
+
+			// If the listeners are empty, return
+			if (this.listeners == null || this.listeners.isEmpty()) {
+				return;
+			}
+
+			// Get a reference to self
+			final AbstractController self = this;
+
+			// // Create a thread object that notifies all listeners
+			//
+			// Thread notifyThread = new Thread() {
+			//
+			// @Override
+			// public void run() {
+			// Loop over all listeners and update them
+			for (int i = 0; i < listeners.size(); i++) {
+				listeners.get(i).update(self);
+			}
+			// }
+			// };
+
+			// // Start the thread
+			// notifyThread.start();
 		}
-
-		// Get a reference to self
-		final AbstractController self = this;
-
-//		// Create a thread object that notifies all listeners
-//
-//		Thread notifyThread = new Thread() {
-//
-//			@Override
-//			public void run() {
-				// Loop over all listeners and update them
-				for (int i = 0; i < listeners.size(); i++) {
-					listeners.get(i).update(self);
-				}
-//			}
-//		};
-
-//		// Start the thread
-//		notifyThread.start();
 	}
 
 	/**
@@ -152,7 +170,7 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 	public void setDisposed(boolean newDisposed) {
 
 		// Atomically set the controller as disposed
-		boolean oldDisposed = disposed.getAndSet(newDisposed);
+		disposed.getAndSet(newDisposed);
 		notifyListeners();
 	}
 
@@ -411,7 +429,8 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 	 * @param category
 	 *            The category under which to add the new child entity
 	 */
-	public void addEntityByCategory(AbstractController newEntity, String category) {
+	public void addEntityByCategory(AbstractController newEntity,
+			String category) {
 		model.addEntityByCategory(newEntity, category);
 	}
 
@@ -423,9 +442,13 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 	@Override
 	public Object clone() {
 
-		// Create a new controller, and make it a copy of this
+		// Create a copy of the model
 		AbstractController clone = new AbstractController();
 		clone.copy(this);
+
+		// Refresh the view to be in sync with the model
+		clone.refresh();
+
 		return clone;
 	}
 
@@ -437,9 +460,17 @@ public class AbstractController implements IVizUpdateable, IVizUpdateableListene
 	 */
 	public void copy(AbstractController otherObject) {
 
-		// Clone the other object's data members
-		model = (AbstractMeshComponent) otherObject.model.clone();
+		// Create the model and give it a reference to this
+		model = new AbstractMeshComponent();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(otherObject.model);
 		view = (AbstractView) otherObject.view.clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
 	}
 
 	/*

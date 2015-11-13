@@ -90,11 +90,13 @@ public class ActionReplicateShape extends Action {
 	@Override
 	public void run() {
 
-		AbstractController geometry = (AbstractController) view.treeViewer.getInput();
+		AbstractController geometry = (AbstractController) view.treeViewer
+				.getInput();
 
 		// Check that only one shape is selected
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
+		ITreeSelection selection = (ITreeSelection) view.treeViewer
+				.getSelection();
 		TreePath[] paths = selection.getPaths();
 
 		if (paths.length != 1) {
@@ -112,11 +114,13 @@ public class ActionReplicateShape extends Action {
 		// Create a transformation, initialized from the selected shape's
 		// transformation
 
-		Transformation accumulatedTransformation = (Transformation) selectedShape.getTransformation().clone();
+		Transformation accumulatedTransformation = (Transformation) selectedShape
+				.getTransformation().clone();
 
 		// Open the dialog
 
-		ReplicateDialog replicateDialog = new ReplicateDialog(view.getSite().getShell());
+		ReplicateDialog replicateDialog = new ReplicateDialog(
+				view.getSite().getShell());
 
 		if (replicateDialog.open() != IDialogConstants.OK_ID) {
 			return;
@@ -135,7 +139,8 @@ public class ActionReplicateShape extends Action {
 		// If the selected shape is a direct child of a GeometryComponent,
 		// its parent shape is null.
 
-		Shape parentShape = (Shape) selectedShape.getEntitiesByCategory("Parent").get(0);
+		Shape parentShape = (Shape) selectedShape
+				.getEntitiesByCategory("Parent").get(0);
 
 		// Remove the selected shape from its original parent
 
@@ -150,7 +155,8 @@ public class ActionReplicateShape extends Action {
 		// Create a new parent union shape
 
 		ShapeComponent replicateUnionComponent = new ShapeComponent();
-		Shape replicateUnion = (Shape) view.getFactory().createController(replicateUnionComponent);
+		Shape replicateUnion = (Shape) view.getFactory()
+				.createController(replicateUnionComponent);
 		replicateUnion.setProperty("Operator", "Union");
 
 		replicateUnion.setProperty("Name", "Replication");
@@ -166,7 +172,8 @@ public class ActionReplicateShape extends Action {
 
 			// Add the translation
 
-			clonedShape.setTransformation((Transformation) accumulatedTransformation.clone());
+			clonedShape.setTransformation(
+					(Transformation) accumulatedTransformation.clone());
 
 			// Add it to the replicated union
 
@@ -185,6 +192,7 @@ public class ActionReplicateShape extends Action {
 
 			synchronized (geometry) {
 				parentShape.addEntity(replicateUnion);
+				replicateUnion.setParent(parentShape);
 			}
 
 			view.treeViewer.refresh(parentShape);

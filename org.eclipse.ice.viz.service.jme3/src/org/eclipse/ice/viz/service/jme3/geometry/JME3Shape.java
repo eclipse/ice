@@ -26,6 +26,13 @@ import com.jme3.material.Material;
 public class JME3Shape extends Shape {
 
 	/**
+	 * The nullary constructor
+	 */
+	public JME3Shape() {
+		super();
+	}
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param model
@@ -67,18 +74,20 @@ public class JME3Shape extends Shape {
 	public void setHighlightedMaterial(Material mat) {
 		((JME3ShapeView) view).setHighlightedMaterial(mat);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.modeling.Shape#clone()
 	 */
-	public Object clone(){
-		
-		//Create a new shape from clones of the model and view
+	@Override
+	public Object clone() {
+
+		// Create a new shape from clones of the model and view
 		ShapeComponent cloneComponent = (ShapeComponent) model.clone();
 		JME3ShapeView cloneView = (JME3ShapeView) view.clone();
 		JME3Shape clone = new JME3Shape(cloneComponent, cloneView);
-		
+
 		return clone;
 	}
 }

@@ -62,6 +62,14 @@ public class AbstractMeshComponent
 	protected AbstractController controller;
 
 	/**
+	 * Set when the object knows that it will be sending a notification in the
+	 * future. When set, the object should refuse to forward notifications to
+	 * any listeners, instead firing an update only when all known pending
+	 * changes are resolved.
+	 */
+	protected AtomicBoolean notifyLock;
+
+	/**
 	 * The default constructor
 	 */
 	public AbstractMeshComponent() {
@@ -71,6 +79,7 @@ public class AbstractMeshComponent
 		type = MeshType.SIMPLE;
 		updateLock = new AtomicBoolean();
 		listeners = new ArrayList<IVizUpdateableListener>();
+		notifyLock = new AtomicBoolean();
 	}
 
 	/**
@@ -194,32 +203,35 @@ public class AbstractMeshComponent
 	 */
 	public void notifyListeners() {
 
-		// If the listeners are empty, return
-		if (this.listeners == null || this.listeners.isEmpty()) {
-			return;
+		if (!notifyLock.get()) {
+
+			// If the listeners are empty, return
+			if (this.listeners == null || this.listeners.isEmpty()) {
+				return;
+			}
+
+			// Get a reference to self
+			final AbstractMeshComponent self = this;
+
+			final List<IVizUpdateableListener> localListeners = new ArrayList<IVizUpdateableListener>(
+					listeners);
+
+			// // Create a thread object that notifies all listeners
+			//
+			// Thread notifyThread = new Thread() {
+			//
+			// @Override
+			// public void run() {
+			// Loop over all listeners and update them
+			for (int i = 0; i < localListeners.size(); i++) {
+				localListeners.get(i).update(self);
+			}
+			// }
+			// };
+			//
+			// // Start the thread
+			// notifyThread.start();
 		}
-
-		// Get a reference to self
-		final AbstractMeshComponent self = this;
-
-		final List<IVizUpdateableListener> localListeners = new ArrayList<IVizUpdateableListener>(
-				listeners);
-
-		// // Create a thread object that notifies all listeners
-		//
-		// Thread notifyThread = new Thread() {
-		//
-		// @Override
-		// public void run() {
-		// Loop over all listeners and update them
-		for (int i = 0; i < localListeners.size(); i++) {
-			localListeners.get(i).update(self);
-		}
-		// }
-		// };
-		//
-		// // Start the thread
-		// notifyThread.start();
 	}
 
 	/**
@@ -274,7 +286,9 @@ public class AbstractMeshComponent
 	 * @value The property's new value
 	 */
 	public void setProperty(String property, String value) {
+		notifyLock.set(true);
 		properties.put(property, value);
+		notifyLock.set(false);
 		notifyListeners();
 	}
 
@@ -299,6 +313,12 @@ public class AbstractMeshComponent
 	 * @entity The entity to be removed
 	 */
 	public void removeEntity(AbstractController entity) {
+
+		notifyLock.set(true);
+
+		// Whether or not the entity was found in the map
+		boolean found = false;
+
 		// If the map contains the given entity
 		for (String category : entities.keySet()) {
 			if (entities.get(category).contains(entity)) {
@@ -311,9 +331,15 @@ public class AbstractMeshComponent
 				// Unregister from the entity
 				entity.unregister(this);
 
-				// Notify own listeners of the change
-				notifyListeners();
+				found = true;
 			}
+		}
+
+		// Notify listeners if a change occurred
+		notifyLock.set(false);
+
+		if (found) {
+			notifyListeners();
 		}
 	}
 
@@ -329,6 +355,8 @@ public class AbstractMeshComponent
 	 */
 	public void addEntityByCategory(AbstractController newEntity,
 			String category) {
+
+		notifyLock.set(true);
 
 		// Get the entities for the given category
 		List<AbstractController> catList = entities.get(category);
@@ -346,6 +374,7 @@ public class AbstractMeshComponent
 		newEntity.register(this);
 
 		// Send notification that entities have been changed
+		notifyLock.set(false);
 		notifyListeners();
 	}
 
@@ -428,8 +457,6 @@ public class AbstractMeshComponent
 
 		// Copy each of the other component's data members
 		type = otherObject.type;
-		entities = new HashMap<String, List<AbstractController>>(
-				otherObject.entities);
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change

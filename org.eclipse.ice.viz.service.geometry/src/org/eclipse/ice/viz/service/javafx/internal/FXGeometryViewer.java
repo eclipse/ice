@@ -90,7 +90,8 @@ public class FXGeometryViewer extends GeometryViewer {
 		super(parent);
 
 		renderer = new FXRenderer();
-		renderer.register(GeometryAttachment.class, new FXGeometryAttachmentManager());
+		renderer.register(GeometryAttachment.class,
+				new FXGeometryAttachmentManager());
 	}
 
 	/**
@@ -112,7 +113,10 @@ public class FXGeometryViewer extends GeometryViewer {
 
 		setupSceneInternals(internalRoot);
 
-		scene = new Scene(internalRoot, Color.rgb(24, 30, 31));
+		scene = new Scene(internalRoot, 100, 100, true);
+
+		// Set the scene's background color
+		scene.setFill(Color.rgb(24, 30, 31));
 
 		// Setup camera and input
 		createDefaultCamera(internalRoot);
@@ -142,7 +146,8 @@ public class FXGeometryViewer extends GeometryViewer {
 		parent.getChildren().add(perspCamera);
 
 		// Hacked in camera (for now)
-		FXCameraAttachment cameraAttachment = new FXCameraAttachment(perspCamera);
+		FXCameraAttachment cameraAttachment = new FXCameraAttachment(
+				perspCamera);
 		setCamera(cameraAttachment);
 	}
 
@@ -180,7 +185,8 @@ public class FXGeometryViewer extends GeometryViewer {
 				}
 
 				// Resolve the shape
-				Shape modelShape = (Shape) nodeParent.getProperties().get(Shape.class);
+				Shape modelShape = (Shape) nodeParent.getProperties()
+						.get(Shape.class);
 
 				if (modelShape == null) {
 					return;
@@ -237,7 +243,8 @@ public class FXGeometryViewer extends GeometryViewer {
 		TransformGizmo gizmo = new TransformGizmo(1000);
 		gizmo.showHandles(false);
 
-		parent.getChildren().addAll(gizmo, box, light1, light2, light3, light4, ambientLight);
+		parent.getChildren().addAll(gizmo, box, light1, light2, light3, light4,
+				ambientLight);
 
 	}
 
@@ -259,14 +266,16 @@ public class FXGeometryViewer extends GeometryViewer {
 	@Override
 	protected void updateCamera(ICamera camera) {
 		if (!(camera instanceof FXCameraAttachment)) {
-			throw new IllegalArgumentException(Messages.FXGeometryViewer_InvalidCamera);
+			throw new IllegalArgumentException(
+					Messages.FXGeometryViewer_InvalidCamera);
 		}
 
 		FXCameraAttachment attachment = (FXCameraAttachment) camera;
 		Camera fxCamera = attachment.getFxCamera();
 
 		if (fxCamera == null) {
-			throw new NullPointerException(Messages.FXGeometryViewer_NullCamera);
+			throw new NullPointerException(
+					Messages.FXGeometryViewer_NullCamera);
 		}
 
 		cameraController = new FPSController(fxCamera, scene, fxCanvas);
