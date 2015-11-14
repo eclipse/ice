@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.caebat.batml.ui">
-   <implementation class="org.eclipse.ice.caebat.batml.ui.BatMLFormWidgetBuilder"/>
-   <service>
-      <provide interface="org.eclipse.ice.client.widgets.IFormWidgetBuilder"/>
-   </service>
-   <reference bind="setVizServiceFactory" cardinality="1..1" interface="org.eclipse.ice.viz.service.IVizServiceFactory" name="IVizServiceFactory" policy="dynamic" unbind="unsetVizServiceFactory"/>
-</scr:component>

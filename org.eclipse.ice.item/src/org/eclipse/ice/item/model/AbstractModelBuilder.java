@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.item.model;
@@ -20,9 +20,9 @@ import org.eclipse.ice.materials.IMaterialsDatabase;
 /**
  * This is a subclass of AbstractItemBuilder specifically focused on adding
  * services for Models, which are Items that generate input files or data.
- * 
+ *
  * @author Jay Jay Billings
- * 
+ *
  */
 public class AbstractModelBuilder extends AbstractItemBuilder {
 
@@ -30,22 +30,22 @@ public class AbstractModelBuilder extends AbstractItemBuilder {
 	 * The materials database that is available to the Model Item and provided,
 	 * usually, by the OSGi Declarative Services Framework.
 	 */
-	private IMaterialsDatabase materialsDatabase;
+	private static IMaterialsDatabase materialsDatabase;
 
 	/**
 	 * This operation sets the service reference for the IMaterialsDatabase
 	 * service.
-	 * 
+	 *
 	 * @param database
 	 *            the service
 	 */
-	public void setMaterialsDatabase(IMaterialsDatabase database) {
+	public static void setMaterialsDatabase(IMaterialsDatabase database) {
 		materialsDatabase = database;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.ice.item.AbstractItemBuilder#setServices(org.eclipse.ice.
 	 * item.Item)

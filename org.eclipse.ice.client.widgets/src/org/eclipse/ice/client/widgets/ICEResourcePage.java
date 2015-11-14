@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.eclipse.core.filesystem.EFS;
@@ -515,7 +516,7 @@ public class ICEResourcePage extends ICEFormPage
 				event.getDelta().accept(new IResourceDeltaVisitor() {
 					public boolean visit(IResourceDelta delta) throws CoreException {
 						for (ICEResource r : ICEResourcePage.this.resourceComponent.getResources()) {
-							if (delta.getResource().getName().equals(r.getName())) {
+							if (delta.getResource().getName().equals((new File(r.getPath()).getName()))) {
 								ICEResourcePage.this.update(r);
 							}
 						}

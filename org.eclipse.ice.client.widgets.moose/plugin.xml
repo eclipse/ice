@@ -194,4 +194,34 @@
       </implementation>
    </extension> 
         
+        
+ <extension
+       id="org.eclipse.ice.client.widgets.moose.xml.contentTypes"
+       name="MOOSE XML Content Type"
+       point="org.eclipse.core.contenttype.contentTypes">
+    <content-type
+          base-type="org.eclipse.core.runtime.xml"
+          describer="org.eclipse.ice.client.widgets.moose.MooseXMLFormContentDescriber"
+          file-extensions="xml"
+          id="org.eclipse.ice.client.widgets.moose.xml.contentType.Form"
+          name="Moose Form"
+          priority="high">
+    </content-type>
+ </extension>
+ 
+ <extension
+        id="org.eclipse.ice.client.widgets.moose.editors"
+        point="org.eclipse.ui.editors">
+    <editor
+          class="org.eclipse.ice.client.widgets.moose.MOOSEFormEditor"
+          default="false"
+          extensions="xml"
+          id="org.eclipse.ice.client.widgets.moose.MOOSEFormEditor"
+          name="MOOSE Editor">
+       <contentTypeBinding
+             contentTypeId="org.eclipse.ice.client.widgets.moose.xml.contentType.Form">
+       </contentTypeBinding>
+    </editor>
+ </extension>
+ 
 </plugin>

@@ -3,6 +3,10 @@
 <plugin>
    <extension-point id="clientInstance" name="ICE Client" schema="schema/clientInstance.exsd"/>
    <extension-point id="iwidgetfactory" name="Widget Factory" schema="schema/iwidgetfactory.exsd"/>
+   <extension-point id="updateEventListener" name="IUpdateEventListener" schema="schema/updateEventListener.exsd"/>
+   <extension-point id="processEventListener" name="IProcessEventListener" schema="schema/processEventListener.exsd"/>
+   <extension-point id="simpleResourceProvider" name="ISimpleResourceProvider" schema="schema/simpleResourceProvider.exsd"/>
+
  <extension point="org.eclipse.ui.newWizards">
     <category 
           id="org.eclipse.ice.wizards"
@@ -87,5 +91,29 @@
        		</with>
        </enablement>
     </renameParticipant>
+ </extension>
+ <extension
+       id="org.eclipse.ice.client.updateEventListener"
+       name="Client Update Event Listener"
+       point="org.eclipse.ice.client.updateEventListener">
+    <updateEventListener
+          class="org.eclipse.ice.client.internal.ClientExtensionFactory">
+    </updateEventListener>
+ </extension>
+ <extension
+       id="org.eclipse.ice.client.simpleResourceProvider"
+       name="Client Simple Resource Provider"
+       point="org.eclipse.ice.client.simpleResourceProvider">
+    <simpleResourceProvider
+          class="org.eclipse.ice.client.internal.ClientExtensionFactory">
+    </simpleResourceProvider>
+ </extension>
+ <extension
+       id="org.eclipse.ice.client.processEventListener"
+       name="Client Process Event Listener"
+       point="org.eclipse.ice.client.processEventListener">
+    <processEventListener
+          class="org.eclipse.ice.client.internal.ClientExtensionFactory">
+    </processEventListener>
  </extension>
 </plugin>

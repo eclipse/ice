@@ -38,6 +38,7 @@ def parse_args(args):
             help='The packages to update.  Leave blank to update all available packages.')
     parser.add_argument('-p', '--prefix', default=os.path.abspath(os.path.join(".","ICE")),
             help="The location to download and install ICE.")
+    parser.add_argument("--unstable", action='store_true', help='Install the unstable nightly version of ICE.')
     parser.add_argument("--with-hdfjava", help="The path to an installation of HDFJava")
     parser.add_argument("--with-visit", help="The path to an installation of VisIt")
     parser.add_argument("--skip-download", action='store_true',
@@ -79,7 +80,14 @@ def mkdir_p(path):
         if os.path.exists(path) and os.path.isdir(path):
             pass
         else:
-            raise
+            print("")
+            print("--------------------------- ERROR -----------------------------")
+            print("Cannot create directory " + path + ".  File already exists.")
+            print("Either delete this file, or specify a different installation")
+            print("location by using the --prefix option.")
+            print("--------------------------- ERROR -----------------------------")
+            print("")
+            exit()
 
 
 def get_os_and_arch():
@@ -140,6 +148,8 @@ def download_packages(opts, os_type, arch_type):
     package_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
                     "VisIt"   : "http://portal.nersc.gov/project/visit/releases/2.9.1/",
                     "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
+    if opts.unstable:
+        package_urls['ICE'] = "http://sourceforge.net/projects/niceproject/files/unstable-nightly/ice/"
     files = dict()
     for pkg in packages:
         fname = get_package_file(pkg, os_type, arch_type)
@@ -261,11 +271,14 @@ def nix_install(opts, pkg_dirs):
         print("--------------------------- ERROR -----------------------------")
         print("Could not find a usable HDFJava library.  Try downloading")
         print("a fresh copy using this installer by providing the --update")
+        print("")
+        print("Alternatively you may specify the location of an existing")
+        print("HDFJava installation using the --with-hdfjava option.")
         print("option without any arguments")
         print("--------------------------- ERROR -----------------------------")
         print("")
         exit()
-    hdf_libdir = os.path.abspath(hdf_libdir)
+    hdf_libdir = os.path.abspath(os.path.dirname(hdf_libdir))
 
     visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
     visit_bin_dir = find_file(visit_path, "visit")
@@ -275,10 +288,13 @@ def nix_install(opts, pkg_dirs):
         print("Could not find a usable VisIt executable.  Try downloading")
         print("a fresh copy using this installer by providing the --update")
         print("option without any arguments")
+        print("")
+        print("Alternatively you may specify the location of an existing")
+        print("VisIt installation using the --with-visit option.")
         print("--------------------------- ERROR -----------------------------")
         print("")
         exit()
-    visit_bin_dir = os.path.abspath(visit_bin_dir)
+    visit_bin_dir = os.path.abspath(os.path.dirname(visit_bin_dir))
     
     ice_preferences = find_file(opts.prefix, "ICE.ini")
     if ice_preferences == None:
@@ -376,7 +392,7 @@ def osx_post(opts, pkgs):
     """ Post installation for OS X """
     mkdir_p(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS"))
     script_path = os.path.join(opts.prefix, "ICE.app", "Contents", "Info.plist")
-    visit_libdir = os.path.abspath(find_file(opts.prefix, "libvisit*"))
+    visit_libdir = os.path.dirname(find_file(opts.prefix, "libvisit*"))
     plutil_cmd = ['plutil', '-replace', 'CFBundleExecutable', '-string', 'ice.sh', script_path]
     lsregister_cmd = ['/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister',
                       '-v', '-f', os.path.join(opts.prefix, 'ICE.app')]

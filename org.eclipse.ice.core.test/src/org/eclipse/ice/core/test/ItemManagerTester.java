@@ -267,6 +267,8 @@ public class ItemManagerTester {
 		int itemId = itemManager.createItem(fakeGeometryBuilder.getItemName(), null);
 		itemManager.renameItem(itemId, "New Name");
 		assertTrue("New Name".equals(itemManager.retrieveItem(itemId).getName()));
+		assertTrue(fakePersistenceProvider.itemRenamed());
+		fakePersistenceProvider.reset();
 	}
 
 	/**

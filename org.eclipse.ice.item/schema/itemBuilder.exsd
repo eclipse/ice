@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.ice.item" id="itemBuilder" name="Item Builder"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension point shall provide ItemBuilders for the Eclipse ICE platform.
       </documentation>
    </annotation>
 
@@ -52,7 +52,7 @@
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  
+                  A class that implements the ItemBuilder interface (or extends one of its implementations) to provide a new builder to Eclipse ICE.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":org.eclipse.ice.item.ItemBuilder"/>

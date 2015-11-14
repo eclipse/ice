@@ -12,7 +12,13 @@
 *******************************************************************************/
 package org.eclipse.ice.iclient.uiwidgets;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This interface simplifies the loading and retrieval ICEResources. It should
@@ -33,4 +39,34 @@ public interface ISimpleResourceProvider {
 	 *            The ICEResource that should be loaded by the provider.
 	 */
 	public void loadResource(ICEResource resource);
+	
+	/**
+	 * This operation retrieves the ISimpleResourceProvider implementation from the
+	 * ExtensionRegistry.
+	 *
+	 * @return The current default ISimpleResourceProvider implementation that were
+	 *         found in the registry.
+	 * @throws CoreException
+	 *             This exception is thrown if an extension cannot be loaded.
+	 */
+	public static ISimpleResourceProvider getSimpleResourceProvider() throws CoreException {
+		/**
+		 * Logger for handling event messages and other information.
+		 */
+		Logger logger = LoggerFactory.getLogger(ISimpleResourceProvider.class);
+
+		ISimpleResourceProvider provider = null;
+		String id = "org.eclipse.ice.client.simpleResourceProvider";
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(id);
+
+		// If the point is available, create the provider
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			provider = (ISimpleResourceProvider) elements[0].createExecutableExtension("class");
+		} else {
+			logger.error("Extension Point " + id + "does not exist");
+		}
+
+		return provider;
+	}
 }

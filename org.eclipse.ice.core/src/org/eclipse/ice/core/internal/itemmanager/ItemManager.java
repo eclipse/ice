@@ -599,7 +599,7 @@ public class ItemManager implements ItemListener {
 	/**
 	 * This operation loads a single Item into the ItemManager, like in
 	 * loadItems(), and returns its Form.
-	 * 
+	 *
 	 * @param item
 	 *            the persisted Item that will be loaded
 	 * @return the form for the Item or null if the Item couldn't be loaded
@@ -622,7 +622,7 @@ public class ItemManager implements ItemListener {
 
 	/**
 	 * This operation loads Items from a project.
-	 * 
+	 *
 	 * @param oldItems
 	 *            the persisted Items to load into the ItemManager after they
 	 *            have already been read in by an IPersistenceProvider
@@ -706,6 +706,7 @@ public class ItemManager implements ItemListener {
 			logger.info("ItemManager Message: Updating all Items with "
 					+ "Persistence Provider.");
 			for (Item item : itemList.values()) {
+				logger.info("ItemManager Message: Persisting " + item.getName());
 				provider.updateItem(item);
 			}
 		}
@@ -1036,16 +1037,17 @@ public class ItemManager implements ItemListener {
 
 	/**
 	 * This operation changes the name of the Item with id itemID.
-	 * 
+	 *
 	 * @param itemID
-	 * 	        The id of the item
+	 *            The id of the item
 	 * @param name
-	 * 			The new name of the Item.
+	 *            The new name of the Item.
 	 */
 	public void renameItem(int itemID, String name) {
 		itemList.get(itemID).setName(name);
+		provider.renameItem(itemList.get(itemID), name);
 	}
-	
+
 	/**
 	 * This operation configures the IOService that should be used by Items
 	 *
