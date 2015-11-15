@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
@@ -60,6 +61,7 @@ public interface IPageProvider {
 	 *            simulated multimap.
 	 * @return the form pages created from the map
 	 */
-	public IFormPage[] getPages(Map<String, ArrayList<Component>> componentMap);
+	public ArrayList<IFormPage> getPages(FormEditor formEditor,
+			Map<String, ArrayList<Component>> componentMap);
 
 }

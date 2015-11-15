@@ -515,19 +515,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The pages.
 	 * @throws CoreException 
 	 */
-	private ArrayList<ICEFormPage> createListSectionPages() {
+	private ArrayList<IFormPage> createListSectionPages() {
 		// Create the list of pages to return
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 		
 		try {
-			// get all of the registered ListPageProviders
+			// Get all of the registered ListPageProviders
 			IListPageProvider[] listPageProviders = IListPageProvider.getProviders();
-			if (listPageProviders != null && listPageProviders.length > 0) {
-					
-				// Use the default list page provider
+			if (listPageProviders != null && listPageProviders.length > 0) {	
+				// Use the default list page provider for now.
 				String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
-				
-				
+				// Do a linear search over providers and pull the correct one.
 				for (IListPageProvider currentProvider : listPageProviders) {
 					if (providerNameToUse.equals(currentProvider.getName())){
 						pages.addAll(currentProvider.getPages(this, componentMap));
@@ -536,9 +534,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				}
 			} else {
 				logger.error("No ListPageProviders registered");
-			}
-		
-		
+			}		
 		} catch (CoreException e) {
 			logger.error("Unable to get ListPageProviders", e);
 		}
@@ -1136,7 +1132,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 			// Create pages for list components
 			if (componentMap.get("list").size() > 0) {
-				for (ICEFormPage p : createListSectionPages()) {
+				for (IFormPage p : createListSectionPages()) {
 					formPages.add(p);
 				}
 			}
@@ -1157,7 +1153,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			}
 		} else {
 			// Otherwise throw up a nice empty page explaining the problem.
-			formPages.add(createEmptyErrorPage());
+			formPages.addAll(createEmptyErrorPage());
 		}
 
 		// Add the Pages
@@ -1177,36 +1173,34 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * This operation creates an empty FormPage explaining that there has been
 	 * an error and no data is available.
 	 * 
-	 * @return the empty page
+	 * @return the error pages
 	 */
-	private IFormPage createEmptyErrorPage() {
+	private ArrayList<IFormPage> createEmptyErrorPage() {
 
-		IFormPage page = null;
+		// Array for storing the pages
+		ArrayList<IFormPage> pages = null;
 
 		try {
 			// get all of the registered ListPageProviders
 			IErrorPageProvider[] errorPageProviders = IErrorPageProvider.getProviders();
 			if (errorPageProviders != null && errorPageProviders.length > 0) {
-
 				// Use the default error page provider
 				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
-
-
+				// Do a linear search to find the correct provider
 				for (IErrorPageProvider currentProvider : errorPageProviders) {
 					if (providerNameToUse.equals(currentProvider.getName())){
-						page = currentProvider.getPage(this, componentMap);
+						pages = currentProvider.getPages(this, componentMap);
 						break;
 					}
 				}
 			} else {
 				logger.error("No ErrorPageProviders registered");
 			}
-
 		} catch (CoreException e) {
 			logger.error("Unable to get ErrorPageProviders", e);
 		}
 
-		return page;
+		return pages;
 
 	}
 

@@ -20,6 +20,7 @@ import org.eclipse.ice.client.widgets.ListComponentSectionPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
  * This class is a default extension for providing list section pages
@@ -29,20 +30,34 @@ import org.eclipse.ui.forms.editor.FormEditor;
  */
 public class DefaultListPageProvider implements IListPageProvider {
 
+	/**
+	 * The page provider name for this class.
+	 */
 	public static final String PROVIDER_NAME = "default";
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IListPageProvider#getName()
+	 */
 	@Override
 	public String getName() {
 		return PROVIDER_NAME;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.providers.IListPageProvider#getPages(org.
+	 * eclipse.ui.forms.editor.FormEditor, java.util.Map)
+	 */
 	@Override
-	public ArrayList<ICEFormPage> getPages(FormEditor formEditor,
-			Map<String, ArrayList<Component>> componentMap) {
+	public ArrayList<IFormPage> getPages(FormEditor formEditor, Map<String, ArrayList<Component>> componentMap) {
 
 		// Get the lists from the component map
 		ArrayList<Component> lists = componentMap.get("list");
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>(lists.size());
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>(lists.size());
 
 		// If there are some lists, render sections for them
 		for (int i = 0; i < lists.size(); i++) {
@@ -51,8 +66,8 @@ public class DefaultListPageProvider implements IListPageProvider {
 			// a collection
 			if (list != null) {
 				// Create a new page for the list
-				ListComponentSectionPage page = new ListComponentSectionPage(
-						formEditor, list.getName(), list.getName());
+				ListComponentSectionPage page = new ListComponentSectionPage(formEditor, list.getName(),
+						list.getName());
 
 				page.setList(list);
 				// Add the page to the return list
@@ -62,5 +77,5 @@ public class DefaultListPageProvider implements IListPageProvider {
 
 		return pages;
 	}
-
+	
 }
