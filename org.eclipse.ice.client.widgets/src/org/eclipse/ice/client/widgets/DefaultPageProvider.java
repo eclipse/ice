@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.ice.client.widgets.providers.IPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
@@ -30,16 +31,23 @@ public class DefaultPageProvider implements IPageProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.IPageProvider#getPages(java.util.Map)
+	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
 	 */
 	@Override
-	public IFormPage[] getPages(Map<String, ArrayList<Component>> componentMap) {
+	public String getName() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getPages(org.
+	 * eclipse.ui.forms.editor.FormEditor, java.util.Map)
+	 */
 	@Override
-	public String getName() {
+	public ArrayList<IFormPage> getPages(FormEditor formEditor,
+			Map<String, ArrayList<Component>> componentMap) {
 		// TODO Auto-generated method stub
 		return null;
 	}
