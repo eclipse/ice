@@ -5,6 +5,7 @@
    <extension-point id="org.eclipse.ice.client.widgets.iformwidgetbuilder" name="IForm Widget Builder" schema="schema/iformwidgetbuilder.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.listPageProvider" name="List Page Provider" schema="schema/org.eclipse.ice.client.widgets.listPageProvider.exsd"/>
    <extension-point id="errorPageProvider" name="Error Page Provider" schema="schema/errorPageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.resourcePageProvider" name="Resource Page Provider" schema="schema/org.eclipse.ice.client.widgets.resourcePageProvider.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -395,5 +396,13 @@
     <implementation
           class="org.eclipse.ice.client.widgets.providers.DefaultListPageProvider">
     </implementation>
+ </extension>
+ <extension
+       id="resourcePageProvider"
+       name="Default Resource Page Provider"
+       point="org.eclipse.ice.client.widgets.resourcePageProvider">
+    <Implementation
+          Class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider">
+    </Implementation>
  </extension>
 </plugin>

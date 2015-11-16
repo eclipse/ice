@@ -23,8 +23,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
+import org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
+import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -90,7 +92,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public class ICEFormEditor extends SharedHeaderFormEditor
-		implements IComponentVisitor, IObservableWidget, IUpdateableListener {
+implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -321,26 +323,34 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ICEFormPage createResourcePage() {
 
-		// Need IResourcePageProvider
+		// create resource page using IResourcePageProvider
 
-		// Local Declarations
-		ResourceComponent resourceComponent = null;
+		try {
+			// get all of the registered ResourcePageProviders
+			IResourcePageProvider[] resourcePageProviders = IResourcePageProvider.getProviders();
+			if (resourcePageProviders != null && resourcePageProviders.length > 0) {
 
-		// Get the ResourceComponent and create the ICEOutput page. There
-		// should
-		// only be one output page.
-		if (!(componentMap.get("output").isEmpty())) {
-			resourceComponent = (ResourceComponent) (componentMap.get("output").get(0));
-			if (resourceComponent != null) {
-				// Make the page
-				resourceComponentPage = new ICEResourcePage(this, resourceComponent.getName(),
-						resourceComponent.getName());
-				// Set the ResourceComponent
-				resourceComponentPage.setResourceComponent(resourceComponent);
+				// Use the default resource page provider
+				String providerNameToUse = DefaultResourcePageProvider.PROVIDER_NAME;
+
+
+				for (IResourcePageProvider currentProvider : resourcePageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())){
+						resourceComponentPage = currentProvider.getPage(this, componentMap);
+						break;
+					}
+				}
+			} else {
+				logger.error("No ResourcePageProvider registered");
 			}
+
+
+		} catch (CoreException e) {
+			logger.error("Unable to get ResourcePageProvider", e);
 		}
 
 		return resourceComponentPage;
+
 	}
 
 	/**
@@ -518,7 +528,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	private ArrayList<IFormPage> createListSectionPages() {
 		// Create the list of pages to return
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
-		
+
 		try {
 			// Get all of the registered ListPageProviders
 			IListPageProvider[] listPageProviders = IListPageProvider.getProviders();
