@@ -92,7 +92,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public class ICEFormEditor extends SharedHeaderFormEditor
-implements IComponentVisitor, IObservableWidget, IUpdateableListener {
+		implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -231,7 +231,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.viz.service.IVizServiceFactory");
 		staticLogger.info("ICEFormEditor: Available configuration elements");
 		for (IConfigurationElement element : elements) {
 			staticLogger.info(element.getName());
@@ -262,9 +263,11 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		// Push a message to the message manager
 		if (getHeaderForm() != null) {
-			final IMessageManager messageManager = getHeaderForm().getMessageManager();
+			final IMessageManager messageManager = getHeaderForm()
+					.getMessageManager();
 			if (dirty) {
-				messageManager.addMessage("statusUpdate", "There are unsaved changes on the form.", null,
+				messageManager.addMessage("statusUpdate",
+						"There are unsaved changes on the form.", null,
 						IMessageProvider.WARNING);
 			} else {
 				messageManager.removeMessage("statusUpdate");
@@ -327,23 +330,24 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		try {
 			// get all of the registered ResourcePageProviders
-			IResourcePageProvider[] resourcePageProviders = IResourcePageProvider.getProviders();
-			if (resourcePageProviders != null && resourcePageProviders.length > 0) {
+			IResourcePageProvider[] resourcePageProviders = IResourcePageProvider
+					.getProviders();
+			if (resourcePageProviders != null
+					&& resourcePageProviders.length > 0) {
 
 				// Use the default resource page provider
 				String providerNameToUse = DefaultResourcePageProvider.PROVIDER_NAME;
 
-
 				for (IResourcePageProvider currentProvider : resourcePageProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())){
-						resourceComponentPage = currentProvider.getPage(this, componentMap);
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						resourceComponentPage = currentProvider.getPage(this,
+								componentMap);
 						break;
 					}
 				}
 			} else {
 				logger.error("No ResourcePageProvider registered");
 			}
-
 
 		} catch (CoreException e) {
 			logger.error("Unable to get ResourcePageProvider", e);
@@ -379,15 +383,18 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		// Get the MasterDetailsComponent and create the MasterDetails page.
 		if (!(componentMap.get("masterDetails").isEmpty())) {
-			masterDetailsComponent = (MasterDetailsComponent) (componentMap.get("masterDetails").get(0));
+			masterDetailsComponent = (MasterDetailsComponent) (componentMap
+					.get("masterDetails").get(0));
 			if (masterDetailsComponent != null) {
 				// Get the name
 				String name = masterDetailsComponent.getName();
 				// Make the page
-				ICEMasterDetailsPage iCEMasterDetailsPage = new ICEMasterDetailsPage(this, "MDPid", name);
+				ICEMasterDetailsPage iCEMasterDetailsPage = new ICEMasterDetailsPage(
+						this, "MDPid", name);
 
 				// Set the MasterDetailsComponent
-				iCEMasterDetailsPage.setMasterDetailsComponent(masterDetailsComponent);
+				iCEMasterDetailsPage
+						.setMasterDetailsComponent(masterDetailsComponent);
 
 				masterDetailsPages.add(iCEMasterDetailsPage);
 			}
@@ -416,8 +423,10 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 			public void run() {
 				// Post the message to the update manager
 				if (getHeaderForm() != null) {
-					final IMessageManager messageManager = getHeaderForm().getMessageManager();
-					messageManager.addMessage("statusUpdate", message, null, IMessageProvider.INFORMATION);
+					final IMessageManager messageManager = getHeaderForm()
+							.getMessageManager();
+					messageManager.addMessage("statusUpdate", message, null,
+							IMessageProvider.INFORMATION);
 				}
 			}
 		});
@@ -440,12 +449,14 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(componentMap.get("geometry").isEmpty())) {
-			geometryComponent = (GeometryComponent) (componentMap.get("geometry").get(0));
+			geometryComponent = (GeometryComponent) (componentMap
+					.get("geometry").get(0));
 
 			if (geometryComponent != null) {
 
 				// Make the GeometryPage
-				geometryPage = new ICEGeometryPage(this, "GPid", geometryComponent.getName());
+				geometryPage = new ICEGeometryPage(this, "GPid",
+						geometryComponent.getName());
 
 				// Set the GeometryComponent
 				geometryPage.setGeometry(geometryComponent);
@@ -476,7 +487,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 			if (meshComponent != null) {
 
 				// Make the MeshPage
-				meshPage = new ICEMeshPage(this, "MeshPid", meshComponent.getName());
+				meshPage = new ICEMeshPage(this, "MeshPid",
+						meshComponent.getName());
 
 				// Set the MeshComponent
 				meshPage.setMeshComponent(meshComponent);
@@ -507,7 +519,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 				emfComponent = (EMFComponent) comp;
 				if (emfComponent != null) {
 					// Make the EMFSectionPage
-					emfPage = new EMFSectionPage(this, emfComponent.getName(), emfComponent.getName());
+					emfPage = new EMFSectionPage(this, emfComponent.getName(),
+							emfComponent.getName());
 					// Set the EMFComponent
 					emfPage.setEMFComponent(emfComponent);
 					pages.add(emfPage);
@@ -523,7 +536,7 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 	 * stored in the component map.
 	 * 
 	 * @return The pages.
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
 	private ArrayList<IFormPage> createListSectionPages() {
 		// Create the list of pages to return
@@ -531,20 +544,22 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		try {
 			// Get all of the registered ListPageProviders
-			IListPageProvider[] listPageProviders = IListPageProvider.getProviders();
-			if (listPageProviders != null && listPageProviders.length > 0) {	
+			IListPageProvider[] listPageProviders = IListPageProvider
+					.getProviders();
+			if (listPageProviders != null && listPageProviders.length > 0) {
 				// Use the default list page provider for now.
 				String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
 				// Do a linear search over providers and pull the correct one.
 				for (IListPageProvider currentProvider : listPageProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())){
-						pages.addAll(currentProvider.getPages(this, componentMap));
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages.addAll(
+								currentProvider.getPages(this, componentMap));
 						break;
 					}
 				}
 			} else {
 				logger.error("No ListPageProviders registered");
-			}		
+			}
 		} catch (CoreException e) {
 			logger.error("Unable to get ListPageProviders", e);
 		}
@@ -563,7 +578,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 		if (!trees.isEmpty()) {
 			// Show the view
 			try {
-				getSite().getWorkbenchWindow().getActivePage().showView(getTreeCompositeViewerID());
+				getSite().getWorkbenchWindow().getActivePage()
+						.showView(getTreeCompositeViewerID());
 			} catch (PartInitException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
@@ -586,7 +602,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 			}
 
 			// Get the TreeCompositeViewer
-			TreeCompositeViewer treeView = (TreeCompositeViewer) getSite().getWorkbenchWindow().getActivePage()
+			TreeCompositeViewer treeView = (TreeCompositeViewer) getSite()
+					.getWorkbenchWindow().getActivePage()
 					.findView(getTreeCompositeViewerID());
 			// Set the tree as input to the tree view
 			treeView.setInput(tree, this);
@@ -667,7 +684,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 		managedForm = headerForm;
 
 		// Get the Form that provides the common header and decorate it.
-		org.eclipse.ui.forms.widgets.Form form = managedForm.getForm().getForm();
+		org.eclipse.ui.forms.widgets.Form form = managedForm.getForm()
+				.getForm();
 		managedForm.getToolkit().decorateFormHeading(form);
 
 		// Create a composite for the overall head layout.
@@ -702,15 +720,16 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		// Create the process label, button and dropdown if the action list is
 		// available.
-		if (iceDataForm.getActionList() != null && !iceDataForm.getActionList().isEmpty()) {
+		if (iceDataForm.getActionList() != null
+				&& !iceDataForm.getActionList().isEmpty()) {
 
 			// Create a label for the process buttons
 			Label processLabel = new Label(headClient, SWT.NONE);
 			processLabel.setText("Process:");
 
 			// Create the dropdown menu
-			processDropDown = new Combo(headClient,
-					SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+			processDropDown = new Combo(headClient, SWT.DROP_DOWN | SWT.SINGLE
+					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			for (String i : iceDataForm.getActionList()) {
 				processDropDown.add(i);
 			}
@@ -722,7 +741,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Set the action value to use when processing
-					processName = processDropDown.getItem(processDropDown.getSelectionIndex());
+					processName = processDropDown
+							.getItem(processDropDown.getSelectionIndex());
 				}
 			});
 
@@ -809,8 +829,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 			if (numComponents == 1) {
 				pageName = ((ICEObject) (comps.get(0))).getName();
 			} else {
-				pageName = ((ICEObject) (comps.get(0))).getName() + ", " + ((ICEObject) (comps.get(1))).getName()
-						+ ", etc.";
+				pageName = ((ICEObject) (comps.get(0))).getName() + ", "
+						+ ((ICEObject) (comps.get(1))).getName() + ", etc.";
 			}
 			// Instantiate the page
 			tmpPage = new ICESectionPage(this, pageName, pageName);
@@ -823,11 +843,12 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 			// Otherwise, if there are more components than the number of
 			// components per page, add them all with numCompsPerPage Components
 			// per page. This loop adds all of the full pages.
-			for (i = 0; i < (numComponents / numCompsPerPage) * numCompsPerPage; i = i + numCompsPerPage) {
+			for (i = 0; i < (numComponents / numCompsPerPage)
+					* numCompsPerPage; i = i + numCompsPerPage) {
 				// Set a name for the page that is a combination of the first
 				// two components
-				pageName = ((ICEObject) (comps.get(i))).getName() + ", " + ((ICEObject) (comps.get(i + 1))).getName()
-						+ ", etc.";
+				pageName = ((ICEObject) (comps.get(i))).getName() + ", "
+						+ ((ICEObject) (comps.get(i + 1))).getName() + ", etc.";
 				// Create the page
 				tmpPage = new ICESectionPage(this, pageName, pageName);
 				// Add the components
@@ -847,7 +868,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 					pageName = ((ICEObject) (comps.get(i))).getName();
 				} else {
 					pageName = ((ICEObject) (comps.get(i))).getName() + ", "
-							+ ((ICEObject) (comps.get(i + 1))).getName() + ", etc.";
+							+ ((ICEObject) (comps.get(i + 1))).getName()
+							+ ", etc.";
 				}
 				// Create the page
 				tmpPage = new ICESectionPage(this, pageName, pageName);
@@ -876,7 +898,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 	 *            the input for this editor
 	 */
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws RuntimeException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws RuntimeException {
 
 		// Get the Client Reference
 		IClient client = null;
@@ -921,12 +944,17 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 			// Register the client as a listener
 			// of specific form editor events.
 			try {
-				registerUpdateListener(IUpdateEventListener.getUpdateEventListener());
-				registerProcessListener(IProcessEventListener.getProcessEventListener());
-				registerResourceProvider(ISimpleResourceProvider.getSimpleResourceProvider());
+				registerUpdateListener(
+						IUpdateEventListener.getUpdateEventListener());
+				registerProcessListener(
+						IProcessEventListener.getProcessEventListener());
+				registerResourceProvider(
+						ISimpleResourceProvider.getSimpleResourceProvider());
 			} catch (CoreException e) {
 				// Complain
-				logger.error("Unable to get register the update, process, or simpleresource implementations!", e);
+				logger.error(
+						"Unable to get register the update, process, or simpleresource implementations!",
+						e);
 			}
 
 		} else {
@@ -993,7 +1021,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 		}
 
 		// Refresh the parts on the selected page
-		for (IFormPart part : ((ICEFormPage) this.getSelectedPage()).getManagedForm().getParts()) {
+		for (IFormPart part : ((ICEFormPage) this.getSelectedPage())
+				.getManagedForm().getParts()) {
 			part.refresh();
 		}
 
@@ -1007,7 +1036,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 			// Get the first MasterDetailsComponent (The current code only
 			// allows one master details to be implemented at this time
-			MasterDetailsComponent comp = (MasterDetailsComponent) (componentMap.get("masterDetails").get(0));
+			MasterDetailsComponent comp = (MasterDetailsComponent) (componentMap
+					.get("masterDetails").get(0));
 
 			// Get the name of the component
 			String name = comp.getName();
@@ -1039,7 +1069,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 		if (!(componentMap.get("emf")).isEmpty()) {
 			for (int i = 0; i < this.getPageCount(); i++) {
 				FormPage formPage = (FormPage) this.pages.get(i);
-				EMFComponent comp = (EMFComponent) componentMap.get("emf").get(0);
+				EMFComponent comp = (EMFComponent) componentMap.get("emf")
+						.get(0);
 				if (formPage.getPartName().equals(comp.getName())) {
 					formPage.doSave(null);
 				}
@@ -1108,12 +1139,14 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 			// Loop over the components and get them into the map
 			for (Component i : iceDataForm.getComponents()) {
-				logger.info("ICEFormEditor Message: Adding component " + i.getName() + " " + i.getId());
+				logger.info("ICEFormEditor Message: Adding component "
+						+ i.getName() + " " + i.getId());
 				i.accept(this);
 			}
 
 			// Create pages for the DataComponents and add them to the list
-			if (!(componentMap.get("data").isEmpty()) || !(componentMap.get("table").isEmpty())
+			if (!(componentMap.get("data").isEmpty())
+					|| !(componentMap.get("table").isEmpty())
 					|| !(componentMap.get("matrix").isEmpty())) {
 				formPages.addAll(createDataTableAndMatrixComponentPages());
 			}
@@ -1152,7 +1185,8 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 			// Create the page for Reactors
 			if (!(componentMap.get("reactor").isEmpty())) {
-				logger.info("ICEFormEditor Message: " + componentMap.get("reactor").size()
+				logger.info("ICEFormEditor Message: "
+						+ componentMap.get("reactor").size()
 						+ " IReactorComponents not rendered.");
 			}
 
@@ -1192,13 +1226,14 @@ implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 		try {
 			// get all of the registered ListPageProviders
-			IErrorPageProvider[] errorPageProviders = IErrorPageProvider.getProviders();
+			IErrorPageProvider[] errorPageProviders = IErrorPageProvider
+					.getProviders();
 			if (errorPageProviders != null && errorPageProviders.length > 0) {
 				// Use the default error page provider
 				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
 				// Do a linear search to find the correct provider
 				for (IErrorPageProvider currentProvider : errorPageProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())){
+					if (providerNameToUse.equals(currentProvider.getName())) {
 						pages = currentProvider.getPages(this, componentMap);
 						break;
 					}
