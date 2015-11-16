@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 /**
@@ -68,9 +67,9 @@ public class JME3MeshVizService extends AbstractVizService {
 		JME3MeshCanvas canvas = null;
 
 		// If input is a VizMeshComponent, use it to create a JME3MeshCanvas.
-		if (object instanceof VizMeshComponent) {
-			canvas = new JME3MeshCanvas((VizMeshComponent) object);
-		}
+		// if (object instanceof VizMeshComponent) {
+		// canvas = new JME3MeshCanvas((VizMeshComponent) object);
+		// }
 		return canvas;
 	}
 

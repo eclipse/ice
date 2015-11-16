@@ -11,12 +11,10 @@
 package org.eclipse.ice.viz.service.javafx.internal;
 
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.modeling.Transformation;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
@@ -38,13 +36,16 @@ import javafx.scene.transform.Translate;
 public class Util {
 
 	/** Default material for normal states. */
-	public static final Material DEFAULT_MATERIAL = new PhongMaterial(Color.BLUE);
+	public static final Material DEFAULT_MATERIAL = new PhongMaterial(
+			Color.BLUE);
 
 	/** Default material for selected, highlighted, etc. states. */
-	public static final Material DEFAULT_HIGHLIGHTED_MATERIAL = new PhongMaterial(Color.RED);
+	public static final Material DEFAULT_HIGHLIGHTED_MATERIAL = new PhongMaterial(
+			Color.RED);
 
 	/** Default material for errors or inconsistent states. */
-	public static final Material DEFAULT_ERROR_MATERIAL = new PhongMaterial(Color.YELLOW);
+	public static final Material DEFAULT_ERROR_MATERIAL = new PhongMaterial(
+			Color.YELLOW);
 
 	/** */
 	public static final String SHAPE_PROP_KEY = "shape"; //$NON-NLS-1$
@@ -59,7 +60,8 @@ public class Util {
 	 *            ICE Transformation data structure
 	 * @return a JavaFX transformation that is analagous to the Transformation
 	 */
-	public static Transform convertTransformation(Transformation transformation) {
+	public static Transform convertTransformation(
+			Transformation transformation) {
 		Affine transform = new Affine();
 
 		if (transformation == null) {
@@ -73,10 +75,14 @@ public class Util {
 
 		Scale sizeXform = new Scale(size, size, size);
 		Scale scaleXform = new Scale(scale[0], scale[1], scale[2]);
-		Rotate rotateXform = eulerToRotate(rotation[0], rotation[1], rotation[2]);
-		Translate translateXform = new Translate(translation[0], translation[1], translation[2]);
-		Transform transformOutput = transform.createConcatenation(translateXform).createConcatenation(rotateXform)
-				.createConcatenation(sizeXform).createConcatenation(scaleXform);
+		Rotate rotateXform = eulerToRotate(rotation[0], rotation[1],
+				rotation[2]);
+		Translate translateXform = new Translate(translation[0], translation[1],
+				translation[2]);
+		Transform transformOutput = transform
+				.createConcatenation(translateXform)
+				.createConcatenation(rotateXform).createConcatenation(sizeXform)
+				.createConcatenation(scaleXform);
 
 		return transformOutput;
 	}
@@ -129,25 +135,6 @@ public class Util {
 		}
 
 		return new Rotate(Math.toDegrees(angle), new Point3D(x, y, z));
-	}
-
-	/**
-	 * <p>
-	 * Returns the IShape property defined by Util.SHAPE_PROP_KEY from the
-	 * supplied node, if one exists.
-	 * </p>
-	 * 
-	 * @param node
-	 * @return an IShape that is assigned to the supplied node.
-	 */
-	public static IShape getShapeProperty(Node node) {
-		Object shapeProperty = node.getProperties().get(SHAPE_PROP_KEY);
-
-		if (shapeProperty != null && shapeProperty instanceof IShape) {
-			return (IShape) shapeProperty;
-		}
-
-		return null;
 	}
 
 	/**

@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.corba.se.spi.ior.Identifiable;
-
 /**
  * <p>
  * VizObject is the base class for all common, shared data structures in Viz
@@ -113,10 +111,12 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#setId(int id)
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#setId(
+	 * int)
 	 */
 	@Override
 	public void setId(int id) {
@@ -129,10 +129,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#getId()
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#getId()
 	 */
 	@Override
 	@XmlAttribute()
@@ -140,10 +141,12 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return uniqueId;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#setName(String name)
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#setName(
+	 * java.lang.String)
 	 */
 	@Override
 	public void setName(String name) {
@@ -156,10 +159,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#getName()
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#getName()
 	 */
 	@Override
 	@XmlAttribute()
@@ -167,10 +171,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return objectName;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#setDescription(String description)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#
+	 * setDescription(java.lang.String)
 	 */
 	@Override
 	public void setDescription(String description) {
@@ -183,10 +188,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#getDescription()
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#
+	 * getDescription()
 	 */
 	@Override
 	@XmlAttribute()
@@ -270,10 +276,10 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#equals(Object otherObject)
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -302,10 +308,10 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return retVal;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#hashCode()
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {

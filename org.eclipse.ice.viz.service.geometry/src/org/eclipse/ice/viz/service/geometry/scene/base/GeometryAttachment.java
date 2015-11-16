@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.geometry.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Shape;
 
@@ -29,7 +28,8 @@ import org.eclipse.ice.viz.service.modeling.Shape;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
-public abstract class GeometryAttachment extends Attachment implements IGeometry {
+public abstract class GeometryAttachment extends Attachment
+		implements IGeometry {
 
 	/**
 	 * Geometry that has been added but has not been integrated as the node
