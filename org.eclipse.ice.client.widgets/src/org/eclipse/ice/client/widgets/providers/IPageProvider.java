@@ -19,24 +19,13 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
- * This is an interface for page providers for Form Editors in ICE that provides
+ * This is an interface for page providers for Form Editors in ICE that provide
  * the set of pages required to draw the UI.
  * 
  * @author Jay Jay Billings
  *
  */
 public interface IPageProvider {
-
-	/**
-	 * This is a static interface method that returns all of the currently
-	 * registers IPageProviders.
-	 * 
-	 * @return The available providers
-	 */
-	public static IPageProvider[] getProviders() {
-		// Add Extensions grabbing code
-		return null;
-	}
 
 	/**
 	 * This operation returns the name of the provider.
@@ -49,19 +38,14 @@ public interface IPageProvider {
 	 * This operation directs the provider to create and return all of its pages
 	 * based on the provided set of pages.
 	 * 
-	 * @param componentMap
-	 *            This map must contain the Components in the Form organized by
-	 *            type. The type is the key and a string equal to one of "data,"
-	 *            "output," "matrix," "masterDetails", "table," "geometry,"
-	 *            "shape," "tree," "mesh," or "reactor." The value is a list
-	 *            that stores all components of that type; DataComponent,
-	 *            ResourceComponent, MatrixComponent, MasterDetailsComponent,
-	 *            TableComponent, GeometryComponent, ShapeComponent,
-	 *            TreeComponent, MeshComponent, ReactorComponent, etc. This is a
-	 *            simulated multimap.
+	 * @param components
+	 *            The list of components that should be rendered onto pages by
+	 *            this provider. Determining the exact type of the components is
+	 *            up to implementing class, but all the components in the list
+	 *            shall have the same type. (No mixed lists!)
 	 * @return the form pages created from the map
 	 */
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
-			Map<String, ArrayList<Component>> componentMap);
+			ArrayList<Component> components);
 
 }

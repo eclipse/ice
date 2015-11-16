@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Initial API and implementation and/or initial documentation - Menghan Li
+ *   Minor updates for architecture compliance - Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.providers;
 
@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
 
@@ -24,49 +25,47 @@ import org.eclipse.ice.client.widgets.ICEResourcePage;
  * This is the default implementation of IPageProvider and it is responsible for
  * generating the default set of pages for ICEFormEditor.
  * 
- * @author Menghan Li
+ * @author Menghan Li, Jay Jay Billings
  *
  */
-public class DefaultResourcePageProvider implements IResourcePageProvider {
+public class DefaultResourcePageProvider extends DefaultPageProvider
+		implements IResourcePageProvider {
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.IPageProvider#getPages(java.util.Map)
+	 * @see
+	 * org.eclipse.ice.client.widgets.providers.DefaultPageProvider#getPages(org
+	 * .eclipse.ui.forms.editor.FormEditor, java.util.ArrayList)
 	 */
-	
-	ResourceComponent resourceComponent = null;
-
-	public static final String PROVIDER_NAME = "default";
-
 	@Override
-	public String getName() {
-		return PROVIDER_NAME;
-	}
-	
-	
-	public ICEResourcePage getPage(FormEditor formEditor, Map<String, ArrayList<Component>> componentMap)  {
-		
+	public ArrayList<IFormPage> getPages(FormEditor formEditor,
+			ArrayList<Component> components) {
+
+		// Local Declarations
+		ResourceComponent resourceComponent = null;
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 		ICEResourcePage resourceComponentPage = null;
-		
 
 		// Get the ResourceComponent and create the ICEOutput page. There
 		// should
 		// only be one output page.
-		if (!(componentMap.get("output").isEmpty())) {
-			resourceComponent = (ResourceComponent) (componentMap.get("output").get(0));
+		if (!(components.isEmpty())) {
+			resourceComponent = (ResourceComponent) (components
+					.get(0));
 			if (resourceComponent != null) {
 				// Make the page
-				 resourceComponentPage =  new ICEResourcePage(formEditor, resourceComponent.getName(),
+				resourceComponentPage = new ICEResourcePage(formEditor,
+						resourceComponent.getName(),
 						resourceComponent.getName());
 				// Set the ResourceComponent
 				resourceComponentPage.setResourceComponent(resourceComponent);
 			}
 		}
 
-		return resourceComponentPage;
+		// Add and return the page
+		pages.add(resourceComponentPage);
+		return pages;
 	}
-
-
 
 }

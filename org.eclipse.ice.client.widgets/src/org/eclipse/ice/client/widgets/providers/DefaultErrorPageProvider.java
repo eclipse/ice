@@ -26,31 +26,18 @@ import org.eclipse.ui.forms.editor.IFormPage;
  * @author Nick Stanish, Jay Jay Billings
  *
  */
-public class DefaultErrorPageProvider implements IErrorPageProvider {
-
-	/**
-	 * Provider name for this default error page provider
-	 */
-	public static final String PROVIDER_NAME = "default";
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
-	 */
-	@Override
-	public String getName() {
-		return PROVIDER_NAME;
-	}
+public class DefaultErrorPageProvider extends DefaultPageProvider
+		implements IErrorPageProvider {
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getPages(org.
-	 * eclipse.ui.forms.editor.FormEditor, java.util.Map)
+	 * eclipse.ui.forms.editor.FormEditor, java.util.ArrayList)
 	 */
 	@Override
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
-			Map<String, ArrayList<Component>> componentMap) {
+			ArrayList<Component> components) {
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 		pages.add(new ErrorMessageFormPage(formEditor, "Error Page",
 				"Error Page"));

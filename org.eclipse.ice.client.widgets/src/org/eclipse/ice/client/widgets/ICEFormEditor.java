@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
+import org.eclipse.ice.client.widgets.providers.DefaultPageFactory;
 import org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
@@ -319,45 +320,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	}
 
 	/**
-	 * This operation creates the ICEResourcePage that will show any output
-	 * files created by ICE.
-	 * 
-	 * @return The ICEResourcePage that should be rendered as part of the Form.
-	 */
-	private ICEFormPage createResourcePage() {
-
-		// create resource page using IResourcePageProvider
-
-		try {
-			// get all of the registered ResourcePageProviders
-			IResourcePageProvider[] resourcePageProviders = IResourcePageProvider
-					.getProviders();
-			if (resourcePageProviders != null
-					&& resourcePageProviders.length > 0) {
-
-				// Use the default resource page provider
-				String providerNameToUse = DefaultResourcePageProvider.PROVIDER_NAME;
-
-				for (IResourcePageProvider currentProvider : resourcePageProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())) {
-						resourceComponentPage = currentProvider.getPage(this,
-								componentMap);
-						break;
-					}
-				}
-			} else {
-				logger.error("No ResourcePageProvider registered");
-			}
-
-		} catch (CoreException e) {
-			logger.error("Unable to get ResourcePageProvider", e);
-		}
-
-		return resourceComponentPage;
-
-	}
-
-	/**
 	 * This method returns the ICEResourcePage that this ICEFormEditor manages.
 	 * 
 	 * @return The ICEResourcePage.
@@ -526,42 +488,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 					pages.add(emfPage);
 				}
 			}
-		}
-
-		return pages;
-	}
-
-	/**
-	 * This operation creates a set of ICEFormPages for ListComponents that are
-	 * stored in the component map.
-	 * 
-	 * @return The pages.
-	 * @throws CoreException
-	 */
-	private ArrayList<IFormPage> createListSectionPages() {
-		// Create the list of pages to return
-		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
-
-		try {
-			// Get all of the registered ListPageProviders
-			IListPageProvider[] listPageProviders = IListPageProvider
-					.getProviders();
-			if (listPageProviders != null && listPageProviders.length > 0) {
-				// Use the default list page provider for now.
-				String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
-				// Do a linear search over providers and pull the correct one.
-				for (IListPageProvider currentProvider : listPageProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages.addAll(
-								currentProvider.getPages(this, componentMap));
-						break;
-					}
-				}
-			} else {
-				logger.error("No ListPageProviders registered");
-			}
-		} catch (CoreException e) {
-			logger.error("Unable to get ListPageProviders", e);
 		}
 
 		return pages;
@@ -1115,24 +1041,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		// Local Declaration
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
-		// Example code for how this might work in the future
-
-		// Get the providers
-		// IPageProvider [] providers = IPageProvider.getProviders();
-
-		// Search over the providers to find the one with the name that matches
-		// the key (in this case "default).
-		// for (IPageProvider provider : providers) {
-
-		// if ("default".equals(provider.getName())) {
-
-		// Get the pages
-		// IFormPage [] formPages = provider.getPages(componentMap);
-		// break;
-
-		// }
-
-		// }
+		// Just allocate it directly for now!
+		DefaultPageFactory factory = new DefaultPageFactory();
 
 		// Load data pages if they are available.
 		if (!iceDataForm.getComponents().isEmpty()) {
@@ -1175,9 +1085,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 			// Create pages for list components
 			if (componentMap.get("list").size() > 0) {
-				for (IFormPage p : createListSectionPages()) {
-					formPages.add(p);
-				}
+				formPages.addAll(factory.getListComponentPages(this,
+						componentMap.get("list")));
 			}
 
 			// Set the TreeCompositeViewer Input
@@ -1193,11 +1102,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			// Create the page for ResourceComponents. This one should always be
 			// last on the list!
 			if (!(componentMap.get("output").isEmpty())) {
-				formPages.add(createResourcePage());
+				formPages.addAll(factory.getResourceComponentPages(this,
+						componentMap.get("output")));
 			}
 		} else {
 			// Otherwise throw up a nice empty page explaining the problem.
-			formPages.addAll(createEmptyErrorPage());
+			formPages.add(factory.getErrorPage(this));
 		}
 
 		// Add the Pages
@@ -1210,42 +1120,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		}
 
 		return;
-
-	}
-
-	/**
-	 * This operation creates an empty FormPage explaining that there has been
-	 * an error and no data is available.
-	 * 
-	 * @return the error pages
-	 */
-	private ArrayList<IFormPage> createEmptyErrorPage() {
-
-		// Array for storing the pages
-		ArrayList<IFormPage> pages = null;
-
-		try {
-			// get all of the registered ListPageProviders
-			IErrorPageProvider[] errorPageProviders = IErrorPageProvider
-					.getProviders();
-			if (errorPageProviders != null && errorPageProviders.length > 0) {
-				// Use the default error page provider
-				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
-				// Do a linear search to find the correct provider
-				for (IErrorPageProvider currentProvider : errorPageProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages = currentProvider.getPages(this, componentMap);
-						break;
-					}
-				}
-			} else {
-				logger.error("No ErrorPageProviders registered");
-			}
-		} catch (CoreException e) {
-			logger.error("Unable to get ErrorPageProviders", e);
-		}
-
-		return pages;
 
 	}
 

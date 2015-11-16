@@ -9,12 +9,11 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.client.widgets;
+package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.eclipse.ice.client.widgets.providers.IPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
@@ -28,15 +27,20 @@ import org.eclipse.ui.forms.editor.IFormPage;
  */
 public class DefaultPageProvider implements IPageProvider {
 
+	/**
+	 * Default provider name
+	 */
+	public static final String PROVIDER_NAME = "default";
+
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
+	 * @see
+	 * org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return PROVIDER_NAME;
 	}
 
 	/*
@@ -47,7 +51,7 @@ public class DefaultPageProvider implements IPageProvider {
 	 */
 	@Override
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
-			Map<String, ArrayList<Component>> componentMap) {
+			ArrayList<Component> components) {
 		// TODO Auto-generated method stub
 		return null;
 	}
