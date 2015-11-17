@@ -16,20 +16,11 @@ import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.ui.MaterialsDatabaseServiceHolder;
 import org.eclipse.nebula.widgets.nattable.NatTable;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.ReferenceBy;
-import org.eclipse.swtbot.swt.finder.SWTBotWidget;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
-import org.eclipse.swtbot.swt.finder.results.IntResult;
 import org.eclipse.swtbot.swt.finder.results.Result;
 import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
-import org.eclipse.swtbot.swt.finder.widgets.AbstractSWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.junit.Test;
@@ -89,10 +80,10 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 		// Check that silver is still in the table. An exception will be thrown
 		// here if it is not.
-		bot.tree(1).getTreeItem("Ag");
+		bot.tree().getTreeItem("Ag");
 
 		// Select silver in the table
-		bot.tree(1).select(0);
+		bot.tree().select(0);
 
 		// Get the NatTable of material properties.
 		NatTable realTable = bot.widget(widgetOfType(NatTable.class));
@@ -214,14 +205,14 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		deleteProperty.click();
 
 		// Change the material selection, then return to silver.
-		bot.tree(1).select(1);
-		bot.tree(1).select(0);
+		bot.tree().select(1);
+		bot.tree().select(0);
 
 		// Check that the table is still empty after being reloaded;
 		assertEquals(0, propertyTable.rowCount());
 
 		// Select aluminum in the table
-		bot.tree(1).select(1);
+		bot.tree().select(1);
 
 		// Make sure the property table has aluminum's properties
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
@@ -235,7 +226,7 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 		// Select americum, which is now in aluminum's previous spot, in the
 		// table
-		bot.tree(1).select(1);
+		bot.tree().select(1);
 
 		// Make sure the property table has americum's properties.
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
@@ -374,7 +365,7 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 		// Search for the custom material and open it
 		bot.text(1).typeText("Custom");
-		bot.tree(1).select(0);
+		bot.tree().select(0);
 
 		// Check the property name for the first data row.
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
@@ -383,8 +374,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		assertEquals(3.5, cellValue);
 
 		// Select the gold under the custom material
-		bot.tree(1).expandNode("Custom Material");
-		bot.tree(1).getTreeItem("Custom Material").select("Au (1)");
+		bot.tree().expandNode("Custom Material");
+		bot.tree().getTreeItem("Custom Material").select("Au (1)");
 
 		// Check the property name for the first data row.
 
@@ -400,8 +391,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		bot.sleep(5000);
 
 		// Make sure the custom material is still there
-		bot.tree(1).expandNode("Custom Material");
-		bot.tree(1).getTreeItem("Custom Material").select("Au (1)");
+		bot.tree().expandNode("Custom Material");
+		bot.tree().getTreeItem("Custom Material").select("Au (1)");
 
 		// Reset the database.
 		reset.click();
@@ -409,7 +400,7 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		bot.button("OK").click();
 
 		// Check that aluminum is back to its default state
-		bot.tree(1).select("Al");
+		bot.tree().select("Al");
 
 		realTable = bot.widget(widgetOfType(NatTable.class));
 		propertyTable = new SWTBotNatTable(realTable);
@@ -443,6 +434,7 @@ class maximizeableShell extends SWTBotShell {
 
 	public void maximize() {
 		syncExec(new Result<Object>() {
+			@Override
 			public Object run() {
 				widget.setMaximized(true);
 				return null;
