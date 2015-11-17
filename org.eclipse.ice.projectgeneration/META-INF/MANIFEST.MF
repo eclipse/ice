@@ -11,4 +11,6 @@ Require-Bundle: org.eclipse.pde.core,
  org.eclipse.ui.ide,
  org.eclipse.ui;bundle-version="3.107.0",
  org.eclipse.jface,
- org.eclipse.ice.client
+ org.eclipse.ice.client,
+ org.slf4j.api
+Export-Package: org.eclipse.ice.projectgeneration

@@ -9,10 +9,19 @@
       </category>
       <wizard
             category="org.eclipse.ice.projectgeneration.wizards"
-            class="org.eclipse.ice.projectgeneration.NewICEItemWizard"
+            class="org.eclipse.ice.projectgeneration.NewICEItemProjectWizard"
             id="org.eclipse.ice.projectgeneration.wizard.new.item"
             name="ICE Item Creation Wizard">
       </wizard>
+   </extension>
+   <extension
+         id="org.eclipse.ice.projectgeneration"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.ice.projectgeneration.ICEItemNature">
+         </run>
+      </runtime>
    </extension>
 
 </plugin>

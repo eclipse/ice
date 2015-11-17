@@ -12,30 +12,47 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration;
 
+import java.net.URI;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 
-public class NewICEItemWizard extends Wizard implements INewWizard {
+/**
+ * This class defines the steps for creating a new New ICE Item project
+ * via the wizard that us accessible via:
+ *   'File -> New... -> Other -> New ICE Item Project'
+ * 
+ * @author arbennett
+ */
+public class NewICEItemProjectWizard extends Wizard implements INewWizard {
 
-	private static final String DESCRIPTION = NewICEItemWizardMessages.NewICEItemWizard_Description;
-	private static final String WIZARD_NAME = NewICEItemWizardMessages.NewICEItemWizard_Wizard_Name;
+	// Messages are externalized in the messages.properties file
+	private static final String DESCRIPTION = NewICEItemProjectWizardMessages.NewICEItemWizard_Description;
+	private static final String WIZARD_NAME = NewICEItemProjectWizardMessages.NewICEItemWizard_Wizard_Name;
 	
 	private WizardNewProjectCreationPage _pageOne;
 	
-	
-	public NewICEItemWizard() {
-		setWindowTitle(NewICEItemWizardMessages.NewICEItemWizard_Window_Title);
+	/**
+	 *	Constructor
+	 */
+	public NewICEItemProjectWizard() {
+		setWindowTitle(NewICEItemProjectWizardMessages.NewICEItemWizard_Window_Title);
 	}
 
+	/**
+	 * Initialize the wizard
+	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		// TODO Auto-generated method stub
-
 	}
 
+	/**
+	 * Defines the wizard pages
+	 */
 	@Override
 	public void addPages() {
 		super.addPages();
@@ -47,10 +64,21 @@ public class NewICEItemWizard extends Wizard implements INewWizard {
 		addPage(_pageOne);
 	}
 	
-	
+	/**
+	 * Take all of the given information and set up a new 
+	 * New ICE Item Project.
+	 * 
+	 * @return whether the project creation was successful
+	 */
 	@Override
 	public boolean performFinish() {
-		// TODO Auto-generated method stub
+		String name = _pageOne.getProjectName();
+		URI location = null;
+		if (!_pageOne.useDefaults()) {
+			location = _pageOne.getLocationURI();
+		}
+		
+		NewICEItemProjectSupport.createProject(name, location);
 		return true;
 	}
 
