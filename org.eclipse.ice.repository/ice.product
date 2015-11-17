@@ -175,7 +175,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt.bupc"/>
       <feature id="org.eclipse.cdt.core.lrparser.feature"/>
       <feature id="org.eclipse.cdt.core.parser.upc.feature"/>
-      <feature id="org.eclipse.cdt.docker.launcher"/>
       <feature id="org.eclipse.cdt.gdb.source"/>
       <feature id="org.eclipse.cdt.gnu.build.source"/>
       <feature id="org.eclipse.cdt.gnu.debug.source"/>

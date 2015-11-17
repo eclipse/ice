@@ -19,6 +19,7 @@ import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -103,11 +104,24 @@ public class EclipseFormWidget implements IFormWidget {
 	public EclipseFormWidget(ICEFormEditor editor) {
 		this();
 		ICEFormEditor = editor;
+
+		// Get the EditorInput object, more than likely this is 
+		// an ICEFormInput
+		IEditorInput input = ICEFormEditor.getEditorInput();
+
+		// Get the Form if we can.
+		if (input instanceof ICEFormInput) {
+			ICEFormInput formInput = (ICEFormInput) input;
+			widgetForm = formInput.getForm();
+		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerUpdateListener(org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener)
+	 * 
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#
+	 * registerUpdateListener(org.eclipse.ice.iclient.uiwidgets.
+	 * IUpdateEventListener)
 	 */
 	@Override
 	public void registerUpdateListener(IUpdateEventListener listener) {
@@ -119,8 +133,11 @@ public class EclipseFormWidget implements IFormWidget {
 	}
 
 	/*
-	 *(non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerProcessListener(org.eclipse.ice.iclient.uiwidgets.IProcessEventListener)
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#
+	 * registerProcessListener(org.eclipse.ice.iclient.uiwidgets.
+	 * IProcessEventListener)
 	 */
 	@Override
 	public void registerProcessListener(IProcessEventListener listener) {
@@ -133,7 +150,10 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#registerResourceProvider(org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider)
+	 * 
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#
+	 * registerResourceProvider(org.eclipse.ice.iclient.uiwidgets.
+	 * ISimpleResourceProvider)
 	 */
 	@Override
 	public void registerResourceProvider(ISimpleResourceProvider provider) {
@@ -146,7 +166,10 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyUpdateListeners()
+	 * 
+	 * @see
+	 * org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyUpdateListeners
+	 * ()
 	 */
 	@Override
 	public void notifyUpdateListeners() {
@@ -159,7 +182,9 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyProcessListeners(java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#
+	 * notifyProcessListeners(java.lang.String)
 	 */
 	@Override
 	public void notifyProcessListeners(String process) {
@@ -172,7 +197,10 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyCancelListeners(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.iclient.uiwidgets.IObservableWidget#notifyCancelListeners
+	 * (java.lang.String)
 	 */
 	@Override
 	public void notifyCancelListeners(String process) {
@@ -184,7 +212,10 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#setForm(org.eclipse.ice.datastructures.form.Form)
+	 * 
+	 * @see
+	 * org.eclipse.ice.iclient.uiwidgets.IFormWidget#setForm(org.eclipse.ice.
+	 * datastructures.form.Form)
 	 */
 	@Override
 	public void setForm(Form form) {
@@ -193,6 +224,7 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#getForm()
 	 */
 	@Override
@@ -208,8 +240,7 @@ public class EclipseFormWidget implements IFormWidget {
 	public void display() {
 
 		// Local Declarations
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 
 		// If the Form has been set, load the widget
 		if (widgetForm != null) {
@@ -219,14 +250,13 @@ public class EclipseFormWidget implements IFormWidget {
 
 			// Open the page
 			try {
-				IEditorPart formEditor = page.openEditor(ICEFormInput,
-						org.eclipse.ice.client.widgets.ICEFormEditor.ID);
+				IEditorPart formEditor = page.openEditor(ICEFormInput, org.eclipse.ice.client.widgets.ICEFormEditor.ID);
 				// Set this editor reference so that listeners can be registered
 				// later.
 				ICEFormEditor = (ICEFormEditor) formEditor;
 			} catch (PartInitException e) {
 				// Dump the stacktrace if something happens.
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 
 		}
@@ -236,7 +266,10 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#updateStatus(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.ice.iclient.uiwidgets.IFormWidget#updateStatus(java.lang.
+	 * String)
 	 */
 	@Override
 	public void updateStatus(String statusMessage) {
@@ -248,6 +281,7 @@ public class EclipseFormWidget implements IFormWidget {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.iclient.uiwidgets.IFormWidget#disable(boolean)
 	 */
 	@Override

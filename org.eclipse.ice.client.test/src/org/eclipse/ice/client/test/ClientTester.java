@@ -50,6 +50,7 @@ import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.omg.CORBA.ORB;
@@ -148,6 +149,19 @@ public class ClientTester {
 
 	}
 
+	/**
+	 * This operation checks that we can add an IFormWidget 
+	 * to the Client.s
+	 */
+	@Test
+	public void checkAddFormWidget() {
+		IFormWidget widget = new FakeFormWidget();
+		Form form = new Form();
+		form.setItemID(1);
+		widget.setForm(form);
+		iCEClient.addFormWidget(widget);
+		assertNotNull(iCEClient.getFormWidget(1));
+	}
 	/**
 	 * This operation checks the Client by making sure that errors can be
 	 * dispatched to the UI system to be displayed to the user.

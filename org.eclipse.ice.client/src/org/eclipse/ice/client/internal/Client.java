@@ -40,6 +40,7 @@ import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -784,4 +785,25 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		getCore().renameItem(itemID, name);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.iclient.IClient#setFormWidget(org.eclipse.ice.iclient.uiwidgets.IFormWidget)
+	 */
+	@Override
+	public void addFormWidget(IFormWidget widget) {
+		// Add this Form Widget to the formWidgetTable 
+		// so it can be used in Item processing.
+		formWidgetTable.put(widget.getForm().getItemID(), widget);
+	}
+
+	/**
+	 * This operation returns the IFormWidget corresponding to 
+	 * the given Item Id. 
+	 * 
+	 * @param itemId The id of the Item whose IFormWidget has been requested
+	 * @return formWidget
+	 */
+	public IFormWidget getFormWidget(int itemId) {
+		return formWidgetTable.get(itemId);
+	}
 }

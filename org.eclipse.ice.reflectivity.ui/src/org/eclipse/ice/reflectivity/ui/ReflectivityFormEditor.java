@@ -47,48 +47,41 @@ public class ReflectivityFormEditor extends ICEFormEditor {
 		// Loop over the DataComponents and get them into the map. This is the
 		// same process as for the regular ICEFormEditor
 		for (Component i : iceDataForm.getComponents()) {
-			logger.info("ICEFormEditor Message: Adding component "
-					+ i.getName() + " " + i.getId());
+			logger.info("ICEFormEditor Message: Adding component " + i.getName() + " " + i.getId());
 			i.accept(this);
 		}
 
 		// Get the components out if they were all properly set.
-		if (!(componentMap.get("data").isEmpty())
-				&& !(componentMap.get("list").isEmpty())
+		if (!(componentMap.get("data").isEmpty()) && !(componentMap.get("list").isEmpty())
 				&& !(componentMap.get("output").isEmpty())) {
 
 			// Retrieve the data component
-			DataComponent dataComp = (DataComponent) componentMap.get("data")
-					.get(0);
+			DataComponent dataComp = (DataComponent) componentMap.get("data").get(0);
 
 			// Retrieve the output data component
-			DataComponent outputComp = (DataComponent) componentMap.get("data")
-					.get(1);
+			DataComponent outputComp = (DataComponent) componentMap.get("data").get(1);
 
 			// Retrieve the list component
-			ListComponent listComp = (ListComponent) componentMap.get("list")
-					.get(0);
+			ListComponent listComp = (ListComponent) componentMap.get("list").get(0);
 
 			// Retrieve the resource component
-			ResourceComponent resComp = (ResourceComponent) componentMap
-					.get("output").get(0);
+			ResourceComponent resComp = (ResourceComponent) componentMap.get("output").get(0);
 
 			// Create the reflectivity page. Use all of the components for the
 			// Id.
-			ReflectivityPage page = new ReflectivityPage(
-					this, dataComp.getName() + listComp.getName()
-							+ resComp.getName() + outputComp.getName(),
+			ReflectivityPage page = new ReflectivityPage(this,
+					dataComp.getName() + listComp.getName() + resComp.getName() + outputComp.getName(),
 					"Reflectivity Page");
-
-			// Set the resource component page for the resource view to know
-			// where to open the resources (the VizResources)
-			super.resourceComponentPage = page;
 
 			// Add the viz service and the components to the reflectivity page.
 			page.setResourceComponent(resComp);
 			page.setDataComponent(dataComp);
 			page.setList(listComp);
 			page.setOutputComponent(outputComp);
+			
+			// Set the resource component page for the resource view to know
+			// where to open the resources (the VizResources)
+			resourceComponentPage = page;
 
 			// Finally, try adding the page to the editor.
 			try {
