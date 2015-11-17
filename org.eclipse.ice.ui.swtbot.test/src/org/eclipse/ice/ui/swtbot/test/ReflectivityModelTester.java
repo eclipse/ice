@@ -161,14 +161,6 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 		enterText("deltaQ1ByQ:", "invalid input");
 		enterText("Wave Length:", "invalid input");
 
-		// Try out the other tabs
-		// TODO Test the functionality of the Cell Editor tab
-		final ListElement tab1 = bot.widget(widgetOfType(ListElement.class), 1);
-		selectPropertyTabItem(tab1);
-
-		final ListElement tab2 = bot.widget(widgetOfType(ListElement.class), 1);
-		selectPropertyTabItem(tab2);
-
 	}
 
 	/**
@@ -198,6 +190,7 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 	 */
 	public static void selectPropertyTabItem(final ListElement tabItem) {
 		UIThreadRunnable.syncExec(SWTUtils.display(), new VoidResult() {
+			@Override
 			public void run() {
 				if (tabItem != null) {
 
