@@ -41,7 +41,7 @@ public class BatMLModelBuilder extends AbstractItemBuilder {
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {
-		BatMLModel batML = new BatMLModel(projectSpace);
+		Item batML = new BatMLModel(projectSpace);
 		batML.setItemBuilderName(getItemName());
 		return batML;
 	}

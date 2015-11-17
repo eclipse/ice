@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,15 +24,24 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 
 /**
- * This class extends the FilteredItemsSelectionDialog for a basic list 
- * dialog for Tree Node Child Exemplars with a search bar that allows for 
- * filtering the list. 
+ * This class extends the FilteredItemsSelectionDialog for a basic list dialog
+ * for Tree Node Child Exemplars with a search bar that allows for filtering the
+ * list.
  * 
  * @author Alex McCaskey
  *
@@ -38,12 +49,28 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
 public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelectionDialog {
 
 	/**
-	 * The set of elements that this dialog displays. 
+	 * The set of elements that this dialog displays.
 	 */
 	private Set<String> elements;
 
 	/**
-	 * The constructor. 
+	 * The list of current children names. 
+	 */
+	private ArrayList<String> currentChildren;
+
+	/**
+	 * Reference to a text box containing the 
+	 * name of the added child. 
+	 */
+	private Text nameText;
+
+	/**
+	 * The string name in the text box. 
+	 */
+	private String currentNameText;
+
+	/**
+	 * The constructor.
 	 * 
 	 * @param shell
 	 * @param list
@@ -54,15 +81,17 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	}
 
 	/**
-	 * The constructor for selecting multiple elements at once. 
+	 * The constructor for selecting multiple elements at once.
 	 * 
 	 * @param shell
 	 * @param multi
 	 * @param list
 	 */
-	public TreeNodeFilteredItemsSelectionDialog(Shell shell, boolean multi, Set<String> list) {
+	public TreeNodeFilteredItemsSelectionDialog(Shell shell, boolean multi, Set<String> list,
+			ArrayList<String> currentNames) {
 		super(shell, multi);
 		elements = list;
+		currentChildren = currentNames;
 	}
 
 	/*
@@ -73,7 +102,66 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	 */
 	@Override
 	protected Control createExtendedContentArea(Composite parent) {
-		return null;
+		Composite comp = new Composite(parent, SWT.NONE);
+		comp.setLayout(new GridLayout(2, false));
+
+		Label label = new Label(comp, SWT.NONE);
+		label.setText("Name:");
+
+		nameText = new Text(comp, SWT.BORDER);
+
+		nameText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent event) {
+				// Get the widget whose text was modified
+				Text text = (Text) event.widget;
+				currentNameText = text.getText();
+			}
+		});
+		// Set its layout data
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = SWT.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		nameText.setLayoutData(gridData);
+
+		comp.setLayoutData(gridData);
+
+		return comp;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.dialogs.FilteredItemsSelectionDialog#handleSelected(org.
+	 * eclipse.jface.viewers.StructuredSelection)
+	 */
+	@Override
+	protected void handleSelected(StructuredSelection selection) {
+		String nameTextStr = "";
+		for (Object o : selection.toList()) {
+			int counter = 1;
+			String name = o.toString().toLowerCase();
+			while (currentChildren.contains(name)) {
+				name += "_" + counter;
+			}
+
+			nameTextStr += name + " ; ";
+		}
+		nameTextStr = nameTextStr.substring(0, nameTextStr.length() - 2);
+		nameText.setText(nameTextStr);
+		currentNameText = nameTextStr;
+
+		super.handleSelected(selection);
+		return;
+	}
+
+	/**
+	 * Return the current Name Text String.
+	 * 
+	 * @return
+	 */
+	public String getNodeText() {
+		return currentNameText;
 	}
 
 	/*
@@ -125,10 +213,10 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	@Override
 	protected Comparator getItemsComparator() {
 		return new Comparator() {
-	         public int compare(Object arg0, Object arg1) {
-	            return arg0.toString().compareTo(arg1.toString());
-	         }
-	      };
+			public int compare(Object arg0, Object arg1) {
+				return arg0.toString().compareTo(arg1.toString());
+			}
+		};
 	}
 
 	/*
@@ -161,7 +249,7 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	 */
 	@Override
 	public String getElementName(Object item) {
-		 return item.toString();
+		return item.toString();
 	}
 
 }

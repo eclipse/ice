@@ -252,8 +252,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		// Push a message to the message manager
 		if (getHeaderForm() != null) {
 			final IMessageManager messageManager = getHeaderForm().getMessageManager();
-			messageManager.addMessage("statusUpdate", "There are unsaved changes on the form.", null,
-					IMessageProvider.WARNING);
+			if (dirty) {
+				messageManager.addMessage("statusUpdate", "There are unsaved changes on the form.", null,
+						IMessageProvider.WARNING);
+			} else {
+				messageManager.removeMessage("statusUpdate");
+				//messageManager.addMessage("statusUpdate", "Form Saved", null, IMessageProvider.INFORMATION);
+			}
 		}
 
 	}
@@ -869,7 +874,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		}
 
 		iceDataForm.register(this);
-		
+
 		return;
 	}
 
@@ -904,6 +909,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 
+		System.out.println("SETTING THE FORM AS NOT DIRTY");
 		// Set the dirty flag
 		setDirty(false);
 
@@ -1003,7 +1009,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	@Override
 	protected void addPages() {
-		
+
 		// Local Declaration
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
@@ -1264,6 +1270,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Notify the update listeners
 		for (IUpdateEventListener eventListener : updateListeners) {
+			System.out.println("Updating " + eventListener.getClass().toString());
 			eventListener.formUpdated(iceDataForm);
 		}
 
@@ -1330,7 +1337,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 					managedForm.getForm().getForm().redraw();
 				}
 			});
-			
+
 			return;
 		}
 
