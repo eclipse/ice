@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Visualization Test Bundle
 Bundle-SymbolicName: org.eclipse.ice.viz.test
-Bundle-Version: 2.1.7.20150825
+Bundle-Version: 2.1.8
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit,
  org.eclipse.ice.analysistool,
