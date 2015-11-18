@@ -402,7 +402,8 @@
        name="Default Resource Page Provider"
        point="org.eclipse.ice.client.widgets.resourcePageProvider">
     <Implementation
-          Class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider">
+          Class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider"
+          class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider">
     </Implementation>
  </extension>
 </plugin>
