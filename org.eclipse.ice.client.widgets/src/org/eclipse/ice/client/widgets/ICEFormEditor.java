@@ -21,15 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider;
-import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
 import org.eclipse.ice.client.widgets.providers.DefaultPageFactory;
-import org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider;
-import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
-import org.eclipse.ice.client.widgets.providers.IListPageProvider;
-import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -42,7 +35,6 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -730,86 +722,25 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
 
-		// Need IBasicComponentPageProvider
-
 		// Local Declarations
-		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
+
 		ArrayList<Component> comps = new ArrayList<Component>();
-		ICESectionPage tmpPage = null;
-		String pageName = null;
-		int numCompsPerPage = 4, i = 0, j = 0;
-		int numComponents = 0;
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
 
 		// Get the TableComponents and DataComponents
 		comps.addAll(componentMap.get("data"));
 		comps.addAll(componentMap.get("table"));
 		comps.addAll(componentMap.get("matrix"));
-
-		numComponents = comps.size();
-
-		// If there are less components than the allowed number of components
-		// per page, just add them all to the first page
-		if (numComponents < numCompsPerPage) {
-			// Set a name for the page that is a combination of the first two
-			// components or only the first one if there is but one component
-			if (numComponents == 1) {
-				pageName = ((ICEObject) (comps.get(0))).getName();
-			} else {
-				pageName = ((ICEObject) (comps.get(0))).getName() + ", "
-						+ ((ICEObject) (comps.get(1))).getName() + ", etc.";
-			}
-			// Instantiate the page
-			tmpPage = new ICESectionPage(this, pageName, pageName);
-			// Loop over the list of DataComponents and create pages for them
-			for (Component component : comps) {
-				tmpPage.addComponent(component);
-			}
-			sectionPages.add(tmpPage);
-		} else {
-			// Otherwise, if there are more components than the number of
-			// components per page, add them all with numCompsPerPage Components
-			// per page. This loop adds all of the full pages.
-			for (i = 0; i < (numComponents / numCompsPerPage)
-					* numCompsPerPage; i = i + numCompsPerPage) {
-				// Set a name for the page that is a combination of the first
-				// two components
-				pageName = ((ICEObject) (comps.get(i))).getName() + ", "
-						+ ((ICEObject) (comps.get(i + 1))).getName() + ", etc.";
-				// Create the page
-				tmpPage = new ICESectionPage(this, pageName, pageName);
-				// Add the components
-				for (j = 0; j < numCompsPerPage; j++) {
-					// i - 1 + j is the buffer offset
-					tmpPage.addComponent(comps.get(i + j));
-				}
-				// Add the page to the list
-				sectionPages.add(tmpPage);
-			}
-
-			// Clean up the left over components by just adding them to
-			// their own page.
-			if (i != comps.size()) {
-				// Start by adding setting up the name
-				if (comps.size() - i == 1) {
-					pageName = ((ICEObject) (comps.get(i))).getName();
-				} else {
-					pageName = ((ICEObject) (comps.get(i))).getName() + ", "
-							+ ((ICEObject) (comps.get(i + 1))).getName()
-							+ ", etc.";
-				}
-				// Create the page
-				tmpPage = new ICESectionPage(this, pageName, pageName);
-				// Add the components
-				while (i < comps.size()) {
-					tmpPage.addComponent(comps.get(i));
-					i++;
-				}
-				// Add the page to the list
-				sectionPages.add(tmpPage);
-			}
+		
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getComponentPages(this, comps);
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
 		}
+		return pages;
 
-		return sectionPages;
+	
 	}
 
 	private String itemName;

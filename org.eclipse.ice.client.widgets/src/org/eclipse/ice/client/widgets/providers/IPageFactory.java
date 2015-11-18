@@ -68,4 +68,13 @@ public interface IPageFactory {
 	 */
 	public IFormPage getErrorPage(FormEditor editor);
 
+	/**
+	 * 
+	 * @param editor
+	 * @param components
+	 * @return
+	 */
+	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
+			ArrayList<Component> components);
+
 }

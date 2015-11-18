@@ -150,5 +150,36 @@ public class DefaultPageFactory implements IPageFactory {
 		// get the first element.
 		return pages.get(0);
 	}
+	
+
+	@Override
+	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
+			ArrayList<Component> components) {
+		// Array for storing the pages
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+
+		try {
+			// get all of the registered basic component page providers
+			ArrayList<IBasicComponentPageProvider> basicComponentProviders = 
+					IBasicComponentPageProvider.getProviders();
+			if (basicComponentProviders != null && basicComponentProviders.size() > 0) {
+				// Use the default basic component page provider
+				String providerNameToUse = DefaultBasicComponentPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IBasicComponentPageProvider currentProvider : basicComponentProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, components);
+						break;
+					}
+				}
+			} else {
+				logger.error("No BasicComponentPageProviders registered");
+			}
+		} catch (CoreException e) {
+			logger.error("Unable to get BasicComponentPageProviders", e);
+		}
+
+		return pages;
+	}
 
 }
