@@ -7,8 +7,9 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Nick Stanish, Jay Jay Billings
+ *   Nick Stanish
  *******************************************************************************/
+
 
 package org.eclipse.ice.client.widgets.providers;
 
@@ -18,29 +19,28 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ExtensionHelper;
 
 /**
- * This is an interface for list page providers for Form Editors in ICE that
- * provides the set of list section pages required to draw the UI.
+ * This is an interface for basic component providers for Form Editors in ICE that
+ * provides the set of basic component pages required to draw the UI.
  * 
- * @author Nick Stanish, Jay Jay Billings
+ * @author Nick Stanish
  *
  */
-public interface IListPageProvider extends IPageProvider {
-
+public interface IBasicComponentPageProvider extends IPageProvider {
 	/**
-	 * Extension point ID for IListPageProviders.
+	 * Extension point ID for IBasicComponentPageProvider.
 	 */
-	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.listPageProvider";
+	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.basicComponentPageProvider";
 
 	/**
 	 * This is a static interface method that returns all of the currently
-	 * registered IListPageProvider.
+	 * registered IBasicComponentPageProviders.
 	 * 
 	 * @return The available providers
 	 * @throws CoreException
 	 */
-	public static ArrayList<IListPageProvider> getProviders() throws CoreException {
-		ExtensionHelper<IListPageProvider> extensionHelper = new ExtensionHelper<IListPageProvider>();
+	public static ArrayList<IBasicComponentPageProvider> getProviders() throws CoreException {
+		ExtensionHelper<IBasicComponentPageProvider> extensionHelper = new ExtensionHelper<IBasicComponentPageProvider>();
 		return extensionHelper.getExtensions(EXTENSION_POINT_ID);
+		
 	}
-
 }

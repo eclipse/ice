@@ -6,6 +6,7 @@
    <extension-point id="org.eclipse.ice.client.widgets.listPageProvider" name="List Page Provider" schema="schema/org.eclipse.ice.client.widgets.listPageProvider.exsd"/>
    <extension-point id="errorPageProvider" name="Error Page Provider" schema="schema/errorPageProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.resourcePageProvider" name="Resource Page Provider" schema="schema/org.eclipse.ice.client.widgets.resourcePageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.basicComponentPageProvider" name="Basic Component Page Provider" schema="schema/org.eclipse.ice.client.widgets.basicComponentPageProvider.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -405,5 +406,11 @@
           Class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider"
           class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider">
     </Implementation>
+ </extension>
+ <extension
+       point="org.eclipse.ice.client.widgets.basicComponentPageProvider">
+    <implementation
+          class="org.eclipse.ice.client.widgets.providers.DefaultBasicComponentPageProvider">
+    </implementation>
  </extension>
 </plugin>

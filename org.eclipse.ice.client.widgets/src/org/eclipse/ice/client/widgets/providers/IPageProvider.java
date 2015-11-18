@@ -7,12 +7,11 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Nick Stanish
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -22,7 +21,7 @@ import org.eclipse.ui.forms.editor.IFormPage;
  * This is an interface for page providers for Form Editors in ICE that provide
  * the set of pages required to draw the UI.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Nick Stanish
  *
  */
 public interface IPageProvider {

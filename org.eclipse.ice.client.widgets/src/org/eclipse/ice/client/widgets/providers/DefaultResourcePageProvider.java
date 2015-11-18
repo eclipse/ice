@@ -12,14 +12,12 @@
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
-import java.util.Map;
 
+import org.eclipse.ice.client.widgets.ICEResourcePage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
-import org.eclipse.ice.client.widgets.ICEFormPage;
-import org.eclipse.ice.client.widgets.ICEResourcePage;
 
 /**
  * This is the default implementation of IPageProvider and it is responsible for
