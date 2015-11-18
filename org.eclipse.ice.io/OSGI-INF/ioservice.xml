@@ -4,6 +4,6 @@
    <reference bind="addReader" cardinality="0..n" interface="org.eclipse.ice.io.serializable.IReader" name="IReader" policy="dynamic"/>
    <reference bind="addWriter" cardinality="0..n" interface="org.eclipse.ice.io.serializable.IWriter" name="IWriter" policy="dynamic"/>
    <service>
-      <provide interface="org.eclipse.ice.io.serializable.IOService"/>
+      <provide interface="org.eclipse.ice.io.serializable.IIOService"/>
    </service>
 </scr:component>

@@ -13,34 +13,34 @@
 package org.eclipse.ice.core.internal.itemmanager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * The ItemManager is responsible for storing, managing and distributing all
  * instances of the Item class. The ItemManager implements a basic, CRUD-style
  * interface for managing items and contains two static methods to manage
  * dynamic registrations of ItemBuilders from the underlying OSGi framework.
  * This class will only store one instance of each ItemBuilder that is
  * registered with it.
- * </p>
  * <p>
  * The ItemManager will store and retrieve Items to and from a data store if an
  * IPersistenceProvider is set by calling ItemManager.setPersistenceProvider().
@@ -62,22 +62,18 @@ public class ItemManager implements ItemListener {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ItemManager.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(ItemManager.class);
 
 	/**
-	 * <p>
 	 * This is a list of all of the items that are managed by the ItemManger.
 	 * The key is the Item Id and the value is a reference to the Item.
-	 * </p>
-	 *
 	 */
 	private HashMap<Integer, Item> itemList;
 
 	/**
-	 * <p>
 	 * The list of ItemBuilders that can be used to create items. The keys are
 	 * the names of the builders and the values are the builders.
-	 * </p>
 	 */
 	private HashMap<String, ItemBuilder> itemBuilderList;
 
@@ -171,7 +167,8 @@ public class ItemManager implements ItemListener {
 	 *            The Eclipse project where the newly created Item should store
 	 *            files and search for other resources.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new and unique id of the item that was created.
 	 *         </p>
 	 */
@@ -258,7 +255,8 @@ public class ItemManager implements ItemListener {
 	 *            The Eclipse project where the newly created Item should store
 	 *            files and search for other resources.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The identification number of the newly created Item or -1 if it
 	 *         was unable to create the Item.
 	 *         </p>
@@ -301,7 +299,8 @@ public class ItemManager implements ItemListener {
 	 *            <p>
 	 *            The unique itemID of the item that should be retrieved.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The Form that represents the Item with id itemID.
 	 *         </p>
 	 */
@@ -337,20 +336,19 @@ public class ItemManager implements ItemListener {
 		// Make sure the builder is not null and add it to the list, if it's not
 		// there already.
 		if (builder != null
-				&& !this.itemBuilderList.containsKey(builder.getItemName())) {
-			this.itemBuilderList.put(builder.getItemName(), builder);
+				&& !itemBuilderList.containsKey(builder.getItemName())) {
+			itemBuilderList.put(builder.getItemName(), builder);
 			// Notify the composite Items of the updated builder list
 			for (ICompositeItemBuilder compositeBuilder : compositeBuilders) {
-				compositeBuilder.addBuilders(new ArrayList<ItemBuilder>(
-						itemBuilderList.values()));
+				compositeBuilder.addBuilders(
+						new ArrayList<ItemBuilder>(itemBuilderList.values()));
 			}
 			// Get the list of Items and see if any disabled ones can be
 			// re-enabled because this builder is their parent.
 			for (int i = 0; i < itemList.values().size(); i++) {
 				Item item = (Item) itemList.values().toArray()[i];
-				if (!item.isEnabled()
-						&& item.getItemBuilderName().equals(
-								builder.getItemName())) {
+				if (!item.isEnabled() && item.getItemBuilderName()
+						.equals(builder.getItemName())) {
 					rebuildItem(builder, item, loadedProject);
 					item.disable(false);
 					logger.info("ItemManager Message: "
@@ -421,7 +419,8 @@ public class ItemManager implements ItemListener {
 	 * If no ItemBuilders have been registered, this operation returns null.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The list of available Items.
 	 *         </p>
 	 */
@@ -559,14 +558,12 @@ public class ItemManager implements ItemListener {
 	}
 
 	/**
-	 * <p>
 	 * This operation is called to direct the ItemManager to load all Items that
 	 * are currently persisted via its IPersistenceProvider. This operation can
 	 * only load the Items if the IPersistenceProvider has been set, but it
 	 * should not fail if the persistence provider has not been set. It is meant
 	 * to be called as a "initialization" or "start up" operation immediately
 	 * after the core starts and should not be called frequently.
-	 * </p>
 	 * <p>
 	 * The ItemManager will call the persistence provider to load all available
 	 * Items when this operation is called. It tries to load the Items in such a
@@ -589,51 +586,7 @@ public class ItemManager implements ItemListener {
 		if (provider != null) {
 			// Get all of the Items
 			ArrayList<Item> oldItems = provider.loadItems();
-			// Put all of the Items in to the list if the provider was able to
-			// load anything.
-			if (oldItems != null && !(oldItems.isEmpty())) {
-				// Loop over each Item and load it up
-				for (Item item : oldItems) {
-					// Reconstruct the Item to use the proper subclass by
-					// searching the builders for the builder with the
-					// appropriate name.
-					if (itemBuilderList.containsKey(item.getItemBuilderName())) {
-						ItemBuilder builder = itemBuilderList.get(item
-								.getItemBuilderName());
-						rebuildItem(builder, item, projectSpace);
-					} else {
-						logger.info("ItemManager Message: "
-								+ "Builder not found for " + item.getName()
-								+ " " + item.getId() + " with builder "
-								+ item.getItemBuilderName()
-								+ ". It will be disabled.");
-						// Otherwise just put the Item in the list, but disable
-						// it. It can still be read, just not processed.
-						item.disable(true);
-						itemList.put(item.getId(), item);
-					}
-				}
-				// Get the keys from the map and sort them
-				TreeSet<Integer> keys = new TreeSet<Integer>(itemList.keySet());
-				// Set the next sequential id such that it is equal to one plus
-				// the last id in the set of Items from the provider. This will
-				// keep any new items from possibly colliding with old ones in
-				// the map.
-				nextSequentialId = keys.last() + 1;
-				// Loop over the set of ids and figure out if there are any
-				// gaps, which can be reused to keep the ids from fragmenting.
-				for (int i = 1; i < nextSequentialId; i++) {
-					// If the set doesn't contain i, add it to the reusable id
-					// list
-					if (!keys.contains(i)) {
-						reusableIds.add(i);
-					}
-				}
-			} else {
-				// Complain a little bit
-				logger.info("Unable to load items in bulk from "
-						+ "the IPersistenceProvider.");
-			}
+			loadItems(oldItems, projectSpace);
 			// Save the project space
 			loadedProject = projectSpace;
 
@@ -644,14 +597,95 @@ public class ItemManager implements ItemListener {
 	}
 
 	/**
-	 * <p>
+	 * This operation loads a single Item into the ItemManager, like in
+	 * loadItems(), and returns its Form.
+	 *
+	 * @param item
+	 *            the persisted Item that will be loaded
+	 * @return the form for the Item or null if the Item couldn't be loaded
+	 */
+	public Form loadItem(IFile item) {
+		ArrayList<Item> loadedItemList = new ArrayList<Item>();
+		Item loadedItem = null;
+		// Delegate the work to the existing load function by loading the Item
+		// with the provider and putting it into a list.
+		try {
+			loadedItem = provider.loadItem(item);
+			loadedItemList.add(loadedItem);
+			loadItems(loadedItemList, item.getProject());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// Return null if the Form isn't available
+		return (loadedItem != null) ? loadedItem.getForm() : null;
+	}
+
+	/**
+	 * This operation loads Items from a project.
+	 *
+	 * @param oldItems
+	 *            the persisted Items to load into the ItemManager after they
+	 *            have already been read in by an IPersistenceProvider
+	 * @param projectSpace
+	 *            the project space that holds the Items
+	 */
+	private void loadItems(ArrayList<Item> oldItems, IProject projectSpace) {
+		// Put all of the Items into the list if the provider was able to
+		// load anything.
+		if (oldItems != null && !(oldItems.isEmpty())) {
+			// Loop over each Item and load it up
+			for (Item item : oldItems) {
+				// Reconstruct the Item to use the proper subclass by
+				// searching the builders for the builder with the
+				// appropriate name.
+				if (itemBuilderList.containsKey(item.getItemBuilderName())) {
+					ItemBuilder builder = itemBuilderList
+							.get(item.getItemBuilderName());
+					rebuildItem(builder, item, projectSpace);
+				} else {
+					logger.info("ItemManager Message: "
+							+ "Builder not found for " + item.getName() + " "
+							+ item.getId() + " with builder "
+							+ item.getItemBuilderName()
+							+ ". It will be disabled.");
+					// Otherwise just put the Item in the list, but disable
+					// it. It can still be read, just not processed.
+					item.disable(true);
+					itemList.put(item.getId(), item);
+				}
+			}
+			// Get the keys from the map and sort them
+			TreeSet<Integer> keys = new TreeSet<Integer>(itemList.keySet());
+			// Set the next sequential id such that it is equal to one plus
+			// the last id in the set of Items from the provider. This will
+			// keep any new items from possibly colliding with old ones in
+			// the map.
+			nextSequentialId = keys.last() + 1;
+			// Loop over the set of ids and figure out if there are any
+			// gaps, which can be reused to keep the ids from fragmenting.
+			for (int i = 1; i < nextSequentialId; i++) {
+				// If the set doesn't contain i, add it to the reusable id
+				// list
+				if (!keys.contains(i)) {
+					reusableIds.add(i);
+				}
+			}
+		} else {
+			// Complain a little bit
+			logger.info("Unable to load items in bulk from "
+					+ "the IPersistenceProvider.");
+		}
+
+		return;
+	}
+
+	/**
 	 * This operation is called to direct the ItemManager to persist all Items
 	 * via its IPersistenceProvider. This operation can only persist the Items
 	 * if the IPersistenceProvider has been set, but it should not fail if the
 	 * persistence provider has not been set. It is meant to be called as a
 	 * "finalization" operation immediately before the core shuts down and
 	 * should not be called frequently.
-	 * </p>
 	 * <p>
 	 * The ItemManager will call the persistence provider to persist all
 	 * available Items when this operation is called. This is not exactly a
@@ -672,6 +706,7 @@ public class ItemManager implements ItemListener {
 			logger.info("ItemManager Message: Updating all Items with "
 					+ "Persistence Provider.");
 			for (Item item : itemList.values()) {
+				logger.info("ItemManager Message: Persisting " + item.getName());
 				provider.updateItem(item);
 			}
 		}
@@ -694,7 +729,8 @@ public class ItemManager implements ItemListener {
 	 *            <p>
 	 *            The id of the Item.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The output file for the specified Item, thoroughly documented
 	 *         elsewhere.
 	 *         </p>
@@ -726,7 +762,8 @@ public class ItemManager implements ItemListener {
 	 *            The name of the action that should be canceled for the
 	 *            specified Item.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status
 	 *         </p>
 	 */
@@ -774,7 +811,8 @@ public class ItemManager implements ItemListener {
 	 *            <p>
 	 *            The incoming Message.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the ItemManager was able to forward the Message and if
 	 *         the Item was able to respond to the Message, false otherwise.
 	 *         </p>
@@ -808,8 +846,8 @@ public class ItemManager implements ItemListener {
 		// Not threaded for now, but should it be? ~JJB 20130912 17:06
 
 		// Direct all of the Items to reload their data
-		logger.info("ItemManager Message: "
-				+ "Reloading all Item project data.");
+		logger.info(
+				"ItemManager Message: " + "Reloading all Item project data.");
 		for (Item item : itemList.values()) {
 			item.reloadProjectData();
 		}
@@ -823,7 +861,8 @@ public class ItemManager implements ItemListener {
 	 * and unique item ids of each Item that is managed by the ItemManager.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The list of ItemHandles that contains the names and unique ids of
 	 *         the Items managed by the ItemManager.
 	 *         </p>
@@ -859,7 +898,8 @@ public class ItemManager implements ItemListener {
 	 *            The Form that is associated with the Item that needs to be
 	 *            updated.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status of the Item after the Form is submitted.
 	 *         </p>
 	 */
@@ -881,8 +921,9 @@ public class ItemManager implements ItemListener {
 
 		// Check the status and write to the database if it is enabled
 		// Only try to write to the database if the EntityManagers are ready
-		if ((status.equals(FormStatus.Processed) || status
-				.equals(FormStatus.ReadyToProcess)) && provider != null) {
+		if ((status.equals(FormStatus.Processed)
+				|| status.equals(FormStatus.ReadyToProcess))
+				&& provider != null) {
 			provider.updateItem(currentItem);
 		}
 
@@ -921,7 +962,8 @@ public class ItemManager implements ItemListener {
 	 *            <p>
 	 *            The name of the action that should be performed for the Item.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status of the Item after the action has been performed.
 	 *         </p>
 	 */
@@ -938,6 +980,12 @@ public class ItemManager implements ItemListener {
 			if (tmpItem != null) {
 				status = tmpItem.process(actionName);
 			}
+		} else {
+			logger.info(
+					"ItemManager Message: Could not process the item because "
+							+ "the itemId was not greater than 0 or the "
+							+ "actionName was null. Returning status = "
+							+ status.toString());
 		}
 
 		return status;
@@ -956,7 +1004,8 @@ public class ItemManager implements ItemListener {
 	 *            <p>
 	 *            The id of the item that should be deleted.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the Item was deleted, false if something went wrong.
 	 *         </p>
 	 */
@@ -971,9 +1020,9 @@ public class ItemManager implements ItemListener {
 			// If the provider exists, delete the Item from the provider
 			if (this.provider != null) {
 				Item item = itemList.get(itemID);
-				logger.info("ItemManager Message: Deleting Item "
-						+ item.getName() + " " + item.getId()
-						+ " from provider");
+				logger.info(
+						"ItemManager Message: Deleting Item " + item.getName()
+								+ " " + item.getId() + " from provider");
 				provider.deleteItem(itemList.get(itemID));
 			}
 			// Remove the Item from the list
@@ -987,13 +1036,26 @@ public class ItemManager implements ItemListener {
 	}
 
 	/**
+	 * This operation changes the name of the Item with id itemID.
+	 *
+	 * @param itemID
+	 *            The id of the item
+	 * @param name
+	 *            The new name of the Item.
+	 */
+	public void renameItem(int itemID, String name) {
+		itemList.get(itemID).setName(name);
+		provider.renameItem(itemList.get(itemID), name);
+	}
+
+	/**
 	 * This operation configures the IOService that should be used by Items
 	 *
 	 * @param service
 	 *            The IOService that provides Input/Output capabilities to Items
 	 *            managed by the Core.
 	 */
-	public void setIOService(IOService service) {
+	public void setIOService(IIOService service) {
 		// We need to set the IOService very early and this gets around a weird
 		// bug/feature of OSGi services that aggressively starts the
 		// ResourcesPlugin and results in a crash because the project space has

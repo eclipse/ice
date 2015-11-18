@@ -32,6 +32,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.ips.IPSReader;
 import org.eclipse.ice.io.ips.IPSWriter;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 
@@ -60,7 +61,7 @@ public class VibeModel extends Item {
 	
 	private ArrayList<String> actionItems;
 
-	private IOService ioService;
+	private IIOService ioService;
 	
 	/**
 	 * A nullary constructor that delegates to the project constructor.
@@ -183,7 +184,7 @@ public class VibeModel extends Item {
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
-				IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter"); //new IPSWriter();
+				IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);

@@ -269,7 +269,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -297,7 +298,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -349,7 +351,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -366,7 +369,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -380,7 +384,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#getWriteableChildren()
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -404,7 +409,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readChild(org.eclipse.ice.io.hdf.IHdfReadable)
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -442,7 +448,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -469,7 +476,8 @@ public class LWRRod extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

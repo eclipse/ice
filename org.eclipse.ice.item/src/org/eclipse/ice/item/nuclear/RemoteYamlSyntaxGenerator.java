@@ -11,17 +11,28 @@
  *******************************************************************************/
 package org.eclipse.ice.item.nuclear;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Dictionary;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileInfo;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.action.Action;
 import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
@@ -37,13 +48,12 @@ import org.slf4j.LoggerFactory;
  * @author Alex McCaskey
  *
  */
-public class RemoteYamlSyntaxGenerator {
+public class RemoteYamlSyntaxGenerator extends Action {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(RemoteYamlSyntaxGenerator.class);
+	private static final Logger logger = LoggerFactory.getLogger(RemoteYamlSyntaxGenerator.class);
 
 	/**
 	 * Reference to the remote PTP connection to use.
@@ -67,8 +77,7 @@ public class RemoteYamlSyntaxGenerator {
 	 * @param moose
 	 * @param app
 	 */
-	public RemoteYamlSyntaxGenerator(IRemoteConnection conn, IFolder moose,
-			String app) {
+	public RemoteYamlSyntaxGenerator(IRemoteConnection conn, IFolder moose, String app) {
 		// super("Executing Remote YAML/Syntax Invocation.");
 		connection = conn;
 		mooseFolder = moose;
@@ -82,127 +91,103 @@ public class RemoteYamlSyntaxGenerator {
 	 *
 	 * @param monitor
 	 */
-	public IStatus generate() {
+	public FormStatus execute(Dictionary<String, String> map) {
+		// public IStatus generate() {
 
 		// Local Declarations
+		File appFile = new File(appPath);
 		IRemoteProcessService processService = null;
-		IRemoteProcess yamlRemoteJob = null, syntaxRemoteJob = null;
-
-		// monitor.subTask("Opening the Remote Connection.");
-		// monitor.worked(40);
 
 		// Try to open the connection and fail if it will not open
 		try {
 			connection.open(null);
 		} catch (RemoteConnectionException e) {
 			// Print diagnostic information and fail
-			logger.error(getClass().getName() + " Exception!",e);
-			String errorMessage = "Could not create connection to remote machine.";
-			return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear", 1,
-					errorMessage, null);
+			logger.error(getClass().getName() + " Exception!", e);
+			return FormStatus.InfoError;
 		}
 
 		// Do the upload(s) and launch the job if the connection is open
 		if (connection.isOpen()) {
 			// Diagnostic info
-			logger.info("RemoteYamlSyntaxGenerator Message:"
-					+ " PTP connection established.");
-
-			// monitor.subTask("Getting a reference to the Process Service on remote machine.");
-			// monitor.worked(60);
-
-			// Get the IRemoteProcessService
-			processService = connection.getService(IRemoteProcessService.class);
-
-			// Create the process builder for the remote job
-			IRemoteProcessBuilder yamlProcessBuilder = processService
-					.getProcessBuilder("sh", "-c", appPath + " --yaml");
-			IRemoteProcessBuilder syntaxProcessBuilder = processService
-					.getProcessBuilder("sh", "-c", appPath + " --syntax");
-
-			// Do not redirect the streams
-			yamlProcessBuilder.redirectErrorStream(false);
-			syntaxProcessBuilder.redirectErrorStream(false);
+			logger.info("RemoteYamlSyntaxGenerator Message:" + " PTP connection established.");
 
 			try {
-				logger.info("RemoteYamlSyntaxGenerator Message: "
-						+ "Attempting to launch with PTP...");
-				logger.info("RemoteYamlSyntaxGenerator Message: Command sent to PTP = "
-						+ yamlProcessBuilder.command().toString());
+				// Local Strings
+				String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
+				String script = remoteSeparator + "tmp" + remoteSeparator + "executeYamlSyntax";
+				String fileLoc = remoteSeparator + "tmp" + remoteSeparator + appFile.getName();
+				
+				// Get the remote file system
+				IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
+				
+				// Create a new script in /tmp
+				IFileStore tmp = fileManager.getResource(script);
+				PrintStream p = new PrintStream(tmp.openOutputStream(EFS.NONE, null));
+				p.println("#!/bin/bash");
+				p.println(appPath + " --yaml &> " + fileLoc + ".yaml");
+				p.println(appPath + " --syntax &> " + fileLoc + ".syntax");
+				p.close();
+				
+				// Make it executable
+				IFileInfo info = tmp.fetchInfo();
+				info.setAttribute(EFS.ATTRIBUTE_EXECUTABLE, true);
+				tmp.putInfo(info, EFS.SET_ATTRIBUTES, null);
 
-				// monitor.subTask("Generating YAML and Action Syntax files on remote machine.");
-				// monitor.worked(80);
+				// Get the IRemoteProcessService
+				// and create the process builder to execute the script
+				processService = connection.getService(IRemoteProcessService.class);
+				IRemoteProcessBuilder pb = processService.getProcessBuilder(script);
+				IRemoteProcess process = pb.start(IRemoteProcessBuilder.FORWARD_X11);
 
-				yamlRemoteJob = yamlProcessBuilder
-						.start(IRemoteProcessBuilder.FORWARD_X11);
-				syntaxRemoteJob = syntaxProcessBuilder
-						.start(IRemoteProcessBuilder.FORWARD_X11);
-
-			} catch (IOException e) {
-				// Print diagnostic information and fail
-				logger.error(getClass().getName() + " Exception!",e);
-				String errorMessage = "Could not execute YAML/Syntax generation on remote machine.";
-				return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
-						1, errorMessage, null);
-			}
-
-			// Monitor the job
-			while (!yamlRemoteJob.isCompleted()
-					&& !syntaxRemoteJob.isCompleted()) {
-				// Give it a second
-				try {
-					Thread.currentThread();
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// Complain
-					logger.error(getClass().getName() + " Exception!",e);
-				}
-			}
-
-			// Get the YAML and Syntax output
-			InputStream yamlStream = yamlRemoteJob.getInputStream();
-			InputStream syntaxStream = syntaxRemoteJob.getInputStream();
-
-			// Write it to File.
-			try {
-				String yamlString = IOUtils.toString(yamlStream);
-				String syntaxString = IOUtils.toString(syntaxStream);
-
-				// Get the app name
-				String animal = Paths.get(appPath).getFileName().toString();
-
-				// Get the path to the Yaml/Syntax files to be created
-				// in the MOOSE folder
-				Path yamlPath = Paths.get(mooseFolder.getLocation()
-						.toOSString() + "/" + animal + ".yaml");
-				Path syntaxPath = Paths.get(mooseFolder.getLocation()
-						.toOSString() + "/" + animal + ".syntax");
-
-				// Delete existing files
-				if (Files.exists(yamlPath)) {
-					Files.delete(yamlPath);
-				}
-				if (Files.exists(syntaxPath)) {
-					Files.delete(syntaxPath);
+				// Wait til it's done
+				while (!process.isCompleted()) {
+					try {
+						Thread.currentThread();
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// Complain
+						logger.error(getClass().getName() + " Exception!", e);
+					}
 				}
 
-				// monitor.subTask("Writing files locally.");
-				// monitor.worked(95);
+				// Get a reference to the local MOOSE directory
+				IFileStore localMooseFolder = EFS.getLocalFileSystem()
+						.fromLocalFile(mooseFolder.getLocation().toFile());
 
-				// Write the new files.
-				Files.write(yamlPath, yamlString.getBytes());
-				Files.write(syntaxPath, syntaxString.getBytes());
+				// Get a handle to the local file. Note that it may
+				// not exist yet.
+				IFileStore yamlStore = localMooseFolder.getChild(appFile.getName() + ".yaml");
+				IFileStore actionStore = localMooseFolder.getChild(appFile.getName() + ".syntax");
 
-			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!",e);
-				String errorMessage = "Could not create write files locally.";
-				return new Status(IStatus.ERROR, "org.eclipse.ice.item.nuclear",
-						1, errorMessage, null);
+				// Get the newly created remote files
+				IFileStore remoteYaml = fileManager.getResource(fileLoc + ".yaml");
+				IFileStore remoteAction = fileManager.getResource(fileLoc + ".syntax");
+
+				// Copy the files from the remote machine to the
+				// local machine.
+				remoteYaml.copy(yamlStore, EFS.OVERWRITE, null);
+				remoteAction.copy(actionStore, EFS.OVERWRITE, null);
+
+				// Clean up by deleting the remote files
+				tmp.delete(EFS.NONE, null);
+				remoteYaml.delete(EFS.NONE, null);
+				remoteAction.delete(EFS.NONE, null);
+
+			} catch (Exception e) {
+				logger.error("RemoteYamlSyntaxGenerator Error Message", e);
+				return FormStatus.InfoError;
 			}
+
 
 		}
 
-		return Status.OK_STATUS;
+		return FormStatus.Processed;
+	}
+
+	@Override
+	public FormStatus cancel() {
+		return null;
 	}
 
 }

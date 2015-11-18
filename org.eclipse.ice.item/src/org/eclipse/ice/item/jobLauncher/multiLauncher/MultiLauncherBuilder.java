@@ -50,7 +50,8 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	}
 
 	/*
-	 * Implements a method from ItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#getItemName()
 	 */
 	@Override
 	public String getItemName() {
@@ -58,7 +59,8 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	}
 
 	/*
-	 * Implements a method from ItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#getItemType()
 	 */
 	@Override
 	public ItemType getItemType() {
@@ -66,7 +68,8 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	}
 
 	/*
-	 * Implements a method from ItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ItemBuilder#build(org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public Item build(IProject projectSpace) {
@@ -98,7 +101,8 @@ public class MultiLauncherBuilder implements ICompositeItemBuilder {
 	}
 
 	/*
-	 * Implements a method from ICompositeItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.ICompositeItemBuilder#addBuilders(java.util.ArrayList)
 	 */
 	@Override
 	public void addBuilders(ArrayList<ItemBuilder> itemBuilders) {

@@ -14,3 +14,4 @@ Import-Package: org.eclipse.ice.vibe.kvPair,
  org.eclipse.ice.vibe.launcher,
  org.eclipse.ice.item.nuclear
 Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.ice.persistence.xml.test

@@ -230,11 +230,30 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		// Check the order of the row label.
 		label = bot.label("Rows:");
 		// Note: We have to wrap the label in a Composite for proper alignment.
-		assertSame(children[0], getParent(label.widget));
+		// Check each member of the children array for the label's parent, as
+		// the children may be ordered differently on different OSs.
+		boolean found = false;
+		Composite comp = getParent(label.widget);
+		for (int i = 0; i < children.length; i++) {
+			if (children[i] == comp) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
 
 		// Check the order of the row spinner.
 		spinner = bot.spinner(0);
-		assertSame(children[1], spinner.widget);
+		found = false;
+		comp = spinner.widget;
+		for (int i = 0; i < children.length; i++) {
+			if (children[i] == comp) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
+		
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
 		assertEquals(2, spinner.getSelection());
@@ -244,11 +263,28 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 		// Check the order of the row label.
 		label = bot.label("Columns:");
 		// Note: We have to wrap the label in a Composite for proper alignment.
-		assertSame(children[2], getParent(label.widget));
+		found = false;
+		comp = getParent(label.widget);
+		for (int i = 0; i < children.length; i++) {
+			if (children[i] == comp) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
 
 		// Check the order of the row spinner.
 		spinner = bot.spinner(1);
-		assertSame(children[3], spinner.widget);
+		found = false;
+		comp = spinner.widget;
+		for (int i = 0; i < children.length; i++) {
+			if (children[i] == comp) {
+				found = true;
+				break;
+			}
+		}
+		assertTrue(found);
+		
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
 		assertEquals(2, spinner.getSelection());

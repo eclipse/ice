@@ -74,6 +74,7 @@
 		<module>org.eclipse.ice.client.compatibility</module>
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
+		<module>org.eclipse.ice.client.widgets.moose.test</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.test</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.grid</module>
@@ -89,6 +90,8 @@
 		<module>org.eclipse.ice.client.rcp</module>
 		<module>org.eclipse.ice.datastructures</module>
 		<module>org.eclipse.ice.datastructures.test</module>
+		<module>org.eclipse.ice.developer</module>
+		<module>org.eclipse.ice.developer.moose</module>
 		<module>org.eclipse.ice.core</module>
 		<module>org.eclipse.ice.core.test</module>
 		<module>org.eclipse.ice.item</module>
@@ -248,6 +251,16 @@
 							<classifier>mars</classifier>
 						</artifact>
 					</target>
+					<filters>
+						<!-- example 1: restrict version of a bundle -->
+						<filter>
+							<type>eclipse-plugin</type>
+								<id>javax.ws.rs</id>
+								<restrictTo>
+									<version>1.1.1.v20130318-1750</version> <!-- alternative: <version> for selecting exactly one versions -->
+								</restrictTo>
+						</filter>
+					</filters>
 				</configuration>
 			</plugin>
 

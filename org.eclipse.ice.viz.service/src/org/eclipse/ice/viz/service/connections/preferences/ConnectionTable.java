@@ -92,7 +92,8 @@ public class ConnectionTable extends VizTableComponent {
 	}
 
 	/*
-	 * Overrides a method from TableComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizTableComponent#addRow()
 	 */
 	@Override
 	public int addRow() {
@@ -238,7 +239,8 @@ public class ConnectionTable extends VizTableComponent {
 	}
 
 	/*
-	 * Overrides a method from TableComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizTableComponent#deleteRow(int)
 	 */
 	@Override
 	public boolean deleteRow(int index) {

@@ -12,10 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.core.test;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
 
 /**
  * This is a fake implementation of the persistence interface and it is used for
@@ -54,6 +57,8 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	 */
 	private volatile boolean deleted = false;
 
+	private volatile boolean renamed = false;
+	
 	/**
 	 * <p>
 	 * This operation returns true if the Items were loaded, false otherwise.
@@ -80,6 +85,7 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 		persisted = false;
 		updated = false;
 		deleted = false;
+		renamed = false;
 
 	}
 
@@ -194,5 +200,48 @@ public class FakePersistenceProvider implements IPersistenceProvider {
 	public Class getClassForItemId(int itemID) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#loadItem(org.eclipse.core.resources.IResource)
+	 */
+	@Override
+	public Item loadItem(IResource itemResource) throws IOException {
+		loaded = true;
+		FakeItem item = new FakeItem(null);
+		item.getForm().setName("The Doctor");
+		return item;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#setDefaultProject(org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void setDefaultProject(IProject project) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.persistence.IPersistenceProvider#getDefaultProject()
+	 */
+	@Override
+	public IProject getDefaultProject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void renameItem(Item item, String newName) {
+		renamed = true;
+		return;
+	}
+
+	public boolean itemRenamed() {
+		// TODO Auto-generated method stub
+		return renamed;
 	}
 }

@@ -16,7 +16,11 @@ package org.eclipse.ice.client.common;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.ice.client.common.wizards.ImportItemWizard;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -41,9 +45,21 @@ public class ImportItemWizardHandler extends AbstractHandler {
 		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
 		Shell shell = window.getShell();
 
+		// Get the selected IProject instance if we can
+		IProject project = null;
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+		if (selection instanceof IStructuredSelection) {
+			Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof IResource) {
+				project = ((IResource) element).getProject();
+			}
+		}
+		
 		// Create a dialog and open it. The wizard itself handles everything, so
 		// we do not need to do anything special with the return value.
-		WizardDialog dialog = new WizardDialog(shell, new ImportItemWizard());
+		ImportItemWizard wizard = new ImportItemWizard();
+		wizard.setProject(project);
+		WizardDialog dialog = new WizardDialog(shell, wizard);
 		dialog.open();
 
 		return null;

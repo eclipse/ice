@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.visit.connections;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
 import org.eclipse.ice.viz.service.connections.preferences.PortEntry;
@@ -34,7 +35,8 @@ import org.eclipse.ui.IWorkbench;
 public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 
 	/*
-	 * Overrides a method from VizConnectionPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#createConnectionTable()
 	 */
 	@Override
 	protected ConnectionTable createConnectionTable() {
@@ -71,6 +73,21 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 				VizEntry visitUserEntry = new VizEntry(contentProvider);
 				visitUserEntry.setName("VisIt User");
 				template.add(visitUserEntry);
+				
+				Iterator<VizEntry> it = template.iterator();
+				while (it.hasNext()) {
+					VizEntry entry = it.next();
+					if ("Path".equals(entry.getName())) {
+						String defaultPath = System.getProperty("visit.binpath");
+						if (defaultPath != null) {
+							if (defaultPath.contains("@user.home")) {
+								defaultPath = defaultPath.replace("@user.home", System.getProperty("user.home"));
+							}
+							entry.setValue(defaultPath);
+						}
+					}
+				}
+				
 				// ---- visit password ---- //
 				// contentProvider = new BasicEntryContentProvider();
 				// contentProvider.setAllowedValueType(AllowedValueType.Undefined);
@@ -85,7 +102,8 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 	}
 
 	/*
-	 * Implements an abstract method from VizConnectionPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#getConnectionsPreferenceNodeId()
 	 */
 	@Override
 	protected String getConnectionsPreferenceNodeId() {
@@ -93,7 +111,8 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 	}
 
 	/*
-	 * Overrides a method from VizConnectionPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {

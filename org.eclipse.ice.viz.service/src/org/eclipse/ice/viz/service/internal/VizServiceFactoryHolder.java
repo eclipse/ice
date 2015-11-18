@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.internal;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Holder class for a VizServiceFactory.
@@ -41,6 +45,15 @@ public class VizServiceFactoryHolder {
 	 */
 	public static void setVizServiceFactory(IVizServiceFactory input) {
 		VizServiceFactoryHolder.factory = input;
+		Logger staticLogger = LoggerFactory.getLogger(VizServiceFactoryHolder.class);
+		
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+		staticLogger.info("Available configuration elements");
+		for(IConfigurationElement element : elements){
+			staticLogger.info(element.getName());
+		}
+		
 		return;
 	}
 

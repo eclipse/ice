@@ -14,12 +14,17 @@
 package org.eclipse.ice.caebat.batml;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -31,163 +36,87 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <p>
  * The BatMLModel extends the Item to provide a model generator for the CAEBAT
  * BatML input files. It uses an EMFComponent to map the BatML schema to an
  * Eclipse Modeling Framework Ecore model, which is then translated to an ICE
  * TreeComposite to be visualized and editted by the user.
- * </p>
  *
- * @author Alex McCaskey
+ * @author Alex McCaskey, Andrew Bennett
  */
 @XmlRootElement(name = "BatMLModel")
 public class BatMLModel extends Item {
 
 	/**
-	 * <p>
-	 * Reference to the main BatML schema file.
-	 * </p>
+	 * References to the main BatML schema file and xml file to be loaded, respectively.
 	 */
-	private static File xsdFile;
+	private static File xsdFile, xmlFile;
 
 	/**
-	 * <p>
 	 * Reference to the EMFComponent that takes the XML Schema file and maps it
 	 * to an Ecore model.
-	 * </p>
 	 */
 	private static EMFComponent emfComp;
 
 	/**
-	 * <p>
-	 * Flag to indicate whether this BatML Item has been initialized.
-	 * </p>
-	 */
-	static boolean initialized = false;
-
-	/**
-	 * <p>
 	 * The constructor.
-	 * </p>
-	 *
 	 */
 	public BatMLModel() {
 		this(null);
 	}
 
 	/**
-	 * <p>
 	 * The constructor with a project space in which files should be
 	 * manipulated.
-	 * </p>
 	 *
 	 * @param projectSpace
-	 *            <p>
 	 *            The Eclipse project where files should be stored and from
 	 *            which they should be retrieved.
-	 *            </p>
 	 */
 	public BatMLModel(IProject projectSpace) {
-
-		// Call super
 		super(projectSpace);
-
 	}
 
 	/**
-	 * <p>
 	 * This method sets up the BatMLModel Item's Form reference, specifically,
 	 * it searches for the correct XML schema and creates an EMFComponent and
 	 * adds it to the Form.
-	 * </p>
-	 *
-	 *
 	 */
 	@Override
 	protected void setupForm() {
 
-		// Create the Form
 		form = new Form();
-		form.setName("BatML Model Builder");
-
+		
 		// It could be the case that we've already created the EMFComponent,
 		// if so just skip this creation stuff
-		if (!initialized) {
-			if (project != null && project.isAccessible()) {
+		if (project != null && project.isAccessible()) {
 
-				// Refresh the project space
-				try {
-					project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} catch (CoreException e) {
-					logger.error(getClass().getName() + " Exception!",e);
-				}
-
-				// Get the batml folder and the correct XML schema
-				IFolder batmlFolder = project.getFolder("batml");
-				IFile xsdIFile = batmlFolder.getFile("electrical.xsd");
-
-				// If valid, create the Java file instance needed by
-				// the EMFComponent
-				if (xsdIFile.exists()) {
-					try {
-						xsdFile = EFS.getStore(xsdIFile.getLocationURI())
-								.toLocalFile(0, new NullProgressMonitor());
-					} catch (CoreException e) {
-						logger.error(getClass().getName() + " Exception!",e);
-					}
-
-					// Create the EMFComponent
-					if (xsdFile != null) {
-						emfComp = new EMFComponent(xsdFile);
-						emfComp.setName("BatML Model Editor");
-						emfComp.setId(1);
-						initialized = true;
-					}
-
-				} else {
-					System.err
-							.println("BatML Model Error. Cannot find requisite "
-									+ "electrical.xsd schema file. No BatML tree will be constructed.");
-				}
+			// Refresh the project space
+			try {
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				logger.error(getClass().getName() + " Exception!", e);
 			}
-		}
 
-		// If we've been successful, add it to the Form.
-		if (emfComp != null) {
-			form.addComponent(emfComp);
+			// Load in the default information
+			loadInput(null);
 		}
-
-		return;
 	}
 
 	/**
-	 * <p>
 	 * This operation is used to setup the name and description of the model.
-	 * </p>
-	 *
 	 */
 	@Override
 	protected void setupItemInfo() {
-
-		// Local Declarations
 		String desc = "This item builds models based on a BatteryML schema.";
-
-		// Describe the Item
-		setName("BatML Model Builder");
+		setName("BatML Model");
 		setDescription(desc);
 		itemType = ItemType.Model;
-
-		// Setup the action list. Remove key-value pair support.
-		// allowedActions.remove(taggedExportActionString);
-		allowedActions.add("Write to XML");
-
-		return;
+		allowedActions.add(0, "Write to XML");
 	}
 
 	/**
-	 * <p>
-	 * </p>
-	 *
+	 * Makes sure that the form is in an acceptable state
+	 * 
 	 * @param preparedForm
 	 *            The form prepared for review.
 	 * @return The Form's status if the review was successful or not.
@@ -198,8 +127,10 @@ public class BatMLModel extends Item {
 	}
 
 	/**
-	 * <p>
-	 * </p>
+	 * Used to export the form's information into an output file.
+	 * 
+	 * @param actionName
+	 * 			A string description of the process that should happen
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -216,14 +147,13 @@ public class BatMLModel extends Item {
 			IFile iFile = project.getFile(fileName);
 			try {
 				// Save the File
-				if (emfComp.save(EFS.getStore(iFile.getLocationURI())
-						.toLocalFile(0, new NullProgressMonitor()))) {
+				if (emfComp.save(EFS.getStore(iFile.getLocationURI()).toLocalFile(0, new NullProgressMonitor()))) {
 					retStatus = FormStatus.Processed;
 				} else {
 					retStatus = FormStatus.InfoError;
 				}
 			} catch (CoreException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				retStatus = FormStatus.InfoError;
 			}
 		}
@@ -232,26 +162,102 @@ public class BatMLModel extends Item {
 	}
 
 	/**
-	 * <p>
-	 * </p>
-	 *
+	 * Loads a file into the form.  If null input is given a default form will
+	 * be populated by transferring files from the plugin itself.
+	 * 
 	 * @param input
 	 *            The name of the input input file, including the file extension
 	 */
 	@Override
 	public void loadInput(String input) {
 
-		// Local Declarations
-		// Local Declarations
-		EMFComponent emfComp = (EMFComponent) form.getComponent(1);
-		String path = project.getFolder("batml").getLocation().toOSString()
-				+ System.getProperty("file.separator") + input;
-		if (emfComp != null) {
-			if (!emfComp.load(new File(path))) {
-				System.err
-						.println("Invalid file passed to SassenaCoherentModel.loadInput");
+		IFile xsdIFile, xmlIFile;
+		File temp = null;
+		
+		// If this is our first time loading up the form we will probably need to import the schema files
+		if (form.getNumberOfComponents() == 0) {
+
+			String[] schemas = { "BuildingBlockDB.xsd", "MaterialDB.xsd", "PackDB.xsd", "UnitsML-v1.0-csd03.xsd",
+					"matml31.xsd", "CellDB.xsd", "ModelDB.xsd", "PartDB.xsd", "common_basic_data_types.xsd",
+					"CellSandwichDB.xsd", "ModuleDB.xsd", "SimulationDB.xsd", "electrical.xml", "DeviceDB.xsd",
+					"NamedParameters.xsd", "UnitsDB.xsd", "electrical.xsd" };
+
+	
+			// Create a filepath for the default file
+			String defaultFilePath = project.getLocation().toOSString() + System.getProperty("file.separator")
+					+ "batml";
+			temp = new File(defaultFilePath);
+			if (!temp.exists()) {
+				temp.mkdir();
+			}
+					
+			// Load the schema files into the workspace
+			for (String schemaFile : schemas) {
+				try {
+					// Create a temporary location to load the default file
+					temp = new File(defaultFilePath + System.getProperty("file.separator") + schemaFile);
+					if (!temp.exists()) {
+						temp.createNewFile();
+	
+						// Pull the default file from inside the plugin
+						URI uri = new URI("platform:/plugin/org.eclipse.ice.caebat.batml/data/" + schemaFile);
+						InputStream reader = uri.toURL().openStream();
+						FileOutputStream outStream = new FileOutputStream(temp);
+	
+						// Write out the default file from the plugin to the temp location
+						int fileByte;
+						while ((fileByte = reader.read()) != -1) {
+							outStream.write(fileByte);
+						}
+						outStream.close();
+						reader.close();
+					}
+				} catch (URISyntaxException e) {
+					logger.error(getClass().getName() + " Exception!", e);
+					logger.error("[BatML Model] ERROR: Could not load the default BatML schema data!");
+				} catch (MalformedURLException e) {
+					logger.error(getClass().getName() + " Exception!", e);
+					logger.error("[BatML Model] ERROR: Could not load the default BatML schema data!");
+				} catch (IOException e) {
+					logger.error(getClass().getName() + " Exception!", e);
+					logger.error("[BatML Model] ERROR: Could not load the default BatML schema data!");
+				}
+			}
+			
+			// Make sure that ICE can find the files to load
+			try {
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				logger.error("[BatML Model] ERROR: Could not refresh project workspace!");
 			}
 		}
-		return;
+		// Load up either a default file, or the newly imported one.
+		if (input == null) {
+			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
+			xmlIFile = project.getFolder("batml").getFile("electrical.xml");
+		} else {
+			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
+			xmlIFile = project.getFile(input);
+		}
+
+		// Get the handle to the files on the local file system
+		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile();
+		xmlFile = xmlIFile.getRawLocation().makeAbsolute().toFile();
+		
+		// Create the EMFComponent
+		if (xsdFile != null) {
+			emfComp = new EMFComponent();
+			emfComp.load(xsdFile, xmlFile);
+			emfComp.getEMFTreeComposite().setName("BatML");
+			emfComp.setName("BatML Model Editor");
+			emfComp.setId(1);
+		} else {
+			emfComp = new EMFComponent();
+			emfComp.setName("BatML Model Editor");
+			emfComp.setDescription("Could not find BatML input for model creation!");
+			emfComp.setId(1);
+		}
+
+		form.addComponent(emfComp);
 	}
 }

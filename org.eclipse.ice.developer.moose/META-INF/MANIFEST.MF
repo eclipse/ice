@@ -1,0 +1,37 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: MOOSE Developer
+Bundle-SymbolicName: org.eclipse.ice.developer.moose;singleton:=true
+Bundle-Version: 2.1.7.20150825
+Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.cdt.core.settings.model,
+ org.eclipse.core.commands,
+ org.eclipse.core.runtime.jobs,
+ org.eclipse.egit.core.op;version="4.0.0",
+ org.eclipse.egit.github.core;version="4.0.0",
+ org.eclipse.egit.github.core.client;version="4.0.0",
+ org.eclipse.egit.github.core.service;version="4.0.0",
+ org.eclipse.jface.dialogs,
+ org.eclipse.jface.window,
+ org.eclipse.jface.wizard,
+ org.eclipse.jgit.api;version="4.0.0",
+ org.eclipse.jgit.api.errors;version="4.0.0",
+ org.eclipse.jgit.lib;version="4.0.0",
+ org.eclipse.swt,
+ org.eclipse.swt.events,
+ org.eclipse.swt.layout,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
+ org.eclipse.ui.handlers,
+ org.eclipse.ui.wizards,
+ org.slf4j;version="1.7.2"
+Require-Bundle: org.eclipse.cdt;bundle-version="8.7.0",
+ org.eclipse.cdt.core,
+ org.eclipse.cdt.make.core;bundle-version="7.3.0",
+ org.eclipse.cdt.managedbuilder.core;bundle-version="8.3.0",
+ org.eclipse.cdt.managedbuilder.ui;bundle-version="8.2.2",
+ org.eclipse.core.runtime;bundle-version="3.11.0",
+ org.eclipse.core.resources;bundle-version="3.10.0",
+ org.eclipse.egit;bundle-version="4.0.0",
+ org.eclipse.ice.developer;bundle-version="2.1.7"

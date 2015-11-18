@@ -40,9 +40,11 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
+import org.eclipse.ice.item.test.FakeIOService;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -64,7 +66,7 @@ public class MOOSEModelTester {
 	/**
 	 * The IO Service used to read/write via MOOSEFileHandler.
 	 */
-	private static IOService service;
+	private static IIOService service;
 
 	/**
 	 * This operation sets up the workspace. It copies the necessary MOOSE data
@@ -148,7 +150,7 @@ public class MOOSEModelTester {
 		projectSpace = project;
 
 		// Set up an IO service and add a reader and writer
-		service = new IOService();
+		service = new FakeIOService();
 		service.addWriter(new MOOSEFileHandler());
 		service.addReader(new MOOSEFileHandler());
 

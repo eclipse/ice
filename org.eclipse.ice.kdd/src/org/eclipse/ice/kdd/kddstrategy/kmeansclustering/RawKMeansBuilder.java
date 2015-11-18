@@ -33,7 +33,8 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	private RawKMeansStrategy kmeans = null;
 
 	/*
-	 * Implements a method in IStrategyBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder#build(java.util.ArrayList)
 	 */
 	@Override
 	public KDDStrategy build(ArrayList<IDataProvider> data) {
@@ -45,7 +46,8 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	}
 
 	/*
-	 * Implements a method in IStrategyBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder#getStrategyName()
 	 */
 	@Override
 	public String getStrategyName() {
@@ -53,7 +55,8 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	}
 
 	/*
-	 * Implements a method in IStrategyBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder#isAvailable(java.util.ArrayList)
 	 */
 	@Override
 	public boolean isAvailable(ArrayList<IDataProvider> dataToCheck) {
@@ -119,7 +122,8 @@ public class RawKMeansBuilder implements IStrategyBuilder {
 	}
 
 	/*
-	 * Implements a method in IStrategyBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.kdd.kddstrategy.IStrategyBuilder#getStrategyPropertiesAsEntries()
 	 */
 	@Override
 	public ArrayList<Entry> getStrategyPropertiesAsEntries() {

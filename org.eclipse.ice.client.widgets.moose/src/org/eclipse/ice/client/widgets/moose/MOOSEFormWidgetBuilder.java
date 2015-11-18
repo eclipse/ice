@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.moose;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the declarative service that registers the MOOSE
@@ -33,6 +37,11 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	public static final String name = "MOOSE Workflow";
 
+	/**
+	 * The logging utility for this class.
+	 */
+	protected final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	/**
 	 * This class consumes (references) the {@link IVizServiceFactory} OSGi
 	 * service. The factory should be passed down to the MOOSEFormEditor.
@@ -69,6 +78,16 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	public void setVizServiceFactory(IVizServiceFactory factory) {
 		this.vizServiceFactory = factory;
+
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+		logger.info("MOOSEFormWidgetBuilder: Available configuration elements");
+		for(IConfigurationElement element : elements){
+			logger.info(element.getName());
+		}
+		
+		return;
+		
 	}
 
 	/**

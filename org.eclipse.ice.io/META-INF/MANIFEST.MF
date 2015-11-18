@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.io
 Bundle-SymbolicName: org.eclipse.ice.io;singleton:=true
 Bundle-Version: 2.1.7.20150825
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .,
  deps/jhdf.jar,
  deps/jhdf4obj.jar,

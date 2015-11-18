@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
@@ -40,12 +42,13 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public class EclipseUIWidgetFactory implements IWidgetFactory {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(EclipseUIWidgetFactory.class);	
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(EclipseUIWidgetFactory.class);
+
 	/**
 	 * <p>
 	 * The set of IFormWidgetBuilders registered with the Factory.
@@ -65,6 +68,7 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * This operation registers an IFormWidgetBuilder with the Factory. The
 	 * IFormWidgetBuilder is used to extend the abilities of the default set of
 	 * EclipseUIWidgets to draw ICE's Form's.
+	 * 
 	 * @param builder
 	 *            The builder that will generate the custom IFormWidget.
 	 */
@@ -76,6 +80,16 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 			logger.info("EclipseUIWidgetFactory Message: New "
 					+ "IFormWidgetBuilder registered for "
 					+ builder.getTargetFormName());
+		}
+
+		IConfigurationElement[] elements = Platform.getExtensionRegistry()
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.client.widgets.iformwidgetbuilder");
+		logger.info(
+				"Available configuration elements(in org.eclipse.ice.client.widgets.EclipseUIWdigetFactory.java):");
+		for (IConfigurationElement element : elements) {
+			logger.info(
+					element.getNamespaceIdentifier() + " " + element.getName());
 		}
 
 		return;

@@ -34,7 +34,8 @@ public class SassenaCoherentModelBuilder extends AbstractItemBuilder {
 	}
 	
 	/*
-	 * Implements a method from AbstractItemBuilder.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {

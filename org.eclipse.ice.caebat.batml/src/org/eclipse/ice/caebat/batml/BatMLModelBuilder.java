@@ -20,7 +20,7 @@ import org.eclipse.ice.item.ItemType;
  * This class builds the BatMLModel. It inherits its operations from
  * ItemBuilder.
  * 
- * @author Scott Forest Hull II
+ * @author Scott Forest Hull II, Alex McCaskey, Andrew Bennett
  */
 public class BatMLModelBuilder extends AbstractItemBuilder {
 
@@ -31,15 +31,17 @@ public class BatMLModelBuilder extends AbstractItemBuilder {
 		setName("BatML Model");
 		setType(ItemType.Model);
 	}
-	
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.
+	 * resources.IProject)
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {
-		BatMLModel batML = new BatMLModel(projectSpace);
+		Item batML = new BatMLModel(projectSpace);
 		batML.setItemBuilderName(getItemName());
 		return batML;
 	}

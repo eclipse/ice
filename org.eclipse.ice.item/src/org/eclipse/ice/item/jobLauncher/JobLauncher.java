@@ -21,7 +21,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -245,7 +247,15 @@ public class JobLauncher extends Item {
 	private Job launchJob;
 
 	/**
-	 * 
+	 * Reference to the job IFolder containing the job 
+	 * launch files. 
+	 */
+	@XmlTransient()
+	private IFolder currentJobFolder;
+	
+	/**
+	 * Reference to the object responsible for returning 
+	 * all IRemoteServices. 
 	 */
 	@XmlTransient()
 	private static IRemoteServicesManager remoteManager;
@@ -323,8 +333,7 @@ public class JobLauncher extends Item {
 	 *            Improved, but its executable command name is vim.
 	 *            </p>
 	 */
-	public void setExecutable(String execName, String execDesc,
-			String execCommand) {
+	public void setExecutable(String execName, String execDesc, String execCommand) {
 
 		// Set the executable command name
 		executableCommandName = execCommand;
@@ -373,8 +382,7 @@ public class JobLauncher extends Item {
 	private void createOutputFiles() {
 
 		// Local Declarations
-		ResourceComponent outputData = (ResourceComponent) form
-				.getComponent(JobLauncherForm.outputId);
+		ResourceComponent outputData = (ResourceComponent) form.getComponent(JobLauncherForm.outputId);
 		String stdOutHeader, stdErrHeader, stdOutFileName, stdErrFileName;
 
 		// Setup the headers
@@ -382,17 +390,24 @@ public class JobLauncher extends Item {
 		stdErrHeader = createOutputHeader("standard error");
 
 		// Setup the file names
-		stdOutFileName = form.getName().replaceAll("\\s+", "_") + "_stdout_"
-				+ getId() + ".txt";
-		stdErrFileName = form.getName().replaceAll("\\s+", "_") + "_stderr_"
-				+ getId() + ".txt";
+		stdOutFileName = form.getName().replaceAll("\\s+", "_") + "_stdout_" + getId() + ".txt";
+		stdErrFileName = form.getName().replaceAll("\\s+", "_") + "_stderr_" + getId() + ".txt";
 
 		// Create the stdout file in the project space
 		if (project != null) {
+
+			// Get the job launch directory
+			if (!currentJobFolder.exists()) {
+				logger.warn(
+						"JobLauncher Warning: Could not get a reference to the current Job Launch Directory. Aborting stderr/stdout file generation.");
+				return;
+			}
+
 			// Create the Eclipse Resources IFile handle for standard out
-			IFile stdOutProjectFile = project.getFile(stdOutFileName);
+			IFile stdOutProjectFile = currentJobFolder.getFile(stdOutFileName);
 			// Create the Eclipse Resources IFile handle for standard error
-			IFile stdErrProjectFile = project.getFile(stdErrFileName);
+			IFile stdErrProjectFile = currentJobFolder.getFile(stdErrFileName);
+			
 			// Create the standard out project file
 			try {
 				// Delete the file if it already exists - we want a clean one
@@ -401,12 +416,10 @@ public class JobLauncher extends Item {
 				}
 				// Create the managed file - creation closes the input
 				// stream
-				stdOutProjectFile.create(
-						new ByteArrayInputStream(stdOutHeader.getBytes()),
-						false, null);
+				stdOutProjectFile.create(new ByteArrayInputStream(stdOutHeader.getBytes()), false, null);
 			} catch (CoreException e) {
 				// Complain
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 			// Create the standard error project file
 			try {
@@ -416,32 +429,24 @@ public class JobLauncher extends Item {
 				}
 				// Create the managed file - creation closes the input
 				// stream
-				stdErrProjectFile.create(
-						new ByteArrayInputStream(stdErrHeader.getBytes()),
-						false, null);
+				stdErrProjectFile.create(new ByteArrayInputStream(stdErrHeader.getBytes()), false, null);
 			} catch (CoreException e) {
 				// Complain
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 			// Put the paths to the standard error and out files into the map.
 			// Note that the toOSSString() operation returns the file path with
 			// the proper file separators ("/" vs. "\") added.
-			actionDataMap.put("stdOutFileName", stdOutProjectFile.getLocation()
-					.toOSString());
-			actionDataMap.put("stdErrFileName", stdErrProjectFile.getLocation()
-					.toOSString());
-			logger.info("JobLauncher Message: File paths: "
-					+ "\n\tStandard Out File = "
-					+ actionDataMap.get("stdOutFileName")
-					+ "\n\tStandard Error File = "
+			actionDataMap.put("stdOutFileName", stdOutProjectFile.getLocation().toOSString());
+			actionDataMap.put("stdErrFileName", stdErrProjectFile.getLocation().toOSString());
+			logger.info("JobLauncher Message: File paths: " + "\n\tStandard Out File = "
+					+ actionDataMap.get("stdOutFileName") + "\n\tStandard Error File = "
 					+ actionDataMap.get("stdErrFileName"));
 
 			try {
 				// Add the output files to the resource component
-				addOutputFile(1, stdOutProjectFile, "Standard Output",
-						outputData);
-				addOutputFile(2, stdErrProjectFile, "Standard Error Output",
-						outputData);
+				addOutputFile(1, stdOutProjectFile, "Standard Output", outputData);
+				addOutputFile(2, stdErrProjectFile, "Standard Error Output", outputData);
 
 				// Grab the current list of project members that are managed for
 				// this item.
@@ -449,12 +454,15 @@ public class JobLauncher extends Item {
 				for (int i = 0; i < members.length; i++) {
 					// Add the resource and its modification time stamp to the
 					// list.
-					workingDirMemberModMap.put(members[i],
-							members[i].getModificationStamp());
+					workingDirMemberModMap.put(members[i], members[i].getModificationStamp());
 				}
 			} catch (CoreException | IOException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
+			
+			// Create the output File that will be 
+			// streamed to the Console
+			createOutputFile();
 		}
 
 		return;
@@ -489,8 +497,7 @@ public class JobLauncher extends Item {
 				int lastDir = workingDirPath.lastIndexOf(separator);
 				workingDirName = workingDirPath.substring(lastDir + 1);
 
-				workingDir = project.getFolder("jobs" + separator
-						+ workingDirName);
+				workingDir = project.getFolder("jobs" + separator + workingDirName);
 
 			}
 
@@ -500,23 +507,19 @@ public class JobLauncher extends Item {
 				resourceNames.add(namedResource.getPath().toASCIIString());
 			}
 			// Get the last resource id. Kinda messy. Nothing doing though.
-			lastId = resources.getResources()
-					.get(resources.getResources().size() - 1).getId();
+			lastId = resources.getResources().get(resources.getResources().size() - 1).getId();
 			// Find the members that are new
 			for (int i = 0; i < latestMembers.length; i++) {
 				IResource currentResource = latestMembers[i];
 				if (!workingDirMemberModMap.keySet().contains(currentResource)) {
-					logger.info("JobLauncher Message: " + "Adding file "
-							+ currentResource.getName() + " to list.");
+					logger.info("JobLauncher Message: " + "Adding file " + currentResource.getName() + " to list.");
 					// Get the file as an ICEResource object
-					ICEResource resource = getResource(currentResource
-							.getLocation().toOSString());
+					ICEResource resource = getResource(currentResource.getLocation().toOSString());
 					if (resource != null) {
 						// Set the name, ID, description
 						resource.setName(currentResource.getName());
 						resource.setId(lastId + i + 1);
-						resource.setDescription(currentResource.getName()
-								+ " from " + getName() + " " + getId());
+						resource.setDescription(currentResource.getName() + " from " + getName() + " " + getId());
 						// Add the resource to the ResourceComponent
 						resources.addResource(resource);
 					}
@@ -527,19 +530,15 @@ public class JobLauncher extends Item {
 					fileName = currentResource.getLocationURI().toASCIIString();
 					// Check the time stamp to see if it was modified AND make
 					// sure that the file is not already in the resource list.
-					if (lastTimeStamp != currentResource.getModificationStamp()
-							&& !resourceNames.contains(fileName)) {
-						logger.info("JobLauncher Message: " + "Adding file "
-								+ currentResource.getName() + " to list.");
+					if (lastTimeStamp != currentResource.getModificationStamp() && !resourceNames.contains(fileName)) {
+						logger.info("JobLauncher Message: " + "Adding file " + currentResource.getName() + " to list.");
 						// Get the file as an ICEResource
-						ICEResource resource = getResource(currentResource
-								.getLocation().toOSString());
+						ICEResource resource = getResource(currentResource.getLocation().toOSString());
 						if (resource != null) {
 							// Set the name, ID, description
 							resource.setName(currentResource.getName());
 							resource.setId(lastId + i + 1);
-							resource.setDescription(currentResource.getName()
-									+ " from " + getName() + " " + getId());
+							resource.setDescription(currentResource.getName() + " from " + getName() + " " + getId());
 							// Add the resource to the ResourceComponent
 							resources.addResource(resource);
 						}
@@ -547,11 +546,11 @@ public class JobLauncher extends Item {
 				}
 			}
 		} catch (CoreException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (NullPointerException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (IOException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 	}
@@ -562,7 +561,8 @@ public class JobLauncher extends Item {
 	 * the contents of the Form.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status of the operation. It will only equal
 	 *         FormStatus.ReadyToProcess or FormStatus.InfoError and should
 	 *         cause the calling operation to fail if the latter is returned.
@@ -584,8 +584,7 @@ public class JobLauncher extends Item {
 
 		// Assign the data components
 		fileData = (DataComponent) form.getComponent(JobLauncherForm.filesId);
-		parallelData = (DataComponent) form
-				.getComponent(JobLauncherForm.parallelId);
+		parallelData = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		// Check the components and fail if they are null
 		if (fileData == null) {
 			return FormStatus.InfoError;
@@ -594,8 +593,7 @@ public class JobLauncher extends Item {
 			// all valid too
 			for (Entry entry : fileData.retrieveAllEntries()) {
 				if (entry.getValue() == null || entry.getValue().isEmpty()) {
-					logger.info("JobLauncher Error: All input file "
-							+ "entries must be set!");
+					logger.info("JobLauncher Error: All input file " + "entries must be set!");
 					return FormStatus.InfoError;
 				}
 			}
@@ -611,16 +609,13 @@ public class JobLauncher extends Item {
 				fileResource = project.findMember(fileEntry.getValue());
 				// Make sure the file exists
 				if (fileResource == null || !fileResource.exists()) {
-					logger.info("JobLauncher Message: Base filename = "
-							+ filename);
-					logger.info("JobLauncher Message: Allowed file names = "
-							+ fileEntry.getAllowedValues());
+					logger.info("JobLauncher Message: Base filename = " + filename);
+					logger.info("JobLauncher Message: Allowed file names = " + fileEntry.getAllowedValues());
 					return FormStatus.InfoError;
 				}
 				// Get the full filename
 				filename = fileResource.getLocation().toOSString();
-				actionDataMap.put(inputFileNameMap.get(entryName).varName,
-						filename);
+				actionDataMap.put(inputFileNameMap.get(entryName).varName, filename);
 			} else {
 				logger.info("File not found in Form: " + entryName);
 			}
@@ -653,20 +648,16 @@ public class JobLauncher extends Item {
 			mpiEntry = parallelData.retrieveEntry("Number of MPI Processes");
 			// Get the number of cores if the Entry is there
 			if (mpiEntry != null) {
-				numProcs = Math.max(numProcs,
-						Integer.parseInt(mpiEntry.getValue()));
+				numProcs = Math.max(numProcs, Integer.parseInt(mpiEntry.getValue()));
 			}
 			// Figure out whether or not TBB threads should be used.
-			Entry tbbThreadsEntry = parallelData
-					.retrieveEntry("Number of TBB Threads");
+			Entry tbbThreadsEntry = parallelData.retrieveEntry("Number of TBB Threads");
 			// Get the number of cores if the Entry is there
 			if (tbbThreadsEntry != null) {
-				numTBBThreads = Math.max(numTBBThreads,
-						Integer.parseInt(tbbThreadsEntry.getValue()));
+				numTBBThreads = Math.max(numTBBThreads, Integer.parseInt(tbbThreadsEntry.getValue()));
 			}
 			// Get the account code
-			Entry accountEntry = parallelData
-					.retrieveEntry("Account Code/Project Code");
+			Entry accountEntry = parallelData.retrieveEntry("Account Code/Project Code");
 			accountCode = accountEntry.getValue();
 		}
 
@@ -697,8 +688,7 @@ public class JobLauncher extends Item {
 			actionDataMap.put("downloadDirectory", remoteDownloadDir);
 		}
 
-		logger.debug("JobLauncher Message: " + "Action Data Map = "
-				+ actionDataMap);
+		logger.debug("JobLauncher Message: " + "Action Data Map = " + actionDataMap);
 
 		return FormStatus.ReadyToProcess;
 	}
@@ -718,12 +708,11 @@ public class JobLauncher extends Item {
 	 *            The ResourceComponent that contains the data.
 	 * @throws IOException
 	 */
-	private void addOutputFile(int resourceId, IFile file, String resourceName,
-			ResourceComponent outputComp) throws IOException {
+	private void addOutputFile(int resourceId, IFile file, String resourceName, ResourceComponent outputComp)
+			throws IOException {
 
 		// Get the file as an ICEResource (returns null if invalid filepath)
-		ICEResource outputResource = this.getResource(file.getLocation()
-				.toOSString());
+		ICEResource outputResource = this.getResource(file.getLocation().toOSString());
 
 		// If the filepath corresponded to a valid resource, we add it to the
 		// ResourceComponent
@@ -761,12 +750,11 @@ public class JobLauncher extends Item {
 			// Get the address of localhost
 			InetAddress addr = InetAddress.getLocalHost();
 		} catch (UnknownHostException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Identify the log
-		header = "# Log of " + logName + " collected by ICE for " + getName()
-				+ " " + getId() + "\n";
+		header = "# Log of " + logName + " collected by ICE for " + getName() + " " + getId() + "\n";
 
 		return header;
 	}
@@ -827,8 +815,7 @@ public class JobLauncher extends Item {
 		form.addComponent(hostsTable);
 
 		// Every JobLauncher should observe the Input File Entry
-		((DataComponent) form.getComponent(JobLauncherForm.filesId))
-				.retrieveEntry("Input File").register(this);
+		((DataComponent) form.getComponent(JobLauncherForm.filesId)).retrieveEntry("Input File").register(this);
 
 		return;
 	}
@@ -843,7 +830,8 @@ public class JobLauncher extends Item {
 	 *            <p>
 	 *            The Form to review.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status.
 	 *         </p>
 	 */
@@ -856,12 +844,10 @@ public class JobLauncher extends Item {
 		// Check the Form and reset the name
 		if (preparedForm != null) {
 			// Make sure the Forms are the same
-			if (form.getId() == preparedForm.getId()
-					&& form.getItemID() == preparedForm.getItemID()) {
+			if (form.getId() == preparedForm.getId() && form.getItemID() == preparedForm.getItemID()) {
 				// Check the hosts table
 				// FIXME
-				TableComponent updatedHostsTable = (TableComponent) form
-						.getComponent(JobLauncherForm.parallelId + 1);
+				TableComponent updatedHostsTable = (TableComponent) form.getComponent(JobLauncherForm.parallelId + 1);
 				if (updatedHostsTable.numberOfRows() > 0) {
 					// Update the hosts table
 					hostsTable = updatedHostsTable;
@@ -871,13 +857,11 @@ public class JobLauncher extends Item {
 					form = preparedForm;
 					status = FormStatus.ReadyToProcess;
 				} else {
-					System.err.println("JobLauncher Message: "
-							+ "Found an empty hosts table "
-							+ "during entry review!");
+					System.err
+							.println("JobLauncher Message: " + "Found an empty hosts table " + "during entry review!");
 				}
 			} else {
-				System.err.println("JobLauncher Message: "
-						+ "Invalid form id for submitted form during review!");
+				System.err.println("JobLauncher Message: " + "Invalid form id for submitted form during review!");
 			}
 		}
 
@@ -907,7 +891,8 @@ public class JobLauncher extends Item {
 	 *            <p>
 	 *            The name of the action to perform.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status.
 	 *         </p>
 	 */
@@ -923,6 +908,7 @@ public class JobLauncher extends Item {
 			// Check the action name and return and error if the action name is
 			// not equal to "Launch the Job"
 			if (!actionName.equals(allowedActions.get(0))) {
+				logger.error("JobLauncher Error - Invalid action name.");
 				return FormStatus.InfoError;
 			}
 
@@ -932,27 +918,52 @@ public class JobLauncher extends Item {
 				// Fill the action data dictionary or fail if there is a
 				// problem.
 				if (!fillActionDataMap().equals(FormStatus.ReadyToProcess)) {
+					logger.error("JobLauncher Error - Error filling the Action Data Map.");
 					return FormStatus.InfoError;
 				}
+
+				// Here we should create a scratch job directory
+				// in project/jobs
+				IFolder jobsFolder = project.getFolder("jobs");
+				if (!jobsFolder.exists()) {
+					try {
+						jobsFolder.create(true, true, null);
+					} catch (CoreException e) {
+						logger.error("JobLauncher Error: Could not create the " + "jobs directory for job launches.",
+								e);
+						return FormStatus.InfoError;
+					}
+				}
+				
+				currentJobFolder = jobsFolder
+						.getFolder("iceLaunch_" + new SimpleDateFormat("yyyMMddhhmmss").format(new Date()));
+				try {
+					currentJobFolder.create(true, true, null);
+				} catch (CoreException e1) {
+					logger.error("JobLauncher Error: Could not create the current launch job directory.", e1);
+					return FormStatus.InfoError;
+				}
+
+				refreshProjectSpace();
+
+				// Add the Job Launch Directory name to the data map
+				actionDataMap.put("localJobLaunchDirectory", currentJobFolder.getName());
+
 				// Create the output files in the project space
 				createOutputFiles();
-
+				
 				// Launch the action
 				action = new JobLaunchAction();
 
 				// If we have a valid connection then give it to the action
-				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap
-						.get("hostname"));
+				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap.get("hostname"));
 				if (remoteConnection != null) {
-					((JobLaunchAction) action)
-							.setRemoteConnection(remoteConnection);
+					((JobLaunchAction) action).setRemoteConnection(remoteConnection);
 				} else if (remoteManager != null) {
 					// If it was null, we'll need to give the action a
 					// reference to the ConnectionType (SSH) so it can
 					// prompt the user for a new connection
-					((JobLaunchAction) action)
-							.setRemoteConnectionType(remoteManager
-									.getRemoteConnectionTypes().get(0));
+					((JobLaunchAction) action).setRemoteConnectionType(remoteManager.getRemoteConnectionTypes().get(0));
 				}
 
 				// Create a new Eclipse Job for the JobLaunchAction
@@ -961,15 +972,13 @@ public class JobLauncher extends Item {
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
 						final int ticks = 100;
-						monitor.beginTask("Executing the Job Launch Action...",
-								ticks);
+						monitor.beginTask("Executing the Job Launch Action...", ticks);
 						try {
 							// Execute the Action
 							status = action.execute(actionDataMap);
 
 							// While its processing, keep the progress bar going
-							while (!status.equals(FormStatus.Processed)
-									&& !status.equals(FormStatus.InfoError)) {
+							while (!status.equals(FormStatus.Processed) && !status.equals(FormStatus.InfoError)) {
 								monitor.subTask("Executing the Job");
 								Thread.sleep(1000);
 								// Check for Cancellation
@@ -979,7 +988,7 @@ public class JobLauncher extends Item {
 								}
 							}
 						} catch (InterruptedException e) {
-							logger.error(getClass().getName() + " Exception!",e);
+							logger.error(getClass().getName() + " Exception!", e);
 						} finally {
 							monitor.subTask("Job Launched Successfully.");
 							monitor.worked(100);
@@ -1004,7 +1013,7 @@ public class JobLauncher extends Item {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 				// Return the new status
 				return status;
@@ -1037,16 +1046,37 @@ public class JobLauncher extends Item {
 	}
 
 	/**
-	 * This method let's clients of the JobLauncher set an existing
-	 * IRemoteConnection for remote job executions. If this connection is
-	 * provided, the JobLauncher will forward it to the JobLaunchAction for use
-	 * in the remote execution.
+	 * Overriding the default behavior here because 
+	 * the overall process output should be in the 
+	 * to-be-created local job folder. 
 	 * 
-	 * @param connection
 	 */
-	// public void setRemoteConnection(IRemoteConnection connection) {
-	// remoteConnection = connection;
-	// }
+	@Override
+	protected void setupOutputFile() {
+		return;
+	}
+
+	private void createOutputFile() {
+		// Setup the output file handle name
+		String outputFilename = form.getName().replaceAll("\\s+", "_") + "_" + getId() + "_processOutput.txt";
+		// Get the file handle from the project space. Note that it may not
+		// actually exist.
+		if (project != null) {
+			// Get the file
+			IFile outputFileHandle = currentJobFolder.getFile(outputFilename);
+			outputFile = outputFileHandle.getLocation().toFile();
+			// Create a new file if it does not already exist
+			try {
+				outputFile.createNewFile();
+			} catch (Exception fileFailException) {
+				logger.info("Item Message: Unable to create output " + "file in workspace. Aborting.");
+				fileFailException.printStackTrace();
+				return;
+			}
+			
+			refreshProjectSpace();
+		}
+	}
 
 	/**
 	 * This operations grabs the information from the stdout and stderr files
@@ -1060,8 +1090,8 @@ public class JobLauncher extends Item {
 			@Override
 			public void run() {
 				// Local Declarations
-				File stdout = new File(actionDataMap.get("stdOutFileName")), stderr = new File(
-						actionDataMap.get("stdErrFileName"));
+				File stdout = new File(actionDataMap.get("stdOutFileName")),
+						stderr = new File(actionDataMap.get("stdErrFileName"));
 				FileWriter outputFileWriter = null;
 				BufferedWriter outputFileBufferedWriter = null;
 				FileReader stdoutReader = null, stderrReader = null;
@@ -1071,8 +1101,7 @@ public class JobLauncher extends Item {
 				try {
 					// Open the output file for writing
 					outputFileWriter = new FileWriter(outputFile);
-					outputFileBufferedWriter = new BufferedWriter(
-							outputFileWriter);
+					outputFileBufferedWriter = new BufferedWriter(outputFileWriter);
 					// Open the JobLauncherAction stdout file for reading
 					stdoutReader = new FileReader(stdout);
 					stdoutBufferredReader = new BufferedReader(stdoutReader);
@@ -1080,8 +1109,7 @@ public class JobLauncher extends Item {
 					stderrReader = new FileReader(stderr);
 					stderrBufferredReader = new BufferedReader(stderrReader);
 					// Run until the launcher is done processing
-					while (status.equals(FormStatus.Processing)
-							|| status.equals(FormStatus.NeedsInfo)) {
+					while (status.equals(FormStatus.Processing) || status.equals(FormStatus.NeedsInfo)) {
 						// Read stdout into the output file
 						while ((line = stdoutBufferredReader.readLine()) != null) {
 							outputFileBufferedWriter.write(line);
@@ -1113,11 +1141,11 @@ public class JobLauncher extends Item {
 					updateResourceComponent();
 				} catch (IOException e) {
 					// Complain and return
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 					return;
 				} catch (InterruptedException e) {
 					// Complain and return
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 					return;
 				}
 
@@ -1156,8 +1184,7 @@ public class JobLauncher extends Item {
 
 		// Local Declarations
 		ArrayList<Entry> row = new ArrayList<Entry>();
-		boolean contractSatisfied = hostname != null && os != null
-				&& execInstallPath != null && form != null
+		boolean contractSatisfied = hostname != null && os != null && execInstallPath != null && form != null
 				&& !hosts.contains(hostname) && hostsTable != null;
 
 		// Make sure parameters are not null. If null, return
@@ -1176,8 +1203,7 @@ public class JobLauncher extends Item {
 			hosts.add(hostname);
 
 			// Dump some debugging information
-			logger.debug("JobLauncher Message: " + "Successfully added host "
-					+ hostname);
+			logger.debug("JobLauncher Message: " + "Successfully added host " + hostname);
 
 		} else {
 			System.err.println("JobLauncher Message: " + "Invalid host added!");
@@ -1223,7 +1249,8 @@ public class JobLauncher extends Item {
 	 * JobLauncher.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The list of hostnames or null if there are not hosts configured.
 	 *         </p>
 	 */
@@ -1257,23 +1284,19 @@ public class JobLauncher extends Item {
 	 *            The default number of processes for MPI to use.
 	 *            </p>
 	 */
-	public void enableMPI(int minProcesses, int maxProcesses,
-			int defaultProcesses) {
+	public void enableMPI(int minProcesses, int maxProcesses, int defaultProcesses) {
 
 		// if form is not set, return
 		if (form == null) {
 			return;
 		}
 		// Perform Operation
-		((JobLauncherForm) form).enableMPI(minProcesses, maxProcesses,
-				defaultProcesses);
+		((JobLauncherForm) form).enableMPI(minProcesses, maxProcesses, defaultProcesses);
 
 		// If the components are not greater than 2, then it is false
 		if (form.getComponents().size() > 3) {
-			DataComponent dataC = (DataComponent) form.getComponents().get(
-					JobLauncherForm.parallelId);
-			Entry entry = dataC
-					.retrieveEntry("Number of MPI Processes");
+			DataComponent dataC = (DataComponent) form.getComponents().get(JobLauncherForm.parallelId);
+			Entry entry = dataC.retrieveEntry("Number of MPI Processes");
 			if (entry != null) {
 				this.mpiEnabled = true;
 				return;
@@ -1333,15 +1356,12 @@ public class JobLauncher extends Item {
 
 		// If form is not set, return
 		if (form != null) {
-			((JobLauncherForm) form).enableOpenMP(minThreads, maxThreads,
-					defaultThreads);
+			((JobLauncherForm) form).enableOpenMP(minThreads, maxThreads, defaultThreads);
 
 			// If the components are not greater than 2, then it is false
 			if (form.getComponents().size() > 3) {
-				DataComponent dataC = (DataComponent) form
-						.getComponent(JobLauncherForm.parallelId);
-				Entry entry = dataC
-						.retrieveEntry("Number of OpenMP Threads");
+				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+				Entry entry = dataC.retrieveEntry("Number of OpenMP Threads");
 				if (entry != null) {
 					openMPEnabled = true;
 					return;
@@ -1408,18 +1428,15 @@ public class JobLauncher extends Item {
 			tbbEnabled = false;
 
 			// Enable the threading entry in the form
-			((JobLauncherForm) form).enableTBB(minThreads, maxThreads,
-					defaultThreads);
+			((JobLauncherForm) form).enableTBB(minThreads, maxThreads, defaultThreads);
 
 			// Check to see if it was enabled or not
 			JobLauncherForm form = (JobLauncherForm) this.getForm();
 
 			// If there are more than 3 components, then parallelism is enabled.
 			if (form.getComponents().size() > 3) {
-				DataComponent dataC = (DataComponent) form
-						.getComponent(JobLauncherForm.parallelId);
-				Entry entry = dataC
-						.retrieveEntry("Number of TBB Threads");
+				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+				Entry entry = dataC.retrieveEntry("Number of TBB Threads");
 				if (entry != null) {
 					tbbEnabled = true;
 				}
@@ -1461,7 +1478,8 @@ public class JobLauncher extends Item {
 	 *            <p>
 	 *            The JobLauncher that should be checked for equality.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
@@ -1476,46 +1494,36 @@ public class JobLauncher extends Item {
 
 		// Check that the object is not null, and that it is an Item
 		// Check that these objects have the same ICEObject data
-		if (otherLauncher == null || !(otherLauncher instanceof Item)
-				|| !super.equals(otherLauncher)) {
+		if (otherLauncher == null || !(otherLauncher instanceof Item) || !super.equals(otherLauncher)) {
 			return false;
 		}
 
 		// Check data
 		JobLauncher launcher = (JobLauncher) otherLauncher;
-		retVal = (this.allowedActions.equals(launcher.allowedActions))
-				&& (this.form.equals(launcher.form))
-				&& (this.itemType == launcher.itemType)
-				&& (this.status.equals(launcher.status))
-				&& (this.mpiEnabled == launcher.mpiEnabled)
-				&& (this.openMPEnabled == launcher.openMPEnabled)
-				&& (this.tbbEnabled == launcher.tbbEnabled)
-				&& (this.hostsTable.equals(launcher.hostsTable))
+		retVal = (this.allowedActions.equals(launcher.allowedActions)) && (this.form.equals(launcher.form))
+				&& (this.itemType == launcher.itemType) && (this.status.equals(launcher.status))
+				&& (this.mpiEnabled == launcher.mpiEnabled) && (this.openMPEnabled == launcher.openMPEnabled)
+				&& (this.tbbEnabled == launcher.tbbEnabled) && (this.hostsTable.equals(launcher.hostsTable))
 				&& (this.hosts.equals(launcher.hosts));
 
 		// Check the remote download directory if it has been configure
 		if (remoteDownloadDir != null) {
-			retVal &= (this.remoteDownloadDir
-					.equals(launcher.remoteDownloadDir));
+			retVal &= (this.remoteDownloadDir.equals(launcher.remoteDownloadDir));
 		}
 
 		// Check project
-		if (this.project != null && launcher.project != null
-				&& (!(this.project.equals(launcher.project)))) {
+		if (this.project != null && launcher.project != null && (!(this.project.equals(launcher.project)))) {
 			return false;
 		}
 
 		// Check project - set to null
-		if (this.project == null && launcher.project != null
-				|| this.project != null && launcher.project == null) {
+		if (this.project == null && launcher.project != null || this.project != null && launcher.project == null) {
 			return false;
 		}
 
 		// Check executable command name
-		if (this.executableCommandName != null
-				&& launcher.executableCommandName != null
-				&& !(this.executableCommandName
-						.equals(launcher.executableCommandName))) {
+		if (this.executableCommandName != null && launcher.executableCommandName != null
+				&& !(this.executableCommandName.equals(launcher.executableCommandName))) {
 			return false;
 
 		}
@@ -1534,7 +1542,8 @@ public class JobLauncher extends Item {
 	 * This operation returns the hashcode value of the JobLauncher.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode
 	 *         </p>
 	 */
@@ -1636,7 +1645,8 @@ public class JobLauncher extends Item {
 	 * This operation provides a deep copy of the JobLauncher.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A clone of the JobLauncher.
 	 *         </p>
 	 */
@@ -1683,8 +1693,7 @@ public class JobLauncher extends Item {
 	 *            null, then it will ignored.
 	 *            </p>
 	 */
-	public void addInputType(String name, String varName, String description,
-			String fileExtension) {
+	public void addInputType(String name, String varName, String description, String fileExtension) {
 
 		// Don't send junk
 		if (name != null && description != null && varName != null) {
@@ -1817,7 +1826,11 @@ public class JobLauncher extends Item {
 	 * @return directory The directory where the job is launched from.
 	 */
 	protected String getWorkingDirectory() {
-		return actionDataMap.get("workingDir");
+		if (actionDataMap != null) {
+			return actionDataMap.get("workingDir");
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -1828,8 +1841,7 @@ public class JobLauncher extends Item {
 	 */
 	public void setRemoteServicesManager(IRemoteServicesManager manager) {
 		if (manager != null) {
-			logger.info("[JobLauncher Message] Setting the IRemoteServicesManager: "
-					+ manager.toString());
+			logger.info("[JobLauncher Message] Setting the IRemoteServicesManager: " + manager.toString());
 			remoteManager = manager;
 		}
 	}
@@ -1844,28 +1856,22 @@ public class JobLauncher extends Item {
 	public IRemoteConnection getRemoteConnection(String hostname) {
 		IRemoteConnection connection = null;
 		if (remoteManager != null) {
-			IRemoteConnectionType connectionType = remoteManager
-					.getRemoteConnectionTypes().get(0);
+			IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
 
 			if (connectionType != null) {
 				try {
 
 					for (IRemoteConnection c : connectionType.getConnections()) {
-						String connectionHost = c.getService(
-								IRemoteConnectionHostService.class)
-								.getHostname();
-						if (InetAddress
-								.getByName(hostname)
-								.getHostAddress()
-								.equals(InetAddress.getByName(connectionHost)
-										.getHostAddress())) {
+						String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
+						if (InetAddress.getByName(hostname).getHostAddress()
+								.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
 							connection = c;
 							break;
 						}
 
 					}
 				} catch (UnknownHostException e) {
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 		}
@@ -1887,8 +1893,7 @@ public class JobLauncher extends Item {
 			Entry entry = (Entry) component;
 
 			// Verify this is the "Input File" Entry and it has a valid value
-			if (entry.getName().equals("Input File")
-					&& !entry.getValue().isEmpty()) {
+			if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
 
 				// Get the regex from the subclass
 				String regex = getFileDependenciesSearchString();
@@ -1919,8 +1924,7 @@ public class JobLauncher extends Item {
 
 		// Get the file DataComponent and Entry names
 		ArrayList<String> entryNames = new ArrayList<String>();
-		DataComponent fileComp = (DataComponent) form
-				.getComponent(JobLauncherForm.filesId);
+		DataComponent fileComp = (DataComponent) form.getComponent(JobLauncherForm.filesId);
 		for (Entry e : fileComp.retrieveAllEntries()) {
 			entryNames.add(e.getName());
 		}
@@ -1941,8 +1945,7 @@ public class JobLauncher extends Item {
 		// Expression for each of those add a new Input file Entry
 		ArrayList<Entry> entriesFound = getReader().findAll(file, regex);
 		for (Entry e : entriesFound) {
-			addInputType(e.getName(), e.getName().replaceAll(" ", ""),
-					e.getDescription(),
+			addInputType(e.getName(), e.getName().replaceAll(" ", ""), e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
 
 		}

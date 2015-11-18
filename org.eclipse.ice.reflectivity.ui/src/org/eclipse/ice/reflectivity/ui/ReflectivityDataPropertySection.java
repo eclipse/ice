@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Kasper Gammeltoft
  *******************************************************************************/
 
@@ -38,7 +38,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * {@link ReflectivityDataPropertySection#setIsEnabled(boolean)} method to
  * change the state of the entries to the value provided. The entries are set to
  * be enabled by default.
- * 
+ *
  * @author Kasper Gammeltoft
  *
  */
@@ -54,6 +54,9 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	 */
 	private DataComponentComposite dataComposite;
 
+	/**
+	 * True if the EntryComposites are enabled for viewing.
+	 */
 	private boolean isEnabled = true;
 
 	/**
@@ -137,7 +140,7 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	 * multiple selections, assumes the first one is the data component to be
 	 * selected. Will discard anything else that is the first element in the
 	 * selection (not a data component).
-	 * 
+	 *
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#setInput(
 	 *      org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
@@ -158,7 +161,7 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	 * This operation manually sets the data component to be displayed by the
 	 * properties view. Set this property before the section is graphically
 	 * constructed.
-	 * 
+	 *
 	 * @param dataComp
 	 *            The data component to display
 	 */
@@ -169,7 +172,7 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 	/**
 	 * Sets the enabled state of the entry composites in this section. This is
 	 * set to true by default.
-	 * 
+	 *
 	 * @param enabled
 	 *            True if the entries are enabled, false if otherwise.
 	 */
@@ -179,7 +182,7 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#
 	 * aboutToBeHidden()
 	 */
@@ -191,7 +194,7 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#
 	 * aboutToBeShown()
 	 */

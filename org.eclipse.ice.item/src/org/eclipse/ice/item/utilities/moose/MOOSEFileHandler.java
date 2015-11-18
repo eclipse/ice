@@ -31,6 +31,7 @@ import java.util.Stack;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -81,8 +82,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(MOOSEFileHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(MOOSEFileHandler.class);
 
 	/**
 	 * A flag to denote whether or not debugging is enabled
@@ -165,9 +165,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				fileOutputWriter.close();
 				fileWriter.close();
 			} catch (IOException e) {
-				logger.info("MOOSEFileHandler Exception: "
-						+ "Unable to write output file.");
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.info("MOOSEFileHandler Exception: " + "Unable to write output file.");
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -202,8 +201,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Post some debug info
 		if (debugFlag) {
-			logger.info("MOOSEFileHandler Message: "
-					+ "Attempting to loading GetPot file " + filePath);
+			logger.info("MOOSEFileHandler Message: " + "Attempting to loading GetPot file " + filePath);
 		}
 
 		// Load the GetPot file
@@ -222,16 +220,14 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			}
 		} catch (IOException e) {
 			// Complain if the file is not found
-			System.err.println("MOOSEFileHandler Message: "
-					+ "Unable to load GetPot file!");
-			logger.error(getClass().getName() + " Exception!",e);
+			System.err.println("MOOSEFileHandler Message: " + "Unable to load GetPot file!");
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Check the string before proceeding
 		if (mooseFileString != null && !mooseFileString.isEmpty()) {
 			// Create an array list from the string
-			ArrayList<String> potLines = new ArrayList<String>(
-					Arrays.asList(mooseFileString.split("\n")));
+			ArrayList<String> potLines = new ArrayList<String>(Arrays.asList(mooseFileString.split("\n")));
 
 			// Remove (non-parameter) commented lines and white space
 			String trimmedPotLine = "";
@@ -239,9 +235,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 				trimmedPotLine = potLines.get(i).trim();
 
-				if (trimmedPotLine.startsWith("#")
-						&& !trimmedPotLine.contains("=")
-						&& !trimmedPotLine.contains("[")
+				if (trimmedPotLine.startsWith("#") && !trimmedPotLine.contains("=") && !trimmedPotLine.contains("[")
 						&& !trimmedPotLine.contains("]")) {
 					// Lines that start with "#" but have no "=" are comments
 					// that aren't parameters and should be removed
@@ -258,10 +252,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// (and has happened at least once) where a line is just a
 					// comment (starts with "#") AND includes a "=" in the text
 					// of the comment
-					if (trimmedPotLine.startsWith("#")
-							&& trimmedPotLine.contains("=")) {
-						String[] splitTrimmedPotLine = trimmedPotLine
-								.split("\\s+");
+					if (trimmedPotLine.startsWith("#") && trimmedPotLine.contains("=")) {
+						String[] splitTrimmedPotLine = trimmedPotLine.split("\\s+");
 						if (splitTrimmedPotLine.length > 4) {
 							// Skip this line, it's a comment that's been
 							// mistaken as a parameter
@@ -300,12 +292,10 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					Block block = new Block();
 					ArrayList<String> blockLines = null;
 					if (endCounter >= counter - 1) {
-						blockLines = new ArrayList<String>(potLines.subList(
-								counter - 1, endCounter));
+						blockLines = new ArrayList<String>(potLines.subList(counter - 1, endCounter));
 					}
 					if (blockLines != null && !blockLines.isEmpty()) {
-						StringBuilder stringBuilder = new StringBuilder(
-								blockLines.get(0));
+						StringBuilder stringBuilder = new StringBuilder(blockLines.get(0));
 						blockLines.set(0, stringBuilder.toString());
 						block.fromGetPot(blockLines);
 						// Add the block to the list
@@ -316,9 +306,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 					// Print some debug information
 					if (debugFlag) {
-						logger.info("\nMOOSEFileHandler Message: "
-								+ "Block output read from GetPot file "
-								+ filePath + " follows.");
+						logger.info("\nMOOSEFileHandler Message: " + "Block output read from GetPot file " + filePath
+								+ " follows.");
 						// Dump each line of the newly created block
 						for (String line : blockLines) {
 							logger.info(line);
@@ -328,11 +317,75 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				}
 			}
 		} else if (debugFlag) {
-			System.err.println("MOOSEFileHandler Message: "
-					+ "String loaded from " + filePath + " is null or empty.");
+			System.err.println("MOOSEFileHandler Message: " + "String loaded from " + filePath + " is null or empty.");
 		}
 
 		return trees;
+	}
+
+	/**
+	 * This method recursively goes through the Block and gives the list of
+	 * files available in the project to any File Entries.
+	 * 
+	 * @param block
+	 * @param projectDir
+	 */
+	private void setFileEntries(Block block, String projectDir) {
+		// Local Declarations
+		String availableFiles = "";
+
+		// Search the block with no children
+		if (block.getSubblocks().isEmpty()) {
+			for (Parameter p : block.getParameters()) {
+				if (p.getCpp_type().contains("FileName")) {
+					File[] files = new File(projectDir).listFiles();
+					for (File file : files) {
+						if (!file.isHidden() && !file.isDirectory()) {
+							// If it is a mesh file, only add exodus extensions
+							if (p.getCpp_type().contains("Mesh")) {
+								String extension = FilenameUtils.getExtension(file.getName());
+								if (extension.equals("e") || extension.equals("exo")) {
+									availableFiles += file.getName() + " ";
+								}
+							} else {
+								availableFiles += file.getName() + " ";
+							}
+						}
+					}
+
+					p.setOptions(availableFiles);
+				}
+			}
+		} else {
+			// else loop over all sub blocks
+			for (Block subBlock : block.getSubblocks()) {
+				setFileEntries(subBlock, projectDir);
+			}
+
+			// Once we're through that, we still have to check
+			// the top level block
+			for (Parameter p : block.getParameters()) {
+				if (p.getCpp_type().contains("FileName")) {
+					File[] files = new File(projectDir).listFiles();
+					for (File file : files) {
+						if (!file.isHidden() && !file.isDirectory()) {
+							// If it is a mesh file, only add exodus extensions
+							if (p.getCpp_type().contains("Mesh")) {
+								String extension = FilenameUtils.getExtension(file.getName());
+								if (extension.equals("e") || extension.equals("exo")) {
+									availableFiles += file.getName() + " ";
+								}
+							} else {
+								availableFiles += file.getName() + " ";
+							}
+						}
+					}
+
+					p.setOptions(availableFiles);
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -350,8 +403,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *         data component is 1.
 	 * @throws IOException
 	 */
-	public ArrayList<TreeComposite> loadYAML(String filePath)
-			throws IOException {
+	public ArrayList<TreeComposite> loadYAML(String filePath) throws IOException {
 
 		// Local Declarations
 		InputStream input = null;
@@ -370,10 +422,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		File yamlFile = new File(filePath);
 		input = new FileInputStream(yamlFile);
 
+		// Get the project space directory string
+		String projectDir = new File(yamlFile.getParent()).getParent();
+
 		// Load the YAML tree
 		if (debugFlag) {
-			logger.info("MOOSEFileHandler Message: Loading YAML file "
-					+ filePath.toString());
+			logger.info("MOOSEFileHandler Message: Loading YAML file " + filePath.toString());
 		}
 		Yaml yaml = new Yaml();
 		ArrayList<?> list = (ArrayList<?>) yaml.load(input);
@@ -381,11 +435,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			logger.info("MOOSEFileHandler Message: File loaded.");
 		}
 
+		// Check we got a valid YAML file
+		if (list == null || list.isEmpty()) {
+			logger.error("Invalid YAML at " + yamlFile.getAbsolutePath());
+			return trees;
+		}
+		
 		// Load the block list. Use YAMLBlocks so that they can be converted to
 		// TreeComposites appropriately.
 		for (int i = 0; i < list.size(); i++) {
 			Block block = new YAMLBlock();
 			block.loadFromMap((Map<String, Object>) list.get(i));
+
+			// Recursively add Files to any File Entries in
+			// this block
+			setFileEntries(block, projectDir);
+
 			block.active = true;
 			trees.add(block.toTreeComposite());
 		}
@@ -395,7 +460,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			input.close();
 		} catch (IOException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Put all the names of top-level nodes into a list (we use this later)
@@ -426,8 +491,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			treeName += "/" + tree.getName();
 
 			// Put the tree in the Map, keyed on path name
-			treeMap.put((treeName.startsWith("/") ? treeName.substring(1)
-					: treeName), tree);
+			treeMap.put((treeName.startsWith("/") ? treeName.substring(1) : treeName), tree);
 
 			// Push child exemplars to the top of the tree stack
 			childExemplars = tree.getChildExemplars();
@@ -453,9 +517,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				// Go up another level if the next tree in the stack isn't
 				// a child exemplar of the current tree referenced by treeName
 				oneUpTree = treeMap.get(treeName.substring(1));
-				if (oneUpTree != null
-						&& !oneUpTree.getChildExemplars().contains(
-								treeStack.peek())) {
+				if (oneUpTree != null && !oneUpTree.getChildExemplars().contains(treeStack.peek())) {
 					prevNameIndex = treeName.lastIndexOf("/");
 					treeName = ((prevNameIndex == 0 || prevNameIndex == -1) ? treeName
 							: treeName.substring(0, prevNameIndex));
@@ -475,7 +537,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		try {
 			hardPathsList = loadActionSyntax(syntaxFilePath);
 		} catch (IOException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Begin looking through the TreeComposites for matches to the list of
@@ -490,8 +552,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		for (String path : hardPathsList) {
 
 			// Clean the path of the excess return carriage at the end
-			cleanPath = (path.endsWith("\r") ? path.substring(0,
-					path.length() - 1) : path);
+			cleanPath = (path.endsWith("\r") ? path.substring(0, path.length() - 1) : path);
 
 			// Get the tree with the corresponding hard path
 			currTree = treeMap.get(cleanPath);
@@ -504,8 +565,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				// "<type>"
 				currChildExemplars = currTree.getChildExemplars();
 				for (int i = 0; i < currChildExemplars.size(); i++) {
-					hasType = "<type>".equals(currChildExemplars.get(i)
-							.getName());
+					hasType = "<type>".equals(currChildExemplars.get(i).getName());
 					if (hasType) {
 						typeIndex = i;
 						break;
@@ -515,9 +575,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (hasType) {
 					// Get the exemplars of <type>, these will become
 					// the list of types to chose from
-					types = currTree
-							.getChildExemplars().get(typeIndex)
-							.getChildExemplars();
+					types = currTree.getChildExemplars().get(typeIndex).getChildExemplars();
 
 					// Remove the <type> child exemplar from currTree
 					currChildExemplars.remove(typeIndex);
@@ -530,23 +588,19 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					for (TreeComposite currType : types) {
 
 						// Get the current type's data node
-						typeParameters = (DataComponent) currType
-								.getDataNodes().get(0);
+						typeParameters = (DataComponent) currType.getDataNodes().get(0);
 						// Get the current tree's data node
-						treeParameters = (DataComponent) currTree
-								.getDataNodes().get(0);
+						treeParameters = (DataComponent) currTree.getDataNodes().get(0);
 
 						// Put all the typeParameters in a HashMap, keyed on
 						// name
 						parameterMap.clear();
-						for (Entry parameter : typeParameters
-								.retrieveAllEntries()) {
+						for (Entry parameter : typeParameters.retrieveAllEntries()) {
 							parameterMap.put(parameter.getName(), parameter);
 						}
 						// Loop through the current tree's parameters, appending
 						// them all onto the type's parameters list
-						for (Entry currEntry : treeParameters
-								.retrieveAllEntries()) {
+						for (Entry currEntry : treeParameters.retrieveAllEntries()) {
 
 							// Check that the HashMap doesn't already have an
 							// entry with the same name
@@ -559,8 +613,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					}
 
 					// Create a new AdaptiveTreeComposite with the list of types
-					AdaptiveTreeComposite adapTree = new AdaptiveTreeComposite(
-							types);
+					AdaptiveTreeComposite adapTree = new AdaptiveTreeComposite(types);
 
 					// Copy all the TreeComposite data (data node, exemplars,
 					// etc.) from currTree
@@ -580,8 +633,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 						// Get the name of the tree that this
 						// AdaptiveTreeComposite is a child exemplar of
-						prevNameIndex = cleanPath.indexOf("/"
-								+ currTree.getName());
+						prevNameIndex = cleanPath.indexOf("/" + currTree.getName());
 						treeName = cleanPath.substring(0, prevNameIndex);
 
 						// Re-set the AdaptiveTreeComposite as a child exemplar
@@ -621,8 +673,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *         not end in an asterisk)
 	 * @throws IOException
 	 */
-	public ArrayList<String> loadActionSyntax(String filePath)
-			throws IOException {
+	public ArrayList<String> loadActionSyntax(String filePath) throws IOException {
 
 		// Local declarations
 		ArrayList<String> actionSyntax = null;
@@ -631,20 +682,17 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		// Check if the filepath is valid
 		if (filePath == null || filePath.isEmpty()) {
 			if (debugFlag) {
-				logger.info("MOOSEFileHandler Error: Could not open "
-						+ "action syntax file: " + filePath);
+				logger.info("MOOSEFileHandler Error: Could not open " + "action syntax file: " + filePath);
 			}
 			return actionSyntax;
 		}
 
 		// Open the action syntax file
 		if (debugFlag) {
-			logger.info("MOOSEFileHandler Message: Loading action "
-					+ "syntax file: " + filePath);
+			logger.info("MOOSEFileHandler Message: Loading action " + "syntax file: " + filePath);
 		}
 
-		actionSyntax = (ArrayList<String>) Files.readAllLines(
-				Paths.get(filePath), Charset.defaultCharset());
+		actionSyntax = (ArrayList<String>) Files.readAllLines(Paths.get(filePath), Charset.defaultCharset());
 
 		// Iterate through the list and eliminate non-hard-paths and
 		// duplicate entries
@@ -691,12 +739,10 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 		// Make sure we have a good Form.
 		if (formToWrite == null) {
-			throw new IllegalArgumentException(
-					"Error: MOOSEFileHandler.write() - the provided Form was null.");
+			throw new IllegalArgumentException("Error: MOOSEFileHandler.write() - the provided Form was null.");
 		}
 
-		TreeComposite mooseTree = (TreeComposite) formToWrite
-				.getComponent(MOOSEModel.mooseTreeCompositeId);
+		TreeComposite mooseTree = (TreeComposite) formToWrite.getComponent(MOOSEModel.mooseTreeCompositeId);
 		ArrayList<TreeComposite> children = new ArrayList<TreeComposite>();
 
 		// We may very well not have a valid TreeComposite in this Form
@@ -708,11 +754,8 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			URI uri = file.getLocationURI();
 			dumpInputFile(uri.getPath(), children);
 		} else {
-			throw new IllegalArgumentException(
-					"Error: MOOSEFileHandler.write() expects a Form with a "
-							+ "MOOSE TreeComposite at ID = "
-							+ MOOSEModel.mooseTreeCompositeId
-							+ ". Write failed.");
+			throw new IllegalArgumentException("Error: MOOSEFileHandler.write() expects a Form with a "
+					+ "MOOSE TreeComposite at ID = " + MOOSEModel.mooseTreeCompositeId + ". Write failed.");
 		}
 
 		return;
@@ -720,15 +763,18 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	}
 
 	/*
-	 * Implements a method from IWriter.
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.io.serializable.IWriter#replace(org.eclipse.core.
+	 * resources.IFile, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void replace(IFile file, String regex, String value) {
 		try {
-			throw new OperationNotSupportedException("MOOSEFileHandler Error: "
-					+ "IWriter.replace() is not supported.");
+			throw new OperationNotSupportedException(
+					"MOOSEFileHandler Error: " + "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return;
@@ -768,13 +814,11 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			ArrayList<TreeComposite> blocks = null;
 			TreeComposite rootNode = new TreeComposite();
 
-			String[] splitPath = mooseFile.getAbsolutePath().split(
-					"\\.(?=[^\\.]+$)");
+			String[] splitPath = mooseFile.getAbsolutePath().split("\\.(?=[^\\.]+$)");
 			if (splitPath.length > 1) {
 				fileExt = splitPath[1];
 			} else {
-				logger.info("MOOSEFileHandler Message:"
-						+ "File did not have file extension: "
+				logger.info("MOOSEFileHandler Message:" + "File did not have file extension: "
 						+ mooseFile.getAbsolutePath());
 				return null;
 			}
@@ -793,8 +837,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				if (blocks != null) {
 					for (TreeComposite block : blocks) {
 						// Clone the block
-						TreeComposite blockClone = (TreeComposite) block
-								.clone();
+						TreeComposite blockClone = (TreeComposite) block.clone();
 
 						// Don't want to do this if the file is a YAML file.
 						if (!fileExt.toLowerCase().equals("yaml")) {
@@ -830,7 +873,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				}
 
 			} catch (IOException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				return null;
 			}
 		}
@@ -876,26 +919,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			provider.setAllowedValues(vars);
 
 			// Walk the tree and search for non-AuxVariable 'variable' Entries
-			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-					tree);
+			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(tree);
 			while (iter.hasNext()) {
 				TreeComposite block = iter.next();
 
 				// Check that this node has data
 				if (!block.getDataNodes().isEmpty()) {
-					DataComponent data = (DataComponent) block.getDataNodes()
-							.get(0);
+					DataComponent data = (DataComponent) block.getDataNodes().get(0);
 
 					// Only operate if this data component is valid, has a
 					// variable
 					// Entry, and is not an AuxVariable
-					if (data != null && data.contains("variable")
-							&& !block.getParent().getName().contains("Aux")) {
+					if (data != null && data.contains("variable") && !block.getParent().getName().contains("Aux")) {
 
 						Entry variableEntry = data.retrieveEntry("variable");
 						String currentValue = variableEntry.getValue();
-						data.retrieveEntry("variable").setContentProvider(
-								provider);
+						data.retrieveEntry("variable").setContentProvider(provider);
 						if (vars.contains(currentValue)) {
 							variableEntry.setValue(currentValue);
 						} else {
@@ -944,27 +983,22 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			provider.setAllowedValues(auxVars);
 
 			// Walk the tree and search for non-AuxVariable 'variable' Entries
-			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-					tree);
+			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(tree);
 			while (iter.hasNext()) {
 				TreeComposite block = iter.next();
 
 				// Check that this node has data
 				if (!block.getDataNodes().isEmpty()) {
-					DataComponent data = (DataComponent) block.getDataNodes()
-							.get(0);
+					DataComponent data = (DataComponent) block.getDataNodes().get(0);
 
 					// Only operate if this data component is valid, has a
 					// variable
 					// Entry, and is not an AuxVariable
-					if (data != null
-							&& data.contains("variable")
-							&& block.getParent().getName()
-									.contains("AuxKernels")) {
+					if (data != null && data.contains("variable")
+							&& block.getParent().getName().contains("AuxKernels")) {
 						Entry variableEntry = data.retrieveEntry("variable");
 						String currentValue = variableEntry.getValue();
-						data.retrieveEntry("variable").setContentProvider(
-								provider);
+						data.retrieveEntry("variable").setContentProvider(provider);
 						variableEntry.setValue(currentValue);
 					}
 
@@ -991,8 +1025,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		ArrayList<Entry> retEntries = new ArrayList<Entry>();
 		Form form = read(file);
 
-		TreeComposite tree = (TreeComposite) form
-				.getComponent(MOOSEModel.mooseTreeCompositeId);
+		TreeComposite tree = (TreeComposite) form.getComponent(MOOSEModel.mooseTreeCompositeId);
 
 		// Make sure the tree is valid
 		if (tree == null || tree.getNumberOfChildren() < 1) {
@@ -1000,8 +1033,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		}
 
 		// Walk the tree and get all Entries that may represent a file
-		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(
-				tree);
+		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(tree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
 
@@ -1012,17 +1044,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
-					if (!"false".equals(e.getTag())
-							&& e.getValue() != null
-							&& !e.getValue().isEmpty()
-							&& (e.getName() + " = " + e.getValue())
-									.matches(regex)) {
+					if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
+							&& (e.getName() + " = " + e.getValue()).matches(regex)) {
 
 						// If this Entry does not have a very descriptive name
 						// we should reset its name to the block it belongs to
-						if ("file".equals(e.getName().toLowerCase())
-								|| "data_file"
-										.equals(e.getName().toLowerCase())) {
+						if ("file".equals(e.getName().toLowerCase()) || "data_file".equals(e.getName().toLowerCase())) {
 							e.setName(child.getName());
 						}
 						retEntries.add((Entry) e.clone());

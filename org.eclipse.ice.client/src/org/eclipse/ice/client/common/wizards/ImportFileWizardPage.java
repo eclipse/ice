@@ -15,6 +15,15 @@ package org.eclipse.ice.client.common.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.common.internal.ClientHolder;
+import org.eclipse.ice.client.internal.Client;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,8 +34,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides the main page for the {@link ImportFileWizard}. It
@@ -38,6 +50,11 @@ import org.eclipse.swt.widgets.Text;
  * 
  */
 public class ImportFileWizardPage extends WizardPage {
+	
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
 	/**
 	 * The files selected in the <code>FileDialog</code> launched by the browse

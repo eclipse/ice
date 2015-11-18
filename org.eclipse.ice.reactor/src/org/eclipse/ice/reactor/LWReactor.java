@@ -145,7 +145,8 @@ public class LWReactor extends LWRComposite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -160,7 +161,8 @@ public class LWReactor extends LWRComposite {
 	}
 
 	/*
-	 * Overrides a method from LWRComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComposite#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -190,7 +192,8 @@ public class LWReactor extends LWRComposite {
 	}
 
 	/*
-	 * Overrides a method from LWRComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComposite#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -231,7 +234,8 @@ public class LWReactor extends LWRComposite {
 	}
 
 	/*
-	 * Overrides a method from LWRComposite.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComposite#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -248,7 +252,8 @@ public class LWReactor extends LWRComposite {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {

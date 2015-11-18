@@ -15,8 +15,14 @@ package org.eclipse.ice.io.serializable;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The IReader interface defines the functionality needed to read files into an
@@ -62,5 +68,39 @@ public interface IReader {
 	 * @return The String name of this IReader.
 	 */
 	public String getReaderType();
+	
+	/**
+	 * This operation retrieves all of the IReaders from the
+	 * ExtensionRegistry.
+	 *
+	 * @return The array of IReaders that were found in the registry.
+	 * @throws CoreException
+	 *             This exception is thrown if an extension cannot be loaded.
+	 */
+	public static IReader[] getIReaders() throws CoreException {
+
+		// Logger for handling event messages and other information.
+		Logger logger = LoggerFactory.getLogger(IReader.class);
+
+		IReader[] readers = null;
+		String id = "org.eclipse.ice.io.reader";
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(id);
+
+		// If the point is available, create all the readers and load them into
+		// the array.
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			readers = new IReader[elements.length];
+			for (int i = 0; i < elements.length; i++) {
+				readers[i] = (IReader) elements[i]
+						.createExecutableExtension("class");
+			}
+		} else {
+			logger.error("Extension Point " + id + "does not exist");
+		}
+
+		return readers;
+	}
 
 }

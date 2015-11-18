@@ -458,7 +458,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -503,7 +504,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -555,7 +557,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -572,7 +575,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#getWriteableChildren()
 	 */
 	@Override
 	public ArrayList<IHdfWriteable> getWriteableChildren() {
@@ -595,7 +599,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#readChild(org.eclipse.ice.io.hdf.IHdfReadable)
 	 */
 	@Override
 	public boolean readChild(IHdfReadable iHdfReadable) {
@@ -659,7 +664,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from PWRAssembly.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.pwr.PWRAssembly#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {
@@ -704,7 +710,8 @@ public class FuelAssembly extends PWRAssembly {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#accept(org.eclipse.ice.reactor.ILWRComponentVisitor)
 	 */
 	@Override
 	public void accept(ILWRComponentVisitor visitor) {

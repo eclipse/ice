@@ -113,6 +113,7 @@ public class NekModel extends Item {
 			try {
 				// Get the Nek folder
 				IFolder nekFolder = getPreferencesDirectory();
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 				// If it exists, get any existing problem files out of it
 				if (nekFolder.exists()) {
 					// Get any resources that exist

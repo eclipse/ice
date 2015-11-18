@@ -193,7 +193,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#loadData(java.net.URI)
 	 */
 	@Override
 	public boolean loadData(URI data) {
@@ -204,7 +205,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#loadData(org.eclipse.ice.analysistool.IDataProvider)
 	 */
 	@Override
 	public boolean loadData(IDataProvider data) {
@@ -227,7 +229,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#loadReferenceData(java.net.URI)
 	 */
 	@Override
 	public boolean loadReferenceData(URI data) {
@@ -238,7 +241,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#loadReferenceData(org.eclipse.ice.analysistool.IDataProvider)
 	 */
 	@Override
 	public boolean loadReferenceData(IDataProvider data) {
@@ -258,7 +262,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getData()
 	 */
 	@Override
 	public URI getData() {
@@ -266,7 +271,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getAvailableAssets()
 	 */
 	@Override
 	public ArrayList<String> getAvailableAssets() {
@@ -274,7 +280,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getSelectedAssets()
 	 */
 	@Override
 	public ArrayList<String> getSelectedAssets() {
@@ -282,7 +289,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#setSelectedAssets(java.util.ArrayList)
 	 */
 	@Override
 	public void setSelectedAssets(ArrayList<String> assets) {
@@ -296,7 +304,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#createSelectedAssets()
 	 */
 	@Override
 	public void createSelectedAssets() {
@@ -344,7 +353,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getTotalSlices()
 	 */
 	@Override
 	public int getTotalSlices() {
@@ -352,7 +362,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getSliceIdentifier(int)
 	 */
 	@Override
 	public String getSliceIdentifier(int sliceNumber) {
@@ -360,7 +371,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getAssetsAtSlice(int)
 	 */
 	@Override
 	public ArrayList<IAnalysisAsset> getAssetsAtSlice(int sliceNumber) {
@@ -368,7 +380,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getAllAssets()
 	 */
 	@Override
 	public ArrayList<IAnalysisAsset> getAllAssets() {
@@ -380,7 +393,8 @@ public class KDDAnalysisDocument implements IAnalysisDocument {
 	}
 
 	/*
-	 * Implements a method from IAnalysisDocument.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.analysistool.IAnalysisDocument#getReferenceData()
 	 */
 	@Override
 	public URI getReferenceData() {

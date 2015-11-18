@@ -140,7 +140,8 @@ public class Material extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -172,7 +173,8 @@ public class Material extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -212,7 +214,8 @@ public class Material extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -228,7 +231,8 @@ public class Material extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#writeAttributes(ncsa.hdf.object.h5.H5File, ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean writeAttributes(H5File h5File, H5Group h5Group) {
@@ -242,7 +246,8 @@ public class Material extends LWRComponent {
 	}
 
 	/*
-	 * Overrides a method from LWRComponent.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.reactor.LWRComponent#readAttributes(ncsa.hdf.object.h5.H5Group)
 	 */
 	@Override
 	public boolean readAttributes(H5Group h5Group) {

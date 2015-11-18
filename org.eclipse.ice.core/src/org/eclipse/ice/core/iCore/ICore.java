@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -71,17 +72,6 @@ public interface ICore {
 	 *            would like to disconnect.
 	 */
 	public void disconnect(int uniqueClientId);
-
-	/**
-	 * This operation retrieves the workspace file system available to the
-	 * ICEUser. It returns a Form that contains the directory structure.
-	 *
-	 * @param uniqueClientID
-	 *            The unique ID of the Client calling the operation.
-	 * @return A Form that contains a description of the workspace file system
-	 *         available to the ICEUser.
-	 */
-	public Form getFileSystem(int uniqueClientID);
 
 	/**
 	 * This operation registers an ItemBuilder and thereby a particular Item
@@ -174,6 +164,20 @@ public interface ICore {
 	 * @return The status of the Item.
 	 */
 	public FormStatus getItemStatus(Integer id);
+
+	/**
+	 * This operation loads an Item from the file and returns the Form that
+	 * represents it.
+	 * 
+	 * This operation assumes that all necessary checks and determinations have
+	 * been performed by the client, including existence checks and the
+	 * determination that this IFile actually contains an Item.
+	 * 
+	 * @param itemFile
+	 *            The IFile that contains the Item
+	 * @return the Form that represents the Item
+	 */
+	public Form loadItem(IFile itemFile);
 
 	/**
 	 * This operation returns the representational state, a Form, of an Item
@@ -315,7 +319,92 @@ public interface ICore {
 	 *         parse this string as an integer.
 	 */
 	public String importFileAsItem(URI file, String itemType);
+	
+	/**
+	 * This operation directs the core to import a file into the specified IProject 
+	 * instance and load that file as an input for the specified Item type. It returns the id
+	 * of the newly created Item.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param itemType
+	 *            The type of Item to create.
+	 * @param project
+	 * 			  The project instance this file will be imported into.
+	 * @return The identification number given as a String of the newly created
+	 *         Item or -1 if it was unable to create the Item. It is safe to
+	 *         parse this string as an integer.
+	 */
+	public String importFileAsItem(URI file, String itemType, IProject project);
+	
+	/**
+	 * This operation directs the core to import an IFile instance into its corresponding IProject 
+	 * instance and load that file as an input for the specified Item type. It returns the id
+	 * of the newly created Item.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null. The IProject instance will be determined from 
+	 *            this IFile instance.
+	 * @param itemType
+	 *            The type of Item to create.
+	 * @return The identification number given as a String of the newly created
+	 *         Item or -1 if it was unable to create the Item. It is safe to
+	 *         parse this string as an integer.
+	 */
+	public String importFileAsItem(IFile file, String itemType);
+	
+	/**
+	 * This operation directs the core to import a file into the specified IProject 
+	 * instance corresponding to the String projectName, and load that file as an 
+	 * input for the specified Item type. It returns the id of the newly created Item.
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param itemType
+	 *            The type of Item to create.
+	 * @param projectName
+	 * 			  The name of the project instance this file will be imported into.
+	 * @return The identification number given as a String of the newly created
+	 *         Item or -1 if it was unable to create the Item. It is safe to
+	 *         parse this string as an integer.
+	 */
+	public String importFileAsItem(URI file, String itemType, String projectName);
+	
+	/**
+	 * This operation directs the core to import a file into the specified IProject instance. 
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param project
+	 *            The IProject instance this file will be imported into. 
+	 */
+	public void importFile(URI file, IProject project);
+	
+	/**
+	 * This operation directs the core to import a file into the specified IProject String name. 
+	 *
+	 * @param file
+	 *            The file that should be imported. Nothing will happen if this
+	 *            argument is null.
+	 * @param projectName
+	 *            The name of the IProject instance this file will be imported into. 
+	 */
+	public void importFile(URI file, String projectName);
 
+	/**
+	 * This operation directs the core to rename the Item given by itemID.
+	 * 
+	 * @param itemID
+	 * 			  The id of the Item.
+	 * @param name
+	 *            The new name of the Item. 
+	 */
+	public void renameItem(int itemID, String name);
+	
 	/**
 	 * This operation posts a message containing an update to the ICE Item
 	 * designated in the body of the message.
@@ -336,4 +425,5 @@ public interface ICore {
 	@Consumes("application/x-www-form-urlencoded")
 	@Produces("text/plain")
 	public String postUpdateMessage(String message);
+	
 }

@@ -15,7 +15,8 @@
 <stringAttribute key="M2_USER_SETTINGS" value=""/>
 <booleanAttribute key="M2_WORKSPACE_RESOLUTION" value="false"/>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
-<mapEntry key="LD_LIBRARY_PATH" value="/home/bkj/Programs/hdf-java/lib/linux/"/>
+<mapEntry key="LD_LIBRARY_PATH" value="/home/bkj/Programs/hdf-java-2.10/HDF-JAVA-2.10.0-Linux/usr/lib/"/>
 </mapAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/ice}"/>
 </launchConfiguration>

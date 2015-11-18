@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ICEEclipseWidgets
 Bundle-SymbolicName: org.eclipse.ice.client.widgets;singleton:=true
 Bundle-Version: 2.1.7.20150825
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
  org.eclipse.jface,
@@ -47,6 +47,5 @@ Import-Package: com.jme3.app,
  org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.client.widgets
 Service-Component: OSGI-INF/eclipseWidgetsComponent.xml,
- OSGI-INF/meshPageVizService.xml,
  OSGI-INF/formEditorVizService.xml
 Bundle-Vendor: Oak Ridge National Laboratory

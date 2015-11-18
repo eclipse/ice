@@ -6,9 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Initial API and implementation and/or initial documentation -
+ *   Jay Jay Billings, Dasha Gorin, Alexander J. McCaskey, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.core.internal;
 
@@ -25,6 +24,7 @@ import java.util.Hashtable;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -37,23 +37,30 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.core.iCore.ICore;
-import org.eclipse.ice.core.iCore.IPersistenceProvider;
 import org.eclipse.ice.core.internal.itemmanager.ItemManager;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.SerializedItemBuilder;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.ice.item.model.AbstractModelBuilder;
+import org.eclipse.ice.item.persistence.IPersistenceProvider;
+import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.osgi.framework.Bundle;
-import org.osgi.service.component.ComponentContext;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
@@ -80,7 +87,7 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  * @author Jay Jay Billings
  */
 @ApplicationPath("/ice")
-public class Core extends Application implements ICore {
+public class Core extends Application implements ICore, BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -97,7 +104,7 @@ public class Core extends Application implements ICore {
 	 * The component context for the ICE Core OSGi component.
 	 *
 	 */
-	private ComponentContext componentContext;
+	private BundleContext bundleContext;
 
 	/**
 	 * The master table of IProject Eclipse projects, keyed by username.
@@ -105,9 +112,30 @@ public class Core extends Application implements ICore {
 	private Hashtable<String, IProject> projectTable;
 
 	/**
+	 * This is the default database where Items are stored. It is passed to both
+	 * the ItemManager and the IPersistenceProvider.
+	 */
+	private IProject itemDBProject;
+
+	/**
+	 * The ServiceReference used to track the HTTP service.
+	 */
+	private ServiceReference<HttpService> httpServiceRef;
+
+	/**
+	 * The ServiceReference used to track the Materials Database.
+	 */
+	private ServiceReference<IMaterialsDatabase> matDBServiceRef;
+
+	/**
 	 * The OSGi HTTP Service used by the Core to publish itself.
 	 */
 	private HttpService httpService;
+
+	/**
+	 * The string identifying the Item Builder extension point.
+	 */
+	public static final String builderID = "org.eclipse.ice.item.itemBuilder";
 
 	/**
 	 * The persistence provided by the osgi. This piece is set by the
@@ -122,6 +150,12 @@ public class Core extends Application implements ICore {
 	 * True if locked, false if not.
 	 */
 	private AtomicBoolean updateLock;
+
+	/**
+	 * This is the service registration used to register the Core as a service
+	 * of the OSGi framework.
+	 */
+	private ServiceRegistration<ICore> registration;
 
 	/**
 	 * An alternative constructor that allows the Core to be constructed with a
@@ -177,44 +211,133 @@ public class Core extends Application implements ICore {
 	 * @param context
 	 *            The bundle context for this OSGi bundle.
 	 */
-	public void start(ComponentContext context) {
+	@Override
+	public void start(BundleContext context) throws CoreException {
 
 		// Store the component's context
-		componentContext = context;
+		bundleContext = context;
 
-		logger.info("ICore Message: Component context set!");
+		logger.info("Bundle context set!");
 
-		// Setup the persistence provider for the ItemManager. The ItemManager
-		// will check them, so just pass the references regardless of whether or
-		// not the OSGi actually set the services.
-		itemManager.setPersistenceProvider(provider);
+		// If the provider has not been injected (say for testing) then pull it.
+		if (provider == null) {
+			provider = IPersistenceProvider.getProvider();
+		}
+		// If the provider IS available (since the core can run without it),
+		// configure it and the ItemManager.
+		if (provider != null) {
+			// Configure its default project.
+			provider.setDefaultProject(itemDBProject);
+			// Setup the persistence provider for the ItemManager so that it can
+			// load items.
+			itemManager.setPersistenceProvider(provider);
+		}
+
+		// Load up the ItemBuilders
+		ItemBuilder[] builders = ItemBuilder.getItemBuilders();
+		for (ItemBuilder builder : builders) {
+			registerItem(builder);
+		}
+
+		// FIXME! Register composite items
+
+		// Get and set the Materials Database.
+		getMaterialsDatabase();
 
 		// Tell the ItemManager to suit up. It's time to rock and roll.
-		itemManager.loadItems(projectTable.get("defaultUser"));
+		itemManager.loadItems(itemDBProject);
 
 		// Start the webservice!
 		startHttpService();
 
-		return;
+		// Check the currently registered extensions - LEAVE FOR NOW! ~JJB
+		// 20151026 11:15
+		// debugCheckExtensions();
 
+		// Register this class as a service with the framework.
+		if (context != null) {
+			registration = context.registerService(ICore.class, this, null);
+		}
+
+		return;
 	}
 
 	/**
-	 * This operation stops the Core.
+	 * This operation configures the Materials database.
 	 */
-	public void stop() {
-		// Update everything in the ItemManager that requires it
-		itemManager.persistItems();
+	private void getMaterialsDatabase() {
+
+		if (bundleContext != null) {
+			// Grab the service interface
+			matDBServiceRef = bundleContext
+					.getServiceReference(IMaterialsDatabase.class);
+			// Get the service
+			IMaterialsDatabase database = bundleContext
+					.getService(matDBServiceRef);
+			// This should probably be delegated through the ItemManager.
+			AbstractModelBuilder.setMaterialsDatabase(database);
+		}
+
+		return;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see ICore#getFileSystem(int uniqueClientID)
+	 * @see
+	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-	public Form getFileSystem(int uniqueClientID) {
-		return new Form();
+	public void stop(BundleContext context) throws Exception {
+		// Update everything in the ItemManager that requires it
+		itemManager.persistItems();
+
+		// Unregister with the HTTP Service
+		if (httpServiceRef != null) {
+			bundleContext.ungetService(httpServiceRef);
+		}
+
+		// Unregister with the Materials Database service
+		if (matDBServiceRef != null) {
+			bundleContext.ungetService(matDBServiceRef);
+		}
+
+		// Unregister this service from the framework
+		registration.unregister();
+	}
+
+	/**
+	 * This function is used for logging information on the extensions available
+	 * to the Core.
+	 *
+	 * @deprecated
+	 */
+	@Deprecated
+	private void debugCheckExtensions() {
+		Set<String> extensionPoints = new HashSet<String>();
+		extensionPoints.add("org.eclipse.ice.item.itemBuilder");
+		extensionPoints.add("org.eclipse.ice.item.compositeItemBuilder");
+		extensionPoints.add("org.eclipse.ice.io.writer");
+		extensionPoints.add("org.eclipse.ice.io.reader");
+		extensionPoints.add("org.eclipse.ice.core.persistenceProvider");
+		extensionPoints.add("org.eclipse.ice.datastructures.jaxbClassProvider");
+		for (String extensionPointName : extensionPoints) {
+			IExtensionPoint point = Platform.getExtensionRegistry()
+					.getExtensionPoint(extensionPointName);
+			logger.debug(
+					"##### Extensions for: " + extensionPointName + " #####");
+			if (point != null) {
+				IExtension[] extensions = point.getExtensions();
+				for (IExtension extension : extensions) {
+					logger.debug("--" + extension.getSimpleIdentifier());
+				}
+			} else {
+				logger.debug("Point does not exist");
+			}
+
+			logger.debug("##### end of " + extensionPointName + " #####");
+		}
+
 	}
 
 	/*
@@ -269,16 +392,20 @@ public class Core extends Application implements ICore {
 	 */
 	@Override
 	public String createItem(String itemType) {
-		return createItem(itemType, projectTable.get("defaultUser"));
+		// This operation retrieves the default "itemDB
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject("itemDB");
+		return createItem(itemType, project);
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.core.iCore.ICore#createItem(java.lang.String,
 	 * org.eclipse.core.resources.IProject)
 	 */
+	@Override
 	public String createItem(String itemType, IProject project) {
 
 		// Local Declarations
@@ -423,75 +550,16 @@ public class Core extends Application implements ICore {
 		return itemManager.cancelItemProcess(itemId, actionName);
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 *
-	 * @see ICore#importFile(URI file)
+	 * @see
+	 * org.eclipse.ice.core.iCore.ICore#loadItem(org.eclipse.core.resources.
+	 * IFile)
 	 */
 	@Override
-	public void importFile(URI file) {
-		// Local Declarations
-		IProject project = projectTable.get("defaultUser");
-
-		// Only do this if the file is good
-		if (file != null) {
-			// Get the file handle
-			IPath path = (new Path(file.toString()));
-			IFile fileInProject = project.getFile(path.lastSegment());
-			// Get the paths and convert them to strings
-			IPath fullPathInProject = fileInProject.getLocation();
-			String path1 = path.toString(),
-					path2 = fullPathInProject.toString();
-			// Remove devices ids and other such things from the path strings
-			path1 = path1.substring(path1.lastIndexOf(":") + 1);
-			path2 = path2.substring(path2.lastIndexOf(":") + 1);
-			// Only manipulate the file if it is not already in the workspace.
-			// It is completely reasonable to stick the file in the workspace
-			// and then "import" it, so a simple check here relieves some
-			// heartburn I would no doubt otherwise endure.
-			if (!path1.equals(path2)) {
-				// If the project space contains a file by the same name, but
-				// with a different absolute path, delete that file.
-				if (fileInProject.exists()) {
-					try {
-						fileInProject.delete(true, null);
-					} catch (CoreException e) {
-						// Complain and don't do anything else.
-						logger.info(
-								"Core Message: " + "Unable to import file.");
-						logger.error(getClass().getName() + " Exception!", e);
-						return;
-					}
-				}
-				try {
-					// Open a stream of the file
-					FileInputStream fileStream = new FileInputStream(
-							new File(file));
-					// Import the file
-					fileInProject.create(fileStream, true, null);
-				} catch (FileNotFoundException e) {
-					// Complain and don't do anything else.
-					logger.info("Core Message: " + "Unable to import file.");
-					logger.error(getClass().getName() + " Exception!", e);
-					return;
-				} catch (CoreException e) {
-					// Complain and don't do anything else.
-					logger.info("Core Message: " + "Unable to import file.");
-					logger.error(getClass().getName() + " Exception!", e);
-					return;
-				}
-			}
-			// Refresh all of the Items
-			itemManager.reloadItemData();
-
-			// Drop some debug info.
-			if (System.getProperty("DebugICE") != null) {
-				logger.info(
-						"Core Message: " + "Imported file " + file.toString());
-			}
-		}
-
-		return;
+	public Form loadItem(IFile itemFile) {
+		return itemManager.loadItem(itemFile);
 	}
 
 	/**
@@ -579,7 +647,6 @@ public class Core extends Application implements ICore {
 	 *            The HTTP service.
 	 */
 	public void setHttpService(HttpService service) {
-
 		// Set the webservice reference
 		httpService = service;
 		logger.info("ICore Message: Web service set!");
@@ -589,54 +656,64 @@ public class Core extends Application implements ICore {
 	 * Private method used by Core.start() method to start the HttpService.
 	 */
 	private void startHttpService() {
-		// If it is good to go, start up the webserver
-		if (httpService != null) {
 
-			// Local Declaration
-			Dictionary<String, String> servletParams = new Hashtable<String, String>();
+		// The service cannot be started without a valid bundle context since we
+		// are no longer using Declarative Services.
+		if (bundleContext != null) {
+			// Grab the service reference and the service
+			httpServiceRef = bundleContext
+					.getServiceReference(HttpService.class);
 
-			// Set the parameters
-			servletParams.put("javax.ws.rs.Application", Core.class.getName());
+			// If it is good to go, start up the webserver
+			if (httpServiceRef != null) {
 
-			// Register the service
-			try {
-				// Get the bundle
-				Bundle bundle = null;
-				if (componentContext != null) {
-					bundle = componentContext.getBundleContext().getBundle();
-				} else {
-					logger.info("ICore Message: "
-							+ "ICE Core ComponentContext was null! No web service started.");
-					return;
+				// Local Declaration
+				Dictionary<String, String> servletParams = new Hashtable<String, String>();
+
+				// Get the service
+				httpService = bundleContext.getService(httpServiceRef);
+
+				// Set the parameters
+				servletParams.put("javax.ws.rs.Application",
+						Core.class.getName());
+
+				// Register the service
+				try {
+					// Get the bundle
+					Bundle bundle = null;
+					bundle = bundleContext.getBundle();
+					// Make sure we got a valid bundle
+					if (bundle == null) {
+						logger.info(
+								"ICE Core Bundle was null! No web service started.");
+						return;
+					}
+
+					// Find the root location and the jaas_config file
+					URL resourceURL = bundle.getEntry("");
+					URL configFileURL = bundle.getEntry("jaas_config.txt");
+					// Resolve the URLs to be absolute
+					resourceURL = FileLocator.resolve(resourceURL);
+					configFileURL = FileLocator.resolve(configFileURL);
+					HttpContext httpContext = new BasicAuthSecuredContext(
+							resourceURL, configFileURL,
+							"ICE Core Server Configuration");
+					httpService.registerServlet("/ice",
+							new ServletContainer(this), servletParams,
+							httpContext);
+				} catch (ServletException | NamespaceException
+						| IOException e) {
+					logger.error(getClass().getName() + " Exception!", e);
 				}
-
-				// Make sure we got a valid bundle
-				if (bundle == null) {
-					logger.info("ICore Message: "
-							+ "ICE Core Bundle was null! No web service started.");
-					return;
-				}
-
-				// Find the root location and the jaas_config file
-				URL resourceURL = bundle.getEntry("");
-				URL configFileURL = bundle.getEntry("jaas_config.txt");
-				// Resolve the URLs to be absolute
-				resourceURL = FileLocator.resolve(resourceURL);
-				configFileURL = FileLocator.resolve(configFileURL);
-				HttpContext httpContext = new BasicAuthSecuredContext(
-						resourceURL, configFileURL,
-						"ICE Core Server Configuration");
-				httpService.registerServlet("/ice", new ServletContainer(this),
-						servletParams, httpContext);
-			} catch (ServletException | NamespaceException | IOException e) {
-				logger.error(getClass().getName() + " Exception!", e);
+				logger.info("ICE Core Server loaded and web service started!");
+			} else {
+				logger.info("ICE Core Server loaded, but without webservice.");
 			}
-			logger.info("ICore Message: ICE Core Server loaded and web "
-					+ "service started!");
 		} else {
-			logger.info("ICore Message: ICE Core Server loaded, but "
-					+ "without webservice.");
+			logger.info("HTTP Service Unavailable.");
 		}
+
+		return;
 	}
 
 	/**
@@ -669,8 +746,8 @@ public class Core extends Application implements ICore {
 		// Local Declarations
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = null;
-		String separator = System.getProperty("file.separator");
 		boolean status = true;
+		String defaultProjectName = "itemDB";
 
 		// Print some diagnostic information
 		if (Platform.getInstanceLocation() != null) {
@@ -682,12 +759,12 @@ public class Core extends Application implements ICore {
 		// support is added.
 		try {
 			// Get the project handle
-			project = workspaceRoot.getProject("default");
+			project = workspaceRoot.getProject(defaultProjectName);
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Create the project description
 				IProjectDescription desc = ResourcesPlugin.getWorkspace()
-						.newProjectDescription("default");
+						.newProjectDescription(defaultProjectName);
 				// Create the project
 				project.create(desc, null);
 			}
@@ -702,6 +779,7 @@ public class Core extends Application implements ICore {
 			}
 			// Add the project to the master table
 			projectTable.put("defaultUser", project);
+			itemDBProject = project;
 		} catch (CoreException e) {
 			// Catch for creating the project
 			logger.error(getClass().getName() + " Exception!", e);
@@ -722,6 +800,7 @@ public class Core extends Application implements ICore {
 	 * @param provider
 	 *            The persistence provider.
 	 */
+	@Inject
 	public void setPersistenceProvider(IPersistenceProvider provider) {
 
 		// If the provider is not null, store the reference and log a message.
@@ -738,7 +817,7 @@ public class Core extends Application implements ICore {
 	 *            The IOService that provides Input/Output capabilities to Items
 	 *            managed by the Core.
 	 */
-	public void setIOService(IOService service) {
+	public void setIOService(IIOService service) {
 		itemManager.setIOService(service);
 	}
 
@@ -759,33 +838,6 @@ public class Core extends Application implements ICore {
 	 */
 	@Override
 	public void disconnect(int uniqueClientId) {
-	}
-
-	/**
-	 * (non-Javadoc)
-	 *
-	 * @see ICore#importFileAsItem(URI file, String itemType)
-	 */
-	@Override
-	public String importFileAsItem(URI file, String itemType) {
-
-		// Local Declarations
-		int newItemId = -1;
-
-		// Create the Item if the ItemType is not null and the project space is
-		// available
-		if (projectTable.get("defaultUser") != null) {
-			// Import the file
-			importFile(file);
-			// Get the name of the file. This is only created to get the short
-			// name of the file.
-			File tmpFile = new File(file);
-			// Create the Item
-			newItemId = itemManager.createItem(tmpFile.getName(), itemType,
-					projectTable.get("defaultUser"));
-		}
-
-		return String.valueOf(newItemId);
 	}
 
 	/**
@@ -837,9 +889,10 @@ public class Core extends Application implements ICore {
 			}
 		} catch (JsonParseException e) {
 			// Log the message
-			System.err.println("Core Message: "
-					+ "JSON parsing failed for message " + messageString);
+			String err = "Core Message: " + "JSON parsing failed for message "
+					+ messageString;
 			logger.error(getClass().getName() + " Exception!", e);
+			logger.error(err);
 		}
 
 		return messages;
@@ -888,6 +941,189 @@ public class Core extends Application implements ICore {
 
 		// Unlock the operation and return safely
 		return (updateLock.getAndSet(false)) ? retVal : null;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see ICore#importFileAsItem(URI file, String itemType)
+	 */
+	@Override
+	public String importFileAsItem(URI file, String itemType) {
+		return importFileAsItem(file, itemType, "itemDB");
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(java.net.URI,
+	 *      java.lang.String, org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public String importFileAsItem(URI file, String itemType,
+			IProject project) {
+		// Local Declarations
+		int newItemId = -1;
+
+		// Create the Item if the ItemType is not null and the project space is
+		// available
+		if (project != null) {
+			// Import the file
+			importFile(file, project);
+			// Get the name of the file. This is only created to get the short
+			// name of the file. Then create the Item
+			newItemId = itemManager.createItem(new File(file).getName(),
+					itemType, project);
+		}
+
+		return String.valueOf(newItemId);
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(org.eclipse.core.resources.IFile,
+	 *      java.lang.String)
+	 */
+	@Override
+	public String importFileAsItem(IFile file, String itemType) {
+		// This is an IFile, meaning it came from an existing
+		// IProject, call importFileAsItem with the file URI and its
+		// corresponding IProject
+		return importFileAsItem(file.getLocationURI(), itemType,
+				file.getProject());
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFileAsItem(java.net.URI,
+	 *      java.lang.String, java.lang.String)
+	 */
+	@Override
+	public String importFileAsItem(URI file, String itemType,
+			String projectName) {
+		// Get the project associated with the project name
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(projectName);
+
+		// Import it as normal
+		return importFileAsItem(file, itemType, project);
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see ICore#importFile(URI file)
+	 */
+	@Override
+	public void importFile(URI file) {
+
+		// Simply import the file to the default project
+		importFile(file, "itemDB");
+
+		return;
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFile(java.net.URI,
+	 *      java.lang.String)
+	 */
+	@Override
+	public void importFile(URI file, String projectName) {
+		// Local Declarations
+		IProject project = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(projectName);
+		if (project != null) {
+			importFile(file, project);
+		} else {
+			logger.info("File could not be imported into project " + projectName
+					+ " because the project does not exist.");
+		}
+
+	}
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#importFile(java.net.URI,
+	 *      org.eclipse.core.resources.IProject)
+	 */
+	@Override
+	public void importFile(URI file, IProject project) {
+		// Only do this if the file is good
+		if (file != null) {
+			// Get the file handle
+			IPath path = (new Path(file.toString()));
+			IFile fileInProject = project.getFile(path.lastSegment());
+			// Get the paths and convert them to strings
+			IPath fullPathInProject = fileInProject.getLocation();
+			String path1 = path.toString(),
+					path2 = fullPathInProject.toString();
+			// Remove devices ids and other such things from the path strings
+			path1 = path1.substring(path1.lastIndexOf(":") + 1);
+			path2 = path2.substring(path2.lastIndexOf(":") + 1);
+			// Only manipulate the file if it is not already in the workspace.
+			// It is completely reasonable to stick the file in the workspace
+			// and then "import" it, so a simple check here relieves some
+			// heartburn I would no doubt otherwise endure.
+			if (!path1.equals(path2)) {
+				// If the project space contains a file by the same name, but
+				// with a different absolute path, delete that file.
+				if (fileInProject.exists()) {
+					try {
+						fileInProject.delete(true, null);
+					} catch (CoreException e) {
+						// Complain and don't do anything else.
+						logger.info(
+								"Core Message: " + "Unable to import file.");
+						logger.error(getClass().getName() + " Exception!", e);
+						return;
+					}
+				}
+				try {
+					// Open a stream of the file
+					FileInputStream fileStream = new FileInputStream(
+							new File(file));
+					// Import the file
+					fileInProject.create(fileStream, true, null);
+				} catch (FileNotFoundException e) {
+					// Complain and don't do anything else.
+					logger.info("Core Message: " + "Unable to import file.");
+					logger.error(getClass().getName() + " Exception!", e);
+					return;
+				} catch (CoreException e) {
+					// Complain and don't do anything else.
+					logger.info("Core Message: " + "Unable to import file.");
+					logger.error(getClass().getName() + " Exception!", e);
+					return;
+				}
+			}
+			// Refresh all of the Items
+			itemManager.reloadItemData();
+
+			// Drop some debug info.
+			if (System.getProperty("DebugICE") != null) {
+				logger.info(
+						"Core Message: " + "Imported file " + file.toString());
+			}
+		} else {
+			logger.info(
+					"File could not be imported into project because the File URI was not valid.");
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.eclipse.ice.core.iCore.ICore#renameItem(int, java.lang.String)
+	 */
+	@Override
+	public void renameItem(int itemID, String name) {
+		itemManager.renameItem(itemID, name);
 	}
 
 }

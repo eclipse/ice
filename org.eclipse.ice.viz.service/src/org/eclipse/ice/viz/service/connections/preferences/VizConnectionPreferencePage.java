@@ -97,7 +97,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	}
 
 	/*
-	 * Implements an abstract method from FieldEditorPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	@Override
 	protected void createFieldEditors() {
@@ -122,7 +123,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	protected abstract String getConnectionsPreferenceNodeId();
 
 	/*
-	 * Overrides a method from AbstractVizPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.preferences.AbstractVizPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {
@@ -176,7 +178,8 @@ public abstract class VizConnectionPreferencePage extends AbstractVizPreferenceP
 	}
 
 	/*
-	 * Overrides a method from FieldEditorPreferencePage.
+	 * (non-Javadoc)
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#performOk()
 	 */
 	@Override
 	public boolean performOk() {

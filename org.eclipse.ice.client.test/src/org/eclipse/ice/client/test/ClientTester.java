@@ -19,21 +19,45 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFileState;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IPathVariableManager;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResourceProxy;
+import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourceAttributes;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.ice.client.internal.Client;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.junit.Before;
 import org.junit.Test;
+import org.omg.CORBA.ORB;
 
 /**
- * <p>
  * ClientTester checks the behavior and functionality of Client. It checks for
  * proper location setting and file system querying from Core.
- * </p>
  *
  * @author Jay Jay Billings
  */
@@ -47,11 +71,6 @@ public class ClientTester {
 	 * The fake Core used in the test
 	 */
 	private FakeCore fakeCore;
-
-	/**
-	 * A string for storing locations on the file system.
-	 */
-	private String location;
 
 	/**
 	 * The fake widget factory used in the test
@@ -83,8 +102,7 @@ public class ClientTester {
 		this.iCEClient.setCoreService(fakeCore);
 		this.iCEClient.setUIWidgetFactory(fakeUIWidgetFactory);
 
-		// Set the Location's Path
-		location = System.getProperty("user.home");
+		return;
 	}
 
 	/**
@@ -104,25 +122,25 @@ public class ClientTester {
 		// Check loading more than once
 		for (int i = 1; i < 5; i++) {
 			// Load an Item
-			this.iCEClient.loadItem(i);
+			iCEClient.loadItem(i);
 			// Check the Factory to make sure it was called
-			assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure the FormWidget was displayed
-			testFormWidget = this.fakeUIWidgetFactory.getLastFormWidget();
+			testFormWidget = fakeUIWidgetFactory.getLastFormWidget();
 			assertTrue(testFormWidget.widgetDisplayed());
 		}
 
 		// Reset the Factory
-		this.fakeUIWidgetFactory.reset();
+		fakeUIWidgetFactory.reset();
 
 		// Check that trying to load invalid widgets fails
 		for (int i = -10; i < -5; i++) {
 			// Load an Item
-			this.iCEClient.loadItem(i);
+			iCEClient.loadItem(i);
 			// Check the Factory to make sure it was called
-			assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure an ErrorBoxWidget was displayed
-			textErrorWidget = this.fakeUIWidgetFactory.getLastErrorBoxWidget();
+			textErrorWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
 			if (textErrorWidget instanceof FakeErrorBoxWidget) {
 				assertTrue(textErrorWidget.widgetDisplayed());
 			}
@@ -132,27 +150,36 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
+	 * This operation checks that we can add an IFormWidget 
+	 * to the Client.s
+	 */
+	@Test
+	public void checkAddFormWidget() {
+		IFormWidget widget = new FakeFormWidget();
+		Form form = new Form();
+		form.setItemID(1);
+		widget.setForm(form);
+		iCEClient.addFormWidget(widget);
+		assertNotNull(iCEClient.getFormWidget(1));
+	}
+	/**
 	 * This operation checks the Client by making sure that errors can be
 	 * dispatched to the UI system to be displayed to the user.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkThrowingErrors() {
 
 		// Reset the Factory
-		this.fakeUIWidgetFactory.reset();
+		fakeUIWidgetFactory.reset();
 
 		// Check loading more than once
 		for (int i = 1; i < 5; i++) {
 			// Load an Item
-			this.iCEClient.throwSimpleError("Throw error " + i + "!");
+			iCEClient.throwSimpleError("Throw error " + i + "!");
 			// Check the Factory to make sure it was called
-			assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+			assertTrue(fakeUIWidgetFactory.widgetRequested());
 			// Make sure the Widget was displayed
-			FakeErrorBoxWidget testWidget = fakeUIWidgetFactory
-					.getLastErrorBoxWidget();
+			FakeErrorBoxWidget testWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
 			assertNotNull(testWidget);
 			assertTrue(testWidget.widgetDisplayed());
 		}
@@ -162,12 +189,10 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client by creating an Item. It makes sure that
 	 * the Client uses the UIWidgetFactory, uses a UIWidget and registers a
 	 * UIWidgetListener with the UIWidget. Fakes are used for the
 	 * UIWidgetFactory and UIWidget.
-	 * </p>
 	 * <p>
 	 * This operation also checks that getAvailableItemTypes returns the same
 	 * list of available Item types as that in FakeCore: Red, Orange, Yellow,
@@ -183,7 +208,7 @@ public class ClientTester {
 		ArrayList<String> types = new ArrayList<String>();
 
 		// Check the list of available Item types
-		types = this.iCEClient.getAvailableItemTypes();
+		types = iCEClient.getAvailableItemTypes();
 		assertTrue(types.contains("Red"));
 		assertTrue(types.contains("Orange"));
 		assertTrue(types.contains("Yellow"));
@@ -197,38 +222,38 @@ public class ClientTester {
 		assertTrue(itemId > 0);
 
 		// Make sure that the Factory was called to get the Widget
-		assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+		assertTrue(fakeUIWidgetFactory.widgetRequested());
 
 		// Get the FormWidget back since this one is a valid request
-		this.fakeFormWidget = fakeUIWidgetFactory.getLastFormWidget();
+		fakeFormWidget = fakeUIWidgetFactory.getLastFormWidget();
 
 		// Make sure that the FormWidget was called, has a registered listener
 		// and was displayed.
-		assertNotNull(this.fakeFormWidget);
-		assertTrue(this.fakeFormWidget.formRegistered());
-		assertTrue(this.fakeFormWidget.listenerRegistered());
-		assertTrue(this.fakeFormWidget.widgetDisplayed());
+		assertNotNull(fakeFormWidget);
+		assertTrue(fakeFormWidget.formRegistered());
+		assertTrue(fakeFormWidget.listenerRegistered());
+		assertTrue(fakeFormWidget.widgetDisplayed());
 
 		// Create another Item - make sure it is something that can't be
 		// created!
-		itemId = this.iCEClient.createItem("Spray Starch");
+		itemId = iCEClient.createItem("Spray Starch");
 
 		// Check the Item id
 		assertTrue(itemId < 0);
 
 		// Make sure that the Factory was called to get a widget
-		assertTrue(this.fakeUIWidgetFactory.widgetRequested());
+		assertTrue(fakeUIWidgetFactory.widgetRequested());
 
 		// Get the ErrorBoxWidget since this was not valid and an error should
 		// have been displayed
-		this.fakeErrorBoxWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
+		fakeErrorBoxWidget = fakeUIWidgetFactory.getLastErrorBoxWidget();
 
 		// Make sure that the FormWidget was called, has a registered listener
 		// and was displayed.
-		assertNotNull(this.fakeErrorBoxWidget);
+		assertNotNull(fakeErrorBoxWidget);
 		// FIXME - Should test for exact string
-		assertNotNull(this.fakeErrorBoxWidget.getErrorString());
-		assertTrue(this.fakeErrorBoxWidget.widgetDisplayed());
+		assertNotNull(fakeErrorBoxWidget.getErrorString());
+		assertTrue(fakeErrorBoxWidget.widgetDisplayed());
 
 		// Get the list of ICEObjects that represents the Items that have been
 		// created and check it. The FakeCore cheats and sends back an ICEObject
@@ -244,21 +269,28 @@ public class ClientTester {
 		}
 		// Make sure that there are no items
 		assertEquals(0, iCEClient.getItems().size());
-		System.out.println("Num ITEMS after delete = "
-				+ iCEClient.getItems().size());
+		System.out.println("Num ITEMS after delete = " + iCEClient.getItems().size());
 
 		return;
-
 	}
 
 	/**
-	 * <p>
+	 * Check that the Core gets invoked when we 
+	 * rename an Item. 
+	 */
+	@Test
+	public void checkItemRenaming() {
+		int itemId = iCEClient.createItem("Red");
+		iCEClient.renameItem(itemId, "HELLO");
+		assertTrue(fakeCore.itemNameChanged());
+		fakeCore.reset();
+	}
+
+	/**
 	 * This operation checks the Client by insuring that Items and Forms can be
 	 * updated. It calls through the IUpdateWidgetListener interface. Review the
 	 * documentation on the FakeCore class to determine the proper Form ids to
 	 * use for the test.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkItemUpdates() {
@@ -309,12 +341,9 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the ability of the client to correctly handle calls
 	 * through the IProcessEventListener interface and by directly calling
 	 * IClient.processItem().
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkItemProcessing() {
@@ -405,8 +434,7 @@ public class ClientTester {
 		assertTrue(fakeUIWidgetFactory.widgetRequested());
 
 		// Retrieve the info widget and get its Form
-		FakeExtraInfoWidget infoWidget = fakeUIWidgetFactory
-				.getLastExtraInfoWidget();
+		FakeExtraInfoWidget infoWidget = fakeUIWidgetFactory.getLastExtraInfoWidget();
 		assertNotNull(infoWidget);
 		Form infoForm = infoWidget.getForm();
 
@@ -429,8 +457,7 @@ public class ClientTester {
 		assertTrue(fakeCore.itemUpdated());
 
 		// Get the streaming text widget and check it
-		FakeStreamingTextWidget textWidget = fakeUIWidgetFactory
-				.getLastStreamingTextWidget();
+		FakeStreamingTextWidget textWidget = fakeUIWidgetFactory.getLastStreamingTextWidget();
 		assertNotNull(textWidget);
 		// Check that the streaming text widget was displayed
 		assertTrue(textWidget.widgetDisplayed());
@@ -443,12 +470,9 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the ability of the Client to load Resources when
 	 * signaled to do so by FormWidgets and other classes to which it may
 	 * subscribe.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkResourceLoading() {
@@ -473,11 +497,8 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks the Client to make sure that if the connectToCore()
 	 * operation is called that the Client tries to load an ExtraInfoWidget.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkRemoteConnection() {
@@ -508,11 +529,8 @@ public class ClientTester {
 	}
 
 	/**
-	 * <p>
 	 * This operation checks that the client can import a file and that it calls
 	 * the Core to do so.
-	 * </p>
-	 *
 	 */
 	@Test
 	public void checkFileImport() {
@@ -536,22 +554,665 @@ public class ClientTester {
 		assertTrue(fakeCore.fileImported());
 		assertTrue(id > 0);
 
+		// Reset the core
+		fakeCore.reset();
+
+		// Check we can import a file to
+		// the given project
+		IProject project = null;
+		iCEClient.importFile(file.toURI(), project);
+		assertTrue(fakeCore.fileImported());
+
+		// Reset the core
+		fakeCore.reset();
+
+		// Check we can import to the project
+		// with given name
+		iCEClient.importFile(file.toURI(), "fakeProject");
+		assertTrue(fakeCore.fileImported());
+
+		// Reset the core
+		fakeCore.reset();
+
+		// Try importing the file as a input file to the project
+		id = iCEClient.importFileAsItem(file.toURI(), "Red", project);
+
+		// Make sure that the file was imported and the item was created
+		assertTrue(fakeCore.fileImported());
+		assertTrue(id > 0);
+
+		// Reset the core
+		fakeCore.reset();
+
+		// Try importing the file as a input file to the project
+		id = iCEClient.importFileAsItem(file.toURI(), "Red", "fakeProject");
+
+		// Make sure that the file was imported and the item was created
+		assertTrue(fakeCore.fileImported());
+		assertTrue(id > 0);
+
+		// Reset the core
+		fakeCore.reset();
+
+		IFile iFile = null;
+		// Try importing the file as a input file to the project
+		id = iCEClient.importFileAsItem(iFile, "Red");
+
+		// Make sure that the file was imported and the item was created
+		assertTrue(fakeCore.fileImported());
+		assertTrue(id > 0);
+
+		// Reset the core
+		fakeCore.reset();
+
 		return;
 
 	}
 
 	/**
-	 * <p>
-	 * checkFS() checks that a valid file system representation is returned from
-	 * Core.
-	 * </p>
-	 *
+	 * This operation tests
+	 * {@link org.eclipse.ice.client.internal.Client.loadItem}.
 	 */
 	@Test
-	public void checkFS() {
-		// Assert that getFileSystem returns a valid ICEObject
-		assertNotNull(iCEClient.getFileSystem());
+	public void checkLoad() {
+		// Make sure the fake core is called on a load.
+		IFile itemFile = new TestIFile();
+		iCEClient.loadItem(itemFile);
+		assertTrue(fakeCore.wasLoaded());
 		return;
 	}
+
+	/**
+	 * A dummy IFile for testing the loadItem function.
+	 * 
+	 * @author Jay Jay Billings
+	 *
+	 */
+	public class TestIFile implements IFile {
+
+		@Override
+		public boolean isConflicting(ISchedulingRule rule) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean contains(ISchedulingRule rule) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public <T> T getAdapter(Class<T> adapter) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void touch(IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setTeamPrivateMember(boolean isTeamPrivate) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setSessionProperty(QualifiedName key, Object value) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setResourceAttributes(ResourceAttributes attributes) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setReadOnly(boolean readOnly) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setPersistentProperty(QualifiedName key, String value) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public long setLocalTimeStamp(long value) throws CoreException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public void setLocal(boolean flag, int depth, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setHidden(boolean isHidden) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setDerived(boolean isDerived, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setDerived(boolean isDerived) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void revertModificationStamp(long value) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void refreshLocal(int depth, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void move(IProjectDescription description, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void move(IProjectDescription description, int updateFlags, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void move(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void move(IPath destination, boolean force, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean isVirtual() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isTeamPrivateMember(int options) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isTeamPrivateMember() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isSynchronized(int depth) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isPhantom() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isLocal(int depth) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isLinked(int options) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isLinked() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isHidden(int options) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isHidden() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isDerived(int options) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isDerived() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isAccessible() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public IWorkspace getWorkspace() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int getType() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public Object getSessionProperty(QualifiedName key) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Map<QualifiedName, Object> getSessionProperties() throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public ResourceAttributes getResourceAttributes() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public URI getRawLocationURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IPath getRawLocation() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IPath getProjectRelativePath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IProject getProject() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getPersistentProperty(QualifiedName key) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Map<QualifiedName, String> getPersistentProperties() throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IPathVariableManager getPathVariableManager() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IContainer getParent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getModificationStamp() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public IMarker getMarker(long id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public URI getLocationURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IPath getLocation() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getLocalTimeStamp() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public String getFileExtension() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int findMaxProblemSeverity(String type, boolean includeSubtypes, int depth) throws CoreException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public IMarker[] findMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IMarker findMarker(long id) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean exists() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void deleteMarkers(String type, boolean includeSubtypes, int depth) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void delete(int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void delete(boolean force, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public IResourceProxy createProxy() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IMarker createMarker(String type) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void copy(IProjectDescription description, int updateFlags, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void copy(IProjectDescription description, boolean force, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void copy(IPath destination, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void copy(IPath destination, boolean force, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void clearHistory(IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceVisitor visitor, int depth, int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceVisitor visitor, int depth, boolean includePhantoms) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceProxyVisitor visitor, int depth, int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceProxyVisitor visitor, int memberFlags) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void accept(IResourceVisitor visitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(IFileState source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(IFileState source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setCharset(String newCharset, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setCharset(String newCharset) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void move(IPath destination, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public String getName() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IFileState[] getHistory(IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IPath getFullPath() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int getEncoding() throws CoreException {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public InputStream getContents(boolean force) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public InputStream getContents() throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IContentDescription getContentDescription() throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getCharsetFor(Reader reader) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getCharset(boolean checkImplicit) throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getCharset() throws CoreException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void delete(boolean force, boolean keepHistory, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void createLink(URI location, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void createLink(IPath localLocation, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void create(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void create(InputStream source, boolean force, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void appendContents(InputStream source, boolean force, boolean keepHistory, IProgressMonitor monitor)
+				throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void appendContents(InputStream source, int updateFlags, IProgressMonitor monitor) throws CoreException {
+			// TODO Auto-generated method stub
+
+		}
+	};
 
 }
