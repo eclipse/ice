@@ -135,13 +135,12 @@ public class FXGeometryViewer extends GeometryViewer {
 	 * 
 	 */
 	private void createDefaultCamera(Group parent) {
-		PerspectiveCamera perspCamera = new PerspectiveCamera();
+		PerspectiveCamera perspCamera = new PerspectiveCamera(true);
 		perspCamera.setNearClip(0.1);
-		perspCamera.setFarClip(2000.0);
+		perspCamera.setFarClip(4000.0);
 		perspCamera.setFieldOfView(35);
 		perspCamera.setTranslateX(0);
-		perspCamera.setTranslateY(-100);
-		perspCamera.setTranslateZ(-1000);
+		perspCamera.setTranslateY(0);
 
 		parent.getChildren().add(perspCamera);
 

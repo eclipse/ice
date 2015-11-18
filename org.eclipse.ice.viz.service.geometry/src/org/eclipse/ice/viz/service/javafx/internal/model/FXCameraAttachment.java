@@ -51,7 +51,7 @@ public class FXCameraAttachment extends CameraAttachment {
         super.attach(owner);
 
         if (camera == null) {
-            camera = new PerspectiveCamera();
+            camera = new PerspectiveCamera(true);
         }
 
         Group fxGroup = Util.getFxGroup(owner);
