@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
-import java.util.List;
-
 /**
  * A controller for a Point model part.
  * 
@@ -93,7 +91,7 @@ public class Point extends AbstractController {
 	 * Returns a vector describing the point's location in three dimensional
 	 * space
 	 */
-	public List<Double> getLocation() {
+	public double[] getLocation() {
 		return ((PointComponent) model).getLocation();
 	}
 

@@ -27,16 +27,10 @@ import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshSelectionManager;
-import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
+import org.eclipse.ice.viz.service.modeling.Edge;
+import org.eclipse.ice.viz.service.modeling.Face;
+import org.eclipse.ice.viz.service.modeling.Vertex;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -392,55 +386,6 @@ public class ICEMeshPage extends ICEFormPage
 			final List<Integer> edgeIds = new ArrayList<Integer>();
 			final List<Integer> polygonIds = new ArrayList<Integer>();
 
-			// Create a visitor to populate the above lists of IDs
-			IMeshPartVisitor visitor = new IMeshPartVisitor() {
-
-				@Override
-				public void visit(Vertex vertex) {
-					vertexIds.add(vertex.getId());
-				}
-
-				@Override
-				public void visit(PolynomialEdge edge) {
-					visit((Edge) edge);
-				}
-
-				@Override
-				public void visit(BezierEdge edge) {
-					visit((Edge) edge);
-				}
-
-				@Override
-				public void visit(Edge edge) {
-					edgeIds.add(edge.getId());
-				}
-
-				@Override
-				public void visit(Hex hex) {
-					visit((Polygon) hex);
-				}
-
-				@Override
-				public void visit(Quad quad) {
-					visit((Polygon) quad);
-				}
-
-				@Override
-				public void visit(Polygon polygon) {
-					polygonIds.add(polygon.getId());
-				}
-
-				@Override
-				public void visit(Object object) {
-					// Do nothing.
-				}
-
-				@Override
-				public void visit(VizMeshComponent mesh) {
-					// Do nothing.
-				}
-			};
-
 			// Get each element from the selection and add the ID for the
 			// corresponding vertex/edge/polygon to one of the above lists.
 			// These lists will be sent to the selection manager later.
@@ -448,7 +393,20 @@ public class ICEMeshPage extends ICEFormPage
 
 				if (element instanceof MeshSelection) {
 					MeshSelection meshSelection = (MeshSelection) element;
-					meshSelection.selectedMeshPart.acceptMeshVisitor(visitor);
+
+					if (meshSelection.selectedMeshPart instanceof Vertex) {
+						vertexIds.add(
+								Integer.valueOf(meshSelection.selectedMeshPart
+										.getProperty("Id")));
+					} else if (meshSelection.selectedMeshPart instanceof Edge) {
+						edgeIds.add(
+								Integer.valueOf(meshSelection.selectedMeshPart
+										.getProperty("Id")));
+					} else if (meshSelection.selectedMeshPart instanceof Face) {
+						polygonIds.add(
+								Integer.valueOf(meshSelection.selectedMeshPart
+										.getProperty("Id")));
+					}
 				}
 			}
 

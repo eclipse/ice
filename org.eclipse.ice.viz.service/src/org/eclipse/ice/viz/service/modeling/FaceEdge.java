@@ -11,22 +11,18 @@
 package org.eclipse.ice.viz.service.modeling;
 
 /**
- * A controller for a Vertex model part.
+ * A controller for an Edge part which maintains a list of polygons it is an
+ * edge for.
  * 
  * @author Robert Smith
  *
  */
-public class Vertex extends Point {
+public class FaceEdge extends Edge {
 
 	/**
 	 * The default constructor
-	 * 
-	 * @param model
-	 *            The controller's model
-	 * @param view
-	 *            The controller's view
 	 */
-	public Vertex(VertexComponent model, AbstractView view) {
+	public FaceEdge(FaceEdgeComponent model, AbstractView view) {
 		super(model, view);
 	}
 }

@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Edge;
+import org.eclipse.ice.viz.service.modeling.Face;
+import org.eclipse.ice.viz.service.modeling.Vertex;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -63,8 +63,8 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				new PropertyDescriptor(ID_LENGTH, "Length"),
 				new PropertyDescriptor(ID_STARTLOC, "Start Location"),
 				new PropertyDescriptor(ID_ENDLOC, "End Location") };
-		vertexDescriptors = new IPropertyDescriptor[] { new PropertyDescriptor(
-				ID_LOCATION, "Location") };
+		vertexDescriptors = new IPropertyDescriptor[] {
+				new PropertyDescriptor(ID_LOCATION, "Location") };
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 	 */
 	static {
 		propDescMap = new Hashtable<Class<?>, IPropertyDescriptor[]>();
-		propDescMap.put(Polygon.class, polygonDescriptors);
+		propDescMap.put(Face.class, polygonDescriptors);
 		propDescMap.put(Edge.class, edgeDescriptors);
 		propDescMap.put(Vertex.class, vertexDescriptors);
 	}
@@ -124,22 +124,24 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 			@Override
 			public Object getValue(Object data, Object id) {
 
-				Polygon polygon = (Polygon) data;
+				Face polygon = (Face) data;
 				ArrayList<String> propertySet = new ArrayList<String>();
 
 				// If the caller seeks the edges, get them from the wrapped
 				// Polygon.
 				if (ID_EDGES.equals(id)) {
-					for (Edge e : polygon.getEdges()) {
-						propertySet.add("Edge " + e.getId());
+					for (AbstractController e : polygon
+							.getEntitiesByCategory("Edges")) {
+						propertySet.add("Edge " + e.getProperty("Id"));
 					}
 					return propertySet;
 				}
 				// If the caller seeks the vertices, get them from the wrapped
 				// Polygon.
 				else if (ID_VERTICES.equals(id)) {
-					for (Vertex v : polygon.getVertices()) {
-						propertySet.add("Vertex " + v.getId());
+					for (AbstractController v : polygon
+							.getEntitiesByCategory("Vertices")) {
+						propertySet.add("Vertex " + v.getProperty("Id"));
 					}
 					return propertySet;
 				}
@@ -165,8 +167,10 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 
 				// Collect the given edge's vertices
 				if (ID_VERTICES.equals(id)) {
-					for (int vId : edge.getVertexIds()) {
-						propertySet.add("Vertex " + vId);
+					for (AbstractController vertex : edge
+							.getEntitiesByCategory("Vertices")) {
+						propertySet.add("Vertex "
+								+ Integer.valueOf(vertex.getProperty("Id")));
 					}
 					return propertySet;
 				}
@@ -176,17 +180,17 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				}
 				// Get the edge's start location
 				else if (ID_STARTLOC.equals(id)) {
-					float[] loc = edge.getStartLocation();
+					double[] loc = edge.getStartLocation();
 					for (int i = 0; i < loc.length; i++) {
-						propertySet.add(((Float) loc[i]).toString());
+						propertySet.add(((Double) loc[i]).toString());
 					}
 					return propertySet;
 				}
 				// Get the edge's end location
 				else if (ID_ENDLOC.equals(id)) {
-					float[] loc = edge.getEndLocation();
+					double[] loc = edge.getEndLocation();
 					for (int i = 0; i < loc.length; i++) {
-						propertySet.add(((Float) loc[i]).toString());
+						propertySet.add(((Double) loc[i]).toString());
 					}
 					return propertySet;
 				}
@@ -212,9 +216,9 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 
 				// Get the vertex's location
 				if (ID_LOCATION.equals(id)) {
-					float[] loc = vertex.getLocation();
+					double[] loc = vertex.getLocation();
 					for (int i = 0; i < loc.length; i++) {
-						propertySet.add(((Float) loc[i]).toString());
+						propertySet.add(((Double) loc[i]).toString());
 					}
 					return propertySet;
 				}
@@ -228,7 +232,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 
 		// Populate the handler map
 		propHandlerMap = new Hashtable<Class<?>, IPropertyTypeHandler>();
-		propHandlerMap.put(Polygon.class, polygonPropertyHandler);
+		propHandlerMap.put(Face.class, polygonPropertyHandler);
 		propHandlerMap.put(Edge.class, edgePropertyHandler);
 		propHandlerMap.put(Vertex.class, vertexPropertyHandler);
 
@@ -241,7 +245,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 	 *            The object to be wrapped by PropertySource. For this subclass,
 	 *            this will be a Polygon, Edge, or Vertex.
 	 */
-	public MeshElementTreeViewPropertySource(IMeshPart part) {
+	public MeshElementTreeViewPropertySource(AbstractController part) {
 
 		// Just call the superclass constructor
 		super(part);

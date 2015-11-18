@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.properties;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -85,13 +84,14 @@ public class EdgeInfoSection extends GeneralInfoSection {
 			MeshSelection meshSelection = (MeshSelection) element;
 
 			// Get the selected IMeshPart.
-			IMeshPart meshPart = meshSelection.selectedMeshPart;
+			AbstractController meshPart = meshSelection.selectedMeshPart;
 
 			// If the selected object is a Polygon, then we need to get an edge
 			// from the Polygon.
-			if (meshPart instanceof Polygon) {
-				Polygon polygon = (Polygon) meshPart;
-				ArrayList<Edge> edges = polygon.getEdges();
+			if (meshPart instanceof NekPolygon) {
+				NekPolygon polygon = (NekPolygon) meshPart;
+				List<AbstractController> edges = polygon
+						.getEntitiesByCategory("Edges");
 				// Set the parent class' ICEObject to the appropriate edge.
 				if (index < edges.size()) {
 					object = edges.get(index);

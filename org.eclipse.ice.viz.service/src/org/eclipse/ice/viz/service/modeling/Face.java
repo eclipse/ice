@@ -11,22 +11,30 @@
 package org.eclipse.ice.viz.service.modeling;
 
 /**
- * A controller for a Vertex model part.
+ * A controller for a Face part.
  * 
  * @author Robert Smith
  *
  */
-public class Vertex extends Point {
+public class Face extends AbstractController {
 
 	/**
-	 * The default constructor
+	 * The nullary constructor
+	 */
+	public Face() {
+		super();
+	}
+
+	/**
+	 * The default constructor.
 	 * 
 	 * @param model
 	 *            The controller's model
 	 * @param view
 	 *            The controller's view
 	 */
-	public Vertex(VertexComponent model, AbstractView view) {
+	public Face(EdgeComponent model, AbstractView view) {
 		super(model, view);
 	}
+
 }

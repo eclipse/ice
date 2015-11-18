@@ -37,6 +37,9 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 	 */
 	private Transformation previousTransformation;
 
+	/**
+	 * The list of listeners observing this object.
+	 */
 	private ArrayList<IVizUpdateableListener> listeners;
 
 	/**

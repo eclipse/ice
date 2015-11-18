@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.eclipse.ice.viz.service.mesh;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
+ org.eclipse.ui,
+ org.eclipse.ice.viz.service.geometry
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.viz.service.mesh.datastructures,
  org.eclipse.ice.viz.service.mesh.properties
@@ -30,8 +31,10 @@ Import-Package: com.jme3.app,
  com.jme3.util,
  org.eclipse.core.internal.resources,
  org.eclipse.draw2d.graph,
+ org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.datastructures,
  org.eclipse.ice.viz.service.datastructures.VizObject,
+ org.eclipse.ice.viz.service.modeling,
  org.eclipse.ui.views.properties,
  org.eclipse.ui.views.properties.tabbed,
  org.slf4j;version="1.7.2"

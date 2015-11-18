@@ -1,65 +1,32 @@
-/*******************************************************************************
- * Copyright (c) 2014 UT-Battelle, LLC.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
- *******************************************************************************/
-package org.eclipse.ice.viz.service.mesh.datastructures;
+/********************************************************************************Copyright(c)2014 UT-Battelle,LLC.*All rights reserved.This program and the accompanying materials*are made available under the terms of the Eclipse Public License v1.0*which accompanies this distribution,and is available at*http://www.eclipse.org/legal/epl-v10.html
+**Contributors:*Initial API and implementation and/or initial documentation-Jay Jay/Billings,*Jordan H.Deyton,Dasha Gorin,Alexander J.McCaskey,Taylor Patterson,*Claire Saunders,Matthew Wang,Anna Wojtowicz*******************************************************************************/package org.eclipse.ice.viz.service.mesh.datastructures;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;import java.util.HashMap;import java.util.HashSet;import java.util.Map.Entry;import java.util.Set;import java.util.TreeMap;import java.util.TreeSet;import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAccessType;import javax.xml.bind.annotation.XmlAccessorType;import javax.xml.bind.annotation.XmlRootElement;import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 
-/**
- * <p>
- * Composite container for Polygons along with any additional information
- * required to interpret the mesh data.<br>
- * <br>
- * The VizMeshComponent breaks a mesh down into vertices and edges. As polygons are
- * added, the new edges and vertices are incorporated into the mesh, and
- * IUpdateableListeners registered with the VizMeshComponent are notified that it
- * has changed.<br>
- * <br>
- * All polygons are expected to have a unique ID among all other polygons. This
- * also holds for vertices and edges.
- * </p>
- * 
- * @author Jordan H. Deyton
- */
-@XmlRootElement(name = "VizMeshComponent")
+/***<p>*Composite container for Polygons along with any additional information*required to interpret the mesh data.<br>*<br>*The VizMeshComponent breaks a mesh down into vertices and edges.As/polygons are*added,the new edges and vertices are incorporated into the mesh,and*IUpdateableListeners registered with the VizMeshComponent are notified that/it*has changed.<br>*<br>*All polygons are expected to have a unique ID among all other polygons./This*also holds for vertices and edges.*</p>**
+
+@author
+Jordan H.Deyton*/@XmlRootElement(name = "VizMeshComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class VizMeshComponent extends VizObject implements IMeshPart {
 
 	/**
 	 * <p>
-	 * The map of Polygons contained in this VizMeshComponent, keyed on their IDs.
+	 * The map of Polygons contained in this VizMeshComponent, keyed on their
+	 * IDs.
 	 * </p>
-	 * 
+	 *
 	 */
 	private TreeMap<Integer, Polygon> polygons;
 	/**
 	 * <p>
 	 * All vertices managed by this VizMeshComponent. Keyed on their IDs.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private TreeMap<Integer, Vertex> vertices;
@@ -67,7 +34,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * All edges managed by this VizMeshComponent. Keyed on their IDs.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private TreeMap<Integer, Edge> edges;
@@ -77,7 +44,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * For each vertex, this contains an ordered set of the IDs of each polygon
 	 * containing the vertex.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> vertexPolygons;
@@ -86,7 +53,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * For each edge, this contains an ordered set of the IDs of each polygon
 	 * containing the edge.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> edgePolygons;
@@ -95,47 +62,47 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * For each vertex, this contains an ordered set of the IDs of each edge
 	 * connected to the vertex.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private TreeMap<Integer, TreeSet<Integer>> vertexEdges;
 
 	/**
 	 * <p>
-	 * A flag signifying that the VizMeshComponent is currently undergoing a copy
-	 * operation.
+	 * A flag signifying that the VizMeshComponent is currently undergoing a
+	 * copy operation.
 	 * </p>
-	 * 
+	 *
 	 */
 	@XmlTransient
 	private final AtomicBoolean copying;
 
 	/**
-	 * <p>
-	 * The default constructor for a VizMeshComponent. Initializes the list of
-	 * polygons and any associated bookkeeping structures.
-	 * </p>
-	 * 
-	 */
-	public VizMeshComponent() {
-		super();
+ * <p>
+ * The default constructor for a VizMeshComponent. Initializes the list of
+ * polygons and any associated bookkeeping structures.
+ * </p>
+ *
+ */
+ public VizMeshComponent() {
+ super();
 
-		// Initialize the trees of shapes, vertices, and edges.
-		polygons = new TreeMap<Integer, Polygon>();
-		vertices = new TreeMap<Integer, Vertex>();
-		edges = new TreeMap<Integer, Edge>();
+ // Initialize the trees of shapes, vertices, and edges.
+ polygons = new TreeMap<Integer, Polygon>();
+ vertices = new TreeMap<Integer, Vertex>();
+ edges = new TreeMap<Integer, Edge>();
 
-		// Initialize the trees of polygon IDs per vertex/edge.
-		vertexPolygons = new TreeMap<Integer, TreeSet<Integer>>();
-		edgePolygons = new TreeMap<Integer, TreeSet<Integer>>();
-		vertexEdges = new TreeMap<Integer, TreeSet<Integer>>();
+ // Initialize the trees of polygon IDs per vertex/edge.
+ vertexPolygons = new TreeMap<Integer, TreeSet<Integer>>();
+ edgePolygons = new TreeMap<Integer, TreeSet<Integer>>();
+ vertexEdges = new TreeMap<Integer, TreeSet<Integer>>();
 
-		// Initialize the flag to signify when the VizMeshComponent is copying data
-		// from another VizMeshComponent.
-		copying = new AtomicBoolean(false);
+ // Initialize the flag to signify when the VizMeshComponent is copying data
+ // from another VizMeshComponent.
+ copying = new AtomicBoolean(false);
 
-		return;
-	}
+ return;
+ }
 
 	/**
 	 * <p>
@@ -145,7 +112,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * different references, then a new polygon is created with references to
 	 * the vertices and edges already known by this VizMeshComponent.
 	 * </p>
-	 * 
+	 *
 	 * @param polygon
 	 *            <p>
 	 *            The new polygon to add to the existing list.
@@ -223,7 +190,8 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 					ArrayList<Edge> newEdges = new ArrayList<Edge>();
 
 					// Loop over the old polygon's vertices and edges. If a
-					// vertex/edge is not in the VizMeshComponent's Maps, use the
+					// vertex/edge is not in the VizMeshComponent's Maps, use
+					// the
 					// old polygon's copy.
 					for (int i = 0; i < size; i++) {
 						// Add either the existing vertex or the new one.
@@ -262,9 +230,8 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 						// Update the polygons that use this vertex.
 						vertexPolygons.get(j).add(id);
 						// Update the edges connected to this vertex.
-						vertexEdges.get(j)
-								.add(polygonEdges.get((i + size - 1) % size)
-										.getId());
+						vertexEdges.get(j).add(polygonEdges
+								.get((i + size - 1) % size).getId());
 						vertexEdges.get(j).add(polygonEdges.get(i).getId());
 					}
 					// If the vertex does not exist, we need to create a new set
@@ -318,7 +285,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * vertices and edges used only by this polygon. If a polygon was removed, a
 	 * notification is sent to listeners.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the polygon to remove from the existing list.
@@ -384,11 +351,11 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 
 	/**
 	 * <p>
-	 * Removes a list polygons from the VizMeshComponent. This will also remove any
-	 * vertices and edges used by these polygons. If a polygon was removed, a
-	 * notification is sent to listeners.
+	 * Removes a list polygons from the VizMeshComponent. This will also remove
+	 * / any vertices and edges used by these polygons. If a polygon was
+	 * removed, a notification is sent to listeners.
 	 * </p>
-	 * 
+	 *
 	 * @param ids
 	 *            <p>
 	 *            An ArrayList containing the IDs of the polygons to remove from
@@ -476,11 +443,12 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 
 	/**
 	 * <p>
-	 * Gets a list of all polygons stored in the VizMeshComponent ordered by their
-	 * IDs.
+	 * Gets a list of all polygons stored in the VizMeshComponent ordered by
+	 * their IDs.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         A list of polygons contained in this VizMeshComponent.
 	 *         </p>
 	 */
@@ -492,12 +460,13 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Gets a Polygon instance corresponding to an ID.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the polygon.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The polygon referred to by the ID, or null if there is no polygon
 	 *         with the ID.
 	 *         </p>
@@ -510,8 +479,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns the next available ID for polygons.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         The greatest polygon ID (or zero) plus one.
 	 *         </p>
 	 */
@@ -523,7 +493,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Sets the list of all polygons stored in the VizMeshComponent.
 	 * </p>
-	 * 
+	 *
 	 * @param polygons
 	 *            <p>
 	 *            The list of polygons to replace the existing list of polygons
@@ -553,8 +523,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Gets a list of all vertices associated with this VizMeshComponent.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         All vertices managed by this VizMeshComponent.
 	 *         </p>
 	 */
@@ -566,12 +537,13 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Gets a Vertex instance corresponding to an ID.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the vertex.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The vertex referred to by the ID, or null if the ID is invalid.
 	 *         </p>
 	 */
@@ -583,8 +555,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns the next available ID for vertices.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         The greatest vertex ID (or zero) plus one.
 	 *         </p>
 	 */
@@ -596,8 +569,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Gets a list of all edges associated with this VizMeshComponent.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         All edges managed by this VizMeshComponent.
 	 *         </p>
 	 */
@@ -609,12 +583,13 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Gets an Edge instance corresponding to an ID.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the edge.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The edge referred to by the ID, or null if the ID is invalid.
 	 *         </p>
 	 */
@@ -626,8 +601,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns the next available ID for edges.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         The greatest edge ID (or zero) plus one.
 	 *         </p>
 	 */
@@ -639,12 +615,13 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns a list of Edges attached to the Vertex with the specified ID.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the vertex.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of Edges that are attached to the vertex with the
 	 *         specified ID. If there are no such edges, e.g., if the vertex ID
 	 *         is invalid, the list will be empty.
@@ -667,12 +644,13 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns a list of Polygons containing the Vertex with the specified ID.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the vertex.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of Polygons that contain the vertex with the
 	 *         specified ID. If there are no such polygons, e.g., if the vertex
 	 *         ID is invalid, the list will be empty.
@@ -695,12 +673,13 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns a list of Polygons containing the Edge with the specified ID.
 	 * </p>
-	 * 
+	 *
 	 * @param id
 	 *            <p>
 	 *            The ID of the edge.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of Polygons that contain the edge with the specified
 	 *         ID. If there are no such polygons, e.g., if the edge ID is
 	 *         invalid, the list will be empty.
@@ -723,7 +702,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * Returns an Edge that connects two specified vertices if one exists.
 	 * </p>
-	 * 
+	 *
 	 * @param firstId
 	 *            <p>
 	 *            The ID of the first vertex.
@@ -732,8 +711,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 *            <p>
 	 *            The ID of the second vertex.
 	 *            </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         An Edge instance that connects the first and second vertices, or
 	 *         null if no such edge exists.
 	 *         </p>
@@ -762,74 +742,76 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	}
 
 	/**
-	 * <p>
-	 * Returns a list containing all Polygons in the VizMeshComponent whose
-	 * vertices are a subset of the supplied list of vertices.
-	 * </p>
-	 * 
-	 * @param vertices
-	 *            <p>
-	 *            A collection of vertices.
-	 *            </p>
-	 * @return <p>
-	 *         An ArrayList of all Polygons in the VizMeshComponent that are
-	 *         composed of some subset of the specified vertices.
-	 *         </p>
-	 */
-	public ArrayList<Polygon> getPolygonsFromVertices(ArrayList<Vertex> vertices) {
-		// TODO Add to tests.
-		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
+ * <p>
+ * Returns a list containing all Polygons in the VizMeshComponent whose
+ * vertices are a subset of the supplied list of vertices.
+ * </p>
+ *
+ * @param vertices
+ * <p>
+ * A collection of vertices.
+ * </p>
+ * @return <p>
+ * An ArrayList of all Polygons in the VizMeshComponent that are
+ * composed of some subset of the specified vertices.
+ * </p>
+ */
+ public ArrayList<Polygon> getPolygonsFromVertices(ArrayList<Vertex> vertices)
+/ {
+ // TODO Add to tests.
+ ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
 
-		if (vertices != null) {
-			// We need a set of used vertex IDs to make sure we don't count a
-			// vertex twice.
-			HashSet<Integer> usedVertices = new HashSet<Integer>();
-			// We also need a map for each matched polygon telling how many of
-			// its vertices were in the provided list of vertices.
-			HashMap<Integer, Integer> polygonCount = new HashMap<Integer, Integer>();
+ if (vertices != null) {
+ // We need a set of used vertex IDs to make sure we don't count a
+ // vertex twice.
+ HashSet<Integer> usedVertices = new HashSet<Integer>();
+ // We also need a map for each matched polygon telling how many of
+ // its vertices were in the provided list of vertices.
+ HashMap<Integer, Integer> polygonCount = new HashMap<Integer, Integer>();
 
-			// Update the counts for the number of vertex IDs that are
-			// associated with each polygon.
-			for (Vertex vertex : vertices) {
-				if (vertex != null && !usedVertices.contains(vertex.getId())) {
-					// Update the counts for all polygons associated with this
-					// vertex if it is valid.
-					Set<Integer> polygonIds = vertexPolygons
-							.get(vertex.getId());
-					if (polygonIds != null) {
-						for (int id : polygonIds) {
-							Integer count = polygonCount.get(id);
-							if (count == null) {
-								count = 0;
-							}
-							polygonCount.put(id, count + 1);
-						}
-					}
-					// We do not want to count this vertex again.
-					usedVertices.add(vertex.getId());
-				}
-			}
+ // Update the counts for the number of vertex IDs that are
+ // associated with each polygon.
+ for (Vertex vertex : vertices) {
+ if (vertex != null && !usedVertices.contains(vertex.getId())) {
+ // Update the counts for all polygons associated with this
+ // vertex if it is valid.
+ Set<Integer> polygonIds = vertexPolygons
+ .get(vertex.getId());
+ if (polygonIds != null) {
+ for (int id : polygonIds) {
+ Integer count = polygonCount.get(id);
+ if (count == null) {
+ count = 0;
+ }
+ polygonCount.put(id, count + 1);
+ }
+ }
+ // We do not want to count this vertex again.
+ usedVertices.add(vertex.getId());
+ }
+ }
 
-			// For each reference polygon ID, check the number of its vertices
-			// that were included in the provided list. If all its vertices were
-			// included, then it can be added to the returned list of Polygons.
-			for (Entry<Integer, Integer> e : polygonCount.entrySet()) {
-				Polygon polygon = polygons.get(e.getKey());
-				if (polygon.getVertices().size() == e.getValue()) {
-					polygonList.add(polygon);
-				}
-			}
-		}
+ // For each reference polygon ID, check the number of its vertices
+ // that were included in the provided list. If all its vertices were
+ // included, then it can be added to the returned list of Polygons.
+ for (Entry<Integer, Integer> e : polygonCount.entrySet()) {
+ Polygon polygon = polygons.get(e.getKey());
+ if (polygon.getVertices().size() == e.getValue()) {
+ polygonList.add(polygon);
+ }
+ }
+ }
 
-		return polygonList;
-	}
+ return polygonList;
+ }
 
 	/**
 	 * <p>
 	 * This operation returns the hash value of the VizMeshComponent.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
@@ -847,16 +829,17 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 
 	/**
 	 * <p>
-	 * This operation is used to check equality between this VizMeshComponent and
-	 * another VizMeshComponent. It returns true if the VizMeshComponents are equal
-	 * and false if they are not.
+	 * This operation is used to check equality between this VizMeshComponent
+	 * and another VizMeshComponent. It returns true if the VizMeshComponents
+	 * are / equal and false if they are not.
 	 * </p>
-	 * 
+	 *
 	 * @param otherObject
 	 *            <p>
 	 *            The other ICEObject that should be compared with this one.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
@@ -871,15 +854,17 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 			equals = true;
 		}
 		// Check the information stored in the other object.
-		else if (otherObject != null && otherObject instanceof VizMeshComponent) {
+		else if (otherObject != null
+				&& otherObject instanceof VizMeshComponent) {
 
 			// We can now cast the other object.
 			VizMeshComponent component = (VizMeshComponent) otherObject;
 
 			// Compare the values between the two objects.
-			equals = (super.equals(otherObject) && polygons
-					.equals(component.polygons));
-			// The polygons are the only defining feature of the VizMeshComponent
+			equals = (super.equals(otherObject)
+					&& polygons.equals(component.polygons));
+			// The polygons are the only defining feature of the
+			// VizMeshComponent
 			// (aside from the super properties). If the polygon lists are
 			// equivalent, we can safely expect the other bookkeeping structures
 			// are identical.
@@ -893,7 +878,7 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * This operation copies the contents of a VizMeshComponent into the current
 	 * object using a deep copy.
 	 * </p>
-	 * 
+	 *
 	 * @param component
 	 *            <p>
 	 *            The ICEObject from which the values should be copied
@@ -941,8 +926,9 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	 * <p>
 	 * This operation returns a clone of the VizMeshComponent using a deep copy.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         The new clone
 	 *         </p>
 	 */
@@ -959,12 +945,11 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 		return object;
 	}
 
-
 	/**
 	 * <p>
 	 * This method calls the {@link IMeshPartVisitor}'s visit method.
 	 * </p>
-	 * 
+	 *
 	 * @param visitor
 	 *            <p>
 	 *            The {@link IMeshPartVisitor} that is visiting this

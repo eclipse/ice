@@ -35,7 +35,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * Geometry that has been added but has not been integrated as the node
 	 * hasn't been attached yet.
 	 */
-	private List<Shape> queuedGeometry;
+	private List<AbstractController> queuedGeometry;
 
 	/** List of shapes that have been added via Geometry instances. */
 	private List<Shape> shapes;
@@ -50,7 +50,7 @@ public abstract class GeometryAttachment extends Attachment
 	private boolean immutable;
 
 	/** */
-	protected Shape currentGeom = null;
+	protected AbstractController currentGeom = null;
 
 	/**
 	 * 
@@ -70,7 +70,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * @see IGeometry#addGeometry(Geometry)
 	 */
 	@Override
-	public void addGeometry(Shape geom) {
+	public void addGeometry(AbstractController geom) {
 		if (geom == null) {
 			return;
 		}
@@ -120,7 +120,7 @@ public abstract class GeometryAttachment extends Attachment
 			return;
 		}
 
-		for (Shape geom : queuedGeometry) {
+		for (AbstractController geom : queuedGeometry) {
 			for (AbstractController shape : geom.getEntities()) {
 				addShape((Shape) shape);
 			}

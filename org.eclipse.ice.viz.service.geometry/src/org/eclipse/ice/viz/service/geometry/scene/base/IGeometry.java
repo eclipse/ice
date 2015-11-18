@@ -12,6 +12,7 @@ package org.eclipse.ice.viz.service.geometry.scene.base;
 
 import java.util.List;
 
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
@@ -32,7 +33,7 @@ public interface IGeometry {
 	 * @param geom
 	 *            an ICE Geometry instance
 	 */
-	public void addGeometry(Shape geom);
+	public void addGeometry(AbstractController geom);
 
 	/**
 	 * <p>

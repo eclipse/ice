@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * A mesh component representing a point in three dimensional space.
  * 
@@ -129,13 +126,10 @@ public class PointComponent extends AbstractMeshComponent {
 	 * Returns a vector describing the point's location in three dimensional
 	 * space
 	 */
-	public List<Double> getLocation() {
+	public double[] getLocation() {
 
 		// Create a list of the x, y, and z coordinates.
-		List<Double> location = new ArrayList<Double>();
-		location.add(x);
-		location.add(y);
-		location.add(z);
+		double location[] = { x, y, z };
 		return location;
 	}
 

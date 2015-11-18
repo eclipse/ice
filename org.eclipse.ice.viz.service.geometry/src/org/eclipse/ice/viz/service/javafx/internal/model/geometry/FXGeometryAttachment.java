@@ -46,7 +46,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 	private final FXGeometryAttachmentManager manager;
 
 	/** */
-	private List<Shape> knownGeometry;
+	private List<AbstractController> knownGeometry;
 
 	/**
 	 * <p>
@@ -108,7 +108,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 	}
 
 	@Override
-	public void addGeometry(Shape geom) {
+	public void addGeometry(AbstractController geom) {
 		super.addGeometry(geom);
 
 		if (fxAttachmentNode == null) {
@@ -120,7 +120,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 		}
 
 		if (!knownGeometry.contains(geom)) {
-			final Shape finalGeom = geom;
+			final AbstractController finalGeom = geom;
 
 			geom.register(new IVizUpdateableListener() {
 				@Override

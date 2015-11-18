@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
-import java.util.List;
-
 /**
  * A mesh component representing a straight line between two Vertices.
  * 
@@ -47,12 +45,12 @@ public class LinearEdgeComponent extends EdgeComponent {
 	public double calculateLength() {
 
 		// Calculate the distance between the start and end points
-		List<Double> startPoint = ((Vertex) entities.get("Vertices").get(0))
+		double[] startPoint = ((Vertex) entities.get("Vertices").get(0))
 				.getLocation();
-		List<Double> endPoint = ((Vertex) entities.get("Vertices").get(1))
+		double[] endPoint = ((Vertex) entities.get("Vertices").get(1))
 				.getLocation();
-		return Math.sqrt(Math.pow(startPoint.get(0) + endPoint.get(0), 2)
-				+ Math.pow(startPoint.get(1) + endPoint.get(1), 2)
-				+ Math.pow(startPoint.get(2) + endPoint.get(2), 2));
+		return Math.sqrt(Math.pow(startPoint[0] + endPoint[0], 2)
+				+ Math.pow(startPoint[1] + endPoint[1], 2)
+				+ Math.pow(startPoint[2] + endPoint[2], 2));
 	}
 }

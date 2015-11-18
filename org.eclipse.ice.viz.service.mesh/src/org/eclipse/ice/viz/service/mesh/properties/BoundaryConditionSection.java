@@ -15,18 +15,10 @@ package org.eclipse.ice.viz.service.mesh.properties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -47,6 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
@@ -164,8 +157,8 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 				if (condition != null && type != null) {
 					condition.setType(type);
 					// Also update the number of required parameters.
-					numberLabel.setText(Integer
-							.toString(type.numberOfParameters));
+					numberLabel
+							.setText(Integer.toString(type.numberOfParameters));
 					numberLabel.pack();
 				}
 			}
@@ -275,8 +268,8 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 		// Create a Combo for the BoundaryConditionType.
 		typeCombo = new Combo(typeComposite, SWT.DROP_DOWN | SWT.BORDER);
 		disposableControls.add(typeCombo);
-		typeCombo
-				.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		typeCombo.setLayoutData(
+				new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		// Get the items for the Combo from the BoundaryConditionType enum.
 		BoundaryConditionType[] types = BoundaryConditionType.values();
 		String[] items = new String[types.length];
@@ -298,8 +291,8 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 		// Create a label that shows the current number of required parameters.
 		numberLabel = new Label(typeComposite, SWT.LEFT);
 		disposableControls.add(numberLabel);
-		numberLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-				false));
+		numberLabel
+				.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 		numberLabel.setText("N/A");
 		numberLabel.setBackground(bg);
 		// ---------------------------------- //
@@ -311,8 +304,8 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 		valueComposite.setBackground(bg);
 		// Set the GridData for the valueComposite to fill horizontally and be
 		// centered vertically.
-		valueComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false));
+		valueComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		// Set a RowLayout for the valueComposite with a little extra spacing
 		// between the widgets.
 		valueComposite.setLayout(new GridLayout(6, false));
@@ -327,7 +320,8 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 		// Create the Texts for the float values.
 		for (int i = 0; i < valueTexts.length; i++) {
 			Text value = new Text(valueComposite, SWT.SINGLE | SWT.BORDER);
-			value.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+			value.setLayoutData(
+					new GridData(SWT.FILL, SWT.CENTER, true, false));
 			value.setText("0.0");
 			disposableControls.add(value);
 			valueTexts[i] = value;
@@ -365,118 +359,77 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 			// For now, we are only dealing with the first available element in
 			// the
 			// selection.
-			if (!structuredSelection.isEmpty()
-					&& structuredSelection.getFirstElement() instanceof MeshSelection) {
+			if (!structuredSelection.isEmpty() && structuredSelection
+					.getFirstElement() instanceof MeshSelection) {
 
 				// Get the MeshSelection.
 				MeshSelection meshSelection = (MeshSelection) structuredSelection
 						.getFirstElement();
 
 				// Get the selected IMeshPart and mesh from the selection.
-				IMeshPart meshPart = meshSelection.selectedMeshPart;
-				final VizMeshComponent mesh = meshSelection.mesh;
-
-				// Create a visitor that can determine the appropriate Vertex
-				// instance whose properties are being exposed based on the type
-				// of
-				// IMeshPart passed in through the selection.
-				IMeshPartVisitor visitor = new IMeshPartVisitor() {
-					@Override
-					public void visit(VizMeshComponent mesh) {
-						// Do nothing.
-					}
-
-					@Override
-					public void visit(Polygon polygon) {
-						// First, get the corresponding edge ID.
-						ArrayList<Edge> edges = polygon.getEdges();
-						if (id < edges.size()) {
-							int edgeId = edges.get(id).getId();
-
-							// Now get the condition based on the type of
-							// boundary
-							// condition we are displaying.
-							if (type == Type.Fluid) {
-								condition = polygon
-										.getFluidBoundaryCondition(edgeId);
-							} else if (type == Type.Thermal) {
-								condition = polygon
-										.getThermalBoundaryCondition(edgeId);
-							} else {
-								condition = polygon.getOtherBoundaryCondition(
-										edgeId, otherIndex);
-							}
-						}
-						return;
-					}
-
-					@Override
-					public void visit(Quad quad) {
-						// Re-direct to the standard polygon operation for now.
-						visit((Polygon) quad);
-					}
-
-					@Override
-					public void visit(Hex hex) {
-						// Re-direct to the standard polygon operation for now.
-						visit((Polygon) hex);
-					}
-
-					@Override
-					public void visit(Edge edge) {
-						// Get the ID of the edge.
-						int edgeId = edge.getId();
-
-						// First, get the polygon according to the id variable.
-						ArrayList<Polygon> polygons = mesh
-								.getPolygonsFromEdge(edgeId);
-						if (id < polygons.size()) {
-							Polygon polygon = polygons.get(id);
-
-							// Now get the condition based on the type of
-							// boundary
-							// condition we are displaying.
-							if (type == Type.Fluid) {
-								condition = polygon
-										.getFluidBoundaryCondition(edgeId);
-							} else if (type == Type.Thermal) {
-								condition = polygon
-										.getThermalBoundaryCondition(edgeId);
-							} else {
-								condition = polygon.getOtherBoundaryCondition(
-										edgeId, otherIndex);
-							}
-						}
-					}
-
-					@Override
-					public void visit(BezierEdge edge) {
-						// Re-direct to the standard edge operation for now.
-						visit((Edge) edge);
-					}
-
-					@Override
-					public void visit(PolynomialEdge edge) {
-						// Re-direct to the standard edge operation for now.
-						visit((Edge) edge);
-					}
-
-					@Override
-					public void visit(Vertex vertex) {
-						// Do nothing.
-					}
-
-					@Override
-					public void visit(Object object) {
-						// Do nothing.
-					}
-				};
+				AbstractController meshPart = meshSelection.selectedMeshPart;
+				final AbstractController mesh = meshSelection.mesh;
 
 				// Reset the condition and set it based on the visited
 				// IMeshPart.
 				BoundaryCondition tmpCondition = condition;
 				condition = null;
-				meshPart.acceptMeshVisitor(visitor);
+
+				// Get the list of edges for the selection
+				List<AbstractController> edges = meshPart
+						.getEntitiesByCategory("Edges");
+
+				// If the selection has edges, get the boundary condition for
+				// the edge with the correct id
+				if (edges != null) {
+					if (id < edges.size()) {
+						int edgeId = Integer
+								.valueOf(edges.get(id).getProperty("Id"));
+
+						NekPolygon polygon = (NekPolygon) meshPart;
+
+						// Now get the condition based on the type of boundary
+						// condition we are displaying.
+						if (type == Type.Fluid) {
+							condition = polygon
+									.getFluidBoundaryCondition(edgeId);
+						} else if (type == Type.Thermal) {
+							condition = polygon
+									.getThermalBoundaryCondition(edgeId);
+						} else {
+							condition = polygon.getOtherBoundaryCondition(
+									edgeId, otherIndex);
+						}
+					}
+				}
+
+				// Otherwise, get the boundary condition associated with the
+				// face with the correct Id
+				else {
+					// Get the ID of the edge.
+					int edgeId = Integer.valueOf(meshPart.getProperty("Id"));
+
+					// First, get the polygon according to the id variable.
+					List<AbstractController> polygons = meshPart
+							.getEntitiesByCategory("Face");
+					if (id < polygons.size()) {
+						NekPolygon polygon = (NekPolygon) polygons.get(id);
+
+						// Now get the condition based on the type of
+						// boundary
+						// condition we are displaying.
+						if (type == Type.Fluid) {
+							condition = polygon
+									.getFluidBoundaryCondition(edgeId);
+						} else if (type == Type.Thermal) {
+							condition = polygon
+									.getThermalBoundaryCondition(edgeId);
+						} else {
+							condition = polygon.getOtherBoundaryCondition(
+									edgeId, otherIndex);
+						}
+					}
+				}
 
 				// Set the flag to true if the references are different.
 				changed = (condition != tmpCondition);
