@@ -13,9 +13,7 @@
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ListComponentSectionPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;

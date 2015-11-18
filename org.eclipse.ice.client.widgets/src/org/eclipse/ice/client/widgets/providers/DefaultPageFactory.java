@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.slf4j.Logger;
@@ -52,10 +51,10 @@ public class DefaultPageFactory implements IPageFactory {
 		// Create resource page using IResourcePageProvider
 		try {
 			// get all of the registered ResourcePageProviders
-			IResourcePageProvider[] resourcePageProviders = IResourcePageProvider
+			ArrayList<IResourcePageProvider> resourcePageProviders = IResourcePageProvider
 					.getProviders();
 			if (resourcePageProviders != null
-					&& resourcePageProviders.length > 0) {
+					&& resourcePageProviders.size() > 0) {
 
 				// Use the default resource page provider
 				String providerNameToUse = DefaultResourcePageProvider.PROVIDER_NAME;
@@ -93,9 +92,9 @@ public class DefaultPageFactory implements IPageFactory {
 
 		try {
 			// Get all of the registered ListPageProviders
-			IListPageProvider[] listPageProviders = IListPageProvider
+			ArrayList<IListPageProvider> listPageProviders = IListPageProvider
 					.getProviders();
-			if (listPageProviders != null && listPageProviders.length > 0) {
+			if (listPageProviders != null && listPageProviders.size() > 0) {
 				// Use the default list page provider for now.
 				String providerNameToUse = DefaultListPageProvider.PROVIDER_NAME;
 				// Do a linear search over providers and pull the correct one.
@@ -128,9 +127,9 @@ public class DefaultPageFactory implements IPageFactory {
 
 		try {
 			// get all of the registered ListPageProviders
-			IErrorPageProvider[] errorPageProviders = IErrorPageProvider
+			ArrayList<IErrorPageProvider> errorPageProviders = IErrorPageProvider
 					.getProviders();
-			if (errorPageProviders != null && errorPageProviders.length > 0) {
+			if (errorPageProviders != null && errorPageProviders.size() > 0) {
 				// Use the default error page provider
 				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
 				// Do a linear search to find the correct provider
@@ -150,6 +149,37 @@ public class DefaultPageFactory implements IPageFactory {
 		// There should only be one page since this is an error page, so just
 		// get the first element.
 		return pages.get(0);
+	}
+	
+
+	@Override
+	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
+			ArrayList<Component> components) {
+		// Array for storing the pages
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+
+		try {
+			// get all of the registered basic component page providers
+			ArrayList<IBasicComponentPageProvider> basicComponentProviders = 
+					IBasicComponentPageProvider.getProviders();
+			if (basicComponentProviders != null && basicComponentProviders.size() > 0) {
+				// Use the default basic component page provider
+				String providerNameToUse = DefaultBasicComponentPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IBasicComponentPageProvider currentProvider : basicComponentProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, components);
+						break;
+					}
+				}
+			} else {
+				logger.error("No BasicComponentPageProviders registered");
+			}
+		} catch (CoreException e) {
+			logger.error("Unable to get BasicComponentPageProviders", e);
+		}
+
+		return pages;
 	}
 
 }

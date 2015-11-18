@@ -13,7 +13,6 @@
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.eclipse.ice.client.widgets.ErrorMessageFormPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
