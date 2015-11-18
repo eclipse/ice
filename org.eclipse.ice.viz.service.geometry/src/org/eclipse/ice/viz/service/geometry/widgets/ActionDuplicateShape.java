@@ -33,130 +33,126 @@ import org.osgi.framework.FrameworkUtil;
  * @author Andrew P. Belt
  */
 public class ActionDuplicateShape extends Action {
-	/**
-	 * 
-	 */
-	private ShapeTreeView view;
+    /**
+     * 
+     */
+    private ShapeTreeView view;
 
-	/**
-	 * The image descriptor associated with the duplicate action's icon
-	 */
-	private ImageDescriptor imageDescriptor;
+    /**
+     * The image descriptor associated with the duplicate action's icon
+     */
+    private ImageDescriptor imageDescriptor;
 
-	/**
-	 * 
-	 * @param view
-	 */
-	public ActionDuplicateShape(ShapeTreeView view) {
+    /**
+     * 
+     * @param view
+     */
+    public ActionDuplicateShape(ShapeTreeView view) {
 
-		this.view = view;
+        this.view = view;
 
-		this.setText("Duplicate Shape");
+        this.setText("Duplicate Shape");
 
-		// Load duplicate.gif icon from the bundle's icons/ directory
+        // Load duplicate.gif icon from the bundle's icons/ directory
 
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		URL imagePath = BundleUtility.find(bundle, "icons/duplicate.gif");
-		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
+        Bundle bundle = FrameworkUtil.getBundle(getClass());
+        URL imagePath = BundleUtility.find(bundle, "icons/duplicate.gif");
+        imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
-	}
+    }
 
-	/**
-	 * Returns the image descriptor associated with the duplicate action's icon
-	 * 
-	 * @see org.eclipse.jface.action.Action#getImageDescriptor()
-	 */
-	@Override
-	public ImageDescriptor getImageDescriptor() {
-		return imageDescriptor;
-	}
+    /**
+     * Returns the image descriptor associated with the duplicate action's icon
+     * 
+     * @see org.eclipse.jface.action.Action#getImageDescriptor()
+     */
+    @Override
+    public ImageDescriptor getImageDescriptor() {
+        return imageDescriptor;
+    }
 
-	/**
-	 * 
-	 */
-	@Override
-	public void run() {
+    /**
+     * 
+     */
+    @Override
+    public void run() {
 
-		Geometry geometry = (Geometry) view.treeViewer
-				.getInput();
+        Geometry geometry = (Geometry) view.treeViewer.getInput();
 
-		// Get selection
+        // Get selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer
-				.getSelection();
-		TreePath[] paths = selection.getPaths();
+        ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
+        TreePath[] paths = selection.getPaths();
 
-		// Iterate through the paths
+        // Iterate through the paths
 
-		for (TreePath path : paths) {
-			Object selectedObject = path.getLastSegment();
+        for (TreePath path : paths) {
+            Object selectedObject = path.getLastSegment();
 
-			if (selectedObject instanceof AbstractShape) {
-				AbstractShape selectedShape = (AbstractShape) selectedObject;
+            if (selectedObject instanceof AbstractShape) {
+                AbstractShape selectedShape = (AbstractShape) selectedObject;
 
-				// Clone the shape
+                // Clone the shape
 
-				IShape clonedShape = (IShape) selectedShape.clone();
+                IShape clonedShape = (IShape) selectedShape.clone();
 
-				// Remove the selected state from the cloned shape
+                // Remove the selected state from the cloned shape
 
-				clonedShape.removeProperty("selected");
+                clonedShape.removeProperty("selected");
 
-				// Try to get the selected shape's parent shape
-				// We can assume that if the parent exists, it is a ComplexShape
+                // Try to get the selected shape's parent shape
+                // We can assume that if the parent exists, it is a ComplexShape
 
-				ComplexShape parentShape = (ComplexShape) selectedShape
-						.getParent();
+                ComplexShape parentShape = (ComplexShape) selectedShape.getParent();
 
-				if (parentShape != null) {
+                if (parentShape != null) {
 
-					// Find the index of the selected shape in the list of its
-					// siblings
+                    // Find the index of the selected shape in the list of its
+                    // siblings
 
-					ArrayList<IShape> childShapes = parentShape.getShapes();
-					int selectedShapeIndex = childShapes.indexOf(selectedShape);
+                    ArrayList<IShape> childShapes = parentShape.getShapes();
+                    int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
-					if (selectedShapeIndex < 0) {
-						continue;
-					}
-					// Add the cloned shape to the original shape's parent
+                    if (selectedShapeIndex < 0) {
+                        continue;
+                    }
+                    // Add the cloned shape to the original shape's parent
 
-					synchronized (geometry) {
-						childShapes.add(selectedShapeIndex + 1, clonedShape);
-						parentShape.setShapes(childShapes);
-					}
+                    synchronized (geometry) {
+                        childShapes.add(selectedShapeIndex + 1, clonedShape);
+                        parentShape.setShapes(childShapes);
+                    }
 
-					view.treeViewer.refresh(parentShape);
-				} else {
+                    view.treeViewer.refresh(parentShape);
+                } else {
 
-					// Find the index of the selected shape in the list of its
-					// siblings
+                    // Find the index of the selected shape in the list of its
+                    // siblings
 
-					ArrayList<IShape> childShapes = geometry.getShapes();
-					int selectedShapeIndex = childShapes.indexOf(selectedShape);
+                    ArrayList<IShape> childShapes = geometry.getShapes();
+                    int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
-					// Add the cloned shape to the root GeometryComponent
+                    // Add the cloned shape to the root GeometryComponent
 
-					synchronized (geometry) {
-						childShapes.add(selectedShapeIndex + 1, clonedShape);
-						geometry.setShapes(childShapes);
-					}
+                    synchronized (geometry) {
+                        childShapes.add(selectedShapeIndex + 1, clonedShape);
+                        geometry.setShapes(childShapes);
+                    }
 
-					view.treeViewer.refresh();
-				}
+                    view.treeViewer.refresh();
+                }
 
-				// Collapse the cloned item and select it
+                // Collapse the cloned item and select it
 
-				view.treeViewer.collapseToLevel(clonedShape, 0);
+                view.treeViewer.collapseToLevel(clonedShape, 0);
 
-				// Change the current selection to the new duplicated shape
+                // Change the current selection to the new duplicated shape
 
-				TreePath clonedPath = path.getParentPath().createChildPath(
-						clonedShape);
-				TreeSelection clonedSelection = new TreeSelection(clonedPath);
-				view.treeViewer.setSelection(clonedSelection);
-			}
-		}
+                TreePath clonedPath = path.getParentPath().createChildPath(clonedShape);
+                TreeSelection clonedSelection = new TreeSelection(clonedPath);
+                view.treeViewer.setSelection(clonedSelection);
+            }
+        }
 
-	}
+    }
 }

@@ -14,172 +14,157 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 
-import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
+import javafx.scene.paint.Material;
 
 /**
  * <p>
- * Converts and stores an IShape's key/value properties list in format of JME3
+ * Converts and stores an IShape's key/value properties list in format of JavaFX
  * data
  * </p>
  * 
+ * @author Tony McCrary (tmccrary@l33tlabs.com)
  * @author Andrew P. Belt
  */
 public class ShapeMaterial {
-	/**
-	 * <p>
-	 * The selected state of the shape
-	 * </p>
-	 * 
-	 */
-	private boolean selected;
-	/**
-	 * 
-	 */
-	private float alpha;
+    /**
+     * <p>
+     * The selected state of the shape
+     * </p>
+     * 
+     */
+    private boolean selected;
+    /**
+     * 
+     */
+    private float alpha;
 
-	/**
-	 * <p>
-	 * The current AssetManager
-	 * </p>
-	 * 
-	 */
-	private AssetManager assetManager;
+    /**
+     * The Material used for this shape.
+     */
+    private Material material;
 
-	/**
-	 * The Material used for this shape.
-	 */
-	private Material material;
+    /**
+     * The Material used for this shape when it is selected/highlighted.
+     */
+    private Material highlightedMaterial;
 
-	/**
-	 * The Material used for this shape when it is selected/highlighted.
-	 */
-	private Material highlightedMaterial;
+    /**
+     * <p>
+     * Initializes the instance with a given IShape
+     * </p>
+     * 
+     * @param assetManager
+     *            <p>
+     *            The AssetManager to load the Material definition
+     *            </p>
+     * @param shape
+     *            <p>
+     *            The shape associated with this ShapeRenderProperties instance
+     *            </p>
+     */
+    public ShapeMaterial(IShape shape) {
 
-	/**
-	 * <p>
-	 * Initializes the instance with a given IShape
-	 * </p>
-	 * 
-	 * @param assetManager
-	 *            <p>
-	 *            The AssetManager to load the Material definition
-	 *            </p>
-	 * @param shape
-	 *            <p>
-	 *            The shape associated with this ShapeRenderProperties instance
-	 *            </p>
-	 */
-	public ShapeMaterial(AssetManager assetManager, IShape shape) {
+        // Initialize variables
+        selected = false;
+        alpha = 1.0f;
 
-		// Set the assetManager used for this shape and material
-		this.assetManager = assetManager;
+        // Loop through each of the shape's parents
+        while (shape != null) {
+            applyShape(shape);
+            // Get the shape's parent
+            shape = shape.getParent();
+        }
 
-		// Initialize variables
-		selected = false;
-		alpha = 1.0f;
+        return;
+    }
 
-		// Loop through each of the shape's parents
-		while (shape != null) {
-			applyShape(shape);
-			// Get the shape's parent
-			shape = shape.getParent();
-		}
+    /**
+     * <p>
+     * Returns the material associated with the IShape properties
+     * </p>
+     * 
+     * @return
+     *         <p>
+     *         The material to render the shape
+     *         </p>
+     */
+    public Material getMaterial() {
+        // Highlight the shape if it is selected. The if statement is ordered
+        // backwards because it is most likely that the shape is not selected
+        // and in this case it will execute this function quicker because it
+        // only has to do the first check.
+        if (!selected) {
+            return material;
+        } else {
+            return highlightedMaterial;
+        }
+    }
 
-		return;
-	}
+    /**
+     * This operation sets the material that should be used for this shape.
+     * 
+     * @param mat
+     *            The JavaFX material.
+     */
+    public void setMaterial(Material mat) {
 
-	/**
-	 * <p>
-	 * Returns the material associated with the IShape properties
-	 * </p>
-	 * 
-	 * @return <p>
-	 *         The material to render the shape
-	 *         </p>
-	 */
-	public Material getMaterial() {
+        // Set the material that should be used for this shape
+        material = mat;
 
-		// There's no material if there is no assetManager!
-		if (assetManager == null) {
-			return null;
-		}
-		// Highlight the shape if it is selected. The if statement is ordered
-		// backwards because it is most likely that the shape is not selected
-		// and in this case it will execute this function quicker because it
-		// only has to do the first check.
-		if (!selected) {
-			return material;
-		} else {
-			return highlightedMaterial;
-		}
-	}
+        return;
+    }
 
-	/**
-	 * This operation sets the material that should be used for this shape.
-	 * 
-	 * @param mat
-	 *            The JME3 material.
-	 */
-	public void setMaterial(Material mat) {
+    /**
+     * This operation sets the material that should be used for the shape when
+     * it is selected.
+     * 
+     * @param mat
+     *            The JavaFX material used when this shape is selected.
+     */
+    public void setHighlightedMaterial(Material mat) {
 
-		// Set the material that should be used for this shape
-		material = mat;
+        // Set the material
+        highlightedMaterial = mat;
 
-		return;
-	}
+        return;
+    }
 
-	/**
-	 * This operation sets the material that should be used for the shape when
-	 * it is selected.
-	 * 
-	 * @param mat
-	 *            The JME3 material used when this shape is selected.
-	 */
-	public void setHighlightedMaterial(Material mat) {
+    /**
+     * <p>
+     * Applies the properties of the given shape to the state of the
+     * ShapeRenderProperties
+     * </p>
+     * 
+     * @param shape
+     *            <p>
+     *            The shape to apply (either a child or its ancestors)
+     *            </p>
+     */
+    private void applyShape(IShape shape) {
 
-		// Set the material
-		highlightedMaterial = mat;
+        // Extract the shape properties
 
-		return;
-	}
+        String selectedValue = shape.getProperty("selected");
+        String alphaValue = shape.getProperty("alpha");
 
-	/**
-	 * <p>
-	 * Applies the properties of the given shape to the state of the
-	 * ShapeRenderProperties
-	 * </p>
-	 * 
-	 * @param shape
-	 *            <p>
-	 *            The shape to apply (either a child or its ancestors)
-	 *            </p>
-	 */
-	private void applyShape(IShape shape) {
+        // Selected
 
-		// Extract the shape properties
+        if (selectedValue != null && "true".equals(selectedValue)) {
+            selected = true;
+        }
+        // Alpha
 
-		String selectedValue = shape.getProperty("selected");
-		String alphaValue = shape.getProperty("alpha");
+        if (alphaValue != null) {
+            try {
+                float alphaFloat = Float.valueOf(alphaValue);
 
-		// Selected
+                alpha *= alphaFloat;
+            } catch (NumberFormatException e) {
+            }
+        }
 
-		if (selectedValue != null && "true".equals(selectedValue)) {
-			selected = true;
-		}
-		// Alpha
+        // Scale alpha value with a constant factor
 
-		if (alphaValue != null) {
-			try {
-				float alphaFloat = Float.valueOf(alphaValue);
-
-				alpha *= alphaFloat;
-			} catch (NumberFormatException e) {
-			}
-		}
-
-		// Scale alpha value with a constant factor
-
-	}
+    }
 
 }

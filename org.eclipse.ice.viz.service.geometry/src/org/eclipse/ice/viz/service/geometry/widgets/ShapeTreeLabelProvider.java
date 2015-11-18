@@ -26,65 +26,67 @@ import org.eclipse.swt.graphics.Image;
  * @author Andrew P. Belt
  */
 public class ShapeTreeLabelProvider extends LabelProvider {
-	/**
-	 * <p>
-	 * Returns the image associated with the given element object
-	 * </p>
-	 * 
-	 * @param element
-	 *            <p>
-	 *            An IShape to produce its image
-	 *            </p>
-	 * @return <p>
-	 *         The icon associated with the given IShape element
-	 *         </p>
-	 */
-	@Override
-	public Image getImage(Object element) {
+    /**
+     * <p>
+     * Returns the image associated with the given element object
+     * </p>
+     * 
+     * @param element
+     *            <p>
+     *            An IShape to produce its image
+     *            </p>
+     * @return
+     *         <p>
+     *         The icon associated with the given IShape element
+     *         </p>
+     */
+    @Override
+    public Image getImage(Object element) {
 
-		// Don't display an image beside the shape
+        // Don't display an image beside the shape
 
-		return null;
+        return null;
 
-	}
+    }
 
-	/**
-	 * <p>
-	 * Returns the name associated with the given element object
-	 * </p>
-	 * 
-	 * @param element
-	 *            <p>
-	 *            The ICEObject or AbstractShape to produce its text
-	 *            </p>
-	 * @return <p>
-	 *         The name associated with the element's ICEObject properties
-	 *         </p>
-	 */
-	@Override
-	public String getText(Object element) {
+    /**
+     * <p>
+     * Returns the name associated with the given element object
+     * </p>
+     * 
+     * @param element
+     *            <p>
+     *            The ICEObject or AbstractShape to produce its text
+     *            </p>
+     * @return
+     *         <p>
+     *         The name associated with the element's ICEObject properties
+     *         </p>
+     */
+    @Override
+    public String getText(Object element) {
 
-		// Check that the element is an ICEObject and is not null
+        // Check that the element is an ICEObject and is not null
 
-		if (element instanceof IVizObject) {
+        if (element instanceof IVizObject) {
 
-			// Return the ICEObject's name property with its ICEObject ID
-			// appended with a space separator
+            // Return the ICEObject's name property with its ICEObject ID
+            // appended with a space separator
 
-			VizObject iceElement = (VizObject) element;
-			return iceElement.getName() + " " + iceElement.getId();
-		}
+            VizObject iceElement = (VizObject) element;
+            return iceElement.getName() + " " + iceElement.getId();
+        }
 
-		else if (element instanceof ShapeTreeContentProvider.BlankShape) {
+        else if (element instanceof ShapeTreeContentProvider.BlankShape) {
 
-			// Return the BlankShape default label text
+            // Return the BlankShape default label text
 
-			return BlankShape.TEXT;
-		}
+            return BlankShape.TEXT;
+        }
 
-		else {
-			return null;
-		}
+        else {
+            return null;
+        }
 
-	}
+    }
 }
