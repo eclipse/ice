@@ -23,7 +23,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider;
 import org.eclipse.ice.client.widgets.providers.DefaultListPageProvider;
+import org.eclipse.ice.client.widgets.providers.DefaultGeometryPageProvider;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
+import org.eclipse.ice.client.widgets.providers.IGeometryPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
@@ -416,12 +418,35 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	private ICEFormPage createGeometryPage() {
 
 		// Need IGeometryPageProvider
-
+		ICEFormPage page = null;
+		try{
+			IGeometryPageProvider[] geometryPageProviders = IGeometryPageProvider.getProviders();
+			if (geometryPageProviders != null && geometryPageProviders.length > 0) {
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				for (IGeometryPageProvider currentProvider : geometryPageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())){
+						page = currentProvider.getPage(this, componentMap);
+						break;
+					}
+				}
+				
+			}else{
+				logger.error("No GeometryPageProviders registered");
+			}
+			
+		}catch(CoreException e){
+			logger.error("Unable to get GeometryPageProvider", e);
+		}
+		
+		return page;
+		
 		// Local Declarations
+		/*
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(new ICEGeometry());
-
+		*/
 		// Get the GeometryComponent and create the GeometryPage.
+		/*
 		if (!(componentMap.get("geometry").isEmpty())) {
 			geometryComponent = (GeometryComponent) (componentMap.get("geometry").get(0));
 
@@ -436,7 +461,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		}
 
-		return geometryPage;
+		return geometryPage;*/
 	}
 
 	/**
