@@ -12,44 +12,45 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-
-import static org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncher.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.IShape;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.datastructures.form.mesh.MeshComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.ice.datastructures.form.MatrixComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.ice.datastructures.form.TimeDataComponent;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncher;
 import org.eclipse.ice.item.jobLauncher.multiLauncher.MultiLauncherBuilder;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * <p>
@@ -295,6 +296,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(DataComponent component)
 	 */
+	@Override
 	public void visit(DataComponent component) {
 
 	}
@@ -304,6 +306,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(ResourceComponent component)
 	 */
+	@Override
 	public void visit(ResourceComponent component) {
 
 		resourceComponent = component;
@@ -315,6 +318,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(TableComponent component)
 	 */
+	@Override
 	public void visit(TableComponent component) {
 		// TODO Auto-generated method stub
 
@@ -325,17 +329,8 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(MatrixComponent component)
 	 */
+	@Override
 	public void visit(MatrixComponent component) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see IComponentVisitor#visit(IShape component)
-	 */
-	public void visit(IShape component) {
 		// TODO Auto-generated method stub
 
 	}
@@ -345,6 +340,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(GeometryComponent component)
 	 */
+	@Override
 	public void visit(GeometryComponent component) {
 		// TODO Auto-generated method stub
 
@@ -355,6 +351,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(MasterDetailsComponent component)
 	 */
+	@Override
 	public void visit(MasterDetailsComponent component) {
 
 		// Set the MasterDetailsComponent
@@ -369,6 +366,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(TreeComposite component)
 	 */
+	@Override
 	public void visit(TreeComposite component) {
 		// TODO Auto-generated method stub
 
@@ -379,6 +377,7 @@ public class MultiLauncherTester implements IComponentVisitor {
 	 * 
 	 * @see IComponentVisitor#visit(IReactorComponent component)
 	 */
+	@Override
 	public void visit(IReactorComponent component) {
 		// TODO Auto-generated method stub
 

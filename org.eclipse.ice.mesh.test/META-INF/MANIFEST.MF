@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mesh Test
+Bundle-SymbolicName: org.eclipse.ice.mesh.test
+Bundle-Version: 2.1.8
+Fragment-Host: org.eclipse.ice.mesh;bundle-version="2.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit
+Bundle-Vendor: Oak Ridge National Laboratory

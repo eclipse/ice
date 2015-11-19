@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.eclipse.ice.client.widgets.reactoreditor.AnalysisWidgetRegistry">
+   <implementation class="org.eclipse.ice.client.widgets.reactoreditor.AnalysisWidgetRegistry"/>
+   <service>
+      <provide interface="org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry"/>
+   </service>
+   <reference bind="addAnalysisWidgetFactory" cardinality="1..n" interface="org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetFactory" name="IAnalysisWidgetFactory" policy="dynamic"/>
+</scr:component>

@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: ParaView Visualization Service Plugin Test Bundle
-Bundle-SymbolicName: org.eclipse.ice.viz.service.paraview.test
-Bundle-Version: 2.0.0
-Fragment-Host: org.eclipse.ice.viz.service.paraview;bundle-version="2.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit
-Bundle-Vendor: Oak Ridge National Laboratory

@@ -1,1 +1,0 @@
-classesdev.propertiesorg.eclipse.ice.item.test-2.0.0.jarlocal-artifacts.propertiesMANIFEST.MFmaven-archiverp2artifacts.xmlp2content.xmlsurefire.propertiessurefire-reportswork

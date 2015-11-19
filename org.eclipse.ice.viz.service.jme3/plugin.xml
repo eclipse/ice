@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.eclipse.ice.viz.service.jme3.internal.IMasterApplicationFactory" name="IMasterApplicationFactory" schema="schema/org.eclipse.ice.viz.service.jme3.internal.IMasterApplicationFactory.exsd"/>
+   <extension
+         point="org.eclipse.ice.viz.service.jme3.internal.IMasterApplicationFactory">
+      <clinet
+            class="org.eclipse.ice.viz.service.jme3.internal.MasterApplicationFactory">
+      </clinet>
+   </extension>
+   <extension
+         point="org.eclipse.ice.viz.service.IVizService">
+      <client
+            class="org.eclipse.ice.viz.service.jme3.geometry.JME3GeometryVizService">
+      </client>
+   </extension>
+   <extension
+         point="org.eclipse.ice.viz.service.IVizService">
+      <client
+            class="org.eclipse.ice.viz.service.jme3.mesh.JME3MeshVizService">
+      </client>
+   </extension>
+
+</plugin>

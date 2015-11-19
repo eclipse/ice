@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ReactorEditor SFR Package
+Bundle-SymbolicName: org.eclipse.ice.client.widgets.reactoreditor.sfr
+Bundle-Version: 2.1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.ice.analysistool,
+ org.eclipse.ice.client.common,
+ org.eclipse.ice.client.widgets.reactoreditor,
+ org.eclipse.ice.client.widgets.reactoreditor.grid,
+ org.eclipse.ice.client.widgets.reactoreditor.properties,
+ org.eclipse.ice.reactor.sfr.base,
+ org.eclipse.ice.reactor.sfr.core,
+ org.eclipse.ice.reactor.sfr.core.assembly,
+ org.eclipse.ui,
+ org.osgi.framework;version="1.7.0",
+ org.slf4j;version="1.7.2"
+Export-Package: org.eclipse.ice.client.widgets.reactoreditor.sfr
+Service-Component: OSGI-INF/*.xml
+Require-Bundle: org.eclipse.draw2d;bundle-version="3.9.0",
+ org.eclipse.gef;bundle-version="3.9.0",
+ org.eclipse.jface;bundle-version="3.8.102",
+ org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
+ org.eclipse.ice.datastructures,
+ org.eclipse.nebula.visualization.widgets;bundle-version="1.0.0",
+ org.eclipse.nebula.visualization.xygraph;bundle-version="1.0.0"
+Bundle-ClassPath: .
+Bundle-Vendor: Oak Ridge National Laboratory

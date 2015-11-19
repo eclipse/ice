@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+
+<plugin>
+   <extension-point id="org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry" name="IReactorEditorRegistry" schema="schema/org.eclipse.ice.client.widgets.reactoreditor.ireactoreditorregistry.exsd"/>
+
+
+      <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.ice.client.widgets.reactoreditor.ReactorFormEditor"
+            default="false"
+            id="org.eclipse.ice.client.widgets.reactor.editor"
+            name="ReactorEditor">
+      </editor>
+   </extension>
+      <extension
+            id="reactorformwidgetbuilder"
+            name="Reactor Form Widget Builder"
+            point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
+         <implementation
+               class="org.eclipse.ice.client.widgets.reactoreditor.ReactorFormWidgetBuilder">
+         </implementation>
+      </extension>
+
+</plugin>

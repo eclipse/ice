@@ -1,0 +1,1336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Units Markup language (UnitsML) Schema
+    Website: http://unitsml.nist.gov
+    Version History: http://unitsml.nist.gov/Schema/schema_changes.txt
+
+Copyright (C) OASIS Open 2006 - 2011. All Rights Reserved.
+
+All capitalized terms in the following text have the meanings
+assigned to them in the OASIS Intellectual Property Rights Policy
+(the "OASIS IPR Policy"). The full Policy may be found at the OASIS
+website.
+
+This document and translations of it may be copied and furnished
+to others, and derivative works that comment on or otherwise explain
+it or assist in its implementation may be prepared, copied, published,
+and distributed, in whole or in part, without restriction of any
+kind, provided that the above copyright notice and this section
+are included on all such copies and derivative works. However, this
+document itself may not be modified in any way, including by removing
+the copyright notice or references to OASIS, except as needed for
+the purpose of developing any document or deliverable produced by
+an OASIS Technical Committee (in which case the rules applicable
+to copyrights, as set forth in the OASIS IPR Policy, must be
+followed) or as required to translate it into languages other than
+English.
+
+The limited permissions granted above are perpetual and will not
+be revoked by OASIS or its successors or assigns.
+
+This document and the information contained herein is provided on
+an "AS IS" basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF
+THE INFORMATION HEREIN WILL NOT INFRINGE ANY OWNERSHIP RIGHTS OR
+ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR
+PURPOSE.
+
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-1.0" 
+targetNamespace="urn:oasis:names:tc:unitsml:schema:xsd:UnitsMLSchema-1.0"
+elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0-CSD-03">
+	
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2009/01/xml.xsd"/>
+	<!--=== Root-Node of an UnitsML document ===-->
+	<xsd:element name="UnitsML" type="UnitsMLType">
+		<xsd:annotation>
+			<xsd:documentation>Container for UnitsML units, quantities, and prefixes.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:complexType name="UnitsMLType">
+		<xsd:annotation>
+			<xsd:documentation>ComplexType for the root element of an UnitsML document.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="UnitSet" minOccurs="0"/>
+			<xsd:element ref="CountedItemSet" minOccurs="0"/>
+			<xsd:element ref="QuantitySet" minOccurs="0"/>
+			<xsd:element ref="DimensionSet" minOccurs="0"/>
+			<xsd:element ref="PrefixSet" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<!--=== Global document elements ===-->
+	<!--     === Unit elements ===-->
+	<xsd:element name="UnitSet" type="UnitSetType">
+		<xsd:annotation>
+			<xsd:documentation>Container for units. Use in UnitsML container or directly incorporate into a host schema.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Unit" type="UnitType">
+		<xsd:annotation>
+			<xsd:documentation>Element for describing units. Use in containers UnitSet or directly incorporate into a host schema.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitSystem" type="SystemType">
+		<xsd:annotation>
+			<xsd:documentation>Container for describing the system of units.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitName" type="NameType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the unit name.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitSymbol" type="SymbolType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing various unit symbols.  Examples include Aring (ASCII), Ã (HTML).</xsd:documentation>
+			
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitVersionHistory" type="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Element for descriptive information, including version changes to the unit.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CodeListValue" type="CodeListValueType">
+		<xsd:annotation>
+			<xsd:documentation>Element for listing the unit code value from a specific code list.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RootUnits" type="RootUnitsType">
+		<xsd:annotation>
+			<xsd:documentation>Container for defining derived units in terms of their root units. This allows a precise definition of a wide range of units. The goal is to improve interoperability among applications and databases which use derived units based on commonly encountered root units.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="EnumeratedRootUnit" type="EnumeratedRootUnitType">
+		<xsd:annotation>
+			<xsd:documentation>Element for a root unit (from an extensive enumerated list) allowing an optional prefix and power. E.g., mm^2</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ExternalRootUnit" type="ExternalRootUnitType">
+		<xsd:annotation>
+			<xsd:documentation>Element for those special cases where the root unit needed is not included in the enumerated list in the above element.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Conversions" type="ConversionsType">
+		<xsd:annotation>
+			<xsd:documentation>Container for providing conversion information to other units.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Float64ConversionFrom" type="Float64ConversionFromType">
+		<xsd:annotation>
+			<xsd:documentation>Element for providing factors for a conversion equation from another unit; y = d + ((b / c) (x + a))</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ConversionNote" type="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Element for descriptive information.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SpecialConversionFrom" type="SpecialConversionFromType">
+		<xsd:annotation>
+			<xsd:documentation>Element for providing unit conversion information for conversions that are more complex than the Float64ConversionFrom linear equation.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="WSDLConversionFrom" type="WSDLConversionFromType">
+		<xsd:annotation>
+			<xsd:documentation>Element for providing conversion based on SOAP/WSDL calls to a remote server.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="WSDLDescription" type="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the WSDL service.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ConversionDescription" type="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Element for a description of the SpecialConversionFrom.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantityReference" type="ReferenceType">
+		<xsd:annotation>
+			<xsd:documentation>Element for all quantities that can be expressed using this unit.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitDefinition" type="DefinitionType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the definition of the unit.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitHistory" type="HistoryType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the historical development of the unit.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitRemark" type="RemarkType">
+		<xsd:annotation>
+			<xsd:documentation>Element as a placeholder for additional information.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!--     === Counted item elements ===-->
+	<xsd:element name="CountedItemSet" type="CountedItemSetType">
+		<xsd:annotation>
+			<xsd:documentation>Container for items that are counted and are (in practice) combined with scientific units of measure.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CountedItem" type="CountedItemType">
+		<xsd:annotation>
+			<xsd:documentation>Container for a single counted item.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ItemName" type="NameType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the item name(s).</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ItemSymbol" type="SymbolType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing symbols for the item.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ItemVersionHistory" type="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Element for descriptive information, including version changes to the item.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ItemDefinition" type="DefinitionType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the definition of the item.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ItemHistory" type="HistoryType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the historical development of the item.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ItemRemark" type="RemarkType">
+		<xsd:annotation>
+			<xsd:documentation>Element as a placeholder for additional information.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!--     === Quantity elements ===-->
+	<xsd:element name="QuantitySet" type="QuantitySetType">
+		<xsd:annotation>
+			<xsd:documentation>Container for quantities.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Quantity" type="QuantityType">
+		<xsd:annotation>
+			<xsd:documentation>Element for describing quantities and referencing corresponding units. Use in container or directly incorporate into a host schema.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantityName" type="NameType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the quantity name.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantitySymbol" type="SymbolType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing various quantity symbols.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitReference" type="ReferenceType">
+		<xsd:annotation>
+			<xsd:documentation>Element for referencing a unit of measure from within the Quantity element.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantityVersionHistory" type="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Element for descriptive information, including version changes to the unit.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantityDefinition" type="DefinitionType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the definition of the quantity.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantityHistory" type="HistoryType">
+		<xsd:annotation>
+			<xsd:documentation>Element to describe the historical development of the quantity.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="QuantityRemark" type="RemarkType">
+		<xsd:annotation>
+			<xsd:documentation>Element as a placeholder for additional information.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!--     === Dimension elements ===-->
+	<xsd:element name="DimensionSet" type="DimensionSetType">
+		<xsd:annotation>
+			<xsd:documentation>Container for dimensions.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Dimension" type="DimensionType">
+		<xsd:annotation>
+			<xsd:documentation>Element to express the dimension of a unit or quantity in terms of the SI base quantities length, mass, time, electric current, thermodynamic temperature, amount of substance, and luminous intensity.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Length" type="LengthType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity length.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Mass" type="MassType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity mass.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Time" type="TimeType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity time.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ElectricCurrent" type="ElectricCurrentType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity electric current.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ThermodynamicTemperature" type="ThermodynamicTemperatureType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity thermodynamic temerature.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="AmountOfSubstance" type="AmountOfSubstanceType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity amount of substance.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="LuminousIntensity" type="LuminousIntensityType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity luminous intensity.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PlaneAngle" type="PlaneAngleType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of the quantity plane angle.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Item" type="ItemType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the dimension of any item. Note: this element is meant to be used to allow counted items to be included in the dimensioning of a derived quantity, e.g., electrons per time; usage of this element does not conform to the SI description of the dimension of a quantity in terms of seven base quantities.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!--     === Prefix elements ===-->
+	<xsd:element name="PrefixSet" type="PrefixSetType">
+		<xsd:annotation>
+			<xsd:documentation>Container for prefixes.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Prefix" type="PrefixType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing information about a prefix.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PrefixName" type="NameType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing the prefix name.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PrefixSymbol" type="SymbolType">
+		<xsd:annotation>
+			<xsd:documentation>Element containing prefix symbols.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<!--=== Attribute groups (global) ===-->
+	<xsd:attributeGroup name="initialUnit">
+		<xsd:annotation>
+			<xsd:documentation>URI indicating the unitID of the starting unit for the conversion. For units which are defined in the same document, the URI should consist of a pound sign (#) followed by the ID value.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="initialUnit" type="xsd:anyURI" use="required">
+			<xsd:annotation>
+				<xsd:documentation>URI indicating the unitID of the starting unit for the conversion. For units which are defined in the same document, the URI should consist of a pound sign (#) followed by the ID value.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="sourceName">
+		<xsd:annotation>
+			<xsd:documentation>Name of relevant publication.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="sourceName" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Name of relevant publication.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="sourceURL">
+		<xsd:annotation>
+			<xsd:documentation>Relevant URL for available information.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="sourceURL" type="xsd:anyURI" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Relevant URL for available information.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="powerRational">
+		<xsd:annotation>
+			<xsd:documentation>An exponent of the unit, specified as powerNumerator and powerDenominator.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="powerNumerator" type="xsd:byte" use="optional" default="1">
+			<xsd:annotation>
+				<xsd:documentation>An integer exponent of the unit.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="powerDenominator" type="xsd:byte" use="optional" default="1">
+			<xsd:annotation>
+				<xsd:documentation>An integer value divided into the powerNumerator to create a non integer exponent of a unit.  For example 1/2.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="prefix">
+		<xsd:annotation>
+			<xsd:documentation>Prefix identifier; e.g., m, k, M, G.  [Enumeration order is by prefix magnitude (Y to y) followed by binary prefixes.]</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="prefix">
+			<xsd:annotation>
+				<xsd:documentation>Prefix identifier; e.g., m, k, M, G.  [Enumeration order is by prefix magnitude (Y to y) followed by binary prefixes.]</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:token">
+					<xsd:enumeration value="Y"/>
+					<xsd:enumeration value="Z"/>
+					<xsd:enumeration value="E"/>
+					<xsd:enumeration value="P"/>
+					<xsd:enumeration value="T"/>
+					<xsd:enumeration value="G"/>
+					<xsd:enumeration value="M"/>
+					<xsd:enumeration value="k"/>
+					<xsd:enumeration value="h"/>
+					<xsd:enumeration value="da"/>
+					<xsd:enumeration value="d"/>
+					<xsd:enumeration value="c"/>
+					<xsd:enumeration value="m"/>
+					<xsd:enumeration value="u"/>
+					<xsd:enumeration value="n"/>
+					<xsd:enumeration value="p"/>
+					<xsd:enumeration value="f"/>
+					<xsd:enumeration value="a"/>
+					<xsd:enumeration value="z"/>
+					<xsd:enumeration value="y"/>
+					<xsd:enumeration value="Ki"/>
+					<xsd:enumeration value="Mi"/>
+					<xsd:enumeration value="Gi"/>
+					<xsd:enumeration value="Ti"/>
+					<xsd:enumeration value="Pi"/>
+					<xsd:enumeration value="Ei"/>
+					<xsd:enumeration value="Zi"/>
+					<xsd:enumeration value="Yi"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<xsd:attributeGroup name="dimensionURL">
+		<xsd:annotation>
+			<xsd:documentation>URL to a representation of the unit or quantity in terms of the 7 SI base dimensions.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="dimensionURL" type="xsd:anyURI">
+			<xsd:annotation>
+				<xsd:documentation>URL to a representation of the unit or quantity in terms of the 7 SI base dimensions.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:attributeGroup>
+	<!--=== Type definitions ===-->
+	<!--     === Unit specific Types ===-->
+	<xsd:complexType name="UnitSetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the unit container.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Unit" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for describing units. Use in containers UnitSet or directly incorporate into a host schema.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="UnitType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the unit.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="UnitSystem" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Container for describing the system(s) of units.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="UnitName" maxOccurs="unbounded"/>
+			<xsd:element ref="UnitSymbol" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="CodeListValue" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="RootUnits" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Container for defining derived units in terms of their root units. This allows a precise definition of a wide range of units. The goal is to improve interoperability among applications and databases which use derived units based on commonly encountered root units.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="Conversions" minOccurs="0"/>
+			<xsd:element ref="QuantityReference" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="UnitVersionHistory" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for descriptive information, including version changes to the unit.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="UnitDefinition" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="UnitHistory" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="UnitRemark" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attribute name="timeStamp" type="xsd:dateTime">
+			<xsd:annotation>
+				<xsd:documentation>Used to indicate the version of the unit output from the Units Database. Changes in the time-stamp are made if a substantive change has been made to the unit, such as a change in the unit definition or changes in conversion factors.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="dimensionURL">
+			<xsd:annotation>
+				<xsd:documentation>Reference to a representation of the unit or quantity in terms of the 7 SI base dimensions.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attributeGroup>
+	</xsd:complexType>
+	<xsd:complexType name="CodeListValueType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the element for listing the unit code value from a specific code list.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="unitCodeValue" type="xsd:string" use="required">
+			<xsd:annotation>
+				<xsd:documentation>The code associated for this unit in a specific code list.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="codeListName" type="xsd:normalizedString">
+			<xsd:annotation>
+				<xsd:documentation>The name of the code list.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="codeListVersion" type="xsd:token">
+			<xsd:annotation>
+				<xsd:documentation>The version of the code list containing the unit code.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="locationURL" type="xsd:anyURI">
+			<xsd:annotation>
+				<xsd:documentation>Suggested retrieval location for this version of the code list.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="organizationName" type="xsd:normalizedString">
+			<xsd:annotation>
+				<xsd:documentation>Organization responsible for publication and/or maintenance of the code list.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="organizationURI" type="xsd:anyURI">
+			<xsd:annotation>
+				<xsd:documentation>URI for organization responsible for the code list.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute ref="xml:lang">
+			<xsd:annotation>
+				<xsd:documentation>Primary language of the element and/or its attributes. [See RFC 4646, RFC 4647 and ISO 639.]</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="RootUnitsType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the container for defining derived units in terms of their root units. This allows a precise definition of a wide range of units. The goal is to improve interoperability among applications and databases which use derived units based on commonly encountered base units.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="EnumeratedRootUnit" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for a root unit (from an extensive enumerated list) allowing an optional prefix and power. E.g., mm^2</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="ExternalRootUnit" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for those special cases where the root unit needed is not included in the enumerated list in the above element.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="EnumeratedRootUnitType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the element for a root unit (from an extensive enumerated list) allowing an optional prefix and power. E.g., mm^2</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="unit" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Unit identifier; the enumerated list is basically English unit names in lowercase, with a few upper case exceptions, e.g., 32F, mmHg, pH.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:token">
+					<xsd:enumeration value="meter"/>
+					<xsd:enumeration value="gram"/>
+					<xsd:enumeration value="second"/>
+					<xsd:enumeration value="ampere"/>
+					<xsd:enumeration value="kelvin"/>
+					<xsd:enumeration value="mole"/>
+					<xsd:enumeration value="candela"/>
+					<xsd:enumeration value="radian"/>
+					<xsd:enumeration value="steradian"/>
+					<xsd:enumeration value="hertz"/>
+					<xsd:enumeration value="newton"/>
+					<xsd:enumeration value="pascal"/>
+					<xsd:enumeration value="joule"/>
+					<xsd:enumeration value="watt"/>
+					<xsd:enumeration value="coulomb"/>
+					<xsd:enumeration value="volt"/>
+					<xsd:enumeration value="farad"/>
+					<xsd:enumeration value="ohm"/>
+					<xsd:enumeration value="siemens"/>
+					<xsd:enumeration value="weber"/>
+					<xsd:enumeration value="tesla"/>
+					<xsd:enumeration value="henry"/>
+					<xsd:enumeration value="degree_Celsius"/>
+					<xsd:enumeration value="lumen"/>
+					<xsd:enumeration value="lux"/>
+					<xsd:enumeration value="katal"/>
+					<xsd:enumeration value="becquerel"/>
+					<xsd:enumeration value="gray"/>
+					<xsd:enumeration value="sievert"/>
+					<xsd:enumeration value="minute"/>
+					<xsd:enumeration value="hour"/>
+					<xsd:enumeration value="day"/>
+					<xsd:enumeration value="arc_degree"/>
+					<xsd:enumeration value="arc_minute"/>
+					<xsd:enumeration value="arc_second"/>
+					<xsd:enumeration value="liter"/>
+					<xsd:enumeration value="metric_ton"/>
+					<xsd:enumeration value="electronvolt"/>
+					<xsd:enumeration value="unified_atomic_mass_unit"/>
+					<xsd:enumeration value="astronomical_unit"/>
+					<xsd:enumeration value="atomic_unit_of_1st_hyperpolarizability"/>
+					<xsd:enumeration value="atomic_unit_of_2nd_hyperpolarizability"/>
+					<xsd:enumeration value="atomic_unit_of_action"/>
+					<xsd:enumeration value="atomic_unit_of_charge"/>
+					<xsd:enumeration value="atomic_unit_of_charge_density"/>
+					<xsd:enumeration value="atomic_unit_of_current"/>
+					<xsd:enumeration value="atomic_unit_of_electric_dipole_moment"/>
+					<xsd:enumeration value="atomic_unit_of_electric_field"/>
+					<xsd:enumeration value="atomic_unit_of_electric_field_gradient"/>
+					<xsd:enumeration value="atomic_unit_of_electric_polarizability"/>
+					<xsd:enumeration value="atomic_unit_of_electric_potential"/>
+					<xsd:enumeration value="atomic_unit_of_electric_quadrupole_moment"/>
+					<xsd:enumeration value="atomic_unit_of_energy"/>
+					<xsd:enumeration value="atomic_unit_of_force"/>
+					<xsd:enumeration value="atomic_unit_of_length"/>
+					<xsd:enumeration value="atomic_unit_of_magnetic_dipole_moment"/>
+					<xsd:enumeration value="atomic_unit_of_magnetic_flux_density"/>
+					<xsd:enumeration value="atomic_unit_of_magnetizability"/>
+					<xsd:enumeration value="atomic_unit_of_mass"/>
+					<xsd:enumeration value="atomic_unit_of_momentum"/>
+					<xsd:enumeration value="atomic_unit_of_permittivity"/>
+					<xsd:enumeration value="atomic_unit_of_time"/>
+					<xsd:enumeration value="atomic_unit_of_velocity"/>
+					<xsd:enumeration value="natural_unit_of_action"/>
+					<xsd:enumeration value="natural_unit_of_action_in_eV_s"/>
+					<xsd:enumeration value="natural_unit_of_energy"/>
+					<xsd:enumeration value="natural_unit_of_energy_in_MeV"/>
+					<xsd:enumeration value="natural_unit_of_length"/>
+					<xsd:enumeration value="natural_unit_of_mass"/>
+					<xsd:enumeration value="natural_unit_of_momentum"/>
+					<xsd:enumeration value="natural_unit_of_momentum_in_MeV_per_c"/>
+					<xsd:enumeration value="natural_unit_of_time"/>
+					<xsd:enumeration value="natural_unit_of_velocity"/>
+					<xsd:enumeration value="nautical_mile"/>
+					<xsd:enumeration value="knot"/>
+					<xsd:enumeration value="angstrom"/>
+					<xsd:enumeration value="are"/>
+					<xsd:enumeration value="hectare"/>
+					<xsd:enumeration value="barn"/>
+					<xsd:enumeration value="bar"/>
+					<xsd:enumeration value="gal"/>
+					<xsd:enumeration value="curie"/>
+					<xsd:enumeration value="roentgen"/>
+					<xsd:enumeration value="rad"/>
+					<xsd:enumeration value="rem"/>
+					<xsd:enumeration value="erg"/>
+					<xsd:enumeration value="dyne"/>
+					<xsd:enumeration value="barye"/>
+					<xsd:enumeration value="poise"/>
+					<xsd:enumeration value="rhe"/>
+					<xsd:enumeration value="stokes"/>
+					<xsd:enumeration value="darcy"/>
+					<xsd:enumeration value="kayser"/>
+					<xsd:enumeration value="lambert"/>
+					<xsd:enumeration value="phot"/>
+					<xsd:enumeration value="thermo_calorie"/>
+					<xsd:enumeration value="table_calorie"/>
+					<xsd:enumeration value="debye"/>
+					<xsd:enumeration value="abampere"/>
+					<xsd:enumeration value="abcoulomb"/>
+					<xsd:enumeration value="abfarad"/>
+					<xsd:enumeration value="abhenry"/>
+					<xsd:enumeration value="abohm"/>
+					<xsd:enumeration value="abmho"/>
+					<xsd:enumeration value="abvolt"/>
+					<xsd:enumeration value="abwatt"/>
+					<xsd:enumeration value="maxwell"/>
+					<xsd:enumeration value="gauss"/>
+					<xsd:enumeration value="gilbert"/>
+					<xsd:enumeration value="oersted"/>
+					<xsd:enumeration value="stilb"/>
+					<xsd:enumeration value="statampere"/>
+					<xsd:enumeration value="statcoulomb"/>
+					<xsd:enumeration value="statfarad"/>
+					<xsd:enumeration value="stathenry"/>
+					<xsd:enumeration value="statohm"/>
+					<xsd:enumeration value="statmho"/>
+					<xsd:enumeration value="statvolt"/>
+					<xsd:enumeration value="statwatt"/>
+					<xsd:enumeration value="statweber"/>
+					<xsd:enumeration value="stattesla"/>
+					<xsd:enumeration value="long_ton"/>
+					<xsd:enumeration value="short_ton"/>
+					<xsd:enumeration value="gross_hundredweight"/>
+					<xsd:enumeration value="hundredweight"/>
+					<xsd:enumeration value="pound"/>
+					<xsd:enumeration value="ounce"/>
+					<xsd:enumeration value="dram"/>
+					<xsd:enumeration value="troy_pound"/>
+					<xsd:enumeration value="troy_ounce"/>
+					<xsd:enumeration value="pennyweight"/>
+					<xsd:enumeration value="apothecaries_dram"/>
+					<xsd:enumeration value="scruple"/>
+					<xsd:enumeration value="grain"/>
+					<xsd:enumeration value="slug"/>
+					<xsd:enumeration value="pound_force"/>
+					<xsd:enumeration value="poundal"/>
+					<xsd:enumeration value="kip"/>
+					<xsd:enumeration value="ton_force"/>
+					<xsd:enumeration value="gram_force"/>
+					<xsd:enumeration value="inch"/>
+					<xsd:enumeration value="foot"/>
+					<xsd:enumeration value="yard"/>
+					<xsd:enumeration value="mile"/>
+					<xsd:enumeration value="us_survey_inch"/>
+					<xsd:enumeration value="us_survey_foot"/>
+					<xsd:enumeration value="us_survey_yard"/>
+					<xsd:enumeration value="us_survey_fathom"/>
+					<xsd:enumeration value="us_survey_rod"/>
+					<xsd:enumeration value="us_survey_chain"/>
+					<xsd:enumeration value="us_survey_link"/>
+					<xsd:enumeration value="us_survey_furlong"/>
+					<xsd:enumeration value="us_survey_mile"/>
+					<xsd:enumeration value="us_acre"/>
+					<xsd:enumeration value="imperial_gallon"/>
+					<xsd:enumeration value="imperial_quart"/>
+					<xsd:enumeration value="imperial_pint"/>
+					<xsd:enumeration value="imperial_gill"/>
+					<xsd:enumeration value="imperial_ounce"/>
+					<xsd:enumeration value="us_gallon"/>
+					<xsd:enumeration value="us_quart"/>
+					<xsd:enumeration value="us_pint"/>
+					<xsd:enumeration value="us_cup"/>
+					<xsd:enumeration value="us_gill"/>
+					<xsd:enumeration value="us_fluid_ounce"/>
+					<xsd:enumeration value="us_fluid_dram"/>
+					<xsd:enumeration value="us_minim"/>
+					<xsd:enumeration value="us_tablespoon"/>
+					<xsd:enumeration value="us_teaspoon"/>
+					<xsd:enumeration value="us_bushel"/>
+					<xsd:enumeration value="us_peck"/>
+					<xsd:enumeration value="us_dry_quart"/>
+					<xsd:enumeration value="us_dry_pint"/>
+					<xsd:enumeration value="thermo_kg_calorie"/>
+					<xsd:enumeration value="table_kg_calorie"/>
+					<xsd:enumeration value="us_label_teaspoon"/>
+					<xsd:enumeration value="us_label_tablespoon"/>
+					<xsd:enumeration value="us_label_cup"/>
+					<xsd:enumeration value="us_label_fluid_ounce"/>
+					<xsd:enumeration value="us_label_ounce"/>
+					<xsd:enumeration value="horsepower"/>
+					<xsd:enumeration value="electric_horsepower"/>
+					<xsd:enumeration value="boiler_horsepower"/>
+					<xsd:enumeration value="metric_horsepower"/>
+					<xsd:enumeration value="water_horsepower"/>
+					<xsd:enumeration value="uk_horsepower"/>
+					<xsd:enumeration value="degree_Fahrenheit"/>
+					<xsd:enumeration value="degree_Rankine"/>
+					<xsd:enumeration value="torr"/>
+					<xsd:enumeration value="standard_atmosphere"/>
+					<xsd:enumeration value="technical_atmosphere"/>
+					<xsd:enumeration value="mm_Hg"/>
+					<xsd:enumeration value="cm_Hg"/>
+					<xsd:enumeration value="0C_cm_Hg"/>
+					<xsd:enumeration value="in_Hg"/>
+					<xsd:enumeration value="32F_in_Hg"/>
+					<xsd:enumeration value="60F_in_Hg"/>
+					<xsd:enumeration value="ft_Hg"/>
+					<xsd:enumeration value="mm_water"/>
+					<xsd:enumeration value="cm_water"/>
+					<xsd:enumeration value="4C_cm_water"/>
+					<xsd:enumeration value="in_water"/>
+					<xsd:enumeration value="39F_in_water"/>
+					<xsd:enumeration value="60F_in_water"/>
+					<xsd:enumeration value="ft_water"/>
+					<xsd:enumeration value="39F_ft_water"/>
+					<xsd:enumeration value="light_year"/>
+					<xsd:enumeration value="parsec"/>
+					<xsd:enumeration value="printers_pica"/>
+					<xsd:enumeration value="computer_pica"/>
+					<xsd:enumeration value="printers_point"/>
+					<xsd:enumeration value="computer_point"/>
+					<xsd:enumeration value="thermo_btu"/>
+					<xsd:enumeration value="table_btu"/>
+					<xsd:enumeration value="mean_btu"/>
+					<xsd:enumeration value="39F_btu"/>
+					<xsd:enumeration value="59F_btu"/>
+					<xsd:enumeration value="60F_btu"/>
+					<xsd:enumeration value="tons_of_tnt"/>
+					<xsd:enumeration value="ec_therm"/>
+					<xsd:enumeration value="us_therm"/>
+					<xsd:enumeration value="year_365"/>
+					<xsd:enumeration value="tropical_year"/>
+					<xsd:enumeration value="sidereal_year"/>
+					<xsd:enumeration value="sidereal_day"/>
+					<xsd:enumeration value="sidereal_hour"/>
+					<xsd:enumeration value="sidereal_minute"/>
+					<xsd:enumeration value="sidereal_second"/>
+					<xsd:enumeration value="shake"/>
+					<xsd:enumeration value="denier"/>
+					<xsd:enumeration value="tex"/>
+					<xsd:enumeration value="gon"/>
+					<xsd:enumeration value="nato_mil"/>
+					<xsd:enumeration value="pound_mole"/>
+					<xsd:enumeration value="ton_refrigeration"/>
+					<xsd:enumeration value="circular_mil"/>
+					<xsd:enumeration value="bel"/>
+					<xsd:enumeration value="neper"/>
+					<xsd:enumeration value="pH"/>
+					<xsd:enumeration value="petro_barrel"/>
+					<xsd:enumeration value="footlambert"/>
+					<xsd:enumeration value="footcandle"/>
+					<xsd:enumeration value="carat"/>
+					<xsd:enumeration value="bit"/>
+					<xsd:enumeration value="byte"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="sourceURL"/>
+		<xsd:attributeGroup ref="prefix">
+			<xsd:annotation>
+				<xsd:documentation>Prefix identifier; e.g., m, k, M, G. [Enumeration order is by prefix magnitude (Y to y) followed by binary prefixes.]</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attributeGroup>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="ExternalRootUnitType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the element for those special cases where the root unit needed is not included in the enumerated list in the above element.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="unit" type="xsd:anyURI" use="required">
+			<xsd:annotation>
+				<xsd:documentation>URI to identify the unit.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="sourceURL">
+			<xsd:annotation>
+				<xsd:documentation>URI identifying the source and possibly the definition of the unit.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attributeGroup>
+		<xsd:attribute name="annotation" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation>Optional unit annotation; e.g., a unit name if the unit identifier above is an uncommon code.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute ref="xml:lang"/>
+		<xsd:attributeGroup ref="prefix"/>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="ConversionsType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the container for providing conversion information to other units.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Float64ConversionFrom" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for providing factors for a conversion equation from another unit; y = d + ((b / c) (x + a)). Note: The related "conversion to" equation is a simple inversion of the above equation; i.e., x = ((c / b) (y - d)) - a.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="SpecialConversionFrom" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for describing a conversion that cannot be described by the linear expression in the element Float64ConversionFrom.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="WSDLConversionFrom" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for providing conversion based on SOAP/WSDL calls to a remote server.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Float64ConversionFromType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the element for providing factors for a conversion equation from another unit; y = d + ((b / c) (x + a))</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ConversionNote" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attributeGroup ref="initialUnit"/>
+		<xsd:attribute name="initialAddend" type="xsd:double" default="0">
+			<xsd:annotation>
+				<xsd:documentation>Number to be added at the start of the conversion (prior to multiplication or division) [factor 'a' in equation].</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="initialAddendDecimalPlace" type="xsd:byte">
+			<xsd:annotation>
+				<xsd:documentation>Indicates the position of the least
+significant digit (in decimal) of
+the initialAddend; the position of
+this digit is given by ten to
+additive inverse of this number.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="multiplicand" type="xsd:double" default="1">
+			<xsd:annotation>
+				<xsd:documentation>Number by which to multiply sum of initial addend and initial value [factor 'b' in equation].</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="multiplicandDigits" type="xsd:unsignedByte">
+			<xsd:annotation>
+				<xsd:documentation>Number of significant digits in the multiplicand value.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="divisor" type="xsd:double" default="1">
+			<xsd:annotation>
+				<xsd:documentation>Divisor to be applied to the value at the same time as the multiplicand [factor 'c' in equation].</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="divisorDigits" type="xsd:unsignedByte">
+			<xsd:annotation>
+				<xsd:documentation>Number of significant digits in the divisor value.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="finalAddend" type="xsd:double" default="0">
+			<xsd:annotation>
+				<xsd:documentation>Number to be added at the end of the conversion [factor 'd' in equation].</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="finalAddendDecimalPlace" type="xsd:byte">
+			<xsd:annotation>
+				<xsd:documentation>Indicates the position of the least
+significant digit (in decimal) of
+the finalAddend; the position of
+this digit is given by ten to
+additive inverse of this number.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="exact" type="xsd:boolean" default="false">
+			<xsd:annotation>
+				<xsd:documentation>Indicates if the conversion is exact.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="SpecialConversionFromType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the element for providing unit conversion information for conversions that are more complex than the Float64ConversionFrom linear equation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ConversionDescription" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Description of the conversion.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attribute name="conversionURL" type="xsd:anyURI">
+			<xsd:annotation>
+				<xsd:documentation>URL for external description of the conversion or for an online convertor.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="initialUnit"/>
+	</xsd:complexType>
+	<xsd:complexType name="WSDLConversionFromType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the element for providing unit conversion information for conversions that are more complex than the Float64ConversionFrom linear equation.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="WSDLDescription" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Description of the service.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attributeGroup ref="initialUnit"/>
+		<xsd:attribute name="wsdlURL" type="xsd:anyURI" use="required">
+			<xsd:annotation>
+				<xsd:documentation>URL for external WSDL definition file.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<!--     === CountedItem specific Types ===-->
+	<xsd:complexType name="CountedItemSetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for a set of counted items.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="CountedItem" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="CountedItemType">
+		<xsd:annotation>
+			<xsd:documentation>Type for a single counted item.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ItemName" maxOccurs="unbounded"/>
+			<xsd:element ref="ItemSymbol" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="ItemVersionHistory" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="ItemDefinition" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="ItemHistory" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="ItemRemark" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+	</xsd:complexType>
+	<!--     === Quantity specific Types ===-->
+	<xsd:complexType name="QuantitySetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for quantity container.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Quantity" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="QuantityType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the quantity.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="QuantityName" maxOccurs="unbounded"/>
+			<xsd:element ref="QuantitySymbol" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element containing various quantity symbols.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="UnitReference" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for specifying particular units associated with the quantity.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="QuantityVersionHistory" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element for descriptive information, including version changes to the quantity.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="QuantityDefinition" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="QuantityHistory" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element ref="QuantityRemark" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attribute name="quantityType" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Type of the quantity.  For example base or derived.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:token">
+					<xsd:enumeration value="base"/>
+					<xsd:enumeration value="derived"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<!-- REVISE -->
+		</xsd:attribute>
+		<xsd:attributeGroup ref="dimensionURL"/>
+	</xsd:complexType>
+	<!--     === Dimension specific Types ===-->
+	<xsd:complexType name="DimensionSetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for the dimension container.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Dimension" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element to express a unit or quantity in terms of the SI base quantities length, mass, time, electric current, thermodynamic temperature, amount of substance, and luminous intensity.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="DimensionType">
+		<xsd:annotation>
+			<xsd:documentation>Type for dimension.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence maxOccurs="unbounded">
+			<xsd:annotation>
+				<xsd:documentation>This unbounded sequence allows any order of any number of elements; e.g., L^1 Â· L^-1.</xsd:documentation>
+			</xsd:annotation>
+			<xsd:element ref="Length" minOccurs="0"/>
+			<xsd:element ref="Mass" minOccurs="0"/>
+			<xsd:element ref="Time" minOccurs="0"/>
+			<xsd:element ref="ElectricCurrent" minOccurs="0"/>
+			<xsd:element ref="ThermodynamicTemperature" minOccurs="0"/>
+			<xsd:element ref="AmountOfSubstance" minOccurs="0"/>
+			<xsd:element ref="LuminousIntensity" minOccurs="0"/>
+			<xsd:element ref="PlaneAngle" minOccurs="0"/>
+			<xsd:element ref="Item" minOccurs="0" maxOccurs="unbounded">
+				<xsd:annotation>
+					<xsd:documentation>Element containing the dimension of any item. Note: this element is meant to be used to allow counted items to be included in the dimensioning of a derived quantity, e.g., electrons per time; usage of this element does not conform to the SI description of the dimension of a quantity in terms of seven base quantities.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attribute name="dimensionless" type="xsd:boolean" use="optional" default="0">
+			<xsd:annotation>
+				<xsd:documentation>Boolean to designate that a quantity or unit is dimensionless.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="LengthType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity length.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="L">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity length.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="MassType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity mass.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="M">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity mass.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="TimeType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity time.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="T">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity time.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="ElectricCurrentType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity electric current.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="I">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity electric current.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="ThermodynamicTemperatureType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity thermodynamic temperature.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="Θ">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity thermodynamic temperature.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="AmountOfSubstanceType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity amount of substance.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="N">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity amount of substance.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="LuminousIntensityType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity luminous intensity.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token" use="optional" fixed="J">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity luminous intensity.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="PlaneAngleType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity plane angle.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="symbol" type="xsd:token">
+			<xsd:annotation>
+				<xsd:documentation>Symbol of the quantity plane angle.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<xsd:complexType name="ItemType">
+		<xsd:annotation>
+			<xsd:documentation>Type of the quantity represented by a counted item, e.g., electron</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="itemURL" type="xsd:anyURI" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Unique URL for identifying or describing the item.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="itemSymbol" type="xsd:token">
+			<xsd:annotation>
+				<xsd:documentation>Symbol for the item.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attributeGroup ref="powerRational"/>
+	</xsd:complexType>
+	<!--     === Prefix specific Types ===-->
+	<xsd:complexType name="PrefixSetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for container for prefixes.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Prefix" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PrefixType">
+		<xsd:annotation>
+			<xsd:documentation>Type for element for describing prefixes. Use in container PrefixSet.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="PrefixName" maxOccurs="unbounded"/>
+			<xsd:element ref="PrefixSymbol" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:id" use="required"/>
+		<xsd:attribute name="prefixBase" default="10">
+			<xsd:annotation>
+				<xsd:documentation>The base of the prefix system, i.e., 10 (SI) or 2 (binary).</xsd:documentation>
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:byte">
+					<xsd:enumeration value="10"/>
+					<xsd:enumeration value="2"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="prefixPower" type="xsd:byte">
+			<xsd:annotation>
+				<xsd:documentation>The exponential power of the prefix with relation to the base.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<!--     === General Types ===-->
+	<xsd:complexType name="NameType">
+		<xsd:annotation>
+			<xsd:documentation>Type for name.  Used for names in units, quantities, and prefixes.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:token">
+				<xsd:attribute ref="xml:lang"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="SystemType">
+		<xsd:annotation>
+			<xsd:documentation>Type for unit system.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="name" type="xsd:token" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Name of the unit system.   For example, SI, inch-pound, CGS, and MKS.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="type" type="xsd:string" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Description of the unit relative to the unit system.  Examples are SI_base and non-SI_not_acceptable.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute ref="xml:lang"/>
+	</xsd:complexType>
+	<xsd:complexType name="SymbolType" mixed="true">
+		<xsd:annotation>
+			<xsd:documentation>Type for symbols.  Used in units, quantities, and prefixes.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+			<xsd:any processContents="skip" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute ref="xml:lang"/>
+		<xsd:attribute name="type" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Type of symbol representation.  Examples include ASCII, unicode, HTML, and MathML.</xsd:documentation>
+				
+			</xsd:annotation>
+			<xsd:simpleType>
+				<xsd:union memberTypes="xsd:token">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:token">
+							<xsd:enumeration value="ASCII"/>
+							<xsd:enumeration value="Unicode"/>
+							<xsd:enumeration value="LaTeX"/>
+							<xsd:enumeration value="HTML"/>
+							<xsd:enumeration value="MathML"/>
+							<xsd:enumeration value="SVG"/>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:union>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="NoteType">
+		<xsd:annotation>
+			<xsd:documentation>Type for notes.  Used in units and conversion factors.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute ref="xml:lang"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="DefinitionType">
+		<xsd:annotation>
+			<xsd:documentation>Type for definition.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="sourceURL"/>
+				<xsd:attributeGroup ref="sourceName"/>
+				<xsd:attribute ref="xml:lang"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="HistoryType">
+		<xsd:annotation>
+			<xsd:documentation>Type for history.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="sourceURL"/>
+				<xsd:attributeGroup ref="sourceName"/>
+				<xsd:attribute ref="xml:lang"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="RemarkType">
+		<xsd:annotation>
+			<xsd:documentation>Type for remark.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attributeGroup ref="sourceURL"/>
+				<xsd:attributeGroup ref="sourceName"/>
+				<xsd:attribute ref="xml:lang">
+					<xsd:annotation>
+						<xsd:documentation>Primary language of the element and/or its attributes. [See RFC 4646, RFC 4647 and ISO 639.]</xsd:documentation>
+					</xsd:annotation>
+				</xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="ReferenceType">
+		<xsd:annotation>
+			<xsd:documentation>Type for reference to a unit or quantity.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="url" type="xsd:anyURI" use="required">
+			<xsd:annotation>
+				<xsd:documentation>URL to the reference item.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="name" type="xsd:token" use="optional">
+			<xsd:annotation>
+				<xsd:documentation>Name of the referenced item.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute ref="xml:lang">
+			<xsd:annotation>
+				<xsd:documentation>Primary language of the element and/or its attributes. [See RFC 4646, RFC 4647 and ISO 639.]</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+</xsd:schema>

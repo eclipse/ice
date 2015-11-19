@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension-point id="org.eclipse.ice.developer.code" name="Scientific Code" schema="schema/iceDevCode.exsd"/>
+	
+	
+   <extension
+         id="org.eclipse.ice.developer.menu"
+         name="Developer"
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            class="org.eclipse.ice.developer.menu.ICEExtensionContributionFactory"
+            locationURI="menu:org.eclipse.ui.main.menu">
+      </menuContribution>
+   </extension>
+   <extension
+         id="org.eclipse.ice.developer.icedev"
+         name="ICE Developer Tooling"
+         point="org.eclipse.ice.developer.code">
+      <code
+            branch="next"
+            codeCategory="Framework"
+            codeName="ICE"
+            repoURL="https://github.com/eclipse/ice">
+         <command
+               commandName="Clone ICE"
+               implementation="org.eclipse.ice.developer.actions.ICECloneHandler">
+         </command>
+         <command
+               commandName="Build ICE"
+               implementation="org.eclipse.ice.developer.actions.BuildICEHandler">
+         </command>
+      </code>
+   </extension>
+   <extension
+         id="org.eclipse.ice.developer.icetests"
+         name="ICE Tests"
+         point="org.eclipse.ice.developer.code">
+      <code
+            branch="master"
+            codeCategory="ICE"
+            codeName="ICE Tests"
+            repoURL="https://github.com/jayjaybillings/ICETests">
+         <command
+               commandName="Clone ICETests to user.home"
+               implementation="org.eclipse.ice.developer.actions.GitCloneHandler">
+               <parameter
+                  name="cloneDirectory"
+                  value="@user.home">
+               </parameter>
+         </command>
+      </code>
+   </extension>
+   
+</plugin>

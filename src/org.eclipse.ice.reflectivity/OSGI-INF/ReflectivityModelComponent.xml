@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="Reflectivity Model">
-   <implementation class="org.eclipse.ice.reflectivity.ReflectivityModelBuilder"/>
-   <service>
-      <provide interface="org.eclipse.ice.item.ItemBuilder"/>
-   </service>
-   <reference bind="setMaterialsDatabase" cardinality="1..1" interface="org.eclipse.ice.materials.IMaterialsDatabase" name="IMaterialsDatabase" policy="dynamic"/>
-</scr:component>

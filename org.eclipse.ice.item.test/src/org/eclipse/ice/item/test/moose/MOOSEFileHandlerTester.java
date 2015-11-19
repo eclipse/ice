@@ -12,19 +12,23 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test.moose;
 
-import static org.junit.Assert.*;
-
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
-import org.eclipse.ice.item.utilities.moose.Parameter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
+import org.eclipse.ice.item.utilities.moose.Parameter;
 import org.junit.Test;
 
 /**
@@ -33,6 +37,16 @@ import org.junit.Test;
  * @author Jay Jay Billings
  */
 public class MOOSEFileHandlerTester {
+
+	/*
+	 * FIXME Some of the tests here do byte comparisons between a reference file
+	 * and an output file. This will cause failures (due to line endings adding
+	 * or removing bytes) if the reference file was created on a different
+	 * operating system! So either the test methods need to be redesigned, or we
+	 * need to be extra careful about passing around the test data to developers
+	 * on other operating systems.
+	 */
+
 	/**
 	 * This operation makes sure that MOOSE data can be loaded a gold-standard
 	 * YAML file.
@@ -72,6 +86,7 @@ public class MOOSEFileHandlerTester {
 		// And it should also have a couple of exemplar children
 		assertTrue(blocks.get(0).hasChildExemplars());
 		assertEquals(2, blocks.get(0).getChildExemplars().size());
+		
 
 		System.out.println("MOOSEFileHandlerTester Message: "
 				+ "Checking medium sized file.");
@@ -90,7 +105,7 @@ public class MOOSEFileHandlerTester {
 		// Check the blocks
 		assertNotNull(blocks);
 		assertEquals(4, blocks.size());
-
+		
 		System.out.println("MOOSEFileHandlerTester Message: "
 				+ "Checking large sized file.");
 
@@ -102,7 +117,7 @@ public class MOOSEFileHandlerTester {
 		}
 
 		for (TreeComposite block : blocks) {
-			System.out.println("Block name = " + block.getName());
+			//System.out.println("Block name = " + block.getName());
 		}
 
 		// Check the blocks
@@ -112,6 +127,7 @@ public class MOOSEFileHandlerTester {
 		// Verify blocks 17 and 23 are actually AdaptiveTreeComposites
 		assertTrue(blocks.get(17) instanceof AdaptiveTreeComposite);
 		assertTrue(blocks.get(23) instanceof AdaptiveTreeComposite);
+
 
 		return;
 
@@ -210,25 +226,27 @@ public class MOOSEFileHandlerTester {
 		fluxJumpIndicator.setActive(true);
 
 		// Get and mark the enabled entries for the Adaptivity tree.
-		DataComponent adaptivityData = (DataComponent) adaptivity.getDataNodes().get(0);
+		DataComponent adaptivityData = (DataComponent) adaptivity
+				.getDataNodes().get(0);
 		adaptivity.setActiveDataNode(adaptivityData);
 		adaptivityData.retrieveEntry("initial_steps").setTag("true");
 		adaptivityData.retrieveEntry("marker").setTag("true");
 		adaptivityData.retrieveEntry("steps").setTag("true");
-		
+
 		// Get and set entries for the Indicators subblocks
-		DataComponent analyticalIndicatorsComponent = 
-				(DataComponent) analyticalIndicator.getDataNodes().get(0);
+		DataComponent analyticalIndicatorsComponent = (DataComponent) analyticalIndicator
+				.getDataNodes().get(0);
 		analyticalIndicatorsComponent.retrieveEntry("block").setTag("false");
 		analyticalIndicatorsComponent.retrieveEntry("type").setTag("true");
 		// "function" and "variable" are marked required by the YAML file
-		DataComponent fluxJumpIndicatorComponent = 
-				(DataComponent) fluxJumpIndicator.getDataNodes().get(0);
+		DataComponent fluxJumpIndicatorComponent = (DataComponent) fluxJumpIndicator
+				.getDataNodes().get(0);
 		fluxJumpIndicatorComponent.retrieveEntry("block").setTag("false");
-		fluxJumpIndicatorComponent.retrieveEntry("scale_by_flux_faces").setTag("false");
+		fluxJumpIndicatorComponent.retrieveEntry("scale_by_flux_faces").setTag(
+				"false");
 		fluxJumpIndicatorComponent.retrieveEntry("type").setTag("true");
 		// "property" and "variable" are marked required by the YAML file
-		
+
 		// Create a variable. Variable does not have any exemplars in this
 		// example, so we can just create a tree for this test.
 		variable = (TreeComposite) blocks.get(2);
@@ -251,9 +269,10 @@ public class MOOSEFileHandlerTester {
 		// Activate both nodes
 		function.setActive(true);
 		powerHistory.setActive(true);
-		
+
 		// Configure the power history tree's data
-		DataComponent powerData = (DataComponent) powerHistory.getDataNodes().get(0);
+		DataComponent powerData = (DataComponent) powerHistory.getDataNodes()
+				.get(0);
 		powerData.retrieveEntry("type").setTag("true");
 		powerData.retrieveEntry("scale_factor").setTag("true");
 		// Add a parameter for the data file
@@ -280,11 +299,11 @@ public class MOOSEFileHandlerTester {
 			inputFileRAF.read(inputBytes);
 			// Convert to a string
 			String inputString = new String(inputBytes);
-			
-			// Chop off the comments at the end of each line. The parameter 
+
+			// Chop off the comments at the end of each line. The parameter
 			// descriptions from the YAML file are appended as comments via the
 			// process loading YAML through the MOOSEFileHandler. But this is
-			// an additional feature, and these comments aren't found in the 
+			// an additional feature, and these comments aren't found in the
 			// original reference file, so we must remove them for testing
 			String[] inputArray = inputString.split("\\n+");
 			inputString = "";
@@ -292,12 +311,12 @@ public class MOOSEFileHandlerTester {
 			for (String line : inputArray) {
 				hasComment = !(line.lastIndexOf(" # ") == -1);
 				if (hasComment) {
-					
+
 					// Figure out if it's the whole line commented out, or just
 					// an in-line comment (only remove the inline)
 					firstHash = line.trim().indexOf("#");
 					lastHash = line.trim().lastIndexOf("#");
-					
+
 					// If the whole line is commented out, and has no in-line
 					// comment
 					if (firstHash == 0 && firstHash == lastHash) {
@@ -309,12 +328,12 @@ public class MOOSEFileHandlerTester {
 						line = line.substring(0, line.lastIndexOf(" # "));
 						line = line.replaceAll("\\s+$", "");
 					}
-					
+
 					if (line.endsWith("=")) {
 						line += " ";
 					}
 				}
-				
+
 				inputString += line + "\n";
 			}
 

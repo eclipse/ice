@@ -14,25 +14,12 @@ package org.eclipse.ice.item.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.net.URI;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.junit.Test;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.geometry.GeometryComponent;
-import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.geometry.GeometryEditor;
 import org.eclipse.ice.item.geometry.GeometryEditorBuilder;
+import org.junit.Test;
 
 /**
  * <p>
