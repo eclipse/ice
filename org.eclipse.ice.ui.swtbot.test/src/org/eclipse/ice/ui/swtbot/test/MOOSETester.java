@@ -37,15 +37,14 @@ public class MOOSETester extends AbstractWorkbenchTester {
 		bot.button("OK").click();
 
 		// Select fork the stork
-		bot.toolbarDropDownButtonWithTooltip(
-				"Click the arrow to the right to view available MOOSE Actions.")
-				.menuItem("MOOSE Fork the Stork").click();
+		bot.menu("Developer").menu("Framework").menu("MOOSE")
+				.menu("Fork the Stork").click();
 
 		// Type text into the three fields
 		bot.text(0).typeText("Application Name");
 		bot.text(1).typeText("User Name");
 		bot.text(2).typeText("Password");
-		
+
 		// Click the cancel button, as we shouldn't actually be trying to
 		// connect to github during our test
 		bot.button("Cancel").click();
@@ -75,22 +74,22 @@ public class MOOSETester extends AbstractWorkbenchTester {
 		bot.comboBoxWithLabel("Process:").setSelection(0);
 		assertTrue(bot.button("Go!").isEnabled());
 		assertTrue(bot.button("Cancel").isEnabled());
-		
+
 		// Change a text field and see if the header's text is updated to
 		// reflect a dirty editor.
 		enterText("Output File Name:", "Test output file name");
 		assertTrue(bot.clabel(0).getText()
 				.equals("There are unsaved changes on the form."));
-		
+
 		// Try it again with another text field
 		enterText("Account Code/Project Code:", "test account numnber");
 		assertTrue(bot.clabel(0).getText()
 				.equals("There are unsaved changes on the form."));
-		
+
 		// Save and check that the header's text returned to normal.
 		bot.toolbarButtonWithTooltip("Save (Ctrl+S)").click();
 		assertTrue(bot.clabel(0).getText().equals("Ready to process."));
-		
+
 		// Try an invalid input string. The header should reflect this and give
 		// an appropriate error message.
 		enterText("Number of MPI Processes:", "Invalid Input");
@@ -119,21 +118,22 @@ public class MOOSETester extends AbstractWorkbenchTester {
 		assertTrue(bot.clabel(0).getText().equals(
 				"'-1' is an unacceptable value. The value must be between 1 and 256."));
 
-		//TODO Add this check back into the test once the associated bug is fixed.
+		// TODO Add this check back into the test once the associated bug is
+		// fixed.
 		// // Try a non-integer number of threads.
 		// enterText("Number of TBB Threads:", "1.5");
 		// assertTrue(bot.clabel(0).getText().equals(
 		// "'1.5' is an unacceptable value. The value must be between 1 and
 		// 256."));
-		
-		//Nothing should happen on a click while an error message is displayed.
+
+		// Nothing should happen on a click while an error message is displayed.
 		bot.button("Go!").click();
-	
-		//Fix the error and try again, it should detect a new error for missing a file.
+
+		// Fix the error and try again, it should detect a new error for missing
+		// a file.
 		enterText("Number of TBB Threads:", "4");
 		bot.button("Go!").click();
-		assertTrue(bot.clabel(0).getText().equals(
-				"The Form contains an error and cannot be processed."));
+		assertTrue(bot.clabel(0).getText().equals("Processing Form..."));
 
 		// See if the tab can be changed
 		bot.cTabItem("Mesh and Output Files").activate();
@@ -151,10 +151,10 @@ public class MOOSETester extends AbstractWorkbenchTester {
 	 *            The text to be typed.
 	 */
 	public void enterText(String label, String text) {
-		//Find the appropriate widget
+		// Find the appropriate widget
 		SWTBotText widget = bot.textWithLabel(label);
-		
-		//Type in the text and hit enter
+
+		// Type in the text and hit enter
 		widget.setText(text);
 		widget.pressShortcut(Keystrokes.LF);
 	}
