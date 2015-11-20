@@ -19,21 +19,21 @@ package org.eclipse.ice.viz.service.modeling;
 public class Face extends AbstractController {
 
 	/**
-	 * The nullary constructor
+	 * The nullary constructor.
 	 */
 	public Face() {
-		super();
+
 	}
 
 	/**
 	 * The default constructor.
 	 * 
 	 * @param model
-	 *            The controller's model
+	 *            The model representing this Face internally
 	 * @param view
-	 *            The controller's view
+	 *            The view representing this Face in the graphics engine
 	 */
-	public Face(EdgeComponent model, AbstractView view) {
+	public Face(FaceComponent model, AbstractView view) {
 		super(model, view);
 	}
 

@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.ice.viz.service.geometry.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * <p>
@@ -38,7 +37,7 @@ public abstract class GeometryAttachment extends Attachment
 	private List<AbstractController> queuedGeometry;
 
 	/** List of shapes that have been added via Geometry instances. */
-	private List<Shape> shapes;
+	private List<AbstractController> shapes;
 
 	/** */
 	private boolean visible;
@@ -63,7 +62,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * 
 	 * @param shape
 	 */
-	protected void checkMesh(Shape shape) {
+	protected void checkMesh(AbstractController shape) {
 	}
 
 	/**
@@ -97,7 +96,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * @see IGeometry#addShape(Geometry)
 	 */
 	@Override
-	public void addShape(Shape shape) {
+	public void addShape(AbstractController shape) {
 		checkMesh(shape);
 
 		if (shapes == null) {
@@ -122,7 +121,7 @@ public abstract class GeometryAttachment extends Attachment
 
 		for (AbstractController geom : queuedGeometry) {
 			for (AbstractController shape : geom.getEntities()) {
-				addShape((Shape) shape);
+				addShape(shape);
 			}
 		}
 
@@ -153,13 +152,13 @@ public abstract class GeometryAttachment extends Attachment
 	 * @param shape
 	 *            ICE shape to visualize
 	 */
-	protected abstract void processShape(Shape shape);
+	protected abstract void processShape(AbstractController shape);
 
 	/**
 	 * @see IGeometry#addShape(Geometry)
 	 */
 	@Override
-	public void removeShape(Shape shape) {
+	public void removeShape(AbstractController shape) {
 		if (shapes == null) {
 			return;
 		}
@@ -177,13 +176,13 @@ public abstract class GeometryAttachment extends Attachment
 	 * 
 	 * @param shape
 	 */
-	protected abstract void disposeShape(Shape shape);
+	protected abstract void disposeShape(AbstractController shape);
 
 	/**
 	 * 
 	 */
 	@Override
-	public boolean hasShape(Shape shape) {
+	public boolean hasShape(AbstractController shape) {
 		if (shapes == null) {
 			return false;
 		}
@@ -195,7 +194,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * 
 	 */
 	@Override
-	public Shape getShape(int index) {
+	public AbstractController getShape(int index) {
 		if (shapes == null) {
 			return null;
 		}
@@ -209,13 +208,13 @@ public abstract class GeometryAttachment extends Attachment
 	 * @return
 	 */
 	@Override
-	public List<Shape> getShapes(boolean copy) {
+	public List<AbstractController> getShapes(boolean copy) {
 		if (shapes == null) {
 			return Collections.emptyList();
 		}
 
 		if (copy) {
-			return new ArrayList<Shape>(shapes);
+			return new ArrayList<AbstractController>(shapes);
 		} else {
 			return shapes;
 		}

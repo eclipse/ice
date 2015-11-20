@@ -111,7 +111,7 @@ public class ReflectivityTabDescriptorProvider
 				if (first instanceof DataComponent) {
 					component = (DataComponent) first;
 				}
-				// Set the output component from the seleciton if it is valid
+				// Set the output component from the selection if it is valid
 				Object second = selectedObjects[1];
 				if (second instanceof DataComponent) {
 					output = (DataComponent) second;

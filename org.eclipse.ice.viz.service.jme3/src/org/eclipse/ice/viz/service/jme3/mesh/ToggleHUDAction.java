@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh;
 
-
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.jface.action.Action;
 
 /**
@@ -26,7 +26,7 @@ public class ToggleHUDAction extends Action {
 	/**
 	 * The jME view whose HUD can be toggled.
 	 */
-	private final ViewAppState view;
+	private final IMeshVizCanvas view;
 
 	/**
 	 * The default constructor.
@@ -34,7 +34,7 @@ public class ToggleHUDAction extends Action {
 	 * @param view
 	 *            The jME view whose HUD can be toggled.
 	 */
-	public ToggleHUDAction(ViewAppState view) {
+	public ToggleHUDAction(IMeshVizCanvas view) {
 		// Set the ViewAppState and update the action's text and tool tip.
 		this.view = view;
 		updateStrings();
@@ -48,7 +48,7 @@ public class ToggleHUDAction extends Action {
 	@Override
 	public void run() {
 		// Toggle the view's HUD and update the text and tool tip.
-		view.setDisplayHUD(!view.getDisplayHUD());
+		view.setVisibleHUD(!view.HUDIsVisible());
 		updateStrings();
 	}
 
@@ -59,7 +59,7 @@ public class ToggleHUDAction extends Action {
 	private void updateStrings() {
 
 		// If the HUD is displayed, set the text for hiding the HUD.
-		if (view.getDisplayHUD()) {
+		if (view.HUDIsVisible()) {
 			setText("Hide HUD");
 			setToolTipText("Hide the heads-up display");
 		}

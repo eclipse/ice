@@ -21,7 +21,6 @@ import org.eclipse.ice.viz.service.geometry.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -157,7 +156,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 	 *            an ICE Geometry IShape
 	 */
 	@Override
-	public void processShape(Shape shape) {
+	public void processShape(AbstractController shape) {
 		// Nothing to do.
 	}
 
@@ -165,7 +164,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 	 * 
 	 */
 	@Override
-	protected void disposeShape(Shape shape) {
+	protected void disposeShape(AbstractController shape) {
 		Node node = (Group) shape.getRepresentation();
 
 		if (node == null) {
@@ -181,7 +180,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 	 * @return
 	 */
 	@Override
-	public List<Shape> getShapes(boolean copy) {
+	public List<AbstractController> getShapes(boolean copy) {
 		return super.getShapes(copy);
 
 	}

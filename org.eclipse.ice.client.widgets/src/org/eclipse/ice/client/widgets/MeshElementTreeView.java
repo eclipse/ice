@@ -18,7 +18,6 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Face;
 import org.eclipse.jface.viewers.ISelection;
@@ -191,12 +190,12 @@ public class MeshElementTreeView extends ViewPart
 			public Object[] getElements(Object inputElement) {
 
 				// Local Declaration
-				ArrayList<Face> allElements = (ArrayList<Face>) inputElement;
+				ArrayList<AbstractController> allElements = (ArrayList<AbstractController>) inputElement;
 				ArrayList<MeshSelection> contents = new ArrayList<MeshSelection>();
 
 				// Wrap the Polygons into PropertySources and add them to
 				// the array
-				for (Face i : allElements) {
+				for (AbstractController i : allElements) {
 					contents.add(new MeshSelection(meshComponent.getMesh(), i));
 				}
 

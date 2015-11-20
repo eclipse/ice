@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry;
 
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 /**
@@ -21,19 +21,19 @@ import org.eclipse.jface.viewers.StructuredSelection;
 public class GeometrySelection extends StructuredSelection {
 
 	/** */
-	private final Shape shape;
+	private final AbstractController shape;
 
 	/**
 	 * 
 	 * @param modelShape
 	 */
-	public GeometrySelection(Shape modelShape) {
+	public GeometrySelection(AbstractController modelShape) {
 		super(modelShape);
 
 		this.shape = modelShape;
 	}
 
-	public Shape getShape() {
+	public AbstractController getShape() {
 		return shape;
 	}
 

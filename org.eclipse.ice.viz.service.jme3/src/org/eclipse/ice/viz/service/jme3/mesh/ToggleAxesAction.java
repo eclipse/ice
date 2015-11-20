@@ -12,6 +12,7 @@
 package org.eclipse.ice.viz.service.jme3.mesh;
 
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.jface.action.Action;
 
 /**
@@ -25,7 +26,7 @@ public class ToggleAxesAction extends Action {
 	/**
 	 * The jME view whose axes can be toggled.
 	 */
-	private final ViewAppState view;
+	private final IMeshVizCanvas view;
 
 	/**
 	 * The default constructor.
@@ -33,7 +34,7 @@ public class ToggleAxesAction extends Action {
 	 * @param view
 	 *            The jME view whose axes can be toggled.
 	 */
-	public ToggleAxesAction(ViewAppState view) {
+	public ToggleAxesAction(IMeshVizCanvas view) {
 		// Set the ViewAppState and update the action's text and tool tip.
 		this.view = view;
 		updateStrings();
@@ -47,7 +48,7 @@ public class ToggleAxesAction extends Action {
 	@Override
 	public void run() {
 		// Toggle the view's HUD and update the text and tool tip.
-		view.setDisplayAxes(!view.getDisplayAxes());
+		view.setVisibleAxis(!view.AxisAreVisible());
 		updateStrings();
 	}
 
@@ -58,7 +59,7 @@ public class ToggleAxesAction extends Action {
 	private void updateStrings() {
 
 		// If the HUD is displayed, set the text for hiding the HUD.
-		if (view.getDisplayAxes()) {
+		if (view.AxisAreVisible()) {
 			setText("Hide Axes");
 			setToolTipText("Hide the axes in the view");
 		}

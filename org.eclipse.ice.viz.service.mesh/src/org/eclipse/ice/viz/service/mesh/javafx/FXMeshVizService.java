@@ -25,7 +25,7 @@ import org.eclipse.ice.viz.service.modeling.Shape;
  * Implements an ICE viz service for geometry modeling.
  * </p>
  * 
- * @author Tony McCrary (tmccrary@l33tlabs.com)
+ * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
 public class FXMeshVizService extends AbstractVizService {
@@ -44,10 +44,16 @@ public class FXMeshVizService extends AbstractVizService {
 	 * @see IVizService#createCanvas(IVizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController controller) throws Exception {
-			MeshCanvas canvas = new MeshCanvas((Shape) controller);
-			return canvas;
+	public IVizCanvas createCanvas(AbstractController geometry)
+			throws Exception {
+		if (geometry instanceof Shape) {
+			FXMeshCanvas canvas = new FXMeshCanvas(geometry);
 
+			return canvas;
+		} else {
+			throw new IllegalArgumentException(
+					"Viz Canvases can only be made from AbstractControllers");
+		}
 	}
 
 	/**

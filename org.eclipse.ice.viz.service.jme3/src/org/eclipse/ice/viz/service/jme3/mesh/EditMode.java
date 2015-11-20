@@ -46,8 +46,8 @@ import com.jme3.scene.Node;
  * @author Jordan Deyton
  * 
  */
-public class EditMode extends MeshAppStateMode implements
-		IMeshSelectionListener {
+public class EditMode extends MeshAppStateMode
+		implements IMeshSelectionListener {
 
 	// ---- MeshAppState variables ---- //
 	/**
@@ -149,7 +149,8 @@ public class EditMode extends MeshAppStateMode implements
 	 * is typically done simply by attaching or detaching {@link #tempSpatials}
 	 * from the <code>MeshAppState</code>'s rootNode.
 	 */
-	private final AtomicBoolean showTemporarySpatials = new AtomicBoolean(false);
+	private final AtomicBoolean showTemporarySpatials = new AtomicBoolean(
+			false);
 	/**
 	 * A flag signifying that the temporary spatials for selected vertices
 	 * should have their locations updated.
@@ -284,8 +285,8 @@ public class EditMode extends MeshAppStateMode implements
 		};
 		deleteAction = new InputControl(action, name);
 		deleteAction.addTriggers(name, new KeyTrigger(KeyInput.KEY_BACK),
-				new KeyTrigger(KeyInput.KEY_DELETE), new KeyTrigger(
-						KeyInput.KEY_ESCAPE));
+				new KeyTrigger(KeyInput.KEY_DELETE),
+				new KeyTrigger(KeyInput.KEY_ESCAPE));
 
 		// Create a listener to signify that the mouse is being dragged.
 		name = "mouseMove";
@@ -301,11 +302,11 @@ public class EditMode extends MeshAppStateMode implements
 			}
 		};
 		mouseMoveListener = new InputControl(analog, name);
-		mouseMoveListener.addTriggers(name, new MouseAxisTrigger(
-				MouseInput.AXIS_X, false), new MouseAxisTrigger(
-				MouseInput.AXIS_X, true), new MouseAxisTrigger(
-				MouseInput.AXIS_Y, true), new MouseAxisTrigger(
-				MouseInput.AXIS_Y, false));
+		mouseMoveListener.addTriggers(name,
+				new MouseAxisTrigger(MouseInput.AXIS_X, false),
+				new MouseAxisTrigger(MouseInput.AXIS_X, true),
+				new MouseAxisTrigger(MouseInput.AXIS_Y, true),
+				new MouseAxisTrigger(MouseInput.AXIS_Y, false));
 
 		return;
 	}
@@ -418,8 +419,8 @@ public class EditMode extends MeshAppStateMode implements
 			if (results.size() > 0) {
 				// Determine the vector between the start point for the mouse
 				// drag and the current location of the mouse drag.
-				Vector3f dragLoc = appState.getClosestGridPoint(results
-						.getClosestCollision().getContactPoint());
+				Vector3f dragLoc = appState.getClosestGridPoint(
+						results.getClosestCollision().getContactPoint());
 				dragLoc.subtractLocal(dragStart);
 
 				// We need to modify the controllers for all the
@@ -429,7 +430,8 @@ public class EditMode extends MeshAppStateMode implements
 				selectionLock.lock();
 				try {
 					// Add the vector to all temporary vertices.
-					for (Entry<Integer, Vertex> e : selectedVertices.entrySet()) {
+					for (Entry<Integer, Vertex> e : selectedVertices
+							.entrySet()) {
 						float[] array = e.getValue().getLocation();
 						Vector3f location = dragLoc.add(array[0], array[1],
 								array[2]);
@@ -485,8 +487,8 @@ public class EditMode extends MeshAppStateMode implements
 			CollisionResults results = getCollision(grid,
 					appState.getCursorRayFromClick());
 			if (results.size() > 0) {
-				dragStart = appState.getClosestGridPoint(results
-						.getClosestCollision().getContactPoint());
+				dragStart = appState.getClosestGridPoint(
+						results.getClosestCollision().getContactPoint());
 			}
 		}
 		// Note: We have to check the clickTimer because it may be possible for
@@ -558,8 +560,8 @@ public class EditMode extends MeshAppStateMode implements
 
 				// Update the location for each of the selected vertices.
 				for (Vertex v : selectedVertices.values()) {
-					VertexController controller = vertexControllers.get(v
-							.getId());
+					VertexController controller = vertexControllers
+							.get(v.getId());
 					Vector3f location = controller.getLocation();
 					v.setLocation(location.x, location.y, location.z);
 				}
