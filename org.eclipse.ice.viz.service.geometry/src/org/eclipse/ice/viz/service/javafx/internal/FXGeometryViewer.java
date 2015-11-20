@@ -16,7 +16,6 @@ import org.eclipse.ice.viz.service.geometry.scene.base.ICamera;
 import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
-import org.eclipse.ice.viz.service.javafx.internal.model.FXShape;
 import org.eclipse.ice.viz.service.javafx.internal.model.geometry.FXGeometryAttachmentManager;
 import org.eclipse.ice.viz.service.javafx.internal.scene.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
@@ -42,6 +41,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.Shape3D;
 
 /**
  * <p>
@@ -159,7 +159,7 @@ public class FXGeometryViewer extends GeometryViewer {
 
 		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
-			FXShape lastSelection = null;
+			Group lastSelection = null;
 
 			@Override
 			public void handle(MouseEvent event) {
@@ -172,12 +172,12 @@ public class FXGeometryViewer extends GeometryViewer {
 					return;
 				}
 
-				if (!(intersectedNode instanceof FXShape)) {
+				if (!(intersectedNode instanceof Shape3D)) {
 					return;
 				}
 
 				// Resolve the parent
-				FXShape nodeParent = (FXShape) intersectedNode.getParent();
+				Group nodeParent = (Group) intersectedNode.getParent();
 
 				if (nodeParent == lastSelection) {
 					return;
@@ -197,11 +197,11 @@ public class FXGeometryViewer extends GeometryViewer {
 
 				setSelection(selection);
 
-				nodeParent.setSelected(true);
+				// nodeParent.setSelected(true);
 
-				if (lastSelection != null) {
-					lastSelection.setSelected(false);
-				}
+				// if (lastSelection != null) {
+				// lastSelection.setSelected(false);
+				// }
 
 				lastSelection = nodeParent;
 			}

@@ -22,21 +22,8 @@ import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
-import org.eclipse.ice.viz.service.jme3.mesh.JME3MeshCanvas;
-import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;
-import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory;
-import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
-import org.eclipse.ice.viz.service.jme3.mesh.MeshSelectionManager;
-import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
-import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
+import org.eclipse.ice.viz.service.mesh.javafx.FXMeshCanvas;
+import org.eclipse.ice.viz.service.mesh.javafx.FXMeshVizService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -123,7 +110,7 @@ public class ICEMeshPage extends ICEFormPage
 	 */
 	private ArrayList<ICEObject> selectedMeshParts;
 
-	private JME3MeshCanvas canvas;
+	private FXMeshCanvas canvas;
 
 	/**
 	 * The constructor
@@ -228,14 +215,17 @@ public class ICEMeshPage extends ICEFormPage
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 
 		// Get the JME3 viz service for meshes
-		IVizService service = editor.getVizServiceFactory()
-				.get("JME3 Mesh Service");
+		// IVizService service = editor.getVizServiceFactory()
+		// .get("JME3 Mesh Service");
+		// TODO Get this service through OSGI
+		IVizService service = new FXMeshVizService();
 
 		// Create the VizCanvas
 		canvas = null;
 		try {
 			// canvas = (JME3MeshCanvas)
 			// service.createCanvas(meshComp.getMesh());
+			canvas = (FXMeshCanvas) service.createCanvas(meshComp.getMesh());
 		} catch (Exception e) {
 			logger.error("Mesh Viz Service failed to create mesh Viz Canvas.");
 		}
@@ -250,7 +240,9 @@ public class ICEMeshPage extends ICEFormPage
 
 		// The MeshPage should also listen for changes to the MeshApplication's
 		// current selection.
-		canvas.registerListener(this);
+		// FIXME This currently isn't doing anything as it just invokes the stub
+		// function selectionChanged() when an update triggers
+		// canvas.registerListener(this);
 
 		// Now that we have a MeshApplication, we need to create the Actions
 		// that fill the ToolBar with configuration settings for the
@@ -285,36 +277,49 @@ public class ICEMeshPage extends ICEFormPage
 
 		// Create the drop down for switching between add and modify modes
 		modesActionTree = new ActionTree("Mode");
-		// Use a MeshAppStateModeFactory to get the available modes and create
-		// ActionTrees for each one to go in the Mode menu.
-		MeshAppStateModeFactory factory = canvas.getMeshAppStateModeFactory();
-		for (Mode type : factory.getAvailableModes()) {
-			final MeshAppStateMode mode = factory.getMode(type);
-			action = new Action() {
-				@Override
-				public void run() {
-					canvas.setMode(mode);
-				}
-			};
-			// Set the Action's text and tool tip.
-			action.setText(mode.getName());
-			action.setToolTipText(mode.getDescription());
-			modesActionTree.add(new ActionTree(action));
-		}
+
+		// Create the option to set edit mode
+		action = new Action() {
+			@Override
+			public void run() {
+				canvas.setEditMode(true);
+			}
+		};
+
+		// Set the Action's text
+		action.setText("Edit Elements");
+		modesActionTree.add(new ActionTree(action));
+
+		// Create the option to set add mode
+		action = new Action() {
+			@Override
+			public void run() {
+				canvas.setEditMode(false);
+			}
+		};
+
+		// Set the Action's text
+		action.setText("Add Elements");
+		modesActionTree.add(new ActionTree(action));
+
 		actions.add(modesActionTree);
 
 		// Create the drop down to reset the camera placement or zoom
 		// TODO create the camera reset action
 
+		// TODO Add actions for toggling the hud based on JME3/JavaFX specific
+		// implementation
 		// Create the toggle switch to show or hide the heads-up display
 		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(
-				canvas.getMeshAppState());
+				canvas);
 		toggleHUDActionTree = new ActionTree(action);
 		actions.add(toggleHUDActionTree);
 
+		// TODO Add the action for toggling the axes based on JME3/JavaFX
+		// specific implementation
 		// Create the toggle switch to show or hide the axes.
 		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(
-				canvas.getMeshAppState());
+				canvas);
 		toggleAxesActionTree = new ActionTree(action);
 		actions.add(toggleAxesActionTree);
 
@@ -322,8 +327,7 @@ public class ICEMeshPage extends ICEFormPage
 		action = new Action() {
 			@Override
 			public void run() {
-				canvas.getMeshAppState().getSelectionManager()
-						.deleteSelection();
+				canvas.deleteSelection();
 			}
 		};
 		action.setText("Delete");
@@ -377,85 +381,11 @@ public class ICEMeshPage extends ICEFormPage
 		// Get the selection made in the MeshElementTreeView.
 		if (part.getSite().getId().equals(MeshElementTreeView.ID)) {
 
-			// Get the mesh selection manager from the app.
-			MeshSelectionManager selectionManager = canvas.getMeshAppState()
-					.getSelectionManager();
-
-			// Reset any existing selection data in the MeshApplication
-			selectionManager.clearSelection();
-
 			// Get the array of all selections in the Mesh Elements view
 			Object[] treeSelections = ((ITreeSelection) selection).toArray();
 
-			// Initialize lists of IDs for vertices, edges, and polygons.
-			final List<Integer> vertexIds = new ArrayList<Integer>();
-			final List<Integer> edgeIds = new ArrayList<Integer>();
-			final List<Integer> polygonIds = new ArrayList<Integer>();
-
-			// Create a visitor to populate the above lists of IDs
-			IMeshPartVisitor visitor = new IMeshPartVisitor() {
-
-				@Override
-				public void visit(Vertex vertex) {
-					vertexIds.add(vertex.getId());
-				}
-
-				@Override
-				public void visit(PolynomialEdge edge) {
-					visit((Edge) edge);
-				}
-
-				@Override
-				public void visit(BezierEdge edge) {
-					visit((Edge) edge);
-				}
-
-				@Override
-				public void visit(Edge edge) {
-					edgeIds.add(edge.getId());
-				}
-
-				@Override
-				public void visit(Hex hex) {
-					visit((Polygon) hex);
-				}
-
-				@Override
-				public void visit(Quad quad) {
-					visit((Polygon) quad);
-				}
-
-				@Override
-				public void visit(Polygon polygon) {
-					polygonIds.add(polygon.getId());
-				}
-
-				@Override
-				public void visit(Object object) {
-					// Do nothing.
-				}
-
-				@Override
-				public void visit(VizMeshComponent mesh) {
-					// Do nothing.
-				}
-			};
-
-			// Get each element from the selection and add the ID for the
-			// corresponding vertex/edge/polygon to one of the above lists.
-			// These lists will be sent to the selection manager later.
-			for (Object element : treeSelections) {
-
-				if (element instanceof MeshSelection) {
-					MeshSelection meshSelection = (MeshSelection) element;
-					meshSelection.selectedMeshPart.acceptMeshVisitor(visitor);
-				}
-			}
-
-			// Select all of the vertices, edges, and polygons.
-			selectionManager.selectVertices(vertexIds);
-			selectionManager.selectEdges(edgeIds);
-			selectionManager.selectPolygons(polygonIds);
+			// Set the canvas's selection to match the selection from the tree
+			canvas.setSelection(treeSelections);
 		}
 
 		return;

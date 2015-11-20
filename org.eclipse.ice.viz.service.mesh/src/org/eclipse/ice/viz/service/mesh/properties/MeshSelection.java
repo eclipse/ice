@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.properties;
 
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 public class MeshSelection {
 
-	public final VizMeshComponent mesh;
+	public final AbstractController mesh;
 
-	public final IMeshPart selectedMeshPart;
+	public final AbstractController selectedMeshPart;
 
-	public MeshSelection(VizMeshComponent mesh, IMeshPart selectedMeshPart) {
+	public MeshSelection(AbstractController mesh,
+			AbstractController selectedMeshPart) {
 		this.mesh = mesh;
 		this.selectedMeshPart = selectedMeshPart;
 	}

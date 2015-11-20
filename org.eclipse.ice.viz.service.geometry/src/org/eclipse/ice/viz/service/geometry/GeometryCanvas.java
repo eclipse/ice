@@ -98,7 +98,8 @@ public class GeometryCanvas implements IVizCanvas, IVizUpdateableListener {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+				IViewPart view = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow().getActivePage()
 						.findView(TransformationView.ID);
 
 				if (view == null || !(view instanceof TransformationView)) {
@@ -107,9 +108,10 @@ public class GeometryCanvas implements IVizCanvas, IVizUpdateableListener {
 
 				TransformationView transformView = (TransformationView) view;
 
-				GeometrySelection selection = (GeometrySelection) event.getSelection();
+				GeometrySelection selection = (GeometrySelection) event
+						.getSelection();
 
-				transformView.setShape(selection.getShape());
+				transformView.setShape((Shape) selection.getShape());
 			}
 		});
 
@@ -133,7 +135,8 @@ public class GeometryCanvas implements IVizCanvas, IVizUpdateableListener {
 	 *             throws an exception if a concrete implementation cannot be
 	 *             found
 	 */
-	private GeometryViewer materializeViewer(Composite viewerParent) throws Exception {
+	private GeometryViewer materializeViewer(Composite viewerParent)
+			throws Exception {
 		try {
 			return new FXGeometryViewer(viewerParent);
 
@@ -162,7 +165,8 @@ public class GeometryCanvas implements IVizCanvas, IVizUpdateableListener {
 
 		IRenderer renderer = viewer.getRenderer();
 
-		rootGeometry = (GeometryAttachment) renderer.createAttachment(GeometryAttachment.class);
+		rootGeometry = (GeometryAttachment) renderer
+				.createAttachment(GeometryAttachment.class);
 		rootGeometry.addGeometry(geometry);
 
 		rootNode.attach(rootGeometry);

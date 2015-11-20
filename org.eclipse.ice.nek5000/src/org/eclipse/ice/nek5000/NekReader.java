@@ -272,8 +272,8 @@ public class NekReader {
 					if (currLine.contains("NPSCAL")) {
 						ArrayList<String> npscalArray = (ArrayList<String>) parseLine(
 								String.class, currLine);
-						numPassiveScalars = Integer.parseInt(npscalArray.get(0)
-								.substring(0, 1));
+						numPassiveScalars = Integer
+								.parseInt(npscalArray.get(0).substring(0, 1));
 					}
 
 					// Create a Nek Entry
@@ -335,8 +335,8 @@ public class NekReader {
 
 					// Grab the number indicating the length of the Passive
 					// Scalar Data section (number of lines)
-					int strIndex = reaLines.get(i).indexOf(
-							"Lines of passive scalar data");
+					int strIndex = reaLines.get(i)
+							.indexOf("Lines of passive scalar data");
 					String numLinesStr = reaLines.get(i)
 							.substring(0, strIndex - 1).trim();
 					int numLines = Integer.parseInt(numLinesStr);
@@ -446,12 +446,12 @@ public class NekReader {
 															// where single
 															// ampersands shows
 															// up as a space
-							currValue = String.format("%s %s %s %s %s %s %s "
-									+ "%s %s %s %s", splitLine[0],
-									splitLine[1], splitLine[2], splitLine[3],
-									splitLine[4], splitLine[5], splitLine[6],
-									splitLine[7], splitLine[8], splitLine[9],
-									splitLine[10]);
+							currValue = String.format(
+									"%s %s %s %s %s %s %s " + "%s %s %s %s",
+									splitLine[0], splitLine[1], splitLine[2],
+									splitLine[3], splitLine[4], splitLine[5],
+									splitLine[6], splitLine[7], splitLine[8],
+									splitLine[9], splitLine[10]);
 
 							for (int k = 14; k < splitLine.length; k++) {
 								if (k != splitLine.length - 1) {
@@ -463,12 +463,12 @@ public class NekReader {
 						} else if (currLine.contains("IFTMSH")) {
 
 							currName = "IFTMSH";
-							currValue = String.format("%s %s %s %s %s %s %s "
-									+ "%s %s %s %s %s", splitLine[0],
-									splitLine[1], splitLine[2], splitLine[3],
-									splitLine[4], splitLine[5], splitLine[6],
-									splitLine[7], splitLine[8], splitLine[9],
-									splitLine[10], splitLine[11]);
+							currValue = String.format(
+									"%s %s %s %s %s %s %s " + "%s %s %s %s %s",
+									splitLine[0], splitLine[1], splitLine[2],
+									splitLine[3], splitLine[4], splitLine[5],
+									splitLine[6], splitLine[7], splitLine[8],
+									splitLine[9], splitLine[10], splitLine[11]);
 							for (int k = 13; k < splitLine.length; k++) {
 								if (k != splitLine.length - 1) {
 									currDesc += splitLine[k] + " ";
@@ -632,8 +632,8 @@ public class NekReader {
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the mesh data heading
-			if ((reaLines.get(i).contains("**MESH DATA**") || reaLines.get(i)
-					.contains("*** MESH DATA ***"))
+			if ((reaLines.get(i).contains("**MESH DATA**")
+					|| reaLines.get(i).contains("*** MESH DATA ***"))
 					&& reaLines.get(i + 1).contains("NEL,NDIM,NELV")) {
 
 				// Grab the numbers on the next line (NEL,NDIM,NELV)
@@ -661,7 +661,8 @@ public class NekReader {
 
 				// Determine what position the fluid, thermal and passive scalar
 				// boundary conditions are in the loaded boundaryConditions list
-				int fluidPosition = 0, thermalPosition = 0, passiveScalPosition = 0;
+				int fluidPosition = 0, thermalPosition = 0,
+						passiveScalPosition = 0;
 				if (ifFlow) {
 					fluidPosition = 0;
 				}
@@ -711,7 +712,8 @@ public class NekReader {
 
 						// Grab the material ID and group number
 						splitLine = currLine.trim().split("\\s+");
-						if (splitLine[3].charAt(splitLine[3].length() - 1) == ']') {
+						if (splitLine[3]
+								.charAt(splitLine[3].length() - 1) == ']') {
 							materialId = splitLine[3].substring(0,
 									splitLine[3].length() - 1);
 							groupNum = Integer.parseInt(splitLine[5]);
@@ -730,8 +732,8 @@ public class NekReader {
 
 							// Parse line into an ArrayList and add to current
 							// element
-							nextLine = (ArrayList<Float>) parseLine(
-									Float.class, reaLines.get(i + j + k + 1));
+							nextLine = (ArrayList<Float>) parseLine(Float.class,
+									reaLines.get(i + j + k + 1));
 							currElement.add(nextLine);
 						}
 
@@ -801,7 +803,7 @@ public class NekReader {
 						}
 
 						// Create new quad, add it to the MeshComponent
-						quad = new Quad(edges, vertices);
+						quad = new NekPolygon();
 						quad.setPolygonProperties(materialId, groupNum);
 
 						// Set the boundary conditions of the quad by edge ID
@@ -817,7 +819,8 @@ public class NekReader {
 							// Set the fluid boundary condition for that edge
 							if (ifFlow) {
 								quad.setFluidBoundaryCondition(currEdgeId,
-										fluidBoundaryConditions.get(currEdgeId));
+										fluidBoundaryConditions
+												.get(currEdgeId));
 							}
 
 							// Set the thermal boundary condition for that edge
@@ -912,7 +915,8 @@ public class NekReader {
 	 *         passive scalar boundary conditions, where N is defined by NPSCAL
 	 *         in the PARAMETERS section (ie. this.numPassiveScalars)
 	 **/
-	private ArrayList<Object> loadBoundaryConditions(ArrayList<String> reaLines) {
+	private ArrayList<Object> loadBoundaryConditions(
+			ArrayList<String> reaLines) {
 
 		// Local declarations
 		ArrayList<Object> currCondition;
@@ -935,8 +939,8 @@ public class NekReader {
 			/** --- Load FLUID boundary conditions --- **/
 
 			// Search for the fluid boundary conditions header
-			if (reaLines.get(i).contains(
-					"***** FLUID   BOUNDARY CONDITIONS *****")) {
+			if (reaLines.get(i)
+					.contains("***** FLUID   BOUNDARY CONDITIONS *****")) {
 
 				// Jump the iterator 1 line ahead and begin reading in boundary
 				// conditions
@@ -959,8 +963,8 @@ public class NekReader {
 			/** --- Load THERMAL boundary conditions --- **/
 
 			// Search for the thermal boundary conditions header
-			if (reaLines.get(i).contains(
-					"***** THERMAL BOUNDARY CONDITIONS *****")) {
+			if (reaLines.get(i)
+					.contains("***** THERMAL BOUNDARY CONDITIONS *****")) {
 
 				// Jump the iterator 1 line ahead and begin reading in boundary
 				// conditions
@@ -983,10 +987,9 @@ public class NekReader {
 
 			/** --- Load PASSIVE SCALAR boundary conditions (if any) --- **/
 			// Find the beginning of the passive scalar BC section
-			if (numPassiveScalars > 0
-					&& reaLines.get(i).contains(
-							"***** PASSIVE SCALAR           "
-									+ "1 BOUNDARY CONDITIONS *****")) {
+			if (numPassiveScalars > 0 && reaLines.get(i)
+					.contains("***** PASSIVE SCALAR           "
+							+ "1 BOUNDARY CONDITIONS *****")) {
 
 				// Repeat the following for as many sets of passive scalar
 				// BCs as there are
@@ -1010,8 +1013,8 @@ public class NekReader {
 						for (int j = 0; j < numThermalElements * 4; j++) {
 
 							// Create the current boundary condition object
-							currCondition = buildBoundaryConditionPair(
-									reaLines, i, j);
+							currCondition = buildBoundaryConditionPair(reaLines,
+									i, j);
 
 							// Plug it (along with the unique edge ID it
 							// corresponds to)
@@ -1192,13 +1195,13 @@ public class NekReader {
 
 			// Search for the drive force data heading
 			if (reaLines.get(i).contains("***** DRIVE FORCE DATA *****")
-					&& reaLines.get(i + 1).contains(
-							"Lines of Drive force data follow")) {
+					&& reaLines.get(i + 1)
+							.contains("Lines of Drive force data follow")) {
 
 				// Grab the number on the next line indicating the length of the
 				// drive force data section (number of lines)
-				int strIndex = reaLines.get(i + 1).indexOf(
-						"Lines of Drive force data follow");
+				int strIndex = reaLines.get(i + 1)
+						.indexOf("Lines of Drive force data follow");
 				String numLinesStr = reaLines.get(i + 1)
 						.substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
@@ -1310,8 +1313,8 @@ public class NekReader {
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
-			if (reaLines.get(i).contains(
-					"***** HISTORY AND INTEGRAL DATA *****")
+			if (reaLines.get(i)
+					.contains("***** HISTORY AND INTEGRAL DATA *****")
 					&& reaLines.get(i + 1).contains("POINTS")) {
 
 				// Grab the number on the next line indicating the length of the
@@ -1385,14 +1388,14 @@ public class NekReader {
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
-			if (reaLines.get(i).contains(
-					"***** OUTPUT FIELD SPECIFICATION *****")
+			if (reaLines.get(i)
+					.contains("***** OUTPUT FIELD SPECIFICATION *****")
 					&& reaLines.get(i + 1).contains("SPECIFICATIONS FOLLOW")) {
 
 				// Grab the number on the next line indicating the length of the
 				// Output Field Specification section (number of lines)
-				int strIndex = reaLines.get(i + 1).indexOf(
-						"SPECIFICATIONS FOLLOW");
+				int strIndex = reaLines.get(i + 1)
+						.indexOf("SPECIFICATIONS FOLLOW");
 				String numLinesStr = reaLines.get(i + 1)
 						.substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
@@ -1413,15 +1416,15 @@ public class NekReader {
 					// Determine if the entry will have discrete values or not
 					isDiscrete = (currLine.contains("COORDINATES")
 							|| currLine.contains("VELOCITY")
-							|| currLine.contains("PRESSURE") || currLine
-							.contains("TEMPERATURE"));
+							|| currLine.contains("PRESSURE")
+							|| currLine.contains("TEMPERATURE"));
 
 					// Create a Nek Entry
 					entry = makeNekEntry(isDiscrete);
 
 					// Define the name and value
-					currValue = ("T".equals(splitLine[0]) ? "YES" : ("F"
-							.equals(splitLine[0]) ? "NO" : splitLine[0]));
+					currValue = ("T".equals(splitLine[0]) ? "YES"
+							: ("F".equals(splitLine[0]) ? "NO" : splitLine[0]));
 					currName = "";
 					for (int k = 1; k < splitLine.length; k++) {
 						if (k != splitLine.length - 1) {
@@ -1659,8 +1662,8 @@ public class NekReader {
 		}
 
 		// Get the edge ID
-		edgeId = (int) (4 * (currBoundaryValues.get(0) - 1) + currBoundaryValues
-				.get(1));
+		edgeId = (int) (4 * (currBoundaryValues.get(0) - 1)
+				+ currBoundaryValues.get(1));
 
 		// Create the boundary condition object
 		condition = new BoundaryCondition();

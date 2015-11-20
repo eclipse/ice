@@ -49,6 +49,7 @@ Import-Package: com.jme3.app,
  org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.geometry.widgets,
  org.eclipse.ice.viz.service.mesh.datastructures,
+ org.eclipse.ice.viz.service.mesh.properties,
  org.eclipse.ice.viz.service.modeling,
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2"

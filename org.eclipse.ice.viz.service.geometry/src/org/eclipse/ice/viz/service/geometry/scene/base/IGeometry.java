@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.geometry.scene.base;
 
 import java.util.List;
 
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 /**
  * <p>
@@ -32,7 +32,7 @@ public interface IGeometry {
 	 * @param geom
 	 *            an ICE Geometry instance
 	 */
-	public void addGeometry(Shape geom);
+	public void addGeometry(AbstractController geom);
 
 	/**
 	 * <p>
@@ -42,7 +42,7 @@ public interface IGeometry {
 	 * @param shape
 	 *            an ICE IShape instance
 	 */
-	public void addShape(Shape shape);
+	public void addShape(AbstractController shape);
 
 	/**
 	 * <p>
@@ -52,7 +52,7 @@ public interface IGeometry {
 	 * @param shape
 	 *            the ICE IShape to remove
 	 */
-	public void removeShape(Shape shape);
+	public void removeShape(AbstractController shape);
 
 	/**
 	 * <p>
@@ -64,7 +64,7 @@ public interface IGeometry {
 	 * 
 	 * @return true if the entity contains the supplied IShape, false otherwise.
 	 */
-	public boolean hasShape(Shape shape);
+	public boolean hasShape(AbstractController shape);
 
 	/**
 	 * <p>
@@ -76,7 +76,7 @@ public interface IGeometry {
 	 * 
 	 * @return an IShape instance or null if one cannot be found
 	 */
-	public Shape getShape(int index);
+	public AbstractController getShape(int index);
 
 	/**
 	 * <p>
@@ -92,7 +92,7 @@ public interface IGeometry {
 	 * 
 	 * @return a List of IShapes associated with this shape.
 	 */
-	public List<Shape> getShapes(boolean copy);
+	public List<AbstractController> getShapes(boolean copy);
 
 	/**
 	 * <p>
