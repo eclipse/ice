@@ -169,6 +169,10 @@ public class FXVertexView extends AbstractView {
 				}
 			}
 		}
+
+		else {
+			mesh.setMaterial(constructingMaterial);
+		}
 	}
 
 	/*

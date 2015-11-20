@@ -17,12 +17,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.ice.viz.service.jme3.widgets.InputControl;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.modeling.Vertex;
 
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -33,6 +29,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Quad;
 
 /**
  * This {@link MeshAppStateMode} allows the user to add additional polygons to
@@ -212,8 +209,8 @@ public class AddMode extends MeshAppStateMode {
 		};
 		cancelAction = new InputControl(action, name);
 		cancelAction.addTriggers(name, new KeyTrigger(KeyInput.KEY_BACK),
-				new KeyTrigger(KeyInput.KEY_DELETE), new KeyTrigger(
-						KeyInput.KEY_ESCAPE));
+				new KeyTrigger(KeyInput.KEY_DELETE),
+				new KeyTrigger(KeyInput.KEY_ESCAPE));
 
 		return;
 	}
@@ -320,8 +317,8 @@ public class AddMode extends MeshAppStateMode {
 				int sides = vertices.size();
 
 				// Add a vertex based on the cursor's position at the click.
-				Vertex vertex = addVertexFromRay(appState
-						.getCursorRayFromClick());
+				Vertex vertex = addVertexFromRay(
+						appState.getCursorRayFromClick());
 
 				// If possible, add an edge between the last vertex and the
 				// current one.
@@ -452,8 +449,8 @@ public class AddMode extends MeshAppStateMode {
 
 		if ((results = getCollision(vertexSpatials, ray)).size() > 0) {
 			// Get the ID from the name of the nearest collision (a VertexView).
-			int id = Integer.parseInt(results.getClosestCollision()
-					.getGeometry().getName());
+			int id = Integer.parseInt(
+					results.getClosestCollision().getGeometry().getName());
 			vertex = appState.getMesh().getVertex(id);
 		} else if ((results = getCollision(grid, ray)).size() > 0) {
 			// Get the collision point and its nearest point to the grid's
@@ -463,7 +460,8 @@ public class AddMode extends MeshAppStateMode {
 
 			// Create a new Vertex from the point on the grid.
 			vertex = new Vertex(gridPoint.x, gridPoint.y, gridPoint.z);
-			vertex.setId(appState.getMesh().getNextVertexId() + vertices.size());
+			vertex.setId(
+					appState.getMesh().getNextVertexId() + vertices.size());
 		}
 
 		if (vertex != null) {

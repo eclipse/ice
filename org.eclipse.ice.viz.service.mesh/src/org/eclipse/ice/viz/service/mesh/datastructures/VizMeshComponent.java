@@ -1,16 +1,42 @@
 /********************************************************************************Copyright(c)2014 UT-Battelle,LLC.*All rights reserved.This program and the accompanying materials*are made available under the terms of the Eclipse Public License v1.0*which accompanies this distribution,and is available at*http://www.eclipse.org/legal/epl-v10.html
-**Contributors:*Initial API and implementation and/or initial documentation-Jay Jay/Billings,*Jordan H.Deyton,Dasha Gorin,Alexander J.McCaskey,Taylor Patterson,*Claire Saunders,Matthew Wang,Anna Wojtowicz*******************************************************************************/package org.eclipse.ice.viz.service.mesh.datastructures;
+**Contributors:*Initial API and implementation and/or initial documentation-Jay Jay/Billings,*Jordan H.Deyton,Dasha Gorin,Alexander J.McCaskey,Taylor Patterson,*Claire Saunders,Matthew Wang,Anna Wojtowicz*******************************************************************************/
+package org.eclipse.ice.viz.service.mesh.datastructures;
 
-import java.util.ArrayList;import java.util.HashMap;import java.util.HashSet;import java.util.Map.Entry;import java.util.Set;import java.util.TreeMap;import java.util.TreeSet;import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.xml.bind.annotation.XmlAccessType;import javax.xml.bind.annotation.XmlAccessorType;import javax.xml.bind.annotation.XmlRootElement;import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 
-/***<p>*Composite container for Polygons along with any additional information*required to interpret the mesh data.<br>*<br>*The VizMeshComponent breaks a mesh down into vertices and edges.As/polygons are*added,the new edges and vertices are incorporated into the mesh,and*IUpdateableListeners registered with the VizMeshComponent are notified that/it*has changed.<br>*<br>*All polygons are expected to have a unique ID among all other polygons./This*also holds for vertices and edges.*</p>**
+/***
+ * <p>
+ * *Composite container for Polygons along with any additional
+ * information*required to interpret the mesh data.<br>
+ * *<br>
+ * *The VizMeshComponent breaks a mesh down into vertices and edges.As/polygons
+ * are*added,the new edges and vertices are incorporated into the
+ * mesh,and*IUpdateableListeners registered with the VizMeshComponent are
+ * notified that/it*has changed.<br>
+ * *<br>
+ * *All polygons are expected to have a unique ID among all other
+ * polygons./This*also holds for vertices and edges.*
+ * </p>
+ * **
+ * 
+ * @author Jordan H.Deyton
+ */
 
-@author
-Jordan H.Deyton*/@XmlRootElement(name = "VizMeshComponent")
+@XmlRootElement(name = "VizMeshComponent")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class VizMeshComponent extends VizObject implements IMeshPart {
 
@@ -78,31 +104,32 @@ public class VizMeshComponent extends VizObject implements IMeshPart {
 	private final AtomicBoolean copying;
 
 	/**
- * <p>
- * The default constructor for a VizMeshComponent. Initializes the list of
- * polygons and any associated bookkeeping structures.
- * </p>
- *
- */
- public VizMeshComponent() {
- super();
+	 * <p>
+	 * The default constructor for a VizMeshComponent. Initializes the list of
+	 * polygons and any associated bookkeeping structures.
+	 * </p>
+	 *
+	 */
+	public VizMeshComponent() {
+		super();
 
- // Initialize the trees of shapes, vertices, and edges.
- polygons = new TreeMap<Integer, Polygon>();
- vertices = new TreeMap<Integer, Vertex>();
- edges = new TreeMap<Integer, Edge>();
+		// Initialize the trees of shapes, vertices, and edges.
+		polygons = new TreeMap<Integer, Polygon>();
+		vertices = new TreeMap<Integer, Vertex>();
+		edges = new TreeMap<Integer, Edge>();
 
- // Initialize the trees of polygon IDs per vertex/edge.
- vertexPolygons = new TreeMap<Integer, TreeSet<Integer>>();
- edgePolygons = new TreeMap<Integer, TreeSet<Integer>>();
- vertexEdges = new TreeMap<Integer, TreeSet<Integer>>();
+		// Initialize the trees of polygon IDs per vertex/edge.
+		vertexPolygons = new TreeMap<Integer, TreeSet<Integer>>();
+		edgePolygons = new TreeMap<Integer, TreeSet<Integer>>();
+		vertexEdges = new TreeMap<Integer, TreeSet<Integer>>();
 
- // Initialize the flag to signify when the VizMeshComponent is copying data
- // from another VizMeshComponent.
- copying = new AtomicBoolean(false);
+		// Initialize the flag to signify when the VizMeshComponent is copying
+		// data
+		// from another VizMeshComponent.
+		copying = new AtomicBoolean(false);
 
- return;
- }
+		return;
+	}
 
 	/**
 	 * <p>
