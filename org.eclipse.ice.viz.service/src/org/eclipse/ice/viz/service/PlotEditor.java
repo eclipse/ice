@@ -34,6 +34,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.slf4j.Logger;
@@ -136,9 +138,14 @@ public class PlotEditor extends EditorPart {
 		// Get the plot from the input.
 		plot = null;
 		IEditorInput editorInput = getEditorInput();
+		
 		// If the input is file input, we'll have to use the URI.
-		if (editorInput instanceof FileEditorInput) {
-			URI uri = ((FileEditorInput) editorInput).getURI();
+		if (editorInput instanceof FileEditorInput || editorInput instanceof FileStoreEditorInput) {
+			
+			// Either way, editorInput is a realization of IURIEditorInput, so 
+			// cast it to that and get the URI. 
+			URI uri = ((IURIEditorInput) editorInput).getURI();
+			
 			// Try to create a plot using the available viz services, prompting
 			// the user if two or more services can create a plot.
 			PlotDialogProvider provider = new PlotDialogProvider();
@@ -150,8 +157,8 @@ public class PlotEditor extends EditorPart {
 		// If the input is plot input, we can just get the plot from it.
 		else if (editorInput instanceof PlotEditorInput) {
 			plot = ((PlotEditorInput) editorInput).getPlot();
-		}
-
+		} 
+		
 		// If no plot could be created, close the editor.
 		if (plot == null) {
 			logger.error(getClass().getName()

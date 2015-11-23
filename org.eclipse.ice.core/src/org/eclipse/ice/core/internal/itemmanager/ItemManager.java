@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -31,6 +33,10 @@ import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +68,7 @@ public class ItemManager implements ItemListener {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory
-			.getLogger(ItemManager.class);
+	private static final Logger logger = LoggerFactory.getLogger(ItemManager.class);
 
 	/**
 	 * This is a list of all of the items that are managed by the ItemManger.
@@ -212,8 +217,7 @@ public class ItemManager implements ItemListener {
 
 		// If the provider exists, persist to the provider
 		if (provider != null) {
-			logger.info("ItemManager Message: Persisting Item " + retVal
-					+ " with the provider");
+			logger.info("ItemManager Message: Persisting Item " + retVal + " with the provider");
 			provider.persistItem(item);
 		}
 
@@ -335,26 +339,21 @@ public class ItemManager implements ItemListener {
 
 		// Make sure the builder is not null and add it to the list, if it's not
 		// there already.
-		if (builder != null
-				&& !itemBuilderList.containsKey(builder.getItemName())) {
+		if (builder != null && !itemBuilderList.containsKey(builder.getItemName())) {
 			itemBuilderList.put(builder.getItemName(), builder);
 			// Notify the composite Items of the updated builder list
 			for (ICompositeItemBuilder compositeBuilder : compositeBuilders) {
-				compositeBuilder.addBuilders(
-						new ArrayList<ItemBuilder>(itemBuilderList.values()));
+				compositeBuilder.addBuilders(new ArrayList<ItemBuilder>(itemBuilderList.values()));
 			}
 			// Get the list of Items and see if any disabled ones can be
 			// re-enabled because this builder is their parent.
 			for (int i = 0; i < itemList.values().size(); i++) {
 				Item item = (Item) itemList.values().toArray()[i];
-				if (!item.isEnabled() && item.getItemBuilderName()
-						.equals(builder.getItemName())) {
+				if (!item.isEnabled() && item.getItemBuilderName().equals(builder.getItemName())) {
 					rebuildItem(builder, item, loadedProject);
 					item.disable(false);
-					logger.info("ItemManager Message: "
-							+ "Enabling orphaned Item " + item.getName() + " "
-							+ item.getId() + " with builder "
-							+ builder.getItemName() + ".");
+					logger.info("ItemManager Message: " + "Enabling orphaned Item " + item.getName() + " "
+							+ item.getId() + " with builder " + builder.getItemName() + ".");
 				}
 
 			}
@@ -403,8 +402,7 @@ public class ItemManager implements ItemListener {
 	 */
 	public void unregisterBuilder(ItemBuilder builder) {
 
-		if (builder != null
-				&& this.itemBuilderList.containsKey(builder.getItemName())) {
+		if (builder != null && this.itemBuilderList.containsKey(builder.getItemName())) {
 			this.itemBuilderList.remove(builder.getItemName());
 		}
 
@@ -533,12 +531,10 @@ public class ItemManager implements ItemListener {
 	 * This operation rebuilds an Item from its builder and the current project
 	 * space.
 	 */
-	private void rebuildItem(ItemBuilder builder, Item item,
-			IProject projectSpace) {
+	private void rebuildItem(ItemBuilder builder, Item item, IProject projectSpace) {
 
 		// Build the proper Item
-		Item rebuiltItem = itemBuilderList.get(item.getItemBuilderName())
-				.build(projectSpace);
+		Item rebuiltItem = itemBuilderList.get(item.getItemBuilderName()).build(projectSpace);
 
 		// Give the project to this temp Item
 		item.setProject(projectSpace);
@@ -639,15 +635,11 @@ public class ItemManager implements ItemListener {
 				// searching the builders for the builder with the
 				// appropriate name.
 				if (itemBuilderList.containsKey(item.getItemBuilderName())) {
-					ItemBuilder builder = itemBuilderList
-							.get(item.getItemBuilderName());
+					ItemBuilder builder = itemBuilderList.get(item.getItemBuilderName());
 					rebuildItem(builder, item, projectSpace);
 				} else {
-					logger.info("ItemManager Message: "
-							+ "Builder not found for " + item.getName() + " "
-							+ item.getId() + " with builder "
-							+ item.getItemBuilderName()
-							+ ". It will be disabled.");
+					logger.info("ItemManager Message: " + "Builder not found for " + item.getName() + " " + item.getId()
+							+ " with builder " + item.getItemBuilderName() + ". It will be disabled.");
 					// Otherwise just put the Item in the list, but disable
 					// it. It can still be read, just not processed.
 					item.disable(true);
@@ -672,8 +664,7 @@ public class ItemManager implements ItemListener {
 			}
 		} else {
 			// Complain a little bit
-			logger.info("Unable to load items in bulk from "
-					+ "the IPersistenceProvider.");
+			logger.info("Unable to load items in bulk from " + "the IPersistenceProvider.");
 		}
 
 		return;
@@ -703,8 +694,7 @@ public class ItemManager implements ItemListener {
 
 		// Update all of the Items in the database if the provider is available.
 		if (provider != null) {
-			logger.info("ItemManager Message: Updating all Items with "
-					+ "Persistence Provider.");
+			logger.info("ItemManager Message: Updating all Items with " + "Persistence Provider.");
 			for (Item item : itemList.values()) {
 				logger.info("ItemManager Message: Persisting " + item.getName());
 				provider.updateItem(item);
@@ -830,6 +820,32 @@ public class ItemManager implements ItemListener {
 			Item messagedItem = itemList.get(itemId);
 			// Post the message
 			retVal = messagedItem.update(msg);
+		} else if (itemId < 0 && "FILE_PLOTEDITOR".equals(msg.getType())) {
+			// This is a PlotEditor request
+			String filePath = msg.getMessage();
+			File fileToOpen = new File(filePath);
+			if (fileToOpen.exists() && fileToOpen.isFile()) {
+				logger.info("Opening PlotEditor for file = " + fileToOpen.getAbsolutePath());
+
+				// Get the IFileStore associated with this File
+				IFileStore fileStore = EFS.getLocalFileSystem().getStore(fileToOpen.toURI());
+
+				// Sync with the display
+				PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						// Open the PlotEditor on the active page. 
+						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+						if (page != null) {
+							try {
+								IDE.openEditorOnFileStore(page, fileStore);
+							} catch (PartInitException e) {
+								logger.error("Error opening PlotEditor for " + fileToOpen.getAbsolutePath(), e);
+							}
+						}
+					}
+				});
+			}
 		}
 
 		return retVal;
@@ -846,8 +862,7 @@ public class ItemManager implements ItemListener {
 		// Not threaded for now, but should it be? ~JJB 20130912 17:06
 
 		// Direct all of the Items to reload their data
-		logger.info(
-				"ItemManager Message: " + "Reloading all Item project data.");
+		logger.info("ItemManager Message: " + "Reloading all Item project data.");
 		for (Item item : itemList.values()) {
 			item.reloadProjectData();
 		}
@@ -921,9 +936,7 @@ public class ItemManager implements ItemListener {
 
 		// Check the status and write to the database if it is enabled
 		// Only try to write to the database if the EntityManagers are ready
-		if ((status.equals(FormStatus.Processed)
-				|| status.equals(FormStatus.ReadyToProcess))
-				&& provider != null) {
+		if ((status.equals(FormStatus.Processed) || status.equals(FormStatus.ReadyToProcess)) && provider != null) {
 			provider.updateItem(currentItem);
 		}
 
@@ -981,11 +994,9 @@ public class ItemManager implements ItemListener {
 				status = tmpItem.process(actionName);
 			}
 		} else {
-			logger.info(
-					"ItemManager Message: Could not process the item because "
-							+ "the itemId was not greater than 0 or the "
-							+ "actionName was null. Returning status = "
-							+ status.toString());
+			logger.info("ItemManager Message: Could not process the item because "
+					+ "the itemId was not greater than 0 or the " + "actionName was null. Returning status = "
+					+ status.toString());
 		}
 
 		return status;
@@ -1021,8 +1032,7 @@ public class ItemManager implements ItemListener {
 			if (this.provider != null) {
 				Item item = itemList.get(itemID);
 				logger.info(
-						"ItemManager Message: Deleting Item " + item.getName()
-								+ " " + item.getId() + " from provider");
+						"ItemManager Message: Deleting Item " + item.getName() + " " + item.getId() + " from provider");
 				provider.deleteItem(itemList.get(itemID));
 			}
 			// Remove the Item from the list
