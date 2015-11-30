@@ -14,10 +14,13 @@ package org.eclipse.ice.projectgeneration;
 
 import java.net.URI;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 
 /**
@@ -27,29 +30,38 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
  * 
  * @author arbennett
  */
-public class NewICEItemProjectWizard extends Wizard implements INewWizard {
+public class WizardNewICEItemProject extends Wizard implements INewWizard {
 
 	// Messages are externalized in the messages.properties file
-	private static final String DESCRIPTION = NewICEItemProjectWizardMessages.NewICEItemWizard_Description;
-	private static final String WIZARD_NAME = NewICEItemProjectWizardMessages.NewICEItemWizard_Wizard_Name;
+	private static final String DESCRIPTION = "Create a new ICE item project.";
+	private static final String WIZARD_NAME = "New ICE Item Project";
+	private static final String WIZARD_TITLE = "Create a new ICE item project";
+	
+	private IStructuredSelection selection;
+	private IWorkbench workbench;
 	
 	private WizardNewProjectCreationPage _pageOne;
+	private WizardNewICEModelBuilderPage _pageTwo;
+
 	
 	/**
 	 *	Constructor
 	 */
-	public NewICEItemProjectWizard() {
-		setWindowTitle(NewICEItemProjectWizardMessages.NewICEItemWizard_Window_Title);
+	public WizardNewICEItemProject() {
+		setWindowTitle(WIZARD_TITLE);
 	}
 
+	
 	/**
 	 * Initialize the wizard
 	 */
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		// TODO Auto-generated method stub
+		this.workbench = workbench;
+		this.selection = selection;
 	}
 
+	
 	/**
 	 * Defines the wizard pages
 	 */
@@ -61,8 +73,14 @@ public class NewICEItemProjectWizard extends Wizard implements INewWizard {
 		_pageOne.setTitle(WIZARD_NAME);
 		_pageOne.setDescription(DESCRIPTION);
 		
+		// Add ICE Item setup page (model builder, job launcher, etc)
+		_pageTwo = new WizardNewICEModelBuilderPage(selection);
+		
+		// Put the pages into the wizard
 		addPage(_pageOne);
+		addPage(_pageTwo);
 	}
+	
 	
 	/**
 	 * Take all of the given information and set up a new 
@@ -72,14 +90,24 @@ public class NewICEItemProjectWizard extends Wizard implements INewWizard {
 	 */
 	@Override
 	public boolean performFinish() {
+		boolean retval = true;
+		
+		// Set up the project
 		String name = _pageOne.getProjectName();
 		URI location = null;
 		if (!_pageOne.useDefaults()) {
 			location = _pageOne.getLocationURI();
 		}
 		
+		// Generate the model builder class files
+		IFile file = _pageTwo.createNewFile();
+		if (file != null) {
+			retval = retval && true;
+		} else {
+			retval = false;
+		}
+		
 		NewICEItemProjectSupport.createProject(name, location);
-		return true;
+		return retval;
 	}
-
 }

@@ -9,9 +9,21 @@
       </category>
       <wizard
             category="org.eclipse.ice.projectgeneration.wizards"
-            class="org.eclipse.ice.projectgeneration.NewICEItemProjectWizard"
+            class="org.eclipse.ice.projectgeneration.WizardNewICEItemProject"
             id="org.eclipse.ice.projectgeneration.wizard.new.item"
-            name="ICE Item Creation Wizard">
+            name="ICE Item Project Creation Wizard">
+      </wizard>
+      <wizard 
+      		category="org.eclipse.ice.projectgeneration.wizards"
+      		class="org.eclipse.ice.projectgeneration.NewModelBuilderClass"
+      		id="org.eclipse.ice.projectgeneration.wizard.new.model.builder"
+      		name="ICE Model Builder">
+      </wizard>
+      <wizard 
+      		category="org.eclipse.ice.projectgeneration.wizards"
+      		class="org.eclipse.ice.projectgeneration.NewJobLauncherClass"
+      		id="org.eclipse.ice.projectgeneration.wizard.new.model.launcher"
+      		name="ICE Job Launcher">
       </wizard>
    </extension>
    <extension
