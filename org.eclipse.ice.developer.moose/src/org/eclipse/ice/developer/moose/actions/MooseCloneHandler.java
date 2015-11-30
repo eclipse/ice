@@ -168,7 +168,7 @@ public class MooseCloneHandler extends GitCloneHandler {
 				libmeshTarget.setRunAllBuilders(false);
 				libmeshTarget.setUseDefaultBuildCmd(false);
 				libmeshTarget.setBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND,
-						"sh scripts/updated_and_rebuild_libmesh.sh");
+						"sh scripts/update_and_rebuild_libmesh.sh");
 				libmeshTarget.setBuildAttribute(IMakeCommonBuildInfo.BUILD_LOCATION,
 						cProject.getLocation().toOSString());
 				libmeshTarget.setBuildAttribute(IMakeCommonBuildInfo.BUILD_ARGUMENTS, "");
