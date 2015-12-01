@@ -10,11 +10,12 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.projectgeneration;
+package org.eclipse.ice.projectgeneration.wizards;
 
 import java.net.URI;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.ice.projectgeneration.NewICEItemProjectSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -26,28 +27,26 @@ import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 /**
  * This class defines the steps for creating a new New ICE Item project
  * via the wizard that us accessible via:
- *   'File -> New... -> Other -> New ICE Item Project'
+ *   'File -> New... -> Other -> New Job Launcher'
  * 
  * @author arbennett
  */
-public class WizardNewICEItemProject extends Wizard implements INewWizard {
+public class WizardNewICEJobLauncher extends Wizard implements INewWizard {
 
 	// Messages are externalized in the messages.properties file
-	private static final String DESCRIPTION = "Create a new ICE item project.";
-	private static final String WIZARD_NAME = "New ICE Item Project";
-	private static final String WIZARD_TITLE = "Create a new ICE item project";
+	private static final String DESCRIPTION = "Create a new job launcher.";
+	private static final String WIZARD_NAME = "New ICE Job Launcher";
+	private static final String WIZARD_TITLE = "Create a new job launcher";
 	
 	private IStructuredSelection selection;
 	private IWorkbench workbench;
 	
-	private WizardNewProjectCreationPage _pageOne;
-	private WizardNewICEModelBuilderPage _pageTwo;
-
+	private WizardNewICEJobLauncherPage _pageOne;
 	
 	/**
 	 *	Constructor
 	 */
-	public WizardNewICEItemProject() {
+	public WizardNewICEJobLauncher() {
 		setWindowTitle(WIZARD_TITLE);
 	}
 
@@ -69,16 +68,12 @@ public class WizardNewICEItemProject extends Wizard implements INewWizard {
 	public void addPages() {
 		super.addPages();
 		
-		_pageOne = new WizardNewProjectCreationPage(DESCRIPTION);
+		_pageOne = new WizardNewICEJobLauncherPage(DESCRIPTION, selection);
 		_pageOne.setTitle(WIZARD_NAME);
 		_pageOne.setDescription(DESCRIPTION);
 		
-		// Add ICE Item setup page (model builder, job launcher, etc)
-		//_pageTwo = new WizardNewICEModelBuilderPage(selection);
-		
 		// Put the pages into the wizard
 		addPage(_pageOne);
-		//addPage(_pageTwo);
 	}
 	
 	
@@ -92,22 +87,8 @@ public class WizardNewICEItemProject extends Wizard implements INewWizard {
 	public boolean performFinish() {
 		boolean retval = true;
 		
-		// Set up the project
-		String name = _pageOne.getProjectName();
-		URI location = null;
-		if (!_pageOne.useDefaults()) {
-			location = _pageOne.getLocationURI();
-		}
-		
-		// Generate the model builder class files
-		/*IFile file = _pageTwo.createNewFile();
-		if (file != null) {
-			retval = retval && true;
-		} else {
-			retval = false;
-		}
-		*/
-		NewICEItemProjectSupport.createProject(name, location);
+		// Do something
+
 		return retval;
 	}
 }

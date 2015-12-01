@@ -115,7 +115,6 @@ public class NewICEItemProjectTester {
 
 		// Check that custom project nature is set up
 		boolean hasICENature = false;
-
 		try {
 			hasICENature = project.hasNature(ICEItemNature.NATURE_ID);
 		} catch (CoreException e) {
@@ -124,15 +123,9 @@ public class NewICEItemProjectTester {
 		Assert.assertTrue(hasICENature);
 
 		// Check that MANIFEST.MF and plugin.xml are set up
+		// TODO
 	}
-
-	/**
-	 * Check that the parser generator form works correctly
-	 */
-	@Test
-	public void testParserGenerator() {
-		return;
-	}
+	
 
 	/**
 	 * Clean up everything we may have messed up

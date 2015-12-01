@@ -10,8 +10,9 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.projectgeneration;
+package org.eclipse.ice.projectgeneration.wizards;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,7 +31,7 @@ public class WizardNewICEModelBuilderPage extends WizardNewFileCreationPage {
 	 * 
 	 * @param selection
 	 */
-	public WizardNewICEModelBuilderPage(IStructuredSelection selection) {
+	public WizardNewICEModelBuilderPage(String pageName, IStructuredSelection selection) {
 		super("NewICEModelBuilderWizardPage", selection);
 		setTitle("ICE Model Builder Item");
 		setDescription("Creates a new ICE model builder item class");
@@ -44,6 +45,6 @@ public class WizardNewICEModelBuilderPage extends WizardNewFileCreationPage {
 	 */
 	@Override
 	protected InputStream getInitialContents() {
-		return null;
+		return new ByteArrayInputStream("Hello world!".getBytes());
 	}
 }
