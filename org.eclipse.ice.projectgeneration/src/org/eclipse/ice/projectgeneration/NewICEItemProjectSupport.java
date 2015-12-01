@@ -48,8 +48,9 @@ public class NewICEItemProjectSupport {
 	 * @return the new New ICE Item Project
 	 */
 	public static IProject createProject(String projectName, URI location) {
-		Assert.isNotNull(projectName);
-		Assert.isTrue(projectName.trim().length() > 0);
+		if (projectName == null || projectName.trim().length() <= 0) {
+			return null;
+		}
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		
 		// Set up the base project
@@ -62,7 +63,7 @@ public class NewICEItemProjectSupport {
 			}
 			description.setLocationURI(location);
 			try {
-				project.create(description, null);
+				project.create(description, new NullProgressMonitor());
 				if (!project.isOpen()) {
 					project.open(new NullProgressMonitor());
 				}

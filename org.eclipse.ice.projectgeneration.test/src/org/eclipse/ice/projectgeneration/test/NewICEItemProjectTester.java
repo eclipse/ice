@@ -15,6 +15,7 @@ package org.eclipse.ice.projectgeneration.test;
 import static org.junit.Assert.fail;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -31,15 +32,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.eclipse.ice.projectgeneration.ICEItemNature;
+import org.eclipse.ice.projectgeneration.NewICEItemProjectSupport;
+
 /**
  * This class tests the creation and configuration of new ICE Item projects.
  *
  * @author arbennett
  */
 public class NewICEItemProjectTester {
-	
+
 	private static IProject projectSpace;
-	
+
 	/**
 	 * Set up the project for the remainder of the tests
 	 */
@@ -48,17 +51,16 @@ public class NewICEItemProjectTester {
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		IProject project = null;
 		String separator = System.getProperty("file.separator");
-		String userDir = System.getProperty("user.home" + separator 
-				+ "ICETests" + separator +"ICEItemProjectTesterWorkspace");
+		String userDir = System
+				.getProperty("user.home" + separator + "ICETests" + separator + "ICEItemProjectTesterWorkspace");
 		System.setProperty("DebugICE", "");
-		
+
 		// Set up the project
 		try {
 			// Get the project handle
 			IPath projectPath = new Path(userDir + separator + ".project");
 			// Create the project description
-			IProjectDescription desc = ResourcesPlugin.getWorkspace()
-			                    .loadProjectDescription(projectPath);
+			IProjectDescription desc = ResourcesPlugin.getWorkspace().loadProjectDescription(projectPath);
 			// Get the project handle and create it
 			project = workspaceRoot.getProject(desc.getName());
 			// Create the project if it doesn't exist
@@ -67,7 +69,7 @@ public class NewICEItemProjectTester {
 			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
-			   project.open(new NullProgressMonitor());
+				project.open(new NullProgressMonitor());
 			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -79,37 +81,51 @@ public class NewICEItemProjectTester {
 		}
 		projectSpace = project;
 	}
-	
-	
+
 	/**
 	 * Check the setup of a New ICE Item Project
 	 */
 	@Test
 	public void testProjectSetup() {
-		
+
 		// Try creating the project with a null name
-		
+		Assert.assertNull(NewICEItemProjectSupport.createProject(null, null));
+
 		// Try creating the project with a blank name
-		
+		Assert.assertNull(NewICEItemProjectSupport.createProject("  ", null));
+
 		// Try creating the project with a valid name
-		
+		IProject project = NewICEItemProjectSupport.createProject("Tester", null);
+		Assert.assertNotNull(project);
+
+		// Try creating the project with the same name as an already existing
+		// one
+		String separator = System.getProperty("file.separator");
+		String userDir = System.getProperty("user.home" + separator + "ICETests");
+		URI loc = null;
+		try {
+			loc = new URI("");
+		} catch (URISyntaxException e) {
+			fail("Could not create a new URI at " + userDir);
+		}
+		project = NewICEItemProjectSupport.createProject("ICEItemProjectTesterWorkspace", loc);
+		Assert.assertEquals(project, projectSpace);
+
 		// Check that all dotfiles are created correctly
-		
+
 		// Check that custom project nature is set up
-		
+		boolean hasICENature = false;
+
+		try {
+			hasICENature = project.hasNature(ICEItemNature.NATURE_ID);
+		} catch (CoreException e) {
+			fail("Error while trying to check project nature!");
+		}
+		Assert.assertTrue(hasICENature);
+
 		// Check that MANIFEST.MF and plugin.xml are set up
 	}
-	
-	
-	/**
-	 * Check that the new ICE Item classes are set up correctly
-	 */
-	@Test
-	public void testClassGeneration() {
-		return;
-	}
-	
-	
+
 	/**
 	 * Check that the parser generator form works correctly
 	 */
@@ -117,8 +133,7 @@ public class NewICEItemProjectTester {
 	public void testParserGenerator() {
 		return;
 	}
-	
-	
+
 	/**
 	 * Clean up everything we may have messed up
 	 */

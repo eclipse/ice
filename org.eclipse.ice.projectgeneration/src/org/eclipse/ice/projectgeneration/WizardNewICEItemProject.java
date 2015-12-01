@@ -74,11 +74,11 @@ public class WizardNewICEItemProject extends Wizard implements INewWizard {
 		_pageOne.setDescription(DESCRIPTION);
 		
 		// Add ICE Item setup page (model builder, job launcher, etc)
-		_pageTwo = new WizardNewICEModelBuilderPage(selection);
+		//_pageTwo = new WizardNewICEModelBuilderPage(selection);
 		
 		// Put the pages into the wizard
 		addPage(_pageOne);
-		addPage(_pageTwo);
+		//addPage(_pageTwo);
 	}
 	
 	
@@ -100,13 +100,13 @@ public class WizardNewICEItemProject extends Wizard implements INewWizard {
 		}
 		
 		// Generate the model builder class files
-		IFile file = _pageTwo.createNewFile();
+		/*IFile file = _pageTwo.createNewFile();
 		if (file != null) {
 			retval = retval && true;
 		} else {
 			retval = false;
 		}
-		
+		*/
 		NewICEItemProjectSupport.createProject(name, location);
 		return retval;
 	}
