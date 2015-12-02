@@ -151,7 +151,11 @@ public class DefaultPageFactory implements IPageFactory {
 		return pages.get(0);
 	}
 	
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getComponentPages()
+	 */
 	@Override
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
@@ -179,6 +183,102 @@ public class DefaultPageFactory implements IPageFactory {
 			logger.error("Unable to get BasicComponentPageProviders", e);
 		}
 
+		return pages;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getGeometryComponentPages()
+	 */
+	@Override
+	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
+			ArrayList<Component> components) {
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		try{
+			ArrayList<IGeometryPageProvider> geometryComponentProviders = 
+					IGeometryPageProvider.getProviders();
+			if (geometryComponentProviders != null && geometryComponentProviders.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IGeometryPageProvider currentProvider : geometryComponentProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, null);
+						break;
+					}
+				}
+			}else{
+				logger.error("No GeometryComponentProviders registered");
+			}
+			
+		} catch (CoreException e){
+			logger.error("Unable to get GeometryComponentPageProviders", e);
+		}
+		
+		return pages;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getIEFSectionComponentPages()
+	 */
+	@Override
+	public ArrayList<IFormPage> getIEFSectionComponentPages(FormEditor editor,
+			ArrayList<Component> components) {
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		try{
+			ArrayList<IEMFSectionPageProvider> EFSectionComponentPages = 
+					IEMFSectionPageProvider.getProviders();
+			if (EFSectionComponentPages != null && EFSectionComponentPages.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IEMFSectionPageProvider currentProvider : EFSectionComponentPages) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, null);
+						break;
+					}
+				}
+			}else{
+				logger.error("No EFSectionComponentPages registered");
+			}
+		}catch(CoreException e){
+			logger.error("Unable to get IEFSectionComponentPages", e);
+		}
+		return pages;
+		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getMeshComponentPages()
+	 */
+	@Override
+	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
+			ArrayList<Component> components){
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		try{
+			ArrayList<IMeshPageProvider> MeshComponentPages = 
+					IMeshPageProvider.getProviders();
+			if (MeshComponentPages != null && MeshComponentPages.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IMeshPageProvider currentProvider : MeshComponentPages) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, null);
+						break;
+					}
+				}
+			}else{
+				logger.error("No MeshComponentPages registered");
+			}
+		}catch(CoreException e){
+			logger.error("Unable to get MeshComponentPages", e);
+		}
 		return pages;
 	}
 

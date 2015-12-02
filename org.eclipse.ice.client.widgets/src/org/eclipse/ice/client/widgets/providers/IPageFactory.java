@@ -76,5 +76,46 @@ public interface IPageFactory {
 	 */
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
 			ArrayList<Component> components);
-
+	
+	/**
+	 * This operation returns the rendered pages that will display the contents
+	 * of the getGeometry components.
+	 *
+	 * @param editor
+	 *            the form editor where the pages will reside
+	 * @param components
+	 *            the list components whose contents should be rendered
+	 * @return the form pages on which the contents of the lists have been
+	 *         rendered
+	 */
+	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
+			ArrayList<Component> components);
+	
+	/**
+	 * This operation returns the rendered pages that will display the contents
+	 * of the IEFSection components.
+	 *
+	 * @param editor
+	 *            the form editor where the pages will reside
+	 * @param components
+	 *            the list components whose contents should be rendered
+	 * @return the form pages on which the contents of the lists have been
+	 *         rendered
+	 */
+	public ArrayList<IFormPage> getIEFSectionComponentPages(FormEditor editor,
+			ArrayList<Component> components);
+	
+	/**
+	 * This operation returns the rendered pages that will display the contents
+	 * of the Mesh components.
+	 *
+	 * @param editor
+	 *            the form editor where the pages will reside
+	 * @param components
+	 *            the list components whose contents should be rendered
+	 * @return the form pages on which the contents of the lists have been
+	 *         rendered
+	 */
+	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
+			ArrayList<Component> components);
 }
