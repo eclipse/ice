@@ -151,7 +151,11 @@ public class DefaultPageFactory implements IPageFactory {
 		return pages.get(0);
 	}
 	
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getComponentPages()
+	 */
 	@Override
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
@@ -182,6 +186,11 @@ public class DefaultPageFactory implements IPageFactory {
 		return pages;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getGeometryComponentPages()
+	 */
 	@Override
 	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
@@ -210,6 +219,11 @@ public class DefaultPageFactory implements IPageFactory {
 		return pages;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getIEFSectionComponentPages()
+	 */
 	@Override
 	public ArrayList<IFormPage> getIEFSectionComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
@@ -237,6 +251,11 @@ public class DefaultPageFactory implements IPageFactory {
 		
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageFactory#getMeshComponentPages()
+	 */
 	@Override
 	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
 			ArrayList<Component> components){
