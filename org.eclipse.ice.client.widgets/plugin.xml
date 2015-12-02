@@ -3,6 +3,11 @@
 
 <plugin>
    <extension-point id="org.eclipse.ice.client.widgets.iformwidgetbuilder" name="IForm Widget Builder" schema="schema/iformwidgetbuilder.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.listPageProvider" name="List Page Provider" schema="schema/org.eclipse.ice.client.widgets.listPageProvider.exsd"/>
+   <extension-point id="errorPageProvider" name="Error Page Provider" schema="schema/errorPageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.resourcePageProvider" name="Resource Page Provider" schema="schema/org.eclipse.ice.client.widgets.resourcePageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.basicComponentPageProvider" name="Basic Component Page Provider" schema="schema/org.eclipse.ice.client.widgets.basicComponentPageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.geometryPageProvider" name="geometryPageProvider" schema="schema/org.eclipse.ice.client.widgets.geometryPageProvider.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -377,5 +382,42 @@
              contentTypeId="org.eclipse.ice.persistence.xml.contentType.Form">
        </contentTypeBinding>
     </editor>
+ </extension>
+ <extension
+       id="defaultErrorPageProvider"
+       name="Default Error Page Provider"
+       point="org.eclipse.ice.client.widgets.errorPageProvider">
+    <implementation
+          class="org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider">
+    </implementation>
+ </extension>
+ <extension
+       id="listPageProvider"
+       name="Default List Page Provider"
+       point="org.eclipse.ice.client.widgets.listPageProvider">
+    <implementation
+          class="org.eclipse.ice.client.widgets.providers.DefaultListPageProvider">
+    </implementation>
+ </extension>
+ <extension
+       id="resourcePageProvider"
+       name="Default Resource Page Provider"
+       point="org.eclipse.ice.client.widgets.resourcePageProvider">
+    <Implementation
+          Class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider"
+          class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider">
+    </Implementation>
+ </extension>
+ <extension
+       point="org.eclipse.ice.client.widgets.basicComponentPageProvider">
+    <implementation
+          class="org.eclipse.ice.client.widgets.providers.DefaultBasicComponentPageProvider">
+    </implementation>
+ </extension>
+ <extension
+       point="org.eclipse.ice.client.widgets.geometryPageProvider">
+    <client
+          class="org.eclipse.ice.client.widgets.providers.DefaultGeometryPageProvider">
+    </client>
  </extension>
 </plugin>

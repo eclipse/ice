@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.client.widgets.providers.DefaultPageFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -42,7 +42,6 @@ import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
@@ -109,11 +108,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	private boolean dirty = false;
 
 	/**
-	 * The Component Map. This map is used to organize the Components in the
-	 * Form by type. The type is the key and is a string equal to one of "data,"
-	 * "output," "matrix," "masterDetails", "table," "geometry," "shape" or
-	 * "tree," or reactor. The value is a list that stores all components of
-	 * that type. This is a simulated multimap.
+	 * The Component Map. This map must contain the Components in the Form
+	 * organized by type. The type is the key and a string equal to one of
+	 * "data," "output," "matrix," "masterDetails", "table," "geometry,"
+	 * "shape," "tree," "mesh," or "reactor." The value is a list that stores
+	 * all components of that type; DataComponent, ResourceComponent,
+	 * MatrixComponent, MasterDetailsComponent, TableComponent,
+	 * GeometryComponent, ShapeComponent, TreeComponent, MeshComponent,
+	 * ReactorComponent, etc. This is a simulated multimap.
+	 * 
 	 */
 	protected HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
 
@@ -221,7 +224,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		staticLogger.info("ICEFormEditor Message: IVizServiceFactory set!");
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.viz.service.IVizServiceFactory");
 		staticLogger.info("ICEFormEditor: Available configuration elements");
 		for (IConfigurationElement element : elements) {
 			staticLogger.info(element.getName());
@@ -252,9 +256,11 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Push a message to the message manager
 		if (getHeaderForm() != null) {
-			final IMessageManager messageManager = getHeaderForm().getMessageManager();
+			final IMessageManager messageManager = getHeaderForm()
+					.getMessageManager();
 			if (dirty) {
-				messageManager.addMessage("statusUpdate", "There are unsaved changes on the form.", null,
+				messageManager.addMessage("statusUpdate",
+						"There are unsaved changes on the form.", null,
 						IMessageProvider.WARNING);
 			} else {
 				messageManager.removeMessage("statusUpdate");
@@ -306,34 +312,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	}
 
 	/**
-	 * This operation creates the ICEResourcePage that will show any output
-	 * files created by ICE.
-	 * 
-	 * @return The ICEResourcePage that should be rendered as part of the Form.
-	 */
-	private ICEFormPage createResourcePage() {
-
-		// Local Declarations
-		ResourceComponent resourceComponent = null;
-
-		// Get the ResourceComponent and create the ICEOutput page. There
-		// should
-		// only be one output page.
-		if (!(componentMap.get("output").isEmpty())) {
-			resourceComponent = (ResourceComponent) (componentMap.get("output").get(0));
-			if (resourceComponent != null) {
-				// Make the page
-				resourceComponentPage = new ICEResourcePage(this, resourceComponent.getName(),
-						resourceComponent.getName());
-				// Set the ResourceComponent
-				resourceComponentPage.setResourceComponent(resourceComponent);
-			}
-		}
-
-		return resourceComponentPage;
-	}
-
-	/**
 	 * This method returns the ICEResourcePage that this ICEFormEditor manages.
 	 * 
 	 * @return The ICEResourcePage.
@@ -351,21 +329,26 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
 
+		// Need IMasterDetailsPageProvider
+
 		// Local Declarations
 		ArrayList<ICEFormPage> masterDetailsPages = new ArrayList<ICEFormPage>();
 		MasterDetailsComponent masterDetailsComponent = null;
 
 		// Get the MasterDetailsComponent and create the MasterDetails page.
 		if (!(componentMap.get("masterDetails").isEmpty())) {
-			masterDetailsComponent = (MasterDetailsComponent) (componentMap.get("masterDetails").get(0));
+			masterDetailsComponent = (MasterDetailsComponent) (componentMap
+					.get("masterDetails").get(0));
 			if (masterDetailsComponent != null) {
 				// Get the name
 				String name = masterDetailsComponent.getName();
 				// Make the page
-				ICEMasterDetailsPage iCEMasterDetailsPage = new ICEMasterDetailsPage(this, "MDPid", name);
+				ICEMasterDetailsPage iCEMasterDetailsPage = new ICEMasterDetailsPage(
+						this, "MDPid", name);
 
 				// Set the MasterDetailsComponent
-				iCEMasterDetailsPage.setMasterDetailsComponent(masterDetailsComponent);
+				iCEMasterDetailsPage
+						.setMasterDetailsComponent(masterDetailsComponent);
 
 				masterDetailsPages.add(iCEMasterDetailsPage);
 			}
@@ -394,8 +377,10 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			public void run() {
 				// Post the message to the update manager
 				if (getHeaderForm() != null) {
-					final IMessageManager messageManager = getHeaderForm().getMessageManager();
-					messageManager.addMessage("statusUpdate", message, null, IMessageProvider.INFORMATION);
+					final IMessageManager messageManager = getHeaderForm()
+							.getMessageManager();
+					messageManager.addMessage("statusUpdate", message, null,
+							IMessageProvider.INFORMATION);
 				}
 			}
 		});
@@ -409,19 +394,37 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The GeometryPage created.
 	 */
 	private ICEFormPage createGeometryPage() {
-
+		
+		
+		ArrayList<Component> comps = new ArrayList<Component>();
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		comps.addAll(componentMap.get("geometry"));
+		
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getGeometryComponentPages(this, comps);
+		
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
+		}
+		
+		return pages.get(0);
+		// Need IGeometryPageProvider
+		/*
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(new ICEGeometry());
 
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(componentMap.get("geometry").isEmpty())) {
-			geometryComponent = (GeometryComponent) (componentMap.get("geometry").get(0));
+			geometryComponent = (GeometryComponent) (componentMap
+					.get("geometry").get(0));
 
 			if (geometryComponent != null) {
 
 				// Make the GeometryPage
-				geometryPage = new ICEGeometryPage(this, "GPid", geometryComponent.getName());
+				geometryPage = new ICEGeometryPage(this, "GPid",
+						geometryComponent.getName());
 
 				// Set the GeometryComponent
 				geometryPage.setGeometry(geometryComponent);
@@ -429,7 +432,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		}
 
-		return geometryPage;
+		return geometryPage;*/
 	}
 
 	/**
@@ -439,6 +442,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The MeshPage created.
 	 */
 	private ICEFormPage createMeshPage() {
+
+		// Need IMeshPageProvider
 
 		// Local Declarations
 		MeshComponent meshComponent = new MeshComponent();
@@ -450,7 +455,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			if (meshComponent != null) {
 
 				// Make the MeshPage
-				meshPage = new ICEMeshPage(this, "MeshPid", meshComponent.getName());
+				meshPage = new ICEMeshPage(this, "MeshPid",
+						meshComponent.getName());
 
 				// Set the MeshComponent
 				meshPage.setMeshComponent(meshComponent);
@@ -467,6 +473,9 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The ICEFormPages for each EMF Component in the list.
 	 */
 	private ArrayList<ICEFormPage> createEMFSectionPages() {
+
+		// Need IEMFSectionPageProvider
+
 		// Local Declarations
 		EMFComponent emfComponent = null;
 		EMFSectionPage emfPage = null;
@@ -478,42 +487,11 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				emfComponent = (EMFComponent) comp;
 				if (emfComponent != null) {
 					// Make the EMFSectionPage
-					emfPage = new EMFSectionPage(this, emfComponent.getName(), emfComponent.getName());
+					emfPage = new EMFSectionPage(this, emfComponent.getName(),
+							emfComponent.getName());
 					// Set the EMFComponent
 					emfPage.setEMFComponent(emfComponent);
 					pages.add(emfPage);
-				}
-			}
-		}
-
-		return pages;
-	}
-
-	/**
-	 * This operation creates a set of ICEFormPages for ListComponents that are
-	 * stored in the component map.
-	 * 
-	 * @return The pages.
-	 */
-	private ArrayList<ICEFormPage> createListSectionPages() {
-
-		// Create the list of pages to return
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		// Get the lists from the component map
-		ArrayList<Component> lists = componentMap.get("list");
-		// If there are some lists, render sections for them
-		if (lists.size() > 0) {
-			for (int i = 0; i < lists.size(); i++) {
-				ListComponent<?> list = (ListComponent<?>) lists.get(i);
-				// Make sure the list isn't null since that value can be put in
-				// a collection
-				if (list != null) {
-					// Create a new page for the list
-					ListComponentSectionPage page = new ListComponentSectionPage(this, list.getName(), list.getName());
-					page.setList(list);
-					// Add the page to the return list
-					pages.add(page);
 				}
 			}
 		}
@@ -532,7 +510,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		if (!trees.isEmpty()) {
 			// Show the view
 			try {
-				getSite().getWorkbenchWindow().getActivePage().showView(getTreeCompositeViewerID());
+				getSite().getWorkbenchWindow().getActivePage()
+						.showView(getTreeCompositeViewerID());
 			} catch (PartInitException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
@@ -555,7 +534,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			}
 
 			// Get the TreeCompositeViewer
-			TreeCompositeViewer treeView = (TreeCompositeViewer) getSite().getWorkbenchWindow().getActivePage()
+			TreeCompositeViewer treeView = (TreeCompositeViewer) getSite()
+					.getWorkbenchWindow().getActivePage()
 					.findView(getTreeCompositeViewerID());
 			// Set the tree as input to the tree view
 			treeView.setInput(tree, this);
@@ -630,11 +610,14 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
 
+		// Need IHeaderContentsProvider
+
 		// Get a reference to the IManagedForm
 		managedForm = headerForm;
 
 		// Get the Form that provides the common header and decorate it.
-		org.eclipse.ui.forms.widgets.Form form = managedForm.getForm().getForm();
+		org.eclipse.ui.forms.widgets.Form form = managedForm.getForm()
+				.getForm();
 		managedForm.getToolkit().decorateFormHeading(form);
 
 		// Create a composite for the overall head layout.
@@ -669,15 +652,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Create the process label, button and dropdown if the action list is
 		// available.
-		if (iceDataForm.getActionList() != null && !iceDataForm.getActionList().isEmpty()) {
+		if (iceDataForm.getActionList() != null
+				&& !iceDataForm.getActionList().isEmpty()) {
 
 			// Create a label for the process buttons
 			Label processLabel = new Label(headClient, SWT.NONE);
 			processLabel.setText("Process:");
 
 			// Create the dropdown menu
-			processDropDown = new Combo(headClient,
-					SWT.DROP_DOWN | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
+			processDropDown = new Combo(headClient, SWT.DROP_DOWN | SWT.SINGLE
+					| SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 			for (String i : iceDataForm.getActionList()) {
 				processDropDown.add(i);
 			}
@@ -689,7 +673,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Set the action value to use when processing
-					processName = processDropDown.getItem(processDropDown.getSelectionIndex());
+					processName = processDropDown
+							.getItem(processDropDown.getSelectionIndex());
 				}
 			});
 
@@ -750,82 +735,26 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 *         {@code null}.
 	 */
 	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
+
 		// Local Declarations
-		ArrayList<ICEFormPage> sectionPages = new ArrayList<ICEFormPage>();
+
 		ArrayList<Component> comps = new ArrayList<Component>();
-		ICESectionPage tmpPage = null;
-		String pageName = null;
-		int numCompsPerPage = 4, i = 0, j = 0;
-		int numComponents = 0;
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
 
 		// Get the TableComponents and DataComponents
 		comps.addAll(componentMap.get("data"));
 		comps.addAll(componentMap.get("table"));
 		comps.addAll(componentMap.get("matrix"));
-
-		numComponents = comps.size();
-
-		// If there are less components than the allowed number of components
-		// per page, just add them all to the first page
-		if (numComponents < numCompsPerPage) {
-			// Set a name for the page that is a combination of the first two
-			// components or only the first one if there is but one component
-			if (numComponents == 1) {
-				pageName = ((ICEObject) (comps.get(0))).getName();
-			} else {
-				pageName = ((ICEObject) (comps.get(0))).getName() + ", " + ((ICEObject) (comps.get(1))).getName()
-						+ ", etc.";
-			}
-			// Instantiate the page
-			tmpPage = new ICESectionPage(this, pageName, pageName);
-			// Loop over the list of DataComponents and create pages for them
-			for (Component component : comps) {
-				tmpPage.addComponent(component);
-			}
-			sectionPages.add(tmpPage);
-		} else {
-			// Otherwise, if there are more components than the number of
-			// components per page, add them all with numCompsPerPage Components
-			// per page. This loop adds all of the full pages.
-			for (i = 0; i < (numComponents / numCompsPerPage) * numCompsPerPage; i = i + numCompsPerPage) {
-				// Set a name for the page that is a combination of the first
-				// two components
-				pageName = ((ICEObject) (comps.get(i))).getName() + ", " + ((ICEObject) (comps.get(i + 1))).getName()
-						+ ", etc.";
-				// Create the page
-				tmpPage = new ICESectionPage(this, pageName, pageName);
-				// Add the components
-				for (j = 0; j < numCompsPerPage; j++) {
-					// i - 1 + j is the buffer offset
-					tmpPage.addComponent(comps.get(i + j));
-				}
-				// Add the page to the list
-				sectionPages.add(tmpPage);
-			}
-
-			// Clean up the left over components by just adding them to
-			// their own page.
-			if (i != comps.size()) {
-				// Start by adding setting up the name
-				if (comps.size() - i == 1) {
-					pageName = ((ICEObject) (comps.get(i))).getName();
-				} else {
-					pageName = ((ICEObject) (comps.get(i))).getName() + ", "
-							+ ((ICEObject) (comps.get(i + 1))).getName() + ", etc.";
-				}
-				// Create the page
-				tmpPage = new ICESectionPage(this, pageName, pageName);
-				// Add the components
-				while (i < comps.size()) {
-					tmpPage.addComponent(comps.get(i));
-					i++;
-				}
-				// Add the page to the list
-				sectionPages.add(tmpPage);
-			}
+		
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getComponentPages(this, comps);
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
 		}
+		return pages;
 
-		return sectionPages;
+	
 	}
 
 	private String itemName;
@@ -840,7 +769,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 *            the input for this editor
 	 */
 	@Override
-	public void init(IEditorSite site, IEditorInput input) throws RuntimeException {
+	public void init(IEditorSite site, IEditorInput input)
+			throws RuntimeException {
 
 		// Get the Client Reference
 		IClient client = null;
@@ -885,12 +815,17 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			// Register the client as a listener
 			// of specific form editor events.
 			try {
-				registerUpdateListener(IUpdateEventListener.getUpdateEventListener());
-				registerProcessListener(IProcessEventListener.getProcessEventListener());
-				registerResourceProvider(ISimpleResourceProvider.getSimpleResourceProvider());
+				registerUpdateListener(
+						IUpdateEventListener.getUpdateEventListener());
+				registerProcessListener(
+						IProcessEventListener.getProcessEventListener());
+				registerResourceProvider(
+						ISimpleResourceProvider.getSimpleResourceProvider());
 			} catch (CoreException e) {
 				// Complain
-				logger.error("Unable to get register the update, process, or simpleresource implementations!", e);
+				logger.error(
+						"Unable to get register the update, process, or simpleresource implementations!",
+						e);
 			}
 
 		} else {
@@ -957,7 +892,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		}
 
 		// Refresh the parts on the selected page
-		for (IFormPart part : ((ICEFormPage) this.getSelectedPage()).getManagedForm().getParts()) {
+		for (IFormPart part : ((ICEFormPage) this.getSelectedPage())
+				.getManagedForm().getParts()) {
 			part.refresh();
 		}
 
@@ -971,7 +907,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 			// Get the first MasterDetailsComponent (The current code only
 			// allows one master details to be implemented at this time
-			MasterDetailsComponent comp = (MasterDetailsComponent) (componentMap.get("masterDetails").get(0));
+			MasterDetailsComponent comp = (MasterDetailsComponent) (componentMap
+					.get("masterDetails").get(0));
 
 			// Get the name of the component
 			String name = comp.getName();
@@ -1003,7 +940,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		if (!(componentMap.get("emf")).isEmpty()) {
 			for (int i = 0; i < this.getPageCount(); i++) {
 				FormPage formPage = (FormPage) this.pages.get(i);
-				EMFComponent comp = (EMFComponent) componentMap.get("emf").get(0);
+				EMFComponent comp = (EMFComponent) componentMap.get("emf")
+						.get(0);
 				if (formPage.getPartName().equals(comp.getName())) {
 					formPage.doSave(null);
 				}
@@ -1048,17 +986,22 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		// Local Declaration
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
+		// Just allocate it directly for now!
+		DefaultPageFactory factory = new DefaultPageFactory();
+
 		// Load data pages if they are available.
 		if (!iceDataForm.getComponents().isEmpty()) {
 
 			// Loop over the components and get them into the map
 			for (Component i : iceDataForm.getComponents()) {
-				logger.info("ICEFormEditor Message: Adding component " + i.getName() + " " + i.getId());
+				logger.info("ICEFormEditor Message: Adding component "
+						+ i.getName() + " " + i.getId());
 				i.accept(this);
 			}
 
 			// Create pages for the DataComponents and add them to the list
-			if (!(componentMap.get("data").isEmpty()) || !(componentMap.get("table").isEmpty())
+			if (!(componentMap.get("data").isEmpty())
+					|| !(componentMap.get("table").isEmpty())
 					|| !(componentMap.get("matrix").isEmpty())) {
 				formPages.addAll(createDataTableAndMatrixComponentPages());
 			}
@@ -1087,9 +1030,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 			// Create pages for list components
 			if (componentMap.get("list").size() > 0) {
-				for (ICEFormPage p : createListSectionPages()) {
-					formPages.add(p);
-				}
+				formPages.addAll(factory.getListComponentPages(this,
+						componentMap.get("list")));
 			}
 
 			// Set the TreeCompositeViewer Input
@@ -1097,18 +1039,20 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 			// Create the page for Reactors
 			if (!(componentMap.get("reactor").isEmpty())) {
-				logger.info("ICEFormEditor Message: " + componentMap.get("reactor").size()
+				logger.info("ICEFormEditor Message: "
+						+ componentMap.get("reactor").size()
 						+ " IReactorComponents not rendered.");
 			}
 
 			// Create the page for ResourceComponents. This one should always be
 			// last on the list!
 			if (!(componentMap.get("output").isEmpty())) {
-				formPages.add(createResourcePage());
+				formPages.addAll(factory.getResourceComponentPages(this,
+						componentMap.get("output")));
 			}
 		} else {
 			// Otherwise throw up a nice empty page explaining the problem.
-			formPages.add(createEmptyErrorPage());
+			formPages.add(factory.getErrorPage(this));
 		}
 
 		// Add the Pages
@@ -1122,16 +1066,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		return;
 
-	}
-
-	/**
-	 * This operation creates an empty FormPage explaining that there has been
-	 * an error and no data is available.
-	 * 
-	 * @return the empty page
-	 */
-	private IFormPage createEmptyErrorPage() {
-		return new ErrorMessageFormPage(this, "Error Page", "Error Page");
 	}
 
 	/**
