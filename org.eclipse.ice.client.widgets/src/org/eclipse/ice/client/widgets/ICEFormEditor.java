@@ -394,9 +394,23 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The GeometryPage created.
 	 */
 	private ICEFormPage createGeometryPage() {
-
+		
+		
+		ArrayList<Component> comps = new ArrayList<Component>();
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		comps.addAll(componentMap.get("geometry"));
+		
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getGeometryComponentPages(this, comps);
+		
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
+		}
+		
+		return pages.get(0);
 		// Need IGeometryPageProvider
-
+		/*
 		// Local Declarations
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(new ICEGeometry());
@@ -418,7 +432,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		}
 
-		return geometryPage;
+		return geometryPage;*/
 	}
 
 	/**

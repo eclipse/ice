@@ -76,5 +76,8 @@ public interface IPageFactory {
 	 */
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
 			ArrayList<Component> components);
+	
+	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
+			ArrayList<Component> components);
 
 }

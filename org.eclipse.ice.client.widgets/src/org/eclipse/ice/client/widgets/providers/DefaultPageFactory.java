@@ -181,5 +181,33 @@ public class DefaultPageFactory implements IPageFactory {
 
 		return pages;
 	}
+	
+	@Override
+	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
+			ArrayList<Component> components) {
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		try{
+			ArrayList<IGeometryPageProvider> geometryComponentProviders = 
+					IGeometryPageProvider.getProviders();
+			if (geometryComponentProviders != null && geometryComponentProviders.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IGeometryPageProvider currentProvider : geometryComponentProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, null);
+						break;
+					}
+				}
+			}else{
+				logger.error("No GeometryComponentProviders registered");
+			}
+			
+		} catch (CoreException e){
+			logger.error("Unable to get GeometryComponentPageProviders", e);
+		}
+		
+		return pages;
+	}
 
 }
