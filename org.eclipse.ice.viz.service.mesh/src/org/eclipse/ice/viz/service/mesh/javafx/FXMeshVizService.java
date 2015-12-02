@@ -18,7 +18,6 @@ import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
  * <p>
@@ -46,14 +45,9 @@ public class FXMeshVizService extends AbstractVizService {
 	@Override
 	public IVizCanvas createCanvas(AbstractController geometry)
 			throws Exception {
-		if (geometry instanceof Shape) {
-			FXMeshCanvas canvas = new FXMeshCanvas(geometry);
+		FXMeshCanvas canvas = new FXMeshCanvas(geometry);
 
-			return canvas;
-		} else {
-			throw new IllegalArgumentException(
-					"Viz Canvases can only be made from AbstractControllers");
-		}
+		return canvas;
 	}
 
 	/**

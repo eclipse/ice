@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.FaceComponent;
+import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceComponent;
 
 /**
  * A component for Faces within the Mesh Editor, making use of FaceEdges to
@@ -23,7 +23,7 @@ import org.eclipse.ice.viz.service.modeling.FaceComponent;
  * @author Robert Smith
  *
  */
-public class NekPolygonComponent extends FaceComponent {
+public class NekPolygonComponent extends EdgeAndVertexFaceComponent {
 
 	/**
 	 * The default constructore
@@ -56,7 +56,7 @@ public class NekPolygonComponent extends FaceComponent {
 		if (entity instanceof Edge) {
 
 			// Add the edge to the Edges cagtegory by default
-			super.addEntityByCategory(entity, "Edges");
+			super.addEntity(entity);
 
 			// If the controller already exists, give a reference to it to the
 			// edge.
@@ -70,8 +70,9 @@ public class NekPolygonComponent extends FaceComponent {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
+	 *
 	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#setController(
 	 * org.eclipse.ice.viz.service.modeling.AbstractController)
 	 */
@@ -80,8 +81,11 @@ public class NekPolygonComponent extends FaceComponent {
 		super.setController(controller);
 
 		// Give a reference to the controller to the edge's faces
-		for (AbstractController edge : entities.get("Edges")) {
-			edge.addEntity(controller);
+		List<AbstractController> edges = entities.get("Edges");
+		if (edges != null) {
+			for (AbstractController edge : edges) {
+				edge.addEntity(controller);
+			}
 		}
 
 	}

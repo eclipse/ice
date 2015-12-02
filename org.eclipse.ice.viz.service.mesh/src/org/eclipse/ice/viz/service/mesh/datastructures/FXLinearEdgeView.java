@@ -15,7 +15,7 @@ import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.LinearEdgeComponent;
+import org.eclipse.ice.viz.service.modeling.EdgeComponent;
 import org.eclipse.ice.viz.service.modeling.Shape;
 
 import javafx.geometry.Point3D;
@@ -70,15 +70,9 @@ public class FXLinearEdgeView extends AbstractView {
 		node = new Group();
 
 		// Create the materials
-		defaultMaterial = new PhongMaterial(Color.rgb(127, 0, 127));
-		defaultMaterial.setSpecularColor(Color.WHITE);
+		defaultMaterial = new PhongMaterial(Color.rgb(80, 30, 140));
 		selectedMaterial = new PhongMaterial(Color.rgb(0, 127, 255));
-		selectedMaterial.setSpecularColor(Color.WHITE);
 		constructingMaterial = new PhongMaterial(Color.rgb(0, 255, 0));
-		constructingMaterial.setSpecularColor(Color.WHITE);
-
-		// Set the sphere to be the constructing material by default
-		mesh.setMaterial(constructingMaterial);
 
 	}
 
@@ -88,8 +82,8 @@ public class FXLinearEdgeView extends AbstractView {
 	 * @param model
 	 *            The model which this view will display
 	 */
-	public FXLinearEdgeView(LinearEdgeComponent model) {
-		super();
+	public FXLinearEdgeView(EdgeComponent model) {
+		this();
 
 		// Initialize the JavaFX node
 		node.setId(model.getProperty("Name"));
@@ -97,9 +91,12 @@ public class FXLinearEdgeView extends AbstractView {
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
-		// Create a Shape3D for the model
-		mesh = createShape(model);
-		node.getChildren().add(mesh);
+		// // Create a Shape3D for the model
+		// mesh = createShape(model);
+		// node.getChildren().add(mesh);
+		//
+		// // Set the cylinder to be the constructing material by default
+		// mesh.setMaterial(constructingMaterial);
 
 	}
 
@@ -108,7 +105,7 @@ public class FXLinearEdgeView extends AbstractView {
 	 * 
 	 * @return A JavaFX Cylinder representing the given LinearEdgeComponent
 	 */
-	private Cylinder createShape(LinearEdgeComponent edgeComponent) {
+	private Cylinder createShape(EdgeComponent edgeComponent) {
 		// Get the edge's endpoints
 		double[] start = ((org.eclipse.ice.viz.service.modeling.Edge) edgeComponent
 				.getController()).getStartLocation();
@@ -117,7 +114,7 @@ public class FXLinearEdgeView extends AbstractView {
 
 		// Create a cylinder situated at the edge's midpoint with the edge's
 		// length.
-		Cylinder edge = new Cylinder(.5,
+		Cylinder edge = new Cylinder(.6,
 				Math.sqrt((Math.pow(start[0] - end[0], 2))
 						+ (Math.pow(start[1] - end[1], 2))
 						+ (Math.pow(start[2] - end[2], 2))));
@@ -182,31 +179,27 @@ public class FXLinearEdgeView extends AbstractView {
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
-		mesh = createShape(((LinearEdgeComponent) model));
+		// Redraw the cylinder and set it as the node's child
+		mesh = createShape(((EdgeComponent) model));
+		node.getChildren().clear();
+		node.getChildren().add(mesh);
 
 		// If the vertex is under construction, leave the material unchanged,
 		// otherwise set it based on whether or not the vertex is selected
 		if (!"True".equals(model.getProperty("Constructing"))) {
 
 			// Convert the model's selected property to a boolean
-			Boolean newSelected = "True".equals(model.getProperty("Selected"));
-
-			// If the selected property has changed, update
-			if (selected != newSelected) {
-
-				// Save the selected value
-				selected = newSelected;
-
-				if (selected) {
-
-					// Set the material if selected
-					mesh.setMaterial(selectedMaterial);
-				} else {
-
-					// Set the material if selected
-					mesh.setMaterial(defaultMaterial);
-				}
+			if ("True".equals(model.getProperty("Selected"))) {
+				mesh.setMaterial(selectedMaterial);
 			}
+
+			else {
+				mesh.setMaterial(defaultMaterial);
+			}
+		}
+
+		else {
+			mesh.setMaterial(constructingMaterial);
 		}
 	}
 

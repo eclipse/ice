@@ -211,7 +211,15 @@ public class GeneralInfoSection extends AbstractPropertySection {
 		if (object != null) {
 			// Update the Text fields with their appropriate values.
 			nameText.setText(object.getProperty("Name"));
-			descText.setText(object.getProperty("Description"));
+
+			// It is permissible for an object to lack a description, in which
+			// case the text is simply empty
+			String desc = object.getProperty("Description");
+			if (desc == null) {
+				desc = "";
+			}
+
+			descText.setText(desc);
 			descText.setEnabled(true);
 			idLabel.setText(object.getProperty("Id"));
 		}

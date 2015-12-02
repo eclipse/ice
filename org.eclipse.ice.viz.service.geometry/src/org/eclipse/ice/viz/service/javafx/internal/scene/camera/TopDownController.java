@@ -15,6 +15,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -88,11 +89,17 @@ public class TopDownController extends CameraController {
 
 	private Affine affine;
 
-	private final double NORMAL_SPEED = 60.0d;
+	private final double NORMAL_SPEED = .5d;
 
-	private final double FAST_SPEED = 120.0d;
+	private final double FAST_SPEED = 1d;
 
 	private double speed;
+
+	/**
+	 * The group containing the camera, its transformations, and any children
+	 * nodes which are to be displayed relative to the camera.
+	 */
+	private Group camGroup;
 
 	/**
 	 * <p>
@@ -109,14 +116,14 @@ public class TopDownController extends CameraController {
 
 		Translate translation = new Translate();
 
-		final Group camGroup = new Group();
+		camGroup = new Group();
 		camGroup.getTransforms().setAll(translation);
 		camGroup.getChildren().add(finalCamera);
 
-		finalCamera.setTranslateZ(-500);
+		finalCamera.setTranslateZ(-85);
 
 		affine = new Affine();
-		camera.getTransforms().setAll(affine);
+		camGroup.getTransforms().setAll(affine);
 
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
@@ -144,12 +151,12 @@ public class TopDownController extends CameraController {
 
 				if (keyCode == KeyCode.W) {
 					Point3D moveVec = yDir.multiply(speed);
-					affine.appendTranslation(moveVec.getX(), moveVec.getY(),
+					affine.appendTranslation(moveVec.getX(), -moveVec.getY(),
 							moveVec.getZ());
 				} else if (keyCode == KeyCode.S) {
 					Point3D moveVec = yDir.multiply(speed);
 					Point3D invVec = new Point3D(-moveVec.getX(),
-							-moveVec.getY(), -moveVec.getZ());
+							moveVec.getY(), -moveVec.getZ());
 					affine.appendTranslation(invVec.getX(), invVec.getY(),
 							invVec.getZ());
 				} else if (keyCode == KeyCode.A) {
@@ -181,19 +188,19 @@ public class TopDownController extends CameraController {
 		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
-				mouseOldX = mousePosX;
-				mouseOldY = mousePosY;
-				mousePosX = arg0.getSceneX();
-				mousePosY = arg0.getSceneY();
-				mouseDeltaX = (mousePosX - mouseOldX);
-				mouseDeltaY = (mousePosY - mouseOldY);
-
-				double modifier = 1.0;
-
-				if (arg0.isPrimaryButtonDown()) {
-					translation.setX(translation.getX() - mouseDeltaX);
-					translation.setY(translation.getY() - mouseDeltaY);
-				}
+				// mouseOldX = mousePosX;
+				// mouseOldY = mousePosY;
+				// mousePosX = arg0.getSceneX();
+				// mousePosY = arg0.getSceneY();
+				// mouseDeltaX = (mousePosX - mouseOldX);
+				// mouseDeltaY = (mousePosY - mouseOldY);
+				//
+				// double modifier = 1.0;
+				//
+				// if (arg0.isPrimaryButtonDown()) {
+				// translation.setX(translation.getX() - mouseDeltaX);
+				// translation.setY(translation.getY() - mouseDeltaY);
+				// }
 			}
 
 		});
@@ -207,13 +214,29 @@ public class TopDownController extends CameraController {
 				// Get the current z position and modify it by the amount of
 				// scrolling
 				double z = finalCamera.getTranslateZ();
-				double newZ = z + event.getDeltaY();
-				finalCamera.setTranslateZ(newZ);
+				double newZ = z + (event.getDeltaY() * .1);
+
+				// Prevent the user from zooming too close to the plane of the x
+				// and y axis
+				if (newZ <= -15) {
+					finalCamera.setTranslateZ(newZ);
+				}
 
 			}
 
 		});
 
+	}
+
+	/**
+	 * Set a node to move along with the camera, so that it is always displayed
+	 * in the same part of the screen.
+	 * 
+	 * @param node
+	 *            The node whose position will be set relative to the camera.
+	 */
+	public void fixToCamera(Node node) {
+		camGroup.getChildren().add(node);
 	}
 
 }

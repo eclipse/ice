@@ -21,9 +21,13 @@ import org.eclipse.ice.viz.service.geometry.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.Face;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
 
 /**
  * <p>
@@ -48,6 +52,11 @@ public class FXMeshAttachment extends GeometryAttachment {
 	private List<AbstractController> knownGeometry;
 
 	/**
+	 * A box displayed behind the rest of the scene.
+	 */
+	private Box background;
+
+	/**
 	 * <p>
 	 * Creates an FXGeometryAttachment instance.
 	 * </p>
@@ -57,6 +66,16 @@ public class FXMeshAttachment extends GeometryAttachment {
 	 */
 	public FXMeshAttachment(FXMeshAttachmentManager manager) {
 		this.manager = manager;
+
+		// Create a grey background box
+		background = new Box(96, 48, 1);
+		PhongMaterial backgroundMaterial = new PhongMaterial();
+		backgroundMaterial.setDiffuseColor(Color.GRAY);
+		background.setMaterial(backgroundMaterial);
+
+		// Move the background back slightly so it will not overlap with the
+		// objects on the z plane
+		// background.setTranslateZ(-1);
 	}
 
 	/**
@@ -69,6 +88,9 @@ public class FXMeshAttachment extends GeometryAttachment {
 		if (fxAttachmentNode == null) {
 			fxAttachmentNode = new Group();
 		}
+
+		// Add the background
+		fxAttachmentNode.getChildren().add(background);
 
 		Group fxNode = Util.getFxGroup(owner);
 		fxNode.getChildren().add(fxAttachmentNode);
@@ -119,7 +141,8 @@ public class FXMeshAttachment extends GeometryAttachment {
 		}
 
 		if (!knownGeometry.contains(geom)) {
-			final AbstractController finalGeom = geom;
+
+			fxAttachmentNode.getChildren().clear();
 
 			geom.register(new IVizUpdateableListener() {
 				@Override
@@ -129,15 +152,8 @@ public class FXMeshAttachment extends GeometryAttachment {
 						@Override
 						public void run() {
 
-							// On update, refresh the list of top level nodes
-							fxAttachmentNode.getChildren().clear();
-
-							for (AbstractController child : finalGeom
-									.getEntities()) {
-								fxAttachmentNode.getChildren()
-										.add((Group) child.getRepresentation());
-
-							}
+							// On update, refresh the scene
+							refresh();
 						}
 					});
 				}
@@ -234,6 +250,56 @@ public class FXMeshAttachment extends GeometryAttachment {
 		}
 
 		return fxAttachmentNode.getId();
+	}
+
+	/**
+	 * Returns the root AbstractController under which all permanent parts are
+	 * children.
+	 * 
+	 * @return The AbstractController which is an ancestor to all permanent
+	 *         parts for this attachment's editor.
+	 */
+	public AbstractController getRoot() {
+		return knownGeometry.get(0);
+	}
+
+	/**
+	 * Redraw all shapes in the scene.
+	 */
+	private void refresh() {
+
+		// On update, refresh the list of top level nodes
+		fxAttachmentNode.getChildren().clear();
+
+		// For each group which has been added to the attachment
+		for (AbstractController group : knownGeometry) {
+
+			// Get each part which is managed by that controller
+			for (AbstractController entity : group.getEntities()) {
+
+				// Add each child of a polygon to the scene, without repeats
+				if (entity instanceof Face) {
+
+					for (AbstractController child : entity.getEntities()) {
+
+						Group render = (Group) child.getRepresentation();
+
+						if (!fxAttachmentNode.getChildren().contains(render)) {
+							// Add the representation to the scene's node
+							fxAttachmentNode.getChildren().add(render);
+						}
+					}
+				} else {
+
+					// Simply add the representations of other objects
+					fxAttachmentNode.getChildren()
+							.add((Group) entity.getRepresentation());
+				}
+			}
+		}
+
+		// Add the background
+		fxAttachmentNode.getChildren().add(background);
 	}
 
 }

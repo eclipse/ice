@@ -24,10 +24,21 @@ import org.eclipse.ice.viz.service.modeling.FaceComponent;
  */
 public class FXFace extends Face {
 
+	/**
+	 * The nullary constructor.
+	 */
 	public FXFace() {
 		super();
 	}
 
+	/**
+	 * The default constructor.
+	 * 
+	 * @param model
+	 *            The part's internal model
+	 * @param view
+	 *            The part's graphical view
+	 */
 	public FXFace(FaceComponent model, AbstractView view) {
 		super(model, view);
 	}

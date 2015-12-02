@@ -17,7 +17,7 @@ import org.eclipse.ice.viz.service.modeling.EdgeComponent;
 
 /**
  * An extension of edge that manages its vertices' states as being selected and
- * under cosntruction.
+ * under construction.
  * 
  * @author Robert Smith
  *

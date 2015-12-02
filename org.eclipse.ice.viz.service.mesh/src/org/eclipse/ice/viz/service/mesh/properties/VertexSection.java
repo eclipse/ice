@@ -244,13 +244,17 @@ public class VertexSection extends AbstractPropertySection {
 			// Reset the vertex and set it based on the selected part.
 			vertex = null;
 
+			if (meshPart instanceof Vertex) {
+				vertex = (Vertex) meshPart;
+			}
+
 			// Determine the appropriate Vertex instance whose properties are
 			// being exposed
-			List<AbstractController> vertices = meshPart
-					.getEntitiesByCategory("Vertices");
-			if (index < vertices.size()) {
-				VertexSection.this.vertex = (Vertex) vertices.get(index);
-			}
+			// List<AbstractController> vertices = meshPart
+			// .getEntitiesByCategory("Vertices");
+			// if (index < vertices.size()) {
+			// VertexSection.this.vertex = (Vertex) vertices.get(index);
+			// }
 		}
 
 		return;

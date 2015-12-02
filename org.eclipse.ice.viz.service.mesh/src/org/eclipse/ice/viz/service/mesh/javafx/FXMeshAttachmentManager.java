@@ -90,4 +90,14 @@ public class FXMeshAttachmentManager implements IAttachmentManager {
 
 	}
 
+	/**
+	 * Getter for the list of active attachments.
+	 * 
+	 * @return All attachments currently managed by this object which are not
+	 *         scheduled for deletion.
+	 */
+	public List<FXMeshAttachment> getAttachments() {
+		return active;
+	}
+
 }

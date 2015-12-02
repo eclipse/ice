@@ -10,25 +10,27 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.javafx;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.eclipse.ice.viz.service.geometry.GeometrySelection;
 import org.eclipse.ice.viz.service.geometry.scene.base.GeometryAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.base.ICamera;
-import org.eclipse.ice.viz.service.geometry.shapes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.ice.viz.service.javafx.internal.FXContentProvider;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
-import org.eclipse.ice.viz.service.javafx.internal.model.geometry.FXGeometryAttachmentManager;
 import org.eclipse.ice.viz.service.javafx.internal.scene.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownController;
+import org.eclipse.ice.viz.service.mesh.datastructures.FXMeshControllerFactory;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceComponent;
-import org.eclipse.ice.viz.service.modeling.EdgeComponent;
-import org.eclipse.ice.viz.service.modeling.Face;
+import org.eclipse.ice.viz.service.modeling.FaceEdgeComponent;
 import org.eclipse.ice.viz.service.modeling.Vertex;
 import org.eclipse.ice.viz.service.modeling.VertexComponent;
 import org.eclipse.jface.viewers.Viewer;
@@ -38,7 +40,6 @@ import org.eclipse.swt.widgets.Control;
 
 import javafx.embed.swt.FXCanvas;
 import javafx.event.EventHandler;
-import javafx.geometry.Point3D;
 import javafx.scene.AmbientLight;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -55,6 +56,8 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Shape3D;
+import javafx.scene.shape.Sphere;
+import javafx.scene.text.Text;
 
 /**
  * <p>
@@ -110,6 +113,11 @@ public class FXMeshViewer extends GeometryViewer {
 	private EventHandler<MouseEvent> editDragHandler;
 
 	/**
+	 * A handler which moves vertices at the end of a drag action in edit mode
+	 */
+	private EventHandler<MouseEvent> editMouseUpHandler;
+
+	/**
 	 * A list of vertices currently selected by the user, because they were
 	 * selected in edit mode or were input vertices which have not yet been
 	 * formed into a complete polygon in add mode.
@@ -126,7 +134,7 @@ public class FXMeshViewer extends GeometryViewer {
 	 * The factory responsible for creating views/controllers for new model
 	 * components.
 	 */
-	private FXShapeControllerFactory factory;
+	private FXMeshControllerFactory factory;
 
 	/**
 	 * The mouse's last recorded x position
@@ -149,6 +157,69 @@ public class FXMeshViewer extends GeometryViewer {
 	private double mousePosY;
 
 	/**
+	 * A JavaFX Text shape displaying the mouse cursor's current x and y
+	 * coordinates.
+	 */
+	private Text cursorPosition;
+
+	/**
+	 * A root model part in which temporary vertices and edges will be held
+	 * before being added to the mesh permanently. These are maintained
+	 * separately so that such parts will not appear in the tree view until
+	 * their parent polygon is completed.
+	 */
+	private AbstractController tempRoot = new AbstractController(
+			new AbstractMeshComponent(), new AbstractView());
+
+	/**
+	 * A list of displayed circles to show the user the location that selectice
+	 * vertices are being dragged to.
+	 */
+	private ArrayList<Sphere> vertexMarkers;
+
+	/**
+	 * The gizmo containing the axis.
+	 */
+	private TransformGizmo gizmo;
+
+	/**
+	 * The manager for attachments to the renderer
+	 */
+	private FXMeshAttachmentManager attachmentManager;
+
+	/**
+	 * Whether or not a drag mouse motion is in progress.
+	 */
+	boolean dragStarted = false;
+
+	/**
+	 * An ordered list of each selected vertex's x coordinate relative to the
+	 * vertex being dragged
+	 */
+	ArrayList<Double> relativeXCords = new ArrayList<Double>();
+
+	/**
+	 * An ordered list of each selected vertex's y coordinate relative to the
+	 * vertex being dragged
+	 */
+	ArrayList<Double> relativeYCords = new ArrayList<Double>();
+
+	/**
+	 * The next unused number to assign as a Vertex's ID.
+	 */
+	int nextVertexID = 1;
+
+	/**
+	 * The next unused number to assign as an Edge's ID.
+	 */
+	int nextEdgeID = 1;
+
+	/**
+	 * The next unused number to assign as a Polygon's ID.
+	 */
+	int nextPolygonID = 1;
+
+	/**
 	 * <p>
 	 * Creates a JavaFX GeometryViewer.
 	 * </p>
@@ -158,9 +229,16 @@ public class FXMeshViewer extends GeometryViewer {
 	public FXMeshViewer(Composite parent) {
 		super(parent);
 
+		// Initialize the class variables
 		renderer = new FXRenderer();
-		renderer.register(GeometryAttachment.class,
-				new FXGeometryAttachmentManager());
+
+		attachmentManager = new FXMeshAttachmentManager();
+		renderer.register(GeometryAttachment.class, attachmentManager);
+
+		factory = new FXMeshControllerFactory();
+		selectedVertices = new ArrayList<AbstractController>();
+		tempEdges = new ArrayList<AbstractController>();
+		vertexMarkers = new ArrayList<Sphere>();
 
 		// Create the handler for add mode
 		addHandler = new EventHandler<MouseEvent>() {
@@ -175,8 +253,38 @@ public class FXMeshViewer extends GeometryViewer {
 				// Whether or not a new vertex has been added
 				boolean changed = false;
 
+				// If the user didn't select a shape, add a new shape where they
+				// clicked
+				if (intersectedNode instanceof Box) {
+
+					// Create a new vertex at that point
+					VertexComponent tempComponent = new VertexComponent(
+							event.getX(), event.getY(), 0);
+					tempComponent.setProperty("Constructing", "True");
+					Vertex tempVertex = (Vertex) factory
+							.createController(tempComponent);
+
+					// Set the vertex's name and ID
+					tempVertex.setProperty("Name", "Vertex");
+					tempVertex.setProperty("Id", String.valueOf(nextVertexID));
+					nextVertexID++;
+
+					// Add the new vertex to the list
+					selectedVertices.add(tempVertex);
+
+					// Add it to the temp root
+					tempRoot.addEntity(tempVertex);
+
+					// Add the temp root to the attachment
+					attachmentManager.getAttachments().get(0)
+							.addGeometry(tempRoot);
+
+					tempVertex.refresh();
+					changed = true;
+				}
+
 				// If the user clicked a shape, try to add it to a polygon
-				if (intersectedNode instanceof Shape3D) {
+				else if (intersectedNode instanceof Shape3D) {
 
 					// Resolve the parent
 					Group nodeParent = (Group) intersectedNode.getParent();
@@ -203,24 +311,6 @@ public class FXMeshViewer extends GeometryViewer {
 
 				}
 
-				// If the user didn't select a shape, add a new shape where they
-				// clicked
-				else {
-
-					// Get the click location
-					Point3D location = pickResult.getIntersectedPoint();
-
-					// Create a new vertex at that point
-					VertexComponent tempComponent = new VertexComponent(
-							location.getX(), 0, location.getZ());
-					Vertex tempVertex = (Vertex) factory
-							.createController(tempComponent);
-
-					// Add the new vertex to the list
-					selectedVertices.add(tempVertex);
-					changed = true;
-				}
-
 				// If a new vertex was added, then construct edges/polygons as
 				// needed
 				if (changed) {
@@ -231,47 +321,86 @@ public class FXMeshViewer extends GeometryViewer {
 					// If this is not the first vertex, create an edge between
 					// it and the last one
 					if (numVertices > 1) {
-						EdgeComponent tempComponent = new EdgeComponent();
+						FaceEdgeComponent tempComponent = new FaceEdgeComponent(
+								(Vertex) selectedVertices.get(numVertices - 2),
+								(Vertex) selectedVertices.get(numVertices - 1));
+						tempComponent.setProperty("Constructing", "True");
 						Edge tempEdge = (Edge) factory
 								.createController(tempComponent);
-						tempEdge.addEntity(
-								selectedVertices.get(numVertices - 2));
-						tempEdge.addEntity(
-								selectedVertices.get(numVertices - 1));
+
+						// Set the edge's name and ID
+						tempEdge.setProperty("Name", "Edge");
+						tempEdge.setProperty("Id", String.valueOf(nextEdgeID));
+						nextEdgeID++;
+
+						// Set the mouse to ignore edges. Only Vertices and
+						// empty space may be selected.
+						((Group) tempEdge.getRepresentation())
+								.setMouseTransparent(true);
 
 						// Add the edge to the list
 						tempEdges.add(tempEdge);
+
+						// Add it to the temp root
+						tempRoot.addEntity(tempEdge);
+
+						// Refresh the edge
+						tempEdge.refresh();
 					}
 
 					// If this was the fourth vertex, the quadrilateral is done
 					// so finish up the polygon
 					if (numVertices == 4) {
 
-						// Crete an edge between the last vertex and the first
-						EdgeComponent tempComponent = new EdgeComponent();
+						// Create an edge between the last vertex and the first
+						FaceEdgeComponent tempComponent = new FaceEdgeComponent(
+								(Vertex) selectedVertices.get(numVertices - 1),
+								(Vertex) selectedVertices.get(0));
+						tempComponent.setProperty("Constructing", "True");
 						Edge tempEdge = (Edge) factory
 								.createController(tempComponent);
-						tempEdge.addEntity(
-								selectedVertices.get(numVertices - 1));
-						tempEdge.addEntity(selectedVertices.get(0));
+
+						// Set the edge's name and ID
+						tempEdge.setProperty("Name", "Edge");
+						tempEdge.setProperty("Id", String.valueOf(nextEdgeID));
+						nextEdgeID++;
 
 						tempEdges.add(tempEdge);
 
 						// Create a face out of all the edges
-						EdgeAndVertexFaceComponent faceComponent = new EdgeAndVertexFaceComponent();
-						Face newFace = (Face) factory
+						NekPolygonComponent faceComponent = new NekPolygonComponent();
+						NekPolygon newFace = (NekPolygon) factory
 								.createController(faceComponent);
+
+						// Set the polygon's name and ID
+						newFace.setProperty("Name", "Polygon");
+						newFace.setProperty("Id",
+								String.valueOf(nextPolygonID));
+						nextPolygonID++;
 
 						for (AbstractController edge : tempEdges) {
 							newFace.addEntity(edge);
+
+							// Remove the edge from the temporary root
+							tempRoot.removeEntity(edge);
+						}
+
+						// Remove the vertices from the temporary root
+						for (AbstractController vertex : selectedVertices) {
+							tempRoot.removeEntity(vertex);
 						}
 
 						// Set the new polygon to the default color
 						newFace.setProperty("Constructing", "False");
 
+						// Add the new polygon to the mesh permanently
+						attachmentManager.getAttachments().get(0).getRoot()
+								.addEntity(newFace);
+
 						// Empty the lists of temporary constructs
 						selectedVertices = new ArrayList<AbstractController>();
 						tempEdges = new ArrayList<AbstractController>();
+
 					}
 				}
 			}
@@ -285,6 +414,13 @@ public class FXMeshViewer extends GeometryViewer {
 
 			@Override
 			public void handle(MouseEvent event) {
+
+				// Get the mouse position
+				mousePosX = event.getSceneX();
+				mousePosY = event.getSceneY();
+				mouseOldX = event.getSceneX();
+				mouseOldY = event.getSceneY();
+
 				// Get the user's selection
 				PickResult pickResult = event.getPickResult();
 				Node intersectedNode = pickResult.getIntersectedNode();
@@ -339,63 +475,168 @@ public class FXMeshViewer extends GeometryViewer {
 
 		editDragHandler = new EventHandler<MouseEvent>() {
 
+			// The marker the user is dragging with the mouse
+			Sphere dragMarker;
+
 			@Override
 			public void handle(MouseEvent event) {
 
-				if (event.getPickResult()
-						.getIntersectedNode() instanceof Shape3D) {
-					mouseOldX = mousePosX;
-					mouseOldY = mousePosY;
-					mousePosX = event.getX();
-					mousePosY = event.getY();
-					double mouseDeltaX = (mousePosX - mouseOldX);
-					double mouseDeltaY = (mousePosY - mouseOldY);
+				// Get the mouse position
+				mouseOldX = mousePosX;
+				mouseOldY = mousePosY;
+				mousePosX = event.getX();
+				mousePosY = event.getY();
 
-					// Get the user's selection
-					PickResult pickResult = event.getPickResult();
-					Node intersectedNode = pickResult.getIntersectedNode();
+				// Get the user's selection
+				PickResult pickResult = event.getPickResult();
+				Node intersectedNode = pickResult.getIntersectedNode();
 
-					// If the user is not dragging a shape, ignroe the motion
-					if (intersectedNode instanceof Shape3D) {
-						// Resolve the parent
-						Group nodeParent = (Group) intersectedNode.getParent();
+				// If the user is not dragging a shape, ignore the motion
+				if (intersectedNode instanceof Shape3D || dragStarted) {
 
-						// Resolve the shape
-						AbstractController modelShape = (AbstractController) nodeParent
-								.getProperties().get(AbstractController.class);
+					// The drag has started, so continue dragging even if the
+					// mouse has moved off a shape
+					dragStarted = true;
 
-						// If the shape is a selected vertex, drag it
-						if (selectedVertices.contains(modelShape)) {
+					// Resolve the parent
+					Group nodeParent = (Group) intersectedNode.getParent();
 
-							// Get the selected shape's coordinates
-							double[] originalCoords = modelShape
+					// Resolve the shape
+					AbstractController modelShape = (AbstractController) nodeParent
+							.getProperties().get(AbstractController.class);
+
+					// If the user has selected a vertex, drag it
+					if (selectedVertices.contains(modelShape) || dragStarted) {
+
+						// If the vertex markers have not yet been made,
+						// create them
+						if (vertexMarkers.isEmpty()) {
+
+							// Get the location of the vertex which was clicked
+							double[] cursorLocation = ((Vertex) modelShape)
 									.getTranslation();
 
-							// Move each vertex
 							for (AbstractController vertex : selectedVertices) {
 
-								// Get this vertex's coordinates
-								double[] currentCoords = modelShape
+								// Create the circle
+								Sphere marker = new Sphere(1);
+								// marker.setScaleZ(.25d);
+
+								// Place it at the vertex's position
+								double[] position = ((Vertex) vertex)
 										.getTranslation();
+								marker.setTranslateX(position[0]);
+								marker.setTranslateY(position[1]);
 
-								// Move the vertex to the mouse's current
-								// position, offset by the original distance
-								// between the vertices.
-								vertex.setTranslation(
-										currentCoords[0] - originalCoords[0]
-												+ mousePosX,
-										0d, currentCoords[2] - originalCoords[2]
-												+ mousePosY);
+								// Add it to the list
+								vertexMarkers.add(marker);
+
+								// Get the relative position of this vertex from
+								// the vertex being dragged
+								relativeXCords
+										.add(position[0] - cursorLocation[0]);
+								relativeYCords
+										.add(position[1] - cursorLocation[1]);
+
+								// If this is the vertex on which the user
+								// started the drag, its marker will be the
+								// target for the drag action
+								if (vertex == modelShape) {
+									dragMarker = marker;
+								}
+
+								attachmentManager.getAttachments().get(0)
+										.getFxNode().getChildren().add(marker);
+
 							}
+						}
 
+						// Move each vertex
+						for (int i = 0; i < vertexMarkers.size(); i++) {
+
+							// Get the vertex marker for this index
+							Sphere marker = vertexMarkers.get(i);
+
+							// Move the vertex to the mouse's current
+							// position, offset by the original distance
+							// between the vertices.
+							marker.setTranslateX(
+									relativeXCords.get(i) + mousePosX);
+							marker.setTranslateY(
+									relativeYCords.get(i) + mousePosY);
 						}
 
 					}
 
 				}
-				;
-			}
+
+			};
+
 		};
+
+		editMouseUpHandler = new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+
+				// Move the selected vertices at the end of a drag, ignoring
+				// other clicks
+				if (dragStarted) {
+					dragStarted = false;
+
+					// Get the mouse position
+					mouseOldX = mousePosX;
+					mouseOldY = mousePosY;
+					mousePosX = event.getX();
+					mousePosY = event.getY();
+
+					for (int i = 0; i < selectedVertices.size(); i++) {
+
+						// Get the vertex
+						Vertex vertex = (Vertex) selectedVertices.get(i);
+
+						// Update its position
+						vertex.updateLocation(relativeXCords.get(i) + mousePosX,
+								relativeYCords.get(i) + mousePosY, 0);
+
+						// Remove the markers from the scene
+						for (Sphere marker : vertexMarkers) {
+							attachmentManager.getAttachments().get(0)
+									.getFxNode().getChildren().remove(marker);
+						}
+
+					}
+
+					// Empty the lists of markers and coordinates
+					vertexMarkers.clear();
+					relativeXCords.clear();
+					relativeYCords.clear();
+				}
+
+			}
+
+		};
+
+		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent me) {
+
+				DecimalFormat format = new DecimalFormat("#.##");
+				cursorPosition.setText(
+						"Cursor position (x,y): (" + format.format(me.getX())
+								+ "," + format.format(me.getY()) + ")");
+				cursorPosition.setTranslateZ(-5);
+
+				// cursorPosition.setTranslateX(-0.1 * scene.getX());
+				// cursorPosition.setTranslateY(0.1 * scene.getY());
+
+				// cursorPosition.getTransforms()
+				// .setAll(defaultCamera.getTransforms());
+				// cursorPosition
+				// .setTranslateZ(cursorPosition.getTranslateX() - 5);
+
+			}
+		});
 	}
 
 	/**
@@ -417,7 +658,28 @@ public class FXMeshViewer extends GeometryViewer {
 
 		setupSceneInternals(internalRoot);
 
+		// Add the HUD text controls to the scene
+		cursorPosition = new Text();
+		// root.getChildren().add(cursorPosition);
+
 		scene = new Scene(internalRoot, 100, 100, true);
+
+		// PerspectiveCamera hudCam = new PerspectiveCamera();
+		// hudCam.setTranslateZ(-100);
+		//
+		// Pane pane = new Pane();
+		//
+		// Label label = new Label();
+		// label.setText("hello world");
+		// pane.getChildren().add(label);
+
+		// Group hudRoot = new Group();
+		// HUD = new SubScene(hudRoot, 100, 100, true,
+		// SceneAntialiasing.BALANCED);
+		// HUD.setFill(Color.TRANSPARENT);
+		// hudRoot.getChildren().add(cursorPosition);
+		// HUD.setCamera(hudCam);
+		// internalRoot.getChildren().add(pane);
 
 		// Set the scene's background color
 		scene.setFill(Color.rgb(24, 30, 31));
@@ -426,17 +688,25 @@ public class FXMeshViewer extends GeometryViewer {
 		createDefaultCamera(internalRoot);
 		wireSelectionHandling();
 
+		// Get the current key handler from the camera
+		final EventHandler<? super KeyEvent> handler = scene.getOnKeyPressed();
+
 		// Set a handler for clearing the current selection
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 			@Override
 			public void handle(KeyEvent event) {
 
-				// If Escape is pressed, all vertices will be deselected and any
-				// polygon under construction will be removed
+				// If Escape is pressed, any polygon under construction will be
+				// removed
 				if (event.getCode() == KeyCode.ESCAPE) {
-					selectedVertices.clear();
-					tempEdges.clear();
+
+					clearSelection();
+				}
+
+				// If another key was pressed, invoke the camera's key handler
+				else {
+					handler.handle(event);
 				}
 			}
 		});
@@ -559,7 +829,7 @@ public class FXMeshViewer extends GeometryViewer {
 		light4.setMouseTransparent(true);
 		light4.setTranslateZ(350);
 
-		TransformGizmo gizmo = new TransformGizmo(1000);
+		gizmo = new TransformGizmo(1000);
 		gizmo.showHandles(false);
 
 		parent.getChildren().addAll(gizmo, box, light1, light2, light3, light4,
@@ -602,6 +872,9 @@ public class FXMeshViewer extends GeometryViewer {
 		scene.setCamera(fxCamera);
 
 		defaultCamera = fxCamera;
+
+		// ((TopDownController) cameraController).fixToCamera(cursorPosition);
+
 	}
 
 	/**
@@ -632,6 +905,7 @@ public class FXMeshViewer extends GeometryViewer {
 	 * 
 	 * @return
 	 */
+	@Override
 	public Group getRoot() {
 		return root;
 	}
@@ -677,14 +951,91 @@ public class FXMeshViewer extends GeometryViewer {
 	 *            viewer.
 	 */
 	public void setEditSelectionHandeling(boolean edit) {
-		if(edit){
+
+		// If the user is switching to edit mode, register the edit handlers
+		// with the scene
+		if (edit) {
 			scene.setOnMouseClicked(editHandler);
 			scene.setOnMouseDragged(editDragHandler);
-		}
-		else{
+			scene.setOnMouseReleased(editMouseUpHandler);
+
+		} else {
+
+			// If the user is switching to add mode, register the add handler
+			// and remove the edit drag handler, as add mode has no
+			// functionality for mouse drag
 			scene.setOnMouseClicked(addHandler);
-			scene.removeEventHandler(EventType., editDragHandler);
+			scene.setOnMouseDragged(null);
+			scene.setOnMouseReleased(editMouseUpHandler);
 		}
+
+		// Don't maintain selections between different modes
+		clearSelection();
+	}
+
+	/**
+	 * Sets the viewer's HUD, which displays the camera center and mouse cursor
+	 * positions, to be visible or invisible.
+	 * 
+	 * @param visible
+	 *            Whether or not the viewer should display the HUD.
+	 */
+	public void setHUDVisible(boolean visible) {
+		cursorPosition.setVisible(visible);
+	}
+
+	/**
+	 * Checks whether the viewer's HUD is visible.
+	 * 
+	 * @return True if the HUD is being displayed, false if it is not.
+	 */
+	public boolean isHUDVisible() {
+		return cursorPosition.isVisible();
+	}
+
+	/**
+	 * Sets the editor's axis display's visibility.
+	 * 
+	 * @param visible
+	 *            Whether or not the editor should display its axis.
+	 */
+	public void setAxisVisible(boolean visible) {
+		gizmo.setVisible(visible);
+	}
+
+	/**
+	 * Checks whether the viewer has visible axis.
+	 * 
+	 * @return True if the axis are displayed in the viewer, false otherwise
+	 */
+	public boolean getAxisVisible() {
+		return gizmo.isVisible();
+	}
+
+	/**
+	 * Remove the selected property from all selected parts and reset the
+	 * selection lists
+	 */
+	private void clearSelection() {
+
+		// Remove the temporary vertices from the scene
+		for (AbstractController vertex : selectedVertices) {
+			tempRoot.removeEntity(vertex);
+			vertex.setProperty("Selected", "False");
+			vertex.setProperty("Constructing", "False");
+			vertex.refresh();
+		}
+
+		// Remove the temporary edges from the scene and set them to
+		// be unselected
+		for (AbstractController edge : tempEdges) {
+			tempRoot.removeEntity(edge);
+			edge.setProperty("Selected", "False");
+		}
+
+		// Empty the lists
+		selectedVertices.clear();
+		tempEdges.clear();
 	}
 
 }

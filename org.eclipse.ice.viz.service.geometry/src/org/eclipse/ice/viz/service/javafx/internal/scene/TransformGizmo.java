@@ -103,7 +103,7 @@ public class TransformGizmo extends Group {
 			axisZ.setMaterial(axisZMaterial);
 			axisZ.setTranslateX(0);
 			axisZ.setTranslateY(0);
-			axisZ.setTranslateZ(axisSize / 2f);
+			axisZ.setTranslateZ(-axisSize / 2f);
 
 			ObservableList<Node> children = getChildren();
 

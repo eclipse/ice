@@ -71,7 +71,7 @@ public class NekPolygon extends Face {
 	 * The default constructor
 	 */
 	public NekPolygon(FaceComponent model, AbstractView view) {
-		super();
+		super(model, view);
 
 		// Initialize the boundary condition containers.
 		edgeProperties = new HashMap<Integer, EdgeProperties>();
@@ -306,5 +306,24 @@ public class NekPolygon extends Face {
 	 */
 	public PolygonProperties getPolygonProperties() {
 		return polygonProperties;
+	}
+
+	@Override
+	public void setProperty(String property, String value) {
+
+		// If the Edge's constructing or selected properties are being changed,
+		// propagate that change to its vertices
+		if ("Constructing".equals(property) || "Selected".equals(property)) {
+
+			// Lock notifications from changing own edges
+			notifyLock.set(true);
+			for (AbstractController vertex : model
+					.getEntitiesByCategory("Edges")) {
+				vertex.setProperty(property, value);
+			}
+			notifyLock.set(false);
+		}
+
+		super.setProperty(property, value);
 	}
 }

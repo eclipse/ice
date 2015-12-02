@@ -26,65 +26,68 @@ import org.eclipse.ice.viz.service.geometry.viewer.IAttachmentManager;
  */
 public class FXGeometryAttachmentManager implements IAttachmentManager {
 
-    /** The active list of attachments. */
-    private List<FXGeometryAttachment> active;
+	/** The active list of attachments. */
+	private List<FXGeometryAttachment> active;
 
-    /** The list of attachments queued for removal. */
-    private List<FXGeometryAttachment> removalQueue;
+	/** The list of attachments queued for removal. */
+	private List<FXGeometryAttachment> removalQueue;
 
-    /**
-     * @see IAttachmentManager#allocate()
-     */
-    public IAttachment allocate() {
-        if (active == null) {
-            active = new ArrayList<>();
-        }
+	/**
+	 * @see IAttachmentManager#allocate()
+	 */
+	@Override
+	public IAttachment allocate() {
+		if (active == null) {
+			active = new ArrayList<>();
+		}
 
-        FXGeometryAttachment attach = new FXGeometryAttachment(this);
-        active.add(attach);
+		FXGeometryAttachment attach = new FXGeometryAttachment(this);
+		active.add(attach);
 
-        return attach;
-    }
+		return attach;
+	}
 
-    /**
-     * @see IAttachmentManager#destroy(IAttachment)
-     */
-    public void destroy(IAttachment attach) {
-        if (!(attach instanceof FXGeometryAttachment)) {
-            return;
-        }
+	/**
+	 * @see IAttachmentManager#destroy(IAttachment)
+	 */
+	@Override
+	public void destroy(IAttachment attach) {
+		if (!(attach instanceof FXGeometryAttachment)) {
+			return;
+		}
 
-        if (removalQueue == null) {
-            removalQueue = new ArrayList<>();
-        }
+		if (removalQueue == null) {
+			removalQueue = new ArrayList<>();
+		}
 
-        active.remove(attach);
-        removalQueue.add((FXGeometryAttachment) attach);
-    }
+		active.remove(attach);
+		removalQueue.add((FXGeometryAttachment) attach);
+	}
 
-    /**
-     * <p>
-     * Batch deletes the attachments in the removal queue.
-     * </p>
-     */
-    private void processDeletions() {
-        if (removalQueue == null || removalQueue.isEmpty()) {
-            return;
-        }
+	/**
+	 * <p>
+	 * Batch deletes the attachments in the removal queue.
+	 * </p>
+	 */
+	private void processDeletions() {
+		if (removalQueue == null || removalQueue.isEmpty()) {
+			return;
+		}
 
-        for (FXGeometryAttachment attachment : removalQueue) {
-            attachment.detach(attachment.getOwner());
-        }
+		for (FXGeometryAttachment attachment : removalQueue) {
+			attachment.detach(attachment.getOwner());
+		}
 
-        removalQueue.clear();
-    }
+		removalQueue.clear();
+	}
 
-    /**
-     * @see IAttachmentManager#update()
-     */
-    public void update() {
-        processDeletions();
+	/**
+	 * @see IAttachmentManager#update()
+	 */
+	@Override
+	public void update() {
+		processDeletions();
 
-    }
+	}
 
 }

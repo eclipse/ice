@@ -20,10 +20,10 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
-import org.eclipse.ice.viz.service.mesh.javafx.FXMeshCanvas;
 import org.eclipse.ice.viz.service.mesh.javafx.FXMeshVizService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -45,7 +45,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
@@ -185,22 +184,29 @@ public class ICEMeshPage extends ICEFormPage
 
 		// Local Declarations
 		final ScrolledForm form = managedForm.getForm();
+		GridLayout layout = new GridLayout();
 
-		// Setup the layout
+		// Setup the layout and layout data
+		layout.numColumns = 1;
+		form.getBody().setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		form.getBody().setLayout(new FillLayout());
 
-		// Show the view related views
+		// Opening the views in order to interact with the geometryEditor
 		try {
+
 			getSite().getWorkbenchWindow().getActivePage()
-					.showView(MeshElementTreeView.ID);
+					.showView(ShapeTreeView.ID);
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(TransformationView.ID);
+
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Create the geometry composite - get the parent
-		Form pageForm = managedForm.getForm().getForm();
+		org.eclipse.ui.forms.widgets.Form pageForm = managedForm.getForm()
+				.getForm();
 		Composite parent = pageForm.getBody();
 
 		// Set the layout
@@ -212,31 +218,22 @@ public class ICEMeshPage extends ICEFormPage
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		actionToolBarManager = new ToolBarManager(toolBar);
 
-		// Grid data so that the VizCanvas will fill the entire area
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-
-		// Get the JME3 viz service for meshes
-		// IVizService service = editor.getVizServiceFactory()
-		// .get("JME3 Mesh Service");
-		// TODO Get this service through OSGI
+		// Get JME3 Geometry service from factory
+		// IVizServiceFactory factory = editor.getVizServiceFactory();
 		IVizService service = new FXMeshVizService();
 
-		// Create the VizCanvas
-		canvas = null;
-		try {
-			// canvas = (JME3MeshCanvas)
-			// service.createCanvas(meshComp.getMesh());
-			canvas = (FXMeshCanvas) service.createCanvas(meshComp.getMesh());
-		} catch (Exception e) {
-			logger.error("Mesh Viz Service failed to create mesh Viz Canvas.");
-		}
+		// Composite editorComposite = new Composite(parent, SWT.NONE);
 
-		// Draw the canvas and set its layout data
+		// Create and draw geometry canvas
 		try {
+			canvas = (IMeshVizCanvas) service.createCanvas(meshComp.getMesh());
 			Composite composite = canvas.draw(parent);
-			composite.setLayoutData(gridData);
+			composite.setLayoutData(
+					new GridData(SWT.FILL, SWT.FILL, true, true));
+
 		} catch (Exception e) {
-			logger.error("Error drawing Mesh Viz Canvas.");
+			logger.error(
+					"Error creating Geometry Canvas with Geometry Service.", e);
 		}
 
 		// The MeshPage should also listen for changes to the MeshApplication's
@@ -262,6 +259,7 @@ public class ICEMeshPage extends ICEFormPage
 				.addSelectionListener(MeshElementTreeView.ID, this);
 
 		return;
+
 	}
 
 	/**
@@ -311,16 +309,35 @@ public class ICEMeshPage extends ICEFormPage
 		// TODO Add actions for toggling the hud based on JME3/JavaFX specific
 		// implementation
 		// Create the toggle switch to show or hide the heads-up display
-		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(
-				canvas);
+		// action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(
+		// canvas);
+		action = new Action() {
+
+			@Override
+			public void run() {
+				canvas.setVisibleHUD(!canvas.HUDIsVisible());
+			}
+		};
+
+		action.setText("Toggle HUD");
 		toggleHUDActionTree = new ActionTree(action);
+
 		actions.add(toggleHUDActionTree);
 
 		// TODO Add the action for toggling the axes based on JME3/JavaFX
 		// specific implementation
 		// Create the toggle switch to show or hide the axes.
-		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(
-				canvas);
+		// action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(
+		// canvas);
+		action = new Action() {
+
+			@Override
+			public void run() {
+				canvas.setVisibleAxis(!canvas.AxisAreVisible());
+			}
+		};
+
+		action.setText("Toggle Axis");
 		toggleAxesActionTree = new ActionTree(action);
 		actions.add(toggleAxesActionTree);
 

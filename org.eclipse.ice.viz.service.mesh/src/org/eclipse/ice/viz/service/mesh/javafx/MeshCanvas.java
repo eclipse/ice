@@ -23,6 +23,7 @@ import org.eclipse.ice.viz.service.geometry.scene.model.INode;
 import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.ice.viz.service.geometry.viewer.IRenderer;
 import org.eclipse.ice.viz.service.javafx.internal.FXGeometryViewer;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -39,7 +40,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  * 
  */
-public class MeshCanvas implements IVizCanvas, IVizUpdateableListener {
+public class MeshCanvas implements IMeshVizCanvas, IVizUpdateableListener {
 
 	/** Factory class to be implemented by renderer implementations. */
 	private static final String GEOMETRY_VIEWER_FACTORY = "org.eclipse.ice.viz.service.geometry.viewer.factory.GeometryViewerFactory";
@@ -266,6 +267,47 @@ public class MeshCanvas implements IVizCanvas, IVizUpdateableListener {
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {
 		this.properties = props;
+	}
+
+	@Override
+	public void setEditMode(boolean edit) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setVisibleHUD(boolean on) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean HUDIsVisible() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setVisibleAxis(boolean on) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public boolean AxisAreVisible() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void deleteSelection() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setSelection(Object[] selection) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

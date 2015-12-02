@@ -312,6 +312,7 @@ public class FXGeometryViewer extends GeometryViewer {
 	 * 
 	 * @return
 	 */
+	@Override
 	public Group getRoot() {
 		return root;
 	}

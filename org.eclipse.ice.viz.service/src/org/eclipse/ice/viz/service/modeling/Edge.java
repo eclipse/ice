@@ -36,8 +36,7 @@ public class Edge extends AbstractController {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getStartLocation() {
-		return ((Vertex) model.getEntitiesByCategory("Vertices").get(0))
-				.getLocation();
+		return ((EdgeComponent) model).getStartLocation();
 	}
 
 	/**
@@ -46,8 +45,7 @@ public class Edge extends AbstractController {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getEndLocation() {
-		return ((Vertex) model.getEntitiesByCategory("Vertices").get(1))
-				.getLocation();
+		return ((EdgeComponent) model).getEndLocation();
 	}
 
 	/**

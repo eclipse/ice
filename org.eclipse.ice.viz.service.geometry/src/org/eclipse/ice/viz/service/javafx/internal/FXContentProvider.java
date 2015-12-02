@@ -12,6 +12,7 @@ package org.eclipse.ice.viz.service.javafx.internal;
 
 import org.eclipse.ice.viz.service.geometry.scene.base.ISceneGenerator;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
+import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -29,80 +30,85 @@ import javafx.scene.Node;
  */
 public class FXContentProvider implements IContentProvider {
 
-    /** Used to generate the JavaFX scene from the input model. */
-    private ISceneGenerator sceneGenerator;
+	/** Used to generate the JavaFX scene from the input model. */
+	private ISceneGenerator sceneGenerator;
 
-    /**
-     * <p>
-     * Generates a JavaFX scene from the input model.
-     * </p>
-     * 
-     * @see IContentProvider#inputChanged(Viewer, Object, Object)
-     */
-    public void inputChanged(Viewer viewer, Object input, Object oldInput) {
-        verifyInput(viewer, input, oldInput);
+	/**
+	 * <p>
+	 * Generates a JavaFX scene from the input model.
+	 * </p>
+	 * 
+	 * @see IContentProvider#inputChanged(Viewer, Object, Object)
+	 */
+	@Override
+	public void inputChanged(Viewer viewer, Object input, Object oldInput) {
+		verifyInput(viewer, input, oldInput);
 
-        FXGeometryViewer fxViewer = (FXGeometryViewer) viewer;
+		GeometryViewer fxViewer = (GeometryViewer) viewer;
 
-        INode newRoot = (INode) input;
+		INode newRoot = (INode) input;
 
-        Group fxRoot = fxViewer.getRoot();
+		Group fxRoot = fxViewer.getRoot();
 
-        if (sceneGenerator == null) {
-            sceneGenerator = new FXSceneGenerator();
-        }
+		if (sceneGenerator == null) {
+			sceneGenerator = new FXSceneGenerator();
+		}
 
-        Node generatedRoot = sceneGenerator.generateScene(newRoot);
+		Node generatedRoot = sceneGenerator.generateScene(newRoot);
 
-        fxRoot.getChildren().setAll(generatedRoot);
-    }
+		fxRoot.getChildren().setAll(generatedRoot);
+	}
 
-    /**
-     * <p>
-     * Verifies the model inputs for sanity.
-     * </p>
-     * 
-     * @param viewer
-     *            the viewer being modified
-     * @param input
-     *            the new input
-     * @param oldInput
-     *            the old input
-     */
-    private void verifyInput(Viewer viewer, Object input, Object oldInput) {
-        if (!(viewer instanceof FXGeometryViewer)) {
-            throw new IllegalArgumentException(Messages.FXContentProvider_InvalidViewerType);
-        }
+	/**
+	 * <p>
+	 * Verifies the model inputs for sanity.
+	 * </p>
+	 * 
+	 * @param viewer
+	 *            the viewer being modified
+	 * @param input
+	 *            the new input
+	 * @param oldInput
+	 *            the old input
+	 */
+	private void verifyInput(Viewer viewer, Object input, Object oldInput) {
+		if (!(viewer instanceof GeometryViewer)) {
+			throw new IllegalArgumentException(
+					Messages.FXContentProvider_InvalidViewerType);
+		}
 
-        if (!(input instanceof INode)) {
-            throw new IllegalArgumentException(Messages.FXContentProvider_InvalidInputType);
-        }
+		if (!(input instanceof INode)) {
+			throw new IllegalArgumentException(
+					Messages.FXContentProvider_InvalidInputType);
+		}
 
-        if (oldInput != null && !(oldInput instanceof INode)) {
-            throw new IllegalArgumentException(Messages.FXContentProvider_InvalidInputNode);
-        }
-    }
+		if (oldInput != null && !(oldInput instanceof INode)) {
+			throw new IllegalArgumentException(
+					Messages.FXContentProvider_InvalidInputNode);
+		}
+	}
 
-    /**
-     * <p>
-     * Disposes the Viewer input.
-     * </p>
-     */
-    public void dispose() {
-    }
+	/**
+	 * <p>
+	 * Disposes the Viewer input.
+	 * </p>
+	 */
+	@Override
+	public void dispose() {
+	}
 
-    /**
-     * 
-     */
-    public ISceneGenerator getGenerator() {
-        return sceneGenerator;
-    }
+	/**
+	 * 
+	 */
+	public ISceneGenerator getGenerator() {
+		return sceneGenerator;
+	}
 
-    /**
-     *
-     */
-    public void setGenerator(ISceneGenerator generator) {
-        this.sceneGenerator = generator;
-    }
+	/**
+	 *
+	 */
+	public void setGenerator(ISceneGenerator generator) {
+		this.sceneGenerator = generator;
+	}
 
 }

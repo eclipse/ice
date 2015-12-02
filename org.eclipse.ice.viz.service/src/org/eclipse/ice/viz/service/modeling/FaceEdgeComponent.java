@@ -29,6 +29,17 @@ public class FaceEdgeComponent extends EdgeComponent {
 		super();
 	}
 
+	/**
+	 * The default constructor. It creates an edge between the two specified
+	 * vertices.
+	 * 
+	 * @param start
+	 * @param end
+	 */
+	public FaceEdgeComponent(Vertex start, Vertex end) {
+		super(start, end);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 *

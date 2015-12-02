@@ -67,15 +67,9 @@ public class FXVertexView extends AbstractView {
 		node = new Group();
 
 		// Create the materials
-		defaultMaterial = new PhongMaterial(Color.rgb(127, 0, 127));
-		defaultMaterial.setSpecularColor(Color.WHITE);
+		defaultMaterial = new PhongMaterial(Color.rgb(80, 30, 140));
 		selectedMaterial = new PhongMaterial(Color.rgb(0, 127, 255));
-		selectedMaterial.setSpecularColor(Color.WHITE);
 		constructingMaterial = new PhongMaterial(Color.rgb(0, 255, 0));
-		constructingMaterial.setSpecularColor(Color.WHITE);
-
-		// Set the sphere to be the constructing material by default
-		mesh.setMaterial(constructingMaterial);
 
 	}
 
@@ -94,12 +88,21 @@ public class FXVertexView extends AbstractView {
 		// Center the node on the vertex's location
 		transformation.setTranslation(model.getX(), model.getY(), 0);
 
+		// Flatten the sphere into a circle
+		transformation.setScale(1, 1, 0.75);
+
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
 		// Create a Shape3D for the model
-		mesh = new Sphere(50);
+		mesh = new Sphere(1);
+
+		// Set the sphere to be the constructing material by default
+		mesh.setMaterial(constructingMaterial);
 		node.getChildren().add(mesh);
+		System.out.println(
+				"JavaFX loc: (" + node.getLocalToSceneTransform().getTx() + ","
+						+ node.getLocalToSceneTransform().getTy() + ")");
 
 	}
 
@@ -149,24 +152,14 @@ public class FXVertexView extends AbstractView {
 		// otherwise set it based on whether or not the vertex is selected
 		if (!"True".equals(model.getProperty("Constructing"))) {
 
-			// Convert the model's selected property to a boolean
-			Boolean newSelected = "True".equals(model.getProperty("Selected"));
+			// If the part is selected, set the selected material
+			if ("True".equals(model.getProperty("Selected"))) {
+				mesh.setMaterial(selectedMaterial);
+			}
 
-			// If the selected property has changed, update
-			if (selected != newSelected) {
-
-				// Save the selected value
-				selected = newSelected;
-
-				if (selected) {
-
-					// Set the material if selected
-					mesh.setMaterial(selectedMaterial);
-				} else {
-
-					// Set the material if selected
-					mesh.setMaterial(defaultMaterial);
-				}
+			// Otherwise set the non-selected material
+			else {
+				mesh.setMaterial(defaultMaterial);
 			}
 		}
 
