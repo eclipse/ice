@@ -82,4 +82,7 @@ public interface IPageFactory {
 	
 	public ArrayList<IFormPage> getIEFSectionComponentPages(FormEditor editor,
 			ArrayList<Component> components);
+	
+	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
+			ArrayList<Component> components);
 }

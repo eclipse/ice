@@ -236,5 +236,31 @@ public class DefaultPageFactory implements IPageFactory {
 		return pages;
 		
 	}
+	
+	@Override
+	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
+			ArrayList<Component> components){
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		try{
+			ArrayList<IMeshPageProvider> MeshComponentPages = 
+					IMeshPageProvider.getProviders();
+			if (MeshComponentPages != null && MeshComponentPages.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IMeshPageProvider currentProvider : MeshComponentPages) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, null);
+						break;
+					}
+				}
+			}else{
+				logger.error("No MeshComponentPages registered");
+			}
+		}catch(CoreException e){
+			logger.error("Unable to get MeshComponentPages", e);
+		}
+		return pages;
+	}
 
 }

@@ -442,9 +442,19 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The MeshPage created.
 	 */
 	private ICEFormPage createMeshPage() {
-
+		ArrayList<Component> comps = new ArrayList<Component>();
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		comps.addAll(componentMap.get("mesh"));
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getMeshComponentPages(this, comps);
+		
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
+		}
+		return pages.get(0);
 		// Need IMeshPageProvider
-
+		/*
 		// Local Declarations
 		MeshComponent meshComponent = new MeshComponent();
 
@@ -465,6 +475,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		}
 
 		return meshPage;
+		*/
 	}
 
 	/**
