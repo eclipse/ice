@@ -45,7 +45,7 @@ public class DefaultPageFactory implements IPageFactory {
 	@Override
 	public ArrayList<IFormPage> getResourceComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
-		
+
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 
 		// Create resource page using IResourcePageProvider
@@ -150,7 +150,7 @@ public class DefaultPageFactory implements IPageFactory {
 		// get the first element.
 		return pages.get(0);
 	}
-	
+
 
 	@Override
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
@@ -180,6 +180,38 @@ public class DefaultPageFactory implements IPageFactory {
 		}
 
 		return pages;
+	}
+
+	@Override
+	public ArrayList<IFormPage> getMasterDetailsPages(FormEditor editor,
+			ArrayList<Component> components) {
+		
+		// Array for storing the pages
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+
+		try {
+			// get all of the registered master details page providers
+			ArrayList<IMasterDetailsPageProvider> masterDetailsPageProviders = 
+					IMasterDetailsPageProvider.getProviders();
+			if (masterDetailsPageProviders != null && masterDetailsPageProviders.size() > 0) {
+				// Use the default master details page provider
+				String providerNameToUse = DefaultBasicComponentPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IMasterDetailsPageProvider currentProvider : masterDetailsPageProviders) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, components);
+						break;
+					}
+				}
+			} else {
+				logger.error("No MasterDetailsPageProviders registered");
+			}
+		} catch (CoreException e) {
+			logger.error("Unable to get MasterDetailsPageProviders", e);
+		}
+
+		return pages;
+
 	}
 
 }

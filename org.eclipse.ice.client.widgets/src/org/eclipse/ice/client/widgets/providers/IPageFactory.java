@@ -76,5 +76,9 @@ public interface IPageFactory {
 	 */
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
 			ArrayList<Component> components);
+	
+	public ArrayList<IFormPage> getMasterDetailsPages(FormEditor editor,
+			ArrayList<Component> components);
+	
 
 }

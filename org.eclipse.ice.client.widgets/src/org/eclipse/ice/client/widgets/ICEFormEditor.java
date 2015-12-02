@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public class ICEFormEditor extends SharedHeaderFormEditor
-		implements IComponentVisitor, IObservableWidget, IUpdateableListener {
+implements IComponentVisitor, IObservableWidget, IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -329,33 +329,20 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
 
-		// Need IMasterDetailsPageProvider
 
-		// Local Declarations
-		ArrayList<ICEFormPage> masterDetailsPages = new ArrayList<ICEFormPage>();
-		MasterDetailsComponent masterDetailsComponent = null;
+		ArrayList<Component> comps = new ArrayList<Component>();
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
 
-		// Get the MasterDetailsComponent and create the MasterDetails page.
-		if (!(componentMap.get("masterDetails").isEmpty())) {
-			masterDetailsComponent = (MasterDetailsComponent) (componentMap
-					.get("masterDetails").get(0));
-			if (masterDetailsComponent != null) {
-				// Get the name
-				String name = masterDetailsComponent.getName();
-				// Make the page
-				ICEMasterDetailsPage iCEMasterDetailsPage = new ICEMasterDetailsPage(
-						this, "MDPid", name);
+		comps.addAll(componentMap.get("masterDetails"));
 
-				// Set the MasterDetailsComponent
-				iCEMasterDetailsPage
-						.setMasterDetailsComponent(masterDetailsComponent);
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getMasterDetailsPages(this, comps);
 
-				masterDetailsPages.add(iCEMasterDetailsPage);
-			}
-
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
 		}
 
-		return masterDetailsPages;
+		return pages;
 	}
 
 	/**
@@ -497,7 +484,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			// Show the view
 			try {
 				getSite().getWorkbenchWindow().getActivePage()
-						.showView(getTreeCompositeViewerID());
+				.showView(getTreeCompositeViewerID());
 			} catch (PartInitException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
@@ -731,16 +718,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		comps.addAll(componentMap.get("data"));
 		comps.addAll(componentMap.get("table"));
 		comps.addAll(componentMap.get("matrix"));
-		
+
 		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		
+
 		ArrayList<IFormPage> componentPages = defaultPageFactory.getComponentPages(this, comps);
 		for(IFormPage componentPage: componentPages){
 			pages.add((ICEFormPage)componentPage);
 		}
 		return pages;
 
-	
+
 	}
 
 	private String itemName;
