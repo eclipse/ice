@@ -473,9 +473,24 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The ICEFormPages for each EMF Component in the list.
 	 */
 	private ArrayList<ICEFormPage> createEMFSectionPages() {
-
+		
+		
+		ArrayList<Component> comps = new ArrayList<Component>();
+		
+		comps.addAll(componentMap.get("emf"));
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
+		
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		
+		ArrayList<IFormPage> componentPages = defaultPageFactory.getIEFSectionComponentPages(this, comps);
+		for(IFormPage componentPage: componentPages){
+			pages.add((ICEFormPage)componentPage);
+		}
+		
+		return pages;
+		
 		// Need IEMFSectionPageProvider
-
+		/*
 		// Local Declarations
 		EMFComponent emfComponent = null;
 		EMFSectionPage emfPage = null;
@@ -496,7 +511,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			}
 		}
 
-		return pages;
+		return pages;*/
 	}
 
 	/**

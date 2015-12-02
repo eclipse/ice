@@ -209,5 +209,32 @@ public class DefaultPageFactory implements IPageFactory {
 		
 		return pages;
 	}
+	
+	@Override
+	public ArrayList<IFormPage> getIEFSectionComponentPages(FormEditor editor,
+			ArrayList<Component> components) {
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		try{
+			ArrayList<IEMFSectionPageProvider> EFSectionComponentPages = 
+					IEMFSectionPageProvider.getProviders();
+			if (EFSectionComponentPages != null && EFSectionComponentPages.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IEMFSectionPageProvider currentProvider : EFSectionComponentPages) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, null);
+						break;
+					}
+				}
+			}else{
+				logger.error("No EFSectionComponentPages registered");
+			}
+		}catch(CoreException e){
+			logger.error("Unable to get IEFSectionComponentPages", e);
+		}
+		return pages;
+		
+	}
 
 }

@@ -8,6 +8,7 @@
    <extension-point id="org.eclipse.ice.client.widgets.resourcePageProvider" name="Resource Page Provider" schema="schema/org.eclipse.ice.client.widgets.resourcePageProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.basicComponentPageProvider" name="Basic Component Page Provider" schema="schema/org.eclipse.ice.client.widgets.basicComponentPageProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.geometryPageProvider" name="geometryPageProvider" schema="schema/org.eclipse.ice.client.widgets.geometryPageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.IEMFSectionPageProvider" name="IEMFSectionPageProvider" schema="schema/org.eclipse.ice.client.widgets.IEMFSectionPageProvider.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -418,6 +419,12 @@
        point="org.eclipse.ice.client.widgets.geometryPageProvider">
     <client
           class="org.eclipse.ice.client.widgets.providers.DefaultGeometryPageProvider">
+    </client>
+ </extension>
+ <extension
+       point="org.eclipse.ice.client.widgets.IEMFSectionPageProvider">
+    <client
+          class="org.eclipse.ice.client.widgets.providers.DefaultIEMFSectionPageProvider">
     </client>
  </extension>
 </plugin>
