@@ -14,6 +14,7 @@ package org.eclipse.ice.projectgeneration.test;
 
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -43,80 +44,43 @@ public class NewICEItemProjectTester {
 
 	private static IProject projectSpace;
 
-	/**
-	 * Set up the project for the remainder of the tests
-	 */
-	@BeforeClass
-	public static void beforeTests() {
-		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = null;
-		String separator = System.getProperty("file.separator");
-		String userDir = System
-				.getProperty("user.home" + separator + "ICETests" + separator + "ICEItemProjectTesterWorkspace");
-		System.setProperty("DebugICE", "");
-
-		// Set up the project
-		try {
-			// Get the project handle
-			IPath projectPath = new Path(userDir + separator + ".project");
-			// Create the project description
-			IProjectDescription desc = ResourcesPlugin.getWorkspace().loadProjectDescription(projectPath);
-			// Get the project handle and create it
-			project = workspaceRoot.getProject(desc.getName());
-			// Create the project if it doesn't exist
-			if (!project.exists()) {
-				project.create(desc, new NullProgressMonitor());
-			}
-			// Open the project if it is not already open
-			if (project.exists() && !project.isOpen()) {
-				project.open(new NullProgressMonitor());
-			}
-			// Refresh the workspace
-			project.refreshLocal(IResource.DEPTH_INFINITE, null);
-			Assert.assertNotNull(project);
-		} catch (CoreException e) {
-			// Catch exception for creating the project
-			e.printStackTrace();
-			fail("ICE Item Project Tester: Error!  Could not set up project space");
-		}
-		projectSpace = project;
-	}
-
+	private String separator = System.getProperty("file.separator");
+	private String userDir = System.getProperty("user.home" + separator + "ICETests");
+	
 	/**
 	 * Check the setup of a New ICE Item Project
 	 */
 	@Test
 	public void testProjectSetup() {
-
+		
+		// Set the location to create the projects
+		String projectName = "   ";
+		URI loc = new File(userDir + separator + projectName).toURI();
+		
 		// Try creating the project with a null name
 		Assert.assertNull(NewICEItemProjectSupport.createProject(null, null));
 
 		// Try creating the project with a blank name
-		Assert.assertNull(NewICEItemProjectSupport.createProject("  ", null));
+		Assert.assertNull(NewICEItemProjectSupport.createProject(projectName, loc));
 
 		// Try creating the project with a valid name
-		IProject project = NewICEItemProjectSupport.createProject("Tester", null);
-		Assert.assertNotNull(project);
+		projectName = "ICEItemProjectTesterWorkspace";
+		loc = new File(userDir + separator + projectName).toURI();
+		projectSpace = NewICEItemProjectSupport.createProject(projectName, loc);
+		Assert.assertNotNull(projectSpace);
 
 		// Try creating the project with the same name as an already existing
 		// one
-		String separator = System.getProperty("file.separator");
-		String userDir = System.getProperty("user.home" + separator + "ICETests");
-		URI loc = null;
-		try {
-			loc = new URI("");
-		} catch (URISyntaxException e) {
-			fail("Could not create a new URI at " + userDir);
-		}
-		project = NewICEItemProjectSupport.createProject("ICEItemProjectTesterWorkspace", loc);
-		Assert.assertEquals(project, projectSpace);
+
+		IProject project = NewICEItemProjectSupport.createProject(projectName, loc);
+		Assert.assertEquals(projectSpace, project);
 
 		// Check that all dotfiles are created correctly
 
 		// Check that custom project nature is set up
 		boolean hasICENature = false;
 		try {
-			hasICENature = project.hasNature(ICEItemNature.NATURE_ID);
+			hasICENature = projectSpace.hasNature(ICEItemNature.NATURE_ID);
 		} catch (CoreException e) {
 			fail("Error while trying to check project nature!");
 		}

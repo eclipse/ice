@@ -22,7 +22,7 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 /**
  * Description
  * 
- * @author bzq
+ * @author arbennett
  */
 public class WizardNewICEModelBuilderPage extends WizardNewFileCreationPage {
 

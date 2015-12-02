@@ -9,9 +9,12 @@ Require-Bundle: org.eclipse.pde.core,
  org.eclipse.equinox.common,
  org.eclipse.osgi,
  org.eclipse.ui.ide,
- org.eclipse.ui;bundle-version="3.107.0",
+ org.eclipse.ui,
  org.eclipse.jface,
  org.eclipse.ice.client,
  org.slf4j.api,
- org.eclipse.core.contenttype;bundle-version="3.5.0"
+ org.eclipse.core.contenttype,
+ org.eclipse.ice.item,
+ org.eclipse.ice.datastructures,
+ org.eclipse.core.runtime
 Export-Package: org.eclipse.ice.projectgeneration

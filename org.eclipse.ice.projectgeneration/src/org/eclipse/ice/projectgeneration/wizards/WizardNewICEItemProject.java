@@ -99,14 +99,6 @@ public class WizardNewICEItemProject extends Wizard implements INewWizard {
 			location = _pageOne.getLocationURI();
 		}
 		
-		// Generate the model builder class files
-		/*IFile file = _pageTwo.createNewFile();
-		if (file != null) {
-			retval = retval && true;
-		} else {
-			retval = false;
-		}
-		*/
 		NewICEItemProjectSupport.createProject(name, location);
 		return retval;
 	}

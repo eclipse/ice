@@ -25,7 +25,7 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 
 /**
- * This class defines the steps for creating a new New ICE Item project
+ * This class defines the steps for creating a new model builder
  * via the wizard that us accessible via:
  *   'File -> New... -> Other -> New ICE Item Project'
  * 
@@ -79,15 +79,24 @@ public class WizardNewICEModelBuilder extends Wizard implements INewWizard {
 	
 	/**
 	 * Take all of the given information and set up a new 
-	 * New ICE Item Project.
+	 * model builder.
 	 * 
-	 * @return whether the project creation was successful
+	 * @return whether the code creation was successful
 	 */
 	@Override
 	public boolean performFinish() {
 		boolean retval = true;
 		
-		// Do something
+		// Create the file
+		IFile file = _pageOne.createNewFile();
+		if (file != null) {
+			retval = retval && true;
+		} else {
+			retval = false;
+		}
+		
+		// Update the plugin definition
+		// TODO
 		
 		return retval;
 	}

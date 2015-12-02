@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 /**
  * This class tests the functionality of generating new model builders.
  * 
- * @author bzq
+ * @author arbennett
  */
 public class NewModelBuilderClassTester {
 

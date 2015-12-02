@@ -29,7 +29,7 @@ import org.junit.BeforeClass;
 /**
  * This class tests the functionality of generating new job launchers.
  * 
- * @author bzq
+ * @author arbennett
  */
 public class NewJobLauncherClassTester {
 
