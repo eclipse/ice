@@ -77,8 +77,18 @@ public interface IPageFactory {
 	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
 			ArrayList<Component> components);
 	
+	/**
+	 * This operation returns the rendered pages that will display the contents
+	 * of the mater-details pattern.
+	 * 
+	 * @param editor
+	 *            the form editor where the pages will reside
+	 * @param components
+	 *            the materDetails pages whose contents should be rendered
+	 * @return the form pages on which the contents of the masterDetails have been
+	 *         rendered
+	 */
 	public ArrayList<IFormPage> getMasterDetailsPages(FormEditor editor,
-			ArrayList<Component> components);
-	
+			ArrayList<Component> components);	
 
 }
