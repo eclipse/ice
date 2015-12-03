@@ -11,6 +11,7 @@
 package org.eclipse.ice.viz.service.mesh.datastructures;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
@@ -192,6 +193,7 @@ public class FXVertexView extends AbstractView {
 		}
 
 		// Notify own listeners of the change
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		updateManager.notifyListeners(eventTypes);
 	}
 }

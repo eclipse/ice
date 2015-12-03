@@ -12,8 +12,11 @@ package org.eclipse.ice.viz.service.modeling;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 
 /**
  * The view of an AbstractMeshComponent shown to the user. The view is
@@ -23,7 +26,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
  * 
  * @author Robert Smith
  */
-public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
+public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateable {
 
 	/**
 	 * The transformation representing the part's intended state. This may not
@@ -41,6 +44,11 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 	 * The list of listeners observing this object.
 	 */
 	private ArrayList<IVizUpdateableListener> listeners;
+	
+	/**
+	 * The listeners registered for updates from this object.
+	 */
+	protected UpdateableSubscriptionManager updateManager;
 
 	/**
 	 * The default constructor.
@@ -77,38 +85,39 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 		update(transformation);
 
 		// Notify own listeners of the change
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Transformation};
+		updateManager.notifyListeners(eventTypes);
 	}
 
-	/**
-	 * Notify all listeners of an update.
-	 */
-	public void notifyListeners() {
-
-		// If the listeners are empty, return
-		if (this.listeners == null || this.listeners.isEmpty()) {
-			return;
-		}
-
-		// Get a reference to self
-		final AbstractView self = this;
-
-		// // Create a thread object that notifies all listeners
-		//
-		// Thread notifyThread = new Thread() {
-		//
-		// @Override
-		// public void run() {
-		// Loop over all listeners and update them
-		for (int i = 0; i < listeners.size(); i++) {
-			listeners.get(i).update(self);
-		}
-		// }
-		// };
-		//
-		// // Start the thread
-		// notifyThread.start();
-	}
+//	/**
+//	 * Notify all listeners of an update.
+//	 */
+//	public void notifyListeners() {
+//
+//		// If the listeners are empty, return
+//		if (this.listeners == null || this.listeners.isEmpty()) {
+//			return;
+//		}
+//
+//		// Get a reference to self
+//		final AbstractView self = this;
+//
+//		// // Create a thread object that notifies all listeners
+//		//
+//		// Thread notifyThread = new Thread() {
+//		//
+//		// @Override
+//		// public void run() {
+//		// Loop over all listeners and update them
+//		for (int i = 0; i < listeners.size(); i++) {
+//			listeners.get(i).update(self);
+//		}
+//		// }
+//		// };
+//		//
+//		// // Start the thread
+//		// notifyThread.start();
+//	}
 
 	/**
 	 * Getter for the part's previous transformation.
@@ -197,7 +206,22 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 	 */
 	@Override
 	public void update(IVizUpdateable component) {
-		notifyListeners();
+		
+		// Notify own listeners of the change
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		updateManager.notifyListeners(eventTypes);
+
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable, org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription[])
+	 */
+	@Override
+	public void update(IVizUpdateable component, UpdateableSubscription[] type) {
+
+		// Pass the update to own listeners
+		updateManager.notifyListeners(type);
 
 	}
 
@@ -223,7 +247,8 @@ public class AbstractView implements IVizUpdateableListener, IVizUpdateable {
 		previousTransformation = (Transformation) otherObject.previousTransformation
 				.clone();
 
-		// Notify listeners of the change
-		notifyListeners();
+		// Notify own listeners of the change
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		updateManager.notifyListeners(eventTypes);
 	}
 }

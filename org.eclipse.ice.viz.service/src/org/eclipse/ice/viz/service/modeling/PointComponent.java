@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+
 /**
  * A mesh component representing a point in three dimensional space.
  * 
@@ -79,7 +81,9 @@ public class PointComponent extends AbstractMeshComponent {
 	 */
 	public void setX(double x) {
 		this.x = x;
-		notifyListeners();
+
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Location};
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -99,7 +103,9 @@ public class PointComponent extends AbstractMeshComponent {
 	 */
 	public void setY(double y) {
 		this.y = y;
-		notifyListeners();
+
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Location};
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -119,7 +125,9 @@ public class PointComponent extends AbstractMeshComponent {
 	 */
 	public void setZ(double z) {
 		this.z = z;
-		notifyListeners();
+
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Location};
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**

@@ -17,8 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 
 /**
  * A component of the model. All models are built from collections of components
@@ -28,7 +31,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
  * @author Robert Smith
  */
 public class AbstractMeshComponent
-		implements IVizUpdateableListener, IVizUpdateable {
+		implements IManagedVizUpdateableListener, IVizUpdateable {
 
 	/**
 	 * The mesh's type, which defines how the part internally stores its data.
@@ -54,7 +57,7 @@ public class AbstractMeshComponent
 	/**
 	 * The listeners registered for updates from this object.
 	 */
-	private List<IVizUpdateableListener> listeners;
+	protected UpdateableSubscriptionManager updateManager;
 
 	/**
 	 * The controller which manages this component
@@ -78,7 +81,7 @@ public class AbstractMeshComponent
 		properties = new HashMap<String, String>();
 		type = MeshType.SIMPLE;
 		updateLock = new AtomicBoolean();
-		listeners = new ArrayList<IVizUpdateableListener>();
+		updateManager = new UpdateableSubscriptionManager(this);
 		notifyLock = new AtomicBoolean();
 	}
 
@@ -115,7 +118,7 @@ public class AbstractMeshComponent
 		properties = new HashMap<String, String>();
 		type = MeshType.SIMPLE;
 		updateLock = new AtomicBoolean();
-		listeners = new ArrayList<IVizUpdateableListener>();
+		updateManager = new UpdateableSubscriptionManager(this);
 	}
 
 	/**
@@ -137,7 +140,7 @@ public class AbstractMeshComponent
 		properties = new HashMap<String, String>();
 		this.type = type;
 		updateLock = new AtomicBoolean();
-		listeners = new ArrayList<IVizUpdateableListener>();
+		updateManager = new UpdateableSubscriptionManager(this);
 	}
 
 	/**
@@ -195,44 +198,10 @@ public class AbstractMeshComponent
 	 */
 	public void setType(MeshType type) {
 		this.type = type;
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Property};
+		updateManager.notifyListeners(eventTypes);
 	}
 
-	/**
-	 * Send a notification to all listeners.
-	 */
-	public void notifyListeners() {
-
-		if (!notifyLock.get()) {
-
-			// If the listeners are empty, return
-			if (this.listeners == null || this.listeners.isEmpty()) {
-				return;
-			}
-
-			// Get a reference to self
-			final AbstractMeshComponent self = this;
-
-			final List<IVizUpdateableListener> localListeners = new ArrayList<IVizUpdateableListener>(
-					listeners);
-
-			// // Create a thread object that notifies all listeners
-			//
-			// Thread notifyThread = new Thread() {
-			//
-			// @Override
-			// public void run() {
-			// Loop over all listeners and update them
-			for (int i = 0; i < localListeners.size(); i++) {
-				localListeners.get(i).update(self);
-			}
-			// }
-			// };
-			//
-			// // Start the thread
-			// notifyThread.start();
-		}
-	}
 
 	/**
 	 * Returns a list of all related entities.
@@ -289,7 +258,8 @@ public class AbstractMeshComponent
 		notifyLock.set(true);
 		properties.put(property, value);
 		notifyLock.set(false);
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Property};
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -339,7 +309,8 @@ public class AbstractMeshComponent
 		notifyLock.set(false);
 
 		if (found) {
-			notifyListeners();
+			UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+			updateManager.notifyListeners(eventTypes);
 		}
 	}
 
@@ -375,7 +346,8 @@ public class AbstractMeshComponent
 
 		// Send notification that entities have been changed
 		notifyLock.set(false);
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/*
@@ -399,10 +371,9 @@ public class AbstractMeshComponent
 	 */
 	@Override
 	public void register(IVizUpdateableListener listener) {
-		if (listener != null && !listeners.contains(listener)) {
-			listeners.add(listener);
-
-		}
+		ArrayList<UpdateableSubscription> eventTypes = new ArrayList<UpdateableSubscription>();
+		eventTypes.add(UpdateableSubscription.All);
+		updateManager.register(listener, eventTypes);
 
 	}
 
@@ -415,7 +386,7 @@ public class AbstractMeshComponent
 	 */
 	@Override
 	public void unregister(IVizUpdateableListener listener) {
-		listeners.remove(listener);
+		updateManager.unregister(listener);
 
 	}
 
@@ -430,9 +401,28 @@ public class AbstractMeshComponent
 	public void update(IVizUpdateable component) {
 
 		// Notify own listeners that an update has occurred.
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		updateManager.notifyListeners(eventTypes);
+		
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
+	 * datastructures.VizObject.IVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscription)
+	 */
+	@Override
+	public void update(IVizUpdateable component, UpdateableSubscription[] type) {
+
+		// Pass the update to own listeners
+		updateManager.notifyListeners(type);
+
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -460,7 +450,8 @@ public class AbstractMeshComponent
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -481,4 +472,5 @@ public class AbstractMeshComponent
 	public void setController(AbstractController controller) {
 		this.controller = controller;
 	}
+
 }

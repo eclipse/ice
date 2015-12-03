@@ -11,6 +11,7 @@
 package org.eclipse.ice.viz.service.geometry.shapes;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.javafx.internal.scene.TransformGizmo;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -298,7 +299,8 @@ public class FXShapeView extends AbstractView {
 		}
 
 		// Notify own listeners of the change
-		notifyListeners();
+		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		updateManager.notifyListeners(eventTypes);;
 	}
 
 }

@@ -13,6 +13,8 @@ package org.eclipse.ice.viz.service.modeling;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+
 /**
  * A component representing an Edge for a Face, which keeps a list of all Faces
  * for which it is a boundary in its entities map.
@@ -85,7 +87,8 @@ public class FaceEdgeComponent extends EdgeComponent {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			notifyListeners();
+			UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+			updateManager.notifyListeners(eventTypes);
 		}
 
 		// Otherwise, add the entity normally

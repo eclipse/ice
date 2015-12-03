@@ -13,6 +13,8 @@ package org.eclipse.ice.viz.service.modeling;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+
 /**
  * A point which specifically serves as the endpoint for one or more Edges. It
  * maintains each edge it is associated with in its entities map.
@@ -88,7 +90,8 @@ public class VertexComponent extends PointComponent {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			notifyListeners();
+			UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+			updateManager.notifyListeners(eventTypes);
 		}
 
 		// Otherwise, add the entity normally
