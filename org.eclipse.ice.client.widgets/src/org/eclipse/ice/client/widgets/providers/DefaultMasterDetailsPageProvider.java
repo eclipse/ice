@@ -6,15 +6,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Nick Stanish
- *   Minor updates for architecture compliance - Jay Jay Billings
+ *   Initial API and implementation and/or initial documentation - Menghan Li
+ * 
  *******************************************************************************/
 
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICEMasterDetailsPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
