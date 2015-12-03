@@ -212,7 +212,10 @@ def undmg_package(pkg, file_path, out_path):
     mkdir_p(mnt_point)
     mount_cmd = ['hdiutil', 'attach', '-mountpoint', mnt_point, file_path, '-quiet']
     unmount_cmd = ['hdiutil', 'detach', mnt_point, '-force', '-quiet']
+    subprocess.Popen(mount_cmd)
+    time.sleep(3)
     subprocess.Popen(unmount_cmd)
+    time.sleep(3)
     subprocess.Popen(mount_cmd)
     time.sleep(3)
     content = find_dir(mnt_point, "Resources")
