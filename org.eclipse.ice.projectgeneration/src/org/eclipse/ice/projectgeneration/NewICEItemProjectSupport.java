@@ -34,12 +34,12 @@ public class NewICEItemProjectSupport {
 
 	// Allocate a logger
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	// Booleans set by the wizard to determine which files should be generated
 	private static boolean modelBuilderNeeded;
 	private static boolean jobLauncherNeeded;
 	private static boolean ioClassesNeeded;
-	
+
 	/**
 	 * Set up a new New ICE Item Project.
 	 * 
@@ -52,12 +52,11 @@ public class NewICEItemProjectSupport {
 			return null;
 		}
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		
+
 		// Set up the base project
 		IProject project = workspaceRoot.getProject(projectName);
 		if (!project.exists()) {
-			IProjectDescription description = 
-					project.getWorkspace().newProjectDescription(project.getName());
+			IProjectDescription description = project.getWorkspace().newProjectDescription(project.getName());
 			if (location != null && workspaceRoot.getLocationURI().equals(location)) {
 				location = null;
 			}
@@ -68,11 +67,11 @@ public class NewICEItemProjectSupport {
 					project.open(new NullProgressMonitor());
 				}
 			} catch (CoreException e) {
-				//TODO: Replace this with a logger
+				// TODO: Replace this with a logger
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Add the ICE Item project nature
 		try {
 			setNature(project);
@@ -80,70 +79,68 @@ public class NewICEItemProjectSupport {
 			// TODO: Replace this with a logger
 			e.printStackTrace();
 		}
-		
-		//TODO: Create model builder if specified
+
+		// TODO: Create model builder if specified
 		if (modelBuilderNeeded) {
 			createModelBuilder();
 		}
-		
-		//TODO: Create job launcher if specified
+
+		// TODO: Create job launcher if specified
 		if (jobLauncherNeeded) {
 			createJobLauncher();
 		}
-		
-		//TODO: Create readers/writers if specified
+
+		// TODO: Create readers/writers if specified
 		if (ioClassesNeeded) {
 			createIOClasses();
 		}
-		
-		//TODO: Configure manifest, classpath, 
-		//      bundle dependencies, and extensions
+
+		// TODO: Configure manifest, classpath,
+		// bundle dependencies, and extensions
 		setupPluginInfrastructure();
-		
+
 		return project;
 	}
 
-	
 	/**
 	 * Make sure that the project has the ICEItemNature associated with it.
 	 * 
 	 * @param project
 	 */
-	private static void setNature(IProject project) throws CoreException {
+	public static void setNature(IProject project) throws CoreException {
 		if (!project.hasNature(ICEItemNature.NATURE_ID)) {
 			IProjectDescription description = project.getDescription();
 			String[] projNatures = description.getNatureIds();
-			projNatures = Arrays.copyOf(projNatures, projNatures.length+1);
+			projNatures = Arrays.copyOf(projNatures, projNatures.length + 1);
 			projNatures[projNatures.length - 1] = ICEItemNature.NATURE_ID;
 			description.setNatureIds(projNatures);
 			project.setDescription(description, new NullProgressMonitor());
 		}
 	}
-	
-	
+
 	/**
-	 * TODO: Create Java classes for model and model builder which 
-	 * 		 extend Item and AbstractModelBuilder respectively
+	 * TODO: Create Java classes for model and model builder which extend Item
+	 * and AbstractModelBuilder respectively
 	 */
 	private static void createModelBuilder() {
 		return;
 	}
-	
+
 	/**
 	 * TODO: Create Java classes for job launcher and launcher builder which
-	 * 		 extend Item and AbstractModelBuilder respectively
+	 * extend Item and AbstractModelBuilder respectively
 	 */
 	private static void createJobLauncher() {
 		return;
 	}
-	
+
 	/**
 	 * TODO: Create the parser generator item
 	 */
 	private static void createIOClasses() {
 		return;
 	}
-	
+
 	/**
 	 * TODO: Configure the manifest, classpath, bundle deps, and extensions
 	 */

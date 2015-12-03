@@ -16,5 +16,6 @@ Require-Bundle: org.eclipse.pde.core,
  org.eclipse.core.contenttype,
  org.eclipse.ice.item,
  org.eclipse.ice.datastructures,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.pde.ui
 Export-Package: org.eclipse.ice.projectgeneration
