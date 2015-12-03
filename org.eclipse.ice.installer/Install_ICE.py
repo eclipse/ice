@@ -23,6 +23,7 @@ import zipfile
 import urllib2
 import fnmatch
 import platform
+import datetime
 import argparse
 import itertools
 import subprocess
@@ -122,10 +123,10 @@ def get_package_file(pkg, os_type, arch_type):
                                            "x86"    : "ice.product-macosx.cocoa.x86.zip"       },
                               "Linux"   : {"x86_64" : "ice.product-linux.gtk.x86_64.zip"       ,
                                            "x86"    : "ice.product-linux.gtk.x86.zip"          }},
-                 "VisIt"   : {"Windows" : {"x86_64" : "visit2.9.1_x64.exe"                     ,
-                                           "x86"    : "visit2.9.1.exe"                         },
-                              "Darwin"  : {"x86_64" : "VisIt-2.9.1.dmg"                        },
-                              "Linux"   : {"x86_64" : "visit2_9_1.linux-x86_64-rhel6.tar.gz"   }},
+                 "VisIt"   : {"Windows" : {"x86_64" : "visit2.10.0_x64.exe"                     ,
+                                           "x86"    : "visit2.10.0.exe"                         },
+                              "Darwin"  : {"x86_64" : "VisIt-2.10.0.dmg"                        },
+                              "Linux"   : {"x86_64" : "visit2_10_0.linux-x86_64-rhel6.tar.gz"   }},
                  "HDFJava" : {"Windows" : {"x86_64" : "HDFView-2.11-win64-vs2012.zip"          ,
                                            "x86"    : "HDFView-2.11-win32-vs2012.zip"          },
                               "Darwin"  : {"x86_64" : "HDFView-2.11.0-Darwin.dmg"                     },
@@ -145,11 +146,18 @@ def download_packages(opts, os_type, arch_type):
     packages = opts.update
     if packages == [] or os_type == None or arch_type == None:
         return
-    package_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
+    date = (datetime.date.today()- datetime.timedelta(1)).isoformat().replace('-','')
+    package_urls = {"ICE" : "http://eclipseice.ornl.gov/downloads/ice/",
+                    "VisIt" : "http://eclipseice.ornl.gov/downloads/visit/",
+                    "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
+    # TODO: If a site from packag_urls is down we can try to download from one of these
+    backup_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
                     "VisIt"   : "http://portal.nersc.gov/project/visit/releases/2.9.1/",
                     "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
     if opts.unstable:
-        package_urls['ICE'] = "http://sourceforge.net/projects/niceproject/files/unstable-nightly/ice/"
+        package_urls['ICE'] = "http://eclipseice.ornl.gov/downloads/ice/unstable-nightly/" + date + '/'
+    else:
+        package_urls['ICE'] = "http://eclipseice.ornl.gov/downloads/ice/stable-nightly/" + date + '/'
     files = dict()
     for pkg in packages:
         fname = get_package_file(pkg, os_type, arch_type)
