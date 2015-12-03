@@ -219,12 +219,14 @@ public class VisitPlotViewer extends ViewPart implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				selectedPlotType = plotTypeCombo.getText();
-				drawSelection(new StructuredSelection(plottedEntry));
+				if(plottedEntry != null) {
+					drawSelection(new StructuredSelection(plottedEntry));
+				}
 			}
 		});
 
 		// Add the TimeSliderWidget.
-		timeSlider = new TimeSliderWidget(partComposite, SWT.BORDER);
+		timeSlider = new TimeSliderWidget(partComposite, SWT.BORDER, null);
 		// The time slider should grab excess horizontal space, but not the
 		// vertical space.
 		timeSlider

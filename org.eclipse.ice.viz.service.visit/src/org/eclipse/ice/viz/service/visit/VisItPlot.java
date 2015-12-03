@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Composite;
 import gov.lbnl.visit.swt.VisItSwtConnection;
 import visit.java.client.FileInfo;
 import visit.java.client.ViewerMethods;
+import visit.java.client.components.*;
+import visit.java.client.components.DatabaseInformation.DatabaseInformationUpdateCallback;
 
 /**
  * This class provides the VisIt implementation for an IPlot.
@@ -379,7 +381,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 				Job loadJob = new Job("Loading VisIt Plot") {
 					@Override
-					protected IStatus run(IProgressMonitor monitor) {
+					protected IStatus run(final IProgressMonitor monitor) {
 
 						// Set the initial task name.
 						monitor.beginTask("Loading VisIt Plot", 100);
@@ -394,24 +396,35 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 								.getViewerMethods();
 						methods.openDatabase(sourcePath);
 						monitor.worked(20);
-						FileInfo info = methods.getDatabaseInfo();
-						monitor.worked(20);
+						
+						new DatabaseInformation(methods)
+						       .register(new DatabaseInformationUpdateCallback() {
+							
+							@Override
+							public void vars(FileInfo info) {
+								// TODO Auto-generated method stub
+								monitor.worked(20);
 
-						// Add the independent series from the meta data.
-						// This uses either the time, the cycles, or a "time"
-						// series with the single time 0.0.
-						addIndependentSeries(info);
-						monitor.worked(5);
+								// Add the independent series from the meta data.
+								// This uses either the time, the cycles, or a "time"
+								// series with the single time 0.0.
+								addIndependentSeries(info);
+								monitor.worked(5);
 
-						// Get all of the plot types and plots in the file.
-						addPlotCategory("Meshes", info.getMeshes());
-						monitor.worked(10);
-						addPlotCategory("Materials", info.getMaterials());
-						monitor.worked(10);
-						addPlotCategory("Scalars", info.getScalars());
-						monitor.worked(10);
-						addPlotCategory("Vectors", info.getVectors());
-						monitor.worked(10);
+								plotTypes.clear();
+								
+								// Get all of the plot types and plots in the file.
+								addPlotCategory("Meshes", info.getMeshes());
+								monitor.worked(10);
+								addPlotCategory("Materials", info.getMaterials());
+								monitor.worked(10);
+								addPlotCategory("Scalars", info.getScalars());
+								monitor.worked(10);
+								addPlotCategory("Vectors", info.getVectors());
+								monitor.worked(10);	
+							}
+						});
+
 
 						// Enabled the mesh or the first available plot type.
 						setInitialPlotType();
