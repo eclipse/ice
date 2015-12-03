@@ -212,11 +212,11 @@ def undmg_package(pkg, file_path, out_path):
     mkdir_p(mnt_point)
     mount_cmd = ['hdiutil', 'attach', '-mountpoint', mnt_point, file_path, '-quiet']
     unmount_cmd = ['hdiutil', 'detach', mnt_point, '-force', '-quiet']
+    subprocess.Popen(unmount_cmd)
     subprocess.Popen(mount_cmd)
     time.sleep(3)
     content = find_dir(mnt_point, "Resources")
     if content is None:
-        print "could not find"
         return
     print "  Copying " + content + " to " + os.path.join(out_path,pkg) + "...."
     if os.path.exists(os.path.join(out_path, pkg)):
