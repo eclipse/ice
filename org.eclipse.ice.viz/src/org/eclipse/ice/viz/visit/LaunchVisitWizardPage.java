@@ -17,6 +17,7 @@ import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -641,6 +642,20 @@ public class LaunchVisitWizardPage extends WizardPage {
 		return;
 	}
 
+	public String generateNewConnectionName() {
+		String prefix = "Connection";
+		int index = 0;
+		String result = "";
+		String[] list = connectionCombo.getItems();
+		
+		do {
+			index += 1;
+			result = prefix + String.valueOf(index);	
+		} while(Arrays.asList(list).contains(result));
+		
+		return result;
+	}
+	
 	/**
 	 * This operation gets the radio selection and sets the fields of this class
 	 * appropriately.
@@ -663,8 +678,8 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 		// Force the user to set a connection name
 		if (index == 0) {
-			MessageDialog.openError(getShell(), "Invalid Key", "Please assign" + " a name to this connection.");
-			return false;
+		    index = -1;	
+		    connectionId = generateNewConnectionName();
 		}
 
 		// Allow the user to select a previously configured connection
@@ -697,14 +712,6 @@ public class LaunchVisitWizardPage extends WizardPage {
 				MessageDialog.openError(getShell(), "Invalid Port", "Please enter the ID of an open port for the "
 						+ "Visit connection.");
 				return false;
-			}
-			// Check if the specified port is in use, then prompt an
-			// error if it is.
-			try (Socket test = new Socket("localhost", Integer.valueOf(port))) {
-				MessageDialog.openError(getShell(), "Port in use", "The specified port number is already in use. "
-						+ "Please select a different port.");
-				return false;
-			} catch (IOException e) {
 			}
 			password = localPasswordComp.getPassword();
 			use_tunneling = false;
@@ -956,7 +963,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 
 			// Create the Text for inputting the port number
 			portText = new Text(this, SWT.BORDER);
-			portText.setText("9600");
+			portText.setText("-1");
 			portText.setLayoutData(new GridData(50, SWT.DEFAULT));
 			portText.setEnabled(false);
 
@@ -968,7 +975,7 @@ public class LaunchVisitWizardPage extends WizardPage {
 					if (portButton.getSelection()) {
 						portText.setEnabled(true);
 					} else {
-						portText.setText("9600");
+						portText.setText("-1");
 						portText.setEnabled(false);
 					}
 				}

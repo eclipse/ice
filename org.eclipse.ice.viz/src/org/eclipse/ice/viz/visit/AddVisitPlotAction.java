@@ -43,6 +43,8 @@ import org.slf4j.LoggerFactory;
 
 import gov.lbnl.visit.swt.VisItSwtWidget;
 import visit.java.client.FileInfo;
+import visit.java.client.components.DatabaseInformation;
+import visit.java.client.components.DatabaseInformation.DatabaseInformationUpdateCallback;
 
 /**
  * This Action opens a dialog that allows the user to pick from plots available
@@ -250,7 +252,7 @@ public class AddVisitPlotAction extends Action {
 	 */
 	private ArrayList<VizEntry> createPlotEntries(IResource resource) {
 
-		ArrayList<VizEntry> entries;
+		final ArrayList<VizEntry> entries;
 
 		if (resource != null) {
 			// Get the ICEResource's List of entries. If it's empty, we need to
@@ -298,21 +300,29 @@ public class AddVisitPlotAction extends Action {
 				}
 
 				widget.getViewerMethods().openDatabase(dbPath);
-				FileInfo fileInfo = widget.getViewerMethods().getDatabaseInfo();
-				// --------------------------------------------- //
+				final String fdbPath = dbPath;
+				new DatabaseInformation(widget.getViewerMethods())
+						.register(new DatabaseInformationUpdateCallback() {
+					
+					@Override
+					public void vars(FileInfo info) {						
+						// --------------------------------------------- //
 
-				// Create the groups for meshes, scalars, vectors, and
-				// materials. The method automatically adds them to the entry
-				// list.
-				String parentFile = dbPath;
-				createPlotEntryGroup("Meshes", fileInfo.getMeshes(), entries,
-						parentFile);
-				createPlotEntryGroup("Scalars", fileInfo.getScalars(), entries,
-						parentFile);
-				createPlotEntryGroup("Vectors", fileInfo.getVectors(), entries,
-						parentFile);
-				createPlotEntryGroup("Materials", fileInfo.getMaterials(),
-						entries, parentFile);
+						// Create the groups for meshes, scalars, vectors, and
+						// materials. The method automatically adds them to the entry
+						// list.
+						entries.clear();
+						String parentFile = fdbPath;
+						createPlotEntryGroup("Meshes", info.getMeshes(), entries,
+								parentFile);
+						createPlotEntryGroup("Scalars", info.getScalars(), entries,
+								parentFile);
+						createPlotEntryGroup("Vectors", info.getVectors(), entries,
+								parentFile);
+						createPlotEntryGroup("Materials", info.getMaterials(),
+								entries, parentFile);	
+					}
+				});
 			}
 		} else {
 			entries = new ArrayList<VizEntry>();
