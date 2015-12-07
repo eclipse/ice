@@ -17,7 +17,7 @@ package org.eclipse.ice.viz.service.datastructures.VizObject;
  * @author r8s
  *
  */
-public enum UpdateableSubscription {
+public enum UpdateableSubscriptionType {
 	/**
 	 * A special value denoting that a listener should be update upon any kind
 	 * of event.
@@ -25,9 +25,10 @@ public enum UpdateableSubscription {
 	All,
 
 	/**
-	 * Selection events are fired when an object is selected or deselected.
+	 * Child events are fired when an object has a child object added or removed
+	 * from it.
 	 */
-	Selection,
+	Child,
 
 	/**
 	 * Property events are fired when an object's properties are changed,
@@ -37,22 +38,14 @@ public enum UpdateableSubscription {
 	Property,
 
 	/**
-	 * Child events are fired when an object has a child object added or removed from it.
+	 * Selection events are fired when an object is selected or deselected.
 	 */
-	Child,
+	Selection,
 
 	/**
-	 * Transformation events are fired when an object's graphical transformation is changed.
+	 * Transformation events are fired when an object's graphical transformation
+	 * is changed.
 	 */
-	Transformation,
-	
-	/**
-	 * Location events are fired when an object moves.
-	 */
-	Location,
-	
-	/**
-	 * Boundary events are fired when an object's boundary conditions are changed.
-	 */
-	Boundary
+	Transformation
+
 }

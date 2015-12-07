@@ -17,9 +17,13 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.Edge;
+import org.eclipse.ice.viz.service.modeling.EdgeComponent;
+import org.eclipse.ice.viz.service.modeling.LinearEdgeComponent;
+import org.eclipse.ice.viz.service.modeling.Vertex;
 
 /**
  * <p>
@@ -54,7 +58,7 @@ public class TestEdge extends Edge {
 	 *            </p>
 	 */
 	public TestEdge(Vertex start, Vertex end) {
-		super(start, end);
+		super(new LinearEdgeComponent(start, end), new AbstractView());
 	}
 
 	/**
@@ -68,7 +72,20 @@ public class TestEdge extends Edge {
 	 *            </p>
 	 */
 	public TestEdge(ArrayList<Vertex> vertices) {
-		super(vertices);
+		super(new EdgeComponent(vertices.get(0), vertices.get(1)),
+				new AbstractView());
+	}
+
+	/**
+	 * The default constructor.
+	 * 
+	 * @param model
+	 *            The controller's model
+	 * @param view
+	 *            The controller's view
+	 */
+	public TestEdge(EdgeComponent model, AbstractView view) {
+		super(model, view);
 	}
 
 	/**
@@ -83,10 +100,11 @@ public class TestEdge extends Edge {
 	 *            </p>
 	 */
 	@Override
-	public void update(IVizUpdateable component) {
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
 
 		// Call the super's update method and update the flag.
-		super.update(component);
+		super.update(component, type);
 		wasUpdated.set(true);
 
 		return;
@@ -98,7 +116,8 @@ public class TestEdge extends Edge {
 	 * the value to false after the call.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the Edge's update method was called, false otherwise.
 	 *         </p>
 	 */

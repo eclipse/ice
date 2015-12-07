@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.datastructures;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Vertex;
@@ -42,6 +44,41 @@ public class FXVertex extends Vertex {
 		// properties
 		((Group) view.getRepresentation()).getProperties()
 				.put(AbstractController.class, this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#update(org.
+	 * eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscriptionType[])
+	 */
+	@Override
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] types) {
+
+		// Queue any messages from the view refresh
+		updateManager.enqueue();
+
+		// If the update came from the component, send it to the view so that it
+		// can refresh.
+		if (component == model) {
+
+			// Only property or selection changes will change the view
+			for (UpdateableSubscriptionType type : types) {
+				if (type == UpdateableSubscriptionType.Property
+						|| type == UpdateableSubscriptionType.Selection) {
+					view.refresh(model);
+					break;
+				}
+			}
+		}
+
+		// Notify own listeners of the change.
+		updateManager.notifyListeners(types);
+		updateManager.flushQueue();
+
 	}
 
 }

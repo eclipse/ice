@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.geometry.scene.base.GNode;
 import org.eclipse.ice.viz.service.geometry.scene.base.GeometryAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.model.INode;
@@ -43,7 +41,7 @@ import org.eclipse.ui.ISelectionListener;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  * 
  */
-public class FXMeshCanvas implements IMeshVizCanvas, IVizUpdateableListener {
+public class FXMeshCanvas implements IMeshVizCanvas {
 
 	/** Factory class to be implemented by renderer implementations. */
 	private static final String GEOMETRY_VIEWER_FACTORY = "org.eclipse.ice.viz.service.geometry.viewer.factory.GeometryViewerFactory";
@@ -186,7 +184,7 @@ public class FXMeshCanvas implements IMeshVizCanvas, IVizUpdateableListener {
 
 		viewer.setInput(rootNode);
 
-		geometry.register(this);
+		// geometry.register(this);
 	}
 
 	/**
@@ -200,26 +198,26 @@ public class FXMeshCanvas implements IMeshVizCanvas, IVizUpdateableListener {
 		return viewer;
 	}
 
-	/**
-	 * <p>
-	 * Listens for updates coming in from the geometry provider.
-	 * </p>
-	 * 
-	 * @see IVizUpdateable#update
-	 */
-	@Override
-	public void update(final IVizUpdateable component) {
-
-		// Invoke this on the JavaFX UI thread
-		javafx.application.Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				if (component == mesh) {
-					// rootGeometry.addGeometry(geometry);
-				}
-			}
-		});
-	}
+	// /**
+	// * <p>
+	// * Listens for updates coming in from the geometry provider.
+	// * </p>
+	// *
+	// * @see IVizUpdateable#update
+	// */
+	// @Override
+	// public void update(final IVizUpdateable component) {
+	//
+	// // Invoke this on the JavaFX UI thread
+	// javafx.application.Platform.runLater(new Runnable() {
+	// @Override
+	// public void run() {
+	// if (component == mesh) {
+	// // rootGeometry.addGeometry(geometry);
+	// }
+	// }
+	// });
+	// }
 
 	/**
 	 * @see IVizCanvas#getDataSource()
@@ -382,6 +380,9 @@ public class FXMeshCanvas implements IMeshVizCanvas, IVizUpdateableListener {
 	 */
 	@Override
 	public void setSelection(Object[] selection) {
+
+		// Set the viewer's internal data structures
+		viewer.setInternalSelection(selection);
 
 		// Start by deselecting everything
 		for (AbstractController polygon : mesh.getEntities()) {

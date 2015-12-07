@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.shapes;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Shape;
@@ -57,7 +59,8 @@ public class FXShapeController extends Shape {
 	 */
 	public void refreshRecursive() {
 
-		notifyLock.set(true);
+		// Queue all messages from recursive refreshing
+		updateManager.enqueue();
 		refresh();
 
 		// Refresh for child
@@ -66,7 +69,8 @@ public class FXShapeController extends Shape {
 			((FXShapeController) child).refreshRecursive();
 		}
 
-		notifyLock.set(false);
+		// Send updates for all the recursive refreshing
+		updateManager.flushQueue();
 	}
 
 	/*
@@ -233,14 +237,19 @@ public class FXShapeController extends Shape {
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public void update(IVizUpdateable component) {
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
 
-		// If the view updated, recursively refresh all children
+		// If the view updated, recursively refresh all children and propagate
+		// the update to own listeners
 		if (component == view) {
 			refreshRecursive();
 		}
 
-		super.update(component);
+		// Otherwise just propagate to own listeners
+		else {
+			super.update(component, type);
+		}
 	}
 
 	// /*
@@ -276,5 +285,37 @@ public class FXShapeController extends Shape {
 	// }
 	//
 	// }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * service.datastructures.VizObject.IVizUpdateable)
+	 */
+	@Override
+	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+			IManagedVizUpdateable source) {
+
+		// Create a list of events to subscribe to
+		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
+
+		// Listen only to new child events from the model
+		if (source == model) {
+			types.add(UpdateableSubscriptionType.Child);
+			types.add(UpdateableSubscriptionType.Selection);
+		}
+
+		// Listen only to transformation events from the view
+		else if (source == view) {
+			types.add(UpdateableSubscriptionType.Transformation);
+		}
+
+		// For other objects, register for everything
+		else {
+			types.add(UpdateableSubscriptionType.All);
+		}
+		return types;
+	}
 
 }

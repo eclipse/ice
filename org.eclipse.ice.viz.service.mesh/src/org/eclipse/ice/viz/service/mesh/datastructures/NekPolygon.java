@@ -17,8 +17,12 @@ import java.util.HashMap;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.Edge;
 import org.eclipse.ice.viz.service.modeling.Face;
 import org.eclipse.ice.viz.service.modeling.FaceComponent;
 
@@ -26,10 +30,11 @@ import org.eclipse.ice.viz.service.modeling.FaceComponent;
  * A Face which maintains the information needed for a Polygon in a Nek5000
  * mesh.
  * 
- * @author Jordan H. Deyton, Robert Smith
+ * @author Jordan H. Deyton
+ * @author Robert Smith
  *
  */
-public class NekPolygon extends Face {
+public class NekPolygon extends Face implements IVizUpdateableListener {
 	/**
 	 * <p>
 	 * The properties for each polygon defined in the MESH DATA section of a Nek
@@ -86,21 +91,30 @@ public class NekPolygon extends Face {
 		// Initialize the polygon's relationship to each edge property and
 		// boundary condition
 		for (AbstractController edge : model.getEntitiesByCategory("Edges")) {
-
-			// Create an entry for the edge in the map of edge properties.
-			EdgeProperties properties = new EdgeProperties();
-			edgeProperties.put(Integer.valueOf(edge.getProperty("Id")),
-					properties);
-
-			// Register with all of the boundary conditions in the properties.
-			properties.getFluidBoundaryCondition().register(this);
-			properties.getThermalBoundaryCondition().register(this);
-			for (BoundaryCondition condition : properties
-					.getOtherBoundaryConditions()) {
-				condition.register(this);
-			}
+			initializeBoundaryConditions(edge);
 		}
 
+	}
+
+	/**
+	 * Create a set of edge properties for the given edge and place them in the
+	 * properties, keyed by that edge's id.
+	 * 
+	 * @param edge
+	 *            The edge for which boundary conditions are being created
+	 */
+	public void initializeBoundaryConditions(AbstractController edge) {
+		// Create an entry for the edge in the map of edge properties.
+		EdgeProperties properties = new EdgeProperties();
+		edgeProperties.put(Integer.valueOf(edge.getProperty("Id")), properties);
+
+		// Register with all of the boundary conditions in the properties.
+		properties.getFluidBoundaryCondition().register(this);
+		properties.getThermalBoundaryCondition().register(this);
+		for (BoundaryCondition condition : properties
+				.getOtherBoundaryConditions()) {
+			condition.register(this);
+		}
 	}
 
 	/**
@@ -130,7 +144,9 @@ public class NekPolygon extends Face {
 				condition.register(this);
 
 				// Notify listeners of the change.
-				notifyListeners();
+				UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
+				eventType[0] = UpdateableSubscriptionType.Property;
+				updateManager.notifyListeners(eventType);
 			}
 		}
 
@@ -186,7 +202,9 @@ public class NekPolygon extends Face {
 				condition.register(this);
 
 				// Notify listeners of the change.
-				notifyListeners();
+				UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
+				eventType[0] = UpdateableSubscriptionType.Property;
+				updateManager.notifyListeners(eventType);
 			}
 		}
 
@@ -248,7 +266,9 @@ public class NekPolygon extends Face {
 				condition.register(this);
 
 				// Notify listeners of the change.
-				notifyListeners();
+				UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
+				eventType[0] = UpdateableSubscriptionType.Property;
+				updateManager.notifyListeners(eventType);
 			}
 		}
 
@@ -308,6 +328,13 @@ public class NekPolygon extends Face {
 		return polygonProperties;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#setProperty(java.
+	 * lang.String, java.lang.String)
+	 */
 	@Override
 	public void setProperty(String property, String value) {
 
@@ -315,15 +342,68 @@ public class NekPolygon extends Face {
 		// propagate that change to its vertices
 		if ("Constructing".equals(property) || "Selected".equals(property)) {
 
-			// Lock notifications from changing own edges
-			notifyLock.set(true);
+			// Queue notifications from changing own edges
+			updateManager.enqueue();
+
 			for (AbstractController vertex : model
 					.getEntitiesByCategory("Edges")) {
 				vertex.setProperty(property, value);
 			}
-			notifyLock.set(false);
+
+			// Send all notifications from setting selection or construction
+			// states
+			updateManager.flushQueue();
 		}
 
 		super.setProperty(property, value);
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
+	 * VizObject.IVizUpdateable)
+	 */
+	@Override
+	public void update(IVizUpdateable component) {
+
+		// This is the IVizUpdateable update method, which will only be
+		// triggered by boundary conditions. Thus, this should trigger a
+		// Property type update for the part's own listeners
+		UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
+		eventType[0] = UpdateableSubscriptionType.Property;
+		updateManager.notifyListeners(eventType);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#addEntity(org.
+	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void addEntity(AbstractController entity) {
+
+		// When edges are added, create boundary conditions for them.
+		if (entity instanceof Edge) {
+			initializeBoundaryConditions(entity);
+		}
+
+		super.addEntity(entity);
+	}
+
+	@Override
+	public void addEntityByCategory(AbstractController entity,
+			String category) {
+
+		// When edges are added, create boundary conditions for them.
+		if ("Edges".equals(category)) {
+			initializeBoundaryConditions(entity);
+		}
+
+		super.addEntityByCategory(entity, category);
+	}
+
 }

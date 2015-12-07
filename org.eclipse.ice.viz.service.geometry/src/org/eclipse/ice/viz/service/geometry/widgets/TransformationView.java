@@ -102,72 +102,86 @@ public class TransformationView extends ViewPart {
 	public void createPartControl(Composite parent) {
 
 		// Create a scrolled composite - scroll bars!
-		ScrolledComposite scrolledParent = new ScrolledComposite(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		ScrolledComposite scrolledParent = new ScrolledComposite(parent,
+				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		// Create a sub-composite to hold the actual widgets
 		final Composite realParent = new Composite(scrolledParent, SWT.NONE);
 
 		// Main layout
 		realParent.setLayout(new GridLayout(4, false));
-		realParent.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		realParent.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 
 		// Size parameter
 		Label sizeLabel = new Label(realParent, SWT.NONE);
-		sizeLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		sizeLabel.setLayoutData(
+				new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		sizeLabel.setText("Size");
 
 		sizeSpinner = new RealSpinner(realParent);
-		sizeSpinner.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		sizeSpinner.getControl().setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		sizeSpinner.setBounds(0.0, 1.0e6);
 		sizeSpinner.setValue(1.0);
 
 		// Horizontal line
 
 		Label separator = new Label(realParent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		separator.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
+		separator.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, false, false, 4, 1));
 
 		// Coordinate labels
 
 		Label labelBlank = new Label(realParent, SWT.NONE);
 
 		Label labelX = new Label(realParent, SWT.NONE);
-		labelX.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		labelX.setLayoutData(
+				new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		labelX.setText("X");
 
 		Label labelY = new Label(realParent, SWT.NONE);
-		labelY.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		labelY.setLayoutData(
+				new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		labelY.setText("Y");
 
 		Label labelZ = new Label(realParent, SWT.NONE);
-		labelZ.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		labelZ.setLayoutData(
+				new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		labelZ.setText("Z");
 
 		// Translation
 		Label translateLabel = new Label(realParent, SWT.NONE);
-		translateLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		translateLabel.setLayoutData(
+				new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		translateLabel.setText("Translate");
 		for (int i = 0; i < 3; i++) {
 			translateSpinners[i] = new RealSpinner(realParent);
-			translateSpinners[i].getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			translateSpinners[i].getControl().setLayoutData(
+					new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 			translateSpinners[i].setBounds(-1.0e6, 1.0e6);
 		}
 
 		// Rotation
 		Label rotationLabel = new Label(realParent, SWT.NONE);
-		rotationLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		rotationLabel.setLayoutData(
+				new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		rotationLabel.setText("Rotation");
 		for (int i = 0; i < 3; i++) {
 			rotationSpinners[i] = new RealSpinner(realParent);
-			rotationSpinners[i].getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			rotationSpinners[i].getControl().setLayoutData(
+					new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 			rotationSpinners[i].setBounds(-1.0e6, 1.0e6);
 		}
 
 		// Scale
 		Label scaleLabel = new Label(realParent, SWT.NONE);
-		scaleLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
+		scaleLabel.setLayoutData(
+				new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		scaleLabel.setText("Scale");
 		for (int i = 0; i < 3; i++) {
 			scaleSpinners[i] = new RealSpinner(realParent);
-			scaleSpinners[i].getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+			scaleSpinners[i].getControl().setLayoutData(
+					new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 			scaleSpinners[i].setBounds(0.0, 1.0e6);
 			scaleSpinners[i].setValue(1.0);
 		}
@@ -196,7 +210,8 @@ public class TransformationView extends ViewPart {
 		// Set the expansion sizes and minimum size of the scrolled composite
 		scrolledParent.setExpandHorizontal(true);
 		scrolledParent.setExpandVertical(true);
-		scrolledParent.setMinSize(realParent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		scrolledParent
+				.setMinSize(realParent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		scrolledParent.setShowFocusedControl(true);
 
 	}
@@ -314,11 +329,13 @@ public class TransformationView extends ViewPart {
 				transformation.setSize(size);
 				transformation.setScale(scaleX, scaleY, scaleZ);
 				transformation.setRotation(rotationX, rotationY, rotationZ);
-				transformation.setTranslation(translationX, translationY, translationZ);
+				transformation.setTranslation(translationX, translationY,
+						translationZ);
 
 				// Reset the shape's transformation
-
-				currentShape.setTransformation(transformation);
+				if (!currentShape.getTransformation().equals(transformation)) {
+					currentShape.setTransformation(transformation);
+				}
 			}
 		};
 

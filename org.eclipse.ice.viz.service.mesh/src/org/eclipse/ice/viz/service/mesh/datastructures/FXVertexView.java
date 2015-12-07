@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.datastructures;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
@@ -54,9 +54,6 @@ public class FXVertexView extends AbstractView {
 	 * The Material to display when the Vertex is first being made
 	 */
 	private PhongMaterial constructingMaterial;
-
-	/** */
-	private boolean selected;
 
 	/**
 	 * The nullary constructor.
@@ -101,9 +98,6 @@ public class FXVertexView extends AbstractView {
 		// Set the sphere to be the constructing material by default
 		mesh.setMaterial(constructingMaterial);
 		node.getChildren().add(mesh);
-		System.out.println(
-				"JavaFX loc: (" + node.getLocalToSceneTransform().getTx() + ","
-						+ node.getLocalToSceneTransform().getTy() + ")");
 
 	}
 
@@ -178,12 +172,24 @@ public class FXVertexView extends AbstractView {
 	public Object clone() {
 		FXVertexView clone = new FXVertexView();
 		clone.copy(this);
-		clone.update(clone.transformation);
+
+		// Force an update from the transformation
+		clone.transformation.setSize(clone.transformation.getSize());
 		return clone;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#update(org.eclipse.ice.
+	 * viz.service.datastructures.VizObject.IVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscriptionType[])
+	 */
 	@Override
-	public void update(IVizUpdateable component) {
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {
@@ -192,8 +198,7 @@ public class FXVertexView extends AbstractView {
 					.setAll(Util.convertTransformation(transformation));
 		}
 
-		// Notify own listeners of the change
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
-		updateManager.notifyListeners(eventTypes);
+		super.update(component, type);
+
 	}
 }

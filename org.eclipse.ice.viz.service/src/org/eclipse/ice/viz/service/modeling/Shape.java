@@ -44,16 +44,16 @@ public class Shape extends AbstractController {
 	 * org.eclipse.ice.viz.service.modeling.AbstractController#removeEntity(org.
 	 * eclipse.ice.viz.service.modeling.AbstractController)
 	 */
-	@Override
-	public void removeEntity(AbstractController entity) {
-		super.removeEntity(entity);
-
-		// If this was the entity's parent, remove it
-		if (entity instanceof Shape
-				&& entity.getEntitiesByCategory("Parent").contains(this)) {
-			entity.removeEntity(this);
-		}
-	}
+	// @Override
+	// public void removeEntity(AbstractController entity) {
+	// super.removeEntity(entity);
+	//
+	// // If this was the entity's parent, remove it
+	// if (entity instanceof Shape
+	// && entity.getEntitiesByCategory("Parent").contains(this)) {
+	// entity.removeEntity(this);
+	// }
+	// }
 
 	/**
 	 * Set the shape's parent shape. Shapes can have at most one parent, and

@@ -20,16 +20,17 @@ import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
 import org.eclipse.ice.viz.service.javafx.internal.FXContentProvider;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
-import org.eclipse.ice.viz.service.javafx.internal.scene.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownController;
 import org.eclipse.ice.viz.service.mesh.datastructures.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonComponent;
+import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Edge;
+import org.eclipse.ice.viz.service.modeling.Face;
 import org.eclipse.ice.viz.service.modeling.FaceEdgeComponent;
 import org.eclipse.ice.viz.service.modeling.Vertex;
 import org.eclipse.ice.viz.service.modeling.VertexComponent;
@@ -52,9 +53,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
 import javafx.scene.text.Text;
@@ -64,10 +63,16 @@ import javafx.scene.text.Text;
  * JavaFX implementation of GeometryViewer.
  * </p>
  * 
- * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
+ * @author Tony McCrary (tmccrary@l33tlabs.com)
+ * @author Robert Smith
  *
  */
 public class FXMeshViewer extends GeometryViewer {
+
+	/**
+	 * The number of units long each side of the squares in the grid will be
+	 */
+	final double SCALE = 3d;
 
 	/** The root JavaFX widget that displays content. */
 	private FXCanvas fxCanvas;
@@ -180,7 +185,7 @@ public class FXMeshViewer extends GeometryViewer {
 	/**
 	 * The gizmo containing the axis.
 	 */
-	private TransformGizmo gizmo;
+	private AxisGridGizmo gizmo;
 
 	/**
 	 * The manager for attachments to the renderer
@@ -321,28 +326,13 @@ public class FXMeshViewer extends GeometryViewer {
 					// If this is not the first vertex, create an edge between
 					// it and the last one
 					if (numVertices > 1) {
-						FaceEdgeComponent tempComponent = new FaceEdgeComponent(
+
+						Edge tempEdge = getEdge(
 								(Vertex) selectedVertices.get(numVertices - 2),
 								(Vertex) selectedVertices.get(numVertices - 1));
-						tempComponent.setProperty("Constructing", "True");
-						Edge tempEdge = (Edge) factory
-								.createController(tempComponent);
-
-						// Set the edge's name and ID
-						tempEdge.setProperty("Name", "Edge");
-						tempEdge.setProperty("Id", String.valueOf(nextEdgeID));
-						nextEdgeID++;
-
-						// Set the mouse to ignore edges. Only Vertices and
-						// empty space may be selected.
-						((Group) tempEdge.getRepresentation())
-								.setMouseTransparent(true);
 
 						// Add the edge to the list
 						tempEdges.add(tempEdge);
-
-						// Add it to the temp root
-						tempRoot.addEntity(tempEdge);
 
 						// Refresh the edge
 						tempEdge.refresh();
@@ -352,18 +342,9 @@ public class FXMeshViewer extends GeometryViewer {
 					// so finish up the polygon
 					if (numVertices == 4) {
 
-						// Create an edge between the last vertex and the first
-						FaceEdgeComponent tempComponent = new FaceEdgeComponent(
+						Edge tempEdge = getEdge(
 								(Vertex) selectedVertices.get(numVertices - 1),
 								(Vertex) selectedVertices.get(0));
-						tempComponent.setProperty("Constructing", "True");
-						Edge tempEdge = (Edge) factory
-								.createController(tempComponent);
-
-						// Set the edge's name and ID
-						tempEdge.setProperty("Name", "Edge");
-						tempEdge.setProperty("Id", String.valueOf(nextEdgeID));
-						nextEdgeID++;
 
 						tempEdges.add(tempEdge);
 
@@ -460,10 +441,7 @@ public class FXMeshViewer extends GeometryViewer {
 						// If nothing is pressed, select that vertex and nothing
 						// else
 						else {
-							for (AbstractController vertex : selectedVertices) {
-								vertex.setProperty("Selected", "False");
-							}
-							selectedVertices.clear();
+							clearSelection();
 
 							selectedVertices.add(modelShape);
 							modelShape.setProperty("Selected", "True");
@@ -805,11 +783,6 @@ public class FXMeshViewer extends GeometryViewer {
 	 * </p>
 	 */
 	private void setupSceneInternals(Group parent) {
-		// Create scene plane for frame of reference.
-		Box box = new Box(1000, 0, 1000);
-		box.setMouseTransparent(true);
-		box.setDrawMode(DrawMode.LINE);
-		box.setMaterial(new PhongMaterial(Color.ANTIQUEWHITE));
 
 		AmbientLight ambientLight = new AmbientLight(Color.rgb(100, 100, 100));
 
@@ -829,10 +802,11 @@ public class FXMeshViewer extends GeometryViewer {
 		light4.setMouseTransparent(true);
 		light4.setTranslateZ(350);
 
-		gizmo = new TransformGizmo(1000);
-		gizmo.showHandles(false);
+		// gizmo = new TransformGizmo(1000);
+		gizmo = new AxisGridGizmo(SCALE);
+		// gizmo.showHandles(false);
 
-		parent.getChildren().addAll(gizmo, box, light1, light2, light3, light4,
+		parent.getChildren().addAll(gizmo, light1, light2, light3, light4,
 				ambientLight);
 
 	}
@@ -1000,7 +974,7 @@ public class FXMeshViewer extends GeometryViewer {
 	 *            Whether or not the editor should display its axis.
 	 */
 	public void setAxisVisible(boolean visible) {
-		gizmo.setVisible(visible);
+		gizmo.toggleAxis(visible);
 	}
 
 	/**
@@ -1009,7 +983,7 @@ public class FXMeshViewer extends GeometryViewer {
 	 * @return True if the axis are displayed in the viewer, false otherwise
 	 */
 	public boolean getAxisVisible() {
-		return gizmo.isVisible();
+		return gizmo.axesVisible();
 	}
 
 	/**
@@ -1031,11 +1005,114 @@ public class FXMeshViewer extends GeometryViewer {
 		for (AbstractController edge : tempEdges) {
 			tempRoot.removeEntity(edge);
 			edge.setProperty("Selected", "False");
+			edge.setProperty("Constructing", "False");
+			edge.refresh();
 		}
 
 		// Empty the lists
 		selectedVertices.clear();
 		tempEdges.clear();
+	}
+
+	/**
+	 * Gets the Edge part between two given vertices, creating a new edge and
+	 * adding it to the temporary root node if none exists.
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public Edge getEdge(Vertex start, Vertex end) {
+
+		// If the start point shares and edge with the endp oint, return it
+		for (AbstractController edge : start.getEntitiesByCategory("Edges")) {
+			if (edge.getEntitiesByCategory("Vertices").contains(end)) {
+
+				edge.setProperty("Constructing", "True");
+				return (Edge) edge;
+			}
+		}
+
+		// If there is not already an edge, create a new one
+		FaceEdgeComponent tempComponent = new FaceEdgeComponent(start, end);
+		tempComponent.setProperty("Constructing", "True");
+		Edge tempEdge = (Edge) factory.createController(tempComponent);
+
+		// Set the edge's name and ID
+		tempEdge.setProperty("Name", "Edge");
+		tempEdge.setProperty("Id", String.valueOf(nextEdgeID));
+		nextEdgeID++;
+
+		// Set the mouse to ignore edges. Only Vertices and
+		// empty space may be selected.
+		((Group) tempEdge.getRepresentation()).setMouseTransparent(true);
+
+		// Add it to the temporary root
+		tempRoot.addEntity(tempEdge);
+
+		return tempEdge;
+
+	}
+
+	/**
+	 * Set the parts of the mesh such that the given objects are the only
+	 * selected parts
+	 * 
+	 * @param selection
+	 *            The new set of parts which will be selected
+	 */
+	public void setInternalSelection(Object[] selection) {
+		clearSelection();
+
+		// Add each object to the correct internal list
+		for (Object target : selection) {
+
+			AbstractController part = ((MeshSelection) target).selectedMeshPart;
+
+			// For vertices, add them to the vertex list if they are not already
+			// present
+			if (part instanceof Vertex) {
+				if (!selectedVertices.contains(part)) {
+					selectedVertices.add(part);
+				}
+			}
+
+			else if (part instanceof Edge) {
+
+				// Add an edge to the list of temporary edges if it is not
+				// already present
+				if (!tempEdges.contains(part)) {
+					tempEdges.add(part);
+				}
+
+				// Then handle its vertices
+				for (AbstractController vertex : part
+						.getEntitiesByCategory("Vertices")) {
+					if (!selectedVertices.contains(vertex)) {
+						selectedVertices.add(vertex);
+					}
+				}
+			}
+
+			else if (part instanceof Face) {
+
+				// Add each of the face's edges
+				for (AbstractController edge : (part)
+						.getEntitiesByCategory("Edges")) {
+					if (!tempEdges.contains(edge)) {
+						tempEdges.add(edge);
+					}
+				}
+
+				// Add each of the face's vertices
+				for (AbstractController vertex : (part)
+						.getEntitiesByCategory("Vertices")) {
+					if (!selectedVertices.contains(vertex)) {
+						selectedVertices.add(vertex);
+					}
+				}
+			}
+		}
 	}
 
 }

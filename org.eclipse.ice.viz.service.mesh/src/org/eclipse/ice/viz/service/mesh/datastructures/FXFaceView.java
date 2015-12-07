@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.datastructures;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 
 /**
  * A class which provides and manages a simple empty node for a JavaFX part,
@@ -40,11 +38,11 @@ public class FXFaceView extends AbstractView {
 	public FXFaceView(AbstractMeshComponent model) {
 		super();
 
-		// Instantiate the node
-		node = new Group();
-
-		// Set the initial graphical representations
-		refresh(model);
+		// // Instantiate the node
+		// node = new Group();
+		//
+		// // Set the initial graphical representations
+		// refresh(model);
 	}
 
 	/*
@@ -68,20 +66,21 @@ public class FXFaceView extends AbstractView {
 	@Override
 	public void refresh(AbstractMeshComponent model) {
 
-		// Clear the list of children so it can be rebuilt
-		node.getChildren().clear();
-
-		// Add each edge to the node
-		for (AbstractController edge : model.getEntitiesByCategory("Edges")) {
-			node.getChildren().add((Node) edge.getRepresentation());
-		}
-
-		// Add each vertex to the node
-		for (AbstractController vertex : model
-				.getEntitiesByCategory("Vertices")) {
-			if (!node.getChildren().contains(vertex.getRepresentation())) {
-				node.getChildren().add((Node) vertex.getRepresentation());
-			}
-		}
+		// // Clear the list of children so it can be rebuilt
+		// node.getChildren().clear();
+		//
+		// // Add each edge to the node
+		// for (AbstractController edge : model.getEntitiesByCategory("Edges"))
+		// {
+		// node.getChildren().add((Node) edge.getRepresentation());
+		// }
+		//
+		// // Add each vertex to the node
+		// for (AbstractController vertex : model
+		// .getEntitiesByCategory("Vertices")) {
+		// if (!node.getChildren().contains(vertex.getRepresentation())) {
+		// node.getChildren().add((Node) vertex.getRepresentation());
+		// }
+		// }
 	}
 }

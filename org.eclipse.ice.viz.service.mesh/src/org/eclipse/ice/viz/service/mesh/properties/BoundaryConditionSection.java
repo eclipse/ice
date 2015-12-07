@@ -381,7 +381,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 
 				// If the selection has edges, get the boundary condition for
 				// the edge with the correct id
-				if (edges != null) {
+				if (!edges.isEmpty()) {
 					if (id < edges.size()) {
 						int edgeId = Integer
 								.valueOf(edges.get(id).getProperty("Id"));
@@ -411,13 +411,12 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 
 					// First, get the polygon according to the id variable.
 					List<AbstractController> polygons = meshPart
-							.getEntitiesByCategory("Face");
+							.getEntitiesByCategory("Faces");
 					if (id < polygons.size()) {
 						NekPolygon polygon = (NekPolygon) polygons.get(id);
 
 						// Now get the condition based on the type of
-						// boundary
-						// condition we are displaying.
+						// boundary condition we are displaying.
 						if (type == Type.Fluid) {
 							condition = polygon
 									.getFluidBoundaryCondition(edgeId);

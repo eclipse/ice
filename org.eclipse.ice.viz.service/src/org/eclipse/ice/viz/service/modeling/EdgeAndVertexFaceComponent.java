@@ -47,6 +47,9 @@ public class EdgeAndVertexFaceComponent extends FaceComponent {
 		// appropriate categories.
 		if (newEntity instanceof Edge) {
 
+			// Queue updates for all the new children
+			updateManager.enqueue();
+
 			// Add the edge under the Edges category
 			Edge edge = (Edge) newEntity;
 			addEntityByCategory(edge, "Edges");
@@ -56,6 +59,9 @@ public class EdgeAndVertexFaceComponent extends FaceComponent {
 					.getEntitiesByCategory("Vertices")) {
 				addEntityByCategory(vertex, "Vertices");
 			}
+
+			// Send notifications for all children
+			updateManager.flushQueue();
 		}
 
 		// Otherwise, add the entity normally

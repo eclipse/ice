@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * A mesh component representing a shape in a Constructive Solid Geometry tree.
@@ -43,8 +43,6 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 */
 	public void setParent(Shape parent) {
 
-		notifyLock.set(true);
-
 		// Get the current list of parents
 		List<AbstractController> parentList = getEntitiesByCategory("Parent");
 
@@ -60,9 +58,9 @@ public class ShapeComponent extends AbstractMeshComponent {
 
 		// Register the parent as a listener and fire an update notification
 		register(parent);
-		notifyLock.set(false);
 
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Child };
 		updateManager.notifyListeners(eventTypes);
 
 	}
@@ -76,6 +74,11 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 */
 	@Override
 	public void setProperty(String property, String value) {
+
+		// Queue updates for all selections
+		updateManager.enqueue();
+
+		// Set own property
 		super.setProperty(property, value);
 
 		// Select/deselect all children as well
@@ -86,6 +89,9 @@ public class ShapeComponent extends AbstractMeshComponent {
 				}
 			}
 		}
+
+		// Send updates for all selections
+		updateManager.flushQueue();
 	}
 
 	/*
@@ -176,7 +182,7 @@ public class ShapeComponent extends AbstractMeshComponent {
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
 	 */
 	@Override
-	public void register(IVizUpdateableListener listener) {
+	public void register(IManagedVizUpdateableListener listener) {
 
 		// Ignore requests to register own children to prevent circular
 		// observation

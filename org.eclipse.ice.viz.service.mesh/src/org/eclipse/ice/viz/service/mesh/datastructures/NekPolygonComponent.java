@@ -55,6 +55,9 @@ public class NekPolygonComponent extends EdgeAndVertexFaceComponent {
 		// If adding an edge, handle it apprioriately
 		if (entity instanceof Edge) {
 
+			// Queue messages from adding the entity
+			updateManager.enqueue();
+
 			// Add the edge to the Edges cagtegory by default
 			super.addEntity(entity);
 
@@ -63,6 +66,10 @@ public class NekPolygonComponent extends EdgeAndVertexFaceComponent {
 			if (controller != null) {
 				entity.addEntityByCategory(controller, "Faces");
 			}
+
+			// Send own update along with the new edge's, if there was one
+			updateManager.flushQueue();
+
 		} else {
 			super.addEntity(entity);
 		}
@@ -83,9 +90,16 @@ public class NekPolygonComponent extends EdgeAndVertexFaceComponent {
 		// Give a reference to the controller to the edge's faces
 		List<AbstractController> edges = entities.get("Edges");
 		if (edges != null) {
+
+			// Queue messages from all edges
+			updateManager.enqueue();
+
 			for (AbstractController edge : edges) {
 				edge.addEntity(controller);
 			}
+
+			// Send messages from all changed edges
+			updateManager.flushQueue();
 		}
 
 	}

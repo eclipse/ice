@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.datastructures;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
@@ -213,12 +213,15 @@ public class FXLinearEdgeView extends AbstractView {
 	public Object clone() {
 		FXLinearEdgeView clone = new FXLinearEdgeView();
 		clone.copy(this);
-		clone.update(clone.transformation);
+
+		// Force an update from the transformation
+		clone.transformation.setSize(clone.transformation.getSize());
 		return clone;
 	}
 
 	@Override
-	public void update(IVizUpdateable component) {
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {
@@ -227,8 +230,6 @@ public class FXLinearEdgeView extends AbstractView {
 					.setAll(Util.convertTransformation(transformation));
 		}
 
-		// Notify own listeners of the change
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
-		updateManager.notifyListeners(eventTypes);
+		super.update(component, type);
 	}
 }

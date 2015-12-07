@@ -18,6 +18,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 
 /**
@@ -34,7 +38,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
  */
 @XmlRootElement(name = "Transformation")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Transformation extends VizObject {
+public class Transformation extends VizObject implements IManagedVizUpdateable {
 	/**
 	 * <p>
 	 * The amount of skew for each of the three axes: x, y, and z
@@ -82,6 +86,13 @@ public class Transformation extends VizObject {
 	private double[] translation = new double[3];
 
 	/**
+	 * The manager for filtering event notifications from this object to
+	 * subscribed listeners.
+	 */
+	private UpdateableSubscriptionManager updateManager = new UpdateableSubscriptionManager(
+			this);
+
+	/**
 	 * <p>
 	 * Upon creation, the Transformation should set its skew values to 0, sizes
 	 * to 1, scale to 1, rotations to 0, and translation to 0. The resultant
@@ -123,6 +134,11 @@ public class Transformation extends VizObject {
 		scale[2] = scale[2] + other.scale[2];
 		skew[2] = skew[2] + other.skew[2];
 		translation[2] = translation[2] + other.translation[2];
+
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -218,7 +234,10 @@ public class Transformation extends VizObject {
 		skew[1] = y;
 		skew[2] = z;
 
-		notifyListeners();
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -234,7 +253,10 @@ public class Transformation extends VizObject {
 	public void setSize(double size) {
 		this.size = size;
 
-		notifyListeners();
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -260,7 +282,10 @@ public class Transformation extends VizObject {
 		scale[1] = y;
 		scale[2] = z;
 
-		notifyListeners();
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -286,7 +311,10 @@ public class Transformation extends VizObject {
 		rotation[1] = yAxis;
 		rotation[2] = zAxis;
 
-		notifyListeners();
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -312,7 +340,10 @@ public class Transformation extends VizObject {
 		translation[1] = y;
 		translation[2] = z;
 
-		notifyListeners();
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/**
@@ -339,7 +370,10 @@ public class Transformation extends VizObject {
 			this.translation[i] += translation[i];
 		}
 
-		notifyListeners();
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		updateManager.notifyListeners(eventTypes);
 
 	}
 
@@ -517,6 +551,32 @@ public class Transformation extends VizObject {
 		output += translation[1] + ", " + translation[2] + ")";
 
 		return output;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateable#register(org.eclipse.ice.viz.service.datastructures
+	 * .VizObject.IManagedVizUpdateableListener)
+	 */
+	@Override
+	public void register(IManagedVizUpdateableListener listener) {
+		updateManager.register(listener);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateable#unregister(org.eclipse.ice.viz.service.
+	 * datastructures.VizObject.IManagedVizUpdateableListener)
+	 */
+	@Override
+	public void unregister(IManagedVizUpdateableListener listener) {
+		updateManager.unregister(listener);
+
 	}
 
 }

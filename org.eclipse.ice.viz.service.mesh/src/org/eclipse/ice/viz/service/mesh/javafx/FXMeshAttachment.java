@@ -13,8 +13,9 @@ package org.eclipse.ice.viz.service.mesh.javafx;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.geometry.scene.base.GeometryAttachment;
 import org.eclipse.ice.viz.service.geometry.scene.base.IGeometry;
 import org.eclipse.ice.viz.service.geometry.scene.model.IAttachment;
@@ -144,9 +145,10 @@ public class FXMeshAttachment extends GeometryAttachment {
 
 			fxAttachmentNode.getChildren().clear();
 
-			geom.register(new IVizUpdateableListener() {
+			geom.register(new IManagedVizUpdateableListener() {
 				@Override
-				public void update(IVizUpdateable component) {
+				public void update(IManagedVizUpdateable component,
+						UpdateableSubscriptionType[] type) {
 
 					javafx.application.Platform.runLater(new Runnable() {
 						@Override
@@ -156,6 +158,16 @@ public class FXMeshAttachment extends GeometryAttachment {
 							refresh();
 						}
 					});
+				}
+
+				@Override
+				public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+						IManagedVizUpdateable source) {
+
+					// Register to receive all updates
+					ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
+					types.add(UpdateableSubscriptionType.All);
+					return types;
 				}
 			});
 

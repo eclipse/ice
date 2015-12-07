@@ -30,7 +30,7 @@ import org.eclipse.ice.viz.service.modeling.AbstractController;
 public class FXMeshVizService extends AbstractVizService {
 
 	/** The name used to lookup this service. */
-	private static final String VIZ_SERVICE_NAME = "ICE Geometry Editor"; //$NON-NLS-1$
+	private static final String VIZ_SERVICE_NAME = "ICE JavaFX Mesh Editor"; //$NON-NLS-1$
 
 	/** The version of the service. */
 	private static final String CURRENT_VERSION = "1.0";

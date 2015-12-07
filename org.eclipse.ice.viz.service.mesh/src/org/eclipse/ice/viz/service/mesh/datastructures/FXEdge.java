@@ -51,15 +51,17 @@ public class FXEdge extends Edge {
 		if ("Constructing".equals(property) || "Selected".equals(property)) {
 
 			// Lock notifications from changing own vertices
-			notifyLock.set(true);
+			updateManager.enqueue();
 			for (AbstractController vertex : model
 					.getEntitiesByCategory("Vertices")) {
 				vertex.setProperty(property, value);
 			}
-			notifyLock.set(false);
 		}
 
 		super.setProperty(property, value);
+
+		// Empty the queue
+		updateManager.flushQueue();
 	}
 
 }

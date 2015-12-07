@@ -248,13 +248,16 @@ public class VertexSection extends AbstractPropertySection {
 				vertex = (Vertex) meshPart;
 			}
 
-			// Determine the appropriate Vertex instance whose properties are
-			// being exposed
-			// List<AbstractController> vertices = meshPart
-			// .getEntitiesByCategory("Vertices");
-			// if (index < vertices.size()) {
-			// VertexSection.this.vertex = (Vertex) vertices.get(index);
-			// }
+			else {
+				// Determine the appropriate Vertex instance whose properties
+				// are
+				// being exposed
+				List<AbstractController> vertices = meshPart
+						.getEntitiesByCategory("Vertices");
+				if (index < vertices.size()) {
+					VertexSection.this.vertex = (Vertex) vertices.get(index);
+				}
+			}
 		}
 
 		return;

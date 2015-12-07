@@ -12,11 +12,11 @@ package org.eclipse.ice.viz.service.modeling;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * The view of an AbstractMeshComponent shown to the user. The view is
@@ -26,7 +26,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
  * 
  * @author Robert Smith
  */
-public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateable {
+public class AbstractView
+		implements IManagedVizUpdateableListener, IManagedVizUpdateable {
 
 	/**
 	 * The transformation representing the part's intended state. This may not
@@ -44,11 +45,12 @@ public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateab
 	 * The list of listeners observing this object.
 	 */
 	private ArrayList<IVizUpdateableListener> listeners;
-	
+
 	/**
 	 * The listeners registered for updates from this object.
 	 */
-	protected UpdateableSubscriptionManager updateManager;
+	protected UpdateableSubscriptionManager updateManager = new UpdateableSubscriptionManager(
+			this);
 
 	/**
 	 * The default constructor.
@@ -81,43 +83,41 @@ public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateab
 	public void setTransformation(Transformation newTransformation) {
 		transformation = newTransformation;
 
-		// Mimic an update notification from the new transformation
-		update(transformation);
-
 		// Notify own listeners of the change
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Transformation};
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Transformation };
 		updateManager.notifyListeners(eventTypes);
 	}
 
-//	/**
-//	 * Notify all listeners of an update.
-//	 */
-//	public void notifyListeners() {
-//
-//		// If the listeners are empty, return
-//		if (this.listeners == null || this.listeners.isEmpty()) {
-//			return;
-//		}
-//
-//		// Get a reference to self
-//		final AbstractView self = this;
-//
-//		// // Create a thread object that notifies all listeners
-//		//
-//		// Thread notifyThread = new Thread() {
-//		//
-//		// @Override
-//		// public void run() {
-//		// Loop over all listeners and update them
-//		for (int i = 0; i < listeners.size(); i++) {
-//			listeners.get(i).update(self);
-//		}
-//		// }
-//		// };
-//		//
-//		// // Start the thread
-//		// notifyThread.start();
-//	}
+	// /**
+	// * Notify all listeners of an update.
+	// */
+	// public void notifyListeners() {
+	//
+	// // If the listeners are empty, return
+	// if (this.listeners == null || this.listeners.isEmpty()) {
+	// return;
+	// }
+	//
+	// // Get a reference to self
+	// final AbstractView self = this;
+	//
+	// // // Create a thread object that notifies all listeners
+	// //
+	// // Thread notifyThread = new Thread() {
+	// //
+	// // @Override
+	// // public void run() {
+	// // Loop over all listeners and update them
+	// for (int i = 0; i < listeners.size(); i++) {
+	// listeners.get(i).update(self);
+	// }
+	// // }
+	// // };
+	// //
+	// // // Start the thread
+	// // notifyThread.start();
+	// }
 
 	/**
 	 * Getter for the part's previous transformation.
@@ -162,25 +162,12 @@ public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateab
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * update(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void update(String updatedKey, String newValue) {
-		// Nothing to do
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
 	 * register(org.eclipse.ice.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void register(IVizUpdateableListener listener) {
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
-		}
+	public void register(IManagedVizUpdateableListener listener) {
+		updateManager.register(listener);
 
 	}
 
@@ -192,33 +179,24 @@ public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateab
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IVizUpdateableListener listener) {
-		listeners.remove(listener);
+	public void unregister(IManagedVizUpdateableListener listener) {
 
+		// Remove the listener from the list
+		updateManager.unregister(listener);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
-	 * VizObject.IVizUpdateable)
+	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
+	 * datastructures.VizObject.IVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscription[])
 	 */
 	@Override
-	public void update(IVizUpdateable component) {
-		
-		// Notify own listeners of the change
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
-		updateManager.notifyListeners(eventTypes);
-
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable, org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription[])
-	 */
-	@Override
-	public void update(IVizUpdateable component, UpdateableSubscription[] type) {
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
 
 		// Pass the update to own listeners
 		updateManager.notifyListeners(type);
@@ -248,7 +226,23 @@ public class AbstractView implements IManagedVizUpdateableListener, IVizUpdateab
 				.clone();
 
 		// Notify own listeners of the change
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.All };
 		updateManager.notifyListeners(eventTypes);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * service.datastructures.VizObject.IVizUpdateable)
+	 */
+	@Override
+	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+			IManagedVizUpdateable source) {
+		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
+		types.add(UpdateableSubscriptionType.All);
+		return types;
 	}
 }

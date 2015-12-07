@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * A class which is responsible for user interactions with the underlying data
@@ -35,7 +38,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
  * @author Robert Smith
  */
 public class AbstractController
-		implements IVizUpdateable, IVizUpdateableListener {
+		implements IManagedVizUpdateable, IManagedVizUpdateableListener {
 
 	/**
 	 * The internal representation of this part.
@@ -53,17 +56,15 @@ public class AbstractController
 	private AtomicBoolean disposed;
 
 	/**
-	 * The list of object registered to lsiten for updates from this one.
+	 * The list of object registered to listen for updates from this one.
 	 */
 	private List<IVizUpdateableListener> listeners;
 
 	/**
-	 * Set when the object knows that it will be sending a notification in the
-	 * future. When set, the object should refuse to forward notifications to
-	 * any listeners, instead firing an update only when all known pending
-	 * changes are resolved.
+	 * The manager for the part's updates.
 	 */
-	protected AtomicBoolean notifyLock;
+	protected UpdateableSubscriptionManager updateManager = new UpdateableSubscriptionManager(
+			this);
 
 	/**
 	 * The default constructor.
@@ -72,7 +73,6 @@ public class AbstractController
 		disposed = new AtomicBoolean();
 		disposed.set(false);
 		listeners = new ArrayList<IVizUpdateableListener>();
-		notifyLock = new AtomicBoolean();
 	}
 
 	/**
@@ -90,7 +90,6 @@ public class AbstractController
 		disposed = new AtomicBoolean();
 		disposed.set(false);
 		listeners = new ArrayList<IVizUpdateableListener>();
-		notifyLock = new AtomicBoolean();
 
 		// Give model a reference to its controller
 		model.setController(this);
@@ -98,40 +97,6 @@ public class AbstractController
 		// Register as a listener to the model and view
 		model.register(this);
 		view.register(this);
-	}
-
-	/**
-	 * Notify all listeners of an update.
-	 */
-	public void notifyListeners() {
-
-		// Block notifications while the lock is set
-		if (!notifyLock.get()) {
-
-			// If the listeners are empty, return
-			if (this.listeners == null || this.listeners.isEmpty()) {
-				return;
-			}
-
-			// Get a reference to self
-			final AbstractController self = this;
-
-			// // Create a thread object that notifies all listeners
-			//
-			// Thread notifyThread = new Thread() {
-			//
-			// @Override
-			// public void run() {
-			// Loop over all listeners and update them
-			for (int i = 0; i < listeners.size(); i++) {
-				listeners.get(i).update(self);
-			}
-			// }
-			// };
-
-			// // Start the thread
-			// notifyThread.start();
-		}
 	}
 
 	/**
@@ -171,7 +136,10 @@ public class AbstractController
 
 		// Atomically set the controller as disposed
 		disposed.getAndSet(newDisposed);
-		notifyListeners();
+
+		UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
+		eventType[0] = UpdateableSubscriptionType.Property;
+		updateManager.notifyListeners(eventType);
 	}
 
 	/**
@@ -434,6 +402,15 @@ public class AbstractController
 		model.addEntityByCategory(newEntity, category);
 	}
 
+	/**
+	 * Getter method for the update manager.
+	 * 
+	 * @return The update subscription manager
+	 */
+	public UpdateableSubscriptionManager getUpdateManager() {
+		return updateManager;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -473,54 +450,53 @@ public class AbstractController
 		view.register(this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
-	 * VizObject.IVizUpdateable)
-	 */
-	@Override
-	public void update(IVizUpdateable component) {
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	// *
+	// IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
+	// * VizObject.IVizUpdateable)
+	// */
+	// @Override
+	// public void update(IManagedVizUpdateable component) {
+	//
+	// // Queue any messages from the view refresh
+	// updateManager.enqueue();
+	//
+	// // If the update came from the component, send it to the view so that it
+	// // can refresh.
+	// if (component == model) {
+	// view.refresh(model);
+	// }
+	//
+	// // Notify own listeners of the change.
+	// UpdateableSubscriptionType[] eventType = new
+	// UpdateableSubscriptionType[1];
+	// eventType[0] = UpdateableSubscriptionType.Property;
+	// updateManager.notifyListeners(eventType);
+	// updateManager.flushQueue();
+	//
+	// }
 
-		// If the update came from he component, send it to the view so that it
-		// can refresh.
-		if (component == model) {
-			view.refresh(model);
-		}
-
-		// Notify own listeners of the change.
-		notifyListeners();
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * update(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void update(String updatedKey, String newValue) {
-		// Nothing to do
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * register(org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener)
-	 */
-	@Override
-	public void register(IVizUpdateableListener listener) {
-
-		// Add the listener to the list if it is not already there.
-		if (!listeners.contains(listener)) {
-			listeners.add(listener);
-		}
-
-	}
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	// * register(org.eclipse.ice.viz.service.datastructures.VizObject.
+	// * IVizUpdateableListener)
+	// */
+	// @Override
+	// public void register(IVizUpdateableListener listener) {
+	//
+	// // Add the listener to the manager for all event types
+	// ArrayList<UpdateableSubscriptionType> eventTypes = new
+	// ArrayList<UpdateableSubscriptionType>();
+	// eventTypes.add(UpdateableSubscriptionType.All);
+	// updateManager.register(listener);
+	//
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -530,10 +506,65 @@ public class AbstractController
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IVizUpdateableListener listener) {
+	public void unregister(IManagedVizUpdateableListener listener) {
 
-		// Remove the lsitener from the list
-		listeners.remove(listener);
+		// Remove the listener from the list
+		updateManager.unregister(listener);
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
+	 * datastructures.VizObject.IVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscriptionType[])
+	 */
+	@Override
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
+
+		// Queue any messages from the view refresh
+		updateManager.enqueue();
+
+		// If the update came from the component, send it to the view so that it
+		// can refresh.
+		if (component == model) {
+			view.refresh(model);
+		}
+
+		// Notify own listeners of the change.
+		updateManager.notifyListeners(type);
+		updateManager.flushQueue();
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateable#register(org.eclipse.ice.viz.service.datastructures
+	 * .VizObject.IVizUpdateableListener, java.util.ArrayList)
+	 */
+	@Override
+	public void register(IManagedVizUpdateableListener listener) {
+		updateManager.register(listener);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * service.datastructures.VizObject.IVizUpdateable)
+	 */
+	@Override
+	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+			IManagedVizUpdateable source) {
+		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
+		types.add(UpdateableSubscriptionType.All);
+		return types;
 	}
 }

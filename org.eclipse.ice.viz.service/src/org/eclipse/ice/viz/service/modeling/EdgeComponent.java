@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.modeling;
 
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
 
 /**
  * A mesh component representing a line between two Vertices.
@@ -115,11 +115,12 @@ public class EdgeComponent extends AbstractMeshComponent {
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
 	 */
 	@Override
-	public void register(IVizUpdateableListener listener) {
+	public void register(IManagedVizUpdateableListener listener) {
 
 		// Do not register the edge's vertices, as the edge will listen to them
 		// instead
-		if (!entities.get("Vertices").contains(listener)) {
+		List<AbstractController> vertices = entities.get("Vertices");
+		if (vertices == null || !entities.get("Vertices").contains(listener)) {
 			super.register(listener);
 		}
 	}
@@ -136,10 +137,13 @@ public class EdgeComponent extends AbstractMeshComponent {
 		super.setController(controller);
 
 		// Give a reference to the controller to the edge's vertices
-		for (AbstractController vertex : entities.get("Vertices")) {
-			vertex.addEntity(controller);
-		}
+		List<AbstractController> vertices = entities.get("Vertices");
 
+		if (vertices != null) {
+			for (AbstractController vertex : vertices) {
+				vertex.addEntity(controller);
+			}
+		}
 	}
 
 	/*
@@ -178,8 +182,9 @@ public class EdgeComponent extends AbstractMeshComponent {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getStartLocation() {
-		return ((Vertex) getEntitiesByCategory("Vertices").get(0))
-				.getLocation();
+		List<AbstractController> vertices = getEntitiesByCategory("Vertices");
+		return (vertices != null && !vertices.isEmpty())
+				? ((Vertex) vertices.get(0)).getLocation() : new double[3];
 	}
 
 	/**
@@ -188,7 +193,8 @@ public class EdgeComponent extends AbstractMeshComponent {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getEndLocation() {
-		return ((Vertex) getEntitiesByCategory("Vertices").get(1))
-				.getLocation();
+		List<AbstractController> vertices = getEntitiesByCategory("Vertices");
+		return (vertices != null && vertices.size() > 1)
+				? ((Vertex) vertices.get(1)).getLocation() : new double[3];
 	}
 }

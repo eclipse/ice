@@ -6,26 +6,42 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Jay Jay 
- *   Billings
+ *   Robert Smith
  *******************************************************************************/
 package org.eclipse.ice.viz.service.datastructures.VizObject;
 
 import java.util.ArrayList;
 
 /**
- * An extension of IVizUpdateableListener which can receive the type of event that triggered the update.
+ * An extension of IVizUpdateableListener which can receive the type of event
+ * that triggered the update.
  * 
  * @author Robert Smith
  *
  */
-public interface IManagedVizUpdateableListener extends IVizUpdateableListener{
+public interface IManagedVizUpdateableListener {
 
 	/**
-	 * Receive an update, including the source component and type of event that triggered the update.
+	 * Polls the listener for a list of the types of events it wants to receive
+	 * from the given source.
 	 * 
-	 * @param component The updateable component the update is coming from
-	 * @param type The event type that of the update
+	 * @param source
+	 *            The object which this listener will listen to
+	 * @return An array of the event types the listener will be notified of
+	 *         during updates
 	 */
-	public void update(IVizUpdateable component, UpdateableSubscription[] type);
+	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+			IManagedVizUpdateable source);
+
+	/**
+	 * Receive an update, including the source component and type of event that
+	 * triggered the update.
+	 * 
+	 * @param component
+	 *            The updateable component the update is coming from
+	 * @param type
+	 *            The event type that of the update
+	 */
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type);
 }

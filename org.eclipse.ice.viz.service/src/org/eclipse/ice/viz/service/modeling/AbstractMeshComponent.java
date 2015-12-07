@@ -15,13 +15,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscription;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * A component of the model. All models are built from collections of components
@@ -31,17 +29,12 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
  * @author Robert Smith
  */
 public class AbstractMeshComponent
-		implements IManagedVizUpdateableListener, IVizUpdateable {
+		implements IManagedVizUpdateableListener, IManagedVizUpdateable {
 
 	/**
 	 * The mesh's type, which defines how the part internally stores its data.
 	 */
 	protected MeshType type;
-
-	/**
-	 * A lock for preventing concurrent writes to the mesh.
-	 */
-	private AtomicBoolean updateLock;
 
 	/**
 	 * A list of other mesh components which are connected to this one, such as
@@ -65,14 +58,6 @@ public class AbstractMeshComponent
 	protected AbstractController controller;
 
 	/**
-	 * Set when the object knows that it will be sending a notification in the
-	 * future. When set, the object should refuse to forward notifications to
-	 * any listeners, instead firing an update only when all known pending
-	 * changes are resolved.
-	 */
-	protected AtomicBoolean notifyLock;
-
-	/**
 	 * The default constructor
 	 */
 	public AbstractMeshComponent() {
@@ -80,9 +65,7 @@ public class AbstractMeshComponent
 		entities = new HashMap<String, List<AbstractController>>();
 		properties = new HashMap<String, String>();
 		type = MeshType.SIMPLE;
-		updateLock = new AtomicBoolean();
 		updateManager = new UpdateableSubscriptionManager(this);
-		notifyLock = new AtomicBoolean();
 	}
 
 	/**
@@ -117,7 +100,6 @@ public class AbstractMeshComponent
 		// Instantiate the class variables
 		properties = new HashMap<String, String>();
 		type = MeshType.SIMPLE;
-		updateLock = new AtomicBoolean();
 		updateManager = new UpdateableSubscriptionManager(this);
 	}
 
@@ -139,7 +121,6 @@ public class AbstractMeshComponent
 		// Instantiate the class variables
 		properties = new HashMap<String, String>();
 		this.type = type;
-		updateLock = new AtomicBoolean();
 		updateManager = new UpdateableSubscriptionManager(this);
 	}
 
@@ -198,10 +179,10 @@ public class AbstractMeshComponent
 	 */
 	public void setType(MeshType type) {
 		this.type = type;
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Property};
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Property };
 		updateManager.notifyListeners(eventTypes);
 	}
-
 
 	/**
 	 * Returns a list of all related entities.
@@ -255,11 +236,30 @@ public class AbstractMeshComponent
 	 * @value The property's new value
 	 */
 	public void setProperty(String property, String value) {
-		notifyLock.set(true);
+
+		// Whether the property was actually changed
+		boolean changed = true;
+
+		if (property.equals(properties.get(property))) {
+			changed = false;
+		}
+
 		properties.put(property, value);
-		notifyLock.set(false);
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Property};
-		updateManager.notifyListeners(eventTypes);
+
+		// If a change occurred, send an update
+		if (changed) {
+
+			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+
+			// Check if the changed property was selection to send the propert
+			// update event.
+			if ("Selected".equals(property)) {
+				eventTypes[0] = UpdateableSubscriptionType.Selection;
+			} else {
+				eventTypes[0] = UpdateableSubscriptionType.Property;
+			}
+			updateManager.notifyListeners(eventTypes);
+		}
 	}
 
 	/**
@@ -284,8 +284,6 @@ public class AbstractMeshComponent
 	 */
 	public void removeEntity(AbstractController entity) {
 
-		notifyLock.set(true);
-
 		// Whether or not the entity was found in the map
 		boolean found = false;
 
@@ -305,11 +303,9 @@ public class AbstractMeshComponent
 			}
 		}
 
-		// Notify listeners if a change occurred
-		notifyLock.set(false);
-
 		if (found) {
-			UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+			UpdateableSubscriptionType[] eventTypes = {
+					UpdateableSubscriptionType.Child };
 			updateManager.notifyListeners(eventTypes);
 		}
 	}
@@ -327,8 +323,6 @@ public class AbstractMeshComponent
 	public void addEntityByCategory(AbstractController newEntity,
 			String category) {
 
-		notifyLock.set(true);
-
 		// Get the entities for the given category
 		List<AbstractController> catList = entities.get(category);
 
@@ -344,38 +338,27 @@ public class AbstractMeshComponent
 		// Register with the entity
 		newEntity.register(this);
 
-		// Send notification that entities have been changed
-		notifyLock.set(false);
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.Child};
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Child };
 		updateManager.notifyListeners(eventTypes);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * update(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void update(String updatedKey, String newValue) {
-		// Nothing to do
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * register(org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener)
-	 */
-	@Override
-	public void register(IVizUpdateableListener listener) {
-		ArrayList<UpdateableSubscription> eventTypes = new ArrayList<UpdateableSubscription>();
-		eventTypes.add(UpdateableSubscription.All);
-		updateManager.register(listener, eventTypes);
-
-	}
+	// /*
+	// * (non-Javadoc)
+	// *
+	// * @see
+	// org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	// * register(org.eclipse.ice.viz.service.datastructures.VizObject.
+	// * IVizUpdateableListener)
+	// */
+	// @Override
+	// public void register(IVizUpdateableListener listener) {
+	// ArrayList<UpdateableSubscriptionType> eventTypes = new
+	// ArrayList<UpdateableSubscriptionType>();
+	// eventTypes.add(UpdateableSubscriptionType.All);
+	// updateManager.register(listener, eventTypes);
+	//
+	// }
 
 	/*
 	 * (non-Javadoc)
@@ -385,25 +368,9 @@ public class AbstractMeshComponent
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IVizUpdateableListener listener) {
+	public void unregister(IManagedVizUpdateableListener listener) {
 		updateManager.unregister(listener);
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
-	 * VizObject.IVizUpdateable)
-	 */
-	@Override
-	public void update(IVizUpdateable component) {
-
-		// Notify own listeners that an update has occurred.
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
-		updateManager.notifyListeners(eventTypes);
-		
 	}
 
 	/*
@@ -416,13 +383,14 @@ public class AbstractMeshComponent
 	 * UpdateableSubscription)
 	 */
 	@Override
-	public void update(IVizUpdateable component, UpdateableSubscription[] type) {
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
 
 		// Pass the update to own listeners
 		updateManager.notifyListeners(type);
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -450,7 +418,8 @@ public class AbstractMeshComponent
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change
-		UpdateableSubscription[] eventTypes = {UpdateableSubscription.All};
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.All };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -471,6 +440,36 @@ public class AbstractMeshComponent
 	 */
 	public void setController(AbstractController controller) {
 		this.controller = controller;
+
+		// Set the manager's parent as well
+		updateManager.setParent(controller.getUpdateManager());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateable#register(org.eclipse.ice.viz.service.datastructures
+	 * .VizObject.IManagedVizUpdateableListener)
+	 */
+	@Override
+	public void register(IManagedVizUpdateableListener listener) {
+		updateManager.register(listener);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * service.datastructures.VizObject.IVizUpdateable)
+	 */
+	@Override
+	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+			IManagedVizUpdateable source) {
+		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
+		types.add(UpdateableSubscriptionType.All);
+		return types;
 	}
 
 }

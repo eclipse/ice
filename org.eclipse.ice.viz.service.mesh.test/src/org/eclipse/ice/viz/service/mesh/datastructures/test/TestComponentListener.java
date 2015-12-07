@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2011, 2014-2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,15 +9,20 @@
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Robert Smith
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.datastructures.test;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * <p>
@@ -30,8 +35,10 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
  * </p>
  * 
  * @author Jay Jay Billings
+ * @author Robert Smith
  */
-public class TestComponentListener implements IVizUpdateableListener {
+public class TestComponentListener
+		implements IManagedVizUpdateableListener, IVizUpdateableListener {
 
 	/**
 	 * The flag that indicates whether or not the listener was updated.
@@ -58,7 +65,8 @@ public class TestComponentListener implements IVizUpdateableListener {
 	 * This operation returns the notification state of the listener.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the listener has been notified of an update, false
 	 *         otherwise.
 	 *         </p>
@@ -111,6 +119,25 @@ public class TestComponentListener implements IVizUpdateableListener {
 		System.out.println("TestComponentListener Message: Updated!");
 
 		return;
+
+	}
+
+	@Override
+	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+			IManagedVizUpdateable source) {
+
+		// Get all events
+		ArrayList<UpdateableSubscriptionType> subs = new ArrayList<UpdateableSubscriptionType>();
+		subs.add(UpdateableSubscriptionType.All);
+		return subs;
+	}
+
+	@Override
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
+
+		// Set the flag
+		wasNotified.set(true);
 
 	}
 }
