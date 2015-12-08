@@ -40,7 +40,7 @@ public class WizardNewICEModelBuilder extends Wizard implements INewWizard {
 	private IStructuredSelection selection;
 	private IWorkbench workbench;
 	
-	private WizardNewICEModelBuilderPage _pageOne;
+	private NewModelBuilderPage _pageOne;
 
 	
 	/**
@@ -68,7 +68,7 @@ public class WizardNewICEModelBuilder extends Wizard implements INewWizard {
 	public void addPages() {
 		super.addPages();
 		
-		_pageOne = new WizardNewICEModelBuilderPage(DESCRIPTION, selection);
+		_pageOne = new NewModelBuilderPage(DESCRIPTION, selection);
 		_pageOne.setTitle(WIZARD_NAME);
 		_pageOne.setDescription(DESCRIPTION);
 		

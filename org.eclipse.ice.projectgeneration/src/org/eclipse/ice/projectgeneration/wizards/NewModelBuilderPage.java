@@ -24,14 +24,14 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
  * 
  * @author arbennett
  */
-public class WizardNewICEModelBuilderPage extends WizardNewFileCreationPage {
+public class NewModelBuilderPage extends WizardNewFileCreationPage {
 
 	/**
 	 * Constructor
 	 * 
 	 * @param selection
 	 */
-	public WizardNewICEModelBuilderPage(String pageName, IStructuredSelection selection) {
+	public NewModelBuilderPage(String pageName, IStructuredSelection selection) {
 		super("NewICEModelBuilderWizardPage", selection);
 		setTitle("ICE Model Builder Item");
 		setDescription("Creates a new ICE model builder item class");

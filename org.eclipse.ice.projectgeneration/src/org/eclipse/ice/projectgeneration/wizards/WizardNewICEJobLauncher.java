@@ -41,7 +41,7 @@ public class WizardNewICEJobLauncher extends Wizard implements INewWizard {
 	private IStructuredSelection selection;
 	private IWorkbench workbench;
 	
-	private WizardNewICEJobLauncherPage _pageOne;
+	private NewJobLauncherPage _pageOne;
 	
 	/**
 	 *	Constructor
@@ -68,7 +68,7 @@ public class WizardNewICEJobLauncher extends Wizard implements INewWizard {
 	public void addPages() {
 		super.addPages();
 		
-		_pageOne = new WizardNewICEJobLauncherPage(DESCRIPTION, selection);
+		_pageOne = new NewJobLauncherPage(DESCRIPTION, selection);
 		_pageOne.setTitle(WIZARD_NAME);
 		_pageOne.setDescription(DESCRIPTION);
 		
