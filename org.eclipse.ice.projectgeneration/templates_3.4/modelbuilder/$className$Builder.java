@@ -1,11 +1,11 @@
 package $packageName$.model;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.item.AbstractItemBuilder;
+import org.eclipse.ice.item.model.AbstractModelBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
-public class $className$Builder extends AbstractItemBuilder {
+public class $className$Builder extends AbstractModelBuilder {
 
 	public $className$Builder() {
 		setName("$className$");

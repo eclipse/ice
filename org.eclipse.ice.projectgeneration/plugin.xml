@@ -2,38 +2,58 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.newWizards">
+         point="org.eclipse.pde.ui.newExtension">
       <category
             id="org.eclipse.ice.projectgeneration.wizards"
             name="ICE Item Creation Wizards">
       </category>
       <wizard
-            category="org.eclipse.ice.projectgeneration.wizards"
-            class="org.eclipse.ice.projectgeneration.wizards.WizardNewICEItemProject"
-            id="org.eclipse.ice.projectgeneration.wizard.new.item"
-            name="ICE Item Project Creation Wizard">
+      		id="org.eclipse.ice.projectgeneration.templates.JobLauncherWizard"
+      		name="Job Launcher Template"
+      		template="org.eclipse.ice.projectgeneration.templates.JobLauncherTemplate">
       </wizard>
-      <wizard 
-      		category="org.eclipse.ice.projectgeneration.wizards"
-      		class="org.eclipse.ice.projectgeneration.wizards.WizardNewICEModelBuilder"
-      		id="org.eclipse.ice.projectgeneration.wizard.new.model.builder"
-      		name="ICE Model Builder">
+      <wizard
+      		id="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderWizard"
+      		name="Job Launcher Builder Template"
+      		template="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderTemplate">
       </wizard>
-      <wizard 
-      		category="org.eclipse.ice.projectgeneration.wizards"
-      		class="org.eclipse.ice.projectgeneration.wizards.WizardNewICEJobLauncher"
-      		id="org.eclipse.ice.projectgeneration.wizard.new.job.launcher"
-      		name="ICE Job Launcher">
+      <wizard
+      		id="org.eclipse.ice.projectgeneration.templates.ModelWizard"
+      		name="Model Template"
+      		template="org.eclipse.ice.projectgeneration.templates.ModelTemplate">
+      </wizard>
+	  <wizard
+      		id="org.eclipse.ice.projectgeneration.templates.ModelBuilderWizard"
+      		name="Model Builder Template"
+      		template="org.eclipse.ice.projectgeneration.templates.ModelBuilderTemplate">
       </wizard>
    </extension>
    <extension
-         id="org.eclipse.ice.projectgeneration"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.eclipse.ice.projectgeneration.ICEItemNature">
-         </run>
-      </runtime>
+   		point="org.eclipse.pde.ui.templates">
+   		<template
+   			class="org.eclipse.ice.projectgeneration.templates.JobLauncherTemplate"
+   			contributingId="org.eclipse.ice.item.jobLauncher"
+   			id="org.eclipse.ice.projectgeneration.templates.JobLauncherTemplate"
+   			name="Job Launcher">
+   		</template>
+   		<template
+   			class="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderTemplate"
+   			contributingId="org.eclipse.ice.item"
+   			id="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderTemplate"
+   			name="Job Launcher Builder">
+   		</template>
+   		<template
+   			class="org.eclipse.ice.projectgeneration.templates.ModelTemplate"
+   			contributingId="org.eclipse.ice.item.model"
+   			id="org.eclipse.ice.projectgeneration.templates.ModelTemplate"
+   			name="Model">
+   		</template>
+   		<template
+   			class="org.eclipse.ice.projectgeneration.templates.ModelBuilderTemplate"
+   			contributingId="org.eclipse.ice.item.model"
+   			id="org.eclipse.ice.projectgeneration.templates.ModelBuilderTemplate"
+   			name="Model Builder">
+   		</template>
    </extension>
 
 </plugin>

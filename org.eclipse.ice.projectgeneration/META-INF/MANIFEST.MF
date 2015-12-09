@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ProjectGeneration
+Bundle-Name: Project Generation
 Bundle-SymbolicName: org.eclipse.ice.projectgeneration;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -18,4 +18,12 @@ Require-Bundle: org.eclipse.pde.core,
  org.eclipse.ice.datastructures,
  org.eclipse.core.runtime,
  org.eclipse.pde.ui
-Export-Package: org.eclipse.ice.projectgeneration
+Export-Package: org.eclipse.ice.projectgeneration;uses:="org.slf4j,org.eclipse.core.resources",
+ org.eclipse.ice.projectgeneration.templates;uses:="org.eclipse.core.runtime,org.eclipse.pde.ui.templates,org.eclipse.jface.wizard",
+ org.eclipse.ice.projectgeneration.wizards;
+  uses:="org.eclipse.ui,
+   org.eclipse.pde.internal.ui.wizards.plugin,
+   org.eclipse.ui.dialogs,
+   org.eclipse.jface.wizard,
+   org.eclipse.jface.viewers"
+Bundle-Vendor: Oak Ridge National Laboratory
