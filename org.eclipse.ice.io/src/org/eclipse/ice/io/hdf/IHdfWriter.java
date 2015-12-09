@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
@@ -19,7 +19,7 @@ import java.net.URI;
  * An interface that provides the required operations for writing an
  * IHdfWriteable tree to an HDF5 file.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public interface IHdfWriter {
@@ -29,7 +29,7 @@ public interface IHdfWriter {
 	 * URI. If any error or failure to write is encountered, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param iHdfWriteable
 	 *            <p>
 	 *            The IHdfWriteable instance to write to the H5File at uri.
@@ -38,7 +38,8 @@ public interface IHdfWriter {
 	 *            <p>
 	 *            The URI of the H5File to write to.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If any error or failure to write is encountered, then false is
 	 *         returned. Otherwise, true is returned.
 	 *         </p>

@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
@@ -40,12 +40,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class LWRComponentReaderTester {
 	/**
-	 * 
+	 *
 	 */
 	@BeforeClass
 	public static void beforeClass() {
@@ -57,8 +57,9 @@ public class LWRComponentReaderTester {
 	 * Creates and returns the same reactor used to write the file
 	 * data/reader_test.h5
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         The same reactor used to write the file data/reader_test.h5
 	 *         </p>
 	 */
@@ -114,14 +115,14 @@ public class LWRComponentReaderTester {
 		// CONTROL
 		// BANKS//////////////////////////////////////////////////////////
 		// Add two control banks to the reactor
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("A",
-				0.625, 230));
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("B",
-				0.625, 215));
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("C",
-				0.625, 200));
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("D",
-				0.625, 185));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("A", 0.625, 230));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("B", 0.625, 215));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("C", 0.625, 200));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("D", 0.625, 185));
 
 		// Assign a position for the control banks
 		pwReactor.setAssemblyLocation(AssemblyType.ControlBank, "A", 4, 4);
@@ -247,8 +248,8 @@ public class LWRComponentReaderTester {
 
 		// Assign the labels array
 		fuelAssembly.getGridLabelProvider().setRowLabels(rowLabelsFuelAssembly);
-		fuelAssembly.getGridLabelProvider().setColumnLabels(
-				columnLabelsFuelAssembly);
+		fuelAssembly.getGridLabelProvider()
+				.setColumnLabels(columnLabelsFuelAssembly);
 
 		// Create a guide tube
 		Tube guideTube = new Tube("Guide Tube A", TubeType.GUIDE);
@@ -269,7 +270,8 @@ public class LWRComponentReaderTester {
 		fuelAssembly.setTubeLocation(guideTube.getName(), 8, 13);
 
 		// Create an instrument tube
-		Tube instrumentTube = new Tube("Instrument Tube A", TubeType.INSTRUMENT);
+		Tube instrumentTube = new Tube("Instrument Tube A",
+				TubeType.INSTRUMENT);
 		instrumentTube.setHeight(1.2);
 		instrumentTube.setInnerRadius(0.987);
 		instrumentTube.setOuterRadius(34.5);
@@ -354,8 +356,8 @@ public class LWRComponentReaderTester {
 		pwReactor.addAssembly(AssemblyType.Fuel, fuelAssembly);
 
 		// Assign a position on the grid of the reactor
-		pwReactor.setAssemblyLocation(AssemblyType.Fuel,
-				fuelAssembly.getName(), 4, 4);
+		pwReactor.setAssemblyLocation(AssemblyType.Fuel, fuelAssembly.getName(),
+				4, 4);
 
 		// ROD CLUSTER
 		// ASSEMBLIES/////////////////////////////////////////////////
@@ -376,7 +378,11 @@ public class LWRComponentReaderTester {
 		String feature2 = "Feature 2";
 		double time1 = 1.0, time2 = 3.0, time3 = 3.5;
 		LWRData data1, data2, data3, data4, data5;
-		ArrayList<Double> position1 = new ArrayList<Double>(), position2 = new ArrayList<Double>(), position3 = new ArrayList<Double>(), position4 = new ArrayList<Double>(), position5 = new ArrayList<Double>();
+		ArrayList<Double> position1 = new ArrayList<Double>(),
+				position2 = new ArrayList<Double>(),
+				position3 = new ArrayList<Double>(),
+				position4 = new ArrayList<Double>(),
+				position5 = new ArrayList<Double>();
 
 		// Setup Positions
 
@@ -451,7 +457,7 @@ public class LWRComponentReaderTester {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Test
 	public void checkReading() {
