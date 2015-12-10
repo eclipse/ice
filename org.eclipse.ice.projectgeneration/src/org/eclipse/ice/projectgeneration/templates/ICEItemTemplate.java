@@ -152,14 +152,7 @@ public abstract class ICEItemTemplate extends OptionTemplateSection {
 
 	@Override
 	protected ResourceBundle getPluginResourceBundle() {
-		Bundle bundle = Platform.getBundle(BUNDLE_ID);
-		
-		System.out.println("-----------------");
-		System.out.println(BUNDLE_ID);
-		System.out.println(bundle);
-		System.out.println(Platform.getResourceBundle(bundle));
-		System.out.println("-----------------");
-		return Platform.getResourceBundle(Platform.getBundle(BUNDLE_ID));	
+		return new ICEProjectResources();	
 	}
 
 	@Override public String[] getNewFiles() { return new String[0]; }
