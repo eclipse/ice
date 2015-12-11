@@ -430,10 +430,16 @@ def osx_post(opts, pkgs):
         f.write('\nexport DYLD_LIBRARY_PATH=' + visit_libdir + ':$DYLD_LIBRARY_PATH')
         f.write('\nexec `dirname $0`/ICE $0')
         f.write('\n')
-    os.chmod(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), stat.S_IXUSR)
     ice_preferences = find_file(opts.prefix, 'ICE.ini')
     with open(ice_preferences, 'a') as f:
         f.write("\n-Xdock:name=Eclipse ICE")
+    os.chmod(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), stat.S_IXUSR | \
+                                        					   stat.S_IRUSR | \
+                                              					   stat.S_IWUSR | \
+                                              					   stat.S_IRGRP | \
+                                              					   stat.S_IWGRP | \
+                                              					   stat.S_IROTH | \
+                                              					   stat.S_IWOTH)
     subprocess.Popen(plutil_cmd)
     subprocess.Popen(lsregister_cmd)
     subprocess.Popen(ln_cmd)
