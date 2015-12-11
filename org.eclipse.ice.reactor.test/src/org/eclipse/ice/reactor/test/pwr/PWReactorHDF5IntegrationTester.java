@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.reactor.test.pwr;
 
@@ -35,13 +35,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class PWReactorHDF5IntegrationTester {
 
 	/**
-	 * 
+	 *
 	 */
 	@BeforeClass
 	public static void beforeClass() {
@@ -49,7 +49,7 @@ public class PWReactorHDF5IntegrationTester {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Test
 	public void checkHDF5Integration() {
@@ -73,7 +73,7 @@ public class PWReactorHDF5IntegrationTester {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return
 	 */
 	private PressurizedWaterReactor createPopulatedPWReactor() {
@@ -86,7 +86,8 @@ public class PWReactorHDF5IntegrationTester {
 		assembly.setName("Test Assembly");
 
 		reactor.addAssembly(AssemblyType.Fuel, assembly);
-		reactor.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), 0, 0);
+		reactor.setAssemblyLocation(AssemblyType.Fuel, assembly.getName(), 0,
+				0);
 
 		ArrayList<Material> materialList = new ArrayList<Material>();
 		materialList.add(new Material("uo2", MaterialType.SOLID));
@@ -120,8 +121,7 @@ public class PWReactorHDF5IntegrationTester {
 				int materialNumber = Integer.valueOf(elements[1]);
 				double radius = Double.valueOf(elements[2]);
 
-				Ring clad = new Ring(
-						"Clad " + pinNumber,
+				Ring clad = new Ring("Clad " + pinNumber,
 						(Material) materialList.get(materialNumber - 1).clone(),
 						1.0, radius);
 				LWRRod rod = new LWRRod("Pin " + pinNumber);
@@ -168,7 +168,7 @@ public class PWReactorHDF5IntegrationTester {
 
 	/**
 	 * Read file.
-	 * 
+	 *
 	 * @param file
 	 *            the file
 	 * @return the byte[]
@@ -185,7 +185,7 @@ public class PWReactorHDF5IntegrationTester {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@AfterClass
 	public static void afterClass() {

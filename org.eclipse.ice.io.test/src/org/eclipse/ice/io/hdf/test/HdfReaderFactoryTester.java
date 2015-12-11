@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf.test;
 
@@ -23,6 +23,12 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.io.hdf.HdfReaderFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
@@ -32,15 +38,9 @@ import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfReaderFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * This class tests the HdfReaderFactory class.
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class HdfReaderFactoryTester {
@@ -252,7 +252,8 @@ public class HdfReaderFactoryTester {
 
 			// Try to grab the group as a dataset - should throw a class cast
 			// exception
-			assertNull(HdfReaderFactory.getDataset(parentH5Group, subGroupName));
+			assertNull(
+					HdfReaderFactory.getDataset(parentH5Group, subGroupName));
 
 			// Try to grab the dataset as a group - should throw a class cast
 			// exception
@@ -302,25 +303,26 @@ public class HdfReaderFactoryTester {
 			// Check nullary and invalid values for Integer read
 			assertNull(HdfReaderFactory.readIntegerAttribute(parentH5Group,
 					integerName));
-			assertNull(HdfReaderFactory.readIntegerAttribute(null, integerName));
-			assertNull(HdfReaderFactory.readIntegerAttribute(parentH5Group,
-					null));
+			assertNull(
+					HdfReaderFactory.readIntegerAttribute(null, integerName));
+			assertNull(
+					HdfReaderFactory.readIntegerAttribute(parentH5Group, null));
 			assertNull(HdfReaderFactory.readIntegerAttribute(null, null));
 
 			// Check nullary and invalid values for Double read
 			assertNull(HdfReaderFactory.readDoubleAttribute(parentH5Group,
 					doubleName));
 			assertNull(HdfReaderFactory.readDoubleAttribute(null, doubleName));
-			assertNull(HdfReaderFactory
-					.readDoubleAttribute(parentH5Group, null));
+			assertNull(
+					HdfReaderFactory.readDoubleAttribute(parentH5Group, null));
 			assertNull(HdfReaderFactory.readDoubleAttribute(null, null));
 
 			// Check nullary and invalid values for String read
 			assertNull(HdfReaderFactory.readStringAttribute(parentH5Group,
 					stringName));
 			assertNull(HdfReaderFactory.readStringAttribute(null, stringName));
-			assertNull(HdfReaderFactory
-					.readStringAttribute(parentH5Group, null));
+			assertNull(
+					HdfReaderFactory.readStringAttribute(parentH5Group, null));
 			assertNull(HdfReaderFactory.readStringAttribute(null, null));
 
 			// Add a Integer, a Double, and a String to the parentGroup
@@ -385,26 +387,27 @@ public class HdfReaderFactoryTester {
 					.getRootNode()).getUserObject();
 
 			// Now, time to read those values!
-			assertEquals(
-					intValue,
-					HdfReaderFactory.readIntegerAttribute(parentH5Group,
-							integerName).intValue());
-			assertEquals(
-					doubleValue,
-					HdfReaderFactory.readDoubleAttribute(parentH5Group,
-							doubleName).doubleValue(), 0.0);
-			assertEquals(stringValue, HdfReaderFactory.readStringAttribute(
-					parentH5Group, stringName));
+			assertEquals(intValue,
+					HdfReaderFactory
+							.readIntegerAttribute(parentH5Group, integerName)
+							.intValue());
+			assertEquals(doubleValue,
+					HdfReaderFactory
+							.readDoubleAttribute(parentH5Group, doubleName)
+							.doubleValue(),
+					0.0);
+			assertEquals(stringValue, HdfReaderFactory
+					.readStringAttribute(parentH5Group, stringName));
 
 			// Checking for child groups.
 			assertNotNull(HdfReaderFactory.getChildH5Groups(parentH5Group));
-			assertEquals(0, HdfReaderFactory.getChildH5Groups(parentH5Group)
-					.size());
+			assertEquals(0,
+					HdfReaderFactory.getChildH5Groups(parentH5Group).size());
 
 			// Check for child objects.
 			assertNotNull(HdfReaderFactory.getChildH5Members(parentH5Group));
-			assertEquals(0, HdfReaderFactory.getChildH5Members(parentH5Group)
-					.size());
+			assertEquals(0,
+					HdfReaderFactory.getChildH5Members(parentH5Group).size());
 
 			// Lets add something to the group
 			H5Group h5Group = (H5Group) h5File.createGroup(childGroupName,
@@ -436,23 +439,20 @@ public class HdfReaderFactoryTester {
 
 			// Check for children now. There should only be one child group.
 			assertNotNull(HdfReaderFactory.getChildH5Groups(parentH5Group));
-			assertEquals(1, HdfReaderFactory.getChildH5Groups(parentH5Group)
-					.size());
-			assertEquals(childGroupName,
-					HdfReaderFactory.getChildH5Groups(parentH5Group).get(0)
-							.getName());
+			assertEquals(1,
+					HdfReaderFactory.getChildH5Groups(parentH5Group).size());
+			assertEquals(childGroupName, HdfReaderFactory
+					.getChildH5Groups(parentH5Group).get(0).getName());
 
 			// Check for child objects. There should be two (a group and a
 			// dataset).
 			assertNotNull(HdfReaderFactory.getChildH5Members(parentH5Group));
-			assertEquals(2, HdfReaderFactory.getChildH5Members(parentH5Group)
-					.size());
-			assertEquals(childGroupName,
-					HdfReaderFactory.getChildH5Members(parentH5Group).get(1)
-							.getName());
-			assertEquals(datasetName,
-					HdfReaderFactory.getChildH5Members(parentH5Group).get(0)
-							.getName());
+			assertEquals(2,
+					HdfReaderFactory.getChildH5Members(parentH5Group).size());
+			assertEquals(childGroupName, HdfReaderFactory
+					.getChildH5Members(parentH5Group).get(1).getName());
+			assertEquals(datasetName, HdfReaderFactory
+					.getChildH5Members(parentH5Group).get(0).getName());
 
 		} catch (Exception e) {
 			// Fail out of the test, not supposed to happen

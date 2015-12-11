@@ -7,10 +7,13 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
@@ -18,9 +21,6 @@ import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -59,7 +59,8 @@ public class HdfWriterFactory {
 	 *            <p>
 	 *            The parent H5Group of the new H5Group.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An H5Group called name which is a child of parentH5Group.
 	 *         </p>
 	 */
@@ -128,7 +129,8 @@ public class HdfWriterFactory {
 	 *            <p>
 	 *            An H5File.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A 64-bit floating point H5Datatype.
 	 *         </p>
 	 */
@@ -190,7 +192,8 @@ public class HdfWriterFactory {
 	 *            <p>
 	 *            An H5File.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A 32-bit integer H5Datatype.
 	 *         </p>
 	 */
@@ -224,9 +227,9 @@ public class HdfWriterFactory {
 		try {
 
 			// Create the integer datatype
-			H5Datatype h5Datatype = (H5Datatype) h5File
-					.createDatatype(Datatype.CLASS_INTEGER, 4, Datatype.NATIVE,
-							Datatype.NATIVE);
+			H5Datatype h5Datatype = (H5Datatype) h5File.createDatatype(
+					Datatype.CLASS_INTEGER, 4, Datatype.NATIVE,
+					Datatype.NATIVE);
 
 			// Return it
 			return h5Datatype;
@@ -267,7 +270,8 @@ public class HdfWriterFactory {
 	 *            <p>
 	 *            The value of the Attribute.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If h5File is null or can not be opened, then false is returned.
 	 *         If name is null or is an empty String, then false is returned. If
 	 *         h5Group is null, then false is returned. If an exception is
@@ -363,7 +367,8 @@ public class HdfWriterFactory {
 	 *            <p>
 	 *            The value of the Attribute.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If h5File is null or can not be opened, then false is returned.
 	 *         If name is null or is an empty String, then false is returned. If
 	 *         h5Group is null, then false is returned. If an exception is
@@ -459,7 +464,8 @@ public class HdfWriterFactory {
 	 *            <p>
 	 *            The value of the Attribute.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If h5File is null or can not be opened, then false is returned.
 	 *         If name is null or is an empty String, then false is returned. If
 	 *         value is null or is an empty String, then false is returned. If
