@@ -5,10 +5,10 @@ import org.eclipse.ice.item.AbstractItemBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
-public class $className$Builder extends AbstractItemBuilder {
+public class $className$LauncherBuilder extends AbstractItemBuilder {
 	
-	public $className$Builder() {
-		setName("$className$");
+	public $className$LauncherBuilder() {
+		setName("$className$Launcher");
 		setType(ItemType.Simulation);
 	}
 

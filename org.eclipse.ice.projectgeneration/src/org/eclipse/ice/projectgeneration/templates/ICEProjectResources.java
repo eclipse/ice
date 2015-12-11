@@ -24,5 +24,4 @@ public class ICEProjectResources extends ResourceBundle {
 	protected Set<String> handleKeySet() {
 		return new HashSet<String>(Arrays.asList("okKey","cancelKey"));
 	}
-
 }

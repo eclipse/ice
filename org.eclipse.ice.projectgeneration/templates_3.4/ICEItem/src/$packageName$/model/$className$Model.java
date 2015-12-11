@@ -13,16 +13,16 @@ import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.Item;
 
-@XmlRootElement(name = "$className$")
-public class $className$ extends Item {
+@XmlRootElement(name = "$className$Model")
+public class $className$Model extends Item {
 
 	private IIOService ioService;
 
-	public VibeModel() {
+	public $className$Model() {
 		this(null);
 	}
 
-	public VibeModel(IProject project) {
+	public $className$Model(IProject project) {
 		// Setup the form and everything
 		super(project);
 		// TODO: (optional) Add User Code Here

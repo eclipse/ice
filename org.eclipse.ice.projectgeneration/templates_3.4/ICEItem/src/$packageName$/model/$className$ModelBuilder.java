@@ -5,10 +5,10 @@ import org.eclipse.ice.item.model.AbstractModelBuilder;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
-public class $className$Builder extends AbstractModelBuilder {
+public class $className$ModelBuilder extends AbstractModelBuilder {
 
-	public $className$Builder() {
-		setName("$className$");
+	public $className$ModelBuilder() {
+		setName("$className$Model");
 		setType(ItemType.Model);
 	}
 

@@ -31,28 +31,10 @@
    <extension
    		point="org.eclipse.pde.ui.templates">
    		<template
-   			class="org.eclipse.ice.projectgeneration.templates.JobLauncherTemplate"
-   			contributingId="org.eclipse.ice.item.jobLauncher"
-   			id="org.eclipse.ice.projectgeneration.templates.JobLauncherTemplate"
-   			name="Job Launcher">
-   		</template>
-   		<template
-   			class="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderTemplate"
+   			class="org.eclipse.ice.projectgeneration.templates.ICEItemTemplate"
    			contributingId="org.eclipse.ice.item"
-   			id="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderTemplate"
-   			name="Job Launcher Builder">
-   		</template>
-   		<template
-   			class="org.eclipse.ice.projectgeneration.templates.ModelTemplate"
-   			contributingId="org.eclipse.ice.item.model"
-   			id="org.eclipse.ice.projectgeneration.templates.ModelTemplate"
-   			name="Model">
-   		</template>
-   		<template
-   			class="org.eclipse.ice.projectgeneration.templates.ModelBuilderTemplate"
-   			contributingId="org.eclipse.ice.item.model"
-   			id="org.eclipse.ice.projectgeneration.templates.ModelBuilderTemplate"
-   			name="Model Builder">
+   			id="org.eclipse.ice.projectgeneration.templates.ICEItemTemplate"
+   			name="Job Launcher">
    		</template>
    </extension>
 

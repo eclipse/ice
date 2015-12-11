@@ -3,18 +3,18 @@ package $packageName$.launcher;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.io.serializable.IIOService;
 
-@XmlRootElement(name = "$className$")
-public class $className$ extends JobLauncher {
+@XmlRootElement(name = "$className$Launcher")
+public class $className$Launcher extends JobLauncher {
 
 	private String fullExecCMD;
 
 	private IIOService ioService;
 
-	public $className$() {
+	public $className$Launcher() {
 		this(null);
 	}
 
-	public $className$(IProject project) {
+	public $className$Launcher(IProject project) {
 
 		// Call the JobLauncher constructor
 		super(project);
