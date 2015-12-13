@@ -1,41 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.pde.ui.newExtension">
-      <category
-            id="org.eclipse.ice.projectgeneration.wizards"
-            name="ICE Item Creation Wizards">
-      </category>
-      <wizard
-      		id="org.eclipse.ice.projectgeneration.templates.JobLauncherWizard"
-      		name="Job Launcher Template"
-      		template="org.eclipse.ice.projectgeneration.templates.JobLauncherTemplate">
-      </wizard>
-      <wizard
-      		id="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderWizard"
-      		name="Job Launcher Builder Template"
-      		template="org.eclipse.ice.projectgeneration.templates.JobLauncherBuilderTemplate">
-      </wizard>
-      <wizard
-      		id="org.eclipse.ice.projectgeneration.templates.ModelWizard"
-      		name="Model Template"
-      		template="org.eclipse.ice.projectgeneration.templates.ModelTemplate">
-      </wizard>
-	  <wizard
-      		id="org.eclipse.ice.projectgeneration.templates.ModelBuilderWizard"
-      		name="Model Builder Template"
-      		template="org.eclipse.ice.projectgeneration.templates.ModelBuilderTemplate">
-      </wizard>
-   </extension>
-   <extension
+   <extension-point id="pluginContent" name="%expoint.pluginContent.name" schema="schema/pluginContent.exsd"/>
+   <extension 
+   		point="org.eclipse.ui.newWizards">
+   		<category 
+   			id="org.eclipse.ice.projectgeneration.wizards"
+   			name="ICE Item Creation Wizards">
+		</category>
+		<wizard
+   				category="org.eclipse.ice.projectgeneration.wizards"
+   				class="org.eclipse.ice.projectgeneration.wizards.NewICEItemProjectWizard"
+   				id="org.eclipse.ice.projectgeneration.wizard.new.item"
+   				name="ICE Item Project Creation Wizard">
+		</wizard>
+	</extension>
+    <extension
    		point="org.eclipse.pde.ui.templates">
    		<template
    			class="org.eclipse.ice.projectgeneration.templates.ICEItemTemplate"
    			contributingId="org.eclipse.ice.item"
-   			id="org.eclipse.ice.projectgeneration.templates.ICEItemTemplate"
-   			name="Job Launcher">
+   			id="org.eclipse.ice.projectgeneration.templates.ICEItem"
+   			name="ICE Item">
    		</template>
    </extension>
+    <extension
+          point="org.eclipse.ice.projectgeneration.pluginContent">
+       <wizard
+             class="org.eclipse.ice.projectgeneration.templates.ICEItemWizard"
+             id="org.eclipse.ice.projectgeneration.pluginContent.ICEItem"
+             java="true"
+             name="ICE Item"
+             pureOSGi="false"
+             rcp="false"
+             requiresActivator="false"
+             ui-content="true">
+          <description>
+             Creates a new ICE Item project
+          </description>
+       </wizard>
+    </extension>
+    <extension
+          point="org.eclipse.pde.ui.newExtension">
+       <category
+             id="templates"
+             name="ICE Item Templates">
+       </category>
+       <wizard
+             availableAsShortcut="true"
+             category="templates"
+             id="org.eclipse.ice.projectgeneration.ICEItem"
+             name="ICE Item"
+             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
+       </wizard>
+       <wizard
+             category="templates"
+             id="org.eclipse.ice.projectgeneration.ICEItem"
+             name="ICE Item"
+             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
+       </wizard>
+       <wizard
+             category="templates"
+             id="org.eclipse.ice.projectgeneration.ICEItem"
+             name="ICE Item"
+             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
+       </wizard>
+    </extension>
 
 </plugin>

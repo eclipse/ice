@@ -32,7 +32,6 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String KEY_CLASS_NAME = "className";
 	protected static final String KEY_EXTENSION_NAME = "extensionName";
 	protected static final String KEY_PACKAGE_NAME = "packageName";
-	protected static String KEY_PACKAGE_STRUCTURE;
 
 	/**
 	 * Constructor
@@ -77,12 +76,6 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	@Override public String getSectionId() { return "ICEItem"; }
 	@Override public String getUsedExtensionPoint() { return EXTENSION_POINT; }
 	
-	/**
-	 * 
-	 * 
-	 * @param id
-	 * @return
-	 */
 	protected String getFormattedPackageName(String id) {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < id.length(); i++) {
@@ -109,12 +102,6 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	   ).trim();
 	}
 	
-
-
-	
-	/**
-	 * 
-	 */
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
 		// Model builder plugin.xml entry

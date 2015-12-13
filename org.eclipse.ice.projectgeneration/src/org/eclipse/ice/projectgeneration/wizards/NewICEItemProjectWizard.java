@@ -13,9 +13,17 @@
 package org.eclipse.ice.projectgeneration.wizards;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.projectgeneration.NewICEItemProjectSupport;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.pde.internal.ui.PDEPlugin;
+import org.eclipse.pde.internal.ui.wizards.WizardElement;
 import org.eclipse.pde.internal.ui.wizards.plugin.NewPluginProjectWizard;
+import org.eclipse.pde.ui.templates.NewPluginProjectFromTemplateWizard;
 import org.eclipse.ui.IWorkbench;
 
 /**
@@ -25,7 +33,8 @@ import org.eclipse.ui.IWorkbench;
  * 
  * @author arbennett
  */
-public class WizardNewICEItemProject extends NewPluginProjectWizard {
+@SuppressWarnings("restriction")
+public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard {
 
 	private static final String DESCRIPTION = "Create a new ICE item project.";
 	private static final String WIZARD_NAME = "New ICE Item Project";
@@ -37,35 +46,29 @@ public class WizardNewICEItemProject extends NewPluginProjectWizard {
 	/**
 	 * Constructor
 	 */
-	public WizardNewICEItemProject() {
+	public NewICEItemProjectWizard() {
 		setWindowTitle(WIZARD_TITLE);
 	}
 
-	/**
-	 * Initialize the wizard
-	 */
 	@Override
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
-	}
-
-	/**
-	 * Take all of the given information and set up a new New ICE Item Project.
-	 * 
-	 * @return whether the project creation was successful
-	 */
-	@SuppressWarnings("restriction")
-	@Override
-	public boolean performFinish() {
-		boolean retval = true;
-
-		super.performFinish();
-		try {
-			NewICEItemProjectSupport.setNature(this.fMainPage.getProjectHandle());
-		} catch (CoreException e) {
+	protected String getTemplateID() {
+		String retval = null;
+		// TODO Auto-generated method stub
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		IExtensionPoint point = registry.getExtensionPoint("org.eclipse.ice.projectgeneration", PLUGIN_POINT);
+		if (point == null) {
+			return null;
 		}
-
-		return retval;
+		IExtension[] extensions = point.getExtensions();
+		for (int i = 0; i < extensions.length; i++) {
+			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
+			for (int j = 0; j < elements.length; j++) {
+				if (elements[j].getName().equals(TAG_WIZARD)) {
+					System.out.println(elements[j].getAttribute(WizardElement.ATT_ID));
+					retval = (elements[j].getAttribute(WizardElement.ATT_ID));
+				}
+			}
+		}
+		return "org.eclipse.ice.projectgeneration.templates.ICEItemTemplate";
 	}
 }
