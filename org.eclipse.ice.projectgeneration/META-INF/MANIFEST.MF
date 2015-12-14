@@ -27,3 +27,4 @@ Export-Package: org.eclipse.ice.projectgeneration;uses:="org.slf4j,org.eclipse.c
    org.eclipse.jface.wizard,
    org.eclipse.jface.viewers"
 Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-ActivationPolicy: lazy
