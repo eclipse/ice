@@ -1543,4 +1543,9 @@ public class JobLaunchAction extends Action implements Runnable {
 		connectionType = type;
 	}
 
+	@Override
+	public String getActionName() {
+		return "Job Launch Action";
+	}
+
 }

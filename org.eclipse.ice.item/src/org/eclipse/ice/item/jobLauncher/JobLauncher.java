@@ -952,10 +952,10 @@ public class JobLauncher extends Item {
 				// Create the output files in the project space
 				createOutputFiles();
 				
-				// Launch the action
-				action = new JobLaunchAction();
+				// Get the Job Launch Action. 
+				action = getActionFactory().getAction("Job Launch Action");
 
-				// If we have a valid connection then give it to the action
+				// FIXME This is bad. If we have a valid connection then give it to the action
 				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap.get("hostname"));
 				if (remoteConnection != null) {
 					((JobLaunchAction) action).setRemoteConnection(remoteConnection);

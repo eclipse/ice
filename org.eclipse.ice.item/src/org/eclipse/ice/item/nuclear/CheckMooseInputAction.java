@@ -408,4 +408,9 @@ public class CheckMooseInputAction extends Action {
 		return null;
 	}
 
+	@Override
+	public String getActionName() {
+		return "Check Moose Input";
+	}
+
 }

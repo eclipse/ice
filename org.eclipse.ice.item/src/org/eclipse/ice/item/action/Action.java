@@ -14,14 +14,19 @@ package org.eclipse.ice.item.action;
 
 import java.util.Dictionary;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.ItemBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * The Action class performs actions, such as launching a job or script, for
- * ICE. It requires a Form with relevant information to execute property and it
+ * ICE. It requires a Form with relevant information to execute properly and it
  * may, at its own discretion, request additional information using a secondary,
  * Action-specific Form. This Form should not be created with list of Actions
  * since it is not used by an Item. This is needed to retrieve unexpected
@@ -171,4 +176,48 @@ public abstract class Action {
 	public FormStatus getStatus() {
 		return status;
 	}
+	
+	/**
+	 * Return the name of this Action. This name will be used by 
+	 * the IActionFactory to reference and create new Actions. 
+	 * 
+	 * @return name The name of this Action.
+	 */
+	public abstract String getActionName();
+	
+	/**
+	 * Return the available Actions provided by the Extension Registry. 
+	 * 
+	 * @return actions All Actions exposed in the Extension Registry. 
+	 * 
+	 * @throws CoreException
+	 */
+	public static Action[] getAvailableActions() throws CoreException {
+		/**
+		 * Logger for handling event messages and other information.
+		 */
+		Logger logger = LoggerFactory.getLogger(Action.class);
+
+		Action[] actions = null;
+		String id = "org.eclipse.ice.item.actions";
+		IExtensionPoint point = Platform.getExtensionRegistry()
+				.getExtensionPoint(id);
+
+		// If the point is available, create all the builders and load them into
+		// the array.
+		if (point != null) {
+			IConfigurationElement[] elements = point.getConfigurationElements();
+			actions = new Action[elements.length];
+			for (int i = 0; i < elements.length; i++) {
+				actions[i] = (Action) elements[i]
+						.createExecutableExtension("class");
+			}
+		} else {
+			logger.error("Extension Point " + id + "does not exist");
+		}
+
+		return actions;
+	}
+
+	
 }

@@ -479,6 +479,13 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		itemName = "ICE Item";
 		itemDescription = "This is an ICE Item";
 
+		// Get the IActionFactory instance.
+		try {
+			actionFactory = IActionFactory.getActionFactory();
+		} catch (CoreException e) {
+			logger.error("Could not get a valid IActionFactory.", e);
+		}
+		
 		// set builderName to empty string
 		builderName = "";
 

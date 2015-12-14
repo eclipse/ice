@@ -12,6 +12,7 @@
 package org.eclipse.ice.item.test;
 
 import org.eclipse.ice.item.IActionFactory;
+import org.eclipse.ice.item.action.Action;
 
 /**
  * This is a fake implementation of the IActionFactory used for testing.
@@ -20,5 +21,11 @@ import org.eclipse.ice.item.IActionFactory;
  * 
  */
 public class FakeActionFactory implements IActionFactory {
+
+	@Override
+	public Action getAction(String actionName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

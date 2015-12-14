@@ -143,5 +143,10 @@ public class RemoteFileDownloadAction extends Action {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String getActionName() {
+		return "Remote File Download";
+	}
 
 }

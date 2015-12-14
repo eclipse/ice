@@ -3,6 +3,9 @@
 <plugin>
    <extension-point id="itemBuilder" name="Item Builder" schema="schema/itemBuilder.exsd"/>
    <extension-point id="compositeItemBuilder" name="Composite Item Builder" schema="schema/compositeItemBuilder.exsd"/>
+   <extension-point id="actionFactory" name="ICE Action Factory" schema="schema/actionFactory.exsd"/>
+   <extension-point id="actions" name="ICE Actions" schema="schema/actions.exsd"/>
+   
    <extension
          id="geometryEditorBuilder"
          name="Geometry Editor"
@@ -72,5 +75,21 @@
       <implementation
             class="org.eclipse.ice.item.utilities.moose.MOOSEFileHandler">
       </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.ICEActionFactory"
+         name="ICE Action Factory"
+         point="org.eclipse.ice.item.actionFactory">
+      <actionFactory
+            class="org.eclipse.ice.item.ICEActionFactory">
+      </actionFactory>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.action.joblaunchaction"
+         name="Job Launch Action"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.JobLaunchAction">
+      </action>
    </extension>
 </plugin>

@@ -101,4 +101,9 @@ public class TaggedOutputWriterAction extends Action {
 		// TODO Auto-generated method stub
 		return FormStatus.InfoError;
 	}
+	
+	@Override
+	public String getActionName() {
+		return "Tagged Output Writer";
+	}
 }

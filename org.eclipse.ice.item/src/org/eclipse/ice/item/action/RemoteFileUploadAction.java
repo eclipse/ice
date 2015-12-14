@@ -176,5 +176,10 @@ public class RemoteFileUploadAction extends Action {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
+	
+	@Override
+	public String getActionName() {
+		return "Remote File Upload";
+	}
 
 }
