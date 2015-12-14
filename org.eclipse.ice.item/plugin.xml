@@ -92,4 +92,44 @@
             class="org.eclipse.ice.item.action.JobLaunchAction">
       </action>
    </extension>
+   <extension
+         id="org.eclipse.ice.item.remoteyamlaction"
+         name="Remote YAML-Syntax Generation"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.nuclear.RemoteYamlSyntaxGenerator">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.remotefiledownload"
+         name="Remote File Download"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.RemoteFileDownloadAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.remotefileupload"
+         name="Remote File Upload"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.RemoteFileUploadAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.moose.checkmooseinput"
+         name="Check Moose Input"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.nuclear.CheckMooseInputAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.taggedoutputwriter"
+         name="Tagged Output Writer"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.TaggedOutputWriterAction">
+      </action>
+   </extension>
 </plugin>

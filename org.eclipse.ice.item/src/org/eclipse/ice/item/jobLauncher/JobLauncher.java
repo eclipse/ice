@@ -954,7 +954,11 @@ public class JobLauncher extends Item {
 				
 				// Get the Job Launch Action. 
 				action = getActionFactory().getAction("Job Launch Action");
-
+				if (action == null) {
+					logger.error("Invalid Job Launch Action.");
+					return FormStatus.InfoError;
+				}
+				
 				// FIXME This is bad. If we have a valid connection then give it to the action
 				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap.get("hostname"));
 				if (remoteConnection != null) {

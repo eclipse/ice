@@ -13,6 +13,7 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,9 +25,14 @@ import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -40,7 +46,10 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.action.Action;
+import org.eclipse.ice.item.action.RemoteAction;
 import org.eclipse.ice.item.action.RemoteFileUploadAction;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.remote.core.IRemoteConnection;
@@ -55,71 +64,59 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
  * --check-input command line argument. This Action works for both local and
  * remote applications.
  * 
+ * This Action requires the following key-value pairs be passed to the 
+ * execute method: projectName - the name of the IProject instance, isRemote - 
+ * a boolean as a String indicating whether the Moose App is local/remote, 
+ * inputTree - the Moose input tree in XML form, appComp - the Files DataComponent 
+ * containing the App URI and output file name in XML form.
+ * 
  * @author Alex McCaskey
  *
  */
-public class CheckMooseInputAction extends Action {
-
-	/**
-	 * Reference to the Moose Tree to validate.
-	 */
-	private TreeComposite mooseTree;
-
-	/**
-	 * Reference to the IRemoteConnection for a remote application. This should
-	 * be null if the application is local.
-	 */
-	private IRemoteConnection connection;
-
-	/**
-	 * Reference to the DataComponent containing the Moose Application URI
-	 * string and input file name.
-	 */
-	private DataComponent appComponent;
-
-	/**
-	 * Reference to the IProject for the Moose Item.
-	 */
-	private IProject project;
-
-	/**
-	 * The constructor, takes the input tree to be validated, the DataComponent
-	 * containing the application and file name, the MOOSE Item's IProject
-	 * instance, and a possible IRemoteConnection if the application is remote.
-	 * 
-	 * @param inputTree
-	 * @param data
-	 * @param proj
-	 * @param conn
-	 */
-	public CheckMooseInputAction(TreeComposite inputTree, DataComponent data, IProject proj, IRemoteConnection conn) {
-		mooseTree = inputTree;
-		connection = conn;
-		appComponent = data;
-		project = proj;
-
-	}
-
+public class CheckMooseInputAction extends RemoteAction {
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 */
 	@Override
-	public FormStatus execute(Dictionary<String, String> dictionary) {
+	public FormStatus execute(Dictionary<String, String> map) {
 		// Local Declarations
 		IRemoteProcessService processService = null;
 		IRemoteProcess checkInputRemoteJob = null;
 		MOOSEFileHandler writer = new MOOSEFileHandler();
 		Form tempForm = new Form();
-		InputStream stdStream = null, errorStream = null;
+		InputStream errorStream = null;
 		String checkInputString = "", line;
 		status = FormStatus.ReadyToProcess;
+		
+		// Get the input params
+		String projectName = map.get("projectName");
+		String treeXML = map.get("inputTree");
+		String appCompXML = map.get("appComp");
+		boolean isRemote = Boolean.valueOf(map.get("isRemote"));
+		
+		// Validate we got the right ones. 
+		if (projectName == null || treeXML == null || appCompXML == null || map.get("isRemote") == null) {
+			logger.error("Invalid input for CheckMooseInputAction.");
+			return FormStatus.InfoError;
+		}
+		
+		// Convert the input XML to the objects we need
+		TreeComposite mooseTree = loadComponent(treeXML);
+		DataComponent appComponent = loadComponent(appCompXML);
+		new MOOSEModel().setActiveDataNodes(mooseTree);
+		
+		// Get the IProject reference
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+
+		// Get the output file reference and the application URI
 		IFile inputFile = project.getFile(appComponent.retrieveEntry("Output File Name").getValue());
 		URI appUri = URI.create(appComponent.retrieveEntry("MOOSE-Based Application").getValue());
 
 		// Make sure we have the correct files in the workspace
-		if (!validateFileEntries()) {
+		if (!validateFileEntries(project, mooseTree)) {
 			status = FormStatus.InfoError;
 			return status;
 		}
@@ -129,21 +126,24 @@ public class CheckMooseInputAction extends Action {
 		writer.write(tempForm, inputFile);
 
 		// Check if this MOOSE app is local or remote
-		if (connection != null) {
+		if (isRemote) {
 
 			// If remote, we have to upload the input file and
 			// the files it references to correctly validate the tree
 
+			// Get the remote connection
+			connection = getRemoteConnection(appUri.getHost());
+			
 			// Create a list of IFiles and add the input file to it
-			ArrayList<IFile> files = new ArrayList<IFile>();
-			files.add(inputFile);
+			ArrayList<File> files = new ArrayList<File>();
+			files.add(inputFile.getLocation().toFile());
 
 			// Now add all files it needs
 			// FYI This list has already been validated and shown to exist
 			// in Moose.fullTreeValidation, if you are using this somewhere
 			// else, make sure they exist!
-			for (Entry fileE : getFileEntries()) {
-				files.add(project.getFile(fileE.getValue()));
+			for (Entry fileE : getFileEntries(mooseTree)) {
+				files.add(project.getFile(fileE.getValue()).getLocation().toFile());
 			}
 
 			// Try to open the connection and fail if it will not open
@@ -168,9 +168,10 @@ public class CheckMooseInputAction extends Action {
 				SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
 				Dictionary<String, String> dataMap = new Hashtable<String, String>();
 				dataMap.put("remoteDir", "ICEJobs" + remoteSeparator + "iceLaunch_" + shortDate.format(currentDate));
+				dataMap.put("remoteHost", appUri.getHost());
 				
 				// Upload the input files
-				RemoteFileUploadAction uploadAction = new RemoteFileUploadAction(files, connection);
+				RemoteFileUploadAction uploadAction = new RemoteFileUploadAction(files);
 				uploadAction.execute(dataMap);
 
 				// Get the IRemoteProcessService
@@ -282,7 +283,7 @@ public class CheckMooseInputAction extends Action {
 	 * This method searches the Model input tree and locates all file Entries
 	 * and loads them on the Model File DataComponent.
 	 */
-	private ArrayList<Entry> getFileEntries() {
+	private ArrayList<Entry> getFileEntries(TreeComposite mooseTree) {
 		// protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
 		ArrayList<Entry> files = new ArrayList<Entry>();
@@ -317,11 +318,11 @@ public class CheckMooseInputAction extends Action {
 	 * 
 	 * @return
 	 */
-	private boolean validateFileEntries() {
-		refreshProjectSpace();
+	private boolean validateFileEntries(IProject project, TreeComposite tree) {
+		refreshProjectSpace(project);
 
 		// Loop over all file entries and make sure they exist
-		for (final Entry entry : getFileEntries()) {
+		for (final Entry entry : getFileEntries(tree)) {
 			try {
 				// Check the entry value validity, if bad throw an exception
 				if (entry.getValue().isEmpty() || !project.getFile(entry.getValue()).exists()) {
@@ -390,7 +391,7 @@ public class CheckMooseInputAction extends Action {
 	 * This utility method can be used by subclasses to refresh the project
 	 * space after the addition or removal of files and folders.
 	 */
-	protected void refreshProjectSpace() {
+	protected void refreshProjectSpace(IProject project) {
 		// Refresh the Project just in case
 		if (project != null) {
 			try {
@@ -402,6 +403,45 @@ public class CheckMooseInputAction extends Action {
 		return;
 	}
 
+	/**
+	 * This operation loads an ICE Component from an XML String.
+	 * @param <T>
+	 *
+	 * @param file
+	 *            The IFile that should be loaded as an Item from XML.
+	 * @return the Item
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T loadComponent(String xmlForm) {
+
+		T comp = null;
+		// Make an array to store the class list of registered Items
+		ArrayList<Class> classList = new ArrayList<Class>();
+		Class[] classArray = {};
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		// Create new JAXB class context and unmarshaller
+		JAXBContext context = null;
+		try {
+			context = JAXBContext.newInstance(classList.toArray(classArray));
+		} catch (JAXBException e1) {
+			e1.printStackTrace();
+			logger.error("Could not get JAXBContext.", e1);
+		}
+
+		try {
+			// Create the unmarshaller and load the item
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			comp = (T) unmarshaller.unmarshal(new ByteArrayInputStream(xmlForm.getBytes()));
+		} catch (JAXBException e) {
+			// Complain
+			logger.error(getClass().getName() + " Exception!", e);
+			// Null out the Item so that it can't be returned uninitialized
+			comp = null;
+		}
+
+		return comp;
+	}
+	
 	@Override
 	public FormStatus cancel() {
 		// TODO Auto-generated method stub

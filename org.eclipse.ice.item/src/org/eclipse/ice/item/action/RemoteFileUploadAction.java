@@ -14,6 +14,7 @@ package org.eclipse.ice.item.action;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
@@ -29,25 +30,20 @@ import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcessService;
 
 /**
- * The RemoteFileUpload Action is a subclass of ICE Action that 
- * takes a list of IFiles and a valid IRemoteConnection and uploads 
- * the files to the host specified by the connection. By default, this 
- * Action uploads the files to $HOME/iceLaunch_$timestamp. 
+ * The RemoteFileUpload Action is a subclass of ICE Action that takes a list of
+ * IFiles and a valid IRemoteConnection and uploads the files to the host
+ * specified by the connection. By default, this Action uploads the files to
+ * $HOME/iceLaunch_$timestamp.
  * 
  * @author Alex McCaskey
  *
  */
-public class RemoteFileUploadAction extends Action {
+public class RemoteFileUploadAction extends RemoteAction {
 
 	/**
 	 * Reference to the list of files to be uploaded
 	 */
-	private List<IFile> filesToUpload;
-
-	/**
-	 * Reference to the IRemoteConnection for the remote host. 
-	 */
-	private IRemoteConnection connection;
+	private List<File> filesToUpload;
 
 	/**
 	 * AtomicBoolean to handle cancellations.
@@ -55,38 +51,72 @@ public class RemoteFileUploadAction extends Action {
 	private AtomicBoolean cancelled;
 
 	/**
-	 * Reference to the remotely hosted directory 
-	 * that will contain the uploaded files.  
+	 * Reference to the remotely hosted directory that will contain the uploaded
+	 * files.
 	 */
 	private IFileStore remoteDirectory;
 
 	/**
-	 * The constructor. Takes a list of files to upload and a 
-	 * remote connection for the remote host. 
+	 * The constructor. Takes a list of files to upload and a remote connection
+	 * for the remote host.
 	 * 
-	 * @param files List of files to upload
-	 * @param conn IRemoteConnnection for the remote host. 
+	 * @param files
+	 *            List of files to upload
 	 * 
 	 */
-	public RemoteFileUploadAction(List<IFile> files, IRemoteConnection conn) {
+	public RemoteFileUploadAction(List<File> files) {
 		super();
 		filesToUpload = files;
-		connection = conn;
+		cancelled = new AtomicBoolean(false);
+	}
+
+	/**
+	 * The nullary constructor
+	 */
+	public RemoteFileUploadAction() {
+		filesToUpload = new ArrayList<File>();
 		cancelled = new AtomicBoolean(false);
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 * 
-	 * This implementation of Action.execute creates the remote working 
-	 * directory and then uploads the files to that directory. 
+	 * This implementation of Action.execute creates the remote working
+	 * directory and then uploads the files to that directory.
 	 */
 	@Override
 	public FormStatus execute(Dictionary<String, String> dictionary) {
 
-		// Set the base name of the working directory.
+		// Get the input parameters.
 		String workingDirectoryBaseName = dictionary.get("remoteDir");
+		String hostName = dictionary.get("remoteHost");
+		String filesString = dictionary.get("uploadFiles");
+		String localFilesDir = dictionary.get("localFilesLocation");
+
+		// Validate input parameters
+		if (hostName == null || workingDirectoryBaseName == null) {
+			logger.error("Invalid input parameters for RemoteFileUpload. See class documentation.");
+			return FormStatus.InfoError;
+		}
+
+		if (filesToUpload.isEmpty()) {
+			if (filesString == null && localFilesDir == null) {
+				logger.error("Invalid input parameters for RemoteFileUpload. See class documentation.");
+				return FormStatus.InfoError;
+			}
+			for (String filePath : filesString.split(";")) {
+				filesToUpload.add(new File(filePath));
+			}
+		}
+
+		// Get the remote connection
+		connection = getRemoteConnection(hostName);
+		if (connection == null) {
+			logger.error("Could not get a valid connection to " + hostName);
+			return FormStatus.InfoError;
+		}
 
 		// Get the remote file manager
 		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
@@ -107,11 +137,11 @@ public class RemoteFileUploadAction extends Action {
 		// Create the remote working directory and upload required files.
 		try {
 			remoteDirectory = fileStore.getChild(workingDirectoryBaseName).mkdir(EFS.NONE, null);
-			logger.info(
-					"RemoteFileUploadAction Message: " + "Created directory on remote system, " + remoteDirectory.getName());
+			logger.info("RemoteFileUploadAction Message: " + "Created directory on remote system, "
+					+ remoteDirectory.getName());
 
 			// Loop over all of the files in the file table and upload them
-			for (IFile file : filesToUpload) {
+			for (File file : filesToUpload) {
 
 				// Check to see if the job should be cancelled.
 				if (cancelled.get()) {
@@ -124,12 +154,11 @@ public class RemoteFileUploadAction extends Action {
 
 				// Get a file store handle to the local copy of the
 				// input file
-				File localFile = file.getLocation().toFile();
-				IFileStore localFileStore = EFS.getLocalFileSystem().fromLocalFile(localFile);
+				IFileStore localFileStore = EFS.getLocalFileSystem().fromLocalFile(file);
 
 				// Copy the local file to the remote file
 				localFileStore.copy(remoteFileStore, EFS.OVERWRITE, null);
-				logger.info("RemoteFileUploadAction Message: " + "Uploaded file " + localFile.getName());
+				logger.info("RemoteFileUploadAction Message: " + "Uploaded file " + file.getName());
 			}
 
 		} catch (CoreException e) {
@@ -139,8 +168,8 @@ public class RemoteFileUploadAction extends Action {
 			return status;
 		}
 
-		// If we make it here, then we've successfully uploaded 
-		// the files. 
+		// If we make it here, then we've successfully uploaded
+		// the files.
 		status = FormStatus.Processing;
 		return status;
 	}
@@ -153,8 +182,7 @@ public class RemoteFileUploadAction extends Action {
 	}
 
 	/**
-	 * Return the absolute path for the remotely hosted 
-	 * directory as a String. 
+	 * Return the absolute path for the remotely hosted directory as a String.
 	 * 
 	 * @return
 	 */
@@ -165,8 +193,9 @@ public class RemoteFileUploadAction extends Action {
 	public IFileStore getRemoteUploadDirectory() {
 		return remoteDirectory;
 	}
+
 	/**
-	 * Remove the remote directory. 
+	 * Remove the remote directory.
 	 */
 	public void deleteUploadRemoteDirectory() {
 		try {
@@ -176,7 +205,7 @@ public class RemoteFileUploadAction extends Action {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
-	
+
 	@Override
 	public String getActionName() {
 		return "Remote File Upload";

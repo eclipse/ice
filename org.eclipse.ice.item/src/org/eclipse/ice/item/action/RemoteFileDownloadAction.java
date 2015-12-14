@@ -24,21 +24,14 @@ import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
 
 /**
- * The RemoteFileDownloadAction is an ICE Action that downloads files 
- * from a remote directory to the current localhost. It requires that clients 
- * provide a remoteDir and localDir key-value pair in the provided execution 
- * dictionary. 
+ * The RemoteFileDownloadAction is an ICE Action that downloads files from a
+ * remote directory to the current localhost. It requires that clients provide a
+ * remoteDir and localDir key-value pair in the provided execution dictionary.
  * 
  * @author Alex McCaskey
  *
  */
-public class RemoteFileDownloadAction extends Action {
-
-	/**
-	 * Reference to the IRemoteConnection to the 
-	 * remote host with the files to be downloaded. 
-	 */
-	private IRemoteConnection connection;
+public class RemoteFileDownloadAction extends RemoteAction {
 
 	/**
 	 * The maximum size limit of any file that will be downloaded from a remote
@@ -49,12 +42,11 @@ public class RemoteFileDownloadAction extends Action {
 	private long maxFileSize;
 
 	/**
-	 * The Constructor, takes the remote connection to use. 
+	 * The Constructor, takes the remote connection to use.
 	 * 
 	 * @param remote
 	 */
-	public RemoteFileDownloadAction(IRemoteConnection remote) {
-		connection = remote;
+	public RemoteFileDownloadAction() {
 		// Get the maxFileSize from the system properties
 		String fileSize = System.getProperty("max_download_size");
 		if (fileSize != null) {
@@ -68,11 +60,12 @@ public class RemoteFileDownloadAction extends Action {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 * 
-	 * This implementation of execute requires that the keys remoteDir and localDir 
-	 * be defined in the provided dictionary, and that they point to valid 
-	 * directory absolute paths. 
+	 * This implementation of execute requires that the keys remoteDir and
+	 * localDir be defined in the provided dictionary, and that they point to
+	 * valid directory absolute paths.
 	 * 
 	 */
 	@Override
@@ -81,21 +74,28 @@ public class RemoteFileDownloadAction extends Action {
 		// Get the remote and local directory
 		String remoteDir = dictionary.get("remoteDir");
 		String localDir = dictionary.get("localDir");
+		String hostName = dictionary.get("remoteHost");
 
 		// Check that we've been given valid directories
-		if (remoteDir == null || localDir == null) {
-			logger.error(
-					"RemoteFileDownloadAction Error - No remote or local directory provided. Can't download files.");
+		if (remoteDir == null || localDir == null || hostName == null) {
+			logger.error("No remote host name or remote/local directory provided. Can't download files.");
 			return FormStatus.InfoError;
 		}
 
+		// Get the remote connection
+		connection = getRemoteConnection(hostName);
+		if (connection == null) {
+			logger.error("Could not get a valid connection to " + hostName);
+			return FormStatus.InfoError;
+		}
+		
 		// Get the remote file manager
 		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
 
-		// Get the Local Directory 
+		// Get the Local Directory
 		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(new File(localDir));
 
-		// Get the remote directory. 
+		// Get the remote directory.
 		IFileStore downloadFileStore = fileManager.getResource(remoteDir);
 		try {
 			// Get the children
@@ -107,8 +107,8 @@ public class RemoteFileDownloadAction extends Action {
 				if (fileInfo.getLength() < maxFileSize) {
 
 					// Print some debug information about the download
-					String msg = "RemoteFileDownloadAction Message: " + "Downloading " + fileInfo.getName() + " with length "
-							+ fileInfo.getLength() + ".";
+					String msg = "RemoteFileDownloadAction Message: " + "Downloading " + fileInfo.getName()
+							+ " with length " + fileInfo.getLength() + ".";
 					logger.info(msg);
 
 					// Get a handle to the local file. Note that it may
@@ -123,9 +123,9 @@ public class RemoteFileDownloadAction extends Action {
 					// Print a debug note saying that the file is too
 					// big to
 					// download.
-					String msg = "RemoteFileDownloadAction Message: " + "File exceeds download limit. " + "File with size "
-							+ fileInfo.getLength() + " is " + sizeDiff + " bytes over the " + maxFileSize
-							+ " byte limit.";
+					String msg = "RemoteFileDownloadAction Message: " + "File exceeds download limit. "
+							+ "File with size " + fileInfo.getLength() + " is " + sizeDiff + " bytes over the "
+							+ maxFileSize + " byte limit.";
 					logger.info(msg);
 				}
 
@@ -133,17 +133,25 @@ public class RemoteFileDownloadAction extends Action {
 		} catch (CoreException e) {
 			logger.error(getClass().getName() + " Exception! Error in downloading the files.", e);
 			return FormStatus.InfoError;
-		} 
-		
+		}
+
 		return FormStatus.Processed;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#cancel()
+	 */
 	@Override
 	public FormStatus cancel() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#getActionName()
+	 */
 	@Override
 	public String getActionName() {
 		return "Remote File Download";
