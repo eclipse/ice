@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Jay Jay Billings
+ *   Jay Jay Billings, Alex McCaskey
  *******************************************************************************/
 package org.eclipse.ice.item;
 
@@ -35,6 +35,13 @@ public interface IActionFactory {
 	 * @return action The Action corresponding to the provided name.
 	 */
 	public Action getAction(String actionName);
+
+	/**
+	 * Return all available Action names.
+	 * 
+	 * @return names The names of all available Actions.
+	 */
+	public String[] getAvailableActions();
 
 	/**
 	 * This operation retrieves the IActionFactory implementation from the

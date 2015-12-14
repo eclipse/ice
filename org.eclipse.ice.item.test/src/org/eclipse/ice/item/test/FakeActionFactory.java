@@ -28,4 +28,10 @@ public class FakeActionFactory implements IActionFactory {
 		return null;
 	}
 
+	@Override
+	public String[] getAvailableActions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
