@@ -7,20 +7,20 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
 import java.io.File;
 import java.net.URI;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.object.FileFormat;
 import ncsa.hdf.object.h5.H5File;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -49,7 +49,8 @@ public class HdfFileFactory {
 	 *            <p>
 	 *            The URI of the H5File to create and open.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An H5File that has been created and opened for read/write
 	 *         operations.
 	 *         </p>
@@ -145,7 +146,8 @@ public class HdfFileFactory {
 	 *            <p>
 	 *            The URI of the H5File to open.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An H5File that has been opened for read/write operations.
 	 *         </p>
 	 */

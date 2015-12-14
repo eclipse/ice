@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf.test;
 
@@ -20,17 +20,17 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
-import ncsa.hdf.object.h5.H5File;
-import ncsa.hdf.object.h5.H5Group;
-
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.junit.Test;
+
+import ncsa.hdf.object.h5.H5File;
+import ncsa.hdf.object.h5.H5Group;
 
 /**
  * <p>
  * This class tests the HdfFileFactory class.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class HdfFileFactoryTester {

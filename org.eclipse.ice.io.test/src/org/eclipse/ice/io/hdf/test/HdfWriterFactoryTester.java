@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf.test;
 
@@ -22,6 +22,12 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.net.URI;
 
+import org.eclipse.ice.io.hdf.HdfFileFactory;
+import org.eclipse.ice.io.hdf.HdfWriterFactory;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ncsa.hdf.hdf5lib.exceptions.HDF5Exception;
 import ncsa.hdf.object.Attribute;
 import ncsa.hdf.object.Dataset;
@@ -31,15 +37,9 @@ import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5File;
 import ncsa.hdf.object.h5.H5Group;
 
-import org.eclipse.ice.io.hdf.HdfFileFactory;
-import org.eclipse.ice.io.hdf.HdfWriterFactory;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * This class tests the HdfWriterFactory class.
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class HdfWriterFactoryTester {
@@ -235,20 +235,20 @@ public class HdfWriterFactoryTester {
 				.getRootNode()).getUserObject();
 
 		// Create a good Reactor group
-		H5Group reactorGroup = HdfWriterFactory.createH5Group(h5File,
-				"Reactor", rootH5Group);
+		H5Group reactorGroup = HdfWriterFactory.createH5Group(h5File, "Reactor",
+				rootH5Group);
 		assertNotNull(reactorGroup);
 
 		// Write some double attributes with bad arguments
 		flag = HdfWriterFactory.writeDoubleAttribute(null, null, null, number);
 		assertFalse(flag);
 
-		flag = HdfWriterFactory
-				.writeDoubleAttribute(h5File, null, null, number);
+		flag = HdfWriterFactory.writeDoubleAttribute(h5File, null, null,
+				number);
 		assertFalse(flag);
 
-		flag = HdfWriterFactory.writeDoubleAttribute(h5File, reactorGroup,
-				null, number);
+		flag = HdfWriterFactory.writeDoubleAttribute(h5File, reactorGroup, null,
+				number);
 		assertFalse(flag);
 
 		// Write a double attribute with good arguments
@@ -315,8 +315,8 @@ public class HdfWriterFactoryTester {
 		flag = HdfWriterFactory.writeStringAttribute(h5File, null, null, null);
 		assertFalse(flag);
 
-		flag = HdfWriterFactory.writeStringAttribute(h5File, reactorGroup,
-				null, null);
+		flag = HdfWriterFactory.writeStringAttribute(h5File, reactorGroup, null,
+				null);
 		assertFalse(flag);
 
 		flag = HdfWriterFactory.writeStringAttribute(h5File, reactorGroup, "",
