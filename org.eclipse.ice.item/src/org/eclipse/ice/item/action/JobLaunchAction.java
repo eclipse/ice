@@ -1141,6 +1141,9 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Set the status
 		status = FormStatus.Processed;
 
+		// Clear the files we care about
+		fileMap.clear();
+		
 		// Close the connection
 		connection.close();
 
