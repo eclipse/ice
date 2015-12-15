@@ -115,7 +115,7 @@ public class RemoteYamlSyntaxGenerator extends Action {
 			try {
 				// Local Strings
 				String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
-				String script = remoteSeparator + "tmp" + remoteSeparator + "executeYamlSyntax";
+				String script = remoteSeparator + "tmp" + remoteSeparator + "executeYamlSyntax_"+System.getProperty("user.name");
 				String fileLoc = remoteSeparator + "tmp" + remoteSeparator + appFile.getName();
 				
 				// Get the remote file system
