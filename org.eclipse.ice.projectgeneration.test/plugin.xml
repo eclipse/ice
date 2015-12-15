@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ice.projectgeneration.pluginContent">
+      <wizard
+            class="org.eclipse.ice.projectgeneration.test.PluginContentWizard1"
+            id="org.eclipse.ice.projectgeneration.test.wizard1"
+            java="true"
+            name="name"
+            pureOSGi="false"
+            rcp="false"
+            requiresActivator="false"
+            ui-content="true">
+      </wizard>
+   </extension>
+
+</plugin>

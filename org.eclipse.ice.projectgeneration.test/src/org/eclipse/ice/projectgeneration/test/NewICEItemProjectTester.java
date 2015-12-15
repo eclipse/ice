@@ -12,6 +12,7 @@
 *******************************************************************************/
 package org.eclipse.ice.projectgeneration.test;
 
+import static org.eclipse.swtbot.swt.finder.waits.Conditions.shellCloses;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -33,7 +34,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.eclipse.ice.projectgeneration.ICEItemNature;
-import org.eclipse.ice.projectgeneration.NewICEItemProjectSupport;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 
 /**
  * This class tests the creation and configuration of new ICE Item projects.
@@ -42,66 +44,45 @@ import org.eclipse.ice.projectgeneration.NewICEItemProjectSupport;
  */
 public class NewICEItemProjectTester {
 
-	private static IProject projectSpace;
+	private static SWTWorkbenchBot bot;
 
-	private String separator = System.getProperty("file.separator");
-	private String userDir = System.getProperty("user.home" + separator + "ICETests");
+	private static final String PROJECT_NAME = "org.eclipse.ice.newitem";
+	private static final String VERSION = "1.0.0";
+	private static final String NAME = "ICE Item";
+	private static final String INSTITUTE = "Oak Ridge National Laboratory";
+	private static final String EXTENSION_NAME = "org.eclipse.ice.newitem";
+	private static final String PACKAGE_NAME = "org.eclipse.ice.newitem";
+	private static final String CLASS_NAME = "NewItem";
+	
 	
 	/**
 	 * Check the setup of a New ICE Item Project
 	 */
 	@Test
-	public void testProjectSetup() {
-		
-		// Set the location to create the projects
-		String projectName = "   ";
-		URI loc = new File(userDir + separator + projectName).toURI();
-		
-		// Try creating the project with a null name
-		Assert.assertNull(NewICEItemProjectSupport.createProject(null, null));
-
-		// Try creating the project with a blank name
-		Assert.assertNull(NewICEItemProjectSupport.createProject(projectName, loc));
-
-		// Try creating the project with a valid name
-		projectName = "ICEItemProjectTesterWorkspace";
-		loc = new File(userDir + separator + projectName).toURI();
-		projectSpace = NewICEItemProjectSupport.createProject(projectName, loc);
-		Assert.assertNotNull(projectSpace);
-
-		// Try creating the project with the same name as an already existing
-		// one
-
-		IProject project = NewICEItemProjectSupport.createProject(projectName, loc);
-		Assert.assertEquals(projectSpace, project);
-
-		// Check that all dotfiles are created correctly
-
-		// Check that custom project nature is set up
-		boolean hasICENature = false;
-		try {
-			hasICENature = projectSpace.hasNature(ICEItemNature.NATURE_ID);
-		} catch (CoreException e) {
-			fail("Error while trying to check project nature!");
-		}
-		Assert.assertTrue(hasICENature);
-
-		// Check that MANIFEST.MF and plugin.xml are set up
-		// TODO
-	}
+	public void testICEItemWizard() {
+		bot = new SWTWorkbenchBot();
+		bot.viewByTitle("Welcome").close();
+		bot.menu("File").menu("New").menu("New ICE Item Project").click();
+		SWTBotShell shell = bot.shell("New ICE Item Project");
+		shell.activate();
 	
-
-	/**
-	 * Clean up everything we may have messed up
-	 */
-	@AfterClass
-	public static void cleanup() {
-		try {
-			projectSpace.close(null);
-			projectSpace.delete(true, null);
-		} catch (CoreException e) {
-			e.printStackTrace();
-			fail("ICE Item Project Tester: Error!  Could not clean up project space");
-		}
+		// Page 1
+		bot.textWithLabel("Project name:").setText(PROJECT_NAME);
+		bot.button("Next >").click();
+		
+		// Page 2
+		bot.textWithLabel("Identifier:").setText(PROJECT_NAME);
+		bot.textWithLabel("Version:").setText(VERSION);
+		bot.textWithLabel("Name:").setText(NAME);
+		bot.textWithLabel("Vendor:").setText(INSTITUTE);
+		bot.button("Next >").click();
+	
+		// Page 3
+		bot.textWithLabel("Extension Base Name").setText(EXTENSION_NAME);
+		bot.textWithLabel("Package Name").setText(PACKAGE_NAME);
+		bot.textWithLabel("Class Base Name").setText(CLASS_NAME);
+		bot.button("Finish").click();
+		
+		bot.waitUntil(shellCloses(shell));
 	}
 }

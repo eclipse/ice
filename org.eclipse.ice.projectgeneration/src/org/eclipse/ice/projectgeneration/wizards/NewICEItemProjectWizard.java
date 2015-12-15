@@ -13,8 +13,10 @@
 package org.eclipse.ice.projectgeneration.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -22,8 +24,8 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ice.projectgeneration.NewICEItemProjectSupport;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -44,6 +46,7 @@ import org.eclipse.pde.ui.templates.NewPluginProjectFromTemplateWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
+import org.eclipse.ice.projectgeneration.ICEItemNature;
 
 /**
  * This class defines the steps for creating a new New ICE Item project via the
@@ -58,7 +61,8 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	private static final String DESCRIPTION = "Create a new ICE item project.";
 	private static final String WIZARD_NAME = "New ICE Item Project";
 	private static final String WIZARD_TITLE = "Create a new ICE item project";
-
+	private static final String TEMPLATE_ID = "org.eclipse.ice.projectgeneration.pluginContent.ICEItem";
+	
 	private AbstractFieldData fPluginData;
 	private NewProjectCreationPage fProjectPage;
 	private PluginContentPage fContentPage;
@@ -78,11 +82,14 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		setWindowTitle(WIZARD_TITLE);
 	}
 
-		@Override
+	
+	/**
+	 * Creates and adds the pages to the wizard.  Three pages are created.
+	 */
+	@Override
 	public void addPages() {
 		WizardElement templateWizardElement = getTemplateWizard();
 
-		System.out.println(fPluginData.toString());
 		fProjectPage = new NewProjectCreationFromTemplatePage("main", fPluginData, getSelection(), templateWizardElement); //$NON-NLS-1$
 		fProjectPage.setTitle(WIZARD_TITLE);
 		fProjectPage.setDescription(DESCRIPTION);
@@ -96,11 +103,9 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			public String getProjectName() {
 				return fProjectPage.getProjectName();
 			}
-
 			public IProject getProject() {
 				return fProjectPage.getProjectHandle();
 			}
-
 			public IPath getLocationPath() {
 				return fProjectPage.getLocationPath();
 			}
@@ -122,6 +127,13 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		}
 	}
 
+		
+	/**
+	 * Takes all of the information from the wizard pages and uses it to create
+	 * the plugin and java classes.
+	 * 
+	 * @return whether the project generation was successful
+	 */
 	@Override
 	public boolean performFinish() {
 		try {
@@ -139,7 +151,6 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 				try {
 					getContainer().run(true, true, new IRunnableWithProgress() {
 						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-							// Target reloaded method clears existing models (which don't exist currently) and inits them with a progress monitor
 							PDECore.getDefault().getModelManager().targetReloaded(monitor);
 							if (monitor.isCanceled()) {
 								throw new InterruptedException();
@@ -147,7 +158,6 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 						}
 					});
 				} catch (InterruptedException e) {
-					// Model initialization cancelled
 					return false;
 				}
 			}
@@ -157,44 +167,62 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			IWorkingSet[] workingSets = fProjectPage.getSelectedWorkingSets();
 			if (workingSets.length > 0)
 				getWorkbench().getWorkingSetManager().addToWorkingSets(fProjectProvider.getProject(), workingSets);
-
+			setNature(fProjectProvider.getProject());
 			return true;
 		} catch (InvocationTargetException e) {
 			PDEPlugin.logException(e);
 		} catch (InterruptedException e) {
+		} catch (CoreException e) {
 		}
+		
 		return false;
 	}
 
 	
-	@Override
-	protected String getTemplateID() {
-		return "org.eclipse.ice.projectgeneration.pluginContent.ICEItem";
-	}
-	
-	private WizardElement getTemplateWizard() {
-		String templateID = getTemplateID();
-		if (templateID == null) {
-			return null;
+	/**
+	 * Make sure that the project has the ICEItemNature associated with it.
+	 * 
+	 * @param project
+	 */
+	public static void setNature(IProject project) throws CoreException {
+		if (!project.hasNature(ICEItemNature.NATURE_ID)) {
+			IProjectDescription description = project.getDescription();
+			String[] projNatures = description.getNatureIds();
+			projNatures = Arrays.copyOf(projNatures, projNatures.length + 1);
+			projNatures[projNatures.length - 1] = ICEItemNature.NATURE_ID;
+			description.setNatureIds(projNatures);
+			project.setDescription(description, new NullProgressMonitor());
 		}
+	}
 
+	
+	/**
+	 * Creates a new wizard element for the definition of the java code templates
+	 * 
+	 * @return the wizard element corresponding to the project's template
+	 */
+	private WizardElement getTemplateWizard() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint("org.eclipse.ice.projectgeneration", PLUGIN_POINT);
-		if (point == null) {
+		if (point == null) 
 			return null;
-		
-		}
 		IExtension[] extensions = point.getExtensions();
 		for (int i = 0; i < extensions.length; i++) {
 			IConfigurationElement[] elements = extensions[i].getConfigurationElements();
 			for (int j = 0; j < elements.length; j++) {
 				if (elements[j].getName().equals(TAG_WIZARD)) {
-					if (templateID.equals(elements[j].getAttribute(WizardElement.ATT_ID))) {
+					if (TEMPLATE_ID.equals(elements[j].getAttribute(WizardElement.ATT_ID))) {
 						return WizardElement.create(elements[j]);
 					}
 				}
 			}
 		}
 		return null;
+	}
+
+
+	@Override
+	protected String getTemplateID() {
+		return TEMPLATE_ID;
 	}
 }

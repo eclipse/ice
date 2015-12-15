@@ -1,28 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2014 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
+ *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
+ *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *******************************************************************************/
 package org.eclipse.ice.projectgeneration.templates;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.projectgeneration.ICEProjectResources;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginElement;
 import org.eclipse.pde.core.plugin.IPluginExtension;
-import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.IPluginModelFactory;
-import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
-import org.osgi.framework.Bundle;
 
+/**
+ * Provides the information for the ICEItemWizard, the final page in the 
+ * new ICE item wizard.
+ * 
+ * @author arbennett
+ */ 
 public class ICEItemTemplate extends OptionTemplateSection {
 
 	protected static final String BUNDLE_ID = "org.eclipse.ice.projectgeneration";
@@ -57,9 +67,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	  * Define the options, descriptions, default values, and page numbers
 	  */
 	protected void setOptions() {
-		 addOption(KEY_EXTENSION_NAME , "Extension Base Name"        , "" , 0);
-		 addOption(KEY_PACKAGE_NAME   , "Package Name"      , "" , 0);
-		 addOption(KEY_CLASS_NAME     , "Class Base Name"        , "" , 0);
+		 addOption(KEY_EXTENSION_NAME , "Extension Base Name"  , "" , 0);
+		 addOption(KEY_PACKAGE_NAME   , "Package Name"         , "" , 0);
+		 addOption(KEY_CLASS_NAME     , "Class Base Name"      , "" , 0);
 	}
 	
 	@Override
