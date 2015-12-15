@@ -13,19 +13,15 @@
 package org.eclipse.ice.item.action;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcessService;
 

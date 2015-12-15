@@ -20,7 +20,6 @@ import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
 
 /**

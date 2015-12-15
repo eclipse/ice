@@ -620,27 +620,6 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
-	 * This operation retrieves the username from the LoginInfoForm.
-	 *
-	 * @return The username.
-	 */
-	private String getUsernameFromForm() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * This operation creates a new SSH session for the given username.
-	 *
-	 * @param dictionary
-	 *            The dictionary of values to be used to create the session.
-	 */
-	private void createSession(Dictionary<String, String> dictionary) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
 	 * This operation returns a buffered writer to the caller that will append
 	 * to file specified in the call.
 	 *

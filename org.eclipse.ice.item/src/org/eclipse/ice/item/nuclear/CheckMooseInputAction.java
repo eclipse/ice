@@ -47,8 +47,6 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.item.Item;
-import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.RemoteAction;
 import org.eclipse.ice.item.action.RemoteFileUploadAction;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
