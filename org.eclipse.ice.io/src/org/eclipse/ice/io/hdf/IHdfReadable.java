@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
@@ -19,7 +19,7 @@ import ncsa.hdf.object.h5.H5Group;
  * An interface that provides the required operations for populating an ICE data
  * structure from an HDF5 file.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public interface IHdfReadable {
@@ -31,13 +31,14 @@ public interface IHdfReadable {
 	 * iHdfReadable fails casting, then false is returned. Otherwise, true is
 	 * returned.
 	 * </p>
-	 * 
+	 *
 	 * @param iHdfReadable
 	 *            <p>
 	 *            The IHdfReadable whose reference is to be cast and assigned to
 	 *            a class variable.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If iHdfReadable is null, then false is returned. If iHdfReadable
 	 *         fails casting, then false is returned. Otherwise, true is
 	 *         returned.
@@ -51,12 +52,13 @@ public interface IHdfReadable {
 	 * class variables. If h5Group is null, false is returned. If any Attribute
 	 * values are null, false is returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5Group
 	 *            <p>
 	 *            The H5Group to read Attributes from.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If h5Group is null, false is returned. If any Attribute values
 	 *         are null, false is returned. Otherwise, true is returned.
 	 *         </p>
@@ -69,12 +71,13 @@ public interface IHdfReadable {
 	 * class variables. If h5Group is null or an Exception is thrown, false is
 	 * returned. If the Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5Group
 	 *            <p>
 	 *            The H5Group to read Datasets from.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If h5Group is null or an Exception is thrown, false is returned.
 	 *         If the Otherwise, true is returned.
 	 *         </p>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.reactor.test;
 
@@ -22,10 +22,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.TreeSet;
-
-import ncsa.hdf.object.FileFormat;
-import ncsa.hdf.object.Group;
-import ncsa.hdf.object.h5.H5File;
 
 import org.eclipse.ice.io.hdf.HdfFileFactory;
 import org.eclipse.ice.reactor.AssemblyType;
@@ -46,14 +42,18 @@ import org.eclipse.ice.reactor.pwr.RodClusterAssembly;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import ncsa.hdf.object.FileFormat;
+import ncsa.hdf.object.Group;
+import ncsa.hdf.object.h5.H5File;
+
 /**
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public class LWRComponentWriterTester {
 
 	/**
-	 * 
+	 *
 	 */
 	@BeforeClass
 	public static void beforeClass() {
@@ -61,7 +61,7 @@ public class LWRComponentWriterTester {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	@Test
 	public void checkWriting() {
@@ -116,14 +116,14 @@ public class LWRComponentWriterTester {
 		// CONTROL
 		// BANKS//////////////////////////////////////////////////////////
 		// Add two control banks to the reactor
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("A",
-				0.625, 230));
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("B",
-				0.625, 215));
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("C",
-				0.625, 200));
-		pwReactor.addAssembly(AssemblyType.ControlBank, new ControlBank("D",
-				0.625, 185));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("A", 0.625, 230));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("B", 0.625, 215));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("C", 0.625, 200));
+		pwReactor.addAssembly(AssemblyType.ControlBank,
+				new ControlBank("D", 0.625, 185));
 
 		// Assign a position for the control banks
 		pwReactor.setAssemblyLocation(AssemblyType.ControlBank, "A", 4, 4);
@@ -249,8 +249,8 @@ public class LWRComponentWriterTester {
 
 		// Assign the labels array
 		fuelAssembly.getGridLabelProvider().setRowLabels(rowLabelsFuelAssembly);
-		fuelAssembly.getGridLabelProvider().setColumnLabels(
-				columnLabelsFuelAssembly);
+		fuelAssembly.getGridLabelProvider()
+				.setColumnLabels(columnLabelsFuelAssembly);
 
 		// Create a guide tube
 		Tube guideTube = new Tube("Guide Tube A", TubeType.GUIDE);
@@ -271,7 +271,8 @@ public class LWRComponentWriterTester {
 		fuelAssembly.setTubeLocation(guideTube.getName(), 8, 13);
 
 		// Create an instrument tube
-		Tube instrumentTube = new Tube("Instrument Tube A", TubeType.INSTRUMENT);
+		Tube instrumentTube = new Tube("Instrument Tube A",
+				TubeType.INSTRUMENT);
 		instrumentTube.setHeight(1.2);
 		instrumentTube.setInnerRadius(0.987);
 		instrumentTube.setOuterRadius(34.5);
@@ -356,8 +357,8 @@ public class LWRComponentWriterTester {
 		pwReactor.addAssembly(AssemblyType.Fuel, fuelAssembly);
 
 		// Assign a position on the grid of the reactor
-		pwReactor.setAssemblyLocation(AssemblyType.Fuel,
-				fuelAssembly.getName(), 4, 4);
+		pwReactor.setAssemblyLocation(AssemblyType.Fuel, fuelAssembly.getName(),
+				4, 4);
 
 		// ROD CLUSTER
 		// ASSEMBLIES/////////////////////////////////////////////////
@@ -378,7 +379,11 @@ public class LWRComponentWriterTester {
 		String feature2 = "Feature 2";
 		double time1 = 1.0, time2 = 3.0, time3 = 3.5;
 		LWRData data1, data2, data3, data4, data5;
-		ArrayList<Double> position1 = new ArrayList<Double>(), position2 = new ArrayList<Double>(), position3 = new ArrayList<Double>(), position4 = new ArrayList<Double>(), position5 = new ArrayList<Double>();
+		ArrayList<Double> position1 = new ArrayList<Double>(),
+				position2 = new ArrayList<Double>(),
+				position3 = new ArrayList<Double>(),
+				position4 = new ArrayList<Double>(),
+				position5 = new ArrayList<Double>();
 
 		// Setup Positions
 
@@ -501,34 +506,34 @@ public class LWRComponentWriterTester {
 		// Check PWRReactor's subpieces
 		Group pWReactor = (Group) root.getMemberList().get(0);
 		assertEquals(10, pWReactor.getMemberList().size());
-		assertEquals("Control Bank Grid", pWReactor.getMemberList().get(0)
-				.getName());
-		assertEquals("Control Banks", pWReactor.getMemberList().get(1)
-				.getName());
-		assertEquals("Fuel Assemblies", pWReactor.getMemberList().get(2)
-				.getName());
-		assertEquals("Fuel Assembly Grid", pWReactor.getMemberList().get(3)
-				.getName());
+		assertEquals("Control Bank Grid",
+				pWReactor.getMemberList().get(0).getName());
+		assertEquals("Control Banks",
+				pWReactor.getMemberList().get(1).getName());
+		assertEquals("Fuel Assemblies",
+				pWReactor.getMemberList().get(2).getName());
+		assertEquals("Fuel Assembly Grid",
+				pWReactor.getMemberList().get(3).getName());
 		assertEquals("Grid Labels", pWReactor.getMemberList().get(4).getName());
-		assertEquals("Incore Instrument Grid", pWReactor.getMemberList().get(5)
-				.getName());
-		assertEquals("Incore Instruments", pWReactor.getMemberList().get(6)
-				.getName());
-		assertEquals("Rod Cluster Assemblies", pWReactor.getMemberList().get(7)
-				.getName());
-		assertEquals("Rod Cluster Assembly Grid", pWReactor.getMemberList()
-				.get(8).getName());
-		assertEquals("State Point Data", pWReactor.getMemberList().get(9)
-				.getName());
+		assertEquals("Incore Instrument Grid",
+				pWReactor.getMemberList().get(5).getName());
+		assertEquals("Incore Instruments",
+				pWReactor.getMemberList().get(6).getName());
+		assertEquals("Rod Cluster Assemblies",
+				pWReactor.getMemberList().get(7).getName());
+		assertEquals("Rod Cluster Assembly Grid",
+				pWReactor.getMemberList().get(8).getName());
+		assertEquals("State Point Data",
+				pWReactor.getMemberList().get(9).getName());
 
 		// Check the Control Bank Grid
 		Group controlBankGrid = (Group) pWReactor.getMemberList().get(0);
 		assertEquals(2, controlBankGrid.getMemberList().size());
 		// Check Control Bank Grid Information
-		assertEquals("Positions", controlBankGrid.getMemberList().get(0)
-				.getName());
-		assertEquals("State Point Data", controlBankGrid.getMemberList().get(1)
-				.getName());
+		assertEquals("Positions",
+				controlBankGrid.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				controlBankGrid.getMemberList().get(1).getName());
 		// information below
 		assertTrue(controlBankGrid.getMemberList().get(0) instanceof Group);
 
@@ -540,8 +545,8 @@ public class LWRComponentWriterTester {
 		assertEquals("B", controlBank.getMemberList().get(1).getName());
 		assertEquals("C", controlBank.getMemberList().get(2).getName());
 		assertEquals("D", controlBank.getMemberList().get(3).getName());
-		assertEquals("State Point Data", controlBank.getMemberList().get(4)
-				.getName());
+		assertEquals("State Point Data",
+				controlBank.getMemberList().get(4).getName());
 		// Check Groups
 		Group A = (Group) controlBank.getMemberList().get(0);
 		Group B = (Group) controlBank.getMemberList().get(1);
@@ -561,23 +566,23 @@ public class LWRComponentWriterTester {
 		Group fuelAssemblies = (Group) pWReactor.getMemberList().get(2);
 		assertEquals(2, fuelAssemblies.getMemberList().size());
 		// Check Fuel Assemblies Information
-		assertEquals("Fuel Assembly A", fuelAssemblies.getMemberList().get(0)
-				.getName());
-		assertEquals("State Point Data", fuelAssemblies.getMemberList().get(1)
-				.getName());
+		assertEquals("Fuel Assembly A",
+				fuelAssemblies.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				fuelAssemblies.getMemberList().get(1).getName());
 		// Check Groups
 		Group fuelAssemblyA = (Group) fuelAssemblies.getMemberList().get(0);
 		// Check contents of FuelAssemblyA
 		assertEquals(6, fuelAssemblyA.getMemberList().size());
-		assertEquals("Grid Labels", fuelAssemblyA.getMemberList().get(0)
-				.getName());
-		assertEquals("LWRRod Grid", fuelAssemblyA.getMemberList().get(1)
-				.getName());
+		assertEquals("Grid Labels",
+				fuelAssemblyA.getMemberList().get(0).getName());
+		assertEquals("LWRRod Grid",
+				fuelAssemblyA.getMemberList().get(1).getName());
 		assertEquals("LWRRods", fuelAssemblyA.getMemberList().get(2).getName());
-		assertEquals("State Point Data", fuelAssemblyA.getMemberList().get(3)
-				.getName());
-		assertEquals("Tube Grid", fuelAssemblyA.getMemberList().get(4)
-				.getName());
+		assertEquals("State Point Data",
+				fuelAssemblyA.getMemberList().get(3).getName());
+		assertEquals("Tube Grid",
+				fuelAssemblyA.getMemberList().get(4).getName());
 		assertEquals("Tubes", fuelAssemblyA.getMemberList().get(5).getName());
 
 		// Check Groups of FuelAssembly A
@@ -596,55 +601,57 @@ public class LWRComponentWriterTester {
 		// Check gridLabels
 		Group labelsGroup = (Group) gridLabels.getMemberList().get(0);
 
-		assertEquals("Column Labels", labelsGroup.getMemberList().get(0)
-				.getName());
-		assertEquals("Row Labels", labelsGroup.getMemberList().get(1).getName());
+		assertEquals("Column Labels",
+				labelsGroup.getMemberList().get(0).getName());
+		assertEquals("Row Labels",
+				labelsGroup.getMemberList().get(1).getName());
 		// Check Groups of GridLabels
 		assertFalse(labelsGroup.getMemberList().get(0) instanceof Group);
 		assertFalse(labelsGroup.getMemberList().get(1) instanceof Group);
 		// Check lWRRodGrid
 		assertEquals("Positions", lWRRodGrid.getMemberList().get(0).getName());
-		assertEquals("State Point Data", lWRRodGrid.getMemberList().get(1)
-				.getName());
+		assertEquals("State Point Data",
+				lWRRodGrid.getMemberList().get(1).getName());
 		assertTrue(lWRRodGrid.getMemberList().get(0) instanceof Group);
 		// Check LWRRods
 		assertEquals("LWRRod A", lWRRods.getMemberList().get(0).getName());
 		Group lWRRodsA = (Group) lWRRods.getMemberList().get(0);
-		assertEquals("State Point Data", lWRRods.getMemberList().get(1)
-				.getName());
+		assertEquals("State Point Data",
+				lWRRods.getMemberList().get(1).getName());
 		// Check lWRRodsA
 		assertEquals(4, lWRRodsA.getMemberList().size());
 		assertEquals("Clad", lWRRodsA.getMemberList().get(0).getName());
 		assertEquals("He", lWRRodsA.getMemberList().get(1).getName());
-		assertEquals("Stack of Cards", lWRRodsA.getMemberList().get(2)
-				.getName());
-		assertEquals("State Point Data", lWRRodsA.getMemberList().get(3)
-				.getName());
+		assertEquals("Stack of Cards",
+				lWRRodsA.getMemberList().get(2).getName());
+		assertEquals("State Point Data",
+				lWRRodsA.getMemberList().get(3).getName());
 		// Check Groups of lWRRodsA
 		Group cladRodA = (Group) lWRRodsA.getMemberList().get(0);
 		Group heRodA = (Group) lWRRodsA.getMemberList().get(1);
 		Group materialBlockRodA = (Group) lWRRodsA.getMemberList().get(2);
 		// Check cladRodA
 		assertEquals(2, cladRodA.getMemberList().size());
-		assertEquals("Clad Material", cladRodA.getMemberList().get(0).getName());
-		assertEquals("State Point Data", cladRodA.getMemberList().get(1)
-				.getName());
+		assertEquals("Clad Material",
+				cladRodA.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				cladRodA.getMemberList().get(1).getName());
 		// Check Groups
 		Group materialCladRodA = (Group) cladRodA.getMemberList().get(0);
 		// Check materialCladRodA
 		assertEquals(1, materialCladRodA.getMemberList().size());
-		assertEquals("State Point Data", materialCladRodA.getMemberList()
-				.get(0).getName());
+		assertEquals("State Point Data",
+				materialCladRodA.getMemberList().get(0).getName());
 		// Check heRodA
 		assertEquals(1, heRodA.getMemberList().size());
-		assertEquals("State Point Data", heRodA.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				heRodA.getMemberList().get(0).getName());
 		// Check materialBlockRodA
 		assertEquals(3, materialBlockRodA.getMemberList().size());
-		assertEquals("Ring 1", materialBlockRodA.getMemberList().get(0)
-				.getName());
-		assertEquals("Ring 2", materialBlockRodA.getMemberList().get(1)
-				.getName());
+		assertEquals("Ring 1",
+				materialBlockRodA.getMemberList().get(0).getName());
+		assertEquals("Ring 2",
+				materialBlockRodA.getMemberList().get(1).getName());
 		assertEquals("State Point Data",
 				materialBlockRodA.getMemberList().get(2).getName());
 		// Check Groups
@@ -652,45 +659,46 @@ public class LWRComponentWriterTester {
 		Group ring2StackA = (Group) materialBlockRodA.getMemberList().get(1);
 		// Check ring1StackA
 		assertEquals(2, ring1StackA.getMemberList().size());
-		assertEquals("Ring 1 Material", ring1StackA.getMemberList().get(0)
-				.getName());
-		assertEquals("State Point Data", ring1StackA.getMemberList().get(1)
-				.getName());
+		assertEquals("Ring 1 Material",
+				ring1StackA.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				ring1StackA.getMemberList().get(1).getName());
 		Group material1Ring = (Group) ring1StackA.getMemberList().get(0);
 		// Check material1Ring
 		assertEquals(1, material1Ring.getMemberList().size());
-		assertEquals("State Point Data", material1Ring.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				material1Ring.getMemberList().get(0).getName());
 		// Check ring2StackA
 		assertEquals(2, ring2StackA.getMemberList().size());
-		assertEquals("Ring 2 Material", ring2StackA.getMemberList().get(0)
-				.getName());
-		assertEquals("State Point Data", ring2StackA.getMemberList().get(1)
-				.getName());
+		assertEquals("Ring 2 Material",
+				ring2StackA.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				ring2StackA.getMemberList().get(1).getName());
 		Group material2Ring = (Group) ring2StackA.getMemberList().get(0);
 		// Check material1Ring
 		assertEquals(1, material2Ring.getMemberList().size());
-		assertEquals("State Point Data", material2Ring.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				material2Ring.getMemberList().get(0).getName());
 		// Check tubeGrid
-		assertEquals("State Point Data", tubeGrid.getMemberList().get(1)
-				.getName());
+		assertEquals("State Point Data",
+				tubeGrid.getMemberList().get(1).getName());
 		assertEquals("Positions", tubeGrid.getMemberList().get(0).getName());
 		assertTrue(tubeGrid.getMemberList().get(0) instanceof Group);
 		// Check tubes
 		assertEquals("Guide Tube A", tubes.getMemberList().get(0).getName());
-		assertEquals("Instrument Tube A", tubes.getMemberList().get(1)
-				.getName());
-		assertEquals("State Point Data", tubes.getMemberList().get(2).getName());
+		assertEquals("Instrument Tube A",
+				tubes.getMemberList().get(1).getName());
+		assertEquals("State Point Data",
+				tubes.getMemberList().get(2).getName());
 		// Check Groups
 		Group guideTubeA = (Group) tubes.getMemberList().get(0);
 		Group instrTubeA = (Group) tubes.getMemberList().get(1);
 		// Check guideTubeA
 		assertEquals(2, guideTubeA.getMemberList().size());
-		assertEquals("Guide Tube Material", guideTubeA.getMemberList().get(0)
-				.getName());
-		assertEquals("State Point Data", guideTubeA.getMemberList().get(1)
-				.getName());
+		assertEquals("Guide Tube Material",
+				guideTubeA.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				guideTubeA.getMemberList().get(1).getName());
 		Group guideTubeMaterial = (Group) guideTubeA.getMemberList().get(0);
 		// Check guideTubeMaterial
 		assertEquals(1, guideTubeMaterial.getMemberList().size());
@@ -698,10 +706,10 @@ public class LWRComponentWriterTester {
 				guideTubeMaterial.getMemberList().get(0).getName());
 		// Check instrTubeA
 		assertEquals(2, instrTubeA.getMemberList().size());
-		assertEquals("Instrument Tube Material", instrTubeA.getMemberList()
-				.get(0).getName());
-		assertEquals("State Point Data", instrTubeA.getMemberList().get(1)
-				.getName());
+		assertEquals("Instrument Tube Material",
+				instrTubeA.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				instrTubeA.getMemberList().get(1).getName());
 		Group instrTubeMaterial = (Group) instrTubeA.getMemberList().get(0);
 		// Check guideTubeMaterial
 		assertEquals(1, instrTubeMaterial.getMemberList().size());
@@ -712,8 +720,8 @@ public class LWRComponentWriterTester {
 		Group fuelAssemblyGrid = (Group) pWReactor.getMemberList().get(3);
 		assertEquals(2, fuelAssemblyGrid.getMemberList().size());
 		// Check FuelAssembly Grid Information
-		assertEquals("Positions", fuelAssemblyGrid.getMemberList().get(0)
-				.getName());
+		assertEquals("Positions",
+				fuelAssemblyGrid.getMemberList().get(0).getName());
 		// information below
 		assertTrue(fuelAssemblyGrid.getMemberList().get(0) instanceof Group);
 
@@ -726,9 +734,10 @@ public class LWRComponentWriterTester {
 		// Check gridLabels
 		labelsGroup = (Group) reactorGridLabels.getMemberList().get(0);
 
-		assertEquals("Column Labels", labelsGroup.getMemberList().get(0)
-				.getName());
-		assertEquals("Row Labels", labelsGroup.getMemberList().get(1).getName());
+		assertEquals("Column Labels",
+				labelsGroup.getMemberList().get(0).getName());
+		assertEquals("Row Labels",
+				labelsGroup.getMemberList().get(1).getName());
 		// Check Groups of GridLabels
 		assertFalse(labelsGroup.getMemberList().get(0) instanceof Group);
 		assertFalse(labelsGroup.getMemberList().get(1) instanceof Group);
@@ -737,28 +746,29 @@ public class LWRComponentWriterTester {
 		Group incoreInstrumentGrid = (Group) pWReactor.getMemberList().get(5);
 		// Check icoreInstrumentGrid
 		assertEquals(2, incoreInstrumentGrid.getMemberList().size());
-		assertEquals("State Point Data", incoreInstrumentGrid.getMemberList()
-				.get(1).getName());
+		assertEquals("State Point Data",
+				incoreInstrumentGrid.getMemberList().get(1).getName());
 		// Check incoreInstruments infor
-		assertEquals("Positions", incoreInstrumentGrid.getMemberList().get(0)
-				.getName());
+		assertEquals("Positions",
+				incoreInstrumentGrid.getMemberList().get(0).getName());
 		// Check Groups
-		assertTrue(incoreInstrumentGrid.getMemberList().get(0) instanceof Group);
+		assertTrue(
+				incoreInstrumentGrid.getMemberList().get(0) instanceof Group);
 
 		// Check Incore Instrument
 		Group incoreInstrument = (Group) pWReactor.getMemberList().get(6);
 		assertEquals(5, incoreInstrument.getMemberList().size());
 		// Check incore instrument information
-		assertEquals("Incore Instrument 1", incoreInstrument.getMemberList()
-				.get(0).getName());
-		assertEquals("Incore Instrument 2", incoreInstrument.getMemberList()
-				.get(1).getName());
-		assertEquals("Incore Instrument 3", incoreInstrument.getMemberList()
-				.get(2).getName());
-		assertEquals("Incore Instrument 4", incoreInstrument.getMemberList()
-				.get(3).getName());
-		assertEquals("State Point Data", incoreInstrument.getMemberList()
-				.get(4).getName());
+		assertEquals("Incore Instrument 1",
+				incoreInstrument.getMemberList().get(0).getName());
+		assertEquals("Incore Instrument 2",
+				incoreInstrument.getMemberList().get(1).getName());
+		assertEquals("Incore Instrument 3",
+				incoreInstrument.getMemberList().get(2).getName());
+		assertEquals("Incore Instrument 4",
+				incoreInstrument.getMemberList().get(3).getName());
+		assertEquals("State Point Data",
+				incoreInstrument.getMemberList().get(4).getName());
 		// Check Groups
 		Group incore1 = (Group) incoreInstrument.getMemberList().get(0);
 		Group incore2 = (Group) incoreInstrument.getMemberList().get(1);
@@ -768,105 +778,105 @@ public class LWRComponentWriterTester {
 		assertEquals(2, incore1.getMemberList().size());
 		// Check incore1 information
 		assertEquals("Thimble", incore1.getMemberList().get(1).getName());
-		assertEquals("State Point Data", incore1.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				incore1.getMemberList().get(0).getName());
 		// Check Groups
 		Group thimble1 = (Group) incore1.getMemberList().get(1);
 		// Check thimble
 		assertEquals(2, thimble1.getMemberList().size());
 		// Check thimble information
-		assertEquals("stainless steel", thimble1.getMemberList().get(1)
-				.getName());
-		assertEquals("State Point Data", thimble1.getMemberList().get(0)
-				.getName());
+		assertEquals("stainless steel",
+				thimble1.getMemberList().get(1).getName());
+		assertEquals("State Point Data",
+				thimble1.getMemberList().get(0).getName());
 		// Check Groups
 		Group steel1 = (Group) thimble1.getMemberList().get(0);
 		// Check steel information
 		assertEquals(0, steel1.getMemberList().size());
 		// Check incore2 information
-		assertEquals("State Point Data", incore2.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				incore2.getMemberList().get(0).getName());
 		assertEquals("Thimble", incore2.getMemberList().get(1).getName());
 		// Check Groups
 		Group thimble2 = (Group) incore2.getMemberList().get(1);
 		// Check thimble
 		assertEquals(2, thimble2.getMemberList().size());
-		assertEquals("State Point Data", thimble2.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				thimble2.getMemberList().get(0).getName());
 		// Check thimble information
-		assertEquals("stainless steel", thimble2.getMemberList().get(1)
-				.getName());
+		assertEquals("stainless steel",
+				thimble2.getMemberList().get(1).getName());
 		// Check Groups
 		Group steel2 = (Group) thimble2.getMemberList().get(1);
 		// Check steel information
 		assertEquals(1, steel2.getMemberList().size());
-		assertEquals("State Point Data", steel2.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				steel2.getMemberList().get(0).getName());
 		// Check incore3 information
-		assertEquals("State Point Data", incore3.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				incore3.getMemberList().get(0).getName());
 		assertEquals("Thimble", incore3.getMemberList().get(1).getName());
 		// Check Groups
 		Group thimble3 = (Group) incore3.getMemberList().get(1);
 		// Check thimble
 		assertEquals(2, thimble3.getMemberList().size());
 		// Check thimble information
-		assertEquals("State Point Data", incore1.getMemberList().get(0)
-				.getName());
-		assertEquals("stainless steel", thimble3.getMemberList().get(1)
-				.getName());
+		assertEquals("State Point Data",
+				incore1.getMemberList().get(0).getName());
+		assertEquals("stainless steel",
+				thimble3.getMemberList().get(1).getName());
 		// Check Groups
 		Group steel3 = (Group) thimble3.getMemberList().get(1);
 		// Check steel information
 		assertEquals(1, steel3.getMemberList().size());
-		assertEquals("State Point Data", steel3.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				steel3.getMemberList().get(0).getName());
 		// Check incore4 information
-		assertEquals("State Point Data", incore4.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				incore4.getMemberList().get(0).getName());
 		assertEquals("Thimble", incore4.getMemberList().get(1).getName());
 		// Check Groups
 		Group thimble4 = (Group) incore4.getMemberList().get(1);
 		// Check thimble
 		assertEquals(2, thimble4.getMemberList().size());
 		// Check thimble information
-		assertEquals("State Point Data", thimble4.getMemberList().get(0)
-				.getName());
-		assertEquals("stainless steel", thimble4.getMemberList().get(1)
-				.getName());
+		assertEquals("State Point Data",
+				thimble4.getMemberList().get(0).getName());
+		assertEquals("stainless steel",
+				thimble4.getMemberList().get(1).getName());
 		// Check Groups
 		Group steel4 = (Group) thimble4.getMemberList().get(1);
 		// Check steel information
 		assertEquals(1, steel4.getMemberList().size());
-		assertEquals("State Point Data", steel4.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				steel4.getMemberList().get(0).getName());
 
 		// Check Rod Cluster Assemblies
 		Group rodClusterAssemblies = (Group) pWReactor.getMemberList().get(7);
 		assertEquals(2, rodClusterAssemblies.getMemberList().size());
 		// Check incore instrument information
-		assertEquals("Rod Cluster Assembly A", rodClusterAssemblies
-				.getMemberList().get(0).getName());
-		assertEquals("State Point Data", rodClusterAssemblies.getMemberList()
-				.get(1).getName());
+		assertEquals("Rod Cluster Assembly A",
+				rodClusterAssemblies.getMemberList().get(0).getName());
+		assertEquals("State Point Data",
+				rodClusterAssemblies.getMemberList().get(1).getName());
 		// Check Groups
 		Group rodClusterA = (Group) rodClusterAssemblies.getMemberList().get(0);
 		// Check RodClusterA
 		assertEquals(3, rodClusterA.getMemberList().size());
 		// Check information
-		assertEquals("LWRRod Grid", rodClusterA.getMemberList().get(0)
-				.getName());
+		assertEquals("LWRRod Grid",
+				rodClusterA.getMemberList().get(0).getName());
 		assertEquals("LWRRods", rodClusterA.getMemberList().get(1).getName());
-		assertEquals("State Point Data", rodClusterA.getMemberList().get(2)
-				.getName());
+		assertEquals("State Point Data",
+				rodClusterA.getMemberList().get(2).getName());
 		// Check Groups
 		Group rodLWRRodGrid = (Group) rodClusterA.getMemberList().get(0);
 		Group rodLWRRods = (Group) rodClusterA.getMemberList().get(1);
 		// Check rodLWRRodGrid
 		assertEquals(1, rodLWRRodGrid.getMemberList().size());
 		// Check information
-		assertEquals("State Point Data", rodLWRRodGrid.getMemberList().get(0)
-				.getName());
+		assertEquals("State Point Data",
+				rodLWRRodGrid.getMemberList().get(0).getName());
 		// Check Groups
 		// Check rodLWRRods
 		assertEquals(1, rodLWRRods.getMemberList().size());
@@ -876,8 +886,8 @@ public class LWRComponentWriterTester {
 		Group rodClusterAssGrid = (Group) pWReactor.getMemberList().get(8);
 		assertEquals(2, rodClusterAssGrid.getMemberList().size());
 		// Check information
-		assertEquals("Positions", rodClusterAssGrid.getMemberList().get(0)
-				.getName());
+		assertEquals("Positions",
+				rodClusterAssGrid.getMemberList().get(0).getName());
 		assertEquals("State Point Data",
 				rodClusterAssGrid.getMemberList().get(1).getName());
 		// Check Groups
@@ -898,8 +908,8 @@ public class LWRComponentWriterTester {
 			newH5File.close();
 			dataFile.delete();
 		} catch (Exception e) {
-			System.err
-					.println("LWRComponentWriterTester error: Could not delete file \""
+			System.err.println(
+					"LWRComponentWriterTester error: Could not delete file \""
 							+ dataFile.toURI().toString() + "\".");
 			fail();
 		}

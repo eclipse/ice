@@ -7,12 +7,15 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
 import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
@@ -21,9 +24,6 @@ import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Group;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -57,7 +57,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The name of the child H5Group.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The child H5Group.
 	 *         </p>
 	 */
@@ -70,8 +71,8 @@ public class HdfReaderFactory {
 		}
 		// Get the group or return null
 		try {
-			return (H5Group) parentH5Group.getFileFormat().get(
-					parentH5Group.getFullName()
+			return (H5Group) parentH5Group.getFileFormat()
+					.get(parentH5Group.getFullName()
 							+ System.getProperty("file.separator") + name);
 		} catch (Exception e) {
 			logger.error("HdfReaderFactory Exception!", e);
@@ -97,7 +98,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The index of the child H5Group in parentH5Group's member list.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The child H5Group.
 	 *         </p>
 	 */
@@ -133,8 +135,8 @@ public class HdfReaderFactory {
 			name = H5.H5Lget_name_by_idx(fileID, parentName, indexType, order,
 					index, linkAccessPropertyList);
 
-			childGroup = (H5Group) parentH5Group.getFileFormat().get(
-					parentH5Group.getFullName()
+			childGroup = (H5Group) parentH5Group.getFileFormat()
+					.get(parentH5Group.getFullName()
 							+ System.getProperty("file.separator") + name);
 		} catch (Exception e) {
 			// If we encounter an error, return null.
@@ -156,7 +158,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The parent H5Group to search.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of child H5Groups.
 	 *         </p>
 	 */
@@ -219,8 +222,8 @@ public class HdfReaderFactory {
 					// Try to get the child H5Group from parentH5Group and add
 					// it
 					// to the list.
-					HObject hobj = parentH5Group.getFileFormat().get(
-							parentH5Group.getFullName()
+					HObject hobj = parentH5Group.getFileFormat()
+							.get(parentH5Group.getFullName()
 									+ System.getProperty("file.separator")
 									+ objectNames[i]);
 					if (hobj != null) {
@@ -297,8 +300,8 @@ public class HdfReaderFactory {
 
 			// Add all members to the array.
 			for (int i = 0; i < count; i++) {
-				HObject hobj = parentH5Group.getFileFormat().get(
-						parentH5Group.getFullName()
+				HObject hobj = parentH5Group.getFileFormat()
+						.get(parentH5Group.getFullName()
 								+ System.getProperty("file.separator")
 								+ objectNames[i]);
 				if (hobj != null) {
@@ -331,7 +334,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The name of the Dataset to search for.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The located Dataset.
 	 *         </p>
 	 */
@@ -345,9 +349,8 @@ public class HdfReaderFactory {
 		}
 		// Get the dataset or return null
 		try {
-			return (Dataset) h5Group.getFileFormat().get(
-					h5Group.getFullName()
-							+ System.getProperty("file.separator") + name);
+			return (Dataset) h5Group.getFileFormat().get(h5Group.getFullName()
+					+ System.getProperty("file.separator") + name);
 		} catch (Exception e) {
 			logger.error("HdfReaderFactory Exception!", e);
 			return null;
@@ -373,7 +376,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The name of the attribute.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The Attribute's value as a Double object.
 	 *         </p>
 	 */
@@ -395,8 +399,8 @@ public class HdfReaderFactory {
 
 				// If the attribute is the correct name and type, return the
 				// Double
-				if (attribute.getName().equals(name)
-						&& attribute.getType().getDatatypeClass() == Datatype.CLASS_FLOAT) {
+				if (attribute.getName().equals(name) && attribute.getType()
+						.getDatatypeClass() == Datatype.CLASS_FLOAT) {
 
 					// Return the correct value
 					return ((double[]) attribute.getValue())[0];
@@ -430,7 +434,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The name of the attribute.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The Attribute's value as an Integer object.
 	 *         </p>
 	 */
@@ -451,8 +456,8 @@ public class HdfReaderFactory {
 
 				// If the attribute is the correct name and type, return the
 				// Integer
-				if (attribute.getName().equals(name)
-						&& attribute.getType().getDatatypeClass() == Datatype.CLASS_INTEGER) {
+				if (attribute.getName().equals(name) && attribute.getType()
+						.getDatatypeClass() == Datatype.CLASS_INTEGER) {
 
 					// Return the correct value
 					return ((int[]) attribute.getValue())[0];
@@ -485,7 +490,8 @@ public class HdfReaderFactory {
 	 *            <p>
 	 *            The name of the attribute.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The Attribute's value as a String object.
 	 *         </p>
 	 */
@@ -506,8 +512,8 @@ public class HdfReaderFactory {
 
 				// If the attribute is the correct name and type, return the
 				// String
-				if (attribute.getName().equals(name)
-						&& attribute.getType().getDatatypeClass() == Datatype.CLASS_STRING) {
+				if (attribute.getName().equals(name) && attribute.getType()
+						.getDatatypeClass() == Datatype.CLASS_STRING) {
 
 					// Return the correct value
 					return ((String[]) attribute.getValue())[0];

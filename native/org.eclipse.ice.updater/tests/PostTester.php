@@ -9,8 +9,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Eric J. Lingerfelt, Alexander J. McCaskey
  *******************************************************************************/
 
 //The output filename for the post test
