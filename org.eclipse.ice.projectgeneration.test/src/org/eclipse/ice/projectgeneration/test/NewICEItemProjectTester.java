@@ -35,7 +35,9 @@ import org.junit.Test;
 
 import org.eclipse.ice.projectgeneration.ICEItemNature;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 
 /**
  * This class tests the creation and configuration of new ICE Item projects.
@@ -45,7 +47,10 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 public class NewICEItemProjectTester {
 
 	private static SWTWorkbenchBot bot;
-
+	private static SWTBotShell shell;
+	private static SWTBotTree tree;
+	private static SWTBot pBot;
+	
 	private static final String PROJECT_NAME = "org.eclipse.ice.newitem";
 	private static final String VERSION = "1.0.0";
 	private static final String NAME = "ICE Item";
@@ -62,27 +67,29 @@ public class NewICEItemProjectTester {
 	public void testICEItemWizard() {
 		bot = new SWTWorkbenchBot();
 		bot.viewByTitle("Welcome").close();
-		bot.menu("File").menu("New").menu("New ICE Item Project").click();
-		SWTBotShell shell = bot.shell("New ICE Item Project");
-		shell.activate();
-	
+		bot.menu("File").menu("New").menu("Other...").click();
+		shell = bot.shell("New");
+		pBot = shell.bot();
+		tree = pBot.tree();
+		tree.expandNode("ICE Item Creation Wizards", "ICE Item Project Creation Wizard").select();
+		pBot.button("Next >").click();
+		
 		// Page 1
-		bot.textWithLabel("Project name:").setText(PROJECT_NAME);
-		bot.button("Next >").click();
+		pBot.textWithLabel("Project name:").setText(PROJECT_NAME);
+		pBot.button("Next >").click();
 		
 		// Page 2
-		bot.textWithLabel("Identifier:").setText(PROJECT_NAME);
-		bot.textWithLabel("Version:").setText(VERSION);
-		bot.textWithLabel("Name:").setText(NAME);
-		bot.textWithLabel("Vendor:").setText(INSTITUTE);
-		bot.button("Next >").click();
+		pBot.textWithLabel("Identifier:").setText(PROJECT_NAME);
+		pBot.textWithLabel("Version:").setText(VERSION);
+		pBot.textWithLabel("Name:").setText(NAME);
+		pBot.textWithLabel("Vendor:").setText(INSTITUTE);
+		pBot.button("Next >").click();
 	
 		// Page 3
-		bot.textWithLabel("Extension Base Name").setText(EXTENSION_NAME);
-		bot.textWithLabel("Package Name").setText(PACKAGE_NAME);
-		bot.textWithLabel("Class Base Name").setText(CLASS_NAME);
-		bot.button("Finish").click();
-		
-		bot.waitUntil(shellCloses(shell));
+		pBot.textWithLabel("Extension Base Name").setText(EXTENSION_NAME);
+		pBot.textWithLabel("Package Name").setText(PACKAGE_NAME);
+		pBot.textWithLabel("Class Base Name").setText(CLASS_NAME);
+		pBot.button("Finish").click();
+		pBot.waitUntil(shellCloses(shell));
 	}
 }
