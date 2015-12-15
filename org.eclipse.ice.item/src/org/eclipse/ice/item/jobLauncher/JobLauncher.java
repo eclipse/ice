@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -50,8 +51,10 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.action.JobLaunchAction;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
@@ -101,7 +104,7 @@ import org.eclipse.remote.core.IRemoteServicesManager;
  * <p>
  * These flags can be inserted as part of the executable name and the
  * JobLauncher will automatically replace them for the appropriate host so long
- * as they are provided. By defeault the JobLauncher appends the name of the
+ * as they are provided. By default the JobLauncher appends the name of the
  * input file to the end of the executable string. This option can be disabled
  * by calling setAppendInputFlag.
  * </p>
@@ -131,8 +134,7 @@ public class JobLauncher extends Item {
 	 * The name of the executable command that should be launched. This is
 	 * different than the proper name of the executable. For example, the name
 	 * of a popular Linux text editor is Vi Improved, but its executable command
-	 * name is vim. In order to use JPA on this object, there is a string limit
-	 * of 1000 characters.
+	 * name is vim.
 	 * </p>
 	 * 
 	 */
@@ -143,8 +145,7 @@ public class JobLauncher extends Item {
 	 * <p>
 	 * The table of hosts on which the job can be launched. The table's columns
 	 * are the hostname, the operating system and the installation directory of
-	 * the executable on that platform. In order to use JPA on this object,
-	 * there is a string limit of 1000 characters.
+	 * the executable on that platform.
 	 * </p>
 	 * 
 	 */
@@ -180,15 +181,14 @@ public class JobLauncher extends Item {
 
 	/**
 	 * True if the launcher should upload input file(s) to a remote machine,
-	 * otherwise false. Setting this flag to false will still allow the
+	 * otherwise false.
 	 */
 	@XmlAttribute
 	private boolean uploadInput;
 
 	/**
 	 * <p>
-	 * The set of hosts available for the job. In order to use JPA on this
-	 * object, there is a string limit of 1000 characters.
+	 * The set of hosts available for the job.
 	 * </p>
 	 * 
 	 */
@@ -241,21 +241,19 @@ public class JobLauncher extends Item {
 
 	/**
 	 * Reference to the Eclipse Job that will wrap our JobLaunchAction to
-	 * provide realtime progress reporting to the Eclipse status bar.
+	 * provide real-time progress reporting to the Eclipse status bar.
 	 */
 	@XmlTransient()
-	private Job launchJob;
+	private ICEJob launchJob;
 
 	/**
-	 * Reference to the job IFolder containing the job 
-	 * launch files. 
+	 * Reference to the job IFolder containing the job launch files.
 	 */
 	@XmlTransient()
 	private IFolder currentJobFolder;
-	
+
 	/**
-	 * Reference to the object responsible for returning 
-	 * all IRemoteServices. 
+	 * Reference to the object responsible for returning all IRemoteServices.
 	 */
 	@XmlTransient()
 	private static IRemoteServicesManager remoteManager;
@@ -398,8 +396,8 @@ public class JobLauncher extends Item {
 
 			// Get the job launch directory
 			if (!currentJobFolder.exists()) {
-				logger.warn(
-						"JobLauncher Warning: Could not get a reference to the current Job Launch Directory. Aborting stderr/stdout file generation.");
+				logger.warn("JobLauncher Warning: Could not get a reference to "
+						+ "the current Job Launch Directory. Aborting stderr/stdout file generation.");
 				return;
 			}
 
@@ -407,7 +405,7 @@ public class JobLauncher extends Item {
 			IFile stdOutProjectFile = currentJobFolder.getFile(stdOutFileName);
 			// Create the Eclipse Resources IFile handle for standard error
 			IFile stdErrProjectFile = currentJobFolder.getFile(stdErrFileName);
-			
+
 			// Create the standard out project file
 			try {
 				// Delete the file if it already exists - we want a clean one
@@ -459,8 +457,8 @@ public class JobLauncher extends Item {
 			} catch (CoreException | IOException e) {
 				logger.error(getClass().getName() + " Exception!", e);
 			}
-			
-			// Create the output File that will be 
+
+			// Create the output File that will be
 			// streamed to the Console
 			createOutputFile();
 		}
@@ -489,19 +487,7 @@ public class JobLauncher extends Item {
 			// Refresh the project space
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
-			// Get the list of members
-			String workingDirPath = getWorkingDirectory();
-			if (workingDirPath != null && !workingDirPath.isEmpty()) {
-
-				// Get the working directory name
-				int lastDir = workingDirPath.lastIndexOf(separator);
-				workingDirName = workingDirPath.substring(lastDir + 1);
-
-				workingDir = project.getFolder("jobs" + separator + workingDirName);
-
-			}
-
-			IResource[] latestMembers = workingDir.members();
+			IResource[] latestMembers = currentJobFolder.members();
 			// Get the names of the current resources
 			for (ICEResource namedResource : resourceList) {
 				resourceNames.add(namedResource.getPath().toASCIIString());
@@ -901,6 +887,8 @@ public class JobLauncher extends Item {
 
 		// Local Declarations
 		FormStatus localStatus = FormStatus.InfoError;
+		List<Action> actionList = new ArrayList<Action>();
+		IActionFactory actionFactory = getActionFactory();
 
 		// Only process the job if the Item is enabled
 		if (isEnabled()) {
@@ -922,103 +910,66 @@ public class JobLauncher extends Item {
 					return FormStatus.InfoError;
 				}
 
-				// Here we should create a scratch job directory
-				// in project/jobs
-				IFolder jobsFolder = project.getFolder("jobs");
-				if (!jobsFolder.exists()) {
-					try {
-						jobsFolder.create(true, true, null);
-					} catch (CoreException e) {
-						logger.error("JobLauncher Error: Could not create the " + "jobs directory for job launches.",
-								e);
-						return FormStatus.InfoError;
-					}
-				}
-				
-				currentJobFolder = jobsFolder
-						.getFolder("iceLaunch_" + new SimpleDateFormat("yyyMMddhhmmss").format(new Date()));
-				try {
-					currentJobFolder.create(true, true, null);
-				} catch (CoreException e1) {
-					logger.error("JobLauncher Error: Could not create the current launch job directory.", e1);
-					return FormStatus.InfoError;
+				// Get a reference to the local IFolder for this job launch
+				currentJobFolder = createLocalJobLaunchFolder();
+				if (currentJobFolder == null || !currentJobFolder.exists()) {
+					logger.error("Could not create a valid local job launch IFolder reference.");
+					status = FormStatus.InfoError;
+					return status;
 				}
 
+				// Refresh the IProject since we just made a new IFolder
 				refreshProjectSpace();
-
-				// Add the Job Launch Directory name to the data map
-				actionDataMap.put("localJobLaunchDirectory", currentJobFolder.getName());
 
 				// Create the output files in the project space
 				createOutputFiles();
-				
-				// Get the Job Launch Action. 
-				action = getActionFactory().getAction("Job Launch Action");
-				if (action == null) {
-					logger.error("Invalid Job Launch Action.");
+
+				// Create the List of Actions to execute... The list is
+				// different depending on whether we are local or remote,
+				// or using Docker or not...
+				if (isLocalhost(actionDataMap.get("hostname"))) {
+					// For a local execution, we just need the Local Execution
+					// Action
+					actionList.add(actionFactory.getAction("Local Execution"));
+				} else {
+					// For a remote execution, we need to push files to the
+					// remote host,
+					// execute remotely, then download resultant files.
+					// actionList.add(actionFactory.getAction("Remote File
+					// Upload"));
+					// actionList.add(actionFactory.getAction("Remote
+					// Execution"));
+					// actionList.add(actionFactory.getAction("Remote File
+					// Download"));
+					actionList.add(actionFactory.getAction("Job Launch Action"));
+				}
+
+				// If any of those Actions were null, then we have a problem
+				if (actionList.contains(null)) {
+					logger.error("Invalid Job Launch Actions.");
 					return FormStatus.InfoError;
 				}
-				
-				// FIXME This is bad. If we have a valid connection then give it to the action
-				IRemoteConnection remoteConnection = getRemoteConnection(actionDataMap.get("hostname"));
-				if (remoteConnection != null) {
-					((JobLaunchAction) action).setRemoteConnection(remoteConnection);
-				} else if (remoteManager != null) {
-					// If it was null, we'll need to give the action a
-					// reference to the ConnectionType (SSH) so it can
-					// prompt the user for a new connection
-					((JobLaunchAction) action).setRemoteConnectionType(remoteManager.getRemoteConnectionTypes().get(0));
-				}
 
-				// Create a new Eclipse Job for the JobLaunchAction
-				launchJob = new Job("Job Launch") {
-
-					@Override
-					protected IStatus run(IProgressMonitor monitor) {
-						final int ticks = 100;
-						monitor.beginTask("Executing the Job Launch Action...", ticks);
-						try {
-							// Execute the Action
-							status = action.execute(actionDataMap);
-
-							// While its processing, keep the progress bar going
-							while (!status.equals(FormStatus.Processed) && !status.equals(FormStatus.InfoError)) {
-								monitor.subTask("Executing the Job");
-								Thread.sleep(1000);
-								// Check for Cancellation
-								if (monitor.isCanceled()) {
-									status = action.cancel();
-									return Status.CANCEL_STATUS;
-								}
-							}
-						} catch (InterruptedException e) {
-							logger.error(getClass().getName() + " Exception!", e);
-						} finally {
-							monitor.subTask("Job Launched Successfully.");
-							monitor.worked(100);
-							monitor.done();
-						}
-						return Status.OK_STATUS;
-					}
-				};
+				// Create the Eclipse Job for this Job Launch!
+				launchJob = new ICEJob(actionList, actionDataMap, status);
 
 				// Schedule it for execution
 				launchJob.schedule();
 
-				// Set the status as processing, if it fails
-				// the Job will set the status correctly
+				// Set the status to Processing
 				status = FormStatus.Processing;
 
 				// Invoke the output streaming thread
 				streamOutputData();
 
-				// Sleep the thread for a sec to give
+				// Sleep the thread for a second to give
 				// the Action time to do its thing
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					logger.error(getClass().getName() + " Exception!", e);
 				}
+
 				// Return the new status
 				return status;
 
@@ -1035,6 +986,43 @@ public class JobLauncher extends Item {
 		return localStatus;
 	}
 
+	/**
+	 * This private utility method is to be used once in the process method to
+	 * generate the local job launch IFolder.
+	 * 
+	 * @return folder The local job launch folder.
+	 */
+	private IFolder createLocalJobLaunchFolder() {
+
+		// Here we should create a scratch job directory
+		// in project/jobs
+		IFolder jobsFolder = project.getFolder("jobs");
+		if (!jobsFolder.exists()) {
+			try {
+				jobsFolder.create(true, true, null);
+			} catch (CoreException e) {
+				logger.error("JobLauncher Error: Could not create the " + "jobs directory for job launches.", e);
+				return null;
+			}
+		}
+
+		// Create a IFolder for the local job launch
+		IFolder jobFolder = jobsFolder
+				.getFolder("iceLaunch_" + new SimpleDateFormat("yyyMMddhhmmss").format(new Date()));
+		try {
+			jobFolder.create(true, true, null);
+		} catch (CoreException e1) {
+			logger.error("JobLauncher Error: Could not create the current launch job directory.", e1);
+			return null;
+		}
+
+		// Add the Job Launch Directory name to the data map
+		actionDataMap.put("localJobLaunchDirectory", jobFolder.getName());
+
+		// Return the job folder.
+		return jobFolder;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1042,17 +1030,15 @@ public class JobLauncher extends Item {
 	 */
 	@Override
 	public FormStatus cancelProcess() {
-		status = super.cancelProcess();
-		if (status.equals(FormStatus.ReadyToProcess)) {
-			launchJob.cancel();
-		}
+		// Cancel the running Eclipse Job and the
+		// currently executing Action
+		status = launchJob.cancelICEJob();
 		return status;
 	}
 
 	/**
-	 * Overriding the default behavior here because 
-	 * the overall process output should be in the 
-	 * to-be-created local job folder. 
+	 * Overriding the default behavior here because the overall process output
+	 * should be in the to-be-created local job folder.
 	 * 
 	 */
 	@Override
@@ -1077,7 +1063,7 @@ public class JobLauncher extends Item {
 				fileFailException.printStackTrace();
 				return;
 			}
-			
+
 			refreshProjectSpace();
 		}
 	}
@@ -1129,7 +1115,12 @@ public class JobLauncher extends Item {
 						// Sleep for a bit
 						Thread.currentThread();
 						Thread.sleep(100);
-						status = action.getStatus();
+						status = launchJob.getStatus();
+						// Monitor for the current Action, 
+						// we need to set this.action to ICEJob's 
+						// current Action in case the status goes to 
+						// NeedsInfo
+						action = launchJob.getCurrentAction();
 					}
 					// Close stdout
 					stdoutBufferredReader.close();
@@ -1955,6 +1946,48 @@ public class JobLauncher extends Item {
 		}
 
 		return;
+	}
+
+	/**
+	 * This operation checks the hostname to determine whether or not it is the
+	 * same as localhost.
+	 *
+	 * @param hostname
+	 *            The hostname of the target platform on which the job will be
+	 *            launched.
+	 * @return True if the hostname is the same as localhost, false otherwise.
+	 */
+	private boolean isLocalhost(String hostname) {
+
+		// Local Declarations
+		boolean retVal = false;
+		String localHostname = null;
+
+		// The simplest names to check are 127.0.0.1 and localhost.localdomain.
+		// These names are always the local machine on Unix systems.
+		if ("127.0.0.1".equals(hostname) || "localhost.localdomain".equals(hostname) || "localhost".equals(hostname)) {
+			retVal = true;
+		} else {
+			// Get the local hostname by looking up the InetAddress
+			try {
+				// Get the address of localhost
+				InetAddress addr = InetAddress.getLocalHost();
+				// Get the hostname
+				localHostname = addr.getHostName();
+			} catch (UnknownHostException e) {
+				logger.error(getClass().getName() + " Exception!", e);
+			}
+			// Compare the names
+			if (hostname.equals(localHostname)) {
+				retVal = true;
+			}
+		}
+
+		logger.info("JobLauncher Message: Localhost hostname = " + localHostname);
+		logger.info("JobLauncher Message: Target " + "Platform hostname = " + hostname);
+		logger.info("JobLauncher Message: Host is" + ((retVal) ? " " : " NOT ") + "localhost.");
+
+		return retVal;
 	}
 
 	/**

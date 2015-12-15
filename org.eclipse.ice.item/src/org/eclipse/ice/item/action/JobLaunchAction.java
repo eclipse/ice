@@ -1206,7 +1206,6 @@ public class JobLaunchAction extends Action implements Runnable {
 			formSubmitted.set(true);
 
 			// Set the status
-			logger.info("SETTING FLAG TO PROCESSING");
 			status = FormStatus.Processing;
 		} else {
 			status = FormStatus.InfoError;

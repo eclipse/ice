@@ -132,4 +132,12 @@
             class="org.eclipse.ice.item.action.TaggedOutputWriterAction">
       </action>
    </extension>
+   <extension
+         id="org.eclipse.ice.item.localexecution"
+         name="Local Execution"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.LocalExecutionAction">
+      </action>
+   </extension>
 </plugin>
