@@ -151,6 +151,8 @@
 			LAST! -->
 		<module>org.eclipse.ice.feature</module>
 		<module>org.eclipse.ice.repository</module>
+		<module>org.eclipse.ice.projectgeneration</module>
+		<module>org.eclipse.ice.projectgeneration.test</module>
 	</modules>
 
 	<!-- This is the main build part that sets up all of the rules. -->

@@ -34,6 +34,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import org.eclipse.ice.projectgeneration.ICEItemNature;
+import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
@@ -50,16 +51,15 @@ public class NewICEItemProjectTester {
 	private static SWTBotShell shell;
 	private static SWTBotTree tree;
 	private static SWTBot pBot;
-	
+
 	private static final String PROJECT_NAME = "org.eclipse.ice.newitem";
 	private static final String VERSION = "1.0.0";
-	private static final String NAME = "ICE Item";
+	private static final String NAME = "Newitem";
 	private static final String INSTITUTE = "Oak Ridge National Laboratory";
 	private static final String EXTENSION_NAME = "org.eclipse.ice.newitem";
 	private static final String PACKAGE_NAME = "org.eclipse.ice.newitem";
 	private static final String CLASS_NAME = "NewItem";
-	
-	
+
 	/**
 	 * Check the setup of a New ICE Item Project
 	 */
@@ -67,29 +67,18 @@ public class NewICEItemProjectTester {
 	public void testICEItemWizard() {
 		bot = new SWTWorkbenchBot();
 		bot.viewByTitle("Welcome").close();
-		bot.menu("File").menu("New").menu("Other...").click();
-		shell = bot.shell("New");
-		pBot = shell.bot();
-		tree = pBot.tree();
-		tree.expandNode("ICE Item Creation Wizards", "ICE Item Project Creation Wizard").select();
-		pBot.button("Next >").click();
-		
-		// Page 1
-		pBot.textWithLabel("Project name:").setText(PROJECT_NAME);
-		pBot.button("Next >").click();
-		
-		// Page 2
-		pBot.textWithLabel("Identifier:").setText(PROJECT_NAME);
-		pBot.textWithLabel("Version:").setText(VERSION);
-		pBot.textWithLabel("Name:").setText(NAME);
-		pBot.textWithLabel("Vendor:").setText(INSTITUTE);
-		pBot.button("Next >").click();
-	
-		// Page 3
-		pBot.textWithLabel("Extension Base Name").setText(EXTENSION_NAME);
-		pBot.textWithLabel("Package Name").setText(PACKAGE_NAME);
-		pBot.textWithLabel("Class Base Name").setText(CLASS_NAME);
-		pBot.button("Finish").click();
-		pBot.waitUntil(shellCloses(shell));
+		bot.menu("File").menu("New").menu("Other...").click().setFocus();
+		bot.tree().getTreeItem("ICE Item Creation Wizards").expand();
+		bot.tree().getTreeItem("ICE Item Creation Wizards").getNode("ICE Item Project Creation Wizard").select();
+		bot.button("Next >").click();
+		bot.textWithLabel("&Project name:").setText("org.eclipse.ice.newitem");
+		bot.button("Next >").click();
+		bot.comboBox().setText("Oak Ridge National Laborator");
+		bot.button("Next >").click();
+		bot.textWithLabel("Extension Base Name").setText("org.eclipse.ice.newitem");
+		bot.textWithLabel("Package Name").setText("org.eclipse.ice.newitem");
+		bot.textWithLabel("Class Base Name").setText("NewItem");
+		bot.button("Finish").click();
+
 	}
 }
