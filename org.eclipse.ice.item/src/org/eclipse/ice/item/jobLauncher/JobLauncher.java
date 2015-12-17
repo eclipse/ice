@@ -228,7 +228,7 @@ public class JobLauncher extends Item {
 	 * A map for storing key-value pairs needed by the actions.
 	 */
 	@XmlTransient()
-	private Dictionary<String, String> actionDataMap;
+	protected Dictionary<String, String> actionDataMap;
 
 	/**
 	 * The set of resources stored in the JobLauncher's working directory, and
@@ -257,6 +257,13 @@ public class JobLauncher extends Item {
 	 */
 	@XmlTransient()
 	private static IRemoteServicesManager remoteManager;
+
+	/**
+	 * Reference to the File containing the total output from 
+	 * this Job Launch.
+	 */
+	@XmlTransient()
+	private File processOutput;
 
 	/**
 	 * This is a utility class used to describe a type of file by the
@@ -870,7 +877,10 @@ public class JobLauncher extends Item {
 	/**
 	 * <p>
 	 * This operation performs the job launch if the action name is equal to
-	 * "Launch the Job"
+	 * "Launch the Job". It invokes the protected getActions method to populate 
+	 * a list of Actions based on the action data map that collectively perform this 
+	 * Job Launch. Subclasses can override this getActions method to provide a 
+	 * custom set of Actions to perform the Job Launch. 
 	 * </p>
 	 * 
 	 * @param actionName
@@ -888,7 +898,6 @@ public class JobLauncher extends Item {
 		// Local Declarations
 		FormStatus localStatus = FormStatus.InfoError;
 		List<Action> actionList = new ArrayList<Action>();
-		IActionFactory actionFactory = getActionFactory();
 
 		// Only process the job if the Item is enabled
 		if (isEnabled()) {
@@ -924,44 +933,33 @@ public class JobLauncher extends Item {
 				// Create the output files in the project space
 				createOutputFiles();
 
-				// Create the List of Actions to execute... The list is
-				// different depending on whether we are local or remote,
-				// or using Docker or not...
-				if (isLocalhost(actionDataMap.get("hostname"))) {
-					// For a local execution, we just need the Local Execution
-					// Action
-					actionList.add(actionFactory.getAction("Local Execution"));
-				} else {
-					// For a remote execution, we need to push files to the
-					// remote host,
-					// execute remotely, then download resultant files.
-					// actionList.add(actionFactory.getAction("Remote File
-					// Upload"));
-					// actionList.add(actionFactory.getAction("Remote
-					// Execution"));
-					// actionList.add(actionFactory.getAction("Remote File
-					// Download"));
-					actionList.add(actionFactory.getAction("Job Launch Action"));
-				}
-
+				// Get the Actions that should be executed for 
+				// this Job Launch
+				actionList = getActions();
+				
 				// If any of those Actions were null, then we have a problem
-				if (actionList.contains(null)) {
+				if (actionList == null || actionList.contains(null)) {
 					logger.error("Invalid Job Launch Actions.");
 					return FormStatus.InfoError;
 				}
 
 				// Create the Eclipse Job for this Job Launch!
-				launchJob = new ICEJob(actionList, actionDataMap, status);
+				launchJob = new ICEJob(actionList, actionDataMap);
 
-				// Schedule it for execution
+				// Schedule it for execution,
+				// Give the Item a little time to
+				// return the Processing status
 				launchJob.schedule();
 
 				// Set the status to Processing
 				status = FormStatus.Processing;
 
 				// Invoke the output streaming thread
-				streamOutputData();
+				writeOutputData();
 
+				// Monitor the Action's status
+				monitorActionStatus();
+				
 				// Sleep the thread for a second to give
 				// the Action time to do its thing
 				try {
@@ -969,21 +967,95 @@ public class JobLauncher extends Item {
 				} catch (InterruptedException e) {
 					logger.error(getClass().getName() + " Exception!", e);
 				}
-
+			
 				// Return the new status
 				return status;
 
 			} else {
+				// Report an Error
 				localStatus = FormStatus.InfoError;
-
 				status = localStatus;
-
 				return status;
 			}
-
+		} else {
+			status = FormStatus.InfoError;
+			return status;
 		}
+	}
 
-		return localStatus;
+	/**
+	 * This private operation kicks off a thread that monitors 
+	 * the status of running Actions, and stops when the status 
+	 * reports Processed. 
+	 */
+	private void monitorActionStatus() {
+		// Keep the status in sync
+		if (status.equals(FormStatus.Processing)) {
+			Thread statusThread = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (!status.equals(FormStatus.Processed)) {
+						// Sleep for a bit
+						Thread.currentThread();
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							logger.error(getClass().getName() + " Exception!", e);
+						}
+
+						// Set the status
+						status = launchJob.getStatus();
+					}
+
+					return;
+				}
+			});
+
+			statusThread.start();
+		}
+	}
+
+	/**
+	 * This operation by default returns the Actions necessary to 
+	 * execute the Job Launch based on the parameters in the action 
+	 * data map. Subclasses can override this method to return a custom 
+	 * set of Actions. 
+	 * 
+	 * By default, for both local and remote launches, this operation 
+	 * returns an Action list that starts with copying files to the local 
+	 * working directory. If local, the next Action is the Local Execution Action. 
+	 * If remote, it returns the Remote File Upload, Remote Execution, and Remote 
+	 * File Download Actions, in that order. 
+	 * 
+	 * @return actions List of Actions to execute. 
+	 */
+	protected List<Action> getActions() {
+		// Create a list to contain the Actions
+		List<Action> actionList = new ArrayList<Action>();
+		
+		// Get a reference to the IActionFactory
+		IActionFactory actionFactory = getActionFactory();
+
+		// Every kind of job launch action will need the pertinent files
+		// moved to the job launch directory.
+		actionList.add(actionFactory.getAction("Local Files Copy"));
+
+		// Create the List of Actions to execute... The list is
+		// different depending on whether we are local or remote,
+		// or using Docker or not...
+		if (isLocalhost(actionDataMap.get("hostname"))) {
+			// For a local execution, we just need the Local Execution
+			// Action
+			actionList.add(actionFactory.getAction("Local Execution"));
+		} else {
+			// For a remote execution, we need to push files to the
+			// remote host, execute remotely, then download resultant files.
+			actionList.add(actionFactory.getAction("Remote File Upload"));
+			actionList.add(actionFactory.getAction("Remote Execution"));
+			actionList.add(actionFactory.getAction("Remote File Download"));
+		}
+		
+		return actionList;
 	}
 
 	/**
@@ -1054,10 +1126,10 @@ public class JobLauncher extends Item {
 		if (project != null) {
 			// Get the file
 			IFile outputFileHandle = currentJobFolder.getFile(outputFilename);
-			outputFile = outputFileHandle.getLocation().toFile();
+			processOutput = outputFileHandle.getLocation().toFile();
 			// Create a new file if it does not already exist
 			try {
-				outputFile.createNewFile();
+				processOutput.createNewFile();
 			} catch (Exception fileFailException) {
 				logger.info("Item Message: Unable to create output " + "file in workspace. Aborting.");
 				fileFailException.printStackTrace();
@@ -1073,7 +1145,7 @@ public class JobLauncher extends Item {
 	 * and puts it into the output file for JobLauncher that is consumed by
 	 * clients.
 	 */
-	private void streamOutputData() {
+	private void writeOutputData() {
 
 		// Create the thread
 		Thread streamingThread = new Thread(new Runnable() {
@@ -1090,7 +1162,7 @@ public class JobLauncher extends Item {
 
 				try {
 					// Open the output file for writing
-					outputFileWriter = new FileWriter(outputFile);
+					outputFileWriter = new FileWriter(processOutput);
 					outputFileBufferedWriter = new BufferedWriter(outputFileWriter);
 					// Open the JobLauncherAction stdout file for reading
 					stdoutReader = new FileReader(stdout);
@@ -1115,12 +1187,13 @@ public class JobLauncher extends Item {
 						// Sleep for a bit
 						Thread.currentThread();
 						Thread.sleep(100);
-						status = launchJob.getStatus();
-						// Monitor for the current Action, 
-						// we need to set this.action to ICEJob's 
-						// current Action in case the status goes to 
+						//status = launchJob.getStatus();
+						// Monitor for the current Action,
+						// we need to set this.action to ICEJob's
+						// current Action in case the status goes to
 						// NeedsInfo
-						action = launchJob.getCurrentAction();
+						//action = launchJob.getCurrentAction();
+						//System.out.println("Streaming - " + status);
 					}
 					// Close stdout
 					stdoutBufferredReader.close();
@@ -1134,11 +1207,7 @@ public class JobLauncher extends Item {
 					// Check the project space to see if new resources were
 					// downloaded that should be added to the ICEResource.
 					updateResourceComponent();
-				} catch (IOException e) {
-					// Complain and return
-					logger.error(getClass().getName() + " Exception!", e);
-					return;
-				} catch (InterruptedException e) {
+				} catch (IOException | InterruptedException e) {
 					// Complain and return
 					logger.error(getClass().getName() + " Exception!", e);
 					return;

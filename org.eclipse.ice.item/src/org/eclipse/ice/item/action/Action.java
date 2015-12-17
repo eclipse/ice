@@ -20,7 +20,16 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleConstants;
+import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,15 +49,31 @@ import org.slf4j.LoggerFactory;
  * Actions may update the dictionary passed to execute() at their discretion, so
  * keep in mind that it may change if you depend on it in the client class.
  * 
- * @author Jay Jay Billings
+ * @author Jay Jay Billings, Alex McCaskey
  */
 public abstract class Action {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected final Logger logger;
-	
+	protected static final Logger logger = LoggerFactory.getLogger(Action.class);
+
+	/**
+	 * The console view in Eclipse.
+	 */
+	private static IConsoleView consoleView = null;
+
+	/**
+	 * The console that will display text from this widget.
+	 */
+	private static MessageConsole console = null;
+
+	/**
+	 * The message stream for the message console to which text should be
+	 * streamed.
+	 */
+	private static MessageConsoleStream msgStream = null;
+
 	/**
 	 * <p>
 	 * A Form that is used to by the Action if it requires additional
@@ -60,6 +85,7 @@ public abstract class Action {
 	 * 
 	 */
 	protected Form actionForm;
+
 	/**
 	 * <p>
 	 * A Form that contains data from the Item that initiated the Action.
@@ -77,15 +103,95 @@ public abstract class Action {
 	protected FormStatus status;
 
 	/**
-	 * <p>
-	 * The Constructor
-	 * </p>
-	 * 
+	 * This static method initializes the data structures necessary 
+	 * for Eclipse Console output for the Action.execute method. 
 	 */
-	public Action() {
-		logger = LoggerFactory.getLogger(getClass());
+	protected static void initializeConsoleOutput() {
+		// Open the Console for Action output text
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Get the currently active page
+				IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+				try {
+					// Load the console view
+					consoleView = (IConsoleView) page.showView(IConsoleConstants.ID_CONSOLE_VIEW);
+					// Create the console instance that will be used to display
+					// text from this widget.
+					console = new MessageConsole("CLI", null);
+					// Add the console to the console manager
+					ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { console });
+					// Show the console in the view
+					consoleView.display(console);
+					console.activate();
+					// Get an output stream for the console
+					msgStream = console.newMessageStream();
+					msgStream.setActivateOnWrite(true);
+					msgStream.println("Streaming output console activated.");
+				} catch (PartInitException e) {
+					// Complain
+					logger.error("Action Message: " + "Unable to stream text!");
+					logger.error(getClass().getName() + " Exception!", e);
+				}
+
+			}
+		});
+
 	}
 
+	/**
+	 * This operation allows subclasses to post errors and return the 
+	 * appropriate status to the Item executing the Action. 
+	 * 
+	 * @param errorMessage The descriptive message for the error.
+	 * @param exception A possible exception to print to the Logger.
+	 * @return status The error status.
+	 */
+	protected FormStatus actionError(String errorMessage, Exception exception) {
+		if(exception == null) { 
+			logger.error(errorMessage);
+		} else {
+			logger.error(errorMessage, exception);
+		}
+		status = FormStatus.InfoError;
+		return status;
+	}
+	
+	/**
+	 * This operation can be used by subclasses to post text to 
+	 * the Eclipse Console. 
+	 * 
+	 * @param sText The string to print to the Console.
+	 */
+	protected void postConsoleText(final String sText) {
+
+		if (msgStream == null) {
+			initializeConsoleOutput();
+		}
+
+		// Must sync with the display thread
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				// Push the text, if possible
+				if (msgStream != null) {
+					msgStream.println(sText);
+				}
+			}
+		});
+
+		return;
+	}
+
+	/**
+	 * This operation clears the Eclipse console. 
+	 */
+	public static void clearConsole() {
+		if (console != null) {
+			console.clearConsole();
+		}
+	}
+	
 	/**
 	 * <p>
 	 * This operation retrieves a Form from the Action that is used to request
@@ -93,7 +199,8 @@ public abstract class Action {
 	 * and password.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The second Form created by the Action for retrieving, for
 	 *         example, a username and password.
 	 *         </p>
@@ -115,7 +222,8 @@ public abstract class Action {
 	 *            The second Form created by the Action for retrieving, for
 	 *            example, a username and password.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The ItemStatus value that specifies whether or not the secondary
 	 *         Form was accepted by the Action. By default it is
 	 *         FormStatus.Processing for any non-null Form and
@@ -146,7 +254,8 @@ public abstract class Action {
 	 *            A dictionary that contains key-value pairs used by the action
 	 *            to perform its function.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status of the Action.
 	 *         </p>
 	 */
@@ -157,7 +266,8 @@ public abstract class Action {
 	 * This operation cancels the Action, if possible.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The ItemStatus value that specifies whether or not the Action was
 	 *         canceled successfully.
 	 *         </p>
@@ -169,26 +279,27 @@ public abstract class Action {
 	 * This operation returns the current status of the Action.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The status
 	 *         </p>
 	 */
 	public FormStatus getStatus() {
 		return status;
 	}
-	
+
 	/**
-	 * Return the name of this Action. This name will be used by 
-	 * the IActionFactory to reference and create new Actions. 
+	 * Return the name of this Action. This name will be used by the
+	 * IActionFactory to reference and create new Actions.
 	 * 
 	 * @return name The name of this Action.
 	 */
 	public abstract String getActionName();
-	
+
 	/**
-	 * Return the available Actions provided by the Extension Registry. 
+	 * Return the available Actions provided by the Extension Registry.
 	 * 
-	 * @return actions All Actions exposed in the Extension Registry. 
+	 * @return actions All Actions exposed in the Extension Registry.
 	 * 
 	 * @throws CoreException
 	 */
@@ -200,8 +311,7 @@ public abstract class Action {
 
 		Action[] actions = null;
 		String id = "org.eclipse.ice.item.actions";
-		IExtensionPoint point = Platform.getExtensionRegistry()
-				.getExtensionPoint(id);
+		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(id);
 
 		// If the point is available, create all the builders and load them into
 		// the array.
@@ -209,8 +319,7 @@ public abstract class Action {
 			IConfigurationElement[] elements = point.getConfigurationElements();
 			actions = new Action[elements.length];
 			for (int i = 0; i < elements.length; i++) {
-				actions[i] = (Action) elements[i]
-						.createExecutableExtension("class");
+				actions[i] = (Action) elements[i].createExecutableExtension("class");
 			}
 		} else {
 			logger.error("Extension Point " + id + "does not exist");
@@ -219,5 +328,4 @@ public abstract class Action {
 		return actions;
 	}
 
-	
 }

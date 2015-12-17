@@ -605,9 +605,9 @@ public class MOOSEModel extends Item {
 					try {
 						URI uri = new URI(loadedApp);
 						if ("ssh".equals(uri.getScheme())) {
-							prefs.put(Paths.get(uri.getRawPath()).getFileName().toString(), loadedApp);
+							prefs.put(uri.getRawPath(), loadedApp);
 						} else {
-							prefs.put(new File(uri).getName(), loadedApp);
+							prefs.put(uri.getRawPath(), loadedApp);
 						}
 						prefs.flush();
 					} catch (BackingStoreException | URISyntaxException e) {

@@ -1056,7 +1056,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			processService = connection.getService(IRemoteProcessService.class);
 
 			// Set the new working directory
-			processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
+			//processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
 
 			// Dump the new working directory
 			logger.info(

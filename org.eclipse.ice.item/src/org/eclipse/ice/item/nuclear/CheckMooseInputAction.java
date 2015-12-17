@@ -29,6 +29,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -51,6 +53,7 @@ import org.eclipse.ice.item.action.RemoteAction;
 import org.eclipse.ice.item.action.RemoteFileUploadAction;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
@@ -90,13 +93,14 @@ public class CheckMooseInputAction extends RemoteAction {
 		status = FormStatus.ReadyToProcess;
 		
 		// Get the input params
-		String projectName = map.get("projectName");
+		String projectName = map.get("projectSpaceDir");
 		String treeXML = map.get("inputTree");
 		String appCompXML = map.get("appComp");
+		String localFilesDir = map.get("localJobLaunchDirectory");
 		boolean isRemote = Boolean.valueOf(map.get("isRemote"));
 		
 		// Validate we got the right ones. 
-		if (projectName == null || treeXML == null || appCompXML == null || map.get("isRemote") == null) {
+		if (projectName == null || localFilesDir == null || treeXML == null || appCompXML == null || map.get("isRemote") == null) {
 			logger.error("Invalid input for CheckMooseInputAction.");
 			return FormStatus.InfoError;
 		}
@@ -126,24 +130,9 @@ public class CheckMooseInputAction extends RemoteAction {
 		// Check if this MOOSE app is local or remote
 		if (isRemote) {
 
-			// If remote, we have to upload the input file and
-			// the files it references to correctly validate the tree
-
 			// Get the remote connection
 			connection = getRemoteConnection(appUri.getHost());
 			
-			// Create a list of IFiles and add the input file to it
-			ArrayList<File> files = new ArrayList<File>();
-			files.add(inputFile.getLocation().toFile());
-
-			// Now add all files it needs
-			// FYI This list has already been validated and shown to exist
-			// in Moose.fullTreeValidation, if you are using this somewhere
-			// else, make sure they exist!
-			for (Entry fileE : getFileEntries(mooseTree)) {
-				files.add(project.getFile(fileE.getValue()).getLocation().toFile());
-			}
-
 			// Try to open the connection and fail if it will not open
 			try {
 				connection.open(null);
@@ -162,27 +151,17 @@ public class CheckMooseInputAction extends RemoteAction {
 				// Get the file separator on the remote system
 				String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
 
-				Date currentDate = new Date();
-				SimpleDateFormat shortDate = new SimpleDateFormat("yyyyMMddhhmmss");
-				Dictionary<String, String> dataMap = new Hashtable<String, String>();
-				dataMap.put("remoteDir", "ICEJobs" + remoteSeparator + "iceLaunch_" + shortDate.format(currentDate));
-				dataMap.put("remoteHost", appUri.getHost());
-				
-				// Upload the input files
-				RemoteFileUploadAction uploadAction = new RemoteFileUploadAction(files);
-				uploadAction.execute(dataMap);
-
 				// Get the IRemoteProcessService
 				processService = connection.getService(IRemoteProcessService.class);
 
 				// Set the working directory to be where the files were uploaded
-				//processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
-
+				processService.setWorkingDirectory("ICEJobs" + remoteSeparator + localFilesDir);
+				
+				logger.info("Setting Remote command to " + appUri.getRawPath() + " --no-color --check-input -i " + inputFile.getName());
+				
 				// Create the process builder for the remote job
 				IRemoteProcessBuilder checkInputProcessBuilder = processService.getProcessBuilder("sh", "-c",
-						"cd " + uploadAction.getRemoteUploadDirectoryPath() + " && " + appUri.getRawPath() + " --no-color --check-input -i "
-								+ uploadAction.getRemoteUploadDirectoryPath() + System.getProperty("file.separator")
-								+ inputFile.getName());
+						appUri.getRawPath() + " --no-color --check-input -i " +inputFile.getName());
 
 				// Do not redirect the streams
 				//checkInputProcessBuilder.redirectErrorStream(true);
@@ -204,7 +183,22 @@ public class CheckMooseInputAction extends RemoteAction {
 				// and standard err
 				errorStream = checkInputRemoteJob.getErrorStream();
 				
-				//uploadAction.deleteUploadRemoteDirectory();
+				// Get the remote file manager
+				//IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
+
+//				try {
+//					IFileStore fileStore = EFS.getStore(fileManager.toURI(processService.getWorkingDirectory()));
+//					//fileStore.delete(EFS.NONE, null); HOLY FUCK ALEX WHAT WERE YOU THINKING!!!!!
+//				} catch (CoreException e) {
+//					e.printStackTrace();
+//				}
+			} else {
+				// Print diagnostic information and fail
+				logger.error(getClass().getName() + " Exception!");
+				String errorMessage = "Could not open remote connection.";
+				throwErrorMessage("Connection Error", "", errorMessage, errorMessage);
+				status = FormStatus.InfoError;
+				return status;
 			}
 
 		} else {

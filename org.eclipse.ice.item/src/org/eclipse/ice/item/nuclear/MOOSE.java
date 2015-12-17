@@ -22,7 +22,9 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -287,12 +289,13 @@ public class MOOSE extends Item {
 			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 			boolean isRemote = "ssh".equals(appUri.getScheme());
 
+			System.out.println("APPURI IS " + appUri + ", " + isRemote);
 			// Validate the Tree, this will also make
 			// sure all required files are in the workspace
-			if (!fullTreeValidation(appUri, isRemote)) {
-				logger.error("Moose Input Tree could not be validated. See error log for details.");
-				return FormStatus.InfoError;
-			}
+//			if (!fullTreeValidation(appUri, isRemote)) {
+//				logger.error("Moose Input Tree could not be validated. See error log for details.");
+//				return FormStatus.InfoError;
+//			}
 
 			// Change the host name if we are remote
 			if (isRemote) {
@@ -324,6 +327,7 @@ public class MOOSE extends Item {
 			// Configure the execute string
 			if (isRemote) {
 
+				System.out.println("Setting the New HOST NAME");
 				// Set the remote executable string
 				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
 						appUri.getRawPath() + " -i ${inputFile} --no-color");
@@ -340,6 +344,13 @@ public class MOOSE extends Item {
 
 			} else {
 
+				// Setup the hosts table to use the local host
+				TableComponent hostsTable = (TableComponent) mooseLauncher.getForm()
+						.getComponent(JobLauncherForm.parallelId + 1);
+				ArrayList<Integer> selected = new ArrayList<Integer>();
+				selected.add(new Integer(0));
+				hostsTable.setSelectedRows(selected);
+				
 				// Set the executable string
 				mooseLauncher.setExecutable(new File(appUri).getName(), "",
 						appUri.getPath() + " -i ${inputFile} --no-color");
@@ -403,8 +414,9 @@ public class MOOSE extends Item {
 		// Create and execute the CheckMooseInputAction!
 		Action checkInput = getActionFactory().getAction("Check Moose Input");
 		Dictionary<String, String> map = new Hashtable<String, String>();
-		map.put("projectName", project.getName());
+		map.put("projectSpaceDir", project.getName());
 		map.put("isRemote", String.valueOf(isRemote));
+		map.put("localJobLaunchDirectory", "tempICELaunch");
 		
 		try {
 			map.put("inputTree", writeComponentToXML(modelTree));
@@ -412,6 +424,24 @@ public class MOOSE extends Item {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 			logger.error("Error writing Tree and DataComponent to XML.", e);
+		}
+		
+		// Upload files if remote
+		if (isRemote) {
+			DataComponent filesData = new DataComponent();
+			filesData.addEntry(modelFiles.retrieveEntry("Output File Name"));
+			for (Entry fileE : getFileEntries()) {
+				filesData.addEntry(fileE);
+			}
+			
+			map.put("hostname", uri.getHost());
+			try {
+				map.put("filesDataComponent", writeComponentToXML(filesData));
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
+			// Upload all required files to the remote machine
+			getActionFactory().getAction("Remote File Upload").execute(map);
 		}
 		
 		return checkInput.execute(map) == FormStatus.ReadyToProcess ? true : false;

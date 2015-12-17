@@ -72,6 +72,19 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
+ * * <tr>
+* <td>
+* <p>
+* localJobLaunchDirectory
+* </p>
+* </td>
+* <td>
+* <p>
+* The name of the directory within the project/jobs folder where 
+* the files to be uploaded can be found (optional).
+* </p>
+* </td>
+* </tr>
  * <tr>
  * <td>
  * <p>
@@ -139,19 +152,6 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * <tr>
  * <td>
  * <p>
- * numOMPThreads
- * </p>
- * </td>
- * <td>
- * <p>
- * The number of OpenMP threads that should be used by the job. The default
- * value of this is always 1.
- * </p>
- * </td>
- * </tr>
- * <tr>
- * <td>
- * <p>
  * numTBBThreads
  * </p>
  * </td>
@@ -187,6 +187,18 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
+ * * <tr>
+* <td>
+* <p>
+* os
+* </p>
+* </td>
+* <td>
+* <p>
+* The name of the operating system.
+* </p>
+* </td>
+* </tr>
  * </table>
  *
  * @author Alex McCaskey
@@ -225,6 +237,9 @@ public class LocalExecutionAction extends Action {
 	 */
 	private ExecutionHelper helper;
 
+	/**
+	 * The constructor. 
+	 */
 	public LocalExecutionAction() {
 		// Initialize the cancelled flag and 
 		// the form status.
@@ -265,22 +280,6 @@ public class LocalExecutionAction extends Action {
 			} catch (IOException e) {
 				// Complain
 				logger.error(getClass().getName() + " Exception!", e);
-			}
-
-			// Copy all files needed to the local launch directory
-			try {
-				for (String fileName : helper.getInputFileMap().keySet()) {
-					logger.info("JobLaunchAction copying " + fileName + " to local job launch folder: "
-							+ localLaunchFolder.getLocation().toOSString() + ".");
-					IFile newFile = localLaunchFolder.getFile(fileName);
-					newFile.create(project.getFile(fileName).getContents(), true, null);
-				}
-			} catch (CoreException e) {
-				logger.error(
-						"LocalExecutionAction Error - Could not copy files from the project space to the job folder.",
-						e);
-				status = FormStatus.InfoError;
-				return status;
 			}
 
 			// Launch the Job!
@@ -540,6 +539,7 @@ public class LocalExecutionAction extends Action {
 				// MUST put a new line for this type of writer. "\r\n" works on
 				// Windows and Unix-based systems.
 				stdOut.write("\r\n");
+				postConsoleText(nextLine);
 				stdOut.flush();
 			}
 			// Write to the stdErr file

@@ -508,6 +508,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 			// Update the status
 			status = iceCore.getItemStatus(itemId);
+
 			// Update the IFormWidget's status
 			formWidget.updateStatus(statusMessageMap.get(status));
 

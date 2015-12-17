@@ -140,4 +140,20 @@
             class="org.eclipse.ice.item.action.LocalExecutionAction">
       </action>
    </extension>
+   <extension
+         id="org.eclipse.ice.item.localfilescopy"
+         name="Local Files Copy"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.LocalFilesCopyAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.remoteexecution"
+         name="Remote Execution"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.RemoteExecutionAction">
+      </action>
+   </extension>
 </plugin>

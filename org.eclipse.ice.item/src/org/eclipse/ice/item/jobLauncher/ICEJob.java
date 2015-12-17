@@ -24,9 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The ICEJob is a subclass of the Eclipse Job class that 
- * provides a run implementation that executes a list of 
- * ICE Actions.  
+ * The ICEJob is a subclass of the Eclipse Job class that provides a run
+ * implementation that executes a list of ICE Actions.
  * 
  * @author Alex McCaskey
  *
@@ -44,14 +43,12 @@ public class ICEJob extends Job {
 	private List<Action> actions;
 
 	/**
-	 * The key-value pairs to be used as input to each 
-	 * Action.
+	 * The key-value pairs to be used as input to each Action.
 	 */
 	private Dictionary<String, String> actionDataMap;
 
 	/**
-	 * The Form Status produced by the 
-	 * Action executions. 
+	 * The Form Status produced by the Action executions.
 	 */
 	private FormStatus status;
 
@@ -61,17 +58,20 @@ public class ICEJob extends Job {
 	private Action currentlyRunningAction;
 
 	/**
-	 * The Constructor. 
+	 * The Constructor.
 	 * 
-	 * @param actionsToExecute The list of Actions to execute in this Job
-	 * @param map The map of input parameters for each Action
-	 * @param jobStatus The reference to the FormStatus to update. 
+	 * @param actionsToExecute
+	 *            The list of Actions to execute in this Job
+	 * @param map
+	 *            The map of input parameters for each Action
+	 * @param jobStatus
+	 *            The reference to the FormStatus to update.
 	 */
-	public ICEJob(List<Action> actionsToExecute, Dictionary<String, String> map, FormStatus jobStatus) {
+	public ICEJob(List<Action> actionsToExecute, Dictionary<String, String> map) {
 		super("ICE Job Launch");
 		actions = actionsToExecute;
 		actionDataMap = map;
-		status = jobStatus;
+		status = FormStatus.Processing;
 	}
 
 	/*
@@ -86,11 +86,25 @@ public class ICEJob extends Job {
 		int worked = 0;
 		monitor.beginTask("Executing the Job Launch Action...", ticks);
 		status = FormStatus.Processing;
+
+		// Clear any existing Eclipse Console content
+		Action.clearConsole();
+		
 		// Execute the Actions
 		for (Action action : actions) {
+			// Get a reference to the Current Action
 			currentlyRunningAction = action;
 			monitor.subTask("Executing " + currentlyRunningAction.getActionName() + "...");
+
+			// Execute the Action
 			FormStatus tempStatus = currentlyRunningAction.execute(actionDataMap);
+
+			// If the Action returned with an InfoError status,
+			// then we need to report that and throw an Error
+			// Eclipse Status
+			if (tempStatus.equals(FormStatus.InfoError)) {
+				return error("Error in executing the " + action.getActionName() + " Action.", null);
+			}
 
 			// If the status was NeedsInfo, we need to relay that to
 			// the JobLauncher
@@ -104,41 +118,39 @@ public class ICEJob extends Job {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e1) {
-						// Complain
-						String error = "Error in executing the " + action.getActionName() + " Action.";
-						logger.error(error, e1);
-						status = FormStatus.InfoError;
-						return new Status(Status.ERROR, "org.eclipse.ice.item.jobLauncher.ICEJob", 1, error, null);
+						return error("Error in executing the " + action.getActionName() + " Action.", e1);
 					}
 				}
-				
-				status = FormStatus.Processing;
-			}
 
-			// If the Action returned with an InfoError status, 
-			// then we need to report that and throw an Error 
-			// Eclipse Status
-			if (tempStatus.equals(FormStatus.InfoError)) {
-				// Return some error
-				status = tempStatus;
-				String error = "Error in executing the " + action.getActionName() + " Action.";
-				logger.error(error);
-				return new Status(Status.ERROR, "org.eclipse.ice.item.jobLauncher.ICEJob", 1, error, null);
+				status = FormStatus.Processing;
 			}
 
 			// Check for Eclipse Job cancellations.
 			if (monitor.isCanceled()) {
 				currentlyRunningAction.cancel();
+				status = FormStatus.Processed;
 				return Status.CANCEL_STATUS;
 			}
-			
+
+			// If the Action is still processing, then
+			// lets just wait until its done.
+			while (tempStatus.equals(FormStatus.Processing)) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e1) {
+					// Complain
+					return error("Error in executing the " + action.getActionName() + " Action.", e1);
+				}
+				tempStatus = currentlyRunningAction.getStatus();
+			}
+
 			// Increment the worked ticker
 			worked += ticks / actions.size();
 			monitor.worked(worked);
 		}
-		
+
 		// Once done executing all Actions, indicate
-		// so by setting the status flag. 
+		// so by setting the status flag.
 		status = FormStatus.Processed;
 		monitor.worked(ticks);
 		monitor.done();
@@ -147,6 +159,7 @@ public class ICEJob extends Job {
 
 	/**
 	 * Return the current Form Status
+	 * 
 	 * @return
 	 */
 	public FormStatus getStatus() {
@@ -154,8 +167,7 @@ public class ICEJob extends Job {
 	}
 
 	/**
-	 * Return the currently executing 
-	 * Action. 
+	 * Return the currently executing Action.
 	 * 
 	 * @return
 	 */
@@ -164,8 +176,7 @@ public class ICEJob extends Job {
 	}
 
 	/**
-	 * This operation cancels this Job from the Eclipse 
-	 * and ICE perspectives. 
+	 * This operation cancels this Job from the Eclipse and ICE perspectives.
 	 * 
 	 * @return
 	 */
@@ -177,4 +188,13 @@ public class ICEJob extends Job {
 		return currentlyRunningAction.cancel();
 	}
 
+	private IStatus error(String message, Exception e) {
+		if (e == null) {
+			logger.error(message);
+		} else {
+			logger.error(message, e);
+		}
+		status = FormStatus.InfoError;
+		return new Status(Status.ERROR, "org.eclipse.ice.item.jobLauncher.ICEJob", 1, message, null);
+	}
 }
