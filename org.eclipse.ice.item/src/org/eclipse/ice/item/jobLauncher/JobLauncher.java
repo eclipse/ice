@@ -1192,7 +1192,7 @@ public class JobLauncher extends Item {
 						// we need to set this.action to ICEJob's
 						// current Action in case the status goes to
 						// NeedsInfo
-						//action = launchJob.getCurrentAction();
+						action = launchJob.getCurrentAction();
 						//System.out.println("Streaming - " + status);
 					}
 					// Close stdout

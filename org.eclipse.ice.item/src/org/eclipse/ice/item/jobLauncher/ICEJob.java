@@ -110,16 +110,17 @@ public class ICEJob extends Job {
 			// the JobLauncher
 			if (tempStatus.equals(FormStatus.NeedsInfo)) {
 				// Set the status so the JobLauncher will see it
-				status = tempStatus;
+				status = FormStatus.NeedsInfo;
 
 				// Wait till the new form has been submitted and
 				// the job has finished.
-				while (status.equals(FormStatus.Processing) || status.equals(FormStatus.NeedsInfo)) {
+				while (tempStatus.equals(FormStatus.NeedsInfo)) {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e1) {
 						return error("Error in executing the " + action.getActionName() + " Action.", e1);
 					}
+					tempStatus = currentlyRunningAction.getStatus();
 				}
 
 				status = FormStatus.Processing;
