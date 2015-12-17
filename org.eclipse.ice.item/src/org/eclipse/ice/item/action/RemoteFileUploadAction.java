@@ -36,6 +36,7 @@ import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcessService;
+import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
 * The RemoteFileUploadAction is a subclass of Action that uploads a list 
@@ -210,7 +211,16 @@ public class RemoteFileUploadAction extends RemoteAction {
 		if (connection == null) {
 			return actionError("Remote File Upload could not get a valid connection to " + hostName + ".", null);
 		}
-
+		
+		// Make sure the connection is actually open
+		if (!connection.isOpen()) {
+			try {
+				connection.open(null);
+			} catch (RemoteConnectionException e) {
+				return actionError("Remote File Upload could not open the IRemoteConnection.", e);
+			}
+		}
+		
 		// Get the remote file manager
 		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
 

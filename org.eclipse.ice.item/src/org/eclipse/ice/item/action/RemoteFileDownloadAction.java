@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
+import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
  * The RemoteFileDownloadAction is an ICE Action that downloads files from a
@@ -140,6 +141,15 @@ public class RemoteFileDownloadAction extends RemoteAction {
 			return actionError("Could not get a valid connection to " + hostName, null);
 		}
 		
+		// Make sure the connection is actually open
+		if (!connection.isOpen()) {
+			try {
+				connection.open(null);
+			} catch (RemoteConnectionException e) {
+				return actionError("Remote File Download could not open the IRemoteConnection.", e);
+			}
+		}
+
 		// Get the remote file manager
 		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
 
