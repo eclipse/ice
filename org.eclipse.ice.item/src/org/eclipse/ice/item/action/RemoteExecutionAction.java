@@ -302,37 +302,11 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 			// Get the Remote Connection if available
 			connection = getRemoteConnection(hostName);
-
 			if (connection == null) {
-
-				// Local Declarations
-				DataComponent loginInfoComp;
-				Entry usernameEntry;
-
-				// Here we'd want to do the NeedsInfo thingy...
-				// Create the new Form
-				actionForm = new LoginInfoForm();
-
-				// Create the UIInfo
-				jschUIInfo = new ICEJschUIInfo();
-
-				// Get the username and password entries
-				loginInfoComp = (DataComponent) actionForm.getComponent(1);
-				usernameEntry = loginInfoComp.retrieveEntry("Username");
-				loginInfoComp.retrieveEntry("Password");
-
-				// Set the username
-				username = System.getProperty("user.name");
-				usernameEntry.setValue(username);
-
-				// Mark the form as not yet submitted
-				formSubmitted.set(false);
-				formAtomic = new AtomicReference<LoginInfoForm>();
-
-				// Set the status
-				status = FormStatus.NeedsInfo;
+				return actionError("Remote Execution Action could not get a valid connection to " + hostName + ".", null);
 			}
-
+			
+			// Start the remote execution thread.
 			processThread.start();
 
 			return status;

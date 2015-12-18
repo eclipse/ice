@@ -58,22 +58,23 @@ public abstract class RemoteAction extends Action {
 	protected IRemoteConnection getRemoteConnection(String host) {
 		// Get the IRemoteServicesManager
 		IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
-		
+
 		// If valid, continue on an get the IRemoteConnection
 		if (remoteManager != null) {
-			
+
 			// Get the connection type - basically Jsch is index 0
 			IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
 			if (connectionType != null) {
 				try {
-					// Loop over existing connections to see if the user already specified 
+					// Loop over existing connections to see if the user already
+					// specified
 					// a connection to the provided host
 					for (IRemoteConnection c : connectionType.getConnections()) {
 						String connectionHost = c.getService(IRemoteConnectionHostService.class).getHostname();
 						if (InetAddress.getByName(host).getHostAddress()
 								.equals(InetAddress.getByName(connectionHost).getHostAddress())) {
 							connection = c;
-							
+
 							// Found it, return the connection
 							return connection;
 						}
@@ -85,7 +86,7 @@ public abstract class RemoteAction extends Action {
 				// If no connection found, let's ask the user to define it.
 				if (connection == null) {
 
-					// Open the Remote Connection Wizard, syncExec here 
+					// Open the Remote Connection Wizard, syncExec here
 					// because we want to wait til its finished.
 					Display.getDefault().syncExec(new Runnable() {
 						@Override
@@ -94,17 +95,20 @@ public abstract class RemoteAction extends Action {
 							// Get the UI Connection Service
 							IRemoteUIConnectionService uiConnService = connectionType
 									.getService(IRemoteUIConnectionService.class);
-							
+
 							// Create a UI Connection Wizard
 							IRemoteUIConnectionWizard wizard = uiConnService.getConnectionWizard(
 									PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-							
-							// If valid, open it and save/open the IRemoteConnection
+
+							// If valid, open it and save/open the
+							// IRemoteConnection
 							if (wizard != null) {
 								wizard.setConnectionName(host);
 								try {
 									connection = wizard.open().save();
-									connection.open(null);
+									if (connection != null) {
+										connection.open(null);
+									}
 								} catch (RemoteConnectionException e) {
 									logger.error(getClass().getName() + " Exception!", e);
 								}

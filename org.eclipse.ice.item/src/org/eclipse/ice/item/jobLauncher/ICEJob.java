@@ -106,26 +106,6 @@ public class ICEJob extends Job {
 				return error("Error in executing the " + action.getActionName() + " Action.", null);
 			}
 
-			// If the status was NeedsInfo, we need to relay that to
-			// the JobLauncher
-			if (tempStatus.equals(FormStatus.NeedsInfo)) {
-				// Set the status so the JobLauncher will see it
-				status = FormStatus.NeedsInfo;
-
-				// Wait till the new form has been submitted and
-				// the job has finished.
-				while (tempStatus.equals(FormStatus.NeedsInfo)) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e1) {
-						return error("Error in executing the " + action.getActionName() + " Action.", e1);
-					}
-					tempStatus = currentlyRunningAction.getStatus();
-				}
-
-				status = FormStatus.Processing;
-			}
-
 			// Check for Eclipse Job cancellations.
 			if (monitor.isCanceled()) {
 				currentlyRunningAction.cancel();

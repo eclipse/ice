@@ -944,7 +944,7 @@ public class JobLauncher extends Item {
 				}
 
 				// Create the Eclipse Job for this Job Launch!
-				launchJob = new ICEJob(actionList, actionDataMap);
+				launchJob = createICEJob(actionList);
 
 				// Schedule it for execution,
 				// Give the Item a little time to
@@ -981,6 +981,20 @@ public class JobLauncher extends Item {
 			status = FormStatus.InfoError;
 			return status;
 		}
+	}
+
+	/**
+	 * This operation can be overrided by subclasses to return 
+	 * a custom ICEJob class. By default, it returns an ICEJob 
+	 * initialized with a list of Actions and the configured 
+	 * action data map. 
+	 * 
+	 * @param actionList List of Actions to execute.
+	 * @return
+	 */
+	protected ICEJob createICEJob(List<Action> actionList) {
+		// TODO Auto-generated method stub
+		return new ICEJob(actionList, actionDataMap);
 	}
 
 	/**
