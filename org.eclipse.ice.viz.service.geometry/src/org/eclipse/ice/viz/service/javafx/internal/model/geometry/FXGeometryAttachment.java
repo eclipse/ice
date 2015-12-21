@@ -134,7 +134,7 @@ public class FXGeometryAttachment extends GeometryAttachment {
 							// On update, refresh the list of top level nodes
 							fxAttachmentNode.getChildren().clear();
 
-							for (AbstractController child : geom
+							for (AbstractController child : finalGeom
 									.getEntities()) {
 								fxAttachmentNode.getChildren()
 										.add((Group) child.getRepresentation());

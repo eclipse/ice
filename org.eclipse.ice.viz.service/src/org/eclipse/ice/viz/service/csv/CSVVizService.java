@@ -21,6 +21,7 @@ import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -113,6 +114,12 @@ public class CSVVizService extends AbstractVizService {
 	@Override
 	public IVizCanvas createCanvas(AbstractController object) throws Exception {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IControllerFactory getFactory() {
+		// CSV visualization service does not make use of the model framework, so it has no factory
 		return null;
 	}
 

@@ -18,6 +18,7 @@ import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * <p>
@@ -72,6 +73,12 @@ public class FXMeshVizService extends AbstractVizService {
 	@Override
 	protected Set<String> findSupportedExtensions() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public IControllerFactory getFactory() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -19,6 +19,7 @@ import org.eclipse.ice.viz.service.connections.ConnectionVizService;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
@@ -174,6 +175,16 @@ public class ParaViewVizService
 			proxyFactory = null;
 		}
 		return;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+	 */
+	@Override
+	public IControllerFactory getFactory() {
+		// The ParaView visualization service does not make use of the model framework, so it has no factory
+		return null;
 	}
 
 }

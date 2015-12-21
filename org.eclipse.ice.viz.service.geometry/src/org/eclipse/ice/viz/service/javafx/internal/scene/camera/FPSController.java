@@ -107,10 +107,10 @@ public class FPSController extends CameraController {
 
 		final Group xform = (Group) camera.getParent();
 
-		Rotate x = new Rotate();
+		final Rotate x = new Rotate();
 		x.setAxis(Rotate.X_AXIS);
 
-		Rotate y = new Rotate();
+		final Rotate y = new Rotate();
 		y.setAxis(Rotate.Y_AXIS);
 
 		Rotate z = new Rotate();
@@ -198,7 +198,8 @@ public class FPSController extends CameraController {
 				mousePosY = arg0.getSceneY();
 				mouseDeltaX = (mousePosX - mouseOldX);
 				mouseDeltaY = (mousePosY - mouseOldY);
-
+				
+				System.out.println(mouseDeltaX + " " + mouseDeltaY);
 				double modifier = 1.0;
 
 				if (arg0.isPrimaryButtonDown()) {

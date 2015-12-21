@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;
 import org.eclipse.ice.viz.service.connections.ConnectionVizService;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
@@ -117,5 +118,15 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	@Override
 	public String getVersion() {
 		return "1.0";
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+	 */
+	@Override
+	public IControllerFactory getFactory() {
+		// The VisIt visualization service does not make use of the model framework, so it has no factory
+		return null;
 	}
 }

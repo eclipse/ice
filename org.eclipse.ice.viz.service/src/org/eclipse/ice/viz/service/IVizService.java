@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * This is a pluggable service interface whereby visualization engines can
@@ -59,6 +60,13 @@ public interface IVizService {
 	 *             a canvas with the given object and giving the reason why.
 	 */
 	public IVizCanvas createCanvas(AbstractController object) throws Exception;
+	
+	/**
+	 * Returns a factory which will create views and controllers for model parts specific to the service's rendering program.
+	 * 
+	 * @return A factory that will create controllers compatible with this service
+	 */
+	public IControllerFactory getFactory();
 	
 	/**
 	 * This operation returns the name of the service. The name should be

@@ -17,7 +17,9 @@ import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.ice.viz.service.geometry.shapes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.modeling.Shape;
 
 /**
@@ -76,6 +78,11 @@ public class GeometryVizService extends AbstractVizService {
 	@Override
 	protected Set<String> findSupportedExtensions() {
 		return Collections.emptySet();
+	}
+
+	@Override
+	public IControllerFactory getFactory() {
+		return new FXShapeControllerFactory();
 	}
 
 }

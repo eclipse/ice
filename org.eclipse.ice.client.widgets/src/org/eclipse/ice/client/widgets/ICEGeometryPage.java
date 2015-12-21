@@ -56,6 +56,11 @@ public class ICEGeometryPage extends ICEFormPage
 	 * 
 	 */
 	private GeometryComponent geometryComp;
+	
+	/**
+	 * The visualization service that is providing the graphical implementation for the geometry editor.
+	 */
+	private IVizService service;
 
 	/**
 	 * <p>
@@ -125,7 +130,6 @@ public class ICEGeometryPage extends ICEFormPage
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
-		// shapeTreeView.setFactory(new JME3ControllerFactory());
 		shapeTreeView.setGeometry(geometryComp.getGeometry());
 
 		return;
@@ -173,6 +177,9 @@ public class ICEGeometryPage extends ICEFormPage
 		// Get JME3 Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		IVizService service = factory.get("ICE Geometry Editor");
+		((ShapeTreeView) getSite()
+		.getWorkbenchWindow().getActivePage()
+		.findView(ShapeTreeView.ID)).setFactory(service.getFactory());
 
 		// Create and draw geometry canvas
 		try {

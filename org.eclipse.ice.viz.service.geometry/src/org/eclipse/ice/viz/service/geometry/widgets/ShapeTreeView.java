@@ -342,8 +342,6 @@ public class ShapeTreeView extends ViewPart
 	 *            The new factory to store in this view
 	 */
 	public void setFactory(IControllerFactory factory) {
-		// TODO Uncomment after the JavaFX implementation is moved to its own
-		// package
-		// this.factory = factory;
+		this.factory = factory;
 	}
 }
