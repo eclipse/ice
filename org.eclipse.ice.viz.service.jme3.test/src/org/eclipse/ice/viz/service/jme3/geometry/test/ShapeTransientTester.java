@@ -10,14 +10,14 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.test.geometry;
+package org.eclipse.ice.viz.service.jme3.geometry.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
 import org.eclipse.ice.viz.service.jme3.geometry.JME3Shape;
+import org.eclipse.ice.viz.service.jme3.geometry.ShapeTransient;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.ShapeComponent;
 import org.junit.Test;

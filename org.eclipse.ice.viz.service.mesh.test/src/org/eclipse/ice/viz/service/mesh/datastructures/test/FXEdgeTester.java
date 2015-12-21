@@ -13,8 +13,8 @@ package org.eclipse.ice.viz.service.mesh.datastructures.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.mesh.datastructures.FXEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.FXMeshControllerFactory;
+import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXEdge;
+import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractView;

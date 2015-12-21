@@ -83,12 +83,12 @@
 		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
 		<module>org.eclipse.ice.client.widgets.rcp</module>
-		<!-- <module>org.eclipse.ice.client.widgets.test</module> -->
+		<module>org.eclipse.ice.client.widgets.test</module>
 		<module>org.eclipse.ice.client.widgets.test.utils</module>
 		<module>org.eclipse.ice.client.widgets.rcp.test</module>
 		<module>org.eclipse.ice.client.rcp</module>
 		<module>org.eclipse.ice.datastructures</module>
-		<!-- <module>org.eclipse.ice.datastructures.test</module> -->
+		<module>org.eclipse.ice.datastructures.test</module>
 		<module>org.eclipse.ice.developer</module>
 		<module>org.eclipse.ice.developer.moose</module>
 		<module>org.eclipse.ice.core</module>
@@ -96,19 +96,19 @@
 		<module>org.eclipse.ice.item</module>
 		<!-- <module>org.eclipse.ice.item.test</module> -->
 		<module>org.eclipse.ice.persistence.xml</module>
-		<!-- <module>org.eclipse.ice.persistence.xml.test</module> -->
+		<module>org.eclipse.ice.persistence.xml.test</module>
 		<module>org.eclipse.ice.io</module>
-		<!-- <module>org.eclipse.ice.io.test</module> -->
+		<module>org.eclipse.ice.io.test</module>
 		<module>org.eclipse.ice.analysistool</module>
 		<module>org.eclipse.ice.reactor</module>
-		<!-- <module>org.eclipse.ice.reactor.test</module> -->
+		<module>org.eclipse.ice.reactor.test</module>
 		<module>org.eclipse.ice.reactor.sfr</module>
-		<!-- <module>org.eclipse.ice.reactor.sfr.test</module> -->
+		<module>org.eclipse.ice.reactor.sfr.test</module>
 		<module>org.eclipse.ice.reactor.plant</module>
-		<!-- <module>org.eclipse.ice.reactor.plant.test</module> -->
+		<module>org.eclipse.ice.reactor.plant.test</module>
 		<module>org.eclipse.ice.reactor.perspective</module>
 		<module>org.eclipse.ice.reactorAnalyzer</module>
-		<!-- <module>org.eclipse.ice.reactorAnalyzer.test</module> -->
+		<module>org.eclipse.ice.reactorAnalyzer.test</module>
 		<module>org.eclipse.ice.vibe</module>
 		<module>org.eclipse.ice.vibe.test</module>
 		<module>org.eclipse.ice.kdd</module>

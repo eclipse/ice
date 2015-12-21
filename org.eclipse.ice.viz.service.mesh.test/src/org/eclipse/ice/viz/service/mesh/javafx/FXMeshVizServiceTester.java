@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.mesh.javafx;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.ice.viz.service.javafx.mesh.FXMeshVizService;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractView;

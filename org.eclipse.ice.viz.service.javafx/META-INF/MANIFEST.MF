@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Geometry Visualization Service Plugin
+Bundle-Name: JavaFX Visualization Services Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.javafx;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -17,5 +17,7 @@ Import-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.mesh.datastructures,
  org.eclipse.ice.viz.service.mesh.properties,
  org.eclipse.ice.viz.service.modeling
-Export-Package: org.eclipse.ice.viz.service.javafx.geometry.datatypes
+Export-Package: org.eclipse.ice.viz.service.javafx.geometry.datatypes,
+ org.eclipse.ice.viz.service.javafx.mesh,
+ org.eclipse.ice.viz.service.javafx.mesh.datatypes
 

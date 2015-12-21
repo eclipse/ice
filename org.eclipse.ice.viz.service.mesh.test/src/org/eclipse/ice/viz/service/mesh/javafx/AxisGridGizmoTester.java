@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.mesh.javafx;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.ice.viz.service.javafx.mesh.AxisGridGizmo;
 import org.junit.Test;
 
 /**

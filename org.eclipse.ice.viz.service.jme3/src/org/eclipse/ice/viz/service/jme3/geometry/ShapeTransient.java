@@ -10,15 +10,11 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.service.geometry.widgets;
+package org.eclipse.ice.viz.service.jme3.geometry;
 
 import java.io.IOException;
 
 import org.eclipse.ice.viz.service.modeling.Shape;
-
-import com.jme3.export.JmeExporter;
-import com.jme3.export.JmeImporter;
-import com.jme3.export.Savable;
 
 /**
  * <p>

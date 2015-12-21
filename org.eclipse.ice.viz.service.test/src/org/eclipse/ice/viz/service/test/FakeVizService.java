@@ -19,6 +19,7 @@ import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * This is a fake IVizService that is used in testing. The only thing it really
@@ -96,7 +97,15 @@ public class FakeVizService implements IVizService {
 	 */
 	@Override
 	public IVizCanvas createCanvas(AbstractController object) throws Exception {
-		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+	 */
+	@Override
+	public IControllerFactory getFactory() {
 		return null;
 	}
 

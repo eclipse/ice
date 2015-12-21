@@ -18,6 +18,8 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;

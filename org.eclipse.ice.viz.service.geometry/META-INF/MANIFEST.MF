@@ -4,37 +4,41 @@ Bundle-Name: Geometry Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.geometry;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Service-Component: OSGI-INF/ControllerFactory.xml,
- OSGI-INF/vizGeometryService.xml
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Vendor: Oak Ridge National Laboratory
 Import-Package: com.jme3.app,
- com.jme3.asset,
+ com.jme3.app.state,
+ com.jme3.bullet,
+ com.jme3.bullet.collision.shapes,
+ com.jme3.bullet.control,
+ com.jme3.bullet.objects,
+ com.jme3.collision,
  com.jme3.export,
  com.jme3.font,
  com.jme3.input,
- com.jme3.light,
+ com.jme3.input.controls,
  com.jme3.material,
  com.jme3.math,
  com.jme3.renderer,
  com.jme3.renderer.queue,
  com.jme3.scene,
- com.jme3.scene.mesh,
+ com.jme3.scene.debug,
  com.jme3.scene.shape,
- com.jme3.system,
+ com.jme3.system.awt,
  com.jme3.util,
- gov.lbnl.visit.swt,
- gov.lbnl.visit.swt.widgets,
  javafx.embed.swt;version="2.2.0",
+ org.eclipse.core.internal.resources,
+ org.eclipse.draw2d.graph,
+ org.eclipse.e4.ui.workbench.modeling,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.datastructures,
  org.eclipse.ice.viz.service.datastructures.VizObject,
  org.eclipse.ice.viz.service.modeling,
  org.eclipse.jface.databinding.swt,
- org.slf4j;version="1.7.2",
- visit.java.client
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui
-Bundle-Vendor: Oak Ridge National Laboratory
-Eclipse-ExtensibleAPI: true
+ org.eclipse.ui,
+ org.eclipse.ui.views.properties,
+ org.eclipse.ui.views.properties.tabbed,
+ org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.geometry.widgets
-

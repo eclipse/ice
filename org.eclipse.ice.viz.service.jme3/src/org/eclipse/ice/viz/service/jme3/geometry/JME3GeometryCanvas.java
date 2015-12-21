@@ -27,7 +27,6 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.eclipse.swt.SWT;

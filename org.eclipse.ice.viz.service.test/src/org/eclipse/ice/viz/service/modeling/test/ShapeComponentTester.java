@@ -13,7 +13,9 @@ package org.eclipse.ice.viz.service.modeling.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Shape;
 import org.eclipse.ice.viz.service.modeling.ShapeComponent;
@@ -112,9 +114,10 @@ public class ShapeComponentTester {
 		 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable)
 		 */
 		@Override
-		public void update(IVizUpdateable component) {
+		public void update(IManagedVizUpdateable component,
+				UpdateableSubscriptionType[] type) {
 			updated = true;
-			super.update(component);
+			super.update(component, type);
 		}
 
 		/**

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry;
 
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXSelection;

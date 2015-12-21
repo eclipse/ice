@@ -30,6 +30,7 @@ import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.test.FakePlot;
 import org.eclipse.ice.viz.service.test.FakeSeries;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
@@ -149,6 +150,11 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 				Set<String> extensions = new HashSet<String>();
 				extensions.add("ext");
 				return extensions;
+			}
+
+			@Override
+			public IControllerFactory getFactory() {
+				return null;
 			}
 		};
 		factory.register(vizService);

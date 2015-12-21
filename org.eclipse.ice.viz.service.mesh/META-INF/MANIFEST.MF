@@ -1,54 +1,33 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Mesh Visualization Service Plugin
-Bundle-SymbolicName: org.eclipse.ice.viz.service.mesh;singleton:=true
+Bundle-Name: VisIt Visualization Service Plugin
+Bundle-SymbolicName: org.eclipse.ice.viz.service.visit;singleton:=true
 Bundle-Version: 2.1.7.20150825
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.eclipse.ice.viz.service.geometry
-Bundle-Vendor: Oak Ridge National Laboratory
-Export-Package: org.eclipse.ice.viz.service.mesh.datastructures,
- org.eclipse.ice.viz.service.mesh.javafx,
- org.eclipse.ice.viz.service.mesh.properties
-Import-Package: com.jme3.app,
- com.jme3.app.state,
- com.jme3.bullet,
- com.jme3.bullet.collision.shapes,
- com.jme3.bullet.control,
- com.jme3.bullet.objects,
- com.jme3.collision,
- com.jme3.font,
- com.jme3.input,
- com.jme3.input.controls,
- com.jme3.material,
- com.jme3.math,
- com.jme3.renderer,
- com.jme3.renderer.queue,
- com.jme3.scene,
- com.jme3.scene.debug,
- com.jme3.scene.shape,
- com.jme3.system.awt,
- com.jme3.util,
- javafx.embed.swt;version="2.2.0",
- org.eclipse.core.internal.resources,
- org.eclipse.draw2d.graph,
- org.eclipse.e4.ui.workbench.modeling,
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: gov.lbnl.visit.swt,
+ gov.lbnl.visit.swt.widgets,
+ org.eclipse.ice.client.common,
  org.eclipse.ice.viz.service,
+ org.eclipse.ice.viz.service.connections,
+ org.eclipse.ice.viz.service.connections.preferences,
  org.eclipse.ice.viz.service.datastructures,
  org.eclipse.ice.viz.service.datastructures.VizObject,
- org.eclipse.ice.viz.service.geometry,
- org.eclipse.ice.viz.service.geometry.scene.base,
- org.eclipse.ice.viz.service.geometry.scene.model,
- org.eclipse.ice.viz.service.geometry.viewer,
- org.eclipse.ice.viz.service.geometry.widgets,
- org.eclipse.ice.viz.service.javafx.internal,
- org.eclipse.ice.viz.service.javafx.internal.model,
- org.eclipse.ice.viz.service.javafx.internal.model.geometry,
- org.eclipse.ice.viz.service.javafx.internal.scene,
- org.eclipse.ice.viz.service.javafx.internal.scene.camera,
  org.eclipse.ice.viz.service.modeling,
+ org.eclipse.ice.viz.service.preferences,
+ org.eclipse.ice.viz.service.widgets,
+ org.eclipse.jface.preference,
+ org.eclipse.swt,
+ org.eclipse.swt.graphics,
+ org.eclipse.swt.widgets,
  org.eclipse.ui,
- org.eclipse.ui.views.properties,
+ org.eclipse.ui.forms.events,
+ org.eclipse.ui.forms.widgets,
  org.eclipse.ui.views.properties.tabbed,
- org.slf4j;version="1.7.2"
+ org.slf4j;version="1.7.2",
+ visit.java.client
+Service-Component: OSGI-INF/vizService.xml
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.ice.viz.service.mesh.datastructures,
+ org.eclipse.ice.viz.service.mesh.properties

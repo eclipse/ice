@@ -21,13 +21,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.nek5000.NekReader;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.junit.Test;
 
 /**
@@ -167,30 +171,42 @@ public class NekReaderTester {
 		
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices each
 		assertEquals(64, meshComponent.getPolygons().size());
-		assertEquals(256, meshComponent.getEdges().size());
-		assertEquals(256, meshComponent.getVertices().size());
+		
+		//Lists of all the edges/vertices for all the polygons
+		List<AbstractController> edges = new ArrayList<AbstractController>();
+		List<AbstractController> vertices = new ArrayList<AbstractController>();
+		
+		//Populate the list by getting the child objects of each polygon
+		for(AbstractController polygon : meshComponent.getPolygons()){
+			edges.addAll(polygon.getEntitiesByCategory("Edges"));
+			vertices.addAll(polygon.getEntitiesByCategory("Vertices"));
+		}
+		
+		
+		assertEquals(256, edges.size());
+		assertEquals(256, vertices.size());
 		
 		// Check the individual polygons, edges and vertices
-		Quad currQuad = new Quad();
 		BoundaryCondition currFluidCondition = new BoundaryCondition();
 		BoundaryCondition currThermalCondition = new BoundaryCondition();
 		BoundaryCondition currScalarCondition = new BoundaryCondition();
 		int currEdgeId;
-		for ( int i = 1; i <= 64; i++ ) {
+		
+		//The index of the current polygon
+		int index = 0;
+		
+		for (AbstractController currQuad : meshComponent.getPolygons() ) {
 			
 			/** --- Checking MeshComponent construction --- **/
 			
-			// Get current element/polygon
-			currQuad = (Quad) meshComponent.getPolygon(i);
-			
 			// Check current polygon has 4 edges and 4 vertices
-			assertEquals(4, currQuad.getEdges().size());
-			assertEquals(4, currQuad.getVertices().size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Edges").size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Vertices").size());
 			
 			// Verify it has non-null vertices and edges
 			for ( int j = 0; j < 4; j++ ) {
-				assertNotNull(currQuad.getEdges().get(j));
-				assertNotNull(currQuad.getVertices().get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Edges").get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Vertices").get(j));
 			}
 			
 			// No need to check if vertices and edges have unique IDs, the 
@@ -206,13 +222,13 @@ public class NekReaderTester {
 			for ( int j = 0; j < 4; j++ ) {
 				
 				// Grab the current edge ID
-				currEdgeId = currQuad.getEdges().get(j).getId();
+				currEdgeId = Integer.parseInt(currQuad.getEntitiesByCategory("Edges").get(j).getProperty("Id"));
 				
 				// Check the fluid boundary conditions (note: only the first
 				// 32 polygons have fluid boundary conditions
-				if ( i <= 32 ) {
+				if ( index <= 32 ) {
 					// Grab the fluid boundary condition associate to this edge
-					currFluidCondition = currQuad.getFluidBoundaryCondition(currEdgeId);
+					currFluidCondition = ((NekPolygon) currQuad).getFluidBoundaryCondition(currEdgeId);
 				
 					// Check the boundary condition, its type and values
 					assertNotNull(currFluidCondition);
@@ -222,7 +238,7 @@ public class NekReaderTester {
 				}
 				
 				// Grab the thermal boundary condition associate to this edge
-				currThermalCondition = currQuad.getThermalBoundaryCondition(currEdgeId);
+				currThermalCondition = ((NekPolygon) currQuad).getThermalBoundaryCondition(currEdgeId);
 				
 				// Check the boundary condition, its type and values
 				assertNotNull(currThermalCondition);
@@ -231,9 +247,12 @@ public class NekReaderTester {
 				assertTrue(currThermalCondition.getValues().size() == 5);
 				
 				// Note: conj_ht example has no passive scalar boundary conditions
-				currScalarCondition = currQuad.getOtherBoundaryCondition(1, currEdgeId);
+				currScalarCondition = ((NekPolygon) currQuad).getOtherBoundaryCondition(1, currEdgeId);
 				assertTrue(currScalarCondition == null);
 			}
+			
+			//Increment the index
+			index++;
 		}
 		
 		/* --- Checking CURVED SIDE DATA component --- */
@@ -250,7 +269,7 @@ public class NekReaderTester {
 		assertEquals(7, curvedSides.getId());
 		
 		// Check that the curved sides component is empty
-		assertEquals(0, curvedSides.getEdges().size());
+		assertEquals(0, curvedSides.getPolygons().size());
 		
 		/* --- Checking PRESOLVE/RESTART OPTIONS component --- */
 		
@@ -503,33 +522,40 @@ public class NekReaderTester {
 		assertEquals(meshDescription, meshComponent.getDescription());
 		assertEquals(6, meshComponent.getId());
 		
+		//Lists of all the edges/vertices for all the polygons
+		List<AbstractController> edges = new ArrayList<AbstractController>();
+		List<AbstractController> vertices = new ArrayList<AbstractController>();
+		
+		//Populate the list by getting the child objects of each polygon
+		for(AbstractController polygon : meshComponent.getPolygons()){
+			edges.addAll(polygon.getEntitiesByCategory("Edges"));
+			vertices.addAll(polygon.getEntitiesByCategory("Vertices"));
+		}
+		
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices each
 		assertEquals(256, meshComponent.getPolygons().size());
-		assertEquals(1024, meshComponent.getEdges().size());
-		assertEquals(1024, meshComponent.getVertices().size());
+		assertEquals(1024, edges.size());
+		assertEquals(1024, vertices.size());
 		
 		// Check the individual polygons, edges and vertices
-		Quad currQuad = new Quad();
+		NekPolygon currQuad = new NekPolygon();
 		BoundaryCondition emptyCondition = new BoundaryCondition();
 		BoundaryCondition currFluidCondition = new BoundaryCondition();
 		BoundaryCondition currThermalCondition = new BoundaryCondition();
 		BoundaryCondition currScalarCondition = new BoundaryCondition();
 		int currEdgeId;
-		for ( int i = 1; i <= 256; i++ ) {
+		for ( AbstractController currQuad1 : meshComponent.getPolygons() ) {
 			
 			/** --- Checking MeshComponent construction --- **/
 			
-			// Get current element/polygon
-			currQuad = (Quad) meshComponent.getPolygon(i);
-			
 			// Check current polygon has 4 edges and 4 vertices
-			assertEquals(4, currQuad.getEdges().size());
-			assertEquals(4, currQuad.getVertices().size());
+			assertEquals(4, currQuad1.getEntitiesByCategory("Edges").size());
+			assertEquals(4, currQuad1.getEntitiesByCategory("Vertices").size());
 			
 			// Verify it has non-null vertices and edges
 			for ( int j = 0; j < 4; j++ ) {
-				assertNotNull(currQuad.getEdges().get(j));
-				assertNotNull(currQuad.getVertices().get(j));
+				assertNotNull(currQuad1.getEntitiesByCategory("Edges").get(j));
+				assertNotNull(currQuad1.getEntitiesByCategory("Vertices").get(j));
 			}
 			
 			// No need to check if vertices and edges have unique IDs, the 
@@ -545,10 +571,10 @@ public class NekReaderTester {
 			for ( int j = 0; j < 4; j++ ) {
 				
 				// Grab the current edge ID
-				currEdgeId = currQuad.getEdges().get(j).getId();
+				currEdgeId = Integer.parseInt(currQuad1.getEntitiesByCategory("Edges").get(j).getProperty("Id"));
 				
 				// Grab the fluid boundary condition associate to this edge
-				currFluidCondition = currQuad.getFluidBoundaryCondition(currEdgeId);
+				currFluidCondition = ((NekPolygon) currQuad1).getFluidBoundaryCondition(currEdgeId);
 			
 				// Check the boundary condition, its type and values
 				assertNotNull(currFluidCondition);
@@ -557,13 +583,13 @@ public class NekReaderTester {
 				assertTrue(currFluidCondition.getValues().size() == 5);
 				
 				// Grab the thermal boundary condition associated to this edge
-				currThermalCondition = currQuad.getThermalBoundaryCondition(currEdgeId);
+				currThermalCondition = ((NekPolygon) currQuad1).getThermalBoundaryCondition(currEdgeId);
 				
 				// Verify it has an empty BC (no thermal BCs for eddy_uv)
 				assertTrue(currThermalCondition.equals(emptyCondition));
 				
 				// Grab the passive scalar BC and verify it's null (no passive scalars for conj_ht)
-				currScalarCondition = currQuad.getOtherBoundaryCondition(1, currEdgeId);
+				currScalarCondition = ((NekPolygon) currQuad1).getOtherBoundaryCondition(1, currEdgeId);
 				assertTrue(currScalarCondition == null);
 			}
 		}
@@ -582,7 +608,7 @@ public class NekReaderTester {
 		assertEquals(7, curvedSides.getId());
 		
 		// Check that the curved sides component is empty
-		assertEquals(0, curvedSides.getEdges().size());
+		assertEquals(0, curvedSides.getPolygons().size());
 		
 		/* --- Checking PRESOLVE/RESTART OPTIONS component --- */
 		
@@ -835,33 +861,39 @@ public class NekReaderTester {
 		assertEquals(meshDescription, meshComponent.getDescription());
 		assertEquals(6, meshComponent.getId());
 		
+		//Lists of all the edges/vertices for all the polygons
+		List<AbstractController> edges = new ArrayList<AbstractController>();
+		List<AbstractController> vertices = new ArrayList<AbstractController>();
+		
+		//Populate the list by getting the child objects of each polygon
+		for(AbstractController polygon : meshComponent.getPolygons()){
+			edges.addAll(polygon.getEntitiesByCategory("Edges"));
+			vertices.addAll(polygon.getEntitiesByCategory("Vertices"));
+		}
+		
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices each
 		assertEquals(8, meshComponent.getPolygons().size());
-		assertEquals(32, meshComponent.getEdges().size());
-		assertEquals(32, meshComponent.getVertices().size());
+		assertEquals(32, edges.size());
+		assertEquals(32, vertices.size());
 		
 		// Check the individual polygons, edges and vertices
-		Quad currQuad = new Quad();
 		BoundaryCondition emptyCondition = new BoundaryCondition();
 		BoundaryCondition currFluidCondition = new BoundaryCondition();
 		BoundaryCondition currThermalCondition = new BoundaryCondition();
 		BoundaryCondition currScalarCondition = new BoundaryCondition();
 		int currEdgeId;
-		for ( int i = 1; i <= 8; i++ ) {
+		for ( AbstractController currQuad : meshComponent.getPolygons() ) {
 			
 			/** --- Checking MeshComponent construction --- **/
 			
-			// Get current element/polygon
-			currQuad = (Quad) meshComponent.getPolygon(i);
-			
 			// Check current polygon has 4 edges and 4 vertices
-			assertEquals(4, currQuad.getEdges().size());
-			assertEquals(4, currQuad.getVertices().size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Edges").size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Vertices").size());
 			
 			// Verify it has non-null vertices and edges
 			for ( int j = 0; j < 4; j++ ) {
-				assertNotNull(currQuad.getEdges().get(j));
-				assertNotNull(currQuad.getVertices().get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Edges").get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Vertices").get(j));
 			}
 			
 			// No need to check if vertices and edges have unique IDs, the 
@@ -877,10 +909,10 @@ public class NekReaderTester {
 			for ( int j = 0; j < 4; j++ ) {
 				
 				// Grab the current edge ID
-				currEdgeId = currQuad.getEdges().get(j).getId();
+				currEdgeId = Integer.parseInt(currQuad.getEntitiesByCategory("Edges").get(j).getProperty("Id"));
 
 				// Grab the fluid boundary condition associate to this edge
-				currFluidCondition = currQuad.getFluidBoundaryCondition(currEdgeId);
+				currFluidCondition = ((NekPolygon) currQuad).getFluidBoundaryCondition(currEdgeId);
 			
 				// Check the boundary condition, its type and values
 				assertNotNull(currFluidCondition);
@@ -889,13 +921,13 @@ public class NekReaderTester {
 				assertTrue(currFluidCondition.getValues().size() == 5);
 				
 				// Grab the thermal boundary condition associate to this edge
-				currThermalCondition = currQuad.getThermalBoundaryCondition(currEdgeId);
+				currThermalCondition = ((NekPolygon) currQuad).getThermalBoundaryCondition(currEdgeId);
 				
 				// Check the boundary condition is empty (no thermal BCs for kov)
 				assertTrue(currThermalCondition.equals(emptyCondition));
 				
 				// Grab the passive scalar BC and verify it's null (no passive scalars for conj_ht)
-				currScalarCondition = currQuad.getOtherBoundaryCondition(1, currEdgeId);
+				currScalarCondition = ((NekPolygon) currQuad).getOtherBoundaryCondition(1, currEdgeId);
 				assertTrue(currScalarCondition == null);
 			}
 		}
@@ -914,7 +946,7 @@ public class NekReaderTester {
 		assertEquals(7, curvedSides.getId());
 		
 		// Check that the curved sides component is empty
-		assertEquals(0, curvedSides.getEdges().size());
+		assertEquals(0, curvedSides.getPolygons().size());
 		
 		/* --- Checking PRESOLVE/RESTART OPTIONS component --- */
 		
@@ -1168,32 +1200,38 @@ public class NekReaderTester {
 		assertEquals(meshDescription, meshComponent.getDescription());
 		assertEquals(6, meshComponent.getId());
 		
+		//Lists of all the edges/vertices for all the polygons
+		List<AbstractController> edges = new ArrayList<AbstractController>();
+		List<AbstractController> vertices = new ArrayList<AbstractController>();
+		
+		//Populate the list by getting the child objects of each polygon
+		for(AbstractController polygon : meshComponent.getPolygons()){
+			edges.addAll(polygon.getEntitiesByCategory("Edges"));
+			vertices.addAll(polygon.getEntitiesByCategory("Vertices"));
+		}
+		
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices each
 		assertEquals(3, meshComponent.getPolygons().size());
-		assertEquals(12, meshComponent.getEdges().size());
-		assertEquals(12, meshComponent.getVertices().size());
+		assertEquals(12, edges.size());
+		assertEquals(12, vertices.size());
 		
 		// Check the individual polygons, edges and vertices
-		Quad currQuad = new Quad();
 		BoundaryCondition currFluidCondition = new BoundaryCondition();
 		BoundaryCondition currThermalCondition = new BoundaryCondition();
 		BoundaryCondition currScalarCondition = new BoundaryCondition();
 		int currEdgeId;
-		for ( int i = 1; i <= 3; i++ ) {
+		for ( AbstractController currQuad : meshComponent.getPolygons() ) {
 			
 			/** --- Checking MeshComponent construction --- **/
 			
-			// Get current element/polygon
-			currQuad = (Quad) meshComponent.getPolygon(i);
-			
 			// Check current polygon has 4 edges and 4 vertices
-			assertEquals(4, currQuad.getEdges().size());
-			assertEquals(4, currQuad.getVertices().size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Edges").size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Vertices").size());
 			
 			// Verify it has non-null vertices and edges
 			for ( int j = 0; j < 4; j++ ) {
-				assertNotNull(currQuad.getEdges().get(j));
-				assertNotNull(currQuad.getVertices().get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Edges").get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Vertices").get(j));
 			}
 			
 			// No need to check if vertices and edges have unique IDs, the 
@@ -1209,10 +1247,10 @@ public class NekReaderTester {
 			for ( int j = 0; j < 4; j++ ) {
 				
 				// Grab the current edge ID
-				currEdgeId = currQuad.getEdges().get(j).getId();
+				currEdgeId = Integer.parseInt(currQuad.getEntitiesByCategory("Edges").get(j).getProperty("Id"));
 				
 				// Grab the fluid boundary condition associate to this edge
-				currFluidCondition = currQuad.getFluidBoundaryCondition(currEdgeId);
+				currFluidCondition = ((NekPolygon) currQuad).getFluidBoundaryCondition(currEdgeId);
 			
 				// Check the boundary condition, its type and values
 				assertNotNull(currFluidCondition);
@@ -1221,7 +1259,7 @@ public class NekReaderTester {
 				assertTrue(currFluidCondition.getValues().size() == 5);
 				
 				// Grab the thermal boundary condition associated to this edge
-				currThermalCondition = currQuad.getThermalBoundaryCondition(currEdgeId);
+				currThermalCondition = ((NekPolygon) currQuad).getThermalBoundaryCondition(currEdgeId);
 				
 				// Check the boundary condition, its type and values
 				assertNotNull(currThermalCondition);
@@ -1230,7 +1268,7 @@ public class NekReaderTester {
 				assertTrue(currThermalCondition.getValues().size() == 5);
 				
 				// Grab the passive scalar BC and verify it's null (no passive scalars for ray_dd)
-				currScalarCondition = currQuad.getOtherBoundaryCondition(1, currEdgeId);
+				currScalarCondition = ((NekPolygon) currQuad).getOtherBoundaryCondition(1, currEdgeId);
 				assertTrue(currScalarCondition == null);
 			}
 		}
@@ -1249,7 +1287,7 @@ public class NekReaderTester {
 		assertEquals(7, curvedSides.getId());
 		
 		// Check that the curved sides component is empty
-		assertEquals(0, curvedSides.getEdges().size());
+		assertEquals(0, curvedSides.getPolygons().size());
 		
 		/* --- Checking PRESOLVE/RESTART OPTIONS component --- */
 		
@@ -1502,32 +1540,38 @@ public class NekReaderTester {
 		assertEquals(meshDescription, meshComponent.getDescription());
 		assertEquals(6, meshComponent.getId());
 		
+		//Lists of all the edges/vertices for all the polygons
+		List<AbstractController> edges = new ArrayList<AbstractController>();
+		List<AbstractController> vertices = new ArrayList<AbstractController>();
+		
+		//Populate the list by getting the child objects of each polygon
+		for(AbstractController polygon : meshComponent.getPolygons()){
+			edges.addAll(polygon.getEntitiesByCategory("Edges"));
+			vertices.addAll(polygon.getEntitiesByCategory("Vertices"));
+		}
+		
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices each
 		assertEquals(3, meshComponent.getPolygons().size());
-		assertEquals(12, meshComponent.getEdges().size());
-		assertEquals(12, meshComponent.getVertices().size());
+		assertEquals(12, edges.size());
+		assertEquals(12, vertices.size());
 		
 		// Check the individual polygons, edges and vertices
-		Quad currQuad = new Quad();
 		BoundaryCondition currFluidCondition = new BoundaryCondition();
 		BoundaryCondition currThermalCondition = new BoundaryCondition();
 		BoundaryCondition currScalarCondition = new BoundaryCondition();
 		int currEdgeId;
-		for ( int i = 1; i <= 3; i++ ) {
+		for ( AbstractController currQuad : meshComponent.getPolygons() ) {
 			
 			/** --- Checking MeshComponent construction --- **/
 			
-			// Get current element/polygon
-			currQuad = (Quad) meshComponent.getPolygon(i);
-			
 			// Check current polygon has 4 edges and 4 vertices
-			assertEquals(4, currQuad.getEdges().size());
-			assertEquals(4, currQuad.getVertices().size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Edges").size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Vertices").size());
 			
 			// Verify it has non-null vertices and edges
 			for ( int j = 0; j < 4; j++ ) {
-				assertNotNull(currQuad.getEdges().get(j));
-				assertNotNull(currQuad.getVertices().get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Edges").get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Vertices").get(j));
 			}
 			
 			// No need to check if vertices and edges have unique IDs, the 
@@ -1543,10 +1587,10 @@ public class NekReaderTester {
 			for ( int j = 0; j < 4; j++ ) {
 				
 				// Grab the current edge ID
-				currEdgeId = currQuad.getEdges().get(j).getId();
+				currEdgeId = Integer.parseInt(currQuad.getEntitiesByCategory("Edges").get(j).getProperty("Id"));
 				
 				// Grab the fluid boundary condition associate to this edge
-				currFluidCondition = currQuad.getFluidBoundaryCondition(currEdgeId);
+				currFluidCondition = ((NekPolygon) currQuad).getFluidBoundaryCondition(currEdgeId);
 			
 				// Check the boundary condition, its type and values
 				assertNotNull(currFluidCondition);
@@ -1555,7 +1599,7 @@ public class NekReaderTester {
 				assertTrue(currFluidCondition.getValues().size() == 5);
 				
 				// Grab the thermal boundary condition associated to this edge
-				currThermalCondition = currQuad.getThermalBoundaryCondition(currEdgeId);
+				currThermalCondition = ((NekPolygon) currQuad).getThermalBoundaryCondition(currEdgeId);
 				
 				// Check the boundary condition, its type and values
 				assertNotNull(currThermalCondition);
@@ -1564,7 +1608,7 @@ public class NekReaderTester {
 				assertTrue(currThermalCondition.getValues().size() == 5);
 				
 				// Grab the passive scalar BC and verify it's null (no passive scalars for ray_nn)
-				currScalarCondition = currQuad.getOtherBoundaryCondition(1, currEdgeId);
+				currScalarCondition = ((NekPolygon) currQuad).getOtherBoundaryCondition(1, currEdgeId);
 				assertTrue(currScalarCondition == null);
 			}
 		}
@@ -1583,7 +1627,7 @@ public class NekReaderTester {
 		assertEquals(7, curvedSides.getId());
 		
 		// Check that the curved sides component is empty
-		assertEquals(0, curvedSides.getEdges().size());
+		assertEquals(0, curvedSides.getPolygons().size());
 		
 		/* --- Checking PRESOLVE/RESTART OPTIONS component --- */
 		
@@ -1836,32 +1880,38 @@ public class NekReaderTester {
 		assertEquals(meshDescription, meshComponent.getDescription());
 		assertEquals(6, meshComponent.getId());
 		
+		//Lists of all the edges/vertices for all the polygons
+		List<AbstractController> edges = new ArrayList<AbstractController>();
+		List<AbstractController> vertices = new ArrayList<AbstractController>();
+		
+		//Populate the list by getting the child objects of each polygon
+		for(AbstractController polygon : meshComponent.getPolygons()){
+			edges.addAll(polygon.getEntitiesByCategory("Edges"));
+			vertices.addAll(polygon.getEntitiesByCategory("Vertices"));
+		}
+		
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices each
 		assertEquals(20, meshComponent.getPolygons().size());
-		assertEquals(80, meshComponent.getEdges().size());
-		assertEquals(80, meshComponent.getVertices().size());
+		assertEquals(80, edges.size());
+		assertEquals(80, vertices.size());
 		
 		// Check the individual polygons, edges and vertices
-		Quad currQuad = new Quad();
 		BoundaryCondition currFluidCondition = new BoundaryCondition();
 		BoundaryCondition currThermalCondition = new BoundaryCondition();
 		BoundaryCondition currScalarCondition = new BoundaryCondition();
 		int currEdgeId;
-		for ( int i = 1; i <= 20; i++ ) {
+		for ( AbstractController currQuad : meshComponent.getPolygons() ) {
 			
 			/** --- Checking MeshComponent construction --- **/
 			
-			// Get current element/polygon
-			currQuad = (Quad) meshComponent.getPolygon(i);
-			
 			// Check current polygon has 4 edges and 4 vertices
-			assertEquals(4, currQuad.getEdges().size());
-			assertEquals(4, currQuad.getVertices().size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Edges").size());
+			assertEquals(4, currQuad.getEntitiesByCategory("Vertices").size());
 			
 			// Verify it has non-null vertices and edges
 			for ( int j = 0; j < 4; j++ ) {
-				assertNotNull(currQuad.getEdges().get(j));
-				assertNotNull(currQuad.getVertices().get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Edges").get(j));
+				assertNotNull(currQuad.getEntitiesByCategory("Vertices").get(j));
 			}
 			
 			// No need to check if vertices and edges have unique IDs, the 
@@ -1877,10 +1927,10 @@ public class NekReaderTester {
 			for ( int j = 0; j < 4; j++ ) {
 				
 				// Grab the current edge ID
-				currEdgeId = currQuad.getEdges().get(j).getId();
+				currEdgeId = Integer.parseInt(currQuad.getEntitiesByCategory("Edges").get(j).getProperty("Id"));
 				
 				// Grab the fluid boundary condition associate to this edge
-				currFluidCondition = currQuad.getFluidBoundaryCondition(currEdgeId);
+				currFluidCondition = ((NekPolygon) currQuad).getFluidBoundaryCondition(currEdgeId);
 			
 				// Check the boundary condition, its type and values
 				assertNotNull(currFluidCondition);
@@ -1889,7 +1939,7 @@ public class NekReaderTester {
 				assertTrue(currFluidCondition.getValues().size() == 5);
 				
 				// Grab the thermal boundary condition associated to this edge
-				currThermalCondition = currQuad.getThermalBoundaryCondition(currEdgeId);
+				currThermalCondition = ((NekPolygon) currQuad).getThermalBoundaryCondition(currEdgeId);
 				
 				// Check the boundary condition, its type and values
 				assertNotNull(currThermalCondition);
@@ -1898,7 +1948,7 @@ public class NekReaderTester {
 				assertTrue(currThermalCondition.getValues().size() == 5);
 				
 				// Grab the passive scalar BC and verify it's null (no passive scalars for ray_dd)
-				currScalarCondition = currQuad.getOtherBoundaryCondition(1, currEdgeId);
+				currScalarCondition = ((NekPolygon) currQuad).getOtherBoundaryCondition(1, currEdgeId);
 				assertTrue(currScalarCondition == null);
 			}
 		}
@@ -1917,7 +1967,7 @@ public class NekReaderTester {
 		assertEquals(7, curvedSides.getId());
 		
 		// Check that the curved sides component is empty
-		assertEquals(0, curvedSides.getEdges().size());
+		assertEquals(0, curvedSides.getPolygons().size());
 		
 		/* --- Checking PRESOLVE/RESTART OPTIONS component --- */
 		
