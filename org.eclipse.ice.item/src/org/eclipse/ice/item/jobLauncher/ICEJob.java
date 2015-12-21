@@ -35,27 +35,27 @@ public class ICEJob extends Job {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ICEJob.class);
+	protected static final Logger logger = LoggerFactory.getLogger(ICEJob.class);
 
 	/**
 	 * The list of Actions to execute
 	 */
-	private List<Action> actions;
+	protected List<Action> actions;
 
 	/**
 	 * The key-value pairs to be used as input to each Action.
 	 */
-	private Dictionary<String, String> actionDataMap;
+	protected Dictionary<String, String> actionDataMap;
 
 	/**
 	 * The Form Status produced by the Action executions.
 	 */
-	private FormStatus status;
+	protected FormStatus status;
 
 	/**
 	 * Reference to the currently executing Action.
 	 */
-	private Action currentlyRunningAction;
+	protected Action currentlyRunningAction;
 
 	/**
 	 * The Constructor.
@@ -169,7 +169,15 @@ public class ICEJob extends Job {
 		return currentlyRunningAction.cancel();
 	}
 
-	private IStatus error(String message, Exception e) {
+	/**
+	 * This protected utility method is used to report errors in the 
+	 * Job execution. 
+	 * 
+	 * @param message
+	 * @param e
+	 * @return
+	 */
+	protected IStatus error(String message, Exception e) {
 		if (e == null) {
 			logger.error(message);
 		} else {

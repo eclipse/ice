@@ -561,7 +561,7 @@ public class JobLauncher extends Item {
 	 *         cause the calling operation to fail if the latter is returned.
 	 *         </p>
 	 */
-	private FormStatus fillActionDataMap() {
+	protected FormStatus fillActionDataMap() {
 
 		// Local Declarations
 		String filename = null, hostname = null;
