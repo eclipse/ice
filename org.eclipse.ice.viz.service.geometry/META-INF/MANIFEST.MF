@@ -31,19 +31,10 @@ Import-Package: com.jme3.app,
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2",
  visit.java.client
-Export-Package: org.eclipse.ice.viz.service.geometry,
- org.eclipse.ice.viz.service.geometry.scene.base,
- org.eclipse.ice.viz.service.geometry.scene.model,
- org.eclipse.ice.viz.service.geometry.shapes,
- org.eclipse.ice.viz.service.geometry.viewer,
- org.eclipse.ice.viz.service.geometry.widgets,
- org.eclipse.ice.viz.service.javafx.internal,
- org.eclipse.ice.viz.service.javafx.internal.model,
- org.eclipse.ice.viz.service.javafx.internal.model.geometry,
- org.eclipse.ice.viz.service.javafx.internal.scene,
- org.eclipse.ice.viz.service.javafx.internal.scene.camera
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Vendor: Oak Ridge National Laboratory
 Eclipse-ExtensibleAPI: true
+Export-Package: org.eclipse.ice.viz.service.geometry.shapes,
+ org.eclipse.ice.viz.service.geometry.widgets
 

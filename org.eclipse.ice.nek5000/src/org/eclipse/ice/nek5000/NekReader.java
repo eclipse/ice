@@ -25,13 +25,14 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.geometry.shapes.FXShapeControllerFactory;
+import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
 import org.eclipse.ice.viz.service.modeling.Edge;
 import org.eclipse.ice.viz.service.modeling.EdgeComponent;
 import org.eclipse.ice.viz.service.modeling.FaceComponent;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.modeling.Vertex;
 import org.eclipse.ice.viz.service.modeling.VertexComponent;
 
@@ -113,7 +114,7 @@ public class NekReader {
 
 	// TODO Replace this hardcoded factory with one chosen by the user to
 	// genereate the correct views
-	private FXShapeControllerFactory factory = new FXShapeControllerFactory();
+	private IControllerFactory factory = new FXShapeControllerFactory();
 
 	/**
 	 * Nullary constructor.

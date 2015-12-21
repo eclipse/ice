@@ -14,7 +14,6 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.geometry.shapes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
@@ -95,10 +94,6 @@ public class ShapeTreeView extends ViewPart
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-
-		// TODO Remove and consume the factory service through OSGI once the
-		// JavaFX implementation is moved to its own package
-		factory = new FXShapeControllerFactory();
 
 		// Create the actions
 
