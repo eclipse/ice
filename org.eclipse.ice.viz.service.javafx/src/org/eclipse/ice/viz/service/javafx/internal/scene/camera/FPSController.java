@@ -200,7 +200,7 @@ public class FPSController extends CameraController {
 				mouseDeltaY = (mousePosY - mouseOldY);
 
 				double modifier = 1.0;
-				System.out.println(mouseOldX + "->" + mousePosX + " " + mouseOldY + "->" + mousePosY);
+
 				if (arg0.isPrimaryButtonDown()) {
 					y.setAngle(y.getAngle() - mouseDeltaX);
 					x.setAngle(x.getAngle() + mouseDeltaY);

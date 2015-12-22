@@ -6,10 +6,12 @@ Bundle-Version: 2.1.7.20150825
 Fragment-Host: org.eclipse.ice.viz.service.mesh
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit
-Import-Package: org.apache.log4j,
+Import-Package: junit.framework;version="4.12.0",
+ org.apache.log4j,
  org.eclipse.ice.viz.service.javafx.mesh,
  org.eclipse.ice.viz.service.javafx.mesh.datatypes,
  org.eclipse.ice.viz.service.mesh.datastructures,
+ org.eclipse.ice.viz.service.modeling,
  org.eclipse.ice.viz.service.visit
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.viz.service.mesh.datastructures.test

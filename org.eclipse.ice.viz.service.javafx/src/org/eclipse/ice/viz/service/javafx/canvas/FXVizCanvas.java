@@ -23,6 +23,7 @@ import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
@@ -77,7 +78,8 @@ public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
 	 */
 	@Override
 	public Composite draw(Composite parent) throws Exception {
-		Composite viewerParent = new Composite(parent, SWT.NONE);
+		Composite viewerParent = new Composite(parent, SWT.FILL);
+		viewerParent.setBackground(new Color(null, 255, 0, 255));
 		viewerParent.setLayout(new FillLayout());
 
 		this.viewer = materializeViewer(viewerParent);
@@ -96,7 +98,7 @@ public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
 
 		loadPart(root);
 
-		return parent;
+		return viewerParent;
 	}
 
 	/**

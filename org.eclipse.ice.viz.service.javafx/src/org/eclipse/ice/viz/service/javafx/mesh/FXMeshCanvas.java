@@ -12,6 +12,8 @@ package org.eclipse.ice.viz.service.javafx.mesh;
 
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
+import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
@@ -221,8 +223,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 				}
 
 				// If the polygon wasn't selected, check each of its children to
-				// see
-				// if they were.
+				// see if they were.
 				else {
 					for (AbstractController part : polygon.getEntities()) {
 						if (((MeshSelection) meshSelection).selectedMeshPart == part) {

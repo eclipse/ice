@@ -38,7 +38,6 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.shape.Shape3D;
-import javafx.scene.shape.Sphere;
 
 /**
  * <p>
@@ -62,7 +61,7 @@ public class FXViewer extends AbstractViewer {
 	private Group root;
 
 	/** The active scene displayed to the end user. */
-	private Scene scene;
+	protected Scene scene;
 
 	/**
 	 * The content provider that generates JavaFX scene data from the geometry
@@ -71,10 +70,10 @@ public class FXViewer extends AbstractViewer {
 	private FXContentProvider contentProvider;
 
 	/** Default camera controller. */
-	private CameraController cameraController;
+	protected CameraController cameraController;
 
 	/** Default camera. */
-	private Camera defaultCamera;
+	protected Camera defaultCamera;
 
 	/**
 	 * <p>

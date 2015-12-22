@@ -20,8 +20,8 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.ice.viz.service.javafx.mesh.FXMeshVizService;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.jface.action.Action;
@@ -219,7 +219,9 @@ public class ICEMeshPage extends ICEFormPage
 
 		// Get JME3 Geometry service from factory
 		// IVizServiceFactory factory = editor.getVizServiceFactory();
-		IVizService service = new FXMeshVizService();
+		// IVizService service = new FXMeshVizService();
+		IVizServiceFactory factory = editor.getVizServiceFactory();
+		IVizService service = factory.get("ICE JavaFX Mesh Editor");
 
 		// Composite editorComposite = new Composite(parent, SWT.NONE);
 

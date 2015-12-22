@@ -168,6 +168,9 @@ public class FXAttachment extends AbstractAttachment {
 				}
 			});
 
+			// Have the geometry refreshed when it is added
+			handleUpdate(geom);
+
 			knownParts.add(geom);
 		}
 	}

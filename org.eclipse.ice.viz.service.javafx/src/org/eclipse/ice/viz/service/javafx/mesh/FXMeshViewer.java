@@ -13,11 +13,12 @@ package org.eclipse.ice.viz.service.javafx.mesh;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.javafx.canvas.FXContentProvider;
+import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
-import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
-import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
+import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
+import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownController;
 import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
+import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonComponent;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
@@ -30,7 +31,6 @@ import org.eclipse.ice.viz.service.modeling.FaceEdgeComponent;
 import org.eclipse.ice.viz.service.modeling.Vertex;
 import org.eclipse.ice.viz.service.modeling.VertexComponent;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 
 import javafx.event.EventHandler;
 import javafx.scene.AmbientLight;
@@ -38,7 +38,6 @@ import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.PointLight;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -64,21 +63,6 @@ public class FXMeshViewer extends FXViewer {
 	 * The number of units long each side of the squares in the grid will be
 	 */
 	final double SCALE = 3d;
-
-	/** The active scene displayed to the end user. */
-	private Scene scene;
-
-	/**
-	 * The content provider that generates JavaFX scene data from the geometry
-	 * editor scene model.
-	 */
-	private FXContentProvider contentProvider;
-
-	/** Default camera controller. */
-	private CameraController cameraController;
-
-	/** Default camera. */
-	private Camera defaultCamera;
 
 	/**
 	 * A handler which places new polygons on the screen based on mouse clicks.
@@ -215,8 +199,6 @@ public class FXMeshViewer extends FXViewer {
 		super(parent);
 
 		// Initialize the class variables
-		renderer = new FXRenderer();
-
 		attachmentManager = new FXMeshAttachmentManager();
 		renderer.register(FXMeshAttachment.class, attachmentManager);
 
@@ -277,6 +259,13 @@ public class FXMeshViewer extends FXViewer {
 					// Resolve the shape
 					AbstractController modelShape = (AbstractController) nodeParent
 							.getProperties().get(AbstractController.class);
+
+					// If four or more vertices have already been selected
+					// through some other method, then clear the selection and
+					// start over
+					if (selectedVertices.size() >= 4) {
+						clearSelection();
+					}
 
 					// If the vertex is already in the polygon currently being
 					// constructed, ignore it
@@ -886,6 +875,31 @@ public class FXMeshViewer extends FXViewer {
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void updateCamera(ICamera camera) {
+		if (!(camera instanceof FXCameraAttachment)) {
+			throw new IllegalArgumentException(
+					"Invalid camera attached to Mesh Viewer.");
+		}
+
+		FXCameraAttachment attachment = (FXCameraAttachment) camera;
+		Camera fxCamera = attachment.getFxCamera();
+
+		if (fxCamera == null) {
+			throw new NullPointerException(
+					"No camera was attached to Mesh Viewer");
+		}
+
+		cameraController = new TopDownController(fxCamera, scene, fxCanvas);
+
+		scene.setCamera(fxCamera);
+
+		defaultCamera = fxCamera;
+
+		// ((TopDownController) cameraController).fixToCamera(cursorPosition);
+
 	}
 
 }
