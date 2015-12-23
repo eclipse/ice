@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Edge;
 import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceComponent;
+import org.eclipse.ice.viz.service.modeling.FaceEdge;
 
 /**
  * A component for Faces within the Mesh Editor, making use of FaceEdges to
@@ -58,12 +59,12 @@ public class NekPolygonComponent extends EdgeAndVertexFaceComponent {
 			// Queue messages from adding the entity
 			updateManager.enqueue();
 
-			// Add the edge to the Edges cagtegory by default
+			// Add the edge to the Edges category by default
 			super.addEntity(entity);
 
 			// If the controller already exists, give a reference to it to the
 			// edge.
-			if (controller != null) {
+			if (entity instanceof FaceEdge && controller != null) {
 				entity.addEntityByCategory(controller, "Faces");
 			}
 
@@ -102,6 +103,19 @@ public class NekPolygonComponent extends EdgeAndVertexFaceComponent {
 			updateManager.flushQueue();
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#clone()
+	 */
+	@Override
+	public Object clone() {
+		// Create a new component, and make it a copy of this one.
+		NekPolygonComponent clone = new NekPolygonComponent();
+		clone.copy(this);
+		return clone;
 	}
 
 }

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * A Face component which keeps both its Edges and Vertices as its child
@@ -67,5 +70,36 @@ public class EdgeAndVertexFaceComponent extends FaceComponent {
 		// Otherwise, add the entity normally
 		super.addEntity(newEntity);
 
+	}
+
+	@Override
+	public void copy(AbstractMeshComponent otherObject) {
+
+		// Copy only if the other object is an EdgeAndVertexFaceComponent
+		if (otherObject instanceof EdgeAndVertexFaceComponent) {
+
+			// Queue messages from the new edges added
+			updateManager.enqueue();
+
+			// For each edge in the other face, add a copy of it to this one.
+			// This will bring in copies of the vertices as well
+			for (AbstractController entity : otherObject
+					.getEntitiesByCategory("Edges")) {
+				addEntity((Edge) entity.clone());
+			}
+
+			// Copy the rest of the object data
+			// Copy each of the other component's data members
+			type = otherObject.type;
+			properties = new HashMap<String, String>(otherObject.properties);
+
+			// Notify listeners of the change
+			UpdateableSubscriptionType[] eventTypes = {
+					UpdateableSubscriptionType.All };
+			updateManager.notifyListeners(eventTypes);
+
+			// Fire an update
+			updateManager.flushQueue();
+		}
 	}
 }

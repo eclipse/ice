@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.7.20150825" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.8" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -175,7 +175,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt.bupc"/>
       <feature id="org.eclipse.cdt.core.lrparser.feature"/>
       <feature id="org.eclipse.cdt.core.parser.upc.feature"/>
-      <feature id="org.eclipse.cdt.docker.launcher"/>
       <feature id="org.eclipse.cdt.gdb.source"/>
       <feature id="org.eclipse.cdt.gnu.build.source"/>
       <feature id="org.eclipse.cdt.gnu.debug.source"/>

@@ -17,7 +17,9 @@ Import-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.mesh.datastructures,
  org.eclipse.ice.viz.service.mesh.properties,
  org.eclipse.ice.viz.service.modeling
-Export-Package: org.eclipse.ice.viz.service.javafx.geometry.datatypes,
+Export-Package: org.eclipse.ice.viz.service.javafx.geometry,
+ org.eclipse.ice.viz.service.javafx.geometry.datatypes,
  org.eclipse.ice.viz.service.javafx.mesh,
- org.eclipse.ice.viz.service.javafx.mesh.datatypes
+ org.eclipse.ice.viz.service.javafx.mesh.datatypes,
+ org.eclipse.ice.viz.service.javafx.viewer
 

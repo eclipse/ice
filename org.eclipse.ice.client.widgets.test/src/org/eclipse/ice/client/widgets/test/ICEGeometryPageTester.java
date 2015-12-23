@@ -17,7 +17,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeComponent;
 import org.junit.Test;
 
 /**
@@ -41,12 +43,15 @@ public class ICEGeometryPageTester {
 		// Get two GeometryComponent to check equality
 		GeometryComponent geometryComponent = new GeometryComponent();
 		GeometryComponent otherGeometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new Shape());
-		geometryComponent.setGeometry(new Shape());
+		geometryComponent.setGeometry(
+				new Shape(new ShapeComponent(), new AbstractView()));
+		geometryComponent.setGeometry(
+				new Shape(new ShapeComponent(), new AbstractView()));
 
 		// Get ICEGeometryPage to check accessor
 		ICEFormEditor ICEFormEditor = new ICEFormEditor();
-		ICEGeometryPage GeometryPage = new ICEGeometryPage(ICEFormEditor, "id", "title");
+		ICEGeometryPage GeometryPage = new ICEGeometryPage(ICEFormEditor, "id",
+				"title");
 
 		// Set, then get back another GeometryComponent
 		GeometryPage.setGeometry(geometryComponent);

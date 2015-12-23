@@ -63,7 +63,8 @@ public class ShapeTreeContentProviderTest {
 		Shape complement1 = (Shape) geometryShape.clone();
 		complement1.setProperty("Operator", OperatorType.Complement.toString());
 		Shape intersection1 = (Shape) geometryShape.clone();
-		intersection1.setProperty("Operator", OperatorType.Intersection.toString());
+		intersection1.setProperty("Operator",
+				OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
 
@@ -76,7 +77,8 @@ public class ShapeTreeContentProviderTest {
 		// of all the previously created shapes
 
 		Object[] union1Children = shapeProvider.getChildren(union1);
-		Object[] union1ExpectedChildren = new Object[] { sphere1, complement1, intersection1 };
+		Object[] union1ExpectedChildren = new Object[] { sphere1, complement1,
+				intersection1 };
 		assertArrayEquals(union1ExpectedChildren, union1Children);
 
 		Object[] complement1Children = shapeProvider.getChildren(complement1);
@@ -87,7 +89,8 @@ public class ShapeTreeContentProviderTest {
 		// rather than an empty list of children when ShapeProvider.getChildren
 		// is called.
 
-		Object[] intersection1Children = shapeProvider.getChildren(intersection1);
+		Object[] intersection1Children = shapeProvider
+				.getChildren(intersection1);
 		assertEquals(1, intersection1Children.length);
 
 		Object[] sphere1Children = shapeProvider.getChildren(sphere1);
@@ -136,7 +139,8 @@ public class ShapeTreeContentProviderTest {
 		Shape complement1 = (Shape) geometryShape.clone();
 		complement1.setProperty("Operator", OperatorType.Complement.toString());
 		Shape intersection1 = (Shape) geometryShape.clone();
-		intersection1.setProperty("Operator", OperatorType.Intersection.toString());
+		intersection1.setProperty("Operator",
+				OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
 
@@ -217,8 +221,10 @@ public class ShapeTreeContentProviderTest {
 		geometryComponent.getGeometry().addEntity(complement1);
 		geometryComponent.getGeometry().addEntity(sphere1);
 
-		Object[] expectedElements = new Object[] { sphere1, cube1, union1, complement1, sphere1 };
-		assertArrayEquals(expectedElements, shapeProvider.getElements(geometry));
+		Object[] expectedElements = new Object[] { sphere1, cube1, union1,
+				complement1, sphere1 };
+		assertArrayEquals(expectedElements,
+				shapeProvider.getElements(geometry));
 
 		// Try getting elements of null and a mistyped object
 

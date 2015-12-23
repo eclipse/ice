@@ -43,7 +43,7 @@ import org.eclipse.ice.item.ItemType;
  *
  * @author Alex McCaskey, Andrew Bennett
  */
-@XmlRootElement(name = "BatML Model")
+@XmlRootElement(name = "BatMLModel")
 public class BatMLModel extends Item {
 
 	/**

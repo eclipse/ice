@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
  * A mesh component representing a line between two Vertices.
@@ -170,10 +172,31 @@ public class EdgeComponent extends AbstractMeshComponent {
 	 */
 	@Override
 	public void copy(AbstractMeshComponent otherObject) {
-		super.copy(otherObject);
+
+		// Queue messages from all the vertices being added
+		updateManager.enqueue();
+
+		// Add a copy of the vertices from the other edge
+		for (AbstractController vertex : otherObject
+				.getEntitiesByCategory("Vertices")) {
+			addEntity((Vertex) vertex.clone());
+		}
 
 		// Copy the length
 		length = ((EdgeComponent) otherObject).length;
+
+		// Copy the rest of the data members and fire an update
+		// Copy each of the other component's data members
+		type = otherObject.type;
+		properties = new HashMap<String, String>(otherObject.properties);
+
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.All };
+		updateManager.notifyListeners(eventTypes);
+
+		// Release all queued messages
+		updateManager.flushQueue();
 	}
 
 	/**

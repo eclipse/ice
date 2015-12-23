@@ -66,10 +66,6 @@ public class NekPolygon extends Face implements IVizUpdateableListener {
 
 		// Initialize the polygon properties
 		polygonProperties = new PolygonProperties();
-
-		// Set the default name, id, and description.
-		model.setProperty("Name", "Polygon");
-		model.setProperty("Description", "");
 	}
 
 	/**
@@ -394,6 +390,13 @@ public class NekPolygon extends Face implements IVizUpdateableListener {
 		super.addEntity(entity);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#
+	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
+	 * AbstractController, java.lang.String)
+	 */
 	@Override
 	public void addEntityByCategory(AbstractController entity,
 			String category) {
@@ -406,4 +409,43 @@ public class NekPolygon extends Face implements IVizUpdateableListener {
 		super.addEntityByCategory(entity, category);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a copy of the model
+		NekPolygon clone = new NekPolygon();
+		clone.copy(this);
+
+		// Refresh the view to be in sync with the model
+		clone.refresh();
+
+		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void copy(AbstractController otherObject) {
+		// Create the model and give it a reference to this
+		model = new NekPolygonComponent();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(otherObject.getModel());
+		view = (AbstractView) otherObject.getView().clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
+	}
 }

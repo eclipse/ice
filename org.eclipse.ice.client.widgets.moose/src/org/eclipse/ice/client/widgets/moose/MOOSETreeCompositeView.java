@@ -175,7 +175,7 @@ public class MOOSETreeCompositeView extends TreeCompositeViewer implements
 
 			// Set the MOOSE tree based on the editor's current configuration.
 			int treeId = MOOSEModel.mooseTreeCompositeId;
-			setInput((TreeComposite) form.getComponent(treeId), getFormEditor());
+			setInput((TreeComposite) form.getComponent(treeId), editor);
 		}
 
 		return;

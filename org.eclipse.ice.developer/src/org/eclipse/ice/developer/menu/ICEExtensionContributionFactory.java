@@ -106,11 +106,6 @@ public class ICEExtensionContributionFactory extends ExtensionContributionFactor
 		// Get the registry and the extensions
 		registry = Platform.getExtensionRegistry();
 
-		// Create the ICE Menu here so it's first in the list
-		//MenuManager ice = new MenuManager("ICE", "ICEID");
-		//categoryMenus.put("ICE", ice);
-		//developerMenu.add(ice);
-
 		// Create the category sub-menus
 		for (CodeCategory c : CodeCategory.values()) {
 			MenuManager manager = new MenuManager(c.name(), c.name() + "ID");
@@ -160,8 +155,9 @@ public class ICEExtensionContributionFactory extends ExtensionContributionFactor
 				if (!"ICE".equals(codeName)) {
 					categoryMenus.get(category).add(codeMenu);
 				}
-
 			}
+			
+			parameters.clear();
 		}
 
 		// Add the newly constructed developer menu

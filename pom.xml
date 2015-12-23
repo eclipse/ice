@@ -15,7 +15,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.7.20150825</version>
+	<version>2.1.8</version>
 	<packaging>pom</packaging>
 
 	<!-- This enables the repository for the latest nightly builds of Tycho. -->
@@ -74,6 +74,7 @@
 		<module>org.eclipse.ice.client.compatibility</module>
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
+		<module>org.eclipse.ice.client.widgets.moose.test</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.test</module>
 		<module>org.eclipse.ice.client.widgets.reactoreditor.grid</module>
@@ -251,6 +252,16 @@
 							<classifier>mars</classifier>
 						</artifact>
 					</target>
+					<filters>
+						<!-- example 1: restrict version of a bundle -->
+						<filter>
+							<type>eclipse-plugin</type>
+								<id>javax.ws.rs</id>
+								<restrictTo>
+									<version>1.1.1.v20130318-1750</version> <!-- alternative: <version> for selecting exactly one versions -->
+								</restrictTo>
+						</filter>
+					</filters>
 				</configuration>
 			</plugin>
 

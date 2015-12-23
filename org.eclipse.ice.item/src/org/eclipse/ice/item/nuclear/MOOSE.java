@@ -95,7 +95,7 @@ public class MOOSE extends Item {
 	/**
 	 * Reference to the Model's input tree.
 	 */
-	@XmlElement()
+	@XmlTransient()
 	private TreeComposite modelTree;
 
 	/**
@@ -119,7 +119,15 @@ public class MOOSE extends Item {
 		this(null);
 		mooseModel = new MOOSEModel(null);
 		mooseLauncher = new MOOSELauncher(null);
-		addComponents();
+		modelTree = (TreeComposite) form.getComponent(2);
+		postProcessorsData = (DataComponent) form.getComponent(MOOSE.ppDataId);
+		mooseModel.getForm().addComponent(modelTree);
+		modelFiles = (DataComponent) form.getComponent(1);
+		status = FormStatus.ReadyToProcess;
+		TreeComposite ppTree;
+		if ((ppTree = getTopLevelTreeByName("Postprocessors")) != null) {
+			setupPostprocessorData(ppTree);
+		}
 	}
 
 	/**
@@ -135,7 +143,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * 
+	 * This private method add the necessary components to the Form.
 	 */
 	private void addComponents() {
 		// Loop over all components and add them to this form
@@ -260,7 +268,7 @@ public class MOOSE extends Item {
 	public FormStatus process(String actionName) {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
-		String host = "localhost";
+		String thisHost = "localhost", remoteHost = "";
 
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
@@ -280,23 +288,22 @@ public class MOOSE extends Item {
 			// Change the host name if we are remote
 			if (isRemote) {
 				IRemoteConnection remoteConnection = mooseLauncher.getRemoteConnection(appUri.getHost());
-				host = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
+				remoteHost = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
+
+				// Get an ICEUpdater, this will return null if the
+				// user does not want this feature
+				try {
+					thisHost = InetAddress.getLocalHost().getHostAddress();//.getCanonicalHostName();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+					logger.error(this.getClass().getName() + " Exception! ", e);
+				}
+				
 			}
 
-			// Get an ICEUpdater, this will return null if the 
-			// user does not want this feature
-			String thisHost = "";
-			try {
-				thisHost = InetAddress.getLocalHost().getCanonicalHostName();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-				logger.error(this.getClass().getName() + " Exception! ", e);
-
-			}
-			if (!thisHost.isEmpty()) {
-				System.out.println("Found This Host to be : " + thisHost);
-				createICEUpdaterBlock(thisHost);
-			}
+			//System.out.println("Using " + thisHost + " as the host name for the ICEUpdater URL.");
+			// If not remote, then this will just be localhost
+			createICEUpdaterBlock(thisHost);
 
 			// Populate the MOOSELaunchers files list, check for error.
 			if (populateListOfLauncherFiles() != FormStatus.ReadyToProcess) {
@@ -318,7 +325,7 @@ public class MOOSE extends Item {
 				ArrayList<Entry> row = hostsTable.getRow(index);
 				ArrayList<Integer> selected = new ArrayList<Integer>();
 				selected.add(new Integer(index));
-				row.get(0).setValue(host);
+				row.get(0).setValue(remoteHost);
 				hostsTable.setSelectedRows(selected);
 
 			} else {
@@ -946,11 +953,9 @@ public class MOOSE extends Item {
 		return clone;
 	}
 
-
 	/**
-	 * Overriding the default behavior here because 
-	 * the overall process output should be in the 
-	 * to-be-created local job folder. 
+	 * Overriding the default behavior here because the overall process output
+	 * should be in the to-be-created local job folder.
 	 * 
 	 */
 	@Override

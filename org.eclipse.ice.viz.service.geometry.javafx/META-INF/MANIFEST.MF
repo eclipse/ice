@@ -19,6 +19,7 @@ Import-Package:
  org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.geometry.viewer,
  org.eclipse.ice.viz.service.geometry.widgets,
+ org.eclipse.ice.viz.service.javafx.viewer,
  org.eclipse.ice.viz.service.mesh.datastructures,
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2"

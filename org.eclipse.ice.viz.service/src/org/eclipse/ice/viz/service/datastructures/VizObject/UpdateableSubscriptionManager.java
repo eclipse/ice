@@ -116,10 +116,13 @@ public class UpdateableSubscriptionManager {
 	}
 
 	/**
-	 * Send an update to each listener
+	 * Broadcast a message to all listeners subscribed to the given message
+	 * types.
 	 * 
-	 * @param source
 	 * @param eventTypes
+	 *            The list of types of messages which are being sent. A listener
+	 *            will be notified if it is subscribed for a type in eventTypes
+	 *            or if it is subscribed for UpdateableSubscriptionType.ALL.
 	 */
 	public void notifyListeners(UpdateableSubscriptionType[] eventTypes) {
 

@@ -12,20 +12,28 @@
 # The Python ICE Installer
 # ******************************************************************************
 
+from __future__ import print_function
 import os
 import sys
 import glob
 import time
+import stat
 import errno
 import shutil
 import tarfile
 import zipfile
-import urllib2
 import fnmatch
 import platform
+import datetime
 import argparse
 import itertools
 import subprocess
+
+
+if sys.version_info >= (3,0):
+    import urllib.request as urllib2
+else:
+    import urllib2
 
 def parse_args(args):
     """ Parse command line arguments and return them. """
@@ -80,7 +88,14 @@ def mkdir_p(path):
         if os.path.exists(path) and os.path.isdir(path):
             pass
         else:
-            raise
+            print("")
+            print("--------------------------- ERROR -----------------------------")
+            print("Cannot create directory " + path + ".  File already exists.")
+            print("Either delete this file, or specify a different installation")
+            print("location by using the --prefix option.")
+            print("--------------------------- ERROR -----------------------------")
+            print("")
+            exit()
 
 
 def get_os_and_arch():
@@ -115,10 +130,10 @@ def get_package_file(pkg, os_type, arch_type):
                                            "x86"    : "ice.product-macosx.cocoa.x86.zip"       },
                               "Linux"   : {"x86_64" : "ice.product-linux.gtk.x86_64.zip"       ,
                                            "x86"    : "ice.product-linux.gtk.x86.zip"          }},
-                 "VisIt"   : {"Windows" : {"x86_64" : "visit2.9.1_x64.exe"                     ,
-                                           "x86"    : "visit2.9.1.exe"                         },
-                              "Darwin"  : {"x86_64" : "VisIt-2.9.1.dmg"                        },
-                              "Linux"   : {"x86_64" : "visit2_9_1.linux-x86_64-rhel6.tar.gz"   }},
+                 "VisIt"   : {"Windows" : {"x86_64" : "visit2.10.0_x64.exe"                     ,
+                                           "x86"    : "visit2.10.0.exe"                         },
+                              "Darwin"  : {"x86_64" : "VisIt-2.10.0.dmg"                        },
+                              "Linux"   : {"x86_64" : "visit2_10_0.linux-x86_64-rhel6.tar.gz"   }},
                  "HDFJava" : {"Windows" : {"x86_64" : "HDFView-2.11-win64-vs2012.zip"          ,
                                            "x86"    : "HDFView-2.11-win32-vs2012.zip"          },
                               "Darwin"  : {"x86_64" : "HDFView-2.11.0-Darwin.dmg"                     },
@@ -138,21 +153,29 @@ def download_packages(opts, os_type, arch_type):
     packages = opts.update
     if packages == [] or os_type == None or arch_type == None:
         return
-    package_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
+    date = (datetime.date.today()- datetime.timedelta(1)).isoformat().replace('-','')
+    package_urls = {"ICE" : "http://eclipseice.ornl.gov/downloads/ice/",
+                    "VisIt" : "http://eclipseice.ornl.gov/downloads/visit/",
+                    "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
+    # TODO: If a site from packag_urls is down we can try to download from one of these
+    backup_urls = {"ICE"     : "http://sourceforge.net/projects/niceproject/files/nightly/nice/",
                     "VisIt"   : "http://portal.nersc.gov/project/visit/releases/2.9.1/",
                     "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
     if opts.unstable:
-        package_urls['ICE'] = "http://sourceforge.net/projects/niceproject/files/unstable-nightly/ice/"
+        package_urls['ICE'] = "http://eclipseice.ornl.gov/downloads/ice/unstable-nightly/" + date + '/'
+    else:
+        package_urls['ICE'] = "http://eclipseice.ornl.gov/downloads/ice/stable-nightly/" + date + '/'
     files = dict()
     for pkg in packages:
         fname = get_package_file(pkg, os_type, arch_type)
         files[pkg] = fname
         if not opts.skip_download:
-            print "Downloading " + pkg + ":",
+            print("Downloading " + pkg + ":")
             url = package_urls[pkg] + fname
             u = urllib2.urlopen(url)
             f = open(fname, 'wb')
-            fsize = int(u.info().getheaders("Content-length")[0])
+            info = {k.lower():v for k,v in dict(u.info()).items()}
+            fsize = int(info['content-length'])
             dl_size = 0
             block = 8192
             while True:
@@ -160,10 +183,10 @@ def download_packages(opts, os_type, arch_type):
                 if not buffer: break
                 dl_size += len(buffer)
                 f.write(buffer)
-                status = r"%5.2f%% complete" % (dl_size * 100. / fsize)
+                status = r"  %5.2f%%" % (dl_size * 100. / fsize)
                 status = status + chr(8)*(len(status)+1)
-                print status,
-            print ""
+                print(status,end='')
+            print("")
     return files
 
 
@@ -185,7 +208,9 @@ def untar_package(pkg, file_path, out_path):
     print("Unpacking " + file_path + "....")
     mkdir_p(out_path)
     pkg = tarfile.open(file_path)
-    dir_name = pkg.getnames()[0]
+    dir_name = os.path.commonprefix(pkg.getnames())
+    if os.path.isdir(os.path.join(out_path, dir_name)):
+        shutil.rmtree(os.path.join(out_path,dir_name))
     pkg.extractall(out_path)
     pkg.close()
     return dir_name
@@ -199,11 +224,14 @@ def undmg_package(pkg, file_path, out_path):
     unmount_cmd = ['hdiutil', 'detach', mnt_point, '-force', '-quiet']
     subprocess.Popen(mount_cmd)
     time.sleep(3)
+    subprocess.Popen(unmount_cmd)
+    time.sleep(3)
+    subprocess.Popen(mount_cmd)
+    time.sleep(3)
     content = find_dir(mnt_point, "Resources")
     if content is None:
-        print "could not find"
         return
-    print "  Copying " + content + " to " + os.path.join(out_path,pkg) + "...."
+    print("  Copying " + content + " to " + os.path.join(out_path,pkg) + "....")
     if os.path.exists(os.path.join(out_path, pkg)):
         shutil.rmtree(os.path.join(out_path, pkg))
     shutil.copytree(content, os.path.join(out_path,pkg))
@@ -214,7 +242,7 @@ def undmg_package(pkg, file_path, out_path):
 def unpack_packages(opts, pkg_files):
     """ Delegates unpacking of packages """
     dirs = dict()
-    for pkg, archive in pkg_files.iteritems():
+    for pkg, archive in pkg_files.items():
         if archive.endswith(".tar.gz") or archive.endswith(".tgz") or archive.endswith(".tar"):
             dirs[pkg] = untar_package(pkg, archive, opts.prefix)
         elif archive.endswith(".zip"):
@@ -258,30 +286,36 @@ def nix_install(opts, pkg_dirs):
             subprocess.call(install_cmd)
 
     hdf_path = opts.with_hdfjava if opts.with_hdfjava else opts.prefix
-    hdf_libdir = os.path.dirname(find_file(hdf_path, "libhdf.a"))
+    hdf_libdir = find_file(hdf_path, "libhdf.a")
     if hdf_libdir is None:
         print("")
         print("--------------------------- ERROR -----------------------------")
         print("Could not find a usable HDFJava library.  Try downloading")
         print("a fresh copy using this installer by providing the --update")
+        print("")
+        print("Alternatively you may specify the location of an existing")
+        print("HDFJava installation using the --with-hdfjava option.")
         print("option without any arguments")
         print("--------------------------- ERROR -----------------------------")
         print("")
         exit()
-    hdf_libdir = os.path.abspath(hdf_libdir)
+    hdf_libdir = os.path.abspath(os.path.dirname(hdf_libdir))
 
     visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
-    visit_bin_dir = os.path.dirname(find_file(visit_path, "visit"))
+    visit_bin_dir = find_file(visit_path, "visit")
     if visit_bin_dir is None:
         print("")
         print("--------------------------- ERROR -----------------------------")
         print("Could not find a usable VisIt executable.  Try downloading")
         print("a fresh copy using this installer by providing the --update")
         print("option without any arguments")
+        print("")
+        print("Alternatively you may specify the location of an existing")
+        print("VisIt installation using the --with-visit option.")
         print("--------------------------- ERROR -----------------------------")
         print("")
         exit()
-    visit_bin_dir = os.path.abspath(visit_bin_dir)
+    visit_bin_dir = os.path.abspath(os.path.dirname(visit_bin_dir))
     
     ice_preferences = find_file(opts.prefix, "ICE.ini")
     if ice_preferences == None:
@@ -314,7 +348,6 @@ def windows_install(opts, pkg_dirs):
     if "HDFJava" in pkg_dirs.keys():
         print("Installing HDFJava...")
         install_script = find_file(opts.prefix, "HDFView*.exe")
-        print install_script
         install_cmd = [install_script]
         subprocess.call(install_cmd, shell=True)
 
@@ -359,9 +392,16 @@ def linux_post(opts, pkgs):
         f.write(urllib2.urlopen('https://raw.githubusercontent.com/eclipse/ice/master/org.eclipse.ice.client.rcp/splash.bmp').read())
     if 'SUDO_USER' in os.environ:
         user = os.environ['SUDO_USER']
-        os.chmod(os.path.join(opts.prefix, "ICE"), 0755)
     else:
         user = os.environ['USER']
+    os.chmod(os.path.join(opts.prefix, "ICE"), stat.S_IXUSR | \
+                                               stat.S_IRUSR | \
+                                               stat.S_IWUSR | \
+                                               stat.S_IRGRP | \
+                                               stat.S_IWGRP | \
+                                               stat.S_IROTH | \
+                                               stat.S_IWOTH)
+    
     mkdir_p(os.path.join('/home', user, ".local", "share", "applications"))
     with open(os.path.join('/home', user, ".local", "share", "applications","ICE.desktop"),'w') as f:
         f.write("[Desktop Entry]")
@@ -390,10 +430,16 @@ def osx_post(opts, pkgs):
         f.write('\nexport DYLD_LIBRARY_PATH=' + visit_libdir + ':$DYLD_LIBRARY_PATH')
         f.write('\nexec `dirname $0`/ICE $0')
         f.write('\n')
-    os.chmod(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), 0755)
     ice_preferences = find_file(opts.prefix, 'ICE.ini')
     with open(ice_preferences, 'a') as f:
         f.write("\n-Xdock:name=Eclipse ICE")
+    os.chmod(os.path.join(opts.prefix, "ICE.app", "Contents", "MacOS", "ice.sh"), stat.S_IXUSR | \
+                                        					   stat.S_IRUSR | \
+                                              					   stat.S_IWUSR | \
+                                              					   stat.S_IRGRP | \
+                                              					   stat.S_IWGRP | \
+                                              					   stat.S_IROTH | \
+                                              					   stat.S_IWOTH)
     subprocess.Popen(plutil_cmd)
     subprocess.Popen(lsregister_cmd)
     subprocess.Popen(ln_cmd)

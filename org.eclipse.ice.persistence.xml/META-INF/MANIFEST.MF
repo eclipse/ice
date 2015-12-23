@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE XML Persistence Provider
 Bundle-SymbolicName: org.eclipse.ice.persistence.xml;singleton:=true
-Bundle-Version: 2.1.7.20150825
+Bundle-Version: 2.1.8
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ice.core.iCore,
  org.eclipse.ice.datastructures.ICEObject,
@@ -14,7 +14,6 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.8.1",
  org.eclipse.ice.datastructures,
  org.eclipse.ice.item;bundle-version="2.1.7"
 Export-Package: org.eclipse.ice.persistence.xml
-Service-Component: OSGi-INF/xmlPersistenceProvider.xml
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-ActivationPolicy: lazy
 Eclipse-LazyStart: true

@@ -70,21 +70,28 @@ public class ICEItemDeleteParticipant extends DeleteParticipant {
 		// If this is an IFile
 		if (itemFile != null) {
 
-			// Get the ICE Form Text Content Describer
-			FormTextContentDescriber describer = getFormTextContentDescriber("ICE Form");
-			
 			try {
-				// Check if this is an ICE XML File
-				int isValid = describer.describe(itemFile.getContents(), null);
-				
-				// If so, get the itemID and return true to 
-				// indicate we want to participate in the deletion
-				if (isValid == ITextContentDescriber.VALID) {
-					itemID = describer.getItemID();
-					return true;
-				} else {
+				// Get the ICE Form Text Content Describer
+				FormTextContentDescriber describer = null;
+				int isValid = ITextContentDescriber.INVALID;									
+
+				for (FormTextContentDescriber desc : FormTextContentDescriber.getFormTextContentDescribers()) {
+					// Check if this is an ICE XML File
+					isValid = desc.describe(itemFile.getContents(), null);
+					if (isValid == ITextContentDescriber.VALID) {
+						describer = desc;
+						break;
+					}
+				}
+
+				// Make sure we got a valid describer
+				if (describer == null) {
 					return false;
 				}
+				
+				// If so, get the ItemID
+				itemID = describer.getItemID();
+				return true;
 			} catch (IOException | CoreException e1) {
 				logger.error("Could not describe the provided file.", e1);
 				return false;

@@ -414,6 +414,36 @@ public class AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object otherObject) {
+
+		// Check if the two references are to the same object
+		if (this == otherObject) {
+			return true;
+		}
+
+		// Check that the other object is an AbstractController
+		if (!(otherObject instanceof AbstractController)) {
+			return false;
+		}
+
+		// Cast the other object
+		AbstractController castObject = (AbstractController) otherObject;
+
+		// Check that the model and view are equal
+		if (!model.equals(castObject.model) || !view.equals(castObject.view)) {
+			return false;
+		}
+
+		// All checks passed, so the two are equal.
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -448,6 +478,16 @@ public class AbstractController
 		// Register as a listener to the model and view
 		model.register(this);
 		view.register(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return model.hashCode() + view.hashCode();
 	}
 
 	// /*

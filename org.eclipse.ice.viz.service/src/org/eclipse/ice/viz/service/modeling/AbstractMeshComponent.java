@@ -284,6 +284,11 @@ public class AbstractMeshComponent
 	 */
 	public void removeEntity(AbstractController entity) {
 
+		// Do not try to add null objects to the map
+		if (entity == null) {
+			return;
+		}
+
 		// Whether or not the entity was found in the map
 		boolean found = false;
 
@@ -326,10 +331,24 @@ public class AbstractMeshComponent
 		// Get the entities for the given category
 		List<AbstractController> catList = entities.get(category);
 
-		// If the list is empty, make an empty one
+		// If the list is null, make an empty one
 		if (catList == null) {
 			catList = new ArrayList<AbstractController>();
 		}
+
+		// Prevent a part from being added multiple times
+		else if (catList.contains(newEntity)) {
+			return;
+		}
+
+		// If the entity is already present in this category, don't add a second
+		// entry for it
+		else
+			for (AbstractController entity : catList) {
+				if (entity == newEntity) {
+					return;
+				}
+			}
 
 		// Add the entity to the list and put it in the map
 		catList.add(newEntity);
@@ -394,6 +413,47 @@ public class AbstractMeshComponent
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object otherObject) {
+
+		// Check if the objects are the same
+		if (this == otherObject) {
+			return true;
+		}
+
+		// Check if the other object is an AbstractMeshComponent and cast it
+		if (!(otherObject instanceof AbstractMeshComponent)) {
+			return false;
+		}
+
+		AbstractMeshComponent castObject = (AbstractMeshComponent) otherObject;
+
+		// Check the types, properties, and entity category for equality
+		if (type != castObject.type || !properties.equals(castObject.properties)
+				|| !entities.keySet().equals(castObject.entities.keySet())) {
+			return false;
+		}
+
+		// For each category, check that the two objects' lists of child
+		// entities in that category are equal.
+		for (String category : entities.keySet()) {
+			if (!entities.get(category)
+					.containsAll(castObject.entities.get(category))
+					|| !castObject.entities.get(category)
+							.containsAll(entities.get(category))) {
+				return false;
+			}
+		}
+
+		// All checks passed, so the objects are equal
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -416,6 +476,10 @@ public class AbstractMeshComponent
 		// Copy each of the other component's data members
 		type = otherObject.type;
 		properties = new HashMap<String, String>(otherObject.properties);
+
+		for (AbstractController entity : otherObject.getEntities()) {
+			addEntity(entity);
+		}
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
@@ -470,6 +534,23 @@ public class AbstractMeshComponent
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
 		types.add(UpdateableSubscriptionType.All);
 		return types;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = type.hashCode();
+		for (String category : entities.keySet()) {
+			for (AbstractController entity : getEntitiesByCategory(category)) {
+				hash += entity.hashCode();
+			}
+		}
+		hash += properties.hashCode();
+		return hash;
 	}
 
 }

@@ -118,6 +118,11 @@ public class ShapeComponent extends AbstractMeshComponent {
 	public void addEntityByCategory(AbstractController newEntity,
 			String category) {
 
+		// Fail silently for null objects
+		if (newEntity == null) {
+			return;
+		}
+
 		// If the category is not parent, add the entity normally
 		if (category != "Parent") {
 
@@ -171,7 +176,62 @@ public class ShapeComponent extends AbstractMeshComponent {
 			}
 		}
 
-		super.copy(source);
+		// Copy each of the other component's data members
+		type = source.type;
+		properties = new HashMap<String, String>(source.properties);
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.All };
+		updateManager.notifyListeners(eventTypes);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#equals(java.
+	 * lang.Object)
+	 */
+	@Override
+	public boolean equals(Object otherObject) {
+
+		// Check if the objects are the same
+		if (this == otherObject) {
+			return true;
+		}
+
+		// Check if the other object is an AbstractMeshComponent and cast it
+		if (!(otherObject instanceof AbstractMeshComponent)) {
+			return false;
+		}
+
+		AbstractMeshComponent castObject = (AbstractMeshComponent) otherObject;
+
+		// Check the types, properties, and entity category for equality
+		if (type != castObject.type || !properties.equals(castObject.properties)
+				|| !entities.keySet().equals(castObject.entities.keySet())) {
+			return false;
+		}
+
+		// For each category, check that the two objects' lists of child
+		// entities in that category are equal.
+		for (String category : entities.keySet()) {
+
+			// Skip this check for the Parent category. Two parts can be
+			// considered equal even if they are in different parts of the
+			// model.
+			if (!"Parent".equals(category)) {
+				if (!entities.get(category)
+						.containsAll(castObject.entities.get(category))
+						|| !castObject.entities.get(category)
+								.containsAll(entities.get(category))) {
+					return false;
+				}
+			}
+		}
+
+		// All checks passed, so the objects are equal
+		return true;
 	}
 
 	/*

@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.viewer.factory;
 
-import org.eclipse.ice.viz.service.geometry.viewer.GeometryViewer;
-import org.eclipse.ice.viz.service.geometry.viewer.IViewerFactory;
-import org.eclipse.ice.viz.service.javafx.internal.FXGeometryViewer;
+import org.eclipse.ice.viz.service.javafx.viewer.IViewerFactory;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -25,14 +23,14 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class GeometryViewerFactory implements IViewerFactory {
 
-    /**
-     * <p>
-     * Creates a JavaFX geometry viewer instance on the supplied parent
-     * composite.
-     * </p>
-     */
-    public GeometryViewer createViewer(Composite parent) {
-        return new FXGeometryViewer(parent);
-    }
+	/**
+	 * <p>
+	 * Creates a JavaFX geometry viewer instance on the supplied parent
+	 * composite.
+	 * </p>
+	 */
+	public GeometryViewer createViewer(Composite parent) {
+		return new FXGeometryViewer(parent);
+	}
 
 }

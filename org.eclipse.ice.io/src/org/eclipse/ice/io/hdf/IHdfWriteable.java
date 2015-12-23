@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 UT-Battelle, LLC.
+ * Copyright (c) 2013, 2014 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Jordan H. Deyton, Dasha Gorin, Eric J. Lingerfelt, Alexander J. McCaskey,
+ *   Taylor Patterson, Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
 package org.eclipse.ice.io.hdf;
 
@@ -22,7 +22,7 @@ import ncsa.hdf.object.h5.H5Group;
  * An interface that provides the required operations for populating an HDF5
  * file from an ICE data structure.
  * </p>
- * 
+ *
  * @author Eric J. Lingerfelt
  */
 public interface IHdfWriteable {
@@ -33,7 +33,7 @@ public interface IHdfWriteable {
 	 * returned. If parentH5Group is null, then null is returned. If an
 	 * exception is thrown, then null is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            The H5File.
@@ -42,7 +42,8 @@ public interface IHdfWriteable {
 	 *            <p>
 	 *            The parent H5Group.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new H5Group.
 	 *         </p>
 	 */
@@ -54,8 +55,9 @@ public interface IHdfWriteable {
 	 * this IHdfWriteable has no IHdfWriteable child objects, then null is
 	 * returned.
 	 * </p>
-	 * 
-	 * @return <p>
+	 *
+	 * @return
+	 * 		<p>
 	 *         An ArrayList of IHdfWriteable child objects.
 	 *         </p>
 	 */
@@ -68,7 +70,7 @@ public interface IHdfWriteable {
 	 * then false is returned. If the operation fails to write all Attributes,
 	 * then false is returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            The H5File.
@@ -77,7 +79,8 @@ public interface IHdfWriteable {
 	 *            <p>
 	 *            The H5Group to write Attributes to.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If the h5Group is null or h5File is null or can not be opened,
 	 *         then false is returned. If the operation fails to write all
 	 *         Attributes, then false is returned. Otherwise, true is returned.
@@ -92,7 +95,7 @@ public interface IHdfWriteable {
 	 * returned. If the operation fails to write all Datasets, then false is
 	 * returned. Otherwise, true is returned.
 	 * </p>
-	 * 
+	 *
 	 * @param h5File
 	 *            <p>
 	 *            The H5File.
@@ -101,7 +104,8 @@ public interface IHdfWriteable {
 	 *            <p>
 	 *            The H5Group to write Datasets to.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         If the h5Group is null or h5File is null or can not be opened,
 	 *         then false is returned. If the operation fails to write all
 	 *         Datasets, then false is returned. Otherwise, true is returned.

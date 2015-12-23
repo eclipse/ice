@@ -72,7 +72,8 @@ public class ShapeTreeLabelProviderTest {
 		Shape cube1 = (Shape) geometryShape.clone();
 		cube1.setProperty("Type", ShapeType.Cube.toString());
 		Shape intersection1 = (Shape) geometryShape.clone();
-		intersection1.setProperty("Operator", OperatorType.Intersection.toString());
+		intersection1.setProperty("Operator",
+				OperatorType.Intersection.toString());
 
 		assertNull(labelProvider.getImage(cube1));
 		assertNull(labelProvider.getImage(intersection1));
@@ -104,7 +105,8 @@ public class ShapeTreeLabelProviderTest {
 		Shape union1 = (Shape) geometryShape.clone();
 		union1.setProperty("Operator", OperatorType.Union.toString());
 		Shape intersection1 = (Shape) geometryShape.clone();
-		intersection1.setProperty("Operator", OperatorType.Intersection.toString());
+		intersection1.setProperty("Operator",
+				OperatorType.Intersection.toString());
 
 		cube1.setProperty("Name", "KUB");
 
@@ -116,13 +118,17 @@ public class ShapeTreeLabelProviderTest {
 		// Check that the ShapeTreeLabelProvider returns the correct names
 		// with the format "<name> <id>"
 
-		String expectedCube1Text = cube1.getProperty("Name") + " " + cube1.getProperty("Id");
+		String expectedCube1Text = cube1.getProperty("Name") + " "
+				+ cube1.getProperty("Id");
 		assertTrue(labelProvider.getText(cube1).equals(expectedCube1Text));
 
-		String expectedIntersection1Text = intersection1.getProperty("Name") + " " + intersection1.getProperty("Id");
-		assertTrue(labelProvider.getText(intersection1).equals(expectedIntersection1Text));
+		String expectedIntersection1Text = intersection1.getProperty("Name")
+				+ " " + intersection1.getProperty("Id");
+		assertTrue(labelProvider.getText(intersection1)
+				.equals(expectedIntersection1Text));
 
-		String expectedUnion1Text = union1.getProperty("Name") + " " + union1.getProperty("Id");
+		String expectedUnion1Text = union1.getProperty("Name") + " "
+				+ union1.getProperty("Id");
 		assertTrue(labelProvider.getText(union1).equals(expectedUnion1Text));
 
 		// Check a null parameter

@@ -90,7 +90,8 @@ public class VertexComponent extends PointComponent {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			UpdateableSubscriptionType[] eventTypes = {UpdateableSubscriptionType.Child};
+			UpdateableSubscriptionType[] eventTypes = {
+					UpdateableSubscriptionType.Child };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -98,5 +99,85 @@ public class VertexComponent extends PointComponent {
 		else {
 			super.addEntityByCategory(entity, category);
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#equals(java.
+	 * lang.Object)
+	 */
+	@Override
+	public boolean equals(Object otherObject) {
+
+		// Check if the objects are the same
+		if (this == otherObject) {
+			return true;
+		}
+
+		// Check if the other object is an AbstractMeshComponent and cast it
+		if (!(otherObject instanceof VertexComponent)) {
+			return false;
+		}
+
+		VertexComponent castObject = (VertexComponent) otherObject;
+
+		// Check the types, properties, and entity category for equality
+		if (type != castObject.type || !properties.equals(castObject.properties)
+				|| !entities.keySet().equals(castObject.entities.keySet())) {
+			return false;
+		}
+
+		// Check that the positions are equal
+		if (x != castObject.getX() || y != castObject.getY()
+				|| z != castObject.getZ()) {
+			return false;
+		}
+
+		// For each category, check that the two objects' lists of child
+		// entities in that category are equal.
+		for (String category : entities.keySet()) {
+
+			// Do not require that the vertices be used in the same edges in
+			// order for them to be equal.
+			if (!"Edges".equals(category)) {
+				if (!entities.get(category)
+						.containsAll(castObject.entities.get(category))
+						|| !castObject.entities.get(category)
+								.containsAll(entities.get(category))) {
+					return false;
+				}
+			}
+		}
+
+		// All checks passed, so the objects are equal
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = type.hashCode();
+		for (String category : entities.keySet()) {
+
+			// Ignore the Edges to prevent circular hashing
+			if ("Edges".equals(category)) {
+				continue;
+			}
+
+			for (AbstractController entity : getEntitiesByCategory(category)) {
+				hash += entity.hashCode();
+			}
+		}
+		hash += properties.hashCode();
+		hash += x;
+		hash += y;
+		hash += z;
+		return hash;
 	}
 }

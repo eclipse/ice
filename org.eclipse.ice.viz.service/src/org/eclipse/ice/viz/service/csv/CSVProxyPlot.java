@@ -242,7 +242,12 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 	 */
 	@Override
 	public void setIndependentSeries(ISeries series) {
+		
+		//Set own independent series as well as the source plot's
 		super.setIndependentSeries(series);
+		getSource().setIndependentSeries(series);
+		
+		//Create a proxy for the independent series and reload
 		independentProxy = createProxySeries(series);
 		loaded = false;
 		getSource().redraw();

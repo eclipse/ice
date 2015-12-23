@@ -45,10 +45,10 @@
          <command
                commandName="Clone ICETests to user.home"
                implementation="org.eclipse.ice.developer.actions.GitCloneHandler">
-            <parameter
+               <parameter
                   name="cloneDirectory"
                   value="@user.home">
-            </parameter>
+               </parameter>
          </command>
       </code>
    </extension>

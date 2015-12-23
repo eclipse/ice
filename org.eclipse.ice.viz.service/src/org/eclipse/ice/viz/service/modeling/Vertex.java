@@ -19,6 +19,13 @@ package org.eclipse.ice.viz.service.modeling;
 public class Vertex extends Point {
 
 	/**
+	 * The nullary constructor
+	 */
+	public Vertex() {
+		super();
+	}
+
+	/**
 	 * The default constructor
 	 * 
 	 * @param model
@@ -28,5 +35,45 @@ public class Vertex extends Point {
 	 */
 	public Vertex(VertexComponent model, AbstractView view) {
 		super(model, view);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a copy of the model
+		Vertex clone = new Vertex();
+		clone.copy(this);
+
+		// Refresh the view to be in sync with the model
+		clone.refresh();
+
+		return clone;
+	}
+
+	/**
+	 * Deep copy the given object's data into this one.
+	 * 
+	 * @param otherObject
+	 *            The object to copy into this one.
+	 */
+	@Override
+	public void copy(AbstractController otherObject) {
+
+		// Create the model and give it a reference to this
+		model = new VertexComponent();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(otherObject.model);
+		view = (AbstractView) otherObject.view.clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
 	}
 }

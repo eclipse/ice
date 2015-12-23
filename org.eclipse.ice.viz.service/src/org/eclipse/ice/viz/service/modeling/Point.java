@@ -19,6 +19,13 @@ package org.eclipse.ice.viz.service.modeling;
 public class Point extends AbstractController {
 
 	/**
+	 * The nullary constructor.
+	 */
+	public Point() {
+		super();
+	}
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param model

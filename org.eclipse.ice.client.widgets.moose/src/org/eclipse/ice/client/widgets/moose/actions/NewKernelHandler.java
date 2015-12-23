@@ -116,7 +116,7 @@ public class NewKernelHandler extends AbstractHandler {
 		includeFileBuffer
 				.append("\t"
 						+ kernelName
-						+ "(const std::string & name, InputParameters parameters);\n\n");
+						+ "(const InputParameters& parameters);\n\n");
 		includeFileBuffer.append("\tvirtual Real computeQpResidual();\n\n");
 		includeFileBuffer.append("};\n\n");
 		includeFileBuffer.append("#endif\n");
@@ -134,7 +134,7 @@ public class NewKernelHandler extends AbstractHandler {
 				.append(kernelName
 						+ "::"
 						+ kernelName
-						+ "(const std::string & name, InputParameters parameters) : Kernel(name, parameters) {\n");
+						+ "(const InputParameters& parameters) : Kernel(parameters) {\n");
 		sourceFileBuffer.append("}\n\n");
 		sourceFileBuffer.append("Real " + kernelName
 				+ "::computeQpResidual() {\n");

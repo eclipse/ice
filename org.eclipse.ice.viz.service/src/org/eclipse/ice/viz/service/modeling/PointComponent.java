@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
+import java.util.HashMap;
+
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
@@ -22,17 +24,17 @@ public class PointComponent extends AbstractMeshComponent {
 	/**
 	 * The point's x coordinate
 	 */
-	private double x;
+	protected double x;
 
 	/**
 	 * The point's y coordinate
 	 */
-	private double y;
+	protected double y;
 
 	/**
 	 * The point's z coordinate
 	 */
-	private double z;
+	protected double z;
 
 	/**
 	 * The basic constructor
@@ -169,4 +171,27 @@ public class PointComponent extends AbstractMeshComponent {
 		updateManager.flushQueue();
 	}
 
+	/**
+	 * Copies the contents of another AbstractMeshComponent into this one.
+	 * 
+	 * @param otherObject
+	 *            The object which will be copied into this.
+	 */
+	@Override
+	public void copy(AbstractMeshComponent otherObject) {
+
+		// Copy each of the other component's data members
+		type = otherObject.type;
+		properties = new HashMap<String, String>(otherObject.properties);
+
+		// Copy the coordinates
+		x = ((PointComponent) otherObject).getX();
+		y = ((PointComponent) otherObject).getY();
+		z = ((PointComponent) otherObject).getZ();
+
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Property };
+		updateManager.notifyListeners(eventTypes);
+	}
 }

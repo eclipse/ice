@@ -121,7 +121,8 @@ public class ActionAddShape extends Action {
 
 		// Create the image descriptor from the file path
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		URL imagePath = BundleUtility.find(bundle, "icons/" + shapeIcons.get(shapeType));
+		URL imagePath = BundleUtility.find(bundle,
+				"icons/" + shapeIcons.get(shapeType));
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
 		return;
@@ -164,7 +165,8 @@ public class ActionAddShape extends Action {
 		// Create the image descriptor from the file path
 
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		URL imagePath = BundleUtility.find(bundle, "icons/" + operatorIcons.get(operatorType));
+		URL imagePath = BundleUtility.find(bundle,
+				"icons/" + operatorIcons.get(operatorType));
 		imageDescriptor = ImageDescriptor.createFromURL(imagePath);
 
 	}
@@ -184,7 +186,8 @@ public class ActionAddShape extends Action {
 
 		// Get the selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
+		ITreeSelection selection = (ITreeSelection) view.treeViewer
+				.getSelection();
 		TreePath[] paths = selection.getPaths();
 
 		// Fail silently if multiple items are selected
@@ -194,7 +197,8 @@ public class ActionAddShape extends Action {
 		}
 		// Get the GeometryComponent from the ShapeTreeView's TreeViewer
 
-		AbstractController geometry = (AbstractController) view.treeViewer.getInput();
+		AbstractController geometry = (AbstractController) view.treeViewer
+				.getInput();
 
 		if (geometry == null) {
 			return;
@@ -215,7 +219,8 @@ public class ActionAddShape extends Action {
 				// Get the selected shape's parent
 
 				Shape selectedShape = (Shape) selectedObject;
-				parentComplexShape = selectedShape.getEntitiesByCategory("Parent").get(0);
+				parentComplexShape = selectedShape
+						.getEntitiesByCategory("Parent").get(0);
 			} else if (selectedObject instanceof BlankShape) {
 
 				// Get the selected blank shape's parent

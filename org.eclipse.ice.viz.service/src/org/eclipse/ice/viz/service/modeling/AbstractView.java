@@ -188,6 +188,34 @@ public class AbstractView
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object otherObject) {
+
+		// Check if the objects are the same
+		if (this == otherObject) {
+			return true;
+		}
+
+		// Check that the other object is an abstractview
+		if (!(otherObject instanceof AbstractView)) {
+			return false;
+		}
+
+		// Check that the transformations are equal
+		if (!(transformation
+				.equals(((AbstractView) otherObject).getTransformation()))) {
+			return false;
+		}
+
+		// If all checks passed, the objects are equal
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
 	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
 	 * datastructures.VizObject.IVizUpdateable,
@@ -244,5 +272,17 @@ public class AbstractView
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
 		types.add(UpdateableSubscriptionType.All);
 		return types;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = transformation.hashCode();
+		hash += previousTransformation.hashCode();
+		return hash;
 	}
 }
