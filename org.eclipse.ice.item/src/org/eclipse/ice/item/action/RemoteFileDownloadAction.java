@@ -7,12 +7,10 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - Jay Jay Billings,
- *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
- *   Claire Saunders, Matthew Wang, Anna Wojtowicz
+ *   Alexander J. McCaskey, Robert Smith
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
-import java.io.File;
 import java.util.Dictionary;
 
 import org.eclipse.core.filesystem.EFS;
@@ -22,23 +20,72 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
+import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
- * The RemoteFileDownloadAction is an ICE Action that downloads files 
- * from a remote directory to the current localhost. It requires that clients 
- * provide a remoteDir and localDir key-value pair in the provided execution 
- * dictionary. 
+ * The RemoteFileDownloadAction is an ICE Action that downloads files from a
+ * remote directory to the current localhost. It requires the following input 
+ * parameters: 
+ * </p>
+ * <table border="1">
+ * <col width="50.0%"></col><col width="50.0%"></col>
+ * <tr>
+ * <td>
+ * <p>
+ * <b>Key</b>
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * <b>Value</b>
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>
+ * <p>
+ * hostname
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The name of the remote host to upload files to.
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>
+ * <p>
+ * localJobLaunchDirectory
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The name of the directory within the project/jobs folder where the files to
+ * be uploaded can be found (optional).
+ * </p>
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>
+ * <p>
+ * projectSpaceDir
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The absolute path string of the ICE project directory. This can be found with
+ * IProject.getLocation().toOSString().
+ * </p>
+ * </td>
+ * </tr>
+ * </table>
+ *
  * 
  * @author Alex McCaskey
  *
  */
-public class RemoteFileDownloadAction extends Action {
-
-	/**
-	 * Reference to the IRemoteConnection to the 
-	 * remote host with the files to be downloaded. 
-	 */
-	private IRemoteConnection connection;
+public class RemoteFileDownloadAction extends RemoteAction {
 
 	/**
 	 * The maximum size limit of any file that will be downloaded from a remote
@@ -49,12 +96,9 @@ public class RemoteFileDownloadAction extends Action {
 	private long maxFileSize;
 
 	/**
-	 * The Constructor, takes the remote connection to use. 
-	 * 
-	 * @param remote
+	 * The Constructor
 	 */
-	public RemoteFileDownloadAction(IRemoteConnection remote) {
-		connection = remote;
+	public RemoteFileDownloadAction() {
 		// Get the maxFileSize from the system properties
 		String fileSize = System.getProperty("max_download_size");
 		if (fileSize != null) {
@@ -68,35 +112,57 @@ public class RemoteFileDownloadAction extends Action {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 * 
-	 * This implementation of execute requires that the keys remoteDir and localDir 
-	 * be defined in the provided dictionary, and that they point to valid 
-	 * directory absolute paths. 
+	 * @see org.eclipse.ice.item.action.Action#execute(java.util.Dictionary)
 	 * 
 	 */
 	@Override
 	public FormStatus execute(Dictionary<String, String> dictionary) {
 
+		// Set the status to Processing since we are 
+		// starting this execution.
+		status = FormStatus.Processing;
+		
 		// Get the remote and local directory
-		String remoteDir = dictionary.get("remoteDir");
-		String localDir = dictionary.get("localDir");
+		String localDir = dictionary.get("localJobLaunchDirectory");
+		String hostName = dictionary.get("hostname");
 
+		// Let's use parts of the ExecutionHelper...
+		ExecutionHelper helper = new ExecutionHelper(dictionary);
+		
 		// Check that we've been given valid directories
-		if (remoteDir == null || localDir == null) {
-			logger.error(
-					"RemoteFileDownloadAction Error - No remote or local directory provided. Can't download files.");
-			return FormStatus.InfoError;
+		if (localDir == null || hostName == null) {
+			return actionError("No remote host name or remote/local directory provided. Can't download files.", null);
+		}
+
+		// Get the remote connection
+		connection = getRemoteConnection(hostName);
+		if (connection == null) {
+			return actionError("Could not get a valid connection to " + hostName, null);
+		}
+		
+		// Make sure the connection is actually open
+		if (!connection.isOpen()) {
+			try {
+				connection.open(null);
+			} catch (RemoteConnectionException e) {
+				return actionError("Remote File Download could not open the IRemoteConnection.", e);
+			}
 		}
 
 		// Get the remote file manager
 		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
 
-		// Get the Local Directory 
-		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(new File(localDir));
+		// Get the Local Directory
+		IFileStore localDirectory = EFS.getLocalFileSystem()
+				.fromLocalFile(helper.getLocalLaunchFolder().getLocation().toFile());
 
-		// Get the remote directory. 
-		IFileStore downloadFileStore = fileManager.getResource(remoteDir);
+		// Get the remote directory.
+		String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
+		String userHome = connection.getProperty(IRemoteConnection.USER_HOME_PROPERTY);
+		IFileStore downloadFileStore = fileManager.getResource(userHome + remoteSeparator + "ICEJobs" + remoteSeparator + localDir);
+		
+		// Try to download the files. 
 		try {
 			// Get the children
 			IFileStore[] remoteStores = downloadFileStore.childStores(EFS.NONE, null);
@@ -107,10 +173,10 @@ public class RemoteFileDownloadAction extends Action {
 				if (fileInfo.getLength() < maxFileSize) {
 
 					// Print some debug information about the download
-					String msg = "RemoteFileDownloadAction Message: " + "Downloading " + fileInfo.getName() + " with length "
-							+ fileInfo.getLength() + ".";
+					String msg = "Remote File Download - " + "Downloading " + fileInfo.getName()
+							+ " with length " + fileInfo.getLength() + ".";
 					logger.info(msg);
-
+					postConsoleText(msg);
 					// Get a handle to the local file. Note that it may
 					// not exist yet.
 					IFileStore childStore = localDirectory.getChild(remoteFile.getName());
@@ -123,25 +189,38 @@ public class RemoteFileDownloadAction extends Action {
 					// Print a debug note saying that the file is too
 					// big to
 					// download.
-					String msg = "RemoteFileDownloadAction Message: " + "File exceeds download limit. " + "File with size "
-							+ fileInfo.getLength() + " is " + sizeDiff + " bytes over the " + maxFileSize
-							+ " byte limit.";
+					String msg = "RemoteFileDownloadAction Message: " + "File exceeds download limit. "
+							+ "File with size " + fileInfo.getLength() + " is " + sizeDiff + " bytes over the "
+							+ maxFileSize + " byte limit.";
+					postConsoleText(msg);
 					logger.info(msg);
 				}
 
 			}
 		} catch (CoreException e) {
-			logger.error(getClass().getName() + " Exception! Error in downloading the files.", e);
-			return FormStatus.InfoError;
-		} 
-		
-		return FormStatus.Processed;
+			return actionError(getClass().getName() + " Exception! Error in downloading the files.", e);
+		}
+
+		status = FormStatus.Processed;
+		return status;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#cancel()
+	 */
 	@Override
 	public FormStatus cancel() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#getActionName()
+	 */
+	@Override
+	public String getActionName() {
+		return "Remote File Download";
 	}
 
 }

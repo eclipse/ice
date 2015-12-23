@@ -620,27 +620,6 @@ public class JobLaunchAction extends Action implements Runnable {
 	}
 
 	/**
-	 * This operation retrieves the username from the LoginInfoForm.
-	 *
-	 * @return The username.
-	 */
-	private String getUsernameFromForm() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/**
-	 * This operation creates a new SSH session for the given username.
-	 *
-	 * @param dictionary
-	 *            The dictionary of values to be used to create the session.
-	 */
-	private void createSession(Dictionary<String, String> dictionary) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
 	 * This operation returns a buffered writer to the caller that will append
 	 * to file specified in the call.
 	 *
@@ -1054,8 +1033,17 @@ public class JobLaunchAction extends Action implements Runnable {
 			// Get the file separator on the remote system
 			String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
 			uploadDataMap.put("remoteDir", "ICEJobs" + remoteSeparator + workingDirectoryBaseName);
+			uploadDataMap.put("remoteHost", execDictionary.get("hostname"));
+			String filesString = "";
+			for (IFile f : files) {
+				filesString += f.getLocation().toOSString() + ";";
+			}
+			filesString = filesString.substring(0, filesString.length()-1);
+			uploadDataMap.put("uploadFiles", filesString);
+			uploadDataMap.put("localFilesLocation", localLaunchFolder.getLocation().toOSString());
+
 			// Create and execute a Remote File Upload action
-			RemoteFileUploadAction uploadAction = new RemoteFileUploadAction(files, connection);
+			RemoteFileUploadAction uploadAction = new RemoteFileUploadAction();
 			status = uploadAction.execute(uploadDataMap);
 			if (status == FormStatus.InfoError) {
 				logger.error("JobLaunchAction Error - Failed to upload files to remote machine.");
@@ -1068,7 +1056,7 @@ public class JobLaunchAction extends Action implements Runnable {
 			processService = connection.getService(IRemoteProcessService.class);
 
 			// Set the new working directory
-			processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
+			//processService.setWorkingDirectory(uploadAction.getRemoteUploadDirectoryPath());
 
 			// Dump the new working directory
 			logger.info(
@@ -1114,11 +1102,13 @@ public class JobLaunchAction extends Action implements Runnable {
 				// Get download directory
 				String remoteDir = processService.getWorkingDirectory();
 				downloadDataMap.put("remoteDir", remoteDir);
+				downloadDataMap.put("remoteHost", execDictionary.get("hostname"));
+
 				logger.info("JobLaunchAction Message: " + "Downloading files to local directory "
 						+ localDirectory.getName() + " from remote directory" + remoteDir + ".");
 
 				// Create and execute the remote files download action!
-				RemoteFileDownloadAction downloadAction = new RemoteFileDownloadAction(connection);
+				RemoteFileDownloadAction downloadAction = new RemoteFileDownloadAction();
 				status = downloadAction.execute(downloadDataMap);
 				if (status == FormStatus.InfoError) {
 					logger.error("JobLaunchAction Error - Failed to download files from remote machine.");
@@ -1130,6 +1120,9 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Set the status
 		status = FormStatus.Processed;
 
+		// Clear the files we care about
+		fileMap.clear();
+		
 		// Close the connection
 		connection.close();
 
@@ -1213,7 +1206,6 @@ public class JobLaunchAction extends Action implements Runnable {
 			formSubmitted.set(true);
 
 			// Set the status
-			logger.info("SETTING FLAG TO PROCESSING");
 			status = FormStatus.Processing;
 		} else {
 			status = FormStatus.InfoError;
@@ -1448,12 +1440,12 @@ public class JobLaunchAction extends Action implements Runnable {
 		// Copy all files needed to the local launch directory
 		try {
 			for (String fileName : fileMap.keySet()) {
-				logger.info("JobLaunchAction copying " + fileName + " to local job launch folder.");
+				logger.info("JobLaunchAction copying " + fileName + " to local job launch folder: " + localLaunchFolder.getLocation().toOSString() + ".");
 				IFile newFile = localLaunchFolder.getFile(fileName);
 				newFile.create(project.getFile(fileName).getContents(), true, null);
 			}
 		} catch (CoreException e) {
-			logger.error("JobLaunchAction Error - Could not copy files from the project space to the job folder.");
+			logger.error("JobLaunchAction Error - Could not copy files from the project space to the job folder.", e);
 			status = FormStatus.InfoError;
 			return;
 		}
@@ -1541,6 +1533,11 @@ public class JobLaunchAction extends Action implements Runnable {
 
 	public void setRemoteConnectionType(IRemoteConnectionType type) {
 		connectionType = type;
+	}
+
+	@Override
+	public String getActionName() {
+		return "Job Launch Action";
 	}
 
 }

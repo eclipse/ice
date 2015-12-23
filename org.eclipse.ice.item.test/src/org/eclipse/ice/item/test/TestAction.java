@@ -63,4 +63,9 @@ public class TestAction extends Action {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public String getActionName() {
+		return "Test Action";
+	}
 }
