@@ -13,8 +13,8 @@
 package org.eclipse.ice.item.nuclear;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.AbstractItemBuilder;
+import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**

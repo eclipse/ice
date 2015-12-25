@@ -22,11 +22,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.eclipse.ice.viz.service.jme3.application.CustomChaseCamera;
 import org.eclipse.ice.viz.service.jme3.application.EmbeddedView;
+import org.eclipse.ice.viz.service.jme3.application.ICameraListener;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.ice.viz.service.jme3.application.SimpleAppState;
-import org.eclipse.ice.viz.service.jme3.application.CustomChaseCamera;
-import org.eclipse.ice.viz.service.jme3.application.ICameraListener;
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
 import org.eclipse.ice.viz.service.jme3.widgets.InputControl;

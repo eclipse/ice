@@ -14,7 +14,6 @@
 package org.eclipse.ice.viz.service.visit;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.connections.ConnectionPlot;

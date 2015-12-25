@@ -19,7 +19,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.client.widgets.reactoreditor.properties.SimpleProperty;
+import org.eclipse.ice.client.widgets.analysis.properties.SimpleProperty;
 import org.eclipse.ice.client.widgets.reactoreditor.sfr.properties.PropertySourceFactory;
 import org.eclipse.ice.reactor.sfr.base.SFRComponent;
 import org.eclipse.ice.reactor.sfr.core.Material;

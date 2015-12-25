@@ -40,7 +40,6 @@ import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
-import org.eclipse.ice.reactorAnalyzer.ReactorAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -453,7 +452,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 					file = currentTask.item.getProject().getFile(name);
 				}
 				// Process persists
-				if ("persist".equals(currentTask.task) && !(currentTask.item instanceof ReactorAnalyzer)) {
+				if ("persist".equals(currentTask.task)) {
 					// Send the Item off to be written to the file
 					writeFile(currentTask.item, file);
 					// Update the item id map

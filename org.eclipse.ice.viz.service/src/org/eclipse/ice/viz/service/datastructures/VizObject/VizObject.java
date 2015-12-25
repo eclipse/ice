@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.sun.corba.se.spi.ior.Identifiable;
+
 /**
  * <p>
  * VizObject is the base class for all common, shared data structures in Viz

@@ -14,17 +14,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
 import org.eclipse.ice.materials.XMLMaterialsDatabase;
 
-import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 
 /**

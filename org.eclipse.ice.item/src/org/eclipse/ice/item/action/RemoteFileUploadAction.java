@@ -13,8 +13,6 @@
 package org.eclipse.ice.item.action;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;

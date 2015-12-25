@@ -12,15 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh;
 
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
-import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 
 /**

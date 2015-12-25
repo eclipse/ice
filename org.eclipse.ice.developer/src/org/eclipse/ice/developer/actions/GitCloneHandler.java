@@ -13,7 +13,6 @@ package org.eclipse.ice.developer.actions;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 

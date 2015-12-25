@@ -12,9 +12,9 @@
 package org.eclipse.ice.viz.service.jme3.mesh;
 
 
-import org.eclipse.ice.viz.service.jme3.application.SimpleAppState;
 import org.eclipse.ice.viz.service.jme3.application.CustomChaseCamera;
 import org.eclipse.ice.viz.service.jme3.application.ICameraListener;
+import org.eclipse.ice.viz.service.jme3.application.SimpleAppState;
 import org.eclipse.ice.viz.service.jme3.widgets.InputControl;
 
 import com.jme3.input.InputManager;
