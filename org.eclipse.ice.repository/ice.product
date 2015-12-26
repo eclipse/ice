@@ -267,33 +267,23 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.moose" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.rcp" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.grid" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.lwr" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer.moose" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.item" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.kdd" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.materials" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reflectivity.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />

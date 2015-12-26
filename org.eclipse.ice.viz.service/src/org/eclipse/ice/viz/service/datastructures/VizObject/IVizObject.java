@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.datastructures.VizObject;
 
-import com.sun.corba.se.spi.ior.Identifiable;
-
 /**
  * <p>
  * VizObject is the base class for all common, shared data structures in Viz

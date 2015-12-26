@@ -7,7 +7,7 @@
 		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>pom.xml</pom-filename>
 		<!-- <target-version>2.1.7.${maven.build.timestamp}</target-version>  -->
-		<target-version>2.1.7.20150825</target-version>		
+		<target-version>2.1.8</target-version>		
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
 
@@ -92,13 +92,10 @@
 		<module>org.eclipse.ice.persistence.xml.test</module>
 		<module>org.eclipse.ice.io</module>
 		<module>org.eclipse.ice.io.test</module>
-		<module>org.eclipse.ice.analysistool</module>
 		<module>org.eclipse.ice.reactor.plant</module>
 		<module>org.eclipse.ice.reactor.plant.test</module>
 		<module>org.eclipse.ice.vibe</module>
 		<module>org.eclipse.ice.vibe.test</module>
-		<module>org.eclipse.ice.kdd</module>
-		<module>org.eclipse.ice.kdd.test</module>
 		<module>org.eclipse.ice.proteus</module>
 		<module>org.eclipse.ice.proteus.test</module>
 		<module>org.eclipse.ice.mesh</module>
