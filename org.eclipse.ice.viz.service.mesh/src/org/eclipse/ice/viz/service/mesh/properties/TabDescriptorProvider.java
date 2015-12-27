@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
+import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
 import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;

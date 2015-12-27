@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.ice.item.utilities.moose.Parameter;

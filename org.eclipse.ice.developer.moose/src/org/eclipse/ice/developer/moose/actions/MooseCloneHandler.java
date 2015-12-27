@@ -42,8 +42,6 @@ import org.eclipse.cdt.managedbuilder.internal.core.Configuration;
 import org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo;
 import org.eclipse.cdt.managedbuilder.internal.core.ManagedProject;
 import org.eclipse.cdt.managedbuilder.ui.wizards.CfgHolder;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -52,20 +50,11 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.egit.core.op.CloneOperation.PostCloneTask;
 import org.eclipse.ice.developer.actions.GitCloneHandler;
 import org.eclipse.ice.developer.moose.nature.MooseNature;
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.wizards.IWizardDescriptor;
 
 /**
  * This handler triggers the "Clone MOOSE" action.
@@ -168,7 +157,7 @@ public class MooseCloneHandler extends GitCloneHandler {
 				libmeshTarget.setRunAllBuilders(false);
 				libmeshTarget.setUseDefaultBuildCmd(false);
 				libmeshTarget.setBuildAttribute(IMakeCommonBuildInfo.BUILD_COMMAND,
-						"sh scripts/updated_and_rebuild_libmesh.sh");
+						"sh scripts/update_and_rebuild_libmesh.sh");
 				libmeshTarget.setBuildAttribute(IMakeCommonBuildInfo.BUILD_LOCATION,
 						cProject.getLocation().toOSString());
 				libmeshTarget.setBuildAttribute(IMakeCommonBuildInfo.BUILD_ARGUMENTS, "");

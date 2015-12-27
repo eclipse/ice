@@ -17,7 +17,7 @@ import java.net.URI;
 import java.net.UnknownHostException;
 
 import org.eclipse.ice.viz.service.AbstractPlot;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;

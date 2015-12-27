@@ -22,6 +22,19 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
+import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
+import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;
+import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
+import org.eclipse.ice.viz.service.geometry.shapes.Tube;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeMaterial;
+import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.widgets.Composite;
@@ -50,20 +63,6 @@ import com.jme3.scene.shape.Line;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
-
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
-import org.eclipse.ice.viz.service.geometry.shapes.IShapeVisitor;
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
-import org.eclipse.ice.viz.service.geometry.shapes.Tube;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeMaterial;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTransient;
 
 /**
  * <p>

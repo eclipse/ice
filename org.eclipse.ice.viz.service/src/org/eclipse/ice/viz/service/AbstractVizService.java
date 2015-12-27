@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 

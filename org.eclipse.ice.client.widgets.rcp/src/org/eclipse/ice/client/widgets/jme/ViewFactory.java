@@ -13,7 +13,6 @@
 package org.eclipse.ice.client.widgets.jme;
 
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;

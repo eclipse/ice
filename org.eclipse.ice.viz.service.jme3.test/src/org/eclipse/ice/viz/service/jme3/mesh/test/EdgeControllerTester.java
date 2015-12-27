@@ -21,15 +21,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.ice.viz.service.jme3.mesh.AbstractMeshController;
 import org.eclipse.ice.viz.service.jme3.mesh.EdgeController;
-import org.eclipse.ice.viz.service.jme3.mesh.EdgeView;
 import org.eclipse.ice.viz.service.jme3.mesh.test.EdgeControllerTester.TestEdgeController.TestPropertyHandler;
 import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jme3.material.Material;
-import com.jme3.scene.shape.Line;
 
 /**
  * <p>

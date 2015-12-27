@@ -15,8 +15,6 @@ package org.eclipse.ice.viz.service.jme3.application;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.jme3.application.SimpleAppState;
-
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 

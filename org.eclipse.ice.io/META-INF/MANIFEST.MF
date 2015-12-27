@@ -2,31 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.io
 Bundle-SymbolicName: org.eclipse.ice.io;singleton:=true
-Bundle-Version: 2.1.7.20150825
+Bundle-Version: 2.1.8
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ClassPath: .,
- deps/jhdf.jar,
- deps/jhdf4obj.jar,
- deps/jhdf5.jar,
- deps/jhdf5obj.jar,
- deps/jhdfobj.jar
+Bundle-ClassPath: .
 Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.dependencies;bundle-version="2.0.0";visibility:=reexport
 Service-Component: OSGI-INF/HdfIORegistry.xml,OSGI-INF/HdfIOFactory.xml,
  OSGI-INF/ioservice.xml
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
-Export-Package: ncsa.hdf.hdf5lib,
- ncsa.hdf.hdf5lib.callbacks,
- ncsa.hdf.hdf5lib.exceptions,
- ncsa.hdf.hdf5lib.structs,
- ncsa.hdf.hdflib,
- ncsa.hdf.object,
- ncsa.hdf.object.fits,
- ncsa.hdf.object.h4,
- ncsa.hdf.object.h5,
- ncsa.hdf.object.nc2,
- org.eclipse.ice.io.csv,
- org.eclipse.ice.io.hdf,
+Export-Package: org.eclipse.ice.io.csv,
  org.eclipse.ice.io.ini,
  org.eclipse.ice.io.ips,
  org.eclipse.ice.io.serializable

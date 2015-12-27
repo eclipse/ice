@@ -11,7 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ice.persistence.xml.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.persistence.xml.XMLPersistenceExtensionFactory;

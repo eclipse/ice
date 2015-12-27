@@ -63,6 +63,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+
 import com.jme3.math.Vector3f;
 
 /**
@@ -85,11 +86,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	private static final String PLANT_PAGE_ID = "Plant View";
 
 	/**
-	 * The {@link Entry} corresponding to the available apps in the MOOSE Model
-	 * Builder.
+	 * 
 	 */
-	private Entry appsEntry;
-
 	private DataComponent postProcessors;
 
 	// ---- Plant Page variables ---- //
@@ -131,8 +129,6 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			Form form = ((ICEFormInput) input).getForm();
 
 			// Get the Entry that contains the available apps.
-			DataComponent dataComp = (DataComponent) form.getComponent(MOOSEModel.fileDataComponentId);
-			appsEntry = dataComp.retrieveEntry("MOOSE-Based Application");
 			postProcessors = (DataComponent) form.getComponent(MOOSE.ppDataId);
 		}
 
@@ -740,8 +736,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// If the selection is for RELAP-7, create a Plant View page
 		// if one doesn't already exist. If the selection is NOT for
 		// RELAP-7, delete any existing Plant View page.
-		String appStr = appsEntry.getValue().toLowerCase();
-		if ("relap".equals(appStr)) {
+		if ("Components".equals(findComponentBlock().getName())) {
 			addPlantPage();
 		} else {
 			removePlantPage();

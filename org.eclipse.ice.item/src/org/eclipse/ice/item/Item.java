@@ -64,12 +64,12 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleForm;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.ResourceHandler;
@@ -479,6 +479,13 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		itemName = "ICE Item";
 		itemDescription = "This is an ICE Item";
 
+		// Get the IActionFactory instance.
+		try {
+			actionFactory = IActionFactory.getActionFactory();
+		} catch (CoreException e) {
+			logger.error("Could not get a valid IActionFactory.", e);
+		}
+		
 		// set builderName to empty string
 		builderName = "";
 
@@ -921,7 +928,11 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			} else if (actionName.equals(taggedExportActionString)) {
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
-				action = new TaggedOutputWriterAction();
+				action = actionFactory.getAction("Tagged Output Writer");
+				if (action == null) {
+					logger.error("Could not get a reference to the TaggedOutputWriter Action");
+					return FormStatus.InfoError;
+				}
 				// Setup the IFile handle
 				outputFile = project.getFile(filename + ".dat");
 				try {

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.connections.preferences;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 

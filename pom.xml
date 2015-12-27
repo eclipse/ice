@@ -7,7 +7,7 @@
 		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>pom.xml</pom-filename>
 		<!-- <target-version>2.1.7.${maven.build.timestamp}</target-version>  -->
-		<target-version>2.1.7.20150825</target-version>		
+		<target-version>2.1.8</target-version>		
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
 
@@ -15,7 +15,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.7.20150825</version>
+	<version>2.1.8</version>
 	<packaging>pom</packaging>
 
 	<!-- This enables the repository for the latest nightly builds of Tycho. -->
@@ -75,14 +75,6 @@
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
 		<module>org.eclipse.ice.client.widgets.moose.test</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.test</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.grid</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.grid.test</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.lwr</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.lwr.test</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
-		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module>
 		<module>org.eclipse.ice.client.widgets.rcp</module>
 		<module>org.eclipse.ice.client.widgets.test</module>
 		<module>org.eclipse.ice.client.widgets.test.utils</module>
@@ -100,20 +92,10 @@
 		<module>org.eclipse.ice.persistence.xml.test</module>
 		<module>org.eclipse.ice.io</module>
 		<module>org.eclipse.ice.io.test</module>
-		<module>org.eclipse.ice.analysistool</module>
-		<module>org.eclipse.ice.reactor</module>
-		<module>org.eclipse.ice.reactor.test</module>
-		<module>org.eclipse.ice.reactor.sfr</module>
-		<module>org.eclipse.ice.reactor.sfr.test</module>
 		<module>org.eclipse.ice.reactor.plant</module>
 		<module>org.eclipse.ice.reactor.plant.test</module>
-		<module>org.eclipse.ice.reactor.perspective</module>
-		<module>org.eclipse.ice.reactorAnalyzer</module>
-		<module>org.eclipse.ice.reactorAnalyzer.test</module>
 		<module>org.eclipse.ice.vibe</module>
 		<module>org.eclipse.ice.vibe.test</module>
-		<module>org.eclipse.ice.kdd</module>
-		<module>org.eclipse.ice.kdd.test</module>
 		<module>org.eclipse.ice.proteus</module>
 		<module>org.eclipse.ice.proteus.test</module>
 		<module>org.eclipse.ice.mesh</module>
@@ -136,14 +118,11 @@
 		<module>org.eclipse.ice.viz.service.paraview</module>
 		<module>org.eclipse.ice.viz.service.paraview.web</module>
 		<module>org.eclipse.ice.viz.service.paraview.test</module>
-		<module>org.eclipse.ice.xolotl</module>
 		<module>org.eclipse.ice.materials</module>
 		<module>org.eclipse.ice.materials.test</module>
 		<module>org.eclipse.ice.materials.ui</module>
 		<module>org.eclipse.ice.caebat.batml</module>
 		<module>org.eclipse.ice.caebat.batml.test</module>
-		<module>org.eclipse.ice.sassena</module>
-		<module>org.eclipse.ice.sassena.test</module>
 		<module>org.eclipse.ice.reflectivity</module>
 		<module>org.eclipse.ice.reflectivity.test</module>
 		<module>org.eclipse.ice.reflectivity.ui</module>

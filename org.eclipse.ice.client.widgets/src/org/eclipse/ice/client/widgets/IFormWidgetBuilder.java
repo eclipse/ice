@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
