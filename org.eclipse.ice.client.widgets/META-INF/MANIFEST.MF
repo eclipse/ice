@@ -24,6 +24,9 @@ Import-Package: com.jme3.app,
  org.eclipse.draw2d.geometry,
  org.eclipse.gef,
  org.eclipse.gef.editparts,
+ org.eclipse.gef.requests,
+ org.eclipse.gef.tools,
+ org.eclipse.gef.ui.parts,
  org.eclipse.ice.client.common,
  org.eclipse.ice.client.common.internal,
  org.eclipse.ice.client.common.properties,
@@ -49,7 +52,8 @@ Import-Package: com.jme3.app,
  org.osgi.framework;version="1.6.0",
  org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.client.widgets,
- org.eclipse.ice.client.widgets.analysis
+ org.eclipse.ice.client.widgets.analysis,
+ org.eclipse.ice.client.widgets.grid
 Service-Component: OSGI-INF/eclipseWidgetsComponent.xml,
  OSGI-INF/formEditorVizService.xml
 Bundle-Vendor: Oak Ridge National Laboratory
