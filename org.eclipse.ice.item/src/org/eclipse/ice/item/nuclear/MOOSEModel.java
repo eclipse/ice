@@ -26,7 +26,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -55,6 +57,7 @@ import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.item.action.Action;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;
@@ -429,9 +432,12 @@ public class MOOSEModel extends Item {
 				// If we have a valid connection, then generate the files we
 				// need
 				if (remoteConnection != null) {
-					RemoteYamlSyntaxGenerator generator = new RemoteYamlSyntaxGenerator(remoteConnection, mooseFolder,
-							uri.getRawPath());
-					generator.execute(null);
+					Action generator = getActionFactory().getAction("Remote YAML/Syntax Generator");
+					Dictionary<String, String> map = new Hashtable<String, String>(); 
+					map.put("mooseFolderPath", mooseFolder.getLocation().toOSString());
+					map.put("mooseAppPath", uri.getRawPath());
+					map.put("remoteHost", uri.getHost());
+					generator.execute(map);
 				}
 
 				String animal = Paths.get(uri.getRawPath()).getFileName().toString();
@@ -599,9 +605,9 @@ public class MOOSEModel extends Item {
 					try {
 						URI uri = new URI(loadedApp);
 						if ("ssh".equals(uri.getScheme())) {
-							prefs.put(Paths.get(uri.getRawPath()).getFileName().toString(), loadedApp);
+							prefs.put(uri.getRawPath(), loadedApp);
 						} else {
-							prefs.put(new File(uri).getName(), loadedApp);
+							prefs.put(uri.getRawPath(), loadedApp);
 						}
 						prefs.flush();
 					} catch (BackingStoreException | URISyntaxException e) {

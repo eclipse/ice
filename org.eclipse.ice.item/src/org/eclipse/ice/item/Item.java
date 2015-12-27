@@ -479,6 +479,13 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		itemName = "ICE Item";
 		itemDescription = "This is an ICE Item";
 
+		// Get the IActionFactory instance.
+		try {
+			actionFactory = IActionFactory.getActionFactory();
+		} catch (CoreException e) {
+			logger.error("Could not get a valid IActionFactory.", e);
+		}
+		
 		// set builderName to empty string
 		builderName = "";
 
@@ -921,7 +928,11 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			} else if (actionName.equals(taggedExportActionString)) {
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
-				action = new TaggedOutputWriterAction();
+				action = actionFactory.getAction("Tagged Output Writer");
+				if (action == null) {
+					logger.error("Could not get a reference to the TaggedOutputWriter Action");
+					return FormStatus.InfoError;
+				}
 				// Setup the IFile handle
 				outputFile = project.getFile(filename + ".dat");
 				try {
