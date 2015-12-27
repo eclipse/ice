@@ -42,7 +42,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
@@ -330,33 +329,20 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
 
-		// Need IMasterDetailsPageProvider
+		ArrayList<Component> comps = new ArrayList<Component>();
+		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
 
-		// Local Declarations
-		ArrayList<ICEFormPage> masterDetailsPages = new ArrayList<ICEFormPage>();
-		MasterDetailsComponent masterDetailsComponent = null;
+		comps.addAll(componentMap.get("masterDetails"));
 
-		// Get the MasterDetailsComponent and create the MasterDetails page.
-		if (!(componentMap.get("masterDetails").isEmpty())) {
-			masterDetailsComponent = (MasterDetailsComponent) (componentMap
-					.get("masterDetails").get(0));
-			if (masterDetailsComponent != null) {
-				// Get the name
-				String name = masterDetailsComponent.getName();
-				// Make the page
-				ICEMasterDetailsPage iCEMasterDetailsPage = new ICEMasterDetailsPage(
-						this, "MDPid", name);
+		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
+		ArrayList<IFormPage> componentPages = defaultPageFactory
+				.getMasterDetailsPages(this, comps);
 
-				// Set the MasterDetailsComponent
-				iCEMasterDetailsPage
-						.setMasterDetailsComponent(masterDetailsComponent);
-
-				masterDetailsPages.add(iCEMasterDetailsPage);
-			}
-
+		for (IFormPage componentPage : componentPages) {
+			pages.add((ICEFormPage) componentPage);
 		}
 
-		return masterDetailsPages;
+		return pages;
 	}
 
 	/**
@@ -395,45 +381,43 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The GeometryPage created.
 	 */
 	private ICEFormPage createGeometryPage() {
-		
-		
+
 		ArrayList<Component> comps = new ArrayList<Component>();
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-		
+
 		comps.addAll(componentMap.get("geometry"));
-		
+
 		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		ArrayList<IFormPage> componentPages = defaultPageFactory.getGeometryComponentPages(this, comps);
-		
-		for(IFormPage componentPage: componentPages){
-			pages.add((ICEFormPage)componentPage);
+		ArrayList<IFormPage> componentPages = defaultPageFactory
+				.getGeometryComponentPages(this, comps);
+
+		for (IFormPage componentPage : componentPages) {
+			pages.add((ICEFormPage) componentPage);
 		}
-		
+
 		return pages.get(0);
 		// Need IGeometryPageProvider
 		/*
-		// Local Declarations
-		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new ICEGeometry());
-
-		// Get the GeometryComponent and create the GeometryPage.
-		if (!(componentMap.get("geometry").isEmpty())) {
-			geometryComponent = (GeometryComponent) (componentMap
-					.get("geometry").get(0));
-
-			if (geometryComponent != null) {
-
-				// Make the GeometryPage
-				geometryPage = new ICEGeometryPage(this, "GPid",
-						geometryComponent.getName());
-
-				// Set the GeometryComponent
-				geometryPage.setGeometry(geometryComponent);
-			}
-
-		}
-
-		return geometryPage;*/
+		 * // Local Declarations GeometryComponent geometryComponent = new
+		 * GeometryComponent(); geometryComponent.setGeometry(new
+		 * ICEGeometry());
+		 * 
+		 * // Get the GeometryComponent and create the GeometryPage. if
+		 * (!(componentMap.get("geometry").isEmpty())) { geometryComponent =
+		 * (GeometryComponent) (componentMap .get("geometry").get(0));
+		 * 
+		 * if (geometryComponent != null) {
+		 * 
+		 * // Make the GeometryPage geometryPage = new ICEGeometryPage(this,
+		 * "GPid", geometryComponent.getName());
+		 * 
+		 * // Set the GeometryComponent
+		 * geometryPage.setGeometry(geometryComponent); }
+		 * 
+		 * }
+		 * 
+		 * return geometryPage;
+		 */
 	}
 
 	/**
@@ -445,38 +429,36 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	private ICEFormPage createMeshPage() {
 		ArrayList<Component> comps = new ArrayList<Component>();
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-		
+
 		comps.addAll(componentMap.get("mesh"));
 		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		ArrayList<IFormPage> componentPages = defaultPageFactory.getMeshComponentPages(this, comps);
-		
-		for(IFormPage componentPage: componentPages){
-			pages.add((ICEFormPage)componentPage);
+		ArrayList<IFormPage> componentPages = defaultPageFactory
+				.getMeshComponentPages(this, comps);
+
+		for (IFormPage componentPage : componentPages) {
+			pages.add((ICEFormPage) componentPage);
 		}
 		return pages.get(0);
 		// Need IMeshPageProvider
 		/*
-		// Local Declarations
-		MeshComponent meshComponent = new MeshComponent();
-
-		// Get the GeometryComponent and create the GeometryPage.
-		if (!(componentMap.get("mesh").isEmpty())) {
-			meshComponent = (MeshComponent) (componentMap.get("mesh").get(0));
-
-			if (meshComponent != null) {
-
-				// Make the MeshPage
-				meshPage = new ICEMeshPage(this, "MeshPid",
-						meshComponent.getName());
-
-				// Set the MeshComponent
-				meshPage.setMeshComponent(meshComponent);
-			}
-
-		}
-
-		return meshPage;
-		*/
+		 * // Local Declarations MeshComponent meshComponent = new
+		 * MeshComponent();
+		 * 
+		 * // Get the GeometryComponent and create the GeometryPage. if
+		 * (!(componentMap.get("mesh").isEmpty())) { meshComponent =
+		 * (MeshComponent) (componentMap.get("mesh").get(0));
+		 * 
+		 * if (meshComponent != null) {
+		 * 
+		 * // Make the MeshPage meshPage = new ICEMeshPage(this, "MeshPid",
+		 * meshComponent.getName());
+		 * 
+		 * // Set the MeshComponent meshPage.setMeshComponent(meshComponent); }
+		 * 
+		 * }
+		 * 
+		 * return meshPage;
+		 */
 	}
 
 	/**
@@ -485,45 +467,38 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * @return The ICEFormPages for each EMF Component in the list.
 	 */
 	private ArrayList<ICEFormPage> createEMFSectionPages() {
-		
-		
+
 		ArrayList<Component> comps = new ArrayList<Component>();
-		
+
 		comps.addAll(componentMap.get("emf"));
 		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-		
+
 		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		
-		ArrayList<IFormPage> componentPages = defaultPageFactory.getIEFSectionComponentPages(this, comps);
-		for(IFormPage componentPage: componentPages){
-			pages.add((ICEFormPage)componentPage);
+
+		ArrayList<IFormPage> componentPages = defaultPageFactory
+				.getIEMFSectionComponentPages(this, comps);
+		for (IFormPage componentPage : componentPages) {
+			pages.add((ICEFormPage) componentPage);
 		}
-		
+
 		return pages;
-		
+
 		// Need IEMFSectionPageProvider
 		/*
-		// Local Declarations
-		EMFComponent emfComponent = null;
-		EMFSectionPage emfPage = null;
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		// Get the EMFComponent and create the EMFSectionPage.
-		if (componentMap.get("emf").size() > 0) {
-			for (Component comp : componentMap.get("emf")) {
-				emfComponent = (EMFComponent) comp;
-				if (emfComponent != null) {
-					// Make the EMFSectionPage
-					emfPage = new EMFSectionPage(this, emfComponent.getName(),
-							emfComponent.getName());
-					// Set the EMFComponent
-					emfPage.setEMFComponent(emfComponent);
-					pages.add(emfPage);
-				}
-			}
-		}
-
-		return pages;*/
+		 * // Local Declarations EMFComponent emfComponent = null;
+		 * EMFSectionPage emfPage = null; ArrayList<ICEFormPage> pages = new
+		 * ArrayList<ICEFormPage>();
+		 * 
+		 * // Get the EMFComponent and create the EMFSectionPage. if
+		 * (componentMap.get("emf").size() > 0) { for (Component comp :
+		 * componentMap.get("emf")) { emfComponent = (EMFComponent) comp; if
+		 * (emfComponent != null) { // Make the EMFSectionPage emfPage = new
+		 * EMFSectionPage(this, emfComponent.getName(), emfComponent.getName());
+		 * // Set the EMFComponent emfPage.setEMFComponent(emfComponent);
+		 * pages.add(emfPage); } } }
+		 * 
+		 * return pages;
+		 */
 	}
 
 	/**
@@ -772,16 +747,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		comps.addAll(componentMap.get("data"));
 		comps.addAll(componentMap.get("table"));
 		comps.addAll(componentMap.get("matrix"));
-		
+
 		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		
-		ArrayList<IFormPage> componentPages = defaultPageFactory.getComponentPages(this, comps);
-		for(IFormPage componentPage: componentPages){
-			pages.add((ICEFormPage)componentPage);
+
+		ArrayList<IFormPage> componentPages = defaultPageFactory
+				.getBasicComponentPages(this, comps);
+		for (IFormPage componentPage : componentPages) {
+			pages.add((ICEFormPage) componentPage);
 		}
 		return pages;
 
-	
 	}
 
 	private String itemName;

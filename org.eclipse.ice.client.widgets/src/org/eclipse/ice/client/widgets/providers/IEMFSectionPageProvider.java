@@ -15,9 +15,10 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ExtensionHelper;
+
 /**
- * This is an interface for IEMFSection page providers for Form Editors in ICE that
- * provides the set of list section pages required to draw the UI.
+ * This is an interface for IEMFSection page providers for Form Editors in ICE
+ * that provides the set of list section pages required to draw the UI.
  * 
  * @author Fangzhou Lin, Jay Jay Billings
  **/
@@ -26,7 +27,7 @@ public interface IEMFSectionPageProvider extends IPageProvider {
 	 * Extension point ID for IEMFSectionPageProviders.
 	 */
 	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.IEMFSectionPageProvider";
-	
+
 	/**
 	 * This is a static interface method that returns all of the currently
 	 * registered IEMFSectionPageProvider.
@@ -34,9 +35,10 @@ public interface IEMFSectionPageProvider extends IPageProvider {
 	 * @return The available providers
 	 * @throws CoreException
 	 */
-	public static ArrayList<IEMFSectionPageProvider> getProviders() throws CoreException {
+	public static ArrayList<IEMFSectionPageProvider> getProviders()
+			throws CoreException {
 		ExtensionHelper<IEMFSectionPageProvider> extensionHelper = new ExtensionHelper<IEMFSectionPageProvider>();
 		return extensionHelper.getExtensions(EXTENSION_POINT_ID);
-		
+
 	}
 }

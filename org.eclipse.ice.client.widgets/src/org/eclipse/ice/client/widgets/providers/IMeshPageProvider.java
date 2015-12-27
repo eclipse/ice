@@ -23,12 +23,12 @@ import org.eclipse.ice.client.common.ExtensionHelper;
  * @author Fangzhou Lin, Jay Jay Billings
  *
  */
-public interface IMeshPageProvider extends IPageProvider{
+public interface IMeshPageProvider extends IPageProvider {
 	/**
 	 * Extension point ID for IMeshPageProviders.
 	 */
 	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.meshPageProvider";
-	
+
 	/**
 	 * This is a static interface method that returns all of the currently
 	 * registered IMeshPageProvider.
@@ -36,7 +36,8 @@ public interface IMeshPageProvider extends IPageProvider{
 	 * @return The available providers
 	 * @throws CoreException
 	 */
-	public static ArrayList<IMeshPageProvider> getProviders() throws CoreException {
+	public static ArrayList<IMeshPageProvider> getProviders()
+			throws CoreException {
 		ExtensionHelper<IMeshPageProvider> extensionHelper = new ExtensionHelper<IMeshPageProvider>();
 		return extensionHelper.getExtensions(EXTENSION_POINT_ID);
 	}

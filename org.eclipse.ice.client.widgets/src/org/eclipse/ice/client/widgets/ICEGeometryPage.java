@@ -39,7 +39,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  * 
  * @author Jay Jay Billings
  */
-public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener {
+public class ICEGeometryPage extends ICEFormPage
+		implements IUpdateableListener {
 	/**
 	 * <p>
 	 * The property that determines whether there is a need to Save.
@@ -135,7 +136,8 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 * geometry.
 	 * </p>
 	 * 
-	 * @param managedForm the managed form that handles the page
+	 * @param managedForm
+	 *            the managed form that handles the page
 	 */
 	@Override
 	public void createFormContent(IManagedForm managedForm) {
@@ -174,8 +176,8 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service.createCanvas(geometryComp
-					.getGeometry().getGeometry());
+			IVizCanvas vizCanvas = service
+					.createCanvas(geometryComp.getGeometry().getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {

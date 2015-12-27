@@ -31,9 +31,13 @@ public class ErrorMessageFormPage extends FormPage {
 
 	/**
 	 * The constructor
-	 * @param editor the FormEditor that created the page
-	 * @param id the id of the page
-	 * @param title the title of the page
+	 * 
+	 * @param editor
+	 *            the FormEditor that created the page
+	 * @param id
+	 *            the id of the page
+	 * @param title
+	 *            the title of the page
 	 */
 	public ErrorMessageFormPage(FormEditor editor, String id, String title) {
 		super(editor, id, title);
@@ -41,7 +45,10 @@ public class ErrorMessageFormPage extends FormPage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
+	 * 
+	 * @see
+	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.
+	 * forms.IManagedForm)
 	 */
 	@Override
 	public void createFormContent(IManagedForm managedForm) {
@@ -58,9 +65,9 @@ public class ErrorMessageFormPage extends FormPage {
 		String errorMsg = "There is no data to show in your Form or in this "
 				+ "particular component. Please file a bug or email "
 				+ "eclipse.ice.project@gmail.com.";
-		managedForm.getToolkit().createText(form.getBody(),errorMsg);
-		
+		managedForm.getToolkit().createText(form.getBody(), errorMsg);
+
 		return;
 	}
-	
+
 }

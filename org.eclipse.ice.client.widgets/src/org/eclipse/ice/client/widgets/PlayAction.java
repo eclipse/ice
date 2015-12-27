@@ -116,8 +116,8 @@ public class PlayAction extends Action implements IMenuCreator {
 
 		// Set the button image
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "play.gif");
+		Path imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "play.gif");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		ImageDescriptor imageDescriptor = ImageDescriptor
 				.createFromURL(imageURL);
@@ -190,8 +190,8 @@ public class PlayAction extends Action implements IMenuCreator {
 		this.setText("Play");
 		// Change the button appearance
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "play.gif");
+		Path imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "play.gif");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		ImageDescriptor imageDescriptor = ImageDescriptor
 				.createFromURL(imageURL);

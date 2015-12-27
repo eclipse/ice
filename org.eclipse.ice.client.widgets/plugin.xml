@@ -10,6 +10,7 @@
    <extension-point id="org.eclipse.ice.client.widgets.geometryPageProvider" name="geometryPageProvider" schema="schema/org.eclipse.ice.client.widgets.geometryPageProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.IEMFSectionPageProvider" name="IEMFSectionPageProvider" schema="schema/org.eclipse.ice.client.widgets.IEMFSectionPageProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.meshPageProvider" name="meshPageProvider" schema="schema/org.eclipse.ice.client.widgets.meshPageProvider.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.masterDetailsPageProvider" name="Master Details Page Provider" schema="schema/org.eclipse.ice.client.widgets.masterDetailsPageProvider.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -411,27 +412,43 @@
     </Implementation>
  </extension>
  <extension
+       id="basicComponentPageProvider"
+       name="Basic Components Page Provider"
        point="org.eclipse.ice.client.widgets.basicComponentPageProvider">
     <implementation
           class="org.eclipse.ice.client.widgets.providers.DefaultBasicComponentPageProvider">
     </implementation>
  </extension>
  <extension
+       id="geometryPageProvider"
+       name="Geometry Page Provider"
        point="org.eclipse.ice.client.widgets.geometryPageProvider">
     <client
           class="org.eclipse.ice.client.widgets.providers.DefaultGeometryPageProvider">
     </client>
  </extension>
  <extension
+       id="emfSectionPageProvider"
+       name="EMF Section Page Provider"
        point="org.eclipse.ice.client.widgets.IEMFSectionPageProvider">
     <client
           class="org.eclipse.ice.client.widgets.providers.DefaultIEMFSectionPageProvider">
     </client>
  </extension>
  <extension
+       id="meshPageProvider"
+       name="Mesh Page Provider"
        point="org.eclipse.ice.client.widgets.meshPageProvider">
     <client
           class="org.eclipse.ice.client.widgets.providers.DefaultMeshPageProvider">
     </client>
+ </extension>
+ <extension 
+       id="masterDetailsPageProvider"
+       name="Master Details Page Provider"
+       point="org.eclipse.ice.client.widgets.masterDetailsPageProvider">
+    <Implementation
+          class="org.eclipse.ice.client.widgets.providers.DefaultMasterDetailsPageProvider">
+    </Implementation>
  </extension>
 </plugin>

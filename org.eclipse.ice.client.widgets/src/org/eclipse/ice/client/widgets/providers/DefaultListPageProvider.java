@@ -6,8 +6,10 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Nick Stanish
- *   Minor updates for architecture compliance - Jay Jay Billings
+ *   Initial API and re-implementation and/or initial documentation - 
+ *   Nick Stanish
+ *   Minor updates for architecture compliance, original implementation - 
+ *   Jay Jay Billings
  *******************************************************************************/
 
 package org.eclipse.ice.client.widgets.providers;
@@ -41,7 +43,8 @@ public class DefaultListPageProvider extends DefaultPageProvider
 			ArrayList<Component> components) {
 
 		// Get the lists from the component map
-		ArrayList<IFormPage> pages = new ArrayList<IFormPage>(components.size());
+		ArrayList<IFormPage> pages = new ArrayList<IFormPage>(
+				components.size());
 
 		// If there are some lists, render sections for them
 		for (int i = 0; i < components.size(); i++) {

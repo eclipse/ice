@@ -7,7 +7,7 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Nick Stanish, Jay Jay Billings
+ *   Menghan Li
  *******************************************************************************/
 
 package org.eclipse.ice.client.widgets.providers;
@@ -18,30 +18,29 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ExtensionHelper;
 
 /**
- * This is an interface for list page providers for Form Editors in ICE that
- * provides the set of list section pages required to draw the UI.
+ * This is an interface for master derails page provider for Form Editors in ICE
+ * that provides the set of ICEMasterDetailsPage required to draw the UI.
  * 
- * @author Nick Stanish, Jay Jay Billings
+ * @author Menghan Li
  *
  */
-public interface IListPageProvider extends IPageProvider {
-
+public interface IMasterDetailsPageProvider extends IPageProvider {
 	/**
-	 * Extension point ID for IListPageProviders.
+	 * Extension point ID for IMasterDetailsPageProvider.
 	 */
-	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.listPageProvider";
+	public static final String EXTENSION_POINT_ID = "org.eclipse.ice.client.widgets.masterDetailsPageProvider";
 
 	/**
 	 * This is a static interface method that returns all of the currently
-	 * registered IListPageProvider.
+	 * registered IMasterDerailsPageProvider.
 	 * 
 	 * @return The available providers
 	 * @throws CoreException
 	 */
-	public static ArrayList<IListPageProvider> getProviders()
+	public static ArrayList<IMasterDetailsPageProvider> getProviders()
 			throws CoreException {
-		ExtensionHelper<IListPageProvider> extensionHelper = new ExtensionHelper<IListPageProvider>();
+		ExtensionHelper<IMasterDetailsPageProvider> extensionHelper = new ExtensionHelper<IMasterDetailsPageProvider>();
 		return extensionHelper.getExtensions(EXTENSION_POINT_ID);
-	}
 
+	}
 }

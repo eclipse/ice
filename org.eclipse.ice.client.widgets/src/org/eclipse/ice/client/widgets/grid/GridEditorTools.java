@@ -111,7 +111,7 @@ public class GridEditorTools {
 	 *            the indices circle counter-clockwise to the last octant in the
 	 *            bottom right just below the x-axis.
 	 * @return A List of Points containing the (column, row) coordinates for all
-	 *          grid locations in the quadrant.
+	 *         grid locations in the quadrant.
 	 */
 	public static List<Point> getOctant(int size, int octantIndex) {
 
@@ -313,8 +313,7 @@ public class GridEditorTools {
 
 					// Use the law of cosines to determine the distance of the
 					// hexagon's center from the origin.
-					double R2 = i2 + r2 - 2 * i * r
-							* cosPiDivThree;
+					double R2 = i2 + r2 - 2 * i * r * cosPiDivThree;
 					double R = Math.sqrt(R2);
 
 					// Use the law of cosines to determine the angle theta for
@@ -341,10 +340,8 @@ public class GridEditorTools {
 					// both the column and radius are even, we need to
 					// shift the y value down by 0.5 units. Otherwise, don't
 					// shift the y value.
-					int yIndex = radius
-							- 1
-							- (int) Math.round(y + (xIndex % 2 * 0.5)
-									- ((radius + 1) % 2 * 0.5));
+					int yIndex = radius - 1 - (int) Math.round(
+							y + (xIndex % 2 * 0.5) - ((radius + 1) % 2 * 0.5));
 
 					// Add the computed x and y indexes to the list of Points.
 					sextant.add(new Point(xIndex, yIndex));
@@ -379,8 +376,7 @@ public class GridEditorTools {
 
 					// Use the law of cosines to determine the distance of the
 					// hexagon's center from the origin.
-					double R2 = i2 + r2 - 2 * i * r
-							* cosPiDivThree;
+					double R2 = i2 + r2 - 2 * i * r * cosPiDivThree;
 					double R = Math.sqrt(R2);
 
 					// Use the law of cosines to determine the angle theta for
@@ -408,10 +404,8 @@ public class GridEditorTools {
 					// both the row and radius are even, we need to
 					// shift the x value right by 0.5 units. Otherwise, don't
 					// shift the x value.
-					int xIndex = radius
-							- 1
-							+ (int) Math.round(x - (yIndex % 2 * 0.5)
-									+ ((radius + 1) % 2 * 0.5));
+					int xIndex = radius - 1 + (int) Math.round(
+							x - (yIndex % 2 * 0.5) + ((radius + 1) % 2 * 0.5));
 
 					// Add the computed x and y indexes to the list of Points.
 					sextant.add(new Point(xIndex, yIndex));

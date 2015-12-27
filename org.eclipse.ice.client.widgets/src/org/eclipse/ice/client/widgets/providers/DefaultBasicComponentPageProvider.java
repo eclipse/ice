@@ -7,11 +7,8 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Nick Stanish
+ *   Jay Jay Billings, Nick Stanish
  *******************************************************************************/
-
-
-
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
@@ -23,20 +20,20 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
- * This is the default implementation of IBasicComponentPageProvider and it is responsible for
- * generating the default set of basic component pages for ICEFormEditor.
+ * This is the default implementation of IBasicComponentPageProvider and it is
+ * responsible for generating the default set of basic component pages for
+ * ICEFormEditor.
  * 
- * @author 
+ * @author Nick Stanish (class), Jay Jay Billings (original implementation)
  *
  */
+public class DefaultBasicComponentPageProvider extends DefaultPageProvider
+		implements IBasicComponentPageProvider {
 
-public class DefaultBasicComponentPageProvider extends DefaultPageProvider 
-	implements IBasicComponentPageProvider {
-	
 	@Override
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
 			ArrayList<Component> components) {
-		
+
 		ArrayList<IFormPage> sectionPages = new ArrayList<IFormPage>();
 		ICESectionPage tmpPage = null;
 		String pageName = null;
@@ -54,7 +51,8 @@ public class DefaultBasicComponentPageProvider extends DefaultPageProvider
 				pageName = ((ICEObject) (components.get(0))).getName();
 			} else {
 				pageName = ((ICEObject) (components.get(0))).getName() + ", "
-						+ ((ICEObject) (components.get(1))).getName() + ", etc.";
+						+ ((ICEObject) (components.get(1))).getName()
+						+ ", etc.";
 			}
 			// Instantiate the page
 			tmpPage = new ICESectionPage(formEditor, pageName, pageName);
@@ -72,7 +70,8 @@ public class DefaultBasicComponentPageProvider extends DefaultPageProvider
 				// Set a name for the page that is a combination of the first
 				// two components
 				pageName = ((ICEObject) (components.get(i))).getName() + ", "
-						+ ((ICEObject) (components.get(i + 1))).getName() + ", etc.";
+						+ ((ICEObject) (components.get(i + 1))).getName()
+						+ ", etc.";
 				// Create the page
 				tmpPage = new ICESectionPage(formEditor, pageName, pageName);
 				// Add the components
@@ -91,7 +90,8 @@ public class DefaultBasicComponentPageProvider extends DefaultPageProvider
 				if (components.size() - i == 1) {
 					pageName = ((ICEObject) (components.get(i))).getName();
 				} else {
-					pageName = ((ICEObject) (components.get(i))).getName() + ", "
+					pageName = ((ICEObject) (components.get(i))).getName()
+							+ ", "
 							+ ((ICEObject) (components.get(i + 1))).getName()
 							+ ", etc.";
 				}

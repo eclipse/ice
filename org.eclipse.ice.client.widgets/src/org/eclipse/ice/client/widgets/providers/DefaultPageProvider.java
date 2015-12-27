@@ -35,8 +35,7 @@ public class DefaultPageProvider implements IPageProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
+	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
 	 */
 	@Override
 	public String getName() {

@@ -38,7 +38,8 @@ public interface IErrorPageProvider extends IPageProvider {
 	 * @return The available providers
 	 * @throws CoreException
 	 */
-	public static ArrayList<IErrorPageProvider> getProviders() throws CoreException {
+	public static ArrayList<IErrorPageProvider> getProviders()
+			throws CoreException {
 		ExtensionHelper<IErrorPageProvider> extensionHelper = new ExtensionHelper<IErrorPageProvider>();
 		return extensionHelper.getExtensions(EXTENSION_POINT_ID);
 	}

@@ -14,8 +14,8 @@ package org.eclipse.ice.client.widgets.providers;
 import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
  * This interfaces establishes the contract for factories that would provide a
@@ -69,42 +69,47 @@ public interface IPageFactory {
 	public IFormPage getErrorPage(FormEditor editor);
 
 	/**
+	 * This operation returns the pages rendered for DataComponent,
+	 * TableComponents and MatrixComponents. These "Basic Components" are
+	 * combined to optimize page usage.
 	 * 
 	 * @param editor
+	 *            the form editor where the pages will reside
 	 * @param components
-	 * @return
+	 *            the data, table or matrix components that should be rendered
+	 * @return the form pages on which the components have been rendered
 	 */
-	public ArrayList<IFormPage> getComponentPages(FormEditor editor,
+	public ArrayList<IFormPage> getBasicComponentPages(FormEditor editor,
 			ArrayList<Component> components);
-	
+
 	/**
 	 * This operation returns the rendered pages that will display the contents
-	 * of the getGeometry components.
+	 * of the Geometry components.
 	 *
 	 * @param editor
 	 *            the form editor where the pages will reside
 	 * @param components
-	 *            the list components whose contents should be rendered
+	 *            the geometry components whose contents should be rendered
 	 * @return the form pages on which the contents of the lists have been
 	 *         rendered
 	 */
 	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
 			ArrayList<Component> components);
-	
+
 	/**
 	 * This operation returns the rendered pages that will display the contents
-	 * of the IEFSection components.
+	 * of the IEMFSection components.
 	 *
 	 * @param editor
 	 *            the form editor where the pages will reside
 	 * @param components
-	 *            the list components whose contents should be rendered
+	 *            the EMF components whose contents should be rendered
 	 * @return the form pages on which the contents of the lists have been
 	 *         rendered
 	 */
-	public ArrayList<IFormPage> getIEFSectionComponentPages(FormEditor editor,
+	public ArrayList<IFormPage> getIEMFSectionComponentPages(FormEditor editor,
 			ArrayList<Component> components);
-	
+
 	/**
 	 * This operation returns the rendered pages that will display the contents
 	 * of the Mesh components.
@@ -112,10 +117,25 @@ public interface IPageFactory {
 	 * @param editor
 	 *            the form editor where the pages will reside
 	 * @param components
-	 *            the list components whose contents should be rendered
+	 *            the mesh components whose contents should be rendered
 	 * @return the form pages on which the contents of the lists have been
 	 *         rendered
 	 */
 	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
 			ArrayList<Component> components);
+
+	/**
+	 * This operation returns the rendered pages that will display the contents
+	 * of the master-details pattern.
+	 * 
+	 * @param editor
+	 *            the form editor where the pages will reside
+	 * @param components
+	 *            the master-details pages whose contents should be rendered
+	 * @return the form pages on which the contents of the masterDetails have
+	 *         been rendered
+	 */
+	public ArrayList<IFormPage> getMasterDetailsPages(FormEditor editor,
+			ArrayList<Component> components);
+
 }

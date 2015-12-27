@@ -232,8 +232,8 @@ public class AnalysisToolComposite extends Composite {
 		viewItem.setToolTipText("Select the view displayed below.");
 
 		// We also need to add a listener to make viewMenu appear.
-		viewItem.addListener(SWT.Selection, new ToolItemMenuListener(viewItem,
-				menu));
+		viewItem.addListener(SWT.Selection,
+				new ToolItemMenuListener(viewItem, menu));
 
 		return;
 	}
@@ -317,8 +317,9 @@ public class AnalysisToolComposite extends Composite {
 
 		// If there is no active view visible and we have views available for
 		// this data source, activate the first available view.
-		if ((viewCompositeStack.topControl == null || viewCompositeStack.topControl
-				.isDisposed()) && !viewNames.isEmpty()) {
+		if ((viewCompositeStack.topControl == null
+				|| viewCompositeStack.topControl.isDisposed())
+				&& !viewNames.isEmpty()) {
 			setActiveView(dataSource + "-" + viewNames.get(0));
 		}
 		return;
@@ -333,8 +334,7 @@ public class AnalysisToolComposite extends Composite {
 	 */
 	private void setActiveView(String key) {
 		logger.info("AnalysisToolComposite message: "
-						+ "Setting active view to "
-						+ key);
+				+ "Setting active view to " + key);
 
 		// Fetch the view part using the key.
 		ViewPart viewPart = viewPartMap.get(key);
@@ -373,8 +373,7 @@ public class AnalysisToolComposite extends Composite {
 	private void removeViews(DataSource dataSource,
 			IAnalysisWidgetFactory factory) {
 		logger.info("AnalysisToolComposite message: "
-						+ "Removing views for data source "
-						+ dataSource);
+				+ "Removing views for data source " + dataSource);
 
 		// Get the list of available views.
 		List<String> viewNames = factory.getAvailableViews(dataSource);
@@ -392,8 +391,8 @@ public class AnalysisToolComposite extends Composite {
 
 		// Dispose of the ViewPart for each view.
 		for (String viewName : viewNames) {
-			logger.info("AnalysisToolComposite message: Removing view "
-					+ viewName);
+			logger.info(
+					"AnalysisToolComposite message: Removing view " + viewName);
 
 			ViewPart viewPart = viewPartMap.remove(dataSource + "-" + viewName);
 			if (viewPart != null) {
@@ -455,8 +454,8 @@ public class AnalysisToolComposite extends Composite {
 		// The leftToolBarComposite grabs excess horizontal space in its row in
 		// the overall layout. It has a StackLayout, with the topControl set to
 		// the holder or the ToolBar for the current View.
-		leftToolBarComposite.setLayoutData(new GridData(
-				GridData.FILL_HORIZONTAL));
+		leftToolBarComposite
+				.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		leftToolBarComposite.setLayout(leftToolBarStack);
 		leftToolBarComposite.layout();
 
@@ -498,17 +497,17 @@ public class AnalysisToolComposite extends Composite {
 		// Get the factory for the data object's class.
 		// FIXME - For the moment, we delegate all Comparison data to the LWR
 		// analysis package.
-		
+
 		// FIXME! Disabled while we remove the reactor stuff!
-		
+
 		IAnalysisWidgetFactory factory = null;
 
-//		if (dataSource == DataSource.Comparison) {
-//			factory = registry
-//					.getAnalysisWidgetFactory(PressurizedWaterReactor.class);
-//		} else {
-//			factory = registry.getAnalysisWidgetFactory(value.getClass());
-//		}
+		// if (dataSource == DataSource.Comparison) {
+		// factory = registry
+		// .getAnalysisWidgetFactory(PressurizedWaterReactor.class);
+		// } else {
+		// factory = registry.getAnalysisWidgetFactory(value.getClass());
+		// }
 
 		// Make sure the registry has a factory for this data object.
 		if (factory == null) {
@@ -568,8 +567,8 @@ public class AnalysisToolComposite extends Composite {
 		super.setBackground(color);
 
 		// Make sure the color is not null. If it is, default to white.
-		color = (color != null ? color : new Color(Display.getCurrent(), 255,
-				255, 255));
+		color = (color != null ? color
+				: new Color(Display.getCurrent(), 255, 255, 255));
 
 		// Set the color for all child Composites.
 		if (getChildren().length > 1) {
@@ -620,7 +619,8 @@ public class AnalysisToolComposite extends Composite {
 		 * @param toolBar
 		 *            The IAnalysisView's ToolBar.
 		 */
-		public ViewPart(IAnalysisView view, Composite container, ToolBar toolBar) {
+		public ViewPart(IAnalysisView view, Composite container,
+				ToolBar toolBar) {
 			this.view = view;
 			this.container = container;
 			this.toolBar = toolBar;

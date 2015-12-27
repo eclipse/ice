@@ -37,7 +37,8 @@ public interface IResourcePageProvider extends IPageProvider {
 	 * 
 	 * @return The available providers
 	 */
-	public static ArrayList<IResourcePageProvider> getProviders() throws CoreException {
+	public static ArrayList<IResourcePageProvider> getProviders()
+			throws CoreException {
 		ExtensionHelper<IResourcePageProvider> extensionHelper = new ExtensionHelper<IResourcePageProvider>();
 		return extensionHelper.getExtensions(EXTENSION_POINT_ID);
 	}
