@@ -6,8 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Menghan Li
- *   Minor updates for architecture compliance - Jay Jay Billings
+ *   Initial API and re-implementation and/or initial documentation - Menghan Li
+ *   Minor updates for architecture compliance, original implementation - 
+ *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.providers;
 
@@ -49,8 +50,7 @@ public class DefaultResourcePageProvider extends DefaultPageProvider
 		// should
 		// only be one output page.
 		if (!(components.isEmpty())) {
-			resourceComponent = (ResourceComponent) (components
-					.get(0));
+			resourceComponent = (ResourceComponent) (components.get(0));
 			if (resourceComponent != null) {
 				// Make the page
 				resourceComponentPage = new ICEResourcePage(formEditor,

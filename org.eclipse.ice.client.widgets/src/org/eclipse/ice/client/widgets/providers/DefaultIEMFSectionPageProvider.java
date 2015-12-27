@@ -6,26 +6,29 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - Fangzhou Lin
- *   Minor updates for architecture compliance - Jay Jay Billings
+ *   Initial API and re-implementation and/or initial documentation - 
+ *   Fangzhou Lin
+ *   Minor updates for architecture compliance, original implementation - 
+ *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.providers;
 
 import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.EMFSectionPage;
-import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
+
 /**
  * This class is a default extension for providing Default IEMFSection Page
  * 
  * @author Fangzhou Lin, Jay Jay Billings
  *
  */
-public class DefaultIEMFSectionPageProvider extends DefaultPageProvider implements IEMFSectionPageProvider{
+public class DefaultIEMFSectionPageProvider extends DefaultPageProvider
+		implements IEMFSectionPageProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -34,7 +37,7 @@ public class DefaultIEMFSectionPageProvider extends DefaultPageProvider implemen
 	 * eclipse.ui.forms.editor.FormEditor, java.util.ArrayList)
 	 */
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
-			ArrayList<Component> components){
+			ArrayList<Component> components) {
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 		EMFComponent emfComponent = null;
 		EMFSectionPage emfPage = null;
@@ -43,15 +46,15 @@ public class DefaultIEMFSectionPageProvider extends DefaultPageProvider implemen
 				emfComponent = (EMFComponent) comp;
 				if (emfComponent != null) {
 					// Make the EMFSectionPage
-					emfPage = new EMFSectionPage(formEditor, emfComponent.getName(),
-							emfComponent.getName());
+					emfPage = new EMFSectionPage(formEditor,
+							emfComponent.getName(), emfComponent.getName());
 					// Set the EMFComponent
 					emfPage.setEMFComponent(emfComponent);
 					pages.add(emfPage);
 				}
 			}
 		}
-		
+
 		return pages;
 	}
 }

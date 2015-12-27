@@ -25,7 +25,10 @@ public abstract class AbstractColorFactory implements IColorFactory {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.reactoreditor.IColorFactory#createColor(org.eclipse.swt.widgets.Display, int)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.reactoreditor.IColorFactory#createColor(
+	 * org.eclipse.swt.widgets.Display, int)
 	 */
 	@Override
 	public Color createColor(Display display, int hex) {

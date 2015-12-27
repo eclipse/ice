@@ -58,8 +58,8 @@ public class PreviousAction extends Action {
 
 		// Set the button image
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "previous.gif");
+		Path imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "previous.gif");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		ImageDescriptor imageDescriptor = ImageDescriptor
 				.createFromURL(imageURL);

@@ -150,8 +150,8 @@ public class GridEditorInput implements IEditorInput {
 			this.columnLabels = null;
 		} else if (columnLabels.size() > columns) {
 			// Get a copy of the List that is the right size.
-			this.columnLabels = new ArrayList<String>(columnLabels.subList(0,
-					columns));
+			this.columnLabels = new ArrayList<String>(
+					columnLabels.subList(0, columns));
 		} else {
 			// Get a copy of the List.
 			this.columnLabels = new ArrayList<String>(columnLabels);

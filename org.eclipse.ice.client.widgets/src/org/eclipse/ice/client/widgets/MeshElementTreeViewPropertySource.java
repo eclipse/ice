@@ -63,8 +63,8 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				new PropertyDescriptor(ID_LENGTH, "Length"),
 				new PropertyDescriptor(ID_STARTLOC, "Start Location"),
 				new PropertyDescriptor(ID_ENDLOC, "End Location") };
-		vertexDescriptors = new IPropertyDescriptor[] { new PropertyDescriptor(
-				ID_LOCATION, "Location") };
+		vertexDescriptors = new IPropertyDescriptor[] {
+				new PropertyDescriptor(ID_LOCATION, "Location") };
 	}
 
 	/**
