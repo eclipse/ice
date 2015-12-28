@@ -51,10 +51,6 @@ public class MOOSETester extends AbstractWorkbenchTester {
 
 		// TODO Write tests for the other options once they are implemented
 
-		// Close the Script unit test
-		bot.shell("MOOSE - Eclipse SDK").setFocus();
-		bot.viewByPartName("Script Unit Test").close();
-
 		// Test the import button then cancel out, as we can't create a SWTbot
 		// test for the OS provided file browser.
 		bot.toolbarButtonWithTooltip(
@@ -137,7 +133,6 @@ public class MOOSETester extends AbstractWorkbenchTester {
 
 		// See if the tab can be changed
 		bot.cTabItem("Mesh and Output Files").activate();
-
 	}
 
 	/**
