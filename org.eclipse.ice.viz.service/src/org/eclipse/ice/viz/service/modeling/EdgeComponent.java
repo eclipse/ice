@@ -99,6 +99,46 @@ public class EdgeComponent extends AbstractMeshComponent {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#
+	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
+	 * AbstractController, java.lang.String)
+	 */
+	@Override
+	public void addEntityByCategory(AbstractController entity,
+			String category) {
+
+		// When a vertex is added, take action to ensure the edge maintains a
+		// proper state
+		if ("Vertices".equals(category)) {
+
+			// The number of vertices
+			List<AbstractController> vertices = entities.get("Vertices");
+			int verticesNum = (vertices != null ? vertices.size() : 0);
+
+			// If the object is a vertex and the edge already has both vertices,
+			// fail silently.
+			if (verticesNum >= 2) {
+				return;
+			}
+
+			// Add the entity
+			super.addEntityByCategory(entity, category);
+
+			// If this was the second vertex, calculate the edge's new length.
+			if (verticesNum == 1) {
+				length = calculateLength();
+			}
+		}
+
+		// Otherwise, add the entity normally
+		else {
+			super.addEntityByCategory(entity, category);
+		}
+	}
+
 	/**
 	 * Calculates the length of the edge. This method does nothing by default,
 	 * and is intended to be overwritten by subclasses.
@@ -181,9 +221,6 @@ public class EdgeComponent extends AbstractMeshComponent {
 				.getEntitiesByCategory("Vertices")) {
 			addEntity((Vertex) vertex.clone());
 		}
-
-		// Copy the length
-		length = ((EdgeComponent) otherObject).length;
 
 		// Copy the rest of the data members and fire an update
 		// Copy each of the other component's data members
