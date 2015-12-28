@@ -7,8 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.ice.dependencies;bundle-version="2.0.0";visibility:=reexport
-Service-Component: OSGI-INF/HdfIORegistry.xml,OSGI-INF/HdfIOFactory.xml,
- OSGI-INF/ioservice.xml
+Service-Component: OSGI-INF/ioservice.xml
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
 Export-Package: org.eclipse.ice.io.csv,
  org.eclipse.ice.io.ini,
@@ -18,6 +17,3 @@ Bundle-Vendor: Oak Ridge National Laboratory
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.slf4j
-Bundle-NativeCode: deps/lib/linux/x86_64/libhdf.a; deps/lib/linux/x86_64/libhdf5.a; deps/lib/linux/x86_64/libjhdf.so; deps/lib/linux/x86_64/libjhdf.so.2.10.0; deps/lib/linux/x86_64/libjhdf5.so; deps/lib/linux/x86_64/libjhdf5.so.2.10.0;
-    processor=x86_64; osname=linux,
-  *

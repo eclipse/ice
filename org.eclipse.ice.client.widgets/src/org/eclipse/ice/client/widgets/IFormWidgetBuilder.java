@@ -61,7 +61,6 @@ public interface IFormWidgetBuilder {
 	 */
 	public IFormWidget build();
 
-
 	/**
 	 * This operation retrieves all of the IFormWidgetBuilders from the
 	 * ExtensionRegistry.
@@ -70,15 +69,16 @@ public interface IFormWidgetBuilder {
 	 * @throws CoreException
 	 *             This exception is thrown if an extension cannot be loaded.
 	 */
-	public static IFormWidgetBuilder[] getFormWidgetBuilders() throws CoreException {
+	public static IFormWidgetBuilder[] getFormWidgetBuilders()
+			throws CoreException {
 
 		/**
 		 * Logger for handling event messages and other information.
 		 */
 		Logger logger = LoggerFactory.getLogger(IFormWidgetBuilder.class);
 
-		IFormWidgetBuilder [] builders = null;
-		String id = "org.eclipse.ice.item.itemBuilder";
+		IFormWidgetBuilder[] builders = null;
+		String id = "org.eclipse.ice.client.widgets.iformwidgetbuilder";
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint(id);
 
