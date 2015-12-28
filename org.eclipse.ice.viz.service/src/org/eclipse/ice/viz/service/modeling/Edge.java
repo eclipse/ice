@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+
 /**
  * A controller for an Edge part.
  * 
@@ -55,6 +58,16 @@ public class Edge extends AbstractController {
 	 */
 	public double getLength() {
 		return ((EdgeComponent) model).getLength();
+	}
+
+	@Override
+	public void update(IManagedVizUpdateable component,
+			UpdateableSubscriptionType[] type) {
+
+		// Recalculate the edge's length
+		((EdgeComponent) model).calculateLength();
+
+		super.update(component, type);
 	}
 
 	/*

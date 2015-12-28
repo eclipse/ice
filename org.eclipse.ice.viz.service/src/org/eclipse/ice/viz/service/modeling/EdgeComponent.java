@@ -70,27 +70,11 @@ public class EdgeComponent extends AbstractMeshComponent {
 	@Override
 	public void addEntity(AbstractController newEntity) {
 
-		// When a vertex is added, take action to ensure the edge maintains its
-		// proper state
+		// When a vertex is added, place it into the Vertices category by
+		// default
 		if (newEntity instanceof Vertex) {
 
-			// The number of vertices
-			List<AbstractController> vertices = entities.get("Vertices");
-			int verticesNum = (vertices != null ? vertices.size() : 0);
-
-			// If the object is a vertex and the edge already has both vertices,
-			// fail silently.
-			if (verticesNum >= 2) {
-				return;
-			}
-
-			// Add the entity
-			super.addEntityByCategory(newEntity, "Vertices");
-
-			// If this was the second vertex, calculate the edge's new length.
-			if (verticesNum == 1) {
-				length = calculateLength();
-			}
+			addEntityByCategory(newEntity, "Vertices");
 
 			// For other entities, add them normally
 		} else {
@@ -140,12 +124,16 @@ public class EdgeComponent extends AbstractMeshComponent {
 	}
 
 	/**
-	 * Calculates the length of the edge. This method does nothing by default,
+	 * Calculates the length of the edge, saving the value in this object as
+	 * well as returning it to the caller. This method does nothing by default,
 	 * and is intended to be overwritten by subclasses.
 	 * 
 	 * @return The edge's current length
 	 */
-	protected double calculateLength() {
+	public double calculateLength() {
+
+		length = 0;
+
 		return 0;
 	}
 

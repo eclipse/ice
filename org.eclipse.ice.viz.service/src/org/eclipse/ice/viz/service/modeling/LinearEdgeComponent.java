@@ -49,8 +49,10 @@ public class LinearEdgeComponent extends EdgeComponent {
 				.getLocation();
 		double[] endPoint = ((Vertex) entities.get("Vertices").get(1))
 				.getLocation();
-		return Math.sqrt(Math.pow(startPoint[0] + endPoint[0], 2)
+		length = Math.sqrt(Math.pow(startPoint[0] + endPoint[0], 2)
 				+ Math.pow(startPoint[1] + endPoint[1], 2)
 				+ Math.pow(startPoint[2] + endPoint[2], 2));
+
+		return length;
 	}
 }
