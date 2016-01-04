@@ -51,7 +51,7 @@ public class MeshSelectionManager {
 	 * A map of currently-selected vertices in the MeshApplication, keyed on
 	 * their IDs.
 	 */
-	private final Map<Integer, Vertex> selectedVertices;
+	private final Map<Integer, VertexController> selectedVertices;
 	/**
 	 * A map of currently-selected edges in the MeshApplication, keyed on their
 	 * IDs.
@@ -86,7 +86,7 @@ public class MeshSelectionManager {
 	public MeshSelectionManager() {
 		// Initialize the current selection collections.
 		listeners = new ArrayList<IMeshSelectionListener>();
-		selectedVertices = new TreeMap<Integer, Vertex>();
+		selectedVertices = new TreeMap<Integer, VertexController>();
 		selectedEdges = new TreeMap<Integer, Edge>();
 		selectedPolygons = new TreeMap<Integer, Polygon>();
 
@@ -185,14 +185,14 @@ public class MeshSelectionManager {
 	 * 
 	 * @return An ArrayList of the currently-selected vertices.
 	 */
-	public List<Vertex> getSelectedVertices() {
-		List<Vertex> vertices;
+	public List<VertexController> getSelectedVertices() {
+		List<VertexController> vertices;
 
 		// Acquire the read lock and create a new list from the values in the
 		// collection of selected vertices.
 		readLock.lock();
 		try {
-			vertices = new ArrayList<Vertex>(selectedVertices.values());
+			vertices = new ArrayList<VertexController>(selectedVertices.values());
 		} finally {
 			readLock.unlock();
 		}
@@ -336,7 +336,7 @@ public class MeshSelectionManager {
 	public void deleteSelection() {
 
 		ArrayList<Integer> removedIds;
-		ArrayList<Vertex> vertices;
+		ArrayList<VertexController> vertices;
 
 		// Acquire the read lock to fetch the data necessary to determine all
 		// polygons that are either selected or whose vertices are all selected.
@@ -349,7 +349,7 @@ public class MeshSelectionManager {
 
 			// Get the set of selected vertices to determine any other polygons
 			// that may have all of their vertices selected.
-			vertices = new ArrayList<Vertex>(selectedVertices.values());
+			vertices = new ArrayList<VertexController>(selectedVertices.values());
 		} finally {
 			readLock.unlock();
 		}
@@ -415,7 +415,7 @@ public class MeshSelectionManager {
 		writeLock.lock();
 		try {
 			if (!selectedVertices.containsKey(id)) {
-				Vertex vertex = mesh.getVertex(id);
+				VertexController vertex = mesh.getVertex(id);
 				if (vertex != null) {
 					selectedVertices.put(id, vertex);
 					changed = true;

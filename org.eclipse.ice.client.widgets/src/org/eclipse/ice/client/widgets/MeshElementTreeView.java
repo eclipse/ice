@@ -20,7 +20,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Face;
+import org.eclipse.ice.viz.service.modeling.FaceController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -226,8 +226,8 @@ public class MeshElementTreeView extends ViewPart
 					// An array of every unique vertex from the selection
 					ArrayList<AbstractController> vertices = new ArrayList<AbstractController>();
 
-					if (selection.selectedMeshPart instanceof Face) {
-						Face polygon = (Face) selection.selectedMeshPart;
+					if (selection.selectedMeshPart instanceof FaceController) {
+						FaceController polygon = (FaceController) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
 						for (AbstractController e : polygon
 								.getEntitiesByCategory("Edges")) {
@@ -278,7 +278,7 @@ public class MeshElementTreeView extends ViewPart
 
 				// Only selected Polygons will have children.
 				return (element instanceof MeshSelection
-						&& ((MeshSelection) element).selectedMeshPart instanceof Face);
+						&& ((MeshSelection) element).selectedMeshPart instanceof FaceController);
 			}
 		});
 

@@ -19,17 +19,17 @@ import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownController;
 import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.Face;
-import org.eclipse.ice.viz.service.modeling.FaceEdgeComponent;
-import org.eclipse.ice.viz.service.modeling.Vertex;
-import org.eclipse.ice.viz.service.modeling.VertexComponent;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.FaceController;
+import org.eclipse.ice.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.ice.viz.service.modeling.VertexController;
+import org.eclipse.ice.viz.service.modeling.VertexMesh;
 import org.eclipse.swt.widgets.Composite;
 
 import javafx.event.EventHandler;
@@ -138,7 +138,7 @@ public class FXMeshViewer extends FXViewer {
 	 * their parent polygon is completed.
 	 */
 	private AbstractController tempRoot = new AbstractController(
-			new AbstractMeshComponent(), new AbstractView());
+			new AbstractMesh(), new AbstractView());
 
 	/**
 	 * A list of displayed circles to show the user the location that selectice
@@ -225,10 +225,10 @@ public class FXMeshViewer extends FXViewer {
 				if (intersectedNode instanceof Box) {
 
 					// Create a new vertex at that point
-					VertexComponent tempComponent = new VertexComponent(
+					VertexMesh tempComponent = new VertexMesh(
 							event.getX(), event.getY(), 0);
 					tempComponent.setProperty("Constructing", "True");
-					Vertex tempVertex = (Vertex) factory
+					VertexController tempVertex = (VertexController) factory
 							.createController(tempComponent);
 
 					// Set the vertex's name and ID
@@ -274,7 +274,7 @@ public class FXMeshViewer extends FXViewer {
 					}
 
 					// If the selected shape is a vertex, add it to the list
-					if (modelShape instanceof Vertex) {
+					if (modelShape instanceof VertexController) {
 						selectedVertices.add(modelShape);
 						changed = true;
 
@@ -296,9 +296,9 @@ public class FXMeshViewer extends FXViewer {
 					// it and the last one
 					if (numVertices > 1) {
 
-						Edge tempEdge = getEdge(
-								(Vertex) selectedVertices.get(numVertices - 2),
-								(Vertex) selectedVertices.get(numVertices - 1));
+						EdgeController tempEdge = getEdge(
+								(VertexController) selectedVertices.get(numVertices - 2),
+								(VertexController) selectedVertices.get(numVertices - 1));
 
 						// Add the edge to the list
 						tempEdges.add(tempEdge);
@@ -311,15 +311,15 @@ public class FXMeshViewer extends FXViewer {
 					// so finish up the polygon
 					if (numVertices == 4) {
 
-						Edge tempEdge = getEdge(
-								(Vertex) selectedVertices.get(numVertices - 1),
-								(Vertex) selectedVertices.get(0));
+						EdgeController tempEdge = getEdge(
+								(VertexController) selectedVertices.get(numVertices - 1),
+								(VertexController) selectedVertices.get(0));
 
 						tempEdges.add(tempEdge);
 
 						// Create a face out of all the edges
-						NekPolygonComponent faceComponent = new NekPolygonComponent();
-						NekPolygon newFace = (NekPolygon) factory
+						NekPolygonMesh faceComponent = new NekPolygonMesh();
+						NekPolygonController newFace = (NekPolygonController) factory
 								.createController(faceComponent);
 
 						// Set the polygon's name and ID
@@ -385,7 +385,7 @@ public class FXMeshViewer extends FXViewer {
 							.getProperties().get(AbstractController.class);
 
 					// If the user clicked a vertex, handle it
-					if (modelShape instanceof Vertex) {
+					if (modelShape instanceof VertexController) {
 
 						// If shift is down, add the vertex to the selection
 						if (event.isShiftDown()) {
@@ -461,7 +461,7 @@ public class FXMeshViewer extends FXViewer {
 						if (vertexMarkers.isEmpty()) {
 
 							// Get the location of the vertex which was clicked
-							double[] cursorLocation = ((Vertex) modelShape)
+							double[] cursorLocation = ((VertexController) modelShape)
 									.getTranslation();
 
 							for (AbstractController vertex : selectedVertices) {
@@ -471,7 +471,7 @@ public class FXMeshViewer extends FXViewer {
 								// marker.setScaleZ(.25d);
 
 								// Place it at the vertex's position
-								double[] position = ((Vertex) vertex)
+								double[] position = ((VertexController) vertex)
 										.getTranslation();
 								marker.setTranslateX(position[0]);
 								marker.setTranslateY(position[1]);
@@ -542,7 +542,7 @@ public class FXMeshViewer extends FXViewer {
 					for (int i = 0; i < selectedVertices.size(); i++) {
 
 						// Get the vertex
-						Vertex vertex = (Vertex) selectedVertices.get(i);
+						VertexController vertex = (VertexController) selectedVertices.get(i);
 
 						// Update its position
 						vertex.updateLocation(relativeXCords.get(i) + mousePosX,
@@ -784,21 +784,21 @@ public class FXMeshViewer extends FXViewer {
 	 * @param end
 	 * @return
 	 */
-	public Edge getEdge(Vertex start, Vertex end) {
+	public EdgeController getEdge(VertexController start, VertexController end) {
 
 		// If the start point shares and edge with the endp oint, return it
 		for (AbstractController edge : start.getEntitiesByCategory("Edges")) {
 			if (edge.getEntitiesByCategory("Vertices").contains(end)) {
 
 				edge.setProperty("Constructing", "True");
-				return (Edge) edge;
+				return (EdgeController) edge;
 			}
 		}
 
 		// If there is not already an edge, create a new one
-		FaceEdgeComponent tempComponent = new FaceEdgeComponent(start, end);
+		FaceEdgeMesh tempComponent = new FaceEdgeMesh(start, end);
 		tempComponent.setProperty("Constructing", "True");
-		Edge tempEdge = (Edge) factory.createController(tempComponent);
+		EdgeController tempEdge = (EdgeController) factory.createController(tempComponent);
 
 		// Set the edge's name and ID
 		tempEdge.setProperty("Name", "Edge");
@@ -833,13 +833,13 @@ public class FXMeshViewer extends FXViewer {
 
 			// For vertices, add them to the vertex list if they are not already
 			// present
-			if (part instanceof Vertex) {
+			if (part instanceof VertexController) {
 				if (!selectedVertices.contains(part)) {
 					selectedVertices.add(part);
 				}
 			}
 
-			else if (part instanceof Edge) {
+			else if (part instanceof EdgeController) {
 
 				// Add an edge to the list of temporary edges if it is not
 				// already present
@@ -856,7 +856,7 @@ public class FXMeshViewer extends FXViewer {
 				}
 			}
 
-			else if (part instanceof Face) {
+			else if (part instanceof FaceController) {
 
 				// Add each of the face's edges
 				for (AbstractController edge : (part)

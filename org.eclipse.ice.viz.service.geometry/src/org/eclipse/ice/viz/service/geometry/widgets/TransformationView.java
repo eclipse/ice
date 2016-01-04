@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.eclipse.jface.databinding.swt.IWidgetValueProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
@@ -65,7 +65,7 @@ public class TransformationView extends ViewPart {
 	 * </p>
 	 * 
 	 */
-	private Shape currentShape;
+	private ShapeController currentShape;
 
 	/**
 	 * Defines whether degrees or radians are used for rotation angles
@@ -228,7 +228,7 @@ public class TransformationView extends ViewPart {
 	 * 
 	 * @param shape
 	 */
-	public void setShape(Shape shape) {
+	public void setShape(ShapeController shape) {
 
 		this.currentShape = shape;
 

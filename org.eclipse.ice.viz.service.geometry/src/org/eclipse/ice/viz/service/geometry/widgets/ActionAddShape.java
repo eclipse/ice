@@ -20,8 +20,8 @@ import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -214,11 +214,11 @@ public class ActionAddShape extends Action {
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof Shape) {
+			if (selectedObject instanceof ShapeController) {
 
 				// Get the selected shape's parent
 
-				Shape selectedShape = (Shape) selectedObject;
+				ShapeController selectedShape = (ShapeController) selectedObject;
 				parentComplexShape = selectedShape
 						.getEntitiesByCategory("Parent").get(0);
 			} else if (selectedObject instanceof BlankShape) {
@@ -234,7 +234,7 @@ public class ActionAddShape extends Action {
 		// Add a child shape to either the GeometryComponent or the parent
 		// ComplexShape
 
-		Shape childShape = createShape();
+		ShapeController childShape = createShape();
 
 		if (parentComplexShape == null) {
 
@@ -287,9 +287,9 @@ public class ActionAddShape extends Action {
 	 *         The newly created shape
 	 *         </p>
 	 */
-	public Shape createShape() {
+	public ShapeController createShape() {
 
-		Shape shape = null;
+		ShapeController shape = null;
 
 		// Determine which type of shape should be created
 
@@ -297,8 +297,8 @@ public class ActionAddShape extends Action {
 
 			// Instantiate a PrimitiveShape and set its name and ID
 
-			ShapeComponent shapeComponent = new ShapeComponent();
-			shape = (Shape) view.getFactory().createController(shapeComponent);
+			ShapeMesh shapeComponent = new ShapeMesh();
+			shape = (ShapeController) view.getFactory().createController(shapeComponent);
 
 			shape.setProperty("Type", shapeType.toString());
 
@@ -311,8 +311,8 @@ public class ActionAddShape extends Action {
 
 			// Instantiate a ComplexShape and set its name
 
-			ShapeComponent shapeComponent = new ShapeComponent();
-			shape = (Shape) view.getFactory().createController(shapeComponent);
+			ShapeMesh shapeComponent = new ShapeMesh();
+			shape = (ShapeController) view.getFactory().createController(shapeComponent);
 
 			shape.setProperty("Operator", operatorType.toString());
 

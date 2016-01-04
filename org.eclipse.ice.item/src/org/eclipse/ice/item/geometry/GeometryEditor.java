@@ -19,10 +19,9 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
-import org.eclipse.ice.viz.service.jme3.geometry.JME3ControllerFactory;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 /**
  * <p>
@@ -96,10 +95,8 @@ public class GeometryEditor extends Item {
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
 
-		// TODO Get the right factory from a service, instead of hard coding
-		IControllerFactory factory = new JME3ControllerFactory();
 		geometryComp.setGeometry(
-				(Shape) factory.createController(new ShapeComponent()));
+				new ShapeController(new ShapeMesh(), new AbstractView()));
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());

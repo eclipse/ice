@@ -11,8 +11,8 @@
 package org.eclipse.ice.viz.service.jme3.geometry;
 
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 import com.jme3.material.Material;
 
@@ -23,7 +23,7 @@ import com.jme3.material.Material;
  * @author Andrew P. Belt, Robert Smith
  *
  */
-public class JME3Shape extends Shape {
+public class JME3Shape extends ShapeController {
 
 	/**
 	 * The nullary constructor
@@ -40,7 +40,7 @@ public class JME3Shape extends Shape {
 	 * @param view
 	 *            The controller's view
 	 */
-	public JME3Shape(ShapeComponent model, AbstractView view) {
+	public JME3Shape(ShapeMesh model, AbstractView view) {
 		super(model, view);
 	}
 
@@ -84,7 +84,7 @@ public class JME3Shape extends Shape {
 	public Object clone() {
 
 		// Create a new shape from clones of the model and view
-		ShapeComponent cloneComponent = (ShapeComponent) model.clone();
+		ShapeMesh cloneComponent = (ShapeMesh) model.clone();
 		JME3ShapeView cloneView = (JME3ShapeView) view.clone();
 		JME3Shape clone = new JME3Shape(cloneComponent, cloneView);
 

@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -87,12 +87,12 @@ public class ActionDuplicateShape extends Action {
 		for (TreePath path : paths) {
 			Object selectedObject = path.getLastSegment();
 
-			if (selectedObject instanceof Shape) {
-				Shape selectedShape = (Shape) selectedObject;
+			if (selectedObject instanceof ShapeController) {
+				ShapeController selectedShape = (ShapeController) selectedObject;
 
 				// Clone the shape
 
-				Shape clonedShape = (Shape) selectedShape.clone();
+				ShapeController clonedShape = (ShapeController) selectedShape.clone();
 
 				// Remove the selected state from the cloned shape
 
@@ -101,7 +101,7 @@ public class ActionDuplicateShape extends Action {
 				// Try to get the selected shape's parent shape
 				// We can assume that if the parent exists, it is a ComplexShape
 
-				Shape parentShape = (Shape) selectedShape.getEntitiesByCategory("Parent").get(0);
+				ShapeController parentShape = (ShapeController) selectedShape.getEntitiesByCategory("Parent").get(0);
 
 				if (parentShape != null) {
 

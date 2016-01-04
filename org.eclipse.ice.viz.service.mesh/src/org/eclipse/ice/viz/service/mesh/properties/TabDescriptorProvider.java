@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.properties.BoundaryConditionSection.Type;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.Face;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.FaceController;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -114,12 +114,12 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 			mesh = meshSelection.mesh;
 
 			// Create the right collection of tabs based on the part's type
-			if (meshSelection.selectedMeshPart instanceof Face) {
-				createTabs((Face) meshSelection.selectedMeshPart);
-			} else if (meshSelection.selectedMeshPart instanceof Edge) {
-				createTabs((Edge) meshSelection.selectedMeshPart);
-			} else if (meshSelection.selectedMeshPart instanceof Vertex) {
-				createTabs((Vertex) meshSelection.selectedMeshPart);
+			if (meshSelection.selectedMeshPart instanceof FaceController) {
+				createTabs((FaceController) meshSelection.selectedMeshPart);
+			} else if (meshSelection.selectedMeshPart instanceof EdgeController) {
+				createTabs((EdgeController) meshSelection.selectedMeshPart);
+			} else if (meshSelection.selectedMeshPart instanceof VertexController) {
+				createTabs((VertexController) meshSelection.selectedMeshPart);
 			}
 		}
 
@@ -128,7 +128,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 				.toArray(new ITabDescriptor[tabDescriptors.size()]);
 	}
 
-	public void createTabs(Face polygon) {
+	public void createTabs(FaceController polygon) {
 
 		// IDs used for the tabs.
 		final String polygonTabId = "polygon";
@@ -325,7 +325,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		}
 		size = vertices.size();
 		for (int i = 0; i < size; i++) {
-			Vertex vertex = (Vertex) vertices.get(i);
+			VertexController vertex = (VertexController) vertices.get(i);
 
 			// Set the current tab ID.
 			final String tabLabel = vertex.getProperty("Name") + " "
@@ -416,7 +416,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		return;
 	}
 
-	public void createTabs(Edge edge) {
+	public void createTabs(EdgeController edge) {
 
 		// The IDs of the tabs that will be created.
 		final String edgeTabId = "edge";
@@ -482,7 +482,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// ---- Create tabs for the vertices. ---- //
 		lastTabId = edgeTabId;
 		for (int i = 0; i < 2; i++) {
-			Vertex vertex = (Vertex) edge.getEntitiesByCategory("Vertices")
+			VertexController vertex = (VertexController) edge.getEntitiesByCategory("Vertices")
 					.get(i);
 
 			// Set the current tab ID.
@@ -574,7 +574,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// ---- Create tabs for the BoundaryConditions. ---- //
 		List<AbstractController> polygons = edge.getEntitiesByCategory("Faces");
 		for (int i = 0; i < polygons.size(); i++) {
-			NekPolygon polygon = (NekPolygon) polygons.get(i);
+			NekPolygonController polygon = (NekPolygonController) polygons.get(i);
 
 			// Set the current tab ID.
 			final String tabLabel = "Boundary Conditions ("
@@ -667,7 +667,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		return;
 	}
 
-	public void createTabs(Vertex vertex) {
+	public void createTabs(VertexController vertex) {
 
 		// Create a TabDescriptor for the Vertex. We only need one tab!
 		final String tabLabel = vertex.getProperty("Name") + " "

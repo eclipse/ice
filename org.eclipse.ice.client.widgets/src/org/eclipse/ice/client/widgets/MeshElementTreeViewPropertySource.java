@@ -17,9 +17,9 @@ import java.util.Hashtable;
 
 import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.Face;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.FaceController;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -77,9 +77,9 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 	 */
 	static {
 		propDescMap = new Hashtable<Class<?>, IPropertyDescriptor[]>();
-		propDescMap.put(Face.class, polygonDescriptors);
-		propDescMap.put(Edge.class, edgeDescriptors);
-		propDescMap.put(Vertex.class, vertexDescriptors);
+		propDescMap.put(FaceController.class, polygonDescriptors);
+		propDescMap.put(EdgeController.class, edgeDescriptors);
+		propDescMap.put(VertexController.class, vertexDescriptors);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 			@Override
 			public Object getValue(Object data, Object id) {
 
-				Face polygon = (Face) data;
+				FaceController polygon = (FaceController) data;
 				ArrayList<String> propertySet = new ArrayList<String>();
 
 				// If the caller seeks the edges, get them from the wrapped
@@ -162,7 +162,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 			@Override
 			public Object getValue(Object data, Object id) {
 
-				Edge edge = (Edge) data;
+				EdgeController edge = (EdgeController) data;
 				ArrayList<String> propertySet = new ArrayList<String>();
 
 				// Collect the given edge's vertices
@@ -211,7 +211,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 			@Override
 			public Object getValue(Object data, Object id) {
 
-				Vertex vertex = (Vertex) data;
+				VertexController vertex = (VertexController) data;
 				ArrayList<String> propertySet = new ArrayList<String>();
 
 				// Get the vertex's location
@@ -232,9 +232,9 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 
 		// Populate the handler map
 		propHandlerMap = new Hashtable<Class<?>, IPropertyTypeHandler>();
-		propHandlerMap.put(Face.class, polygonPropertyHandler);
-		propHandlerMap.put(Edge.class, edgePropertyHandler);
-		propHandlerMap.put(Vertex.class, vertexPropertyHandler);
+		propHandlerMap.put(FaceController.class, polygonPropertyHandler);
+		propHandlerMap.put(EdgeController.class, edgePropertyHandler);
+		propHandlerMap.put(VertexController.class, vertexPropertyHandler);
 
 	}
 

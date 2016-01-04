@@ -44,7 +44,7 @@ public class VertexController extends AbstractMeshController {
 	 * </p>
 	 * 
 	 */
-	private Vertex model;
+	private VertexController model;
 
 	// ---- Property IDs. ---- //
 	/**
@@ -74,7 +74,7 @@ public class VertexController extends AbstractMeshController {
 	 *            </p>
 	 */
 	// TODO Update documentation in model. It has the jME3 material now!
-	public VertexController(Vertex vertex,
+	public VertexController(VertexController vertex,
 			ConcurrentLinkedQueue<AbstractMeshController> queue,
 			Material material) {
 		super(vertex, queue);
@@ -269,7 +269,7 @@ public class VertexController extends AbstractMeshController {
 	public Object clone() {
 
 		// Initialize a new object.
-		VertexController object = new VertexController((Vertex) model.clone(),
+		VertexController object = new VertexController((VertexController) model.clone(),
 				updateQueue, view.geometry.getMaterial());
 
 		// Copy the contents from this one.

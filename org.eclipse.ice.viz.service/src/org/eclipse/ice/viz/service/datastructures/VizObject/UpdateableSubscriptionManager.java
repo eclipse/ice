@@ -233,6 +233,11 @@ public class UpdateableSubscriptionManager {
 	 *            The listener to be unregistered
 	 */
 	public void unregister(IManagedVizUpdateableListener listener) {
-		subscriptionMap.remove(listener);
+
+		// Try to remove the listener from each individual subscription list.
+		for (UpdateableSubscriptionType category : subscriptionMap.keySet()) {
+			subscriptionMap.get(category).remove(listener);
+		}
+
 	}
 }

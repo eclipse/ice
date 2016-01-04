@@ -11,7 +11,7 @@
       </programArgs>
       <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080  -Dosgi.framework.extensions=org.eclipse.fx.osgi
       </vmArgs>
-      <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin 
+      <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin
       </vmArgsLin>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts -Dvisit.binpath=@user.home/visit/bin
       </vmArgsMac>
@@ -280,8 +280,9 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.geometry.javafx" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.javafx" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.jme3" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />

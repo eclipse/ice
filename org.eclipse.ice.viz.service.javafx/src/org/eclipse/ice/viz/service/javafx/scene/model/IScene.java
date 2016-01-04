@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 /**
  * <p>
@@ -61,6 +61,6 @@ public interface IScene {
 	 * 
 	 * @return a List of all the geometry used in the scene.
 	 */
-	public List<Shape> getGeometry();
+	public List<ShapeController> getGeometry();
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -24,7 +24,7 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
 
 /**
  * This class provides an {@link ISection} for displaying the information of a
- * {@link Vertex} in a modifiable manner.
+ * {@link VertexController} in a modifiable manner.
  * 
  * @author Jordan H. Deyton
  * 

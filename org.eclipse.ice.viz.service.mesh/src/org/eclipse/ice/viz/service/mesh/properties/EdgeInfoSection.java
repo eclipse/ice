@@ -15,7 +15,7 @@ package org.eclipse.ice.viz.service.mesh.properties;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,7 +24,7 @@ import org.eclipse.ui.views.properties.tabbed.ISection;
 
 /**
  * This class provides an {@link ISection} for displaying the information of an
- * {@link Edge} in a modifiable manner.
+ * {@link EdgeController} in a modifiable manner.
  * 
  * @author Jordan H. Deyton
  * 
@@ -88,8 +88,8 @@ public class EdgeInfoSection extends GeneralInfoSection {
 
 			// If the selected object is a Polygon, then we need to get an edge
 			// from the Polygon.
-			if (meshPart instanceof NekPolygon) {
-				NekPolygon polygon = (NekPolygon) meshPart;
+			if (meshPart instanceof NekPolygonController) {
+				NekPolygonController polygon = (NekPolygonController) meshPart;
 				List<AbstractController> edges = polygon
 						.getEntitiesByCategory("Edges");
 				// Set the parent class' ICEObject to the appropriate edge.

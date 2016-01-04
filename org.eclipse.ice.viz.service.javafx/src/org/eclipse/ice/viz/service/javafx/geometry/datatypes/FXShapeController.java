@@ -18,8 +18,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 import javafx.scene.Group;
 
@@ -29,7 +29,7 @@ import javafx.scene.Group;
  * @author r8s
  *
  */
-public class FXShapeController extends Shape {
+public class FXShapeController extends ShapeController {
 
 	/**
 	 * THe nullary constructor
@@ -46,12 +46,12 @@ public class FXShapeController extends Shape {
 	 * @param view
 	 *            The controller's view
 	 */
-	public FXShapeController(ShapeComponent model, AbstractView view) {
+	public FXShapeController(ShapeMesh model, AbstractView view) {
 		super(model, view);
 
 		// Associate this controller with the node within the node's internal
 		// data structures
-		((Group) view.getRepresentation()).getProperties().put(Shape.class,
+		((Group) view.getRepresentation()).getProperties().put(ShapeController.class,
 				this);
 	}
 
@@ -103,7 +103,7 @@ public class FXShapeController extends Shape {
 	 * service.modeling.Shape)
 	 */
 	@Override
-	public void setParent(Shape parent) {
+	public void setParent(ShapeController parent) {
 
 		// If the shape already has a parent, remove this shape's JavaFX node
 		// from the parent's JavaFX node. Ignore this step for the root shape,
@@ -164,14 +164,14 @@ public class FXShapeController extends Shape {
 	public void copy(AbstractController source) {
 
 		// Create the model and give it a reference to this
-		model = new ShapeComponent();
+		model = new ShapeMesh();
 		model.setController(this);
 
 		// For simple objects, copy the model and create a new view based on the
 		// copy
 		if (source.getProperty("Operator") == null) {
 			model.copy(source.getModel());
-			view = new FXShapeView((ShapeComponent) model);
+			view = new FXShapeView((ShapeMesh) model);
 			view.copy(source.getView());
 		}
 

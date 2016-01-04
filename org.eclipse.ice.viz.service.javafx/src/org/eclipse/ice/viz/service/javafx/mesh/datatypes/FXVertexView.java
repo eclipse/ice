@@ -14,10 +14,10 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateabl
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.VertexComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.VertexMesh;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -77,7 +77,7 @@ public class FXVertexView extends AbstractView {
 	 * @param model
 	 *            The model which this view will display
 	 */
-	public FXVertexView(VertexComponent model) {
+	public FXVertexView(VertexMesh model) {
 		this();
 
 		// Set the node's name
@@ -112,7 +112,7 @@ public class FXVertexView extends AbstractView {
 	public void setController(AbstractController controller) {
 
 		// Put the controller in the node's data structure
-		node.getProperties().put(Shape.class, mesh);
+		node.getProperties().put(ShapeController.class, mesh);
 	}
 
 	/*
@@ -134,11 +134,11 @@ public class FXVertexView extends AbstractView {
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMeshComponent model) {
+	public void refresh(AbstractMesh model) {
 
 		// Center the node on the vertex's location
-		transformation.setTranslation(((VertexComponent) model).getX(),
-				((VertexComponent) model).getY(), 0);
+		transformation.setTranslation(((VertexMesh) model).getX(),
+				((VertexMesh) model).getY(), 0);
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));

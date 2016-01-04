@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -385,7 +385,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 						int edgeId = Integer
 								.valueOf(edges.get(id).getProperty("Id"));
 
-						NekPolygon polygon = (NekPolygon) meshPart;
+						NekPolygonController polygon = (NekPolygonController) meshPart;
 
 						// Now get the condition based on the type of boundary
 						// condition we are displaying.
@@ -412,7 +412,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 					List<AbstractController> polygons = meshPart
 							.getEntitiesByCategory("Faces");
 					if (id < polygons.size()) {
-						NekPolygon polygon = (NekPolygon) polygons.get(id);
+						NekPolygonController polygon = (NekPolygonController) polygons.get(id);
 
 						// Now get the condition based on the type of
 						// boundary condition we are displaying.

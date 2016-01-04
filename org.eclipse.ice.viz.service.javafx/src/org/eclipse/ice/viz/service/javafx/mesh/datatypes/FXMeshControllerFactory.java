@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
-import org.eclipse.ice.viz.service.modeling.EdgeComponent;
-import org.eclipse.ice.viz.service.modeling.FaceComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
+import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.ice.viz.service.modeling.FaceMesh;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.VertexComponent;
+import org.eclipse.ice.viz.service.modeling.VertexMesh;
 
 /**
  * A factory which creates JavaFX specific AbstractViews and AbstractControllers
@@ -29,25 +29,25 @@ import org.eclipse.ice.viz.service.modeling.VertexComponent;
 public class FXMeshControllerFactory implements IControllerFactory {
 
 	@Override
-	public AbstractController createController(AbstractMeshComponent model) {
+	public AbstractController createController(AbstractMesh model) {
 
 		// If the model is an edge component, create an edge with a linear
 		// edge view
-		if (model instanceof EdgeComponent) {
-			FXLinearEdgeView view = new FXLinearEdgeView((EdgeComponent) model);
-			return new FXEdge((EdgeComponent) model, view);
+		if (model instanceof EdgeMesh) {
+			FXLinearEdgeView view = new FXLinearEdgeView((EdgeMesh) model);
+			return new FXEdgeController((EdgeMesh) model, view);
 		}
 
 		// If it is a vertex component, create a vertex
-		else if (model instanceof VertexComponent) {
-			FXVertexView view = new FXVertexView((VertexComponent) model);
-			return new FXVertex((VertexComponent) model, view);
+		else if (model instanceof VertexMesh) {
+			FXVertexView view = new FXVertexView((VertexMesh) model);
+			return new FXVertexController((VertexMesh) model, view);
 		}
 
 		// If it is a face component, create a face
-		else if (model instanceof NekPolygonComponent) {
+		else if (model instanceof NekPolygonMesh) {
 			FXFaceView view = new FXFaceView(model);
-			return new NekPolygon((FaceComponent) model, view);
+			return new NekPolygonController((FaceMesh) model, view);
 		}
 
 		// If the component type is not recognized, return null

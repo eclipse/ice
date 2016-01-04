@@ -43,7 +43,7 @@ public class AbstractController
 	/**
 	 * The internal representation of this part.
 	 */
-	protected AbstractMeshComponent model;
+	protected AbstractMesh model;
 
 	/**
 	 * This part's representation in the graphics rendering program.
@@ -83,7 +83,14 @@ public class AbstractController
 	 * @param view
 	 *            The model's view.
 	 */
-	public AbstractController(AbstractMeshComponent model, AbstractView view) {
+	public AbstractController(AbstractMesh model, AbstractView view) {
+
+		// Check that the model and view are valid
+		if (model == null || view == null) {
+			throw new IllegalArgumentException(
+					"An AbstractController must have a non-null model and view.");
+		}
+
 		// Initialize the class variables
 		this.model = model;
 		this.view = view;
@@ -147,7 +154,7 @@ public class AbstractController
 	 * 
 	 * @return The controller's managed model.
 	 */
-	public AbstractMeshComponent getModel() {
+	public AbstractMesh getModel() {
 		return model;
 	}
 
@@ -468,7 +475,7 @@ public class AbstractController
 	public void copy(AbstractController otherObject) {
 
 		// Create the model and give it a reference to this
-		model = new AbstractMeshComponent();
+		model = new AbstractMesh();
 		model.setController(this);
 
 		// Copy the other object's data members
@@ -489,54 +496,6 @@ public class AbstractController
 	public int hashCode() {
 		return model.hashCode() + view.hashCode();
 	}
-
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	// *
-	// IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
-	// * VizObject.IVizUpdateable)
-	// */
-	// @Override
-	// public void update(IManagedVizUpdateable component) {
-	//
-	// // Queue any messages from the view refresh
-	// updateManager.enqueue();
-	//
-	// // If the update came from the component, send it to the view so that it
-	// // can refresh.
-	// if (component == model) {
-	// view.refresh(model);
-	// }
-	//
-	// // Notify own listeners of the change.
-	// UpdateableSubscriptionType[] eventType = new
-	// UpdateableSubscriptionType[1];
-	// eventType[0] = UpdateableSubscriptionType.Property;
-	// updateManager.notifyListeners(eventType);
-	// updateManager.flushQueue();
-	//
-	// }
-
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see
-	// org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	// * register(org.eclipse.ice.viz.service.datastructures.VizObject.
-	// * IVizUpdateableListener)
-	// */
-	// @Override
-	// public void register(IVizUpdateableListener listener) {
-	//
-	// // Add the listener to the manager for all event types
-	// ArrayList<UpdateableSubscriptionType> eventTypes = new
-	// ArrayList<UpdateableSubscriptionType>();
-	// eventTypes.add(UpdateableSubscriptionType.All);
-	// updateManager.register(listener);
-	//
-	// }
 
 	/*
 	 * (non-Javadoc)

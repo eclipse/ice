@@ -14,8 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 import com.jme3.material.Material;
@@ -39,53 +39,53 @@ public class JME3ShapeTester {
 	public void checkRepresentation() {
 
 		// Create a cube shape and check that the view returns a Box
-		ShapeComponent cubeComp = new ShapeComponent();
+		ShapeMesh cubeComp = new ShapeMesh();
 		cubeComp.setProperty("Type", "Cube");
 		JME3ShapeView cubeView = new JME3ShapeView(cubeComp);
-		Shape cube = new Shape(cubeComp, cubeView);
+		ShapeController cube = new ShapeController(cubeComp, cubeView);
 		assertTrue(cube.getRepresentation() instanceof Box);
 
 		// Create a cylinder shape and check that the view returns a Cylinder
-		ShapeComponent cylinderComp = new ShapeComponent();
+		ShapeMesh cylinderComp = new ShapeMesh();
 		cylinderComp.setProperty("Type", "Cylinder");
 		JME3ShapeView cylinderView = new JME3ShapeView(cylinderComp);
-		Shape cylinder = new Shape(cylinderComp, cylinderView);
+		ShapeController cylinder = new ShapeController(cylinderComp, cylinderView);
 		assertTrue(cylinder.getRepresentation() instanceof Cylinder);
 
 		// Create a sphere shape and check that the view returns a Sphere
-		ShapeComponent sphereComp = new ShapeComponent();
+		ShapeMesh sphereComp = new ShapeMesh();
 		sphereComp.setProperty("Type", "Sphere");
 		JME3ShapeView sphereView = new JME3ShapeView(sphereComp);
-		Shape sphere = new Shape(sphereComp, sphereView);
+		ShapeController sphere = new ShapeController(sphereComp, sphereView);
 		assertTrue(sphere.getRepresentation() instanceof Sphere);
 
 		// Create a cube tube and check that the view returns a Tube
-		ShapeComponent tubeComp = new ShapeComponent();
+		ShapeMesh tubeComp = new ShapeMesh();
 		tubeComp.setProperty("Type", "Tube");
 		JME3ShapeView tubeView = new JME3ShapeView(tubeComp);
-		Shape tube = new Shape(tubeComp, tubeView);
+		ShapeController tube = new ShapeController(tubeComp, tubeView);
 		assertTrue(tube.getRepresentation() instanceof Tube);
 
 		// Create a non-rendered shape and check that the view returns null
-		ShapeComponent noneComp = new ShapeComponent();
+		ShapeMesh noneComp = new ShapeMesh();
 		noneComp.setProperty("Type", "None");
 		JME3ShapeView noneView = new JME3ShapeView(noneComp);
-		Shape none = new Shape(noneComp, noneView);
+		ShapeController none = new ShapeController(noneComp, noneView);
 		assertNull(none.getRepresentation());
 
 		// Create a shape with an invalid type and check that the view returns
 		// null
-		ShapeComponent badComp = new ShapeComponent();
+		ShapeMesh badComp = new ShapeMesh();
 		badComp.setProperty("Type", "Invalid string");
 		JME3ShapeView badView = new JME3ShapeView(badComp);
-		Shape bad = new Shape(badComp, badView);
+		ShapeController bad = new ShapeController(badComp, badView);
 		assertNull(bad.getRepresentation());
 
 		// Create a shape with with no "Type" property and check that the view
 		// returns null
-		ShapeComponent unsetComp = new ShapeComponent();
+		ShapeMesh unsetComp = new ShapeMesh();
 		JME3ShapeView unsetView = new JME3ShapeView(unsetComp);
-		Shape unset = new Shape(unsetComp, unsetView);
+		ShapeController unset = new ShapeController(unsetComp, unsetView);
 		assertNull(unset.getRepresentation());
 	}
 
@@ -96,7 +96,7 @@ public class JME3ShapeTester {
 	public void checkMaterial() {
 
 		// Create a shape
-		ShapeComponent model = new ShapeComponent();
+		ShapeMesh model = new ShapeMesh();
 		JME3ShapeView view = new JME3ShapeView(model);
 		JME3Shape shape = new JME3Shape(model, view);
 

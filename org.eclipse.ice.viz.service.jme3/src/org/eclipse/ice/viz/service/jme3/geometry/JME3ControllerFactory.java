@@ -11,10 +11,10 @@
 package org.eclipse.ice.viz.service.jme3.geometry;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 /**
  * A factory for creating JME3Shapes from MeshComponents.
@@ -32,16 +32,16 @@ public class JME3ControllerFactory implements IControllerFactory {
 	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public AbstractController createController(AbstractMeshComponent model) {
+	public AbstractController createController(AbstractMesh model) {
 
 		// If the model is not a shapecomponent, fail silently
-		if (model instanceof ShapeComponent) {
+		if (model instanceof ShapeMesh) {
 
 			// Create a JME3 view
-			AbstractView view = new JME3ShapeView((ShapeComponent) model);
+			AbstractView view = new JME3ShapeView((ShapeMesh) model);
 
 			// Create a JME3 controller
-			return new JME3Shape((ShapeComponent) model, view);
+			return new JME3Shape((ShapeMesh) model, view);
 
 		} else {
 			return null;

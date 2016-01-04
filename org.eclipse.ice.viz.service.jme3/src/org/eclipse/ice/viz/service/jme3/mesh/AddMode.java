@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.eclipse.ice.viz.service.jme3.widgets.InputControl;
 import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -49,7 +49,7 @@ public class AddMode extends MeshAppStateMode {
 	private Geometry grid;
 	/**
 	 * The parent <code>Node</code> containing spatials in the scene for all
-	 * {@link Vertex}es in the {@link #mesh}.
+	 * {@link VertexController}es in the {@link #mesh}.
 	 */
 	private Node vertexSpatials;
 	/**
@@ -87,7 +87,7 @@ public class AddMode extends MeshAppStateMode {
 	 * A list of temporary Vertex instances. These are used to construct
 	 * polygons for the {@link #mesh}.
 	 */
-	private final ArrayList<Vertex> vertices;
+	private final ArrayList<VertexController> vertices;
 	/**
 	 * A list of controllers for the temporary vertices. These should be deleted
 	 * if the polygon is cancelled or if the polygon is added to the
@@ -125,7 +125,7 @@ public class AddMode extends MeshAppStateMode {
 		tempSpatials = new Node("AddMode-temp");
 
 		// Initialize any final variables here.
-		vertices = new ArrayList<Vertex>();
+		vertices = new ArrayList<VertexController>();
 		vertexControllers = new ArrayList<VertexController>();
 		edges = new ArrayList<Edge>();
 		edgeControllers = new ArrayList<EdgeController>();
@@ -317,7 +317,7 @@ public class AddMode extends MeshAppStateMode {
 				int sides = vertices.size();
 
 				// Add a vertex based on the cursor's position at the click.
-				Vertex vertex = addVertexFromRay(
+				VertexController vertex = addVertexFromRay(
 						appState.getCursorRayFromClick());
 
 				// If possible, add an edge between the last vertex and the
@@ -439,10 +439,10 @@ public class AddMode extends MeshAppStateMode {
 	 * @return An existing Vertex if the ray collides with one, otherwise a new
 	 *         Vertex at the nearest grid location.
 	 */
-	private Vertex addVertexFromRay(Ray ray) {
+	private VertexController addVertexFromRay(Ray ray) {
 
 		// We need to create a Vertex and a controller if possible.
-		Vertex vertex = null;
+		VertexController vertex = null;
 		VertexController controller;
 
 		CollisionResults results;
@@ -459,7 +459,7 @@ public class AddMode extends MeshAppStateMode {
 			Vector3f gridPoint = appState.getClosestGridPoint(point);
 
 			// Create a new Vertex from the point on the grid.
-			vertex = new Vertex(gridPoint.x, gridPoint.y, gridPoint.z);
+			vertex = new VertexController(gridPoint.x, gridPoint.y, gridPoint.z);
 			vertex.setId(
 					appState.getMesh().getNextVertexId() + vertices.size());
 		}
@@ -491,7 +491,7 @@ public class AddMode extends MeshAppStateMode {
 	 * @return An existing Edge if the MeshComponent already has an Edge between
 	 *         those vertices, otherwise a new Edge.
 	 */
-	private Edge addEdgeFromVertices(Vertex start, Vertex end) {
+	private Edge addEdgeFromVertices(VertexController start, VertexController end) {
 
 		// We need to create an Edge and a controller if possible.
 		VizMeshComponent mesh = appState.getMesh();

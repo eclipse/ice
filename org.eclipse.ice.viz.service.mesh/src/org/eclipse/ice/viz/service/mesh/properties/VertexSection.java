@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -38,7 +38,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * This class provides an {@link ISection} for displaying the location of a
- * {@link Vertex} in a modifiable manner.<br>
+ * {@link VertexController} in a modifiable manner.<br>
  * <br>
  * Eventually, this may include the ability to modify the locations of multiple
  * vertices in a single selection.
@@ -51,7 +51,7 @@ public class VertexSection extends AbstractPropertySection {
 	/**
 	 * The Vertex whose location is being displayed and/or modified.
 	 */
-	private Vertex vertex;
+	private VertexController vertex;
 
 	// ---- Section configuration ---- //
 	/**
@@ -244,8 +244,8 @@ public class VertexSection extends AbstractPropertySection {
 			// Reset the vertex and set it based on the selected part.
 			vertex = null;
 
-			if (meshPart instanceof Vertex) {
-				vertex = (Vertex) meshPart;
+			if (meshPart instanceof VertexController) {
+				vertex = (VertexController) meshPart;
 			}
 
 			else {
@@ -255,7 +255,7 @@ public class VertexSection extends AbstractPropertySection {
 				List<AbstractController> vertices = meshPart
 						.getEntitiesByCategory("Vertices");
 				if (index < vertices.size()) {
-					VertexSection.this.vertex = (Vertex) vertices.get(index);
+					VertexSection.this.vertex = (VertexController) vertices.get(index);
 				}
 			}
 		}

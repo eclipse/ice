@@ -20,10 +20,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.EdgeComponent;
-import org.eclipse.ice.viz.service.modeling.LinearEdgeComponent;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.ice.viz.service.modeling.LinearEdgeMesh;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 
 /**
  * <p>
@@ -34,7 +34,7 @@ import org.eclipse.ice.viz.service.modeling.Vertex;
  * 
  * @author Jordan H. Deyton
  */
-public class TestEdge extends Edge {
+public class TestEdge extends EdgeController {
 	/**
 	 * <p>
 	 * Whether or not the Edge's update method was called.
@@ -57,8 +57,8 @@ public class TestEdge extends Edge {
 	 *            The second Vertex in this Edge.
 	 *            </p>
 	 */
-	public TestEdge(Vertex start, Vertex end) {
-		super(new LinearEdgeComponent(start, end), new AbstractView());
+	public TestEdge(VertexController start, VertexController end) {
+		super(new LinearEdgeMesh(start, end), new AbstractView());
 	}
 
 	/**
@@ -71,8 +71,8 @@ public class TestEdge extends Edge {
 	 *            The two Vertices this Edge connects.
 	 *            </p>
 	 */
-	public TestEdge(ArrayList<Vertex> vertices) {
-		super(new EdgeComponent(vertices.get(0), vertices.get(1)),
+	public TestEdge(ArrayList<VertexController> vertices) {
+		super(new EdgeMesh(vertices.get(0), vertices.get(1)),
 				new AbstractView());
 	}
 
@@ -84,7 +84,7 @@ public class TestEdge extends Edge {
 	 * @param view
 	 *            The controller's view
 	 */
-	public TestEdge(EdgeComponent model, AbstractView view) {
+	public TestEdge(EdgeMesh model, AbstractView view) {
 		super(model, view);
 	}
 

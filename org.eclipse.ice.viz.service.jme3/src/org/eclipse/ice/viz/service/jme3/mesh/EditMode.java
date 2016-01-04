@@ -56,7 +56,7 @@ public class EditMode extends MeshAppStateMode
 	private Geometry grid;
 	/**
 	 * The parent {@link Node} containing spatials in the scene for all
-	 * {@link Vertex vertices} in the {@link #mesh}.
+	 * {@link VertexController vertices} in the {@link #mesh}.
 	 */
 	private Node vertexSpatials;
 	/**
@@ -140,7 +140,7 @@ public class EditMode extends MeshAppStateMode
 	/**
 	 * A map of currently-selected vertices, keyed on their IDs.
 	 */
-	private final Map<Integer, Vertex> selectedVertices;
+	private final Map<Integer, VertexController> selectedVertices;
 	// --------------------------- //
 
 	// ---- Temporary spatials ---- //
@@ -190,7 +190,7 @@ public class EditMode extends MeshAppStateMode
 		tempSpatials = new Node("editModeTempSpatials");
 
 		// Initialize any final collections here.
-		selectedVertices = new HashMap<Integer, Vertex>();
+		selectedVertices = new HashMap<Integer, VertexController>();
 		vertexControllers = new HashMap<Integer, VertexController>();
 		edgeControllers = new HashMap<Integer, EdgeController>();
 
@@ -430,7 +430,7 @@ public class EditMode extends MeshAppStateMode
 				selectionLock.lock();
 				try {
 					// Add the vector to all temporary vertices.
-					for (Entry<Integer, Vertex> e : selectedVertices
+					for (Entry<Integer, VertexController> e : selectedVertices
 							.entrySet()) {
 						float[] array = e.getValue().getLocation();
 						Vector3f location = dragLoc.add(array[0], array[1],
@@ -515,7 +515,7 @@ public class EditMode extends MeshAppStateMode
 				// it to the collection of selected vertices.
 				CollisionResults results = getCollision(vertexSpatials,
 						appState.getCursorRayFromClick());
-				Vertex clickedVertex = null;
+				VertexController clickedVertex = null;
 				int id = 0;
 				if (results.size() > 0) {
 					// Get the Vertex ID from the VertexView.
@@ -559,7 +559,7 @@ public class EditMode extends MeshAppStateMode
 				// not need to check for shift or control.
 
 				// Update the location for each of the selected vertices.
-				for (Vertex v : selectedVertices.values()) {
+				for (VertexController v : selectedVertices.values()) {
 					VertexController controller = vertexControllers
 							.get(v.getId());
 					Vector3f location = controller.getLocation();
@@ -594,7 +594,7 @@ public class EditMode extends MeshAppStateMode
 			float scale = appState.getScale();
 
 			// Add each of the currently-selected vertices to the map.
-			for (Vertex vertex : appState.getSelectionManager()
+			for (VertexController vertex : appState.getSelectionManager()
 					.getSelectedVertices()) {
 				int id = vertex.getId();
 
@@ -602,7 +602,7 @@ public class EditMode extends MeshAppStateMode
 				selectedVertices.put(id, vertex);
 
 				// Create a temporary clone of the current vertex.
-				Vertex clone = (Vertex) vertex.clone();
+				VertexController clone = (VertexController) vertex.clone();
 
 				// Create a temporary controller for the clone vertex.
 				// TODO Set up this material in initMaterials

@@ -154,7 +154,7 @@ public class AbstractView
 	 * @param model
 	 *            A reference to the view's model
 	 */
-	public void refresh(AbstractMeshComponent model) {
+	public void refresh(AbstractMesh model) {
 		// Nothing to do
 	}
 

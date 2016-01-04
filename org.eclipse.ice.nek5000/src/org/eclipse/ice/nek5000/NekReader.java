@@ -25,16 +25,16 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
+import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
-import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.EdgeComponent;
-import org.eclipse.ice.viz.service.modeling.FaceComponent;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.EdgeMesh;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.Vertex;
-import org.eclipse.ice.viz.service.modeling.VertexComponent;
+import org.eclipse.ice.viz.service.modeling.VertexController;
+import org.eclipse.ice.viz.service.modeling.VertexMesh;
 
 /**
  * NekReader class is responsible for reading in the contents of a Nek5000 .rea
@@ -114,7 +114,11 @@ public class NekReader {
 
 	// TODO Replace this hardcoded factory with one chosen by the user to
 	// genereate the correct views
-	private IControllerFactory factory = new FXShapeControllerFactory();
+	/**
+	 * The factory which the reader will use to produce views and controllers
+	 * for the objects it generates.
+	 */
+	private IControllerFactory factory = new FXMeshControllerFactory();
 
 	/**
 	 * Nullary constructor.
@@ -612,12 +616,12 @@ public class NekReader {
 		ArrayList<String> numbersLine = null;
 
 		// Local declarations for quad building
-		Vertex vertex;
-		Edge edge;
-		NekPolygon quad;
-		ArrayList<Vertex> vertices = null;
-		ArrayList<Edge> edges = null;
-		ArrayList<Vertex> vertexCombo = null;
+		VertexController vertex;
+		EdgeController edge;
+		NekPolygonController quad;
+		ArrayList<VertexController> vertices = null;
+		ArrayList<EdgeController> edges = null;
+		ArrayList<VertexController> vertexCombo = null;
 
 		// Keeps track of the unique edge IDs associated to the current quad
 		// for the purpose of assigning boundary conditions keyed on edge IDs
@@ -748,7 +752,7 @@ public class NekReader {
 
 						// Construct a set of vertices
 						float x, y, z;
-						vertices = new ArrayList<Vertex>();
+						vertices = new ArrayList<VertexController>();
 
 						for (int k = 0; k < currElement.get(0).size(); k++) {
 
@@ -758,9 +762,9 @@ public class NekReader {
 							z = 0f;
 
 							// Create new vertex and add to vertices ArrayList
-							VertexComponent vertexComponent = new VertexComponent(
-									x, y, z);
-							vertex = (Vertex) factory
+							VertexMesh vertexComponent = new VertexMesh(x, y,
+									z);
+							vertex = (VertexController) factory
 									.createController(vertexComponent);
 							vertex.setProperty("Id",
 									Integer.toString(vertexId)); // Set unique
@@ -771,12 +775,12 @@ public class NekReader {
 						}
 
 						// Construct combinations of vertices
-						edges = new ArrayList<Edge>();
+						edges = new ArrayList<EdgeController>();
 						edgeIdList = new ArrayList<Integer>();
 
 						for (int k = 0; k < 4; k++) {
 
-							vertexCombo = new ArrayList<Vertex>();
+							vertexCombo = new ArrayList<VertexController>();
 
 							// Edge 1 = Vertices 1 + 2
 							// Edge 2 = Vertices 2 + 3
@@ -807,9 +811,9 @@ public class NekReader {
 							}
 
 							// Create a new edge and add to edges ArrayList
-							EdgeComponent edgeComponent = new EdgeComponent(
+							EdgeMesh edgeComponent = new EdgeMesh(
 									vertexCombo.get(0), vertexCombo.get(1));
-							edge = (Edge) factory
+							edge = (EdgeController) factory
 									.createController(edgeComponent);
 							edge.setProperty("Id", Integer.toString(edgeId)); // Set
 																				// unique
@@ -823,11 +827,11 @@ public class NekReader {
 						}
 
 						// Create new quad, add it to the MeshComponent
-						FaceComponent quadComponent = new FaceComponent();
-						quad = (NekPolygon) factory
+						NekPolygonMesh quadComponent = new NekPolygonMesh();
+						quad = (NekPolygonController) factory
 								.createController(quadComponent);
 
-						for (Edge e : edges) {
+						for (EdgeController e : edges) {
 							quad.addEntity(e);
 						}
 
@@ -1727,6 +1731,17 @@ public class NekReader {
 	 */
 	public ProblemProperties getLastProperties() {
 		return properties;
+	}
+
+	/**
+	 * Setter method for the factory which will produce views and controllers
+	 * for the objects read from the Nek file.
+	 * 
+	 * @param factory
+	 *            The reader's new factory
+	 */
+	public void setControllerFactory(IControllerFactory factory) {
+		this.factory = factory;
 	}
 
 }

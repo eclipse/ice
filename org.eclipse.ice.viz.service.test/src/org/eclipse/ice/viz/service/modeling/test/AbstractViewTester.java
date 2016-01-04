@@ -38,7 +38,7 @@ public class AbstractViewTester {
 	/**
 	 * The controller's model
 	 */
-	TestMeshComponent component;
+	TestMesh component;
 
 	/**
 	 * The controller's view
@@ -56,7 +56,7 @@ public class AbstractViewTester {
 	@Before
 	public void beforeEachTest() {
 		entities = new ArrayList<AbstractController>();
-		component = new TestMeshComponent(entities);
+		component = new TestMesh(entities);
 		view = new TestView();
 		controller = new TestController(component, view);
 	}

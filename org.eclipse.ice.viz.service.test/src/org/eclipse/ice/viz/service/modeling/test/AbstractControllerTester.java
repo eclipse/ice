@@ -20,11 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.junit.Before;
@@ -46,7 +45,7 @@ public class AbstractControllerTester {
 	/**
 	 * The controller's model
 	 */
-	TestMeshComponent component;
+	TestMesh component;
 
 	/**
 	 * The controller's view
@@ -64,7 +63,7 @@ public class AbstractControllerTester {
 	@Before
 	public void beforeEachTest() {
 		entities = new ArrayList<AbstractController>();
-		component = new TestMeshComponent(entities);
+		component = new TestMesh(entities);
 		view = new TestView();
 		controller = new TestController(component, view);
 	}
@@ -79,8 +78,8 @@ public class AbstractControllerTester {
 		assertEquals(0, controller.getEntities().size());
 
 		// Create a new VizObject with id 2
-		AbstractController object = new AbstractController(
-				new AbstractMeshComponent(), new AbstractView());
+		AbstractController object = new AbstractController(new AbstractMesh(),
+				new AbstractView());
 		object.setProperty("Id", "2");
 
 		// Add the object as a child
@@ -94,8 +93,13 @@ public class AbstractControllerTester {
 		assertTrue(
 				"2".equals(controller.getEntities().get(0).getProperty("Id")));
 
+		// Create a new part with id 3
+		AbstractController secondObject = new AbstractController(
+				new AbstractMesh(), new AbstractView());
+		secondObject.setProperty("Id", "3");
+
 		// Add a second entity
-		controller.addEntity((AbstractController) object.clone());
+		controller.addEntity(secondObject);
 
 		// Check that the controller was notified
 		assertTrue(controller.isUpdated());
@@ -149,8 +153,8 @@ public class AbstractControllerTester {
 	public void testEntityCategories() {
 
 		// Create an edge entity
-		AbstractController edge = new AbstractController(
-				new AbstractMeshComponent(), new AbstractView());
+		AbstractController edge = new AbstractController(new AbstractMesh(),
+				new AbstractView());
 		edge.setProperty("Name", "edge");
 		controller.addEntityByCategory(edge, "Edges");
 
@@ -158,14 +162,14 @@ public class AbstractControllerTester {
 		assertTrue(controller.isUpdated());
 
 		// Create a vertex entity
-		AbstractController vertex1 = new AbstractController(
-				new AbstractMeshComponent(), new AbstractView());
+		AbstractController vertex1 = new AbstractController(new AbstractMesh(),
+				new AbstractView());
 		vertex1.setProperty("Name", "vertex1");
 		controller.addEntityByCategory(vertex1, "Vertices");
 
 		// Create another vertex entity
-		AbstractController vertex2 = new AbstractController(
-				new AbstractMeshComponent(), new AbstractView());
+		AbstractController vertex2 = new AbstractController(new AbstractMesh(),
+				new AbstractView());
 		vertex2.setProperty("Name", "vertex2");
 		controller.addEntityByCategory(vertex2, "Vertices");
 
@@ -454,20 +458,54 @@ public class AbstractControllerTester {
 	}
 }
 
+/**
+ * A simple AbstractController implementation that keeps track of whether it has
+ * been updated for testing purposes.
+ * 
+ * @author Robert Smith
+ *
+ */
 class TestController extends AbstractController {
 
+	/**
+	 * Whether the controller has received an update since the last time it was
+	 * tested.
+	 */
 	boolean updated = false;
 
-	public TestController(AbstractMeshComponent model, AbstractView view) {
+	/**
+	 * The default constructor.
+	 * 
+	 * @param model
+	 *            The controller's model
+	 * @param view
+	 *            The controller's view
+	 */
+	public TestController(AbstractMesh model, AbstractView view) {
 		super(model, view);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#update(org.
+	 * eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscriptionType[])
+	 */
 	@Override
 	public void update(IManagedVizUpdateable component,
 			UpdateableSubscriptionType[] type) {
 		updated = true;
 	}
 
+	/**
+	 * Checks whether the controller has been updated and returns it to its
+	 * default state.
+	 * 
+	 * @return True if the controller has received an update since the last time
+	 *         this funciton was called. False if it has not.
+	 */
 	public boolean isUpdated() {
 		boolean temp = updated;
 		updated = false;
@@ -476,14 +514,40 @@ class TestController extends AbstractController {
 
 }
 
-class TestMeshComponent extends AbstractMeshComponent {
+/**
+ * A simple AbstractMesh implementation that keeps track of whether it has been
+ * updated for testing purposes.
+ * 
+ * @author Robert Smith
+ *
+ */
+class TestMesh extends AbstractMesh {
 
+	/**
+	 * Whether the mesh has received an update since the last time it was
+	 * tested.
+	 */
 	boolean updated = false;
 
-	public TestMeshComponent(List<AbstractController> entities) {
+	/**
+	 * The default constructor
+	 * 
+	 * @param entities
+	 *            The list of child entities
+	 */
+	public TestMesh(List<AbstractController> entities) {
 		super(entities);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractMesh#update(org.eclipse.ice.
+	 * viz.service.datastructures.VizObject.IManagedVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscriptionType[])
+	 */
 	@Override
 	public void update(IManagedVizUpdateable component,
 			UpdateableSubscriptionType[] type) {
@@ -491,6 +555,13 @@ class TestMeshComponent extends AbstractMeshComponent {
 		super.update(component, type);
 	}
 
+	/**
+	 * Checks whether the controller has been updated and returns it to its
+	 * default state.
+	 * 
+	 * @return True if the mesh has received an update since the last time this
+	 *         function was called. False if it has not.
+	 */
 	public boolean isUpdated() {
 		boolean temp = updated;
 		updated = false;
@@ -498,19 +569,48 @@ class TestMeshComponent extends AbstractMeshComponent {
 	}
 }
 
+/**
+ * A simple AbstractView implementation that keeps track of whether it has been
+ * updated for testing purposes.
+ * 
+ * @author Robert Smith
+ *
+ */
 class TestView extends AbstractView {
 
+	/**
+	 * Whether the mesh has received an update since the last time it was
+	 * tested.
+	 */
 	boolean updated = false;
 
+	/**
+	 * The default constructor
+	 */
 	public TestView() {
 		super();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 */
 	@Override
 	public Object getRepresentation() {
 		return new TestObject();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#update(org.eclipse.ice.
+	 * viz.service.datastructures.VizObject.IManagedVizUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * UpdateableSubscriptionType[])
+	 */
 	@Override
 	public void update(IManagedVizUpdateable component,
 			UpdateableSubscriptionType[] type) {
@@ -518,6 +618,13 @@ class TestView extends AbstractView {
 		super.update(component, type);
 	}
 
+	/**
+	 * Checks whether the view has been updated and returns it to its default
+	 * state.
+	 * 
+	 * @return True if the mesh has received an update since the last time this
+	 *         function was called. False if it has not.
+	 */
 	public boolean isUpdated() {
 		boolean temp = updated;
 		updated = false;
@@ -525,7 +632,17 @@ class TestView extends AbstractView {
 	}
 }
 
+/**
+ * A dummy object which TestView returns as its graphical representation.
+ * 
+ * @author Robert Smith.
+ *
+ */
 class TestObject extends VizObject {
+
+	/**
+	 * The default constructor.
+	 */
 	public TestObject() {
 		super();
 	}

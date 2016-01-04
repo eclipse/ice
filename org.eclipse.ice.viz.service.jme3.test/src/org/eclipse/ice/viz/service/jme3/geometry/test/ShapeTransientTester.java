@@ -19,7 +19,7 @@ import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.jme3.geometry.JME3Shape;
 import org.eclipse.ice.viz.service.jme3.geometry.ShapeTransient;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -39,7 +39,7 @@ public class ShapeTransientTester {
 	@Test
 	public void checkStorage() {
 
-		ShapeComponent sphereComp = new ShapeComponent();
+		ShapeMesh sphereComp = new ShapeMesh();
 		sphereComp.setProperty("Type", ShapeType.Sphere.toString());
 		AbstractView sphereView = new AbstractView();
 		JME3Shape sphere = new JME3Shape(sphereComp, sphereView);

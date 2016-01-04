@@ -15,7 +15,7 @@ import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IViewPart;
@@ -37,7 +37,7 @@ public class FXGeometryCanvas extends FXVizCanvas {
 	 *            The shape under which all parts in the model will be contained
 	 *            as children
 	 */
-	public FXGeometryCanvas(Shape source) {
+	public FXGeometryCanvas(ShapeController source) {
 		super(source);
 	}
 
@@ -73,7 +73,7 @@ public class FXGeometryCanvas extends FXVizCanvas {
 
 		FXSelection selection = (FXSelection) event.getSelection();
 
-		transformView.setShape((Shape) selection.getShape());
+		transformView.setShape((ShapeController) selection.getShape());
 	}
 
 	/*

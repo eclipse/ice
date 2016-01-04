@@ -19,26 +19,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolygonProperties;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Edge;
-import org.eclipse.ice.viz.service.modeling.EdgeComponent;
-import org.eclipse.ice.viz.service.modeling.FaceComponent;
-import org.eclipse.ice.viz.service.modeling.Vertex;
-import org.eclipse.ice.viz.service.modeling.VertexComponent;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.ice.viz.service.modeling.FaceMesh;
+import org.eclipse.ice.viz.service.modeling.VertexController;
+import org.eclipse.ice.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
 /**
@@ -61,20 +56,20 @@ public class NekPolygonTester {
 	@Test
 	public void checkCreation() {
 
-		Vertex vertex;
-		Edge edge;
+		VertexController vertex;
+		EdgeController edge;
 
 		// We need edges and vertices to supply to created Polygons.
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ArrayList<EdgeController> edges = new ArrayList<EdgeController>();
+		ArrayList<VertexController> vertices = new ArrayList<VertexController>();
 
 		// For our test, we'll just make a triangle with one point at the origin
 		// and the other two on the x and z axes at a distance of 5.
-		vertices.add(new Vertex(new VertexComponent(0f, 0f, 0f),
+		vertices.add(new VertexController(new VertexMesh(0f, 0f, 0f),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(5f, 0f, 0f),
+		vertices.add(new VertexController(new VertexMesh(5f, 0f, 0f),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(0f, 0f, 5f),
+		vertices.add(new VertexController(new VertexMesh(0f, 0f, 5f),
 				new AbstractView()));
 
 		// Set the IDs for the vertices.
@@ -87,8 +82,9 @@ public class NekPolygonTester {
 		for (int i = 0; i < size; i++) {
 			// Create a new ArrayList holding the vertices that will describe
 			// the current edge.
-			edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
+			edge = new EdgeController(
+					new EdgeMesh(vertices.get(i), vertices.get((i + 1) % size)),
+					new AbstractView());
 			edge.setProperty("Id", Integer.toString(i + 1));
 
 			// Add the edge to the List of Edges.
@@ -96,11 +92,11 @@ public class NekPolygonTester {
 		}
 
 		// Create a Polygon to test.
-		NekPolygon polygon;
+		NekPolygonController polygon;
 
 		/* ---- Test the nullary constructor. ---- */
 		// Initialize the polygon.
-		polygon = new NekPolygon(new FaceComponent(), new AbstractView());
+		polygon = new NekPolygonController(new FaceMesh(), new AbstractView());
 
 		// Check the edges.
 		assertNotNull(polygon.getEntitiesByCategory("Edges"));
@@ -112,11 +108,11 @@ public class NekPolygonTester {
 		/* --------------------------------------- */
 
 		/* ---- Try a valid polygon. ---- */
-		for (Edge e : edges) {
-			polygon.addEntity(e);
+		for (EdgeController e : edges) {
+			polygon.addEntityByCategory(e, "Edges");
 		}
-		for (Vertex v : vertices) {
-			polygon.addEntity(v);
+		for (VertexController v : vertices) {
+			polygon.addEntityByCategory(v, "Vertices");
 		}
 
 		// Check the contents of the polygon's Edge List.
@@ -137,6 +133,7 @@ public class NekPolygonTester {
 		/* ---- Make sure we cannot modify the Edge/Vertex Lists. ---- */
 		// Try to remove an edge.
 		polygon.getEntitiesByCategory("Edges").remove(0);
+		polygonEdges = polygon.getEntitiesByCategory("Edges");
 		assertEquals(size, polygonEdges.size());
 		assertEquals(edges, polygonEdges);
 
@@ -149,114 +146,15 @@ public class NekPolygonTester {
 		/* ---- Check invalid arguments. ---- */
 		try {
 			// Try passing in nulls.
-			polygon = new NekPolygon(null, null);
-
-			// Check the edges.
-			assertNotNull(polygon.getEntitiesByCategory("Edges"));
-			assertTrue(polygon.getEntitiesByCategory("Edges").isEmpty());
-
-			// Check the vertices.
-			assertNotNull(polygon.getEntitiesByCategory("Vertices"));
-			assertTrue(polygon.getEntitiesByCategory("Vertices").isEmpty());
+			polygon = new NekPolygonController(null, null);
 
 			// If we've reached this point, then there was no exception thrown!
 			fail();
-		} catch (IllegalArgumentException e) {
 
-		}
-		/* ---------------------------------- */
-
-		/* ---- Try passing in an invalid edge. ---- */
-		edge = new Edge(new EdgeComponent(), new AbstractView());
-		edge.setProperty("Id", "100");
-		edges.set(2, edge);
-
-		try {
-			polygon = new NekPolygon(new FaceComponent(), new AbstractView());
-			for (Edge e : edges) {
-				polygon.addEntity(e);
-			}
-			for (Vertex v : vertices) {
-				polygon.addEntity(v);
-			}
-
-			// Check the edges.
-			assertNotNull(polygon.getEntitiesByCategory("Edges"));
-			assertTrue(polygon.getEntitiesByCategory("Edges").isEmpty());
-
-			// Check the vertices.
-			assertNotNull(polygon.getEntitiesByCategory("Vertices"));
-			assertTrue(polygon.getEntitiesByCategory("Verteices").isEmpty());
-
-			// If we've reached this point, then there was no exception thrown!
-			fail();
 		} catch (IllegalArgumentException e) {
 
 		}
 		/* ----------------------------------------- */
-
-		/* ---- Try passing in an edge that uses a different Vertex. ---- */
-		vertex = new Vertex(new VertexComponent(0d, 0d, 5d),
-				new AbstractView());
-		vertex.setProperty("Id", "200");
-		edge = new Edge(new EdgeComponent(vertices.get(2), vertex),
-				new AbstractView());
-		edge.setProperty("Id", "300");
-		edges.set(2, edge);
-
-		try {
-			polygon = new NekPolygon(new FaceComponent(), new AbstractView());
-			for (Edge e : edges) {
-				polygon.addEntity(e);
-			}
-			for (Vertex v : vertices) {
-				polygon.addEntity(v);
-			}
-
-			// Check the edges.
-			assertNotNull(polygon.getEntitiesByCategory("Edges"));
-			assertTrue(polygon.getEntitiesByCategory("Edges").isEmpty());
-
-			// Check the vertices.
-			assertNotNull(polygon.getEntitiesByCategory("Vertices"));
-			assertTrue(polygon.getEntitiesByCategory("Vertices").isEmpty());
-
-			// If we've reached this point, then there was no exception thrown!
-			fail();
-		} catch (IllegalArgumentException e) {
-
-		}
-		/* -------------------------------------------------------------- */
-
-		/* ---- Try passing in an edge with the same ID. ---- */
-		edge = new Edge(new EdgeComponent(vertices.get(2), vertices.get(0)),
-				new AbstractView());
-		edge.setProperty("Id", "1");
-		edges.set(2, edge);
-
-		try {
-			polygon = new NekPolygon(new FaceComponent(), new AbstractView());
-			for (Edge e : edges) {
-				polygon.addEntity(e);
-			}
-			for (Vertex v : vertices) {
-				polygon.addEntity(v);
-			}
-
-			// Check the edges.
-			assertNotNull(polygon.getEntitiesByCategory("Edge"));
-			assertTrue(polygon.getEntitiesByCategory("Edge").isEmpty());
-
-			// Check the vertices.
-			assertNotNull(polygon.getEntitiesByCategory("Vertices"));
-			assertTrue(polygon.getEntitiesByCategory("Vertices").isEmpty());
-
-			// If we've reached this point, then there was no exception thrown!
-			fail();
-		} catch (IllegalArgumentException e) {
-
-		}
-		/* -------------------------------------------------- */
 
 		return;
 	}
@@ -279,19 +177,19 @@ public class NekPolygonTester {
 		 */
 
 		/* ---- Create a polygon. ---- */
-		Edge edge;
+		EdgeController edge;
 
 		// We need edges and vertices to supply to created Polygons.
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ArrayList<EdgeController> edges = new ArrayList<EdgeController>();
+		ArrayList<VertexController> vertices = new ArrayList<VertexController>();
 
 		// For our test, we'll just make a triangle with one point at the origin
 		// and the other two on the x and z axes at a distance of 5.
-		vertices.add(new Vertex(new VertexComponent(0d, 0d, 0d),
+		vertices.add(new VertexController(new VertexMesh(0d, 0d, 0d),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(5d, 0d, 5d),
+		vertices.add(new VertexController(new VertexMesh(5d, 0d, 5d),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(0d, 0d, 5d),
+		vertices.add(new VertexController(new VertexMesh(0d, 0d, 5d),
 				new AbstractView()));
 
 		// Set the IDs for the vertices.
@@ -303,20 +201,21 @@ public class NekPolygonTester {
 		for (int i = 0; i < size; i++) {
 			// Create a new ArrayList holding the vertices that will describe
 			// the current edge.
-			edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
+			edge = new EdgeController(
+					new EdgeMesh(vertices.get(i), vertices.get((i + 1) % size)),
+					new AbstractView());
 			edge.setProperty("Id", Integer.toString(i + 1));
 
 			// Add the edge to the List of Edges.
 			edges.add(edge);
 		}
 
-		NekPolygon polygon = new NekPolygon(new FaceComponent(),
+		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
-		for (Edge e : edges) {
+		for (EdgeController e : edges) {
 			polygon.addEntity(e);
 		}
-		for (Vertex v : vertices) {
+		for (VertexController v : vertices) {
 			polygon.addEntity(v);
 		}
 		/* --------------------------- */
@@ -455,7 +354,7 @@ public class NekPolygonTester {
 	public void checkPolygonProperites() {
 
 		// Create a Polygon and PolygonProperties for testing
-		NekPolygon polygon = new NekPolygon(new FaceComponent(),
+		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		PolygonProperties defaultProps = new PolygonProperties();
 		PolygonProperties customProps = new PolygonProperties("54g", 9000);
@@ -490,19 +389,19 @@ public class NekPolygonTester {
 		 */
 
 		/* ---- Create a polygon. ---- */
-		Edge edge;
+		EdgeController edge;
 
 		// We need edges and vertices to supply to created Polygons.
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ArrayList<EdgeController> edges = new ArrayList<EdgeController>();
+		ArrayList<VertexController> vertices = new ArrayList<VertexController>();
 
 		// For our test, we'll just make a triangle with one point at the origin
 		// and the other two on the x and z axes at a distance of 5.
-		vertices.add(new Vertex(new VertexComponent(0d, 0d, 0d),
+		vertices.add(new VertexController(new VertexMesh(0d, 0d, 0d),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(5d, 0d, 0d),
+		vertices.add(new VertexController(new VertexMesh(5d, 0d, 0d),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(0d, 0d, 5d),
+		vertices.add(new VertexController(new VertexMesh(0d, 0d, 5d),
 				new AbstractView()));
 
 		// Set the IDs for the vertices.
@@ -514,20 +413,21 @@ public class NekPolygonTester {
 		for (int i = 0; i < size; i++) {
 			// Create a new ArrayList holding the vertices that will describe
 			// the current edge.
-			edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
+			edge = new EdgeController(
+					new EdgeMesh(vertices.get(i), vertices.get((i + 1) % size)),
+					new AbstractView());
 			edge.setProperty("Id", Integer.toString(i + 1));
 
 			// Add the edge to the List of Edges.
 			edges.add(edge);
 		}
 
-		NekPolygon polygon = new NekPolygon(new FaceComponent(),
+		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
-		for (Edge e : edges) {
+		for (EdgeController e : edges) {
 			polygon.addEntity(e);
 		}
-		for (Vertex v : vertices) {
+		for (VertexController v : vertices) {
 			polygon.addEntity(v);
 		}
 		/* --------------------------- */
@@ -567,88 +467,92 @@ public class NekPolygonTester {
 		return;
 	}
 
-	/**
-	 * This operation checks the ability of the Polygon to persist itself to XML
-	 * and to load itself from an XML input stream.
-	 * 
-	 * @throws IOException
-	 * @throws JAXBException
-	 * @throws NullPointerException
-	 */
-	@Test
-	public void checkLoadingFromXML()
-			throws NullPointerException, JAXBException, IOException {
-
-		// We need edges and vertices to supply to created Polygons.
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
-		// Local Declarations
-		VizJAXBHandler xmlHandler = new VizJAXBHandler();
-		ArrayList<Class> classList = new ArrayList<Class>();
-		classList.add(NekPolygon.class);
-
-		// For our test, we'll just make a triangle with one point at the origin
-		// and the other two on the x and z axes at a distance of 5.
-		vertices.add(new Vertex(new VertexComponent(0d, 0d, 0d),
-				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(5d, 0d, 0d),
-				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(0d, 0d, 5d),
-				new AbstractView()));
-
-		// Set the IDs for the vertices.
-		for (int i = 0; i < vertices.size(); i++) {
-			vertices.get(i).setProperty("Id", Integer.toString(i + 1));
-		}
-		// Get the edges.
-		int size = vertices.size();
-		for (int i = 0; i < size; i++) {
-			// Create a new ArrayList holding the vertices that will describe
-			// the current edge.
-			Edge edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
-			edge.setProperty("Id", Integer.toString(i + 1));
-
-			// Add the edge to the List of Edges.
-			edges.add(edge);
-		}
-
-		// Create a Polygon to test.
-		NekPolygon polygon = new NekPolygon(new FaceComponent(),
-				new AbstractView());
-		for (Edge e : edges) {
-			polygon.addEntity(e);
-		}
-		for (Vertex v : vertices) {
-			polygon.addEntity(v);
-		}
-
-		// Add a fluid and passive scalar boundary condition.
-		polygon.setFluidBoundaryCondition(1,
-				new BoundaryCondition(BoundaryConditionType.Flux));
-		polygon.setOtherBoundaryCondition(1, 1,
-				new BoundaryCondition(BoundaryConditionType.Wall));
-
-		// Add a PolygonProperties.
-		polygon.setPolygonProperties("leet", 1337);
-
-		// Load it into XML.
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		xmlHandler.write(polygon, classList, outputStream);
-
-		// Convert the output stream data to an input stream.
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(
-				outputStream.toByteArray());
-
-		// Load the input stream's contents into a new component.
-		NekPolygon loadedPolygon = new NekPolygon();
-		loadedPolygon = (NekPolygon) xmlHandler.read(classList, inputStream);
-
-		// Make sure the two components match.
-		assertTrue(polygon.equals(loadedPolygon));
-
-		return;
-	}
+	// TODO Reimplement this test if JAXB xml persistence is ever implemented
+	// for the Mesh Editor.
+	// /**
+	// * This operation checks the ability of the Polygon to persist itself to
+	// XML
+	// * and to load itself from an XML input stream.
+	// *
+	// * @throws IOException
+	// * @throws JAXBException
+	// * @throws NullPointerException
+	// */
+	// @Test
+	// public void checkLoadingFromXML()
+	// throws NullPointerException, JAXBException, IOException {
+	//
+	// // We need edges and vertices to supply to created Polygons.
+	// ArrayList<EdgeController> edges = new ArrayList<EdgeController>();
+	// ArrayList<VertexController> vertices = new ArrayList<VertexController>();
+	// // Local Declarations
+	// VizJAXBHandler xmlHandler = new VizJAXBHandler();
+	// ArrayList<Class> classList = new ArrayList<Class>();
+	// classList.add(NekPolygonController.class);
+	//
+	// // For our test, we'll just make a triangle with one point at the origin
+	// // and the other two on the x and z axes at a distance of 5.
+	// vertices.add(new VertexController(new VertexMesh(0d, 0d, 0d),
+	// new AbstractView()));
+	// vertices.add(new VertexController(new VertexMesh(5d, 0d, 0d),
+	// new AbstractView()));
+	// vertices.add(new VertexController(new VertexMesh(0d, 0d, 5d),
+	// new AbstractView()));
+	//
+	// // Set the IDs for the vertices.
+	// for (int i = 0; i < vertices.size(); i++) {
+	// vertices.get(i).setProperty("Id", Integer.toString(i + 1));
+	// }
+	// // Get the edges.
+	// int size = vertices.size();
+	// for (int i = 0; i < size; i++) {
+	// // Create a new ArrayList holding the vertices that will describe
+	// // the current edge.
+	// EdgeController edge = new EdgeController(new EdgeMesh(vertices.get(i),
+	// vertices.get((i + 1) % size)), new AbstractView());
+	// edge.setProperty("Id", Integer.toString(i + 1));
+	//
+	// // Add the edge to the List of Edges.
+	// edges.add(edge);
+	// }
+	//
+	// // Create a Polygon to test.
+	// NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
+	// new AbstractView());
+	// for (EdgeController e : edges) {
+	// polygon.addEntity(e);
+	// }
+	// for (VertexController v : vertices) {
+	// polygon.addEntity(v);
+	// }
+	//
+	// // Add a fluid and passive scalar boundary condition.
+	// polygon.setFluidBoundaryCondition(1,
+	// new BoundaryCondition(BoundaryConditionType.Flux));
+	// polygon.setOtherBoundaryCondition(1, 1,
+	// new BoundaryCondition(BoundaryConditionType.Wall));
+	//
+	// // Add a PolygonProperties.
+	// polygon.setPolygonProperties("leet", 1337);
+	//
+	// // Load it into XML.
+	// ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+	// xmlHandler.write(polygon, classList, outputStream);
+	//
+	// // Convert the output stream data to an input stream.
+	// ByteArrayInputStream inputStream = new ByteArrayInputStream(
+	// outputStream.toByteArray());
+	//
+	// // Load the input stream's contents into a new component.
+	// NekPolygonController loadedPolygon = new NekPolygonController();
+	// loadedPolygon = (NekPolygonController) xmlHandler.read(classList,
+	// inputStream);
+	//
+	// // Make sure the two components match.
+	// assertTrue(polygon.equals(loadedPolygon));
+	//
+	// return;
+	// }
 
 	/**
 	 * <p>
@@ -661,16 +565,16 @@ public class NekPolygonTester {
 	public void checkEquality() {
 
 		// We need edges and vertices to supply to created Polygons.
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ArrayList<EdgeController> edges = new ArrayList<EdgeController>();
+		ArrayList<VertexController> vertices = new ArrayList<VertexController>();
 
 		// For our test, we'll just make a triangle with one point at the origin
 		// and the other two on the x and z axes at a distance of 5.
-		vertices.add(new Vertex(new VertexComponent(0f, 0f, 0f),
+		vertices.add(new VertexController(new VertexMesh(0f, 0f, 0f),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(5f, 0f, 0f),
+		vertices.add(new VertexController(new VertexMesh(5f, 0f, 0f),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(0f, 0f, 5f),
+		vertices.add(new VertexController(new VertexMesh(0f, 0f, 5f),
 				new AbstractView()));
 
 		// Set the IDs for the vertices.
@@ -682,8 +586,9 @@ public class NekPolygonTester {
 		for (int i = 0; i < size; i++) {
 			// Create a new ArrayList holding the vertices that will describe
 			// the current edge.
-			Edge edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
+			EdgeController edge = new EdgeController(
+					new EdgeMesh(vertices.get(i), vertices.get((i + 1) % size)),
+					new AbstractView());
 			edge.setProperty("Id", Integer.toString(i + 1));
 
 			// Add the edge to the List of Edges.
@@ -691,33 +596,34 @@ public class NekPolygonTester {
 		}
 
 		// Initialize objects for testing.
-		NekPolygon object = new NekPolygon(new FaceComponent(),
+		NekPolygonController object = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
-		for (Edge e : edges) {
+		for (EdgeController e : edges) {
 			object.addEntity(e);
 		}
-		for (Vertex v : vertices) {
+		for (VertexController v : vertices) {
 			object.addEntity(v);
 		}
-		NekPolygon equalObject = new NekPolygon(new FaceComponent(),
-				new AbstractView());
-		for (Edge e : edges) {
+		NekPolygonController equalObject = new NekPolygonController(
+				new FaceMesh(), new AbstractView());
+		for (EdgeController e : edges) {
 			equalObject.addEntity(e);
 		}
-		for (Vertex v : vertices) {
+		for (VertexController v : vertices) {
 			equalObject.addEntity(v);
 		}
 
 		// Change one of the vertices.
-		vertices.set(2, new Vertex(new VertexComponent(0d, 0d, 6d),
+		vertices.set(2, new VertexController(new VertexMesh(0d, 0d, 6d),
 				new AbstractView()));
 		vertices.get(2).setProperty("Id", "3");
 		// Update the corresponding edges.
 		for (int i = 0; i < size; i++) {
 			// Create a new ArrayList holding the vertices that will describe
 			// the current edge.
-			Edge edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
+			EdgeController edge = new EdgeController(
+					new EdgeMesh(vertices.get(i), vertices.get((i + 1) % size)),
+					new AbstractView());
 			edge.setProperty("Id", Integer.toString(i + 1));
 
 			// Add the edge to the List of Edges.
@@ -725,12 +631,12 @@ public class NekPolygonTester {
 		}
 
 		// Initialize the unequalObject.
-		NekPolygon unequalObject = new NekPolygon(new FaceComponent(),
-				new AbstractView());
-		for (Edge e : edges) {
+		NekPolygonController unequalObject = new NekPolygonController(
+				new FaceMesh(), new AbstractView());
+		for (EdgeController e : edges) {
 			unequalObject.addEntity(e);
 		}
-		for (Vertex v : vertices) {
+		for (VertexController v : vertices) {
 			unequalObject.addEntity(v);
 		}
 
@@ -770,16 +676,16 @@ public class NekPolygonTester {
 	public void checkCopying() {
 
 		// We need edges and vertices to supply to created Polygons.
-		ArrayList<Edge> edges = new ArrayList<Edge>();
-		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		ArrayList<EdgeController> edges = new ArrayList<EdgeController>();
+		ArrayList<VertexController> vertices = new ArrayList<VertexController>();
 
 		// For our test, we'll just make a triangle with one point at the origin
 		// and the other two on the x and z axes at a distance of 5.
-		vertices.add(new Vertex(new VertexComponent(0f, 0f, 0f),
+		vertices.add(new VertexController(new VertexMesh(0f, 0f, 0f),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(5f, 0f, 0f),
+		vertices.add(new VertexController(new VertexMesh(5f, 0f, 0f),
 				new AbstractView()));
-		vertices.add(new Vertex(new VertexComponent(0f, 0f, 5f),
+		vertices.add(new VertexController(new VertexMesh(0f, 0f, 5f),
 				new AbstractView()));
 
 		// Set the IDs for the vertices.
@@ -791,8 +697,9 @@ public class NekPolygonTester {
 		for (int i = 0; i < size; i++) {
 			// Create a new ArrayList holding the vertices that will describe
 			// the current edge.
-			Edge edge = new Edge(new EdgeComponent(vertices.get(i),
-					vertices.get((i + 1) % size)), new AbstractView());
+			EdgeController edge = new EdgeController(
+					new EdgeMesh(vertices.get(i), vertices.get((i + 1) % size)),
+					new AbstractView());
 			edge.setProperty("Id", Integer.toString(i + 1));
 
 			// Add the edge to the List of Edges.
@@ -800,31 +707,26 @@ public class NekPolygonTester {
 		}
 
 		// Create a Polygon to test.
-		NekPolygon object = new NekPolygon(new FaceComponent(),
-				new AbstractView());
-		for (Edge e : edges) {
+		NekPolygonController object = new NekPolygonController(
+				new NekPolygonMesh(), new AbstractView());
+		for (EdgeController e : edges) {
 			object.addEntity(e);
 		}
-		for (Vertex v : vertices) {
-			object.addEntity(v);
+
+		NekPolygonController copy = new NekPolygonController(
+				new NekPolygonMesh(), new AbstractView());
+		for (EdgeController e : edges) {
+			EdgeController temp = (EdgeController) e.clone();
+			temp.setProperty("Id", "2");
+			copy.addEntity(temp);
 		}
 
-		NekPolygon copy = new NekPolygon(new FaceComponent(),
-				new AbstractView());
-		for (Edge e : edges) {
-			copy.addEntity(e);
-		}
-		for (Vertex v : vertices) {
-			copy.addEntity(v);
-		}
-
-		NekPolygon clone = new NekPolygon(new FaceComponent(),
-				new AbstractView());
-		for (Edge e : edges) {
-			clone.addEntity(e);
-		}
-		for (Vertex v : vertices) {
-			clone.addEntity(v);
+		NekPolygonController clone = new NekPolygonController(
+				new NekPolygonMesh(), new AbstractView());
+		for (EdgeController e : edges) {
+			EdgeController temp = (EdgeController) e.clone();
+			temp.setProperty("Id", "3");
+			copy.addEntity(temp);
 		}
 
 		// Make sure the objects are not equal before copying.
@@ -845,7 +747,7 @@ public class NekPolygonTester {
 		assertFalse(object.equals(clone));
 
 		// Copy the object.
-		clone = (NekPolygon) object.clone();
+		clone = (NekPolygonController) object.clone();
 
 		// Make sure the references are different but contents the same.
 		assertFalse(object == clone);

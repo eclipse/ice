@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.jme3.geometry;
 
 import java.io.IOException;
 
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 /**
  * <p>
@@ -36,7 +36,7 @@ public class ShapeTransient implements Savable {
 	 * </p>
 	 * 
 	 */
-	private Shape shape;
+	private ShapeController shape;
 
 	/**
 	 * <p>
@@ -48,7 +48,7 @@ public class ShapeTransient implements Savable {
 	 *            The associated shape
 	 *            </p>
 	 */
-	public ShapeTransient(Shape shape) {
+	public ShapeTransient(ShapeController shape) {
 		this.shape = shape;
 	}
 
@@ -62,7 +62,7 @@ public class ShapeTransient implements Savable {
 	 *         The associated shape
 	 *         </p>
 	 */
-	public Shape getShape() {
+	public ShapeController getShape() {
 		return shape;
 	}
 

@@ -15,7 +15,7 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 import java.net.URL;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -109,12 +109,12 @@ public class ActionDeleteShape extends Action {
 
 			// Check if the selected object is an IShape
 
-			if (selectedObject instanceof Shape) {
+			if (selectedObject instanceof ShapeController) {
 
-				Shape selectedShape = (Shape) selectedObject;
-				Shape parentShape = (Shape) selectedShape.getEntitiesByCategory("Parent").get(0);
+				ShapeController selectedShape = (ShapeController) selectedObject;
+				ShapeController parentShape = (ShapeController) selectedShape.getEntitiesByCategory("Parent").get(0);
 
-				if (parentShape instanceof Shape) {
+				if (parentShape instanceof ShapeController) {
 
 					// Remove the selected shape from the parent
 

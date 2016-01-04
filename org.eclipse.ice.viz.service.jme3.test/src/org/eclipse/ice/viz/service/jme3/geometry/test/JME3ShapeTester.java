@@ -17,7 +17,7 @@ import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.jme3.geometry.JME3ControllerFactory;
 import org.eclipse.ice.viz.service.jme3.geometry.JME3Shape;
 import org.eclipse.ice.viz.service.jme3.geometry.Tube;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 import com.jme3.material.Material;
@@ -40,7 +40,7 @@ public class JME3ShapeTester {
 	public void checkRepresentation() {
 
 		// Create a cube shape
-		ShapeComponent component = new ShapeComponent();
+		ShapeMesh component = new ShapeMesh();
 		component.setProperty("Type", ShapeType.Cube.toString());
 		JME3ControllerFactory factory = new JME3ControllerFactory();
 		JME3Shape shape = (JME3Shape) factory.createController(component);
@@ -98,7 +98,7 @@ public class JME3ShapeTester {
 	public void checkMaterial() {
 
 		// Create a shape
-		ShapeComponent component = new ShapeComponent();
+		ShapeMesh component = new ShapeMesh();
 		component.setProperty("Type", ShapeType.Cube.toString());
 		JME3ControllerFactory factory = new JME3ControllerFactory();
 		JME3Shape shape = (JME3Shape) factory.createController(component);
@@ -139,7 +139,7 @@ public class JME3ShapeTester {
 		assertTrue(base == shape.getMaterial());
 
 		// Add the shape to a union
-		ShapeComponent unionComponent = new ShapeComponent();
+		ShapeMesh unionComponent = new ShapeMesh();
 		component.setProperty("Operator", "Union");
 		JME3Shape union = (JME3Shape) factory.createController(unionComponent);
 		union.addEntity(shape);

@@ -13,10 +13,10 @@ package org.eclipse.ice.viz.service.jme3.geometry;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 import com.jme3.material.Material;
 import com.jme3.math.Vector3f;
@@ -68,7 +68,7 @@ public class JME3ShapeView extends AbstractView {
 	 * @param model
 	 *            The model which this view will graphically represent.
 	 */
-	public JME3ShapeView(ShapeComponent model) {
+	public JME3ShapeView(ShapeMesh model) {
 
 		// Create the view's mesh
 		setMesh(model);
@@ -136,7 +136,7 @@ public class JME3ShapeView extends AbstractView {
 	 * @param model
 	 *            The view' model
 	 */
-	public void setMesh(AbstractMeshComponent model) {
+	public void setMesh(AbstractMesh model) {
 		// The shape's type
 		String type = model.getProperty("Type");
 
@@ -185,7 +185,7 @@ public class JME3ShapeView extends AbstractView {
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMeshComponent model) {
+	public void refresh(AbstractMesh model) {
 
 		// Update both the mesh and selected state
 		setMesh(model);

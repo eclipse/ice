@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 import org.eclipse.ice.viz.service.javafx.scene.model.IScene;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 /**
  * <p>
@@ -38,7 +38,7 @@ public abstract class GScene implements IScene {
 	private Map<Integer, INode> nodes;
 
 	/** */
-	private List<Shape> geometry;
+	private List<ShapeController> geometry;
 
 	/**
 	 * @see IScene#getRoot()
@@ -76,7 +76,7 @@ public abstract class GScene implements IScene {
 	 * @see IScene#getGeometry()
 	 */
 	@Override
-	public List<Shape> getGeometry() {
+	public List<ShapeController> getGeometry() {
 		if (geometry == null) {
 			return Collections.emptyList();
 		}

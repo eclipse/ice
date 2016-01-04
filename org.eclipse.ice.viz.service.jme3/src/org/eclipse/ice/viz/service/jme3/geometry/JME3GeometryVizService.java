@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 /**
  * This class is an implementation of IVizService which provides a 3D
@@ -46,7 +46,7 @@ public class JME3GeometryVizService extends AbstractVizService {
 	 */
 	@Override
 	public IVizCanvas createCanvas(AbstractController geometry) {
-		if (geometry instanceof Shape) {
+		if (geometry instanceof ShapeController) {
 			JME3GeometryCanvas canvas = new JME3GeometryCanvas(geometry);
 			return canvas;
 		} else {

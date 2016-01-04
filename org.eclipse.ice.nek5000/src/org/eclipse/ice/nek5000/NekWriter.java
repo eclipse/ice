@@ -43,9 +43,9 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Vertex;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 
 /**
  * This class is responsible for writing the contents of a Component collection
@@ -396,10 +396,10 @@ public class NekWriter implements IComponentVisitor {
 
 		// Local declarations
 		MeshComponent mesh = (MeshComponent) componentMap.get("Mesh Data");
-		NekPolygon currQuad;
+		NekPolygonController currQuad;
 		AbstractController currEdge;
 		int currEdgeId;
-		ArrayList<Vertex> currVertices = new ArrayList<Vertex>();
+		ArrayList<VertexController> currVertices = new ArrayList<VertexController>();
 		String currValue;
 
 		// String buffer used to construct the mesh data, as the MeshComponent
@@ -421,7 +421,7 @@ public class NekWriter implements IComponentVisitor {
 		for (int i = 0; i < mesh.getPolygons().size(); i++) {
 
 			// Define the current mesh element
-			currQuad = (NekPolygon) mesh.getPolygons().get(i);
+			currQuad = (NekPolygonController) mesh.getPolygons().get(i);
 			currValue = String.format(
 					"           ELEMENT%6s [ %4s]" // FORMAT:
 													// 18X,I6,4X,I3,A1,11x,i5
@@ -441,7 +441,7 @@ public class NekWriter implements IComponentVisitor {
 				for (AbstractController v : entity
 						.getEntitiesByCategory("Vertices")) {
 					if (!currVertices.contains(v)) {
-						currVertices.add((Vertex) v);
+						currVertices.add((VertexController) v);
 					}
 				}
 			}

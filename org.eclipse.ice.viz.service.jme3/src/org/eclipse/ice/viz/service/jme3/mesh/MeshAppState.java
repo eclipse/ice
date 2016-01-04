@@ -936,8 +936,8 @@ public class MeshAppState extends ViewAppState implements
 					}
 				}
 				// Remove any expired vertices.
-				for (Vertex vertex : oldPolygon.getVertices()) {
-					Vertex curVertex = mesh.getVertex(vertex.getId());
+				for (VertexController vertex : oldPolygon.getVertices()) {
+					VertexController curVertex = mesh.getVertex(vertex.getId());
 					if (vertex != curVertex) {
 						VertexController c = vertexControllers.remove(vertex
 								.getId());
@@ -981,8 +981,8 @@ public class MeshAppState extends ViewAppState implements
 					}
 				}
 				// Remove any expired vertices.
-				for (Vertex vertex : polygon.getVertices()) {
-					Vertex curVertex = mesh.getVertex(vertex.getId());
+				for (VertexController vertex : polygon.getVertices()) {
+					VertexController curVertex = mesh.getVertex(vertex.getId());
 					if (vertex != curVertex) {
 						VertexController c = vertexControllers.remove(vertex
 								.getId());
@@ -1003,7 +1003,7 @@ public class MeshAppState extends ViewAppState implements
 		// Add all the new polygons.
 		for (Polygon polygon : newPolygons) {
 			// Add all of the polygon's new vertices.
-			for (Vertex vertex : polygon.getVertices()) {
+			for (VertexController vertex : polygon.getVertices()) {
 				// If the vertex is new, create a new VertexController.
 				if (!vertexControllers.containsKey(vertex.getId())) {
 					VertexController c = new VertexController(vertex,

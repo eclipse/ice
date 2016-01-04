@@ -23,8 +23,8 @@ import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -49,20 +49,20 @@ public class ShapeTreeContentProviderTest {
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
 		// Create a shape
-		ShapeComponent geometryModel = new ShapeComponent();
+		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		Shape geometryShape = new Shape(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
 
-		Shape sphere1 = (Shape) geometryShape.clone();
+		ShapeController sphere1 = (ShapeController) geometryShape.clone();
 		sphere1.setProperty("Type", ShapeType.Sphere.toString());
-		Shape cube1 = (Shape) geometryShape.clone();
+		ShapeController cube1 = (ShapeController) geometryShape.clone();
 		cube1.setProperty("Type", ShapeType.Cube.toString());
 
-		Shape union1 = (Shape) geometryShape.clone();
+		ShapeController union1 = (ShapeController) geometryShape.clone();
 		union1.setProperty("Operator", OperatorType.Union.toString());
-		Shape complement1 = (Shape) geometryShape.clone();
+		ShapeController complement1 = (ShapeController) geometryShape.clone();
 		complement1.setProperty("Operator", OperatorType.Complement.toString());
-		Shape intersection1 = (Shape) geometryShape.clone();
+		ShapeController intersection1 = (ShapeController) geometryShape.clone();
 		intersection1.setProperty("Operator",
 				OperatorType.Intersection.toString());
 
@@ -125,20 +125,20 @@ public class ShapeTreeContentProviderTest {
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
 		// Create a shape
-		ShapeComponent geometryModel = new ShapeComponent();
+		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		Shape geometryShape = new Shape(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
 
-		Shape sphere1 = (Shape) geometryShape.clone();
+		ShapeController sphere1 = (ShapeController) geometryShape.clone();
 		sphere1.setProperty("Type", ShapeType.Sphere.toString());
-		Shape cube1 = (Shape) geometryShape.clone();
+		ShapeController cube1 = (ShapeController) geometryShape.clone();
 		cube1.setProperty("Type", ShapeType.Cube.toString());
 
-		Shape union1 = (Shape) geometryShape.clone();
+		ShapeController union1 = (ShapeController) geometryShape.clone();
 		union1.setProperty("Operator", OperatorType.Union.toString());
-		Shape complement1 = (Shape) geometryShape.clone();
+		ShapeController complement1 = (ShapeController) geometryShape.clone();
 		complement1.setProperty("Operator", OperatorType.Complement.toString());
-		Shape intersection1 = (Shape) geometryShape.clone();
+		ShapeController intersection1 = (ShapeController) geometryShape.clone();
 		intersection1.setProperty("Operator",
 				OperatorType.Intersection.toString());
 
@@ -200,16 +200,16 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ShapeComponent geometryModel = new ShapeComponent();
+		ShapeMesh geometryModel = new ShapeMesh();
 		geometryModel.setProperty("Type", ShapeType.Sphere.toString());
 		AbstractView geometryView = new AbstractView();
-		Shape geometry = new Shape(geometryModel, geometryView);
+		ShapeController geometry = new ShapeController(geometryModel, geometryView);
 
-		Shape sphere1 = (Shape) geometry.clone();
-		Shape cube1 = (Shape) geometry.clone();
-		Shape union1 = (Shape) geometry.clone();
-		Shape complement1 = (Shape) geometry.clone();
-		Shape intersection1 = (Shape) geometry.clone();
+		ShapeController sphere1 = (ShapeController) geometry.clone();
+		ShapeController cube1 = (ShapeController) geometry.clone();
+		ShapeController union1 = (ShapeController) geometry.clone();
+		ShapeController complement1 = (ShapeController) geometry.clone();
+		ShapeController intersection1 = (ShapeController) geometry.clone();
 
 		// Put them all in a GeometryComponent
 

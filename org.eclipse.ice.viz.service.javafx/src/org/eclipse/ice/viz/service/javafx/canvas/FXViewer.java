@@ -16,7 +16,7 @@ import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.FPSController;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -178,8 +178,8 @@ public class FXViewer extends AbstractViewer {
 				}
 
 				// Resolve the shape
-				Shape modelShape = (Shape) nodeParent.getProperties()
-						.get(Shape.class);
+				ShapeController modelShape = (ShapeController) nodeParent.getProperties()
+						.get(ShapeController.class);
 
 				if (modelShape == null) {
 					return;

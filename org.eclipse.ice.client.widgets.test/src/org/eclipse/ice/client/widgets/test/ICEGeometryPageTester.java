@@ -18,8 +18,8 @@ import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -44,9 +44,9 @@ public class ICEGeometryPageTester {
 		GeometryComponent geometryComponent = new GeometryComponent();
 		GeometryComponent otherGeometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(
-				new Shape(new ShapeComponent(), new AbstractView()));
+				new ShapeController(new ShapeMesh(), new AbstractView()));
 		geometryComponent.setGeometry(
-				new Shape(new ShapeComponent(), new AbstractView()));
+				new ShapeController(new ShapeMesh(), new AbstractView()));
 
 		// Get ICEGeometryPage to check accessor
 		ICEFormEditor ICEFormEditor = new ICEFormEditor();

@@ -15,10 +15,10 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -79,7 +79,7 @@ public class FXShapeView extends AbstractView {
 	 * @param model
 	 *            The model which this view will display
 	 */
-	public FXShapeView(ShapeComponent model) {
+	public FXShapeView(ShapeMesh model) {
 		super();
 
 		// Initialize the JavaFX ndoe
@@ -217,7 +217,7 @@ public class FXShapeView extends AbstractView {
 	public void setController(AbstractController controller) {
 
 		// Put the controller in the node's data structure
-		node.getProperties().put(Shape.class, shape);
+		node.getProperties().put(ShapeController.class, shape);
 	}
 
 	/*
@@ -239,7 +239,7 @@ public class FXShapeView extends AbstractView {
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMeshComponent model) {
+	public void refresh(AbstractMesh model) {
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));

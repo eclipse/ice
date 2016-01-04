@@ -11,9 +11,9 @@
 package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 /**
  * A factory for creating instances of Shape with FXShapeViews for use with
@@ -32,15 +32,15 @@ public class FXShapeControllerFactory implements IControllerFactory {
 	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public AbstractController createController(AbstractMeshComponent model) {
+	public AbstractController createController(AbstractMesh model) {
 
 		// Check that the model is a shape component, if not return null
-		if (model instanceof ShapeComponent) {
+		if (model instanceof ShapeMesh) {
 
 			// Create an FXShapeView for the model, then wrap them both in a
 			// shape
-			FXShapeView view = new FXShapeView((ShapeComponent) model);
-			return new FXShapeController((ShapeComponent) model, view);
+			FXShapeView view = new FXShapeView((ShapeMesh) model);
+			return new FXShapeController((ShapeMesh) model, view);
 		}
 		return null;
 	}

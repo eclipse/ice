@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 
 import javafx.scene.Group;
@@ -35,7 +35,7 @@ public class FXFaceView extends AbstractView {
 	 * 
 	 * @param model
 	 */
-	public FXFaceView(AbstractMeshComponent model) {
+	public FXFaceView(AbstractMesh model) {
 		super();
 
 		// // Instantiate the node
@@ -64,7 +64,7 @@ public class FXFaceView extends AbstractView {
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMeshComponent model) {
+	public void refresh(AbstractMesh model) {
 
 		// // Clear the list of children so it can be rebuilt
 		// node.getChildren().clear();

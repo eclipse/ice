@@ -19,8 +19,8 @@ import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeLabelProvider;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -65,13 +65,13 @@ public class ShapeTreeLabelProviderTest {
 		// Any input should produce a null return value
 
 		// Create a shape
-		ShapeComponent geometryModel = new ShapeComponent();
+		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		Shape geometryShape = new Shape(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
 
-		Shape cube1 = (Shape) geometryShape.clone();
+		ShapeController cube1 = (ShapeController) geometryShape.clone();
 		cube1.setProperty("Type", ShapeType.Cube.toString());
-		Shape intersection1 = (Shape) geometryShape.clone();
+		ShapeController intersection1 = (ShapeController) geometryShape.clone();
 		intersection1.setProperty("Operator",
 				OperatorType.Intersection.toString());
 
@@ -95,16 +95,16 @@ public class ShapeTreeLabelProviderTest {
 		// Create some named shapes
 
 		// Create a shape
-		ShapeComponent geometryModel = new ShapeComponent();
+		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		Shape geometryShape = new Shape(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
 
-		Shape cube1 = (Shape) geometryShape.clone();
+		ShapeController cube1 = (ShapeController) geometryShape.clone();
 		cube1.setProperty("Type", ShapeType.Cube.toString());
 
-		Shape union1 = (Shape) geometryShape.clone();
+		ShapeController union1 = (ShapeController) geometryShape.clone();
 		union1.setProperty("Operator", OperatorType.Union.toString());
-		Shape intersection1 = (Shape) geometryShape.clone();
+		ShapeController intersection1 = (ShapeController) geometryShape.clone();
 		intersection1.setProperty("Operator",
 				OperatorType.Intersection.toString());
 

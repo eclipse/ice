@@ -43,8 +43,8 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.reactor.LWRComponent;
 import org.eclipse.ice.reactor.LWRComponentReader;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")
@@ -239,9 +239,9 @@ public class TableComponentTester extends Item {
 		// ===========================================================================Try
 		// making geometry page
 		// Create a shape
-		ShapeComponent geometryModel = new ShapeComponent();
+		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		Shape geometryShape = new Shape(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
 
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(geometryShape);

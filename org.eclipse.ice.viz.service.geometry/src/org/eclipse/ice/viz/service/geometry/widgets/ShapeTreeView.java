@@ -19,7 +19,7 @@ import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -73,7 +73,7 @@ public class ShapeTreeView extends ViewPart
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<Shape> selectedShapes = new ArrayList<Shape>();
+	private ArrayList<ShapeController> selectedShapes = new ArrayList<ShapeController>();
 
 	// The actions for manipulating shapes
 	private DropdownAction addPrimitiveShapes;
@@ -234,8 +234,8 @@ public class ShapeTreeView extends ViewPart
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof Shape) {
-				Shape selectedShape = (Shape) selectedObject;
+			if (selectedObject instanceof ShapeController) {
+				ShapeController selectedShape = (ShapeController) selectedObject;
 
 				// Set the TransformationView's shape
 
@@ -299,7 +299,7 @@ public class ShapeTreeView extends ViewPart
 
 		// Edit the shapes' selection property
 
-		for (Shape selectedShape : selectedShapes) {
+		for (ShapeController selectedShape : selectedShapes) {
 			selectedShape.setProperty("Selected", "False");
 		}
 
@@ -312,9 +312,9 @@ public class ShapeTreeView extends ViewPart
 
 			// Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
 
-			if (selectedObject instanceof Shape) {
+			if (selectedObject instanceof ShapeController) {
 
-				Shape selectedShape = (Shape) selectedObject;
+				ShapeController selectedShape = (ShapeController) selectedObject;
 				selectedShape.setProperty("Selected", "True");
 				selectedShapes.add(selectedShape);
 			}

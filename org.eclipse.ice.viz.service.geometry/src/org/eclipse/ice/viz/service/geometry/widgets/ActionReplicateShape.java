@@ -15,8 +15,8 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 import java.net.URL;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -106,10 +106,10 @@ public class ActionReplicateShape extends Action {
 
 		Object selectedObject = paths[0].getLastSegment();
 
-		if (!(selectedObject instanceof Shape)) {
+		if (!(selectedObject instanceof ShapeController)) {
 			return;
 		}
-		Shape selectedShape = (Shape) selectedObject;
+		ShapeController selectedShape = (ShapeController) selectedObject;
 
 		// Create a transformation, initialized from the selected shape's
 		// transformation
@@ -139,7 +139,7 @@ public class ActionReplicateShape extends Action {
 		// If the selected shape is a direct child of a GeometryComponent,
 		// its parent shape is null.
 
-		Shape parentShape = (Shape) selectedShape
+		ShapeController parentShape = (ShapeController) selectedShape
 				.getEntitiesByCategory("Parent").get(0);
 
 		// Remove the selected shape from its original parent
@@ -154,8 +154,8 @@ public class ActionReplicateShape extends Action {
 
 		// Create a new parent union shape
 
-		ShapeComponent replicateUnionComponent = new ShapeComponent();
-		Shape replicateUnion = (Shape) view.getFactory()
+		ShapeMesh replicateUnionComponent = new ShapeMesh();
+		ShapeController replicateUnion = (ShapeController) view.getFactory()
 				.createController(replicateUnionComponent);
 		replicateUnion.setProperty("Operator", "Union");
 
@@ -166,7 +166,7 @@ public class ActionReplicateShape extends Action {
 
 			// Clone the selected shape and remove its "selected" property
 
-			Shape clonedShape = (Shape) selectedShape.clone();
+			ShapeController clonedShape = (ShapeController) selectedShape.clone();
 			clonedShape.setProperty("Selected", "False");
 			clonedShape.setProperty("Id", Integer.toString(i));
 

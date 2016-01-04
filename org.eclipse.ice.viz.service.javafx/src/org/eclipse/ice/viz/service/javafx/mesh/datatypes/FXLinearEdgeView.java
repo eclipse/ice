@@ -14,10 +14,10 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateabl
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeComponent;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
@@ -83,7 +83,7 @@ public class FXLinearEdgeView extends AbstractView {
 	 * @param model
 	 *            The model which this view will display
 	 */
-	public FXLinearEdgeView(EdgeComponent model) {
+	public FXLinearEdgeView(EdgeMesh model) {
 		this();
 
 		// Initialize the JavaFX node
@@ -106,11 +106,11 @@ public class FXLinearEdgeView extends AbstractView {
 	 * 
 	 * @return A JavaFX Cylinder representing the given LinearEdgeComponent
 	 */
-	private Cylinder createShape(EdgeComponent edgeComponent) {
+	private Cylinder createShape(EdgeMesh edgeComponent) {
 		// Get the edge's endpoints
-		double[] start = ((org.eclipse.ice.viz.service.modeling.Edge) edgeComponent
+		double[] start = ((org.eclipse.ice.viz.service.modeling.EdgeController) edgeComponent
 				.getController()).getStartLocation();
-		double[] end = ((org.eclipse.ice.viz.service.modeling.Edge) edgeComponent
+		double[] end = ((org.eclipse.ice.viz.service.modeling.EdgeController) edgeComponent
 				.getController()).getEndLocation();
 
 		// Create a cylinder situated at the edge's midpoint with the edge's
@@ -153,7 +153,7 @@ public class FXLinearEdgeView extends AbstractView {
 	public void setController(AbstractController controller) {
 
 		// Put the controller in the node's data structure
-		node.getProperties().put(Shape.class, mesh);
+		node.getProperties().put(ShapeController.class, mesh);
 	}
 
 	/*
@@ -175,13 +175,13 @@ public class FXLinearEdgeView extends AbstractView {
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMeshComponent model) {
+	public void refresh(AbstractMesh model) {
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
 		// Redraw the cylinder and set it as the node's child
-		mesh = createShape(((EdgeComponent) model));
+		mesh = createShape(((EdgeMesh) model));
 		node.getChildren().clear();
 		node.getChildren().add(mesh);
 

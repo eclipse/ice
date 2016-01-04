@@ -17,8 +17,8 @@ import org.eclipse.ice.viz.service.jme3.geometry.JME3ControllerFactory;
 import org.eclipse.ice.viz.service.jme3.geometry.JME3Shape;
 import org.eclipse.ice.viz.service.jme3.geometry.JME3ShapeView;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMeshComponent;
-import org.eclipse.ice.viz.service.modeling.ShapeComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -37,14 +37,14 @@ public class JME3ControllerFactoryTester {
 
 		// Create a factory and a component
 		JME3ControllerFactory factory = new JME3ControllerFactory();
-		AbstractMeshComponent mesh = new AbstractMeshComponent();
+		AbstractMesh mesh = new AbstractMesh();
 
 		// Since the component is not a shape, it should be rejected by the
 		// factory.
 		assertNull(factory.createController(mesh));
 
 		// Create a shape and send it to the factory
-		ShapeComponent shape = new ShapeComponent();
+		ShapeMesh shape = new ShapeMesh();
 		AbstractController shapeController = factory.createController(shape);
 
 		// The created controller should be a JME3Shape wrapping the model, and

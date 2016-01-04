@@ -32,5 +32,5 @@ public interface IControllerFactory {
 	 * @return The new controller, which contains the input model and the new
 	 *         view
 	 */
-	public AbstractController createController(AbstractMeshComponent model);
+	public AbstractController createController(AbstractMesh model);
 }

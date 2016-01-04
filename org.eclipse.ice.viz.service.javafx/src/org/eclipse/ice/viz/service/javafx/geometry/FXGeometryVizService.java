@@ -20,7 +20,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 /**
  * <p>
@@ -48,8 +48,8 @@ public class FXGeometryVizService extends AbstractVizService {
 	@Override
 	public IVizCanvas createCanvas(AbstractController geometry)
 			throws Exception {
-		if (geometry instanceof Shape) {
-			FXGeometryCanvas canvas = new FXGeometryCanvas((Shape) geometry);
+		if (geometry instanceof ShapeController) {
+			FXGeometryCanvas canvas = new FXGeometryCanvas((ShapeController) geometry);
 
 			return canvas;
 		} else {

@@ -13,7 +13,7 @@
 package org.eclipse.ice.viz.service.geometry.widgets;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Shape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -59,13 +59,13 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		// If the element is an IShape, call its accept() operation to
 		// trigger the visit() call
 
-		if (parentElement instanceof Shape) {
+		if (parentElement instanceof ShapeController) {
 			temporaryChildren = null;
 
 			// Call the parentShape's accept operation to call the appropriate
 			// visit member function in this class
 
-			Shape parentShape = (Shape) parentElement;
+			ShapeController parentShape = (ShapeController) parentElement;
 
 			if (parentShape.getProperty("Operator") != null) {
 
@@ -145,12 +145,12 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 
 		// Return null if the element is not an IShape
 
-		if (!(element instanceof Shape)) {
+		if (!(element instanceof ShapeController)) {
 			return null;
 		}
 		// Return the object's parent
 
-		Shape shape = (Shape) element;
+		ShapeController shape = (ShapeController) element;
 		return shape.getEntitiesByCategory("Parent");
 
 	}
@@ -238,7 +238,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		/**
 		 * The shape which "contains" this blank shape object
 		 */
-		private Shape parent;
+		private ShapeController parent;
 
 		/**
 		 * Initializes the BlankShape with a parent
@@ -246,7 +246,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		 * @param parent
 		 *            The parent shape in the TreeViewer hierarchy
 		 */
-		public BlankShape(Shape parent) {
+		public BlankShape(ShapeController parent) {
 			this.parent = parent;
 		}
 
@@ -255,7 +255,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		 * 
 		 * @return The parent shape
 		 */
-		public Shape getParent() {
+		public ShapeController getParent() {
 			return parent;
 		}
 	}

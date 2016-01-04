@@ -168,7 +168,8 @@ public class NekModelTester {
 		// Check the action list. It should contain the read and write actions
 		// as well as the write action for ICE's default format.
 		assertEquals(3, form.getActionList().size());
-		assertTrue(form.getActionList().contains(NekModel.nekWriteActionString));
+		assertTrue(
+				form.getActionList().contains(NekModel.nekWriteActionString));
 		assertTrue(form.getActionList().contains(NekModel.nekReadActionString));
 
 		// Resubmit the form
@@ -185,8 +186,8 @@ public class NekModelTester {
 			projectSpace.getFile(testFilename).delete(true, null);
 		} catch (CoreException e) {
 			// Complain
-			System.err.println("NekModelTester Message: "
-					+ "Unable to delete test file.");
+			System.err.println(
+					"NekModelTester Message: " + "Unable to delete test file.");
 			e.printStackTrace();
 			// And fail
 			fail();
@@ -200,14 +201,16 @@ public class NekModelTester {
 	 * This operation configures a NekModel. It is used by both test operations.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A newly instantiated NekModel.
 	 *         </p>
 	 */
 	private NekModel setupNekItem() {
 
 		// Local Declarations
-		NekModel model = new NekModel(projectSpace);
+		NekModel model = new NekModel(projectSpace,
+				new TestNekControllerFactory());
 
 		return model;
 	}

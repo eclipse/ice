@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.javafx.mesh;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachmentManager;
 import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.Face;
+import org.eclipse.ice.viz.service.modeling.FaceController;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -66,7 +66,7 @@ public class FXMeshAttachment extends FXAttachment {
 			for (AbstractController entity : group.getEntities()) {
 
 				// Add each child of a polygon to the scene, without repeats
-				if (entity instanceof Face) {
+				if (entity instanceof FaceController) {
 
 					for (AbstractController child : entity.getEntities()) {
 

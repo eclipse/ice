@@ -320,7 +320,7 @@ public class JME3MeshCanvas implements IMeshVizCanvas {
 		IMeshPartVisitor visitor = new IMeshPartVisitor() {
 
 			@Override
-			public void visit(Vertex vertex) {
+			public void visit(VertexController vertex) {
 				vertexIds.add(vertex.getId());
 			}
 
