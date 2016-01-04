@@ -20,7 +20,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.ICEObject.Identifiable;
@@ -38,13 +37,6 @@ import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.EditorPart;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -67,8 +59,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings
  */
-public class Client implements IUpdateEventListener, IProcessEventListener, ISimpleResourceProvider,
-		IWidgetClosedListener, IClient, BundleActivator {
+public class Client implements IUpdateEventListener, IProcessEventListener,
+		ISimpleResourceProvider, IWidgetClosedListener, IClient,
+		BundleActivator {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -172,13 +165,15 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		// posted to the IFormWidget based on the status of the process.
 		statusMessageMap.put(FormStatus.Processed, "Done!");
 		statusMessageMap.put(FormStatus.Processing, "Processing Form...");
-		statusMessageMap.put(FormStatus.InfoError, "The Form contains an error" + " and cannot be processed.");
+		statusMessageMap.put(FormStatus.InfoError,
+				"The Form contains an error" + " and cannot be processed.");
 		statusMessageMap.put(FormStatus.ReadyToProcess, "Ready to process.");
 		statusMessageMap.put(FormStatus.NeedsInfo,
-				"The Form requires additional information before " + "it can be processed.");
+				"The Form requires additional information before "
+						+ "it can be processed.");
 		statusMessageMap.put(FormStatus.InReview, "In review...");
-		statusMessageMap.put(FormStatus.Unacceptable,
-				"This Form will not be " + "processed or updated. It should be considered read-only.");
+		statusMessageMap.put(FormStatus.Unacceptable, "This Form will not be "
+				+ "processed or updated. It should be considered read-only.");
 
 		// Set the reference to this in the Singleton for the widget classes to
 		// retrieve as needed.
@@ -209,11 +204,10 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 			logger.error("Unable to access core!.");
 		}
 
-		// Get the widgets factory service by using the Workbench. This is a
-		// good way to do it that prevents the ResourcesPlugin from being called
-		// prematurely.
-		IWidgetFactory factory = PlatformUI.getWorkbench().getService(IWidgetFactory.class);
-		setUIWidgetFactory(factory);
+		// Get the widgets factory service by using the static inferace method
+		// and directly registering it. At the moment we have only a single
+		// factory, so we will grab the 0-th entry.
+		setUIWidgetFactory(IWidgetFactory.getIWidgetFactories()[0]);
 
 		// I realize how hilarious it is to use two different mechanisms for
 		// acquiring services here. FIXME! This is just testing for now.
@@ -295,7 +289,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 			processorThread.start();
 		} else {
 			// Otherwise notify the use that the Item is invalid
-			throwSimpleError("IClient Message: " + "Item has no parent widget in this client.");
+			throwSimpleError("IClient Message: "
+					+ "Item has no parent widget in this client.");
 		}
 	}
 
@@ -367,7 +362,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		if (itemId > 0) {// FIXME Status check!
 			loadItem(itemId);
 		} else if (itemId <= 0) {
-			throwSimpleError("Unable to load Item " + itemType + " after creating it.");
+			throwSimpleError(
+					"Unable to load Item " + itemType + " after creating it.");
 		}
 	}
 
@@ -384,7 +380,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		if (iWidgetFactory != null) {
 			logger.info("IClient Message: Widget Factory set!");
 		} else {
-			logger.info("IClient Message: " + "Widget Factory set, but is null.");
+			logger.info(
+					"IClient Message: " + "Widget Factory set, but is null.");
 		}
 		return;
 	}
@@ -413,19 +410,23 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 			formWidget.display();
 			// Set the initial status of the Form
 			formStatus = getCore().getItemStatus(itemId);
-			formWidget.updateStatus(statusMessageMap.get(iCore.getItemStatus(itemId)));
+			formWidget.updateStatus(
+					statusMessageMap.get(iCore.getItemStatus(itemId)));
 			// If the FormStatus signifies that the Form is absolutely
 			// unacceptable, then the user should be warned.
 			if (formStatus.equals(FormStatus.Unacceptable)) {
 				formWidget.disable(true);
-				throwSimpleError("This Form has been set to a read-only mode by "
-						+ "ICE. Please be advised that it can not be upated" + " or processed.");
+				throwSimpleError(
+						"This Form has been set to a read-only mode by "
+								+ "ICE. Please be advised that it can not be upated"
+								+ " or processed.");
 			}
 			// Register for updates
 			formWidget.registerUpdateListener(this);
 			formWidget.registerProcessListener(this);
 			formWidget.registerResourceProvider(this);
-			logger.info("IClient Message: Loaded Item " + itemId + ", " + form.getName());
+			logger.info("IClient Message: Loaded Item " + itemId + ", "
+					+ form.getName());
 			// Store the widget in the table of FormWidgets
 			formWidgetTable.put(itemId, formWidget);
 		} else {
@@ -511,12 +512,14 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 			}
 			// Process the item
 			if (itemForm != null) {
-				logger.info("IClient Message: Processing Item " + itemId + ", " + itemForm.getName());
+				logger.info("IClient Message: Processing Item " + itemId + ", "
+						+ itemForm.getName());
 				processItem(formWidgetTable.get(itemId), actionName);
 			}
 		} else if (itemId < 0 || itemForm == null) {
 			// Otherwise notify the use that the Item is invalid
-			throwSimpleError("The Item id is invalid. " + "Please double check it and try again "
+			throwSimpleError("The Item id is invalid. "
+					+ "Please double check it and try again "
 					+ "or notify your systems administrator.");
 		}
 		return;
@@ -599,22 +602,26 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 			// Update the Form if needed, skip FormStatus.InReview for now.
 			// FIXME! - need FormStatus.InReview
-			if (!status.equals(FormStatus.InfoError) && !status.equals(FormStatus.Unacceptable)) {
+			if (!status.equals(FormStatus.InfoError)
+					&& !status.equals(FormStatus.Unacceptable)) {
 				form = getCore().getItem(formId);
 				// Update the status of the Item update
 				if (formWidgetTable.containsKey(form.getItemID())) {
 					String statusMessage = statusMessageMap.get(status);
-					formWidgetTable.get(form.getItemID()).updateStatus(statusMessage);
+					formWidgetTable.get(form.getItemID())
+							.updateStatus(statusMessage);
 				}
 			} else {
 				// Notify the user that there is some invalid information in the
 				// Form
-				throwSimpleError("Form contains invalid information. " + "Please review it for completeness and "
+				throwSimpleError("Form contains invalid information. "
+						+ "Please review it for completeness and "
 						+ "accuracy and resubmit.");
 			}
 		} else {
 			// Otherwise let the user know
-			throwSimpleError("Fatal Error: " + "Form returned to Client can not be null!");
+			throwSimpleError("Fatal Error: "
+					+ "Form returned to Client can not be null!");
 		}
 
 		return;
@@ -669,7 +676,8 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 			// Display the widget
 			textEditor.display();
 		} else {
-			throwSimpleError("The resource that you asked to load does not " + "exist or is erroneously linked.");
+			throwSimpleError("The resource that you asked to load does not "
+					+ "exist or is erroneously linked.");
 		}
 	}
 
@@ -713,7 +721,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, org.eclipse.core.resources.IProject)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI,
+	 * org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public void importFile(URI file, IProject project) {
@@ -724,7 +734,9 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFile(java.net.URI,
+	 * java.lang.String)
 	 */
 	@Override
 	public void importFile(URI file, String projectName) {
@@ -745,20 +757,25 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 		return Integer.valueOf(getCore().importFileAsItem(file, itemType));
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, org.eclipse.core.resources.IProject)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
+	 * java.lang.String, org.eclipse.core.resources.IProject)
 	 */
 	@Override
 	public int importFileAsItem(URI file, String itemType, IProject project) {
 		// Pass the call on to the core
-		return Integer.valueOf(getCore().importFileAsItem(file, itemType, project));
+		return Integer
+				.valueOf(getCore().importFileAsItem(file, itemType, project));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(org.eclipse.core.resources.IFile, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(org.eclipse.core.
+	 * resources.IFile, java.lang.String)
 	 */
 	@Override
 	public int importFileAsItem(IFile file, String itemType) {
@@ -768,16 +785,20 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI, java.lang.String, java.lang.String)
+	 * 
+	 * @see org.eclipse.ice.iclient.IClient#importFileAsItem(java.net.URI,
+	 * java.lang.String, java.lang.String)
 	 */
 	@Override
 	public int importFileAsItem(URI file, String itemType, String projectName) {
 		// Pass the call on to the core
-		return Integer.valueOf(getCore().importFileAsItem(file, itemType, projectName));
+		return Integer.valueOf(
+				getCore().importFileAsItem(file, itemType, projectName));
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.iclient.IClient#renameItem(int, java.lang.String)
 	 */
 	@Override
@@ -787,20 +808,24 @@ public class Client implements IUpdateEventListener, IProcessEventListener, ISim
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.iclient.IClient#setFormWidget(org.eclipse.ice.iclient.uiwidgets.IFormWidget)
+	 * 
+	 * @see
+	 * org.eclipse.ice.iclient.IClient#setFormWidget(org.eclipse.ice.iclient.
+	 * uiwidgets.IFormWidget)
 	 */
 	@Override
 	public void addFormWidget(IFormWidget widget) {
-		// Add this Form Widget to the formWidgetTable 
+		// Add this Form Widget to the formWidgetTable
 		// so it can be used in Item processing.
 		formWidgetTable.put(widget.getForm().getItemID(), widget);
 	}
 
 	/**
-	 * This operation returns the IFormWidget corresponding to 
-	 * the given Item Id. 
+	 * This operation returns the IFormWidget corresponding to the given Item
+	 * Id.
 	 * 
-	 * @param itemId The id of the Item whose IFormWidget has been requested
+	 * @param itemId
+	 *            The id of the Item whose IFormWidget has been requested
 	 * @return formWidget
 	 */
 	public IFormWidget getFormWidget(int itemId) {

@@ -12,7 +12,6 @@
 package org.eclipse.ice.item.test;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;

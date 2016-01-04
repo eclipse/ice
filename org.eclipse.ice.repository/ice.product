@@ -135,42 +135,42 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.epp.mpc"/>
       <feature id="org.eclipse.remote"/>
       <feature id="org.eclipse.pde"/>
-      <feature id="org.eclipse.wst.common_core.feature" version="3.7.0.v201505132009"/>
-      <feature id="org.eclipse.wst.common_ui.feature" version="3.7.0.v201505132009"/>
-      <feature id="org.eclipse.wst.jsdt.feature" version="1.6.200.v201505071819"/>
-      <feature id="org.eclipse.wst.server_core.feature" version="3.3.500.v201505132000"/>
-      <feature id="org.eclipse.wst.server_ui.feature" version="3.3.500.v201505261810"/>
-      <feature id="org.eclipse.wst.server_userdoc.feature" version="3.3.300.v201405011426"/>
-      <feature id="org.eclipse.wst.web_core.feature" version="3.7.0.v201505132009"/>
-      <feature id="org.eclipse.wst.web_ui.feature" version="3.7.0.v201505261810"/>
-      <feature id="org.eclipse.wst.web_userdoc.feature" version="3.6.0.v201405062147"/>
-      <feature id="org.eclipse.wst.xml.xpath2.processor.feature" version="2.0.301.v201409111854"/>
-      <feature id="org.eclipse.wst.xml_core.feature" version="3.7.0.v201502261749"/>
-      <feature id="org.eclipse.wst.xml_ui.feature" version="3.7.0.v201505141512"/>
-      <feature id="org.eclipse.wst.xml_userdoc.feature" version="3.6.0.v201405062147"/>
-      <feature id="org.eclipse.wst.xsl.feature" version="1.3.401.v201409111855"/>
-      <feature id="org.eclipse.ptp" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.core" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.debug.sdm" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.etfw" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.etfw.feedback.perfsuite" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.etfw.tau" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.etfw.tau.fortran" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.fortran" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.gem" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.pldt" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.pldt.fortran" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.pldt.upc" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rdt.sync" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rdt.sync.cdt" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rdt.sync.fortran" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.remote" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.remote.terminal" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rm.ibm.ll" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rm.ibm.pe" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rm.ibm.platform.lsf" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rm.jaxb.contrib" version="9.0.0.201506101404"/>
-      <feature id="org.eclipse.ptp.rm.slurm" version="9.0.0.201506101404"/>
+      <feature id="org.eclipse.wst.common_core.feature"/>
+      <feature id="org.eclipse.wst.common_ui.feature"/>
+      <feature id="org.eclipse.wst.jsdt.feature"/>
+      <feature id="org.eclipse.wst.server_core.feature"/>
+      <feature id="org.eclipse.wst.server_ui.feature"/>
+      <feature id="org.eclipse.wst.server_userdoc.feature"/>
+      <feature id="org.eclipse.wst.web_core.feature"/>
+      <feature id="org.eclipse.wst.web_ui.feature"/>
+      <feature id="org.eclipse.wst.web_userdoc.feature"/>
+      <feature id="org.eclipse.wst.xml.xpath2.processor.feature"/>
+      <feature id="org.eclipse.wst.xml_core.feature"/>
+      <feature id="org.eclipse.wst.xml_ui.feature"/>
+      <feature id="org.eclipse.wst.xml_userdoc.feature"/>
+      <feature id="org.eclipse.wst.xsl.feature"/>
+      <feature id="org.eclipse.ptp"/>
+      <feature id="org.eclipse.ptp.core"/>
+      <feature id="org.eclipse.ptp.debug.sdm"/>
+      <feature id="org.eclipse.ptp.etfw"/>
+      <feature id="org.eclipse.ptp.etfw.feedback.perfsuite"/>
+      <feature id="org.eclipse.ptp.etfw.tau"/>
+      <feature id="org.eclipse.ptp.etfw.tau.fortran"/>
+      <feature id="org.eclipse.ptp.fortran"/>
+      <feature id="org.eclipse.ptp.gem"/>
+      <feature id="org.eclipse.ptp.pldt"/>
+      <feature id="org.eclipse.ptp.pldt.fortran"/>
+      <feature id="org.eclipse.ptp.pldt.upc"/>
+      <feature id="org.eclipse.ptp.rdt.sync"/>
+      <feature id="org.eclipse.ptp.rdt.sync.cdt"/>
+      <feature id="org.eclipse.ptp.rdt.sync.fortran"/>
+      <feature id="org.eclipse.ptp.remote"/>
+      <feature id="org.eclipse.ptp.remote.terminal"/>
+      <feature id="org.eclipse.ptp.rm.ibm.ll"/>
+      <feature id="org.eclipse.ptp.rm.ibm.pe"/>
+      <feature id="org.eclipse.ptp.rm.ibm.platform.lsf"/>
+      <feature id="org.eclipse.ptp.rm.jaxb.contrib"/>
+      <feature id="org.eclipse.ptp.rm.slurm"/>
       <feature id="org.eclipse.ice"/>
       <feature id="org.eclipse.cdt.bupc"/>
       <feature id="org.eclipse.cdt.core.lrparser.feature"/>
@@ -233,6 +233,28 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.swtbot.forms"/>
       <feature id="org.eclipse.swtbot.generator.feature"/>
       <feature id="org.eclipse.swtbot.ide"/>
+      <feature id="org.eclipse.nebula.visualization.feature"/>
+      <feature id="org.eclipse.nebula.widgets.nattable.core.feature"/>
+      <feature id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature"/>
+      <feature id="org.eclipse.nebula.widgets.nattable.extension.poi.feature"/>
+      <feature id="org.eclipse.sdk"/>
+      <feature id="org.eclipse.gef"/>
+      <feature id="org.eclipse.gef.sdk"/>
+      <feature id="org.eclipse.equinox.compendium.sdk"/>
+      <feature id="org.eclipse.equinox.core.feature"/>
+      <feature id="org.eclipse.equinox.executable"/>
+      <feature id="org.eclipse.equinox.sdk"/>
+      <feature id="org.eclipse.equinox.server.core"/>
+      <feature id="org.eclipse.equinox.server.jetty"/>
+      <feature id="org.eclipse.equinox.serverside.sdk"/>
+      <feature id="org.eclipse.equinox.weaving.sdk"/>
+      <feature id="org.eclipse.equinox.core.sdk"/>
+      <feature id="org.eclipse.emf.common.ui"/>
+      <feature id="org.eclipse.emf.ecore.edit"/>
+      <feature id="org.eclipse.emf.ecore.editor"/>
+      <feature id="org.eclipse.draw2d"/>
+      <feature id="org.eclipse.draw2d.sdk"/>
+      <feature id="org.eclipse.e4.core.tools.feature"/>
    </features>
 
    <configurations>
@@ -245,36 +267,23 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.util" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.analysistool" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.moose" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets.rcp" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.grid" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.lwr" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.reactoreditor.sfr" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer.moose" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.item" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.kdd" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.materials" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.materials.ui" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.nek5000" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.proteus" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactor" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactor.perspective" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactor.sfr" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reactorAnalyzer" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.reflectivity.ui" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.sassena" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
@@ -283,7 +292,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.xolotl" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ui.forms" autoStart="true" startLevel="0" />

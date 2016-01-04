@@ -101,4 +101,13 @@ public class TaggedOutputWriterAction extends Action {
 		// TODO Auto-generated method stub
 		return FormStatus.InfoError;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#getActionName()
+	 */
+	@Override
+	public String getActionName() {
+		return "Tagged Output Writer";
+	}
 }

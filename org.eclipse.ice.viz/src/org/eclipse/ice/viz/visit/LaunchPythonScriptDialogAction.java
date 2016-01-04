@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
@@ -27,6 +25,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+
+import gov.lbnl.visit.swt.VisItSwtWidget;
 
 /**
  * 

@@ -14,7 +14,6 @@ package org.eclipse.ice.client.common.wizards;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;

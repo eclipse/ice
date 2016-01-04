@@ -122,23 +122,23 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 		// Select the new row and try to move it down a row. This shouldn't do
 		// anything.
 		table.selectCell(bot, 0, 5);
-		bot.button(5).click();
+		bot.button("v").click();
 		cellName = (String) realTable.getDataValueByPosition(1, 6);
 		assertTrue("107Ag".equals(cellName));
 
 		// Move it up two rows
-		bot.button(4).click();
-		bot.button(4).click();
+		bot.button("^").click();
+		bot.button("^").click();
 		cellName = (String) realTable.getDataValueByPosition(1, 4);
 		assertTrue("107Ag".equals(cellName));
 
 		// Move it up five times. This should let it reach the top of the table
 		// then stop.
-		bot.button(4).click();
-		bot.button(4).click();
-		bot.button(4).click();
-		bot.button(4).click();
-		bot.button(4).click();
+		bot.button("^").click();
+		bot.button("^").click();
+		bot.button("^").click();
+		bot.button("^").click();
+		bot.button("^").click();
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
 		assertTrue("107Ag".equals(cellName));
 

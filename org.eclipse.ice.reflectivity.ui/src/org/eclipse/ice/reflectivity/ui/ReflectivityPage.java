@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.ice.client.widgets.ElementSourceDialog;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
-import org.eclipse.ice.client.widgets.ICEResourceView;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -49,7 +48,6 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.internal.Workbench;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;

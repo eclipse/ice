@@ -41,7 +41,6 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.io.serializable.IIOService;
-import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.item.test.FakeIOService;

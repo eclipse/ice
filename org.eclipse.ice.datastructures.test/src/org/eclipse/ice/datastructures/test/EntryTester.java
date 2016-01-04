@@ -32,8 +32,6 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.IEntryContentProvider;
-import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
-import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.junit.Test;
 
 /**

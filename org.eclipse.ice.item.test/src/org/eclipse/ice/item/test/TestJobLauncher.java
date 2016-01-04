@@ -12,9 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
@@ -70,6 +73,17 @@ public class TestJobLauncher extends JobLauncher {
 		return getActionFactory();
 	}
 
+	/**
+	 * For the tests, we just need to run remote execution
+	 */
+	@Override
+	protected ArrayList<Action> getActions() {
+		
+		ArrayList<Action> list = new ArrayList<Action>();
+		list.add(getActionFactory().getAction("Remote Execution"));
+		
+		return list;
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ice.item.Item#setupFormWithServices()
