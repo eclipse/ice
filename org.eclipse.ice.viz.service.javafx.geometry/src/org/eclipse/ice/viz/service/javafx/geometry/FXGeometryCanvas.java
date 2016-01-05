@@ -10,25 +10,49 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXSelection;
+import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
+import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeController;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.WritableImage;
 
 /**
- * An extension fo FXVizCanvas that implements functionality for the Geometry
+ * An extension for FXVizCanvas that implements functionality for the Geometry
  * Editor.
  * 
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
-public class FXGeometryCanvas extends FXVizCanvas {
+public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(FXGeometryCanvas.class);
 
 	/**
 	 * The default constructor
@@ -89,11 +113,250 @@ public class FXGeometryCanvas extends FXVizCanvas {
 
 		// Create a geometry viewer, throwing an exception if the operation
 		// fails
-		try {
-			return new FXGeometryViewer(viewerParent);
+		return new FXGeometryViewer(viewerParent);
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#createComposite
+	 * (org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	public Composite createComposite(Composite parent) {
+		try {
+			return draw(parent);
 		} catch (Exception e) {
-			throw new Exception("", e); //$NON-NLS-1$
+			logger.error(
+					"JavaFX Geometry Canvas could not instantiate FXGeometryViewer.");
+			return null;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#exportImage()
+	 */
+	@Override
+	public void exportImage() {
+
+		// Take a snapshot of the current scene
+		WritableImage screenshot = viewer.getCanvas().getScene().snapshot(null);
+
+		// FileChooser fileChooser = new FileChooser();
+		//
+		// // Set extension filter
+		// FileChooser.ExtensionFilter extFilter = new
+		// FileChooser.ExtensionFilter(
+		// ".png");
+		// fileChooser.getExtensionFilters().add(extFilter);
+
+		// //Get the stage that is displaying the canvas
+		// Stage stage = (Stage) viewer.getCanvas().getScene().getWindow();
+		//
+		// Scene scene = new Scene();
+		// scene.snapshot(image)
+
+		// Show save file dialog
+		// File file = fileChooser.showSaveDialog();
+		//
+		// if (file != null) {
+		// try {
+		// WritableImage writableImage = new WritableImage((int)
+		// Math.round(stage.getWidth()),
+		// (int) Math.round(stage.getHeight()));
+		// canvas.snapshot(null, writableImage);
+		// RenderedImage renderedImage = SwingFXUtils
+		// .fromFXImage(writableImage, null);
+		// ImageIO.write(renderedImage, "png", file);
+		// } catch (IOException ex) {
+		// Logger.getLogger(JavaFX_DrawOnCanvas.class.getName())
+		// .log(Level.SEVERE, null, ex);
+		// }
+		// }
+
+		// }
+
+		// Make the array of strings needed to pass to the file dialog.
+		String[] extensionStrings = new String[] { ".png" };
+
+		// Create the file save dialog.
+		FileDialog fileDialog = new FileDialog(
+				Display.getCurrent().getActiveShell(), SWT.SAVE);
+		fileDialog.setFilterExtensions(extensionStrings);
+		fileDialog.setOverwrite(true);
+
+		// Open the dialog and, if the user inputs a path, write the image to
+		// the file
+		String path = fileDialog.open();
+		if (path != null) {
+			File file = new File(path);
+			try {
+				ImageIO.write(SwingFXUtils.fromFXImage(screenshot, null), "png",
+						file);
+			} catch (IOException e) {
+				logger.error(
+						"JavaFX Geometry Canvas encountered an error while "
+								+ "attempting to write screenshot to file.");
+			}
+		}
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#resetCamera()
+	 */
+	@Override
+	public void resetCamera() {
+		((FXViewer) viewer).resetCamera();
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#setWireframe(
+	 * boolean)
+	 */
+	@Override
+	public void setWireframe(boolean wireframe) {
+
+		// Set all objects in the tree to wireframe mode
+		recursiveSetWireframe(root, wireframe);
+	}
+
+	/**
+	 * Set the target object and all of its descendants to display in wireframe
+	 * mode or fill mode.
+	 * 
+	 * @param target
+	 *            The object whose descendants (self included) will have their
+	 *            modes set.
+	 * @param wireframe
+	 *            If true, the parts will be set to wireframe mode. Otherwise,
+	 *            they will be removed from wireframe mode.
+	 */
+	private void recursiveSetWireframe(AbstractController target,
+			boolean wireframe) {
+
+		// Set this object to the correct mode
+		((FXShapeController) root).setWireFrameMode(wireframe);
+
+		// Iterate over each of its children, setting them to the correct mode
+		for (AbstractController child : root
+				.getEntitiesByCategory("Children")) {
+			((IWireFramePart) child).setWireFrameMode(wireframe);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#thrustCamera(
+	 * float)
+	 */
+	@Override
+	public void thrustCamera(float distance) {
+		((FXViewer) viewer).thrustCamera(distance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#strafeCamera(
+	 * float)
+	 */
+	@Override
+	public void strafeCamera(float distance) {
+		((FXViewer) viewer).strafeCamera(distance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#raiseCamera(
+	 * float)
+	 */
+	@Override
+	public void raiseCamera(float distance) {
+		((FXViewer) viewer).raiseCamera(distance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#rollCamera(
+	 * float)
+	 */
+	@Override
+	public void rollCamera(float radians) {
+		((FXViewer) viewer).rollCamera(radians);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#pitchCamera(
+	 * float)
+	 */
+	@Override
+	public void pitchCamera(float radians) {
+		((FXViewer) viewer).pitchCamera(radians);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#yawCamera(
+	 * float)
+	 */
+	@Override
+	public void yawCamera(float radians) {
+		((FXViewer) viewer).yawCamera(radians);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraYByZ()
+	 */
+	@Override
+	public void setDefaultCameraYByZ() {
+		((FXViewer) viewer).setDefaultCameraYByZ();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraXByY()
+	 */
+	@Override
+	public void setDefaultCameraXByY() {
+		((FXViewer) viewer).setDefaultCameraXByY();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraZByX()
+	 */
+	@Override
+	public void setDefaultCameraZByX() {
+		((FXViewer) viewer).setDefaultCameraZByX();
 	}
 }

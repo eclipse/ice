@@ -10,21 +10,21 @@
  *      initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.jme;
+package org.eclipse.ice.client.widgets.moose;
 
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.ice.viz.service.IVizService;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
-import org.eclipse.ice.viz.service.jme3.internal.MasterApplicationHolder;
 
 /**
- * This factory is used to create custom {@link ViewAppState}s for components
- * including <code>GeometryComponent</code>s, <code>MeshComponent</code>s, and
- * <code>PlantComposite</code>s. To embed the view in an SWT
- * <code>Composite</code>, see
- * {@link ViewAppState#createComposite(org.eclipse.swt.widgets.Composite)}.
+ * This factory is used to create 3D models for the Plant View. It gets the
+ * appropriate IVizService to instantiate an implementation of the Plant View
+ * and returns an IVizCanvas containing the Plant View from it.
  * 
  * @author Jordan, Robert Smith
  * 
@@ -34,9 +34,18 @@ public class ViewFactory {
 	// TODO We may want to handle this via an OSGi-based factories and registry.
 
 	/**
-	 * The core <code>MasterApplication</code> that renders all of the views.
+	 * A factory containing all consumed IVizServices. The service implementing
+	 * the IPlantView will be drawn from it.
 	 */
-	private final MasterApplication app;
+	private IVizServiceFactory factory;
+
+	/**
+	 * Whether or not this factory will create a jME MasterApplication when one
+	 * cannot be obtained through OSGI. This is not relevant for other
+	 * implementations of IPlantView, and will be ignored if one of them is
+	 * selected.
+	 */
+	private boolean staticFallBack;
 
 	/**
 	 * The default constructor.
@@ -48,7 +57,8 @@ public class ViewFactory {
 	/**
 	 * A constructor that allows the <code>ViewFactory</code> to create its own
 	 * {@link MasterApplication} if the OSGi-provided
-	 * <code>MasterApplication</code> is not available.
+	 * <code>MasterApplication</code> is not available and it is directed to
+	 * make use of the jME Plant View service.
 	 * <p>
 	 * <b>Note:</b> This is <i>not intended</i> for use inside ICE but inside
 	 * static applications. In ICE, the <code>MasterApplication</code> is
@@ -62,21 +72,12 @@ public class ViewFactory {
 	 * </p>
 	 * 
 	 * @param staticFallBack
-	 *            If true, then this factory will create its own
-	 *            <code>MasterApplication</code> when it cannot acquire one via
-	 *            OSGi.
+	 *            If true, then if the jME service is selected this factory will
+	 *            create its own <code>MasterApplication</code> when it cannot
+	 *            acquire one via OSGi.
 	 */
 	public ViewFactory(boolean staticFallBack) {
-
-		// Try to get the app via OSGi.
-		MasterApplication app = MasterApplicationHolder.getApplication();
-		// If the flag is set to true and we couldn't get the app through OSGi,
-		// create a new app.
-		if (app == null && staticFallBack) {
-			app = MasterApplication.createApplication();
-		}
-
-		this.app = app;
+		this.staticFallBack = staticFallBack;
 	}
 
 	/**
@@ -120,23 +121,48 @@ public class ViewFactory {
 	 */
 	public IPlantView createPlantView(PlantComposite plant) {
 
-		PlantAppState view = null;
+		// TODO Move this to the IVizService for the jME implementation
+		// // Try to get the app via OSGi.
+		// MasterApplication app = MasterApplicationHolder.getApplication();
+		// // If the flag is set to true and we couldn't get the app through
+		// OSGi,
+		// // create a new app.
+		// if (app == null && staticFallBack) {
+		// app = MasterApplication.createApplication();
+		// }
+		//
+		// PlantAppState view = null;
+		//
+		// if (app != null) {
+		//
+		// // If necessary, wait until the MasterApplication has started before
+		// // trying to add a new AppState, or nothing may initialize.
+		// if (!app.isInitialized()) {
+		// app.blockUntilInitialized(0);
+		// }
+		//
+		// view = new PlantAppState();
+		// view.start(app);
+		//
+		// view.setPlant(plant);
+		// }
+		//
+		// return view;
 
-		if (app != null) {
+		// TODO This should be getting all services and presenting the user with
+		// a choice, instead of hardcoding the JavaFX editor in.
+		IVizService service = factory.get("ICE Geometry Editor");
 
-			// If necessary, wait until the MasterApplication has started before
-			// trying to add a new AppState, or nothing may initialize.
-			if (!app.isInitialized()) {
-				app.blockUntilInitialized(0);
-			}
+		// Create and draw geometry canvas
+		try {
+			IVizCanvas vizCanvas = service
+					.createCanvas(geometryComp.getGeometry());
+			vizCanvas.draw(parent);
 
-			view = new PlantAppState();
-			view.start(app);
-
-			view.setPlant(plant);
+		} catch (Exception e) {
+			logger.error(
+					"Error creating Geometry Canvas with Geometry Service.", e);
 		}
-
-		return view;
 	}
 
 	/**
@@ -154,6 +180,20 @@ public class ViewFactory {
 		}
 
 		return;
+	}
+
+	/**
+	 * Sets the IVizServiceFactory which this factory will draw IVizServices
+	 * from.
+	 * 
+	 * This function is intended to be called by the OSGI layer to automatically
+	 * consume a provided IVizServiceFactory services.
+	 * 
+	 * @param factory
+	 *            The new IVizServiceFactory to be used by this factory.
+	 */
+	public void setVizServiceFactory(IVizServiceFactory factory) {
+		this.factory = factory;
 	}
 
 }

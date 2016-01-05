@@ -9,8 +9,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-Vendor: Oak Ridge National Laboratory
 Eclipse-ExtensibleAPI: true
-Import-Package: org.eclipse.ice.viz.service,
+Import-Package: javafx.scene.image;version="2.2.0",
+ org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.datastructures.VizObject,
+ org.eclipse.ice.viz.service.geometry.plantView,
+ org.eclipse.ice.viz.service.geometry.reactor,
  org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.geometry.widgets,
  org.eclipse.ice.viz.service.javafx.canvas,
@@ -18,7 +21,8 @@ Import-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.javafx.scene.base,
  org.eclipse.ice.viz.service.javafx.scene.model,
  org.eclipse.ice.viz.service.javafx.viewer,
- org.eclipse.ice.viz.service.modeling
+ org.eclipse.ice.viz.service.modeling,
+ org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.viz.service.javafx.geometry,
  org.eclipse.ice.viz.service.javafx.geometry.datatypes
 

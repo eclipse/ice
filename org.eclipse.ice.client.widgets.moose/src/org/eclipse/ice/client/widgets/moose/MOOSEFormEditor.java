@@ -26,7 +26,6 @@ import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.client.widgets.ICEFormPage;
-import org.eclipse.ice.client.widgets.jme.ViewFactory;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -38,6 +37,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
@@ -63,7 +63,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
-import com.jme3.math.Vector3f;
 
 /**
  * This class extends the default {@link ICEFormEditor} to enable it to draw a
@@ -93,7 +92,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	/**
 	 * The PlantAppState rendered on the Plant View page.
 	 */
-	private PlantAppState plantView;
+	private IPlantView plantView;
 
 	/**
 	 * The factory responsible for synchronizing the current "Components"
@@ -171,7 +170,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 							// names
 							// to the String list if they are enabled by the
 							// user
-							for (Entry postProcessor : postProcessors.retrieveAllEntries()) {
+							for (Entry postProcessor : postProcessors
+									.retrieveAllEntries()) {
 								if ("yes".equals(postProcessor.getValue())) {
 									enabledPPs.add(postProcessor.getName());
 								}
@@ -186,24 +186,30 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								// list of the Resources corresponding to the
 								// enabled
 								// Postprocessors.
-								while (resourceList.size() != enabledPPs.size()) {
+								while (resourceList.size() != enabledPPs
+										.size()) {
 
 									// Grab the ResourceComponent
-									resources = resourceComponentPage.getResourceComponent();
+									resources = resourceComponentPage
+											.getResourceComponent();
 
 									// Sleep a little bit
 									try {
 										Thread.sleep(500);
 									} catch (InterruptedException e) {
-										logger.error(getClass().getName() + " Exception!", e);
+										logger.error(getClass().getName()
+												+ " Exception!", e);
 									}
 
 									// Loop over the ICEResources and add them
 									// to the list if they correspond to enabled
 									// Postprocessors and have valid data
-									for (ICEResource r : resources.getResources()) {
-										if (enabledPPs.contains(FilenameUtils.removeExtension(r.getName()))
-												&& hasValidPostprocessorData(r)) {
+									for (ICEResource r : resources
+											.getResources()) {
+										if (enabledPPs.contains(FilenameUtils
+												.removeExtension(r.getName()))
+												&& hasValidPostprocessorData(
+														r)) {
 											resourceList.add(r);
 										}
 									}
@@ -218,17 +224,28 @@ public class MOOSEFormEditor extends ICEFormEditor {
 								for (final ICEResource r : resourceList) {
 
 									// Kick off on UI thread
-									PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+									PlatformUI.getWorkbench().getDisplay()
+											.asyncExec(new Runnable() {
 										@Override
 										public void run() {
 											try {
-												// Only show the resource if it hasn't already been displayed
-												if (!resourceComponentPage.isResourceDisplayed(r)) {
-													MOOSEFormEditor.this.setActivePage(resourceComponentPage.getId());
-													resourceComponentPage.showResource(r);
+												// Only show the resource if it
+												// hasn't already been displayed
+												if (!resourceComponentPage
+														.isResourceDisplayed(
+																r)) {
+													MOOSEFormEditor.this
+															.setActivePage(
+																	resourceComponentPage
+																			.getId());
+													resourceComponentPage
+															.showResource(r);
 												}
 											} catch (PartInitException e) {
-												logger.error(getClass().getName() + " Exception!", e);
+												logger.error(
+														getClass().getName()
+																+ " Exception!",
+														e);
 											}
 										}
 
@@ -263,7 +280,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 		// Simply count the number of lines in the resource file
 		try {
-			LineNumberReader reader = new LineNumberReader(new FileReader(r.getPath().getPath()));
+			LineNumberReader reader = new LineNumberReader(
+					new FileReader(r.getPath().getPath()));
 			int cnt = 0;
 			String lineRead = "";
 			while ((lineRead = reader.readLine()) != null) {
@@ -307,7 +325,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 
 						// Create a Section for the plant view.
 						section = toolkit.createSection(body,
-								ExpandableComposite.NO_TITLE | ExpandableComposite.EXPANDED);
+								ExpandableComposite.NO_TITLE
+										| ExpandableComposite.EXPANDED);
 						populatePlantViewSection(section, toolkit);
 						// No layout data to set for FillLayouts.
 
@@ -330,7 +349,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 	 * @param toolkit
 	 *            The {@code FormToolkit} used to decorate widgets as necessary.
 	 */
-	private void populatePlantViewSection(Section section, FormToolkit toolkit) {
+	private void populatePlantViewSection(Section section,
+			FormToolkit toolkit) {
 		// Get the background color to use later.
 		Color background = section.getBackground();
 
@@ -350,7 +370,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// Add it to the view.
 		ToolBar toolBar = toolBarManager.createControl(analysisComposite);
 		toolBar.setBackground(background);
-		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		toolBar.setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
 		// Create the plant view.
 		TreeComposite components = findComponentBlock();
@@ -361,7 +382,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		// Render the plant view in the analysis Composite.
 		Composite plantComposite = plantView.createComposite(analysisComposite);
 		plantComposite.setBackground(background);
-		plantComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		plantComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Make sure the factory/plant is reset when the plant view is disposed.
 		plantComposite.addDisposeListener(new DisposeListener() {
@@ -417,37 +439,23 @@ public class MOOSEFormEditor extends ICEFormEditor {
 				plantView.resetCamera();
 			}
 		}));
-		cameraTree.add(new ActionTree(new Action("YZ (Y right, Z up - initial default)") {
-			@Override
-			public void run() {
-				Vector3f position = new Vector3f(10f, 0f, 0f);
-				Vector3f dir = new Vector3f(-1f, 0f, 0f);
-				Vector3f up = Vector3f.UNIT_Z;
-				plantView.setDefaultCameraPosition(position);
-				plantView.setDefaultCameraOrientation(dir, up);
-				plantView.resetCamera();
-			}
-		}));
+		cameraTree.add(new ActionTree(
+				new Action("YZ (Y right, Z up - initial default)") {
+					@Override
+					public void run() {
+						plantView.setDefaultCameraYByZ();
+					}
+				}));
 		cameraTree.add(new ActionTree(new Action("XY (X right, Y up)") {
 			@Override
 			public void run() {
-				Vector3f position = new Vector3f(0f, 0f, 10f);
-				Vector3f dir = new Vector3f(0f, 0f, -1f);
-				Vector3f up = Vector3f.UNIT_Y;
-				plantView.setDefaultCameraPosition(position);
-				plantView.setDefaultCameraOrientation(dir, up);
-				plantView.resetCamera();
+				plantView.setDefaultCameraXByY();
 			}
 		}));
 		cameraTree.add(new ActionTree(new Action("ZX (Z right, X up)") {
 			@Override
 			public void run() {
-				Vector3f position = new Vector3f(0f, 10f, 0f);
-				Vector3f dir = new Vector3f(0f, -1f, 0f);
-				Vector3f up = Vector3f.UNIT_X;
-				plantView.setDefaultCameraPosition(position);
-				plantView.setDefaultCameraOrientation(dir, up);
-				plantView.resetCamera();
+				plantView.setDefaultCameraZByX();
 			}
 		}));
 		toolBar.add(cameraTree.getContributionItem());
@@ -460,9 +468,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 			}
 		};
 		// Set the action's image (a camera).
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "camera.png");
+		imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "camera.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
-		ImageDescriptor imageDescriptor = ImageDescriptor.createFromURL(imageURL);
+		ImageDescriptor imageDescriptor = ImageDescriptor
+				.createFromURL(imageURL);
 		action.setImageDescriptor(imageDescriptor);
 		ActionTree saveImageTree = new ActionTree(action);
 		toolBar.add(saveImageTree.getContributionItem());
@@ -474,10 +484,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move left (A)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().strafeCamera(-1f);
+				plantView.strafeCamera(-1f);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-left-perspective-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-left-perspective-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -487,10 +498,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move forward (W)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().thrustCamera(moveRate);
+				plantView.thrustCamera(moveRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-up-perspective-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-up-perspective-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -500,10 +512,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move backward (S)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().thrustCamera(-moveRate);
+				plantView.thrustCamera(-moveRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-down-perspective-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-down-perspective-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -513,10 +526,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move right (D)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().strafeCamera(moveRate);
+				plantView.strafeCamera(moveRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-right-perspective-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-right-perspective-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -526,10 +540,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move up (SPACE)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().raiseCamera(moveRate);
+				plantView.raiseCamera(moveRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-up-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-up-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -539,10 +554,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Move down (C)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().raiseCamera(-moveRate);
+				plantView.raiseCamera(-moveRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-down-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-down-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -556,10 +572,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Roll Left (Q)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().rollCamera(-rotateRate);
+				plantView.rollCamera(-rotateRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-roll-left-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-roll-left-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -569,10 +586,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Roll Right (E)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().rollCamera(rotateRate);
+				plantView.rollCamera(rotateRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-roll-right-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-roll-right-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -582,10 +600,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Pitch Up (up arrow)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().pitchCamera(rotateRate);
+				plantView.pitchCamera(rotateRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-pitch-up-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-pitch-up-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -594,10 +613,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Pitch down (down arrow)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().pitchCamera(-rotateRate);
+				plantView.pitchCamera(-rotateRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-pitch-down-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-pitch-down-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -607,10 +627,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Yaw Left (left arrow)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().yawCamera(-rotateRate);
+				plantView.yawCamera(-rotateRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-yaw-left-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-yaw-left-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -619,10 +640,11 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		action = new Action("Yaw Right (right arrow)") {
 			@Override
 			public void run() {
-				plantView.getFlightCamera().yawCamera(rotateRate);
+				plantView.yawCamera(rotateRate);
 			}
 		};
-		imagePath = new Path("icons" + System.getProperty("file.separator") + "arrow-yaw-right-16.png");
+		imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "arrow-yaw-right-16.png");
 		imageURL = FileLocator.find(bundle, imagePath, null);
 		image = ImageDescriptor.createFromURL(imageURL);
 		action.setImageDescriptor(image);
@@ -687,7 +709,8 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		TreeComposite namedRootBlock = null;
 
 		// Get the root TreeComposite from the form.
-		TreeComposite root = (TreeComposite) iceDataForm.getComponent(MOOSEModel.mooseTreeCompositeId);
+		TreeComposite root = (TreeComposite) iceDataForm
+				.getComponent(MOOSEModel.mooseTreeCompositeId);
 
 		// Find the "Mesh" TreeComposite. We will need to pull the mesh from
 		// this node as a file resource.

@@ -13,7 +13,7 @@
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
 import org.eclipse.ice.client.common.ActionTree;
-import org.eclipse.ice.client.widgets.jme.ViewFactory;
+import org.eclipse.ice.client.widgets.moose.ViewFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
 import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;

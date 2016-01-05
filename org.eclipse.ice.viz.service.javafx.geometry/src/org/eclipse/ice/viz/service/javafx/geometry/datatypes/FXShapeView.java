@@ -18,8 +18,10 @@ import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.ice.viz.service.modeling.TubeMesh;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -27,8 +29,11 @@ import javafx.scene.paint.Material;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
+import javafx.scene.shape.TriangleMesh;
 
 /**
  * A class which creates and maintains the JavaFX graphical representation of a
@@ -37,22 +42,36 @@ import javafx.scene.shape.Sphere;
  * @author Tony McCrary, Robert Smith
  *
  */
-public class FXShapeView extends AbstractView {
+public class FXShapeView extends AbstractView implements IWireFramePart {
 
 	/**
 	 * A group containing the shape which represents the part and a gizmo which
 	 * modifies the shape's appearance
 	 */
-	private Group node;
+	protected Group node;
 
-	/** */
-	private Shape3D shape;
+	/**
+	 * A JavaFX 3D shape for use with shapes that have default implementations
+	 */
+	protected Shape3D shape;
+
+	/**
+	 * The class which creates and manages a JavaFX triangle mesh for tubes.
+	 */
+	protected FXTube tubeShape;
 
 	/** */
 	private TransformGizmo gizmo;
 
+	/**
+	 * A user specified material which will be used if the shape is not
+	 * selected. If customMaterial is not specified, the class will create a
+	 * default material based on the type of the shape being rendered.
+	 */
+	protected PhongMaterial customMaterial;
+
 	/** */
-	private PhongMaterial defaultMaterial;
+	protected PhongMaterial defaultMaterial;
 
 	/** */
 	private Material selectedMaterial = Util.DEFAULT_HIGHLIGHTED_MATERIAL;
@@ -102,17 +121,21 @@ public class FXShapeView extends AbstractView {
 		node.getChildren().add(gizmo);
 
 		// Create a Shape3D for the model
-		createShape(ShapeType.valueOf(model.getProperty("Type")));
+		createShape(model, ShapeType.valueOf(model.getProperty("Type")));
 
 	}
 
 	/**
-	 * Sets the representation to the appropriate type of Shape3D.
+	 * Sets the representation to the appropriate type of Shape3D, according to
+	 * properties taken form the model
+	 * 
+	 * @param model
+	 *            The model on which the shape will be based
 	 * 
 	 * @param type
 	 *            The type of shape to display
 	 */
-	private void createShape(ShapeType type) {
+	protected void createShape(AbstractMesh model, ShapeType type) {
 
 		// Fail silently for complex shapes
 		if (type == null) {
@@ -140,8 +163,12 @@ public class FXShapeView extends AbstractView {
 				node.getChildren().remove(shape);
 
 				Box box = new Box(50, 50, 50);
-				defaultMaterial = new PhongMaterial(Color.rgb(50, 50, 255));
-				defaultMaterial.setSpecularColor(Color.WHITE);
+
+				// If a material is not specified, create a new one
+				if (customMaterial == null) {
+					defaultMaterial = new PhongMaterial(Color.rgb(50, 50, 255));
+					defaultMaterial.setSpecularColor(Color.WHITE);
+				}
 				box.setMaterial(defaultMaterial);
 				shape = box;
 			}
@@ -154,8 +181,11 @@ public class FXShapeView extends AbstractView {
 
 				Cylinder cyl = new Cylinder(50, 50);
 
-				defaultMaterial = new PhongMaterial(Color.rgb(0, 181, 255));
-				defaultMaterial.setSpecularColor(Color.WHITE);
+				// If a material is not specified, create a new one
+				if (customMaterial == null) {
+					defaultMaterial = new PhongMaterial(Color.rgb(0, 181, 255));
+					defaultMaterial.setSpecularColor(Color.WHITE);
+				}
 				cyl.setMaterial(defaultMaterial);
 				shape = cyl;
 			}
@@ -170,26 +200,40 @@ public class FXShapeView extends AbstractView {
 
 				Sphere sphere = new Sphere(50, 50);
 
-				defaultMaterial = new PhongMaterial(Color.rgb(131, 0, 157));
-				defaultMaterial.setSpecularColor(Color.WHITE);
+				// If a material is not specified, create a new one
+				if (customMaterial == null) {
+					defaultMaterial = new PhongMaterial(Color.rgb(131, 0, 157));
+					defaultMaterial.setSpecularColor(Color.WHITE);
+				}
 				sphere.setMaterial(defaultMaterial);
 				shape = sphere;
 			}
 
 			break;
 		case Tube:
-			if (!(shape instanceof Cylinder)) {
-				// Save the old shape
-				prevShape = shape;
+			// There is no conditional on Tubes as tubes are set to draw based
+			// on information from the model's properties
+			// Cast the model as a PipeComponent and get the parameters
+			TubeMesh pipe = (TubeMesh) model;
+			int axialSamples = pipe.getAxialSamples();
+			double height = pipe.getLength();
+			double outerRadius = pipe.getRadius();
+			double innerRadius = pipe.getInnerRadius();
 
-				Cylinder tube = new Cylinder(50, 50);
+			// Create the mesh
+			tubeShape = new FXTube(height, innerRadius, outerRadius,
+					axialSamples, 50);
 
-				defaultMaterial = new PhongMaterial(Color.rgb(0, 131, 157));
-				defaultMaterial.setSpecularColor(Color.WHITE);
-				tube.setMaterial(defaultMaterial);
-				shape = tube;
+			// Get the actual mesh and set it to a view
+			TriangleMesh tubeMesh = tubeShape.getMesh();
+			shape = new MeshView(tubeMesh);
+
+			// If a material is not specified, create a new one
+			if (customMaterial == null) {
+				defaultMaterial = new PhongMaterial(Color.CYAN);
 			}
 
+			shape.setMaterial(defaultMaterial);
 			break;
 		default:
 			return;
@@ -250,7 +294,7 @@ public class FXShapeView extends AbstractView {
 		if (model.getProperty("Operator") == null) {
 
 			// Create the shape if neccesary
-			createShape(ShapeType.valueOf(model.getProperty("Type")));
+			createShape(model, ShapeType.valueOf(model.getProperty("Type")));
 
 			// Convert the model's selected property to a boolean
 			Boolean newSelected = "True".equals(model.getProperty("Selected"));
@@ -308,6 +352,23 @@ public class FXShapeView extends AbstractView {
 				UpdateableSubscriptionType.All };
 		updateManager.notifyListeners(eventTypes);
 		;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.WireFramePart#setWireFrameMode(
+	 * boolean)
+	 */
+	@Override
+	public void setWireFrameMode(boolean on) {
+
+		// Set the shape to the correct draw mode
+		if (on) {
+			shape.setDrawMode(DrawMode.LINE);
+		} else {
+			shape.setDrawMode(DrawMode.FILL);
+		}
 	}
 
 }

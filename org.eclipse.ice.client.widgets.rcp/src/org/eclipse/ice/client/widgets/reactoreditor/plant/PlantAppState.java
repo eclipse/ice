@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 UT-Battelle, LLC.
+ * Copyright (c) 2014-2016 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
+ *    Robert Smith
  *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
@@ -38,7 +39,7 @@ import com.jme3.scene.Node;
 /**
  * This jME3-based {@link AppState} provides a 3D view of a reactor plant.
  * 
- * @author Jordan Deyton
+ * @author Jordan Deyton, Robert Smith
  * 
  */
 public class PlantAppState extends ViewAppState
@@ -552,40 +553,6 @@ public class PlantAppState extends ViewAppState
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
-	 * setDefaultCameraOrientation(float, float, float, float, float, float)
-	 */
-	@Override
-	public void setDefaultCameraOrientation(float directionX, float directionY,
-			float directionZ, float upX, float upY, float upZ) {
-
-		// Create Vector3fs from the floats and redirect to the Vector3f
-		// implementation
-		Vector3f direction = new Vector3f(directionX, directionY, directionZ);
-		Vector3f up = new Vector3f(upX, upY, upZ);
-		setDefaultCameraOrientation(direction, up);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
-	 * setDefaultCameraPosition(float, float, float)
-	 */
-	@Override
-	public void setDefaultCameraPosition(float x, float y, float z) {
-
-		// Convert input to a Vector3f and redirect to the Vector3f
-		// implementation
-		Vector3f direction = new Vector3f(x, y, z);
-		setDefaultCameraPosition(direction);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#thrustCamera(
 	 * float)
@@ -653,5 +620,54 @@ public class PlantAppState extends ViewAppState
 	@Override
 	public void yawCamera(float radians) {
 		getFlightCamera().yawCamera(radians);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraYByZ()
+	 */
+	@Override
+	public void setDefaultCameraYByZ() {
+
+		Vector3f position = new Vector3f(10f, 0f, 0f);
+		Vector3f dir = new Vector3f(-1f, 0f, 0f);
+		Vector3f up = Vector3f.UNIT_Z;
+		setDefaultCameraPosition(position);
+		setDefaultCameraOrientation(dir, up);
+		resetCamera();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraXByY()
+	 */
+	@Override
+	public void setDefaultCameraXByY() {
+		Vector3f position = new Vector3f(0f, 0f, 10f);
+		Vector3f dir = new Vector3f(0f, 0f, -1f);
+		Vector3f up = Vector3f.UNIT_Y;
+		setDefaultCameraPosition(position);
+		setDefaultCameraOrientation(dir, up);
+		resetCamera();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraZByX()
+	 */
+	@Override
+	public void setDefaultCameraZByX() {
+		Vector3f position = new Vector3f(0f, 10f, 0f);
+		Vector3f dir = new Vector3f(0f, -1f, 0f);
+		Vector3f up = Vector3f.UNIT_X;
+		setDefaultCameraPosition(position);
+		setDefaultCameraOrientation(dir, up);
+		resetCamera();
 	}
 }

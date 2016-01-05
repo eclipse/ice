@@ -20,6 +20,7 @@ import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.Group;
 
@@ -29,7 +30,8 @@ import javafx.scene.Group;
  * @author r8s
  *
  */
-public class FXShapeController extends ShapeController {
+public class FXShapeController extends ShapeController
+		implements IWireFramePart {
 
 	/**
 	 * THe nullary constructor
@@ -51,8 +53,8 @@ public class FXShapeController extends ShapeController {
 
 		// Associate this controller with the node within the node's internal
 		// data structures
-		((Group) view.getRepresentation()).getProperties().put(ShapeController.class,
-				this);
+		((Group) view.getRepresentation()).getProperties()
+				.put(ShapeController.class, this);
 	}
 
 	/**
@@ -319,4 +321,14 @@ public class FXShapeController extends ShapeController {
 		return types;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.WireFramePart#setWireFrameMode(
+	 * boolean)
+	 */
+	@Override
+	public void setWireFrameMode(boolean on) {
+		((IWireFramePart) view).setWireFrameMode(on);
+	}
 }

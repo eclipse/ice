@@ -12,8 +12,8 @@ package org.eclipse.ice.viz.service.javafx.canvas;
 
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
-import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;
-import org.eclipse.ice.viz.service.javafx.internal.scene.camera.FPSController;
+import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CenteredController;
+import org.eclipse.ice.viz.service.javafx.internal.scene.camera.ICameraController;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.Viewer;
@@ -69,7 +69,7 @@ public class FXViewer extends AbstractViewer {
 	private FXContentProvider contentProvider;
 
 	/** Default camera controller. */
-	protected CameraController cameraController;
+	protected ICameraController cameraController;
 
 	/** Default camera. */
 	protected Camera defaultCamera;
@@ -177,8 +177,8 @@ public class FXViewer extends AbstractViewer {
 				}
 
 				// Resolve the shape
-				ShapeController modelShape = (ShapeController) nodeParent.getProperties()
-						.get(ShapeController.class);
+				ShapeController modelShape = (ShapeController) nodeParent
+						.getProperties().get(ShapeController.class);
 
 				if (modelShape == null) {
 					return;
@@ -270,7 +270,7 @@ public class FXViewer extends AbstractViewer {
 					Messages.FXGeometryViewer_NullCamera);
 		}
 
-		cameraController = new FPSController(fxCamera, scene, fxCanvas);
+		cameraController = new CenteredController(fxCamera, scene, fxCanvas);
 
 		scene.setCamera(fxCamera);
 
@@ -334,12 +334,115 @@ public class FXViewer extends AbstractViewer {
 		this.contentProvider = contentProvider;
 	}
 
-	public CameraController getCameraController() {
+	public ICameraController getCameraController() {
 		return cameraController;
 	}
 
 	public Camera getDefaultCamera() {
 		return defaultCamera;
+	}
+
+	/**
+	 * Reset the camera to its default position.
+	 */
+	public void resetCamera() {
+		cameraController.reset();
+	}
+
+	/**
+	 * Change the camera's pitch, its rotation about the axis perpendicular to
+	 * its heading to the right, controlling how it is pointed in an up/down
+	 * direction.
+	 * 
+	 * @param radians
+	 *            The number of radians by which to rotate the camera.
+	 */
+	public void pitchCamera(double radians) {
+		cameraController.pitchCamera(radians);
+	}
+
+	/**
+	 * Change the camera's roll, it's rotation about the axis it is pointing.
+	 * 
+	 * @param radians
+	 *            The number of radians by which to rotate the camera.
+	 */
+	public void rollCamera(double radians) {
+		cameraController.rollCamera(radians);
+	}
+
+	/**
+	 * Move the camera to the up or down, orthogonal to the direction it is
+	 * pointing.
+	 * 
+	 * @param distance
+	 *            The amount of space to move the camera. Positive distances
+	 *            move the camera up, negative distances move it down.
+	 */
+	public void raiseCamera(double distance) {
+		cameraController.raiseCamera(distance);
+	}
+
+	/**
+	 * Move the camera to the left or right, orthogonal to the direction it is
+	 * pointing.
+	 * 
+	 * @param distance
+	 *            The amount of space to move the camera. Positive distances
+	 *            move the camera right, negative distances move it left.
+	 */
+	public void strafeCamera(double distance) {
+		cameraController.strafeCamera(distance);
+	}
+
+	/**
+	 * Move the camera forward or backwards in the direction it is pointing.
+	 * 
+	 * @param distance
+	 *            The amount of space to move the camera. Positive distances
+	 *            move the camera forward, negative distances move it backwards.
+	 */
+	public void thrustCamera(double distance) {
+		cameraController.thrustCamera(distance);
+	}
+
+	/**
+	 * Change the camera's yaw, its rotation about the axis perpendicular to its
+	 * heading in to the above, controlling how it is pointed in a left/right
+	 * direction.
+	 * 
+	 * @param radians
+	 *            The number of radians by which to rotate the camera.
+	 */
+	public void yawCamera(double radians) {
+		cameraController.yawCamera(radians);
+	}
+
+	/**
+	 * Set the camera's default position to view the scene with the Y axis
+	 * horizontal and the Z vertical.
+	 */
+	public void setDefaultCameraYByZ() {
+		cameraController.setDefaultAngle(90, 0, 90);
+		cameraController.reset();
+	}
+
+	/**
+	 * Set the camera's default position to view the scene with the X axis
+	 * horizontal and the Y vertical.
+	 */
+	public void setDefaultCameraXByY() {
+		cameraController.setDefaultAngle(0, 0, 0);
+		cameraController.reset();
+	}
+
+	/**
+	 * Set the camera's default position to view the scene with the Z axis
+	 * horizontal and the Y vertical.
+	 */
+	public void setDefaultCameraZByX() {
+		cameraController.setDefaultAngle(0, 90, 90);
+		cameraController.reset();
 	}
 
 }

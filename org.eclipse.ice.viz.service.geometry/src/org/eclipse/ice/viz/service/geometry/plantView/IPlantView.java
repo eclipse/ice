@@ -52,40 +52,63 @@ public interface IPlantView {
 	public void resetCamera();
 
 	/**
-	 * Sets the default orientation of the view's camera. The vectors formed by
-	 * the direction coordinates and the up coordinates must be orthogonal, or
-	 * else an exception will be thrown.
-	 * 
-	 * @param directionX
-	 *            The x direction of the new default direction in which the
-	 *            camera will point.
-	 * @param directionX
-	 *            The x direction of the new default direction in which the
-	 *            camera will point.
-	 * @param directionX
-	 *            The x direction of the new default direction in which the
-	 *            camera will point.
-	 * @param upX
-	 *            The x direction of the new default up direction.
-	 * @param upY
-	 *            The y direction of the new default up direction.
-	 * @param upZ
-	 *            The z direction of the new default up direction.
+	 * Sets the camera to face the origin with the Y axis horizontal and the Z
+	 * axis vertical. This will also be the new default position reset to when
+	 * case resetCamera() is called.
 	 */
-	public void setDefaultCameraOrientation(float directionX, float directionY,
-			float directionZ, float upX, float upY, float upZ);
+	public void setDefaultCameraYByZ();
 
 	/**
-	 * Sets the default position of the view's camera.
-	 * 
-	 * @param x
-	 *            The new default position x coordinate.
-	 * @param y
-	 *            The new default position y coordinate.
-	 * @param z
-	 *            The new default position z coordinate.
+	 * Sets the camera to face the origin with the X axis horizontal and the Y
+	 * axis vertical. This will also be the new default position reset to when
+	 * case resetCamera() is called.
 	 */
-	public void setDefaultCameraPosition(float x, float y, float z);
+	public void setDefaultCameraXByY();
+
+	/**
+	 * Sets the camera to face the origin with the Z axis horizontal and the X
+	 * axis vertical. This will also be the new default position reset to when
+	 * case resetCamera() is called.
+	 */
+	public void setDefaultCameraZByX();
+
+	// /**
+	// * Sets the default orientation of the view's camera. The vectors formed
+	// by
+	// * the direction coordinates and the up coordinates must be orthogonal, or
+	// * else an exception will be thrown.
+	// *
+	// * @param directionX
+	// * The x direction of the new default direction in which the
+	// * camera will point.
+	// * @param directionX
+	// * The x direction of the new default direction in which the
+	// * camera will point.
+	// * @param directionX
+	// * The x direction of the new default direction in which the
+	// * camera will point.
+	// * @param upX
+	// * The x direction of the new default up direction.
+	// * @param upY
+	// * The y direction of the new default up direction.
+	// * @param upZ
+	// * The z direction of the new default up direction.
+	// */
+	// public void setDefaultCameraOrientation(float directionX, float
+	// directionY,
+	// float directionZ, float upX, float upY, float upZ);
+	//
+	// /**
+	// * Sets the default position of the view's camera.
+	// *
+	// * @param x
+	// * The new default position x coordinate.
+	// * @param y
+	// * The new default position y coordinate.
+	// * @param z
+	// * The new default position z coordinate.
+	// */
+	// public void setDefaultCameraPosition(float x, float y, float z);
 
 	/**
 	 * Sets all rendered plant components to be viewed as wireframes or as solid

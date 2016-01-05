@@ -27,170 +27,189 @@ import javafx.scene.transform.Transform;
  * around a point and letting the user zoom in and out.
  * </p>
  */
-public class ArcBallController extends CameraController {
+public class ArcBallController extends AbstractCameraController {
 
-    /** */
-    Transform xform;
+	/** */
+	Transform xform;
 
-    /** */
-    Affine transform;
+	/** */
+	Affine transform;
 
-    /** */
-    private Camera camera;
+	/** */
+	private Camera camera;
 
-    /** */
-    private Scene scene;
+	/** */
+	private Scene scene;
 
-    /** */
-    double anchorX;
+	/** */
+	double anchorX;
 
-    /** */
-    double anchorY;
+	/** */
+	double anchorY;
 
-    /** */
-    double anchorAngle;
+	/** */
+	double anchorAngle;
 
-    /** */
-    private double sphereRadius;
+	/** */
+	private double sphereRadius;
 
-    /** */
-    private double height;
+	/** */
+	private double height;
 
-    /** */
-    private double width;
+	/** */
+	private double width;
 
-    /** */
-    protected Point3D currentRot;
+	/** */
+	protected Point3D currentRot;
 
-    /** */
-    private Point3D startRot;
+	/** */
+	private Point3D startRot;
 
-    /** */
-    protected boolean activeRotation;
+	/** */
+	protected boolean activeRotation;
 
-    /** */
-    private FXCanvas canvas;
+	/** */
+	private FXCanvas canvas;
 
-    /**
-     * <p>
-     * </p>
-     */
-    public ArcBallController(Camera camera, Scene scene, FXCanvas canvas) {
-        this.camera = camera;
-        this.scene = scene;
-        this.canvas = canvas;
-        
-        final Camera finalCamera = camera;
-        final Scene finalScene = scene;
+	/**
+	 * <p>
+	 * </p>
+	 */
+	public ArcBallController(Camera camera, Scene scene, FXCanvas canvas) {
+		super(camera, scene, canvas);
 
-        scene.setOnScroll(new EventHandler<ScrollEvent>() {
+		final Camera finalCamera = camera;
+		final Scene finalScene = scene;
 
-            public void handle(ScrollEvent event) {
-                double translateX = -finalCamera.getTranslateX();
-                double translateY = -finalCamera.getTranslateY();
-                double translateZ = -finalCamera.getTranslateZ();
+		scene.setOnScroll(new EventHandler<ScrollEvent>() {
 
-                double deltaY = event.getDeltaY();
+			@Override
+			public void handle(ScrollEvent event) {
+				double translateX = -finalCamera.getTranslateX();
+				double translateY = -finalCamera.getTranslateY();
+				double translateZ = -finalCamera.getTranslateZ();
 
-                // The direction the camera is facing
-                Point3D zVec = new Point3D(translateX, translateY, translateZ);
+				double deltaY = event.getDeltaY();
 
-                // Normalized version that can be scaled
-                Point3D normalize = zVec.normalize();
+				// The direction the camera is facing
+				Point3D zVec = new Point3D(translateX, translateY, translateZ);
 
-                double zoomSpeed = 50.0;
+				// Normalized version that can be scaled
+				Point3D normalize = zVec.normalize();
 
-                // Final zoom scaling coefficient
-                Point3D scaledMovementCof = normalize.multiply(zoomSpeed);
+				double zoomSpeed = 50.0;
 
-                double currentX = finalCamera.getTranslateX();
-                double currentY = finalCamera.getTranslateY();
-                double currentZ = finalCamera.getTranslateZ();
+				// Final zoom scaling coefficient
+				Point3D scaledMovementCof = normalize.multiply(zoomSpeed);
 
-                double zoomX = scaledMovementCof.getX();
-                double zoomY = scaledMovementCof.getY();
-                double zoomZ = scaledMovementCof.getZ();
+				double currentX = finalCamera.getTranslateX();
+				double currentY = finalCamera.getTranslateY();
+				double currentZ = finalCamera.getTranslateZ();
 
-                if (deltaY < 0) {
-                    finalCamera.setTranslateX(currentX + zoomX);
-                    finalCamera.setTranslateY(currentY + zoomY);
-                    finalCamera.setTranslateZ(currentZ + zoomZ);
-                } else {
-                    finalCamera.setTranslateX(currentX - zoomX);
-                    finalCamera.setTranslateY(currentY - zoomY);
-                    finalCamera.setTranslateZ(currentZ - zoomZ);
-                }
-            }
-        });
+				double zoomX = scaledMovementCof.getX();
+				double zoomY = scaledMovementCof.getY();
+				double zoomZ = scaledMovementCof.getZ();
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+				if (deltaY < 0) {
+					finalCamera.setTranslateX(currentX + zoomX);
+					finalCamera.setTranslateY(currentY + zoomY);
+					finalCamera.setTranslateZ(currentZ + zoomZ);
+				} else {
+					finalCamera.setTranslateX(currentX - zoomX);
+					finalCamera.setTranslateY(currentY - zoomY);
+					finalCamera.setTranslateZ(currentZ - zoomZ);
+				}
+			}
+		});
 
-            public void handle(MouseEvent arg0) {
+		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
-                width = finalScene.getWidth();
-                height = finalScene.getHeight();
+			@Override
+			public void handle(MouseEvent arg0) {
 
-                sphereRadius = Math.min(width / 2.0d, height / 2.0d);
+				width = finalScene.getWidth();
+				height = finalScene.getHeight();
 
-                double startX = arg0.getSceneX() - (finalScene.getWidth() / 2.0d);
-                double startY = (finalScene.getHeight() / 2.0d) - arg0.getSceneY();
+				sphereRadius = Math.min(width / 2.0d, height / 2.0d);
 
-                startRot = CamUtil.pointToSphere(-startX, startY, sphereRadius).normalize();
-                currentRot = startRot;
+				double startX = arg0.getSceneX()
+						- (finalScene.getWidth() / 2.0d);
+				double startY = (finalScene.getHeight() / 2.0d)
+						- arg0.getSceneY();
 
-                activeRotation = true;
-            }
+				startRot = CamUtil.pointToSphere(-startX, startY, sphereRadius)
+						.normalize();
+				currentRot = startRot;
 
-        });
+				activeRotation = true;
+			}
 
-        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		});
 
-            public void handle(MouseEvent arg0) {
-                activeRotation = false;
-            }
+		scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
-        });
+			@Override
+			public void handle(MouseEvent arg0) {
+				activeRotation = false;
+			}
 
-        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent arg0) {
-                double dragX = arg0.getSceneX() - (finalScene.getWidth() / 2.0d);
-                double dragY = (finalScene.getHeight() / 2.0d) - arg0.getSceneY();
+		});
 
-                currentRot = CamUtil.pointToSphere(-dragX, dragY, sphereRadius).normalize();
+		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {
+				double dragX = arg0.getSceneX()
+						- (finalScene.getWidth() / 2.0d);
+				double dragY = (finalScene.getHeight() / 2.0d)
+						- arg0.getSceneY();
 
-                Point3D rotationAxis = currentRot.crossProduct(startRot).normalize();
+				currentRot = CamUtil.pointToSphere(-dragX, dragY, sphereRadius)
+						.normalize();
 
-                double dotProduct = currentRot.dotProduct(startRot);
+				Point3D rotationAxis = currentRot.crossProduct(startRot)
+						.normalize();
 
-                if (dotProduct > 1 - 1E-10) {
-                    dotProduct = 1.0;
-                }
+				double dotProduct = currentRot.dotProduct(startRot);
 
-                double angle = Math.acos(dotProduct) * 180.0f / Math.PI;
+				if (dotProduct > 1 - 1E-10) {
+					dotProduct = 1.0;
+				}
 
-                Point3D invRotAxis = new Point3D(-rotationAxis.getX(), -rotationAxis.getY(), -rotationAxis.getZ());
+				double angle = Math.acos(dotProduct) * 180.0f / Math.PI;
 
-                Point3D pivot = new Point3D(0, 0, 0);
-                Rotate rotation = new Rotate(angle * 0.1d, pivot.getX(), pivot.getY(), pivot.getZ(), invRotAxis);
+				Point3D invRotAxis = new Point3D(-rotationAxis.getX(),
+						-rotationAxis.getY(), -rotationAxis.getZ());
 
-                if (finalCamera.getTransforms().size() > 0) {
-                    Transform totalRot = finalCamera.getTransforms().get(0).createConcatenation(rotation);
-                    finalCamera.getTransforms().setAll(totalRot);
-                } else {
-                    finalCamera.getTransforms().add(rotation);
-                }
+				Point3D pivot = new Point3D(0, 0, 0);
+				Rotate rotation = new Rotate(angle * 0.1d, pivot.getX(),
+						pivot.getY(), pivot.getZ(), invRotAxis);
 
-                double translateX = finalCamera.getTranslateX();
-                double translateY = finalCamera.getTranslateY();
-                double translateZ = finalCamera.getTranslateZ();
+				if (finalCamera.getTransforms().size() > 0) {
+					Transform totalRot = finalCamera.getTransforms().get(0)
+							.createConcatenation(rotation);
+					finalCamera.getTransforms().setAll(totalRot);
+				} else {
+					finalCamera.getTransforms().add(rotation);
+				}
 
-                Affine lookAt = CamUtil.lookAt(new Point3D(0, 0, 0), new Point3D(translateX, translateY, translateZ),
-                        new Point3D(0, 1, 0));
+				double translateX = finalCamera.getTranslateX();
+				double translateY = finalCamera.getTranslateY();
+				double translateZ = finalCamera.getTranslateZ();
 
-                finalCamera.getTransforms().add(lookAt);
-            }
-        });
+				Affine lookAt = CamUtil.lookAt(new Point3D(0, 0, 0),
+						new Point3D(translateX, translateY, translateZ),
+						new Point3D(0, 1, 0));
 
-    }
+				finalCamera.getTransforms().add(lookAt);
+			}
+		});
+
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+
+	}
 
 }

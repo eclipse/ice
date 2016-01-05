@@ -11,10 +11,8 @@
 package org.eclipse.ice.viz.service.javafx.internal.scene.camera;
 
 import javafx.embed.swt.FXCanvas;
-import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -30,201 +28,307 @@ import javafx.scene.transform.Transform;
  * around a point and letting the user zoom in and out.
  * </p>
  */
-public class FPSController extends CameraController {
-
-	/** */
-	Transform xform;
-
-	/** */
-	Affine transform;
-
-	/** */
-	private Camera camera;
-
-	/** */
-	private Scene scene;
-
-	/** */
-	double anchorX;
-
-	/** */
-	double anchorY;
-
-	/** */
-	double anchorAngle;
-
-	/** */
-	private double sphereRadius;
-
-	/** */
-	private double height;
-
-	/** */
-	private double width;
-
-	/** */
-	protected Point3D currentRot;
-
-	/** */
-	private Point3D startRot;
-
-	/** */
-	protected boolean activeRotation;
-
-	/** */
-	private FXCanvas canvas;
-
-	private double mousePosX;
-
-	private double mousePosY;
-
-	private double mouseOldX;
-
-	private double mouseOldY;
-
-	private double mouseDeltaX;
-
-	private double mouseDeltaY;
-
-	private Affine affine;
-
-	private final double NORMAL_SPEED = 60.0d;
-
-	private final double FAST_SPEED = 120.0d;
-
-	private double speed;
+public class FPSController extends AbstractCameraController {
 
 	/**
-	 * <p>
-	 * </p>
+	 * A combination of all transformations applied to the camera node.
+	 */
+	Affine affine;
+
+	/**
+	 * The X rotation applied to the camera.
+	 */
+	private Rotate x;
+
+	/**
+	 * The Y rotation applied to the camera.
+	 */
+	private Rotate y;
+
+	/**
+	 * The default constructor.
+	 * 
+	 * @param camera
+	 *            The camera this controller will manage.
+	 * @param scene
+	 *            The scene the camera is viewing.
+	 * @param canvas
+	 *            The FXCanvas containing the scene.
 	 */
 	public FPSController(Camera camera, Scene scene, FXCanvas canvas) {
-		this.camera = camera;
-		this.scene = scene;
-		this.canvas = canvas;
+		super(camera, scene, canvas);
+	}
 
-		final Camera finalCamera = camera;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#handleKeyPressed(javafx.scene.input.KeyEvent)
+	 */
+	@Override
+	public void handleKeyPressed(KeyEvent event) {
 
-		final Group xform = (Group) camera.getParent();
+		double speed = NORMAL_SPEED;
 
-		Rotate x = new Rotate();
-		x.setAxis(Rotate.X_AXIS);
+		if (event.isShiftDown()) {
+			speed = FAST_SPEED;
+		}
 
-		Rotate y = new Rotate();
-		y.setAxis(Rotate.Y_AXIS);
+		KeyCode keyCode = event.getCode();
 
-		Rotate z = new Rotate();
-		z.setAxis(Rotate.Z_AXIS);
+		Transform worldTransform = xform.getLocalToSceneTransform();
+		double zx = worldTransform.getMzx();
+		double zy = worldTransform.getMzy();
+		double zz = worldTransform.getMzz();
 
-		final Group camGroup = new Group();
-		camGroup.getTransforms().setAll(x, y, z);
-		camGroup.getChildren().add(finalCamera);
+		double xx = worldTransform.getMxx();
+		double xy = worldTransform.getMxy();
+		double xz = worldTransform.getMxz();
 
-		finalCamera.setTranslateZ(-2000);
+		Point3D zDir = new Point3D(zx, zy, zz).normalize();
+		Point3D xDir = new Point3D(xx, xy, xz).normalize();
 
-		// affine = new Affine();
-		// camera.getTransforms().setAll(affine);
+		if (keyCode == KeyCode.W) {
+			Point3D moveVec = zDir.multiply(speed);
+			affine.appendTranslation(moveVec.getX(), moveVec.getY(),
+					moveVec.getZ());
+		} else if (keyCode == KeyCode.S) {
+			Point3D moveVec = zDir.multiply(speed);
+			Point3D invVec = new Point3D(-moveVec.getX(), -moveVec.getY(),
+					-moveVec.getZ());
+			affine.appendTranslation(invVec.getX(), invVec.getY(),
+					invVec.getZ());
+		} else if (keyCode == KeyCode.A) {
+			Point3D moveVec = xDir.multiply(speed);
+			affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
+					-moveVec.getZ());
+		} else if (keyCode == KeyCode.D) {
+			Point3D moveVec = xDir.multiply(speed);
+			affine.appendTranslation(moveVec.getX(), moveVec.getY(),
+					moveVec.getZ());
+		}
 
-		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent event) {
+		if (keyCode == KeyCode.SPACE) {
+			camera.setTranslateZ(camera.getTranslateZ() - speed);
+		} else if (keyCode == KeyCode.C) {
+			camera.setTranslateZ(camera.getTranslateZ() + speed);
+		}
+	}
 
-				double speed = NORMAL_SPEED;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#handleMouseDragged(javafx.scene.input.
+	 * MouseEvent)
+	 */
+	@Override
+	public void handleMouseDragged(MouseEvent event) {
 
-				if (event.isShiftDown()) {
-					speed = FAST_SPEED;
-				}
+		// Replace the old mouse position
+		mouseOldX = mousePosX;
+		mouseOldY = mousePosY;
 
-				KeyCode keyCode = event.getCode();
+		// Get the current mouse position and calculate the deltas
+		mousePosX = event.getSceneX();
+		mousePosY = event.getSceneY();
+		mouseDeltaX = (mousePosX - mouseOldX);
+		mouseDeltaY = (mousePosY - mouseOldY);
 
-				Transform worldTransform = xform.getLocalToSceneTransform();
-				double zx = worldTransform.getMzx();
-				double zy = worldTransform.getMzy();
-				double zz = worldTransform.getMzz();
+		// Apply the change in mouse position to the camera's angle
+		if (event.isPrimaryButtonDown()) {
+			y.setAngle(y.getAngle() - mouseDeltaX);
+			x.setAngle(x.getAngle() + mouseDeltaY);
+		}
+	}
 
-				double xx = worldTransform.getMxx();
-				double xy = worldTransform.getMxy();
-				double xz = worldTransform.getMxz();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#handleMousePressed(javafx.scene.input.
+	 * MouseEvent)
+	 */
+	@Override
+	public void handleMousePressed(MouseEvent event) {
 
-				Point3D zDir = new Point3D(zx, zy, zz).normalize();
-				Point3D xDir = new Point3D(xx, xy, xz).normalize();
+		// Get the mouse position for the start of the drag
+		mousePosX = event.getSceneX();
+		mousePosY = event.getSceneY();
+		mouseOldX = event.getSceneX();
+		mouseOldY = event.getSceneY();
+	}
 
-				if (keyCode == KeyCode.W) {
-					Point3D moveVec = zDir.multiply(speed);
-					affine.appendTranslation(moveVec.getX(), moveVec.getY(),
-							moveVec.getZ());
-				} else if (keyCode == KeyCode.S) {
-					Point3D moveVec = zDir.multiply(speed);
-					Point3D invVec = new Point3D(-moveVec.getX(),
-							-moveVec.getY(), -moveVec.getZ());
-					affine.appendTranslation(invVec.getX(), invVec.getY(),
-							invVec.getZ());
-				} else if (keyCode == KeyCode.A) {
-					Point3D moveVec = xDir.multiply(speed);
-					affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
-							-moveVec.getZ());
-				} else if (keyCode == KeyCode.D) {
-					Point3D moveVec = xDir.multiply(speed);
-					affine.appendTranslation(moveVec.getX(), moveVec.getY(),
-							moveVec.getZ());
-				}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#handleMouseScroll(javafx.scene.input.
+	 * ScrollEvent)
+	 */
+	@Override
+	public void handleMouseScroll(ScrollEvent event) {
+		// Get the current z position and modify it by the amount of
+		// scrolling
+		double z = camera.getTranslateZ();
+		double newZ = z + event.getDeltaY();
+		camera.setTranslateZ(newZ);
+	}
 
-				if (keyCode == KeyCode.SPACE) {
-					finalCamera
-							.setTranslateZ(finalCamera.getTranslateZ() - speed);
-				} else if (keyCode == KeyCode.C) {
-					finalCamera
-							.setTranslateZ(finalCamera.getTranslateZ() + speed);
-				}
-			}
-		});
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#initCamera()
+	 */
+	@Override
+	public void initCamera() {
+		super.initCamera();
 
-		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				mousePosX = arg0.getSceneX();
-				mousePosY = arg0.getSceneY();
-				mouseOldX = arg0.getSceneX();
-				mouseOldY = arg0.getSceneY();
-			}
-		});
+		// Reset the camera to its default position
+		reset();
+	}
 
-		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent arg0) {
-				mouseOldX = mousePosX;
-				mouseOldY = mousePosY;
-				mousePosX = arg0.getSceneX();
-				mousePosY = arg0.getSceneY();
-				mouseDeltaX = (mousePosX - mouseOldX);
-				mouseDeltaY = (mousePosY - mouseOldY);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#reset()
+	 */
+	@Override
+	public void reset() {
 
-				double modifier = 1.0;
+		// Reset the camera to its initial angles
+		x.setAngle(0);
+		y.setAngle(0);
 
-				if (arg0.isPrimaryButtonDown()) {
-					y.setAngle(y.getAngle() - mouseDeltaX);
-					x.setAngle(x.getAngle() + mouseDeltaY);
-				}
-			}
+		// Create an empty affine transformation, add the default angles to it,
+		// and replace the node's transformations with it
+		affine = new Affine();
+		affine.append(defaultX);
+		affine.append(defaultY);
+		affine.append(defaultZ);
+		xform.getTransforms().setAll(affine);
 
-		});
+		// Zoom the camera back to a default distance from the origin.
+		camera.setTranslateZ(-2000);
 
-		// Set the bevaior for mouse scroll events
-		scene.setOnScroll(new EventHandler<ScrollEvent>() {
+	}
 
-			@Override
-			public void handle(ScrollEvent event) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#pitchCamera(double)
+	 */
+	@Override
+	public void pitchCamera(double radians) {
 
-				// Get the current z position and modify it by the amount of
-				// scrolling
-				double z = finalCamera.getTranslateZ();
-				double newZ = z + event.getDeltaY();
-				finalCamera.setTranslateZ(newZ);
+		// Get the x direction for the camera's current heading
+		Transform worldTransform = xform.getLocalToSceneTransform();
+		double xx = worldTransform.getMxx();
+		double xy = worldTransform.getMxy();
+		double xz = worldTransform.getMxz();
+		Point3D xDir = new Point3D(xx, xy, xz).normalize();
 
-			}
+		// Create a new rotation along that axis and apply it to the camera
+		Rotate rotation = new Rotate(radians * 180 / Math.PI, xDir);
+		affine.append(rotation);
+	}
 
-		});
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#rollCamera(double)
+	 */
+	@Override
+	public void rollCamera(double radians) {
 
+		// Get the z direction of the camera's current heading
+		Transform worldTransform = xform.getLocalToSceneTransform();
+		double zx = worldTransform.getMzx();
+		double zy = worldTransform.getMzy();
+		double zz = worldTransform.getMzz();
+		Point3D zDir = new Point3D(zx, zy, zz).normalize();
+
+		// Create a new rotation along that axis and apply it to the camera
+		Rotate rotation = new Rotate(radians * 180 / Math.PI, zDir);
+		affine.append(rotation);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#strafeCamera(double)
+	 */
+	@Override
+	public void raiseCamera(double distance) {
+		camera.setTranslateZ(camera.getTranslateZ() - distance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#strafeCamera(double)
+	 */
+	@Override
+	public void strafeCamera(double distance) {
+
+		Transform worldTransform = xform.getLocalToSceneTransform();
+
+		double xx = worldTransform.getMxx();
+		double xy = worldTransform.getMxy();
+		double xz = worldTransform.getMxz();
+		Point3D xDir = new Point3D(xx, xy, xz).normalize();
+
+		Point3D moveVec = xDir.multiply(distance);
+		affine.appendTranslation(moveVec.getX(), moveVec.getY(),
+				moveVec.getZ());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#thrustCamera(double)
+	 */
+	@Override
+	public void thrustCamera(double distance) {
+
+		Transform worldTransform = xform.getLocalToSceneTransform();
+		double zx = worldTransform.getMzx();
+		double zy = worldTransform.getMzy();
+		double zz = worldTransform.getMzz();
+
+		Point3D zDir = new Point3D(zx, zy, zz).normalize();
+
+		Point3D moveVec = zDir.multiply(distance);
+		affine.appendTranslation(moveVec.getX(), moveVec.getY(),
+				moveVec.getZ());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#yawCamera(double)
+	 */
+	@Override
+	public void yawCamera(double radians) {
+
+		// Get the y direction of the camera's current heading
+		Transform worldTransform = xform.getLocalToSceneTransform();
+		double yx = worldTransform.getMyx();
+		double yy = worldTransform.getMyy();
+		double yz = worldTransform.getMyz();
+		Point3D yDir = new Point3D(yx, yy, yz).normalize();
+
+		// Create a new rotation along that axis and apply it to the camera
+		Rotate rotation = new Rotate(radians * 180 / Math.PI, yDir);
+		affine.append(rotation);
 	}
 
 }

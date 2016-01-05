@@ -26,143 +26,157 @@ import javafx.scene.transform.Transform;
  * point and letting the user zoom in and out.
  * </p>
  */
-public class TurntableController extends CameraController {
+public class TurntableController extends AbstractCameraController {
 
-    /** */
-    Transform xform;
+	/** */
+	Transform xform;
 
-    /** */
-    Affine transform;
+	/** */
+	Affine transform;
 
-    /** */
-    private Camera camera;
+	/** */
+	private Camera camera;
 
-    /** */
-    private Scene scene;
+	/** */
+	private Scene scene;
 
-    /** */
-    double anchorX;
+	/** */
+	double anchorX;
 
-    /** */
-    double anchorY;
+	/** */
+	double anchorY;
 
-    /** */
-    double anchorAngle;
+	/** */
+	double anchorAngle;
 
-    /** */
-    private double sphereRadius;
+	/** */
+	private double sphereRadius;
 
-    /** */
-    private double height;
+	/** */
+	private double height;
 
-    /** */
-    private double width;
+	/** */
+	private double width;
 
-    /** */
-    protected Point3D currentRot;
+	/** */
+	protected Point3D currentRot;
 
-    /** */
-    private Point3D startRot;
+	/** */
+	private Point3D startRot;
 
-    /** */
-    protected boolean activeRotation;
+	/** */
+	protected boolean activeRotation;
 
-    /** */
-    private FXCanvas canvas;
+	/** */
+	private FXCanvas canvas;
 
-    /** */
-    private double startX;
+	/** */
+	private double startX;
 
-    /** */
-    private double startY;
+	/** */
+	private double startY;
 
-    /**
-     * <p>
-     * </p>
-     */
-    public TurntableController(Camera camera, Scene scene, FXCanvas canvas) {
-        this.camera = camera;
-        this.scene = scene;
-        this.canvas = canvas;
-        
-        final Camera finalCamera = camera;
-        final Scene finalScene = scene;
+	/**
+	 * <p>
+	 * </p>
+	 */
+	public TurntableController(Camera camera, Scene scene, FXCanvas canvas) {
+		super(camera, scene, canvas);
 
-        final Affine affine = new Affine();
+		final Camera finalCamera = camera;
+		final Scene finalScene = scene;
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+		final Affine affine = new Affine();
 
-            public void handle(MouseEvent arg0) {
-                width = finalScene.getWidth();
-                height = finalScene.getHeight();
+		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
-                startX = arg0.getSceneX();
-                startY = arg0.getSceneY();
+			@Override
+			public void handle(MouseEvent arg0) {
+				width = finalScene.getWidth();
+				height = finalScene.getHeight();
 
-                activeRotation = true;
-            }
+				startX = arg0.getSceneX();
+				startY = arg0.getSceneY();
 
-        });
+				activeRotation = true;
+			}
 
-        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+		});
 
-            public void handle(MouseEvent arg0) {
-                activeRotation = false;
-            }
+		scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
 
-        });
+			@Override
+			public void handle(MouseEvent arg0) {
+				activeRotation = false;
+			}
 
-        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent arg0) {
+		});
 
-                try {
-                    Point3D yAxis = new Point3D(0.0d, -1.0d, 0.0d);
-                    Affine transform = affine;
-                    Affine createInverse = transform.createInverse();
+		scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {
 
-                    Point3D zInv = new Point3D(createInverse.getMzx(), createInverse.getMzy(), createInverse.getMzz());
-                    Point3D xInv = new Point3D(createInverse.getMxx(), createInverse.getMxy(), createInverse.getMxz());
+				try {
+					Point3D yAxis = new Point3D(0.0d, -1.0d, 0.0d);
+					Affine transform = affine;
+					Affine createInverse = transform.createInverse();
 
-                    Point3D subtract = yAxis.subtract(zInv);
-                    double invSqr = subtract.dotProduct(subtract);
+					Point3D zInv = new Point3D(createInverse.getMzx(),
+							createInverse.getMzy(), createInverse.getMzz());
+					Point3D xInv = new Point3D(createInverse.getMxx(),
+							createInverse.getMxy(), createInverse.getMxz());
 
-                    Point3D xAxis = null;
+					Point3D subtract = yAxis.subtract(zInv);
+					double invSqr = subtract.dotProduct(subtract);
 
-                    if (invSqr > 0.0001f) {
-                        xAxis = yAxis.crossProduct(zInv);
+					Point3D xAxis = null;
 
-                        double xDot = xAxis.dotProduct(xInv);
+					if (invSqr > 0.0001f) {
+						xAxis = yAxis.crossProduct(zInv);
 
-                        if (xDot < 0.0d) {
-                            xAxis = new Point3D(-xAxis.getX(), -xAxis.getY(), -xAxis.getZ());
-                        }
+						double xDot = xAxis.dotProduct(xInv);
 
-                        double ac = Math.acos(xAxis.dotProduct(zInv));
-                        ac = Math.abs(ac - 0.5d) * 2.0d;
-                        ac = ac * ac;
+						if (xDot < 0.0d) {
+							xAxis = new Point3D(-xAxis.getX(), -xAxis.getY(),
+									-xAxis.getZ());
+						}
 
-                        Point3D scaledTo = new Point3D(zInv.getX(), zInv.getY(), zInv.getZ()).multiply(ac);
-                        xAxis = yAxis.add(scaledTo);
-                    } else {
-                        xAxis = new Point3D(xInv.getX(), xInv.getY(), xInv.getZ());
-                    }
+						double ac = Math.acos(xAxis.dotProduct(zInv));
+						ac = Math.abs(ac - 0.5d) * 2.0d;
+						ac = ac * ac;
 
-                    double speedModifier = 0.005f;
+						Point3D scaledTo = new Point3D(zInv.getX(), zInv.getY(),
+								zInv.getZ()).multiply(ac);
+						xAxis = yAxis.add(scaledTo);
+					} else {
+						xAxis = new Point3D(xInv.getX(), xInv.getY(),
+								xInv.getZ());
+					}
 
-                    Rotate ry = new Rotate(speedModifier * -(arg0.getY() - startY), xAxis);
-                    finalCamera.getTransforms().add(ry);
+					double speedModifier = 0.005f;
 
-                    Rotate rx = new Rotate(speedModifier * (arg0.getX() - startX), yAxis);
-                    Transform createConcatenation = rx.createConcatenation(ry);
+					Rotate ry = new Rotate(
+							speedModifier * -(arg0.getY() - startY), xAxis);
+					finalCamera.getTransforms().add(ry);
 
-                    finalCamera.getTransforms().add(createConcatenation);
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
+					Rotate rx = new Rotate(
+							speedModifier * (arg0.getX() - startX), yAxis);
+					Transform createConcatenation = rx.createConcatenation(ry);
 
-    }
+					finalCamera.getTransforms().add(createConcatenation);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+
+	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+
+	}
 
 }
