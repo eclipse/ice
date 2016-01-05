@@ -175,7 +175,7 @@ public class ICEGeometryPage extends ICEFormPage
 				.getForm();
 		Composite parent = pageForm.getBody();
 
-		// Get JME3 Geometry service from factory
+		// Get Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		service = factory.get("ICE Geometry Editor");
 		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()

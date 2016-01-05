@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.ice.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;

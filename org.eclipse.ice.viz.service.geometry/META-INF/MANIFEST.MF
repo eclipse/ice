@@ -4,8 +4,7 @@ Bundle-Name: Geometry Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.geometry;singleton:=true
 Bundle-Version: 2.1.8
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Service-Component: OSGI-INF/ControllerFactory.xml,
- OSGI-INF/vizGeometryService.xml
+Service-Component: OSGI-INF/ControllerFactory.xml
 Import-Package: com.jme3.app,
  com.jme3.asset,
  com.jme3.export,
@@ -31,7 +30,8 @@ Import-Package: com.jme3.app,
  org.eclipse.jface.databinding.swt,
  org.slf4j;version="1.7.2",
  visit.java.client
-Export-Package:  org.eclipse.ice.viz.service.geometry.shapes,
+Export-Package: org.eclipse.ice.viz.service.geometry.plantView,
+ org.eclipse.ice.viz.service.geometry.shapes,
  org.eclipse.ice.viz.service.geometry.widgets
 Bundle-Vendor: Oak Ridge National Laboratory
 Eclipse-ExtensibleAPI: true

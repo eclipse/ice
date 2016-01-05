@@ -8,7 +8,7 @@
  * Contributors:
  *   Tony McCrary (tmccrary@l33tlabs.com)
  *******************************************************************************/
-package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
+package org.eclipse.ice.viz.service.javafx.canvas;
 
 import javafx.collections.ObservableList;
 import javafx.scene.DepthTest;

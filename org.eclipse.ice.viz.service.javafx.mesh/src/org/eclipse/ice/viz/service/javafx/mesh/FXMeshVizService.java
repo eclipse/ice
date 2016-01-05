@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
@@ -41,8 +40,6 @@ public class FXMeshVizService extends AbstractVizService {
 	 * <p>
 	 * Creates a GeometryCanvas.
 	 * </p>
-	 * 
-	 * @see IVizService#createCanvas(IVizObject)
 	 */
 	@Override
 	public IVizCanvas createCanvas(AbstractController geometry)
@@ -75,9 +72,10 @@ public class FXMeshVizService extends AbstractVizService {
 	protected Set<String> findSupportedExtensions() {
 		return Collections.emptySet();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
 	 */
 	@Override

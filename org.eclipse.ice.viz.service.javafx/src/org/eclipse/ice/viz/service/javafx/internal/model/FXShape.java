@@ -1,7 +1,7 @@
 package org.eclipse.ice.viz.service.javafx.internal.model;
 
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.javafx.geometry.datatypes.TransformGizmo;
+import org.eclipse.ice.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 
 import javafx.scene.Group;

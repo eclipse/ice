@@ -20,6 +20,7 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.reactor.plant.IPlantCompositeListener;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
+import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
 import org.eclipse.ice.viz.service.jme3.application.EmbeddedView;
 import org.eclipse.ice.viz.service.jme3.application.FlightCamera;
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
@@ -40,8 +41,8 @@ import com.jme3.scene.Node;
  * @author Jordan Deyton
  * 
  */
-public class PlantAppState extends ViewAppState implements IUpdateableListener,
-		IPlantCompositeListener {
+public class PlantAppState extends ViewAppState
+		implements IPlantView, IUpdateableListener, IPlantCompositeListener {
 
 	/**
 	 * The factory that is used to look up Materials for {@link PlantComponent}s
@@ -227,7 +228,7 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 	public void registerControls() {
 		// Nothing to do yet.
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -239,7 +240,7 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 		// Nothing to do yet.
 	}
 	// ------------------------ //
-	
+
 	// ---- Cleanup ---- //
 	/*
 	 * (non-Javadoc)
@@ -410,9 +411,8 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 	public void setDefaultCameraPosition(Vector3f position) {
 		// Check for nulls first.
 		if (position == null) {
-			throw new IllegalArgumentException(
-					"PlantAppState error: "
-							+ "Null arguments not accepted for setting the default camera position.");
+			throw new IllegalArgumentException("PlantAppState error: "
+					+ "Null arguments not accepted for setting the default camera position.");
 		}
 
 		// Update the default position.
@@ -457,11 +457,12 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 	 * @see #setDefaultCameraPosition(Vector3f)
 	 * @see #setDefaultCameraOrientation(Vector3f, Vector3f)
 	 */
+	@Override
 	public void resetCamera() {
 		// Get the camera if it exists.
 		final EmbeddedView view = getEmbeddedView();
-		final FlightCamera flyCam = (view != null ? (FlightCamera) view
-				.getViewCamera() : null);
+		final FlightCamera flyCam = (view != null
+				? (FlightCamera) view.getViewCamera() : null);
 
 		// If the camera exists, reset its position and orientation.
 		if (flyCam != null) {
@@ -524,7 +525,7 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 
 		return;
 	}
-	
+
 	/**
 	 * Sets all rendered plant components to be viewed as wireframes or as solid
 	 * objects.
@@ -533,6 +534,7 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 	 *            If true, plant components will be rendered with wireframes. If
 	 *            false, they will be rendered solid.
 	 */
+	@Override
 	public void setWireframe(boolean wireframe) {
 		// Loop over the PlantComponents. If one has a controller, then set the
 		// wireframe property for the controller.
@@ -546,4 +548,110 @@ public class PlantAppState extends ViewAppState implements IUpdateableListener,
 		return;
 	}
 	// ----------------------------- //
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraOrientation(float, float, float, float, float, float)
+	 */
+	@Override
+	public void setDefaultCameraOrientation(float directionX, float directionY,
+			float directionZ, float upX, float upY, float upZ) {
+
+		// Create Vector3fs from the floats and redirect to the Vector3f
+		// implementation
+		Vector3f direction = new Vector3f(directionX, directionY, directionZ);
+		Vector3f up = new Vector3f(upX, upY, upZ);
+		setDefaultCameraOrientation(direction, up);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * setDefaultCameraPosition(float, float, float)
+	 */
+	@Override
+	public void setDefaultCameraPosition(float x, float y, float z) {
+
+		// Convert input to a Vector3f and redirect to the Vector3f
+		// implementation
+		Vector3f direction = new Vector3f(x, y, z);
+		setDefaultCameraPosition(direction);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#thrustCamera(
+	 * float)
+	 */
+	@Override
+	public void thrustCamera(float distance) {
+		getFlightCamera().thrustCamera(distance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#strafeCamera(
+	 * float)
+	 */
+	@Override
+	public void strafeCamera(float distance) {
+		getFlightCamera().strafeCamera(distance);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#raiseCamera(
+	 * float)
+	 */
+	@Override
+	public void raiseCamera(float distance) {
+		getFlightCamera().raiseCamera(distance);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#rollCamera(
+	 * float)
+	 */
+	@Override
+	public void rollCamera(float radians) {
+		getFlightCamera().rollCamera(radians);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#pitchCamera(
+	 * float)
+	 */
+	@Override
+	public void pitchCamera(float radians) {
+		getFlightCamera().pitchCamera(radians);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#yawCamera(
+	 * float)
+	 */
+	@Override
+	public void yawCamera(float radians) {
+		getFlightCamera().yawCamera(radians);
+	}
 }

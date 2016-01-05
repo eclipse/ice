@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.canvas;
 
-import org.eclipse.ice.viz.service.javafx.geometry.datatypes.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CameraController;

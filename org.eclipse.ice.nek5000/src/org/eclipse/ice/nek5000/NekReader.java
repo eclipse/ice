@@ -25,7 +25,6 @@ import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
@@ -111,14 +110,11 @@ public class NekReader {
 	 * elements, number of fluid elements, number of passive scalar sets).
 	 */
 	private ProblemProperties properties;
-
-	// TODO Replace this hardcoded factory with one chosen by the user to
-	// genereate the correct views
 	/**
 	 * The factory which the reader will use to produce views and controllers
 	 * for the objects it generates.
 	 */
-	private IControllerFactory factory = new FXMeshControllerFactory();
+	private IControllerFactory factory;
 
 	/**
 	 * Nullary constructor.

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JavaFX Geometry Visualization Services Plugin
+Bundle-SymbolicName: org.eclipse.ice.viz.service.javafx.geometry;singleton:=true
+Bundle-Version: 2.1.7.20150825
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/vizGeometryService.xml
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-Vendor: Oak Ridge National Laboratory
+Eclipse-ExtensibleAPI: true
+Import-Package: org.eclipse.ice.viz.service,
+ org.eclipse.ice.viz.service.datastructures.VizObject,
+ org.eclipse.ice.viz.service.geometry.shapes,
+ org.eclipse.ice.viz.service.geometry.widgets,
+ org.eclipse.ice.viz.service.javafx.canvas,
+ org.eclipse.ice.viz.service.javafx.internal,
+ org.eclipse.ice.viz.service.javafx.scene.base,
+ org.eclipse.ice.viz.service.javafx.scene.model,
+ org.eclipse.ice.viz.service.javafx.viewer,
+ org.eclipse.ice.viz.service.modeling
+Export-Package: org.eclipse.ice.viz.service.javafx.geometry,
+ org.eclipse.ice.viz.service.javafx.geometry.datatypes
+

@@ -11,7 +11,6 @@
 package org.eclipse.ice.viz.service.javafx.geometry;
 
 import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
-import org.eclipse.ice.viz.service.javafx.viewer.IAttachmentManager;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 import javafx.scene.Group;

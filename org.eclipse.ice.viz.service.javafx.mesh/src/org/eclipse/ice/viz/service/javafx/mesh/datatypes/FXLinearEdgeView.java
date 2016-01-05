@@ -92,13 +92,6 @@ public class FXLinearEdgeView extends AbstractView {
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
-		// // Create a Shape3D for the model
-		// mesh = createShape(model);
-		// node.getChildren().add(mesh);
-		//
-		// // Set the cylinder to be the constructing material by default
-		// mesh.setMaterial(constructingMaterial);
-
 	}
 
 	/**
