@@ -10,17 +10,17 @@
  *      initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.jme3.widgets;
+package org.eclipse.ice.client.widgets.jme;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.jme3.application.IRenderQueue;
+import org.eclipse.ice.viz.service.jme3.widgets.AbstractView;
 
 import com.jme3.scene.Node;
 
@@ -48,7 +48,7 @@ public abstract class AbstractController implements IUpdateableListener {
 	/**
 	 * The model for which this controller provides a view.
 	 */
-	protected final IVizUpdateable model;
+	protected final IUpdateable model;
 	/**
 	 * The {@link AbstractView} associated with this controller.
 	 */
@@ -85,11 +85,11 @@ public abstract class AbstractController implements IUpdateableListener {
 	 *            The queue responsible for tasks that need to be performed on
 	 *            the jME rendering thread.
 	 */
-	public AbstractController(IVizUpdateable model, AbstractView view,
+	public AbstractController(IUpdateable model, AbstractView view,
 			IRenderQueue renderQueue) {
 
 		// Set the model and register with it. It should not be null.
-		this.model = (model != null ? model : new VizObject());
+		this.model = (model != null ? model : new ICEObject());
 		this.model.register(this);
 
 		// Set the view. If it is null, create a new, basic view.
@@ -118,7 +118,7 @@ public abstract class AbstractController implements IUpdateableListener {
 	/**
 	 * @return The model for which this controller provides a view.
 	 */
-	public IVizUpdateable getModel() {
+	public IUpdateable getModel() {
 		return model;
 	}
 
@@ -181,6 +181,6 @@ public abstract class AbstractController implements IUpdateableListener {
 	 * Updates the controller and/or view if the {@link #model} has changed.
 	 */
 	@Override
-	public abstract void update(IVizUpdateable component);
+	public abstract void update(IUpdateable component);
 
 }

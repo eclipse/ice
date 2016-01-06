@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014-2016 UT-Battelle, LLC.
+ * Copyright (c) 2014, 2015 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,6 @@
  *
  * Contributors:
  *    Jordan Deyton (UT-Battelle, LLC.) - initial API and implementation and/or initial documentation
- *    Robert Smith
  *   
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.reactoreditor.plant;
@@ -19,7 +18,6 @@ import java.util.concurrent.Callable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.reactor.plant.IPlantCompositeListener;
-import org.eclipse.ice.reactor.plant.IPlantView;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.viz.service.jme3.application.EmbeddedView;
@@ -39,11 +37,11 @@ import com.jme3.scene.Node;
 /**
  * This jME3-based {@link AppState} provides a 3D view of a reactor plant.
  * 
- * @author Jordan Deyton, Robert Smith
+ * @author Jordan Deyton
  * 
  */
-public class PlantAppState extends ViewAppState
-		implements IPlantView, IUpdateableListener, IPlantCompositeListener {
+public class PlantAppState extends ViewAppState implements IUpdateableListener,
+		IPlantCompositeListener {
 
 	/**
 	 * The factory that is used to look up Materials for {@link PlantComponent}s
@@ -229,7 +227,7 @@ public class PlantAppState extends ViewAppState
 	public void registerControls() {
 		// Nothing to do yet.
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -241,7 +239,7 @@ public class PlantAppState extends ViewAppState
 		// Nothing to do yet.
 	}
 	// ------------------------ //
-
+	
 	// ---- Cleanup ---- //
 	/*
 	 * (non-Javadoc)
@@ -412,8 +410,9 @@ public class PlantAppState extends ViewAppState
 	public void setDefaultCameraPosition(Vector3f position) {
 		// Check for nulls first.
 		if (position == null) {
-			throw new IllegalArgumentException("PlantAppState error: "
-					+ "Null arguments not accepted for setting the default camera position.");
+			throw new IllegalArgumentException(
+					"PlantAppState error: "
+							+ "Null arguments not accepted for setting the default camera position.");
 		}
 
 		// Update the default position.
@@ -452,26 +451,17 @@ public class PlantAppState extends ViewAppState
 		return;
 	}
 
-	@Override
-	public void dispose() {
-
-		stop();
-
-		return;
-	}
-
 	/**
 	 * Resets the plant view's camera to its default position and orientation.
 	 * 
 	 * @see #setDefaultCameraPosition(Vector3f)
 	 * @see #setDefaultCameraOrientation(Vector3f, Vector3f)
 	 */
-	@Override
 	public void resetCamera() {
 		// Get the camera if it exists.
 		final EmbeddedView view = getEmbeddedView();
-		final FlightCamera flyCam = (view != null
-				? (FlightCamera) view.getViewCamera() : null);
+		final FlightCamera flyCam = (view != null ? (FlightCamera) view
+				.getViewCamera() : null);
 
 		// If the camera exists, reset its position and orientation.
 		if (flyCam != null) {
@@ -510,7 +500,6 @@ public class PlantAppState extends ViewAppState
 	 * @param plant
 	 *            The new plant.
 	 */
-	@Override
 	public void setPlant(final PlantComposite plant) {
 
 		if (plant != null && plant != this.plant) {
@@ -535,7 +524,7 @@ public class PlantAppState extends ViewAppState
 
 		return;
 	}
-
+	
 	/**
 	 * Sets all rendered plant components to be viewed as wireframes or as solid
 	 * objects.
@@ -544,7 +533,6 @@ public class PlantAppState extends ViewAppState
 	 *            If true, plant components will be rendered with wireframes. If
 	 *            false, they will be rendered solid.
 	 */
-	@Override
 	public void setWireframe(boolean wireframe) {
 		// Loop over the PlantComponents. If one has a controller, then set the
 		// wireframe property for the controller.
@@ -558,125 +546,4 @@ public class PlantAppState extends ViewAppState
 		return;
 	}
 	// ----------------------------- //
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#thrustCamera(
-	 * float)
-	 */
-	@Override
-	public void thrustCamera(float distance) {
-		getFlightCamera().thrustCamera(distance);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#strafeCamera(
-	 * float)
-	 */
-	@Override
-	public void strafeCamera(float distance) {
-		getFlightCamera().strafeCamera(distance);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#raiseCamera(
-	 * float)
-	 */
-	@Override
-	public void raiseCamera(float distance) {
-		getFlightCamera().raiseCamera(distance);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#rollCamera(
-	 * float)
-	 */
-	@Override
-	public void rollCamera(float radians) {
-		getFlightCamera().rollCamera(radians);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#pitchCamera(
-	 * float)
-	 */
-	@Override
-	public void pitchCamera(float radians) {
-		getFlightCamera().pitchCamera(radians);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#yawCamera(
-	 * float)
-	 */
-	@Override
-	public void yawCamera(float radians) {
-		getFlightCamera().yawCamera(radians);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
-	 * setDefaultCameraYByZ()
-	 */
-	@Override
-	public void setDefaultCameraYByZ() {
-
-		Vector3f position = new Vector3f(10f, 0f, 0f);
-		Vector3f dir = new Vector3f(-1f, 0f, 0f);
-		Vector3f up = Vector3f.UNIT_Z;
-		setDefaultCameraPosition(position);
-		setDefaultCameraOrientation(dir, up);
-		resetCamera();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
-	 * setDefaultCameraXByY()
-	 */
-	@Override
-	public void setDefaultCameraXByY() {
-		Vector3f position = new Vector3f(0f, 0f, 10f);
-		Vector3f dir = new Vector3f(0f, 0f, -1f);
-		Vector3f up = Vector3f.UNIT_Y;
-		setDefaultCameraPosition(position);
-		setDefaultCameraOrientation(dir, up);
-		resetCamera();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
-	 * setDefaultCameraZByX()
-	 */
-	@Override
-	public void setDefaultCameraZByX() {
-		Vector3f position = new Vector3f(0f, 10f, 0f);
-		Vector3f dir = new Vector3f(0f, -1f, 0f);
-		Vector3f up = Vector3f.UNIT_X;
-		setDefaultCameraPosition(position);
-		setDefaultCameraOrientation(dir, up);
-		resetCamera();
-	}
 }
