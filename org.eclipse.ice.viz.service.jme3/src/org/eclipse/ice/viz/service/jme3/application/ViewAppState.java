@@ -61,8 +61,8 @@ import com.jme3.scene.shape.Line;
  * @author Jordan
  *
  */
-public abstract class ViewAppState extends CompositeAppState implements
-		IEmbeddedViewClient {
+public abstract class ViewAppState extends CompositeAppState
+		implements IEmbeddedViewClient {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -220,8 +220,8 @@ public abstract class ViewAppState extends CompositeAppState implements
 			String[] extensionStrings = new String[] { ".png" };
 
 			// Create the file save dialog.
-			FileDialog fileDialog = new FileDialog(Display.getCurrent()
-					.getActiveShell(), SWT.SAVE);
+			FileDialog fileDialog = new FileDialog(
+					Display.getCurrent().getActiveShell(), SWT.SAVE);
 			fileDialog.setFilterExtensions(extensionStrings);
 			fileDialog.setOverwrite(true);
 

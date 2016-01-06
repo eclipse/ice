@@ -10,21 +10,21 @@
  *      initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.moose;
+package org.eclipse.ice.viz.service.javafx.geometry;
 
-import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
+import org.eclipse.ice.reactor.plant.IPlantView;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
-import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
-import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
-import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantCompositeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This factory is used to create 3D models for the Plant View. It gets the
- * appropriate IVizService to instantiate an implementation of the Plant View
- * and returns an IVizCanvas containing the Plant View from it.
+ * appropriate IVizService to instantiate an implementation of IPlantView which
+ * is capable of drawing the the view into a composite.
  * 
  * @author Jordan, Robert Smith
  * 
@@ -32,6 +32,12 @@ import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 public class ViewFactory {
 
 	// TODO We may want to handle this via an OSGi-based factories and registry.
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(ViewFactory.class);
 
 	/**
 	 * A factory containing all consumed IVizServices. The service implementing
@@ -153,16 +159,24 @@ public class ViewFactory {
 		// a choice, instead of hardcoding the JavaFX editor in.
 		IVizService service = factory.get("ICE Geometry Editor");
 
+		// Create a converter for the plant composite
+		FXPlantCompositeConverter converter = new FXPlantCompositeConverter(
+				plant);
+
+		// The canvas to be created
+		IVizCanvas vizCanvas = null;
+
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service
-					.createCanvas(geometryComp.getGeometry());
-			vizCanvas.draw(parent);
 
+			// Create and draw the canvas
+			vizCanvas = service.createCanvas(converter.getPlant());
 		} catch (Exception e) {
 			logger.error(
 					"Error creating Geometry Canvas with Geometry Service.", e);
 		}
+
+		return (IPlantView) vizCanvas;
 	}
 
 	/**
@@ -171,13 +185,8 @@ public class ViewFactory {
 	 * @param view
 	 *            The view to dispose.
 	 */
-	public void disposeView(ViewAppState view) {
-
-		if (view != null) {
-			view.stop();
-
-			// If we need to do anything special, do it here.
-		}
+	public void disposeView(IPlantView view) {
+		view.dispose();
 
 		return;
 	}

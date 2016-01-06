@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import java.util.List;
-
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -21,13 +19,25 @@ import org.eclipse.ice.viz.service.modeling.AbstractMesh;
  * @author Robert Smith
  *
  */
-public class HeatExchangerMesh extends AbstractMesh {
+public class HeatExchangerController extends AbstractController {
+
+	/**
+	 * The nullary constructor.
+	 */
+	public HeatExchangerController() {
+		super();
+	}
 
 	/**
 	 * The default constructor.
+	 * 
+	 * @param model
+	 *            The part's internal representation.
+	 * @param view
+	 *            The part's graphical representation in the rendering program.
 	 */
-	public HeatExchangerMesh() {
-		super();
+	public HeatExchangerController(HeatExchangerMesh model, AbstractView view) {
+		super(model, view);
 	}
 
 	/**
@@ -37,7 +47,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *         one.
 	 */
 	public PipeController getPrimaryPipe() {
-		return (PipeController) entities.get("Primary Pipe").get(0);
+		return ((HeatExchangerMesh) model).getPrimaryPipe();
 	}
 
 	/**
@@ -47,7 +57,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *         one.
 	 */
 	public PipeController getSecondaryPipe() {
-		return (PipeController) entities.get("Secondary Pipe").get(0);
+		return ((HeatExchangerMesh) model).getSecondaryPipe();
 	}
 
 	/**
@@ -58,17 +68,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *            The Heat Exchanger's new primary pipe.
 	 */
 	public void setPrimaryPipe(PipeController pipe) {
-
-		// Get the current primary pipe, if any
-		List<AbstractController> primary = entities.get("Primary Pipe");
-
-		// If there is already one, remove it.
-		if (!primary.isEmpty()) {
-			removeEntity(primary.get(0));
-		}
-
-		// Add the pipe under the Primary Pipe category
-		addEntityByCategory(pipe, "Primary Pipe");
+		((HeatExchangerMesh) model).setPrimaryPipe(pipe);
 	}
 
 	/**
@@ -79,17 +79,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *            The Heat Exchanger's new secondary pipe.
 	 */
 	public void setSecondaryPipe(PipeController pipe) {
-
-		// Get the current secondary pipe, if any
-		List<AbstractController> secondary = entities.get("Secondary Pipe");
-
-		// If there is already one, remove it.
-		if (!secondary.isEmpty()) {
-			removeEntity(secondary.get(0));
-		}
-
-		// Add the pipe under the Primary Pipe category
-		addEntityByCategory(pipe, "Secondary Pipe");
+		((HeatExchangerMesh) model).setSecondaryPipe(pipe);
 	}
 
 	/*
@@ -100,9 +90,13 @@ public class HeatExchangerMesh extends AbstractMesh {
 	@Override
 	public Object clone() {
 
-		// Create a new component, and make it a copy of this one.
-		HeatExchangerMesh clone = new HeatExchangerMesh();
+		// Create a copy of the model
+		HeatExchangerController clone = new HeatExchangerController();
 		clone.copy(this);
+
+		// Refresh the view to be in sync with the model
+		clone.refresh();
+
 		return clone;
 	}
 }

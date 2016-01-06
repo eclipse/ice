@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import java.nio.channels.Pipe;
 import java.util.ArrayList;
 
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
+import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -33,7 +34,7 @@ import javafx.scene.transform.Rotate;
  * @author Robert Smith
  *
  */
-public class FXReactorView extends AbstractView implements WireFramePart {
+public class FXReactorView extends AbstractView implements IWireFramePart {
 
 	/**
 	 * The JavaFX node containing the reactor's mesh
@@ -118,12 +119,12 @@ public class FXReactorView extends AbstractView implements WireFramePart {
 
 		// Check all the reactor's children for core channels
 		for (AbstractController channel : model.getEntities()) {
-			if (channel instanceof Pipe) {
-				if (((Pipe) channel).getPipeType() == PipeType.CORE_CHANNEL) {
+			if (channel instanceof PipeController) {
+				if ("True".equals(channel.getProperty("Core Chanel"))) {
 
 					// Add the extrema of core channels to the list
-					extrema.add(((Pipe) channel).getLowerExtrema());
-					extrema.add(((Pipe) channel).getUpperExtrema());
+					extrema.add(((PipeController) channel).getLowerExtrema());
+					extrema.add(((PipeController) channel).getUpperExtrema());
 				}
 			}
 		}

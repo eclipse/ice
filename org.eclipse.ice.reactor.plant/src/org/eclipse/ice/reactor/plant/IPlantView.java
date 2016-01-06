@@ -8,11 +8,9 @@
  * Contributors:
  *   Robert Smith
  *******************************************************************************/
-package org.eclipse.ice.viz.service.geometry.plantView;
+package org.eclipse.ice.reactor.plant;
 
 import org.eclipse.swt.widgets.Composite;
-
-import com.jme3.math.Vector3f;
 
 /**
  * An interface for classes which create the graphical representations for Plant
@@ -36,6 +34,11 @@ public interface IPlantView {
 	 *         longer required</b>.
 	 */
 	public Composite createComposite(Composite parent);
+
+	/**
+	 * Dispose the plant view and its resources.
+	 */
+	public void dispose();
 
 	/**
 	 * Exports the view to an image file. The user is prompted for the image
@@ -109,6 +112,8 @@ public interface IPlantView {
 	// * The new default position z coordinate.
 	// */
 	// public void setDefaultCameraPosition(float x, float y, float z);
+
+	public void setPlant(PlantComposite plant);
 
 	/**
 	 * Sets all rendered plant components to be viewed as wireframes or as solid

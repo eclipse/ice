@@ -18,6 +18,7 @@ import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
@@ -48,8 +49,10 @@ public class FXGeometryVizService extends AbstractVizService {
 	@Override
 	public IVizCanvas createCanvas(AbstractController geometry)
 			throws Exception {
-		if (geometry instanceof ShapeController) {
-			FXGeometryCanvas canvas = new FXGeometryCanvas((ShapeController) geometry);
+		if (geometry instanceof ShapeController
+				|| geometry instanceof FXPlantViewRootController) {
+			FXGeometryCanvas canvas = new FXGeometryCanvas(
+					(ShapeController) geometry);
 
 			return canvas;
 		} else {
@@ -81,9 +84,10 @@ public class FXGeometryVizService extends AbstractVizService {
 	protected Set<String> findSupportedExtensions() {
 		return Collections.emptySet();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
 	 */
 	@Override

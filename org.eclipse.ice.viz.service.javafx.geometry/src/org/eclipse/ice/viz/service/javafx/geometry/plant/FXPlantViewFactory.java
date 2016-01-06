@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import java.nio.channels.Pipe;
-
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
@@ -27,7 +26,7 @@ import org.eclipse.ice.viz.service.modeling.IControllerFactory;
  * @author Robert Smith
  *
  */
-public class FXReactorAnalyzerFactory implements IControllerFactory {
+public class FXPlantViewFactory implements IControllerFactory {
 
 	/*
 	 * (non-Javadoc)
@@ -37,7 +36,7 @@ public class FXReactorAnalyzerFactory implements IControllerFactory {
 	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public AbstractController createController(AbstractMeshComponent model) {
+	public AbstractController createController(AbstractMesh model) {
 
 		// Create a FXJunction view for junctions
 		if (model instanceof JunctionMesh) {
@@ -47,8 +46,8 @@ public class FXReactorAnalyzerFactory implements IControllerFactory {
 
 		// Create a FXPipeView for pipes
 		else if (model instanceof PipeMesh) {
-			FXShapeView view = new FXPipeView((PipeMesh) model);
-			return new Pipe((PipeMesh) model, view);
+			FXPipeView view = new FXPipeView((PipeMesh) model);
+			return new FXPipeController((PipeMesh) model, view);
 		}
 
 		// Create a FXReactorView for reactors

@@ -265,6 +265,28 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		node.getProperties().put(ShapeController.class, shape);
 	}
 
+	/**
+	 * Set the shape's default material. The shape is not guaranteed to actually
+	 * display in this material after the function returns, as other materials
+	 * may be taking precedence over the default one, such as the
+	 * selectedMaterial when the shape is selected.
+	 * 
+	 * @param material
+	 */
+	public void setMaterial(PhongMaterial material) {
+		customMaterial = material;
+
+		// If the shape is currently displaying the default material, set it to
+		// the new one
+		if (shape.getMaterial() == defaultMaterial) {
+			shape.setMaterial(material);
+		}
+
+		// Save this material as the default for future uses.
+		defaultMaterial = material;
+
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

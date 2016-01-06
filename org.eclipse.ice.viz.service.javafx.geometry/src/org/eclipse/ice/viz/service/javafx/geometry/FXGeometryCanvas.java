@@ -15,7 +15,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
+import org.eclipse.ice.reactor.plant.IPlantView;
+import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
@@ -23,6 +24,7 @@ import org.eclipse.ice.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeController;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantCompositeConverter;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
@@ -358,5 +360,29 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	@Override
 	public void setDefaultCameraZByX() {
 		((FXViewer) viewer).setDefaultCameraZByX();
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setPlant(PlantComposite plant) {
+
+		// Convert the plant composite into an AbstractController
+		FXPlantCompositeConverter converter = new FXPlantCompositeConverter(
+				plant);
+		AbstractController newRoot = converter.getPlant();
+
+		// Remove everything from the root to ensure it will be
+		for (AbstractController entity : root.getEntities()) {
+			root.removeEntity(entity);
+		}
+
+		root = newRoot;
+		loadPart(root);
+
 	}
 }

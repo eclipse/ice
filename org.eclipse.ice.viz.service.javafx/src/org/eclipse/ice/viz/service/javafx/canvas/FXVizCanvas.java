@@ -143,7 +143,7 @@ public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
 	 * @param root
 	 *            the geometry to visualize
 	 */
-	private void loadPart(AbstractController root) {
+	protected void loadPart(AbstractController root) {
 		if (root == null) {
 			return;
 		}

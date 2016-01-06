@@ -26,19 +26,14 @@ Import-Package: com.jme3.math,
  org.eclipse.ice.client.common,
  org.eclipse.ice.client.common.properties,
  org.eclipse.ice.client.widgets,
- org.eclipse.ice.client.widgets.jme,
- org.eclipse.ice.client.widgets.reactoreditor.plant,
- org.eclipse.ice.datastructures.form,
  org.eclipse.ice.iclient.uiwidgets,
  org.eclipse.ice.item,
  org.eclipse.ice.item.jobLauncher,
  org.eclipse.ice.item.nuclear,
- org.eclipse.ice.materials,
  org.eclipse.ice.persistence.xml,
  org.eclipse.ice.reactor.plant,
  org.eclipse.ice.viz.service,
- org.eclipse.ice.viz.service.geometry.plantView,
- org.eclipse.ice.viz.service.jme3.application,
+ org.eclipse.ice.viz.service.javafx.geometry,
  org.eclipse.jgit.api;version="4.0.0",
  org.eclipse.jgit.api.errors;version="4.0.0",
  org.eclipse.ui,
@@ -48,7 +43,8 @@ Import-Package: com.jme3.math,
  org.slf4j;version="1.7.2"
 Require-Bundle: org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
  org.eclipse.ice.datastructures,
- org.eclipse.core.runtime;bundle-version="3.11.0"
+ org.eclipse.core.runtime;bundle-version="3.11.0",
+ org.eclipse.swt
 Service-Component: OSGI-INF/MOOSEEditorComponent.xml
 Export-Package: org.eclipse.ice.client.widgets.moose
 Bundle-Vendor: Oak Ridge National Laboratory

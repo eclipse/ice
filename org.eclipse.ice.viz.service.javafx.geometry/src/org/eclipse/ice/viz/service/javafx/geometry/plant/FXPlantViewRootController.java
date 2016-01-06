@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import java.nio.channels.Pipe;
-
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 /**
  * A controller that manages all the parts present in a Reactor Analyzer. This
@@ -26,8 +27,8 @@ import org.eclipse.ice.viz.service.modeling.AbstractView;
  * @author Robert Smith
  *
  */
-public class FXReactorAnalyzerRoot extends AbstractController
-		implements WireFramePart {
+public class FXPlantViewRootController extends AbstractController
+		implements IWireFramePart {
 
 	/**
 	 * The default constructor
@@ -38,8 +39,7 @@ public class FXReactorAnalyzerRoot extends AbstractController
 	 * @param view
 	 *            A dummy view which will be unused by the root
 	 */
-	public FXReactorAnalyzerRoot(AbstractMeshComponent model,
-			AbstractView view) {
+	public FXPlantViewRootController(AbstractMesh model, AbstractView view) {
 		super(model, view);
 	}
 
@@ -54,8 +54,8 @@ public class FXReactorAnalyzerRoot extends AbstractController
 	public void addEntity(AbstractController entity) {
 
 		// If the entity is a core channel, add it to all reactors
-		if (entity instanceof Pipe) {
-			if (((Pipe) entity).getPipeType() == PipeType.CORE_CHANNEL) {
+		if (entity instanceof PipeController) {
+			if ("True".equals(entity.getProperty("Core Channel"))) {
 
 				// Queue updates from adding children
 				updateManager.enqueue();
@@ -109,7 +109,7 @@ public class FXReactorAnalyzerRoot extends AbstractController
 	@Override
 	public void setWireFrameMode(boolean on) {
 		for (AbstractController child : model.getEntities()) {
-			((WireFramePart) child).setWireFrameMode(on);
+			((IWireFramePart) child).setWireFrameMode(on);
 		}
 	}
 

@@ -19,9 +19,9 @@ import java.util.concurrent.Callable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.reactor.plant.IPlantCompositeListener;
+import org.eclipse.ice.reactor.plant.IPlantView;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.viz.service.geometry.plantView.IPlantView;
 import org.eclipse.ice.viz.service.jme3.application.EmbeddedView;
 import org.eclipse.ice.viz.service.jme3.application.FlightCamera;
 import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
@@ -452,6 +452,14 @@ public class PlantAppState extends ViewAppState
 		return;
 	}
 
+	@Override
+	public void dispose() {
+
+		stop();
+
+		return;
+	}
+
 	/**
 	 * Resets the plant view's camera to its default position and orientation.
 	 * 
@@ -502,6 +510,7 @@ public class PlantAppState extends ViewAppState
 	 * @param plant
 	 *            The new plant.
 	 */
+	@Override
 	public void setPlant(final PlantComposite plant) {
 
 		if (plant != null && plant != this.plant) {

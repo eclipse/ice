@@ -109,7 +109,8 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 *            <p>
 	 *            The other Object to compare against.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
@@ -142,7 +143,8 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
@@ -186,7 +188,8 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 * Returns the hashCode of the object.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */
@@ -203,10 +206,12 @@ public class PlantComponent extends ICEObject implements IReactorComponent {
 	 * <!-- begin-UML-doc --> Gets a String representation of the
 	 * PlantComponent. <!-- end-UML-doc -->
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The name of the PlantComponent as a String.
 	 *         </p>
-	 * @see <p>
+	 * @see
+	 * 		<p>
 	 *      IReactorComponent#toString()
 	 *      </p>
 	 */

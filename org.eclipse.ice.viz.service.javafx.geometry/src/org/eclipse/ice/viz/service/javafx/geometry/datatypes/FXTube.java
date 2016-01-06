@@ -424,9 +424,6 @@ public class FXTube {
 
 			mesh.getFaces().addAll(indices);
 			mesh.getFaceSmoothingGroups().addAll(smoothingGroups);
-
-			System.out.println(mesh.getFaces().size());
-			System.out.println(mesh.getFaceSmoothingGroups().size());
 		}
 
 		return mesh;

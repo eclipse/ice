@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.modeling.TubeController;
@@ -137,6 +138,46 @@ public class PipeController extends TubeController implements IWireFramePart {
 	@Override
 	public void setWireFrameMode(boolean on) {
 		((IWireFramePart) view).setWireFrameMode(on);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new shape from clones of the model and view
+		PipeController clone = new PipeController();
+
+		// Copy any other data into the clone
+		clone.copy(this);
+
+		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void copy(AbstractController source) {
+
+		// Create the model and give it a reference to this
+		model = new PipeMesh();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(source.getModel());
+		view = (AbstractView) source.getView().clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
 	}
 
 }

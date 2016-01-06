@@ -113,4 +113,44 @@ public class TubeController extends ShapeController {
 		((TubeMesh) model).setInnerRadius(radius);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new shape from clones of the model and view
+		TubeController clone = new TubeController();
+
+		// Copy any other data into the clone
+		clone.copy(this);
+
+		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void copy(AbstractController source) {
+
+		// Create the model and give it a reference to this
+		model = new TubeMesh();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(source.model);
+		view = (AbstractView) source.view.clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
+	}
+
 }

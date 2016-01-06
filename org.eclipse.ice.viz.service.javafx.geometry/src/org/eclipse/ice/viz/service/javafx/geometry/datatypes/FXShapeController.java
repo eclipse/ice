@@ -18,11 +18,12 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.Group;
+import javafx.scene.paint.PhongMaterial;
 
 /**
  * A controller for Shapes which have been rendered in JavaFX
@@ -74,6 +75,18 @@ public class FXShapeController extends ShapeController
 
 		// Send updates for all the recursive refreshing
 		updateManager.flushQueue();
+	}
+
+	/**
+	 * Set the shape's default material. The shape is not guaranteed to actually
+	 * display in this material after the function returns, as other materials
+	 * may be taking precedence over the default one, such as the
+	 * selectedMaterial when the shape is selected.
+	 * 
+	 * @param material
+	 */
+	public void setMaterial(PhongMaterial material) {
+		((FXShapeView) view).setMaterial(material);
 	}
 
 	/*

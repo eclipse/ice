@@ -13,12 +13,11 @@
 package org.eclipse.ice.client.widgets.reactoreditor.lwr;
 
 import org.eclipse.ice.client.common.ActionTree;
-import org.eclipse.ice.client.widgets.moose.ViewFactory;
 import org.eclipse.ice.client.widgets.reactoreditor.AnalysisView;
 import org.eclipse.ice.client.widgets.reactoreditor.DataSource;
-import org.eclipse.ice.client.widgets.reactoreditor.plant.PlantAppState;
+import org.eclipse.ice.reactor.plant.IPlantView;
 import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
+import org.eclipse.ice.viz.service.javafx.geometry.ViewFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -52,7 +51,7 @@ public class PlantAnalysisView extends AnalysisView {
 	 * The jME3 <code>ViewAppState</code> used to display a 3D view of an LWR
 	 * plant.
 	 */
-	private final PlantAppState plantApp;
+	private final IPlantView plantApp;
 	/**
 	 * The ActionTree that lets the user select the plant to display its
 	 * properties.
@@ -221,8 +220,8 @@ public class PlantAnalysisView extends AnalysisView {
 	@Override
 	public void update(String key, Object value) {
 
-		logger.info("PlantAnalysisView message: "
-				+ "Receiving update for key " + key + ": " + value.toString());
+		logger.info("PlantAnalysisView message: " + "Receiving update for key "
+				+ key + ": " + value.toString());
 
 		// Currently, the only value this class listens to is the one that holds
 		// the current PlantComposite.
