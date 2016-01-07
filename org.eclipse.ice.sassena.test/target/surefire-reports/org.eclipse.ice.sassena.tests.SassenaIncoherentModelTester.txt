@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.sassena.tests.SassenaIncoherentModelTester
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.221 sec - in org.eclipse.ice.sassena.tests.SassenaIncoherentModelTester
+checkLoadInput(org.eclipse.ice.sassena.tests.SassenaIncoherentModelTester)  Time elapsed: 0.166 sec
+checkSetupForm(org.eclipse.ice.sassena.tests.SassenaIncoherentModelTester)  Time elapsed: 0.02 sec
+checkProcess(org.eclipse.ice.sassena.tests.SassenaIncoherentModelTester)  Time elapsed: 0.03 sec

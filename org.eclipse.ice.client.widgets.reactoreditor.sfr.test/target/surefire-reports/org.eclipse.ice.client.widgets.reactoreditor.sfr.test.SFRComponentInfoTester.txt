@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.client.widgets.reactoreditor.sfr.test.SFRComponentInfoTester
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in org.eclipse.ice.client.widgets.reactoreditor.sfr.test.SFRComponentInfoTester
+checkConstruction(org.eclipse.ice.client.widgets.reactoreditor.sfr.test.SFRComponentInfoTester)  Time elapsed: 0 sec
+checkMatches(org.eclipse.ice.client.widgets.reactoreditor.sfr.test.SFRComponentInfoTester)  Time elapsed: 0 sec

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.xolotl;singleton:=true
+Bundle-Name: Xolotl
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.ice.datastructures,org.eclipse.core.resour
+ ces;bundle-version="3.8.101"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.item,org.eclipse.ice.item.jobLauncher
+Service-Component: OSGI-INF/XolotlLauncher.xml
+

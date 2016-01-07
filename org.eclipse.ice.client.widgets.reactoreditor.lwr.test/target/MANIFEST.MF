@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.client.widgets.reactoreditor.lwr.
+ test
+Bundle-Name: ReactorEditor LWR Test Plugin
+Bundle-Version: 2.1.8
+Require-Bundle: org.junit;bundle-version="4.10.0"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.io.hdf
+Fragment-Host: org.eclipse.ice.client.widgets.reactoreditor.lwr;bundle
+ -version="2.0.0"
+

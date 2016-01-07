@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.test.LWRDataProviderTester
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec - in org.eclipse.ice.reactor.test.LWRDataProviderTester
+checkEquality(org.eclipse.ice.reactor.test.LWRDataProviderTester)  Time elapsed: 0 sec
+checkConstruction(org.eclipse.ice.reactor.test.LWRDataProviderTester)  Time elapsed: 0 sec
+checkCopying(org.eclipse.ice.reactor.test.LWRDataProviderTester)  Time elapsed: 0 sec
+checkDataProvider(org.eclipse.ice.reactor.test.LWRDataProviderTester)  Time elapsed: 0 sec

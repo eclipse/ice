@@ -14,9 +14,9 @@ package org.eclipse.ice.viz;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.net.URI;
 
 import org.eclipse.ice.viz.service.PlotEditor;
 import org.eclipse.ice.viz.service.PlotEditorInput;

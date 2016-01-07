@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.sfr.test.PinAssemblyTester
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 sec - in org.eclipse.ice.reactor.sfr.test.PinAssemblyTester
+checkEquality(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0.003 sec
+checkConstruction(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0 sec
+checkPinAddRem(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0.001 sec
+checkCopying(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0 sec
+checkInnerDuct(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0 sec
+checkCompositeImplementation(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0.001 sec
+checkPinPitch(org.eclipse.ice.reactor.sfr.test.PinAssemblyTester)  Time elapsed: 0 sec

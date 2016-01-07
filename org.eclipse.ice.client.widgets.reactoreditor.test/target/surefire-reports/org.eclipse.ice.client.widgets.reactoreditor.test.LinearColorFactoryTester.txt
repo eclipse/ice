@@ -1,0 +1,9 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester
+checkSetColorsWithList(org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester)  Time elapsed: 0.001 sec
+checkSetColorsWithTheme(org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester)  Time elapsed: 0 sec
+checkMultipleColors(org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester)  Time elapsed: 0 sec
+checkDefaultColors(org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester)  Time elapsed: 0 sec
+checkSetColorsWithIntegers(org.eclipse.ice.client.widgets.reactoreditor.test.LinearColorFactoryTester)  Time elapsed: 0 sec

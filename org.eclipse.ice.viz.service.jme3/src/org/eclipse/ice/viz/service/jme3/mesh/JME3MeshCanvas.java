@@ -21,20 +21,14 @@ import java.util.concurrent.Callable;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
 import org.eclipse.ice.viz.service.jme3.internal.MasterApplicationHolder;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateModeFactory.Mode;
-import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.jme3.scene.shape.Quad;
+import com.sun.javafx.geom.Edge;
 
 /**
  * An IVizCanvas containing a mesh editor powered by jMonkeyEngine 3. This class

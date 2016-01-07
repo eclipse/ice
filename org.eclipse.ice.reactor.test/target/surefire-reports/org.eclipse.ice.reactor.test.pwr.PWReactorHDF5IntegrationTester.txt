@@ -1,0 +1,5 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.test.pwr.PWReactorHDF5IntegrationTester
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.198 sec - in org.eclipse.ice.reactor.test.pwr.PWReactorHDF5IntegrationTester
+checkHDF5Integration(org.eclipse.ice.reactor.test.pwr.PWReactorHDF5IntegrationTester)  Time elapsed: 1.196 sec

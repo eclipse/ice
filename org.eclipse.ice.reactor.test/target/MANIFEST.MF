@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.reactor.test
+Bundle-Name: ReactorTest
+Bundle-Version: 2.1.8
+Require-Bundle: org.junit;bundle-version="4.8.2"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.datastructures.test,org.eclipse.ice.vi
+ z.service.datastructures
+Fragment-Host: org.eclipse.ice.reactor;bundle-version="2.0.0"
+

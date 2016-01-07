@@ -1,0 +1,9 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.test.GridLocationTester
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec - in org.eclipse.ice.reactor.test.GridLocationTester
+checkEquality(org.eclipse.ice.reactor.test.GridLocationTester)  Time elapsed: 0.001 sec
+checkConstruction(org.eclipse.ice.reactor.test.GridLocationTester)  Time elapsed: 0 sec
+checkComparable(org.eclipse.ice.reactor.test.GridLocationTester)  Time elapsed: 0 sec
+checkCopying(org.eclipse.ice.reactor.test.GridLocationTester)  Time elapsed: 0 sec
+checkDataProvider(org.eclipse.ice.reactor.test.GridLocationTester)  Time elapsed: 0 sec

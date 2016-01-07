@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.reactor.sfr.test
+Bundle-Name: org.eclipse.ice.reactor.sfr.test
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.ice.datastructures,org.junit
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.analysistool,org.eclipse.ice.datastruc
+ tures.test,org.eclipse.ice.reactor.sfr.base,org.eclipse.ice.reactor.s
+ fr.core,org.eclipse.ice.reactor.sfr.core.assembly,org.eclipse.ice.viz
+ .service.datastructures,org.eclipse.ice.viz.service.mesh.datastructur
+ es
+

@@ -26,6 +26,8 @@ import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.Transformation;
@@ -67,12 +69,14 @@ import com.jme3.system.JmeCanvasContext;
  * @author Robert Smith
  * @author Jay Jay Billings
  */
-public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas, IVizUpdateableListener {
+public class JME3GeometryCanvas extends SimpleApplication
+		implements IVizCanvas, IVizUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(JME3GeometryCanvas.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(JME3GeometryCanvas.class);
 
 	/**
 	 * Some of the code in this file was adapted from the JME3 tutorials and
@@ -106,12 +110,12 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 	/**
 	 * Leaf nodes in the scene graph that show each axis
 	 */
-	private static com.jme3.scene.Geometry xAxis = new com.jme3.scene.Geometry("xAxis",
-			new Line(xPoint.negate(), xPoint));
-	private static com.jme3.scene.Geometry yAxis = new com.jme3.scene.Geometry("yAxis",
-			new Line(yPoint.negate(), yPoint));
-	private static com.jme3.scene.Geometry zAxis = new com.jme3.scene.Geometry("zAxis",
-			new Line(zPoint.negate(), zPoint));
+	private static com.jme3.scene.Geometry xAxis = new com.jme3.scene.Geometry(
+			"xAxis", new Line(xPoint.negate(), xPoint));
+	private static com.jme3.scene.Geometry yAxis = new com.jme3.scene.Geometry(
+			"yAxis", new Line(yPoint.negate(), yPoint));
+	private static com.jme3.scene.Geometry zAxis = new com.jme3.scene.Geometry(
+			"zAxis", new Line(zPoint.negate(), zPoint));
 
 	/**
 	 * A material for the axis and labels that define each.
@@ -149,7 +153,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		logger.info("Opening jME3 geometry renderer...");
 
 		// Turn off near clipping on the geometry
-		cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(), 0.01f, 1000f);
+		cam.setFrustumPerspective(45f, (float) cam.getWidth() / cam.getHeight(),
+				0.01f, 1000f);
 
 		// Set up the camera
 		FlyByCamera cam = getFlyByCamera();
@@ -164,7 +169,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		al.setColor(ColorRGBA.LightGray.mult(0.5f));
 		rootNode.addLight(al);
 
-		ColorRGBA MediumGray = new ColorRGBA((float) .3, (float) .3, (float) .3, 1);
+		ColorRGBA MediumGray = new ColorRGBA((float) .3, (float) .3, (float) .3,
+				1);
 
 		// Setup the light source that is emitted from behind the camera
 		cameraLight = new DirectionalLight();
@@ -190,7 +196,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		rootNode.addLight(lowerCornerLight);
 
 		// Create the x axis
-		axisMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		axisMaterial = new Material(assetManager,
+				"Common/MatDefs/Misc/Unshaded.j3md");
 		axisMaterial.setColor("Color", ColorRGBA.Green);
 		xAxis.setMaterial(axisMaterial);
 		rootNode.attachChild(xAxis);
@@ -201,7 +208,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		guiNode.attachChild(xLabel);
 
 		// Create the y axis
-		axisMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		axisMaterial = new Material(assetManager,
+				"Common/MatDefs/Misc/Unshaded.j3md");
 		axisMaterial.setColor("Color", ColorRGBA.Red);
 		yAxis.setMaterial(axisMaterial);
 		rootNode.attachChild(yAxis);
@@ -212,7 +220,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		guiNode.attachChild(yLabel);
 
 		// Create the z axis
-		axisMaterial = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		axisMaterial = new Material(assetManager,
+				"Common/MatDefs/Misc/Unshaded.j3md");
 		axisMaterial.setColor("Color", ColorRGBA.Blue);
 		zAxis.setMaterial(axisMaterial);
 		rootNode.attachChild(zAxis);
@@ -234,7 +243,8 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		primitiveMeshes[5] = new Tube(0.5f, 0.4f, 1.0f, 5, 30);
 
 		// Create the base material
-		baseMaterial = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		baseMaterial = new Material(assetManager,
+				"Common/MatDefs/Light/Lighting.j3md");
 		baseMaterial.setBoolean("UseMaterialColors", true);
 		float alpha = 1.0f;
 		ColorRGBA color = new ColorRGBA(1.0f, 1.0f, 1.0f, alpha);
@@ -244,13 +254,15 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		baseMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
 
 		// Create the highlighted material used when a shape is selected
-		highlightedMaterial = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+		highlightedMaterial = new Material(assetManager,
+				"Common/MatDefs/Light/Lighting.j3md");
 		highlightedMaterial.setBoolean("UseMaterialColors", true);
 		color = new ColorRGBA(1.0f, 0.0f, 0.0f, 1.0f); // Red
 		highlightedMaterial.setColor("Diffuse", color);
 		highlightedMaterial.setFloat("Shininess", 12);
 		highlightedMaterial.setColor("Ambient", ColorRGBA.White);
-		highlightedMaterial.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+		highlightedMaterial.getAdditionalRenderState()
+				.setBlendMode(BlendMode.Alpha);
 
 		return;
 	}
@@ -348,18 +360,21 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 		// Set the transformation values
 
-		transform.setScale((float) (size * scale[0]), (float) (size * scale[1]), (float) (size * scale[2]));
+		transform.setScale((float) (size * scale[0]), (float) (size * scale[1]),
+				(float) (size * scale[2]));
 
 		// Create a quaternion from the angle measurements on each axis,
 		// and apply it to the Transform
 
 		Quaternion rotationQuat = new Quaternion();
-		rotationQuat.fromAngles((float) rotation[0], (float) rotation[1], (float) rotation[2]);
+		rotationQuat.fromAngles((float) rotation[0], (float) rotation[1],
+				(float) rotation[2]);
 		transform.setRotation(rotationQuat);
 
 		// Translate it last
 
-		transform.setTranslation((float) translation[0], (float) translation[1], (float) translation[2]);
+		transform.setTranslation((float) translation[0], (float) translation[1],
+				(float) translation[2]);
 
 		return transform;
 	}
@@ -368,17 +383,20 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 		// Only unions are currently supported until the mesh renderer is
 		// implemented
 
-		if (OperatorType.Union.toString().equals(shape.getProperty("Operator"))) {
+		if (OperatorType.Union.toString()
+				.equals(shape.getProperty("Operator"))) {
 
 			// Create a new Node
 
 			Node complexShapeNode = new Node(shape.getProperty("Name"));
 			complexShapeNode.setUserData("shape", new ShapeTransient(shape));
-			complexShapeNode.setLocalTransform(convertTransformation(shape.getTransformation()));
+			complexShapeNode.setLocalTransform(
+					convertTransformation(shape.getTransformation()));
 
 			// Loop through the shapes in the ComplexShape
 
-			List<AbstractController> shapes = shape.getEntitiesByCategory("Children");
+			List<AbstractController> shapes = shape
+					.getEntitiesByCategory("Children");
 
 			for (AbstractController childShape : shapes) {
 
@@ -412,9 +430,11 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 			}
 			// Create geometry and store the reference to the shape data
 			// structure
-			com.jme3.scene.Geometry geom = new com.jme3.scene.Geometry(shape.getProperty("Name"), mesh);
+			com.jme3.scene.Geometry geom = new com.jme3.scene.Geometry(
+					shape.getProperty("Name"), mesh);
 			geom.setUserData("shape", new ShapeTransient(shape));
-			geom.setLocalTransform(convertTransformation(shape.getTransformation()));
+			geom.setLocalTransform(
+					convertTransformation(shape.getTransformation()));
 
 			// Cylinders need to be rotated 90 degrees on the x-axis
 
@@ -506,15 +526,18 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 			if (primitiveShapeIndex >= 0) {
 				// nodeShape is an existing PrimitiveShape
 
-				JME3Shape primitiveShape = primitiveShapes.get(primitiveShapeIndex);
+				JME3Shape primitiveShape = primitiveShapes
+						.get(primitiveShapeIndex);
 
 				// Reset the transformation
 
-				childSpatial.setLocalTransform(convertTransformation(primitiveShape.getTransformation()));
+				childSpatial.setLocalTransform(convertTransformation(
+						primitiveShape.getTransformation()));
 
 				// Rotate 90 degrees if it's a cylinder
 
-				if (ShapeType.valueOf(primitiveShape.getProperty("Type")) == ShapeType.Cylinder) {
+				if (ShapeType.valueOf(primitiveShape
+						.getProperty("Type")) == ShapeType.Cylinder) {
 					childSpatial.rotate(FastMath.PI / 2, 0.0f, 0.0f);
 				}
 
@@ -540,10 +563,12 @@ public class JME3GeometryCanvas extends SimpleApplication implements IVizCanvas,
 
 				// Reset the transform
 
-				childSpatial.setLocalTransform(convertTransformation(complexShape.getTransformation()));
+				childSpatial.setLocalTransform(convertTransformation(
+						complexShape.getTransformation()));
 
 				// Synchronize each individual child in the ComplexShape
-				List<AbstractController> complexShapeChildren = complexShape.getEntities();
+				List<AbstractController> complexShapeChildren = complexShape
+						.getEntities();
 
 				syncShapes(childNode, complexShapeChildren);
 

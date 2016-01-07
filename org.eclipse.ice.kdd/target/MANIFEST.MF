@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.kdd
+Export-Package: org.eclipse.ice.kdd
+Bundle-Name: org.eclipse.ice.kdd
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.ice.datastructures,org.eclipse.core.resour
+ ces;bundle-version="3.8.1",org.eclipse.core.runtime;bundle-version="3
+ .8.0"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.analysistool,org.slf4j;version="1.7.2"
+Service-Component: OSGI-INF/kddtool.xml, OSGI-INF/strategyfactory.xml,
+  OSGI-INF/rawkmeans.xml, OSGI-INF/godfrey.xml
+

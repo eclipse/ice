@@ -11,9 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.internal.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import org.eclipse.ice.viz.service.BasicVizServiceFactory;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='org.eclipse.ice.client.widgets.reactoreditor.lwr' version='2.1.8' singleton='false'>
+    <update id='org.eclipse.ice.client.widgets.reactoreditor.lwr' range='[0.0.0,2.1.8)' severity='0'/>
+    <properties size='5'>
+      <property name='org.eclipse.equinox.p2.name' value='ReactorEditor LWR Package'/>
+      <property name='org.eclipse.equinox.p2.provider' value='Oak Ridge National Laboratory'/>
+      <property name='maven-groupId' value='ICE'/>
+      <property name='maven-artifactId' value='org.eclipse.ice.client.widgets.reactoreditor.lwr'/>
+      <property name='maven-version' value='2.1.8'/>
+    </properties>
+    <provides size='4'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.client.widgets.reactoreditor.lwr' version='2.1.8'/>
+      <provided namespace='osgi.bundle' name='org.eclipse.ice.client.widgets.reactoreditor.lwr' version='2.1.8'/>
+      <provided namespace='java.package' name='org.eclipse.ice.client.widgets.reactoreditor.lwr' version='0.0.0'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+    </provides>
+    <requires size='23'>
+      <required namespace='osgi.bundle' name='org.eclipse.gef' range='3.9.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.jface' range='3.8.102'/>
+      <required namespace='osgi.bundle' name='com.ibm.icu' range='4.4.2'/>
+      <required namespace='osgi.bundle' name='org.eclipse.ice.client.compatibility' range='2.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.ice.datastructures' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.nebula.visualization.widgets' range='1.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.nebula.visualization.xygraph' range='1.0.0'/>
+      <required namespace='java.package' name='org.eclipse.core.runtime' range='3.4.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.analysistool' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.client.common' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.client.widgets.jme' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.client.widgets.reactoreditor' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.client.widgets.reactoreditor.grid' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.client.widgets.reactoreditor.plant' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.client.widgets.reactoreditor.properties' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.reactor' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.reactor.bwr' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.reactor.plant' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.reactor.pwr' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.viz.service.jme3.application' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ui' range='0.0.0'/>
+      <required namespace='java.package' name='org.osgi.framework' range='1.7.0'/>
+      <required namespace='java.package' name='org.slf4j' range='1.7.2'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='org.eclipse.ice.client.widgets.reactoreditor.lwr' version='2.1.8'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: org.eclipse.ice.client.widgets.reactoreditor.lwr&#xA;Bundle-Version: 2.1.8&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>

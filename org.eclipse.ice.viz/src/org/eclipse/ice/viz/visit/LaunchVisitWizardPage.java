@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtConnectionManager;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
@@ -39,6 +36,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtConnectionManager;
 
 /**
  * This class extends WizardPage to create the Wizard content to allow the user

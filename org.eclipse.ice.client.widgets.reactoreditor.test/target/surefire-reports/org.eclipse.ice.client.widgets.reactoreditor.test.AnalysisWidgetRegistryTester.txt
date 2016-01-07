@@ -1,0 +1,5 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.client.widgets.reactoreditor.test.AnalysisWidgetRegistryTester
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.AnalysisWidgetRegistryTester
+checkAnalysisWidgetFactoryRegistration(org.eclipse.ice.client.widgets.reactoreditor.test.AnalysisWidgetRegistryTester)  Time elapsed: 0.001 sec

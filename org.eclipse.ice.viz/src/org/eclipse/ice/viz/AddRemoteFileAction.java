@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz;
 
-import gov.lbnl.visit.swt.VisItRemoteFileDialog;
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -30,6 +26,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.lbnl.visit.swt.VisItRemoteFileDialog;
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtWidget;
 
 /**
  * This Action presents a {@link VisItRemoteFileDialog} to select files from a

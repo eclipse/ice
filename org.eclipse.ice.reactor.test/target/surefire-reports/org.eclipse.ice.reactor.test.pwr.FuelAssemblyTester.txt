@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 sec - in org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester
+checkHDF5Readables(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0.009 sec
+checkEquality(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0.001 sec
+checkConstruction(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0 sec
+checkRodClusterAssembly(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0 sec
+checkTube(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0.001 sec
+checkLabels(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0 sec
+checkHDF5Writeables(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0.009 sec
+checkCopying(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0 sec
+checkCompositeImplementations(org.eclipse.ice.reactor.test.pwr.FuelAssemblyTester)  Time elapsed: 0 sec

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.reactor
+Export-Package: org.eclipse.ice.reactor,org.eclipse.ice.reactor.bwr,or
+ g.eclipse.ice.reactor.pwr
+Bundle-Name: Reactor
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.ice.datastructures,org.eclipse.ice.io;visi
+ bility:=reexport,org.eclipse.ice.analysistool;bundle-version="2.0.0"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.datastructures.ICEObject,org.eclipse.i
+ ce.reactor.pwr,org.slf4j;version="1.7.2"
+

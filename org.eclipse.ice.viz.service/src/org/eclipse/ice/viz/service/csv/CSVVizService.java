@@ -119,7 +119,8 @@ public class CSVVizService extends AbstractVizService {
 
 	@Override
 	public IControllerFactory getFactory() {
-		// CSV visualization service does not make use of the model framework, so it has no factory
+		// CSV visualization service does not make use of the model framework,
+		// so it has no factory
 		return null;
 	}
 

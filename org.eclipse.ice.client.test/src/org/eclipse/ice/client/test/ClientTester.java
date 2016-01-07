@@ -37,11 +37,9 @@ import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -53,7 +51,6 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.ORB;
 
 /**
  * ClientTester checks the behavior and functionality of Client. It checks for

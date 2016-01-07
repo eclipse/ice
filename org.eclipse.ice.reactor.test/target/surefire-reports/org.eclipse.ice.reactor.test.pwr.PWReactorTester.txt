@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.test.pwr.PWReactorTester
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 sec - in org.eclipse.ice.reactor.test.pwr.PWReactorTester
+checkHDF5Readables(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0.02 sec
+checkEquality(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0.002 sec
+checkDataProviderLocations(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec
+checkConstruction(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec
+checkRodClusterAssembly(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec
+checkLabels(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec
+checkHDF5Writeables(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0.012 sec
+checkCopying(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec
+checkCompositeImplementations(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0.001 sec
+checkInCoreInstrument(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec
+checkControlBank(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0.001 sec
+checkFuelAssembly(org.eclipse.ice.reactor.test.pwr.PWReactorTester)  Time elapsed: 0 sec

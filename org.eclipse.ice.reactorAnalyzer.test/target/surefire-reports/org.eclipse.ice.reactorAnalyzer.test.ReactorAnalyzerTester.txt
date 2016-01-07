@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerTester
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 3, Time elapsed: 0.028 sec - in org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerTester
+checkDataSourceReview(org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerTester) skipped
+checkConstruction(org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerTester)  Time elapsed: 0.002 sec
+checkProcessing(org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerTester) skipped
+checkResubmit(org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerTester) skipped

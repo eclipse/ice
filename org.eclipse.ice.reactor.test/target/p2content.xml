@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='org.eclipse.ice.reactor.test' version='2.1.8' singleton='false'>
+    <update id='org.eclipse.ice.reactor.test' range='[0.0.0,2.1.8)' severity='0'/>
+    <properties size='5'>
+      <property name='org.eclipse.equinox.p2.name' value='ReactorTest'/>
+      <property name='org.eclipse.equinox.p2.provider' value='Oak Ridge National Laboratory'/>
+      <property name='maven-groupId' value='ICE'/>
+      <property name='maven-artifactId' value='org.eclipse.ice.reactor.test'/>
+      <property name='maven-version' value='2.1.8'/>
+    </properties>
+    <provides size='4'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.reactor.test' version='2.1.8'/>
+      <provided namespace='osgi.bundle' name='org.eclipse.ice.reactor.test' version='2.1.8'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+      <provided namespace='osgi.fragment' name='org.eclipse.ice.reactor' version='2.1.8'/>
+    </provides>
+    <requires size='4'>
+      <required namespace='osgi.bundle' name='org.eclipse.ice.reactor' range='2.0.0'/>
+      <required namespace='osgi.bundle' name='org.junit' range='4.8.2'/>
+      <required namespace='java.package' name='org.eclipse.ice.datastructures.test' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.viz.service.datastructures' range='0.0.0'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='org.eclipse.ice.reactor.test' version='2.1.8'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: org.eclipse.ice.reactor.test&#xA;Bundle-Version: 2.1.8&#xA;Fragment-Host: org.eclipse.ice.reactor;bundle-version=&quot;2.0.0&quot;&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>

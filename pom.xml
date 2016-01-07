@@ -7,7 +7,7 @@
 		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>pom.xml</pom-filename>
 		<!-- <target-version>2.1.7.${maven.build.timestamp}</target-version>  -->
-		<target-version>2.1.7.20150825</target-version>		
+		<target-version>2.1.8</target-version>		
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
 
@@ -74,6 +74,7 @@
 		<module>org.eclipse.ice.client.compatibility</module>
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
+<<<<<<< HEAD
 		<!-- <module>org.eclipse.ice.client.widgets.moose.test</module> -->
 		<module>org.eclipse.ice.client.widgets.reactoreditor</module>
 		<!-- <module>org.eclipse.ice.client.widgets.reactoreditor.test</module> -->
@@ -83,6 +84,9 @@
 		<!-- <module>org.eclipse.ice.client.widgets.reactoreditor.lwr.test</module> -->
 		<module>org.eclipse.ice.client.widgets.reactoreditor.sfr</module>
 		<!-- <module>org.eclipse.ice.client.widgets.reactoreditor.sfr.test</module> -->
+=======
+		<module>org.eclipse.ice.client.widgets.moose.test</module>
+>>>>>>> refs/heads/next
 		<module>org.eclipse.ice.client.widgets.rcp</module>
 		<!-- <module>org.eclipse.ice.client.widgets.test</module> -->
 		<module>org.eclipse.ice.client.widgets.test.utils</module>
@@ -99,21 +103,33 @@
 		<module>org.eclipse.ice.persistence.xml</module>
 		<!-- <module>org.eclipse.ice.persistence.xml.test</module> -->
 		<module>org.eclipse.ice.io</module>
+<<<<<<< HEAD
 		<!-- <module>org.eclipse.ice.io.test</module> -->
 		<module>org.eclipse.ice.analysistool</module>
 		<module>org.eclipse.ice.reactor</module>
 		<!-- <module>org.eclipse.ice.reactor.test</module> -->
 		<module>org.eclipse.ice.reactor.sfr</module>
 		<!-- <module>org.eclipse.ice.reactor.sfr.test</module> -->
+=======
+		<module>org.eclipse.ice.io.test</module>
+>>>>>>> refs/heads/next
 		<module>org.eclipse.ice.reactor.plant</module>
+<<<<<<< HEAD
 		<!-- <module>org.eclipse.ice.reactor.plant.test</module> -->
 		<module>org.eclipse.ice.reactor.perspective</module>
 		<module>org.eclipse.ice.reactorAnalyzer</module>
 		<!-- <module>org.eclipse.ice.reactorAnalyzer.test</module> -->
+=======
+		<module>org.eclipse.ice.reactor.plant.test</module>
+>>>>>>> refs/heads/next
 		<module>org.eclipse.ice.vibe</module>
+<<<<<<< HEAD
 		<!-- <module>org.eclipse.ice.vibe.test</module> -->
 		<module>org.eclipse.ice.kdd</module>
 		<!-- <module>org.eclipse.ice.kdd.test</module> -->
+=======
+		<module>org.eclipse.ice.vibe.test</module>
+>>>>>>> refs/heads/next
 		<module>org.eclipse.ice.proteus</module>
 		<!-- <module>org.eclipse.ice.proteus.test</module> -->
 		<module>org.eclipse.ice.mesh</module>
@@ -139,15 +155,23 @@
 		<!-- <module>org.eclipse.ice.viz.service.visit.test</module> -->
 		<module>org.eclipse.ice.viz.service.paraview</module>
 		<module>org.eclipse.ice.viz.service.paraview.web</module>
+<<<<<<< HEAD
 		<!-- <module>org.eclipse.ice.viz.service.paraview.test</module> -->
 		<module>org.eclipse.ice.xolotl</module>
+=======
+		<module>org.eclipse.ice.viz.service.paraview.test</module>
+>>>>>>> refs/heads/next
 		<module>org.eclipse.ice.materials</module>
 		<!-- <module>org.eclipse.ice.materials.test</module> -->
 		<module>org.eclipse.ice.materials.ui</module>
 		<module>org.eclipse.ice.caebat.batml</module>
+<<<<<<< HEAD
 		<!-- <module>org.eclipse.ice.caebat.batml.test</module> -->
 		<module>org.eclipse.ice.sassena</module>
 		<!-- <module>org.eclipse.ice.sassena.test</module> -->
+=======
+		<module>org.eclipse.ice.caebat.batml.test</module>
+>>>>>>> refs/heads/next
 		<module>org.eclipse.ice.reflectivity</module>
 		<!-- <module>org.eclipse.ice.reflectivity.test</module> -->
 		<module>org.eclipse.ice.reflectivity.ui</module>

@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactorAnalyzer.test.ReactorReaderFactoryTester
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.111 sec - in org.eclipse.ice.reactorAnalyzer.test.ReactorReaderFactoryTester
+checkCopying(org.eclipse.ice.reactorAnalyzer.test.ReactorReaderFactoryTester)  Time elapsed: 0.006 sec
+checkReading(org.eclipse.ice.reactorAnalyzer.test.ReactorReaderFactoryTester)  Time elapsed: 0.103 sec

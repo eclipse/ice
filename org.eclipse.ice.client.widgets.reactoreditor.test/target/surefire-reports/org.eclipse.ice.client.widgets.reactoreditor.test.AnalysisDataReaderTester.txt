@@ -1,0 +1,5 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.client.widgets.reactoreditor.test.AnalysisDataReaderTester
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.013 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.AnalysisDataReaderTester
+readExampleData(org.eclipse.ice.client.widgets.reactoreditor.test.AnalysisDataReaderTester)  Time elapsed: 0.013 sec

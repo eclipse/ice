@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.reactor.sfr
+Export-Package: org.eclipse.ice.reactor.sfr.base,org.eclipse.ice.react
+ or.sfr.core,org.eclipse.ice.reactor.sfr.core.assembly
+Bundle-Name: org.eclipse.ice.reactor.sfr
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.ice.datastructures
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: ncsa.hdf.hdf5lib,ncsa.hdf.hdf5lib.exceptions,ncsa.hdf.
+ hdf5lib.structs,org.eclipse.ice.analysistool,org.slf4j;version="1.7.2
+ "
+

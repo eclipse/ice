@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.reactor.perspective;singleton:=tr
+ ue
+Export-Package: org.eclipse.ice.reactor.perspective
+Bundle-Name: ICE Reactors Component
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100",org.
+ eclipse.ice.client.compatibility;bundle-version="2.0.0",org.eclipse.i
+ ce.datastructures
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.client.widgets,org.eclipse.ice.client.
+ widgets.reactoreditor,org.eclipse.ice.datastructures.ICEObject,org.ec
+ lipse.ice.datastructures.componentVisitor,org.eclipse.ice.datastructu
+ res.form,org.eclipse.ice.datastructures.resource,org.eclipse.ice.icli
+ ent,org.eclipse.ice.io.hdf,org.eclipse.ice.reactor,org.eclipse.ice.re
+ actor.bwr,org.eclipse.ice.reactor.pwr,org.eclipse.ice.reactor.sfr.bas
+ e,org.eclipse.ice.reactor.sfr.core,org.eclipse.ice.reactor.sfr.core.a
+ ssembly,org.eclipse.ice.reactorAnalyzer,org.eclipse.swt,org.eclipse.s
+ wt.widgets,org.eclipse.ui,org.eclipse.ui.part,org.eclipse.ui.views,or
+ g.eclipse.ui.views.contentoutline,org.eclipse.ui.views.properties,org
+ .eclipse.ui.views.properties.tabbed,org.slf4j;version="1.7.2"
+Service-Component: OSGI-INF/ReactorEditorRegistry.xml,OSGI-INF/Reactor
+ ClientHolder.xml,OSGI-INF/IORegistryHolder.xml
+

@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 sec - in org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester
+checkHDF5Readables(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0.01 sec
+checkEquality(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0 sec
+checkConstruction(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0.001 sec
+checkLWRRodOperations(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0 sec
+checkLWRDataProvider(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0 sec
+checkHDF5Writeables(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0.01 sec
+checkCopying(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0.001 sec
+checkCompositeImplementations(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0 sec
+checkRodPitch(org.eclipse.ice.reactor.test.pwr.PWRAssemblyTester)  Time elapsed: 0 sec

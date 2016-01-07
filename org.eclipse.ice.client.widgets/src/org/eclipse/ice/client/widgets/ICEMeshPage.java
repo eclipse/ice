@@ -22,6 +22,8 @@ import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.jface.action.Action;

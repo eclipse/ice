@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.sfr.test.SFRDataTester
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec - in org.eclipse.ice.reactor.sfr.test.SFRDataTester
+checkEquality(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkPosition(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkFeature(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkUnits(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkValue(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkConstruction(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkCopying(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec
+checkUncertainty(org.eclipse.ice.reactor.sfr.test.SFRDataTester)  Time elapsed: 0 sec

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.analysistool;singleton:=true
+Export-Package: org.eclipse.ice.analysistool
+Bundle-Name: ICE Analysis Tool Interface
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.ice.datastructures
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.ice.datastructures.form
+

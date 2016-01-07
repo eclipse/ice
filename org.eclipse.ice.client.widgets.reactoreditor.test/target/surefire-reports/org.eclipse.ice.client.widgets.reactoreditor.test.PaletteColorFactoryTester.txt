@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.client.widgets.reactoreditor.test.PaletteColorFactoryTester
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.PaletteColorFactoryTester
+checkPalette(org.eclipse.ice.client.widgets.reactoreditor.test.PaletteColorFactoryTester)  Time elapsed: 0 sec
+checkReset(org.eclipse.ice.client.widgets.reactoreditor.test.PaletteColorFactoryTester)  Time elapsed: 0 sec

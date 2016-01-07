@@ -1,0 +1,11 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactor.sfr.test.SFReactorTester
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec - in org.eclipse.ice.reactor.sfr.test.SFReactorTester
+checkLatticePitch(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0 sec
+checkEquality(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0.001 sec
+checkAssemblyAddRem(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0.002 sec
+checkOuterFlatToFlat(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0 sec
+checkConstruction(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0 sec
+checkCopying(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0 sec
+checkCompositeImplementation(org.eclipse.ice.reactor.sfr.test.SFReactorTester)  Time elapsed: 0 sec

@@ -1,0 +1,5 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerBuilderTester
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.246 sec - in org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerBuilderTester
+checkBuilding(org.eclipse.ice.reactorAnalyzer.test.ReactorAnalyzerBuilderTester)  Time elapsed: 0.219 sec

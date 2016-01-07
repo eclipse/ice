@@ -14,9 +14,6 @@ package org.eclipse.ice.tablecomponenttester;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,9 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -40,12 +34,9 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.reactor.LWRComponent;
-import org.eclipse.ice.reactor.LWRComponentReader;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
-import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {
@@ -70,7 +61,8 @@ public class TableComponentTester extends Item {
 		ArrayList<String> masterTypeTemplate;
 		Entry entry1, entry2, entry3, entry4;
 		ResourceComponent resourceComp = new ResourceComponent();
-		TreeComposite parent = null, child1 = null, child2 = null, child3 = null;
+		TreeComposite parent = null, child1 = null, child2 = null,
+				child3 = null;
 
 		// Create the Form
 		form = new Form();
@@ -78,7 +70,8 @@ public class TableComponentTester extends Item {
 		// Set the details of this Item
 		setName("ICE Demonstration Component");
 		setDescription("This component demonstrates the different types of "
-				+ "data structures available in ICE and their visual " + "representations.");
+				+ "data structures available in ICE and their visual "
+				+ "representations.");
 
 		// create a new instance of MasterDetailsComponent
 		mDetailsComp = new MasterDetailsComponent();
@@ -241,7 +234,8 @@ public class TableComponentTester extends Item {
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(geometryShape);
@@ -255,8 +249,9 @@ public class TableComponentTester extends Item {
 		// ===== Resource Component Page ===== //
 		resourceComp.setName("Resource component");
 		resourceComp.setId(109);
-		resourceComp.setDescription(
-				"This component contains the files, resources " + "and data available to this plug-in.");
+		resourceComp
+				.setDescription("This component contains the files, resources "
+						+ "and data available to this plug-in.");
 		// Add files from the project space to the Resource Component
 		if (project != null) {
 			try {
@@ -267,7 +262,8 @@ public class TableComponentTester extends Item {
 					if (resources[i].getType() == IResource.FILE) {
 						IFile file = (IFile) resources[i];
 						// Create resource
-						ICEResource iceResource = new ICEResource(new File(file.getRawLocationURI()));
+						ICEResource iceResource = new ICEResource(
+								new File(file.getRawLocationURI()));
 						iceResource.setId(i);
 						iceResource.setName("File " + i);
 						iceResource.setPath(file.getLocationURI());
@@ -336,28 +332,6 @@ public class TableComponentTester extends Item {
 
 		// Add the TreeComposite to the Form
 		form.addComponent(parent);
-
-		// Find the ReactorEditor test file - get the bundle first
-		Bundle bundle = Platform.getBundle("org.eclipse.ice.tablecomponenttester");
-		String separator = System.getProperty("file.separator");
-		Path testDataPath = new Path("data" + separator + "test_new.h5");
-		URL testDataURL = FileLocator.find(bundle, testDataPath, null);
-		LWRComponentReader reader = new LWRComponentReader();
-		LWRComponent lwrComponent;
-		try {
-			URI dataFileURI = FileLocator.toFileURL(testDataURL).toURI();
-			System.out.println(dataFileURI);
-			lwrComponent = (LWRComponent) reader.read(dataFileURI);
-			lwrComponent.setId(999);
-			// Add the LWRComponent to the form
-			form.addComponent(lwrComponent);
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		return;
 	}

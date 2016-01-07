@@ -61,8 +61,7 @@ public class PipeController extends AbstractPlantController {
 	 *            The queue responsible for tasks that need to be performed on
 	 *            the jME rendering thread.
 	 */
-	public PipeController(Pipe model, PipeView view,
-			IRenderQueue renderQueue) {
+	public PipeController(Pipe model, PipeView view, IRenderQueue renderQueue) {
 		super(model, view, renderQueue);
 
 		// Set the model. If it is null, create a new, default model.
@@ -92,8 +91,8 @@ public class PipeController extends AbstractPlantController {
 		view.updateMesh((float) model.getRadius(), (float) model.getLength(),
 				model.getNumElements());
 		view.setLocation(PlantMath.getVector(model.getPosition()));
-		view.setRotation(getQuaternionFromOrientation(PlantMath.getVector(model
-				.getOrientation())));
+		view.setRotation(getQuaternionFromOrientation(
+				PlantMath.getVector(model.getOrientation())));
 		view.refreshMesh();
 
 		return;
@@ -128,8 +127,8 @@ public class PipeController extends AbstractPlantController {
 		List<Quaternion> rotations = new ArrayList<Quaternion>();
 
 		offsets.add(PlantMath.getVector(model.getPosition()));
-		rotations.add(getQuaternionFromOrientation(PlantMath.getVector(model
-				.getOrientation())));
+		rotations.add(getQuaternionFromOrientation(
+				PlantMath.getVector(model.getOrientation())));
 
 		return getWorldBounds(view.getBottomVertices(primary), offsets,
 				rotations);
@@ -163,8 +162,8 @@ public class PipeController extends AbstractPlantController {
 		List<Quaternion> rotations = new ArrayList<Quaternion>();
 
 		offsets.add(PlantMath.getVector(model.getPosition()));
-		rotations.add(getQuaternionFromOrientation(PlantMath.getVector(model
-				.getOrientation())));
+		rotations.add(getQuaternionFromOrientation(
+				PlantMath.getVector(model.getOrientation())));
 
 		return getWorldBounds(view.getTopVertices(primary), offsets, rotations);
 	}
@@ -251,8 +250,8 @@ public class PipeController extends AbstractPlantController {
 		List<Vector3f> offsets = new ArrayList<Vector3f>();
 		List<Quaternion> rotations = new ArrayList<Quaternion>();
 		offsets.add(PlantMath.getVector(model.getPosition()));
-		rotations.add(getQuaternionFromOrientation(PlantMath.getVector(model
-				.getOrientation())));
+		rotations.add(getQuaternionFromOrientation(
+				PlantMath.getVector(model.getOrientation())));
 
 		// Get the BoundingBox for the end vertices in world coordinates.
 		return getWorldBounds(allEndVertices, offsets, rotations);
@@ -329,8 +328,8 @@ public class PipeController extends AbstractPlantController {
 			float length = (float) model.getLength();
 			int axialSamples = model.getNumElements();
 			final Vector3f location = PlantMath.getVector(model.getPosition());
-			final Quaternion rotation = getQuaternionFromOrientation(PlantMath
-					.getVector(model.getOrientation()));
+			final Quaternion rotation = getQuaternionFromOrientation(
+					PlantMath.getVector(model.getOrientation()));
 
 			// Update the mesh. This method only affects the underlying mesh.
 			view.updateMesh(radius, length, axialSamples);

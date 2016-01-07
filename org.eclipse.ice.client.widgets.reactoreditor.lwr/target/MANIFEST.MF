@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.client.widgets.reactoreditor.lwr
+Export-Package: org.eclipse.ice.client.widgets.reactoreditor.lwr
+Bundle-Name: ReactorEditor LWR Package
+Bundle-Version: 2.1.8
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.gef;bundle-version="3.9.0",org.eclipse.jfa
+ ce;bundle-version="3.8.102",com.ibm.icu;bundle-version="4.4.2",org.ec
+ lipse.ice.client.compatibility;bundle-version="2.0.0",org.eclipse.ice
+ .datastructures,org.eclipse.nebula.visualization.widgets;bundle-versi
+ on="1.0.0",org.eclipse.nebula.visualization.xygraph;bundle-version="1
+ .0.0"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.core.runtime;version="3.4.0",org.eclipse.i
+ ce.analysistool,org.eclipse.ice.client.common,org.eclipse.ice.client.
+ widgets.jme,org.eclipse.ice.client.widgets.reactoreditor,org.eclipse.
+ ice.client.widgets.reactoreditor.grid,org.eclipse.ice.client.widgets.
+ reactoreditor.plant,org.eclipse.ice.client.widgets.reactoreditor.prop
+ erties,org.eclipse.ice.reactor,org.eclipse.ice.reactor.bwr,org.eclips
+ e.ice.reactor.plant,org.eclipse.ice.reactor.pwr,org.eclipse.ice.viz.s
+ ervice.jme3.application,org.eclipse.ui,org.osgi.framework;version="1.
+ 7.0",org.slf4j;version="1.7.2"
+Service-Component: OSGI-INF/*.xml
+

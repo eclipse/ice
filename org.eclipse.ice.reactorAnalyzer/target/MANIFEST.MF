@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.eclipse.ice.reactorAnalyzer;singleton:=true
+Export-Package: org.eclipse.ice.reactorAnalyzer
+Bundle-Name: ReactorAnalyzer
+Bundle-Version: 2.1.8
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.101",or
+ g.eclipse.core.runtime;bundle-version="3.7.0",org.eclipse.ice.datastr
+ uctures,org.eclipse.ice.reactor;bundle-version="2.0.0"
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: ncsa.hdf.hdf5lib,ncsa.hdf.hdf5lib.callbacks,ncsa.hdf.h
+ df5lib.exceptions,ncsa.hdf.hdf5lib.structs,ncsa.hdf.hdflib,ncsa.hdf.o
+ bject,ncsa.hdf.object.fits,ncsa.hdf.object.h4,ncsa.hdf.object.h5,ncsa
+ .hdf.object.nc2,org.eclipse.core.resources,org.eclipse.ice.analysisto
+ ol,org.eclipse.ice.datastructures.ICEObject,org.eclipse.ice.datastruc
+ tures.componentVisitor,org.eclipse.ice.datastructures.form,org.eclips
+ e.ice.datastructures.form.painfullySimpleForm,org.eclipse.ice.datastr
+ uctures.resource,org.eclipse.ice.item,org.eclipse.ice.reactor.sfr.bas
+ e,org.eclipse.ice.reactor.sfr.core,org.eclipse.ice.reactor.sfr.core.a
+ ssembly,org.eclipse.ice.viz.service.datastructures,org.eclipse.ice.vi
+ z.service.mesh.datastructures,org.slf4j;version="1.7.2"
+Service-Component: OSGi-INF/reactorAnalyzerComponent.xml
+

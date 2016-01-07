@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='org.eclipse.ice.reactor' version='2.1.8' singleton='false'>
+    <update id='org.eclipse.ice.reactor' range='[0.0.0,2.1.8)' severity='0'/>
+    <properties size='5'>
+      <property name='org.eclipse.equinox.p2.name' value='Reactor'/>
+      <property name='org.eclipse.equinox.p2.provider' value='Oak Ridge National Laboratory'/>
+      <property name='maven-groupId' value='ICE'/>
+      <property name='maven-artifactId' value='org.eclipse.ice.reactor'/>
+      <property name='maven-version' value='2.1.8'/>
+    </properties>
+    <provides size='6'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.reactor' version='2.1.8'/>
+      <provided namespace='osgi.bundle' name='org.eclipse.ice.reactor' version='2.1.8'/>
+      <provided namespace='java.package' name='org.eclipse.ice.reactor' version='0.0.0'/>
+      <provided namespace='java.package' name='org.eclipse.ice.reactor.bwr' version='0.0.0'/>
+      <provided namespace='java.package' name='org.eclipse.ice.reactor.pwr' version='0.0.0'/>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+    </provides>
+    <requires size='6'>
+      <required namespace='osgi.bundle' name='org.eclipse.ice.datastructures' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.ice.io' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.ice.analysistool' range='2.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.datastructures.ICEObject' range='0.0.0'/>
+      <required namespace='java.package' name='org.eclipse.ice.reactor.pwr' range='0.0.0'/>
+      <required namespace='java.package' name='org.slf4j' range='1.7.2'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='org.eclipse.ice.reactor' version='2.1.8'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: org.eclipse.ice.reactor&#xA;Bundle-Version: 2.1.8&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>

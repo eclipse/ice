@@ -116,7 +116,8 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 			// Create the right collection of tabs based on the part's type
 			if (meshSelection.selectedMeshPart instanceof FaceController) {
 				createTabs((FaceController) meshSelection.selectedMeshPart);
-			} else if (meshSelection.selectedMeshPart instanceof EdgeController) {
+			} else
+				if (meshSelection.selectedMeshPart instanceof EdgeController) {
 				createTabs((EdgeController) meshSelection.selectedMeshPart);
 			} else if (meshSelection.selectedMeshPart instanceof VertexController) {
 				createTabs((VertexController) meshSelection.selectedMeshPart);
@@ -482,8 +483,8 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// ---- Create tabs for the vertices. ---- //
 		lastTabId = edgeTabId;
 		for (int i = 0; i < 2; i++) {
-			VertexController vertex = (VertexController) edge.getEntitiesByCategory("Vertices")
-					.get(i);
+			VertexController vertex = (VertexController) edge
+					.getEntitiesByCategory("Vertices").get(i);
 
 			// Set the current tab ID.
 			final String tabLabel = vertex.getProperty("Name") + " "
@@ -574,7 +575,8 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// ---- Create tabs for the BoundaryConditions. ---- //
 		List<AbstractController> polygons = edge.getEntitiesByCategory("Faces");
 		for (int i = 0; i < polygons.size(); i++) {
-			NekPolygonController polygon = (NekPolygonController) polygons.get(i);
+			NekPolygonController polygon = (NekPolygonController) polygons
+					.get(i);
 
 			// Set the current tab ID.
 			final String tabLabel = "Boundary Conditions ("
