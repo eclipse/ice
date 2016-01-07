@@ -91,4 +91,5 @@ public class JunctionMesh extends ShapeMesh {
 	public void setZOut(double ZOut) {
 		setProperty("Z Output", Double.toString(ZOut));
 	}
+
 }

@@ -63,7 +63,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 *            The shape under which all parts in the model will be contained
 	 *            as children
 	 */
-	public FXGeometryCanvas(ShapeController source) {
+	public FXGeometryCanvas(AbstractController source) {
 		super(source);
 	}
 

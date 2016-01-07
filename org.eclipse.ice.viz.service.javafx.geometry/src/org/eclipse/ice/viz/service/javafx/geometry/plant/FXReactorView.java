@@ -392,6 +392,17 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 */
+	@Override
+	public Object getRepresentation() {
+		return node;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.WireFrameView#
 	 * setWireFrameMode(boolean)
 	 */

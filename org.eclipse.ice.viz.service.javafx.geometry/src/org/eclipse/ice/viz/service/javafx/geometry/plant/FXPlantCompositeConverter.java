@@ -542,15 +542,17 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 		public PipeController addPipe(Pipe plantComp) {
 			// Create a new pipe
 			PipeMesh mesh = new PipeMesh();
-			PipeController pipe = (PipeController) factory
-					.createController(mesh);
 
 			// Set the pipe's properties
-			pipe.setProperty("Id", Integer.toString(plantComp.getId()));
-			pipe.setLength(plantComp.getLength());
-			pipe.setRadius(plantComp.getRadius());
-			pipe.setInnerRadius(plantComp.getRadius());
-			pipe.setAxialSamples(plantComp.getNumElements());
+			mesh.setProperty("Id", Integer.toString(plantComp.getId()));
+			mesh.setLength(plantComp.getLength());
+			mesh.setRadius(plantComp.getRadius());
+			mesh.setInnerRadius(plantComp.getRadius());
+			mesh.setAxialSamples(plantComp.getNumElements());
+
+			// Create the view and controller
+			PipeController pipe = (PipeController) factory
+					.createController(mesh);
 
 			// Get the data describing the pipe's location. Position is the
 			// center of the pipe's input end, while orientation is a vector

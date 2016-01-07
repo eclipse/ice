@@ -136,7 +136,7 @@ public class ShapeMesh extends AbstractMesh {
 		}
 
 		// Force changes to the parent category to go through the setParent()
-		// funcgtion
+		// function
 		else {
 			setParent((ShapeController) newEntity);
 		}

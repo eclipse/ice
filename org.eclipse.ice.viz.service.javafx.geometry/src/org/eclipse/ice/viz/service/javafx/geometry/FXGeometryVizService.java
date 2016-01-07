@@ -51,8 +51,7 @@ public class FXGeometryVizService extends AbstractVizService {
 			throws Exception {
 		if (geometry instanceof ShapeController
 				|| geometry instanceof FXPlantViewRootController) {
-			FXGeometryCanvas canvas = new FXGeometryCanvas(
-					(ShapeController) geometry);
+			FXGeometryCanvas canvas = new FXGeometryCanvas(geometry);
 
 			return canvas;
 		} else {

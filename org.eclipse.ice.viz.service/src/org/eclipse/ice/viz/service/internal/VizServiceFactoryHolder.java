@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class VizServiceFactoryHolder {
-	//The VizServiceFactory held by the VizServiceFactory
+	// The VizServiceFactory held by the VizServiceFactory
 	private static IVizServiceFactory factory;
 
 	/**
@@ -45,26 +45,29 @@ public class VizServiceFactoryHolder {
 	 */
 	public static void setVizServiceFactory(IVizServiceFactory input) {
 		VizServiceFactoryHolder.factory = input;
-		Logger staticLogger = LoggerFactory.getLogger(VizServiceFactoryHolder.class);
-		
+		Logger staticLogger = LoggerFactory
+				.getLogger(VizServiceFactoryHolder.class);
+
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+				.getConfigurationElementsFor(
+						"org.eclipse.ice.viz.service.IVizServiceFactory");
 		staticLogger.info("Available configuration elements");
-		for(IConfigurationElement element : elements){
+		for (IConfigurationElement element : elements) {
 			staticLogger.info(element.getName());
 		}
-		
+
 		return;
 	}
 
 	/**
-	 * Remove the given VizServiceFactory if it is held by the VizServiceFactoryHolder.
+	 * Remove the given VizServiceFactory if it is held by the
+	 * VizServiceFactoryHolder.
 	 * 
-	 * @input A VizServiceFactory to remove. 
+	 * @input A VizServiceFactory to remove.
 	 */
 	public static void unsetVizServiceFactory(IVizServiceFactory input) {
-		if(input == factory){
-		factory = null;
+		if (input == factory) {
+			factory = null;
 		}
 		return;
 	}

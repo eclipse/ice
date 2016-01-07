@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.TubeMesh;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,6 +110,67 @@ public class PipeMesh extends TubeMesh {
 		setProperty("Rod Diameter", Double.toString(rodDiameter));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.ShapeMesh#addEntityByCategory(org.
+	 * eclipse.ice.viz.service.modeling.AbstractController, java.lang.String)
+	 */
+	@Override
+	public void addEntityByCategory(AbstractController entity,
+			String category) {
+
+		// If adding an input or output, add it without registering
+		// as a listener, to avoid circular updates
+		if ("Input".equals(category) || "Output".equals(category)) {
+
+			// Get the entities for the given category
+			List<AbstractController> catList = entities.get(category);
+
+			// If the list is null, make an empty one
+			if (catList == null) {
+				catList = new ArrayList<AbstractController>();
+			}
+
+			// Prevent a part from being added multiple times
+			else if (catList.contains(entity)) {
+				return;
+			}
+
+			// If the entity is already present in this category, don't add a
+			// second
+			// entry for it
+			else
+				for (AbstractController currentEntity : catList) {
+					if (entity == currentEntity) {
+						return;
+					}
+				}
+
+			// Add the entity to the list and put it in the map
+			catList.add(entity);
+			entities.put(category, catList);
+
+			// Notify listeners of the new child
+			UpdateableSubscriptionType[] eventTypes = {
+					UpdateableSubscriptionType.Child };
+			updateManager.notifyListeners(eventTypes);
+		}
+
+		// Otherwise, add it normally
+		else {
+			super.addEntityByCategory(entity, category);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.ShapeMesh#setProperty(java.lang.
+	 * String, java.lang.String)
+	 */
 	@Override
 	public void setProperty(String property, String value) {
 

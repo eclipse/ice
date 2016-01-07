@@ -157,7 +157,8 @@ public class ViewFactory {
 
 		// TODO This should be getting all services and presenting the user with
 		// a choice, instead of hardcoding the JavaFX editor in.
-		IVizService service = factory.get("ICE Geometry Editor");
+		// IVizService service = factory.get("ICE Geometry Editor");
+		IVizService service = new FXGeometryVizService();
 
 		// Create a converter for the plant composite
 		FXPlantCompositeConverter converter = new FXPlantCompositeConverter(
