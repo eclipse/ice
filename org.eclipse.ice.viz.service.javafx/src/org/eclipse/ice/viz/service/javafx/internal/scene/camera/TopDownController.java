@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.javafx.internal.scene.camera;
 import javafx.embed.swt.FXCanvas;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -29,12 +30,39 @@ import javafx.scene.transform.Transform;
 public class TopDownController extends AbstractCameraController {
 
 	/**
-	 * The collected transformation for all movements applied to the camera
+	 * <p>
+	 * </p>
 	 */
-	Affine affine = new Affine();
-
 	public TopDownController(Camera camera, Scene scene, FXCanvas canvas) {
 		super(camera, scene, canvas);
+	}
+
+	/**
+	 * Set a node to move along with the camera, so that it is always displayed
+	 * in the same part of the screen.
+	 * 
+	 * @param node
+	 *            The node whose position will be set relative to the camera.
+	 */
+	public void fixToCamera(Node node) {
+		xform.getChildren().add(node);
+	}
+
+	/**
+	 * Move the camera along the Z axis by the given distance.
+	 * 
+	 * @param deltaZ
+	 *            The amount to move the camera by. Positive values move it in
+	 *            towards the origin, negative values move it back away from the
+	 *            origin.
+	 */
+	public void zoomCamera(double deltaZ) {
+
+		// Prevent the user from zooming too close to the plane of the x
+		// and y axis
+		if (affine.getTz() + deltaZ <= -15) {
+			affine.appendTranslation(0, 0, deltaZ);
+		}
 	}
 
 	/*
@@ -87,9 +115,9 @@ public class TopDownController extends AbstractCameraController {
 		}
 
 		if (keyCode == KeyCode.SPACE) {
-			camera.setTranslateZ(camera.getTranslateZ() - speed);
+			zoomCamera(-speed);
 		} else if (keyCode == KeyCode.C) {
-			camera.setTranslateZ(camera.getTranslateZ() + speed);
+			zoomCamera(speed);
 		}
 	}
 
@@ -103,30 +131,9 @@ public class TopDownController extends AbstractCameraController {
 	@Override
 	public void handleMouseScroll(ScrollEvent event) {
 
-		// Get the current z position and modify it by the amount of
+		// Zoom the camera based on the amount and direction of
 		// scrolling
-		double z = affine.getTz();
-		double deltaZ = event.getDeltaY() * .1;
-
-		// Prevent the user from zooming too close to the plane of the x
-		// and y axis
-		if (z + deltaZ <= -15) {
-			affine.appendTranslation(0, 0, event.getDeltaY() * .1);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
-	 * AbstractCameraController#initCamera()
-	 */
-	@Override
-	protected void initCamera() {
-		super.initCamera();
-
-		// Reset the camera to its initial position
-		reset();
+		zoomCamera(event.getDeltaY() * .1);
 	}
 
 	/*
@@ -138,12 +145,11 @@ public class TopDownController extends AbstractCameraController {
 	@Override
 	public void reset() {
 
-		// Create a new affine transformation centered above the origin and
-		// replace the camera's current transformation(s) with it
+		// Create a new affine transformation, set it to the default position,
+		// and apply it to the camera
 		affine = new Affine();
 		affine.appendTranslation(0, 0, -85);
 		xform.getTransforms().setAll(affine);
-
 	}
 
 }

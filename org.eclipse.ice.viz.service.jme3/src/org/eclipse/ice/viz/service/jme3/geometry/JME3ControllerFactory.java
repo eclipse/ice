@@ -19,7 +19,7 @@ import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 /**
  * A factory for creating JME3Shapes from MeshComponents.
  * 
- * @author r8s
+ * @author Robert Smith
  *
  */
 public class JME3ControllerFactory implements IControllerFactory {
@@ -34,7 +34,7 @@ public class JME3ControllerFactory implements IControllerFactory {
 	@Override
 	public AbstractController createController(AbstractMesh model) {
 
-		// If the model is not a shapecomponent, fail silently
+		// If the model is not a shape mesh, fail silently
 		if (model instanceof ShapeMesh) {
 
 			// Create a JME3 view

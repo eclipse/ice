@@ -15,13 +15,16 @@ import javafx.scene.Camera;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 
 /**
- * <p>
- * ArcBallController provides 3D editor like features to a camera, by rotating
- * around a point and letting the user zoom in and out.
- * </p>
+ * A camera centered around and gazing towards the origin. The user can rotate
+ * the camera about the origin by dragging the mouse and zoom through scrolling
+ * the mouse wheel.
+ * 
+ * @author Robert Smith
+ *
  */
 public class CenteredController extends AbstractCameraController {
 
@@ -34,20 +37,6 @@ public class CenteredController extends AbstractCameraController {
 	 * The Y rotation applied to the camera.
 	 */
 	private Rotate y;
-
-	// /**
-	// * The default X coordinate for the camera.
-	// */
-	// private double defaultXPosition;
-	//
-	// /**
-	// * The default amount of X rotation to apply to the camera.
-	// */
-	// private double defaultXRotation;
-	//
-	// private double defaultYRotation;
-	//
-	// private double
 
 	/**
 	 * The default constructor.
@@ -62,65 +51,23 @@ public class CenteredController extends AbstractCameraController {
 	public CenteredController(Camera camera, Scene scene, FXCanvas canvas) {
 		super(camera, scene, canvas);
 
-		// scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-		// @Override
-		// public void handle(KeyEvent event) {
-		//
-		// double speed = NORMAL_SPEED;
-		//
-		// if (event.isShiftDown()) {
-		// speed = FAST_SPEED;
-		// }
-		//
-		// KeyCode keyCode = event.getCode();
-		//
-		// Transform worldTransform = xform.getLocalToSceneTransform();
-		// double zx = worldTransform.getMzx();
-		// double zy = worldTransform.getMzy();
-		// double zz = worldTransform.getMzz();
-		//
-		// double xx = worldTransform.getMxx();
-		// double xy = worldTransform.getMxy();
-		// double xz = worldTransform.getMxz();
-		//
-		// Point3D zDir = new Point3D(zx, zy, zz).normalize();
-		// Point3D xDir = new Point3D(xx, xy, xz).normalize();
-		//
-		// if (keyCode == KeyCode.W) {
-		// Point3D moveVec = zDir.multiply(speed);
-		// affine.appendTranslation(moveVec.getX(), moveVec.getY(),
-		// moveVec.getZ());
-		// } else if (keyCode == KeyCode.S) {
-		// Point3D moveVec = zDir.multiply(speed);
-		// Point3D invVec = new Point3D(-moveVec.getX(),
-		// -moveVec.getY(), -moveVec.getZ());
-		// affine.appendTranslation(invVec.getX(), invVec.getY(),
-		// invVec.getZ());
-		// } else if (keyCode == KeyCode.A) {
-		// Point3D moveVec = xDir.multiply(speed);
-		// affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
-		// -moveVec.getZ());
-		// } else if (keyCode == KeyCode.D) {
-		// Point3D moveVec = xDir.multiply(speed);
-		// affine.appendTranslation(moveVec.getX(), moveVec.getY(),
-		// moveVec.getZ());
-		// }
-		//
-		// if (keyCode == KeyCode.SPACE) {
-		// finalCamera
-		// .setTranslateZ(finalCamera.getTranslateZ() - speed);
-		// } else if (keyCode == KeyCode.C) {
-		// finalCamera
-		// .setTranslateZ(finalCamera.getTranslateZ() + speed);
-		// }
-		// }
-		// });
+		// Set the x axis rotation for the affine transformation
+		x = new Rotate();
+		x.setAxis(Rotate.X_AXIS);
+		xform.getTransforms().add(x);
+
+		// Set the y axis rotation for the affine transformation
+		y = new Rotate();
+		y.setAxis(Rotate.Y_AXIS);
+
+		// Apply the rotations and the affine to the camera
+		xform.getTransforms().setAll(x, y, affine);
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseDragged(javafx.scene.input.
 	 * MouseEvent)
@@ -140,31 +87,16 @@ public class CenteredController extends AbstractCameraController {
 
 		// Apply the change in mouse position to the camera's angle
 		if (event.isPrimaryButtonDown()) {
+
 			y.setAngle(y.getAngle() - mouseDeltaX);
 			x.setAngle(x.getAngle() + mouseDeltaY);
+
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
-	 * AbstractCameraController#handleMousePressed(javafx.scene.input.
-	 * MouseEvent)
-	 */
-	@Override
-	public void handleMousePressed(MouseEvent event) {
-
-		// Get the mouse position for the start of the drag
-		mousePosX = event.getSceneX();
-		mousePosY = event.getSceneY();
-		mouseOldX = event.getSceneX();
-		mouseOldY = event.getSceneY();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseScroll(javafx.scene.input.
 	 * ScrollEvent)
@@ -182,25 +114,31 @@ public class CenteredController extends AbstractCameraController {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
-	 * AbstractCameraController#initCamera()
+	 * AbstractCameraController#reset()
 	 */
-	@Override
-	public void initCamera() {
-		super.initCamera();
-
-		// Reset the camera to its default position
-		reset();
-	}
-
 	@Override
 	public void reset() {
 
-		// Reset the camera to its initial angles
-		x.setAngle(0);
-		y.setAngle(0);
+		// Handle the rotations if they exist
+		if (x != null) {
+			// Reset the camera to its initial angles
+			x.setAngle(0);
+			y.setAngle(0);
+		}
 
 		// Zoom the camera back to a default distance from the origin.
-		camera.setTranslateZ(-2000);
+		affine = new Affine();
+		affine.appendTranslation(0, 0, -2000);
+
+		// If x and y exist, apply them to the camera
+		if (x != null) {
+			xform.getTransforms().setAll(x, y, affine);
+		}
+
+		// Otherwise only apply the affine to the camera
+		else {
+			xform.getTransforms().setAll(affine);
+		}
 
 	}
 

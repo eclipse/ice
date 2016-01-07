@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 
 /**
@@ -44,6 +45,11 @@ public class AbstractCameraController implements ICameraController {
 	 * applied to set the camera's position and direction.
 	 */
 	protected final Group xform;
+
+	/**
+	 * The collected transformation for all movements applied to the camera
+	 */
+	protected Affine affine;
 
 	/**
 	 * The FXCanvas which is using this camera
@@ -83,12 +89,12 @@ public class AbstractCameraController implements ICameraController {
 	/**
 	 * A constant multiplier for the mouse's normal movement speed.
 	 */
-	protected final double NORMAL_SPEED = 60.0d;
+	protected final double NORMAL_SPEED = 1.0d;
 
 	/**
 	 * A constant multiplier for the mouse's increased movement speed.
 	 */
-	protected final double FAST_SPEED = 120.0d;
+	protected final double FAST_SPEED = 2.0d;
 
 	/**
 	 * The default amount of X rotation to apply
@@ -124,7 +130,12 @@ public class AbstractCameraController implements ICameraController {
 		this.canvas = canvas;
 
 		// Get the camera's parent
-		xform = (Group) camera.getParent();
+		xform = new Group();
+		xform.getChildren().add(camera);
+
+		// Set the affine transformation
+		affine = new Affine();
+		xform.getTransforms().setAll(affine);
 
 		// Initialize the default angles
 		defaultX = new Rotate();
@@ -133,6 +144,9 @@ public class AbstractCameraController implements ICameraController {
 		defaultX.setAxis(Rotate.X_AXIS);
 		defaultY.setAxis(Rotate.Y_AXIS);
 		defaultZ.setAxis(Rotate.Z_AXIS);
+
+		// Set the camera to its default position
+		reset();
 
 		// Set the handler for key presses
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {

@@ -69,6 +69,25 @@ public class AbstractControllerTester {
 	}
 
 	/**
+	 * Check that the AbstractController is in the correct state after
+	 * construction.
+	 */
+	@Test
+	public void testConstruction() {
+
+		TestMesh mesh = new TestMesh(null);
+		TestView view = new TestView();
+		TestController controller = new TestController(mesh, view);
+
+		// Check that the controller contains the mesh and view
+		assertTrue(mesh == controller.getModel());
+		assertTrue(view == controller.getView());
+
+		// Check that the model has a reference to the controller
+		assertTrue(controller == mesh.getController());
+	}
+
+	/**
 	 * Tests the state of the entities list as objects are added and removed, as
 	 * well as whether objects in it are sending propert notifications.
 	 */
