@@ -14,6 +14,7 @@ import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeView;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.paint.Color;
@@ -35,6 +36,7 @@ public class FXPipeView extends FXShapeView
 		super();
 
 		defaultMaterial = new PhongMaterial(Color.CYAN);
+		defaultMaterial.setSpecularColor(Color.WHITE);
 	}
 
 	/**
@@ -47,7 +49,15 @@ public class FXPipeView extends FXShapeView
 	public FXPipeView(PipeMesh model) {
 		super(model);
 
-		setMaterial(new PhongMaterial(Color.CYAN));
+		// Pipes are cyan by default
+		if (!"True".equals(model.getProperty("Core Channel"))) {
+			setMaterial(new PhongMaterial(Color.CYAN));
+		}
+
+		// Core channels are red
+		else {
+			setMaterial(new PhongMaterial(Color.RED));
+		}
 	}
 
 	/*
@@ -88,11 +98,17 @@ public class FXPipeView extends FXShapeView
 	private Extrema calculateExtrema(float[] points) {
 
 		// Get the transformation's parameters
-		double[] rotation = transformation.getRotation();
+		double[] rotationDegrees = transformation.getRotation();
 		double[] scale = transformation.getScale();
 		double size = transformation.getSize();
 		double[] skew = transformation.getSkew();
 		double[] translation = transformation.getTranslation();
+
+		// Convert the degrees to radians
+		double[] rotation = new double[3];
+		rotation[0] = rotationDegrees[0] * 180 / Math.PI;
+		rotation[1] = rotationDegrees[1] * 180 / Math.PI;
+		rotation[2] = rotationDegrees[2] * 180 / Math.PI;
 
 		// TODO Apply skew from the transformation
 		// Consider each point one at a time
@@ -181,6 +197,30 @@ public class FXPipeView extends FXShapeView
 		}
 
 		return new Extrema(minX, maxX, minY, maxY, minZ, maxZ);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView#refresh
+	 * (org.eclipse.ice.viz.service.modeling.AbstractMesh)
+	 */
+	@Override
+	public void refresh(AbstractMesh model) {
+
+		// Pipes are cyan by default
+		if (!"True".equals(model.getProperty("Core Channel"))) {
+			defaultMaterial = new PhongMaterial(Color.CYAN);
+		}
+
+		// Core channels are red
+		else {
+			defaultMaterial = new PhongMaterial(Color.RED);
+		}
+
+		super.refresh(model);
+
 	}
 
 	// /*

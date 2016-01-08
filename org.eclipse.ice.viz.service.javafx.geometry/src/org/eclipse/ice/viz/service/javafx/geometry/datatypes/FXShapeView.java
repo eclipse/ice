@@ -168,8 +168,12 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 				if (customMaterial == null) {
 					defaultMaterial = new PhongMaterial(Color.rgb(50, 50, 255));
 					defaultMaterial.setSpecularColor(Color.WHITE);
+					box.setMaterial(defaultMaterial);
+				} else {
+
+					// If a material is specified, set it
+					box.setMaterial(customMaterial);
 				}
-				box.setMaterial(defaultMaterial);
 				shape = box;
 			}
 
@@ -185,8 +189,12 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 				if (customMaterial == null) {
 					defaultMaterial = new PhongMaterial(Color.rgb(0, 181, 255));
 					defaultMaterial.setSpecularColor(Color.WHITE);
+					cyl.setMaterial(defaultMaterial);
+				} else {
+
+					// If a material is specified, set it
+					cyl.setMaterial(customMaterial);
 				}
-				cyl.setMaterial(defaultMaterial);
 				shape = cyl;
 			}
 
@@ -204,8 +212,12 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 				if (customMaterial == null) {
 					defaultMaterial = new PhongMaterial(Color.rgb(131, 0, 157));
 					defaultMaterial.setSpecularColor(Color.WHITE);
+					sphere.setMaterial(defaultMaterial);
+				} else {
+
+					// If a material is specified, set it
+					sphere.setMaterial(customMaterial);
 				}
-				sphere.setMaterial(defaultMaterial);
 				shape = sphere;
 			}
 
@@ -230,10 +242,15 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 			// If a material is not specified, create a new one
 			if (customMaterial == null) {
-				defaultMaterial = new PhongMaterial(Color.CYAN);
-			}
 
-			shape.setMaterial(defaultMaterial);
+				if (defaultMaterial == null) {
+					defaultMaterial = new PhongMaterial(Color.CYAN);
+				}
+				shape.setMaterial(defaultMaterial);
+			} else {
+				// If a material is specified, set it
+				shape.setMaterial(customMaterial);
+			}
 			break;
 		default:
 			return;
@@ -364,6 +381,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {
+
 			// Set the node's transformation
 			node.getTransforms()
 					.setAll(Util.convertTransformation(transformation));

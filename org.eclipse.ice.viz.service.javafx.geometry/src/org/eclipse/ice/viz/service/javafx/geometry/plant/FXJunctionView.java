@@ -105,21 +105,24 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		// Get the bounds of the region encompassing all pipe ends
 		Extrema boxBounds = new Extrema(pipeEdges);
 
-		// Get the size of the box, which has a minimum size of 10 x 10 x 10 in
+		// Get the size of the box, which has a minimum size of 1 x 1 x 1 in
 		// case the calculated size is smaller, as might be the case if one of
 		// the pipes is a secondary Heat Exchanger loop pipe which cannot be
 		// drawn until the center of the junction's bounds is known
-		centerX = Math.max(boxBounds.getMaxX() - boxBounds.getMinX(), 10);
-		centerY = Math.max(boxBounds.getMaxY() - boxBounds.getMinY(), 10);
-		centerZ = Math.max(boxBounds.getMaxZ() - boxBounds.getMinZ(), 10);
+		centerX = Math.max(boxBounds.getMaxX() - boxBounds.getMinX(), 1);
+		centerY = Math.max(boxBounds.getMaxY() - boxBounds.getMinY(), 1);
+		centerZ = Math.max(boxBounds.getMaxZ() - boxBounds.getMinZ(), 1);
+
+		System.out.println(
+				"Junction center:" + centerX + " " + centerY + " " + centerZ);
 
 		// Create a box which fills the box bounds
 		box = new Box(centerX, centerY, centerZ);
 
 		// Move the box to the center of the bounded area
-		box.setTranslateX(boxBounds.getMaxX() / 2 + boxBounds.getMinX());
-		box.setTranslateY(boxBounds.getMaxY() / 2 + boxBounds.getMinY());
-		box.setTranslateZ(boxBounds.getMaxZ() / 2 + boxBounds.getMinZ());
+		box.setTranslateX((boxBounds.getMaxX() + boxBounds.getMinX()) / 2);
+		box.setTranslateX((boxBounds.getMaxY() + boxBounds.getMinY()) / 2);
+		box.setTranslateX((boxBounds.getMaxZ() + boxBounds.getMinZ()) / 2);
 
 		// Add the box to the scene and set its material
 		node.getChildren().add(box);

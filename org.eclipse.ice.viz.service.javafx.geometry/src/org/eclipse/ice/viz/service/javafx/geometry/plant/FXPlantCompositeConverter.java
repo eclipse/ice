@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
+import java.util.List;
+
 import org.eclipse.ice.reactor.plant.Boundary;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
@@ -69,6 +71,12 @@ import org.eclipse.ice.viz.service.modeling.AbstractView;
 public class FXPlantCompositeConverter implements IVizUpdateableListener {
 
 	/**
+	 * The scale which translates between RELAP7 units and JavaFX units. Each
+	 * RELAP7 unit will be treated as SCALE JavaFX units.
+	 */
+	private final int SCALE = 100;
+
+	/**
 	 * The root of the tree of plant parts converted from the source.
 	 */
 	FXPlantViewRootController output;
@@ -121,6 +129,26 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 		for (PlantComponent plantComp : source.getPlantComponents()) {
 			plantComp.accept(visitor);
 		}
+
+		// PipeMesh mesh = new PipeMesh();
+		// mesh.setAxialSamples(40);
+		// mesh.setInnerRadius(40);
+		// mesh.setLength(100);
+		// mesh.setRadius(50);
+		//
+		// PipeController pipe = (PipeController) new FXPlantViewFactory()
+		// .createController(mesh);
+		//
+		// pipe.setRotation(0, 0, 2);
+		//
+		// ShapeMesh box = new ShapeMesh();
+		// box.setProperty("Type", "Cube");
+		// ShapeController boxC = new ShapeController(box, new
+		// FXShapeView(box));
+		//
+		// output.addEntity(boxC);
+
+		// output.addEntity(pipe);
 	}
 
 	private class FXPlantComponentVisitor implements IPlantComponentVisitor {
@@ -164,6 +192,12 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 			JunctionController junction = (JunctionController) factory
 					.createController(mesh);
 
+			// Create a list of all pipes in the plant by combining the pipes
+			// with the core channels
+			List<AbstractController> pipeList = root
+					.getEntitiesByCategory("Pipes");
+			pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+
 			// Add all the input pipes to the junction
 			for (PlantComponent input : plantComp.getInputs()) {
 
@@ -171,8 +205,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 				boolean found = false;
 
 				// Check the root to see if a pipe with that id already exists
-				for (AbstractController pipe : root
-						.getEntitiesByCategory("Pipes")) {
+				for (AbstractController pipe : pipeList) {
 					if (Integer.parseInt(pipe.getProperty("Id")) == input
 							.getId()) {
 
@@ -193,11 +226,15 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 					// Convert the pipe into a modeling data structure
 					input.accept(this);
 
+					// Refresh the list of pipes
+					pipeList = root.getEntitiesByCategory("Pipes");
+					pipeList.addAll(
+							root.getEntitiesByCategory("Core Channels"));
+
 					// Now that the pipe is guaranteed to be in the root, as it
 					// was added when visited, find the pipe with that id and
 					// add it
-					for (AbstractController pipe : root
-							.getEntitiesByCategory("Pipes")) {
+					for (AbstractController pipe : pipeList) {
 						if (Integer.parseInt(pipe.getProperty("Id")) == input
 								.getId()) {
 							junction.addEntityByCategory(pipe, "Input");
@@ -215,8 +252,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 				boolean found = false;
 
 				// Check the root to see if a pipe with that id already exists
-				for (AbstractController pipe : root
-						.getEntitiesByCategory("Pipes")) {
+				for (AbstractController pipe : pipeList) {
 					if (Integer.parseInt(pipe.getProperty("Id")) == output
 							.getId()) {
 
@@ -236,6 +272,11 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 
 					// Convert the pipe into a modeling data structure
 					output.accept(this);
+
+					// Refresh the list of pipes
+					pipeList = root.getEntitiesByCategory("Pipes");
+					pipeList.addAll(
+							root.getEntitiesByCategory("Core Channels"));
 
 					// Now that the pipe is gauranteed to be in the root, as it
 					// was added when visited, find the pipe with that id and
@@ -291,9 +332,14 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 			// Whether or not a match was found
 			boolean found = false;
 
+			// Create a list of all pipes in the plant by combining the pipes
+			// with the core channels
+			List<AbstractController> pipeList = root
+					.getEntitiesByCategory("Pipes");
+			pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+
 			// Check the root to see if a pipe with that id already exists
-			for (AbstractController pipe : root
-					.getEntitiesByCategory("Pipes")) {
+			for (AbstractController pipe : pipeList) {
 				if (Integer.parseInt(pipe.getProperty("Id")) == primary
 						.getId()) {
 
@@ -312,10 +358,13 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 				// Convert the pipe into a modeling data structure
 				primary.accept(this);
 
+				// Refresh the list of pipes
+				pipeList = root.getEntitiesByCategory("Pipes");
+				pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+
 				// Now that the pipe is guaranteed to be in the root, as it was
 				// added when visited, find the pipe with that id and add it
-				for (AbstractController pipe : root
-						.getEntitiesByCategory("Pipes")) {
+				for (AbstractController pipe : pipeList) {
 					if (Integer.parseInt(pipe.getProperty("Id")) == primary
 							.getId()) {
 						heatExchanger.setPrimaryPipe((PipeController) pipe);
@@ -330,8 +379,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 			found = false;
 
 			// Check the root to see if a pipe with that id already exists
-			for (AbstractController pipe : root
-					.getEntitiesByCategory("Pipes")) {
+			for (AbstractController pipe : pipeList) {
 				if (Integer.parseInt(pipe.getProperty("Id")) == secondary
 						.getId()) {
 
@@ -350,10 +398,13 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 				// Convert the pipe into a modeling data structure
 				primary.accept(this);
 
+				// Refresh the list of pipes
+				pipeList = root.getEntitiesByCategory("Pipes");
+				pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+
 				// Now that the pipe is guaranteed to be in the root, as it was
 				// added when visited, find the pipe with that id and add it
-				for (AbstractController pipe : root
-						.getEntitiesByCategory("Pipes")) {
+				for (AbstractController pipe : pipeList) {
 					if (Integer.parseInt(pipe.getProperty("Id")) == secondary
 							.getId()) {
 						heatExchanger.setSecondaryPipe((PipeController) pipe);
@@ -371,17 +422,17 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 		public void visit(Pipe plantComp) {
 
 			// Convert the pipe and add it to the root.
-			addPipe(plantComp);
+			root.addEntityByCategory(createPipe(plantComp), "Pipes");
+
 		}
 
 		@Override
 		public void visit(CoreChannel plantComp) {
 
-			// Convert the pipe and add it to the root
-			PipeController pipe = addPipe(plantComp);
+			// Convert the pipe
+			PipeController pipe = createPipe(plantComp);
 
-			// Set the pipe as a core channel and add it to the root again, this
-			// time in the core channel category
+			// Set the pipe as a core channel and add it to the root
 			pipe.setProperty("Core Channel", "True");
 			root.addEntityByCategory(pipe, "Core Channels");
 
@@ -532,22 +583,21 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 		}
 
 		/**
-		 * Creates a JavaFX PipeController from a RELAP7 Pipe and adds it to the
-		 * visitor's root node.
+		 * Creates a JavaFX PipeController from a RELAP7 Pipe.
 		 * 
 		 * @param plantComp
 		 *            The pipe to be converted.
 		 * @return The converted pipe.
 		 */
-		public PipeController addPipe(Pipe plantComp) {
+		public PipeController createPipe(Pipe plantComp) {
 			// Create a new pipe
 			PipeMesh mesh = new PipeMesh();
 
 			// Set the pipe's properties
 			mesh.setProperty("Id", Integer.toString(plantComp.getId()));
-			mesh.setLength(plantComp.getLength());
-			mesh.setRadius(plantComp.getRadius());
-			mesh.setInnerRadius(plantComp.getRadius());
+			mesh.setLength(plantComp.getLength() * SCALE);
+			mesh.setRadius(plantComp.getRadius() * SCALE);
+			mesh.setInnerRadius(plantComp.getRadius() * SCALE);
 			mesh.setAxialSamples(plantComp.getNumElements());
 
 			// Create the view and controller
@@ -558,37 +608,64 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 			// center of the pipe's input end, while orientation is a vector
 			// from the position which describes the pipe's axis.
 			double[] position = plantComp.getPosition();
+
+			// Multiply the positions to the proper scale
+			position[0] = position[0] * SCALE;
+			position[1] = position[1] * SCALE;
+			position[2] = position[2] * SCALE;
+
+			// System.out.println("Original Position: " + position[0] + " "
+			// + position[1] + " " + position[2]);
+
 			double[] orientation = plantComp.getOrientation();
+
+			// System.out.println("Orientation Vector: " + orientation[0] + " "
+			// + orientation[1] + " " + orientation[2]);
 
 			// Normalize the orientation vector
 			double[] normalized = new double[3];
 			double length = Math.sqrt(
 					Math.pow(orientation[0], 2) + Math.pow(orientation[1], 2)
 							+ Math.pow(orientation[2], 2));
-			normalized[0] = normalized[0] / length;
-			normalized[1] = normalized[1] / length;
-			normalized[2] = normalized[2] / length;
+			normalized[0] = orientation[0] / length;
+			normalized[1] = orientation[1] / length;
+			normalized[2] = orientation[2] / length;
 
 			// The tube is, by default, centered on the origin. Stepping one
 			// half its length in the direction of the orientation vector will
 			// place the output edge's center on the origin, so that the
 			// position vector now properly represents the movement from the
 			// origen to the pipe's position.
-			position[0] += plantComp.getLength() / 2 * normalized[0];
-			position[1] += plantComp.getLength() / 2 * normalized[1];
-			position[2] += plantComp.getLength() / 2 * normalized[2];
+			double pipeLength = plantComp.getLength() * SCALE;
+			position[0] += pipeLength / 2 * normalized[0];
+			position[1] += pipeLength / 2 * normalized[1];
+			position[2] += pipeLength / 2 * normalized[2];
+
+			// System.out.println("Translation: " + position[0] + " " +
+			// position[1]
+			// + " " + position[2]);
 
 			// Set the pipe's translation
 			pipe.setTranslation(position[0], position[1], position[2]);
 
+			// Calculate the amount of z rotation in the formula, applying none
+			// if the normalized vector has a 0 X component. This is done to
+			// avoid division by 0.
+			double zRotation;
+			if (normalized[0] != 0) {
+				zRotation = normalized[1] / normalized[0] + 90;
+			} else {
+				zRotation = 90d;
+			}
+
 			// The normalized orientation vector can be represented by an
 			// XY-plane angle calculated by arctan(y/x) and an angle from the z
-			// vector, calculated by arccos(z)
-			pipe.setRotation(Math.acos(normalized[2]), 0,
-					Math.atan(normalized[1] / normalized[2]));
+			// vector, calculated by arccos(z).
+			pipe.setRotation(Math.acos(normalized[2] * 180 / Math.PI), 0,
+					Math.atan(zRotation * 180 / Math.PI));
 
-			// Add the pipe to the root
-			root.addEntityByCategory(pipe, "Pipes");
+			// System.out.println(
+			// "Rotation: " + normalized[2] + " " + 0 + " " + (zRotation));
 
 			return pipe;
 		}

@@ -11,7 +11,6 @@
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
-import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
@@ -54,28 +53,27 @@ public class FXPlantViewRootController extends AbstractController
 	public void addEntity(AbstractController entity) {
 
 		// If the entity is a core channel, add it to all reactors
-		if (entity instanceof PipeController) {
-			if ("True".equals(entity.getProperty("Core Channel"))) {
+		if ("True".equals(entity.getProperty("Core Channel"))) {
 
-				// Queue updates from adding children
-				updateManager.enqueue();
+			// Queue updates from adding children
+			updateManager.enqueue();
 
-				// Add the entity to this, then to all reactors
-				model.addEntityByCategory(entity, "Core Channels");
+			// Add the entity to this, then to all reactors
+			model.addEntityByCategory(entity, "Core Channels");
 
-				for (AbstractController reactor : model
-						.getEntitiesByCategory("Reactors")) {
-					reactor.addEntity(entity);
-				}
-
-				// Fire update for the added child
-				UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[] {
-						UpdateableSubscriptionType.Child };
-				updateManager.notifyListeners(eventTypes);
+			for (AbstractController reactor : model
+					.getEntitiesByCategory("Reactors")) {
+				reactor.addEntity(entity);
 			}
 
-			// If the entity is a reactor, add all core channels to it
-		} else if (entity instanceof ReactorController) {
+			// Fire update for the added child
+			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[] {
+					UpdateableSubscriptionType.Child };
+			updateManager.notifyListeners(eventTypes);
+		}
+
+		// If the entity is a reactor, add all core channels to it
+		else if (entity instanceof ReactorController) {
 
 			// Queue updates from adding children
 			updateManager.enqueue();
