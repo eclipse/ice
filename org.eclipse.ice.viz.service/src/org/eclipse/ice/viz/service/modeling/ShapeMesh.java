@@ -41,7 +41,7 @@ public class ShapeMesh extends AbstractMesh {
 	 * @param parent
 	 *            The new shape which serves as this shape's parent.
 	 */
-	public void setParent(ShapeController parent) {
+	public void setParent(AbstractController parent) {
 
 		// Get the current list of parents
 		List<AbstractController> parentList = getEntitiesByCategory("Parent");
@@ -128,8 +128,7 @@ public class ShapeMesh extends AbstractMesh {
 
 			// Set self as parent to any children
 			if (category == "Children") {
-				((ShapeController) newEntity)
-						.setParent(((ShapeController) controller));
+				((ShapeController) newEntity).setParent((controller));
 			}
 
 			super.addEntityByCategory(newEntity, category);
@@ -138,7 +137,7 @@ public class ShapeMesh extends AbstractMesh {
 		// Force changes to the parent category to go through the setParent()
 		// function
 		else {
-			setParent((ShapeController) newEntity);
+			setParent(newEntity);
 		}
 	}
 

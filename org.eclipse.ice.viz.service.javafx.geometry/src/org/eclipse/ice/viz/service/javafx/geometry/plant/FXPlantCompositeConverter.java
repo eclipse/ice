@@ -74,7 +74,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 	 * The scale which translates between RELAP7 units and JavaFX units. Each
 	 * RELAP7 unit will be treated as SCALE JavaFX units.
 	 */
-	private final int SCALE = 100;
+	private final int SCALE = 50;
 
 	/**
 	 * The root of the tree of plant parts converted from the source.
@@ -434,7 +434,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 
 			// Set the pipe as a core channel and add it to the root
 			pipe.setProperty("Core Channel", "True");
-			root.addEntityByCategory(pipe, "Core Channels");
+			root.addEntity(pipe);
 
 		}
 
@@ -635,37 +635,87 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 			// half its length in the direction of the orientation vector will
 			// place the output edge's center on the origin, so that the
 			// position vector now properly represents the movement from the
-			// origen to the pipe's position.
+			// origin to the pipe's position.
 			double pipeLength = plantComp.getLength() * SCALE;
 			position[0] += pipeLength / 2 * normalized[0];
 			position[1] += pipeLength / 2 * normalized[1];
 			position[2] += pipeLength / 2 * normalized[2];
 
-			// System.out.println("Translation: " + position[0] + " " +
-			// position[1]
-			// + " " + position[2]);
-
 			// Set the pipe's translation
 			pipe.setTranslation(position[0], position[1], position[2]);
 
-			// Calculate the amount of z rotation in the formula, applying none
-			// if the normalized vector has a 0 X component. This is done to
-			// avoid division by 0.
-			double zRotation;
-			if (normalized[0] != 0) {
-				zRotation = normalized[1] / normalized[0] + 90;
+			// Calculate the amount of radians per axis as follows: (rotation z)
+			// = atan(y/x) and (rotation y) = atan (z / sqrt(x ^ 2 + y ^ 2))
+
+			// Calculate the y rotation angle
+			double yRotation;
+			if (normalized[1] != 0 || normalized[0] != 0) {
+				yRotation = normalized[2] / Math.sqrt(Math.pow(normalized[0], 2)
+						+ Math.pow(normalized[1], 2));
 			} else {
-				zRotation = 90d;
+				yRotation = 0d;
 			}
 
-			// The normalized orientation vector can be represented by an
-			// XY-plane angle calculated by arctan(y/x) and an angle from the z
-			// vector, calculated by arccos(z).
-			pipe.setRotation(Math.acos(normalized[2] * 180 / Math.PI), 0,
-					Math.atan(zRotation * 180 / Math.PI));
+			// Calculate the z rotation angle
+			double zRotation;
+			if (normalized[0] != 0) {
+				zRotation = normalized[1] / normalized[0];
+			} else {
+				zRotation = 0d;
+			}
 
-			// System.out.println(
-			// "Rotation: " + normalized[2] + " " + 0 + " " + (zRotation));
+			// If the pitch and yaw are both zero, then the orientation vector
+			// is pointing down one of the axes. The code in this case works for
+			// the x axis and other arbitrary angles.
+			if ((yRotation != 0 && zRotation != 0) || normalized[0] != 0) {
+
+				// Set the rotation, adding a 90 degree rotation on the z axis
+				// so that the pipe is pointing down the x axis by defualt
+				pipe.setRotation(0, -Math.atan(yRotation),
+						-Math.atan(zRotation) - Math.PI / 2);
+			}
+
+			// Explicitly set the pipe to point down the y or z axis
+			else {
+
+				// Rotate the pipe to point down the z axis by rotating about
+				// the x
+				if (normalized[2] > 0) {
+					pipe.setRotation(Math.PI / 2, 0, 0);
+				}
+
+				// Rotate in the other direction if the vector is negative
+				else if (normalized[2] < 0) {
+					pipe.setRotation(Math.PI / 2, 0, 0);
+				}
+
+				// If the orientation is the negated y vector, flip the tube by
+				// 180 degrees about the x axis to turn it upside down. The
+				// positive y vector is the tube's default position, and thus
+				// does not need to be handled.
+				else if (normalized[1] < 0) {
+					pipe.setRotation(Math.PI, 0, 0);
+				}
+			}
+
+			//
+			// // Calculate the amount of z rotation in the formula, applying
+			// none
+			// // if the normalized vector has a 0 X component. This is done to
+			// // avoid division by 0.
+			// double zRotation;
+			// if (normalized[0] != 0) {
+			// zRotation = normalized[1] / normalized[0] + 90;
+			// } else {
+			// zRotation = 90d;
+			// }
+			//
+			// // The normalized orientation vector can be represented by an
+			// // XY-plane angle calculated by arctan(y/x) and an angle from the
+			// z
+			// // vector, calculated by arccos(z).
+			// pipe.setRotation(Math.acos(normalized[2] * 180 / Math.PI), 0,
+			// Math.atan(zRotation * 180 / Math.PI));
 
 			return pipe;
 		}

@@ -34,9 +34,6 @@ public class FXPipeView extends FXShapeView
 	 */
 	public FXPipeView() {
 		super();
-
-		defaultMaterial = new PhongMaterial(Color.CYAN);
-		defaultMaterial.setSpecularColor(Color.WHITE);
 	}
 
 	/**
@@ -51,12 +48,16 @@ public class FXPipeView extends FXShapeView
 
 		// Pipes are cyan by default
 		if (!"True".equals(model.getProperty("Core Channel"))) {
-			setMaterial(new PhongMaterial(Color.CYAN));
+			PhongMaterial material = new PhongMaterial(Color.CYAN);
+			material.setSpecularColor(Color.WHITE);
+			setMaterial(material);
 		}
 
 		// Core channels are red
 		else {
-			setMaterial(new PhongMaterial(Color.RED));
+			PhongMaterial material = new PhongMaterial(Color.RED);
+			material.setSpecularColor(Color.WHITE);
+			setMaterial(material);
 		}
 	}
 
@@ -84,7 +85,7 @@ public class FXPipeView extends FXShapeView
 	public Extrema getUpperExtrema() {
 
 		// Get the mesh's lower boundary and calculate its extrema
-		float[] points = tubeShape.getLowerBoundary();
+		float[] points = tubeShape.getUpperBoundary();
 		return calculateExtrema(points);
 	}
 
@@ -98,17 +99,17 @@ public class FXPipeView extends FXShapeView
 	private Extrema calculateExtrema(float[] points) {
 
 		// Get the transformation's parameters
-		double[] rotationDegrees = transformation.getRotation();
+		double[] rotation = transformation.getRotation();
 		double[] scale = transformation.getScale();
 		double size = transformation.getSize();
 		double[] skew = transformation.getSkew();
 		double[] translation = transformation.getTranslation();
 
-		// Convert the degrees to radians
-		double[] rotation = new double[3];
-		rotation[0] = rotationDegrees[0] * 180 / Math.PI;
-		rotation[1] = rotationDegrees[1] * 180 / Math.PI;
-		rotation[2] = rotationDegrees[2] * 180 / Math.PI;
+		// // Convert the radians to degrees
+		// double[] rotation = new double[3];
+		// rotation[0] = rotationRadians[0] * 180 / Math.PI;
+		// rotation[1] = rotationRadians[1] * 180 / Math.PI;
+		// rotation[2] = rotationRadians[2] * 180 / Math.PI;
 
 		// TODO Apply skew from the transformation
 		// Consider each point one at a time
@@ -121,30 +122,30 @@ public class FXPipeView extends FXShapeView
 
 			// Apply size and scale to the points
 			points[i * 3] = (float) (points[i * 3] * size * scale[0]);
-			points[i * 3 + 1] = (float) (points[i * 3] * size * scale[1]);
-			points[i * 3 + 2] = (float) (points[i * 3] * size * scale[2]);
+			points[i * 3 + 1] = (float) (points[i * 3 + 1] * size * scale[1]);
+			points[i * 3 + 2] = (float) (points[i * 3 + 2] * size * scale[2]);
 
 			// Apply the rotation to the point
 			float x = points[i * 3];
 			float y = points[i * 3 + 1];
 			float z = points[i * 3 + 2];
 
-			// Rotate about the x axis
-			float tempY = (float) (y * Math.cos(rotation[0])
-					- z * Math.sin(rotation[0]));
-			z = (float) (y * Math.sin(rotation[0]) - z * Math.cos(rotation[0]));
+			// Rotate about the z axis
+			float tempY = (float) (x * Math.sin(rotation[2])
+					+ y * Math.cos(rotation[2]));
+			x = (float) (x * Math.cos(rotation[2]) - y * Math.sin(rotation[2]));
 			y = tempY;
 
 			// Rotate about the y axis
 			float tempX = (float) (z * Math.sin(rotation[1])
-					- x * Math.cos(rotation[1]));
+					+ x * Math.cos(rotation[1]));
 			z = (float) (z * Math.cos(rotation[1]) - x * Math.sin(rotation[1]));
 			x = tempX;
 
-			// Rotate about the z axis
-			tempY = (float) (x * Math.sin(rotation[2])
-					- y * Math.cos(rotation[2]));
-			x = (float) (x * Math.cos(rotation[2]) - y * Math.sin(rotation[2]));
+			// Rotate about the x axis
+			tempY = (float) (y * Math.cos(rotation[0])
+					- z * Math.sin(rotation[0]));
+			z = (float) (y * Math.sin(rotation[0]) + z * Math.cos(rotation[0]));
 			y = tempY;
 
 			// Apply the skew and save the calculated values back to the array
@@ -154,8 +155,8 @@ public class FXPipeView extends FXShapeView
 
 			// Apply translation to each coordinate
 			points[i * 3] = (float) (points[i * 3] + translation[0]);
-			points[i * 3 + 1] = (float) (points[i * 3] + translation[1]);
-			points[i * 3 + 2] = (float) (points[i * 3] + translation[2]);
+			points[i * 3 + 1] = (float) (points[i * 3 + 1] + translation[1]);
+			points[i * 3 + 2] = (float) (points[i * 3 + 2] + translation[2]);
 
 		}
 
@@ -211,12 +212,16 @@ public class FXPipeView extends FXShapeView
 
 		// Pipes are cyan by default
 		if (!"True".equals(model.getProperty("Core Channel"))) {
-			defaultMaterial = new PhongMaterial(Color.CYAN);
+			PhongMaterial material = new PhongMaterial(Color.CYAN);
+			material.setSpecularColor(Color.WHITE);
+			setMaterial(material);
 		}
 
 		// Core channels are red
 		else {
-			defaultMaterial = new PhongMaterial(Color.RED);
+			PhongMaterial material = new PhongMaterial(Color.RED);
+			material.setSpecularColor(Color.WHITE);
+			setMaterial(material);
 		}
 
 		super.refresh(model);

@@ -245,6 +245,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 				if (defaultMaterial == null) {
 					defaultMaterial = new PhongMaterial(Color.CYAN);
+					defaultMaterial.setSpecularColor(Color.WHITE);
 				}
 				shape.setMaterial(defaultMaterial);
 			} else {

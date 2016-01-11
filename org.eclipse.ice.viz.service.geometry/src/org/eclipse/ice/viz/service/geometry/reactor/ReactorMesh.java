@@ -11,7 +11,6 @@
 package org.eclipse.ice.viz.service.geometry.reactor;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 /**
@@ -41,11 +40,11 @@ public class ReactorMesh extends ShapeMesh {
 	public void addEntityByCategory(AbstractController entity,
 			String category) {
 
-		// If the entity is a pipe, set this shape as its parent, so
+		// If the entity is a Core Channel, set this shape as its parent, so
 		// that when the reactor is transformed all core channels will also be
 		// transformed
-		if (entity instanceof PipeController) {
-			((PipeController) entity).setParent((ShapeController) controller);
+		if ("Core Channels".equals(category)) {
+			((PipeController) entity).setParent(controller);
 		}
 
 		super.addEntityByCategory(entity, category);

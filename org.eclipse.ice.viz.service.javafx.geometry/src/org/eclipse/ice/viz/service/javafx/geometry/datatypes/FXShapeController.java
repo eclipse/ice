@@ -118,7 +118,7 @@ public class FXShapeController extends ShapeController
 	 * service.modeling.Shape)
 	 */
 	@Override
-	public void setParent(ShapeController parent) {
+	public void setParent(AbstractController parent) {
 
 		// If the shape already has a parent, remove this shape's JavaFX node
 		// from the parent's JavaFX node. Ignore this step for the root shape,

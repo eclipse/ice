@@ -91,15 +91,15 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		// A list of the extrema of all pipe ends
 		ArrayList<Extrema> pipeEdges = new ArrayList<Extrema>();
 
-		// Get the top end of each input pipe
+		// Get the bottom end of each input pipe
 		for (AbstractController input : model.getEntitiesByCategory("Input")) {
-			pipeEdges.add(((PipeController) input).getUpperExtrema());
+			pipeEdges.add(((PipeController) input).getLowerExtrema());
 		}
 
-		// Get the bottom end of each output pipe
+		// Get the top end of each output pipe
 		for (AbstractController output : model
 				.getEntitiesByCategory("Output")) {
-			pipeEdges.add(((PipeController) output).getLowerExtrema());
+			pipeEdges.add(((PipeController) output).getUpperExtrema());
 		}
 
 		// Get the bounds of the region encompassing all pipe ends
@@ -113,16 +113,18 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		centerY = Math.max(boxBounds.getMaxY() - boxBounds.getMinY(), 1);
 		centerZ = Math.max(boxBounds.getMaxZ() - boxBounds.getMinZ(), 1);
 
-		System.out.println(
-				"Junction center:" + centerX + " " + centerY + " " + centerZ);
-
-		// Create a box which fills the box bounds
-		box = new Box(centerX, centerY, centerZ);
+		// Create a box which fills the box bounds, adding 1 to each dimension
+		// to give enough space between the meshes that they won't clip through
+		// each other.
+		box = new Box(centerX + 1, centerY + 1, centerZ + 1);
 
 		// Move the box to the center of the bounded area
-		box.setTranslateX((boxBounds.getMaxX() + boxBounds.getMinX()) / 2);
-		box.setTranslateX((boxBounds.getMaxY() + boxBounds.getMinY()) / 2);
-		box.setTranslateX((boxBounds.getMaxZ() + boxBounds.getMinZ()) / 2);
+		box.setTranslateX((boxBounds.getMaxX() - boxBounds.getMinX()) / 2
+				+ boxBounds.getMinX());
+		box.setTranslateY((boxBounds.getMaxY() - boxBounds.getMinY()) / 2
+				+ boxBounds.getMinY());
+		box.setTranslateZ((boxBounds.getMaxZ() - boxBounds.getMinZ()) / 2
+				+ boxBounds.getMinZ());
 
 		// Add the box to the scene and set its material
 		node.getChildren().add(box);

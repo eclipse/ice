@@ -151,7 +151,7 @@ public class Extrema {
 	 * @return The minimum Y coordinate
 	 */
 	public double getMinY() {
-		return minX;
+		return minY;
 	}
 
 	/**

@@ -16,6 +16,7 @@ import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
@@ -119,13 +120,11 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 
 		// Check all the reactor's children for core channels
 		for (AbstractController channel : model.getEntities()) {
-			if (channel instanceof PipeController) {
-				if ("True".equals(channel.getProperty("Core Chanel"))) {
+			if ("True".equals(channel.getProperty("Core Channel"))) {
 
-					// Add the extrema of core channels to the list
-					extrema.add(((PipeController) channel).getLowerExtrema());
-					extrema.add(((PipeController) channel).getUpperExtrema());
-				}
+				// Add the extrema of core channels to the list
+				extrema.add(((PipeController) channel).getLowerExtrema());
+				extrema.add(((PipeController) channel).getUpperExtrema());
 			}
 		}
 
@@ -133,7 +132,7 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		Extrema bounds = new Extrema(extrema);
 
 		// How thick the mesh will be
-		double thickness = 25;
+		double thickness = 5;
 
 		// The number of samples to be used in the creation of the circular
 		// portion of the mesh
@@ -149,7 +148,7 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		double sizeY = bounds.getMaxY() - bounds.getMinY();
 		double sizeZ = bounds.getMaxZ() - bounds.getMinZ();
 
-		// Set the characteristics based on the
+		// Set the characteristics based on the sizes
 		depth = Math.min(Math.min(sizeX, sizeY), sizeZ);
 		height = Math.max(Math.max(sizeX, sizeY), sizeZ);
 		if (sizeX < height && sizeX > depth) {
@@ -160,12 +159,18 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 			width = sizeZ;
 		}
 
+		// Widen the reactor so that the inner wall is touching the bounds of
+		// the core channels, saving the original width for later comparisons
+		double origWidth = width;
+		width = width + thickness;
+
 		// The material for the shapes
 		PhongMaterial material = new PhongMaterial(Color.WHITE);
 
-		// Discard the old reactor node
+		// Discard the old reactor node and replace it with a new one.
 		node.getChildren().remove(reactorNode);
 		reactorNode = new Group();
+		node.getChildren().add(reactorNode);
 
 		// Create the two straight sides
 		side1 = new Box(thickness, height, depth);
@@ -192,8 +197,8 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		// coordinates, etc
 		float[] vertices = new float[blockSize * 2];
 
-		// At each sample point, create the four four vertices defining a
-		// rectagular slice of the semicircle
+		// At each sample point, create the four vertices defining a
+		// rectangular slice of the semicircle
 		for (int i = 0; i < samples; i++) {
 
 			// The bottom inner vertex
@@ -316,6 +321,18 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		lowerArch.setTranslateY(-height / 2 - width / 2 - thickness / 2);
 		reactorNode.getChildren().add(lowerArch);
 
+		// Rotate the mesh such that its height is pointing in its longest
+		// direction and its hole is pointing along its shortest distance
+		// Rotate on the z axis if the X is the height or Z is the height and
+		// Y is the width
+		if ((sizeX > sizeY && sizeX > sizeZ)
+				|| (sizeZ > sizeY && sizeY > sizeX)) {
+			Rotate temp = new Rotate();
+			temp.setAxis(Rotate.Z_AXIS);
+			temp.setAngle(90);
+			reactorNode.getTransforms().add(temp);
+		}
+
 		// If z is the highest dimension, rotate on the x axis
 		if (sizeY != height && sizeX != height && sizeZ == height) {
 			Rotate temp = new Rotate();
@@ -325,27 +342,21 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		}
 
 		// If z is the widest dimension, rotate on the y axis
-		else if (sizeY != width && sizeX != width && sizeZ == width) {
+		else if (sizeY != origWidth && sizeX != origWidth
+				&& sizeZ == origWidth) {
 			Rotate temp = new Rotate();
 			temp.setAxis(Rotate.Y_AXIS);
 			temp.setAngle(90);
 			reactorNode.getTransforms().add(temp);
 		}
 
-		// Rotate on the z axis if the X is the height or Z is the height and Y
-		// is the width
-		if ((sizeX > sizeY && sizeX > sizeZ)
-				|| (sizeZ > sizeY && sizeY > sizeX)) {
-			Rotate temp = new Rotate();
-			temp.setAxis(Rotate.Z_AXIS);
-			temp.setAngle(90);
-			reactorNode.getTransforms().add(temp);
-		}
-
 		// Move the reactor to surround the region
-		reactorNode.setTranslateX((bounds.getMinX() + bounds.getMaxX()) / 2);
-		reactorNode.setTranslateY((bounds.getMinY() + bounds.getMaxY()) / 2);
-		reactorNode.setTranslateZ((bounds.getMinZ() + bounds.getMaxZ()) / 2);
+		reactorNode.setTranslateX(
+				(bounds.getMaxX() - bounds.getMinX()) / 2 + bounds.getMinX());
+		reactorNode.setTranslateY(
+				(bounds.getMaxY() - bounds.getMinY()) / 2 + bounds.getMinY());
+		reactorNode.setTranslateZ(
+				(bounds.getMaxZ() - bounds.getMinZ()) / 2 + bounds.getMinZ());
 
 	}
 
@@ -398,6 +409,20 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	@Override
 	public Object getRepresentation() {
 		return node;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
+	 * .viz.service.modeling.AbstractMesh)
+	 */
+	@Override
+	public void refresh(AbstractMesh model) {
+
+		// Redraw the mesh
+		createShape((ReactorMesh) model);
 	}
 
 	/*

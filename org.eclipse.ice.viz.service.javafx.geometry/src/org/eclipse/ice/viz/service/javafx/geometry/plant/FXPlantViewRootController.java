@@ -40,6 +40,9 @@ public class FXPlantViewRootController extends AbstractController
 	 */
 	public FXPlantViewRootController(AbstractMesh model, AbstractView view) {
 		super(model, view);
+
+		// Identify this object as the root of the tree
+		model.setProperty("Root", "True");
 	}
 
 	/*

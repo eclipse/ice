@@ -44,7 +44,7 @@ public class ShapeController extends AbstractController {
 	 * @param parent
 	 *            The new shape which serves as this shape's parent.
 	 */
-	public void setParent(ShapeController parent) {
+	public void setParent(AbstractController parent) {
 		((ShapeMesh) model).setParent(parent);
 	}
 
