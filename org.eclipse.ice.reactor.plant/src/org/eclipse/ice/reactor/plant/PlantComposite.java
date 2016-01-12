@@ -90,7 +90,7 @@ public class PlantComposite extends PlantComponent
 		if (component != null) {
 			int id = component.getId();
 
-			// If the ID is availalble, add the component and notify listeners
+			// If the ID is available, add the component and notify listeners
 			// that a component has been added.
 			if (!components.containsKey(id)) {
 				components.put(id, component);

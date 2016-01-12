@@ -75,6 +75,7 @@ public class FXPlantCompositeConverter
 	 * 
 	 * @return A JavaFX modeling data structure representation fo the plant.
 	 */
+	@Override
 	public AbstractController getPlant() {
 
 		// If the output has not been initialized, create it
@@ -194,7 +195,8 @@ public class FXPlantCompositeConverter
 				if (!found) {
 
 					// Convert the pipe into a modeling data structure
-					input.accept(this);
+					// input.accept(this);
+					source.getPlantComponent(input.getId()).accept(this);
 
 					// Refresh the list of pipes
 					pipeList = root.getEntitiesByCategory("Pipes");
@@ -241,7 +243,8 @@ public class FXPlantCompositeConverter
 				if (!found) {
 
 					// Convert the pipe into a modeling data structure
-					output.accept(this);
+					// output.accept(this);
+					source.getPlantComponent(output.getId()).accept(this);
 
 					// Refresh the list of pipes
 					pipeList = root.getEntitiesByCategory("Pipes");
@@ -326,7 +329,8 @@ public class FXPlantCompositeConverter
 			if (!found) {
 
 				// Convert the pipe into a modeling data structure
-				primary.accept(this);
+				// primary.accept(this);
+				source.getPlantComponent(primary.getId()).accept(this);
 
 				// Refresh the list of pipes
 				pipeList = root.getEntitiesByCategory("Pipes");
@@ -366,7 +370,8 @@ public class FXPlantCompositeConverter
 			if (!found) {
 
 				// Convert the pipe into a modeling data structure
-				primary.accept(this);
+				// primary.accept(this);
+				source.getPlantComponent(secondary.getId()).accept(this);
 
 				// Refresh the list of pipes
 				pipeList = root.getEntitiesByCategory("Pipes");
@@ -391,20 +396,68 @@ public class FXPlantCompositeConverter
 		@Override
 		public void visit(Pipe plantComp) {
 
-			// Convert the pipe and add it to the root.
-			root.addEntityByCategory(createPipe(plantComp), "Pipes");
+			// If this pipe has already been converted, ignore it
+			boolean found = false;
+
+			// Create a list of all pipes in the plant by combining the pipes
+			// with the core channels
+			List<AbstractController> pipeList = root
+					.getEntitiesByCategory("Pipes");
+			pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+
+			// Check the root to see if a pipe with that id already exists
+			for (AbstractController pipe : pipeList) {
+				if (Integer.parseInt(pipe.getProperty("Id")) == plantComp
+						.getId()) {
+
+					// Match found, stop the search
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+
+				// Convert the pipe and add it to the root.
+				root.addEntityByCategory(createPipe(plantComp), "Pipes");
+
+			}
 
 		}
 
 		@Override
 		public void visit(CoreChannel plantComp) {
 
-			// Convert the pipe
-			PipeController pipe = createPipe(plantComp);
+			// If this pipe has already been converted, ignore it
+			boolean found = false;
 
-			// Set the pipe as a core channel and add it to the root
-			pipe.setProperty("Core Channel", "True");
-			root.addEntity(pipe);
+			// Create a list of all pipes in the plant by combining the pipes
+			// with the core channels
+			List<AbstractController> pipeList = root
+					.getEntitiesByCategory("Pipes");
+			pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+
+			// Check the root to see if a pipe with that id already exists
+			for (AbstractController pipe : pipeList) {
+				if (Integer.parseInt(pipe.getProperty("Id")) == plantComp
+						.getId()) {
+
+					// Match found, stop the search
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+
+				// Convert the pipe
+				PipeController pipe = createPipe(plantComp);
+
+				// Set the pipe as a core channel and add it to the root
+				pipe.setProperty("Core Channel", "True");
+				root.addEntity(pipe);
+
+			}
 
 		}
 
@@ -586,6 +639,9 @@ public class FXPlantCompositeConverter
 
 			double[] orientation = plantComp.getOrientation();
 
+			// System.out.println("Pipe Position: " + position[0] + " "
+			// + position[1] + " " + position[2]);
+
 			// Normalize the orientation vector
 			double[] normalized = new double[3];
 			double length = Math.sqrt(
@@ -629,28 +685,36 @@ public class FXPlantCompositeConverter
 			}
 
 			// If the pitch and yaw are both zero, then the orientation vector
-			// is pointing down one of the axes. The code in this case works for
-			// the x axis and other arbitrary angles.
-			if ((yRotation != 0 && zRotation != 0) || normalized[0] != 0) {
-
-				// Set the rotation, adding a 90 degree rotation on the z axis
-				// so that the pipe is pointing down the x axis by defualt
+			// is pointing down one of the axes. For other angles, we simple set
+			// the rotation
+			if ((yRotation != 0 && zRotation != 0)) {
 				pipe.setRotation(0, -Math.atan(yRotation),
-						-Math.atan(zRotation) - Math.PI / 2);
+						-Math.atan(zRotation));
 			}
 
-			// Explicitly set the pipe to point down the y or z axis
+			// Explicitly set the pipe to point down the x, y, or z axis
 			else {
+
+				// Rotate the pipe to point down the x axis by rotating about
+				// the z
+				if (normalized[0] > 0) {
+					pipe.setRotation(0, 0, -Math.PI / 2);
+				}
+
+				// Rotate in the other direction if the vector is negative
+				else if (normalized[0] < 0) {
+					pipe.setRotation(0, 0, Math.PI / 2);
+				}
 
 				// Rotate the pipe to point down the z axis by rotating about
 				// the x
-				if (normalized[2] > 0) {
+				else if (normalized[2] > 0) {
 					pipe.setRotation(Math.PI / 2, 0, 0);
 				}
 
 				// Rotate in the other direction if the vector is negative
 				else if (normalized[2] < 0) {
-					pipe.setRotation(Math.PI / 2, 0, 0);
+					pipe.setRotation(-Math.PI / 2, 0, 0);
 				}
 
 				// If the orientation is the negated y vector, flip the tube by
@@ -658,7 +722,7 @@ public class FXPlantCompositeConverter
 				// positive y vector is the tube's default position, and thus
 				// does not need to be handled.
 				else if (normalized[1] < 0) {
-					pipe.setRotation(Math.PI, 0, 0);
+					pipe.setRotation(-Math.PI, 0, 0);
 				}
 			}
 

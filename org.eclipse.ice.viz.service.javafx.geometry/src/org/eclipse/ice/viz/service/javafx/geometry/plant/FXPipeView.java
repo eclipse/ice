@@ -13,12 +13,14 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant;
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeView;
+import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Sphere;
 
 /**
  * A class managing the JavaFX graphical representation of a Pipe part.
@@ -105,13 +107,6 @@ public class FXPipeView extends FXShapeView
 		double[] skew = transformation.getSkew();
 		double[] translation = transformation.getTranslation();
 
-		// // Convert the radians to degrees
-		// double[] rotation = new double[3];
-		// rotation[0] = rotationRadians[0] * 180 / Math.PI;
-		// rotation[1] = rotationRadians[1] * 180 / Math.PI;
-		// rotation[2] = rotationRadians[2] * 180 / Math.PI;
-
-		// TODO Apply skew from the transformation
 		// Consider each point one at a time
 		for (int i = 0; i < points.length / 3; i++) {
 
@@ -259,5 +254,18 @@ public class FXPipeView extends FXShapeView
 	// node.getTransforms().setAll(Util.convertTransformation(transformation));
 	// node.getChildren().add(mesh.getMesh());
 	// }
+
+	@Override
+	protected void createShape(AbstractMesh model, ShapeType type) {
+		super.createShape(model, type);
+
+		Extrema e = getLowerExtrema();
+		Sphere sphere = new Sphere(e.getMaxZ() - e.getMinZ());
+		// sphere.setTranslateX((e.getMaxX() - e.getMinX() / 2 + e.getMinX()));
+		// sphere.setTranslateY((e.getMaxY() - e.getMinY() / 2 + e.getMinY()));
+		// sphere.setTranslateZ((e.getMaxZ() - e.getMinZ() / 2 + e.getMinZ()));
+		sphere.setTranslateY(((PipeMesh) model).getLength() / 2);
+		node.getChildren().add(sphere);
+	}
 
 }
