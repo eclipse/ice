@@ -74,7 +74,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 	 * The scale which translates between RELAP7 units and JavaFX units. Each
 	 * RELAP7 unit will be treated as SCALE JavaFX units.
 	 */
-	private final int SCALE = 50;
+	private final int SCALE = 25;
 
 	/**
 	 * The root of the tree of plant parts converted from the source.
@@ -614,13 +614,7 @@ public class FXPlantCompositeConverter implements IVizUpdateableListener {
 			position[1] = position[1] * SCALE;
 			position[2] = position[2] * SCALE;
 
-			// System.out.println("Original Position: " + position[0] + " "
-			// + position[1] + " " + position[2]);
-
 			double[] orientation = plantComp.getOrientation();
-
-			// System.out.println("Orientation Vector: " + orientation[0] + " "
-			// + orientation[1] + " " + orientation[2]);
 
 			// Normalize the orientation vector
 			double[] normalized = new double[3];

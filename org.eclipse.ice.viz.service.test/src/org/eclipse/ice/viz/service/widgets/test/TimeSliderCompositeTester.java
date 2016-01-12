@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
+import org.eclipse.ice.viz.service.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;

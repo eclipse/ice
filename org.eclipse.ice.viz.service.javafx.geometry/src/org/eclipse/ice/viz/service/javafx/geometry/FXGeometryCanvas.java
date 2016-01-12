@@ -23,7 +23,6 @@ import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
-import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeController;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantCompositeConverter;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
@@ -231,7 +230,9 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	public void setWireframe(boolean wireframe) {
 
 		// Set all objects in the tree to wireframe mode
-		recursiveSetWireframe(root, wireframe);
+		for (AbstractController entity : root.getEntities()) {
+			recursiveSetWireframe(entity, wireframe);
+		}
 	}
 
 	/**
@@ -249,10 +250,10 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 			boolean wireframe) {
 
 		// Set this object to the correct mode
-		((FXShapeController) root).setWireFrameMode(wireframe);
+		((IWireFramePart) target).setWireFrameMode(wireframe);
 
 		// Iterate over each of its children, setting them to the correct mode
-		for (AbstractController child : root
+		for (AbstractController child : target
 				.getEntitiesByCategory("Children")) {
 			((IWireFramePart) child).setWireFrameMode(wireframe);
 		}
@@ -362,12 +363,24 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 		((FXViewer) viewer).setDefaultCameraZByX();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.reactor.plant.IPlantView#dispose()
+	 */
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.reactor.plant.IPlantView#setPlant(org.eclipse.ice.reactor
+	 * .plant.PlantComposite)
+	 */
 	@Override
 	public void setPlant(PlantComposite plant) {
 

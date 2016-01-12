@@ -80,6 +80,12 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	private boolean selected;
 
 	/**
+	 * Whether the shape is displaying in wireframe mode. The shape will be a
+	 * wireframe if true, or solid if false.
+	 */
+	private boolean wireframe;
+
+	/**
 	 * The nullary constructor.
 	 */
 	public FXShapeView() {
@@ -90,6 +96,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		gizmo = new TransformGizmo(0);
 		gizmo.setVisible(false);
 		node.getChildren().add(gizmo);
+		wireframe = true;
 
 	}
 
@@ -257,6 +264,13 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 			return;
 		}
 
+		// Set the correct wireframe mode
+		if (wireframe) {
+			shape.setDrawMode(DrawMode.LINE);
+		} else {
+			shape.setDrawMode(DrawMode.FILL);
+		}
+
 		// If the function didn't return, a change has occurred. Replace the old
 		// shape with the new shape in the group
 		if (prevShape != null) {
@@ -333,7 +347,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		// handle their own views.
 		if (model.getProperty("Operator") == null) {
 
-			// Create the shape if neccesary
+			// Create the shape if necessary
 			createShape(model, ShapeType.valueOf(model.getProperty("Type")));
 
 			// Convert the model's selected property to a boolean
@@ -392,7 +406,6 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		UpdateableSubscriptionType[] eventTypes = {
 				UpdateableSubscriptionType.All };
 		updateManager.notifyListeners(eventTypes);
-		;
 	}
 
 	/*
@@ -404,7 +417,10 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	@Override
 	public void setWireFrameMode(boolean on) {
 
-		// Set the shape to the correct draw mode
+		// Save the new state
+		wireframe = on;
+
+		// Set the current shape to the correct draw mode
 		if (on) {
 			shape.setDrawMode(DrawMode.LINE);
 		} else {

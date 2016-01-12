@@ -6,7 +6,6 @@ Bundle-Version: 2.1.8
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.lbnl.visit.swt,
  gov.lbnl.visit.swt.widgets,
- org.eclipse.ice.client.common,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.connections.preferences,

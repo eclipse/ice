@@ -113,11 +113,6 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		// reactor
 		ArrayList<Extrema> extrema = new ArrayList<Extrema>();
 
-		// // Add a small region to the list to ensure that the reactor will
-		// never
-		// // be displayed as below some small default size
-		// extrema.add(new Extrema(0, 50, 0, 51, 0, 200));
-
 		// Check all the reactor's children for core channels
 		for (AbstractController channel : model.getEntities()) {
 			if ("True".equals(channel.getProperty("Core Channel"))) {

@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
@@ -56,11 +55,6 @@ public class AbstractController
 	private AtomicBoolean disposed;
 
 	/**
-	 * The list of object registered to listen for updates from this one.
-	 */
-	private List<IVizUpdateableListener> listeners;
-
-	/**
 	 * The manager for the part's updates.
 	 */
 	protected UpdateableSubscriptionManager updateManager = new UpdateableSubscriptionManager(
@@ -72,7 +66,6 @@ public class AbstractController
 	public AbstractController() {
 		disposed = new AtomicBoolean();
 		disposed.set(false);
-		listeners = new ArrayList<IVizUpdateableListener>();
 	}
 
 	/**
@@ -96,7 +89,6 @@ public class AbstractController
 		this.view = view;
 		disposed = new AtomicBoolean();
 		disposed.set(false);
-		listeners = new ArrayList<IVizUpdateableListener>();
 
 		// Give model a reference to its controller
 		model.setController(this);

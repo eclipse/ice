@@ -93,13 +93,13 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 
 		// Get the bottom end of each input pipe
 		for (AbstractController input : model.getEntitiesByCategory("Input")) {
-			pipeEdges.add(((PipeController) input).getLowerExtrema());
+			pipeEdges.add(((PipeController) input).getUpperExtrema());
 		}
 
 		// Get the top end of each output pipe
 		for (AbstractController output : model
 				.getEntitiesByCategory("Output")) {
-			pipeEdges.add(((PipeController) output).getUpperExtrema());
+			pipeEdges.add(((PipeController) output).getLowerExtrema());
 		}
 
 		// Get the bounds of the region encompassing all pipe ends
