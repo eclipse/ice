@@ -8,7 +8,7 @@
  * Contributors:
  *   Robert Smith
  *******************************************************************************/
-package org.eclipse.ice.reactor.plant;
+package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import org.eclipse.swt.widgets.Composite;
 
@@ -113,7 +113,7 @@ public interface IPlantView {
 	// */
 	// public void setDefaultCameraPosition(float x, float y, float z);
 
-	public void setPlant(PlantComposite plant);
+	public void setPlant(IPlantData plant);
 
 	/**
 	 * Sets all rendered plant components to be viewed as wireframes or as solid

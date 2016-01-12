@@ -10,14 +10,13 @@
  *      initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.ice.viz.service.javafx.geometry;
+package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.reactor.plant.IPlantView;
-import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
-import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantCompositeConverter;
+import org.eclipse.ice.viz.service.javafx.geometry.FXGeometryVizService;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

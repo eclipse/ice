@@ -8,44 +8,10 @@
  * Contributors:
  *   Robert Smith
  *******************************************************************************/
-package org.eclipse.ice.viz.service.javafx.geometry.plant;
+package org.eclipse.ice.reactor.plant;
 
 import java.util.List;
 
-import org.eclipse.ice.reactor.plant.Boundary;
-import org.eclipse.ice.reactor.plant.Branch;
-import org.eclipse.ice.reactor.plant.CoreChannel;
-import org.eclipse.ice.reactor.plant.DownComer;
-import org.eclipse.ice.reactor.plant.FlowJunction;
-import org.eclipse.ice.reactor.plant.GeometricalComponent;
-import org.eclipse.ice.reactor.plant.HeatExchanger;
-import org.eclipse.ice.reactor.plant.IPlantComponentVisitor;
-import org.eclipse.ice.reactor.plant.IdealPump;
-import org.eclipse.ice.reactor.plant.Inlet;
-import org.eclipse.ice.reactor.plant.Junction;
-import org.eclipse.ice.reactor.plant.MassFlowInlet;
-import org.eclipse.ice.reactor.plant.OneInOneOutJunction;
-import org.eclipse.ice.reactor.plant.Outlet;
-import org.eclipse.ice.reactor.plant.Pipe;
-import org.eclipse.ice.reactor.plant.PipeToPipeJunction;
-import org.eclipse.ice.reactor.plant.PipeWithHeatStructure;
-import org.eclipse.ice.reactor.plant.PlantComponent;
-import org.eclipse.ice.reactor.plant.PlantComposite;
-import org.eclipse.ice.reactor.plant.PointKinetics;
-import org.eclipse.ice.reactor.plant.Pump;
-import org.eclipse.ice.reactor.plant.Reactor;
-import org.eclipse.ice.reactor.plant.SeparatorDryer;
-import org.eclipse.ice.reactor.plant.SolidWall;
-import org.eclipse.ice.reactor.plant.SpecifiedDensityAndVelocityInlet;
-import org.eclipse.ice.reactor.plant.Subchannel;
-import org.eclipse.ice.reactor.plant.SubchannelBranch;
-import org.eclipse.ice.reactor.plant.TDM;
-import org.eclipse.ice.reactor.plant.TimeDependentJunction;
-import org.eclipse.ice.reactor.plant.TimeDependentVolume;
-import org.eclipse.ice.reactor.plant.Turbine;
-import org.eclipse.ice.reactor.plant.Valve;
-import org.eclipse.ice.reactor.plant.VolumeBranch;
-import org.eclipse.ice.reactor.plant.WetWell;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
@@ -56,6 +22,9 @@ import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewFactory;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantData;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
@@ -68,7 +37,8 @@ import org.eclipse.ice.viz.service.modeling.AbstractView;
  * @author Robert Smith
  *
  */
-public class FXPlantCompositeConverter implements IVizUpdateableListener {
+public class FXPlantCompositeConverter
+		implements IPlantData, IVizUpdateableListener {
 
 	/**
 	 * The scale which translates between RELAP7 units and JavaFX units. Each
