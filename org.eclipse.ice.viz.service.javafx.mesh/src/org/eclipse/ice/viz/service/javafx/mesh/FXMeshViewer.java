@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
-import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownController;
+import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownCameraController;
 import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
@@ -225,8 +225,8 @@ public class FXMeshViewer extends FXViewer {
 				if (intersectedNode instanceof Box) {
 
 					// Create a new vertex at that point
-					VertexMesh tempComponent = new VertexMesh(
-							event.getX(), event.getY(), 0);
+					VertexMesh tempComponent = new VertexMesh(event.getX(),
+							event.getY(), 0);
 					tempComponent.setProperty("Constructing", "True");
 					VertexController tempVertex = (VertexController) factory
 							.createController(tempComponent);
@@ -297,8 +297,10 @@ public class FXMeshViewer extends FXViewer {
 					if (numVertices > 1) {
 
 						EdgeController tempEdge = getEdge(
-								(VertexController) selectedVertices.get(numVertices - 2),
-								(VertexController) selectedVertices.get(numVertices - 1));
+								(VertexController) selectedVertices
+										.get(numVertices - 2),
+								(VertexController) selectedVertices
+										.get(numVertices - 1));
 
 						// Add the edge to the list
 						tempEdges.add(tempEdge);
@@ -312,7 +314,8 @@ public class FXMeshViewer extends FXViewer {
 					if (numVertices == 4) {
 
 						EdgeController tempEdge = getEdge(
-								(VertexController) selectedVertices.get(numVertices - 1),
+								(VertexController) selectedVertices
+										.get(numVertices - 1),
 								(VertexController) selectedVertices.get(0));
 
 						tempEdges.add(tempEdge);
@@ -542,7 +545,8 @@ public class FXMeshViewer extends FXViewer {
 					for (int i = 0; i < selectedVertices.size(); i++) {
 
 						// Get the vertex
-						VertexController vertex = (VertexController) selectedVertices.get(i);
+						VertexController vertex = (VertexController) selectedVertices
+								.get(i);
 
 						// Update its position
 						vertex.updateLocation(relativeXCords.get(i) + mousePosX,
@@ -784,7 +788,8 @@ public class FXMeshViewer extends FXViewer {
 	 * @param end
 	 * @return
 	 */
-	public EdgeController getEdge(VertexController start, VertexController end) {
+	public EdgeController getEdge(VertexController start,
+			VertexController end) {
 
 		// If the start point shares and edge with the endp oint, return it
 		for (AbstractController edge : start.getEntitiesByCategory("Edges")) {
@@ -798,7 +803,8 @@ public class FXMeshViewer extends FXViewer {
 		// If there is not already an edge, create a new one
 		FaceEdgeMesh tempComponent = new FaceEdgeMesh(start, end);
 		tempComponent.setProperty("Constructing", "True");
-		EdgeController tempEdge = (EdgeController) factory.createController(tempComponent);
+		EdgeController tempEdge = (EdgeController) factory
+				.createController(tempComponent);
 
 		// Set the edge's name and ID
 		tempEdge.setProperty("Name", "Edge");
@@ -892,7 +898,8 @@ public class FXMeshViewer extends FXViewer {
 					"No camera was attached to Mesh Viewer");
 		}
 
-		cameraController = new TopDownController(fxCamera, scene, fxCanvas);
+		cameraController = new TopDownCameraController(fxCamera, scene,
+				fxCanvas);
 
 		scene.setCamera(fxCamera);
 

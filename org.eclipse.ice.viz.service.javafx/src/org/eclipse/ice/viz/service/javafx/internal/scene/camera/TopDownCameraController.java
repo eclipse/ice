@@ -27,13 +27,13 @@ import javafx.scene.transform.Transform;
  * around a point and letting the user zoom in and out.
  * </p>
  */
-public class TopDownController extends AbstractCameraController {
+public class TopDownCameraController extends AbstractCameraController {
 
 	/**
 	 * <p>
 	 * </p>
 	 */
-	public TopDownController(Camera camera, Scene scene, FXCanvas canvas) {
+	public TopDownCameraController(Camera camera, Scene scene, FXCanvas canvas) {
 		super(camera, scene, canvas);
 	}
 

@@ -27,7 +27,7 @@ import javafx.scene.transform.Transform;
  * around a point and letting the user zoom in and out.
  * </p>
  */
-public class ArcBallController extends AbstractCameraController {
+public class ArcBallCameraController extends AbstractCameraController {
 
 	/** */
 	Transform xform;
@@ -75,7 +75,7 @@ public class ArcBallController extends AbstractCameraController {
 	 * <p>
 	 * </p>
 	 */
-	public ArcBallController(Camera camera, Scene scene, FXCanvas canvas) {
+	public ArcBallCameraController(Camera camera, Scene scene, FXCanvas canvas) {
 		super(camera, scene, canvas);
 
 		final Camera finalCamera = camera;

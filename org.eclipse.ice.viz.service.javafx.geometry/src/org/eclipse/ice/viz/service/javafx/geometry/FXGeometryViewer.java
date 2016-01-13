@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.javafx.geometry;
 
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
-import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CenteredController;
+import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CenteredCameraController;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.swt.widgets.Composite;
 
@@ -59,7 +59,7 @@ public class FXGeometryViewer extends FXViewer {
 		}
 
 		// Create a controller
-		cameraController = new CenteredController(fxCamera, scene, fxCanvas);
+		cameraController = new CenteredCameraController(fxCamera, scene, fxCanvas);
 
 		// Set the camera on the scene
 		scene.setCamera(fxCamera);

@@ -44,7 +44,7 @@ public class FXPlantCompositeConverter
 	 * The scale which translates between RELAP7 units and JavaFX units. Each
 	 * RELAP7 unit will be treated as SCALE JavaFX units.
 	 */
-	private final int SCALE = 25;
+	private final int SCALE = 50;
 
 	/**
 	 * The root of the tree of plant parts converted from the source.
@@ -163,6 +163,8 @@ public class FXPlantCompositeConverter
 			JunctionController junction = (JunctionController) factory
 					.createController(mesh);
 
+			junction.setProperty("Name", plantComp.getName());
+
 			// Create a list of all pipes in the plant by combining the pipes
 			// with the core channels
 			List<AbstractController> pipeList = root
@@ -251,11 +253,10 @@ public class FXPlantCompositeConverter
 					pipeList.addAll(
 							root.getEntitiesByCategory("Core Channels"));
 
-					// Now that the pipe is gauranteed to be in the root, as it
+					// Now that the pipe is guaranteed to be in the root, as it
 					// was added when visited, find the pipe with that id and
 					// add it
-					for (AbstractController pipe : root
-							.getEntitiesByCategory("Pipes")) {
+					for (AbstractController pipe : pipeList) {
 						if (Integer.parseInt(pipe.getProperty("Id")) == output
 								.getId()) {
 							junction.addEntityByCategory(pipe, "Output");
@@ -294,99 +295,103 @@ public class FXPlantCompositeConverter
 		@Override
 		public void visit(HeatExchanger plantComp) {
 
+			// Heat Exchangers require a contained primary pipe, so create one
+			// for it.
+			PipeController pipe = createPipe(plantComp.getPrimaryPipe());
+
 			// Create a new heat exchanger
-			HeatExchangerMesh mesh = new HeatExchangerMesh();
+			HeatExchangerMesh mesh = new HeatExchangerMesh(pipe);
 			HeatExchangerController heatExchanger = (HeatExchangerController) factory
 					.createController(mesh);
 
-			// Get the primary pipe
-			Pipe primary = plantComp.getPrimaryPipe();
-
-			// Whether or not a match was found
-			boolean found = false;
-
-			// Create a list of all pipes in the plant by combining the pipes
-			// with the core channels
-			List<AbstractController> pipeList = root
-					.getEntitiesByCategory("Pipes");
-			pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
-
-			// Check the root to see if a pipe with that id already exists
-			for (AbstractController pipe : pipeList) {
-				if (Integer.parseInt(pipe.getProperty("Id")) == primary
-						.getId()) {
-
-					// If found, set the pipe as the exchanger's primary
-					heatExchanger.setPrimaryPipe((PipeController) pipe);
-
-					// Match found, stop the search
-					found = true;
-					break;
-				}
-			}
-
-			// If a match was not found, create a new pipe
-			if (!found) {
-
-				// Convert the pipe into a modeling data structure
-				// primary.accept(this);
-				source.getPlantComponent(primary.getId()).accept(this);
-
-				// Refresh the list of pipes
-				pipeList = root.getEntitiesByCategory("Pipes");
-				pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
-
-				// Now that the pipe is guaranteed to be in the root, as it was
-				// added when visited, find the pipe with that id and add it
-				for (AbstractController pipe : pipeList) {
-					if (Integer.parseInt(pipe.getProperty("Id")) == primary
-							.getId()) {
-						heatExchanger.setPrimaryPipe((PipeController) pipe);
-						break;
-					}
-				}
-			}
-
-			// Get the secondary pipe
-			Pipe secondary = plantComp.getSecondaryPipe();
-
-			found = false;
-
-			// Check the root to see if a pipe with that id already exists
-			for (AbstractController pipe : pipeList) {
-				if (Integer.parseInt(pipe.getProperty("Id")) == secondary
-						.getId()) {
-
-					// If found, set the pipe as the exchanger's primary
-					heatExchanger.setSecondaryPipe((PipeController) pipe);
-
-					// Match found, stop the search
-					found = true;
-					break;
-				}
-			}
-
-			// If a match was not found, create a new pipe
-			if (!found) {
-
-				// Convert the pipe into a modeling data structure
-				// primary.accept(this);
-				source.getPlantComponent(secondary.getId()).accept(this);
-
-				// Refresh the list of pipes
-				pipeList = root.getEntitiesByCategory("Pipes");
-				pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
-
-				// Now that the pipe is guaranteed to be in the root, as it was
-				// added when visited, find the pipe with that id and add it
-				for (AbstractController pipe : pipeList) {
-					if (Integer.parseInt(pipe.getProperty("Id")) == secondary
-							.getId()) {
-						heatExchanger.setSecondaryPipe((PipeController) pipe);
-						break;
-					}
-				}
-			}
+			// // Get the primary pipe
+			// Pipe primary = plantComp.getPrimaryPipe();
+			//
+			// // Whether or not a match was found
+			// boolean found = false;
+			//
+			// // Create a list of all pipes in the plant by combining the pipes
+			// // with the core channels
+			// List<AbstractController> pipeList = root
+			// .getEntitiesByCategory("Pipes");
+			// pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+			//
+			// // Check the root to see if a pipe with that id already exists
+			// for (AbstractController pipe : pipeList) {
+			// if (Integer.parseInt(pipe.getProperty("Id")) == primary
+			// .getId()) {
+			//
+			// // If found, set the pipe as the exchanger's primary
+			// heatExchanger.setPrimaryPipe((PipeController) pipe);
+			//
+			// // Match found, stop the search
+			// found = true;
+			// break;
+			// }
+			// }
+			//
+			// // If a match was not found, create a new pipe
+			// if (!found) {
+			//
+			// // Convert the pipe into a modeling data structure
+			// // primary.accept(this);
+			// source.getPlantComponent(primary.getId()).accept(this);
+			//
+			// // Refresh the list of pipes
+			// pipeList = root.getEntitiesByCategory("Pipes");
+			// pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+			//
+			// // Now that the pipe is guaranteed to be in the root, as it was
+			// // added when visited, find the pipe with that id and add it
+			// for (AbstractController pipe : pipeList) {
+			// if (Integer.parseInt(pipe.getProperty("Id")) == primary
+			// .getId()) {
+			// heatExchanger.setPrimaryPipe((PipeController) pipe);
+			// break;
+			// }
+			// }
+			// }
+			//
+			// // Get the secondary pipe
+			// Pipe secondary = plantComp.getSecondaryPipe();
+			//
+			// found = false;
+			//
+			// // Check the root to see if a pipe with that id already exists
+			// for (AbstractController pipe : pipeList) {
+			// if (Integer.parseInt(pipe.getProperty("Id")) == secondary
+			// .getId()) {
+			//
+			// // If found, set the pipe as the exchanger's primary
+			// heatExchanger.setSecondaryPipe((PipeController) pipe);
+			//
+			// // Match found, stop the search
+			// found = true;
+			// break;
+			// }
+			// }
+			//
+			// // If a match was not found, create a new pipe
+			// if (!found) {
+			//
+			// // Convert the pipe into a modeling data structure
+			// // primary.accept(this);
+			// source.getPlantComponent(secondary.getId()).accept(this);
+			//
+			// // Refresh the list of pipes
+			// pipeList = root.getEntitiesByCategory("Pipes");
+			// pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
+			//
+			// // Now that the pipe is guaranteed to be in the root, as it was
+			// // added when visited, find the pipe with that id and add it
+			// for (AbstractController pipe : pipeList) {
+			// if (Integer.parseInt(pipe.getProperty("Id")) == secondary
+			// .getId()) {
+			// heatExchanger.setSecondaryPipe((PipeController) pipe);
+			// break;
+			// }
+			// }
+			// }
 
 			// Add the heat exchanger to the root
 			root.addEntityByCategory(heatExchanger, "Heat Exchangers");
@@ -622,6 +627,8 @@ public class FXPlantCompositeConverter
 			mesh.setRadius(plantComp.getRadius() * SCALE);
 			mesh.setInnerRadius(plantComp.getRadius() * SCALE);
 			mesh.setAxialSamples(plantComp.getNumElements());
+
+			mesh.setProperty("Name", plantComp.getName());
 
 			// Create the view and controller
 			PipeController pipe = (PipeController) factory

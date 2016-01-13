@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
+import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
+import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
@@ -54,6 +56,12 @@ public class FXPlantViewFactory implements IControllerFactory {
 		else if (model instanceof ReactorMesh) {
 			FXReactorView view = new FXReactorView((ReactorMesh) model);
 			return new ReactorController((ReactorMesh) model, view);
+		}
+
+		// Create a FXHeatExchangerView for heat exchangers.
+		else if (model instanceof HeatExchangerMesh) {
+			FXHeatExchangerView view = new FXHeatExchangerView(model);
+			return new HeatExchangerController((HeatExchangerMesh) model, view);
 		}
 
 		// Return null for unrecognized components

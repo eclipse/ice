@@ -13,14 +13,11 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant;
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeView;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Sphere;
 
 /**
  * A class managing the JavaFX graphical representation of a Pipe part.
@@ -28,8 +25,7 @@ import javafx.scene.shape.Sphere;
  * @author Robert Smith
  *
  */
-public class FXPipeView extends FXShapeView
-		implements PipeView, IWireFramePart {
+public class FXPipeView extends FXShapeView implements PipeView {
 
 	/**
 	 * The nullary constructor
@@ -61,6 +57,7 @@ public class FXPipeView extends FXShapeView
 			material.setSpecularColor(Color.WHITE);
 			setMaterial(material);
 		}
+
 	}
 
 	/*
@@ -254,18 +251,5 @@ public class FXPipeView extends FXShapeView
 	// node.getTransforms().setAll(Util.convertTransformation(transformation));
 	// node.getChildren().add(mesh.getMesh());
 	// }
-
-	@Override
-	protected void createShape(AbstractMesh model, ShapeType type) {
-		super.createShape(model, type);
-
-		Extrema e = getLowerExtrema();
-		Sphere sphere = new Sphere(e.getMaxZ() - e.getMinZ());
-		// sphere.setTranslateX((e.getMaxX() - e.getMinX() / 2 + e.getMinX()));
-		// sphere.setTranslateY((e.getMaxY() - e.getMinY() / 2 + e.getMinY()));
-		// sphere.setTranslateZ((e.getMaxZ() - e.getMinZ() / 2 + e.getMinZ()));
-		sphere.setTranslateY(((PipeMesh) model).getLength() / 2);
-		node.getChildren().add(sphere);
-	}
 
 }

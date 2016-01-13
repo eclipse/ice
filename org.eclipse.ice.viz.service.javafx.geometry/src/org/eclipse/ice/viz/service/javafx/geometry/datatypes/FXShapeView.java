@@ -231,7 +231,14 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 			break;
 		case Tube:
 			// There is no conditional on Tubes as tubes are set to draw based
-			// on information from the model's properties
+			// on information from the model's properties, and thus may require
+			// redrawing even without a change in type.
+
+			// Get the previous shape, if any
+			if (shape != null) {
+				prevShape = shape;
+			}
+
 			// Cast the model as a PipeComponent and get the parameters
 			TubeMesh pipe = (TubeMesh) model;
 			int axialSamples = pipe.getAxialSamples();
@@ -239,9 +246,15 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 			double outerRadius = pipe.getRadius();
 			double innerRadius = pipe.getInnerRadius();
 
+			// If the number of axial samples is less than 3 the tube cannot be
+			// created.
+			if (axialSamples < 3) {
+				axialSamples = 3;
+			}
+
 			// Create the mesh
 			tubeShape = new FXTube(height, innerRadius, outerRadius,
-					axialSamples, 50);
+					axialSamples, 10);
 
 			// Get the actual mesh and set it to a view
 			TriangleMesh tubeMesh = tubeShape.getMesh();
@@ -281,6 +294,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		else if (initial) {
 			node.getChildren().add(shape);
 		}
+
 	}
 
 	/**
@@ -295,6 +309,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 		// Put the controller in the node's data structure
 		node.getProperties().put(ShapeController.class, shape);
+
 	}
 
 	/**
@@ -327,6 +342,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 */
 	@Override
 	public Object getRepresentation() {
+
 		return node;
 	}
 
@@ -371,6 +387,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 					gizmo.setVisible(false);
 				}
 			}
+
 		}
 	}
 
@@ -426,6 +443,15 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		} else {
 			shape.setDrawMode(DrawMode.FILL);
 		}
+
+		//
+		// node.getChildren().clear();
+		// node.getChildren().add(shape);
+
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Property };
+		updateManager.notifyListeners(eventTypes);
 	}
 
 }

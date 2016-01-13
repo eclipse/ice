@@ -26,7 +26,7 @@ import javafx.scene.transform.Rotate;
  * @author Robert Smith
  *
  */
-public class CenteredController extends AbstractCameraController {
+public class CenteredCameraController extends AbstractCameraController {
 
 	/**
 	 * The X rotation applied to the camera.
@@ -39,6 +39,11 @@ public class CenteredController extends AbstractCameraController {
 	private Rotate y;
 
 	/**
+	 * The Z rotation applied to the camera.
+	 */
+	private Rotate z;
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param camera
@@ -48,7 +53,8 @@ public class CenteredController extends AbstractCameraController {
 	 * @param canvas
 	 *            The FXCanvas containing the scene.
 	 */
-	public CenteredController(Camera camera, Scene scene, FXCanvas canvas) {
+	public CenteredCameraController(Camera camera, Scene scene,
+			FXCanvas canvas) {
 		super(camera, scene, canvas);
 
 		// Set the x axis rotation for the affine transformation
@@ -60,8 +66,12 @@ public class CenteredController extends AbstractCameraController {
 		y = new Rotate();
 		y.setAxis(Rotate.Y_AXIS);
 
+		// Set the y axis rotation for the affine transformation
+		z = new Rotate();
+		z.setAxis(Rotate.Z_AXIS);
+
 		// Apply the rotations and the affine to the camera
-		xform.getTransforms().setAll(x, y, affine);
+		xform.getTransforms().setAll(x, y, z, affine);
 
 	}
 
@@ -122,8 +132,9 @@ public class CenteredController extends AbstractCameraController {
 		// Handle the rotations if they exist
 		if (x != null) {
 			// Reset the camera to its initial angles
-			x.setAngle(0);
-			y.setAngle(0);
+			x.setAngle(defaultX.getAngle());
+			y.setAngle(defaultY.getAngle());
+			z.setAngle(defaultZ.getAngle());
 		}
 
 		// Zoom the camera back to a default distance from the origin.

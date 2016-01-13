@@ -1,39 +1,53 @@
-/// *******************************************************************************
-// * Copyright (c) 2014 UT-Battelle, LLC.
-// * All rights reserved. This program and the accompanying materials
-// * are made available under the terms of the Eclipse Public License v1.0
-// * which accompanies this distribution, and is available at
-// * http://www.eclipse.org/legal/epl-v10.html
-// *
-// * Contributors:
-// * Initial API and implementation and/or initial documentation - Jay Jay
-/// Billings,
-// * Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
-// * Claire Saunders, Matthew Wang, Anna Wojtowicz
-// *******************************************************************************/
-// package org.eclipse.ice.client.widgets.reactoreditor.plant;
+/// ********************************************************************************Copyright(c)2014
+/// UT-Battelle,LLC.*All rights reserved.This program and the accompanying
+/// materials*are made available under the terms of the Eclipse Public License
+/// v1.0*which accompanies this distribution,and is available
+/// at*http://www.eclipse.org/legal/epl-v10.html
+// **Contributors:*Initial API and implementation and/or initial
+/// documentation-Jay Jay/Billings,*Jordan H.Deyton,Dasha Gorin,Alexander
+/// J.McCaskey,Taylor Patterson,*Claire Saunders,Matthew Wang,Anna
+/// Wojtowicz*******************************************************************************/package
+/// org.eclipse.ice.client.widgets.reactoreditor.plant;
 //
 // import org.eclipse.ice.reactor.plant.HeatExchanger;
 //
-// import com.jme3.bounding.BoundingBox;
-// import com.jme3.material.Material;
-// import com.jme3.math.FastMath;
-// import com.jme3.math.Quaternion;
-// import com.jme3.math.Vector3f;
-// import com.jme3.scene.Geometry;
-// import com.jme3.scene.shape.Box;
+// import com.jme3.bounding.BoundingBox;import com.jme3.material.Material;import
+/// com.jme3.math.FastMath;import com.jme3.math.Quaternion;import
+/// com.jme3.math.Vector3f;import com.jme3.scene.Geometry;import
+/// com.jme3.scene.shape.Box;
 //
-/// **
-// * This class provides a view for a {@link HeatExchanger}. This view provides
-/// a
-// * standard pipe as its primary pipe, but it also provides a {@link
-/// #container}
-// * around the pipe and secondary input and output pipes that extend from the
-// * container to their respective junctions.<br>
-// * <br>
-// * <b>Operations in this class (not including the constructor) should be
-/// called
-// * from a SimpleApplication's simpleUpdate() thread.</b>
+/// ***This
+//
+// class provides
+// a view for a
+//
+// {@link HeatExchanger}.
+//
+// This view provides/a*
+// standard pipe
+// as its
+// primary pipe, but
+// it also
+// provides a
+//
+// {@link
+/// #container}*
+//
+// around the
+// pipe and
+// secondary input
+// and output
+// pipes that
+// extend from the*
+// container to
+// their respective junctions.<br>*<br>*<b>
+// Operations in this class(
+// not including
+// the constructor)
+// should be/called*
+// from a SimpleApplication's
+//
+// simpleUpdate() thread.</b>
 // *
 // * @author Jordan H. Deyton
 // *

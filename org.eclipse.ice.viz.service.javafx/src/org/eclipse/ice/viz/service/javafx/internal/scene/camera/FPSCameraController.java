@@ -28,7 +28,7 @@ import javafx.scene.transform.Transform;
  * around a point and letting the user zoom in and out.
  * </p>
  */
-public class FPSController extends AbstractCameraController {
+public class FPSCameraController extends AbstractCameraController {
 
 	/**
 	 * A combination of all transformations applied to the camera node.
@@ -55,7 +55,7 @@ public class FPSController extends AbstractCameraController {
 	 * @param canvas
 	 *            The FXCanvas containing the scene.
 	 */
-	public FPSController(Camera camera, Scene scene, FXCanvas canvas) {
+	public FPSCameraController(Camera camera, Scene scene, FXCanvas canvas) {
 		super(camera, scene, canvas);
 	}
 

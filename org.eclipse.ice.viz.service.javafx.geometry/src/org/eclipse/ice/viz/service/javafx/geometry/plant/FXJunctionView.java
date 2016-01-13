@@ -50,6 +50,12 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 	PhongMaterial material;
 
 	/**
+	 * Whether or not to display the junction in wireframe mode. It will be in
+	 * wireframe mode if true or drawn regularly if false.
+	 */
+	boolean wireframe;
+
+	/**
 	 * The nullary constructor.
 	 */
 	public FXJunctionView() {
@@ -58,6 +64,7 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		// Initialize the date members
 		node = new Group();
 		material = new PhongMaterial(Color.GRAY);
+		wireframe = false;
 	}
 
 	/**
@@ -74,6 +81,7 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		node = new Group();
 		node.setId(model.getProperty("Name"));
 		material = new PhongMaterial(Color.GRAY);
+		wireframe = false;
 
 		// Initialize the mesh
 		createMesh(model);
@@ -113,10 +121,10 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		centerY = Math.max(boxBounds.getMaxY() - boxBounds.getMinY(), 1);
 		centerZ = Math.max(boxBounds.getMaxZ() - boxBounds.getMinZ(), 1);
 
-		// Create a box which fills the box bounds, adding 1 to each dimension
+		// Create a box which fills the box bounds, adding 2 to each dimension
 		// to give enough space between the meshes that they won't clip through
 		// each other.
-		box = new Box(centerX + 1, centerY + 1, centerZ + 1);
+		box = new Box(centerX + 3, centerY + 3, centerZ + 3);
 
 		// Move the box to the center of the bounded area
 		box.setTranslateX((boxBounds.getMaxX() - boxBounds.getMinX()) / 2
@@ -129,6 +137,13 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		// Add the box to the scene and set its material
 		node.getChildren().add(box);
 		box.setMaterial(material);
+
+		// Set the box to the correct wireframe mode
+		if (wireframe) {
+			box.setDrawMode(DrawMode.LINE);
+		} else {
+			box.setDrawMode(DrawMode.FILL);
+		}
 	}
 
 	/*
@@ -167,6 +182,9 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
+
+		// Save the new state
+		wireframe = on;
 
 		// Set the box to the proper mode
 		if (on) {

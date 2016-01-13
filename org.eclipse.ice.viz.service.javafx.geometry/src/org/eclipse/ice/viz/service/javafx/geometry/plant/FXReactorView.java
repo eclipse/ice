@@ -69,6 +69,12 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	MeshView upperArch;
 
 	/**
+	 * Whether or not the reactor will display in wireframe mode. It will be a
+	 * wireframe if true, or solid if false.
+	 */
+	boolean wireframe;
+
+	/**
 	 * The nullary constructor.
 	 */
 	public FXReactorView() {
@@ -353,6 +359,8 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		reactorNode.setTranslateZ(
 				(bounds.getMaxZ() - bounds.getMinZ()) / 2 + bounds.getMinZ());
 
+		// Set the shapes to the correct rendering mode
+		setWireFrameMode(wireframe);
 	}
 
 	/**
@@ -428,6 +436,9 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
+
+		// Save the new state
+		wireframe = on;
 
 		// Set each of the reactor's parts to line mode
 		if (on) {

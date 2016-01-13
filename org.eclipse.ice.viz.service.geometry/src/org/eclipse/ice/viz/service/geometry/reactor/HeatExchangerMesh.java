@@ -24,10 +24,23 @@ import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 public class HeatExchangerMesh extends AbstractMesh {
 
 	/**
-	 * The default constructor.
+	 * The nullary constructor.
 	 */
 	public HeatExchangerMesh() {
 		super();
+	}
+
+	/**
+	 * The default constructor
+	 * 
+	 * @param primary
+	 *            The heat exchanger's primary pipe.
+	 */
+	public HeatExchangerMesh(PipeController primary) {
+		this();
+
+		// Add the primary pipe to its category
+		setPrimaryPipe(primary);
 	}
 
 	/**

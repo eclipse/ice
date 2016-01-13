@@ -15,7 +15,6 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
-import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXTube;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -280,29 +279,30 @@ public class FXHeatExchangerView extends AbstractView
 		node.getChildren().remove(secondaryInlet);
 		node.getChildren().remove(secondaryOutlet);
 
+		// Get a reference to the primary pipe
+		FXPipeController primaryPipeController = (FXPipeController) ((HeatExchangerMesh) model)
+				.getPrimaryPipe();
+
 		// Recolor the primary pipe to blue and add its mesh to the node
-		((FXPipeController) ((HeatExchangerMesh) model).getPrimaryPipe())
-				.setMaterial(new PhongMaterial(Color.BLUE));
-		primaryPipe = (Group) ((HeatExchangerMesh) model).getPrimaryPipe()
-				.getRepresentation();
+		primaryPipeController.setMaterial(new PhongMaterial(Color.BLUE));
+		primaryPipe = (Group) primaryPipeController.getRepresentation();
 		node.getChildren().add(primaryPipe);
 
 		// Create the wall around the primary pipe
-		double wallSize = ((HeatExchangerMesh) model).getPrimaryPipe()
-				.getRadius() * 4;
-		wall = new Box(wallSize, ((PipeMesh) model).getLength() * 0.8d,
+		double wallSize = primaryPipeController.getRadius() * 4;
+		wall = new Box(wallSize, primaryPipeController.getLength() * 0.8d,
 				wallSize);
 
 		// Create the secondary inlet
-		AbstractController inletJunction = ((HeatExchangerMesh) model)
-				.getSecondaryPipe().getEntitiesByCategory("Input").get(0);
+		AbstractController inletJunction = model
+				.getEntitiesByCategory("Secondary Input").get(0);
 		secondaryInlet = createTubeToPoint(
 				((JunctionController) inletJunction).getCenter(),
 				(HeatExchangerMesh) model);
 
 		// Create the secondary outlet
-		AbstractController outletJunction = ((HeatExchangerMesh) model)
-				.getSecondaryPipe().getEntitiesByCategory("Output").get(0);
+		AbstractController outletJunction = model
+				.getEntitiesByCategory("Secondary Output").get(0);
 		secondaryOutlet = createTubeToPoint(
 				((JunctionController) outletJunction).getCenter(),
 				(HeatExchangerMesh) model);

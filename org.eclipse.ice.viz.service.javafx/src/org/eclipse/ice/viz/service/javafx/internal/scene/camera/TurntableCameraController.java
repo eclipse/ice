@@ -26,7 +26,7 @@ import javafx.scene.transform.Transform;
  * point and letting the user zoom in and out.
  * </p>
  */
-public class TurntableController extends AbstractCameraController {
+public class TurntableCameraController extends AbstractCameraController {
 
 	/** */
 	Transform xform;
@@ -80,7 +80,7 @@ public class TurntableController extends AbstractCameraController {
 	 * <p>
 	 * </p>
 	 */
-	public TurntableController(Camera camera, Scene scene, FXCanvas canvas) {
+	public TurntableCameraController(Camera camera, Scene scene, FXCanvas canvas) {
 		super(camera, scene, canvas);
 
 		final Camera finalCamera = camera;

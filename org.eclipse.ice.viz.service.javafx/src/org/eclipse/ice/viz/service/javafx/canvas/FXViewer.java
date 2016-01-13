@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.javafx.canvas;
 
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXRenderer;
-import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CenteredController;
+import org.eclipse.ice.viz.service.javafx.internal.scene.camera.CenteredCameraController;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.ICameraController;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
@@ -57,7 +57,7 @@ public class FXViewer extends AbstractViewer {
 	private Group internalRoot;
 
 	/** The root of the scene as exposed to clients. */
-	private Group root;
+	protected Group root;
 
 	/** The active scene displayed to the end user. */
 	protected Scene scene;
@@ -270,7 +270,8 @@ public class FXViewer extends AbstractViewer {
 					Messages.FXGeometryViewer_NullCamera);
 		}
 
-		cameraController = new CenteredController(fxCamera, scene, fxCanvas);
+		cameraController = new CenteredCameraController(fxCamera, scene,
+				fxCanvas);
 
 		scene.setCamera(fxCamera);
 
@@ -423,7 +424,7 @@ public class FXViewer extends AbstractViewer {
 	 * horizontal and the Z vertical.
 	 */
 	public void setDefaultCameraYByZ() {
-		cameraController.setDefaultAngle(90, 0, 90);
+		cameraController.setDefaultAngle(90, 90, 90);
 		cameraController.reset();
 	}
 
@@ -441,7 +442,7 @@ public class FXViewer extends AbstractViewer {
 	 * horizontal and the Y vertical.
 	 */
 	public void setDefaultCameraZByX() {
-		cameraController.setDefaultAngle(0, 90, 90);
+		cameraController.setDefaultAngle(0, 90, 0);
 		cameraController.reset();
 	}
 
