@@ -12,6 +12,7 @@ package org.eclipse.ice.viz.service.geometry.reactor;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -19,7 +20,8 @@ import org.eclipse.ice.viz.service.modeling.AbstractView;
  * @author Robert Smith
  *
  */
-public class HeatExchangerController extends AbstractController {
+public class HeatExchangerController extends AbstractController
+		implements IWireFramePart {
 
 	/**
 	 * The nullary constructor.
@@ -98,5 +100,17 @@ public class HeatExchangerController extends AbstractController {
 		clone.refresh();
 
 		return clone;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.IWireFramePart#setWireFrameMode(
+	 * boolean)
+	 */
+	@Override
+	public void setWireFrameMode(boolean on) {
+		((IWireFramePart) view).setWireFrameMode(on);
 	}
 }

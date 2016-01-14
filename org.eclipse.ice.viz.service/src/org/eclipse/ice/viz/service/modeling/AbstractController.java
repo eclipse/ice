@@ -519,11 +519,8 @@ public class AbstractController
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
 
-		// If the update came from the component, send it to the view so that it
-		// can refresh.
-		if (component == model) {
-			view.refresh(model);
-		}
+		// Refresh the view
+		view.refresh(model);
 
 		// Notify own listeners of the change.
 		updateManager.notifyListeners(type);

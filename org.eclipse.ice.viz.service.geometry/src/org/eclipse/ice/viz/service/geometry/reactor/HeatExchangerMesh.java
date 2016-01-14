@@ -31,26 +31,17 @@ public class HeatExchangerMesh extends AbstractMesh {
 	}
 
 	/**
-	 * The default constructor
-	 * 
-	 * @param primary
-	 *            The heat exchanger's primary pipe.
-	 */
-	public HeatExchangerMesh(PipeController primary) {
-		this();
-
-		// Add the primary pipe to its category
-		setPrimaryPipe(primary);
-	}
-
-	/**
 	 * Convenience getter method for the primary pipe.
 	 * 
 	 * @return The Heat Exchanger's primary pipe, or null if it does not have
 	 *         one.
 	 */
 	public PipeController getPrimaryPipe() {
-		return (PipeController) entities.get("Primary Pipe").get(0);
+
+		List<AbstractController> category = getEntitiesByCategory(
+				"Primary Pipe");
+
+		return !category.isEmpty() ? (PipeController) category.get(0) : null;
 	}
 
 	/**
@@ -72,12 +63,18 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 */
 	public void setPrimaryPipe(PipeController pipe) {
 
+		// Set this exchanger's transformation based on the pipe's, as the heat
+		// exchanger should be drawn around the pipe
+		controller.setTransformation(pipe.getTransformation());
+
 		// Get the current primary pipe, if any
 		List<AbstractController> primary = entities.get("Primary Pipe");
 
 		// If there is already one, remove it.
-		if (!primary.isEmpty()) {
-			removeEntity(primary.get(0));
+		if (primary != null) {
+			if (!primary.isEmpty()) {
+				removeEntity(primary.get(0));
+			}
 		}
 
 		// Add the pipe under the Primary Pipe category

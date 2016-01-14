@@ -342,7 +342,6 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 */
 	@Override
 	public Object getRepresentation() {
-
 		return node;
 	}
 

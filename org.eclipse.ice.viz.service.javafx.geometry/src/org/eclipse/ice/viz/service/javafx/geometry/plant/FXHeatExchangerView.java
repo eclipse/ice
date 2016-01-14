@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import java.util.List;
+
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
@@ -83,7 +83,6 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Initialize the node
 		node = new Group();
-		node.getTransforms().setAll(Util.convertTransformation(transformation));
 	}
 
 	/**
@@ -97,7 +96,6 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Initialize the node
 		node = new Group();
-		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
 		// Render shapes based on the model
 		refresh(model);
@@ -111,28 +109,38 @@ public class FXHeatExchangerView extends AbstractView
 	 * other end will be centered on the given point. The tube's mesh will be
 	 * set as a child to the view's node, with a blue material.
 	 * 
+	 * This function returns the FXTube as a return value and writes the
+	 * MeshView constructed from that FXTube's data to the "view" argument.
+	 * 
 	 * @param point
 	 *            The point at which to center the tube's non-intersecting end
 	 * @param model
 	 *            The model containing the information about the pipe's physical
 	 *            characteristics, which will be copied for the new tube
+	 * @param view
+	 *            A MeshView for JavaFX representation of the new tube. The
+	 *            pipe's graphical view will be saved to this object.
 	 * @return A new tube mesh adhering to the above specifications
 	 */
-	private FXTube createTubeToPoint(double[] point, HeatExchangerMesh model) {
+	private FXTube createTubeToPoint(double[] point, HeatExchangerMesh model,
+			MeshView view) {
 
 		// Get the primary tube's start point
 		Extrema start = model.getPrimaryPipe().getLowerExtrema();
 		double[] startPoint = new double[3];
-		startPoint[0] = (start.getMaxX() - start.getMinX()) / 2;
-		startPoint[1] = (start.getMaxY() - start.getMinY()) / 2;
-		startPoint[2] = (start.getMaxZ() - start.getMinZ()) / 2;
+		startPoint[0] = (start.getMaxX() - start.getMinX()) / 2
+				+ start.getMinX();
+		startPoint[1] = (start.getMaxY() - start.getMinY()) / 2
+				+ start.getMinY();
+		startPoint[2] = (start.getMaxZ() - start.getMinZ()) / 2
+				+ start.getMinZ();
 
 		// Get the primary tube's end point
 		Extrema end = model.getPrimaryPipe().getUpperExtrema();
 		double[] endPoint = new double[3];
-		endPoint[0] = (end.getMaxX() - end.getMinX()) / 2;
-		endPoint[1] = (end.getMaxY() - end.getMinY()) / 2;
-		endPoint[2] = (end.getMaxZ() - end.getMinZ()) / 2;
+		endPoint[0] = (end.getMaxX() - end.getMinX()) / 2 + end.getMinX();
+		endPoint[1] = (end.getMaxY() - end.getMinY()) / 2 + end.getMinY();
+		endPoint[2] = (end.getMaxZ() - end.getMinZ()) / 2 + end.getMinZ();
 
 		// Calculate the direction of the axis
 		double[] axis = new double[3];
@@ -167,11 +175,11 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Get the vector from the start point to the target point
 		double[] targetVector = new double[3];
-		targetVector[0] = point[0] - startPoint[0];
-		targetVector[1] = point[1] - startPoint[1];
-		targetVector[2] = point[2] - startPoint[2];
+		targetVector[0] = point[0] - wallStart[0];
+		targetVector[1] = point[1] - wallStart[1];
+		targetVector[2] = point[2] - wallStart[2];
 
-		// Calculate the dot product with between the axis and target vector
+		// Calculate the dot product between the axis and target vector
 		double dotProduct = primaryVector[0] * targetVector[0]
 				+ primaryVector[1] * targetVector[1]
 				+ primaryVector[2] * targetVector[2];
@@ -202,15 +210,16 @@ public class FXHeatExchangerView extends AbstractView
 		Rotate rotation = new Rotate(-Math.toDegrees(rotationAmount),
 				axisOfRotation);
 
+		// Calculate the length of the tube
+		double length = Math.sqrt(Math.pow(intersection[0] - point[0], 2)
+				+ Math.pow(intersection[1] - point[1], 2)
+				+ Math.pow(intersection[2] - point[2], 2));
+
 		// Create a new tube that is long enough to reach from the intersection
 		// point to the target and as wide as the primary pipe
-		FXTube tube = new FXTube(
-				Math.sqrt(Math.pow(intersection[0] + point[0], 2)
-						+ Math.pow(intersection[1] + point[1], 2)
-						+ Math.pow(intersection[2] + point[2], 2)),
+		FXTube tube = new FXTube(length, model.getPrimaryPipe().getRadius(),
 				model.getPrimaryPipe().getRadius(),
-				model.getPrimaryPipe().getRadius(),
-				model.getPrimaryPipe().getAxialSamples(), 50);
+				model.getPrimaryPipe().getAxialSamples(), 10);
 
 		// Create a rotation to restore the tube to the default position after
 		// the Pipe's transformation is applied, so that the rotation calculated
@@ -221,10 +230,37 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Create a view on the mesh, apply the rotations and material, and add
 		// it to the node
-		MeshView tubeView = new MeshView(tube.getMesh());
-		tubeView.getTransforms().setAll(rotation, reverseRotation);
-		tubeView.setMaterial(new PhongMaterial(Color.BLUE));
-		node.getChildren().add(tubeView);
+		view = new MeshView(tube.getMesh());
+		view.getTransforms().setAll(rotation, reverseRotation);
+		view.setMaterial(new PhongMaterial(Color.BLUE));
+		node.getChildren().add(view);
+
+		// Calculate the vector between the intersection point and the target
+		// point
+		double[] directVector = new double[3];
+		directVector[0] = point[0] - intersection[0];
+		directVector[1] = point[1] - intersection[1];
+		directVector[2] = point[2] - intersection[2];
+
+		// Normalize the vector of the direct line
+		double directLength = Math.sqrt(Math.pow(directVector[0], 2)
+				+ Math.pow(directVector[1], 2) + Math.pow(directVector[2], 2));
+		double[] normalizedDirect = new double[3];
+		normalizedDirect[0] = directVector[0] / directLength;
+		normalizedDirect[1] = directVector[1] / directLength;
+		normalizedDirect[2] = directVector[2] / directLength;
+
+		// Move the view to the intersection point, then step along the direct
+		// vector a distance equal to half the pipe's length. Since tubes's
+		// translations are based on their central point, this will shift the
+		// tube so that one end is at the intersection point and the other is at
+		// the target.
+		view.setTranslateX(
+				intersection[0] + (normalizedDirect[0] * length / 2));
+		view.setTranslateY(
+				intersection[1] + (normalizedDirect[1] * length / 2));
+		view.setTranslateZ(
+				intersection[2] + (normalizedDirect[2] * length / 2));
 
 		return tube;
 
@@ -267,6 +303,18 @@ public class FXHeatExchangerView extends AbstractView
 	 * (non-Javadoc)
 	 * 
 	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 */
+	@Override
+	public Object getRepresentation() {
+
+		return node;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
 	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
 	 * .viz.service.modeling.AbstractMesh)
 	 */
@@ -276,8 +324,19 @@ public class FXHeatExchangerView extends AbstractView
 		// Remove the extra parts from the node
 		node.getChildren().remove(primaryPipe);
 		node.getChildren().remove(wall);
-		node.getChildren().remove(secondaryInlet);
-		node.getChildren().remove(secondaryOutlet);
+		node.getChildren().remove(inletView);
+		node.getChildren().remove(outletView);
+
+		node.getChildren().clear();
+
+		try { // The heat exchanger cannot be drawn without a central pipe to
+				// contain.
+			if (((HeatExchangerMesh) model).getPrimaryPipe() == null) {
+				return;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// Get a reference to the primary pipe
 		FXPipeController primaryPipeController = (FXPipeController) ((HeatExchangerMesh) model)
@@ -293,54 +352,48 @@ public class FXHeatExchangerView extends AbstractView
 		wall = new Box(wallSize, primaryPipeController.getLength() * 0.8d,
 				wallSize);
 
-		// Create the secondary inlet
-		AbstractController inletJunction = model
-				.getEntitiesByCategory("Secondary Input").get(0);
-		secondaryInlet = createTubeToPoint(
-				((JunctionController) inletJunction).getCenter(),
-				(HeatExchangerMesh) model);
-
-		// Create the secondary outlet
-		AbstractController outletJunction = model
-				.getEntitiesByCategory("Secondary Output").get(0);
-		secondaryOutlet = createTubeToPoint(
-				((JunctionController) outletJunction).getCenter(),
-				(HeatExchangerMesh) model);
-
 		// Add the wall to the scene
 		wall.setMaterial(new PhongMaterial(Color.BLUE));
 		node.getChildren().add(wall);
+		wall.getTransforms().setAll(Util.convertTransformation(transformation));
 
-		// Add the secondary pipes to the scene
-		inletView = new MeshView(secondaryInlet.getMesh());
-		inletView.setMaterial(new PhongMaterial(Color.BLUE));
-		node.getChildren().add(inletView);
-		outletView = new MeshView(secondaryOutlet.getMesh());
-		outletView.setMaterial(new PhongMaterial(Color.BLUE));
-		node.getChildren().add(outletView);
-	}
+		// Get the secondary input junction
+		List<AbstractController> secondaryInputList = model
+				.getEntitiesByCategory("Secondary Input");
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
-	 * datastructures.VizObject.IVizUpdateable,
-	 * org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * UpdateableSubscription[])
-	 */
-	@Override
-	public void update(IManagedVizUpdateable component,
-			UpdateableSubscriptionType[] type) {
+		// If there is a secondary input, draw its pipe
+		if (!secondaryInputList.isEmpty()) {
+			// Create the secondary inlet
+			AbstractController inletJunction = model
+					.getEntitiesByCategory("Secondary Input").get(0);
+			secondaryInlet = createTubeToPoint(
+					((JunctionController) inletJunction).getCenter(),
+					(HeatExchangerMesh) model, inletView);
 
-		// If the transformation has changed, refresh the node's transformation
-		if (component == transformation) {
-			node.getTransforms()
-					.setAll(Util.convertTransformation(transformation));
+			// Add the secondary pipes to the scene
+			inletView = new MeshView(secondaryInlet.getMesh());
+			inletView.setMaterial(new PhongMaterial(Color.BLUE));
+
 		}
 
-		// Pass the update to own listeners
-		updateManager.notifyListeners(type);
+		// Get the secondary input junction
+		List<AbstractController> secondaryOutputList = model
+				.getEntitiesByCategory("Secondary Output");
+
+		// If there is a secondary input, draw its pipe
+		if (!secondaryOutputList.isEmpty()) {
+			// Create the secondary inlet
+			AbstractController outletJunction = model
+					.getEntitiesByCategory("Secondary Output").get(0);
+			secondaryOutlet = createTubeToPoint(
+					((JunctionController) outletJunction).getCenter(),
+					(HeatExchangerMesh) model, outletView);
+
+			// Add the secondary pipes to the scene
+			outletView = new MeshView(secondaryOutlet.getMesh());
+			outletView.setMaterial(new PhongMaterial(Color.BLUE));
+		}
+
 	}
 
 	/*

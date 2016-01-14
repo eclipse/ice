@@ -174,6 +174,7 @@ public class ViewFactory {
 		} catch (Exception e) {
 			logger.error(
 					"Error creating Geometry Canvas with Geometry Service.", e);
+			e.printStackTrace();
 		}
 
 		return (IPlantView) vizCanvas;
