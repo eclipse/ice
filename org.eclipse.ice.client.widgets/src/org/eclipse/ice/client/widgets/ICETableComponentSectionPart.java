@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.entry.EntryConverter;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -412,7 +413,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 							.getRowIds().size()];
 					// add rows to list - using RowWrapper class
 					for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-						rows[i] = (new RowWrapper(tableComponent.getRow(i)));
+						rows[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent.getRow(i))));
 					}
 					// Reset the input
 					tableComponentViewer.setInput(rows);
@@ -461,7 +462,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 							.getRowIds().size()];
 					// add rows to list - using RowWrapper class
 					for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-						rows[i] = (new RowWrapper(tableComponent.getRow(i)));
+						rows[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent.getRow(i))));
 					}
 					// Reset the input
 					tableComponentViewer.setInput(rows);
@@ -554,7 +555,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		// Iterate over lists and add editors - text or menu editor
 		for (int i = 0; i < tableComponent.getRowTemplate().size(); i++) {
 			// Menu editor if the allowedvaluetypes are a discrete list
-			if (tableComponent.getRowTemplate().get(i).getValueType() == AllowedValueType.Discrete) {
+			if (EntryConverter.convert(tableComponent.getRowTemplate().get(i)).getValueType() == AllowedValueType.Discrete) {
 
 				// Setup the label, content, and input providers for
 				// the combobox with the editors
@@ -589,7 +590,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 		// add rows to list - using RowWrapper class
 		for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-			rows[i] = (new RowWrapper(tableComponent.getRow(i)));
+			rows[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent.getRow(i))));
 		}
 
 		// Set the rows in TableViewer.
@@ -852,8 +853,8 @@ public class ICETableComponentSectionPart extends SectionPart implements
 							.getRowIds().size()];
 					// add rows to list - using RowWrapper class
 					for (int i = 0; i < rowWrappers.length; i++) {
-						rowWrappers[i] = (new RowWrapper(tableComponent
-								.getRow(i)));
+						rowWrappers[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent
+								.getRow(i))));
 					}
 
 					// Reset the input and re-pack the table.

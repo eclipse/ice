@@ -23,6 +23,8 @@ import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.entry.EntryConverter;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -175,8 +177,8 @@ public class IPSReader implements IReader {
 		}
 
 		// Read in the ini file and create the iterator
-		Entry foundEntry;
-		ArrayList<Entry> matchedEntries = new ArrayList<Entry>();
+		IEntry foundEntry;
+		ArrayList<IEntry> matchedEntries = new ArrayList<IEntry>();
 		ArrayList<String> lines = null;
 		try {
 			lines = readFileLines(ifile);
@@ -201,7 +203,7 @@ public class IPSReader implements IReader {
 			}
 		}
 
-		return matchedEntries;
+		return EntryConverter.convertIEntriesToEntries(matchedEntries);
 	}
 
 	/**
@@ -283,9 +285,9 @@ public class IPSReader implements IReader {
 		String[] splitLine = null;
 
 		// Build the template for the ports table
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		Entry portNameTemplate = makeIPSEntry();
-		Entry implementationTemplate = makeIPSEntry();
+		ArrayList<IEntry> entries = new ArrayList<IEntry>();
+		IEntry portNameTemplate = makeIPSEntry();
+		IEntry implementationTemplate = makeIPSEntry();
 		portNameTemplate.setName("Name");
 		implementationTemplate.setName("Value");
 		entries.add(portNameTemplate);
@@ -310,7 +312,7 @@ public class IPSReader implements IReader {
 				splitLine = line.split("=", 2);
 
 				// Set up the data in the table
-				ArrayList<Entry> row = new ArrayList<Entry>();
+				ArrayList<IEntry> row = new ArrayList<IEntry>();
 				int rowID = globalConfiguration.addRow();
 				row = globalConfiguration.getRow(rowID);
 				row.get(0).setValue(splitLine[0]);
@@ -354,9 +356,9 @@ public class IPSReader implements IReader {
 		currID++;
 
 		// Build the template for the ports table
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		Entry portNameTemplate = makeIPSEntry();
-		Entry implementationTemplate = makeIPSEntry();
+		ArrayList<IEntry> entries = new ArrayList<IEntry>();
+		IEntry portNameTemplate = makeIPSEntry();
+		IEntry implementationTemplate = makeIPSEntry();
 		portNameTemplate.setName("Port Name");
 		implementationTemplate.setName("Implementation");
 		entries.add(portNameTemplate);
@@ -415,7 +417,7 @@ public class IPSReader implements IReader {
 				// Get the port name of the entry & make sure that it is in
 				// the list of portNames.
 				int rowID = portsTable.addRow();
-				ArrayList<Entry> row = portsTable.getRow(rowID);
+				ArrayList<IEntry> row = portsTable.getRow(rowID);
 
 				String portName = line.replaceAll("[^a-zA-Z0-9_]", "");
 				if (portNames.contains(portName)) {
@@ -471,7 +473,7 @@ public class IPSReader implements IReader {
 	private DataComponent loadComponent(Iterator<String> it) {
 		// Create the port component and a generic entry
 		DataComponent portComponent = new DataComponent();
-		Entry entry;
+		IEntry entry;
 		String[] splitLine = null;
 
 		// Scan until we get to the next port component
@@ -611,7 +613,7 @@ public class IPSReader implements IReader {
 	private DataComponent loadTimeLoopComponent(Iterator<String> it) {
 		// Create the port component and a generic entry
 		DataComponent timeLoopData = new DataComponent();
-		Entry entry;
+		IEntry entry;
 		String[] splitLine = null;
 
 		// Scan until we get to the next port component
@@ -756,7 +758,7 @@ public class IPSReader implements IReader {
 	 * 
 	 * @return the default IPS entry
 	 */
-	private Entry makeIPSEntry() {
+	private IEntry makeIPSEntry() {
 		Entry entry = new Entry() {
 			@Override
 			protected void setup() {
@@ -771,6 +773,6 @@ public class IPSReader implements IReader {
 			}
 		};
 
-		return entry;
+		return EntryConverter.convert(entry);
 	}
 }

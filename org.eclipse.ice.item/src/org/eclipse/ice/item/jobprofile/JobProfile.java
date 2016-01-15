@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -163,7 +164,7 @@ public class JobProfile extends Item {
 			DataComponent exeInfo = null;
 			DataComponent threadOps = null;
 			TableComponent hostnames = null;
-			Entry entry = null;
+			IEntry entry = null;
 
 			// Create a new JobLauncher
 			JobLauncher launcher = new JobLauncher(project);
@@ -180,7 +181,7 @@ public class JobProfile extends Item {
 
 			// Set the launcher information - fills out the form Name,
 			// description, and execution name + parameters
-			ArrayList<Entry> execEntries = exeInfo.retrieveAllEntries();
+			ArrayList<IEntry> execEntries = exeInfo.retrieveAllEntries();
 			String execName = execEntries.get(0).getValue();
 			String execDesc = "This operation will execute "
 					+ execEntries.get(0).getValue();

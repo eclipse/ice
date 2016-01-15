@@ -18,9 +18,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICETableComponentSectionPart;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -78,13 +83,13 @@ public class ICETableComponentSectionPartTester {
 				eclipseTestForm = new ManagedForm(new Shell(display));
 
 				// Setup TableComponent
-				Entry column1 = new Entry();
-				Entry column2 = new Entry();
-				Entry column3 = new Entry();
+				IEntry column1 = new StringEntry();
+				IEntry column2 = new StringEntry();
+				IEntry column3 = new StringEntry();
 
-				ArrayList<Entry> template = new ArrayList<Entry>();
-				ArrayList<Entry> row1 = new ArrayList<Entry>();
-				ArrayList<Entry> row2 = new ArrayList<Entry>();
+				ArrayList<IEntry> template = new ArrayList<IEntry>();
+				ArrayList<IEntry> row1 = new ArrayList<IEntry>();
+				ArrayList<IEntry> row2 = new ArrayList<IEntry>();
 
 				// set tableComponent values for name, id, description
 				tableComponent.setName("Table 1");
@@ -99,15 +104,11 @@ public class ICETableComponentSectionPartTester {
 				column1.setValue("Over 9000!");
 				column1.setTag("Column");
 
-				column2 = new Entry() {
-					@Override
-					protected void setup() {
-						allowedValueType = AllowedValueType.Continuous;
-						allowedValues = new ArrayList<String>();
-						allowedValues.add("0");
-						allowedValues.add("15");
-					}
-				};
+				column2 = new ContinuousEntry();
+				List<String> allowed = new ArrayList<String>();
+				allowed.add("0");
+				allowed.add("15");
+				column2.setAllowedValues(allowed);
 				column2.setName("Column2");
 				column2.setId(2);
 				column2.setDescription("I am Column2! I can only take values from 0 to 15");
@@ -115,15 +116,11 @@ public class ICETableComponentSectionPartTester {
 				column2.setTag("Column");
 
 				// Override ->add menuitem
-				column3 = new Entry() {
-					@Override
-					protected void setup() {
-						allowedValueType = AllowedValueType.Discrete;
-						allowedValues = new ArrayList<String>();
-						allowedValues.add("I am one");
-						allowedValues.add("I am two");
-					}
-				};
+				column3 = new DiscreteEntry();
+				List<String> allowed3 = new ArrayList<String>();
+				allowed3.add("I am one");
+				allowed3.add("I am two");
+				column3.setAllowedValues(allowed3);
 				column3.setName("Column3");
 				column3.setId(3);
 				column3.setDescription("I am Column3!");

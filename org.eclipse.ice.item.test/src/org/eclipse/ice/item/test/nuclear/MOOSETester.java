@@ -40,6 +40,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -178,7 +179,7 @@ public class MOOSETester {
 		assertTrue(form.getComponent(MOOSEModel.fileDataComponentId) instanceof DataComponent);
 
 		// Check the MOOSE app entry
-		Entry mooseAppEntry = ((DataComponent) form
+		IEntry mooseAppEntry = ((DataComponent) form
 				.getComponent(MOOSEModel.fileDataComponentId))
 				.retrieveEntry("MOOSE-Based Application");
 		assertNotNull(mooseAppEntry);
@@ -188,7 +189,7 @@ public class MOOSETester {
 		assertEquals(mooseAppEntry.getDefaultValue(), mooseAppEntry.getValue());
 
 		// Check the output file Entry
-		Entry outputFileEntry = ((DataComponent) form
+		IEntry outputFileEntry = ((DataComponent) form
 				.getComponent(MOOSEModel.fileDataComponentId))
 				.retrieveEntry("Output File Name");
 		assertNotNull(outputFileEntry);
@@ -286,11 +287,11 @@ public class MOOSETester {
 		assertNotNull(dataNode);
 
 		// Get the parameters off the data node
-		ArrayList<Entry> parameters = dataNode.retrieveAllEntries();
+		ArrayList<IEntry> parameters = dataNode.retrieveAllEntries();
 		assertNotNull(parameters);
 		assertEquals(3, parameters.size());
 		// Check the first one
-		Entry param = parameters.get(0);
+		IEntry param = parameters.get(0);
 		assertEquals("interval", param.getName());
 		assertEquals("1", param.getValue());
 		// Check the second one

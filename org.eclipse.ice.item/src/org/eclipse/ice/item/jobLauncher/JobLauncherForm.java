@@ -13,12 +13,17 @@
 package org.eclipse.ice.item.jobLauncher;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 
@@ -176,8 +181,9 @@ public class JobLauncherForm extends Form {
 		final int maxProcessesFixed = Math.max(maxProcesses, 1);
 		final int defaultProcessesFixed = Math.max(defaultProcesses, 1);
 		DataComponent parallelismComponent = null;
-		Entry mpiEntry = null;
-
+		IEntry mpiEntry = null;
+		List<String> allowed = new ArrayList<String>();
+		
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
 		if (minProcessesFixed <= maxProcessesFixed
@@ -190,24 +196,21 @@ public class JobLauncherForm extends Form {
 				parallelismComponent.deleteEntry(mpiEntryName);
 			}
 			// Create the Entry
-			mpiEntry = new Entry() {
-				// Setup the values
-				@Override
-				public void setup() {
-					// Add the min and max threads
-					if (minProcessesFixed != maxProcessesFixed) {
-						allowedValues.add(String.valueOf(minProcessesFixed));
-						allowedValues.add(String.valueOf(maxProcessesFixed));
-						allowedValueType = AllowedValueType.Continuous;
-					} else {
-						// Only add one value if everything has been reset to 1
-						allowedValues.add(String.valueOf(minProcessesFixed));
-						allowedValueType = AllowedValueType.Discrete;
-						value = String.valueOf(minProcessesFixed);
-					}
-					defaultValue = String.valueOf(defaultProcessesFixed);
-				}
-			};
+			if (minProcessesFixed != maxProcessesFixed) {
+				mpiEntry = new ContinuousEntry();
+				allowed.add(String.valueOf(minProcessesFixed));
+				allowed.add(String.valueOf(maxProcessesFixed));
+				mpiEntry.setAllowedValues(allowed);
+				mpiEntry.setDefaultValue(String.valueOf(defaultProcessesFixed));
+				mpiEntry.setValue(String.valueOf(defaultProcessesFixed));
+			} else {
+				mpiEntry = new DiscreteEntry();
+				allowed.add(String.valueOf(minProcessesFixed));
+				mpiEntry.setAllowedValues(allowed);
+				mpiEntry.setDefaultValue(String.valueOf(defaultProcessesFixed));
+				mpiEntry.setValue(allowed.get(0));
+			}
+
 			mpiEntry.setName(mpiEntryName);
 			mpiEntry.setId(1);
 			mpiEntry.setDescription("The number of processes to use with "
@@ -284,8 +287,9 @@ public class JobLauncherForm extends Form {
 		final int maxThreadsFixed = Math.max(maxThreads, 1);
 		final int defaultThreadsFixed = Math.max(defaultThreads, 1);
 		DataComponent parallelismComponent = null;
-		Entry openMPEntry = null;
-
+		IEntry openMPEntry = null;
+		List<String> allowed = new ArrayList<String>();
+		
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
 		if (minThreadsFixed <= maxThreadsFixed
@@ -297,25 +301,22 @@ public class JobLauncherForm extends Form {
 			if (parallelismComponent.contains(openMPEntryName)) {
 				parallelismComponent.deleteEntry(openMPEntryName);
 			}
-			// Create the Entry
-			openMPEntry = new Entry() {
-				// Setup the values
-				@Override
-				public void setup() {
-					// Add the min and max threads
-					if (minThreadsFixed != maxThreadsFixed) {
-						allowedValues.add(String.valueOf(minThreadsFixed));
-						allowedValues.add(String.valueOf(maxThreadsFixed));
-						allowedValueType = AllowedValueType.Continuous;
-					} else {
-						// Only add one value if everything has been reset to 1
-						allowedValues.add(String.valueOf(minThreadsFixed));
-						allowedValueType = AllowedValueType.Discrete;
-						value = String.valueOf(minThreadsFixed);
-					}
-					defaultValue = String.valueOf(defaultThreadsFixed);
-				}
-			};
+			
+			if (minThreadsFixed != maxThreadsFixed) {
+				openMPEntry = new ContinuousEntry();
+				allowed.add(String.valueOf(minThreadsFixed));
+				allowed.add(String.valueOf(maxThreadsFixed));
+				openMPEntry.setAllowedValues(allowed);
+				openMPEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
+				openMPEntry.setValue(String.valueOf(defaultThreadsFixed));
+			} else {
+				openMPEntry = new DiscreteEntry();
+				allowed.add(String.valueOf(minThreadsFixed));
+				openMPEntry.setAllowedValues(allowed);
+				openMPEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
+				openMPEntry.setValue(String.valueOf(defaultThreadsFixed));
+			}
+			
 			openMPEntry.setName(openMPEntryName);
 			openMPEntry.setId(1);
 			openMPEntry.setDescription("The number of threads to use with "
@@ -391,8 +392,9 @@ public class JobLauncherForm extends Form {
 		final int maxThreadsFixed = Math.max(maxThreads, 1);
 		final int defaultThreadsFixed = Math.max(defaultThreads, 1);
 		DataComponent parallelismComponent = null;
-		Entry tBBEntry = null;
-
+		IEntry tBBEntry = null;
+		List<String> allowedValues = new ArrayList<String>();
+		
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
 		if (minThreadsFixed <= maxThreadsFixed
@@ -404,25 +406,23 @@ public class JobLauncherForm extends Form {
 			if (parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
 				parallelismComponent.deleteEntry(JobLauncherForm.TBBEntryName);
 			}
-			// Create the Entry
-			tBBEntry = new Entry() {
-				// Setup the values
-				@Override
-				public void setup() {
-					// Add the min and max threads
-					if (minThreadsFixed != maxThreadsFixed) {
-						allowedValues.add(String.valueOf(minThreadsFixed));
-						allowedValues.add(String.valueOf(maxThreadsFixed));
-						allowedValueType = AllowedValueType.Continuous;
-					} else {
-						// Only add one value if everything has been reset to 1
-						allowedValues.add(String.valueOf(minThreadsFixed));
-						allowedValueType = AllowedValueType.Discrete;
-						value = String.valueOf(minThreadsFixed);
-					}
-					defaultValue = String.valueOf(defaultThreadsFixed);
-				}
-			};
+			
+			if (minThreadsFixed != maxThreadsFixed) {
+				tBBEntry = new ContinuousEntry();
+				allowedValues.add(String.valueOf(minThreadsFixed));
+				allowedValues.add(String.valueOf(maxThreadsFixed));
+				tBBEntry.setAllowedValues(allowedValues);
+				tBBEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
+				tBBEntry.setValue(String.valueOf(defaultThreadsFixed));
+
+			} else {
+				tBBEntry = new DiscreteEntry();
+				// Only add one value if everything has been reset to 1
+				allowedValues.add(String.valueOf(minThreadsFixed));
+				tBBEntry.setAllowedValues(allowedValues);
+				tBBEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
+				tBBEntry.setValue(String.valueOf(minThreadsFixed));
+			}
 
 			tBBEntry.setName(JobLauncherForm.TBBEntryName);
 			tBBEntry.setId(2);
@@ -482,7 +482,7 @@ public class JobLauncherForm extends Form {
 
 		// Local Declarations
 		int oldId = 0;
-		Entry oldEntry = null;
+		IEntry oldEntry = null;
 		DataComponent fileComponent = ((DataComponent) getComponent(1));
 		final ArrayList<String> finalFiles = (files != null) ? 
 				(ArrayList<String>) files.clone() : new ArrayList<String>();
@@ -498,19 +498,8 @@ public class JobLauncherForm extends Form {
 		}
 
 		// Create an Entry with the filenames
-		Entry fileEntry = new Entry() {
-			// Setup the filenames
-			@Override
-			protected void setup() {
-				// The input file should be one of the files in the "inputFiles"
-				// array.
-				this.allowedValues = finalFiles;
-				this.allowedValueType = AllowedValueType.File;
-
-				return;
-			}
-
-		};
+		IEntry fileEntry = new FileEntry();
+		fileEntry.setAllowedValues(finalFiles);
 		
 		// Set the name and description of the Filename entry
 		fileEntry.setDescription(desc);
@@ -520,10 +509,18 @@ public class JobLauncherForm extends Form {
 		// Keep the original value, if possible
 		if (fileEntry.getAllowedValues().contains(oldValue)) {
 			fileEntry.setValue(oldValue);
+			fileEntry.setDefaultValue(oldValue);
+		} else if (!finalFiles.isEmpty()) {
+			fileEntry.setValue(finalFiles.get(0));
+			fileEntry.setDefaultValue(finalFiles.get(0));
+		} else {
+			fileEntry.setAllowedValues(Arrays.asList("Import a File"));
+			fileEntry.setValue("Import a File");
+			fileEntry.setDefaultValue("Import a File");
 		}
 		// Determine if the Entry already exists in the component and reuse it
 		if (oldEntry != null) {
-			oldEntry.copy(fileEntry);
+			((FileEntry)oldEntry).copy((FileEntry) fileEntry);
 		} else {
 			// Or just add it
 			fileComponent.addEntry(fileEntry);
@@ -593,18 +590,14 @@ public class JobLauncherForm extends Form {
 						+ "threads, TBB Threads, or MPI processes that should be used for the Job.");
 
 		// Create an Entry to hold an account code/project name
-		Entry accountEntry = new Entry() {
-			@Override
-			public void setup() {
-				setId(3);
-				setName("Account Code/Project Code");
-				setDescription("Account code or project name that "
+		IEntry accountEntry = new StringEntry();
+		accountEntry.setDefaultValue("none");
+		accountEntry.setValue("none");
+		accountEntry.setId(3);
+		accountEntry.setName("Account Code/Project Code");
+		accountEntry.setDescription("Account code or project name that "
 						+ "should be used when launching the simulation.");
-			    allowedValueType = AllowedValueType.Undefined;
-			    defaultValue = "none";
-				return;
-			}
-		};
+		
 		// Add the Entry to the component
 		parallelismComponent.addEntry(accountEntry);
 		

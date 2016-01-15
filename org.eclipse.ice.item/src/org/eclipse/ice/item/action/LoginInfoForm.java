@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -42,14 +44,14 @@ public class LoginInfoForm extends Form {
 	 * </p>
 	 * 
 	 */
-	private Entry username;
+	private IEntry username;
 	/**
 	 * <p>
 	 * An Entry for the password.
 	 * </p>
 	 * 
 	 */
-	private Entry password;
+	private IEntry password;
 
 	/**
 	 * <p>
@@ -63,46 +65,18 @@ public class LoginInfoForm extends Form {
 		super();
 
 		// Create an Entry with the filenames
-		username = new Entry() {
-
-			// Setup the filenames
-			@Override
-			public void setup() {
-
-				// Set the default values
-				allowedValueType = AllowedValueType.Undefined;
-				setId(1);
-				setName("Username");
-				setDescription("Log-in Username");
-
-				return;
-			}
-
-		};
+		username = new StringEntry();
+		// Set the default values
+		username.setId(1);
+		username.setName("Username");
+		username.setDescription("Log-in Username");
 
 		// Create an Entry with the filenames
-		password = new Entry() {
-
-			// Simple pass through for updates
-			@Override
-			public void update(String key, String value) {
-			}
-
-			// Setup the filenames
-			@Override
-			public void setup() {
-
-				// Set the default values
-				allowedValueType = AllowedValueType.Undefined;
-				setId(2);
-				setName("Password");
-				setDescription("Log-in Password");
-				secretFlag = true;
-
-				return;
-			}
-
-		};
+		password = new StringEntry();
+		password.setId(2);
+		password.setName("Password");
+		password.setDescription("Log-in Password");
+		password.setSecret(true);
 
 		// Set the name and description of the Form
 		setName("Log-in Information Form");

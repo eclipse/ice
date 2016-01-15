@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
@@ -81,7 +82,7 @@ public class JunctionLinker extends PlantComponentLinker {
 				 */
 				@Override
 				public void visit(final Junction junction) {
-					Entry entry;
+					IEntry entry;
 
 					// Get the "input" or "inputs" Entry.
 					entry = dataComp.retrieveEntry("inputs");
@@ -133,7 +134,7 @@ public class JunctionLinker extends PlantComponentLinker {
 				@Override
 				public void visit(final TimeDependentJunction junction) {
 					// Get the "input" entry.
-					Entry entry = dataComp.retrieveEntry("input");
+					IEntry entry = dataComp.retrieveEntry("input");
 					// If such an entry exists, create a new EntryListener that
 					// links the entry's value with the plant component.
 					if (entry != null) {

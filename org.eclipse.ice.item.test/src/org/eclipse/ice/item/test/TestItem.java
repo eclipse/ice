@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -93,7 +95,7 @@ public class TestItem extends Item {
 		FakeDataComponent dc1 = new FakeDataComponent();
 		dc1.setId(1);
 		dc1.setName("Jay");
-		Entry dc1Entry = new Entry();
+		IEntry dc1Entry = new StringEntry();
 		dc1Entry.setName("Jay");
 		dc1Entry.setValue("Awesome");
 		dc1Entry.setTag("jayjaybillings");
@@ -102,7 +104,7 @@ public class TestItem extends Item {
 		DataComponent dc2 = new DataComponent();
 		dc2.setId(2);
 		dc2.setName("David");
-		Entry dc2Entry = new Entry();
+		IEntry dc2Entry = new StringEntry();
 		dc2Entry.setId(5);
 		dc2Entry.setName("David's Entry");
 		dc2Entry.setValue("The boss");
@@ -155,7 +157,7 @@ public class TestItem extends Item {
 		FormStatus retVal = FormStatus.InfoError;
 		ArrayList<DataComponent> components = new ArrayList<DataComponent>();
 		DataComponent dc2 = null;
-		Entry dc2Entry = null;
+		IEntry dc2Entry = null;
 
 		// Grab the DataComponents
 		for (i = 0; i < this.form.getNumberOfComponents(); i++) {

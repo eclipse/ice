@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -70,7 +71,7 @@ public class SerializedItemBuilderTester {
 		ByteArrayInputStream stream = null;
 		Form form = null;
 		DataComponent dataComp1 = null, dataComp2 = null;
-		Entry entry = null;
+		IEntry entry = null;
 		String psfItemString = "";
 
 		// Local Declarations

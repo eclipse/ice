@@ -25,6 +25,10 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -57,7 +61,7 @@ public class ParameterListTester {
 		param.type = "double";
 
 		// Create an Entry from the parameter - start with double
-		Entry parameterEntry = param.toEntry();
+		IEntry parameterEntry = param.toEntry();
 		// Check the name
 		assertEquals(param.name, parameterEntry.getName());
 		// Check the value
@@ -66,7 +70,7 @@ public class ParameterListTester {
 		// Check the description
 		assertEquals(param.name, parameterEntry.getDescription());
 		// Check the AllowedValueType
-		assertEquals(AllowedValueType.Continuous, parameterEntry.getValueType());
+		assertTrue(parameterEntry instanceof ContinuousEntry);
 		// Check the bounds
 		assertTrue(parameterEntry.getAllowedValues().contains(
 				String.valueOf(Double.POSITIVE_INFINITY)));
@@ -85,7 +89,7 @@ public class ParameterListTester {
 		param.value = "1";
 		parameterEntry = param.toEntry();
 		// Check the AllowedValueType
-		assertEquals(AllowedValueType.Continuous, parameterEntry.getValueType());
+		assertTrue(parameterEntry instanceof ContinuousEntry);
 		// Check the bounds
 		assertTrue(parameterEntry.getAllowedValues().contains(
 				String.valueOf(Double.POSITIVE_INFINITY)));
@@ -104,7 +108,7 @@ public class ParameterListTester {
 		param.value = "true";
 		parameterEntry = param.toEntry();
 		// Check the AllowedValueType
-		assertEquals(AllowedValueType.Discrete, parameterEntry.getValueType());
+		assertTrue(parameterEntry instanceof DiscreteEntry);
 		// Check the bounds
 		assertTrue(parameterEntry.getAllowedValues().contains("true"));
 		assertTrue(parameterEntry.getAllowedValues().contains("false"));
@@ -121,7 +125,7 @@ public class ParameterListTester {
 		param.value = "myString";
 		parameterEntry = param.toEntry();
 		// Check the AllowedValueType
-		assertEquals(AllowedValueType.Undefined, parameterEntry.getValueType());
+		assertTrue(parameterEntry instanceof StringEntry);
 		// Create parameter from this Entry
 		retParam = new Parameter();
 		retParam.fromEntry(parameterEntry);
@@ -135,7 +139,7 @@ public class ParameterListTester {
 		param.value = "{1,1,1,1}";
 		parameterEntry = param.toEntry();
 		// Check the AllowedValueType
-		assertEquals(AllowedValueType.Undefined, parameterEntry.getValueType());
+		assertTrue(parameterEntry instanceof StringEntry);
 		// Create parameter from this Entry
 		retParam = new Parameter();
 		retParam.fromEntry(parameterEntry);

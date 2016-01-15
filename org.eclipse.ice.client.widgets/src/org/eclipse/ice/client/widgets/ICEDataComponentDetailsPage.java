@@ -14,6 +14,8 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.entry.EntryConverter;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.viewers.ISelection;
@@ -195,12 +197,12 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		glayout.marginWidth = glayout.marginHeight = 0;
 		client.setLayout(glayout);
 
-		ArrayList<Entry> entries = component.retrieveReadyEntries();
+		ArrayList<IEntry> entries = component.retrieveReadyEntries();
 
 		// Make sure that there are actually Entries to add!
 		if (entries != null) {
 			// Create a Control for each Entry
-			for (Entry entry : entries) {
+			for (IEntry entry : entries) {
 				EntryComposite tmpComposite = null;
 				// Set an event listener to enable saving
 				Listener listener = new Listener() {
@@ -212,7 +214,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 				};
 
 				// Create the new Entry
-				tmpComposite = new EntryComposite(client, SWT.FLAT, entry);
+				tmpComposite = new EntryComposite(client, SWT.FLAT, EntryConverter.convert(entry));
 				// Set the Listener
 				tmpComposite.addListener(SWT.Selection, listener);
 			}

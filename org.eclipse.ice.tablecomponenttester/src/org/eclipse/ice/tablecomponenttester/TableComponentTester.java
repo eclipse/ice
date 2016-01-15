@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -28,6 +29,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -64,7 +69,7 @@ public class TableComponentTester extends Item {
 		ArrayList<MasterDetailsPair> template;
 		ArrayList<DataComponent> dataCompTemplate;
 		ArrayList<String> masterTypeTemplate;
-		Entry entry1, entry2, entry3, entry4;
+		IEntry entry1, entry2, entry3, entry4;
 		ResourceComponent resourceComp = new ResourceComponent();
 		TreeComposite parent = null, child1 = null, child2 = null, child3 = null;
 
@@ -83,51 +88,28 @@ public class TableComponentTester extends Item {
 		// Setup list for templates
 		// Create Entries
 
-		entry1 = new Entry() {
-			@Override
-			protected void setup() {
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("0");
-				this.allowedValues.add("50");
-				this.defaultValue = "1";
-				this.allowedValueType = AllowedValueType.Continuous;
-			}
-		};
+		entry1 = new ContinuousEntry();
+		entry1.setAllowedValues(Arrays.asList("0","50"));
+		entry1.setDefaultValue("1");
+		entry1.setValue("1");
 		entry1.setName("Generic 1");
 
-		entry2 = new Entry() {
-			@Override
-			protected void setup() {
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("Check");
-				this.allowedValues.add("Not Checked");
-				// this.defaultValue = "Yes";
-				this.allowedValueType = AllowedValueType.Discrete;
-			}
-		};
+		entry2 = new DiscreteEntry();
+		entry2.setAllowedValues(Arrays.asList("Check", "Not Checked"));
+		entry2.setDefaultValue("Check");
+		entry2.setValue("Check");
 		entry2.setName("Generic 2");
 
-		entry3 = new Entry() {
-			@Override
-			protected void setup() {
-				this.allowedValues = new ArrayList<String>();
-				this.defaultValue = "Text";
-				this.allowedValueType = AllowedValueType.Undefined;
-			}
-		};
+		entry3 = new StringEntry();
+		entry3.setDefaultValue("Text");
 		entry3.setName("Generic 3");
 
-		entry4 = new Entry() {
-			@Override
-			protected void setup() {
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("0");
-				this.allowedValues.add("10000");
-				this.defaultValue = "9001";
-				this.allowedValueType = AllowedValueType.Continuous;
-			}
-		};
-
+		entry4 = new ContinuousEntry();
+		entry4.setAllowedValues(Arrays.asList("0", "10000"));
+		entry4.setDefaultValue("9001");
+		entry4.setValue("9001");
+		entry4.setName("Generic 4");
+			
 		// Create DataComponents
 		detailsComp1 = new DataComponent();
 		detailsComp2 = new DataComponent();
@@ -175,31 +157,15 @@ public class TableComponentTester extends Item {
 
 		TableComponent table = new TableComponent();
 
-		Entry column1 = new Entry() {
-			@Override
-			public void setup() {
-				defaultValue = "hello1";
-				allowedValueType = AllowedValueType.Undefined;
-			}
-		};
-		Entry column2 = new Entry() {
-			@Override
-			public void setup() {
-				allowedValueType = AllowedValueType.Discrete;
-				allowedValues.add("Hello");
-				allowedValues.add("World");
-				defaultValue = allowedValues.get(0);
-			}
-		};
-		Entry column3 = new Entry() {
-			@Override
-			public void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				allowedValues.add("0.0");
-				allowedValues.add("2.0");
-				defaultValue = allowedValues.get(0);
-			}
-		};
+		IEntry column1 = new StringEntry();
+		column1.setDefaultValue("hello1");
+		
+		IEntry column2 = new DiscreteEntry();
+		column2.setAllowedValues(Arrays.asList("Hello", "World"));
+
+		IEntry column3 = new ContinuousEntry();
+		column3.setAllowedValues(Arrays.asList("0.0", "2.0"));
+		column3.setDefaultValue("0.0");
 
 		column1.setName("Column 1 - Undefined");
 		column2.setName("Column 2 - Discrete");
@@ -209,7 +175,7 @@ public class TableComponentTester extends Item {
 		column2.setDescription("desc 2");
 		column3.setDescription("desc 3");
 
-		ArrayList<Entry> template1 = new ArrayList<Entry>();
+		ArrayList<IEntry> template1 = new ArrayList<IEntry>();
 		template1.add(column1);
 		template1.add(column2);
 		template1.add(column3);
@@ -266,8 +232,8 @@ public class TableComponentTester extends Item {
 						iceResource.setName("File " + i);
 						iceResource.setPath(file.getLocationURI());
 						// Setup some entries for testing properties
-						Entry entryClone = (Entry) entry1.clone();
-						ArrayList<Entry> properties = new ArrayList<Entry>();
+						IEntry entryClone = (IEntry) entry1.clone();
+						ArrayList<IEntry> properties = new ArrayList<IEntry>();
 						properties.add(entryClone);
 						properties.add(entry4);
 						properties.add(entry3);

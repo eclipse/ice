@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -130,8 +133,7 @@ public class NekReader {
 	 * @throws FileNotFoundException
 	 *             Thrown when readFileLines(...) fails to find the input file
 	 */
-	public ArrayList<Component> loadREAFile(File reaFile)
-			throws FileNotFoundException, IOException {
+	public ArrayList<Component> loadREAFile(File reaFile) throws FileNotFoundException, IOException {
 
 		// Make sure the file is valid, otherwise just stop here
 		if (reaFile == null || !reaFile.isFile()) {
@@ -174,8 +176,8 @@ public class NekReader {
 		components.add(objectSpec);
 
 		// Set the ProblemProperties object
-		ProblemProperties properties = new ProblemProperties(numDimensions,
-				numThermalElements, numFluidElements, numPassiveScalars);
+		ProblemProperties properties = new ProblemProperties(numDimensions, numThermalElements, numFluidElements,
+				numPassiveScalars);
 		this.properties = properties;
 
 		// Return the components
@@ -194,8 +196,7 @@ public class NekReader {
 	 * @throws IOException
 	 *             Thrown when the FileInputStream cannot be read or closed
 	 */
-	public ArrayList<String> readFileLines(File file)
-			throws FileNotFoundException, IOException {
+	public ArrayList<String> readFileLines(File file) throws FileNotFoundException, IOException {
 
 		// Convert to FileInputStream
 		FileInputStream fileStream = null;
@@ -213,8 +214,7 @@ public class NekReader {
 
 		// Break up the StringBuffer at each newline character
 		String[] bufferSplit = (buffer.toString()).split("\n");
-		ArrayList<String> fileLines = new ArrayList<String>(
-				Arrays.asList(bufferSplit));
+		ArrayList<String> fileLines = new ArrayList<String>(Arrays.asList(bufferSplit));
 
 		return fileLines;
 	}
@@ -233,26 +233,23 @@ public class NekReader {
 		// Create a parameters component to add entries
 		DataComponent parameters = new DataComponent();
 		parameters.setName("Parameters");
-		parameters.setDescription("Entries contained in the Parameters "
-				+ "section of a Nek5000 reafile");
+		parameters.setDescription("Entries contained in the Parameters " + "section of a Nek5000 reafile");
 		parameters.setId(2);
 
-		Entry entry;
+		IEntry entry;
 		// Begin reading in the lines
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the parameters heading and 3 lines below indicating
 			// how many lines the parameters section is
-			if (reaLines.get(i).contains("****** PARAMETERS *****")
-					&& reaLines.get(i + 1).contains("NEKTON VERSION")
+			if (reaLines.get(i).contains("****** PARAMETERS *****") && reaLines.get(i + 1).contains("NEKTON VERSION")
 					&& reaLines.get(i + 2).contains("DIMENSIONAL RUN")
 					&& reaLines.get(i + 3).contains("PARAMETERS FOLLOW")) {
 
 				// Grab the number indicating the length of the parameters
 				// section (number of lines)
 				int strIndex = reaLines.get(i + 3).indexOf("PARAMETERS FOLLOW");
-				String numLinesStr = reaLines.get(i + 3)
-						.substring(0, strIndex - 1).trim();
+				String numLinesStr = reaLines.get(i + 3).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 4 lines ahead (from the header) and begin
@@ -270,10 +267,8 @@ public class NekReader {
 					// If the current parameter is NPSCAL, define the value of
 					// numPassiveScalars
 					if (currLine.contains("NPSCAL")) {
-						ArrayList<String> npscalArray = (ArrayList<String>) parseLine(
-								String.class, currLine);
-						numPassiveScalars = Integer.parseInt(npscalArray.get(0)
-								.substring(0, 1));
+						ArrayList<String> npscalArray = (ArrayList<String>) parseLine(String.class, currLine);
+						numPassiveScalars = Integer.parseInt(npscalArray.get(0).substring(0, 1));
 					}
 
 					// Create a Nek Entry
@@ -320,14 +315,14 @@ public class NekReader {
 		// Create a passive scalar component to add entries
 		DataComponent passiveScalarData = new DataComponent();
 		passiveScalarData.setName("Passive Scalar Data");
-		passiveScalarData.setDescription("Entries contained in the Passive "
-				+ "Scalar Data section of a Nek5000 reafile");
+		passiveScalarData
+				.setDescription("Entries contained in the Passive " + "Scalar Data section of a Nek5000 reafile");
 		passiveScalarData.setId(3);
 
 		// Only write these entries if there are >0 passive scalars defined
 		if (numPassiveScalars > 0) {
 
-			Entry entry;
+			IEntry entry;
 			for (int i = 0; i < reaLines.size(); i++) {
 
 				// Search for the passive scalar heading
@@ -335,10 +330,8 @@ public class NekReader {
 
 					// Grab the number indicating the length of the Passive
 					// Scalar Data section (number of lines)
-					int strIndex = reaLines.get(i).indexOf(
-							"Lines of passive scalar data");
-					String numLinesStr = reaLines.get(i)
-							.substring(0, strIndex - 1).trim();
+					int strIndex = reaLines.get(i).indexOf("Lines of passive scalar data");
+					String numLinesStr = reaLines.get(i).substring(0, strIndex - 1).trim();
 					int numLines = Integer.parseInt(numLinesStr);
 
 					// Jump the iterator 1 line ahead (from the header) and
@@ -398,11 +391,10 @@ public class NekReader {
 		// Create a switches component to add entries
 		DataComponent switches = new DataComponent();
 		switches.setName("Logical Switches");
-		switches.setDescription("Entries contained in the Logical Switches "
-				+ "section of a Nek5000 reafile");
+		switches.setDescription("Entries contained in the Logical Switches " + "section of a Nek5000 reafile");
 		switches.setId(4);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the logical switches heading indicating how many
@@ -412,8 +404,7 @@ public class NekReader {
 				// Grab the number indicating the length of the switches
 				// section (number of lines)
 				int strIndex = reaLines.get(i).indexOf("LOGICAL SWITCHES");
-				String numLinesStr = reaLines.get(i).substring(0, strIndex - 1)
-						.trim();
+				String numLinesStr = reaLines.get(i).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 1 lines ahead and begin reading in Entries
@@ -446,12 +437,9 @@ public class NekReader {
 															// where single
 															// ampersands shows
 															// up as a space
-							currValue = String.format("%s %s %s %s %s %s %s "
-									+ "%s %s %s %s", splitLine[0],
-									splitLine[1], splitLine[2], splitLine[3],
-									splitLine[4], splitLine[5], splitLine[6],
-									splitLine[7], splitLine[8], splitLine[9],
-									splitLine[10]);
+							currValue = String.format("%s %s %s %s %s %s %s " + "%s %s %s %s", splitLine[0],
+									splitLine[1], splitLine[2], splitLine[3], splitLine[4], splitLine[5], splitLine[6],
+									splitLine[7], splitLine[8], splitLine[9], splitLine[10]);
 
 							for (int k = 14; k < splitLine.length; k++) {
 								if (k != splitLine.length - 1) {
@@ -463,12 +451,9 @@ public class NekReader {
 						} else if (currLine.contains("IFTMSH")) {
 
 							currName = "IFTMSH";
-							currValue = String.format("%s %s %s %s %s %s %s "
-									+ "%s %s %s %s %s", splitLine[0],
-									splitLine[1], splitLine[2], splitLine[3],
-									splitLine[4], splitLine[5], splitLine[6],
-									splitLine[7], splitLine[8], splitLine[9],
-									splitLine[10], splitLine[11]);
+							currValue = String.format("%s %s %s %s %s %s %s " + "%s %s %s %s %s", splitLine[0],
+									splitLine[1], splitLine[2], splitLine[3], splitLine[4], splitLine[5], splitLine[6],
+									splitLine[7], splitLine[8], splitLine[9], splitLine[10], splitLine[11]);
 							for (int k = 13; k < splitLine.length; k++) {
 								if (k != splitLine.length - 1) {
 									currDesc += splitLine[k] + " ";
@@ -529,11 +514,10 @@ public class NekReader {
 		// Create a PreNek Axes component to add entries
 		DataComponent preNekAxes = new DataComponent();
 		preNekAxes.setName("Pre-Nek Axes");
-		preNekAxes.setDescription("Entries contained in the Pre-Nek Axes "
-				+ "section of a Nek5000 reafile");
+		preNekAxes.setDescription("Entries contained in the Pre-Nek Axes " + "section of a Nek5000 reafile");
 		preNekAxes.setId(5);
 
-		Entry entry;
+		IEntry entry;
 		String[] splitLine;
 		String currValue;
 		String currName;
@@ -552,8 +536,8 @@ public class NekReader {
 				// Construct the current value and name
 				currValue = "";
 				currName = "";
-				currValue = String.format("%-13s %-13s %-13s %-13s",
-						splitLine[0], splitLine[1], splitLine[2], splitLine[3]);
+				currValue = String.format("%-13s %-13s %-13s %-13s", splitLine[0], splitLine[1], splitLine[2],
+						splitLine[3]);
 
 				for (int j = 4; j < splitLine.length; j++) {
 					if (j != splitLine.length - 1) {
@@ -617,8 +601,7 @@ public class NekReader {
 		// Create a mesh component, quad and edge
 		MeshComponent mesh = new MeshComponent();
 		mesh.setName("Mesh Data");
-		mesh.setDescription("Elements contained in the Mesh section of a "
-				+ "Nek5000 reafile");
+		mesh.setDescription("Elements contained in the Mesh section of a " + "Nek5000 reafile");
 		mesh.setId(6);
 
 		// Create containers to hold/index all the different sets of boundary
@@ -632,13 +615,11 @@ public class NekReader {
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the mesh data heading
-			if ((reaLines.get(i).contains("**MESH DATA**") || reaLines.get(i)
-					.contains("*** MESH DATA ***"))
+			if ((reaLines.get(i).contains("**MESH DATA**") || reaLines.get(i).contains("*** MESH DATA ***"))
 					&& reaLines.get(i + 1).contains("NEL,NDIM,NELV")) {
 
 				// Grab the numbers on the next line (NEL,NDIM,NELV)
-				numbersLine = (ArrayList<String>) parseLine(String.class,
-						reaLines.get(i + 1));
+				numbersLine = (ArrayList<String>) parseLine(String.class, reaLines.get(i + 1));
 
 				// NEL = number of (thermal) elements used
 				// NDIM = number of dimensions
@@ -712,8 +693,7 @@ public class NekReader {
 						// Grab the material ID and group number
 						splitLine = currLine.trim().split("\\s+");
 						if (splitLine[3].charAt(splitLine[3].length() - 1) == ']') {
-							materialId = splitLine[3].substring(0,
-									splitLine[3].length() - 1);
+							materialId = splitLine[3].substring(0, splitLine[3].length() - 1);
 							groupNum = Integer.parseInt(splitLine[5]);
 						} else {
 							materialId = splitLine[3];
@@ -730,8 +710,7 @@ public class NekReader {
 
 							// Parse line into an ArrayList and add to current
 							// element
-							nextLine = (ArrayList<Float>) parseLine(
-									Float.class, reaLines.get(i + j + k + 1));
+							nextLine = (ArrayList<Float>) parseLine(Float.class, reaLines.get(i + j + k + 1));
 							currElement.add(nextLine);
 						}
 
@@ -816,15 +795,12 @@ public class NekReader {
 
 							// Set the fluid boundary condition for that edge
 							if (ifFlow) {
-								quad.setFluidBoundaryCondition(currEdgeId,
-										fluidBoundaryConditions.get(currEdgeId));
+								quad.setFluidBoundaryCondition(currEdgeId, fluidBoundaryConditions.get(currEdgeId));
 							}
 
 							// Set the thermal boundary condition for that edge
 							if (ifHeat) {
-								quad.setThermalBoundaryCondition(currEdgeId,
-										thermalBoundaryConditions
-												.get(currEdgeId));
+								quad.setThermalBoundaryCondition(currEdgeId, thermalBoundaryConditions.get(currEdgeId));
 							}
 
 							// Set the passive scalar boundary condition(s) for
@@ -837,13 +813,11 @@ public class NekReader {
 
 									// Define the current set of scalar boundary
 									// conditions
-									currSetScalars = scalarBoundaryConditions
-											.get(ii);
+									currSetScalars = scalarBoundaryConditions.get(ii);
 
 									// Set the passive scalar boundary condition
 									// for the current edge
-									quad.setOtherBoundaryCondition(currEdgeId,
-											ii, currSetScalars.get(currEdgeId));
+									quad.setOtherBoundaryCondition(currEdgeId, ii, currSetScalars.get(currEdgeId));
 								}
 							}
 						}
@@ -883,8 +857,7 @@ public class NekReader {
 
 		MeshComponent curvedSides = new MeshComponent();
 		curvedSides.setName("Curved Side Data");
-		curvedSides.setDescription("Elements contained in the Curved Side "
-				+ " section of a Nek5000 reafile");
+		curvedSides.setDescription("Elements contained in the Curved Side " + " section of a Nek5000 reafile");
 		curvedSides.setId(7);
 
 		// TODO to be implemented
@@ -935,8 +908,7 @@ public class NekReader {
 			/** --- Load FLUID boundary conditions --- **/
 
 			// Search for the fluid boundary conditions header
-			if (reaLines.get(i).contains(
-					"***** FLUID   BOUNDARY CONDITIONS *****")) {
+			if (reaLines.get(i).contains("***** FLUID   BOUNDARY CONDITIONS *****")) {
 
 				// Jump the iterator 1 line ahead and begin reading in boundary
 				// conditions
@@ -959,8 +931,7 @@ public class NekReader {
 			/** --- Load THERMAL boundary conditions --- **/
 
 			// Search for the thermal boundary conditions header
-			if (reaLines.get(i).contains(
-					"***** THERMAL BOUNDARY CONDITIONS *****")) {
+			if (reaLines.get(i).contains("***** THERMAL BOUNDARY CONDITIONS *****")) {
 
 				// Jump the iterator 1 line ahead and begin reading in boundary
 				// conditions
@@ -973,8 +944,7 @@ public class NekReader {
 
 					// Plug it (along with the unique edge ID it corresponds to)
 					// into the thermal boundary conditions HashMap
-					thermalBoundaryConditions.put(
-							(Integer) currCondition.get(0),
+					thermalBoundaryConditions.put((Integer) currCondition.get(0),
 							(BoundaryCondition) currCondition.get(1));
 				}
 
@@ -984,17 +954,15 @@ public class NekReader {
 			/** --- Load PASSIVE SCALAR boundary conditions (if any) --- **/
 			// Find the beginning of the passive scalar BC section
 			if (numPassiveScalars > 0
-					&& reaLines.get(i).contains(
-							"***** PASSIVE SCALAR           "
-									+ "1 BOUNDARY CONDITIONS *****")) {
+					&& reaLines.get(i).contains("***** PASSIVE SCALAR           " + "1 BOUNDARY CONDITIONS *****")) {
 
 				// Repeat the following for as many sets of passive scalar
 				// BCs as there are
 				for (int currScalarNum = 1; currScalarNum <= numPassiveScalars; currScalarNum++) {
 
 					// Search for the current scalar header
-					String passiveScalarHeader = "***** PASSIVE SCALAR           "
-							+ currScalarNum + " BOUNDARY CONDITIONS *****";
+					String passiveScalarHeader = "***** PASSIVE SCALAR           " + currScalarNum
+							+ " BOUNDARY CONDITIONS *****";
 					if (reaLines.get(i).contains(passiveScalarHeader)) {
 
 						// Create a HashMap for the current passive scalar
@@ -1010,15 +978,13 @@ public class NekReader {
 						for (int j = 0; j < numThermalElements * 4; j++) {
 
 							// Create the current boundary condition object
-							currCondition = buildBoundaryConditionPair(
-									reaLines, i, j);
+							currCondition = buildBoundaryConditionPair(reaLines, i, j);
 
 							// Plug it (along with the unique edge ID it
 							// corresponds to)
 							// into the passive scalar boundary conditions
 							// HashMap
-							scalarBoundaryCondition.put(
-									(Integer) currCondition.get(0),
+							scalarBoundaryCondition.put((Integer) currCondition.get(0),
 									(BoundaryCondition) currCondition.get(1));
 						}
 
@@ -1053,11 +1019,11 @@ public class NekReader {
 		// Create a presolve/restart component to add entries
 		DataComponent presolveRestart = new DataComponent();
 		presolveRestart.setName("Pre-solve/Restart Options");
-		presolveRestart.setDescription("Entries contained in the Pre-solve/"
-				+ "Restart Options section of a Nek5000 reafile");
+		presolveRestart
+				.setDescription("Entries contained in the Pre-solve/" + "Restart Options section of a Nek5000 reafile");
 		presolveRestart.setId(8);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the presolve/restart options heading
@@ -1066,8 +1032,7 @@ public class NekReader {
 				// Grab the number indicating the length of the presolve/restart
 				// options section (number of lines)
 				int strIndex = reaLines.get(i).indexOf("PRESOLVE/RESTART");
-				String numLinesStr = reaLines.get(i).substring(0, strIndex - 1)
-						.trim();
+				String numLinesStr = reaLines.get(i).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 1 line ahead (from the header) and begin
@@ -1125,11 +1090,11 @@ public class NekReader {
 		// Create an initial conditions component to add entries
 		DataComponent initialConditions = new DataComponent();
 		initialConditions.setName("Initial Conditions");
-		initialConditions.setDescription("Entries contained in the Initial "
-				+ "Conditions section of a Nek5000 reafile");
+		initialConditions
+				.setDescription("Entries contained in the Initial " + "Conditions section of a Nek5000 reafile");
 		initialConditions.setId(9);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
@@ -1138,8 +1103,7 @@ public class NekReader {
 				// Grab the number indicating the length of the initial
 				// conditions section (number of lines)
 				int strIndex = reaLines.get(i).indexOf("INITIAL");
-				String numLinesStr = reaLines.get(i).substring(0, strIndex - 1)
-						.trim();
+				String numLinesStr = reaLines.get(i).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 1 line ahead (from the header) and begin
@@ -1183,24 +1147,20 @@ public class NekReader {
 		// Create a drive force data component to add entries
 		DataComponent driveForceData = new DataComponent();
 		driveForceData.setName("Drive Force Data");
-		driveForceData.setDescription("Entries contained in the Drive Force "
-				+ "Data section of a Nek5000 reafile");
+		driveForceData.setDescription("Entries contained in the Drive Force " + "Data section of a Nek5000 reafile");
 		driveForceData.setId(10);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the drive force data heading
 			if (reaLines.get(i).contains("***** DRIVE FORCE DATA *****")
-					&& reaLines.get(i + 1).contains(
-							"Lines of Drive force data follow")) {
+					&& reaLines.get(i + 1).contains("Lines of Drive force data follow")) {
 
 				// Grab the number on the next line indicating the length of the
 				// drive force data section (number of lines)
-				int strIndex = reaLines.get(i + 1).indexOf(
-						"Lines of Drive force data follow");
-				String numLinesStr = reaLines.get(i + 1)
-						.substring(0, strIndex - 1).trim();
+				int strIndex = reaLines.get(i + 1).indexOf("Lines of Drive force data follow");
+				String numLinesStr = reaLines.get(i + 1).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 2 lines ahead (from the header) and begin
@@ -1244,11 +1204,11 @@ public class NekReader {
 		// Create a variable property data component to add entries
 		DataComponent varPropertyData = new DataComponent();
 		varPropertyData.setName("Variable Property Data");
-		varPropertyData.setDescription("Entries contained in the Variable "
-				+ "Property Data section of a Nek5000 reafile");
+		varPropertyData
+				.setDescription("Entries contained in the Variable " + "Property Data section of a Nek5000 reafile");
 		varPropertyData.setId(11);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
@@ -1258,8 +1218,7 @@ public class NekReader {
 				// Grab the number on the next line indicating the length of the
 				// variable property data section (number of lines)
 				int strIndex = reaLines.get(i + 1).indexOf("Lines follow");
-				String numLinesStr = reaLines.get(i + 1)
-						.substring(0, strIndex - 1).trim();
+				String numLinesStr = reaLines.get(i + 1).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 2 lines ahead (from the header) and begin
@@ -1302,23 +1261,21 @@ public class NekReader {
 		// Create a history and integral data component to add entries
 		DataComponent historyIntegralData = new DataComponent();
 		historyIntegralData.setName("History and Integral Data");
-		historyIntegralData.setDescription("Entries contained in the History "
-				+ "and Integral Data section of a Nek5000 reafile");
+		historyIntegralData
+				.setDescription("Entries contained in the History " + "and Integral Data section of a Nek5000 reafile");
 		historyIntegralData.setId(12);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
-			if (reaLines.get(i).contains(
-					"***** HISTORY AND INTEGRAL DATA *****")
+			if (reaLines.get(i).contains("***** HISTORY AND INTEGRAL DATA *****")
 					&& reaLines.get(i + 1).contains("POINTS")) {
 
 				// Grab the number on the next line indicating the length of the
 				// History & Integral data section (number of lines)
 				int strIndex = reaLines.get(i + 1).indexOf("POINTS");
-				String numLinesStr = reaLines.get(i + 1)
-						.substring(0, strIndex - 1).trim();
+				String numLinesStr = reaLines.get(i + 1).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 2 lines ahead (from the header) and begin
@@ -1376,25 +1333,22 @@ public class NekReader {
 		// Create a output field spec component to add entries
 		DataComponent outputFieldSpec = new DataComponent();
 		outputFieldSpec.setName("Output Field Specification");
-		outputFieldSpec.setDescription("Entries contained in the Output Field "
-				+ "Specification section of a Nek5000 reafile");
+		outputFieldSpec.setDescription(
+				"Entries contained in the Output Field " + "Specification section of a Nek5000 reafile");
 		outputFieldSpec.setId(13);
 
-		Entry entry;
+		IEntry entry;
 		boolean isDiscrete;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
-			if (reaLines.get(i).contains(
-					"***** OUTPUT FIELD SPECIFICATION *****")
+			if (reaLines.get(i).contains("***** OUTPUT FIELD SPECIFICATION *****")
 					&& reaLines.get(i + 1).contains("SPECIFICATIONS FOLLOW")) {
 
 				// Grab the number on the next line indicating the length of the
 				// Output Field Specification section (number of lines)
-				int strIndex = reaLines.get(i + 1).indexOf(
-						"SPECIFICATIONS FOLLOW");
-				String numLinesStr = reaLines.get(i + 1)
-						.substring(0, strIndex - 1).trim();
+				int strIndex = reaLines.get(i + 1).indexOf("SPECIFICATIONS FOLLOW");
+				String numLinesStr = reaLines.get(i + 1).substring(0, strIndex - 1).trim();
 				int numLines = Integer.parseInt(numLinesStr);
 
 				// Jump the iterator 2 lines ahead (from the header) and begin
@@ -1411,17 +1365,14 @@ public class NekReader {
 					splitLine = currLine.trim().split("\\s+");
 
 					// Determine if the entry will have discrete values or not
-					isDiscrete = (currLine.contains("COORDINATES")
-							|| currLine.contains("VELOCITY")
-							|| currLine.contains("PRESSURE") || currLine
-							.contains("TEMPERATURE"));
+					isDiscrete = (currLine.contains("COORDINATES") || currLine.contains("VELOCITY")
+							|| currLine.contains("PRESSURE") || currLine.contains("TEMPERATURE"));
 
 					// Create a Nek Entry
 					entry = makeNekEntry(isDiscrete);
 
 					// Define the name and value
-					currValue = ("T".equals(splitLine[0]) ? "YES" : ("F"
-							.equals(splitLine[0]) ? "NO" : splitLine[0]));
+					currValue = ("T".equals(splitLine[0]) ? "YES" : ("F".equals(splitLine[0]) ? "NO" : splitLine[0]));
 					currName = "";
 					for (int k = 1; k < splitLine.length; k++) {
 						if (k != splitLine.length - 1) {
@@ -1461,11 +1412,10 @@ public class NekReader {
 		// Create a object specification component to add entries
 		DataComponent objectSpec = new DataComponent();
 		objectSpec.setName("Object Specification");
-		objectSpec.setDescription("Entries contained in the Object "
-				+ "Specification section of a Nek5000 reafile");
+		objectSpec.setDescription("Entries contained in the Object " + "Specification section of a Nek5000 reafile");
 		objectSpec.setId(14);
 
-		Entry entry;
+		IEntry entry;
 		// Begin reading in the lines
 		for (int i = 0; i < reaLines.size(); i++) {
 
@@ -1511,49 +1461,25 @@ public class NekReader {
 	 * 
 	 * @return Constructed Entry with default Nek values.
 	 */
-	private Entry makeNekEntry(boolean isDiscrete) {
+	private IEntry makeNekEntry(boolean isDiscrete) {
 
-		Entry entry;
+		IEntry entry;
 
 		// If entry's value can only be T/F
 		if (isDiscrete) {
-			entry = new Entry() {
-				@Override
-				protected void setup() {
+			entry = new DiscreteEntry();
+			entry.setAllowedValues(Arrays.asList("no", "yes"));
 
-					// Set up the allowed discrete values
-					ArrayList<String> allowedValues = new ArrayList<String>();
-					allowedValues.add("NO");
-					allowedValues.add("YES");
-
-					this.setName("Nek5000 Default Entry");
-					this.tag = "";
-					this.ready = true;
-					this.setDescription("");
-					this.allowedValues = allowedValues;
-					this.defaultValue = "NO";
-					this.value = this.defaultValue;
-					this.allowedValueType = AllowedValueType.Discrete;
-				}
-			};
+			entry.setName("Nek5000 Default Entry");
+			entry.setDescription("");
+			entry.setDefaultValue("NO");
+			entry.setValue(entry.getDefaultValue());
+		} else {
+			entry = new StringEntry();
+			entry.setName("Nek5000 Default Entry");
+			entry.setDescription("");
+			entry.setValue("");
 		}
-
-		else {
-			entry = new Entry() {
-				@Override
-				protected void setup() {
-					this.setName("Nek5000 Default Entry");
-					this.tag = "";
-					this.ready = true;
-					this.setDescription("");
-					this.allowedValues = new ArrayList<String>();
-					this.defaultValue = "";
-					this.value = this.defaultValue;
-					this.allowedValueType = AllowedValueType.Undefined;
-				}
-			};
-		}
-
 		return entry;
 	}
 
@@ -1577,8 +1503,7 @@ public class NekReader {
 
 		// Break up the line into a list of non-whitespace elements
 		String[] splitLine = line.trim().split("\\s+");
-		ArrayList<String> stringArray = new ArrayList<String>(
-				Arrays.asList(splitLine));
+		ArrayList<String> stringArray = new ArrayList<String>(Arrays.asList(splitLine));
 
 		// Parse to the objectType class specified
 		if (objectType == String.class) {
@@ -1635,8 +1560,7 @@ public class NekReader {
 	 * @return An ArrayList containing the unique Edge ID in the first element,
 	 *         and the associated BoundaryCondition in the second element.
 	 */
-	private ArrayList<Object> buildBoundaryConditionPair(
-			ArrayList<String> reaLines, int i, int j) {
+	private ArrayList<Object> buildBoundaryConditionPair(ArrayList<String> reaLines, int i, int j) {
 
 		// Local declarations
 		String currLine;
@@ -1659,8 +1583,7 @@ public class NekReader {
 		}
 
 		// Get the edge ID
-		edgeId = (int) (4 * (currBoundaryValues.get(0) - 1) + currBoundaryValues
-				.get(1));
+		edgeId = (int) (4 * (currBoundaryValues.get(0) - 1) + currBoundaryValues.get(1));
 
 		// Create the boundary condition object
 		condition = new BoundaryCondition();

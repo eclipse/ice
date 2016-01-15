@@ -12,10 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.item.utilities.trilinos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 
@@ -77,8 +84,9 @@ public class Parameter {
 	 *         The Entry.
 	 *         </p>
 	 */
-	public Entry toEntry() {
+	public IEntry toEntry() {
 
+		IEntry entry = null;
 		// Determine the type - default to continuous
 		allowedType = AllowedValueType.Continuous;
 		// Switch to Discrete or Undefined as required, but only if the type is
@@ -91,24 +99,29 @@ public class Parameter {
 			}
 		}
 
-		// Create the Entry
-		Entry entry = new Entry() {
-			@Override
-			protected void setup() {
-				// Set the details
-				allowedValueType = Parameter.this.allowedType;
-				defaultValue = Parameter.this.value;
-				value = Parameter.this.value;
-				// Figure out the allowed values
-				if (allowedValueType.equals(AllowedValueType.Continuous)) {
-					allowedValues.add(String.valueOf(Double.NEGATIVE_INFINITY));
-					allowedValues.add(String.valueOf(Double.POSITIVE_INFINITY));
-				} else if (allowedValueType.equals(AllowedValueType.Discrete)) {
-					allowedValues.add("true");
-					allowedValues.add("false");
-				}
-			}
-		};
+		// Set the details
+		List<String> allowedValues = new ArrayList<String>();
+		AllowedValueType allowedValueType = Parameter.this.allowedType;
+		String defaultValue = Parameter.this.value;
+		String value = Parameter.this.value;
+		
+		if (allowedValueType.equals(AllowedValueType.Continuous)) {
+			allowedValues.add(String.valueOf(Double.NEGATIVE_INFINITY));
+			allowedValues.add(String.valueOf(Double.POSITIVE_INFINITY));
+			entry = new ContinuousEntry();
+			entry.setAllowedValues(allowedValues);
+		} else if (allowedValueType.equals(AllowedValueType.Discrete)) {
+			allowedValues.add("true");
+			allowedValues.add("false");
+			entry = new DiscreteEntry();
+			entry.setAllowedValues(allowedValues);
+		} else {
+			entry = new StringEntry();
+		}
+		
+		entry.setDefaultValue(defaultValue);
+		entry.setValue(value);
+		
 		entry.setName(name);
 		entry.setDescription(name);
 		entry.setTag(type);
@@ -132,17 +145,16 @@ public class Parameter {
 	 *            The Entry.
 	 *            </p>
 	 */
-	public void fromEntry(Entry entry) {
+	public void fromEntry(IEntry entry) {
 
 		// Only load if the Entry is not null
 		if (entry != null) {
 			// Get the type and value
-			AllowedValueType allowedType = entry.getValueType();
 			String entryValue = entry.getValue();
 			// Figure out the type
-			if (allowedType.equals(AllowedValueType.Continuous)) {
+			if (entry instanceof ContinuousEntry) {
 				type = (entryValue.contains(".")) ? "double" : "int";
-			} else if (allowedType.equals(AllowedValueType.Undefined)) {
+			} else if (entry instanceof StringEntry) {
 				type = (!entryValue.contains("{") && !entryValue.contains("}")) ? "string"
 						: "Array(string)";
 			} else {

@@ -41,6 +41,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -286,12 +288,12 @@ public class CheckMooseInputAction extends RemoteAction {
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
-				for (Entry e : data.retrieveAllEntries()) {
+				for (IEntry e : data.retrieveAllEntries()) {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
-							&& e.getValueType().equals(AllowedValueType.File)) {
+							&& e instanceof FileEntry) {
 
 						Entry clonedEntry = (Entry) e.clone();
 						files.add(clonedEntry);

@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
@@ -38,6 +40,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -307,7 +311,7 @@ public class ItemTester implements ItemListener {
 		// Local Declarations
 		Form testForm = null;
 		DataComponent dc1 = null;
-		Entry dc1Entry = null;
+		IEntry dc1Entry = null;
 
 		// Get the Form and make sure it isn't null
 		testForm = item.getForm();
@@ -548,7 +552,7 @@ public class ItemTester implements ItemListener {
 		ByteArrayInputStream stream = null;
 		Form form = null;
 		DataComponent dataComp1 = null, dataComp2 = null;
-		Entry entry = null;
+		IEntry entry = null;
 
 		// Create the InputStream
 		stream = new ByteArrayInputStream(psfItemString.getBytes());
@@ -612,7 +616,7 @@ public class ItemTester implements ItemListener {
 
 		Form form = null;
 		DataComponent dataComp1 = null, dataComp2 = null;
-		Entry entry = null;
+		IEntry entry = null;
 
 		System.out.println("PSFItemString = " + psfItemString);
 
@@ -638,7 +642,7 @@ public class ItemTester implements ItemListener {
 		entry = dataComp1.retrieveEntry("Full Assembly Flag");
 		assertNotNull(entry);
 		assertEquals("Full Assembly Flag", entry.getName());
-		assertEquals(null, entry.getParent());
+		//assertEquals(null, entry.getParent());
 
 		// Change its value. By default it is false.
 		entry.setValue("true");
@@ -1028,7 +1032,9 @@ public class ItemTester implements ItemListener {
 		assertTrue(vizResource instanceof VizResource);
 
 		// Now construct a file Entry based on a .e file
-		Entry entry = new Entry();
+		IEntry entry = new FileEntry();
+		List<String> places = Arrays.asList("mesh.e");
+		entry.setAllowedValues(places);
 		entry.setValue("mesh.e");
 		vizResource = null;
 

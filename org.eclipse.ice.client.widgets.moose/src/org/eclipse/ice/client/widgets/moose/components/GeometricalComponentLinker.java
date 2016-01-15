@@ -15,6 +15,7 @@ package org.eclipse.ice.client.widgets.moose.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.GeometricalComponent;
@@ -66,7 +67,7 @@ public class GeometricalComponentLinker extends PlantComponentLinker {
 				 */
 				@Override
 				public void visit(final GeometricalComponent comp) {
-					Entry entry;
+					IEntry entry;
 
 					// Get the "position" entry.
 					entry = dataComp.retrieveEntry("position");

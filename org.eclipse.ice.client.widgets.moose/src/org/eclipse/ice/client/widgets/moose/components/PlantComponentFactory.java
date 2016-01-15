@@ -15,6 +15,7 @@ package org.eclipse.ice.client.widgets.moose.components;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.Branch;
@@ -244,7 +245,7 @@ public class PlantComponentFactory {
 		// Get the "type" Entry from the DataComponent and re-direct to the
 		// createComponent(String) method with the Entry's value.
 		if (dataComp != null) {
-			Entry entry = dataComp.retrieveEntry("type");
+			IEntry entry = dataComp.retrieveEntry("type");
 			if (entry != null) {
 				plantComp = createComponent(entry.getValue());
 			}

@@ -20,6 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -90,6 +92,9 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		String localInstallDir = userHome + separator + "projects";
 		String remoteInstallDir = "/home/moose";
 
+		// Setup the Form
+		super.setupForm();
+
 		// Create the list of executables
 		ArrayList<String> executables = new ArrayList<String>();
 		executables.add("MARMOT");
@@ -103,8 +108,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Add the list to the suite
 		addExecutables(executables);
 
-		// Setup the Form
-		super.setupForm();
 
 		// Get a handle on the "executables" DataComponent
 		execDataComp = (DataComponent) form.getComponent(5);
@@ -112,14 +115,14 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		execDataComp.register(this);
 
 		// Create an entry for a "custom" MOOSE executable
-		Entry customExecEntry = new Entry();
+		IEntry customExecEntry = new StringEntry();
 		customExecEntry.setName(customExecName);
 		customExecEntry.setDescription("A custom MOOSE-based executable. Note "
 				+ "that this field is case-sensitive and should be entered as "
 				+ "it appears in the filesystem.");
 		customExecEntry.setId(2);
-		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0)
-				.getName());
+//		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0)
+//				.getName());
 		customExecEntry.setReady(false);
 
 		// Add it to the form
@@ -168,86 +171,86 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * @return The complete launch command specific for a given MOOSE product,
 	 *         determined by the executable name selected by the client.
 	 */
-	@Override
-	protected String updateExecutablePath(String installDir, String executable) {
-
-		// Local declarations
-		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-		String customExecValue = "";
-		if (execDataComp != null && customExecEntry != null
-				&& customExecEntry.getValue() != null) {
-			customExecValue = execDataComp.retrieveEntry(customExecName)
-					.getValue();
-		}
-
-		// A HashMap of MOOSE product executables that can be launched
-		HashMap<String, String> executableMap = new HashMap<String, String>();
-		executableMap.put("MARMOT", "marmot");
-		executableMap.put("BISON", "bison");
-		executableMap.put("RELAP-7", "relap-7");
-		executableMap.put("RAVEN", "raven");
-		executableMap.put("MOOSE_TEST", "moose_test");
-		executableMap.put(customExecName, customExecValue);
-		executableMap.put(yamlSyntaxGenerator, yamlSyntaxGenerator);
-
-		// Create the command that will launch the MOOSE product
-		String launchCommand = null;
-		setUploadInputFlag(true);
-
-		if ("MOOSE_TEST".equals(executable)) {
-			launchCommand = "${installDir}" + "moose/test/"
-					+ executableMap.get(executable)
-					+ "-opt -i ${inputFile} --no-color";
-		} else if (yamlSyntaxGenerator.equals(executable)) {
-			launchCommand =
-			// BISON files
-			"if [ -d ${installDir}bison ] "
-					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
-					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
-					+ "    ${installDir}bison/bison-opt --syntax > bison.syntax\n"
-					+ "    echo 'Generating BISON files'\n"
-					+ "fi\n"
-					// MARMOT files
-					+ "if [ -d ${installDir}marmot ] "
-					+ "&& [ -f ${installDir}marmot/marmot-opt ]\n then\n"
-					+ "    ${installDir}marmot/marmot-opt --yaml > marmot.yaml\n"
-					+ "    ${installDir}marmot/marmot-opt --syntax > marmot.syntax\n"
-					+ "    echo 'Generating MARMOT files'\n"
-					+ "fi\n"
-					// RELAP-7 files
-					+ "if [ -d ${installDir}relap-7 ] "
-					+ "&& [ -f ${installDir}relap-7/relap-7-opt ]\n then\n"
-					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml\n"
-					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax\n"
-					+ "    echo 'Generating RELAP-7 files'\n"
-					+ "elif [ -d ${installDir}r7_moose ] " // Old
-															// name
-					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]\n then\n"
-					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml\n"
-					+ "    ${installDir}r7_moose/r7_moose-opt --syntax > relap.syntax\n"
-					+ "    echo 'Generating RELAP-7 files'\n"
-					+ "fi\n"
-					// RAVEN files
-					+ "if [ -d ${installDir}raven ] "
-					+ "&& [ -f ${installDir}raven/RAVEN-opt ]\n then\n"
-					+ "    ${installDir}raven/RAVEN-opt --yaml > raven.yaml\n"
-					+ "    ${installDir}raven/RAVEN-opt --syntax > raven.syntax\n"
-					+ "    echo 'Generating RAVEN files'\n" + "fi\n";
-		} else if ("RAVEN".equals(executable)) {
-			// RAVEN directory is lowercase, but the executable is uppercase
-			launchCommand = "${installDir}" + executableMap.get(executable)
-					+ "/" + executable + "-opt -i ${inputFile} --no-color";
-
-		} else {
-			// BISON, MARMOT, RELAP-7 and (presumably) custom apps follow the
-			// same execution pattern
-			launchCommand = "${installDir}" + executableMap.get(executable)
-					+ "/" + executableMap.get(executable)
-					+ "-opt -i ${inputFile} --no-color";
-		}
-
-		return launchCommand;
-	}
+//	@Override
+//	protected String updateExecutablePath(String installDir, String executable) {
+//
+//		// Local declarations
+////		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
+////		String customExecValue = "";
+////		if (execDataComp != null && customExecEntry != null
+////				&& customExecEntry.getValue() != null) {
+////			customExecValue = execDataComp.retrieveEntry(customExecName)
+////					.getValue();
+////		}
+//
+////		// A HashMap of MOOSE product executables that can be launched
+////		HashMap<String, String> executableMap = new HashMap<String, String>();
+////		executableMap.put("MARMOT", "marmot");
+////		executableMap.put("BISON", "bison");
+////		executableMap.put("RELAP-7", "relap-7");
+////		executableMap.put("RAVEN", "raven");
+////		executableMap.put("MOOSE_TEST", "moose_test");
+////		executableMap.put(customExecName, customExecValue);
+////		executableMap.put(yamlSyntaxGenerator, yamlSyntaxGenerator);
+//
+//		// Create the command that will launch the MOOSE product
+//		String launchCommand = null;
+//		setUploadInputFlag(true);
+//
+//		if ("MOOSE_TEST".equals(executable)) {
+//			launchCommand = "${installDir}" + "moose/test/"
+//					+ executableMap.get(executable)
+//					+ "-opt -i ${inputFile} --no-color";
+//		} else if (yamlSyntaxGenerator.equals(executable)) {
+//			launchCommand =
+//			// BISON files
+//			"if [ -d ${installDir}bison ] "
+//					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
+//					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
+//					+ "    ${installDir}bison/bison-opt --syntax > bison.syntax\n"
+//					+ "    echo 'Generating BISON files'\n"
+//					+ "fi\n"
+//					// MARMOT files
+//					+ "if [ -d ${installDir}marmot ] "
+//					+ "&& [ -f ${installDir}marmot/marmot-opt ]\n then\n"
+//					+ "    ${installDir}marmot/marmot-opt --yaml > marmot.yaml\n"
+//					+ "    ${installDir}marmot/marmot-opt --syntax > marmot.syntax\n"
+//					+ "    echo 'Generating MARMOT files'\n"
+//					+ "fi\n"
+//					// RELAP-7 files
+//					+ "if [ -d ${installDir}relap-7 ] "
+//					+ "&& [ -f ${installDir}relap-7/relap-7-opt ]\n then\n"
+//					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml\n"
+//					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax\n"
+//					+ "    echo 'Generating RELAP-7 files'\n"
+//					+ "elif [ -d ${installDir}r7_moose ] " // Old
+//															// name
+//					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]\n then\n"
+//					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml\n"
+//					+ "    ${installDir}r7_moose/r7_moose-opt --syntax > relap.syntax\n"
+//					+ "    echo 'Generating RELAP-7 files'\n"
+//					+ "fi\n"
+//					// RAVEN files
+//					+ "if [ -d ${installDir}raven ] "
+//					+ "&& [ -f ${installDir}raven/RAVEN-opt ]\n then\n"
+//					+ "    ${installDir}raven/RAVEN-opt --yaml > raven.yaml\n"
+//					+ "    ${installDir}raven/RAVEN-opt --syntax > raven.syntax\n"
+//					+ "    echo 'Generating RAVEN files'\n" + "fi\n";
+//		} else if ("RAVEN".equals(executable)) {
+//			// RAVEN directory is lowercase, but the executable is uppercase
+//			launchCommand = "${installDir}" + executableMap.get(executable)
+//					+ "/" + executable + "-opt -i ${inputFile} --no-color";
+//
+//		} else {
+//			// BISON, MARMOT, RELAP-7 and (presumably) custom apps follow the
+//			// same execution pattern
+//			launchCommand = "${installDir}" + executableMap.get(executable)
+//					+ "/" + executableMap.get(executable)
+//					+ "-opt -i ${inputFile} --no-color";
+//		}
+//
+//		return launchCommand;
+//	}
 
 	/**
 	 * <p>
@@ -478,26 +481,26 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 			if (execDataComp != null) {
 				execName = execDataComp.retrieveAllEntries().get(0).getValue();
 			}
-
-			Entry parentEntry = execDataComp.retrieveEntry("Executable");
-			Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-
-			if (execName.equals(customExecName) && !customExecEntry.isReady()) {
-				// Reveal the custom app Entry if it's currently hidden and
-				// the user wants to enter a name
-				customExecEntry.update(parentEntry.getName(), "true");
-			} else if (!execName.equals(customExecName)
-					&& customExecEntry.isReady()) {
-				// Hide the custom app Entry if it's exposed and the user
-				// selected another app
-				customExecEntry.update(parentEntry.getName(), "false");
-			}
+//
+//			IEntry parentEntry = execDataComp.retrieveEntry("Executable");
+//			IEntry customExecEntry = execDataComp.retrieveEntry(customExecName);
+//
+//			if (execName.equals(customExecName) && !customExecEntry.isReady()) {
+//				// Reveal the custom app Entry if it's currently hidden and
+//				// the user wants to enter a name
+//				customExecEntry.update(parentEntry.getName(), "true");
+//			} else if (!execName.equals(customExecName)
+//					&& customExecEntry.isReady()) {
+//				// Hide the custom app Entry if it's exposed and the user
+//				// selected another app
+//				customExecEntry.update(parentEntry.getName(), "false");
+//			}
 		} else {
 
-			if (component instanceof Entry) {
+			if (component instanceof IEntry) {
 
 				// Check if this is the Input File entry and has a valid value
-				Entry entry = (Entry) component;
+				IEntry entry = (IEntry) component;
 				if (entry.getName().equals("Input File")
 						&& !entry.getValue().isEmpty()) {
 

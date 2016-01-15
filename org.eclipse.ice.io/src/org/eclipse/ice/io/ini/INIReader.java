@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -328,7 +329,7 @@ public class INIReader implements ITemplatedReader {
 							DataComponent comp = (DataComponent) form
 									.getComponent(variableToComponentNumber
 											.get(var));
-							for (Entry ent : comp.retrieveAllEntries()) {
+							for (IEntry ent : comp.retrieveAllEntries()) {
 								if (ent.getName().equals(var)) {
 									ent.setValue(val);
 									foundInTemplate = true;

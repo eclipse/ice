@@ -24,6 +24,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -123,7 +124,7 @@ public class INIWriter implements IWriter {
 					}
 
 					// Now go through the rows and add each variable
-					for (Entry ent : dataComp.retrieveAllEntries()) {
+					for (IEntry ent : dataComp.retrieveAllEntries()) {
 						tableContents += ent.getName().trim()
 								+ assignmentPattern + ent.getValue().trim()
 								+ newLine;

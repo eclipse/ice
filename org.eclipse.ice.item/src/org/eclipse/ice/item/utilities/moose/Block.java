@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
@@ -938,7 +939,7 @@ public class Block {
 					if (compParameters != null) {
 						// Loop over all the Entries and convert them to
 						// Parameters
-						for (Entry paramEntry : compParameters
+						for (IEntry paramEntry : compParameters
 								.retrieveAllEntries()) {
 							Parameter param = new Parameter();
 							param.fromEntry(paramEntry);

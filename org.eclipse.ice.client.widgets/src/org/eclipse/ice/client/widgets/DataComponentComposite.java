@@ -21,6 +21,8 @@ import java.util.TreeMap;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
+import org.eclipse.ice.datastructures.entry.EntryConverter;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.SWT;
@@ -170,7 +172,7 @@ public class DataComponentComposite extends Composite
 	public void refresh() {
 
 		// Local Declarations
-		List<Entry> entries = dataComp.retrieveAllEntries();
+		List<IEntry> entries = dataComp.retrieveAllEntries();
 
 		// If there's an empty label set and it's not longer necessary, dispose
 		if (!entries.isEmpty() && emptyLabel != null) {
@@ -181,14 +183,14 @@ public class DataComponentComposite extends Composite
 		// If a selection change triggered this refresh, make sure to update
 		// any Entries on the dataComp that need their value(s) updating
 		for (int i = 0; i < entries.size(); i++) {
-			Entry entry = dataComp.retrieveAllEntries().get(i);
+			IEntry entry = dataComp.retrieveAllEntries().get(i);
 			EntryComposite entryComp = entryMap.get(i);
 			if (entryComp != null
 					&& !entry.getValue().equals(entryComp.entry.getValue())) {
 				// Reset the reference to the Entry because depending on the way
 				// its value was updated it could be an entirely new Entry
 				// (reset vs. cloned/destructive copy).
-				entryComp.entry = entry;
+				entryComp.entry = EntryConverter.convert(entry);
 				entryComp.refresh();
 			}
 		}
@@ -199,7 +201,7 @@ public class DataComponentComposite extends Composite
 				: entryMap.size();
 
 		for (int i = 0; i < maxIterations; i++) {
-			Entry entry = (i < entries.size() ? entries.get(i) : null);
+			IEntry entry = (i < entries.size() ? entries.get(i) : null);
 			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i)
 					: null);
 			String value = (entryComp != null ? entryComp.entry.getValue()
@@ -216,7 +218,7 @@ public class DataComponentComposite extends Composite
 				// If the EntryComposite hasn't been rendered yet, render
 				// it,
 				// and add it to the entryMap
-				renderEntry(entry, i);
+				renderEntry(EntryConverter.convert(entry), i);
 				entryComp = entryMap.get(i);
 				entryComp.setEntryValue(value);
 				entryComp.refresh();
@@ -233,7 +235,7 @@ public class DataComponentComposite extends Composite
 					if (!entryComp.entry.getAllowedValues()
 							.contains(allowedValue)) {
 						disposeEntry(i);
-						renderEntry(entry, i);
+						renderEntry(EntryConverter.convert(entry), i);
 						entryComp = entryMap.get(i);
 						entryComp.setEntryValue(value);
 						entryComp.refresh();
@@ -310,7 +312,7 @@ public class DataComponentComposite extends Composite
 	private void renderEntries() {
 
 		// Try to get the list of ready Entries from the DataComponent.
-		List<Entry> entries = (dataComp != null ? dataComp.retrieveAllEntries()
+		List<IEntry> entries = (dataComp != null ? dataComp.retrieveAllEntries()
 				: null);
 
 		// If the list is not null and not empty, try to render the Entries.
@@ -325,9 +327,9 @@ public class DataComponentComposite extends Composite
 			}
 			// Create EntryComposites for all ready Entries.
 			for (int i = 0; i < entries.size(); i++) {
-				Entry entry = entries.get(i);
+				Entry entry = EntryConverter.convert(entries.get(i));
 				if (entry.isReady()) {
-					renderEntry(entries.get(i), i);
+					renderEntry(entry, i);
 				}
 			}
 		}

@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
@@ -54,7 +55,7 @@ public class SuiteLauncherTester {
 		// Get the list and check it
 		DataComponent execComp = (DataComponent) (launcher.getForm())
 				.getComponent(JobLauncherForm.parallelId + 2);
-		Entry execEntry = execComp.retrieveAllEntries().get(0);
+		IEntry execEntry = execComp.retrieveAllEntries().get(0);
 		assertEquals(execs, execEntry.getAllowedValues());
 
 		return;
@@ -100,7 +101,7 @@ public class SuiteLauncherTester {
 		// Get the executable list and check it
 		DataComponent execComp = (DataComponent) cloneItem.getForm()
 				.getComponent(JobLauncherForm.parallelId + 2);
-		Entry execEntry = execComp.retrieveAllEntries().get(0);
+		IEntry execEntry = execComp.retrieveAllEntries().get(0);
 		assertEquals(execs, execEntry.getAllowedValues());
 
 		// run copy operation

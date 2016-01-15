@@ -41,6 +41,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -1220,7 +1221,7 @@ public class JobLaunchAction extends Action implements Runnable {
 
 		// Local Declarations
 		DataComponent loginInfoComp;
-		Entry usernameEntry;
+		IEntry usernameEntry;
 		Thread processThread = new Thread(this);
 		formSubmitted = new AtomicBoolean();
 		formSubmitted.set(true);

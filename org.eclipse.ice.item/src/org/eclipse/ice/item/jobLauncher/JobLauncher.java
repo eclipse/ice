@@ -44,6 +44,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.EntryConverter;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
@@ -569,7 +573,7 @@ public class JobLauncher extends Item {
 		IResource fileResource = null;
 		String os = "linux", accountCode = "";
 		DataComponent fileData = null, parallelData = null;
-		Entry fileEntry = null, mpiEntry = null;
+		IEntry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
 		// Get the project space directory
@@ -584,7 +588,7 @@ public class JobLauncher extends Item {
 		} else {
 			// Make sure if there are any additional input files, that they are
 			// all valid too
-			for (Entry entry : fileData.retrieveAllEntries()) {
+			for (IEntry entry : fileData.retrieveAllEntries()) {
 				if (entry.getValue() == null || entry.getValue().isEmpty()) {
 					logger.info("JobLauncher Error: All input file " + "entries must be set!");
 					return FormStatus.InfoError;
@@ -627,7 +631,7 @@ public class JobLauncher extends Item {
 			selectedRowId = selectedRowIds.get(0);
 		}
 		// Get the hostname and os
-		ArrayList<Entry> hostEntries = hostsTable.getRow(selectedRowId);
+		ArrayList<IEntry> hostEntries = hostsTable.getRow(selectedRowId);
 		hostname = hostEntries.get(0).getValue();
 		os = hostEntries.get(1).getValue();
 		installDir = hostEntries.get(2).getValue();
@@ -644,13 +648,13 @@ public class JobLauncher extends Item {
 				numProcs = Math.max(numProcs, Integer.parseInt(mpiEntry.getValue()));
 			}
 			// Figure out whether or not TBB threads should be used.
-			Entry tbbThreadsEntry = parallelData.retrieveEntry("Number of TBB Threads");
+			IEntry tbbThreadsEntry = parallelData.retrieveEntry("Number of TBB Threads");
 			// Get the number of cores if the Entry is there
 			if (tbbThreadsEntry != null) {
 				numTBBThreads = Math.max(numTBBThreads, Integer.parseInt(tbbThreadsEntry.getValue()));
 			}
 			// Get the account code
-			Entry accountEntry = parallelData.retrieveEntry("Account Code/Project Code");
+			IEntry accountEntry = parallelData.retrieveEntry("Account Code/Project Code");
 			accountCode = accountEntry.getValue();
 		}
 
@@ -761,10 +765,10 @@ public class JobLauncher extends Item {
 	@Override
 	protected void setupForm() {
 
-		ArrayList<Entry> columnNames = new ArrayList<Entry>();
-		Entry entry1 = new Entry();
-		Entry entry2 = new Entry();
-		Entry entry3 = new Entry();
+		ArrayList<IEntry> columnNames = new ArrayList<IEntry>();
+		IEntry entry1 = new StringEntry();
+		IEntry entry2 = new StringEntry();
+		IEntry entry3 = new StringEntry();
 
 		// Initialize the host and input lists
 		hosts = new ArrayList<String>();
@@ -1261,7 +1265,7 @@ public class JobLauncher extends Item {
 	public void addHost(String hostname, String os, String execInstallPath) {
 
 		// Local Declarations
-		ArrayList<Entry> row = new ArrayList<Entry>();
+		ArrayList<IEntry> row = new ArrayList<IEntry>();
 		boolean contractSatisfied = hostname != null && os != null && execInstallPath != null && form != null
 				&& !hosts.contains(hostname) && hostsTable != null;
 
@@ -1373,8 +1377,8 @@ public class JobLauncher extends Item {
 
 		// If the components are not greater than 2, then it is false
 		if (form.getComponents().size() > 3) {
-			DataComponent dataC = (DataComponent) form.getComponents().get(JobLauncherForm.parallelId);
-			Entry entry = dataC.retrieveEntry("Number of MPI Processes");
+			DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+			IEntry entry = dataC.retrieveEntry("Number of MPI Processes");
 			if (entry != null) {
 				this.mpiEnabled = true;
 				return;
@@ -1439,7 +1443,7 @@ public class JobLauncher extends Item {
 			// If the components are not greater than 2, then it is false
 			if (form.getComponents().size() > 3) {
 				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
-				Entry entry = dataC.retrieveEntry("Number of OpenMP Threads");
+				IEntry entry = dataC.retrieveEntry("Number of OpenMP Threads");
 				if (entry != null) {
 					openMPEnabled = true;
 					return;
@@ -1514,7 +1518,7 @@ public class JobLauncher extends Item {
 			// If there are more than 3 components, then parallelism is enabled.
 			if (form.getComponents().size() > 3) {
 				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
-				Entry entry = dataC.retrieveEntry("Number of TBB Threads");
+				IEntry entry = dataC.retrieveEntry("Number of TBB Threads");
 				if (entry != null) {
 					tbbEnabled = true;
 				}
@@ -1965,10 +1969,10 @@ public class JobLauncher extends Item {
 	@Override
 	public void update(IUpdateable component) {
 
-		if (component instanceof Entry) {
+		if (component instanceof FileEntry) {
 
 			// If this is an Entry, cast it
-			Entry entry = (Entry) component;
+			FileEntry entry = (FileEntry) component;
 
 			// Verify this is the "Input File" Entry and it has a valid value
 			if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
@@ -2003,14 +2007,14 @@ public class JobLauncher extends Item {
 		// Get the file DataComponent and Entry names
 		ArrayList<String> entryNames = new ArrayList<String>();
 		DataComponent fileComp = (DataComponent) form.getComponent(JobLauncherForm.filesId);
-		for (Entry e : fileComp.retrieveAllEntries()) {
+		for (IEntry e : fileComp.retrieveAllEntries()) {
 			entryNames.add(e.getName());
 		}
 
 		// Remove all old Entries from the Item
 		for (String s : entryNames) {
 			if (!"Input File".equals(s)) {
-				Entry entry = fileComp.retrieveEntry(s);
+				IEntry entry = fileComp.retrieveEntry(s);
 				if (inputFileNameMap.containsKey(entry.getName())) {
 					inputFileNameMap.remove(entry.getName());
 				}
@@ -2021,8 +2025,8 @@ public class JobLauncher extends Item {
 
 		// Use the IReader to find all occurrences of the given Regular
 		// Expression for each of those add a new Input file Entry
-		ArrayList<Entry> entriesFound = getReader().findAll(file, regex);
-		for (Entry e : entriesFound) {
+		ArrayList<IEntry> entriesFound = EntryConverter.convertEntriesToIEntries(getReader().findAll(file, regex));
+		for (IEntry e : entriesFound) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""), e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);
 

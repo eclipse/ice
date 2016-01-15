@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -25,6 +26,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -157,7 +160,7 @@ public class NekModel extends Item {
 
 		// Local Declaration
 		DataComponent filesComp = new DataComponent();
-		Entry filesEntry = null;
+		IEntry filesEntry = null;
 		final String noFilesValue = "No examples available.";
 		String entryName = "Available examples";
 		String entryDesc = "The example problem file that will be loaded.";
@@ -174,23 +177,17 @@ public class NekModel extends Item {
 		// Configure the values of the file Entry
 		if (files != null && !(files.isEmpty())) {
 			// Setup the Entry with the list of files
-			filesEntry = new Entry() {
-				@Override
-				protected void setup() {
-					allowedValues.addAll(files);
-					allowedValueType = AllowedValueType.Discrete;
-				}
-			};
+			filesEntry = new DiscreteEntry();
+			filesEntry.setAllowedValues(files);
+			filesEntry.setDefaultValue(files.get(0));
+			filesEntry.setValue(files.get(0));
 		} else {
 			// Setup the Entry with only value to describe that there are no
 			// examples.
-			filesEntry = new Entry() {
-				@Override
-				protected void setup() {
-					allowedValues.add(noFilesValue);
-					allowedValueType = AllowedValueType.Discrete;
-				}
-			};
+			filesEntry = new DiscreteEntry();
+			filesEntry.setAllowedValues(Arrays.asList(noFilesValue));
+			filesEntry.setDefaultValue(noFilesValue);
+			filesEntry.setValue(noFilesValue);
 		}
 
 		// Setup the file Entry's descriptive information
@@ -222,7 +219,7 @@ public class NekModel extends Item {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		DataComponent dataComp = null;
-		Entry problemEntry = null;
+		IEntry problemEntry = null;
 		String problemName = null;
 		String separator = System.getProperty("file.separator");
 

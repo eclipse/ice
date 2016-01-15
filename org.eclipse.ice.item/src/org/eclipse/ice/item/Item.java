@@ -55,6 +55,7 @@ import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -348,7 +349,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 * speed of reviewEntries() and is created in setupForm() when it is called
 	 * by loadFromXML() or loadFromPSF().
 	 */
-	protected ArrayList<Entry> entryList;
+	protected ArrayList<IEntry> entryList;
 
 	/**
 	 * The string that is used to describe the process by which the Item class
@@ -941,7 +942,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 					// Set the output file name
 					propsDictionary.put("iceTaggedOutputFileName", outputFile.getLocationURI().getPath());
 					// Add the key-value pairs
-					for (Entry i : entryList) {
+					for (IEntry i : entryList) {
 						// Use tags if they are available
 						if (i.getTag() != null) {
 							propsDictionary.put(i.getTag(), i.getValue());
@@ -1127,7 +1128,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 		registerUpdateables();
 
 		// Update the values of the Entries in the Registry
-		for (Entry entry : entryList) {
+		for (IEntry entry : entryList) {
 			if (registry.containsKey(entry.getName())) {
 				updateStatus = registry.updateValue(entry.getName(), entry.getValue());
 			}
@@ -1181,14 +1182,16 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 			entryList.addAll(((DataComponent) component).retrieveAllEntries());
 		}
 		// Register the Entries
-		for (Entry entry : entryList) {
+		for (IEntry entry : entryList) {
 			// Register the Entry name and its default value
 			registry.setValue(entry.getName(), entry.getDefaultValue());
 			// Register parent dependencies so that they can be notified
 			// when the parent changes
-			if (entry.getParent() != null) {
-				registry.register(entry, entry.getParent());
-			}
+			
+			// FIXME ABOUT THE PARENTS
+//			if (entry.getParent() != null) {
+//				registry.register(entry, entry.getParent());
+//			}
 		}
 		// Dispatch the values the first time around so that children
 		// can mark themselves ready.
@@ -1391,7 +1394,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 
 		// Setup the list of Entries. This list is recreated every time this
 		// operation is called.
-		entryList = new ArrayList<Entry>();
+		entryList = new ArrayList<IEntry>();
 
 		// Setup the map of components
 		componentMap = new HashMap<String, ArrayList<Component>>();
@@ -1672,7 +1675,7 @@ public class Item implements IComponentVisitor, Identifiable, IUpdateableListene
 	 *         invalid, returns null.
 	 * @throws IOException
 	 */
-	public ICEResource getResource(Entry file) throws IOException {
+	public ICEResource getResource(IEntry file) throws IOException {
 
 		// Local declarations
 		ICEResource resource = null;

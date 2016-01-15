@@ -31,6 +31,8 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -108,14 +110,14 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		assertEquals(2, jobLauncherForm.getNumberOfComponents());
 
 		// Get the Entries in the input files component
-		ArrayList<Entry> entries = ((DataComponent) jobLauncherForm
+		ArrayList<IEntry> entries = ((DataComponent) jobLauncherForm
 				.getComponent(1)).retrieveAllEntries();
 		// Check the number of Entries in the input files component
 		assertEquals(1, entries.size());
 		// Check the Entries. The Input File Entry should have files.size()
 		// allowed values.
 		assertEquals("Input file", entries.get(0).getName());
-		retFiles = entries.get(0).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(0).getAllowedValues();
 		// Check the list of files
 		assertNotNull(retFiles);
 		assertEquals(files, retFiles);
@@ -134,9 +136,9 @@ public class JobLauncherFormTester implements IComponentVisitor {
 	public void checkParallelism() {
 
 		// Local Declarations
-		Entry openMPEntry = null;
-		Entry mpiEntry = null;
-		Entry tBBEntry = null;
+		IEntry openMPEntry = null;
+		IEntry mpiEntry = null;
+		IEntry tBBEntry = null;
 
 		// Create the JobLauncherForm
 		jobLauncherForm = new JobLauncherForm();
@@ -168,10 +170,10 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		jobLauncherForm.enableMPI(1, 1024, 512);
 		
 		// Check the account code 
-		Entry accountEntry = threadingComponent.retrieveEntry("Account Code/Project Code");
+		IEntry accountEntry = threadingComponent.retrieveEntry("Account Code/Project Code");
 		assertNotNull(accountEntry);
 		assertEquals("none",accountEntry.getValue());
-		assertEquals(accountEntry.getValueType(),AllowedValueType.Undefined);
+		assertTrue(accountEntry instanceof StringEntry);
 
 		// Get the MPI Entry and check it
 		mpiEntry = threadingComponent.retrieveEntry("Number of MPI Processes");
@@ -523,6 +525,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// Make sure they match
 		assertTrue(jobForm.equals(loadedForm));
 
+		
 	}
 
 	/**
@@ -610,7 +613,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		assertEquals(2, jobLauncherForm.getNumberOfComponents());
 
 		// Get the Entries
-		ArrayList<Entry> entries = ((DataComponent) jobLauncherForm
+		ArrayList<IEntry> entries = ((DataComponent) jobLauncherForm
 				.getComponent(1)).retrieveAllEntries();
 
 		// Check the number of Entries in the Platform component. There should
@@ -621,28 +624,28 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// files.size()
 		// allowed values.
 		assertEquals(filename1, entries.get(0).getName());
-		retFiles = entries.get(0).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(0).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files1.size(), retFiles.size());
 		assertEquals(files1, retFiles);
 
 		// Check the second file set
 		assertEquals(filename2, entries.get(1).getName());
-		retFiles = entries.get(1).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(1).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files2.size(), retFiles.size());
 		assertEquals(files2, retFiles);
 
 		// Check the third file set
 		assertEquals(filename3, entries.get(2).getName());
-		retFiles = entries.get(2).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(2).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files3.size(), retFiles.size());
 		assertEquals(files3, retFiles);
 
 		// Check the fourth file set
 		assertEquals(filename3, entries.get(2).getName());
-		retFiles = entries.get(2).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(2).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files3.size(), retFiles.size());
 		assertEquals(files3, retFiles);

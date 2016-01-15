@@ -29,6 +29,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -184,7 +185,7 @@ public class RemoteFileUploadAction extends RemoteAction {
 			}
 			
 			// Add those files to the list 
-			for (Entry e : data.retrieveAllEntries()) {
+			for (IEntry e : data.retrieveAllEntries()) {
 				filesToUpload.add(project.getFile(e.getName()).getLocation().toFile());
 			}
 		} else if (localFilesDir != null) {
