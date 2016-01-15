@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -465,7 +464,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	}
 
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 		// TODO Auto-generated method stub
 		return null;
 	}

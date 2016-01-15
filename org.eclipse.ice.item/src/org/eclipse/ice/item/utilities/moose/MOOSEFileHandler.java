@@ -34,15 +34,10 @@ import javax.naming.OperationNotSupportedException;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.entry.EntryConverter;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.io.serializable.IReader;
@@ -1016,10 +1011,10 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            The regular expression we should search for.
 	 */
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 
 		// Local declarations
-		ArrayList<Entry> retEntries = new ArrayList<Entry>();
+		ArrayList<IEntry> retEntries = new ArrayList<IEntry>();
 		Form form = read(file);
 
 		TreeComposite tree = (TreeComposite) form.getComponent(MOOSEModel.mooseTreeCompositeId);
@@ -1037,7 +1032,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
-				for (Entry e : EntryConverter.convertIEntriesToEntries(data.retrieveAllEntries())) {
+				for (IEntry e :data.retrieveAllEntries()) {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
@@ -1049,7 +1044,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 						if ("file".equals(e.getName().toLowerCase()) || "data_file".equals(e.getName().toLowerCase())) {
 							e.setName(child.getName());
 						}
-						retEntries.add((Entry) e.clone());
+						retEntries.add((IEntry) e.clone());
 					}
 				}
 			}

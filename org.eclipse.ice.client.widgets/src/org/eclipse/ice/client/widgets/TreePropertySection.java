@@ -30,6 +30,8 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -834,7 +836,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// If there is a data node, add a new Entry to it.
 		if (dataNode != null && !dataNode.contains("New parameter")) {
 			// Create an Entry with a BasicEntryContentProvider.
-			Entry entry = new Entry(new BasicEntryContentProvider());
+			IEntry entry = new StringEntry();//new BasicEntryContentProvider());
 			// Set the Entry's initial properties.
 			entry.setName("new_parameter");
 			entry.setDescription("");

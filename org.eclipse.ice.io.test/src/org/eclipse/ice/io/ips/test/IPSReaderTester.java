@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -173,8 +173,8 @@ public class IPSReaderTester {
 		/* --- Test the findAll method --- */
 		String regex = "SIM_ROOT = .*";
 		String fakex = "Sassafras my mass";
-		ArrayList<Entry> matches = reader.findAll(inputFile, regex);
-		ArrayList<Entry> fakes = reader.findAll(inputFile, fakex);
+		ArrayList<IEntry> matches = reader.findAll(inputFile, regex);
+		ArrayList<IEntry> fakes = reader.findAll(inputFile, fakex);
 		assertEquals(fakes.size(),0);
 		assertEquals(matches.size(),1);
 		assertEquals(matches.get(0).getValue(), "SIM_ROOT = $CAEBAT_ROOT/vibe/trunk/examples/${SIM_NAME}");

@@ -19,6 +19,10 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleEntry;
@@ -75,25 +79,23 @@ public class PainfullySimpleEntryTester {
 		PSFEntry.add("#Some comments to ignore at the top\n");
 		PSFEntry.add("//More comments to ignore at the top\n");
 		PSFEntry.add("name=Coolant Temperature                        "
-				+ "                                #The name that a user "
-				+ "will see\n");
+				+ "                                #The name that a user " + "will see\n");
 		PSFEntry.add("description=The temperature of the coolant that surrounds "
 				+ "the assembly and pins //A description that will help the user\n");
 		PSFEntry.add("defaultValue=550                                          "
 				+ "                      //The default value\n");
 		PSFEntry.add("allowedValueType=Continuous                               "
-				+ "                      //Indicates that the value can be "
-				+ "anything between 550 and 650 K.\n");
+				+ "                      //Indicates that the value can be " + "anything between 550 and 650 K.\n");
 		PSFEntry.add("allowedValue=550                                          "
 				+ "                      //The lower bound of the range\n");
 		PSFEntry.add("allowedValue=650                                          "
 				+ "                      //The upper bound of the range\n");
 		PSFEntry.add("tag=coolantTemperature                                    "
 				+ "                      //A tag to mark it\n");
-		PSFEntry.add("parent=Full Assembly Flag                         "
-				+ "                              //The parent\n");
-		PSFEntry.add("group=Coolant Group                                       "
-				+ "                      //The group\n");
+		PSFEntry.add(
+				"parent=Full Assembly Flag                         " + "                              //The parent\n");
+		PSFEntry.add(
+				"group=Coolant Group                                       " + "                      //The group\n");
 		PSFEntry.add("  \t  \n");
 
 	}
@@ -122,24 +124,16 @@ public class PainfullySimpleEntryTester {
 		}
 
 		// Print the tag for diagnostics
-		System.out.println("PainfullySimpleEntry tag value = "
-				+ painfullySimpleEntry.getTag());
+		System.out.println("PainfullySimpleEntry tag value = " + painfullySimpleEntry.getTag());
 
 		// Create a duplicate Entry programmatically
-		Entry duplicateEntry = new Entry() {
-			@Override
-			protected void setup() {
-				setName("Coolant Temperature");
-				setDescription("The temperature of the coolant " + ""
-						+ "that surrounds the assembly and pins");
-				defaultValue = "550";
-				allowedValueType = AllowedValueType.Continuous;
-				allowedValues.add("550");
-				allowedValues.add("650");
-				tag = "coolantTemperature";
-			}
-		};
-		duplicateEntry.setParent("Full Assembly Flag");
+		IEntry duplicateEntry = new ContinuousEntry("550", "650");
+
+		duplicateEntry.setName("Coolant Temperature");
+		duplicateEntry.setDescription("The temperature of the coolant " + "" + "that surrounds the assembly and pins");
+		duplicateEntry.setDefaultValue("550");
+		duplicateEntry.setTag("coolantTemperature");
+		// duplicateEntry.setParent("Full Assembly Flag");
 
 		// Check the group, which is not an attribute on Entry and will not be
 		// checked
@@ -150,36 +144,23 @@ public class PainfullySimpleEntryTester {
 
 		// Now replace the AllowedValueType string with the Discrete type to
 		// check that it can be parsed correctly
-		PSFEntry.set(
-				6,
-				"allowedValueType=Discrete                               "
-						+ "                      //Indicates that the value can be "
-						+ "any one of 550, 575 and 650 K.\n");
+		PSFEntry.set(6, "allowedValueType=Discrete                               "
+				+ "                      //Indicates that the value can be " + "any one of 550, 575 and 650 K.\n");
 		// Add 575K to the block. Note order matters for Arraylist equality!
-		PSFEntry.add(8,
-				"allowedValue=575                                          "
-						+ "                      //The mid-range value\n");
+		PSFEntry.add(8, "allowedValue=575                                          "
+				+ "                      //The mid-range value\n");
 
 		// Print the block for diagnostics
 		System.out.println("Dumping PSF Block for Diagnostics:\n" + PSFEntry);
 
 		// Create a duplicate Entry programmatically, but with
 		// AllowedValueType.Discrete. Also add 575K.
-		duplicateEntry = new Entry() {
-			@Override
-			protected void setup() {
-				setName("Coolant Temperature");
-				setDescription("The temperature of the coolant " + ""
-						+ "that surrounds the assembly and pins");
-				defaultValue = "550";
-				allowedValueType = AllowedValueType.Discrete;
-				allowedValues.add("550");
-				allowedValues.add("575");
-				allowedValues.add("650");
-				parent = "Full Assembly Flag";
-				tag = "coolantTemperature";
-			}
-		};
+		duplicateEntry = new DiscreteEntry("550", "575", "650");
+		duplicateEntry.setName("Coolant Temperature");
+		duplicateEntry.setDescription("The temperature of the coolant " + "" + "that surrounds the assembly and pins");
+		duplicateEntry.setDefaultValue("550");
+//				parent = "Full Assembly Flag";
+		duplicateEntry.setTag("coolantTemperature");
 
 		// Re-create the Entry and load it
 		painfullySimpleEntry = new PainfullySimpleEntry();
@@ -195,11 +176,8 @@ public class PainfullySimpleEntryTester {
 		// Finally replace the AllowedValueType string with the Undefined type
 		// to
 		// check that it can be parsed correctly
-		PSFEntry.set(
-				6,
-				"allowedValueType=Undefined                               "
-						+ "                      //Indicates that the value can be "
-						+ "any thing (which would be bad!).\n");
+		PSFEntry.set(6, "allowedValueType=Undefined                               "
+				+ "                      //Indicates that the value can be " + "any thing (which would be bad!).\n");
 		// Remove the temperature blocks
 		PSFEntry.remove(7);
 		PSFEntry.remove(7);
@@ -210,18 +188,12 @@ public class PainfullySimpleEntryTester {
 
 		// Create a duplicate Entry programmatically, but with
 		// AllowedValueType.Discrete. Also add 575K.
-		duplicateEntry = new Entry() {
-			@Override
-			protected void setup() {
-				setName("Coolant Temperature");
-				setDescription("The temperature of the coolant " + ""
-						+ "that surrounds the assembly and pins");
-				defaultValue = "550";
-				allowedValueType = AllowedValueType.Undefined;
-				parent = "Full Assembly Flag";
-				tag = "coolantTemperature";
-			}
-		};
+		duplicateEntry = new StringEntry();
+		duplicateEntry.setName("Coolant Temperature");
+		duplicateEntry.setDescription("The temperature of the coolant " + "" + "that surrounds the assembly and pins");
+		duplicateEntry.setDefaultValue("550");
+//				parent = "Full Assembly Flag";
+		duplicateEntry.setTag("coolantTemperature");
 
 		// Re-create the Entry and load it
 		painfullySimpleEntry = new PainfullySimpleEntry();
@@ -261,8 +233,7 @@ public class PainfullySimpleEntryTester {
 
 		// Perform test
 		PSFEntry.set(6, "allowedType=Undefined                               "
-				+ "                      //Indicates that the value can be "
-				+ "any thing (which would be bad!).\n");
+				+ "                      //Indicates that the value can be " + "any thing (which would be bad!).\n");
 
 		// Re-create the Entry and load it
 		painfullySimpleEntry = new PainfullySimpleEntry();
@@ -294,8 +265,7 @@ public class PainfullySimpleEntryTester {
 			@Override
 			protected void setup() {
 				setName("Coolant Temperature");
-				setDescription("The temperature of the coolant " + ""
-						+ "that surrounds the assembly and pins");
+				setDescription("The temperature of the coolant " + "" + "that surrounds the assembly and pins");
 				defaultValue = "550";
 				allowedValueType = AllowedValueType.Discrete;
 				allowedValues.add("550");

@@ -14,7 +14,11 @@ package org.eclipse.ice.datastructures.form.painfullySimpleForm;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.AbstractEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 
@@ -29,7 +33,7 @@ import org.eclipse.ice.datastructures.form.Entry;
  * 
  * @author Jay Jay Billings
  */
-public class PainfullySimpleEntry extends Entry {
+public class PainfullySimpleEntry extends AbstractEntry {
 	/**
 	 * <p>
 	 * This group name is used to determine to which DataComponent the
@@ -38,6 +42,8 @@ public class PainfullySimpleEntry extends Entry {
 	 * 
 	 */
 	private String group;
+
+	private List<String> allowedValues;
 
 	/**
 	 * <p>
@@ -48,6 +54,7 @@ public class PainfullySimpleEntry extends Entry {
 	public PainfullySimpleEntry() {
 		// Call the superclass' constructor
 		super();
+		allowedValues = new ArrayList<String>();
 	}
 
 	/**
@@ -70,8 +77,7 @@ public class PainfullySimpleEntry extends Entry {
 	 *            </p>
 	 * @throws IOException
 	 */
-	public void loadFromPSFBlock(ArrayList<String> inputStrings)
-			throws IOException {
+	public void loadFromPSFBlock(ArrayList<String> inputStrings) throws IOException {
 
 		// Local Declarations
 		ArrayList<String> linesToRemove = new ArrayList<String>();
@@ -107,10 +113,8 @@ public class PainfullySimpleEntry extends Entry {
 				// exception
 				if (!currentString.contains("=")) {
 					throw new IOException(
-							"String in Entry block does not contain an "
-									+ "equals sign! The string was at line "
-									+ inputStrings.indexOf(currentString)
-									+ ":\n" + currentString);
+							"String in Entry block does not contain an " + "equals sign! The string was at line "
+									+ inputStrings.indexOf(currentString) + ":\n" + currentString);
 				}
 				// Trim and split the string
 				splitStrings = currentString.trim().split("\\=");
@@ -124,35 +128,32 @@ public class PainfullySimpleEntry extends Entry {
 				}
 				// Get the default value
 				else if ("defaultValue".equals(splitStrings[0])) {
-					this.iEntryContentProvider.setDefaultValue(splitStrings[1]);
+					this.setDefaultValue(splitStrings[1]);
 				}
 				// Get the AllowedValueType
 				else if ("allowedValueType".equals(splitStrings[0])) {
-					this.iEntryContentProvider
-							.setAllowedValueType(AllowedValueType
-									.valueOf(splitStrings[1]));
+					// this.setAllowedValueType(AllowedValueType
+					// .valueOf(splitStrings[1]));
 				}
 				// Get the AllowedValues
 				else if ("allowedValue".equals(splitStrings[0])) {
-					allowedValues.add(splitStrings[1]);
-					this.iEntryContentProvider.setAllowedValues(allowedValues);
+					this.setAllowedValues(Arrays.asList(splitStrings[1]));// allowedValues);
 				}
 				// Get the tag
 				else if ("tag".equals(splitStrings[0])) {
 					setTag(splitStrings[1]);
 				}
 				// Get the parent
-				else if ("parent".equals(splitStrings[0])) {
-					setParent(splitStrings[1]);
-				}
+				// else if ("parent".equals(splitStrings[0])) {
+				// setParent(splitStrings[1]);
+				// }
 				// Get the group name
 				else if ("group".equals(splitStrings[0])) {
 					group = splitStrings[1];
 				}
 				// Check for an invalid tag. If it is found, throw an exception.
 				else if (!validKeys.contains(splitStrings[0])) {
-					throw new IOException("Invalid PSF statement: "
-							+ currentString);
+					throw new IOException("Invalid PSF statement: " + currentString);
 				}
 			}
 		}
@@ -167,11 +168,101 @@ public class PainfullySimpleEntry extends Entry {
 	 * which DataComponent the PainfullySimpleEntry should be added.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The group name
 	 *         </p>
 	 */
 	public String getGroup() {
 		return group;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.entry.AbstractEntry#setValue(java.lang.
+	 * String)
+	 */
+	@Override
+	public boolean setValue(String newValue) {
+		// Only set the value if it is allowed
+		if (allowedValues != null && !allowedValues.isEmpty()) {
+			if (allowedValues.contains(newValue)) {
+				return super.setValue(newValue);
+			}
+		} else {
+			return super.setValue(newValue);
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.entry.AbstractEntry#clone()
+	 */
+	@Override
+	public Object clone() {
+		PainfullySimpleEntry e = new PainfullySimpleEntry();
+		e.copy(this);
+		return e;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.entry.AbstractEntry#setValue(java.lang.
+	 * String[])
+	 */
+	@Override
+	public boolean setValue(String... values) {
+		throw new UnsupportedOperationException(
+				"PSFEntry only supports " + "the storage of one String value, not many, selected from "
+						+ "a list of allowed values. " + "Therefore, this operation is not supported.");
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.datastructures.entry.AbstractEntry#getValues()
+	 */
+	@Override
+	public String[] getValues() {
+		throw new UnsupportedOperationException(
+				"PSFEntry only supports " + "the storage of one String value, not many, selected from "
+						+ "a list of allowed values. " + "Therefore, this operation is not supported.");
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.entry.AbstractEntry#getAllowedValues()
+	 */
+	@Override
+	public List<String> getAllowedValues() {
+		return allowedValues;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.entry.AbstractEntry#setAllowedValues(java.
+	 * util.List)
+	 */
+	@Override
+	public void setAllowedValues(List<String> values) {
+		allowedValues = values;
+	}
+
+	@Override
+	public void update(IUpdateable component) {
+		// TODO Auto-generated method stub
+
 	}
 }

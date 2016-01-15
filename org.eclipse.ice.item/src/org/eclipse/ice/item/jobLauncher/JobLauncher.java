@@ -39,17 +39,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.entry.EntryConverter;
 import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -59,7 +53,6 @@ import org.eclipse.ice.item.IActionFactory;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.action.Action;
-import org.eclipse.ice.item.action.JobLaunchAction;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;
@@ -2025,7 +2018,7 @@ public class JobLauncher extends Item {
 
 		// Use the IReader to find all occurrences of the given Regular
 		// Expression for each of those add a new Input file Entry
-		ArrayList<IEntry> entriesFound = EntryConverter.convertEntriesToIEntries(getReader().findAll(file, regex));
+		ArrayList<IEntry> entriesFound = getReader().findAll(file, regex);
 		for (IEntry e : entriesFound) {
 			addInputType(e.getName(), e.getName().replaceAll(" ", ""), e.getDescription(),
 					"." + e.getValue().split("\\.(?=[^\\.]+$)")[1]);

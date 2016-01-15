@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.EntryConverter;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -189,7 +188,7 @@ public class VibeLauncher extends JobLauncher {
 
 		// Get the Run ID that may be used to locate the simulation files
 		String runID = "";
-		ArrayList<IEntry> runIDMatches = EntryConverter.convertEntriesToIEntries(reader.findAll(inputFile, "RUN_ID=.*"));
+		ArrayList<IEntry> runIDMatches = reader.findAll(inputFile, "RUN_ID=.*");
 		if (runIDMatches != null && !runIDMatches.isEmpty()) {
 			runID = runIDMatches.get(0).getName().split("=")[1];
 		}
@@ -197,7 +196,7 @@ public class VibeLauncher extends JobLauncher {
 		// Get the Case Name which may also be used to locate the simulation
 		// files
 		String caseName = "";
-		ArrayList<IEntry> caseNameMatches = EntryConverter.convertEntriesToIEntries(reader.findAll(inputFile, "SIM_NAME=.*"));
+		ArrayList<IEntry> caseNameMatches = reader.findAll(inputFile, "SIM_NAME=.*");
 		if (caseNameMatches != null && !caseNameMatches.isEmpty()) {
 			caseName = caseNameMatches.get(0).getName().split("=")[1];
 		}
@@ -209,7 +208,7 @@ public class VibeLauncher extends JobLauncher {
 
 		// Get the base path for the simulation files
 		String dataDir = "";
-		ArrayList<IEntry> simRootMatches = EntryConverter.convertEntriesToIEntries(reader.findAll(inputFile, "SIM_ROOT=.*"));
+		ArrayList<IEntry> simRootMatches = reader.findAll(inputFile, "SIM_ROOT=.*");
 		if (simRootMatches != null && !simRootMatches.isEmpty()) {
 			dataDir = simRootMatches.get(0).getName().split("=")[1];
 		}
@@ -223,7 +222,7 @@ public class VibeLauncher extends JobLauncher {
 
 		// Get the input file directory for the simulation
 		String inputDir = "";
-		ArrayList<IEntry> inputDirMatches = EntryConverter.convertEntriesToIEntries(reader.findAll(inputFile, ".*INPUT_DIR.*"));
+		ArrayList<IEntry> inputDirMatches = reader.findAll(inputFile, ".*INPUT_DIR.*");
 		if (inputDirMatches != null && !inputDirMatches.isEmpty()) {
 			inputDir = inputDirMatches.get(0).getName().split("=")[1];
 		}
