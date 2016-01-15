@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.modeling;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
@@ -145,7 +145,7 @@ public class EdgeMesh extends AbstractMesh {
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
 	 */
 	@Override
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 
 		// Do not register the edge's vertices, as the edge will listen to them
 		// instead

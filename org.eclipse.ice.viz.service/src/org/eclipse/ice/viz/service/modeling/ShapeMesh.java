@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
 /**
@@ -264,7 +264,7 @@ public class ShapeMesh extends AbstractMesh {
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener)
 	 */
 	@Override
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 
 		// Ignore requests to register own children to prevent circular
 		// observation

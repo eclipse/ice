@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -253,7 +253,7 @@ public class FXShapeController extends ShapeController
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 
 		// If the view updated, recursively refresh all children and propagate
@@ -311,7 +311,7 @@ public class FXShapeController extends ShapeController
 	 */
 	@Override
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-			IManagedVizUpdateable source) {
+			IManagedUpdateable source) {
 
 		// Create a list of events to subscribe to
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();

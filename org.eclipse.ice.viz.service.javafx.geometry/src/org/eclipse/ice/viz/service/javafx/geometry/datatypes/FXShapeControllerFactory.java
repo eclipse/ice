@@ -11,8 +11,8 @@
 package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 /**
@@ -22,27 +22,25 @@ import org.eclipse.ice.viz.service.modeling.ShapeMesh;
  * @author Robert Smith
  *
  */
-public class FXShapeControllerFactory implements IControllerFactory {
+public class FXShapeControllerFactory extends AbstractControllerFactory {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.modeling.IControllerFactory#createController(
-	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent)
+	/**
+	 * The default cosntructor.
 	 */
-	@Override
-	public AbstractController createController(AbstractMesh model) {
+	public FXShapeControllerFactory() {
+		super();
 
-		// Check that the model is a shape component, if not return null
-		if (model instanceof ShapeMesh) {
+		// Set the ShapeMesh provider
+		typeMap.put(ShapeMesh.class, new IControllerProvider() {
+			@Override
+			public AbstractController createController(AbstractMesh model) {
 
-			// Create an FXShapeView for the model, then wrap them both in a
-			// shape
-			FXShapeView view = new FXShapeView((ShapeMesh) model);
-			return new FXShapeController((ShapeMesh) model, view);
-		}
-		return null;
+				// Create an FXShapeView for the model, then wrap them both in a
+				// shape controller
+				FXShapeView view = new FXShapeView((ShapeMesh) model);
+				return new FXShapeController((ShapeMesh) model, view);
+			}
+		});
 	}
 
 }

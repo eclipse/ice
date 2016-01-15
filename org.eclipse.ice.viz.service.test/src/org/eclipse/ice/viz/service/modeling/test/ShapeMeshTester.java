@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.modeling.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
@@ -117,7 +117,7 @@ public class ShapeMeshTester {
 		 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable)
 		 */
 		@Override
-		public void update(IManagedVizUpdateable component,
+		public void update(IManagedUpdateable component,
 				UpdateableSubscriptionType[] type) {
 			updated = true;
 			super.update(component, type);

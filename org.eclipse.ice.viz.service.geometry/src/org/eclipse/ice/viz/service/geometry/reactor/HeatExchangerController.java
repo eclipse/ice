@@ -113,4 +113,5 @@ public class HeatExchangerController extends AbstractController
 	public void setWireFrameMode(boolean on) {
 		((IWireFramePart) view).setWireFrameMode(on);
 	}
+
 }

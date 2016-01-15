@@ -11,6 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.internal.scene.camera;
 
 import javafx.embed.swt.FXCanvas;
+import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -27,6 +28,17 @@ import javafx.scene.transform.Rotate;
  *
  */
 public class CenteredCameraController extends AbstractCameraController {
+
+	/**
+	 * The speed at which the camera turns when using the pitch/roll/yaw
+	 * functions
+	 */
+	final private double ROTATION_SPEED = 15;
+
+	/**
+	 * The speed at which the camera will be moved for raise/strafe/thrust
+	 */
+	final private double SPEED = 50;
 
 	/**
 	 * The X rotation applied to the camera.
@@ -141,9 +153,9 @@ public class CenteredCameraController extends AbstractCameraController {
 		affine = new Affine();
 		affine.appendTranslation(0, 0, -2000);
 
-		// If x and y exist, apply them to the camera
+		// If x, y, and z exist, apply them to the camera
 		if (x != null) {
-			xform.getTransforms().setAll(x, y, affine);
+			xform.getTransforms().setAll(x, y, z, affine);
 		}
 
 		// Otherwise only apply the affine to the camera
@@ -151,6 +163,75 @@ public class CenteredCameraController extends AbstractCameraController {
 			xform.getTransforms().setAll(affine);
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#pitchCamera(double)
+	 */
+	@Override
+	public void pitchCamera(double radians) {
+		affine.append(
+				new Rotate(radians * 180 / Math.PI, new Point3D(1, 0, 0)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#rollCamera(double)
+	 */
+	@Override
+	public void rollCamera(double radians) {
+		affine.append(
+				new Rotate(radians * 180 / Math.PI, new Point3D(0, 0, 1)));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#raiseCamera(double)
+	 */
+	@Override
+	public void raiseCamera(double distance) {
+		affine.appendTranslation(0, -distance * SPEED, 0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#strafeCamera(double)
+	 */
+	@Override
+	public void strafeCamera(double distance) {
+		affine.appendTranslation(distance * SPEED, 0, 0);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#thrustCamera(double)
+	 */
+	@Override
+	public void thrustCamera(double distance) {
+		affine.appendTranslation(0, 0, distance * SPEED);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * ICameraController#yawCamera(double)
+	 */
+	@Override
+	public void yawCamera(double radians) {
+		affine.append(
+				new Rotate(radians * 180 / Math.PI, new Point3D(0, 1, 0)));
 	}
 
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
@@ -55,7 +55,7 @@ public class FXVertexController extends VertexController {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] types) {
 
 		// Queue any messages from the view refresh

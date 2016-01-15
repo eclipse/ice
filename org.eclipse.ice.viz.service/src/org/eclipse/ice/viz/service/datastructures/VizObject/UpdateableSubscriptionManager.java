@@ -16,9 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * A class which manages a list of IVizUpdateable listeners and filters updates
- * by matching types of events to listeners which have subscribed to the
- * corresponding event type(s).
+ * A class which manages a list of IManagedUpdateableListeners and holds
+ * messages intended to be sent to them. The manager filters updates by matching
+ * types of events to listeners which have subscribed to the corresponding event
+ * type(s).
  * 
  * @author Robert Smith
  *
@@ -28,19 +29,19 @@ public class UpdateableSubscriptionManager {
 	/**
 	 * The updateable object the manager is controlling the message passing for.
 	 */
-	IManagedVizUpdateable source;
+	private IManagedUpdateable source;
 
 	/**
 	 * A map of registered listeners associated with the event types they are
 	 * registered to receive.
 	 */
-	HashMap<UpdateableSubscriptionType, ArrayList<IManagedVizUpdateableListener>> subscriptionMap = new HashMap<UpdateableSubscriptionType, ArrayList<IManagedVizUpdateableListener>>();
+	private HashMap<UpdateableSubscriptionType, ArrayList<IManagedUpdateableListener>> subscriptionMap = new HashMap<UpdateableSubscriptionType, ArrayList<IManagedUpdateableListener>>();
 
 	/**
 	 * A list of queued messages to be delivered all at once, for cases where
 	 * multiple events occur in quick succession.
 	 */
-	ArrayList<UpdateableSubscriptionType> messageQueue = new ArrayList<UpdateableSubscriptionType>();
+	private ArrayList<UpdateableSubscriptionType> messageQueue = new ArrayList<UpdateableSubscriptionType>();
 
 	/**
 	 * Keeps track of whether the manager is in queue mode. In queue mode,
@@ -51,18 +52,21 @@ public class UpdateableSubscriptionManager {
 	 * The number represents the amount of times the manager has been ordered to
 	 * queue messages. Only once it has been ordered to flush the queue that
 	 * many times will it actually begin notifying listeners. Thus, the manager
-	 * is in queue mode if and only if the variable queue is greater than 0.
+	 * is in queue mode if and only if the variable queueCount is greater than
+	 * 0.
 	 */
-	int queue = 0;
+	private int queueCount = 0;
 
 	/**
 	 * A parent manager belonging to a registered listener. This parent should
-	 * be an object which can safely be assummed to never need to send an update
+	 * be an object which can safely be assumed to never need to send an update
 	 * notification while waiting for an update from this manager's source, such
 	 * as in the case of a controller and model from the viz.service.modeling
-	 * packages.
+	 * packages. A parent should never be able to leave its queued state while
+	 * this object is in a queued state, but this object flushing its queue is
+	 * not a guarantee that the parent will then flush its queue.
 	 */
-	UpdateableSubscriptionManager parent;
+	private UpdateableSubscriptionManager parent;
 
 	/**
 	 * The default constructor.
@@ -71,7 +75,7 @@ public class UpdateableSubscriptionManager {
 	 *            The object whose listeners this manager will control
 	 *            communications for.
 	 */
-	public UpdateableSubscriptionManager(IManagedVizUpdateable source) {
+	public UpdateableSubscriptionManager(IManagedUpdateable source) {
 		this.source = source;
 	}
 
@@ -79,7 +83,7 @@ public class UpdateableSubscriptionManager {
 	 * Sets the manager in queue mode.
 	 */
 	public void enqueue() {
-		queue++;
+		queueCount++;
 
 		// If there is a parent, lock its notifications as well
 		if (parent != null) {
@@ -93,16 +97,22 @@ public class UpdateableSubscriptionManager {
 	public void flushQueue() {
 
 		// Attempt to exit queue mode
-		queue--;
-		if (queue == 0) {
+		queueCount--;
+		if (queueCount == 0) {
 
 			// Handle the message queue if there is one
 			if (!messageQueue.isEmpty()) {
 
-				// Send the queued messages
+				// Get a local copy of the queued messages and clear the queue.
+				// This prevents subsequent calls to the manager before all
+				// events are dispatched from sending the same message twice.
 				UpdateableSubscriptionType[] types = new UpdateableSubscriptionType[messageQueue
 						.size()];
-				notifyListeners(messageQueue.toArray(types));
+				messageQueue.toArray(types);
+				messageQueue.clear();
+
+				// Send the messages
+				notifyListeners(types);
 
 				// Empty the queue
 				messageQueue.clear();
@@ -127,7 +137,7 @@ public class UpdateableSubscriptionManager {
 	public void notifyListeners(UpdateableSubscriptionType[] eventTypes) {
 
 		// In queue mode, place the events in the queue
-		if (queue > 0) {
+		if (queueCount > 0) {
 
 			// Add each event type to the queue, avoiding repeats
 			for (UpdateableSubscriptionType event : eventTypes) {
@@ -167,12 +177,12 @@ public class UpdateableSubscriptionManager {
 				if (match) {
 
 					// Get the listeners of that type
-					ArrayList<IManagedVizUpdateableListener> listeners = subscriptionMap
+					ArrayList<IManagedUpdateableListener> listeners = subscriptionMap
 							.get(listenerType);
 
 					// Update each listener, providing event types if it can
 					// handle that kind of input
-					for (IManagedVizUpdateableListener listener : listeners) {
+					for (IManagedUpdateableListener listener : listeners) {
 						listener.update(source, eventTypes);
 
 					}
@@ -191,7 +201,7 @@ public class UpdateableSubscriptionManager {
 	 * @param types
 	 *            The list of event types the listener will receive
 	 */
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 
 		// Poll the listener as to which event types it wants to receive updates
 		// for
@@ -202,12 +212,12 @@ public class UpdateableSubscriptionManager {
 		for (UpdateableSubscriptionType type : types) {
 
 			// Get the current list of subscribers
-			ArrayList<IManagedVizUpdateableListener> tempListeners = subscriptionMap
+			ArrayList<IManagedUpdateableListener> tempListeners = subscriptionMap
 					.get(type);
 
 			// If it is empty, create a new list
 			if (tempListeners == null) {
-				tempListeners = new ArrayList<IManagedVizUpdateableListener>();
+				tempListeners = new ArrayList<IManagedUpdateableListener>();
 			}
 
 			// Add the listener to the map
@@ -232,7 +242,7 @@ public class UpdateableSubscriptionManager {
 	 * @param listener
 	 *            The listener to be unregistered
 	 */
-	public void unregister(IManagedVizUpdateableListener listener) {
+	public void unregister(IManagedUpdateableListener listener) {
 
 		// Try to remove the listener from each individual subscription list.
 		for (UpdateableSubscriptionType category : subscriptionMap.keySet()) {

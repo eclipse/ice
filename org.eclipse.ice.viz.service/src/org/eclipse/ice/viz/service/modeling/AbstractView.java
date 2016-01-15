@@ -12,8 +12,8 @@ package org.eclipse.ice.viz.service.modeling;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
@@ -27,7 +27,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
  * @author Robert Smith
  */
 public class AbstractView
-		implements IManagedVizUpdateableListener, IManagedVizUpdateable {
+		implements IManagedUpdateableListener, IManagedUpdateable {
 
 	/**
 	 * The transformation representing the part's intended state. This may not
@@ -166,7 +166,7 @@ public class AbstractView
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 		updateManager.register(listener);
 
 	}
@@ -179,7 +179,7 @@ public class AbstractView
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IManagedVizUpdateableListener listener) {
+	public void unregister(IManagedUpdateableListener listener) {
 
 		// Remove the listener from the list
 		updateManager.unregister(listener);
@@ -223,7 +223,7 @@ public class AbstractView
 	 * UpdateableSubscription[])
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 
 		// Pass the update to own listeners
@@ -268,7 +268,7 @@ public class AbstractView
 	 */
 	@Override
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-			IManagedVizUpdateable source) {
+			IManagedUpdateable source) {
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
 		types.add(UpdateableSubscriptionType.All);
 		return types;

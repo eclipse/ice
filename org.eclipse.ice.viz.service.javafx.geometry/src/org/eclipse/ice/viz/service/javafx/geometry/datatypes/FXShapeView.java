@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.javafx.canvas.TransformGizmo;
@@ -407,7 +407,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	}
 
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
@@ -418,10 +418,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 					.setAll(Util.convertTransformation(transformation));
 		}
 
-		// Notify own listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.All };
-		updateManager.notifyListeners(eventTypes);
+		updateManager.notifyListeners(type);
 	}
 
 	/*
@@ -443,13 +440,9 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 			shape.setDrawMode(DrawMode.FILL);
 		}
 
-		//
-		// node.getChildren().clear();
-		// node.getChildren().add(shape);
-
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.Wireframe };
 		updateManager.notifyListeners(eventTypes);
 	}
 

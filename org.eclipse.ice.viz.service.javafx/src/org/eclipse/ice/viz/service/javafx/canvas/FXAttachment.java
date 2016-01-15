@@ -13,8 +13,8 @@ package org.eclipse.ice.viz.service.javafx.canvas;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
@@ -142,9 +142,9 @@ public class FXAttachment extends AbstractAttachment {
 
 		if (!knownParts.contains(geom)) {
 
-			geom.register(new IManagedVizUpdateableListener() {
+			geom.register(new IManagedUpdateableListener() {
 				@Override
-				public void update(IManagedVizUpdateable component,
+				public void update(IManagedUpdateable component,
 						UpdateableSubscriptionType[] type) {
 
 					javafx.application.Platform.runLater(new Runnable() {
@@ -159,7 +159,7 @@ public class FXAttachment extends AbstractAttachment {
 
 				@Override
 				public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-						IManagedVizUpdateable source) {
+						IManagedUpdateable source) {
 
 					// Register to receive all updates
 					ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();

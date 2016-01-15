@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
@@ -38,7 +38,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
  */
 @XmlRootElement(name = "Transformation")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Transformation extends VizObject implements IManagedVizUpdateable {
+public class Transformation extends VizObject implements IManagedUpdateable {
 	/**
 	 * <p>
 	 * The amount of skew for each of the three axes: x, y, and z
@@ -561,7 +561,7 @@ public class Transformation extends VizObject implements IManagedVizUpdateable {
 	 * .VizObject.IManagedVizUpdateableListener)
 	 */
 	@Override
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 		updateManager.register(listener);
 
 	}
@@ -574,7 +574,7 @@ public class Transformation extends VizObject implements IManagedVizUpdateable {
 	 * datastructures.VizObject.IManagedVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IManagedVizUpdateableListener listener) {
+	public void unregister(IManagedUpdateableListener listener) {
 		updateManager.unregister(listener);
 
 	}

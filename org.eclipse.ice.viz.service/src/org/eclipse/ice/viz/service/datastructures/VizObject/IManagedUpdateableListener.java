@@ -13,13 +13,13 @@ package org.eclipse.ice.viz.service.datastructures.VizObject;
 import java.util.ArrayList;
 
 /**
- * An extension of IVizUpdateableListener which can receive the type of event
- * that triggered the update.
+ * An interface for participants in the observer pattern, which receive updates
+ * from an IMangedUpdateable's IUpdateableSubscriptionManager.
  * 
  * @author Robert Smith
  *
  */
-public interface IManagedVizUpdateableListener {
+public interface IManagedUpdateableListener {
 
 	/**
 	 * Polls the listener for a list of the types of events it wants to receive
@@ -31,7 +31,7 @@ public interface IManagedVizUpdateableListener {
 	 *         during updates
 	 */
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-			IManagedVizUpdateable source);
+			IManagedUpdateable source);
 
 	/**
 	 * Receive an update, including the source component and type of event that
@@ -42,6 +42,6 @@ public interface IManagedVizUpdateableListener {
 	 * @param type
 	 *            The event type that of the update
 	 */
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type);
 }

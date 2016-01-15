@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
@@ -37,7 +37,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
  * @author Robert Smith
  */
 public class AbstractController
-		implements IManagedVizUpdateable, IManagedVizUpdateableListener {
+		implements IManagedUpdateable, IManagedUpdateableListener {
 
 	/**
 	 * The internal representation of this part.
@@ -497,7 +497,7 @@ public class AbstractController
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IManagedVizUpdateableListener listener) {
+	public void unregister(IManagedUpdateableListener listener) {
 
 		// Remove the listener from the list
 		updateManager.unregister(listener);
@@ -513,7 +513,7 @@ public class AbstractController
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 
 		// Queue any messages from the view refresh
@@ -536,7 +536,7 @@ public class AbstractController
 	 * .VizObject.IVizUpdateableListener, java.util.ArrayList)
 	 */
 	@Override
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 		updateManager.register(listener);
 
 	}
@@ -550,7 +550,7 @@ public class AbstractController
 	 */
 	@Override
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-			IManagedVizUpdateable source) {
+			IManagedUpdateable source) {
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
 		types.add(UpdateableSubscriptionType.All);
 		return types;

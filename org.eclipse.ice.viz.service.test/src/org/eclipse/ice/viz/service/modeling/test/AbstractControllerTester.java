@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -513,7 +513,7 @@ class TestController extends AbstractController {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 		updated = true;
 	}
@@ -568,7 +568,7 @@ class TestMesh extends AbstractMesh {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 		updated = true;
 		super.update(component, type);
@@ -631,7 +631,7 @@ class TestView extends AbstractView {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 		updated = true;
 		super.update(component, type);

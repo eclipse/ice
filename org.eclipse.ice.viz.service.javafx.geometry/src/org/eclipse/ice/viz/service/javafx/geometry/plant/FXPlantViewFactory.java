@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
@@ -18,8 +17,8 @@ import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * A factory for creating JavaFX views and controllers for Reactor Analyzer
@@ -28,45 +27,58 @@ import org.eclipse.ice.viz.service.modeling.IControllerFactory;
  * @author Robert Smith
  *
  */
-public class FXPlantViewFactory implements IControllerFactory {
+public class FXPlantViewFactory extends AbstractControllerFactory {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.modeling.IControllerFactory#createController(
-	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent)
+	/**
+	 * The default cosntructor.
 	 */
-	@Override
-	public AbstractController createController(AbstractMesh model) {
+	public FXPlantViewFactory() {
+		super();
 
-		// Create a FXJunction view for junctions
-		if (model instanceof JunctionMesh) {
-			FXJunctionView view = new FXJunctionView((JunctionMesh) model);
-			return new JunctionController((JunctionMesh) model, view);
-		}
+		// Set the JunctionMesh provider
+		typeMap.put(JunctionMesh.class, new IControllerProvider() {
+			@Override
+			public AbstractController createController(AbstractMesh model) {
 
-		// Create a FXPipeView for pipes
-		else if (model instanceof PipeMesh) {
-			FXPipeView view = new FXPipeView((PipeMesh) model);
-			return new FXPipeController((PipeMesh) model, view);
-		}
+				// Create a FXJunction view for junctions
+				FXJunctionView view = new FXJunctionView((JunctionMesh) model);
+				return new JunctionController((JunctionMesh) model, view);
+			}
+		});
 
-		// Create a FXReactorView for reactors
-		else if (model instanceof ReactorMesh) {
-			FXReactorView view = new FXReactorView((ReactorMesh) model);
-			return new ReactorController((ReactorMesh) model, view);
-		}
+		// Set the PipeMesh provider
+		typeMap.put(PipeMesh.class, new IControllerProvider() {
+			@Override
+			public AbstractController createController(AbstractMesh model) {
 
-		// Create a FXHeatExchangerView for heat exchangers.
-		else if (model instanceof HeatExchangerMesh) {
-			FXHeatExchangerView view = new FXHeatExchangerView(model);
-			return new HeatExchangerController((HeatExchangerMesh) model, view);
-		}
+				// Create a FXPipeView for pipes
+				FXPipeView view = new FXPipeView((PipeMesh) model);
+				return new FXPipeController((PipeMesh) model, view);
+			}
+		});
 
-		// Return null for unrecognized components
-		else
-			return null;
+		// Set the ReactorMesh provider
+		typeMap.put(ReactorMesh.class, new IControllerProvider() {
+			@Override
+			public AbstractController createController(AbstractMesh model) {
+
+				// Create a FXReactorView for reactors
+				FXReactorView view = new FXReactorView((ReactorMesh) model);
+				return new ReactorController((ReactorMesh) model, view);
+			}
+		});
+
+		// Set the HeatExchangerMesh provider
+		typeMap.put(HeatExchangerMesh.class, new IControllerProvider() {
+			@Override
+			public AbstractController createController(AbstractMesh model) {
+
+				// Create a FXHeatExchangerView for heat exchangers.
+				FXHeatExchangerView view = new FXHeatExchangerView(model);
+				return new FXHeatExchangerController((HeatExchangerMesh) model,
+						view);
+			}
+		});
 	}
 
 }

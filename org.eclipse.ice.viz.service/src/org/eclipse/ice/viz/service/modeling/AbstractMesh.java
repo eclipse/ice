@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 
@@ -29,7 +29,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
  * @author Robert Smith
  */
 public class AbstractMesh
-		implements IManagedVizUpdateableListener, IManagedVizUpdateable {
+		implements IManagedUpdateableListener, IManagedUpdateable {
 
 	/**
 	 * The mesh's type, which defines how the part internally stores its data.
@@ -387,7 +387,7 @@ public class AbstractMesh
 	 * IVizUpdateableListener)
 	 */
 	@Override
-	public void unregister(IManagedVizUpdateableListener listener) {
+	public void unregister(IManagedUpdateableListener listener) {
 		updateManager.unregister(listener);
 
 	}
@@ -402,7 +402,7 @@ public class AbstractMesh
 	 * UpdateableSubscription)
 	 */
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 
 		// Pass the update to own listeners
@@ -524,7 +524,7 @@ public class AbstractMesh
 	 * .VizObject.IManagedVizUpdateableListener)
 	 */
 	@Override
-	public void register(IManagedVizUpdateableListener listener) {
+	public void register(IManagedUpdateableListener listener) {
 		updateManager.register(listener);
 	}
 
@@ -537,7 +537,7 @@ public class AbstractMesh
 	 */
 	@Override
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-			IManagedVizUpdateable source) {
+			IManagedUpdateable source) {
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
 		types.add(UpdateableSubscriptionType.All);
 		return types;

@@ -43,6 +43,12 @@ public enum UpdateableSubscriptionType {
 	Selection,
 
 	/**
+	 * Wireframe events are fired when a part is redrawn in wireframe mode, or a
+	 * wireframe part is redrawn as a non-wireframe
+	 */
+	Wireframe,
+
+	/**
 	 * Transformation events are fired when an object's graphical transformation
 	 * is changed.
 	 */

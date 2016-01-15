@@ -18,8 +18,8 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateableListener;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
@@ -38,7 +38,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscripti
  * @author Robert Smith
  */
 public class TestComponentListener
-		implements IManagedVizUpdateableListener, IVizUpdateableListener {
+		implements IManagedUpdateableListener, IVizUpdateableListener {
 
 	/**
 	 * The flag that indicates whether or not the listener was updated.
@@ -124,7 +124,7 @@ public class TestComponentListener
 
 	@Override
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
-			IManagedVizUpdateable source) {
+			IManagedUpdateable source) {
 
 		// Get all events
 		ArrayList<UpdateableSubscriptionType> subs = new ArrayList<UpdateableSubscriptionType>();
@@ -133,7 +133,7 @@ public class TestComponentListener
 	}
 
 	@Override
-	public void update(IManagedVizUpdateable component,
+	public void update(IManagedUpdateable component,
 			UpdateableSubscriptionType[] type) {
 
 		// Set the flag

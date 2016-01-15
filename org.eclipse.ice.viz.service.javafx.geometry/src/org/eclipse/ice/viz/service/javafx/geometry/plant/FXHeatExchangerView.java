@@ -12,6 +12,7 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import java.util.List;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
@@ -76,6 +77,12 @@ public class FXHeatExchangerView extends AbstractView
 	MeshView outletView;
 
 	/**
+	 * Whether to display this part in wireframe mode. It will be displayed as a
+	 * wireframe if true or as a solid if false.
+	 */
+	boolean wireframe;
+
+	/**
 	 * The nullary constructor.
 	 */
 	public FXHeatExchangerView() {
@@ -120,10 +127,14 @@ public class FXHeatExchangerView extends AbstractView
 	 * @param view
 	 *            A MeshView for JavaFX representation of the new tube. The
 	 *            pipe's graphical view will be saved to this object.
+	 * @param wireframe
+	 *            Whether or not to render the MeshView as a wireframe. If true,
+	 *            it will display as a wireframe, otherwise it will display as a
+	 *            solid.
 	 * @return A new tube mesh adhering to the above specifications
 	 */
 	private FXTube createTubeToPoint(double[] point, HeatExchangerMesh model,
-			MeshView view) {
+			MeshView view, boolean wireframe) {
 
 		// Get the primary tube's start point
 		Extrema start = model.getPrimaryPipe().getLowerExtrema();
@@ -233,6 +244,9 @@ public class FXHeatExchangerView extends AbstractView
 		view = new MeshView(tube.getMesh());
 		view.getTransforms().setAll(rotation, reverseRotation);
 		view.setMaterial(new PhongMaterial(Color.BLUE));
+		if (wireframe) {
+			view.setDrawMode(DrawMode.LINE);
+		}
 		node.getChildren().add(view);
 
 		// Calculate the vector between the intersection point and the target
@@ -329,18 +343,18 @@ public class FXHeatExchangerView extends AbstractView
 
 		node.getChildren().clear();
 
-		try { // The heat exchanger cannot be drawn without a central pipe to
-				// contain.
-			if (((HeatExchangerMesh) model).getPrimaryPipe() == null) {
-				return;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		// The heat exchanger cannot be drawn without a central pipe to
+		// contain.
+		if (((HeatExchangerMesh) model).getPrimaryPipe() == null) {
+			return;
 		}
 
 		// Get a reference to the primary pipe
 		FXPipeController primaryPipeController = (FXPipeController) ((HeatExchangerMesh) model)
 				.getPrimaryPipe();
+
+		// Set the primary pipe to the same wireframe mode as this object
+		primaryPipeController.setWireFrameMode(wireframe);
 
 		// Recolor the primary pipe to blue and add its mesh to the node
 		primaryPipeController.setMaterial(new PhongMaterial(Color.BLUE));
@@ -354,6 +368,9 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Add the wall to the scene
 		wall.setMaterial(new PhongMaterial(Color.BLUE));
+		if (wireframe) {
+			wall.setDrawMode(DrawMode.LINE);
+		}
 		node.getChildren().add(wall);
 		wall.getTransforms().setAll(Util.convertTransformation(transformation));
 
@@ -368,7 +385,7 @@ public class FXHeatExchangerView extends AbstractView
 					.getEntitiesByCategory("Secondary Input").get(0);
 			secondaryInlet = createTubeToPoint(
 					((JunctionController) inletJunction).getCenter(),
-					(HeatExchangerMesh) model, inletView);
+					(HeatExchangerMesh) model, inletView, wireframe);
 
 			// Add the secondary pipes to the scene
 			inletView = new MeshView(secondaryInlet.getMesh());
@@ -387,7 +404,7 @@ public class FXHeatExchangerView extends AbstractView
 					.getEntitiesByCategory("Secondary Output").get(0);
 			secondaryOutlet = createTubeToPoint(
 					((JunctionController) outletJunction).getCenter(),
-					(HeatExchangerMesh) model, outletView);
+					(HeatExchangerMesh) model, outletView, wireframe);
 
 			// Add the secondary pipes to the scene
 			outletView = new MeshView(secondaryOutlet.getMesh());
@@ -406,23 +423,33 @@ public class FXHeatExchangerView extends AbstractView
 	@Override
 	public void setWireFrameMode(boolean on) {
 
-		// If wall exists, the secondary pipe should as well, so set them
-		// all
-		if (wall != null) {
+		// Save the wireframe state
+		wireframe = on;
 
-			// Set each of the pieces to line mode
-			if (on) {
+		// Set each of the pieces that exist to line mode
+		if (on) {
+			if (wall != null)
 				wall.setDrawMode(DrawMode.LINE);
+			if (inletView != null)
 				inletView.setDrawMode(DrawMode.LINE);
+			if (outletView != null)
 				outletView.setDrawMode(DrawMode.LINE);
-			}
-
-			// Set each of the pieces to fill mode
-		} else {
-			wall.setDrawMode(DrawMode.FILL);
-			inletView.setDrawMode(DrawMode.FILL);
-			outletView.setDrawMode(DrawMode.FILL);
 		}
+
+		// Set each of the pieces to fill mode
+		else {
+			if (wall != null)
+				wall.setDrawMode(DrawMode.FILL);
+			if (inletView != null)
+				inletView.setDrawMode(DrawMode.FILL);
+			if (outletView != null)
+				outletView.setDrawMode(DrawMode.FILL);
+		}
+
+		// Notify listeners of the change
+		UpdateableSubscriptionType[] eventTypes = {
+				UpdateableSubscriptionType.Wireframe };
+		updateManager.notifyListeners(eventTypes);
 
 	}
 

@@ -146,40 +146,6 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 		// Take a snapshot of the current scene
 		WritableImage screenshot = viewer.getCanvas().getScene().snapshot(null);
 
-		// FileChooser fileChooser = new FileChooser();
-		//
-		// // Set extension filter
-		// FileChooser.ExtensionFilter extFilter = new
-		// FileChooser.ExtensionFilter(
-		// ".png");
-		// fileChooser.getExtensionFilters().add(extFilter);
-
-		// //Get the stage that is displaying the canvas
-		// Stage stage = (Stage) viewer.getCanvas().getScene().getWindow();
-		//
-		// Scene scene = new Scene();
-		// scene.snapshot(image)
-
-		// Show save file dialog
-		// File file = fileChooser.showSaveDialog();
-		//
-		// if (file != null) {
-		// try {
-		// WritableImage writableImage = new WritableImage((int)
-		// Math.round(stage.getWidth()),
-		// (int) Math.round(stage.getHeight()));
-		// canvas.snapshot(null, writableImage);
-		// RenderedImage renderedImage = SwingFXUtils
-		// .fromFXImage(writableImage, null);
-		// ImageIO.write(renderedImage, "png", file);
-		// } catch (IOException ex) {
-		// Logger.getLogger(JavaFX_DrawOnCanvas.class.getName())
-		// .log(Level.SEVERE, null, ex);
-		// }
-		// }
-
-		// }
-
 		// Make the array of strings needed to pass to the file dialog.
 		String[] extensionStrings = new String[] { ".png" };
 

@@ -48,9 +48,6 @@ import javafx.scene.shape.Shape3D;
  */
 public class FXViewer extends AbstractViewer {
 
-	/** The root JavaFX widget that displays content. */
-	protected FXCanvas fxCanvas;
-
 	/**
 	 * The internally used root that cannot be modified by clients.
 	 */
@@ -424,7 +421,7 @@ public class FXViewer extends AbstractViewer {
 	 * horizontal and the Z vertical.
 	 */
 	public void setDefaultCameraYByZ() {
-		cameraController.setDefaultAngle(90, 90, 90);
+		cameraController.setDefaultAngle(90, 90, 0);
 		cameraController.reset();
 	}
 
@@ -442,7 +439,7 @@ public class FXViewer extends AbstractViewer {
 	 * horizontal and the Y vertical.
 	 */
 	public void setDefaultCameraZByX() {
-		cameraController.setDefaultAngle(0, 90, 0);
+		cameraController.setDefaultAngle(90, 0, 90);
 		cameraController.reset();
 	}
 

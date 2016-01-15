@@ -11,13 +11,15 @@
 package org.eclipse.ice.viz.service.datastructures.VizObject;
 
 /**
- * An extension of IVizUpdateable which allows the listener to subscribe for
- * updates only for specified kinds of events.
+ * An interface for participants in the observer pattern who have an
+ * UpdateableSubscriptionManager, which allows the listener to subscribe for
+ * updates only for specified kinds of events and for the observed object to
+ * collect messages to be sent in bulk, rather than one at a time.
  * 
  * @author Robert Smith
  *
  */
-public interface IManagedVizUpdateable {
+public interface IManagedUpdateable {
 
 	/**
 	 * Register a listener to receive managed updates.
@@ -28,7 +30,7 @@ public interface IManagedVizUpdateable {
 	 *            The list of event types that the listener is subscribed to
 	 *            listen to
 	 */
-	public void register(IManagedVizUpdateableListener listener);
+	public void register(IManagedUpdateableListener listener);
 
 	/**
 	 * Remove a registered listener.
@@ -37,5 +39,5 @@ public interface IManagedVizUpdateable {
 	 *            The object which will no longer receive notifications from
 	 *            this
 	 */
-	public void unregister(IManagedVizUpdateableListener listener);
+	public void unregister(IManagedUpdateableListener listener);
 }
