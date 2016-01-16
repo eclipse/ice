@@ -14,8 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
@@ -61,7 +60,18 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 	 * The constructor
 	 */
 	public EclipseUIWidgetFactory() {
+		// Create the map to hold the builders
 		widgetBuildersMap = new HashMap<String, IFormWidgetBuilder>();
+		// Register the builders if possible
+		try {
+			for (IFormWidgetBuilder builder : IFormWidgetBuilder
+					.getFormWidgetBuilders()) {
+				registerFormWidgetBuilder(builder);
+			}
+		} catch (CoreException e) {
+			// Complain
+			logger.error("Unable to register builder!", e);
+		}
 	}
 
 	/**
@@ -80,16 +90,6 @@ public class EclipseUIWidgetFactory implements IWidgetFactory {
 			logger.info("EclipseUIWidgetFactory Message: New "
 					+ "IFormWidgetBuilder registered for "
 					+ builder.getTargetFormName());
-		}
-
-		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(
-						"org.eclipse.ice.client.widgets.iformwidgetbuilder");
-		logger.info(
-				"Available configuration elements(in org.eclipse.ice.client.widgets.EclipseUIWdigetFactory.java):");
-		for (IConfigurationElement element : elements) {
-			logger.info(
-					element.getNamespaceIdentifier() + " " + element.getName());
 		}
 
 		return;

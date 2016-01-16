@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public interface IFormWidgetBuilder {
+
 	/**
 	 * <p>
 	 * This operation returns the name of the target Form that the Builder will
@@ -78,7 +79,7 @@ public interface IFormWidgetBuilder {
 		Logger logger = LoggerFactory.getLogger(IFormWidgetBuilder.class);
 
 		IFormWidgetBuilder[] builders = null;
-		String id = "org.eclipse.ice.item.itemBuilder";
+		String id = "org.eclipse.ice.client.widgets.iformwidgetbuilder";
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint(id);
 

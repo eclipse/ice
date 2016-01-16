@@ -367,7 +367,7 @@
  <extension
        id="eclipsewidgetfactory"
        name="Eclipse UI Widget Factory"
-       point="org.eclipse.ice.client.iwidgetfactory">
+       point="org.eclipse.ice.client.IWidgetFactory">
     <iwidgetfactory
           class="org.eclipse.ice.client.widgets.EclipseUIWidgetFactory">
     </iwidgetfactory>

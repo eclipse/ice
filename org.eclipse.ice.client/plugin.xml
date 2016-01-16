@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="clientInstance" name="ICE Client" schema="schema/clientInstance.exsd"/>
-   <extension-point id="iwidgetfactory" name="Widget Factory" schema="schema/iwidgetfactory.exsd"/>
+   <extension-point id="IWidgetFactory" name="Widget Factory" schema="schema/iwidgetfactory.exsd"/>
    <extension-point id="updateEventListener" name="IUpdateEventListener" schema="schema/updateEventListener.exsd"/>
    <extension-point id="processEventListener" name="IProcessEventListener" schema="schema/processEventListener.exsd"/>
    <extension-point id="simpleResourceProvider" name="ISimpleResourceProvider" schema="schema/simpleResourceProvider.exsd"/>
