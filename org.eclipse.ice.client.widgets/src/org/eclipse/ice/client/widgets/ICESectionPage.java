@@ -24,12 +24,12 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -125,7 +125,10 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
+	 * 
+	 * @see
+	 * org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.
+	 * forms.IManagedForm)
 	 */
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
@@ -159,7 +162,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	 * where there is a setter there must be a getter.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The set of Components managed by this page.
 	 *         </p>
 	 */
@@ -234,16 +238,18 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 		// The DataComponent Sections should only grab what vertical space they
 		// need, so set the containing Composite's GridData to only grab and
 		// fill excess horizontal space.
-		dataGridComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false));
+		dataGridComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 		// Create the DataComponent Sections.
 		for (int i = 0; i < numDataComponents; i++) {
 			// Create a new Section for the current DataComponent.
 			DataComponent dataComponent = dataComponents.get(i);
 			Section section = formToolkit.createSection(dataGridComposite,
-					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
-							| ExpandableComposite.EXPANDED | ExpandableComposite.COMPACT);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION
+							| ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED
+							| ExpandableComposite.COMPACT);
 			// Each Section should grab all available space it can get within
 			// the containing Composite created above this loop.
 			section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -287,12 +293,14 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 			// Create a new Section for the current TableComponent.
 			TableComponent tableComponent = tableComponents.get(i);
 			Section section = formToolkit.createSection(container,
-					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION
+							| ExpandableComposite.TWISTIE
 							| ExpandableComposite.EXPANDED);
 			// Each Section should fill all available horizontal and vertical
 			// space in the parent GridLayout, but it should only grab excess
 			// horizontal space.
-			section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+			section.setLayoutData(
+					new GridData(SWT.FILL, SWT.FILL, true, false));
 
 			// To populate the Section, use an ICETableComponentSectionPart.
 			ICETableComponentSectionPart sectionPart;
@@ -328,23 +336,25 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 
 		// Create a Composite to wrap the MatrixComponent Sections. As specified
 		// above, it should have a default horizontal FillLayout.
-		Composite matrixGridComposite = formToolkit.createComposite(
-				scrolledForm.getBody(), SWT.NONE);
+		Composite matrixGridComposite = formToolkit
+				.createComposite(scrolledForm.getBody(), SWT.NONE);
 		matrixGridComposite.setLayout(new FillLayout());
 
 		// The MatrixComponentSections should grab all remaining space.
-		matrixGridComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-				true, true));
+		matrixGridComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Create the MatrixComponent Sections.
 		for (int i = 0; i < matrixComponents.size(); i++) {
 			// Create a new Section for the current MatrixComponent.
 			MatrixComponent matrixComponent = matrixComponents.get(i);
 			Section section = formToolkit.createSection(matrixGridComposite,
-					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION
+							| ExpandableComposite.TWISTIE
 							| ExpandableComposite.EXPANDED);
-			// No layout data needs to be set because the matrixGridComposite
-			// uses a FillLayout.
+							// No layout data needs to be set because the
+							// matrixGridComposite
+							// uses a FillLayout.
 
 			// To populate the Section, use an ICEMatrixComponentSectionPart.
 			ICEMatrixComponentSectionPart sectionPart;
@@ -464,10 +474,8 @@ public class ICESectionPage extends ICEFormPage implements IComponentVisitor {
 	@Override
 	public void visit(TimeDataComponent component) {
 
-
 		// Treat as a DataComponent
 		this.visit((DataComponent) component);
-
 
 	}
 

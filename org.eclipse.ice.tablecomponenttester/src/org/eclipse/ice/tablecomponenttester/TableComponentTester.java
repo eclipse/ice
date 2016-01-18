@@ -41,8 +41,6 @@ import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.reactor.LWRComponent;
-import org.eclipse.ice.reactor.LWRComponentReader;
 import org.osgi.framework.Bundle;
 
 @XmlRootElement(name = "TableComponentTester")
@@ -332,29 +330,6 @@ public class TableComponentTester extends Item {
 
 		// Add the TreeComposite to the Form
 		form.addComponent(parent);
-
-		// Find the ReactorEditor test file - get the bundle first
-		Bundle bundle = Platform
-				.getBundle("org.eclipse.ice.tablecomponenttester");
-		String separator = System.getProperty("file.separator");
-		Path testDataPath = new Path("data" + separator + "test_new.h5");
-		URL testDataURL = FileLocator.find(bundle, testDataPath, null);
-		LWRComponentReader reader = new LWRComponentReader();
-		LWRComponent lwrComponent;
-		try {
-			URI dataFileURI = FileLocator.toFileURL(testDataURL).toURI();
-			System.out.println(dataFileURI);
-			lwrComponent = (LWRComponent) reader.read(dataFileURI);
-			lwrComponent.setId(999);
-			// Add the LWRComponent to the form
-			form.addComponent(lwrComponent);
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		return;
 	}

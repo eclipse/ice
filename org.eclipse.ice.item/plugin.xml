@@ -3,6 +3,9 @@
 <plugin>
    <extension-point id="itemBuilder" name="Item Builder" schema="schema/itemBuilder.exsd"/>
    <extension-point id="compositeItemBuilder" name="Composite Item Builder" schema="schema/compositeItemBuilder.exsd"/>
+   <extension-point id="actionFactory" name="ICE Action Factory" schema="schema/actionFactory.exsd"/>
+   <extension-point id="actions" name="ICE Actions" schema="schema/actions.exsd"/>
+   
    <extension
          id="geometryEditorBuilder"
          name="Geometry Editor"
@@ -72,5 +75,85 @@
       <implementation
             class="org.eclipse.ice.item.utilities.moose.MOOSEFileHandler">
       </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.ICEActionFactory"
+         name="ICE Action Factory"
+         point="org.eclipse.ice.item.actionFactory">
+      <actionFactory
+            class="org.eclipse.ice.item.ICEActionFactory">
+      </actionFactory>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.action.joblaunchaction"
+         name="Job Launch Action"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.JobLaunchAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.remoteyamlaction"
+         name="Remote YAML-Syntax Generation"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.nuclear.RemoteYamlSyntaxGenerator">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.remotefiledownload"
+         name="Remote File Download"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.RemoteFileDownloadAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.remotefileupload"
+         name="Remote File Upload"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.RemoteFileUploadAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.moose.checkmooseinput"
+         name="Check Moose Input"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.nuclear.CheckMooseInputAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.taggedoutputwriter"
+         name="Tagged Output Writer"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.TaggedOutputWriterAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.localexecution"
+         name="Local Execution"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.LocalExecutionAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.localfilescopy"
+         name="Local Files Copy"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.LocalFilesCopyAction">
+      </action>
+   </extension>
+   <extension
+         id="org.eclipse.ice.item.remoteexecution"
+         name="Remote Execution"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.RemoteExecutionAction">
+      </action>
    </extension>
 </plugin>

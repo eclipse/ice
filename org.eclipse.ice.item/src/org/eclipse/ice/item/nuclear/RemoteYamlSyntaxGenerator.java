@@ -12,25 +12,14 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Dictionary;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.item.action.Action;
+import org.eclipse.ice.item.action.RemoteAction;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcess;
@@ -48,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Alex McCaskey
  *
  */
-public class RemoteYamlSyntaxGenerator extends Action {
+public class RemoteYamlSyntaxGenerator extends RemoteAction {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -56,48 +45,33 @@ public class RemoteYamlSyntaxGenerator extends Action {
 	private static final Logger logger = LoggerFactory.getLogger(RemoteYamlSyntaxGenerator.class);
 
 	/**
-	 * Reference to the remote PTP connection to use.
-	 */
-	private IRemoteConnection connection;
-
-	/**
-	 * Reference to the IFolder for MOOSE in the project space.
-	 */
-	private IFolder mooseFolder;
-
-	/**
-	 * Reference to the remote application absolute path.
-	 */
-	private String appPath;
-
-	/**
-	 * The Constructor
-	 *
-	 * @param conn
-	 * @param moose
-	 * @param app
-	 */
-	public RemoteYamlSyntaxGenerator(IRemoteConnection conn, IFolder moose, String app) {
-		// super("Executing Remote YAML/Syntax Invocation.");
-		connection = conn;
-		mooseFolder = moose;
-		appPath = app;
-	}
-
-	/**
 	 * This method generates the YAML and Action syntax files in the local
 	 * projectSpace/MOOSE directory from a remotely hosted MOOSE-based
-	 * application.
+	 * application. Clients of this Action must provide a Dictionary with 
+	 * the mooseAppPath, mooseFolderPath, and remoteHost key/value pairs. 
 	 *
 	 * @param monitor
 	 */
 	public FormStatus execute(Dictionary<String, String> map) {
-		// public IStatus generate() {
 
 		// Local Declarations
+		String appPath = map.get("mooseAppPath");
+		String mooseFolderPath = map.get("mooseFolderPath");
+		String hostName = map.get("remoteHost");
+		if (appPath == null || mooseFolderPath == null) {
+			logger.error("Invalid parameters passed to the RemoteYamlSyntaxGenerator Action.");
+			return FormStatus.InfoError;
+		}
 		File appFile = new File(appPath);
 		IRemoteProcessService processService = null;
-
+		connection = getRemoteConnection(hostName);
+		
+		// Validate the connection we have. 
+		if (connection == null) {
+			logger.error("Could not create a remote connection in the RemoteYamlSyntaxGenerator.");
+			return FormStatus.InfoError;
+		}
+		
 		// Try to open the connection and fail if it will not open
 		try {
 			connection.open(null);
@@ -115,7 +89,7 @@ public class RemoteYamlSyntaxGenerator extends Action {
 			try {
 				// Local Strings
 				String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
-				String script = remoteSeparator + "tmp" + remoteSeparator + "executeYamlSyntax";
+				String script = remoteSeparator + "tmp" + remoteSeparator + "executeYamlSyntax_" + System.getProperty("user.name");
 				String fileLoc = remoteSeparator + "tmp" + remoteSeparator + appFile.getName();
 				
 				// Get the remote file system
@@ -153,7 +127,7 @@ public class RemoteYamlSyntaxGenerator extends Action {
 
 				// Get a reference to the local MOOSE directory
 				IFileStore localMooseFolder = EFS.getLocalFileSystem()
-						.fromLocalFile(mooseFolder.getLocation().toFile());
+						.fromLocalFile(new File(mooseFolderPath));
 
 				// Get a handle to the local file. Note that it may
 				// not exist yet.
@@ -185,9 +159,22 @@ public class RemoteYamlSyntaxGenerator extends Action {
 		return FormStatus.Processed;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#cancel()
+	 */
 	@Override
 	public FormStatus cancel() {
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.action.Action#getActionName()
+	 */
+	@Override
+	public String getActionName() {
+		return "Remote YAML/Syntax Generator";
 	}
 
 }

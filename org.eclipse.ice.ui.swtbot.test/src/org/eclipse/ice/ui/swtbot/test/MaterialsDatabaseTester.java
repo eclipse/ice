@@ -57,9 +57,6 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		// before ICE's UI has had time to properly update.
 		SWTBotPreferences.PLAYBACK_DELAY = 50;
 
-		// Close the initial eclipse welcome window
-		bot.viewByTitle("Welcome").close();
-
 		// Open the ICE perspective
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
@@ -409,7 +406,6 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		assertTrue("Abs xs".equals(cellName));
 		cellValue = (double) realTable.getDataValueByPosition(2, 1);
 		assertEquals(0.231, cellValue);
-
 	}
 
 	/*

@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,6 +21,8 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.lbnl.visit.swt.VisItSwtWidget;
 
 /**
  * This class is used for managing a daemon thread for processing mouse input.

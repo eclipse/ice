@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtWidget;
-import gov.lbnl.visit.swt.widgets.TimeSliderWidget;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,6 +57,9 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.lbnl.visit.swt.VisItSwtWidget;
+import gov.lbnl.visit.swt.widgets.TimeSliderWidget;
 
 /**
  * This class extends the ViewPart class and provides a view in the

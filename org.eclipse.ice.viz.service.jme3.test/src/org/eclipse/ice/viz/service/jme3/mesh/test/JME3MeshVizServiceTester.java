@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.jme3.mesh.JME3MeshCanvas;

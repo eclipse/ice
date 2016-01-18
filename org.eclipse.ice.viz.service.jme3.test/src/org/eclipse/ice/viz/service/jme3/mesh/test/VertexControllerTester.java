@@ -22,7 +22,6 @@ import org.eclipse.ice.viz.service.jme3.mesh.AbstractMeshController;
 import org.eclipse.ice.viz.service.jme3.mesh.StateType;
 import org.eclipse.ice.viz.service.jme3.mesh.VertexController;
 import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.jme3.material.Material;

@@ -46,15 +46,12 @@ import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.serializable.IIOService;
-import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
-import org.eclipse.ice.item.persistence.IPersistenceProvider;
-import org.eclipse.ice.persistence.xml.XMLPersistenceProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -239,6 +236,11 @@ public class ItemTester implements ItemListener {
 		// Check that it is the name from before
 		assertEquals("Item's Builder", loadedItem.getItemBuilderName());
 
+		// Check the context
+		assertTrue(loadedItem.getContext().isEmpty());
+		loadedItem.setContext("foo");
+		assertEquals("foo", loadedItem.getContext());
+
 	}
 
 	/**
@@ -368,10 +370,13 @@ public class ItemTester implements ItemListener {
 		Item unEqualItem = new Item(null);
 		Item transitiveItem = new Item(null);
 		item.setItemBuilderName("Builder");
+		item.setContext("fasten seat belt while seated");
 
 		// Set ICEObject data
 		equalItem.setId(item.getId());
+		equalItem.setContext(item.getContext());
 		transitiveItem.setId(item.getId());
+		transitiveItem.setContext(item.getContext());
 		unEqualItem.setId(2);
 
 		// Set builders
@@ -437,7 +442,7 @@ public class ItemTester implements ItemListener {
 		 * The following sets of operations will be used to test the
 		 * "clone and copy" portion of Item.
 		 */
-		// Local Declarations
+		item.setContext("27E");
 		Item cloneItem = new Item(null), copyItem = new Item(null);
 
 		// run clone operations
@@ -761,7 +766,7 @@ public class ItemTester implements ItemListener {
 		assertTrue(xmlWriter.written);
 
 		// ----- This should be replaced to use a FakeIWriter
-		
+
 		// Direct the Item to write the Form to a key-value pair output
 		assertEquals(FormStatus.Processed,
 				item.process("Export to key-value pair output"));

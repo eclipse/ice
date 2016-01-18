@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.ISeries;
 import org.eclipse.ice.viz.service.csv.CSVSeries;
+import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 

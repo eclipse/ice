@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtConnection;
-import gov.lbnl.visit.swt.VisItSwtConnectionManager;
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,6 +34,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtConnectionManager;
+import gov.lbnl.visit.swt.VisItSwtWidget;
 
 /**
  * This is an editor for interacting with the VisIt SWT Widget. It is opened by

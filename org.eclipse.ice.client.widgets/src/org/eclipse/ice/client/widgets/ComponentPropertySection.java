@@ -26,12 +26,12 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -60,14 +60,15 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Jordan H. Deyton
  * 
  */
-public class ComponentPropertySection extends AbstractPropertySection implements
-		IComponentVisitor {
+public class ComponentPropertySection extends AbstractPropertySection
+		implements IComponentVisitor {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ComponentPropertySection.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(ComponentPropertySection.class);
+
 	/**
 	 * The tree composite provided to this section as input.
 	 */
@@ -143,8 +144,8 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 		if (System.getProperty("DebugICE") == null) {
 			client.setBackground(backgroundColor);
 		} else {
-			client.setBackground(Display.getCurrent().getSystemColor(
-					SWT.COLOR_RED));
+			client.setBackground(
+					Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 		}
 
 		// Set the client area for the section.
@@ -178,8 +179,7 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		super.setInput(part, selection);
 
-		logger.info("ComponentPropertySection message: "
-				+ "Setting input.");
+		logger.info("ComponentPropertySection message: " + "Setting input.");
 
 		// Get and check the selection.
 		Assert.isTrue(selection instanceof IStructuredSelection);
@@ -312,13 +312,13 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 		else {
 			// Instantiate the dialog, set the DataComponent and set the
 			// listeners
-			dataComposite = new DataComponentComposite(component,
-					sectionClient, SWT.FLAT);
+			dataComposite = new DataComponentComposite(component, sectionClient,
+					SWT.FLAT);
 
 			// Set the LayoutData for the DataComponentComposite. It should
 			// occupy all available horizontal space.
-			dataComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING,
-					true, true));
+			dataComposite.setLayoutData(
+					new GridData(SWT.FILL, SWT.BEGINNING, true, true));
 
 			// Keep track of the added DataComponentComposites.
 			sectionControls.add(dataComposite);
@@ -385,6 +385,6 @@ public class ComponentPropertySection extends AbstractPropertySection implements
 	@Override
 	public void visit(ListComponent component) {
 		// Do nothing.
-		
+
 	}
 }

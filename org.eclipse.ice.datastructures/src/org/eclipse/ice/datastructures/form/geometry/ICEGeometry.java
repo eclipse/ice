@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
 import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 
@@ -41,7 +41,7 @@ import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 
 @XmlRootElement(name = "Geometry")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class ICEGeometry implements IUpdateable, IUpdateableListener {
+public class ICEGeometry extends ICEObject implements IUpdateableListener {
 
 	/**
 	 * The held Geometry object.
@@ -172,9 +172,10 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	/**
 	 * Calculate a hashcode for this object
 	 */
+	@Override
 	public int hashCode() {
 		// Sum the has for all held objects.
-		int hash = geometry.hashCode();
+		int hash = super.hashCode() + geometry.hashCode();
 		for (ICEShape shape : shapes) {
 			hash += shape.hashCode();
 		}
@@ -184,6 +185,7 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 	/**
 	 * Test if this object equals another
 	 */
+	@Override
 	public boolean equals(Object otherObject) {
 		// Check if a similar reference
 		if (this == otherObject) {
@@ -237,171 +239,26 @@ public class ICEGeometry implements IUpdateable, IUpdateableListener {
 		notifyListeners();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#setId(int)
-	 */
-	@Override
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.Identifiable#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getId()
-	 */
-	@Override
-	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.Identifiable#setName(java.lang
-	 * .String)
-	 */
-	@Override
-	public void setName(String name) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.datastructures.ICEObject.Identifiable#getName()
-	 */
-	@Override
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.Identifiable#setDescription(
-	 * java.lang.String)
-	 */
-	@Override
-	public void setDescription(String description) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#update(java.lang
-	 * .String, java.lang.String)
-	 */
-	@Override
-	public void update(String updatedKey, String newValue) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#register(org.eclipse
-	 * .ice.datastructures.ICEObject.IUpdateableListener)
-	 */
-	@Override
-	public void register(IUpdateableListener listener) {
-		listeners.add(listener);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.IUpdateable#unregister(org.eclipse
-	 * .ice.datastructures.ICEObject.IUpdateableListener)
-	 */
-	@Override
-	public void unregister(IUpdateableListener listener) {
-		listeners.remove(listener);
-
-	}
-
 	/**
 	 * Return a copy of this object
 	 */
+	@Override
 	public Object clone() {
 		ICEGeometry newGeometry = new ICEGeometry();
 		newGeometry.copy(this);
 		return newGeometry;
 	}
 
-	/**
-	 * <p>
-	 * Notifies all IUpdateableListeners in the listener list that an event has
-	 * occurred which has changed the state of this GeometryComponent
-	 * </p>
-	 * 
-	 */
-	protected void notifyListeners() {
-
-		final ICEGeometry geometry = this;
-
-		// If the listeners are empty, return
-		if (this.listeners == null || this.listeners.isEmpty()) {
-			return;
-		}
-		// Create a thread object that notifies all listeners
-
-		Thread notifyThread = new Thread() {
-
-			@Override
-			public void run() {
-				// Loop over all listeners and update them
-				for (int i = 0; i < listeners.size(); i++) {
-					listeners.get(i).update(geometry);
-				}
-			}
-		};
-
-		// Start the thread
-		notifyThread.start();
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org
-	 * .eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.
+	 * eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	@Override
 	public void update(IUpdateable component) {
-		// Notify listeners only if updated by ICEShape
-		if (component instanceof ICEShape) {
-			notifyListeners();
-		}
+		// TODO Auto-generated method stub
 
 	}
 

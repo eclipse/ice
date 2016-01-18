@@ -11,7 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;

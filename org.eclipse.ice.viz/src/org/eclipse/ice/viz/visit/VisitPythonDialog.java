@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.visit;
 
-import gov.lbnl.visit.swt.VisItSwtWidget;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.List;
@@ -46,6 +44,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import gov.lbnl.visit.swt.VisItSwtWidget;
 import visit.java.client.AttributeSubject;
 import visit.java.client.AttributeSubject.AttributeSubjectCallback;
 

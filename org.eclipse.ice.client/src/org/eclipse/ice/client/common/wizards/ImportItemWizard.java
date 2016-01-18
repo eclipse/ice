@@ -17,7 +17,6 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ImportItemWizardHandler;
-import org.eclipse.ice.client.common.internal.ClientHolder;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchWindow;

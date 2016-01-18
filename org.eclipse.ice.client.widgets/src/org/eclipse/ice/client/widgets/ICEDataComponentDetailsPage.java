@@ -86,7 +86,8 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * if it was not set in the constructor.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The DataComponent used in this provider or null if it was not
 	 *         set.
 	 *         </p>
@@ -157,7 +158,10 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
+	 * 
+	 * @see
+	 * org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.
+	 * ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
@@ -181,8 +185,8 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		parent.setLayout(layout);
 
 		FormToolkit toolkit = mform.getToolkit();
-		Section section = toolkit.createSection(parent, Section.DESCRIPTION
-				| ExpandableComposite.TITLE_BAR);
+		Section section = toolkit.createSection(parent,
+				Section.DESCRIPTION | ExpandableComposite.TITLE_BAR);
 		section.marginWidth = 10;
 		section.setText(component.getName());
 		section.setDescription(component.getDescription());

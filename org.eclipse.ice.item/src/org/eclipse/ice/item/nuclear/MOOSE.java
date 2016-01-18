@@ -13,18 +13,22 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -32,7 +36,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -45,8 +48,11 @@ import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
+import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.action.Action;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
@@ -143,8 +149,7 @@ public class MOOSE extends Item {
 	}
 
 	/**
-	 * This private method add the necessary components 
-	 * to the Form. 
+	 * This private method add the necessary components to the Form.
 	 */
 	private void addComponents() {
 		// Loop over all components and add them to this form
@@ -269,7 +274,7 @@ public class MOOSE extends Item {
 	public FormStatus process(String actionName) {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
-		String host = "localhost";
+		String thisHost = "localhost", remoteHost = "";
 
 		// Parse the action name
 		if ("Launch the Job".equals(actionName)) {
@@ -279,33 +284,34 @@ public class MOOSE extends Item {
 			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
 			boolean isRemote = "ssh".equals(appUri.getScheme());
 
+			System.out.println("APPURI IS " + appUri + ", " + isRemote);
 			// Validate the Tree, this will also make
 			// sure all required files are in the workspace
-			if (!fullTreeValidation(appUri, isRemote)) {
-				logger.error("Moose Input Tree could not be validated. See error log for details.");
-				return FormStatus.InfoError;
-			}
+//			if (!fullTreeValidation(appUri, isRemote)) {
+//				logger.error("Moose Input Tree could not be validated. See error log for details.");
+//				return FormStatus.InfoError;
+//			}
 
 			// Change the host name if we are remote
 			if (isRemote) {
 				IRemoteConnection remoteConnection = mooseLauncher.getRemoteConnection(appUri.getHost());
-				host = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
+				remoteHost = remoteConnection.getService(IRemoteConnectionHostService.class).getHostname();
+
+				// Get an ICEUpdater, this will return null if the
+				// user does not want this feature
+				try {
+					thisHost = InetAddress.getLocalHost().getHostAddress();// .getCanonicalHostName();
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+					logger.error(this.getClass().getName() + " Exception! ", e);
+				}
+
 			}
 
-			// Get an ICEUpdater, this will return null if the 
-			// user does not want this feature
-			String thisHost = "";
-			try {
-				thisHost = InetAddress.getLocalHost().getCanonicalHostName();
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-				logger.error(this.getClass().getName() + " Exception! ", e);
-
-			}
-			if (!thisHost.isEmpty()) {
-				System.out.println("Found This Host to be : " + thisHost);
-				createICEUpdaterBlock(thisHost);
-			}
+			// System.out.println("Using " + thisHost + " as the host name for
+			// the ICEUpdater URL.");
+			// If not remote, then this will just be localhost
+			createICEUpdaterBlock(thisHost);
 
 			// Populate the MOOSELaunchers files list, check for error.
 			if (populateListOfLauncherFiles() != FormStatus.ReadyToProcess) {
@@ -316,6 +322,7 @@ public class MOOSE extends Item {
 			// Configure the execute string
 			if (isRemote) {
 
+				System.out.println("Setting the New HOST NAME");
 				// Set the remote executable string
 				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
 						appUri.getRawPath() + " -i ${inputFile} --no-color");
@@ -327,11 +334,18 @@ public class MOOSE extends Item {
 				ArrayList<Entry> row = hostsTable.getRow(index);
 				ArrayList<Integer> selected = new ArrayList<Integer>();
 				selected.add(new Integer(index));
-				row.get(0).setValue(host);
+				row.get(0).setValue(remoteHost);
 				hostsTable.setSelectedRows(selected);
 
 			} else {
 
+				// Setup the hosts table to use the local host
+				TableComponent hostsTable = (TableComponent) mooseLauncher.getForm()
+						.getComponent(JobLauncherForm.parallelId + 1);
+				ArrayList<Integer> selected = new ArrayList<Integer>();
+				selected.add(new Integer(0));
+				hostsTable.setSelectedRows(selected);
+				
 				// Set the executable string
 				mooseLauncher.setExecutable(new File(appUri).getName(), "",
 						appUri.getPath() + " -i ${inputFile} --no-color");
@@ -392,18 +406,71 @@ public class MOOSE extends Item {
 	 * @return
 	 */
 	private boolean fullTreeValidation(URI uri, boolean isRemote) {
-		// Initialize the connection to null,
-		// it should remain null if this is a local launch
-		IRemoteConnection remoteConnection = null;
-
-		// Get the remote connection if the app is hosted remotely
+		// Create and execute the CheckMooseInputAction!
+		Action checkInput = getActionFactory().getAction("Check Moose Input");
+		Dictionary<String, String> map = new Hashtable<String, String>();
+		map.put("projectSpaceDir", project.getName());
+		map.put("isRemote", String.valueOf(isRemote));
+		map.put("localJobLaunchDirectory", "tempICELaunch");
+		
+		try {
+			map.put("inputTree", writeComponentToXML(modelTree));
+			map.put("appComp", writeComponentToXML(modelFiles));
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			logger.error("Error writing Tree and DataComponent to XML.", e);
+		}
+		
+		// Upload files if remote
 		if (isRemote) {
-			remoteConnection = mooseLauncher.getRemoteConnection(uri.getHost());
+			DataComponent filesData = new DataComponent();
+			filesData.addEntry(modelFiles.retrieveEntry("Output File Name"));
+			for (Entry fileE : getFileEntries()) {
+				filesData.addEntry(fileE);
+			}
+			
+			map.put("hostname", uri.getHost());
+			try {
+				map.put("filesDataComponent", writeComponentToXML(filesData));
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			}
+			// Upload all required files to the remote machine
+			getActionFactory().getAction("Remote File Upload").execute(map);
+		}
+		
+		return checkInput.execute(map) == FormStatus.ReadyToProcess ? true : false;
+	}
+
+	/**
+	 * Write the provided Component to an XML String
+	 * @param comp
+	 * @return
+	 * @throws JAXBException
+	 */
+	private <T> String writeComponentToXML(T comp) throws JAXBException {
+		// Get the XML
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		// Create the marshaller and write the item
+		Marshaller marshaller;
+		
+		// Make an array to store the class list of registered Items
+		ArrayList<Class> classList = new ArrayList<Class>();
+		Class[] classArray = {};
+		classList.addAll(new ICEJAXBClassProvider().getClasses());
+		// Create new JAXB class context and unmarshaller
+		JAXBContext context = JAXBContext.newInstance(classList.toArray(classArray));
+
+		try {
+			marshaller = context.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.marshal(comp, outputStream);
+		} catch (JAXBException e) {
+			// Complain
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
-		// Create and execute the CheckMooseInputAction!
-		CheckMooseInputAction checkInput = new CheckMooseInputAction(modelTree, modelFiles, project, remoteConnection);
-		return checkInput.execute(null) == FormStatus.ReadyToProcess ? true : false;
+		return new String(outputStream.toByteArray());
 	}
 
 	/**
@@ -955,11 +1022,9 @@ public class MOOSE extends Item {
 		return clone;
 	}
 
-
 	/**
-	 * Overriding the default behavior here because 
-	 * the overall process output should be in the 
-	 * to-be-created local job folder. 
+	 * Overriding the default behavior here because the overall process output
+	 * should be in the to-be-created local job folder.
 	 * 
 	 */
 	@Override

@@ -129,14 +129,14 @@ public class CustomFrameRateDialog extends Dialog {
 
 		// The first part of the instructions
 		Label addInstr = new Label(composite, SWT.NONE);
-		addInstr.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				3, 1));
+		addInstr.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		addInstr.setText("Enter a new frame rate:");
 
 		// Create the text field for entering a new frame rate
 		addRateText = new Text(composite, SWT.BORDER);
-		addRateText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 1, 1));
+		addRateText.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		// Frames per second label to follow the text field
 		Label fpsLabel = new Label(composite, SWT.NONE);
@@ -144,8 +144,8 @@ public class CustomFrameRateDialog extends Dialog {
 
 		// The second part of the instructions
 		Label selInstr = new Label(composite, SWT.NONE);
-		selInstr.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				3, 1));
+		selInstr.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		selInstr.setText("Or select a frame rate:");
 
 		// Area to display and select previously used frame rates
@@ -153,8 +153,8 @@ public class CustomFrameRateDialog extends Dialog {
 		for (int rate : rates) {
 			rateList.add(rate + "fps");
 		}
-		rateList.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				3, 1));
+		rateList.setLayoutData(
+				new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 		return composite;
 	}
@@ -207,7 +207,8 @@ public class CustomFrameRateDialog extends Dialog {
 	 * Public access to the frameRate field
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The value stored in the frameRate field
 	 *         </p>
 	 */

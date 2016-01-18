@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.client.widgets.reactoreditor.builder">
-   <implementation class="org.eclipse.ice.client.widgets.reactoreditor.ReactorFormWidgetBuilder"/>
-   <service>
-      <provide interface="org.eclipse.ice.client.widgets.IFormWidgetBuilder"/>
-   </service>
-   <reference bind="setAnalysisWidgetRegistry" cardinality="1..1" interface="org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry" name="IAnalysisWidgetRegistry" policy="dynamic"/>
-   <reference bind="setReactorEditorRegistry" cardinality="1..1" interface="org.eclipse.ice.client.widgets.reactoreditor.IReactorEditorRegistry" name="IReactorEditorRegistry" policy="dynamic"/>
-</scr:component>
