@@ -135,6 +135,9 @@ public class DefaultPageFactory implements IPageFactory {
 				// Do a linear search to find the correct provider
 				for (IErrorPageProvider currentProvider : errorPageProviders) {
 					if (providerNameToUse.equals(currentProvider.getName())) {
+						// The Error Page does not use any components, so
+						// passing null as the second argument is OK. In
+						// general, a list of components should be passed here.
 						pages = currentProvider.getPages(editor, null);
 						break;
 					}
@@ -197,6 +200,8 @@ public class DefaultPageFactory implements IPageFactory {
 	@Override
 	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
+
+		// List for storing the pages
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 		try {
 			ArrayList<IGeometryPageProvider> geometryComponentProviders = IGeometryPageProvider
@@ -208,7 +213,7 @@ public class DefaultPageFactory implements IPageFactory {
 				// Do a linear search to find the correct provider
 				for (IGeometryPageProvider currentProvider : geometryComponentProviders) {
 					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages = currentProvider.getPages(editor, null);
+						pages = currentProvider.getPages(editor, components);
 						break;
 					}
 				}
@@ -243,7 +248,7 @@ public class DefaultPageFactory implements IPageFactory {
 				// Do a linear search to find the correct provider
 				for (IEMFSectionPageProvider currentProvider : EMFSectionComponentPages) {
 					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages = currentProvider.getPages(editor, null);
+						pages = currentProvider.getPages(editor, components);
 						break;
 					}
 				}
@@ -266,8 +271,10 @@ public class DefaultPageFactory implements IPageFactory {
 	@Override
 	public ArrayList<IFormPage> getMeshComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
+		// List for the pages
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
 		try {
+			// Create the provider and get the pages from it
 			ArrayList<IMeshPageProvider> MeshComponentPages = IMeshPageProvider
 					.getProviders();
 			if (MeshComponentPages != null && MeshComponentPages.size() > 0) {
@@ -276,7 +283,7 @@ public class DefaultPageFactory implements IPageFactory {
 				// Do a linear search to find the correct provider
 				for (IMeshPageProvider currentProvider : MeshComponentPages) {
 					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages = currentProvider.getPages(editor, null);
+						pages = currentProvider.getPages(editor, components);
 						break;
 					}
 				}

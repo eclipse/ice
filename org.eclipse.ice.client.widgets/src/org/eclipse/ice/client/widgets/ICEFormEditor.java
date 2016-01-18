@@ -118,8 +118,12 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 * ReactorComponent, etc. This is a simulated multimap.
 	 * 
 	 */
-	protected HashMap<String, ArrayList<Component>> componentMap = new HashMap<String, ArrayList<Component>>();
+	protected HashMap<String, ArrayList<Component>> componentMap;
 
+	/**
+	 * The FormInput that stores data from an ICE form to be used by the
+	 * FormEditor.
+	 */
 	private ICEFormInput ICEFormInput;
 
 	/**
@@ -196,6 +200,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		processListeners = new ArrayList<IProcessEventListener>();
 
 		// Setup the component map
+		componentMap = new HashMap<String, ArrayList<Component>>();
 		componentMap.put("data", new ArrayList<Component>());
 		componentMap.put("output", new ArrayList<Component>());
 		componentMap.put("table", new ArrayList<Component>());
@@ -321,31 +326,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	}
 
 	/**
-	 * This operation creates an ICEMasterDetailsPage which will show data in a
-	 * form consistent with the master-details pattern. It uses
-	 * MasterDetailsComponents from ICE.
-	 * 
-	 * @return The Form pages, one for each MasterDetailsComponent.
-	 */
-	private ArrayList<ICEFormPage> createMasterDetailsComponentPages() {
-
-		ArrayList<Component> comps = new ArrayList<Component>();
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		comps.addAll(componentMap.get("masterDetails"));
-
-		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		ArrayList<IFormPage> componentPages = defaultPageFactory
-				.getMasterDetailsPages(this, comps);
-
-		for (IFormPage componentPage : componentPages) {
-			pages.add((ICEFormPage) componentPage);
-		}
-
-		return pages;
-	}
-
-	/**
 	 * This operation posts a status message to the ICEFormEditor should be
 	 * displayed to the user or system viewing the widget. It is a simple
 	 * string.
@@ -372,133 +352,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			}
 		});
 
-	}
-
-	/**
-	 * Creates a GeometryPage to display shapes powered with JME3. Also gives
-	 * the geometryComponent to provide data to display.
-	 * 
-	 * @return The GeometryPage created.
-	 */
-	private ICEFormPage createGeometryPage() {
-
-		ArrayList<Component> comps = new ArrayList<Component>();
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		comps.addAll(componentMap.get("geometry"));
-
-		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		ArrayList<IFormPage> componentPages = defaultPageFactory
-				.getGeometryComponentPages(this, comps);
-
-		for (IFormPage componentPage : componentPages) {
-			pages.add((ICEFormPage) componentPage);
-		}
-
-		return pages.get(0);
-		// Need IGeometryPageProvider
-		/*
-		 * // Local Declarations GeometryComponent geometryComponent = new
-		 * GeometryComponent(); geometryComponent.setGeometry(new
-		 * ICEGeometry());
-		 * 
-		 * // Get the GeometryComponent and create the GeometryPage. if
-		 * (!(componentMap.get("geometry").isEmpty())) { geometryComponent =
-		 * (GeometryComponent) (componentMap .get("geometry").get(0));
-		 * 
-		 * if (geometryComponent != null) {
-		 * 
-		 * // Make the GeometryPage geometryPage = new ICEGeometryPage(this,
-		 * "GPid", geometryComponent.getName());
-		 * 
-		 * // Set the GeometryComponent
-		 * geometryPage.setGeometry(geometryComponent); }
-		 * 
-		 * }
-		 * 
-		 * return geometryPage;
-		 */
-	}
-
-	/**
-	 * Creates a MeshPage to display 2D meshes powered with JME3. Also gives the
-	 * MeshComponent to provide data to display.
-	 * 
-	 * @return The MeshPage created.
-	 */
-	private ICEFormPage createMeshPage() {
-		ArrayList<Component> comps = new ArrayList<Component>();
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		comps.addAll(componentMap.get("mesh"));
-		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-		ArrayList<IFormPage> componentPages = defaultPageFactory
-				.getMeshComponentPages(this, comps);
-
-		for (IFormPage componentPage : componentPages) {
-			pages.add((ICEFormPage) componentPage);
-		}
-		return pages.get(0);
-		// Need IMeshPageProvider
-		/*
-		 * // Local Declarations MeshComponent meshComponent = new
-		 * MeshComponent();
-		 * 
-		 * // Get the GeometryComponent and create the GeometryPage. if
-		 * (!(componentMap.get("mesh").isEmpty())) { meshComponent =
-		 * (MeshComponent) (componentMap.get("mesh").get(0));
-		 * 
-		 * if (meshComponent != null) {
-		 * 
-		 * // Make the MeshPage meshPage = new ICEMeshPage(this, "MeshPid",
-		 * meshComponent.getName());
-		 * 
-		 * // Set the MeshComponent meshPage.setMeshComponent(meshComponent); }
-		 * 
-		 * }
-		 * 
-		 * return meshPage;
-		 */
-	}
-
-	/**
-	 * This operation creates a list of ICEFormPages for EMFComponents.
-	 * 
-	 * @return The ICEFormPages for each EMF Component in the list.
-	 */
-	private ArrayList<ICEFormPage> createEMFSectionPages() {
-
-		ArrayList<Component> comps = new ArrayList<Component>();
-
-		comps.addAll(componentMap.get("emf"));
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-
-		ArrayList<IFormPage> componentPages = defaultPageFactory
-				.getIEMFSectionComponentPages(this, comps);
-		for (IFormPage componentPage : componentPages) {
-			pages.add((ICEFormPage) componentPage);
-		}
-
-		return pages;
-
-		// Need IEMFSectionPageProvider
-		/*
-		 * // Local Declarations EMFComponent emfComponent = null;
-		 * EMFSectionPage emfPage = null; ArrayList<ICEFormPage> pages = new
-		 * ArrayList<ICEFormPage>();
-		 * 
-		 * // Get the EMFComponent and create the EMFSectionPage. if
-		 * (componentMap.get("emf").size() > 0) { for (Component comp :
-		 * componentMap.get("emf")) { emfComponent = (EMFComponent) comp; if
-		 * (emfComponent != null) { // Make the EMFSectionPage emfPage = new
-		 * EMFSectionPage(this, emfComponent.getName(), emfComponent.getName());
-		 * // Set the EMFComponent emfPage.setEMFComponent(emfComponent);
-		 * pages.add(emfPage); } } }
-		 * 
-		 * return pages;
-		 */
 	}
 
 	/**
@@ -726,37 +579,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		form.setText(itemName);
 
 		return;
-	}
-
-	/**
-	 * This operation creates a set of ICESectionPages using DataComponents,
-	 * TableComponents, and MatrixComponents. These pages are used in the
-	 * addPages() operation and rendered to the screen.
-	 * 
-	 * @return The list of created pages. May be empty, and should never be
-	 *         {@code null}.
-	 */
-	protected ArrayList<ICEFormPage> createDataTableAndMatrixComponentPages() {
-
-		// Local Declarations
-
-		ArrayList<Component> comps = new ArrayList<Component>();
-		ArrayList<ICEFormPage> pages = new ArrayList<ICEFormPage>();
-
-		// Get the TableComponents and DataComponents
-		comps.addAll(componentMap.get("data"));
-		comps.addAll(componentMap.get("table"));
-		comps.addAll(componentMap.get("matrix"));
-
-		DefaultPageFactory defaultPageFactory = new DefaultPageFactory();
-
-		ArrayList<IFormPage> componentPages = defaultPageFactory
-				.getBasicComponentPages(this, comps);
-		for (IFormPage componentPage : componentPages) {
-			pages.add((ICEFormPage) componentPage);
-		}
-		return pages;
-
 	}
 
 	private String itemName;
@@ -1005,29 +827,36 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			if (!(componentMap.get("data").isEmpty())
 					|| !(componentMap.get("table").isEmpty())
 					|| !(componentMap.get("matrix").isEmpty())) {
-				formPages.addAll(createDataTableAndMatrixComponentPages());
+				// Get the TableComponents and DataComponents
+				ArrayList<Component> comps = new ArrayList<Component>();
+				comps.addAll(componentMap.get("data"));
+				comps.addAll(componentMap.get("table"));
+				comps.addAll(componentMap.get("matrix"));
+				formPages.addAll(factory.getBasicComponentPages(this, comps));
 			}
 
 			// Create pages for the MasterDetailsComponents
 			if (!(componentMap.get("masterDetails").isEmpty())) {
-				formPages.addAll(createMasterDetailsComponentPages());
+				formPages.addAll(factory.getMasterDetailsPages(this,
+						componentMap.get("masterDetails")));
 			}
 
 			// Create the page for GeometryComponents
 			if (!(componentMap.get("geometry").isEmpty())) {
-				formPages.add(createGeometryPage());
+				formPages.addAll(factory.getGeometryComponentPages(this,
+						componentMap.get("geometry")));
 			}
 
 			// Create the page for MeshComponents
 			if (!(componentMap.get("mesh").isEmpty())) {
-				formPages.add(createMeshPage());
+				formPages.addAll(factory.getMeshComponentPages(this,
+						componentMap.get("mesh")));
 			}
 
 			// Create pages for the EMF components
 			if (componentMap.get("emf").size() > 0) {
-				for (ICEFormPage p : createEMFSectionPages()) {
-					formPages.add(p);
-				}
+				formPages.addAll(factory.getIEMFSectionComponentPages(this,
+						componentMap.get("emf")));
 			}
 
 			// Create pages for list components
@@ -1039,18 +868,15 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 			// Set the TreeCompositeViewer Input
 			setTreeCompositeViewerInput();
 
-			// Create the page for Reactors
-			if (!(componentMap.get("reactor").isEmpty())) {
-				logger.info("ICEFormEditor Message: "
-						+ componentMap.get("reactor").size()
-						+ " IReactorComponents not rendered.");
-			}
-
 			// Create the page for ResourceComponents. This one should always be
 			// last on the list!
 			if (!(componentMap.get("output").isEmpty())) {
-				formPages.addAll(factory.getResourceComponentPages(this,
-						componentMap.get("output")));
+				ArrayList<IFormPage> comps = factory.getResourceComponentPages(
+						this, componentMap.get("output"));
+				formPages.addAll(comps);
+				// Set the default resource component page so that the Resource
+				// View will work.
+				resourceComponentPage = (ICEResourcePage) comps.get(0);
 			}
 		} else {
 			// Otherwise throw up a nice empty page explaining the problem.
