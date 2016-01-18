@@ -3,6 +3,7 @@
 
 <plugin>
    <extension-point id="org.eclipse.ice.client.widgets.iformwidgetbuilder" name="IForm Widget Builder" schema="schema/iformwidgetbuilder.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.entryComposite" name="Entry Composite" schema="schema/entryComposite.exsd"/>
 
       <extension
          point="org.eclipse.ui.editors">
@@ -378,4 +379,38 @@
        </contentTypeBinding>
     </editor>
  </extension>
+ <extension
+       id="org.eclipse.ice.client.widgets.stringentrycomposite"
+       name="String Entry Composite"
+       point="org.eclipse.ice.client.widgets.entryComposite">
+    <implementation
+          class="org.eclipse.ice.client.widgets.StringEntryComposite">
+    </implementation>
+ </extension>
+  <extension
+       id="org.eclipse.ice.client.widgets.discreteentrycomposite"
+       name="String Entry Composite"
+       point="org.eclipse.ice.client.widgets.entryComposite">
+    <implementation
+          class="org.eclipse.ice.client.widgets.DiscreteEntryComposite">
+    </implementation>
+ </extension>
+  <extension
+       id="org.eclipse.ice.client.widgets.fileentrycomposite"
+       name="String Entry Composite"
+       point="org.eclipse.ice.client.widgets.entryComposite">
+    <implementation
+          class="org.eclipse.ice.client.widgets.FileEntryComposite">
+    </implementation>
+ </extension>
+  <extension
+       id="org.eclipse.ice.client.widgets.executableentrycomposite"
+       name="String Entry Composite"
+       point="org.eclipse.ice.client.widgets.entryComposite">
+    <implementation
+          class="org.eclipse.ice.client.widgets.ExecutableEntryComposite">
+    </implementation>
+ </extension>
+ 
+ 
 </plugin>

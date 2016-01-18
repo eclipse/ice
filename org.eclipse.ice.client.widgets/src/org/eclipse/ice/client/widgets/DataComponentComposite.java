@@ -190,7 +190,7 @@ public class DataComponentComposite extends Composite
 				// Reset the reference to the Entry because depending on the way
 				// its value was updated it could be an entirely new Entry
 				// (reset vs. cloned/destructive copy).
-				entryComp.entry = EntryConverter.convert(entry);
+				entryComp.entry = entry;
 				entryComp.refresh();
 			}
 		}
@@ -218,9 +218,9 @@ public class DataComponentComposite extends Composite
 				// If the EntryComposite hasn't been rendered yet, render
 				// it,
 				// and add it to the entryMap
-				renderEntry(EntryConverter.convert(entry), i);
+				renderEntry(entry, i);
 				entryComp = entryMap.get(i);
-				entryComp.setEntryValue(value);
+				entryComp.entry.setValue(value);
 				entryComp.refresh();
 
 			} else {
@@ -235,9 +235,9 @@ public class DataComponentComposite extends Composite
 					if (!entryComp.entry.getAllowedValues()
 							.contains(allowedValue)) {
 						disposeEntry(i);
-						renderEntry(EntryConverter.convert(entry), i);
+						renderEntry(entry, i);
 						entryComp = entryMap.get(i);
-						entryComp.setEntryValue(value);
+						entryComp.entry.setValue(value);
 						entryComp.refresh();
 					}
 				}
@@ -327,7 +327,7 @@ public class DataComponentComposite extends Composite
 			}
 			// Create EntryComposites for all ready Entries.
 			for (int i = 0; i < entries.size(); i++) {
-				Entry entry = EntryConverter.convert(entries.get(i));
+				IEntry entry = entries.get(i);
 				if (entry.isReady()) {
 					renderEntry(entry, i);
 				}
@@ -392,7 +392,7 @@ public class DataComponentComposite extends Composite
 	 *            The index in the entryMap of where the rendered EntryComposite
 	 *            will be put.
 	 */
-	private void renderEntry(Entry entry, int index) {
+	private void renderEntry(IEntry entry, int index) {
 
 		// Check the entry map to see if there is already a composite for this
 		// entry. If there is, fail silently.
@@ -416,7 +416,7 @@ public class DataComponentComposite extends Composite
 		};
 
 		// Create the EntryComposite.
-		entryComposite = new EntryComposite(this, SWT.FLAT, entry);
+		entryComposite = EntryComposite.getEntryComposite(this, entry);
 
 		// Decorate the EntryComposite. Use the FormToolKit if possible.
 		if (formToolkit != null) {
@@ -454,7 +454,7 @@ public class DataComponentComposite extends Composite
 
 			// Get the Entries from the entryMap and UI and make sure they're
 			// valid
-			Entry mapEntry = null, uiEntry = null;
+			IEntry mapEntry = null, uiEntry = null;
 			if (entryMap.get(i) != null)
 				mapEntry = entryMap.get(i).entry;
 			if (uiMap.get(i) != null)
@@ -468,7 +468,7 @@ public class DataComponentComposite extends Composite
 			int uiPosition = 0;
 			if (!mapEntry.getName().equals(uiEntry.getName())) {
 				for (int j = 0; j < uiEntryComps.size(); j++) {
-					Entry e = uiMap.get(j).entry;
+					IEntry e = uiMap.get(j).entry;
 					if (e.getName().equals(mapEntry.getName())) {
 						uiPosition = j;
 						break;

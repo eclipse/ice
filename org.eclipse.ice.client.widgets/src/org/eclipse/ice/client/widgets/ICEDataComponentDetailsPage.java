@@ -214,7 +214,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 				};
 
 				// Create the new Entry
-				tmpComposite = new EntryComposite(client, SWT.FLAT, EntryConverter.convert(entry));
+				tmpComposite = EntryComposite.getEntryComposite(client, entry);
 				// Set the Listener
 				tmpComposite.addListener(SWT.Selection, listener);
 			}
