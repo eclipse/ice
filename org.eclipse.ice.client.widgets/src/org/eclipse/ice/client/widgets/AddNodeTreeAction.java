@@ -49,7 +49,8 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 
 		// Set the image to be the green plus button.
 		Bundle bundle = FrameworkUtil.getBundle(AddNodeTreeAction.class);
-		Path imagePath = new Path("icons" + System.getProperty("file.separator") + "add.png");
+		Path imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "add.png");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		setImageDescriptor(ImageDescriptor.createFromURL(imageURL));
 
@@ -100,7 +101,7 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 			final HashMap<String, TreeComposite> exemplarMap;
 			ArrayList<TreeComposite> exemplars = null;
 			ArrayList<String> currentChildNames = new ArrayList<String>();
-			
+
 			// Get the exemplar children and put them in the map
 			exemplars = tree.getChildExemplars();
 			exemplarMap = new HashMap<String, TreeComposite>();
@@ -112,12 +113,13 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 			for (int i = 0; i < tree.getNumberOfChildren(); i++) {
 				currentChildNames.add(tree.getChildAtIndex(i).getName());
 			}
-			
+
 			// Create a selection dialog so that they can make a choice
 			IWorkbench bench = PlatformUI.getWorkbench();
 			IWorkbenchWindow window = bench.getActiveWorkbenchWindow();
 			TreeNodeFilteredItemsSelectionDialog addNodeDialog = new TreeNodeFilteredItemsSelectionDialog(
-					window.getShell(), true, exemplarMap.keySet(), currentChildNames);
+					window.getShell(), true, exemplarMap.keySet(),
+					currentChildNames);
 
 			// Set up the Details Label Provider to return the
 			// TreeComposites Description
@@ -132,7 +134,8 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 						if (text == null || text.isEmpty()) {
 							return element.toString();
 						} else {
-							return "\n" + text; // FIXME not sure why we need a \n...
+							return "\n" + text; // FIXME not sure why we need a
+												// \n...
 						}
 					}
 				}
@@ -153,7 +156,7 @@ public class AddNodeTreeAction extends AbstractTreeAction {
 					// Clone it. This lets you pull a sub-class of TreeComposite
 					// if the clone() method is overridden.
 					TreeComposite child = (TreeComposite) exemplar.clone();
-					
+
 					// Add it to the tree
 					tree.setNextChild(child);
 

@@ -76,7 +76,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 	 * @param title
 	 *            The title of the page.
 	 */
-	public ListComponentSectionPage(FormEditor editor, String id, String title) {
+	public ListComponentSectionPage(FormEditor editor, String id,
+			String title) {
 		super(editor, id, title);
 	}
 
@@ -109,20 +110,22 @@ public class ListComponentSectionPage extends ICEFormPage {
 			shell = parent.getShell();
 			// Create the section and set its layout info
 			Section listSection = formToolkit.createSection(parent,
-					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION | ExpandableComposite.TWISTIE
-							| ExpandableComposite.EXPANDED | ExpandableComposite.COMPACT);
+					ExpandableComposite.TITLE_BAR | Section.DESCRIPTION
+							| ExpandableComposite.TWISTIE
+							| ExpandableComposite.EXPANDED
+							| ExpandableComposite.COMPACT);
 			listSection.setLayout(new GridLayout(1, false));
-			listSection.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-					true, 1, 1));
+			listSection.setLayoutData(
+					new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 			// Create the section client, which is the client area of the
 			// section that will actually render data.
 			sectionClient = new Composite(listSection, SWT.FLAT);
 			sectionClient.setLayout(new GridLayout(2, false));
-			sectionClient.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-					true, 1, 1));
+			sectionClient.setLayoutData(
+					new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 			// Fixes section header bug where label color is spammed
-			sectionClient.setBackground(Display.getCurrent().getSystemColor(
-					SWT.COLOR_WHITE));
+			sectionClient.setBackground(
+					Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 			// Fixes background color bug for NatTable
 			sectionClient.setBackgroundMode(SWT.INHERIT_FORCE);
 
@@ -149,8 +152,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 		// the table and lay it out.
 		Composite listButtonComposite = new Composite(sectionClient, SWT.NONE);
 		listButtonComposite.setLayout(new GridLayout(1, false));
-		listButtonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL,
-				false, true, 1, 1));
+		listButtonComposite.setLayoutData(
+				new GridData(SWT.RIGHT, SWT.FILL, false, true, 1, 1));
 
 		// Create the add button to add a new element to the list.
 		Button addMaterialButton = new Button(listButtonComposite, SWT.PUSH);
@@ -317,8 +320,8 @@ public class ListComponentSectionPage extends ICEFormPage {
 						int numSelected = selected.size();
 						// Makes sure that the user does not move the selected
 						// cell past the end of the table.
-						if (!(selected.get(numSelected - 1).equals(list
-								.get(list.size() - 1)))) {
+						if (!(selected.get(numSelected - 1)
+								.equals(list.get(list.size() - 1)))) {
 
 							list.getReadWriteLock().writeLock().lock();
 

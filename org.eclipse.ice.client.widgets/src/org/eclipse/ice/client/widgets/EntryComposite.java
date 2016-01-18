@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
@@ -117,7 +116,8 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		if (refEntry != null) {
 			entry = refEntry;
 		} else {
-			throw new RuntimeException("Entry passed to EntryComposite " + "constructor cannot be null!");
+			throw new RuntimeException("Entry passed to EntryComposite "
+					+ "constructor cannot be null!");
 		}
 
 		// Setup the allowedBinaryValues for check boxes
@@ -180,7 +180,8 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 
 		// Print an error if this Entry has been prematurely disposed.
 		if (isDisposed()) {
-			logger.info("EntryComposite Message: " + "This composite has been prematurely disposed!");
+			logger.info("EntryComposite Message: "
+					+ "This composite has been prematurely disposed!");
 			return;
 		}
 
@@ -249,7 +250,6 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		label.setText(entry.getName() + ":");
 		label.setToolTipText(entry.getDescription());
 		label.setBackground(getBackground());
-
 		return;
 	}
 
@@ -268,13 +268,15 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 
 			// Set a description and image
 			decoration.setDescriptionText(saveMessage);
-			Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
+			Image image = FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
 					.getImage();
 			decoration.setImage(image);
 
 			// Set a listener to hide/show the decoration according to the
 			// editor's state and the current entry value
-			final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+			final IEditorPart editor = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage()
 					.getActiveEditor();
 			editor.addPropertyListener(new IPropertyListener() {
 				@Override
@@ -282,7 +284,8 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 					// Toggle the decoration on if the form is dirty and the
 					// value has changed
 					if (editor != null) {
-						if (editor.isDirty() && !EntryComposite.this.entry.getValue().equals(currentSelection)) {
+						if (editor.isDirty() && !EntryComposite.this.entry
+								.getValue().equals(currentSelection)) {
 							// Show the decoration
 							EntryComposite.this.decoration.show();
 						} else if (!editor.isDirty()) {
@@ -299,10 +302,12 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		// If the decoration already exists, check the Entry's state and set the
 		// decoration as needed.
 		else {
-			final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+			final IEditorPart editor = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage()
 					.getActiveEditor();
 			if (editor != null) {
-				if (editor.isDirty() && !EntryComposite.this.entry.getValue().equals(currentSelection)) {
+				if (editor.isDirty() && !EntryComposite.this.entry.getValue()
+						.equals(currentSelection)) {
 					// Show the decoration
 					EntryComposite.this.decoration.show();
 				} else if (!editor.isDirty()) {
@@ -369,8 +374,8 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 					Class<?> javaClass = Platform.getBundle(contributorName).loadClass(attribute);
 					Constructor<?> ctor = javaClass.getDeclaredConstructor(Composite.class, IEntry.class);
 					EntryComposite tempEntryComposite = (EntryComposite) ctor.newInstance(parent, entry);
-					System.out.println("CONTEXT: " + entry.getContextId() + ", " + tempEntryComposite.getContextId());
-					if (tempEntryComposite.getContextId().equals(entry.getContextId())) {
+					System.out.println("CONTEXT: " + entry.getContext() + ", " + tempEntryComposite.getContextId());
+					if (tempEntryComposite.getContextId().equals(entry.getContext())) {
 						entryComposite = tempEntryComposite;
 						break;
 					}

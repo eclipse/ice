@@ -38,7 +38,8 @@ public class EclipseTextEditor implements ITextEditor {
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(EclipseTextEditor.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(EclipseTextEditor.class);
 
 	/**
 	 * The ICEResource managed by the EclipseTextEditor.
@@ -94,7 +95,7 @@ public class EclipseTextEditor implements ITextEditor {
 					textFile.refreshLocal(IResource.DEPTH_ZERO, null);
 				} catch (CoreException e) {
 					// TODO Auto-generated catch block
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 			// Get the workbench page
@@ -106,7 +107,7 @@ public class EclipseTextEditor implements ITextEditor {
 						"org.eclipse.ui.DefaultTextEditor");
 			} catch (PartInitException e) {
 				// TODO Auto-generated catch block
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 
 		}

@@ -57,8 +57,7 @@ public class TreeCompositeContentProvider implements ILazyTreeContentProvider {
 	 *            A meta data collection mapping all data nodes to their parent
 	 *            TreeComposites in the TreeViewer.
 	 */
-	public TreeCompositeContentProvider(
-			TreeCompositeViewer treeCompositeViewer,
+	public TreeCompositeContentProvider(TreeCompositeViewer treeCompositeViewer,
 			Map<Component, TreeComposite> parentMap) {
 
 		treeViewer = null;

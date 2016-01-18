@@ -18,31 +18,43 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
- * <p>The ICEFormPage class is the base class for all FormPages in ICE.</p>
+/**
+ * <p>
+ * The ICEFormPage class is the base class for all FormPages in ICE.
+ * </p>
+ * 
  * @author Jay Jay Billings
  */
 public class ICEFormPage extends FormPage {
-	
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	protected final Logger logger;
-	
-	/** 
-	 * <p>The Form from ICE that contains the data to be displayed in this on this Page.</p>
+
+	/**
+	 * <p>
+	 * The Form from ICE that contains the data to be displayed in this on this
+	 * Page.
+	 * </p>
 	 */
 	protected Form iceForm;
-	/** 
-	 * <p>A handle to the Editor that is injected in the Constructor.</p>
+	/**
+	 * <p>
+	 * A handle to the Editor that is injected in the Constructor.
+	 * </p>
 	 */
 	protected ICEFormEditor editor;
 
-	/** 
+	/**
 	 * The Constructor
-	 * @param editor The FormEditor for which the Page should be constructed.
-	 * @param id The id of the page.
-	 * @param title The title of the page.
+	 * 
+	 * @param editor
+	 *            The FormEditor for which the Page should be constructed.
+	 * @param id
+	 *            The id of the page.
+	 * @param title
+	 *            The title of the page.
 	 */
 	public ICEFormPage(FormEditor editor, String id, String title) {
 
@@ -50,10 +62,10 @@ public class ICEFormPage extends FormPage {
 		super(editor, id, title);
 
 		this.editor = (ICEFormEditor) editor;
-		
+
 		// Save the editor reference
 		this.editor = (ICEFormEditor) editor;
-		
+
 		// Create the logger
 		logger = LoggerFactory.getLogger(getClass());
 

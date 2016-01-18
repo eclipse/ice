@@ -69,9 +69,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * 
  * @author Taylor Patterson, Jordan H. Deyton
  */
-public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
-		IMeshSelectionListener, ISelectionProvider,
-		ITabbedPropertySheetPageContributor {
+public class ICEMeshPage extends ICEFormPage
+		implements ISelectionListener, IMeshSelectionListener,
+		ISelectionProvider, ITabbedPropertySheetPageContributor {
 
 	/**
 	 * Eclipse view ID
@@ -122,7 +122,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 * The collection of parts selected in the MeshApplication.
 	 */
 	private ArrayList<ICEObject> selectedMeshParts;
-	
+
 	private JME3MeshCanvas canvas;
 
 	/**
@@ -208,7 +208,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(TransformationView.ID);
 		} catch (PartInitException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Create the geometry composite - get the parent
@@ -220,24 +220,26 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 
 		// Create the tool bar and buttons for the view
 		toolBar = new ToolBar(parent, SWT.NONE);
-		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		toolBar.setLayoutData(
+				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		actionToolBarManager = new ToolBarManager(toolBar);
 
-		//Grid data so that the VizCanvas will fill the entire area
+		// Grid data so that the VizCanvas will fill the entire area
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		
-		//Get the JME3 viz service for meshes
-		IVizService service = editor.getVizServiceFactory().get("JME3 Mesh Service");
-		
-		//Create the VizCanvas
+
+		// Get the JME3 viz service for meshes
+		IVizService service = editor.getVizServiceFactory()
+				.get("JME3 Mesh Service");
+
+		// Create the VizCanvas
 		canvas = null;
 		try {
 			canvas = (JME3MeshCanvas) service.createCanvas(meshComp.getMesh());
 		} catch (Exception e) {
 			logger.error("Mesh Viz Service failed to create mesh Viz Canvas.");
 		}
-		
-		//Draw the canvas and set its layout data
+
+		// Draw the canvas and set its layout data
 		try {
 			Composite composite = canvas.draw(parent);
 			composite.setLayoutData(gridData);
@@ -248,7 +250,6 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		// The MeshPage should also listen for changes to the MeshApplication's
 		// current selection.
 		canvas.registerListener(this);
-		
 
 		// Now that we have a MeshApplication, we need to create the Actions
 		// that fill the ToolBar with configuration settings for the
@@ -261,7 +262,6 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 				.getWorkbenchWindow().getActivePage()
 				.findView(MeshElementTreeView.ID);
 		meshElementTreeView.setMeshComponent(meshComp);
-
 
 		// Register this page as a SelectionListener to the MeshElementTreeView
 		getSite().getWorkbenchWindow().getSelectionService()
@@ -281,7 +281,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		ActionTree toggleHUDActionTree;
 		ActionTree toggleAxesActionTree;
 		ActionTree deleteActionTree;
-		
+
 		// Create the drop down for switching between add and modify modes
 		modesActionTree = new ActionTree("Mode");
 		// Use a MeshAppStateModeFactory to get the available modes and create
@@ -306,12 +306,14 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		// TODO create the camera reset action
 
 		// Create the toggle switch to show or hide the heads-up display
-		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(canvas.getMeshAppState());
+		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(
+				canvas.getMeshAppState());
 		toggleHUDActionTree = new ActionTree(action);
 		actions.add(toggleHUDActionTree);
 
 		// Create the toggle switch to show or hide the axes.
-		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(canvas.getMeshAppState());
+		action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(
+				canvas.getMeshAppState());
 		toggleAxesActionTree = new ActionTree(action);
 		actions.add(toggleAxesActionTree);
 
@@ -319,7 +321,8 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		action = new Action() {
 			@Override
 			public void run() {
-				canvas.getMeshAppState().getSelectionManager().deleteSelection();
+				canvas.getMeshAppState().getSelectionManager()
+						.deleteSelection();
 			}
 		};
 		action.setText("Delete");
@@ -355,8 +358,6 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 
 		return;
 	}
-
-	
 
 	/**
 	 * This operation overrides the default/abstract implementation of
@@ -475,7 +476,8 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	 * @see ISelectionProvider#addSelectionChangedListener(ISelectionChangedListener)
 	 */
 	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+	public void addSelectionChangedListener(
+			ISelectionChangedListener listener) {
 		listeners.add(listener);
 		return;
 	}
@@ -505,9 +507,8 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	public void setSelection(ISelection selection) {
 		Object[] list = listeners.getListeners();
 		for (int i = 0; i < list.length; i++) {
-			((ISelectionChangedListener) list[i])
-					.selectionChanged(new SelectionChangedEvent(this,
-							getSelection()));
+			((ISelectionChangedListener) list[i]).selectionChanged(
+					new SelectionChangedEvent(this, getSelection()));
 		}
 	}
 
@@ -527,5 +528,5 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		return super.getAdapter(adapter);
 	}
 	// ----------------------------------------------------------- //
-	
+
 }

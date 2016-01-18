@@ -55,8 +55,8 @@ public class NextAction extends Action {
 		this.setText("Next");
 
 		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "next.gif");
+		Path imagePath = new Path(
+				"icons" + System.getProperty("file.separator") + "next.gif");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		ImageDescriptor imageDescriptor = ImageDescriptor
 				.createFromURL(imageURL);
