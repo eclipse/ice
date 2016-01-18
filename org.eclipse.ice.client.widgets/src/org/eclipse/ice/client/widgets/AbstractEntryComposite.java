@@ -1,14 +1,9 @@
 package org.eclipse.ice.client.widgets;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -28,12 +23,12 @@ import org.eclipse.ui.forms.IMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class EntryComposite extends Composite implements IUpdateableListener {
+public abstract class AbstractEntryComposite extends Composite implements IEntryComposite { 
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	protected static final Logger logger = LoggerFactory.getLogger(EntryComposite.class);
+	protected static final Logger logger = LoggerFactory.getLogger(AbstractEntryComposite.class);
 
 	/**
 	 * A label that describes the Entry.
@@ -46,7 +41,7 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 	protected IEntry entry;
 
 	/**
-	 * 
+	 * Reference to the widget this Composite will contain
 	 */
 	protected Control widget;
 
@@ -93,8 +88,6 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 	 */
 	protected ControlDecoration decoration = null;
 
-	protected String entryCompositeName;
-
 	/**
 	 * The Constructor
 	 *
@@ -107,10 +100,10 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 	 *            when changed by the user and to be updated from when changed
 	 *            internally by ICE.
 	 */
-	public EntryComposite(Composite parent, IEntry refEntry) {
+	public AbstractEntryComposite(Composite parent, IEntry refEntry, int style) {
 
 		// Call the super constructor
-		super(parent, SWT.FLAT);
+		super(parent, style);
 
 		// Set the Entry reference
 		if (refEntry != null) {
@@ -151,7 +144,7 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				entry.unregister(EntryComposite.this);
+				entry.unregister(AbstractEntryComposite.this);
 			}
 		});
 
@@ -164,18 +157,25 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		return;
 	}
 
-	/**
-	 * This operation renders the SWT widgets for the Entry.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.IEntryComposite#getComposite()
 	 */
-	protected abstract void render();
+	public Composite getComposite() {
+		return this;
+	}
 
-	protected abstract String getContextId();
-
-	/**
-	 * This operation directs the EntryComposite to refresh its view of the
-	 * Entry. This should be called in the event that the Entry has changed on
-	 * the file system and the view needs to be updated.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.IEntryComposite#render()
 	 */
+	public abstract void render();
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.IEntryComposite#refresh()
+	 */
+	@Override
 	public void refresh() {
 
 		// Print an error if this Entry has been prematurely disposed.
@@ -215,13 +215,9 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		return;
 	}
 
-	/**
-	 * This operation sets the Message Manager that should be used by the
-	 * EntryComposite to post messages about the Entry. If the Message Manager
-	 * is not set, the EntryComposite will not attempt to post messages.
-	 *
-	 * @param manager
-	 *            The Message Manager that the EntryComposite should use.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.IEntryComposite#setMessageManager(org.eclipse.ui.forms.IMessageManager)
 	 */
 	public void setMessageManager(IMessageManager manager) {
 
@@ -231,15 +227,23 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		return;
 	}
 
-	/**
-	 * Returns the entry stored on this Composite
-	 *
-	 * @return The Entry rendered by this Composite.
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.IEntryComposite#getEntry()
 	 */
 	public IEntry getEntry() {
 		return entry;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.IEntryComposite#setEntry(org.eclipse.ice.datastructures.entry.IEntry)
+	 */
+	public void setEntry(IEntry ent) {
+		entry = ent;
+		refresh();
+	}
+	
 	/**
 	 * Creates a label for the EntryComposite.
 	 */
@@ -284,13 +288,13 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 					// Toggle the decoration on if the form is dirty and the
 					// value has changed
 					if (editor != null) {
-						if (editor.isDirty() && !EntryComposite.this.entry
+						if (editor.isDirty() && !AbstractEntryComposite.this.entry
 								.getValue().equals(currentSelection)) {
 							// Show the decoration
-							EntryComposite.this.decoration.show();
+							AbstractEntryComposite.this.decoration.show();
 						} else if (!editor.isDirty()) {
 							// Hide the decoration
-							EntryComposite.this.decoration.hide();
+							AbstractEntryComposite.this.decoration.hide();
 						}
 					}
 
@@ -306,13 +310,13 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 					.getActiveWorkbenchWindow().getActivePage()
 					.getActiveEditor();
 			if (editor != null) {
-				if (editor.isDirty() && !EntryComposite.this.entry.getValue()
+				if (editor.isDirty() && !AbstractEntryComposite.this.entry.getValue()
 						.equals(currentSelection)) {
 					// Show the decoration
-					EntryComposite.this.decoration.show();
+					AbstractEntryComposite.this.decoration.show();
 				} else if (!editor.isDirty()) {
 					// Hide the decoration
-					EntryComposite.this.decoration.hide();
+					AbstractEntryComposite.this.decoration.hide();
 				}
 			}
 		}
@@ -320,74 +324,37 @@ public abstract class EntryComposite extends Composite implements IUpdateableLis
 		return;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 */
 	@Override
 	public void update(IUpdateable component) {
-		// TODO Auto-generated method stub
 		// When the Entry has updated, refresh on the Eclipse UI thread.
 		if (component == entry) {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					if (!EntryComposite.this.isDisposed()) {
+					if (!AbstractEntryComposite.this.isDisposed()) {
 
 						// Refresh the EntryComposite
 						refresh();
 
 						// Toggle the "unsaved changes" decoration if the entry
 						// value is different
-						if (!EntryComposite.this.entry.getValue().equals(currentSelection)) {
+						if (!AbstractEntryComposite.this.entry.getValue().equals(currentSelection)) {
 							toggleSaveDecoration();
 						}
 
 						// Update the reference to the Entry's value
-						currentSelection = EntryComposite.this.entry.getValue();
+						currentSelection = AbstractEntryComposite.this.entry.getValue();
 
 					} else {
-						entry.unregister(EntryComposite.this);
+						entry.unregister(AbstractEntryComposite.this);
 					}
 				}
 			});
 		}
 	}
 
-	/**
-	 * 
-	 * @param parent
-	 * @param entry
-	 * @return
-	 */
-	public static EntryComposite getEntryComposite(Composite parent, IEntry entry) {
-
-		EntryComposite entryComposite = null;
-		String id = "org.eclipse.ice.client.widgets.entryComposite";
-		IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(id);
-
-		// If the point is available, create all the builders and load them into
-		// the array.
-		if (point != null) {
-			IConfigurationElement[] elements = point.getConfigurationElements();
-			for (IConfigurationElement element : elements) {
-				String attribute = element.getAttribute("class");
-				String contributorName = element.getDeclaringExtension().getContributor().getName();
-				System.out.println("HELLO: " + attribute + ", " + contributorName);
-				try {
-					Class<?> javaClass = Platform.getBundle(contributorName).loadClass(attribute);
-					Constructor<?> ctor = javaClass.getDeclaredConstructor(Composite.class, IEntry.class);
-					EntryComposite tempEntryComposite = (EntryComposite) ctor.newInstance(parent, entry);
-					System.out.println("CONTEXT: " + entry.getContext() + ", " + tempEntryComposite.getContextId());
-					if (tempEntryComposite.getContextId().equals(entry.getContext())) {
-						entryComposite = tempEntryComposite;
-						break;
-					}
-				} catch (Exception e) {
-					logger.error("", e);
-				}
-			}
-		} else {
-			logger.error("Extension Point " + id + "does not exist");
-		}
-
-		return entryComposite;
-
-	}
 }

@@ -20,15 +20,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 
-public class DiscreteEntryComposite extends EntryComposite {
+public class DiscreteEntryComposite extends AbstractEntryComposite {
 
 
-	public DiscreteEntryComposite(Composite parent, IEntry refEntry) {
-		super(parent, refEntry);
+	public DiscreteEntryComposite(Composite parent, IEntry refEntry, int style) {
+		super(parent, refEntry, style);
 	}
 
 	@Override
-	protected void render() {
+	public void render() {
 		// Local Declarations
 		int numAllowedValues = 0, maxValueLength = 12, maxShortValues = 4;
 		boolean shortValues = true;
@@ -249,8 +249,4 @@ public class DiscreteEntryComposite extends EntryComposite {
 		return;
 	}
 	
-	@Override
-	protected String getContextId() {
-		return "org.eclipse.ice.client.widgets.DiscreteEntry";
-	}
 }

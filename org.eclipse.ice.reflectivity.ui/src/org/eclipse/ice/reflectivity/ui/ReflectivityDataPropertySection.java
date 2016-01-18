@@ -13,7 +13,7 @@
 package org.eclipse.ice.reflectivity.ui;
 
 import org.eclipse.ice.client.widgets.DataComponentComposite;
-import org.eclipse.ice.client.widgets.EntryComposite;
+import org.eclipse.ice.client.widgets.IEntryComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -98,9 +98,9 @@ public class ReflectivityDataPropertySection extends AbstractPropertySection {
 		// Sets the entries to be enabled to the state of the isEnabled flag
 		Control[] children = dataComposite.getChildren();
 		for (Control child : children) {
-			if (child instanceof EntryComposite) {
-				EntryComposite entry = (EntryComposite) child;
-				entry.setEnabled(isEnabled);
+			if (child instanceof IEntryComposite) {
+				IEntryComposite entry = (IEntryComposite) child;
+				entry.getComposite().setEnabled(isEnabled);
 			}
 		}
 

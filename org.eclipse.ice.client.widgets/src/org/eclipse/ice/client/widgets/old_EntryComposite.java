@@ -91,7 +91,7 @@ public class old_EntryComposite extends Composite implements IUpdateableListener
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(EntryComposite.class);
+	private static final Logger logger = LoggerFactory.getLogger(old_EntryComposite.class);
 
 	/**
 	 * A label that describes the Entry.

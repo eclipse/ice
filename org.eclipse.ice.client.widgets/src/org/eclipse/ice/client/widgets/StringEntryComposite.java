@@ -16,14 +16,14 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-public class StringEntryComposite extends EntryComposite {
+public class StringEntryComposite extends AbstractEntryComposite {
 
-	public StringEntryComposite(Composite parent, IEntry refEntry) {
-		super(parent, refEntry);
+	public StringEntryComposite(Composite parent, IEntry refEntry, int style) {
+		super(parent, refEntry, style);
 	}
 
 	@Override
-	protected void render() {
+	public void render() {
 		// Set the default layout to a vertical FillLayout.
 		FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
 		fillLayout.marginHeight = 5;
@@ -103,8 +103,4 @@ public class StringEntryComposite extends EntryComposite {
 		}
 	}
 
-	@Override
-	protected String getContextId() {
-		return "org.eclipse.ice.client.widgets.StringEntry";
-	}
 }

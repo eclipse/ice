@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.AbstractEntry;
+import org.eclipse.ice.datastructures.entry.IEntryVisitor;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.Entry;
 
@@ -264,5 +265,10 @@ public class PainfullySimpleEntry extends AbstractEntry {
 	public void update(IUpdateable component) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void accept(IEntryVisitor visitor) {
+		visitor.visit(this);
 	}
 }

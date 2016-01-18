@@ -52,7 +52,7 @@ public class ExtraInfoDialog extends Dialog {
 	/**
 	 * The set of EntryComposites used to display Entries.
 	 */
-	private ArrayList<EntryComposite> entryComposites;
+	private ArrayList<AbstractEntryComposite> entryComposites;
 
 	/**
 	 * The DataComponentComposite that renders the data
@@ -95,7 +95,7 @@ public class ExtraInfoDialog extends Dialog {
 		listeners = new ArrayList<IWidgetClosedListener>();
 
 		// Initialize the list of Composites
-		entryComposites = new ArrayList<EntryComposite>();
+		entryComposites = new ArrayList<AbstractEntryComposite>();
 
 		return;
 	}

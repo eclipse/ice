@@ -27,12 +27,12 @@ import org.eclipse.swt.widgets.FileDialog;
 
 public class ExecutableEntryComposite extends FileEntryComposite {
 
-	public ExecutableEntryComposite(Composite parent, IEntry refEntry) {
-		super(parent, refEntry);
+	public ExecutableEntryComposite(Composite parent, IEntry refEntry, int style) {
+		super(parent, refEntry, style);
 	}
 
 	@Override
-	protected void render() {
+	public void render() {
 
 		// Get the number of allowed values
 		int numAllowedValues = entry.getAllowedValues().size();
@@ -243,8 +243,4 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 		}
 	}
 
-	@Override
-	protected String getContextId() {
-		return "org.eclipse.ice.client.widgets.ExecutableEntry";
-	}
 }

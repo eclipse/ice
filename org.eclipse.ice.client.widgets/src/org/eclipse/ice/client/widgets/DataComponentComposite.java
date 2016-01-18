@@ -19,12 +19,13 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.client.widgets.providers.DefaultEntryCompositeProvider;
+import org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.EntryConverter;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -40,6 +41,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IMessageManager;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is an SWT Composite that is specialized to render ICE
@@ -48,8 +51,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz
  */
-public class DataComponentComposite extends Composite
-		implements IUpdateableListener {
+public class DataComponentComposite extends Composite implements IUpdateableListener {
+
+	/**
+	 * Reference to the logger service.
+	 */
+	protected Logger logger = LoggerFactory.getLogger(DataComponentComposite.class);
 
 	/**
 	 * This attribute is a reference to an ICE DataComponent that stores the
@@ -63,8 +70,8 @@ public class DataComponentComposite extends Composite
 	 * A map of Entries to the Composites that define them. Keyed on their index
 	 * (the order they were added to the DataComponent).
 	 */
-	private SortedMap<Integer, EntryComposite> entryMap = Collections
-			.synchronizedSortedMap(new TreeMap<Integer, EntryComposite>());
+	private SortedMap<Integer, IEntryComposite> entryMap = Collections
+			.synchronizedSortedMap(new TreeMap<Integer, IEntryComposite>());
 
 	// FIXME - Entries in a DataComponent are not guaranteed to have unique IDs,
 	// nor are they guaranteed to have unique names. Because there is an
@@ -96,7 +103,8 @@ public class DataComponentComposite extends Composite
 	 * The {@code FormToolkit} used by the parent {@code Form}. This should be
 	 * set by the customized {@code Form} or {@code Page} that created this
 	 * {@code DataComponentComposite} in order to properly decorate the rendered
-	 * {@code EntryComposite}s. Otherwise, some default decorations are applied.
+	 * {@code AbstractEntryComposite}s. Otherwise, some default decorations are
+	 * applied.
 	 */
 	public FormToolkit formToolkit = null;
 
@@ -110,8 +118,7 @@ public class DataComponentComposite extends Composite
 	 * @param style
 	 *            The style in which the composite should be drawn.
 	 */
-	public DataComponentComposite(DataComponent comp, Composite parentComposite,
-			int style) {
+	public DataComponentComposite(DataComponent comp, Composite parentComposite, int style) {
 
 		// Construct the base composite
 		super(parentComposite, style);
@@ -147,15 +154,16 @@ public class DataComponentComposite extends Composite
 		renderEntries();
 
 		// Add a listener for the "DefaultSelection" key (return/enter). It
-		// needs to be registered with the EntryComposite and the Text widget,
+		// needs to be registered with the AbstractEntryComposite and the Text
+		// widget,
 		// in case it is being used by JFace, which doesn't always post standard
 		// SWT events.
 		Listener enterListener = new Listener() {
 			@Override
 			public void handleEvent(Event e) {
 				// Notify the EntryComposites that the selection was made
-				for (EntryComposite entryComp : entryMap.values()) {
-					entryComp.notifyListeners(SWT.DefaultSelection, e);
+				for (IEntryComposite entryComp : entryMap.values()) {
+					entryComp.getComposite().notifyListeners(SWT.DefaultSelection, e);
 				}
 			}
 		};
@@ -184,27 +192,24 @@ public class DataComponentComposite extends Composite
 		// any Entries on the dataComp that need their value(s) updating
 		for (int i = 0; i < entries.size(); i++) {
 			IEntry entry = dataComp.retrieveAllEntries().get(i);
-			EntryComposite entryComp = entryMap.get(i);
-			if (entryComp != null
-					&& !entry.getValue().equals(entryComp.entry.getValue())) {
+			IEntryComposite entryComp = entryMap.get(i);
+			if (entryComp != null && !entry.getValue().equals(entryComp.getEntry().getValue())) {
 				// Reset the reference to the Entry because depending on the way
 				// its value was updated it could be an entirely new Entry
 				// (reset vs. cloned/destructive copy).
-				entryComp.entry = entry;
+				entryComp.setEntry(entry);
 				entryComp.refresh();
 			}
 		}
 
 		// Begin comparing the list of Entries to the EntryComposites in
 		// entryMap to determine what needs to be done
-		int maxIterations = entries.size() > entryMap.size() ? entries.size()
-				: entryMap.size();
+		int maxIterations = entries.size() > entryMap.size() ? entries.size() : entryMap.size();
 
 		for (int i = 0; i < maxIterations; i++) {
 			IEntry entry = (i < entries.size() ? entries.get(i) : null);
-			EntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i)
-					: null);
-			String value = (entryComp != null ? entryComp.entry.getValue()
+			IEntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i) : null);
+			String value = (entryComp != null ? entryComp.getEntry().getValue()
 					: (entry != null ? entry.getValue() : ""));
 
 			// First, if the Entry isn't supposed to be displayed, dispose it
@@ -215,29 +220,39 @@ public class DataComponentComposite extends Composite
 
 			} else if (entryComp == null && entry.isReady()) {
 
-				// If the EntryComposite hasn't been rendered yet, render
+				// If the AbstractEntryComposite hasn't been rendered yet,
+				// render
 				// it,
 				// and add it to the entryMap
 				renderEntry(entry, i);
 				entryComp = entryMap.get(i);
-				entryComp.entry.setValue(value);
+				entryComp.getEntry().setValue(value);
 				entryComp.refresh();
 
 			} else {
 
 				// Iterate through the Entry.AllowedValues and compare to the
-				// values of the corresponding EntryComposite in the map
-				for (int j = 0; j < entry.getAllowedValues().size(); j++) {
+				// values of the corresponding AbstractEntryComposite in the map
+				int nAllowed = 0;
+				
+				// This IEntry may not be a DiscreteEntry, so check 
+				// that we can get allowed values here, continue if not.
+				try {
+					nAllowed = entry.getAllowedValues().size();
+				} catch (UnsupportedOperationException e) {
+					continue;
+				}
+				
+				for (int j = 0; j < nAllowed; j++) {
 					String allowedValue = entry.getAllowedValues().get(j);
 
 					// Re-render Entries only if they've had a new AllowedValue
 					// added
-					if (!entryComp.entry.getAllowedValues()
-							.contains(allowedValue)) {
+					if (!entryComp.getEntry().getAllowedValues().contains(allowedValue)) {
 						disposeEntry(i);
 						renderEntry(entry, i);
 						entryComp = entryMap.get(i);
-						entryComp.entry.setValue(value);
+						entryComp.getEntry().setValue(value);
 						entryComp.refresh();
 					}
 				}
@@ -312,8 +327,7 @@ public class DataComponentComposite extends Composite
 	private void renderEntries() {
 
 		// Try to get the list of ready Entries from the DataComponent.
-		List<IEntry> entries = (dataComp != null ? dataComp.retrieveAllEntries()
-				: null);
+		List<IEntry> entries = (dataComp != null ? dataComp.retrieveAllEntries() : null);
 
 		// If the list is not null and not empty, try to render the Entries.
 		if (entries != null && !entries.isEmpty()) {
@@ -343,8 +357,7 @@ public class DataComponentComposite extends Composite
 			// Create the "no parameters" label.
 			emptyLabel = new Label(this, SWT.NONE);
 			emptyLabel.setText("No parameters available.");
-			emptyLabel.setLayoutData(
-					new GridData(SWT.FILL, SWT.BEGINNING, true, true));
+			emptyLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
 
 			// If not debugging, set the default background to white.
 			if (System.getProperty("DebugICE") == null) {
@@ -352,10 +365,9 @@ public class DataComponentComposite extends Composite
 			} else {
 				// If debugging, set the background to red and add some debug
 				// information to the label's text.
-				emptyLabel.setText(emptyLabel.getText() + "\nDataComponent: "
-						+ (dataComp != null ? dataComp.getName() : "null"));
-				emptyLabel.setBackground(
-						Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+				emptyLabel.setText(
+						emptyLabel.getText() + "\nDataComponent: " + (dataComp != null ? dataComp.getName() : "null"));
+				emptyLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 			}
 		}
 
@@ -372,8 +384,8 @@ public class DataComponentComposite extends Composite
 	private void disposeEntries() {
 
 		// Dispose the composites from GUI
-		for (EntryComposite comp : entryMap.values()) {
-			comp.dispose();
+		for (IEntryComposite comp : entryMap.values()) {
+			comp.getComposite().dispose();
 		}
 
 		// Clear the list
@@ -383,56 +395,47 @@ public class DataComponentComposite extends Composite
 	}
 
 	/**
-	 * This operation creates an EntryComposite for an Entry and adds that Entry
-	 * to the EntryMap.
+	 * This operation creates an AbstractEntryComposite for an Entry and adds
+	 * that Entry to the EntryMap.
 	 *
 	 * @param entry
 	 *            The Entry for which the Control should be created.
 	 * @param index
-	 *            The index in the entryMap of where the rendered EntryComposite
-	 *            will be put.
+	 *            The index in the entryMap of where the rendered
+	 *            AbstractEntryComposite will be put.
 	 */
 	private void renderEntry(IEntry entry, int index) {
 
 		// Check the entry map to see if there is already a composite for this
 		// entry. If there is, fail silently.
-		for (EntryComposite entryTemp : entryMap.values()) {
+		for (IEntryComposite entryTemp : entryMap.values()) {
 			if (entryTemp.getEntry().equals(entry)) {
 				return;
 			}
 		}
 
 		// Local Declarations
-		EntryComposite entryComposite = null;
+		IEntryComposite entryComposite = null;
 
-		// Create a listener for the Entry composite that will pass events to
-		// any other listeners.
-		Listener entryListener = new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				// Let them know
-				notifyListeners(SWT.Selection, new Event());
+		IEntryCompositeProvider provider = new DefaultEntryCompositeProvider();
+
+		if (!"default".equals(entry.getContext())) {
+			try {
+				for (IEntryCompositeProvider p : IEntryCompositeProvider.getProviders()) {
+					if (p.getName().equals(entry.getContext())) {
+						provider = p;
+						break;
+					}
+				}
+			} catch (CoreException e) {
+				logger.error("Exception caught in trying to get a custom IEntryCompositeProvider.", e);
 			}
-		};
-
-		// Create the EntryComposite.
-		entryComposite = EntryComposite.getEntryComposite(this, entry);
-
-		// Decorate the EntryComposite. Use the FormToolKit if possible.
-		if (formToolkit != null) {
-			formToolkit.adapt(entryComposite);
-		} else {
-			entryComposite.setBackground(getBackground());
 		}
 
-		// Set the LayoutData. The DataComponentComposite has a GridLayout. The
-		// EntryComposite should grab all available horizontal space.
-		entryComposite.setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		// Set the Listener.
-		entryComposite.addListener(SWT.Selection, entryListener);
+		// Create the AbstractEntryComposite.
+		entryComposite = provider.getEntryComposite(this, entry, SWT.FLAT, formToolkit);
 
-		// Add the EntryComposite to the Map
+		// Add the AbstractEntryComposite to the Map
 		entryMap.put(index, entryComposite);
 
 		// Lastly, reorder the EntryComposites on this DataComponentComposite
@@ -441,9 +444,9 @@ public class DataComponentComposite extends Composite
 		// Begin by getting a list of the EntryComposites as they appear in the
 		// UI, and make a map indexing them based on their order.
 		List<Control> uiEntryComps = Arrays.asList(getChildren());
-		HashMap<Integer, EntryComposite> uiMap = new HashMap<Integer, EntryComposite>();
+		HashMap<Integer, AbstractEntryComposite> uiMap = new HashMap<Integer, AbstractEntryComposite>();
 		for (int i = 0; i < uiEntryComps.size(); i++) {
-			EntryComposite e = (EntryComposite) uiEntryComps.get(i);
+			AbstractEntryComposite e = (AbstractEntryComposite) uiEntryComps.get(i);
 			if (e != null) {
 				uiMap.put(i, e);
 			}
@@ -456,7 +459,7 @@ public class DataComponentComposite extends Composite
 			// valid
 			IEntry mapEntry = null, uiEntry = null;
 			if (entryMap.get(i) != null)
-				mapEntry = entryMap.get(i).entry;
+				mapEntry = entryMap.get(i).getEntry();
 			if (uiMap.get(i) != null)
 				uiEntry = uiMap.get(i).entry;
 			if (mapEntry == null || uiEntry == null) {
@@ -464,7 +467,7 @@ public class DataComponentComposite extends Composite
 			}
 
 			// If the Entries don't match, find where in the UI the
-			// corresponding EntryComposite really is
+			// corresponding AbstractEntryComposite really is
 			int uiPosition = 0;
 			if (!mapEntry.getName().equals(uiEntry.getName())) {
 				for (int j = 0; j < uiEntryComps.size(); j++) {
@@ -475,18 +478,22 @@ public class DataComponentComposite extends Composite
 					}
 				}
 
-				// Now determine where to move the UI EntryComposite
+				// Now determine where to move the UI AbstractEntryComposite
 				if (i - 1 >= 0) {
-					// Try getting the EntryComposite above the proper location
-					EntryComposite entryAbove = uiMap.get(i - 1);
-					// Move the UI EntryComposite into its correct position
+					// Try getting the AbstractEntryComposite above the proper
+					// location
+					AbstractEntryComposite entryAbove = uiMap.get(i - 1);
+					// Move the UI AbstractEntryComposite into its correct
+					// position
 					if (entryAbove != null) {
 						uiMap.get(uiPosition).moveBelow(entryAbove);
 					}
 				} else if (i + 1 <= entryMap.size()) {
-					// Try getting the EntryComposite below the proper location
-					EntryComposite entryBelow = uiMap.get(i + 1);
-					// Move the UI EntryComposite into its correct position
+					// Try getting the AbstractEntryComposite below the proper
+					// location
+					AbstractEntryComposite entryBelow = uiMap.get(i + 1);
+					// Move the UI AbstractEntryComposite into its correct
+					// position
 					if (entryBelow != null) {
 						uiMap.get(uiPosition).moveAbove(entryBelow);
 					}
@@ -502,15 +509,15 @@ public class DataComponentComposite extends Composite
 	 * composite.
 	 *
 	 * @param index
-	 *            The index of the EntryComposite in the entryMap that will be
-	 *            removed.
+	 *            The index of the AbstractEntryComposite in the entryMap that
+	 *            will be removed.
 	 */
 	private void disposeEntry(int index) {
 
 		// Remove the Control
-		EntryComposite composite = entryMap.remove(index);
+		IEntryComposite composite = entryMap.remove(index);
 		if (composite != null) {
-			composite.dispose();
+			composite.getComposite().dispose();
 		}
 
 		return;
@@ -553,7 +560,7 @@ public class DataComponentComposite extends Composite
 
 		// Set the message manager if it is available
 		if (messageManager != null) {
-			for (EntryComposite composite : entryMap.values()) {
+			for (IEntryComposite composite : entryMap.values()) {
 				composite.setMessageManager(messageManager);
 			}
 		}

@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.ice.client.widgets" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.ice.client.widgets" id="entryComposite" name="Entry Composite"/>
+         <meta.schema plugin="org.eclipse.ice.client.widgets" id="entryCompositeProvider" name="Entry Composite Provider"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.ice.client.widgets.EntryComposite:"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider"/>
                </appinfo>
             </annotation>
          </attribute>
