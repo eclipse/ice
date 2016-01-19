@@ -1,3 +1,15 @@
+
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey, Jay Jay Billings
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
@@ -23,6 +35,15 @@ import org.eclipse.ui.forms.IMessageManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The AbstractEntryComposite is an implementation of the IEntryComposite and 
+ * also a SWT Composite extension. It deals with rendering provided 
+ * IEntry instances on an SWT Composite. It provides an abstract render operation 
+ * that subclasses should implement to deal with specific IEntry types. 
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public abstract class AbstractEntryComposite extends Composite implements IEntryComposite { 
 
 	/**

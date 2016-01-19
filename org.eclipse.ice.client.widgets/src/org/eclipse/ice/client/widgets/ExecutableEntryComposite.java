@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.io.File;
@@ -25,12 +36,30 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 
+/**
+ * The ExecutableEntryComposite is an extension of hte FileEntryComposite 
+ * that creates a browse button that let's users navigate to an executable on 
+ * either the local machine or a remote host.
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class ExecutableEntryComposite extends FileEntryComposite {
 
+	/**
+	 * The Constructor
+	 * @param parent
+	 * @param refEntry
+	 * @param style
+	 */
 	public ExecutableEntryComposite(Composite parent, IEntry refEntry, int style) {
 		super(parent, refEntry, style);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.FileEntryComposite#render()
+	 */
 	@Override
 	public void render() {
 

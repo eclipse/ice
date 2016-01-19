@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -16,12 +27,31 @@ import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * The StringEntry is an extension of the AbstractEntryComposite that renders 
+ * StringEntry realizations of IEntry. It draws a SWT Text widget to get user 
+ * input for the StringEntry. 
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class StringEntryComposite extends AbstractEntryComposite {
 
+	/**
+	 * The Constructor. 
+	 * 
+	 * @param parent
+	 * @param refEntry
+	 * @param style
+	 */
 	public StringEntryComposite(Composite parent, IEntry refEntry, int style) {
 		super(parent, refEntry, style);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.AbstractEntryComposite#render()
+	 */
 	@Override
 	public void render() {
 		// Set the default layout to a vertical FillLayout.
@@ -76,6 +106,7 @@ public class StringEntryComposite extends AbstractEntryComposite {
 	}
 
 	/**
+	 * Set the Entry value. 
 	 * 
 	 * @param value
 	 */

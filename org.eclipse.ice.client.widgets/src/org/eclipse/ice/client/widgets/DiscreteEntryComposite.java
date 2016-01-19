@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.util.Arrays;
@@ -19,12 +30,32 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 
+/**
+ * DiscreteEntryComposite is an extension of AbstractEntryComposite that 
+ * constructs a SWT Composite tailored to DiscreteEntry instances. It creates 
+ * either a Combo widget that is displayed as either a drop down or a 
+ * check box depending on the DiscreteEntry's allowed values. 
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class DiscreteEntryComposite extends AbstractEntryComposite {
 
+	/**
+	 * The constructor 
+	 * 
+	 * @param parent
+	 * @param refEntry
+	 * @param style
+	 */
 	public DiscreteEntryComposite(Composite parent, IEntry refEntry, int style) {
 		super(parent, refEntry, style);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.AbstractEntryComposite#render()
+	 */
 	@Override
 	public void render() {
 		// Local Declarations

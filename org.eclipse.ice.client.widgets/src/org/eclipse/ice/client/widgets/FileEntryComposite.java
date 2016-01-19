@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey
+ *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
 import java.io.File;
@@ -19,12 +30,31 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Layout;
 
+/**
+ * FileEntryComposite is an extension of DiscreteEntryComposite that 
+ * provides a browse button in addition to the DiscreteEntryComposite widget 
+ * to enable users to browse to a file and add it to the allowed value list of the 
+ * provided FileEntry. 
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class FileEntryComposite extends DiscreteEntryComposite {
 
+	/**
+	 * The Constructor
+	 * @param parent
+	 * @param refEntry
+	 * @param style
+	 */
 	public FileEntryComposite(Composite parent, IEntry refEntry, int style) {
 		super(parent, refEntry, style);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.client.widgets.DiscreteEntryComposite#render()
+	 */
 	@Override
 	public void render() {
 
@@ -52,7 +82,6 @@ public class FileEntryComposite extends DiscreteEntryComposite {
 		Button browseButton = new Button(this, SWT.PUSH);
 		browseButton.setText("Browse...");
 
-		System.out.println("CREATED A BROWSE BUTTON");
 		// Add an event listener that displays a Directory Dialog prompt
 		browseButton.addSelectionListener(new SelectionAdapter() {
 			@Override

@@ -168,8 +168,11 @@ public class DefaultEntryCompositeProvider implements IEntryCompositeProvider, I
 	 */
 	@Override
 	public void visit(PainfullySimpleEntry entry) {
-		// TODO Auto-generated method stub
-
+		if (entry.getAllowedValues() != null && entry.getAllowedValues().size() > 0) {
+			entryComposite = new DiscreteEntryComposite(parent, entry, style);
+		} else {
+			entryComposite = new StringEntryComposite(parent, entry, style);
+		}
 	}
 
 	/*
