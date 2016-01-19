@@ -16,6 +16,8 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -28,9 +30,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * The StringEntry is an extension of the AbstractEntryComposite that renders 
- * StringEntry realizations of IEntry. It draws a SWT Text widget to get user 
- * input for the StringEntry. 
+ * The StringEntry is an extension of the AbstractEntryComposite that renders
+ * StringEntry realizations of IEntry. It draws a SWT Text widget to get user
+ * input for the StringEntry.
  * 
  * @author Alex McCaskey
  *
@@ -38,7 +40,7 @@ import org.eclipse.swt.widgets.Text;
 public class StringEntryComposite extends AbstractEntryComposite {
 
 	/**
-	 * The Constructor. 
+	 * The Constructor.
 	 * 
 	 * @param parent
 	 * @param refEntry
@@ -50,6 +52,7 @@ public class StringEntryComposite extends AbstractEntryComposite {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.AbstractEntryComposite#render()
 	 */
 	@Override
@@ -62,7 +65,7 @@ public class StringEntryComposite extends AbstractEntryComposite {
 		Layout layout = fillLayout;
 
 		createLabel();
-		
+
 		// Create a textfield
 		if (!entry.isSecret()) {
 			logger.info("Creating " + entry.getName() + " StringEntryComposite.");
@@ -95,6 +98,7 @@ public class StringEntryComposite extends AbstractEntryComposite {
 			public void handleEvent(Event e) {
 				// Notify any listeners that the selection has changed
 				notifyListeners(SWT.Selection, new Event());
+				logger.info("HELLO WORLD SETTING " + ((Text) widget).getText());
 				// Set the value of the Entry
 				setEntryValue(((Text) widget).getText());
 			}
@@ -102,35 +106,16 @@ public class StringEntryComposite extends AbstractEntryComposite {
 		this.addListener(SWT.DefaultSelection, enterListener);
 		widget.addListener(SWT.DefaultSelection, enterListener);
 
-		setLayout(layout);
-	}
-
-	/**
-	 * Set the Entry value. 
-	 * 
-	 * @param value
-	 */
-	private void setEntryValue(String value) {
-		if (!entry.setValue(value)) {
-			// Get the message
-			String errorMessage = "Error setting the Entry value.";//entry.getErrorMessage();
-			// Post it if it exists
-			if (errorMessage != null) {
-				// Display the error at the top of the screen
-				if (messageManager != null) {
-					messageManager.addMessage(messageName, errorMessage, null, IMessageProvider.ERROR);
-				}
-				// Highlight the text if it is in a text box
-				if (widget != null) {
-					Color color = new Color(Display.getCurrent(), 200, 0, 0);
-					((Text) widget).setForeground(color);
-					FontData fontData = new FontData();
-					fontData.setStyle(SWT.BOLD);
-					Font font = new Font(getDisplay(), fontData);
-					((Text) widget).setFont(font);
+		((Text) widget).addTraverseListener(new TraverseListener() {
+			public void keyTraversed(TraverseEvent e) {
+				if (e.detail == SWT.TRAVERSE_TAB_NEXT || e.detail == SWT.TRAVERSE_TAB_PREVIOUS) {
+					e.doit = true;
+					notifyListeners(SWT.TAB, new Event());
+					setEntryValue(((Text) widget).getText());
 				}
 			}
-		}
+		});
+		
+		setLayout(layout);
 	}
-
 }

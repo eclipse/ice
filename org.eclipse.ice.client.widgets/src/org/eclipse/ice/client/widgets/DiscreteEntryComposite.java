@@ -137,7 +137,7 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
 					// Set the value of the Entry
-					entry.setValue(((Button) e.getSource()).getText());
+					setEntryValue(((Button) e.getSource()).getText());
 				}
 			});
 			// Fix the color
@@ -223,7 +223,7 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Set the value of the Entry
-					entry.setValue(((Combo) e.widget).getText());
+					setEntryValue(((Combo) e.widget).getText());
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
 				}
@@ -315,9 +315,9 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 			// Get the checkbox state
 			Button button = (Button) e.getSource();
 			if (button.getSelection()) {
-				entry.setValue(yes);
+				DiscreteEntryComposite.this.setEntryValue(yes);
 			} else {
-				entry.setValue(no);
+				DiscreteEntryComposite.this.setEntryValue(no);
 			}
 
 			logger.info(

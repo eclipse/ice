@@ -16,18 +16,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
@@ -351,6 +359,70 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 		return;
 	}
 
+	/**
+	 * This operation sets the value of the Entry and, if possible and
+	 * necessary, reports to the message manager.
+	 *
+	 * @param value
+	 */
+	protected void setEntryValue(String value) {
+
+		boolean success = entry.setValue(value);
+		// Set the value and post a message if necessary
+		if (!success && messageManager != null) {
+			// Get the message
+			String errorMessage = entry.getErrorMessage();
+			// Post it if it exists
+			if (errorMessage != null) {
+				// Display the error at the top of the screen
+				if (messageManager != null) {
+					messageManager.addMessage(messageName, errorMessage, null, IMessageProvider.ERROR);
+				}
+				// Highlight the text if it is in a text box
+				if (widget != null && widget instanceof Text) {
+					Text text = (Text) widget;
+					Color color = new Color(Display.getCurrent(), 200, 0, 0);
+					text.setForeground(color);
+					FontData fontData = new FontData();
+					fontData.setStyle(SWT.BOLD);
+					Font font = new Font(getDisplay(), fontData);
+					text.setFont(font);
+				}
+			}
+
+		} else if (value == null) {
+
+			if (entry instanceof DiscreteEntry) {
+				// Set the Entry to the first AllowedValue if it's Discrete
+				if (!entry.getAllowedValues().isEmpty()) {
+					String allowedValue = entry.getAllowedValues().get(0);
+					entry.setValue(allowedValue);
+				}
+			} else {
+				// Otherwise, set the default value
+				entry.setValue(entry.getDefaultValue());
+			}
+
+		} else {
+			// Remove a posted message if necessary
+			if (messageManager != null) {
+				messageManager.removeMessage(messageName);
+			}
+			// Remove the text box highlight if it is in a text box
+			if (widget != null && widget instanceof Text) {
+				Text text = (Text) widget;
+				Color color = new Color(Display.getCurrent(), 0, 0, 0);
+				text.setForeground(color);
+				FontData fontData = new FontData();
+				fontData.setStyle(SWT.NORMAL);
+				fontData.setHeight(10);
+				Font font = new Font(getDisplay(), fontData);
+				text.setFont(font);
+			}
+		}
+
+		return;
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)

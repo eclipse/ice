@@ -93,7 +93,7 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Set the value of the Entry
-					entry.setValue(((Combo) e.widget).getText());
+					setEntryValue(((Combo) e.widget).getText());
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
 				}
@@ -124,7 +124,7 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 
 								// If it is executable just add its absolute
 								// path
-								entry.setValue(file.toURI().toString());
+								setEntryValue(file.toURI().toString());
 							} else {
 								// If its just a File, import it
 								IClient client = null;
@@ -137,7 +137,7 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 								if (client != null) {
 									client.importFile(file.toURI());
 									// Set the entry's value to the new file
-									entry.setValue(file.getName());
+									setEntryValue(file.getName());
 								}
 							}
 
@@ -255,7 +255,7 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 
 
 						// If it is executable just add its absolute path
-						entry.setValue(entryValue);
+						setEntryValue(entryValue);
 
 					}
 

@@ -437,6 +437,10 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		// Create the IEntryComposite.
 		entryComposite = provider.getEntryComposite(this, entry, SWT.FLAT, formToolkit);
 
+		if (messageManager != null) {
+			entryComposite.setMessageManager(messageManager);
+		}
+		
 		// Add theIEntryComposite to the Map
 		entryMap.put(index, entryComposite);
 

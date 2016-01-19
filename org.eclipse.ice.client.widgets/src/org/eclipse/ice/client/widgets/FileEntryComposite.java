@@ -115,7 +115,7 @@ public class FileEntryComposite extends DiscreteEntryComposite {
 						entry.setAllowedValues(valueList);
 
 						// Set the entry's value to the new file
-						entry.setValue(importedFile.getName());
+						setEntryValue(importedFile.getName());
 					}
 
 					// Notify any listeners of the selection event
