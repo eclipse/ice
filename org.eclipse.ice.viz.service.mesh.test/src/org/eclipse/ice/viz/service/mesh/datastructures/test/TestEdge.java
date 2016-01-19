@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.EdgeMesh;
@@ -101,7 +101,7 @@ public class TestEdge extends EdgeController {
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Call the super's update method and update the flag.
 		super.update(component, type);

@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.geometry.reactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.TubeMesh;
 import org.slf4j.Logger;
@@ -153,8 +153,8 @@ public class PipeMesh extends TubeMesh {
 			entities.put(category, catList);
 
 			// Notify listeners of the new child
-			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = {
+					SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 

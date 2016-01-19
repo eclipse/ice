@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.junit.Test;
 
 /**
@@ -41,18 +41,18 @@ public class UpdateableSubscriptionManagerTester {
 		UpdateableSubscriptionManager manager = source.getManager();
 
 		// Create a listener for the object
-		ArrayList<UpdateableSubscriptionType> allList = new ArrayList<UpdateableSubscriptionType>();
-		allList.add(UpdateableSubscriptionType.ALL);
+		ArrayList<SubscriptionType> allList = new ArrayList<SubscriptionType>();
+		allList.add(SubscriptionType.ALL);
 		TestListener listener = new TestListener(allList);
 		source.register(listener);
 
 		// Create a list containing the CHILD type
-		ArrayList<UpdateableSubscriptionType> list = new ArrayList<UpdateableSubscriptionType>();
-		list.add(UpdateableSubscriptionType.CHILD);
+		ArrayList<SubscriptionType> list = new ArrayList<SubscriptionType>();
+		list.add(SubscriptionType.CHILD);
 
 		// Create a list containing the PROPERTY type
-		ArrayList<UpdateableSubscriptionType> propertyList = new ArrayList<UpdateableSubscriptionType>();
-		propertyList.add(UpdateableSubscriptionType.PROPERTY);
+		ArrayList<SubscriptionType> propertyList = new ArrayList<SubscriptionType>();
+		propertyList.add(SubscriptionType.PROPERTY);
 
 		// Check that the listener receives updates normally
 		source.sendUpdate(list);
@@ -138,26 +138,26 @@ public class UpdateableSubscriptionManagerTester {
 		TestUpdateable source = new TestUpdateable();
 
 		// A list that specifies all subscription types
-		ArrayList<UpdateableSubscriptionType> allList = new ArrayList<UpdateableSubscriptionType>();
-		allList.add(UpdateableSubscriptionType.ALL);
+		ArrayList<SubscriptionType> allList = new ArrayList<SubscriptionType>();
+		allList.add(SubscriptionType.ALL);
 
 		// A list that specifies the child and property subscription types
-		ArrayList<UpdateableSubscriptionType> childPropertyList = new ArrayList<UpdateableSubscriptionType>();
-		childPropertyList.add(UpdateableSubscriptionType.CHILD);
-		childPropertyList.add(UpdateableSubscriptionType.PROPERTY);
+		ArrayList<SubscriptionType> childPropertyList = new ArrayList<SubscriptionType>();
+		childPropertyList.add(SubscriptionType.CHILD);
+		childPropertyList.add(SubscriptionType.PROPERTY);
 
 		// A list that specifies the child and transformation subscription types
-		ArrayList<UpdateableSubscriptionType> childTransformationList = new ArrayList<UpdateableSubscriptionType>();
-		childTransformationList.add(UpdateableSubscriptionType.CHILD);
-		childTransformationList.add(UpdateableSubscriptionType.TRANSFORMATION);
+		ArrayList<SubscriptionType> childTransformationList = new ArrayList<SubscriptionType>();
+		childTransformationList.add(SubscriptionType.CHILD);
+		childTransformationList.add(SubscriptionType.TRANSFORMATION);
 
 		// A list that specifies the child subscription type
-		ArrayList<UpdateableSubscriptionType> childList = new ArrayList<UpdateableSubscriptionType>();
-		childList.add(UpdateableSubscriptionType.CHILD);
+		ArrayList<SubscriptionType> childList = new ArrayList<SubscriptionType>();
+		childList.add(SubscriptionType.CHILD);
 
 		// A list that specifies the property subscription type
-		ArrayList<UpdateableSubscriptionType> propertyList = new ArrayList<UpdateableSubscriptionType>();
-		propertyList.add(UpdateableSubscriptionType.PROPERTY);
+		ArrayList<SubscriptionType> propertyList = new ArrayList<SubscriptionType>();
+		propertyList.add(SubscriptionType.PROPERTY);
 
 		// Create a listener that will receive all updates
 		TestListener listener = new TestListener(allList);
@@ -216,8 +216,8 @@ public class UpdateableSubscriptionManagerTester {
 		TestUpdateable source = new TestUpdateable();
 
 		// A list that specifies the property subscription type
-		ArrayList<UpdateableSubscriptionType> propertyList = new ArrayList<UpdateableSubscriptionType>();
-		propertyList.add(UpdateableSubscriptionType.PROPERTY);
+		ArrayList<SubscriptionType> propertyList = new ArrayList<SubscriptionType>();
+		propertyList.add(SubscriptionType.PROPERTY);
 
 		// Create two listeners that will receive property updates
 		TestListener listener = new TestListener(propertyList);
@@ -289,7 +289,7 @@ public class UpdateableSubscriptionManagerTester {
 		/**
 		 * The list of types of events this listener will receive
 		 */
-		ArrayList<UpdateableSubscriptionType> types;
+		ArrayList<SubscriptionType> types;
 
 		/**
 		 * The default constructor.
@@ -297,7 +297,7 @@ public class UpdateableSubscriptionManagerTester {
 		 * @param types
 		 *            The list of types of events this listener will receive.
 		 */
-		public TestListener(ArrayList<UpdateableSubscriptionType> types) {
+		public TestListener(ArrayList<SubscriptionType> types) {
 			this.types = types;
 		}
 
@@ -309,7 +309,7 @@ public class UpdateableSubscriptionManagerTester {
 		 * service.datastructures.VizObject.IManagedUpdateable)
 		 */
 		@Override
-		public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+		public ArrayList<SubscriptionType> getSubscriptions(
 				IManagedUpdateable source) {
 			return types;
 		}
@@ -325,21 +325,21 @@ public class UpdateableSubscriptionManagerTester {
 		 */
 		@Override
 		public void update(IManagedUpdateable component,
-				UpdateableSubscriptionType[] types) {
+				SubscriptionType[] types) {
 
 			// For each type in the update, set each notification received to
 			// true if it matches one of the checked types
-			for (UpdateableSubscriptionType type : types) {
+			for (SubscriptionType type : types) {
 
-				if (type == UpdateableSubscriptionType.PROPERTY) {
+				if (type == SubscriptionType.PROPERTY) {
 					propertyNotified = true;
 				}
 
-				else if (type == UpdateableSubscriptionType.CHILD) {
+				else if (type == SubscriptionType.CHILD) {
 					childNotified = true;
 				}
 
-				else if (type == UpdateableSubscriptionType.ALL) {
+				else if (type == SubscriptionType.ALL) {
 					allNotified = true;
 				}
 			}
@@ -416,10 +416,10 @@ public class UpdateableSubscriptionManagerTester {
 			return manager;
 		}
 
-		public void sendUpdate(ArrayList<UpdateableSubscriptionType> types) {
+		public void sendUpdate(ArrayList<SubscriptionType> types) {
 
 			// Convert the array list to an array and send it to the manager
-			UpdateableSubscriptionType[] temp = new UpdateableSubscriptionType[types
+			SubscriptionType[] temp = new SubscriptionType[types
 					.size()];
 			temp = types.toArray(temp);
 			manager.notifyListeners(temp);

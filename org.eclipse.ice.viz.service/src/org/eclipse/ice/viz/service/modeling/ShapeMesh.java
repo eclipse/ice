@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A mesh component representing a shape in a Constructive Solid Geometry tree.
@@ -59,8 +59,8 @@ public class ShapeMesh extends AbstractMesh {
 		// Register the parent as a listener and fire an update notification
 		register(parent);
 
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.CHILD };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.CHILD };
 		updateManager.notifyListeners(eventTypes);
 
 	}
@@ -180,8 +180,8 @@ public class ShapeMesh extends AbstractMesh {
 		type = source.type;
 		properties = new HashMap<String, String>(source.properties);
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.ALL };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 

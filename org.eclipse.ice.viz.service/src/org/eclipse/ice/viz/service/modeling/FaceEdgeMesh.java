@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A component representing an Edge for a Face, which keeps a list of all Faces
@@ -89,8 +89,8 @@ public class FaceEdgeMesh extends EdgeMesh {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = {
+					SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -146,8 +146,8 @@ public class FaceEdgeMesh extends EdgeMesh {
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.ALL };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 
 		// Release all queued messages

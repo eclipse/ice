@@ -36,13 +36,13 @@ public class UpdateableSubscriptionManager {
 	 * A map of registered listeners associated with the event types they are
 	 * registered to receive.
 	 */
-	private HashMap<UpdateableSubscriptionType, ArrayList<IManagedUpdateableListener>> subscriptionMap = new HashMap<UpdateableSubscriptionType, ArrayList<IManagedUpdateableListener>>();
+	private HashMap<SubscriptionType, ArrayList<IManagedUpdateableListener>> subscriptionMap = new HashMap<SubscriptionType, ArrayList<IManagedUpdateableListener>>();
 
 	/**
 	 * A list of queued messages to be delivered all at once, for cases where
 	 * multiple events occur in quick succession.
 	 */
-	private ArrayList<UpdateableSubscriptionType> messageQueue = new ArrayList<UpdateableSubscriptionType>();
+	private ArrayList<SubscriptionType> messageQueue = new ArrayList<SubscriptionType>();
 
 	/**
 	 * Keeps track of whether the manager is in queue mode. In queue mode,
@@ -107,7 +107,7 @@ public class UpdateableSubscriptionManager {
 				// Get a local copy of the queued messages and clear the queue.
 				// This prevents subsequent calls to the manager before all
 				// events are dispatched from sending the same message twice.
-				UpdateableSubscriptionType[] types = new UpdateableSubscriptionType[messageQueue
+				SubscriptionType[] types = new SubscriptionType[messageQueue
 						.size()];
 				messageQueue.toArray(types);
 				messageQueue.clear();
@@ -135,13 +135,13 @@ public class UpdateableSubscriptionManager {
 	 *            will be notified if it is subscribed for a type in eventTypes
 	 *            or if it is subscribed for UpdateableSubscriptionType.ALL.
 	 */
-	public void notifyListeners(UpdateableSubscriptionType[] eventTypes) {
+	public void notifyListeners(SubscriptionType[] eventTypes) {
 
 		// In queue mode, place the events in the queue
 		if (queueCount > 0) {
 
 			// Add each event type to the queue, avoiding repeats
-			for (UpdateableSubscriptionType event : eventTypes) {
+			for (SubscriptionType event : eventTypes) {
 				if (!messageQueue.contains(event)) {
 					messageQueue.add(event);
 				}
@@ -157,30 +157,30 @@ public class UpdateableSubscriptionManager {
 
 			// A map from a temporary identification number to the a list of
 			// subscription types
-			HashMap<Integer, ArrayList<UpdateableSubscriptionType>> messageMap = new HashMap<Integer, ArrayList<UpdateableSubscriptionType>>();
+			HashMap<Integer, ArrayList<SubscriptionType>> messageMap = new HashMap<Integer, ArrayList<SubscriptionType>>();
 
 			// The next ID number to use when a new listener is encountered in
 			// the below search
 			int nextID = 0;
 
 			// Check each event type with registered listeners in the map
-			for (UpdateableSubscriptionType listenerType : subscriptionMap
+			for (SubscriptionType listenerType : subscriptionMap
 					.keySet()) {
 
 				// Whether there are any matches for this event type
 				boolean match = false;
 
 				// Listeners for all events are automatically updated
-				if (listenerType == UpdateableSubscriptionType.ALL) {
+				if (listenerType == SubscriptionType.ALL) {
 					match = true;
 				}
 
 				else
 
 					// Check each event type to see if one matches
-					for (UpdateableSubscriptionType eventType : eventTypes) {
+					for (SubscriptionType eventType : eventTypes) {
 						if (listenerType == eventType
-								&& eventType != UpdateableSubscriptionType.ALL) {
+								&& eventType != SubscriptionType.ALL) {
 							match = true;
 							break;
 						}
@@ -207,7 +207,7 @@ public class UpdateableSubscriptionManager {
 								// When a match is found, add the new type to
 								// the map of messages for that ID
 								if (listenerMap.get(i) == listener) {
-									ArrayList<UpdateableSubscriptionType> list = messageMap
+									ArrayList<SubscriptionType> list = messageMap
 											.get(i);
 									list.add(listenerType);
 									messageMap.put(i, list);
@@ -223,12 +223,12 @@ public class UpdateableSubscriptionManager {
 							listenerMap.put(nextID, listener);
 
 							// Create a list of subscription types
-							ArrayList<UpdateableSubscriptionType> list;
+							ArrayList<SubscriptionType> list;
 
 							// If the type isn't ALL, initialize the list with
 							// the current message type
-							if (listenerType != UpdateableSubscriptionType.ALL) {
-								list = new ArrayList<UpdateableSubscriptionType>();
+							if (listenerType != SubscriptionType.ALL) {
+								list = new ArrayList<SubscriptionType>();
 								list.add(listenerType);
 							}
 
@@ -236,7 +236,7 @@ public class UpdateableSubscriptionManager {
 							// subscription types in the list
 							else {
 
-								list = new ArrayList<UpdateableSubscriptionType>(
+								list = new ArrayList<SubscriptionType>(
 										Arrays.asList(eventTypes));
 							}
 							messageMap.put(nextID, list);
@@ -251,7 +251,7 @@ public class UpdateableSubscriptionManager {
 
 			// For each listener, send it the message types it is subscribed for
 			for (int i = 0; i < nextID; i++) {
-				UpdateableSubscriptionType[] list = new UpdateableSubscriptionType[messageMap
+				SubscriptionType[] list = new SubscriptionType[messageMap
 						.get(i).size()];
 				list = messageMap.get(i).toArray(list);
 				listenerMap.get(i).update(source, list);
@@ -273,11 +273,11 @@ public class UpdateableSubscriptionManager {
 
 		// Poll the listener as to which event types it wants to receive updates
 		// for
-		ArrayList<UpdateableSubscriptionType> types = listener
+		ArrayList<SubscriptionType> types = listener
 				.getSubscriptions(source);
 
 		// Add the listener to each type's list in the map
-		for (UpdateableSubscriptionType type : types) {
+		for (SubscriptionType type : types) {
 
 			// Get the current list of subscribers
 			ArrayList<IManagedUpdateableListener> tempListeners = subscriptionMap
@@ -313,7 +313,7 @@ public class UpdateableSubscriptionManager {
 	public void unregister(IManagedUpdateableListener listener) {
 
 		// Try to remove the listener from each individual subscription list.
-		for (UpdateableSubscriptionType category : subscriptionMap.keySet()) {
+		for (SubscriptionType category : subscriptionMap.keySet()) {
 			subscriptionMap.get(category).remove(listener);
 		}
 

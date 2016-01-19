@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A mesh component representing a polygon.
@@ -146,8 +146,8 @@ public class FaceMesh extends AbstractMesh {
 			properties = new HashMap<String, String>(otherObject.properties);
 
 			// Notify listeners of the change
-			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.ALL };
+			SubscriptionType[] eventTypes = {
+					SubscriptionType.ALL };
 			updateManager.notifyListeners(eventTypes);
 
 			// Fire an update

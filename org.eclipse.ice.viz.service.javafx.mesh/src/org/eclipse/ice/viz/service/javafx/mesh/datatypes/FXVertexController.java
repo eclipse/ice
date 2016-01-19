@@ -11,7 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.VertexController;
@@ -56,7 +56,7 @@ public class FXVertexController extends VertexController {
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] types) {
+			SubscriptionType[] types) {
 
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
@@ -66,9 +66,9 @@ public class FXVertexController extends VertexController {
 		if (component == model) {
 
 			// Only property or selection changes will change the view
-			for (UpdateableSubscriptionType type : types) {
-				if (type == UpdateableSubscriptionType.PROPERTY
-						|| type == UpdateableSubscriptionType.SELECTION) {
+			for (SubscriptionType type : types) {
+				if (type == SubscriptionType.PROPERTY
+						|| type == SubscriptionType.SELECTION) {
 					view.refresh(model);
 					break;
 				}

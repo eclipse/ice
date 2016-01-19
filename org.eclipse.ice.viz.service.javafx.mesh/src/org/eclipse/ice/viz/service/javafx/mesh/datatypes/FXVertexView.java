@@ -11,7 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
@@ -189,7 +189,7 @@ public class FXVertexView extends AbstractView {
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {

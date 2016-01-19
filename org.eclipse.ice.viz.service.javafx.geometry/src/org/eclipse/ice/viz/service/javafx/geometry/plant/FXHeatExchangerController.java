@@ -11,7 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
@@ -56,14 +56,14 @@ public class FXHeatExchangerController extends HeatExchangerController {
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
 
 		// Refresh the view, ignoring wireframe events from anything except this
 		// object's view
-		if (type[0] != UpdateableSubscriptionType.WIREFRAME
+		if (type[0] != SubscriptionType.WIREFRAME
 				|| component == view) {
 			view.refresh(model);
 		}

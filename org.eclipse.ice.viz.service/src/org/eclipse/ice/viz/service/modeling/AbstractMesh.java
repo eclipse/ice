@@ -19,7 +19,7 @@ import java.util.Map;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A component of the model. All models are built from collections of components
@@ -178,8 +178,8 @@ public class AbstractMesh
 	 */
 	public void setType(MeshType type) {
 		this.type = type;
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -249,14 +249,14 @@ public class AbstractMesh
 		// If a change occurred, send an update
 		if (changed) {
 
-			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
+			SubscriptionType[] eventTypes = new SubscriptionType[1];
 
 			// Check if the changed property was selection to send the proper
 			// update event.
 			if ("Selected".equals(property)) {
-				eventTypes[0] = UpdateableSubscriptionType.SELECTION;
+				eventTypes[0] = SubscriptionType.SELECTION;
 			} else {
-				eventTypes[0] = UpdateableSubscriptionType.PROPERTY;
+				eventTypes[0] = SubscriptionType.PROPERTY;
 			}
 			updateManager.notifyListeners(eventTypes);
 		}
@@ -309,8 +309,8 @@ public class AbstractMesh
 		}
 
 		if (found) {
-			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = {
+					SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 	}
@@ -357,8 +357,8 @@ public class AbstractMesh
 		// Register with the entity
 		newEntity.register(this);
 
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.CHILD };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.CHILD };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -403,7 +403,7 @@ public class AbstractMesh
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Pass the update to own listeners
 		updateManager.notifyListeners(type);
@@ -489,8 +489,8 @@ public class AbstractMesh
 		}
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.ALL };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -536,10 +536,10 @@ public class AbstractMesh
 	 * service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+	public ArrayList<SubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
-		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-		types.add(UpdateableSubscriptionType.ALL);
+		ArrayList<SubscriptionType> types = new ArrayList<SubscriptionType>();
+		types.add(SubscriptionType.ALL);
 		return types;
 	}
 

@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.modeling;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A Face component which keeps both its Edges and Vertices as its child
@@ -171,8 +171,8 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 			properties = new HashMap<String, String>(otherObject.properties);
 
 			// Notify listeners of the change
-			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.ALL };
+			SubscriptionType[] eventTypes = {
+					SubscriptionType.ALL };
 			updateManager.notifyListeners(eventTypes);
 
 			// Fire an update

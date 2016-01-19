@@ -22,7 +22,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * <p>
@@ -123,18 +123,18 @@ public class TestComponentListener
 	}
 
 	@Override
-	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+	public ArrayList<SubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
 
 		// Get all events
-		ArrayList<UpdateableSubscriptionType> subs = new ArrayList<UpdateableSubscriptionType>();
-		subs.add(UpdateableSubscriptionType.ALL);
+		ArrayList<SubscriptionType> subs = new ArrayList<SubscriptionType>();
+		subs.add(SubscriptionType.ALL);
 		return subs;
 	}
 
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Set the flag
 		wasNotified.set(true);

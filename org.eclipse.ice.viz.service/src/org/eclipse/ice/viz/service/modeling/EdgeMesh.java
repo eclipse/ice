@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A mesh component representing a line between two Vertices.
@@ -218,8 +218,8 @@ public class EdgeMesh extends AbstractMesh {
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.ALL };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 
 		// Release all queued messages

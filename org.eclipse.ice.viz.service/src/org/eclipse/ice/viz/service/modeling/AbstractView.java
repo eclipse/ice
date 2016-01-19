@@ -16,7 +16,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * The view of an AbstractMeshComponent shown to the user. The view is
@@ -84,8 +84,8 @@ public class AbstractView
 		transformation = newTransformation;
 
 		// Notify own listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.TRANSFORMATION };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.TRANSFORMATION };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -224,7 +224,7 @@ public class AbstractView
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Pass the update to own listeners
 		updateManager.notifyListeners(type);
@@ -254,8 +254,8 @@ public class AbstractView
 				.clone();
 
 		// Notify own listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.ALL };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -267,10 +267,10 @@ public class AbstractView
 	 * service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+	public ArrayList<SubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
-		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-		types.add(UpdateableSubscriptionType.ALL);
+		ArrayList<SubscriptionType> types = new ArrayList<SubscriptionType>();
+		types.add(SubscriptionType.ALL);
 		return types;
 	}
 

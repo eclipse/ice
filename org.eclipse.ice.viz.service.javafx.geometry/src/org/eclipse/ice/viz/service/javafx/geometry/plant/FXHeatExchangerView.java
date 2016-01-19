@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
@@ -447,8 +447,8 @@ public class FXHeatExchangerView extends AbstractView
 		}
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.WIREFRAME };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.WIREFRAME };
 		updateManager.notifyListeners(eventTypes);
 
 	}

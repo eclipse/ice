@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 
 /**
@@ -136,8 +136,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		translation[2] = translation[2] + other.translation[2];
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -235,8 +235,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		skew[2] = z;
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -254,8 +254,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		this.size = size;
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -283,8 +283,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		scale[2] = z;
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -312,8 +312,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		rotation[2] = zAxis;
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -341,8 +341,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		translation[2] = z;
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -371,8 +371,8 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 		}
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
+		SubscriptionType[] eventTypes = new SubscriptionType[1];
+		eventTypes[0] = SubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 
 	}

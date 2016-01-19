@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A point which specifically serves as the endpoint for one or more Edges. It
@@ -92,8 +92,8 @@ public class VertexMesh extends PointMesh {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = {
+					SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -150,8 +150,8 @@ public class VertexMesh extends PointMesh {
 		}
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 

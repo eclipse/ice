@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.modeling;
 
 import java.util.HashMap;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A mesh component representing a point in three dimensional space.
@@ -84,8 +84,8 @@ public class PointMesh extends AbstractMesh {
 	public void setX(double x) {
 		this.x = x;
 
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -107,8 +107,8 @@ public class PointMesh extends AbstractMesh {
 	public void setY(double y) {
 		this.y = y;
 
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -130,8 +130,8 @@ public class PointMesh extends AbstractMesh {
 	public void setZ(double z) {
 		this.z = z;
 
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -213,8 +213,8 @@ public class PointMesh extends AbstractMesh {
 		}
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 }

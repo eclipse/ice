@@ -11,7 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
@@ -408,7 +408,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {
@@ -441,8 +441,8 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		}
 
 		// Notify listeners of the change
-		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.WIREFRAME };
+		SubscriptionType[] eventTypes = {
+				SubscriptionType.WIREFRAME };
 		updateManager.notifyListeners(eventTypes);
 	}
 

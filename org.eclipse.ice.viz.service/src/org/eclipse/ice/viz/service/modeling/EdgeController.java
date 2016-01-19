@@ -11,7 +11,7 @@
 package org.eclipse.ice.viz.service.modeling;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A controller for an Edge part.
@@ -62,7 +62,7 @@ public class EdgeController extends AbstractController {
 
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Recalculate the edge's length
 		((EdgeMesh) model).calculateLength();

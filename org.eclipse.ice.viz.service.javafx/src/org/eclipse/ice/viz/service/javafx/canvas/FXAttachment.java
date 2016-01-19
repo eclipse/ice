@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
@@ -145,7 +145,7 @@ public class FXAttachment extends AbstractAttachment {
 			geom.register(new IManagedUpdateableListener() {
 				@Override
 				public void update(IManagedUpdateable component,
-						UpdateableSubscriptionType[] type) {
+						SubscriptionType[] type) {
 
 					javafx.application.Platform.runLater(new Runnable() {
 						@Override
@@ -158,12 +158,12 @@ public class FXAttachment extends AbstractAttachment {
 				}
 
 				@Override
-				public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+				public ArrayList<SubscriptionType> getSubscriptions(
 						IManagedUpdateable source) {
 
 					// Register to receive all updates
-					ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-					types.add(UpdateableSubscriptionType.ALL);
+					ArrayList<SubscriptionType> types = new ArrayList<SubscriptionType>();
+					types.add(SubscriptionType.ALL);
 					return types;
 				}
 			});

@@ -17,7 +17,7 @@ package org.eclipse.ice.viz.service.datastructures.VizObject;
  * @author r8s
  *
  */
-public enum UpdateableSubscriptionType {
+public enum SubscriptionType {
 	/**
 	 * A special value denoting that a listener should be update upon any kind
 	 * of event.

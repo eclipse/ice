@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
@@ -254,7 +254,7 @@ public class FXShapeController extends ShapeController
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// If the view updated, recursively refresh all children and propagate
 		// the update to own listeners
@@ -310,26 +310,26 @@ public class FXShapeController extends ShapeController
 	 * service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+	public ArrayList<SubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
 
 		// Create a list of events to subscribe to
-		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
+		ArrayList<SubscriptionType> types = new ArrayList<SubscriptionType>();
 
 		// Listen only to new child events from the model
 		if (source == model) {
-			types.add(UpdateableSubscriptionType.CHILD);
-			types.add(UpdateableSubscriptionType.SELECTION);
+			types.add(SubscriptionType.CHILD);
+			types.add(SubscriptionType.SELECTION);
 		}
 
 		// Listen only to transformation events from the view
 		else if (source == view) {
-			types.add(UpdateableSubscriptionType.TRANSFORMATION);
+			types.add(SubscriptionType.TRANSFORMATION);
 		}
 
 		// For other objects, register for everything
 		else {
-			types.add(UpdateableSubscriptionType.ALL);
+			types.add(SubscriptionType.ALL);
 		}
 		return types;
 	}

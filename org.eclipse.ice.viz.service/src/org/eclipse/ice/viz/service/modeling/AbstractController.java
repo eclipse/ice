@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
 /**
  * A class which is responsible for user interactions with the underlying data
@@ -136,8 +136,8 @@ public class AbstractController
 		// Atomically set the controller as disposed
 		disposed.getAndSet(newDisposed);
 
-		UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
-		eventType[0] = UpdateableSubscriptionType.PROPERTY;
+		SubscriptionType[] eventType = new SubscriptionType[1];
+		eventType[0] = SubscriptionType.PROPERTY;
 		updateManager.notifyListeners(eventType);
 	}
 
@@ -514,7 +514,7 @@ public class AbstractController
 	 */
 	@Override
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+			SubscriptionType[] type) {
 
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
@@ -549,10 +549,10 @@ public class AbstractController
 	 * service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+	public ArrayList<SubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
-		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-		types.add(UpdateableSubscriptionType.ALL);
+		ArrayList<SubscriptionType> types = new ArrayList<SubscriptionType>();
+		types.add(SubscriptionType.ALL);
 		return types;
 	}
 }

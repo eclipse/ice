@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
@@ -70,8 +70,8 @@ public class FXPlantViewRootController extends AbstractController
 			}
 
 			// Fire update for the added child
-			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[] {
-					UpdateableSubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = new SubscriptionType[] {
+					SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -90,8 +90,8 @@ public class FXPlantViewRootController extends AbstractController
 			}
 
 			// Fire update for the added child
-			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[] {
-					UpdateableSubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = new SubscriptionType[] {
+					SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 

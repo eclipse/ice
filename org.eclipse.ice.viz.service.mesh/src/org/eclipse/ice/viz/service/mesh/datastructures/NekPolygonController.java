@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.EdgeController;
@@ -140,8 +140,8 @@ public class NekPolygonController extends FaceController implements IVizUpdateab
 				condition.register(this);
 
 				// Notify listeners of the change.
-				UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
-				eventType[0] = UpdateableSubscriptionType.PROPERTY;
+				SubscriptionType[] eventType = new SubscriptionType[1];
+				eventType[0] = SubscriptionType.PROPERTY;
 				updateManager.notifyListeners(eventType);
 			}
 		}
@@ -198,8 +198,8 @@ public class NekPolygonController extends FaceController implements IVizUpdateab
 				condition.register(this);
 
 				// Notify listeners of the change.
-				UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
-				eventType[0] = UpdateableSubscriptionType.PROPERTY;
+				SubscriptionType[] eventType = new SubscriptionType[1];
+				eventType[0] = SubscriptionType.PROPERTY;
 				updateManager.notifyListeners(eventType);
 			}
 		}
@@ -262,8 +262,8 @@ public class NekPolygonController extends FaceController implements IVizUpdateab
 				condition.register(this);
 
 				// Notify listeners of the change.
-				UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
-				eventType[0] = UpdateableSubscriptionType.PROPERTY;
+				SubscriptionType[] eventType = new SubscriptionType[1];
+				eventType[0] = SubscriptionType.PROPERTY;
 				updateManager.notifyListeners(eventType);
 			}
 		}
@@ -367,8 +367,8 @@ public class NekPolygonController extends FaceController implements IVizUpdateab
 		// This is the IVizUpdateable update method, which will only be
 		// triggered by boundary conditions. Thus, this should trigger a
 		// Property type update for the part's own listeners
-		UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
-		eventType[0] = UpdateableSubscriptionType.PROPERTY;
+		SubscriptionType[] eventType = new SubscriptionType[1];
+		eventType[0] = SubscriptionType.PROPERTY;
 		updateManager.notifyListeners(eventType);
 	}
 

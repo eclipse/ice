@@ -30,7 +30,7 @@ public interface IManagedUpdateableListener {
 	 * @return An array of the event types the listener will be notified of
 	 *         during updates
 	 */
-	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
+	public ArrayList<SubscriptionType> getSubscriptions(
 			IManagedUpdateable source);
 
 	/**
@@ -43,5 +43,5 @@ public interface IManagedUpdateableListener {
 	 *            The event type that of the update
 	 */
 	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type);
+			SubscriptionType[] type);
 }

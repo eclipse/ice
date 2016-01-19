@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
@@ -475,6 +475,14 @@ public class AbstractControllerTester {
 		assertEquals(0, Double.compare(translation[1], 2));
 		assertEquals(0, Double.compare(translation[2], 3));
 	}
+
+	/**
+	 * 
+	 */
+	@Test
+	public void testEquality() {
+
+	}
 }
 
 /**
@@ -513,8 +521,7 @@ class TestController extends AbstractController {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 		updated = true;
 	}
 
@@ -568,8 +575,7 @@ class TestMesh extends AbstractMesh {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 		updated = true;
 		super.update(component, type);
 	}
@@ -631,8 +637,7 @@ class TestView extends AbstractView {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			UpdateableSubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 		updated = true;
 		super.update(component, type);
 	}
