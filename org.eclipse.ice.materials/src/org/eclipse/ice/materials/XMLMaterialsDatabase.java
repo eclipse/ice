@@ -208,7 +208,7 @@ public class XMLMaterialsDatabase
 				materialsMap.put(material.getName(), material);
 			}
 		} catch (JAXBException e) {
-			logger.error(getClass().getName() + " Exception!", e);
+			logger.error(getClass().getName() + " Exception! " + (fileToLoad == null), e);
 		}
 	}
 

@@ -41,6 +41,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.ExecutableEntry;
 import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -282,7 +283,7 @@ public class MOOSE extends Item {
 
 			// First and foremost, Get the application URI
 			// and see if it is a remote app or not
-			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
+			URI appUri = ((ExecutableEntry)modelFiles.retrieveEntry("MOOSE-Based Application")).getExecutableURI();
 			boolean isRemote = "ssh".equals(appUri.getScheme());
 
 			System.out.println("APPURI IS " + appUri + ", " + isRemote);
@@ -323,7 +324,6 @@ public class MOOSE extends Item {
 			// Configure the execute string
 			if (isRemote) {
 
-				System.out.println("Setting the New HOST NAME");
 				// Set the remote executable string
 				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
 						appUri.getRawPath() + " -i ${inputFile} --no-color");

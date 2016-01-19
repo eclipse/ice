@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.entry.ExecutableEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -194,7 +195,8 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 
 					// Create a variable for the Executable Value
 					String entryValue = null;
-
+					URI entryURI = null;
+					
 					// Create a MessageDialog to get whether the user
 					// wants to use a remote or local executable.
 					MessageDialog dialog = new MessageDialog(getShell(), "Local or Remote Application", null,
@@ -236,12 +238,14 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 						if (filePath != null) {
 							// Import the files
 							File importedFile = new File(filePath);
-							entryValue = importedFile.toURI().toString();
+							entryURI = importedFile.toURI();
+							//entryValue = importedFile.toURI().toString();
 						}
 					}
 
 					// If we got a valid entryValue, then let's set it.
-					if (entryValue != null && !entryValue.isEmpty()) {
+					if (entryURI != null) {
+						entryValue = new File(entryURI).getName();
 						// Create a new content provider with the new file
 						// in the allowed values list
 						List<String> valueList = entry.getAllowedValues();
@@ -253,7 +257,10 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 						// value
 						entry.setAllowedValues(valueList);
 
-
+						((ExecutableEntry)entry).setExecutableURI(entryURI);
+						
+						entry.setDescription("The full path of this application is " + entryURI.toString());
+						
 						// If it is executable just add its absolute path
 						setEntryValue(entryValue);
 

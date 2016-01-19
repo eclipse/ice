@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -55,7 +56,7 @@ public class TreeProperty {
 	/**
 	 * The actual "property" or "parameter".
 	 */
-	private final Entry entry;
+	private final IEntry entry;
 
 	/**
 	 * Whether or not the {@link #entry} is the adaptive type for the
@@ -81,7 +82,7 @@ public class TreeProperty {
 	 *            The actual "property" or "parameter".
 	 */
 	public TreeProperty(int id, TreeComposite tree, DataComponent dataNode,
-			Entry entry) {
+			IEntry entry) {
 		this.id = id;
 		this.tree = tree;
 		this.dataNode = dataNode;
@@ -134,7 +135,7 @@ public class TreeProperty {
 	 * @return The <code>Entry</code> corresponding to the tree property or
 	 *         parameter.
 	 */
-	public Entry getEntry() {
+	public IEntry getEntry() {
 		return entry;
 	}
 

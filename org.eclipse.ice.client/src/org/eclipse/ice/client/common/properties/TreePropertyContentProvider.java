@@ -21,11 +21,9 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
-import org.eclipse.ice.datastructures.entry.EntryConverter;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -150,7 +148,7 @@ public class TreePropertyContentProvider implements IStructuredContentProvider,
 					TreeProperty property;
 					for (IEntry entry : component.retrieveReadyEntries()) {
 						property = new TreeProperty(id.getAndIncrement(), tree,
-								component, EntryConverter.convert(entry));
+								component, entry);
 						properties.add(property);
 					}
 				}

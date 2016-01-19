@@ -393,13 +393,13 @@ public class MOOSEModel extends Item {
 	 * with the name "executuableName.yaml" that it can load. It throws an
 	 * IOException if it cannot find a match.
 	 *
-	 * @param mooseExecutableName
+	 * @param mooseSpecFileEntry
 	 *            The name of the MOOSE executable whose YAML input
 	 *            specification should be loaded into the Form's TreeComposite.
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	protected void loadTreeContents(String mooseExecutableName) throws IOException, CoreException {
+	protected void loadTreeContents(ExecutableEntry mooseSpecFileEntry) throws IOException, CoreException {
 
 		// Local Declarations
 		TreeComposite mooseParentTree = (TreeComposite) form.getComponent(mooseTreeCompositeId), tmpParentTree;
@@ -416,7 +416,7 @@ public class MOOSEModel extends Item {
 			}
 
 			// Create the URI from the user's application path
-			URI uri = URI.create(mooseExecutableName);
+			URI uri = mooseSpecFileEntry.getExecutableURI();
 			IFile yamlFile = null, syntaxFile = null;
 
 			if ("ssh".equals(uri.getScheme())) {
@@ -564,7 +564,7 @@ public class MOOSEModel extends Item {
 		if (mooseFileComponent != null) {
 
 			// Get the entry that stores the currently-selected MOOSE app name
-			IEntry mooseSpecFileEntry = mooseFileComponent.retrieveEntry("MOOSE-Based Application");
+			ExecutableEntry mooseSpecFileEntry = (ExecutableEntry) mooseFileComponent.retrieveEntry("MOOSE-Based Application");
 
 			// Load the MOOSE-based application if it is different than the one
 			// currently loaded.
@@ -583,7 +583,7 @@ public class MOOSEModel extends Item {
 					TreeComposite inputTree = (TreeComposite) preparedForm.getComponent(mooseTreeCompositeId).clone();
 
 					try {
-						loadTreeContents(loadedApp);
+						loadTreeContents(mooseSpecFileEntry);
 					} catch (IOException | CoreException e) {
 						logger.error(getClass().getName() + " Exception!",e);
 					}
@@ -597,14 +597,14 @@ public class MOOSEModel extends Item {
 					// Save this App as a Preference
 					IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
 					try {
-						URI uri = new URI(loadedApp);
+						URI uri = mooseSpecFileEntry.getExecutableURI();
 						if ("ssh".equals(uri.getScheme())) {
 							prefs.put(uri.getRawPath(), loadedApp);
 						} else {
 							prefs.put(uri.getRawPath(), loadedApp);
 						}
 						prefs.flush();
-					} catch (BackingStoreException | URISyntaxException e) {
+					} catch (BackingStoreException e) {
 						logger.error(getClass().getName() + " Exception!",e);
 					}
 
@@ -1227,8 +1227,9 @@ public class MOOSEModel extends Item {
 
 						// Set the value
 						String oldValue = inputParameter.getValue();
+						//System.out.println("Param: " + paramClone.getName() + ", " + inputParameter.getName() + ", " + inputParameter.getValue());
 						paramClone.setValue(paramClone.getAllowedValues().contains(oldValue) ? oldValue
-								: paramClone.getAllowedValues().get(0));
+								: (!paramClone.getAllowedValues().isEmpty() ? paramClone.getAllowedValues().get(0) : ""));
 
 						// Set the new parameter on the data node
 						inputNode.deleteEntry(inputParameter.getName());
