@@ -172,7 +172,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 
 			// Notify listeners of the change
 			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.All };
+					UpdateableSubscriptionType.ALL };
 			updateManager.notifyListeners(eventTypes);
 
 			// Fire an update

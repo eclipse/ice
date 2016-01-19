@@ -128,7 +128,7 @@ public class TestComponentListener
 
 		// Get all events
 		ArrayList<UpdateableSubscriptionType> subs = new ArrayList<UpdateableSubscriptionType>();
-		subs.add(UpdateableSubscriptionType.All);
+		subs.add(UpdateableSubscriptionType.ALL);
 		return subs;
 	}
 

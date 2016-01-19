@@ -13,6 +13,7 @@
 package org.eclipse.ice.viz.service.datastructures.VizObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -150,6 +151,18 @@ public class UpdateableSubscriptionManager {
 		// If not in queue mode, notify the listeners
 		else {
 
+			// A map from a temporary identification number to the listener
+			// associated with it
+			HashMap<Integer, IManagedUpdateableListener> listenerMap = new HashMap<Integer, IManagedUpdateableListener>();
+
+			// A map from a temporary identification number to the a list of
+			// subscription types
+			HashMap<Integer, ArrayList<UpdateableSubscriptionType>> messageMap = new HashMap<Integer, ArrayList<UpdateableSubscriptionType>>();
+
+			// The next ID number to use when a new listener is encountered in
+			// the below search
+			int nextID = 0;
+
 			// Check each event type with registered listeners in the map
 			for (UpdateableSubscriptionType listenerType : subscriptionMap
 					.keySet()) {
@@ -158,7 +171,7 @@ public class UpdateableSubscriptionManager {
 				boolean match = false;
 
 				// Listeners for all events are automatically updated
-				if (listenerType == UpdateableSubscriptionType.All) {
+				if (listenerType == UpdateableSubscriptionType.ALL) {
 					match = true;
 				}
 
@@ -166,7 +179,8 @@ public class UpdateableSubscriptionManager {
 
 					// Check each event type to see if one matches
 					for (UpdateableSubscriptionType eventType : eventTypes) {
-						if (listenerType == eventType) {
+						if (listenerType == eventType
+								&& eventType != UpdateableSubscriptionType.ALL) {
 							match = true;
 							break;
 						}
@@ -180,15 +194,69 @@ public class UpdateableSubscriptionManager {
 					ArrayList<IManagedUpdateableListener> listeners = subscriptionMap
 							.get(listenerType);
 
-					// Update each listener, providing event types if it can
-					// handle that kind of input
+					// Place each listener and the correct event types in the
+					// maps, assigning each a temporary matching ID.
 					for (IManagedUpdateableListener listener : listeners) {
-						listener.update(source, eventTypes);
 
+						// If the listener is already in the map...
+						if (listenerMap.containsValue(listener)) {
+
+							// Search for the ID value for the listener
+							for (Integer i : listenerMap.keySet()) {
+
+								// When a match is found, add the new type to
+								// the map of messages for that ID
+								if (listenerMap.get(i) == listener) {
+									ArrayList<UpdateableSubscriptionType> list = messageMap
+											.get(i);
+									list.add(listenerType);
+									messageMap.put(i, list);
+								}
+							}
+						}
+
+						// If the listener is not already in the map, place it
+						// there
+						else {
+
+							// Put the listener in the listener map
+							listenerMap.put(nextID, listener);
+
+							// Create a list of subscription types
+							ArrayList<UpdateableSubscriptionType> list;
+
+							// If the type isn't ALL, initialize the list with
+							// the current message type
+							if (listenerType != UpdateableSubscriptionType.ALL) {
+								list = new ArrayList<UpdateableSubscriptionType>();
+								list.add(listenerType);
+							}
+
+							// If the type is ALL, put all the queued
+							// subscription types in the list
+							else {
+
+								list = new ArrayList<UpdateableSubscriptionType>(
+										Arrays.asList(eventTypes));
+							}
+							messageMap.put(nextID, list);
+
+							// Increment the ID
+							nextID++;
+						}
 					}
 				}
 
 			}
+
+			// For each listener, send it the message types it is subscribed for
+			for (int i = 0; i < nextID; i++) {
+				UpdateableSubscriptionType[] list = new UpdateableSubscriptionType[messageMap
+						.get(i).size()];
+				list = messageMap.get(i).toArray(list);
+				listenerMap.get(i).update(source, list);
+			}
+
 		}
 	}
 

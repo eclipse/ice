@@ -63,7 +63,7 @@ public class FXHeatExchangerController extends HeatExchangerController {
 
 		// Refresh the view, ignoring wireframe events from anything except this
 		// object's view
-		if (type[0] != UpdateableSubscriptionType.Wireframe
+		if (type[0] != UpdateableSubscriptionType.WIREFRAME
 				|| component == view) {
 			view.refresh(model);
 		}

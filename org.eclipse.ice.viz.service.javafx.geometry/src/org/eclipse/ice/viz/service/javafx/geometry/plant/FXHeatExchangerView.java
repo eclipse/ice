@@ -448,7 +448,7 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Wireframe };
+				UpdateableSubscriptionType.WIREFRAME };
 		updateManager.notifyListeners(eventTypes);
 
 	}

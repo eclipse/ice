@@ -67,8 +67,8 @@ public class FXVertexController extends VertexController {
 
 			// Only property or selection changes will change the view
 			for (UpdateableSubscriptionType type : types) {
-				if (type == UpdateableSubscriptionType.Property
-						|| type == UpdateableSubscriptionType.Selection) {
+				if (type == UpdateableSubscriptionType.PROPERTY
+						|| type == UpdateableSubscriptionType.SELECTION) {
 					view.refresh(model);
 					break;
 				}

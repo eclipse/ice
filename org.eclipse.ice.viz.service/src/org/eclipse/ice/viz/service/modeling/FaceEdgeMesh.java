@@ -90,7 +90,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 			entities.put(category, catList);
 
 			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.Child };
+					UpdateableSubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -147,7 +147,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.All };
+				UpdateableSubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 
 		// Release all queued messages

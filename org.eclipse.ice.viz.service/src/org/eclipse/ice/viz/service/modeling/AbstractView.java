@@ -85,7 +85,7 @@ public class AbstractView
 
 		// Notify own listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Transformation };
+				UpdateableSubscriptionType.TRANSFORMATION };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -255,7 +255,7 @@ public class AbstractView
 
 		// Notify own listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.All };
+				UpdateableSubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -270,7 +270,7 @@ public class AbstractView
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-		types.add(UpdateableSubscriptionType.All);
+		types.add(UpdateableSubscriptionType.ALL);
 		return types;
 	}
 

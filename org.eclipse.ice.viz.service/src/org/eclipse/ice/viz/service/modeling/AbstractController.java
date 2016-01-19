@@ -137,7 +137,7 @@ public class AbstractController
 		disposed.getAndSet(newDisposed);
 
 		UpdateableSubscriptionType[] eventType = new UpdateableSubscriptionType[1];
-		eventType[0] = UpdateableSubscriptionType.Property;
+		eventType[0] = UpdateableSubscriptionType.PROPERTY;
 		updateManager.notifyListeners(eventType);
 	}
 
@@ -552,7 +552,7 @@ public class AbstractController
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-		types.add(UpdateableSubscriptionType.All);
+		types.add(UpdateableSubscriptionType.ALL);
 		return types;
 	}
 }

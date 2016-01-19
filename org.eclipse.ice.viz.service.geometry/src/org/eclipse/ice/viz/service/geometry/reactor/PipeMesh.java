@@ -154,7 +154,7 @@ public class PipeMesh extends TubeMesh {
 
 			// Notify listeners of the new child
 			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.Child };
+					UpdateableSubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 

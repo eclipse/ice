@@ -93,7 +93,7 @@ public class VertexMesh extends PointMesh {
 			entities.put(category, catList);
 
 			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.Child };
+					UpdateableSubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -151,7 +151,7 @@ public class VertexMesh extends PointMesh {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 

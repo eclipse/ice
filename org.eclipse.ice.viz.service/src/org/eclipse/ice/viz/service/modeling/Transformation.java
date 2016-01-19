@@ -137,7 +137,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -236,7 +236,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -255,7 +255,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -284,7 +284,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -313,7 +313,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -342,7 +342,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -372,7 +372,7 @@ public class Transformation extends VizObject implements IManagedUpdateable {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[1];
-		eventTypes[0] = UpdateableSubscriptionType.Transformation;
+		eventTypes[0] = UpdateableSubscriptionType.TRANSFORMATION;
 		updateManager.notifyListeners(eventTypes);
 
 	}

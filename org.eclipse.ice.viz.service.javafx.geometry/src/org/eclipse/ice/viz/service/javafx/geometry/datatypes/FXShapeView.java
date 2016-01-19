@@ -442,7 +442,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Wireframe };
+				UpdateableSubscriptionType.WIREFRAME };
 		updateManager.notifyListeners(eventTypes);
 	}
 

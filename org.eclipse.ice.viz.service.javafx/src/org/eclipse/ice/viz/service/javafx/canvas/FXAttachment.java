@@ -163,7 +163,7 @@ public class FXAttachment extends AbstractAttachment {
 
 					// Register to receive all updates
 					ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-					types.add(UpdateableSubscriptionType.All);
+					types.add(UpdateableSubscriptionType.ALL);
 					return types;
 				}
 			});

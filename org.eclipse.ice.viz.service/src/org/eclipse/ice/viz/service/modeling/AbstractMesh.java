@@ -179,7 +179,7 @@ public class AbstractMesh
 	public void setType(MeshType type) {
 		this.type = type;
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -254,9 +254,9 @@ public class AbstractMesh
 			// Check if the changed property was selection to send the proper
 			// update event.
 			if ("Selected".equals(property)) {
-				eventTypes[0] = UpdateableSubscriptionType.Selection;
+				eventTypes[0] = UpdateableSubscriptionType.SELECTION;
 			} else {
-				eventTypes[0] = UpdateableSubscriptionType.Property;
+				eventTypes[0] = UpdateableSubscriptionType.PROPERTY;
 			}
 			updateManager.notifyListeners(eventTypes);
 		}
@@ -310,7 +310,7 @@ public class AbstractMesh
 
 		if (found) {
 			UpdateableSubscriptionType[] eventTypes = {
-					UpdateableSubscriptionType.Child };
+					UpdateableSubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 	}
@@ -358,7 +358,7 @@ public class AbstractMesh
 		newEntity.register(this);
 
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Child };
+				UpdateableSubscriptionType.CHILD };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -490,7 +490,7 @@ public class AbstractMesh
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.All };
+				UpdateableSubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -539,7 +539,7 @@ public class AbstractMesh
 	public ArrayList<UpdateableSubscriptionType> getSubscriptions(
 			IManagedUpdateable source) {
 		ArrayList<UpdateableSubscriptionType> types = new ArrayList<UpdateableSubscriptionType>();
-		types.add(UpdateableSubscriptionType.All);
+		types.add(UpdateableSubscriptionType.ALL);
 		return types;
 	}
 

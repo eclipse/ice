@@ -42,17 +42,17 @@ public class UpdateableSubscriptionManagerTester {
 
 		// Create a listener for the object
 		ArrayList<UpdateableSubscriptionType> allList = new ArrayList<UpdateableSubscriptionType>();
-		allList.add(UpdateableSubscriptionType.All);
+		allList.add(UpdateableSubscriptionType.ALL);
 		TestListener listener = new TestListener(allList);
 		source.register(listener);
 
 		// Create a list containing the CHILD type
 		ArrayList<UpdateableSubscriptionType> list = new ArrayList<UpdateableSubscriptionType>();
-		list.add(UpdateableSubscriptionType.Child);
+		list.add(UpdateableSubscriptionType.CHILD);
 
 		// Create a list containing the PROPERTY type
 		ArrayList<UpdateableSubscriptionType> propertyList = new ArrayList<UpdateableSubscriptionType>();
-		propertyList.add(UpdateableSubscriptionType.Property);
+		propertyList.add(UpdateableSubscriptionType.PROPERTY);
 
 		// Check that the listener receives updates normally
 		source.sendUpdate(list);
@@ -71,7 +71,61 @@ public class UpdateableSubscriptionManagerTester {
 		manager.flushQueue();
 		assertTrue(listener.gotChild());
 
-		// Check that every message
+		// Check that every message type is queued
+		manager.enqueue();
+		source.sendUpdate(propertyList);
+		source.sendUpdate(list);
+		manager.flushQueue();
+		assertTrue(listener.gotChild());
+		assertTrue(listener.gotProperty());
+		assertFalse(listener.gotAll());
+
+		// Check that the queue is not flushed until the manager receives a
+		// number of flush requests equal to the number of queue requests it has
+		// received
+		manager.enqueue();
+		manager.enqueue();
+		source.sendUpdate(propertyList);
+		assertFalse(listener.gotProperty());
+
+		// Flushing the queue once should not release the manager's messages
+		manager.flushQueue();
+		assertFalse(listener.gotProperty());
+
+		// Flushing it again should release them
+		manager.flushQueue();
+		assertTrue(listener.gotProperty());
+
+		// Add a parent manager
+		TestUpdateable parentSource = new TestUpdateable();
+		UpdateableSubscriptionManager parent = parentSource.getManager();
+		manager.setParent(parent);
+
+		// Create a listener for the object
+		TestListener parentListener = new TestListener(allList);
+		parentSource.register(parentListener);
+
+		// Queuing the child should block the parent's messages
+		manager.enqueue();
+		parentSource.sendUpdate(propertyList);
+		assertFalse(parentListener.gotProperty());
+
+		// Flushing the child should flush the parent
+		manager.flushQueue();
+		assertTrue(parentListener.gotProperty());
+
+		// Flushing the child should be equivalent to invoking flushQueue() on
+		// the parent once. Thus it should not automatically release the queued
+		// state if other queueing requests have come in.
+		parent.enqueue();
+		manager.enqueue();
+		parentSource.sendUpdate(propertyList);
+		manager.flushQueue();
+		assertFalse(parentListener.gotProperty());
+
+		// Releasing the parent's queue afterwards should send the messages
+		parent.flushQueue();
+		assertTrue(parentListener.gotProperty());
 	}
 
 	/**
@@ -79,30 +133,31 @@ public class UpdateableSubscriptionManagerTester {
 	 */
 	@Test
 	public void checkMessageTypes() {
+
 		// Create an object to listen to
 		TestUpdateable source = new TestUpdateable();
 
 		// A list that specifies all subscription types
 		ArrayList<UpdateableSubscriptionType> allList = new ArrayList<UpdateableSubscriptionType>();
-		allList.add(UpdateableSubscriptionType.All);
+		allList.add(UpdateableSubscriptionType.ALL);
 
 		// A list that specifies the child and property subscription types
 		ArrayList<UpdateableSubscriptionType> childPropertyList = new ArrayList<UpdateableSubscriptionType>();
-		childPropertyList.add(UpdateableSubscriptionType.Child);
-		childPropertyList.add(UpdateableSubscriptionType.Property);
+		childPropertyList.add(UpdateableSubscriptionType.CHILD);
+		childPropertyList.add(UpdateableSubscriptionType.PROPERTY);
 
 		// A list that specifies the child and transformation subscription types
 		ArrayList<UpdateableSubscriptionType> childTransformationList = new ArrayList<UpdateableSubscriptionType>();
-		childTransformationList.add(UpdateableSubscriptionType.Child);
-		childTransformationList.add(UpdateableSubscriptionType.Property);
+		childTransformationList.add(UpdateableSubscriptionType.CHILD);
+		childTransformationList.add(UpdateableSubscriptionType.TRANSFORMATION);
 
 		// A list that specifies the child subscription type
 		ArrayList<UpdateableSubscriptionType> childList = new ArrayList<UpdateableSubscriptionType>();
-		childList.add(UpdateableSubscriptionType.Child);
+		childList.add(UpdateableSubscriptionType.CHILD);
 
 		// A list that specifies the property subscription type
 		ArrayList<UpdateableSubscriptionType> propertyList = new ArrayList<UpdateableSubscriptionType>();
-		propertyList.add(UpdateableSubscriptionType.Property);
+		propertyList.add(UpdateableSubscriptionType.PROPERTY);
 
 		// Create a listener that will receive all updates
 		TestListener listener = new TestListener(allList);
@@ -110,6 +165,7 @@ public class UpdateableSubscriptionManagerTester {
 
 		// Create a listener that will only receive CHILD type updates
 		TestListener childListener = new TestListener(childList);
+		source.register(childListener);
 
 		// Send a child update and check that it was received.
 		source.sendUpdate(childList);
@@ -139,25 +195,71 @@ public class UpdateableSubscriptionManagerTester {
 		assertFalse(childListener.gotProperty());
 		assertFalse(childListener.gotAll());
 
-		// Send child and property updates, and check that bother were received
+		// Send child and property updates, and check that both were received
 		source.sendUpdate(childPropertyList);
-		assertFalse(listener.gotChild());
+		assertTrue(listener.gotChild());
 		assertTrue(listener.gotProperty());
 		assertFalse(listener.gotAll());
-		assertFalse(childListener.gotChild());
+		assertTrue(childListener.gotChild());
 		assertFalse(childListener.gotProperty());
 		assertFalse(childListener.gotAll());
 
-		// Send an ALL update, and check that nothing was received, as ALL is
-		// not a valid type for a message to send.
-		source.sendUpdate(allList);
-		assertFalse(listener.gotChild());
+	}
+
+	/**
+	 * Check that listeners are registered and unregistered correctly.
+	 */
+	@Test
+	public void checkRegistration() {
+
+		// Create an object to listen to
+		TestUpdateable source = new TestUpdateable();
+
+		// A list that specifies the property subscription type
+		ArrayList<UpdateableSubscriptionType> propertyList = new ArrayList<UpdateableSubscriptionType>();
+		propertyList.add(UpdateableSubscriptionType.PROPERTY);
+
+		// Create two listeners that will receive property updates
+		TestListener listener = new TestListener(propertyList);
+		source.register(listener);
+
+		// Check that the listener receives updates
+		source.sendUpdate(propertyList);
+		assertTrue(listener.gotProperty());
+
+		// Remove the listener and check that it no longer receives updates
+		source.unregister(listener);
+		source.sendUpdate(propertyList);
 		assertFalse(listener.gotProperty());
-		assertFalse(listener.gotAll());
-		assertFalse(childListener.gotChild());
-		assertFalse(childListener.gotProperty());
-		assertFalse(childListener.gotAll());
 
+		// Add two listeners and check that both receive updates
+		TestListener listener2 = new TestListener(propertyList);
+		source.register(listener);
+		source.register(listener2);
+		source.sendUpdate(propertyList);
+		assertTrue(listener.gotProperty());
+		assertTrue(listener2.gotProperty());
+
+		// Remove them both and check that neither receives updates
+		source.unregister(listener);
+		source.unregister(listener2);
+		source.sendUpdate(propertyList);
+		assertFalse(listener.gotProperty());
+		assertFalse(listener2.gotProperty());
+
+		// Check that listeners are notified based on the manager's state at the
+		// time the queue is flushed, rather than when messages are sent
+		source.register(listener);
+		source.register(listener2);
+		source.getManager().enqueue();
+		source.sendUpdate(propertyList);
+		source.unregister(listener);
+		source.getManager().flushQueue();
+
+		// Listener2 should have received the update. Listener, which was
+		// unregistered before the queue was flushed, should not
+		assertFalse(listener.gotProperty());
+		assertTrue(listener2.gotProperty());
 	}
 
 	/**
@@ -229,15 +331,15 @@ public class UpdateableSubscriptionManagerTester {
 			// true if it matches one of the checked types
 			for (UpdateableSubscriptionType type : types) {
 
-				if (type == UpdateableSubscriptionType.Property) {
+				if (type == UpdateableSubscriptionType.PROPERTY) {
 					propertyNotified = true;
 				}
 
-				else if (type == UpdateableSubscriptionType.Child) {
+				else if (type == UpdateableSubscriptionType.CHILD) {
 					childNotified = true;
 				}
 
-				else if (type == UpdateableSubscriptionType.All) {
+				else if (type == UpdateableSubscriptionType.ALL) {
 					allNotified = true;
 				}
 			}
@@ -255,7 +357,7 @@ public class UpdateableSubscriptionManagerTester {
 		public boolean gotAll() {
 			boolean temp = allNotified;
 			allNotified = false;
-			return allNotified;
+			return temp;
 		}
 
 		/**
@@ -270,7 +372,7 @@ public class UpdateableSubscriptionManagerTester {
 		public boolean gotChild() {
 			boolean temp = childNotified;
 			childNotified = false;
-			return childNotified;
+			return temp;
 		}
 
 		/**
@@ -285,7 +387,7 @@ public class UpdateableSubscriptionManagerTester {
 		public boolean gotProperty() {
 			boolean temp = propertyNotified;
 			propertyNotified = false;
-			return propertyNotified;
+			return temp;
 		}
 
 	}
@@ -315,8 +417,12 @@ public class UpdateableSubscriptionManagerTester {
 		}
 
 		public void sendUpdate(ArrayList<UpdateableSubscriptionType> types) {
-			manager.notifyListeners(
-					(UpdateableSubscriptionType[]) types.toArray());
+
+			// Convert the array list to an array and send it to the manager
+			UpdateableSubscriptionType[] temp = new UpdateableSubscriptionType[types
+					.size()];
+			temp = types.toArray(temp);
+			manager.notifyListeners(temp);
 		}
 
 		/*

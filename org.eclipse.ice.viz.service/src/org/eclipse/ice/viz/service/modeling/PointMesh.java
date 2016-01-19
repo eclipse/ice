@@ -85,7 +85,7 @@ public class PointMesh extends AbstractMesh {
 		this.x = x;
 
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -108,7 +108,7 @@ public class PointMesh extends AbstractMesh {
 		this.y = y;
 
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -131,7 +131,7 @@ public class PointMesh extends AbstractMesh {
 		this.z = z;
 
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -214,7 +214,7 @@ public class PointMesh extends AbstractMesh {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Property };
+				UpdateableSubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 }

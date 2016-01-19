@@ -60,7 +60,7 @@ public class ShapeMesh extends AbstractMesh {
 		register(parent);
 
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.Child };
+				UpdateableSubscriptionType.CHILD };
 		updateManager.notifyListeners(eventTypes);
 
 	}
@@ -181,7 +181,7 @@ public class ShapeMesh extends AbstractMesh {
 		properties = new HashMap<String, String>(source.properties);
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.All };
+				UpdateableSubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 

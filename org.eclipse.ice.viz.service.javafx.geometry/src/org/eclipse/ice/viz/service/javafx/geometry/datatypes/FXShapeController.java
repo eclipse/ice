@@ -318,18 +318,18 @@ public class FXShapeController extends ShapeController
 
 		// Listen only to new child events from the model
 		if (source == model) {
-			types.add(UpdateableSubscriptionType.Child);
-			types.add(UpdateableSubscriptionType.Selection);
+			types.add(UpdateableSubscriptionType.CHILD);
+			types.add(UpdateableSubscriptionType.SELECTION);
 		}
 
 		// Listen only to transformation events from the view
 		else if (source == view) {
-			types.add(UpdateableSubscriptionType.Transformation);
+			types.add(UpdateableSubscriptionType.TRANSFORMATION);
 		}
 
 		// For other objects, register for everything
 		else {
-			types.add(UpdateableSubscriptionType.All);
+			types.add(UpdateableSubscriptionType.ALL);
 		}
 		return types;
 	}

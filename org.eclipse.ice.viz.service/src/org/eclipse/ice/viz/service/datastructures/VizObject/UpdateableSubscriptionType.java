@@ -22,36 +22,36 @@ public enum UpdateableSubscriptionType {
 	 * A special value denoting that a listener should be update upon any kind
 	 * of event.
 	 */
-	All,
+	ALL,
 
 	/**
 	 * Child events are fired when an object has a child object added or removed
 	 * from it.
 	 */
-	Child,
+	CHILD,
 
 	/**
 	 * Property events are fired when an object's properties are changed,
 	 * disregarding properties which are covered by another event type on this
 	 * list.
 	 */
-	Property,
+	PROPERTY,
 
 	/**
 	 * Selection events are fired when an object is selected or deselected.
 	 */
-	Selection,
+	SELECTION,
 
 	/**
 	 * Wireframe events are fired when a part is redrawn in wireframe mode, or a
 	 * wireframe part is redrawn as a non-wireframe
 	 */
-	Wireframe,
+	WIREFRAME,
 
 	/**
 	 * Transformation events are fired when an object's graphical transformation
 	 * is changed.
 	 */
-	Transformation
+	TRANSFORMATION
 
 }

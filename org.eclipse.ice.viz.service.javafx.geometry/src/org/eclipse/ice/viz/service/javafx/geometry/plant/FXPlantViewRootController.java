@@ -71,7 +71,7 @@ public class FXPlantViewRootController extends AbstractController
 
 			// Fire update for the added child
 			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[] {
-					UpdateableSubscriptionType.Child };
+					UpdateableSubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -91,7 +91,7 @@ public class FXPlantViewRootController extends AbstractController
 
 			// Fire update for the added child
 			UpdateableSubscriptionType[] eventTypes = new UpdateableSubscriptionType[] {
-					UpdateableSubscriptionType.Child };
+					UpdateableSubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 

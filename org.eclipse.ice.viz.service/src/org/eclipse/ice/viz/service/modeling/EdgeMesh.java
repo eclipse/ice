@@ -219,7 +219,7 @@ public class EdgeMesh extends AbstractMesh {
 
 		// Notify listeners of the change
 		UpdateableSubscriptionType[] eventTypes = {
-				UpdateableSubscriptionType.All };
+				UpdateableSubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 
 		// Release all queued messages
