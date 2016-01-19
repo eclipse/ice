@@ -178,15 +178,14 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 	@Override
 	public void refresh() {
 
-		// Print an error if this Entry has been prematurely disposed.
-		if (isDisposed()) {
-			logger.info("EntryComposite Message: "
-					+ "This composite has been prematurely disposed!");
-			return;
+		logger.info("Refresh called for " + entry.getName());
+		if (label != null) {
+			label.dispose();
+			label = null;
 		}
-
+		
 		if (widget != null) {
-			System.out.println("DISPOSING WIDGET : " + entry.getName());
+			logger.info("Disposing widget - " + widget.getClass().getCanonicalName());
 			widget.dispose();
 			widget = null;
 		}
@@ -199,6 +198,13 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 		// Remove all of the previous buttons.
 		buttons.clear();
+
+		// Print an error if this Entry has been prematurely disposed.
+		if (isDisposed()) {
+			logger.info("EntryComposite Message: "
+					+ "This composite has been prematurely disposed!");
+			return;
+		}
 
 		// Remove the resize listener.
 		if (resizeListener != null) {
@@ -336,7 +342,8 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 				@Override
 				public void run() {
 					if (!AbstractEntryComposite.this.isDisposed()) {
-
+						logger.info("Updating " + entry.getName() + " Entry Composite.");
+					
 						// Refresh the EntryComposite
 						refresh();
 

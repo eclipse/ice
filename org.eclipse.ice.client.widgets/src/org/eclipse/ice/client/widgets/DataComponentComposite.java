@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * DataComponents. It can take a message manager for posting messages and it can
  * be configured to post save events.
  *
- * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz
+ * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz, Alex McCaskey
  */
 public class DataComponentComposite extends Composite implements IUpdateableListener {
 
@@ -417,8 +417,10 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		// Local Declarations
 		IEntryComposite entryComposite = null;
 
+		// Create the Provider for Entry Composites
 		IEntryCompositeProvider provider = new DefaultEntryCompositeProvider();
 
+		// Check if we need to use a custom provider
 		if (!"default".equals(entry.getContext())) {
 			try {
 				for (IEntryCompositeProvider p : IEntryCompositeProvider.getProviders()) {
@@ -432,10 +434,10 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 			}
 		}
 
-		// Create the AbstractEntryComposite.
+		// Create the IEntryComposite.
 		entryComposite = provider.getEntryComposite(this, entry, SWT.FLAT, formToolkit);
 
-		// Add the AbstractEntryComposite to the Map
+		// Add theIEntryComposite to the Map
 		entryMap.put(index, entryComposite);
 
 		// Lastly, reorder the EntryComposites on this DataComponentComposite
@@ -444,9 +446,9 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		// Begin by getting a list of the EntryComposites as they appear in the
 		// UI, and make a map indexing them based on their order.
 		List<Control> uiEntryComps = Arrays.asList(getChildren());
-		HashMap<Integer, AbstractEntryComposite> uiMap = new HashMap<Integer, AbstractEntryComposite>();
+		HashMap<Integer, IEntryComposite> uiMap = new HashMap<Integer, IEntryComposite>();
 		for (int i = 0; i < uiEntryComps.size(); i++) {
-			AbstractEntryComposite e = (AbstractEntryComposite) uiEntryComps.get(i);
+			IEntryComposite e = (IEntryComposite) uiEntryComps.get(i);
 			if (e != null) {
 				uiMap.put(i, e);
 			}
@@ -461,7 +463,7 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 			if (entryMap.get(i) != null)
 				mapEntry = entryMap.get(i).getEntry();
 			if (uiMap.get(i) != null)
-				uiEntry = uiMap.get(i).entry;
+				uiEntry = uiMap.get(i).getEntry();
 			if (mapEntry == null || uiEntry == null) {
 				continue;
 			}
@@ -471,7 +473,7 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 			int uiPosition = 0;
 			if (!mapEntry.getName().equals(uiEntry.getName())) {
 				for (int j = 0; j < uiEntryComps.size(); j++) {
-					IEntry e = uiMap.get(j).entry;
+					IEntry e = uiMap.get(j).getEntry();
 					if (e.getName().equals(mapEntry.getName())) {
 						uiPosition = j;
 						break;
@@ -482,20 +484,20 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 				if (i - 1 >= 0) {
 					// Try getting the AbstractEntryComposite above the proper
 					// location
-					AbstractEntryComposite entryAbove = uiMap.get(i - 1);
+					IEntryComposite entryAbove = uiMap.get(i - 1);
 					// Move the UI AbstractEntryComposite into its correct
 					// position
 					if (entryAbove != null) {
-						uiMap.get(uiPosition).moveBelow(entryAbove);
+						uiMap.get(uiPosition).getComposite().moveBelow(entryAbove.getComposite());
 					}
 				} else if (i + 1 <= entryMap.size()) {
 					// Try getting the AbstractEntryComposite below the proper
 					// location
-					AbstractEntryComposite entryBelow = uiMap.get(i + 1);
+					IEntryComposite entryBelow = uiMap.get(i + 1);
 					// Move the UI AbstractEntryComposite into its correct
 					// position
 					if (entryBelow != null) {
-						uiMap.get(uiPosition).moveAbove(entryBelow);
+						uiMap.get(uiPosition).getComposite().moveAbove(entryBelow.getComposite());
 					}
 				}
 			}

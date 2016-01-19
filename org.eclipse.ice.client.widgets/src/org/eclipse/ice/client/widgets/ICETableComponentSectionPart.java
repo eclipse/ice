@@ -17,9 +17,8 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.EntryConverter;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -116,7 +115,7 @@ public class ICETableComponentSectionPart extends SectionPart
 		/**
 		 * Holds an ArrayList of Entries in the TableComponent for TableViewer.
 		 */
-		private List<Entry> list;
+		private List<IEntry> list;
 
 		/**
 		 * The Constructor, injects the ArrayList of Entries at this row.
@@ -125,7 +124,7 @@ public class ICETableComponentSectionPart extends SectionPart
 		 *            The list of Entries that make up this RowWrapper.
 		 * 
 		 */
-		public RowWrapper(List<Entry> list) {
+		public RowWrapper(List<IEntry> list) {
 			this.list = list;
 		}
 
@@ -135,7 +134,7 @@ public class ICETableComponentSectionPart extends SectionPart
 		 * </p>
 		 * 
 		 */
-		public List<Entry> getRowWrapper() {
+		public List<IEntry> getRowWrapper() {
 			return list;
 		}
 	}
@@ -414,7 +413,7 @@ public class ICETableComponentSectionPart extends SectionPart
 							.getRowIds().size()];
 					// add rows to list - using RowWrapper class
 					for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-						rows[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent.getRow(i))));
+						rows[i] = (new RowWrapper(tableComponent.getRow(i)));
 					}
 					// Reset the input
 					tableComponentViewer.setInput(rows);
@@ -463,7 +462,7 @@ public class ICETableComponentSectionPart extends SectionPart
 							.getRowIds().size()];
 					// add rows to list - using RowWrapper class
 					for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-						rows[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent.getRow(i))));
+						rows[i] = (new RowWrapper(tableComponent.getRow(i)));
 					}
 					// Reset the input
 					tableComponentViewer.setInput(rows);
@@ -556,7 +555,7 @@ public class ICETableComponentSectionPart extends SectionPart
 		// Iterate over lists and add editors - text or menu editor
 		for (int i = 0; i < tableComponent.getRowTemplate().size(); i++) {
 			// Menu editor if the allowedvaluetypes are a discrete list
-			if (EntryConverter.convert(tableComponent.getRowTemplate().get(i)).getValueType() == AllowedValueType.Discrete) {
+			if (tableComponent.getRowTemplate().get(i) instanceof DiscreteEntry) {
 
 				// Setup the label, content, and input providers for
 				// the combobox with the editors
@@ -591,7 +590,7 @@ public class ICETableComponentSectionPart extends SectionPart
 
 		// add rows to list - using RowWrapper class
 		for (int i = 0; i < tableComponent.getRowIds().size(); i++) {
-			rows[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent.getRow(i))));
+			rows[i] = (new RowWrapper(tableComponent.getRow(i)));
 		}
 
 		// Set the rows in TableViewer.
@@ -827,7 +826,7 @@ public class ICETableComponentSectionPart extends SectionPart
 				boolean rowStatus = true;
 				if (rows.length == tableComponent.numberOfRows()) {
 					for (int j = 0; j < rows.length; j++) {
-						List<Entry> rowList = rows[j].list;
+						List<IEntry> rowList = rows[j].list;
 
 						// If the number of entries are not the same, needs to
 						// be fixed.
@@ -857,8 +856,8 @@ public class ICETableComponentSectionPart extends SectionPart
 							.getRowIds().size()];
 					// add rows to list - using RowWrapper class
 					for (int i = 0; i < rowWrappers.length; i++) {
-						rowWrappers[i] = (new RowWrapper(EntryConverter.convertIEntriesToEntries(tableComponent
-								.getRow(i))));
+						rowWrappers[i] = (new RowWrapper(tableComponent
+								.getRow(i)));
 					}
 
 					// Reset the input and re-pack the table.

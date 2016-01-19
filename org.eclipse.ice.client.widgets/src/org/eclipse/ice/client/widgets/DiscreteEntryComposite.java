@@ -1,6 +1,5 @@
 package org.eclipse.ice.client.widgets;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 
 public class DiscreteEntryComposite extends AbstractEntryComposite {
-
 
 	public DiscreteEntryComposite(Composite parent, IEntry refEntry, int style) {
 		super(parent, refEntry, style);
@@ -79,10 +77,10 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 			// If no values were found, throw an error
 			throwMissingValuesError();
 		}
-		
+
 		setLayout(layout);
 	}
-	
+
 	/**
 	 * This operation creates buttons on the Composite.
 	 */
@@ -141,30 +139,29 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 			// Otherwise unchecked
 			tmpButton.setSelection(false);
 		}
-		// Add the listeners
-		tmpButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// Notify any listeners that the selection has changed
-				notifyListeners(SWT.Selection, new Event());
-				// Get the index of the value
-				int index = lowercaseAllowedValues.indexOf(entry.getValue().toLowerCase());
-				// Set the correct value
-				String value = null;
-				value = (index == 0) ? entry.getAllowedValues().get(1) : entry.getAllowedValues().get(0);
-				entry.setValue(value);
-				logger.info("EntryComposite Message: Updated Entry " + entry.getName() + " with value = "
-						+ entry.getValue());
 
-				return;
+		// Get the positive and negative entry allowed values
+		String yes = "", no = "";
+		for (String s : lowercaseAllowedValues) {
+			for (int i = 0; i < allowedBinaryValues.size(); i++) {
+				if (s.equals(allowedBinaryValues.get(i)) && i < 6) {
+					yes = s;
+					break;
+				} else if (s.equals(allowedBinaryValues.get(i)) && i > 5) {
+					no = s;
+					break;
+				}
 			}
-		});
+		}
+
+		// Add the listeners
+		PostiveNegativeSelectionAdapter adapter = new PostiveNegativeSelectionAdapter(yes, no);
+		tmpButton.addSelectionListener(adapter);
 
 		// Add the button to the list
 		tmpButton.setBackground(getBackground());
 		buttons.add(tmpButton);
 	}
-
 
 	/**
 	 * This operation creates a drop-down menu on the Composite.
@@ -184,14 +181,14 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 			List<String> allowedValues = entry.getAllowedValues();
 			for (int i = 0; i < allowedValues.size(); i++) {
 				String allowedValue = allowedValues.get(i);
-				((Combo)widget).add(allowedValue);
+				((Combo) widget).add(allowedValue);
 				if (allowedValue.equals(currentValue)) {
-					((Combo)widget).select(i);
+					((Combo) widget).select(i);
 				}
 			}
 
 			// Add a selection listener
-			((Combo)widget).addSelectionListener(new SelectionAdapter() {
+			((Combo) widget).addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					// Set the value of the Entry
@@ -205,13 +202,13 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 			// If the dropDown hasn't been disposed, check if a new AllowedValue
 			// has been added to the Entry
 			List<String> allowedValues = entry.getAllowedValues();
-			List<String> comboValues = Arrays.asList(((Combo)widget).getItems());
+			List<String> comboValues = Arrays.asList(((Combo) widget).getItems());
 
 			for (int i = 0; i < allowedValues.size(); i++) {
 				String allowedValue = allowedValues.get(i);
 				// Add any new AllowedValues to the dropDown
 				if (!comboValues.contains(allowedValue)) {
-					((Combo)widget).add(allowedValue);
+					((Combo) widget).add(allowedValue);
 				}
 			}
 		}
@@ -227,7 +224,7 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 
 		if (messageManager != null) {
 			// Get the message
-			String errorMessage = "There are no allowed values, can't create DiscreteEntryComposite.";//entry.getErrorMessage();
+			String errorMessage = "There are no allowed values, can't create DiscreteEntryComposite.";// entry.getErrorMessage();
 			// Post it if it exists
 			if (errorMessage != null) {
 				// Display the error at the top of the screen
@@ -248,5 +245,54 @@ public class DiscreteEntryComposite extends AbstractEntryComposite {
 
 		return;
 	}
-	
+
+	/**
+	 * This is private class for setting the proper positive and 
+	 * negative allowed values for a check box. 
+	 * 
+	 * @author Alex McCaskey
+	 *
+	 */
+	private class PostiveNegativeSelectionAdapter extends SelectionAdapter {
+		
+		/**
+		 * Reference to the positive and negative 
+		 * allowed values
+		 */
+		private String yes, no;
+
+		/**
+		 * The constructor.
+		 * 
+		 * @param yes2
+		 * @param no2
+		 */
+		public PostiveNegativeSelectionAdapter(String yes2, String no2) {
+			yes = yes2;
+			no = no2;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			// Notify any listeners that the selection has changed
+			notifyListeners(SWT.Selection, new Event());
+
+			// Get the checkbox state
+			Button button = (Button) e.getSource();
+			if (button.getSelection()) {
+				entry.setValue(yes);
+			} else {
+				entry.setValue(no);
+			}
+
+			logger.info(
+					"EntryComposite Message: Updated Entry " + entry.getName() + " with value = " + entry.getValue());
+
+			return;
+		}
+	}
 }

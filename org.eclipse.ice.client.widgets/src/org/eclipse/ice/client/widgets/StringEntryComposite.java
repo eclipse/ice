@@ -35,7 +35,7 @@ public class StringEntryComposite extends AbstractEntryComposite {
 		
 		// Create a textfield
 		if (!entry.isSecret()) {
-			System.out.println("CREATING TEXT WIDGET");
+			logger.info("Creating " + entry.getName() + " StringEntryComposite.");
 			widget = new Text(this, SWT.LEFT | SWT.BORDER);
 		} else {
 			widget = new Text(this, SWT.LEFT | SWT.BORDER | SWT.PASSWORD);
@@ -72,7 +72,6 @@ public class StringEntryComposite extends AbstractEntryComposite {
 		this.addListener(SWT.DefaultSelection, enterListener);
 		widget.addListener(SWT.DefaultSelection, enterListener);
 
-		System.out.println("SETTING LAYOUT");
 		setLayout(layout);
 	}
 

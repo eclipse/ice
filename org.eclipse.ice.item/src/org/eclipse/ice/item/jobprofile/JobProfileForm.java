@@ -15,6 +15,7 @@ package org.eclipse.ice.item.jobprofile;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -515,8 +516,10 @@ public class JobProfileForm extends Form {
 		TableComponent dataFiles = null;
 		int entryId = 1;
 
-		IEntry entry = null;
-
+		IEntry jobName = null, execName = null, params = null;
+		IEntry openMPEntry = null, nThreads = null, mpiEntry = null, 
+				nProcs = null, tbbEntry = null, nTbbThreads = null;
+		
 		ArrayList<IEntry> rowTemplate = null;
 
 		// Setup JobProfile name and description
@@ -542,45 +545,45 @@ public class JobProfileForm extends Form {
 				+ "the job, input file and output types, the executable, and " + "parameters.");
 
 		// Setup the Entry - Job Profile
-		entry = new StringEntry();
-		entry.setName("Job Name");
-		entry.setDescription("This is a name for the job profile.");
-		entry.setDefaultValue("JobProfile");
-		entry.setTag("jobName");
+		jobName = new StringEntry();
+		jobName.setName("Job Name");
+		jobName.setDescription("This is a name for the job profile.");
+		jobName.setDefaultValue("JobProfile");
+		jobName.setTag("jobName");
 
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		jobName.setId(entryId);
 		entryId++;
 		// Add to component
-		exeInfo.addEntry(entry);
+		exeInfo.addEntry(jobName);
 
 		// Setup the Entry - Executable Name
-		entry = new StringEntry();
-		entry.setName("Executable Name");
-		entry.setDescription(
+		execName = new StringEntry();
+		execName.setName("Executable Name");
+		execName.setDescription(
 				"Specifies the command line argument to " + "execute the job (excludes parameters for the job). "
 						+ "If the executable is not installed on the path, you "
 						+ "should include the ${installDir} variable in the " + "appropriate place.");
-		entry.setDefaultValue("ls");
-		entry.setTag("executableName");
+		execName.setDefaultValue("ls");
+		execName.setTag("executableName");
 
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		execName.setId(entryId);
 		entryId++;
 		// Add to component
-		exeInfo.addEntry(entry);
+		exeInfo.addEntry(execName);
 
 		// Setup the Entry - Parameters
-		entry = new StringEntry();
-		entry.setName("Parameters");
-		entry.setDescription("Specifies the parameters for a job.");
-		entry.setTag("parameters");
+		params = new StringEntry();
+		params.setName("Parameters");
+		params.setDescription("Specifies the parameters for a job.");
+		params.setTag("parameters");
 
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		params.setId(entryId);
 		entryId++;
 		// Add to component
-		exeInfo.addEntry(entry);
+		exeInfo.addEntry(params);
 
 		// Setup the Threading Options
 		threadOps.setName("Threading Options");
@@ -588,110 +591,127 @@ public class JobProfileForm extends Form {
 				+ "certain threading or processes options for MPI " + "and OpenMP.");
 
 		// Setup the Entry - Enable OpenMP
-		entry = new DiscreteEntry();
-		entry.setName("Enable OpenMP");
-		entry.setDescription("Specifies if the program utilizes " + "OpenMP library.");
-		entry.setDefaultValue("No");
-		List<String> allowedValues = new ArrayList<String>();
-		allowedValues.add("Yes");
-		allowedValues.add("No");
-		entry.setTag("enableOpenMP");
-		entry.setAllowedValues(allowedValues);
+		openMPEntry = new DiscreteEntry("yes", "no");
+		openMPEntry.setName("Enable OpenMP");
+		openMPEntry.setDescription("Specifies if the program utilizes OpenMP library.");
+		openMPEntry.setDefaultValue("no");
+		openMPEntry.setTag("enableOpenMP");
 
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		openMPEntry.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(openMPEntry);
 
 		// Setup the Entry - Number of Threads
-		entry = new ContinuousEntry();
-		entry.setName("Default Number of Threads");
-		entry.setDescription("Specifies the default number of threads " + "for OpenMP.");
-		entry.setDefaultValue("1");
-		allowedValues = new ArrayList<String>();
-		allowedValues.add("1");
-		allowedValues.add("128");
-		entry.setAllowedValues(allowedValues);
-		entry.setTag("numOfThreads");
+		nThreads = new ContinuousEntry("1","128")  {
+			@Override
+			public void update(IUpdateable updateable) {
+				if (updateable instanceof DiscreteEntry) {
+					DiscreteEntry entry = (DiscreteEntry) updateable;
+					if ("Enable OpenMP".equals(entry.getName())) {
+						boolean turnOn = entry.getValue().equals("yes") ? true : false;
+						setReady(turnOn);
+					}
+				}
+			}
+		};
+		nThreads.setName("Default Number of Threads");
+		nThreads.setDescription("Specifies the default number of threads " + "for OpenMP.");
+		nThreads.setDefaultValue("1");
+		nThreads.setTag("numOfThreads");
+		nThreads.setReady(false);
 
+		// Register for selections of the Open MP Entry
+		openMPEntry.register(nThreads);
+		
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		nThreads.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(nThreads);
 
 		// Setup the Entry - Enable MPI
-		entry = new DiscreteEntry();
-		entry.setName("Enable MPI");
-		entry.setDescription("Specifies if the program utilizes " + "MPI library.");
-		entry.setDefaultValue("No");
-		allowedValues = new ArrayList<String>();
-		allowedValues.add("Yes");
-		allowedValues.add("No");
-		entry.setTag("enableMPI");
-		entry.setAllowedValues(allowedValues);
+		mpiEntry = new DiscreteEntry("no", "yes");
+		mpiEntry.setName("Enable MPI");
+		mpiEntry.setDescription("Specifies if the program utilizes " + "MPI library.");
+		mpiEntry.setDefaultValue("no");
+		mpiEntry.setTag("enableMPI");
 
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		mpiEntry.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(mpiEntry);
 
 		// Setup the Entry - Number of Processes
-		entry = new ContinuousEntry();
-		entry.setName("Default Number of Processes");
-		entry.setDescription("Specifies the default number of processes " + "for MPI.");
-		entry.setDefaultValue("1");
-		allowedValues = new ArrayList<String>();
-		allowedValues.add("1");
-		allowedValues.add("512000");
-		entry.setTag("numOfProcesses");
-		entry.setAllowedValues(allowedValues);
-		// this.setParent("Enable MPI");
-		// this.setReady(false);
-
+		nProcs = new ContinuousEntry("1", "512000") {
+			@Override
+			public void update(IUpdateable updateable) {
+				if (updateable instanceof DiscreteEntry) {
+					DiscreteEntry entry = (DiscreteEntry) updateable;
+					if ("Enable MPI".equals(entry.getName())) {
+						boolean turnOn = entry.getValue().equals("yes") ? true : false;
+						setReady(turnOn);
+					}
+				}
+			}
+		};
+		nProcs.setName("Default Number of Processes");
+		nProcs.setDescription("Specifies the default number of processes " + "for MPI.");
+		nProcs.setDefaultValue("1");
+		nProcs.setTag("numOfProcesses");
+		nProcs.setReady(false);
+		
+		// Register for selections of the MPI Entry
+		mpiEntry.register(nProcs);
+		
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		nProcs.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(nProcs);
 
 		// Setup the Entry - Enable Thread Building Block
-		entry = new DiscreteEntry();
-		entry.setName("Enable TBB");
-		entry.setDescription("Specifies if the program utilizes " + "Thread Building Blocks.");
-		entry.setDefaultValue("No");
-		allowedValues = new ArrayList<String>();
-		allowedValues.add("Yes");
-		allowedValues.add("No");
-		entry.setTag("enableTBB");
-		entry.setAllowedValues(allowedValues);
+		tbbEntry = new DiscreteEntry("no", "yes");
+		tbbEntry.setName("Enable TBB");
+		tbbEntry.setDescription("Specifies if the program utilizes " + "Thread Building Blocks.");
+		tbbEntry.setDefaultValue("no");
+		tbbEntry.setTag("enableTBB");
 
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		tbbEntry.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(tbbEntry);
 
 		// Setup the Entry - Number of Thread Building Blocks
-		entry = new ContinuousEntry();
-		entry.setName("Default Number of TBBs");
-		entry.setDescription("Specifies the default number of " + "Thread Blocks.");
-		entry.setDefaultValue("1");
-		allowedValues = new ArrayList<String>();
-		allowedValues.add("1");
-		allowedValues.add("128");
-		entry.setTag("numOfTBBs");
-		entry.setAllowedValues(allowedValues);
-		// this.setParent("Enable TBB");
-		// this.setReady(false);
-		// }
+		nTbbThreads = new ContinuousEntry("1", "128") {
+			@Override
+			public void update(IUpdateable updateable) {
+				if (updateable instanceof DiscreteEntry) {
+					DiscreteEntry entry = (DiscreteEntry) updateable;
+					if ("Enable TBB".equals(entry.getName())) {
+						boolean turnOn = entry.getValue().equals("yes") ? true : false;
+						setReady(turnOn);
+					}
+				}
+			}
+		};
+		nTbbThreads.setName("Default Number of TBBs");
+		nTbbThreads.setDescription("Specifies the default number of " + "Thread Blocks.");
+		nTbbThreads.setDefaultValue("1");
+		nTbbThreads.setTag("numOfTBBs");
+		nTbbThreads.setReady(false);
+		
+		// Register for selections of the TBB Entry
+		tbbEntry.register(nTbbThreads);
+		
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		nTbbThreads.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(nTbbThreads);
 
 		// Setup the Hostnames
 		hostnames.setName("Hostnames");
@@ -703,11 +723,12 @@ public class JobProfileForm extends Form {
 		// Setup Entries to Template
 
 		// Setup the Entry - Hostname
-		entry = new StringEntry();
+		IEntry entry = new StringEntry();
 		entry.setName("Hostname");
 		entry.setDescription(
 				"Specifies the location of the executable. " + " Use localhost for executables stored locally.");
 		entry.setDefaultValue("localhost");
+		entry.setValue("localhost");
 		entry.setTag("hostname");
 		// Set the id and increment the counter
 		entry.setId(entryId);
@@ -716,19 +737,12 @@ public class JobProfileForm extends Form {
 		rowTemplate.add(entry);
 
 		// Setup the Entry - Operating System
-		entry = new DiscreteEntry();
-
+		entry = new DiscreteEntry("Linux x86_64", "Linux x86", "Windows x86", "Windows x64", "Mac OSX");
 		entry.setName("Operating System");
 		entry.setDescription("Specifies the operating system installed " + "for the hostname.");
-		entry.setDefaultValue("Linux x86_x64");
-		allowedValues = new ArrayList<String>();
-		allowedValues.add("Linux x86_x64");
-		allowedValues.add("Linux x86");
-		allowedValues.add("Windows x86");
-		allowedValues.add("Windows x64");
-		allowedValues.add("Mac OSX");
+		entry.setDefaultValue("Linux x86_64");
+		entry.setValue(entry.getDefaultValue());
 		entry.setTag("operatingSystem");
-		entry.setAllowedValues(allowedValues);
 
 		// Set the id and increment the counter
 		entry.setId(entryId);
@@ -741,6 +755,7 @@ public class JobProfileForm extends Form {
 		entry.setName("Install Directory");
 		entry.setDescription("Specifies the install directory for a hostname.");
 		entry.setDefaultValue("/bin");
+		entry.setValue("/bin");
 		entry.setTag("installDirectory");
 		// Set the id and increment the counter
 		entry.setId(entryId);
@@ -768,6 +783,7 @@ public class JobProfileForm extends Form {
 		entry.setName("Data File");
 		entry.setDescription("Specifies a data file required to run " + "an executable.");
 		entry.setDefaultValue("text.txt");
+		entry.setValue(entry.getDefaultValue());
 		entry.setTag("dataFile");
 		// Set the id and increment the counter
 		entry.setId(entryId);
@@ -780,6 +796,7 @@ public class JobProfileForm extends Form {
 		entry.setName("File Path");
 		entry.setDescription("Specifies the install directory " + "for a data file.");
 		entry.setDefaultValue("/opt/bin");
+		entry.setValue("/opt/bin");
 		entry.setTag("filePath");
 		// Set the id and increment the counter
 		entry.setId(entryId);

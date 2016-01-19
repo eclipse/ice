@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.entry.AbstractEntry;
 import org.eclipse.ice.datastructures.entry.IEntryVisitor;
 import org.eclipse.ice.datastructures.form.AllowedValueType;

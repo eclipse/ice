@@ -295,8 +295,8 @@ public class JobProfile extends Item {
 	protected void setupForm() {
 
 		// Copy only the forms contents. This is required for JPA to work.
-		this.form = new Form();
-		this.form.copy(new JobProfileForm());
+		this.form = new JobProfileForm();
+//		this.form.copy(new JobProfileForm());
 
 		// Create a set of Actions
 		ArrayList<String> actions = new ArrayList<String>();
