@@ -19,18 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Dictionary;
-import java.util.Hashtable;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -43,19 +38,15 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.action.RemoteAction;
-import org.eclipse.ice.item.action.RemoteFileUploadAction;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.remote.core.IRemoteConnection;
-import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
@@ -277,10 +268,10 @@ public class CheckMooseInputAction extends RemoteAction {
 	 * This method searches the Model input tree and locates all file Entries
 	 * and loads them on the Model File DataComponent.
 	 */
-	private ArrayList<Entry> getFileEntries(TreeComposite mooseTree) {
+	private ArrayList<IEntry> getFileEntries(TreeComposite mooseTree) {
 		// protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
-		ArrayList<Entry> files = new ArrayList<Entry>();
+		ArrayList<IEntry> files = new ArrayList<IEntry>();
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(mooseTree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
@@ -295,7 +286,7 @@ public class CheckMooseInputAction extends RemoteAction {
 					if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
 							&& e instanceof FileEntry) {
 
-						Entry clonedEntry = (Entry) e.clone();
+						IEntry clonedEntry = (IEntry) e.clone();
 						files.add(clonedEntry);
 					}
 				}
@@ -316,7 +307,7 @@ public class CheckMooseInputAction extends RemoteAction {
 		refreshProjectSpace(project);
 
 		// Loop over all file entries and make sure they exist
-		for (final Entry entry : getFileEntries(tree)) {
+		for (final IEntry entry : getFileEntries(tree)) {
 			try {
 				// Check the entry value validity, if bad throw an exception
 				if (entry.getValue().isEmpty() || !project.getFile(entry.getValue()).exists()) {

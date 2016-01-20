@@ -20,12 +20,11 @@ import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 
 /**
  * This class provides a wrapper for {@link TreeComposite} properties or
- * parameters. Properties for a <code>TreeComposite</code> are the {@link Entry}
+ * parameters. Properties for a <code>TreeComposite</code> are the {@link IEntry}
  * instances stored in the tree's {@link DataComponent}s or "data nodes".
  * <p>
  * This class also provides some helper methods for determining if a property is

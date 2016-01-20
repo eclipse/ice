@@ -18,8 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.utilities.moose.Parameter;
 import org.junit.Test;
 

@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  * {@link ComboBoxCellEditor} is used to display and select from the available
  * values.</li>
  * <li>Otherwise, the default {@link TextCellEditor} is used to edit the
- * <code>Entry</code>'s value.</li>
+ * <code>IEntry</code>'s value.</li>
  * </ul>
  * 
  * @author Jordan H. Deyton

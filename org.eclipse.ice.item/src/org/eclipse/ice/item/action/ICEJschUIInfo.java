@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
 import org.eclipse.ice.reactor.plant.DownComer;

@@ -17,10 +17,7 @@ import java.util.ArrayList;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -98,7 +95,7 @@ public class SuiteLauncher extends JobLauncher {
 	 * The content provider for the entry that holds all of the names of the
 	 * executables.
 	 */
-	private BasicEntryContentProvider execContentProvider;
+//	private BasicEntryContentProvider execContentProvider;
 
 	/**
 	 * The list of executables.
@@ -140,7 +137,7 @@ public class SuiteLauncher extends JobLauncher {
 		super.setupForm();
 
 		// Create the content provider for the Entry.
-		execContentProvider = new BasicEntryContentProvider();
+//		execContentProvider = new BasicEntryContentProvider();
 		// Determine whether or not executables are available or it should be
 		// given an empty list.
 		if (executablesList == null || executablesList.isEmpty()) {
@@ -336,8 +333,6 @@ public class SuiteLauncher extends JobLauncher {
 			// Get the executable information. The Entry is not simply cloned
 			// because a reference to the content provider is required.
 			this.execComponent = otherLauncher.execComponent;
-			this.execContentProvider = (BasicEntryContentProvider) otherLauncher.execContentProvider
-					.clone();
 			this.execEntry = (IEntry) otherLauncher.execEntry.clone();
 			this.executablesList = (ArrayList<String>) otherLauncher.executablesList
 					.clone();

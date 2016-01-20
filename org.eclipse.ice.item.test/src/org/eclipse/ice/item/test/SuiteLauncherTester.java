@@ -21,7 +21,6 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
 import org.junit.Test;

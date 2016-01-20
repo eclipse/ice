@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 
