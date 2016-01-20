@@ -24,7 +24,6 @@ import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.IEntryVisitor;
 import org.eclipse.ice.datastructures.entry.MultiValueEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleEntry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -160,19 +159,6 @@ public class DefaultEntryCompositeProvider implements IEntryCompositeProvider, I
 	@Override
 	public void visit(ContinuousEntry entry) {
 		entryComposite = new StringEntryComposite(parent, entry, style);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.entry.IEntryVisitor#visit(org.eclipse.ice.datastructures.form.painfullySimpleForm.PainfullySimpleEntry)
-	 */
-	@Override
-	public void visit(PainfullySimpleEntry entry) {
-		if (entry.getAllowedValues() != null && entry.getAllowedValues().size() > 0) {
-			entryComposite = new DiscreteEntryComposite(parent, entry, style);
-		} else {
-			entryComposite = new StringEntryComposite(parent, entry, style);
-		}
 	}
 
 	/*
