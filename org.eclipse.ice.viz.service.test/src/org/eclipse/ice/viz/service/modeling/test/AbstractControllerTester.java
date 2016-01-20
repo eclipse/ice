@@ -75,7 +75,7 @@ public class AbstractControllerTester {
 	@Test
 	public void testConstruction() {
 
-		TestMesh mesh = new TestMesh(null);
+		TestMesh mesh = new TestMesh(new ArrayList<AbstractController>());
 		TestView view = new TestView();
 		TestController controller = new TestController(mesh, view);
 
@@ -89,7 +89,7 @@ public class AbstractControllerTester {
 
 	/**
 	 * Tests the state of the entities list as objects are added and removed, as
-	 * well as whether objects in it are sending propert notifications.
+	 * well as whether objects in it are sending proper notifications.
 	 */
 	@Test
 	public void testEntities() {
@@ -477,11 +477,77 @@ public class AbstractControllerTester {
 	}
 
 	/**
-	 * 
+	 * Check that AbstractController's equality testing is correct
 	 */
 	@Test
 	public void testEquality() {
 
+		// Create a controller
+		AbstractMesh mesh = new TestMesh(new ArrayList<AbstractController>());
+		mesh.setProperty("Equal", "True");
+		AbstractController object = new TestController(mesh, new TestView());
+
+		// Create a controller equal to the first
+		AbstractMesh equalMesh = new TestMesh(
+				new ArrayList<AbstractController>());
+		equalMesh.setProperty("Equal", "True");
+		AbstractController equalObject = new TestController(equalMesh,
+				new TestView());
+
+		// Create a controller which is not equal to the first
+		AbstractMesh inequalMesh = new TestMesh(
+				new ArrayList<AbstractController>());
+		inequalMesh.setProperty("Equal", "False");
+		AbstractController inequalObject = new TestController(inequalMesh,
+				new TestView());
+
+		// A controller should equal itself
+		assertTrue(object.equals(object));
+
+		// A controller should equal a controller with an equal mesh and view
+		assertTrue(object.equals(equalObject));
+
+		// A controller should not equal a controller with an inequal mesh
+		assertFalse(object.equals(inequalObject));
+
+		// Set the meshes to be equal
+		inequalObject.setProperty("Equal", "True");
+
+		// The two objects should now be equal
+		assertTrue(object.equals(inequalObject));
+
+		// Set the views to be inequal
+		((TestView) inequalObject.getView()).setData(1);
+
+		// The objects should be inequal again
+		assertFalse(object.equals(inequalObject));
+
+		// Check that a cloned controller is equal to the original
+		AbstractController clone = (AbstractController) object.clone();
+		assertTrue(object.equals(clone));
+	}
+
+	/**
+	 * Check that updates are handled correctly
+	 */
+	@Test
+	public void checkUpdates() {
+
+		// Create a controller
+		TestMesh mesh = new TestMesh(new ArrayList<AbstractController>());
+		TestController object = new TestController(mesh, new TestView());
+
+		// Create a parent object to receive updates
+		TestMesh parentMesh = new TestMesh(new ArrayList<AbstractController>());
+		TestController parent = new TestController(parentMesh, new TestView());
+		parent.addEntity(object);
+
+		// Create an update and check that the parent was updated
+		mesh.setProperty("Test", "Value");
+		assertTrue(parent.isUpdated());
+
+		// Check that the view was refreshed
+		assertTrue(((TestView) object.getView()).isRefreshed());
 	}
 }
 
@@ -522,6 +588,7 @@ class TestController extends AbstractController {
 	 */
 	@Override
 	public void update(IManagedUpdateable component, SubscriptionType[] type) {
+		super.update(component, type);
 		updated = true;
 	}
 
@@ -530,7 +597,7 @@ class TestController extends AbstractController {
 	 * default state.
 	 * 
 	 * @return True if the controller has received an update since the last time
-	 *         this funciton was called. False if it has not.
+	 *         this function was called. False if it has not.
 	 */
 	public boolean isUpdated() {
 		boolean temp = updated;
@@ -604,16 +671,55 @@ class TestMesh extends AbstractMesh {
 class TestView extends AbstractView {
 
 	/**
+	 * A dummy variable allowing two TestViews to be equal or inequal to one
+	 * another.
+	 */
+	private int data;
+
+	/**
+	 * Whether the view has been refreshed since the last time it was checked.
+	 */
+	private boolean refreshed = false;
+
+	/**
 	 * Whether the mesh has received an update since the last time it was
 	 * tested.
 	 */
-	boolean updated = false;
+	private boolean updated = false;
 
 	/**
 	 * The default constructor
 	 */
 	public TestView() {
 		super();
+		data = 0;
+	}
+
+	/**
+	 * Set the test view's data member.
+	 */
+	public void setData(int data) {
+		this.data = data;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#equals(java.lang.
+	 * Object)
+	 */
+	@Override
+	public boolean equals(Object otherObject) {
+
+		// If the views have identical data, they are equal
+		if (data == ((TestView) otherObject).data) {
+			return true;
+		}
+
+		// Otherwise they are not
+		else {
+			return false;
+		}
 	}
 
 	/*
@@ -631,6 +737,18 @@ class TestView extends AbstractView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
+	 * .viz.service.modeling.AbstractMesh)
+	 */
+	@Override
+	public void refresh(AbstractMesh mesh) {
+		refreshed = true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
 	 * org.eclipse.ice.viz.service.modeling.AbstractView#update(org.eclipse.ice.
 	 * viz.service.datastructures.VizObject.IManagedVizUpdateable,
 	 * org.eclipse.ice.viz.service.datastructures.VizObject.
@@ -640,6 +758,19 @@ class TestView extends AbstractView {
 	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 		updated = true;
 		super.update(component, type);
+	}
+
+	/**
+	 * Checks whether the view has been refreshed and returns it to its default
+	 * state.
+	 * 
+	 * @return True if the refresh() function has been invoked since the last
+	 *         time this function was called. False if it has not.
+	 */
+	public boolean isRefreshed() {
+		boolean temp = refreshed;
+		refreshed = false;
+		return temp;
 	}
 
 	/**
