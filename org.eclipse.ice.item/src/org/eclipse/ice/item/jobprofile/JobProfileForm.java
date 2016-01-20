@@ -636,6 +636,7 @@ public class JobProfileForm extends Form {
 		mpiEntry.setName("Enable MPI");
 		mpiEntry.setDescription("Specifies if the program utilizes " + "MPI library.");
 		mpiEntry.setDefaultValue("no");
+		mpiEntry.setValue("no");
 		mpiEntry.setTag("enableMPI");
 
 		// Set the id and increment the counter
@@ -737,10 +738,10 @@ public class JobProfileForm extends Form {
 		rowTemplate.add(entry);
 
 		// Setup the Entry - Operating System
-		entry = new DiscreteEntry("Linux x86_64", "Linux x86", "Windows x86", "Windows x64", "Mac OSX");
+		entry = new DiscreteEntry("Linux x86_x64", "Linux x86", "Windows x86", "Windows x64", "Mac OSX");
 		entry.setName("Operating System");
 		entry.setDescription("Specifies the operating system installed " + "for the hostname.");
-		entry.setDefaultValue("Linux x86_64");
+		entry.setDefaultValue("Linux x86_x64");
 		entry.setValue(entry.getDefaultValue());
 		entry.setTag("operatingSystem");
 

@@ -116,8 +116,8 @@ public class SerializedItemBuilderTester {
 				+ "                      //The upper bound of the range\n");
 		PSFForm.add("tag=coolantTemperature                                    "
 				+ "                      //A tag to mark it\n");
-		PSFForm.add("parent=Full Assembly Flag                         "
-				+ "                              //The parent\n");
+//		PSFForm.add("parent=Full Assembly Flag                         "
+//				+ "                              //The parent\n");
 		PSFForm.add("group=Assembly                                       "
 				+ "                      //The group\n");
 		PSFForm.add("  \t  \n");
@@ -128,7 +128,7 @@ public class SerializedItemBuilderTester {
 		PSFForm.add("allowedValue=196\n");
 		PSFForm.add("allowedValue=289\n");
 		PSFForm.add("tag=numberOfPins\n");
-		PSFForm.add("parent=Full Assembly Flag\n");
+//		PSFForm.add("parent=Full Assembly Flag\n");
 		PSFForm.add("group=Assembly\n");
 		PSFForm.add("  \t  \n");
 		PSFForm.add("name=Full Assembly Flag\n");

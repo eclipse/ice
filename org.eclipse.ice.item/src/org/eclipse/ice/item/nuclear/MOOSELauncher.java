@@ -108,7 +108,6 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Add the list to the suite
 		addExecutables(executables);
 
-
 		// Get a handle on the "executables" DataComponent
 		execDataComp = (DataComponent) form.getComponent(5);
 		// Register the launcher as a listener of the executables DataComponent
@@ -118,11 +117,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		IEntry customExecEntry = new StringEntry();
 		customExecEntry.setName(customExecName);
 		customExecEntry.setDescription("A custom MOOSE-based executable. Note "
-				+ "that this field is case-sensitive and should be entered as "
-				+ "it appears in the filesystem.");
+				+ "that this field is case-sensitive and should be entered as " + "it appears in the filesystem.");
 		customExecEntry.setId(2);
-//		customExecEntry.setParent(execDataComp.retrieveAllEntries().get(0)
-//				.getName());
 		customExecEntry.setReady(false);
 
 		// Add it to the form
@@ -132,8 +128,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		DataComponent inputFilesComp = (DataComponent) form.getComponent(1);
 		// Set the input file to only *.i files (to reduce workspace clutter)
 		inputFilesComp.deleteEntry("Input File");
-		addInputType("Input File", "inputFile",
-				"The MOOSE input file that defines the problem.", ".i");
+		addInputType("Input File", "inputFile", "The MOOSE input file that defines the problem.", ".i");
 
 		// Add hosts
 		addHost("localhost", "linux", localInstallDir);
@@ -148,109 +143,16 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 		// Register this MooseLauncher as a listener of the Input File Entry.
 		// When it is set to something we can react with a search of related
 		// moose files.
-		inputFilesComp.retrieveEntry("Input File").register(this);
-
+		IEntry inputFile = inputFilesComp.retrieveEntry("Input File");
+		inputFile.register(this);
+		String fileValue = inputFile.getValue();
 		// Go ahead and create the list of files related to the Input File
-		if (!inputFilesComp.retrieveEntry("Input File").getValue().isEmpty()
-				&& inputFilesComp.retrieveEntry("Input File").getValue()
-						.contains(".i") && getReader() != null) {
-			update(inputFilesComp.retrieveEntry("Input File"));
+		if (!fileValue.isEmpty() && fileValue.contains(".i") && getReader() != null) {
+			update(inputFile);
 		}
 
 		return;
 	}
-
-	/**
-	 * Overrides the base class operation to properly account for MOOSE's file
-	 * structure.
-	 *
-	 * @param installDir
-	 *            The installation directory of MOOSE.
-	 * @param executable
-	 *            The name of the executable selected by a client.
-	 * @return The complete launch command specific for a given MOOSE product,
-	 *         determined by the executable name selected by the client.
-	 */
-//	@Override
-//	protected String updateExecutablePath(String installDir, String executable) {
-//
-//		// Local declarations
-////		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-////		String customExecValue = "";
-////		if (execDataComp != null && customExecEntry != null
-////				&& customExecEntry.getValue() != null) {
-////			customExecValue = execDataComp.retrieveEntry(customExecName)
-////					.getValue();
-////		}
-//
-////		// A HashMap of MOOSE product executables that can be launched
-////		HashMap<String, String> executableMap = new HashMap<String, String>();
-////		executableMap.put("MARMOT", "marmot");
-////		executableMap.put("BISON", "bison");
-////		executableMap.put("RELAP-7", "relap-7");
-////		executableMap.put("RAVEN", "raven");
-////		executableMap.put("MOOSE_TEST", "moose_test");
-////		executableMap.put(customExecName, customExecValue);
-////		executableMap.put(yamlSyntaxGenerator, yamlSyntaxGenerator);
-//
-//		// Create the command that will launch the MOOSE product
-//		String launchCommand = null;
-//		setUploadInputFlag(true);
-//
-//		if ("MOOSE_TEST".equals(executable)) {
-//			launchCommand = "${installDir}" + "moose/test/"
-//					+ executableMap.get(executable)
-//					+ "-opt -i ${inputFile} --no-color";
-//		} else if (yamlSyntaxGenerator.equals(executable)) {
-//			launchCommand =
-//			// BISON files
-//			"if [ -d ${installDir}bison ] "
-//					+ "&& [ -f ${installDir}bison/bison-opt ]\n then\n"
-//					+ "    ${installDir}bison/bison-opt --yaml > bison.yaml\n"
-//					+ "    ${installDir}bison/bison-opt --syntax > bison.syntax\n"
-//					+ "    echo 'Generating BISON files'\n"
-//					+ "fi\n"
-//					// MARMOT files
-//					+ "if [ -d ${installDir}marmot ] "
-//					+ "&& [ -f ${installDir}marmot/marmot-opt ]\n then\n"
-//					+ "    ${installDir}marmot/marmot-opt --yaml > marmot.yaml\n"
-//					+ "    ${installDir}marmot/marmot-opt --syntax > marmot.syntax\n"
-//					+ "    echo 'Generating MARMOT files'\n"
-//					+ "fi\n"
-//					// RELAP-7 files
-//					+ "if [ -d ${installDir}relap-7 ] "
-//					+ "&& [ -f ${installDir}relap-7/relap-7-opt ]\n then\n"
-//					+ "    ${installDir}relap-7/relap-7-opt --yaml > relap.yaml\n"
-//					+ "    ${installDir}relap-7/relap-7-opt --syntax > relap.syntax\n"
-//					+ "    echo 'Generating RELAP-7 files'\n"
-//					+ "elif [ -d ${installDir}r7_moose ] " // Old
-//															// name
-//					+ "&& [ -f ${installDir}r7_moose/r7_moose-opt ]\n then\n"
-//					+ "    ${installDir}r7_moose/r7_moose-opt --yaml > relap.yaml\n"
-//					+ "    ${installDir}r7_moose/r7_moose-opt --syntax > relap.syntax\n"
-//					+ "    echo 'Generating RELAP-7 files'\n"
-//					+ "fi\n"
-//					// RAVEN files
-//					+ "if [ -d ${installDir}raven ] "
-//					+ "&& [ -f ${installDir}raven/RAVEN-opt ]\n then\n"
-//					+ "    ${installDir}raven/RAVEN-opt --yaml > raven.yaml\n"
-//					+ "    ${installDir}raven/RAVEN-opt --syntax > raven.syntax\n"
-//					+ "    echo 'Generating RAVEN files'\n" + "fi\n";
-//		} else if ("RAVEN".equals(executable)) {
-//			// RAVEN directory is lowercase, but the executable is uppercase
-//			launchCommand = "${installDir}" + executableMap.get(executable)
-//					+ "/" + executable + "-opt -i ${inputFile} --no-color";
-//
-//		} else {
-//			// BISON, MARMOT, RELAP-7 and (presumably) custom apps follow the
-//			// same execution pattern
-//			launchCommand = "${installDir}" + executableMap.get(executable)
-//					+ "/" + executableMap.get(executable)
-//					+ "-opt -i ${inputFile} --no-color";
-//		}
-//
-//		return launchCommand;
-//	}
 
 	/**
 	 * <p>
@@ -263,7 +165,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 *            <p>
 	 *            The MOOSEModel Item that should be checked for equality.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the launchers are equal, false if not
 	 *         </p>
 	 */
@@ -279,16 +182,14 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 		// Check that the object is not null, and that it is an Item
 		// Check that these objects have the same ICEObject data
-		if (other == null || !(other instanceof MOOSELauncher)
-				|| !super.equals(other)) {
+		if (other == null || !(other instanceof MOOSELauncher) || !super.equals(other)) {
 			return false;
 		}
 
 		// Check data
 		MOOSELauncher otherMooseLauncher = (MOOSELauncher) other;
 		retVal = (this.allowedActions.equals(otherMooseLauncher.allowedActions))
-				&& (this.form.equals(otherMooseLauncher.form))
-				&& (this.itemType == otherMooseLauncher.itemType)
+				&& (this.form.equals(otherMooseLauncher.form)) && (this.itemType == otherMooseLauncher.itemType)
 				&& (this.status.equals(otherMooseLauncher.status));
 
 		// Check project
@@ -313,7 +214,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * This operation returns the hashcode value of the MOOSELauncher.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashcode
 	 *         </p>
 	 */
@@ -364,7 +266,8 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 * This operation provides a deep copy of the MOOSELauncher Item.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         A clone of the MOOSELauncher Item.
 	 *         </p>
 	 */
@@ -386,8 +289,7 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 		// Local declarations
 		String description = "The Multiphysics Object-Oriented Simulation "
-				+ "Environment (MOOSE) is a multiphysics framework developed "
-				+ "by Idaho National Laboratory.";
+				+ "Environment (MOOSE) is a multiphysics framework developed " + "by Idaho National Laboratory.";
 
 		// Set the model defaults
 		setName(MOOSELauncherBuilder.name);
@@ -473,49 +375,22 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	@Override
 	public void update(IUpdateable component) {
 
-		// If the component is a DataComponent, then toggle the custom MOOSE
-		// app entry on/off
-		if (component instanceof DataComponent) {
-
-			// Grab the name of the current executable selected by the user
-			if (execDataComp != null) {
-				execName = execDataComp.retrieveAllEntries().get(0).getValue();
-			}
-//
-//			IEntry parentEntry = execDataComp.retrieveEntry("Executable");
-//			IEntry customExecEntry = execDataComp.retrieveEntry(customExecName);
-//
-//			if (execName.equals(customExecName) && !customExecEntry.isReady()) {
-//				// Reveal the custom app Entry if it's currently hidden and
-//				// the user wants to enter a name
-//				customExecEntry.update(parentEntry.getName(), "true");
-//			} else if (!execName.equals(customExecName)
-//					&& customExecEntry.isReady()) {
-//				// Hide the custom app Entry if it's exposed and the user
-//				// selected another app
-//				customExecEntry.update(parentEntry.getName(), "false");
-//			}
-		} else {
-
-			if (component instanceof IEntry) {
+		if (component instanceof IEntry) {
 
 				// Check if this is the Input File entry and has a valid value
 				IEntry entry = (IEntry) component;
-				if (entry.getName().equals("Input File")
-						&& !entry.getValue().isEmpty()) {
+				if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
 
 					// First, check if the file extension on the value is valid
 					if (!entry.getValue().contains(".i")) {
 						// Complain and exit
-						logger.info("MOOSELauncher Message: Input files"
-								+ "must have a *.i extension!");
+						logger.info("MOOSELauncher Message: Input files" + "must have a *.i extension!");
 						return;
 					}
 
 				}
-			}
 
-			super.update(component);
+			super.update(entry);
 		}
 
 		return;
