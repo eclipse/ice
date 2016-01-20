@@ -107,6 +107,7 @@ public class TestItem extends Item {
 		IEntry dc2Entry = new StringEntry();
 		dc2Entry.setId(5);
 		dc2Entry.setName("David's Entry");
+		dc2Entry.setTag("David's Entry");
 		dc2Entry.setValue("The boss");
 		dc2.addEntry(dc2Entry);
 

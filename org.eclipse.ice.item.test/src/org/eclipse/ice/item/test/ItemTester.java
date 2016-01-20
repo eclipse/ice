@@ -141,8 +141,8 @@ public class ItemTester implements ItemListener {
 				+ "                      //The upper bound of the range\n");
 		PSFForm.add("tag=coolantTemperature                                    "
 				+ "                      //A tag to mark it\n");
-		PSFForm.add("parent=Full Assembly Flag                         "
-				+ "                              //The parent\n");
+//		PSFForm.add("parent=Full Assembly Flag                         "
+//				+ "                              //The parent\n");
 		PSFForm.add("group=Assembly                                       "
 				+ "                      //The group\n");
 		PSFForm.add("  \t  \n");
@@ -153,7 +153,7 @@ public class ItemTester implements ItemListener {
 		PSFForm.add("allowedValue=196\n");
 		PSFForm.add("allowedValue=289\n");
 		PSFForm.add("tag=numberOfPins\n");
-		PSFForm.add("parent=Full Assembly Flag\n");
+//		PSFForm.add("parent=Full Assembly Flag\n");
 		PSFForm.add("group=Assembly\n");
 		PSFForm.add("  \t  \n");
 		PSFForm.add("name=Full Assembly Flag\n");
@@ -771,6 +771,7 @@ public class ItemTester implements ItemListener {
 		// ----- This should be replaced to use a FakeIWriter
 
 		// Direct the Item to write the Form to a key-value pair output
+		System.out.println("Processing!");
 		assertEquals(FormStatus.Processed,
 				item.process("Export to key-value pair output"));
 
@@ -782,14 +783,10 @@ public class ItemTester implements ItemListener {
 		Properties formDatProps = new Properties();
 		try {
 			formDatProps.load(formDatFile.getContents());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException | CoreException e) {
 			e.printStackTrace();
-		} catch (CoreException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 			fail();
-		}
+		} 
 		assertEquals("Awesome", formDatProps.get("jayjaybillings"));
 		assertEquals("The boss", formDatProps.get("David'sEntry"));
 

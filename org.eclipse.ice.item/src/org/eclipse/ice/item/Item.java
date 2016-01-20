@@ -950,6 +950,7 @@ public class Item
 				// Set the status
 				retStatus = FormStatus.Processed;
 			} else if (actionName.equals(taggedExportActionString)) {
+				System.out.println("Executing Tagged Output Writer");
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
 				action = actionFactory.getAction("Tagged Output Writer");
@@ -968,8 +969,10 @@ public class Item
 							outputFile.getLocationURI().getPath());
 					// Add the key-value pairs
 					for (IEntry i : entryList) {
+						System.out.println("Looping - " + i.getName());
 						// Use tags if they are available
 						if (i.getTag() != null) {
+							System.out.println("Putting in " + i.getTag() + ", " + i.getValue());
 							propsDictionary.put(i.getTag(), i.getValue());
 						} else {
 							// Otherwise just use the Entry's name
