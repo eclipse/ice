@@ -1,9 +1,0 @@
-<!--<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.io.hdf.HdfIORegistry">
-   <implementation class="org.eclipse.ice.io.hdf.HdfIORegistry"/>
-   <service>
-      <provide interface="org.eclipse.ice.io.hdf.IHdfIORegistry"/>
-   </service>
-   <reference bind="registerHdfIOFactory" cardinality="1..n" interface="org.eclipse.ice.io.hdf.IHdfIOFactory" name="IHdfIOFactory" policy="dynamic"/>
-</scr:component>
--->

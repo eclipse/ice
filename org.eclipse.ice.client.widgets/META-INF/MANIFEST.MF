@@ -53,6 +53,5 @@ Import-Package: javafx.embed.swt;version="2.2.0",
 Export-Package: org.eclipse.ice.client.widgets,
  org.eclipse.ice.client.widgets.analysis,
  org.eclipse.ice.client.widgets.grid
-Service-Component: OSGI-INF/eclipseWidgetsComponent.xml,
- OSGI-INF/formEditorVizService.xml
+Service-Component: OSGI-INF/formEditorVizService.xml
 Bundle-Vendor: Oak Ridge National Laboratory
