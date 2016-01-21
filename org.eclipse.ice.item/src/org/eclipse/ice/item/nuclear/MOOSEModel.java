@@ -264,7 +264,7 @@ public class MOOSEModel extends Item {
 	protected void setupForm() {
 
 		// Local Declarations
-		IEntry mooseAppEntry;
+		ExecutableEntry mooseAppEntry;
 
 		// Create the Form
 		form = new Form();
@@ -287,36 +287,8 @@ public class MOOSEModel extends Item {
 		mooseApps = new ArrayList<String>();
 
 		// Get the Application preferences
-		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
-		try {
-			for (String key : prefs.keys()) {
-				String app = prefs.get(key, "");
-				if (!app.isEmpty()) {
-					mooseApps.add(app);
-				}
-			}
-		} catch (BackingStoreException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-		}
-
-		// Only load up the Entry if some MOOSE apps were discovered.
-		if (!mooseApps.isEmpty()) {
-			mooseApps.add(0, "Select Application");
-			// Set the default to "none", forcing the user to make a selection.
-			loadedApp = mooseApps.get(0);
-			// Create the MOOSE application Entry. Add all of the files if any
-			// were found.
-			mooseAppEntry = new ExecutableEntry();
-			mooseAppEntry.setAllowedValues(mooseApps);
-			mooseAppEntry.setDefaultValue(loadedApp);
-		} else {
-			mooseApps.add("Import Application");
-			loadedApp = mooseApps.get(0);
-			mooseAppEntry = new ExecutableEntry();
-			mooseAppEntry.setAllowedValues(mooseApps);
-			mooseAppEntry.setDefaultValue(loadedApp);
-		}
-		mooseAppEntry.setValue(mooseAppEntry.getDefaultValue());
+		mooseAppEntry = new ExecutableEntry();
+		mooseAppEntry.loadFromPreferences("org.eclipse.ice.item.moose");
 		mooseAppEntry.setId(1);
 		mooseAppEntry.setName("MOOSE-Based Application");
 		mooseAppEntry.setDescription(
@@ -592,19 +564,7 @@ public class MOOSEModel extends Item {
 					mergeTrees(inputTree, yamlTree);
 
 					// Save this App as a Preference
-					IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
-					try {
-						URI uri = mooseSpecFileEntry.getExecutableURI();
-						if ("ssh".equals(uri.getScheme())) {
-							prefs.put(uri.getRawPath(), loadedApp);
-						} else {
-							prefs.put(uri.getRawPath(), loadedApp);
-						}
-						prefs.flush();
-					} catch (BackingStoreException e) {
-						logger.error(getClass().getName() + " Exception!",e);
-					}
-
+					mooseSpecFileEntry.persistToPreferences("org.eclipse.ice.item.moose");
 				}
 
 				// Try to find a mesh file and append it as an ICEResource

@@ -356,6 +356,8 @@ public class MOOSE extends Item {
 			// so we can add the resources to our resource component
 			((ResourceComponent) mooseLauncher.getForm().getComponent(JobLauncherForm.outputId)).register(this);
 
+			mooseModel.process(MOOSEModel.mooseProcessActionString);
+			
 			// Launch the Moose application
 			retStatus = mooseLauncher.process(actionName);
 

@@ -437,7 +437,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			logger.error("Invalid YAML at " + yamlFile.getAbsolutePath());
 			return trees;
 		}
-		
+
 		// Load the block list. Use YAMLBlocks so that they can be converted to
 		// TreeComposites appropriately.
 		for (int i = 0; i < list.size(); i++) {
@@ -969,7 +969,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				auxVars.add(auxVariablesBlock.getChildAtIndex(i).getName());
 			}
 
-
 			// Walk the tree and search for non-AuxVariable 'variable' Entries
 			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(tree);
 			while (iter.hasNext()) {
@@ -1032,7 +1031,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
-				for (IEntry e :data.retrieveAllEntries()) {
+				for (IEntry e : data.retrieveAllEntries()) {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.

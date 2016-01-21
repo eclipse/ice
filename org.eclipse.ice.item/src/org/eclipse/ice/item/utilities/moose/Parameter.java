@@ -13,6 +13,7 @@
 package org.eclipse.ice.item.utilities.moose;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.FileEntry;
@@ -61,7 +62,7 @@ public class Parameter {
 	 * The list of options of the parameter (if any). Not all parameters have
 	 * options.
 	 */
-	private ArrayList<String> options = null;
+	private List<String> options = null;
 
 	/**
 	 * The name of the group to which the parameter belongs.
@@ -138,7 +139,7 @@ public class Parameter {
 	 * 
 	 * @return The list of options.
 	 */
-	public ArrayList<String> getOptions() {
+	public List<String> getOptions() {
 		return options;
 	}
 
@@ -311,11 +312,13 @@ public class Parameter {
 			}
 
 			// Otherwise, for all other parameters
-		} else if ("VariableName".equals(cpp_type) || "AuxVariableName".equals(cpp_type) || "variable".equals(this.name)) {
-			entry = new DiscreteEntry();
+		} else if ("NonlinearVariableName".equals(cpp_type) || "VariableName".equals(cpp_type) || "AuxVariableName".equals(cpp_type) || "variable".equals(this.name)) {
+			entry = new DiscreteEntry(getDefault());
+			entry.setDefaultValue(getDefault());
+			
 		} else {
 			entry = new StringEntry();
-			entry.setDefaultValue(Parameter.this.getDefault());
+			entry.setDefaultValue(getDefault());
 		}
 		
 		// Set the rest of the attributes
@@ -365,11 +368,11 @@ public class Parameter {
 		if (entry != null) {
 			name = entry.getName();
 			description = entry.getDescription();
-			_default = entry.getDefaultValue();
+			_default = entry.getValue();
 			comment = entry.getComment();
 			required = entry.isRequired();
 			enabled = !"false".equalsIgnoreCase(entry.getTag());
-			options = entry instanceof DiscreteEntry ? (ArrayList<String>) entry.getAllowedValues() : null;
+			options = entry instanceof DiscreteEntry ? (List<String>) entry.getAllowedValues() : null;
 		}
 
 		return;

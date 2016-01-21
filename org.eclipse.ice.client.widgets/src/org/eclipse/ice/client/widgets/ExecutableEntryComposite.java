@@ -95,6 +95,8 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 				public void widgetSelected(SelectionEvent e) {
 					// Set the value of the Entry
 					setEntryValue(((Combo) e.widget).getText());
+					entry.setDescription("The full path of this application is "
+							+ ((ExecutableEntry) entry).getExecutableURI().toString());
 					// Notify any listeners that the selection has changed
 					notifyListeners(SWT.Selection, new Event());
 				}
@@ -222,13 +224,14 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 
 						// Get the selected Resource
 						IFileStore fs = browser.getResource();
+						URI uri = fs.toURI();
 						// Get the hostname
 						String hostName = browser.getConnection().getService(IRemoteConnectionHostService.class)
 								.getHostname();
 
 						// Set up the entry value
-						URI uri = fs.toURI();
-						entryValue = uri.getScheme() + "://" + hostName + uri.getPath();
+						entryURI = URI.create(uri.getScheme() + "://" + hostName + uri.getPath());
+						entryValue = fs.getName();//uri.getScheme() + "://" + hostName + uri.getPath();
 
 					} else {
 						// If Local, just open up a file browser
@@ -239,13 +242,14 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 							// Import the files
 							File importedFile = new File(filePath);
 							entryURI = importedFile.toURI();
-							//entryValue = importedFile.toURI().toString();
+							entryValue = new File(entryURI).getName();
 						}
 					}
 
 					// If we got a valid entryValue, then let's set it.
 					if (entryURI != null) {
-						entryValue = new File(entryURI).getName();
+//						entryValue = new File(entryURI).getName();
+						
 						// Create a new content provider with the new file
 						// in the allowed values list
 						List<String> valueList = entry.getAllowedValues();
@@ -257,12 +261,12 @@ public class ExecutableEntryComposite extends FileEntryComposite {
 						// value
 						entry.setAllowedValues(valueList);
 
-						((ExecutableEntry)entry).setExecutableURI(entryURI);
-						
 						entry.setDescription("The full path of this application is " + entryURI.toString());
 						
 						// If it is executable just add its absolute path
-						setEntryValue(entryValue);
+						//setEntryValue(entryValue);
+						
+						((ExecutableEntry)entry).setValue(entryValue, entryURI.toString());
 
 					}
 
