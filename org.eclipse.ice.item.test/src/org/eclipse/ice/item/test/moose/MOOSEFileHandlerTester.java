@@ -353,7 +353,6 @@ public class MOOSEFileHandlerTester {
 		String userDir = System.getProperty("user.home") + separator + "ICETests" + separator + "itemData";
 		String refFilePath = userDir + separator + "bison_short.input.ref";
 		String outFilePath = userDir + separator + "bison_short.input.out";
-		String realFile = userDir + separator + "mooseModel.i";
 
 		// Turn debugging on
 		System.setProperty("DebugICE", "on");
@@ -361,7 +360,7 @@ public class MOOSEFileHandlerTester {
 		MOOSEFileHandler handler = new MOOSEFileHandler();
 
 		// Load the file into a TreeComposite with the Handler
-		ArrayList<TreeComposite> potTree = handler.loadFromGetPot(realFile);
+		ArrayList<TreeComposite> potTree = handler.loadFromGetPot(refFilePath);
 
 		// Hehe... "potTree."
 
@@ -371,7 +370,7 @@ public class MOOSEFileHandlerTester {
 		// Compare the input file to the reference file
 		try {
 			// Load the reference file into a byte array
-			RandomAccessFile refFileRAF = new RandomAccessFile(realFile, "r");
+			RandomAccessFile refFileRAF = new RandomAccessFile(refFilePath, "r");
 			byte[] refBytes = new byte[(int) refFileRAF.length()];
 			refFileRAF.read(refBytes);
 			// Load the input file into a byte array
