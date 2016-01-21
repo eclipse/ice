@@ -705,6 +705,24 @@ class TestView extends AbstractView {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new view
+		TestView clone = new TestView();
+
+		// Copy this object's data into the clone and return it
+		clone.copy(this);
+		clone.data = data;
+		return clone;
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#equals(java.lang.
 	 * Object)
 	 */

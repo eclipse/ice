@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.junit.Before;
 import org.junit.Test;
@@ -163,5 +164,19 @@ public class AbstractViewTester {
 		// Check that the view sent a notification
 		assertTrue(controller.isUpdated());
 
+	}
+
+	/**
+	 * Check the AbstractView's equality testing.
+	 */
+	@Test
+	public void checkEquality(){
+		
+		AbstractView object = new AbstractView();
+		AbstractView equalObject = new AbstractView();
+		AbstractView unequalObject = new AbstractView();
+		
+		Transformation transformation = new Transformation();
+		unequalObject.
 	}
 }

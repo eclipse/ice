@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 
 /**
  * The view of an AbstractMeshComponent shown to the user. The view is
@@ -84,40 +84,9 @@ public class AbstractView
 		transformation = newTransformation;
 
 		// Notify own listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.TRANSFORMATION };
+		SubscriptionType[] eventTypes = { SubscriptionType.TRANSFORMATION };
 		updateManager.notifyListeners(eventTypes);
 	}
-
-	// /**
-	// * Notify all listeners of an update.
-	// */
-	// public void notifyListeners() {
-	//
-	// // If the listeners are empty, return
-	// if (this.listeners == null || this.listeners.isEmpty()) {
-	// return;
-	// }
-	//
-	// // Get a reference to self
-	// final AbstractView self = this;
-	//
-	// // // Create a thread object that notifies all listeners
-	// //
-	// // Thread notifyThread = new Thread() {
-	// //
-	// // @Override
-	// // public void run() {
-	// // Loop over all listeners and update them
-	// for (int i = 0; i < listeners.size(); i++) {
-	// listeners.get(i).update(self);
-	// }
-	// // }
-	// // };
-	// //
-	// // // Start the thread
-	// // notifyThread.start();
-	// }
 
 	/**
 	 * Getter for the part's previous transformation.
@@ -223,8 +192,7 @@ public class AbstractView
 	 * UpdateableSubscription[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// Pass the update to own listeners
 		updateManager.notifyListeners(type);
@@ -254,8 +222,7 @@ public class AbstractView
 				.clone();
 
 		// Notify own listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.ALL };
+		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 

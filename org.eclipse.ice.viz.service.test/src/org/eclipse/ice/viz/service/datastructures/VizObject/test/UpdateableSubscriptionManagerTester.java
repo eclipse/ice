@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.junit.Test;
 
 /**
@@ -43,7 +43,7 @@ public class UpdateableSubscriptionManagerTester {
 		// Create a listener for the object
 		ArrayList<SubscriptionType> allList = new ArrayList<SubscriptionType>();
 		allList.add(SubscriptionType.ALL);
-		TestListener listener = new TestListener(allList);
+		TestManagedListener listener = new TestManagedListener(allList);
 		source.register(listener);
 
 		// Create a list containing the CHILD type
@@ -102,7 +102,7 @@ public class UpdateableSubscriptionManagerTester {
 		manager.setParent(parent);
 
 		// Create a listener for the object
-		TestListener parentListener = new TestListener(allList);
+		TestManagedListener parentListener = new TestManagedListener(allList);
 		parentSource.register(parentListener);
 
 		// Queuing the child should block the parent's messages
@@ -160,11 +160,11 @@ public class UpdateableSubscriptionManagerTester {
 		propertyList.add(SubscriptionType.PROPERTY);
 
 		// Create a listener that will receive all updates
-		TestListener listener = new TestListener(allList);
+		TestManagedListener listener = new TestManagedListener(allList);
 		source.register(listener);
 
 		// Create a listener that will only receive CHILD type updates
-		TestListener childListener = new TestListener(childList);
+		TestManagedListener childListener = new TestManagedListener(childList);
 		source.register(childListener);
 
 		// Send a child update and check that it was received.
@@ -220,7 +220,7 @@ public class UpdateableSubscriptionManagerTester {
 		propertyList.add(SubscriptionType.PROPERTY);
 
 		// Create two listeners that will receive property updates
-		TestListener listener = new TestListener(propertyList);
+		TestManagedListener listener = new TestManagedListener(propertyList);
 		source.register(listener);
 
 		// Check that the listener receives updates
@@ -233,7 +233,7 @@ public class UpdateableSubscriptionManagerTester {
 		assertFalse(listener.gotProperty());
 
 		// Add two listeners and check that both receive updates
-		TestListener listener2 = new TestListener(propertyList);
+		TestManagedListener listener2 = new TestManagedListener(propertyList);
 		source.register(listener);
 		source.register(listener2);
 		source.sendUpdate(propertyList);
@@ -263,136 +263,6 @@ public class UpdateableSubscriptionManagerTester {
 	}
 
 	/**
-	 * A basic implementation of IManagedUpdateableListener for testing
-	 * purposes.
-	 * 
-	 * @author Robert Smith
-	 *
-	 */
-	private class TestListener implements IManagedUpdateableListener {
-
-		/**
-		 * Whether the listener has received an update of the property type
-		 */
-		private boolean propertyNotified;
-
-		/**
-		 * Whether the listener has received an update of the child type
-		 */
-		private boolean childNotified;
-
-		/**
-		 * Whether the listener has received an update of the all type
-		 */
-		private boolean allNotified;
-
-		/**
-		 * The list of types of events this listener will receive
-		 */
-		ArrayList<SubscriptionType> types;
-
-		/**
-		 * The default constructor.
-		 * 
-		 * @param types
-		 *            The list of types of events this listener will receive.
-		 */
-		public TestListener(ArrayList<SubscriptionType> types) {
-			this.types = types;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-		 * IManagedUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
-		 * service.datastructures.VizObject.IManagedUpdateable)
-		 */
-		@Override
-		public ArrayList<SubscriptionType> getSubscriptions(
-				IManagedUpdateable source) {
-			return types;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-		 * IManagedUpdateableListener#update(org.eclipse.ice.viz.service.
-		 * datastructures.VizObject.IManagedUpdateable,
-		 * org.eclipse.ice.viz.service.datastructures.VizObject.
-		 * UpdateableSubscriptionType[])
-		 */
-		@Override
-		public void update(IManagedUpdateable component,
-				SubscriptionType[] types) {
-
-			// For each type in the update, set each notification received to
-			// true if it matches one of the checked types
-			for (SubscriptionType type : types) {
-
-				if (type == SubscriptionType.PROPERTY) {
-					propertyNotified = true;
-				}
-
-				else if (type == SubscriptionType.CHILD) {
-					childNotified = true;
-				}
-
-				else if (type == SubscriptionType.ALL) {
-					allNotified = true;
-				}
-			}
-
-		}
-
-		/**
-		 * Checks if the listener has received an ALL type notification and
-		 * resets its state for the ALL type to the original, unnotified state.
-		 * 
-		 * @return True if the listener has received a notification of type ALL
-		 *         since the last time this function was invoked. False
-		 *         otherwise.
-		 */
-		public boolean gotAll() {
-			boolean temp = allNotified;
-			allNotified = false;
-			return temp;
-		}
-
-		/**
-		 * Checks if the listener has received a CHILD type notification and
-		 * resets its state for the CHILD type to the original, unnotified
-		 * state.
-		 * 
-		 * @return True if the listener has received a notification of type
-		 *         CHILD since the last time this function was invoked. False
-		 *         otherwise.
-		 */
-		public boolean gotChild() {
-			boolean temp = childNotified;
-			childNotified = false;
-			return temp;
-		}
-
-		/**
-		 * Checks if the listener has received an PROPERTY type notification and
-		 * resets its state for the PROPERTY type to the original, unnotified
-		 * state.
-		 * 
-		 * @return True if the listener has received a notification of type
-		 *         PROPERTY since the last time this function was invoked. False
-		 *         otherwise.
-		 */
-		public boolean gotProperty() {
-			boolean temp = propertyNotified;
-			propertyNotified = false;
-			return temp;
-		}
-
-	}
-
-	/**
 	 * A basic implementation of IManagedUpdateable for testing purposes.
 	 * 
 	 * @author Robert Smith
@@ -419,8 +289,7 @@ public class UpdateableSubscriptionManagerTester {
 		public void sendUpdate(ArrayList<SubscriptionType> types) {
 
 			// Convert the array list to an array and send it to the manager
-			SubscriptionType[] temp = new SubscriptionType[types
-					.size()];
+			SubscriptionType[] temp = new SubscriptionType[types.size()];
 			temp = types.toArray(temp);
 			manager.notifyListeners(temp);
 		}
