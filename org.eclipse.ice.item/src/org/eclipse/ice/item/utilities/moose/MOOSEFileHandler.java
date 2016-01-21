@@ -34,13 +34,10 @@ import javax.naming.OperationNotSupportedException;
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.io.serializable.IReader;
@@ -440,7 +437,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			logger.error("Invalid YAML at " + yamlFile.getAbsolutePath());
 			return trees;
 		}
-		
+
 		// Load the block list. Use YAMLBlocks so that they can be converted to
 		// TreeComposites appropriately.
 		for (int i = 0; i < list.size(); i++) {
@@ -584,7 +581,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// Copy all the parameters from currTree into all to the
 					// childExemplars before we instantiate an
 					// AdaptiveTreeComposite
-					Map<String, Entry> parameterMap = new HashMap<String, Entry>();
+					Map<String, IEntry> parameterMap = new HashMap<String, IEntry>();
 					for (TreeComposite currType : types) {
 
 						// Get the current type's data node
@@ -595,12 +592,12 @@ public class MOOSEFileHandler implements IReader, IWriter {
 						// Put all the typeParameters in a HashMap, keyed on
 						// name
 						parameterMap.clear();
-						for (Entry parameter : typeParameters.retrieveAllEntries()) {
+						for (IEntry parameter : typeParameters.retrieveAllEntries()) {
 							parameterMap.put(parameter.getName(), parameter);
 						}
 						// Loop through the current tree's parameters, appending
 						// them all onto the type's parameters list
-						for (Entry currEntry : treeParameters.retrieveAllEntries()) {
+						for (IEntry currEntry : treeParameters.retrieveAllEntries()) {
 
 							// Check that the HashMap doesn't already have an
 							// entry with the same name
@@ -893,8 +890,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		// Local Declarations
 		TreeComposite variables = null;
 		ArrayList<String> vars = new ArrayList<String>();
-		IEntryContentProvider provider = new BasicEntryContentProvider();
-		provider.setAllowedValueType(AllowedValueType.Discrete);
 
 		// Grab the Variables Block
 		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
@@ -915,9 +910,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				vars.add("Create a Variable");
 			}
 
-			// Set the allowed values as the list of available vars
-			provider.setAllowedValues(vars);
-
 			// Walk the tree and search for non-AuxVariable 'variable' Entries
 			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(tree);
 			while (iter.hasNext()) {
@@ -932,9 +924,9 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// Entry, and is not an AuxVariable
 					if (data != null && data.contains("variable") && !block.getParent().getName().contains("Aux")) {
 
-						Entry variableEntry = data.retrieveEntry("variable");
+						IEntry variableEntry = data.retrieveEntry("variable");
 						String currentValue = variableEntry.getValue();
-						data.retrieveEntry("variable").setContentProvider(provider);
+						variableEntry.setAllowedValues(vars);
 						if (vars.contains(currentValue)) {
 							variableEntry.setValue(currentValue);
 						} else {
@@ -962,8 +954,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 		// Local Declarations
 		TreeComposite auxVariablesBlock = null;
 		ArrayList<String> auxVars = new ArrayList<String>();
-		IEntryContentProvider provider = new BasicEntryContentProvider();
-		provider.setAllowedValueType(AllowedValueType.Discrete);
 
 		// Grab the AuxVariables Block
 		for (int i = 0; i < tree.getNumberOfChildren(); i++) {
@@ -979,9 +969,6 @@ public class MOOSEFileHandler implements IReader, IWriter {
 				auxVars.add(auxVariablesBlock.getChildAtIndex(i).getName());
 			}
 
-			// Set the allowed values as the list of available vars
-			provider.setAllowedValues(auxVars);
-
 			// Walk the tree and search for non-AuxVariable 'variable' Entries
 			BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(tree);
 			while (iter.hasNext()) {
@@ -996,10 +983,14 @@ public class MOOSEFileHandler implements IReader, IWriter {
 					// Entry, and is not an AuxVariable
 					if (data != null && data.contains("variable")
 							&& block.getParent().getName().contains("AuxKernels")) {
-						Entry variableEntry = data.retrieveEntry("variable");
+						IEntry variableEntry = data.retrieveEntry("variable");
 						String currentValue = variableEntry.getValue();
-						data.retrieveEntry("variable").setContentProvider(provider);
-						variableEntry.setValue(currentValue);
+						variableEntry.setAllowedValues(auxVars);
+						if (auxVars.contains(currentValue)) {
+							variableEntry.setValue(currentValue);
+						} else {
+							variableEntry.setValue(auxVars.get(0));
+						}
 					}
 
 				}
@@ -1019,10 +1010,10 @@ public class MOOSEFileHandler implements IReader, IWriter {
 	 *            The regular expression we should search for.
 	 */
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 
 		// Local declarations
-		ArrayList<Entry> retEntries = new ArrayList<Entry>();
+		ArrayList<IEntry> retEntries = new ArrayList<IEntry>();
 		Form form = read(file);
 
 		TreeComposite tree = (TreeComposite) form.getComponent(MOOSEModel.mooseTreeCompositeId);
@@ -1040,7 +1031,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
-				for (Entry e : data.retrieveAllEntries()) {
+				for (IEntry e : data.retrieveAllEntries()) {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
@@ -1052,7 +1043,7 @@ public class MOOSEFileHandler implements IReader, IWriter {
 						if ("file".equals(e.getName().toLowerCase()) || "data_file".equals(e.getName().toLowerCase())) {
 							e.setName(child.getName());
 						}
-						retEntries.add((Entry) e.clone());
+						retEntries.add((IEntry) e.clone());
 					}
 				}
 			}

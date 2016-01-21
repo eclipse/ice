@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Taylor Patterson
  */
-public class MeshElementTreeView extends ViewPart implements
-		IUpdateableListener, IPartListener2, ISelectionListener,
+public class MeshElementTreeView extends ViewPart
+		implements IUpdateableListener, IPartListener2, ISelectionListener,
 		ITabbedPropertySheetPageContributor {
 
 	/**
@@ -230,11 +230,13 @@ public class MeshElementTreeView extends ViewPart implements
 						Polygon polygon = (Polygon) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
 						for (Edge e : polygon.getEdges()) {
-							children.add(new MeshSelection(meshComponent.getMesh(), e));
+							children.add(new MeshSelection(
+									meshComponent.getMesh(), e));
 						}
 						// Add new MeshSelections for the vertices.
 						for (Vertex v : polygon.getVertices()) {
-							children.add(new MeshSelection(meshComponent.getMesh(), v));
+							children.add(new MeshSelection(
+									meshComponent.getMesh(), v));
 						}
 					}
 
@@ -264,7 +266,8 @@ public class MeshElementTreeView extends ViewPart implements
 			public boolean hasChildren(Object element) {
 
 				// Only selected Polygons will have children.
-				return (element instanceof MeshSelection && ((MeshSelection) element).selectedMeshPart instanceof Polygon);
+				return (element instanceof MeshSelection
+						&& ((MeshSelection) element).selectedMeshPart instanceof Polygon);
 			}
 		});
 

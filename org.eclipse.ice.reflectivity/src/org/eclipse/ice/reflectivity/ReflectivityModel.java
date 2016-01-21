@@ -23,9 +23,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.Material;
@@ -454,34 +456,18 @@ public class ReflectivityModel extends Model {
 		form.addComponent(paramComponent);
 
 		// Add a file entry for the wave vector file
-		Entry fileEntry = new Entry() {
-			@Override
-			protected void setup() {
-				// Only set the allowed value type for this. No other work
-				// required.
-				allowedValueType = AllowedValueType.File;
-				defaultValue = "waveVector.csv";
-				return;
-			}
-		};
+		FileEntry fileEntry = new FileEntry();
+		fileEntry.setProject(project);
+		fileEntry.setDefaultValue("waveVector.csv");
 		fileEntry.setId(1);
 		fileEntry.setName(WaveEntryName);
 		fileEntry.setDescription("Wave vector information for this problem.");
 		paramComponent.addEntry(fileEntry);
 
 		// Add an entry for the number of layers
-		Entry numLayersEntry = new Entry() {
-			@Override
-			protected void setup() {
-				// The number of layers should never be less than one and I
-				// imagine that 100 is a good upper limit.
-				allowedValueType = AllowedValueType.Continuous;
-				allowedValues.add("1");
-				allowedValues.add("101");
-				defaultValue = "41";
-				return;
-			}
-		};
+		IEntry numLayersEntry = new ContinuousEntry("1", "101");
+		numLayersEntry.setDefaultValue("41");
+		numLayersEntry.setValue("41");
 		numLayersEntry.setId(2);
 		numLayersEntry.setName(RoughnessEntryName);
 		numLayersEntry.setDescription(
@@ -489,32 +475,18 @@ public class ReflectivityModel extends Model {
 		paramComponent.addEntry(numLayersEntry);
 
 		// Add an entry for the deltaQ0
-		Entry deltaQ0Entry = new Entry() {
-			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				allowedValues.add(".000001");
-				allowedValues.add("15");
-				defaultValue = ".0002";
-				return;
-			}
-		};
+		IEntry deltaQ0Entry = new ContinuousEntry(".000001","15");
+		deltaQ0Entry.setDefaultValue(".0002");
+		deltaQ0Entry.setValue(".0002");
 		deltaQ0Entry.setId(3);
 		deltaQ0Entry.setName(deltaQ0EntryName);
 		deltaQ0Entry.setDescription("The incident angle of the neutron beam.");
 		paramComponent.addEntry(deltaQ0Entry);
 
 		// Add an entry for the deltaQ1ByQ
-		Entry deltaQ1Entry = new Entry() {
-			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				allowedValues.add(".000001");
-				allowedValues.add("15");
-				defaultValue = ".03";
-				return;
-			}
-		};
+		IEntry deltaQ1Entry = new ContinuousEntry(".000001","15");
+		deltaQ1Entry.setDefaultValue(".03");
+		deltaQ1Entry.setValue(".03");
 		deltaQ1Entry.setId(4);
 		deltaQ1Entry.setName(deltaQ1ByQEntryName);
 		deltaQ1Entry
@@ -522,16 +494,9 @@ public class ReflectivityModel extends Model {
 		paramComponent.addEntry(deltaQ1Entry);
 
 		// Add an entry for the wavelength
-		Entry waveEntry = new Entry() {
-			@Override
-			protected void setup() {
-				allowedValueType = AllowedValueType.Continuous;
-				allowedValues.add(".000001");
-				allowedValues.add("1000");
-				defaultValue = "4.25";
-				return;
-			}
-		};
+		IEntry waveEntry = new ContinuousEntry(".000001","1000");
+		waveEntry.setDefaultValue("4.25");
+		waveEntry.setValue("4.25");
 		waveEntry.setId(5);
 		waveEntry.setName(WaveLengthEntryName);
 		waveEntry.setDescription("The wavelength of the neutron beam.");
@@ -577,7 +542,7 @@ public class ReflectivityModel extends Model {
 		output.setId(outputCompId);
 
 		// Add an entry for the wavelength
-		Entry chiSquared = new Entry();
+		IEntry chiSquared = new StringEntry();
 		chiSquared.setId(1);
 		chiSquared.setName(ChiSquaredEntryName);
 		chiSquared.setDescription(
@@ -585,7 +550,7 @@ public class ReflectivityModel extends Model {
 		output.addEntry(chiSquared);
 
 		// Add an entry for the wavelength
-		Entry chiSquaredrq4 = new Entry();
+		IEntry chiSquaredrq4 = new StringEntry();
 		chiSquaredrq4.setId(2);
 		chiSquaredrq4.setName(ChiSquaredRQ4EntryName);
 		chiSquaredrq4.setDescription(

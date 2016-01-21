@@ -15,8 +15,8 @@ package org.eclipse.ice.item.action;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +132,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 
 		// Local Declarations
 		DataComponent comp = null;
-		ArrayList<Entry> entries = null;
+		ArrayList<IEntry> entries = null;
 		String password = null;
 		String[] response = new String[1];
 
@@ -167,7 +167,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 
 		// Local Declarations
 		DataComponent comp = null;
-		ArrayList<Entry> entries = null;
+		ArrayList<IEntry> entries = null;
 		String password = null;
 
 		// Get the password if possible
@@ -191,7 +191,7 @@ public class ICEJschUIInfo implements UIKeyboardInteractive, UserInfo {
 
 		// Local Declarations
 		DataComponent comp = null;
-		ArrayList<Entry> entries = null;
+		ArrayList<IEntry> entries = null;
 		String password = null;
 
 		// Get the password if possible

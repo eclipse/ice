@@ -161,28 +161,29 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 		parent.setLayout(new ColumnLayout());
 		parent.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-//		dataComposite = new DataComponentComposite(null, parent, SWT.FLAT);
-//
-//		// Create a listener that will mark the form as dirty when the event is
-//		// received.
-//		Listener listener = new Listener() {
-//			@Override
-//			public void handleEvent(Event e) {
-//				// logger.info("Changed!");
-//				// Change the editor state
-//				editor.setDirty(true);
-//			}
-//		};
-//
-//		// Register the Listener
-//		dataComposite.addListener(SWT.Selection, listener);
-//		GridLayout gridLayout = new GridLayout();
-//		gridLayout.marginLeft = 5;
-//		gridLayout.marginTop = 5;
-//		gridLayout.marginRight = 5;
-//		gridLayout.marginBottom = 5;
-//		gridLayout.verticalSpacing = 0;
-//		dataComposite.setLayout(gridLayout);
+		// dataComposite = new DataComponentComposite(null, parent, SWT.FLAT);
+		//
+		// // Create a listener that will mark the form as dirty when the event
+		// is
+		// // received.
+		// Listener listener = new Listener() {
+		// @Override
+		// public void handleEvent(Event e) {
+		// // logger.info("Changed!");
+		// // Change the editor state
+		// editor.setDirty(true);
+		// }
+		// };
+		//
+		// // Register the Listener
+		// dataComposite.addListener(SWT.Selection, listener);
+		// GridLayout gridLayout = new GridLayout();
+		// gridLayout.marginLeft = 5;
+		// gridLayout.marginTop = 5;
+		// gridLayout.marginRight = 5;
+		// gridLayout.marginBottom = 5;
+		// gridLayout.verticalSpacing = 0;
+		// dataComposite.setLayout(gridLayout);
 
 		// Make sure we show the EMF Tree Viewer when we create
 		// this EMF ICEFormPage.
@@ -190,7 +191,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(EMFTreeCompositeViewer.ID);
 		} catch (PartInitException e) {
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		// Get a reference to the EMFTreeView ViewPart from the Workbench
@@ -229,7 +230,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 			// Complain
 			logger.info("EclipseStreamingTextWidget Message: Unable to "
 					+ "stream text!");
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
@@ -239,7 +240,8 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	 * the EMFSectionPage.
 	 * </p>
 	 *
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The EMFComponent or null if the component has not yet been set in
 	 *         the page.
 	 *         </p>
@@ -251,63 +253,63 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
-//		// Only get the selection if the part is the EMFTreeView.
-//		if (part.getSite().getId().equals(EMFTreeCompositeViewer.ID)) {
-//
-//			// Get the number of selections highlighted
-//			int count = emfTreeView.getTreeViewer().getTree()
-//					.getSelectionCount();
-//
-//			// Only work if we've got a selection
-//			if (count > 0) {
-//				// Get the highlighted child String
-//				Object data = emfTreeView.getTreeViewer().getTree()
-//						.getSelection()[0].getData();
-//
-//				if (data instanceof TreeComposite) {
-//
-//					// Get the DataComponent from this TreeComposite
-//					DataComponent dataComp = emfComponent
-//							.getDataFromTreeNode((TreeComposite) data);
-//
-//					// Make sure its not null, the DataComponentComposite is not null,
-//					// and that we don't have the same DataComponent.
-//					if (dataComp != null
-//							&& dataComposite != null
-//							&& !dataComp.equals(dataComposite
-//									.getDataComponent())) {
-//						dataComposite.dispose();
-//						dataComposite = new DataComponentComposite(dataComp,
-//								parent, SWT.FLAT);
-//						// Create a listener that will mark the form as
-//						// dirty
-//						// when the event is
-//						// received.
-//						Listener listener = new Listener() {
-//							@Override
-//							public void handleEvent(Event e) {
-//								// logger.info("Changed!");
-//								// Change the editor state
-//								editor.setDirty(true);
-//							}
-//						};
-//
-//						// Register the Listener
-//						dataComposite.addListener(SWT.Selection, listener);
-//
-//						GridLayout gridLayout = new GridLayout();
-//						gridLayout.marginLeft = 5;
-//						gridLayout.marginTop = 5;
-//						gridLayout.marginRight = 5;
-//						gridLayout.marginBottom = 5;
-//						gridLayout.verticalSpacing = 0;
-//						dataComposite.setLayout(gridLayout);
-//						parent.layout();
-//					}
-//
-//				}
-//			}
-//		}
+		// // Only get the selection if the part is the EMFTreeView.
+		// if (part.getSite().getId().equals(EMFTreeCompositeViewer.ID)) {
+		//
+		// // Get the number of selections highlighted
+		// int count = emfTreeView.getTreeViewer().getTree()
+		// .getSelectionCount();
+		//
+		// // Only work if we've got a selection
+		// if (count > 0) {
+		// // Get the highlighted child String
+		// Object data = emfTreeView.getTreeViewer().getTree()
+		// .getSelection()[0].getData();
+		//
+		// if (data instanceof TreeComposite) {
+		//
+		// // Get the DataComponent from this TreeComposite
+		// DataComponent dataComp = emfComponent
+		// .getDataFromTreeNode((TreeComposite) data);
+		//
+		// // Make sure its not null, the DataComponentComposite is not null,
+		// // and that we don't have the same DataComponent.
+		// if (dataComp != null
+		// && dataComposite != null
+		// && !dataComp.equals(dataComposite
+		// .getDataComponent())) {
+		// dataComposite.dispose();
+		// dataComposite = new DataComponentComposite(dataComp,
+		// parent, SWT.FLAT);
+		// // Create a listener that will mark the form as
+		// // dirty
+		// // when the event is
+		// // received.
+		// Listener listener = new Listener() {
+		// @Override
+		// public void handleEvent(Event e) {
+		// // logger.info("Changed!");
+		// // Change the editor state
+		// editor.setDirty(true);
+		// }
+		// };
+		//
+		// // Register the Listener
+		// dataComposite.addListener(SWT.Selection, listener);
+		//
+		// GridLayout gridLayout = new GridLayout();
+		// gridLayout.marginLeft = 5;
+		// gridLayout.marginTop = 5;
+		// gridLayout.marginRight = 5;
+		// gridLayout.marginBottom = 5;
+		// gridLayout.verticalSpacing = 0;
+		// dataComposite.setLayout(gridLayout);
+		// parent.layout();
+		// }
+		//
+		// }
+		// }
+		// }
 
 	}
 
@@ -330,7 +332,7 @@ public class EMFSectionPage extends ICEFormPage implements ISelectionListener {
 		// EMFTreeView ViewPart
 		getSite().getWorkbenchWindow().getSelectionService()
 				.removeSelectionListener(EMFTreeCompositeViewer.ID, this);
-		//dataComposite.dispose();
+		// dataComposite.dispose();
 		console.clearConsole();
 		super.dispose();
 	}

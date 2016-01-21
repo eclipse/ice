@@ -15,7 +15,6 @@ package org.eclipse.ice.client.widgets.moose.components;
 import java.util.List;
 
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.Boundary;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;

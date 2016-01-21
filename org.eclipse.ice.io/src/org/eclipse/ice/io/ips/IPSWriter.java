@@ -33,8 +33,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -290,7 +290,7 @@ public class IPSWriter implements IWriter {
 
 		// Local Declarations
 		String configString = "";
-		ArrayList<Entry> row;
+		ArrayList<IEntry> row;
 		byte[] byteArray;
 
 		// Build the output by going through each row
@@ -325,7 +325,7 @@ public class IPSWriter implements IWriter {
 
 		// Local Declarations
 		String configString = "[PORTS]\n\tNAMES = ";
-		ArrayList<Entry> row;
+		ArrayList<IEntry> row;
 		byte[] byteArray;
 
 		// Build the output by going through each row
@@ -365,14 +365,14 @@ public class IPSWriter implements IWriter {
 			throws IOException {
 		// Get the port name and the entries
 		String currLine = "[" + component.getName() + "]\n";
-		ArrayList<Entry> portParams = component.retrieveAllEntries();
+		ArrayList<IEntry> portParams = component.retrieveAllEntries();
 
 		// Write the port header
 		byte[] byteArray = currLine.getBytes();
 		stream.write(byteArray);
 
 		// Write each of the port parameters
-		for (Entry param : portParams) {
+		for (IEntry param : portParams) {
 			// Write the port header
 			currLine = "\t" + param.getName().trim() + " = ";
 			byteArray = currLine.getBytes();
@@ -408,14 +408,14 @@ public class IPSWriter implements IWriter {
 			throws IOException {
 		// Get the port name and the entries
 		String currLine = "[TIME_LOOP]\n";
-		ArrayList<Entry> timeLoopParams = component.retrieveAllEntries();
+		ArrayList<IEntry> timeLoopParams = component.retrieveAllEntries();
 
 		// Write the port header
 		byte[] byteArray = currLine.getBytes();
 		stream.write(byteArray);
 
 		// Write each of the port parameters
-		for (Entry param : timeLoopParams) {
+		for (IEntry param : timeLoopParams) {
 			// Write the port header
 			currLine = "\t" + param.getName().trim() + " = ";
 			byteArray = currLine.getBytes();

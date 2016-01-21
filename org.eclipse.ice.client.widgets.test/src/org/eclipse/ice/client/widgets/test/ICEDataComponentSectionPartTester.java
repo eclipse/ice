@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ICEDataComponentSectionPart;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.ManagedForm;
@@ -96,7 +96,7 @@ public class ICEDataComponentSectionPartTester {
 		// Reset comp2 and add an entry to comp1 to cause an update
 		// notification to be posted.
 		comp2 = null;
-		comp1.addEntry(new Entry());
+		comp1.addEntry(new StringEntry());
 
 		// Grab the Component from the ICESectionPart and make sure it is
 		// correct

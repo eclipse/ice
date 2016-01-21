@@ -15,10 +15,9 @@ package org.eclipse.ice.item.jobLauncher;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -90,13 +89,13 @@ public class SuiteLauncher extends JobLauncher {
 	/**
 	 * The entry that holds the name of the executable in the component;
 	 */
-	private Entry execEntry;
+	private IEntry execEntry;
 
 	/**
 	 * The content provider for the entry that holds all of the names of the
 	 * executables.
 	 */
-	private BasicEntryContentProvider execContentProvider;
+//	private BasicEntryContentProvider execContentProvider;
 
 	/**
 	 * The list of executables.
@@ -138,7 +137,7 @@ public class SuiteLauncher extends JobLauncher {
 		super.setupForm();
 
 		// Create the content provider for the Entry.
-		execContentProvider = new BasicEntryContentProvider();
+//		execContentProvider = new BasicEntryContentProvider();
 		// Determine whether or not executables are available or it should be
 		// given an empty list.
 		if (executablesList == null || executablesList.isEmpty()) {
@@ -147,18 +146,14 @@ public class SuiteLauncher extends JobLauncher {
 			execList = executablesList;
 			defaultValue = executablesList.get(0);
 		}
-		// Finish setting the allowed values and default value
-		execContentProvider.setAllowedValues(execList);
-		execContentProvider.setAllowedValueType(AllowedValueType.Discrete);
-		execContentProvider.setDefaultValue("");
-		// Set the Entry tag
-		execContentProvider.setTag("exec");
 
 		// Create the Entry for listing the executables
-		execEntry = new Entry(execContentProvider);
+		execEntry = new DiscreteEntry();
+		execEntry.setAllowedValues(execList);
 		execEntry.setDescription(execEntryDesc);
 		execEntry.setId(1);
 		execEntry.setName(execEntryName);
+		execEntry.setTag("exec");
 
 		// Create the component for listing executables
 		execComponent = new DataComponent();
@@ -191,10 +186,8 @@ public class SuiteLauncher extends JobLauncher {
 		}
 		// Set the list of executables.
 		executablesList = executables;
-		// Update the content provider if needed
-		if (execContentProvider != null) {
-			execContentProvider.setAllowedValues(executablesList);
-		}
+		
+		execEntry.setAllowedValues(executablesList);
 
 		return;
 
@@ -340,9 +333,7 @@ public class SuiteLauncher extends JobLauncher {
 			// Get the executable information. The Entry is not simply cloned
 			// because a reference to the content provider is required.
 			this.execComponent = otherLauncher.execComponent;
-			this.execContentProvider = (BasicEntryContentProvider) otherLauncher.execContentProvider
-					.clone();
-			this.execEntry = new Entry(execContentProvider);
+			this.execEntry = (IEntry) otherLauncher.execEntry.clone();
 			this.executablesList = (ArrayList<String>) otherLauncher.executablesList
 					.clone();
 

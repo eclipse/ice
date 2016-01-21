@@ -60,14 +60,6 @@
             </view>         	
       </perspectiveExtension>
    </extension>
-   <extension
-         id="reflectivityformwidgetbuilder"
-         name="Reflectivity Form Widget Builder"
-         point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
-      <implementation
-            class="org.eclipse.ice.reflectivity.ui.ReflectivityFormWidgetBuilder">
-      </implementation>
-   </extension>
    
    <extension
        id="org.eclipse.ice.reflectivity.ui.xml.contentTypes"
@@ -96,6 +88,14 @@
              contentTypeId="org.eclipse.ice.reflectivity.ui.xml.contentType.Form">
        </contentTypeBinding>
     </editor>
+ </extension>
+ <extension
+       id="reflectivityformwidgetbuilder"
+       name="Reflectivity Form Widget Builder"
+       point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
+    <implementation
+          class="org.eclipse.ice.reflectivity.ui.ReflectivityFormWidgetBuilder">
+    </implementation>
  </extension>
 
 </plugin>

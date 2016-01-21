@@ -14,7 +14,7 @@ package org.eclipse.ice.client.widgets.moose.components;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public abstract class EntryListener implements IUpdateableListener {
 	/**
 	 * The entry that is this listener observes.
 	 */
-	protected final Entry entry;
+	protected final IEntry entry;
 
 	/**
 	 * The default constructor. Registers with the entry.
@@ -45,7 +45,7 @@ public abstract class EntryListener implements IUpdateableListener {
 	 * @param entry
 	 *            The Entry to listen to.
 	 */
-	public EntryListener(Entry entry) {
+	public EntryListener(IEntry entry) {
 		if (entry != null) {
 			this.entry = entry;
 			entry.register(this);

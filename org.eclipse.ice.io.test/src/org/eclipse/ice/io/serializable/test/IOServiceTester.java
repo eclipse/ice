@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
@@ -62,8 +62,8 @@ public class IOServiceTester {
 			}
 
 			@Override
-			public ArrayList<Entry> findAll(IFile file, String regex) {
-				ArrayList<Entry> fakeEntry = new ArrayList<Entry>();
+			public ArrayList<IEntry> findAll(IFile file, String regex) {
+				ArrayList<IEntry> fakeEntry = new ArrayList<IEntry>();
 				return fakeEntry;
 			}
 

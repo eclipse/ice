@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  * {@link ComboBoxCellEditor} is used to display and select from the available
  * values.</li>
  * <li>Otherwise, the default {@link TextCellEditor} is used to edit the
- * <code>Entry</code>'s value.</li>
+ * <code>IEntry</code>'s value.</li>
  * </ul>
  * 
  * @author Jordan H. Deyton
@@ -111,7 +111,7 @@ public class ComboCellEditingSupport extends TextCellEditingSupport {
 
 			TreeProperty property = (TreeProperty) element;
 
-			boolean isFile = property.getEntry().getValueType() == AllowedValueType.File;
+			boolean isFile = property.getEntry() instanceof FileEntry;
 
 			if (isFile) {
 				comboCell = new FileComboBoxCellEditor(parent, new String[] {}, SWT.DROP_DOWN | SWT.READ_ONLY, this, property);

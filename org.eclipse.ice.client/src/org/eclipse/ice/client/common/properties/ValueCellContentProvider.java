@@ -15,9 +15,11 @@ package org.eclipse.ice.client.common.properties;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
 
 /**
  * This class provides an {@link ICellContentProvider} geared toward the value
@@ -112,8 +114,8 @@ public class ValueCellContentProvider extends TreePropertyCellContentProvider im
 			// The property has multiple allowed values if it is the "type"
 			// property (for the type of AdaptiveTreeComposite) or if the
 			// wrapped Entry has a discrete allowed value type.
-			requiresCombo = property.isAdaptiveType() || property.getEntry().getValueType() == AllowedValueType.Discrete
-					|| property.getEntry().getValueType() == AllowedValueType.File;
+			requiresCombo = property.isAdaptiveType() || property.getEntry() instanceof DiscreteEntry
+					|| property.getEntry() instanceof FileEntry;
 		}
 
 		return requiresCombo;
@@ -131,10 +133,10 @@ public class ValueCellContentProvider extends TreePropertyCellContentProvider im
 
 		if (isValid(element)) {
 			TreeProperty property = (TreeProperty) element;
-			Entry entry = property.getEntry();
+			IEntry entry = property.getEntry();
 
 			// If it's a discrete Entry, get the allowed value types.
-			if (entry.getValueType() == AllowedValueType.Discrete || entry.getValueType() == AllowedValueType.File) {
+			if (entry instanceof DiscreteEntry || entry instanceof FileEntry) {
 				allowedValues = entry.getAllowedValues();
 			}
 			// If it's the "type" property, get the adaptive tree types.

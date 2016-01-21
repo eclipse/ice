@@ -82,7 +82,8 @@ public class ICEResourceView extends PlayableViewPart
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ICEResourceView.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(ICEResourceView.class);
 
 	// The ID
 	public static final String ID = "org.eclipse.ice.client.widgets.ICEResourceView";
@@ -222,7 +223,8 @@ public class ICEResourceView extends PlayableViewPart
 			};
 
 			// Loop over the Form Components to find a ResourceComponent.
-			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput()).getForm();
+			Form activeForm = ((ICEFormInput) activeEditor.getEditorInput())
+					.getForm();
 			for (Component i : activeForm.getComponents()) {
 				i.accept(visitor);
 				// Exit the loop when the first ResourceComponent is found.
@@ -268,14 +270,16 @@ public class ICEResourceView extends PlayableViewPart
 			resourceComponent.unregister(this);
 
 			// Clear the related UI pieces.
-			if (fileTreeViewer != null && !fileTreeViewer.getControl().isDisposed()) {
+			if (fileTreeViewer != null
+					&& !fileTreeViewer.getControl().isDisposed()) {
 				textList.clear();
 				fileTreeViewer.refresh();
 				fileTreeViewer.getTree().redraw();
 			}
 
 			// Clear the related UI pieces.
-			if (imageTreeViewer != null && !imageTreeViewer.getControl().isDisposed()) {
+			if (imageTreeViewer != null
+					&& !imageTreeViewer.getControl().isDisposed()) {
 				imageList.clear();
 				imageTreeViewer.refresh();
 				imageTreeViewer.getTree().redraw();
@@ -367,22 +371,23 @@ public class ICEResourceView extends PlayableViewPart
 
 		// Create the Table and table viewer for the Plot tab
 		Table listTable = new Table(tabFolder, SWT.FLAT);
-		DefaultEventTableViewer<VizResource> listTableViewer = new DefaultEventTableViewer<VizResource>(plotList,
-				listTable, plotList);
+		DefaultEventTableViewer<VizResource> listTableViewer = new DefaultEventTableViewer<VizResource>(
+				plotList, listTable, plotList);
 		// Register the table control with the plot tab
 		plotTab.setControl(listTable);
 
 		// Check if there is currently an active ICEFormEditor. If so, update
 		// the currently active editor and related UI pieces.
-		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.getActiveEditor();
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		if (activeEditor != null && activeEditor instanceof ICEFormEditor) {
 			if (activeEditor != editor) {
 				setActiveEditor((ICEFormEditor) activeEditor);
 			}
 		} else {
 			// Get a list of all the currently open editors
-			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			IWorkbenchPage workbenchPage = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
 			IEditorReference[] editorRefs = workbenchPage.getEditorReferences();
 
 			if (editorRefs != null && editorRefs.length > 0) {
@@ -400,7 +405,8 @@ public class ICEResourceView extends PlayableViewPart
 
 		// Register as a listener to the part service so that the view can
 		// update when the active ICEFormEditor changes.
-		IPartService partService = getSite().getWorkbenchWindow().getPartService();
+		IPartService partService = getSite().getWorkbenchWindow()
+				.getPartService();
 		partService.addPartListener(this);
 
 		return;
@@ -423,7 +429,8 @@ public class ICEResourceView extends PlayableViewPart
 			}
 
 			@Override
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			public void inputChanged(Viewer viewer, Object oldInput,
+					Object newInput) {
 				// Don't handle input changes
 				return;
 			}
@@ -439,15 +446,21 @@ public class ICEResourceView extends PlayableViewPart
 				// If the element is a PropertySource
 				if (parentElement instanceof PropertySource) {
 					PropertySource source = (PropertySource) parentElement;
-					ICEResource resource = (ICEResource) source.getWrappedData();
+					ICEResource resource = (ICEResource) source
+							.getWrappedData();
 					// Load the path and modification date as children
-					String[] children = { "Path: " + resource.getPath().toASCIIString(),
+					String[] children = {
+							"Path: " + resource.getPath().toASCIIString(),
 							"Date: " + resource.getLastModificationDate() };
 
 					// Map the children to their parent resource for appropriate
 					// selection behavior
-					resourceChildMap.put("Path: " + resource.getPath().toASCIIString(), resource);
-					resourceChildMap.put("Date: " + resource.getLastModificationDate(), resource);
+					resourceChildMap.put(
+							"Path: " + resource.getPath().toASCIIString(),
+							resource);
+					resourceChildMap.put(
+							"Date: " + resource.getLastModificationDate(),
+							resource);
 
 					return children;
 				}
@@ -478,7 +491,8 @@ public class ICEResourceView extends PlayableViewPart
 				// shouldn't need it.... I think.
 				if (element instanceof PropertySource) {
 					PropertySource source = (PropertySource) element;
-					ICEResource resource = (ICEResource) source.getWrappedData();
+					ICEResource resource = (ICEResource) source
+							.getWrappedData();
 					return resource.getName();
 				}
 				return (String) element;
@@ -488,9 +502,11 @@ public class ICEResourceView extends PlayableViewPart
 			public Image getImage(Object element) {
 				// If it is a resource, set a "folder" picture
 				if (element instanceof PropertySource) {
-					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+					return PlatformUI.getWorkbench().getSharedImages()
+							.getImage(ISharedImages.IMG_OBJ_FOLDER);
 				}
-				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+				return PlatformUI.getWorkbench().getSharedImages()
+						.getImage(ISharedImages.IMG_OBJ_FILE);
 			}
 
 		});
@@ -543,15 +559,18 @@ public class ICEResourceView extends PlayableViewPart
 
 		// Only perform a UI update if the component is valid and the UI pieces
 		// exist.
-		if (component != null && component == resourceComponent && fileTreeViewer != null) {
+		if (component != null && component == resourceComponent
+				&& fileTreeViewer != null) {
 
 			// Sync with the display
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					// Just do a blanket update - no need to check the component
-					if (fileTreeViewer != null && !fileTreeViewer.getControl().isDisposed()) {
-						logger.info("ICEResourceView Message: " + "Updating resource table.");
+					if (fileTreeViewer != null
+							&& !fileTreeViewer.getControl().isDisposed()) {
+						logger.info("ICEResourceView Message: "
+								+ "Updating resource table.");
 						sortTreeContent();
 						setTreeContent();
 						fileTreeViewer.refresh();
@@ -560,10 +579,11 @@ public class ICEResourceView extends PlayableViewPart
 				}
 			});
 		}
-		
+
 		// Only perform a UI update if the component is valid and the UI
 		// pieces exist.
-		if (component != null && component == resourceComponent && imageTreeViewer != null) {
+		if (component != null && component == resourceComponent
+				&& imageTreeViewer != null) {
 
 			// Sync with the display
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
@@ -571,8 +591,10 @@ public class ICEResourceView extends PlayableViewPart
 				public void run() {
 					// Just do a blanket update - no need to check the
 					// component
-					if (imageTreeViewer != null && !imageTreeViewer.getControl().isDisposed()) {
-						logger.info("ICEResourceView Message: " + "Updating resource table.");
+					if (imageTreeViewer != null
+							&& !imageTreeViewer.getControl().isDisposed()) {
+						logger.info("ICEResourceView Message: "
+								+ "Updating resource table.");
 						sortTreeContent();
 						setTreeContent();
 						imageTreeViewer.refresh();
@@ -621,10 +643,10 @@ public class ICEResourceView extends PlayableViewPart
 		if (playAction.isInPlayState()) {
 			playAction.stop();
 		}
-		
+
 		imageTreeViewer.setInput(imageList);
 		fileTreeViewer.setInput(textList);
-		
+
 		// If there are no files, but there are images, set to the images tab.
 		// Otherwise, default to the files tab.
 		if (textList.isEmpty() && !imageList.isEmpty()) {
@@ -632,14 +654,16 @@ public class ICEResourceView extends PlayableViewPart
 			playable = true;
 
 			// Select the first available image resource.
-			imageTreeViewer.setSelection(new StructuredSelection(imageList.get(0)), true);
+			imageTreeViewer.setSelection(
+					new StructuredSelection(imageList.get(0)), true);
 		} else {
 			tabFolder.setSelection(0);
 			playable = false;
 
 			// Select the first available text resource.
 			if (!textList.isEmpty()) {
-				fileTreeViewer.setSelection(new StructuredSelection(textList.get(0)), true);
+				fileTreeViewer.setSelection(
+						new StructuredSelection(textList.get(0)), true);
 			}
 		}
 
@@ -659,12 +683,12 @@ public class ICEResourceView extends PlayableViewPart
 		if (playAction.isInPlayState()) {
 			playAction.stop();
 		}
-		
-		//Set the tree content
+
+		// Set the tree content
 		imageTreeViewer.setInput(imageList);
 		fileTreeViewer.setInput(textList);
-		
-		//Check if the new content is playable
+
+		// Check if the new content is playable
 		if (tabIndex == 1) {
 			if (!imageList.isEmpty()) {
 				playable = true;
@@ -805,8 +829,10 @@ public class ICEResourceView extends PlayableViewPart
 	 */
 	public ICEResource getResourceFromSelection(ISelection selection) {
 		ICEResource selectedResource = null;
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
-			Object element = ((IStructuredSelection) selection).getFirstElement();
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
+			Object element = ((IStructuredSelection) selection)
+					.getFirstElement();
 			// Strings must be looked up in the Resource View's map.
 			if (element instanceof String) {
 				selectedResource = resourceChildMap.get(element);
@@ -867,18 +893,25 @@ public class ICEResourceView extends PlayableViewPart
 				// Set the selection to the next resource in the currently
 				// displayed list or the first resource if the last resource
 				// is currently selected.
-				if (tabFolder.getSelectionIndex() == 1 && !imageList.isEmpty()) {
+				if (tabFolder.getSelectionIndex() == 1
+						&& !imageList.isEmpty()) {
 					currSelection = imageTreeViewer.getTree().getSelection();
-					currIndex = imageTreeViewer.getTree().indexOf(currSelection[0]);
+					currIndex = imageTreeViewer.getTree()
+							.indexOf(currSelection[0]);
 
 					int nextIndex = (currIndex + 1) % imageList.size();
-					imageTreeViewer.setSelection(new StructuredSelection(imageList.get(nextIndex)), true);
+					imageTreeViewer.setSelection(
+							new StructuredSelection(imageList.get(nextIndex)),
+							true);
 				} else if (!textList.isEmpty()) {
 					currSelection = fileTreeViewer.getTree().getSelection();
-					currIndex = fileTreeViewer.getTree().indexOf(currSelection[0]);
-										
+					currIndex = fileTreeViewer.getTree()
+							.indexOf(currSelection[0]);
+
 					int nextIndex = (currIndex + 1) % textList.size();
-					fileTreeViewer.setSelection(new StructuredSelection(textList.get(nextIndex)), true);
+					fileTreeViewer.setSelection(
+							new StructuredSelection(textList.get(nextIndex)),
+							true);
 				}
 			}
 		});
@@ -908,25 +941,31 @@ public class ICEResourceView extends PlayableViewPart
 				// Set the selection to the previous resource in the
 				// currently displayed list, or the last resource if the first
 				// resource is currently selected.
-				if (tabFolder.getSelectionIndex() == 1 && !imageList.isEmpty()) 
-				{
+				if (tabFolder.getSelectionIndex() == 1
+						&& !imageList.isEmpty()) {
 					currSelection = imageTreeViewer.getTree().getSelection();
-					currIndex = imageTreeViewer.getTree().indexOf(currSelection[0]);
-					
+					currIndex = imageTreeViewer.getTree()
+							.indexOf(currSelection[0]);
+
 					int prevIndex = (currIndex - 1) % imageList.size();
 					if (prevIndex < 0) {
 						prevIndex = imageList.size() - 1;
 					}
-					imageTreeViewer.setSelection(new StructuredSelection(imageList.get(prevIndex)), true);
+					imageTreeViewer.setSelection(
+							new StructuredSelection(imageList.get(prevIndex)),
+							true);
 				} else if (!textList.isEmpty()) {
 					currSelection = fileTreeViewer.getTree().getSelection();
-					currIndex = fileTreeViewer.getTree().indexOf(currSelection[0]);
-					
+					currIndex = fileTreeViewer.getTree()
+							.indexOf(currSelection[0]);
+
 					int prevIndex = (currIndex - 1) % textList.size();
 					if (prevIndex < 0) {
 						prevIndex = textList.size() - 1;
 					}
-					fileTreeViewer.setSelection(new StructuredSelection(textList.get(prevIndex)), true);
+					fileTreeViewer.setSelection(
+							new StructuredSelection(textList.get(prevIndex)),
+							true);
 				}
 			}
 		});
@@ -948,7 +987,8 @@ public class ICEResourceView extends PlayableViewPart
 		protected static IPropertyDescriptor[] descriptors;
 
 		static {
-			descriptors = new IPropertyDescriptor[] { new PropertyDescriptor(ID_PATH, "Path"),
+			descriptors = new IPropertyDescriptor[] {
+					new PropertyDescriptor(ID_PATH, "Path"),
 					new PropertyDescriptor(ID_DATE, "Date") };
 		}
 
