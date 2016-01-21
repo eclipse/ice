@@ -16,7 +16,6 @@ import org.eclipse.ice.client.widgets.StringEntryComposite;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.SWT;
 import org.junit.Test;
 
