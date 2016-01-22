@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.jme3.mesh.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 

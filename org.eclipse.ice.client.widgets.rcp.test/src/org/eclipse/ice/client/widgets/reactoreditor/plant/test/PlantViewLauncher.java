@@ -21,6 +21,7 @@ import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.reactor.plant.Reactor;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
+import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

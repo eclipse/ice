@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  */
 public interface IFormWidgetBuilder {
+
 	/**
 	 * <p>
 	 * This operation returns the name of the target Form that the Builder will
@@ -62,7 +62,6 @@ public interface IFormWidgetBuilder {
 	 */
 	public IFormWidget build();
 
-
 	/**
 	 * This operation retrieves all of the IFormWidgetBuilders from the
 	 * ExtensionRegistry.
@@ -71,15 +70,16 @@ public interface IFormWidgetBuilder {
 	 * @throws CoreException
 	 *             This exception is thrown if an extension cannot be loaded.
 	 */
-	public static IFormWidgetBuilder[] getFormWidgetBuilders() throws CoreException {
+	public static IFormWidgetBuilder[] getFormWidgetBuilders()
+			throws CoreException {
 
 		/**
 		 * Logger for handling event messages and other information.
 		 */
 		Logger logger = LoggerFactory.getLogger(IFormWidgetBuilder.class);
 
-		IFormWidgetBuilder [] builders = null;
-		String id = "org.eclipse.ice.item.itemBuilder";
+		IFormWidgetBuilder[] builders = null;
+		String id = "org.eclipse.ice.client.widgets.iformwidgetbuilder";
 		IExtensionPoint point = Platform.getExtensionRegistry()
 				.getExtensionPoint(id);
 

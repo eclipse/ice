@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.reactor.perspective.internal.ReactorClientHolder">
-   <implementation class="org.eclipse.ice.reactor.perspective.internal.ReactorClientHolder"/>
-   <reference bind="setClient" cardinality="1..1" interface="org.eclipse.ice.iclient.IClient" name="IClient" policy="dynamic" unbind="unsetClient"/>
-</scr:component>

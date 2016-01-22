@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.proteus.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.proteus.PROTEUSModel;

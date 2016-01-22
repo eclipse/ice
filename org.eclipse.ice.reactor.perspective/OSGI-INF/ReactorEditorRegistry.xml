@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.reactor.perspective.internal.reactorEditorRegistry">
-   <implementation class="org.eclipse.ice.reactor.perspective.internal.ReactorEditorRegistry"/>
-   <service>
-      <provide interface="org.eclipse.ice.client.widgets.reactoreditor.IReactorEditorRegistry"/>
-   </service>
-   <reference bind="setAnalysisWidgetRegistry" cardinality="1..1" interface="org.eclipse.ice.client.widgets.reactoreditor.IAnalysisWidgetRegistry" name="IAnalysisWidgetRegistry" policy="dynamic" unbind="unsetAnalysisWidgetRegistry"/>
-</scr:component>

@@ -13,6 +13,7 @@ package org.eclipse.ice.viz.service.jme3.mesh.test;
 
 import org.eclipse.ice.viz.service.datastructures.VizActionTree;
 import org.eclipse.ice.viz.service.jme3.application.MasterApplication;
+import org.eclipse.ice.viz.service.jme3.application.ViewAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppState;
 import org.eclipse.ice.viz.service.jme3.mesh.MeshAppStateMode;

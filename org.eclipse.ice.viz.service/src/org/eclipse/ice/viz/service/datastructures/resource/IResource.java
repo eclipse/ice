@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 
-import javax.xml.bind.annotation.XmlTransient;
-
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
 

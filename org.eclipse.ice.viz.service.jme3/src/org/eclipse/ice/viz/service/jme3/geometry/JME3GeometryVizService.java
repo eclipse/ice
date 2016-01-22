@@ -12,7 +12,6 @@
 package org.eclipse.ice.viz.service.jme3.geometry;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
