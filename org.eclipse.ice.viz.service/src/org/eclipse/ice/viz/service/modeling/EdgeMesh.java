@@ -46,8 +46,8 @@ public class EdgeMesh extends AbstractMesh {
 		super();
 
 		// Add the vertices to the list of entities.
-		addEntity(start);
-		addEntity(end);
+		addEntityByCategory(start, "Vertices");
+		addEntityByCategory(end, "Vertices");
 	}
 
 	/**
@@ -57,30 +57,6 @@ public class EdgeMesh extends AbstractMesh {
 	 */
 	public double getLength() {
 		return length;
-	}
-
-	/**
-	 * Adds a new entity to the edge. Caps the edge at a maximum of two
-	 * vertices, and recalculates the edge's length when a second vertex is
-	 * added.
-	 * 
-	 * @param newEntity
-	 *            The vertex to add to the edge.
-	 */
-	@Override
-	public void addEntity(AbstractController newEntity) {
-
-		// When a vertex is added, place it into the Vertices category by
-		// default
-		if (newEntity instanceof VertexController) {
-
-			addEntityByCategory(newEntity, "Vertices");
-
-			// For other entities, add them normally
-		} else {
-			super.addEntity(newEntity);
-		}
-
 	}
 
 	/*
