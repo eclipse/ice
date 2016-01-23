@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.parsergenerator;
 
-import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.Item;
 
 /**
- * Description
+ * This is an Item that assembles parsers based on various quantities that are
+ * common to most text parsers and can be set by clients.
  * 
  * @author Andrew Bennett
  */
@@ -31,16 +31,14 @@ public class ParserGenerator extends Item {
 	public ParserGenerator() {
 		return;
 	}
-	
-	
+
 	/**
 	 * Constructor
 	 */
 	public ParserGenerator(IProject projectSpace) {
 		return;
 	}
-	
-	
+
 	/**
 	 * <p>
 	 * This operation overrides the Item.setupForm() operation.
@@ -57,7 +55,7 @@ public class ParserGenerator extends Item {
 			loadInput(null);
 		}
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation overrides the Item.setupItemInfo() operation.
@@ -108,6 +106,5 @@ public class ParserGenerator extends Item {
 	public void loadInput(String name) {
 		return;
 	}
-	
-}
 
+}
