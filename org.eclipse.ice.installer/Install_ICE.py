@@ -30,7 +30,15 @@ import itertools
 import subprocess
 
 
-if sys.version_info >= (3,0):
+if sys.version_info < (2,7):
+    print("")
+    print("--------------------------- ERROR -----------------------------")
+    print("  Unsupported Python version: " + sys.version_info.major + "." + sys.version_info.minor)
+    print("  Please update to Python 2.7 or greater to use the installer.")
+    print("--------------------------- ERROR -----------------------------")
+    print("")
+    exit()
+elif sys.version_info >= (3,0):
     import urllib.request as urllib2
 else:
     import urllib2
