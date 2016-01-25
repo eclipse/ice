@@ -71,6 +71,9 @@ public class DiscreteEntry extends AbstractEntry {
 	public DiscreteEntry(String... allowed) {
 		super();
 		allowedValues = Arrays.asList(allowed);
+		if (value == null && !allowedValues.isEmpty()) {
+			value = allowedValues.get(0);
+		}
 	}
 
 	/*

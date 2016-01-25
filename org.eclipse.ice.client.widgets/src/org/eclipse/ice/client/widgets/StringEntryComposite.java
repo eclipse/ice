@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -98,7 +99,6 @@ public class StringEntryComposite extends AbstractEntryComposite {
 			public void handleEvent(Event e) {
 				// Notify any listeners that the selection has changed
 				notifyListeners(SWT.Selection, new Event());
-				logger.info("HELLO WORLD SETTING " + ((Text) widget).getText());
 				// Set the value of the Entry
 				setEntryValue(((Text) widget).getText());
 			}

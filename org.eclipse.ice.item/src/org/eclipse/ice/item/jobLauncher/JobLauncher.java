@@ -41,6 +41,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.docker.DockerComponent;
 import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
@@ -808,6 +809,12 @@ public class JobLauncher extends Item {
 		// Every JobLauncher should observe the Input File Entry
 		((DataComponent) form.getComponent(JobLauncherForm.filesId)).retrieveEntry("Input File").register(this);
 
+		DockerComponent docker = new DockerComponent();
+		docker.setName("Docker Configuration");
+		docker.setDescription("This page enables the use of Docker for this Job Launch.");
+		docker.setId(22);
+		form.addComponent(docker);
+		
 		return;
 	}
 

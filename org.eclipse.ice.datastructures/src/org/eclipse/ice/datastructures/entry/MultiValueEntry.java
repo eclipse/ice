@@ -30,7 +30,13 @@ public class MultiValueEntry extends StringEntry {
 	}
 
 	@Override
-	public boolean setValue(String... values) {
+	public boolean setValue(String... newValues) {
+		if (values != null && newValues.length > 1) {
+			values = newValues;
+			return true;
+		} else if (newValues.length == 1) {
+			return super.setValue(newValues[0]);
+		}
 		return false;
 	}
 
@@ -42,8 +48,7 @@ public class MultiValueEntry extends StringEntry {
 
 	@Override
 	public String[] getValues() {
-		// TODO Auto-generated method stub
-		return null;
+		return values;
 	}
 
 	@Override

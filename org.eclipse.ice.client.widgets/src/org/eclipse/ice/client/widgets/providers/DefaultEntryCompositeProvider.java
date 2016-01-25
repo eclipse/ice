@@ -15,6 +15,7 @@ import org.eclipse.ice.client.widgets.DiscreteEntryComposite;
 import org.eclipse.ice.client.widgets.ExecutableEntryComposite;
 import org.eclipse.ice.client.widgets.FileEntryComposite;
 import org.eclipse.ice.client.widgets.IEntryComposite;
+import org.eclipse.ice.client.widgets.MultiValueEntryComposite;
 import org.eclipse.ice.client.widgets.StringEntryComposite;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
@@ -167,8 +168,7 @@ public class DefaultEntryCompositeProvider implements IEntryCompositeProvider, I
 	 */
 	@Override
 	public void visit(MultiValueEntry entry) {
-		// TODO Auto-generated method stub
-
+		entryComposite = new MultiValueEntryComposite(parent, entry, style);
 	}
 
 }

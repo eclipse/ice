@@ -243,6 +243,7 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 
 				
 				tmpComposite = provider.getEntryComposite(client, entry, SWT.FLAT, formEditor.getToolkit());
+				System.out.println("HELLO: " + tmpComposite.getClass().getSimpleName() + ", " + entry.getName());
 				// Set the Listener
 				tmpComposite.getComposite().addListener(SWT.Selection, listener);
 			}

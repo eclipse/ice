@@ -44,15 +44,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The AbstractEntryComposite is an implementation of the IEntryComposite and 
- * also a SWT Composite extension. It deals with rendering provided 
- * IEntry instances on an SWT Composite. It provides an abstract render operation 
- * that subclasses should implement to deal with specific IEntry types. 
+ * The AbstractEntryComposite is an implementation of the IEntryComposite and
+ * also a SWT Composite extension. It deals with rendering provided IEntry
+ * instances on an SWT Composite. It provides an abstract render operation that
+ * subclasses should implement to deal with specific IEntry types.
  * 
  * @author Alex McCaskey
  *
  */
-public abstract class AbstractEntryComposite extends Composite implements IEntryComposite { 
+public abstract class AbstractEntryComposite extends Composite implements IEntryComposite {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -138,8 +138,7 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 		if (refEntry != null) {
 			entry = refEntry;
 		} else {
-			throw new RuntimeException("Entry passed to EntryComposite "
-					+ "constructor cannot be null!");
+			//throw new RuntimeException("Entry passed to EntryComposite " + "constructor cannot be null!");
 		}
 
 		// Setup the allowedBinaryValues for check boxes
@@ -163,22 +162,28 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 		// Create the MessageName String
 		messageName = new String();
-		messageName = entry.getName() + " " + entry.getId();
+		messageName = entry != null ? entry.getName() + " " + entry.getId() : "";
 
 		// Register for updates from the Entry
-		entry.register(this);
+		if (entry != null) {
+			entry.register(this);
+		}
 
 		// Add a listener to the Entry that unregisters this composite as a
 		// listener upon disposal.
 		addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-				entry.unregister(AbstractEntryComposite.this);
+				if (entry != null) {
+					entry.unregister(AbstractEntryComposite.this);
+				}
 			}
 		});
 
 		// Get a reference to the current Entry value
-		currentSelection = entry.getValue();
+		if (entry != null) {
+			currentSelection = entry.getValue();
+		}
 
 		// Render the entry
 		render();
@@ -188,6 +193,7 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.IEntryComposite#getComposite()
 	 */
 	public Composite getComposite() {
@@ -196,12 +202,14 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.IEntryComposite#render()
 	 */
 	public abstract void render();
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.IEntryComposite#refresh()
 	 */
 	@Override
@@ -212,13 +220,13 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 			label.dispose();
 			label = null;
 		}
-		
+
 		if (widget != null) {
 			logger.info("Disposing widget - " + widget.getClass().getCanonicalName());
 			widget.dispose();
 			widget = null;
 		}
-		
+
 		for (Button button : buttons) {
 			if (!button.isDisposed()) {
 				button.dispose();
@@ -230,8 +238,7 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 		// Print an error if this Entry has been prematurely disposed.
 		if (isDisposed()) {
-			logger.info("EntryComposite Message: "
-					+ "This composite has been prematurely disposed!");
+			logger.info("EntryComposite Message: " + "This composite has been prematurely disposed!");
 			return;
 		}
 
@@ -252,7 +259,10 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.IEntryComposite#setMessageManager(org.eclipse.ui.forms.IMessageManager)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.IEntryComposite#setMessageManager(org.
+	 * eclipse.ui.forms.IMessageManager)
 	 */
 	public void setMessageManager(IMessageManager manager) {
 
@@ -264,6 +274,7 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.client.widgets.IEntryComposite#getEntry()
 	 */
 	public IEntry getEntry() {
@@ -272,13 +283,16 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.client.widgets.IEntryComposite#setEntry(org.eclipse.ice.datastructures.entry.IEntry)
+	 * 
+	 * @see
+	 * org.eclipse.ice.client.widgets.IEntryComposite#setEntry(org.eclipse.ice.
+	 * datastructures.entry.IEntry)
 	 */
 	public void setEntry(IEntry ent) {
 		entry = ent;
 		refresh();
 	}
-	
+
 	/**
 	 * Creates a label for the EntryComposite.
 	 */
@@ -307,15 +321,13 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 			// Set a description and image
 			decoration.setDescriptionText(saveMessage);
-			Image image = FieldDecorationRegistry.getDefault()
-					.getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
+			Image image = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING)
 					.getImage();
 			decoration.setImage(image);
 
 			// Set a listener to hide/show the decoration according to the
 			// editor's state and the current entry value
-			final IEditorPart editor = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage()
+			final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.getActiveEditor();
 			editor.addPropertyListener(new IPropertyListener() {
 				@Override
@@ -323,8 +335,8 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 					// Toggle the decoration on if the form is dirty and the
 					// value has changed
 					if (editor != null) {
-						if (editor.isDirty() && !AbstractEntryComposite.this.entry
-								.getValue().equals(currentSelection)) {
+						if (editor.isDirty()
+								&& !AbstractEntryComposite.this.entry.getValue().equals(currentSelection)) {
 							// Show the decoration
 							AbstractEntryComposite.this.decoration.show();
 						} else if (!editor.isDirty()) {
@@ -341,12 +353,10 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 		// If the decoration already exists, check the Entry's state and set the
 		// decoration as needed.
 		else {
-			final IEditorPart editor = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage()
+			final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
 					.getActiveEditor();
 			if (editor != null) {
-				if (editor.isDirty() && !AbstractEntryComposite.this.entry.getValue()
-						.equals(currentSelection)) {
+				if (editor.isDirty() && !AbstractEntryComposite.this.entry.getValue().equals(currentSelection)) {
 					// Show the decoration
 					AbstractEntryComposite.this.decoration.show();
 				} else if (!editor.isDirty()) {
@@ -423,9 +433,13 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 
 		return;
 	}
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.
+	 * eclipse.ice.datastructures.ICEObject.IUpdateable)
 	 */
 	@Override
 	public void update(IUpdateable component) {
@@ -436,7 +450,7 @@ public abstract class AbstractEntryComposite extends Composite implements IEntry
 				public void run() {
 					if (!AbstractEntryComposite.this.isDisposed()) {
 						logger.info("Updating " + entry.getName() + " Entry Composite.");
-					
+
 						// Refresh the EntryComposite
 						refresh();
 

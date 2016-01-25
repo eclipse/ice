@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.docker;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.MultiValueEntry;
@@ -46,19 +47,38 @@ public class DockerDetailsData extends DataComponent {
 		IEntry asDaemon = new DiscreteEntry("yes", "no");
 		asDaemon.setDefaultValue("no");
 		asDaemon.setName("Daemon");
-		asDaemon.setDescription("Indicate whether this container should be launched as a background daemon.");
+		asDaemon.setDescription("Indicate whether this container should be launched as a background daemon (docker run -d).");
 		asDaemon.setId(2);
+
+		IEntry interactive = new DiscreteEntry("yes", "no");
+		interactive.setName("Interactive");
+		interactive.setDefaultValue("no");
+		interactive.setDescription("Pass -i to docker run, interactive");
+		interactive.setId(3);
+		
+		IEntry tty = new DiscreteEntry("yes", "no");
+		interactive.setName("Allocate TTY");
+		interactive.setDefaultValue("no");
+		interactive.setDescription("Pass -t to docker run, allocate tty");
+		interactive.setId(4);
 
 		// List Entry
 		MultiValueEntry volumes = new MultiValueEntry();
 		volumes.setName("Volumes");
 		volumes.setDescription("Provide any directories this container should expose.");
-		volumes.setId(3);
+		volumes.setId(5);
+		
+		DiscreteEntry volumesFrom = new DiscreteEntry("No volumes to choose from.");
+		volumesFrom.setName("Volumes From");
+		volumesFrom.setDescription("Specify volumes to mount in this image from another image.");
+		volumesFrom.setId(6);
 		
 		addEntry(name);
 		addEntry(asDaemon);
+		addEntry(interactive);
+		addEntry(tty);
 		addEntry(volumes);
-		
+		addEntry(volumesFrom);
 	}
 
 }
