@@ -1,18 +1,38 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey
+ *******************************************************************************/
 package org.eclipse.ice.datastructures.docker;
 
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.MultiValueEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 
 import com.spotify.docker.client.messages.Image;
 
+/**
+ * 
+ * @author Alex McCaskey
+ *
+ */
 public class DockerDetailsData extends DataComponent {
 
 	private Image image;
 	
+	/**
+	 * 
+	 * @param i
+	 */
 	public DockerDetailsData(Image i) {
-		// TODO Auto-generated constructor stub
 		image = i;
 		setName(image.repoTags().get(0) + " Parameters");
 		setDescription("Please provide container-specific parameters.");
@@ -30,20 +50,14 @@ public class DockerDetailsData extends DataComponent {
 		asDaemon.setId(2);
 
 		// List Entry
-//		Entry volumes = new Entry() {
-//			@Override
-//			public void setup() {
-//				//allowedValueType = AllowedValueType.List;
-//				setName("Volumes");
-//				setDescription("Provide any directories this container should expose.");
-//				setId(3);
-//			}
-//			
-//		};
+		MultiValueEntry volumes = new MultiValueEntry();
+		volumes.setName("Volumes");
+		volumes.setDescription("Provide any directories this container should expose.");
+		volumes.setId(3);
 		
 		addEntry(name);
 		addEntry(asDaemon);
-//		addEntry(volumes);
+		addEntry(volumes);
 		
 	}
 

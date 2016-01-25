@@ -1,34 +1,37 @@
+/*******************************************************************************
+ * Copyright (c) 2012, 2014, 2015 UT-Battelle, LLC.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Initial API and implementation and/or initial documentation - 
+ *   Alex McCaskey
+ *******************************************************************************/
 package org.eclipse.ice.datastructures.entry;
 
-import java.util.List;
-
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 
-public class MultiValueEntry extends AbstractEntry {
+/**
+ * 
+ * @author Alex McCaskey
+ *
+ */
+public class MultiValueEntry extends StringEntry {
 
+	private String[] values;
+	
 	@Override
 	public Object clone() {
-		// TODO Auto-generated method stub
-		return null;
+		MultiValueEntry entry = new MultiValueEntry();
+		entry.copy(this);
+		return entry;
 	}
 
 	@Override
 	public boolean setValue(String... values) {
-		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public List<String> getAllowedValues() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setAllowedValues(List<String> values) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
