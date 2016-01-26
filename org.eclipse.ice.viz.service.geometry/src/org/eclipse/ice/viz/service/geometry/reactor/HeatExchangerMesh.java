@@ -51,7 +51,10 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *         one.
 	 */
 	public PipeController getSecondaryPipe() {
-		return (PipeController) entities.get("Secondary Pipe").get(0);
+		List<AbstractController> category = getEntitiesByCategory(
+				"Secondary Pipe");
+
+		return !category.isEmpty() ? (PipeController) category.get(0) : null;
 	}
 
 	/**

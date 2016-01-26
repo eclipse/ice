@@ -9,7 +9,7 @@
    <launcherArgs>
       <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault
       </programArgs>
-      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080 -Dosgi.framework.extensions=org.eclipse.fx.osgi
       </vmArgs>
       <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin
       </vmArgsLin>
