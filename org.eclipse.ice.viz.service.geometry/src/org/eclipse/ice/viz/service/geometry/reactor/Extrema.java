@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 UT-Battelle, LLC.
+ * Copyright (c) 2015-2016 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,9 @@ package org.eclipse.ice.viz.service.geometry.reactor;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A class defining the extrema of some shape or region in three dimensional
  * space. It includes the minimum and maximum x, y, and z coordinates found
@@ -21,6 +24,11 @@ import java.util.List;
  *
  */
 public class Extrema {
+
+	/**
+	 * The extrema's error logger.
+	 */
+	private final Logger logger;
 
 	/**
 	 * The region's maximum x coordinate.
@@ -70,6 +78,14 @@ public class Extrema {
 		this.maxY = maxY;
 		this.minZ = minZ;
 		this.maxZ = maxZ;
+
+		// Allocate the logger
+		logger = LoggerFactory.getLogger(getClass());
+
+		if (minX > maxX || minY > maxY || minZ > maxZ) {
+			logger.error(
+					"Illegal Extrama bounds: Minimum values may not exceed maximum values");
+		}
 	}
 
 	/**
@@ -81,6 +97,9 @@ public class Extrema {
 	 *            The list of regions which this extrema will contain.
 	 */
 	public Extrema(List<Extrema> subRegions) {
+
+		// Allocate the logger
+		logger = LoggerFactory.getLogger(getClass());
 
 		for (Extrema region : subRegions) {
 

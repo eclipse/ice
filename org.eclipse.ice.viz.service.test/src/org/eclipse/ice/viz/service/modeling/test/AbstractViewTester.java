@@ -170,13 +170,26 @@ public class AbstractViewTester {
 	 * Check the AbstractView's equality testing.
 	 */
 	@Test
-	public void checkEquality(){
-		
+	public void checkEquality() {
+
+		// Create objects for testing
 		AbstractView object = new AbstractView();
 		AbstractView equalObject = new AbstractView();
 		AbstractView unequalObject = new AbstractView();
-		
+
+		// Give one view a different transformation
 		Transformation transformation = new Transformation();
-		unequalObject.
+		transformation.setSize(2);
+		unequalObject.setTransformation(transformation);
+
+		// An object should equal itself
+		assertTrue(object.equals(object));
+
+		// Check that a comparison of two equal objects returns true
+		assertTrue(object.equals(equalObject));
+		assertTrue(equalObject.equals(object));
+
+		// Check that a comparison of two unequal objects returns false
+		assertFalse(object.equals(unequalObject));
 	}
 }
