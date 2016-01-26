@@ -236,7 +236,7 @@ public class ICEMeshPage extends ICEFormPage
 
 		} catch (Exception e) {
 			logger.error(
-					"Error creating Geometry Canvas with Geometry Service.", e);
+					"Error creating Mesh Canvas with Mesh Service.", e);
 		}
 
 		// The MeshPage should also listen for changes to the MeshApplication's

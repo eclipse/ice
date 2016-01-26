@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ice.viz.service.mesh">
-      <implementation class="org.eclipse.ice.viz.service.javafx.mesh.FXMeshVizService"/>
+   <implementation class="org.eclipse.ice.viz.service.javafx.mesh.FXMeshVizService"/>
    <service>
       <provide interface="org.eclipse.ice.viz.service.IVizService"/>
    </service>

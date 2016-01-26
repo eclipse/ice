@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
+import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.junit.Test;
 
 /**
@@ -24,7 +26,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class HeatExchangerMeshTester {
+public class HeatExchangerControllerTester {
 
 	/**
 	 * Test the HeatExchanger's ability to correctly manage its contained pipes.
@@ -33,14 +35,18 @@ public class HeatExchangerMeshTester {
 	public void checkPipes(){
 		
 		//Create a heat exchanger and some pipes
-		HeatExchangerMesh exchanger = new HeatExchangerMesh();
+		HeatExchangerMesh exchangerMesh = new HeatExchangerMesh();
+		HeatExchangerController exchanger = new HeatExchangerController(new HeatExchangerMesh(), new AbstractView());
 		
+		//Create pipes for the exchanger
 		PipeController primary = new PipeController(new PipeMesh(), new AbstractView());
 		PipeController secondary = new PipeController(new PipeMesh(), new AbstractView());
 		
+		//Check that the secondary pipe can be set
 		exchanger.setSecondaryPipe(secondary);
 		assertTrue(secondary == exchanger.getSecondaryPipe());
 				
+		//Check that the primary pipe can be set
 		exchanger.setPrimaryPipe(primary);
 		assertTrue(primary == exchanger.getPrimaryPipe());
 		

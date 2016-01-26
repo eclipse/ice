@@ -24,6 +24,9 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.test.TestManagedList
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.test.utils.TestController;
+import org.eclipse.ice.viz.service.modeling.test.utils.TestMesh;
+import org.eclipse.ice.viz.service.modeling.test.utils.TestView;
 import org.junit.Before;
 import org.junit.Test;
 

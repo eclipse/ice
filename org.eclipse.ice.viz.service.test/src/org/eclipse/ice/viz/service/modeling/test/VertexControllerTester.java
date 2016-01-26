@@ -26,6 +26,8 @@ import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.EdgeMesh;
 import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ice.viz.service.modeling.VertexMesh;
+import org.eclipse.ice.viz.service.modeling.test.utils.TestController;
+import org.eclipse.ice.viz.service.modeling.test.utils.TestMesh;
 import org.junit.Test;
 
 /**
