@@ -195,7 +195,7 @@ public abstract class AbstractAttachment extends Attachment
 	 */
 	@Override
 	public AbstractController getShape(int index) {
-		if (shapes == null) {
+		if (shapes == null || shapes.size() > index) {
 			return null;
 		}
 
