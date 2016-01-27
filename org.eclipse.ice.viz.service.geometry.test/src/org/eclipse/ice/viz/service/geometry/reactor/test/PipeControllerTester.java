@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
+import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -22,12 +25,12 @@ import org.eclipse.ice.viz.service.modeling.test.utils.TestMesh;
 import org.junit.Test;
 
 /**
- * A class to test the functionality of the PipeMesh
+ * A class to test the functionality of the PipeController.
  * 
  * @author Robert Smith
  *
  */
-public class PipeMeshTester {
+public class PipeControllerTester {
 
 	/**
 	 * Test the PipeMesh convenience methods and properties management.
@@ -36,7 +39,8 @@ public class PipeMeshTester {
 	public void checkProperties(){
 		
 		//Create a pipe
-		PipeMesh pipe = new PipeMesh();
+		PipeMesh pipeMesh = new PipeMesh();
+		PipeController pipe = new PipeController(pipeMesh, new AbstractView());
 		
 		//Check the number of rods
 		pipe.setNumRods(1);
@@ -60,17 +64,55 @@ public class PipeMeshTester {
 	}
 	
 	/**
+	 * Test that the PipeMesh sends updates correctly.
+	 */
+	@Test
+	public void checkUpdates(){
+	
+		//Create a pipe
+		PipeMesh pipeMesh = new PipeMesh();
+		PipeController pipe = new PipeController(pipeMesh, new AbstractView());
+		
+		//Create a test object to receive and track updates from the pipe
+		TestController parent = new TestController(new TestMesh(), new AbstractView());
+		parent.addEntity(pipe);
+		
+		//Add an input and output, as well as another pipe
+		AbstractController input = new AbstractController(new AbstractMesh(), new AbstractView());
+		pipe.addEntityByCategory(input, "Input");
+		AbstractController output = new AbstractController(new AbstractMesh(), new AbstractView());
+		pipe.addEntityByCategory(output, "Output");
+		PipeController child = new PipeController(new PipeMesh(), new AbstractView());
+		pipe.addEntity(child);
+		
+		//Clear the received messages	
+		parent.isUpdated();
+		
+		//Updates from input should be ignored
+		input.setProperty("Send", "Update");
+		assertFalse(parent.isUpdated());
+		
+		//Updates from output should be ignored
+		output.setProperty("Send", "Update");
+		assertFalse(parent.isUpdated());		
+		
+		//The pipe should receive updates from other entities
+		child.setProperty("Send", "Update");
+		assertTrue(parent.isUpdated());
+	}
+	
+	/**
 	 * Check that the part is cloned correctly.
 	 */
 	@Test
 	public void checkClone(){
 		
 		//Create a junction
-		PipeMesh pipe = new PipeMesh();
+		PipeController pipe = new PipeController(new PipeMesh(), new AbstractView());
 		pipe.setProperty("Test", "Property");
 		
 		//Clone it and check that they are identical
-		PipeMesh clone = (PipeMesh) pipe.clone();
+		PipeController clone = (PipeController) pipe.clone();
 		assertTrue(pipe.equals(clone));
 	}
 }

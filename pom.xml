@@ -92,7 +92,7 @@
 		<!-- <module>org.eclipse.ice.persistence.xml.test</module> -->
 		<module>org.eclipse.ice.io</module>
 		<!-- <module>org.eclipse.ice.io.test</module> -->
-		<module>org.eclipse.ice.reactor.plant</module>
+		<!-- <module>org.eclipse.ice.reactor.plant</module> -->
 		<!-- <module>org.eclipse.ice.reactor.plant.test</module> -->
 		<module>org.eclipse.ice.vibe</module>
 		<!-- <module>org.eclipse.ice.vibe.test</module> -->
@@ -112,7 +112,7 @@
 		<!-- <module>org.eclipse.ice.viz.service.geometry.test</module> -->
 		<module>org.eclipse.ice.viz.service.javafx</module>
 		<!-- <module>org.eclipse.ice.viz.service.javafx.test</module> -->
-		<module>org.eclipse.ice.viz.service.javafx.geometry</module>
+		<!-- <module>org.eclipse.ice.viz.service.javafx.geometry</module> -->
 		<module>org.eclipse.ice.viz.service.javafx.mesh</module>
 		<!-- <module>org.eclipse.ice.viz.service.jme3</module> -->
 		<!-- <module>org.eclipse.ice.viz.service.jme3.test</module> -->

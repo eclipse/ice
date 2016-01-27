@@ -30,7 +30,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class EdgeAndVertexFaceMeshtester {
+public class EdgeAndVertexFaceMeshTester {
 
 	/**
 	 * Tests that the face adds and removes all child entities in the correct categories.
@@ -103,7 +103,20 @@ public class EdgeAndVertexFaceMeshtester {
 		assertFalse(face.getEntitiesByCategory("Edges").contains(edge3));
 		assertFalse(face.getEntitiesByCategory("Vertices").contains(vertex2));
 		assertFalse(face.getEntitiesByCategory("Vertices").contains(vertex3));
+	}
+	
+	/**
+	 * Check that the part is cloned correctly.
+	 */
+	@Test
+	public void checkClone(){
 		
-
+		//Create a face
+		EdgeAndVertexFaceMesh face = new EdgeAndVertexFaceMesh();
+		face.setProperty("Test", "Property");
+		
+		//Clone it and check that they are identical
+		EdgeAndVertexFaceMesh clone = (EdgeAndVertexFaceMesh) face.clone();
+		assertTrue(face.equals(clone));
 	}
 }

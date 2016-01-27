@@ -22,35 +22,12 @@ import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.junit.Test;
 
 /**
- * A class to test the functionality of the HeatExchangerController.
+ * A class to test the functionality of the HeatExchangerMesh.
  * 
  * @author Robert Smith
  *
  */
-public class HeatExchangerControllerTester {
-
-	/**
-	 * Test the HeatExchanger's ability to correctly manage its contained pipes.
-	 */
-	@Test
-	public void checkPipes(){
-		
-		//Create a heat exchanger and some pipes
-		HeatExchangerController exchanger = new HeatExchangerController(new HeatExchangerMesh(), new AbstractView());
-		
-		//Create pipes for the exchanger
-		PipeController primary = new PipeController(new PipeMesh(), new AbstractView());
-		PipeController secondary = new PipeController(new PipeMesh(), new AbstractView());
-		
-		//Check that the secondary pipe can be set
-		exchanger.setSecondaryPipe(secondary);
-		assertTrue(secondary == exchanger.getSecondaryPipe());
-				
-		//Check that the primary pipe can be set
-		exchanger.setPrimaryPipe(primary);
-		assertTrue(primary == exchanger.getPrimaryPipe());
-		
-	}
+public class HeatExchangerMeshTester {
 	
 	/**
 	 * Check that the part is cloned correctly.
@@ -58,12 +35,12 @@ public class HeatExchangerControllerTester {
 	@Test
 	public void checkClone(){
 		
-		//Create a face
-		HeatExchangerController exchanger= new HeatExchangerController(new HeatExchangerMesh(), new AbstractView());
+		//Create an exchanger
+		HeatExchangerMesh exchanger= new HeatExchangerMesh();
 		exchanger.setProperty("Test", "Property");
 		
 		//Clone it and check that they are identical
-		HeatExchangerController clone = (HeatExchangerController) exchanger.clone();
+		HeatExchangerMesh clone = (HeatExchangerMesh) exchanger.clone();
 		assertTrue(exchanger.equals(clone));
 	}
 }

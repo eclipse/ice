@@ -100,38 +100,6 @@ public class FXPlantCompositeConverter
 		for (PlantComponent plantComp : source.getPlantComponents()) {
 			plantComp.accept(visitor);
 		}
-
-		// output.getEntitiesByCategory("Junctions").get(0).addEntityByCategory(output.getEntitiesByCategory("Heat
-		// Exchangers").get(0), "Secondary Input");
-
-		output.getEntitiesByCategory("Heat Exchangers").get(0)
-				.addEntityByCategory(
-						output.getEntitiesByCategory("Junctions").get(0),
-						"Secondary Input");
-		output.getEntitiesByCategory("Heat Exchangers").get(0)
-				.addEntityByCategory(
-						output.getEntitiesByCategory("Junctions").get(1),
-						"Secondary Output");
-
-		// PipeMesh mesh = new PipeMesh();
-		// mesh.setAxialSamples(40);
-		// mesh.setInnerRadius(40);
-		// mesh.setLength(100);
-		// mesh.setRadius(50);
-		//
-		// PipeController pipe = (PipeController) new FXPlantViewFactory()
-		// .createController(mesh);
-		//
-		// pipe.setRotation(0, 0, 2);
-		//
-		// ShapeMesh box = new ShapeMesh();
-		// box.setProperty("Type", "Cube");
-		// ShapeController boxC = new ShapeController(box, new
-		// FXShapeView(box));
-		//
-		// output.addEntity(boxC);
-
-		// output.addEntity(pipe);
 	}
 
 	private class FXPlantComponentVisitor implements IPlantComponentVisitor {

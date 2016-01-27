@@ -220,8 +220,6 @@ public class ICEMeshPage extends ICEFormPage
 		actionToolBarManager = new ToolBarManager(toolBar);
 
 		// Get JME3 Geometry service from factory
-		// IVizServiceFactory factory = editor.getVizServiceFactory();
-		// IVizService service = new FXMeshVizService();
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		IVizService service = factory.get("ICE JavaFX Mesh Editor");
 

@@ -51,4 +51,18 @@ public class JunctionView extends AbstractView {
 		return center;
 
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new component, and make it a copy of this one.
+		JunctionView clone = new JunctionView();
+		clone.copy(this);
+		return clone;
+	}
 }

@@ -4,7 +4,7 @@ Bundle-Name: JavaFX Mesh Visualization Services Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.javafx.mesh;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Service-Component: OSGI-INF/vizGeometryService.xml
+Service-Component: OSGI-INF/FXMeshService.xml
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-Vendor: Oak Ridge National Laboratory

@@ -18,7 +18,7 @@ package org.eclipse.ice.viz.service.geometry.reactor;
  * @author Robert Smith
  *
  */
-public interface PipeView {
+public interface IPipeView {
 
 	/**
 	 * Get the farthest points in all three directions for the pipe's lower end

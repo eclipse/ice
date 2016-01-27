@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
-import org.eclipse.ice.viz.service.geometry.reactor.PipeView;
+import org.eclipse.ice.viz.service.geometry.reactor.IPipeView;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 
@@ -25,7 +25,7 @@ import javafx.scene.paint.PhongMaterial;
  * @author Robert Smith
  *
  */
-public class FXPipeView extends FXShapeView implements PipeView {
+public class FXPipeView extends FXShapeView implements IPipeView {
 
 	/**
 	 * The nullary constructor
@@ -60,12 +60,10 @@ public class FXPipeView extends FXShapeView implements PipeView {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.PipeView#
-	 * getLowerExtrema()
-	 */
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getLowerExtrema()
+     */
 	@Override
 	public Extrema getLowerExtrema() {
 
@@ -76,9 +74,7 @@ public class FXPipeView extends FXShapeView implements PipeView {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.PipeView#
-	 * getUpperExtrema()
+	 * @see org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getUpperExtrema()
 	 */
 	@Override
 	public Extrema getUpperExtrema() {

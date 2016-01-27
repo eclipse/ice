@@ -86,35 +86,6 @@ public class ViewFactory {
 	}
 
 	/**
-	 * // * Creates a {@link MeshAppState} for the specified // *
-	 * <code>MeshComponent</code>. // * // * @param mesh // * The root
-	 * <code>MeshComponent</code> or mesh that contains // * edges, vertices,
-	 * and other <code>MeshComponent</code>s. // * @return A new
-	 * <code>MeshAppState</code>, or null if there is no core // *
-	 * <code>MasterApplication</code> in the background. //
-	 */
-	// public MeshAppState createMeshView(MeshComponent mesh) {
-	//
-	// MeshAppState view = null;
-	//
-	// if (app != null) {
-	//
-	// // If necessary, wait until the MasterApplication has started before
-	// // trying to add a new AppState, or nothing may initialize.
-	// if (!app.isInitialized()) {
-	// app.blockUntilInitialized(0);
-	// }
-	//
-	// view = new MeshAppState();
-	// view.start(app);
-	//
-	// view.setMesh(mesh);
-	// }
-	//
-	// return view;
-	// }
-
-	/**
 	 * Creates a {@link PlantAppState} for the specified
 	 * <code>PlantComposite</code>.
 	 * 
@@ -126,38 +97,9 @@ public class ViewFactory {
 	 */
 	public IPlantView createPlantView(PlantComposite plant) {
 
-		// TODO Move this to the IVizService for the jME implementation
-		// // Try to get the app via OSGi.
-		// MasterApplication app = MasterApplicationHolder.getApplication();
-		// // If the flag is set to true and we couldn't get the app through
-		// OSGi,
-		// // create a new app.
-		// if (app == null && staticFallBack) {
-		// app = MasterApplication.createApplication();
-		// }
-		//
-		// PlantAppState view = null;
-		//
-		// if (app != null) {
-		//
-		// // If necessary, wait until the MasterApplication has started before
-		// // trying to add a new AppState, or nothing may initialize.
-		// if (!app.isInitialized()) {
-		// app.blockUntilInitialized(0);
-		// }
-		//
-		// view = new PlantAppState();
-		// view.start(app);
-		//
-		// view.setPlant(plant);
-		// }
-		//
-		// return view;
-
 		// TODO This should be getting all services and presenting the user with
 		// a choice, instead of hardcoding the JavaFX editor in.
-		// IVizService service = factory.get("ICE Geometry Editor");
-		IVizService service = new FXGeometryVizService();
+		IVizService service = factory.get("ICE Geometry Editor");
 
 		// Create a converter for the plant composite
 		FXPlantCompositeConverter converter = new FXPlantCompositeConverter(
@@ -174,7 +116,6 @@ public class ViewFactory {
 		} catch (Exception e) {
 			logger.error(
 					"Error creating Geometry Canvas with Geometry Service.", e);
-			e.printStackTrace();
 		}
 
 		return (IPlantView) vizCanvas;
