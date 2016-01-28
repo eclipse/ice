@@ -23,8 +23,6 @@ import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
-import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -58,8 +56,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Taylor Patterson, Jordan H. Deyton
  */
 public class ICEMeshPage extends ICEFormPage
-		implements ISelectionListener, IMeshSelectionListener,
-		ISelectionProvider, ITabbedPropertySheetPageContributor {
+		implements ISelectionListener, ISelectionProvider, 
+		ITabbedPropertySheetPageContributor {
 
 	/**
 	 * Eclipse view ID
@@ -406,17 +404,6 @@ public class ICEMeshPage extends ICEFormPage
 			// Set the canvas's selection to match the selection from the tree
 			canvas.setSelection(treeSelections);
 		}
-
-		return;
-	}
-
-	/**
-	 * This method should make the appropriate ISelectionProvider calls to send
-	 * the recent update to the MeshApplication's selection to the other
-	 * ISelectionListeners.
-	 */
-	@Override
-	public void selectionChanged() {
 
 		return;
 	}
