@@ -41,15 +41,17 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String EXTENSION_POINT = "org.eclipse.ice.item.itemBuilder";
 	protected static final String KEY_CLASS_NAME = "className";
 	protected static final String KEY_EXTENSION_NAME = "extensionName";
-	protected static final String KEY_PACKAGE_NAME = "packageName";
+	protected String PACKAGE_NAME;
 
 	/**
 	 * Constructor
 	 */
-	public ICEItemTemplate() {
+	public ICEItemTemplate(String projectName) {
 		setPageCount(1);
 		setOptions();
+		PACKAGE_NAME = projectName;
 	}
+	
 	
 	/**
 	 * Add pages to the wizard
@@ -67,8 +69,6 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	  * Define the options, descriptions, default values, and page numbers
 	  */
 	protected void setOptions() {
-		 addOption(KEY_EXTENSION_NAME , "Extension Base Name"  , "" , 0);
-		 addOption(KEY_PACKAGE_NAME   , "Package Name"         , "" , 0);
 		 addOption(KEY_CLASS_NAME     , "Class Base Name"      , "" , 0);
 	}
 	
@@ -117,12 +117,12 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		// Model builder plugin.xml entry
 		IPluginBase plugin = model.getPluginBase();
 		IPluginExtension extension = createExtension(EXTENSION_POINT, false);
-		extension.setName(splitCamelCase(getStringOption(KEY_EXTENSION_NAME) + " Model"));
-		extension.setId(getStringOption(KEY_EXTENSION_NAME).toLowerCase() + "ModelBuilder");
+		extension.setName(splitCamelCase(PACKAGE_NAME + " Model"));
+		extension.setId(getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
 		IPluginModelFactory factory = model.getPluginFactory();
 		IPluginElement element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", getStringOption(KEY_PACKAGE_NAME) + "." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
+		element.setAttribute("class", PACKAGE_NAME + "." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);
@@ -130,12 +130,12 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		// Job launcher builder plugin.xml entry
 		plugin = model.getPluginBase();
 		extension = createExtension(EXTENSION_POINT, false);
-		extension.setName(splitCamelCase(getStringOption(KEY_EXTENSION_NAME) + " Launcher"));
-		extension.setId(getStringOption(KEY_EXTENSION_NAME).toLowerCase() + "LauncherBuilder");
+		extension.setName(splitCamelCase(PACKAGE_NAME + " Launcher"));
+		extension.setId(getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
 		factory = model.getPluginFactory();
 		element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", getStringOption(KEY_PACKAGE_NAME) + "." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
+		element.setAttribute("class", PACKAGE_NAME + "." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);

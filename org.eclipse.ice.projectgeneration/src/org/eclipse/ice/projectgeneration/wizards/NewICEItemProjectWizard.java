@@ -12,11 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration.wizards;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -62,14 +67,14 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	private static final String WIZARD_NAME = "New ICE Item Project";
 	private static final String WIZARD_TITLE = "Create a new ICE item project";
 	private static final String TEMPLATE_ID = "org.eclipse.ice.projectgeneration.pluginContent.ICEItem";
-	
+
 	private AbstractFieldData fPluginData;
 	private NewProjectCreationPage fProjectPage;
 	private PluginContentPage fContentPage;
 	private IPluginContentWizard fTemplateWizard;
 	private IProjectProvider fProjectProvider;
 	private IConfigurationElement fConfig;
-	
+
 	private IStructuredSelection selection;
 	private IWorkbench workbench;
 
@@ -82,15 +87,15 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		setWindowTitle(WIZARD_TITLE);
 	}
 
-	
 	/**
-	 * Creates and adds the pages to the wizard.  Three pages are created.
+	 * Creates and adds the pages to the wizard. Three pages are created.
 	 */
 	@Override
 	public void addPages() {
 		WizardElement templateWizardElement = getTemplateWizard();
 
-		fProjectPage = new NewProjectCreationFromTemplatePage("main", fPluginData, getSelection(), templateWizardElement); //$NON-NLS-1$
+		fProjectPage = new NewProjectCreationFromTemplatePage("main", fPluginData, getSelection(), //$NON-NLS-1$
+				templateWizardElement);
 		fProjectPage.setTitle(WIZARD_TITLE);
 		fProjectPage.setDescription(DESCRIPTION);
 
@@ -103,9 +108,11 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			public String getProjectName() {
 				return fProjectPage.getProjectName();
 			}
+
 			public IProject getProject() {
 				return fProjectPage.getProjectHandle();
 			}
+
 			public IPath getLocationPath() {
 				return fProjectPage.getLocationPath();
 			}
@@ -113,7 +120,6 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 
 		fContentPage = new PluginContentPage("page2", fProjectProvider, fProjectPage, fPluginData); //$NON-NLS-1$
 		addPage(fContentPage);
-
 		try {
 			fTemplateWizard = (IPluginContentWizard) templateWizardElement.createExecutableExtension();
 			fTemplateWizard.init(fPluginData);
@@ -127,7 +133,6 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		}
 	}
 
-		
 	/**
 	 * Takes all of the information from the wizard pages and uses it to create
 	 * the plugin and java classes.
@@ -136,6 +141,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	 */
 	@Override
 	public boolean performFinish() {
+		boolean successful = false;
 		try {
 			fProjectPage.updateData();
 			fContentPage.updateData();
@@ -146,11 +152,13 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			}
 			BasicNewProjectResourceWizard.updatePerspective(fConfig);
 
-			// If the PDE models are not initialized, initialize with option to cancel
+			// If the PDE models are not initialized, initialize with option to
+			// cancel
 			if (!PDECore.getDefault().areModelsInitialized()) {
 				try {
 					getContainer().run(true, true, new IRunnableWithProgress() {
-						public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+						public void run(IProgressMonitor monitor)
+								throws InvocationTargetException, InterruptedException {
 							PDECore.getDefault().getModelManager().targetReloaded(monitor);
 							if (monitor.isCanceled()) {
 								throw new InterruptedException();
@@ -158,34 +166,38 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 						}
 					});
 				} catch (InterruptedException e) {
-					return false;
+					e.printStackTrace();
 				}
 			}
 
-			getContainer().run(false, true, new NewProjectCreationOperation(fPluginData, fProjectProvider, fTemplateWizard));
+			getContainer().run(false, true,
+					new NewProjectCreationOperation(fPluginData, fProjectProvider, fTemplateWizard));
 
 			IWorkingSet[] workingSets = fProjectPage.getSelectedWorkingSets();
 			if (workingSets.length > 0)
 				getWorkbench().getWorkingSetManager().addToWorkingSets(fProjectProvider.getProject(), workingSets);
 			setNature(fProjectProvider.getProject());
-			return true;
+			setPackageLayout();
+			successful = true;
 		} catch (InvocationTargetException e) {
 			PDEPlugin.logException(e);
+			e.printStackTrace();
 		} catch (InterruptedException e) {
+			e.printStackTrace();
 		} catch (CoreException e) {
+			e.printStackTrace();
 		}
-		
-		return false;
+
+		return successful;
 	}
 
-	
 	/**
 	 * Make sure that the project has the ICEItemNature associated with it.
 	 * 
 	 * @param project
 	 */
 	public static void setNature(IProject project) throws CoreException {
-		if (!project.hasNature(ICEItemNature.NATURE_ID)) {
+		if (false && !project.hasNature(ICEItemNature.NATURE_ID)) {
 			IProjectDescription description = project.getDescription();
 			String[] projNatures = description.getNatureIds();
 			projNatures = Arrays.copyOf(projNatures, projNatures.length + 1);
@@ -195,16 +207,16 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		}
 	}
 
-	
 	/**
-	 * Creates a new wizard element for the definition of the java code templates
+	 * Creates a new wizard element for the definition of the java code
+	 * templates
 	 * 
 	 * @return the wizard element corresponding to the project's template
 	 */
 	private WizardElement getTemplateWizard() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		IExtensionPoint point = registry.getExtensionPoint("org.eclipse.ice.projectgeneration", PLUGIN_POINT);
-		if (point == null) 
+		if (point == null)
 			return null;
 		IExtension[] extensions = point.getExtensions();
 		for (int i = 0; i < extensions.length; i++) {
@@ -220,6 +232,34 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		return null;
 	}
 
+	/**
+	 * Sets the package layout to be as specified in the wizard.
+	 */
+	private void setPackageLayout() {
+		String sep = System.getProperty("file.separator");
+		String[] packageHierarchy = fProjectProvider.getProjectName().split("\\.");
+		String projectSrcPath = fProjectProvider.getLocationPath().makeAbsolute().toOSString() + sep
+				+ fProjectProvider.getProjectName() + sep + fPluginData.getSourceFolderName();
+		File[] projectSrcs = new File(projectSrcPath).listFiles();
+		File modelDir = new File(projectSrcPath + sep + String.join(sep, packageHierarchy) + sep + "model");
+		File launcherDir = new File(projectSrcPath + sep + String.join(sep, packageHierarchy) + sep + "launcher");
+		try {
+			modelDir.mkdirs();
+			launcherDir.mkdirs();
+			for (File f : projectSrcs) {
+				if (f.getName().endsWith("Launcher.java") || f.getName().endsWith("LauncherBuilder.java")) {
+					Files.move(f.toPath(), (new File(launcherDir.getAbsolutePath() + sep + f.getName())).toPath(), REPLACE_EXISTING);
+				} else if (f.getName().endsWith("Model.java") || f.getName().endsWith("ModelBuilder.java")) {
+					Files.move(f.toPath(), (new File(modelDir.getAbsolutePath() + sep + f.getName())).toPath(), REPLACE_EXISTING);
+				}
+			}
+			fProjectProvider.getProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (CoreException ce) {
+			ce.printStackTrace();
+		}
+	}
 
 	@Override
 	protected String getTemplateID() {

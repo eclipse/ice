@@ -23,6 +23,8 @@ import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
  */
 public class ICEItemWizard extends NewPluginTemplateWizard {
 
+	private String projectName;
+	
 	public ICEItemWizard() {
 		super();
 	}
@@ -30,12 +32,12 @@ public class ICEItemWizard extends NewPluginTemplateWizard {
 	@Override
 	public void init(IFieldData data) {
 		super.init(data);
-		setWindowTitle("New ICE Item Parameters");
+		projectName = data.getName();
 	}
 	
 	@Override
 	public ITemplateSection[] createTemplateSections() {
-		return new ITemplateSection[] {new ICEItemTemplate()};
+		return new ITemplateSection[] {new ICEItemTemplate(projectName)};
 	}
 
 }

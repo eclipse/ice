@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.parsergenerator.test;
 
-import org.eclipse.ice.parsergenerator.antlr.ANTLRFlatGrammar;
+import org.eclipse.ice.parsergenerator.grammars.FlatGrammar;
 import org.junit.Test;
 
 /**
@@ -20,7 +20,7 @@ import org.junit.Test;
  * 
  * @author Andrew Bennett
  */
-public class ANTLRGrammarTester {
+public class GrammarTester {
 
 	private String sep = java.lang.System.lineSeparator();
 	private String iniGrammar = 
@@ -57,7 +57,7 @@ public class ANTLRGrammarTester {
 				
 	@Test
 	public void TestGrammar() {
-		ANTLRFlatGrammar g = new ANTLRFlatGrammar();
+		FlatGrammar g = new FlatGrammar();
 		g.setAssignmentOperator("=");
 		g.setCommentSymbol("#");
 		g.setSection("[", "]");
