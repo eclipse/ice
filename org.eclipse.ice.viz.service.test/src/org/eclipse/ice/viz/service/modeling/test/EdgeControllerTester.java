@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 UT-Battelle, LLC.
+ * Copyright (c) 2016 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,16 +17,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.EdgeMesh;
-import org.eclipse.ice.viz.service.modeling.LinearEdgeMesh;
 import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ice.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
 /**
- * A class for testing EdgeController's functionality
+ * A class for testing Edge's functionality
  * 
  * @author Robert Smith
  *
@@ -40,15 +40,11 @@ public class EdgeControllerTester {
 	public void checkVertices() {
 
 		// Create the edge
-		EdgeMesh edgeMesh = new LinearEdgeMesh();
+		EdgeMesh edgeMesh = new EdgeMesh();
 		EdgeController edge = new EdgeController(edgeMesh, new AbstractView());
 
 		// The edge should initially have length 0
 		assertEquals(0, Double.compare(edge.getLength(), 0d));
-
-		// Try adding a non-vertex. It should be put in the Default category
-		edge.addEntity(new AbstractController());
-		assertEquals(1, edge.getEntitiesByCategory("Default").size());
 
 		// Create some vertices
 		VertexController vertex1 = new VertexController(new VertexMesh(0, 0, 0),
@@ -59,9 +55,9 @@ public class EdgeControllerTester {
 				new AbstractView());
 
 		// Add all three vertices to the edge.
-		edge.addEntity(vertex1);
-		edge.addEntity(vertex2);
-		edge.addEntity(vertex3);
+		edge.addEntityByCategory(vertex1, "Vertices");
+		edge.addEntityByCategory(vertex2, "Vertices");
+		edge.addEntityByCategory(vertex3, "Vertices");
 
 		// Check the Vertices category to ensure that the edge accepted the
 		// first two vertices and ignored the third
@@ -74,7 +70,7 @@ public class EdgeControllerTester {
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntity(vertex3);
+		edge.addEntityByCategory(vertex3, "Vertices");
 
 		// Check the Vertices category to ensure that the last vertex was
 		// replaced

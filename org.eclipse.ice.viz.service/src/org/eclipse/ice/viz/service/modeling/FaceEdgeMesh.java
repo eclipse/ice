@@ -47,25 +47,6 @@ public class FaceEdgeMesh extends EdgeMesh {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see
-	 *
-	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#addEntity(org.
-	 * eclipse.ice.viz.service.modeling.AbstractController)
-	 */
-	@Override
-	public void addEntity(AbstractController entity) {
-
-		// If not specified, assume all faces go in the Faces category
-		if (entity instanceof FaceController) {
-			addEntityByCategory(entity, "Faces");
-		} else {
-			super.addEntity(entity);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
 	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#
 	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
 	 * AbstractController, java.lang.String)

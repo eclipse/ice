@@ -43,10 +43,6 @@ public class EdgeMeshTester {
 		// The edge should initially have length 0
 		assertEquals(0, Double.compare(edge.getLength(), 0d));
 
-		// Try adding a non-vertex. It should be put in the Default category
-		edge.addEntity(new AbstractController());
-		assertEquals(1, edge.getEntitiesByCategory("Default").size());
-
 		// Create some vertices
 		VertexController vertex1 = new VertexController(new VertexMesh(0, 0, 0),
 				new AbstractView());
@@ -56,9 +52,9 @@ public class EdgeMeshTester {
 				new AbstractView());
 
 		// Add all three vertices to the edge.
-		edge.addEntity(vertex1);
-		edge.addEntity(vertex2);
-		edge.addEntity(vertex3);
+		edge.addEntityByCategory(vertex1, "Vertices");
+		edge.addEntityByCategory(vertex2, "Vertices");
+		edge.addEntityByCategory(vertex3, "Vertices");
 
 		// Check the Vertices category to ensure that the edge accepted the
 		// first two vertices and ignored the third
@@ -71,7 +67,7 @@ public class EdgeMeshTester {
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntity(vertex3);
+		edge.addEntityByCategory(vertex3, "Vertices");
 
 		// Check the Vertices category to ensure that the last vertex was
 		// replaced
