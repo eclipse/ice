@@ -18,8 +18,8 @@ import java.util.Map;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 
 /**
  * A component of the model. All models are built from collections of components
@@ -178,8 +178,7 @@ public class AbstractMesh
 	 */
 	public void setType(MeshType type) {
 		this.type = type;
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -253,10 +252,10 @@ public class AbstractMesh
 
 			// Check if the changed property was selection to send the proper
 			// update event.
-			if ("Selected".equals(property)) {
-				eventTypes[0] = SubscriptionType.SELECTION;
-			} else {
+			if (!"Selected".equals(property)) {
 				eventTypes[0] = SubscriptionType.PROPERTY;
+			} else {
+				eventTypes[0] = SubscriptionType.SELECTION;
 			}
 			updateManager.notifyListeners(eventTypes);
 		}
@@ -309,8 +308,7 @@ public class AbstractMesh
 		}
 
 		if (found) {
-			SubscriptionType[] eventTypes = {
-					SubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 	}
@@ -357,27 +355,9 @@ public class AbstractMesh
 		// Register with the entity
 		newEntity.register(this);
 
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.CHILD };
+		SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
 		updateManager.notifyListeners(eventTypes);
 	}
-
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see
-	// org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	// * register(org.eclipse.ice.viz.service.datastructures.VizObject.
-	// * IVizUpdateableListener)
-	// */
-	// @Override
-	// public void register(IVizUpdateableListener listener) {
-	// ArrayList<UpdateableSubscriptionType> eventTypes = new
-	// ArrayList<UpdateableSubscriptionType>();
-	// eventTypes.add(UpdateableSubscriptionType.All);
-	// updateManager.register(listener, eventTypes);
-	//
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -402,8 +382,7 @@ public class AbstractMesh
 	 * UpdateableSubscription)
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// Pass the update to own listeners
 		updateManager.notifyListeners(type);
@@ -430,21 +409,64 @@ public class AbstractMesh
 
 		AbstractMesh castObject = (AbstractMesh) otherObject;
 
-		// Check the types, properties, and entity category for equality
-		if (type != castObject.type || !properties.equals(castObject.properties)
-				|| !entities.keySet().equals(castObject.entities.keySet())) {
+		// Check the types and properties for equality
+		if (type != castObject.type
+				|| !properties.equals(castObject.properties)) {
 			return false;
 		}
 
-		// For each category, check that the two objects' lists of child
-		// entities in that category are equal.
-		for (String category : entities.keySet()) {
-			if (!entities.get(category)
-					.containsAll(castObject.entities.get(category))
-					|| !castObject.entities.get(category)
-							.containsAll(entities.get(category))) {
-				return false;
+		// If this object has and child entities, check them for equality with
+		// the other object's
+		if (!entities.keySet().isEmpty()) {
+
+			// For each category, check that the two objects' lists of child
+			// entities in that category are equal.
+			for (String category : entities.keySet()) {
+
+				// Get the lists for this category
+				List<AbstractController> cat = entities.get(category);
+				List<AbstractController> otherCat = castObject.entities
+						.get(category);
+
+				// Handle the case where the category is not found in the first
+				// object
+				if (cat == null || cat.isEmpty()) {
+
+					// If both objects have nothing for this category, the
+					// categories are equal
+					if (otherCat == null || otherCat.isEmpty()) {
+						continue;
+					}
+
+					// If the second object has something in this category, the
+					// two
+					// are not equal
+					else {
+						return false;
+					}
+				}
+
+				// If the category is not found in the second object when it was
+				// in
+				// the first, the two are not equal
+				else if (otherCat == null || otherCat.isEmpty()) {
+					return false;
+				}
+
+				// Otherwise, compare the lists. If they are not equal, then the
+				// meshes are not equal
+				else if (!cat.containsAll(otherCat)
+						|| !otherCat.containsAll(cat)) {
+					return false;
+				}
 			}
+		}
+
+		// If the other object has a non-empty entity set while this object does
+		// not, then they are not equal
+		else if (!castObject.entities.keySet().isEmpty()) {
+			return false;
+
 		}
 
 		// All checks passed, so the objects are equal
@@ -489,8 +511,7 @@ public class AbstractMesh
 		}
 
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.ALL };
+		SubscriptionType[] eventTypes = SubscriptionType.values();
 		updateManager.notifyListeners(eventTypes);
 	}
 

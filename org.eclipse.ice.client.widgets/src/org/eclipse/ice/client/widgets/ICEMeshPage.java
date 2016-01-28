@@ -23,8 +23,6 @@ import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
-import org.eclipse.ice.viz.service.jme3.mesh.IMeshSelectionListener;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -58,8 +56,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Taylor Patterson, Jordan H. Deyton
  */
 public class ICEMeshPage extends ICEFormPage
-		implements ISelectionListener, IMeshSelectionListener,
-		ISelectionProvider, ITabbedPropertySheetPageContributor {
+		implements ISelectionListener, ISelectionProvider, 
+		ITabbedPropertySheetPageContributor {
 
 	/**
 	 * Eclipse view ID
@@ -220,8 +218,6 @@ public class ICEMeshPage extends ICEFormPage
 		actionToolBarManager = new ToolBarManager(toolBar);
 
 		// Get JME3 Geometry service from factory
-		// IVizServiceFactory factory = editor.getVizServiceFactory();
-		// IVizService service = new FXMeshVizService();
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		IVizService service = factory.get("ICE JavaFX Mesh Editor");
 
@@ -236,7 +232,7 @@ public class ICEMeshPage extends ICEFormPage
 
 		} catch (Exception e) {
 			logger.error(
-					"Error creating Geometry Canvas with Geometry Service.", e);
+					"Error creating Mesh Canvas with Mesh Service.", e);
 		}
 
 		// The MeshPage should also listen for changes to the MeshApplication's
@@ -408,17 +404,6 @@ public class ICEMeshPage extends ICEFormPage
 			// Set the canvas's selection to match the selection from the tree
 			canvas.setSelection(treeSelections);
 		}
-
-		return;
-	}
-
-	/**
-	 * This method should make the appropriate ISelectionProvider calls to send
-	 * the recent update to the MeshApplication's selection to the other
-	 * ISelectionListeners.
-	 */
-	@Override
-	public void selectionChanged() {
 
 		return;
 	}

@@ -70,66 +70,65 @@
 		<module>org.eclipse.ice.target.mars</module>
 		<module>../ICEDeps/org.eclipse.ice.dependencies</module>
 		<module>org.eclipse.ice.client</module>
-		<!-- <module>org.eclipse.ice.client.test</module> -->
+		<module>org.eclipse.ice.client.test</module> 
 		<module>org.eclipse.ice.client.compatibility</module>
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
-		<!-- <module>org.eclipse.ice.client.widgets.moose.test</module> -->
-		<module>org.eclipse.ice.client.widgets.rcp</module>
-		<!-- <module>org.eclipse.ice.client.widgets.test</module> -->
+		<module>org.eclipse.ice.client.widgets.moose.test</module> 
+		<!-- <module>org.eclipse.ice.client.widgets.rcp</module> -->
+		<module>org.eclipse.ice.client.widgets.test</module> 
 		<module>org.eclipse.ice.client.widgets.test.utils</module>
-		<!-- <module>org.eclipse.ice.client.widgets.rcp.test</module> -->
+		<!-- <module>org.eclipse.ice.client.widgets.rcp.test</module> --> 
 		<module>org.eclipse.ice.client.rcp</module>
 		<module>org.eclipse.ice.datastructures</module>
-		<!-- <module>org.eclipse.ice.datastructures.test</module> -->
+		<module>org.eclipse.ice.datastructures.test</module> 
 		<module>org.eclipse.ice.developer</module>
 		<module>org.eclipse.ice.developer.moose</module>
 		<module>org.eclipse.ice.core</module>
-		<!-- <module>org.eclipse.ice.core.test</module> -->
+		<module>org.eclipse.ice.core.test</module> 
 		<module>org.eclipse.ice.item</module>
-		<!-- <module>org.eclipse.ice.item.test</module> -->
+		<module>org.eclipse.ice.item.test</module> 
 		<module>org.eclipse.ice.persistence.xml</module>
-		<!-- <module>org.eclipse.ice.persistence.xml.test</module> -->
+		<module>org.eclipse.ice.persistence.xml.test</module> 
 		<module>org.eclipse.ice.io</module>
-		<!-- <module>org.eclipse.ice.io.test</module> -->
-		<module>org.eclipse.ice.reactor.plant</module>
-		<!-- <module>org.eclipse.ice.reactor.plant.test</module> -->
+		<module>org.eclipse.ice.io.test</module> 
+		<module>org.eclipse.ice.reactor.plant</module> 
+		<module>org.eclipse.ice.reactor.plant.test</module> 
 		<module>org.eclipse.ice.vibe</module>
-		<!-- <module>org.eclipse.ice.vibe.test</module> -->
 		<module>org.eclipse.ice.vibe.test</module>
 		<module>org.eclipse.ice.proteus</module>
-		<!-- <module>org.eclipse.ice.proteus.test</module> -->
+		<module>org.eclipse.ice.proteus.test</module> 
 		<module>org.eclipse.ice.mesh</module>
-		<!-- <module>org.eclipse.ice.mesh.test</module> -->
+		<module>org.eclipse.ice.mesh.test</module> 
 		<module>org.eclipse.ice.nek5000</module>
-		<!-- <module>org.eclipse.ice.nek5000.test</module> -->
+		<module>org.eclipse.ice.nek5000.test</module> 
 		<module>../visit_java_client/gov.lbnl.visit.swt</module>
 		<module>org.eclipse.ice.viz</module>
-		<!-- <module>org.eclipse.ice.viz.test</module> -->
+		<module>org.eclipse.ice.viz.test</module> 
 		<module>org.eclipse.ice.viz.service</module>
-		<!-- <module>org.eclipse.ice.viz.service.test</module> -->
+		<module>org.eclipse.ice.viz.service.test</module> 
 		<module>org.eclipse.ice.viz.service.geometry</module>
-		<!-- <module>org.eclipse.ice.viz.service.geometry.test</module> -->
+		<module>org.eclipse.ice.viz.service.geometry.test</module> 
 		<module>org.eclipse.ice.viz.service.javafx</module>
-		<!-- <module>org.eclipse.ice.viz.service.javafx.test</module> -->
-		<module>org.eclipse.ice.viz.service.javafx.geometry</module>
+		<!-- <module>org.eclipse.ice.viz.service.javafx.test</module> --> 
+		<module>org.eclipse.ice.viz.service.javafx.geometry</module> 
 		<module>org.eclipse.ice.viz.service.javafx.mesh</module>
-		<!-- <module>org.eclipse.ice.viz.service.jme3</module> -->
-		<!-- <module>org.eclipse.ice.viz.service.jme3.test</module> -->
+		<!-- <module>org.eclipse.ice.viz.service.jme3</module> 
+		<module>org.eclipse.ice.viz.service.jme3.test</module> -->
 		<module>org.eclipse.ice.viz.service.mesh</module>
-		<!-- <module>org.eclipse.ice.viz.service.mesh.test</module> -->
+		<module>org.eclipse.ice.viz.service.mesh.test</module> 
 		<module>org.eclipse.ice.viz.service.visit</module>
-		<!-- <module>org.eclipse.ice.viz.service.visit.test</module> -->
+		<module>org.eclipse.ice.viz.service.visit.test</module> 
 		<module>org.eclipse.ice.viz.service.paraview</module>
 		<module>org.eclipse.ice.viz.service.paraview.web</module>
-		<!-- <module>org.eclipse.ice.viz.service.paraview.test</module> -->
+		<module>org.eclipse.ice.viz.service.paraview.test</module> 
 		<module>org.eclipse.ice.materials</module>
-		<!-- <module>org.eclipse.ice.materials.test</module> -->
+		<module>org.eclipse.ice.materials.test</module> 
 		<module>org.eclipse.ice.materials.ui</module>
 		<module>org.eclipse.ice.caebat.batml</module>
-		<!-- <module>org.eclipse.ice.caebat.batml.test</module> -->
+		<module>org.eclipse.ice.caebat.batml.test</module> 
 		<module>org.eclipse.ice.reflectivity</module>
-		<!-- <module>org.eclipse.ice.reflectivity.test</module> -->
+		<module>org.eclipse.ice.reflectivity.test</module> 
 		<module>org.eclipse.ice.reflectivity.ui</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
 			LAST! -->

@@ -115,5 +115,21 @@ public class TubeMesh extends ShapeMesh {
 	public void setInnerRadius(double radius) {
 		setProperty("Inner Radius", Double.toString(radius));
 	}
+	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Make a new shape component and copy the data into it
+		TubeMesh clone = new TubeMesh();
+		clone.copy(this);
+
+		return clone;
+	}
 
 }

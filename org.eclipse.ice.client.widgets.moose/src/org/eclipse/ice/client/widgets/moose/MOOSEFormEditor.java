@@ -37,6 +37,9 @@ import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSEModel;
 import org.eclipse.ice.reactor.plant.PlantComposite;
 import org.eclipse.ice.reactor.plant.ViewFactory;
+import org.eclipse.ice.viz.service.BasicVizServiceFactory;
+import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.Separator;
@@ -373,11 +376,15 @@ public class MOOSEFormEditor extends ICEFormEditor {
 		toolBar.setLayoutData(
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		// Create the plant view.
+		// Create the plant composite.
 		TreeComposite components = findComponentBlock();
 		factory.setTree(components);
 		PlantComposite plant = factory.getPlant();
-		plantView = new ViewFactory().createPlantView(plant);
+		
+		//Get the factory and create a plant view from the composite
+		ViewFactory viewFactory = new ViewFactory();
+		viewFactory.setVizServiceFactory((BasicVizServiceFactory) VizServiceFactoryHolder.getFactory());
+		plantView = viewFactory.createPlantView(plant);
 
 		// Render the plant view in the analysis Composite.
 		Composite plantComposite = plantView.createComposite(analysisComposite);

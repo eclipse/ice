@@ -332,7 +332,7 @@ public class FXMeshViewer extends FXViewer {
 						nextPolygonID++;
 
 						for (AbstractController edge : tempEdges) {
-							newFace.addEntity(edge);
+							newFace.addEntityByCategory(edge, "Edges");
 
 							// Remove the edge from the temporary root
 							tempRoot.removeEntity(edge);

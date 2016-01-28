@@ -47,7 +47,7 @@ public class PipeController extends TubeController implements IWireFramePart {
 	 *         coordinates
 	 */
 	public Extrema getLowerExtrema() {
-		return ((PipeView) view).getLowerExtrema();
+		return ((IPipeView) view).getLowerExtrema();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class PipeController extends TubeController implements IWireFramePart {
 	 *         coordinates
 	 */
 	public Extrema getUpperExtrema() {
-		return ((PipeView) view).getUpperExtrema();
+		return ((IPipeView) view).getUpperExtrema();
 	}
 
 	/**

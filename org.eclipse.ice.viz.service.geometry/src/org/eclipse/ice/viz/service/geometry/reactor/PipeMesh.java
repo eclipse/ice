@@ -139,8 +139,7 @@ public class PipeMesh extends TubeMesh {
 			}
 
 			// If the entity is already present in this category, don't add a
-			// second
-			// entry for it
+			// second entry for it
 			else
 				for (AbstractController currentEntity : catList) {
 					if (entity == currentEntity) {

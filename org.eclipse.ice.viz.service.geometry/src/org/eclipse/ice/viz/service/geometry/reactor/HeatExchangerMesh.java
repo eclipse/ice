@@ -51,7 +51,10 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *         one.
 	 */
 	public PipeController getSecondaryPipe() {
-		return (PipeController) entities.get("Secondary Pipe").get(0);
+		List<AbstractController> category = getEntitiesByCategory(
+				"Secondary Pipe");
+
+		return !category.isEmpty() ? (PipeController) category.get(0) : null;
 	}
 
 	/**
@@ -94,8 +97,10 @@ public class HeatExchangerMesh extends AbstractMesh {
 		List<AbstractController> secondary = entities.get("Secondary Pipe");
 
 		// If there is already one, remove it.
-		if (!secondary.isEmpty()) {
-			removeEntity(secondary.get(0));
+		if (secondary != null) {
+			if (!secondary.isEmpty()) {
+				removeEntity(secondary.get(0));
+			}
 		}
 
 		// Add the pipe under the Primary Pipe category

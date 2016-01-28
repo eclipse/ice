@@ -61,4 +61,21 @@ public class JunctionController extends AbstractController
 		((IWireFramePart) view).setWireFrameMode(on);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a copy of the model
+		JunctionController clone = new JunctionController();
+		clone.copy(this);
+
+		// Refresh the view to be in sync with the model
+		clone.refresh();
+
+		return clone;
+	}
 }
