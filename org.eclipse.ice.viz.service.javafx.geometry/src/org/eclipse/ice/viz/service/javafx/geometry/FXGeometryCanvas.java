@@ -12,7 +12,6 @@ package org.eclipse.ice.viz.service.javafx.geometry;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 
 import javax.imageio.ImageIO;
 
@@ -49,9 +48,6 @@ import javafx.scene.image.WritableImage;
  */
 public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 
-	/** Factory class to be implemented by renderer implementations. */
-	private static final String GEOMETRY_VIEWER_FACTORY = "org.eclipse.ice.viz.service.javafx.geometry.FXGeometryViewerFactory";
-	
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -117,21 +113,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 
 		// Create a geometry viewer, throwing an exception if the operation
 		// fails
-		//return new FXGeometryViewer(viewerParent);
-		
-        try {
-            Class<?> viewerFactory = Class.forName(GEOMETRY_VIEWER_FACTORY); //$NON-NLS-1$
-
-            if (viewerFactory == null) {
-                throw new Exception(""); //$NON-NLS-1$
-            }
-
-            Object newInstance = viewerFactory.newInstance();
-            Method method = newInstance.getClass().getMethod("createViewer", Composite.class); //$NON-NLS-1$
-            return (FXGeometryViewer) method.invoke(newInstance, viewerParent);
-        } catch (Exception e) {
-            throw new Exception("", e); //$NON-NLS-1$
-        }
+		return new FXGeometryViewer(viewerParent);
 	}
 
 	/*
