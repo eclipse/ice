@@ -45,7 +45,7 @@ public class LinearEdgeMesh extends EdgeMesh {
 	public double calculateLength() {
 
 		// If the edge has two vertices, calculate its length
-		if (entities.get("Vertices").size() == 2) {
+		if (getEntitiesByCategory("Vertices").size() == 2) {
 
 			// Calculate the distance between the start and end points
 			double[] startPoint = ((VertexController) entities.get("Vertices")

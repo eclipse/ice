@@ -193,9 +193,11 @@ public class EdgeMesh extends AbstractMesh {
 		type = otherObject.type;
 		properties = new HashMap<String, String>(otherObject.properties);
 
+		// Calculate the new length
+		calculateLength();
+
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.ALL };
+		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 
 		// Release all queued messages

@@ -62,16 +62,18 @@ public class EdgeController extends AbstractController {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#update(org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable, org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType[])
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#update(org.
+	 * eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
-		//If the vertices were changed, recalculate the edge's length
-		for(SubscriptionType event : type){	
-			if(event == SubscriptionType.CHILD){
-				((EdgeMesh) model).calculateLength();				
+		// If the vertices were changed, recalculate the edge's length
+		for (SubscriptionType event : type) {
+			if (event == SubscriptionType.CHILD) {
+				((EdgeMesh) model).calculateLength();
 			}
 		}
 

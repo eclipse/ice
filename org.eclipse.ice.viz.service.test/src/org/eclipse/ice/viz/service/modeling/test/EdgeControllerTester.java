@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceMesh;
 import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.EdgeMesh;
 import org.eclipse.ice.viz.service.modeling.LinearEdgeMesh;
@@ -60,9 +59,9 @@ public class EdgeControllerTester {
 				new AbstractView());
 
 		// Add all three vertices to the edge.
-		edge.addEntity(vertex1);
-		edge.addEntity(vertex2);
-		edge.addEntity(vertex3);
+		edge.addEntityByCategory(vertex1, "Vertices");
+		edge.addEntityByCategory(vertex2, "Vertices");
+		edge.addEntityByCategory(vertex3, "Vertices");
 
 		// Check the Vertices category to ensure that the edge accepted the
 		// first two vertices and ignored the third
@@ -75,7 +74,7 @@ public class EdgeControllerTester {
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntity(vertex3);
+		edge.addEntityByCategory(vertex3, "Vertices");
 
 		// Check the Vertices category to ensure that the last vertex was
 		// replaced
@@ -84,18 +83,19 @@ public class EdgeControllerTester {
 		assertFalse(vertices.contains(vertex2));
 		assertTrue(vertices.contains(vertex3));
 	}
-	
+
 	/**
 	 * Check that the part is cloned correctly.
 	 */
 	@Test
-	public void checkClone(){
-		
-		//Create an edge
-		EdgeController edge = new EdgeController(new EdgeMesh(), new AbstractView());
+	public void checkClone() {
+
+		// Create an edge
+		EdgeController edge = new EdgeController(new EdgeMesh(),
+				new AbstractView());
 		edge.setProperty("Test", "Property");
-		
-		//Clone it and check that they are identical
+
+		// Clone it and check that they are identical
 		EdgeController clone = (EdgeController) edge.clone();
 		assertTrue(edge.equals(clone));
 	}

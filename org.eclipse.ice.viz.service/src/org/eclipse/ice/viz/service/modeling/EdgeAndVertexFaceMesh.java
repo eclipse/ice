@@ -85,9 +85,9 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 		// consistent with the Edges category
 		if (!getEntitiesByCategory("Vertices").contains(entity)) {
 
-			//Queue messages from all the removals
+			// Queue messages from all the removals
 			updateManager.enqueue();
-			
+
 			// If the entity is an edge, also remove its vertices
 			if (getEntitiesByCategory("Edges").contains(entity)) {
 				for (AbstractController vertex : entity
@@ -117,8 +117,8 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 
 			// Remove the entity as normal
 			super.removeEntity(entity);
-			
-			//Flush the message queue
+
+			// Flush the message queue
 			updateManager.flushQueue();
 		}
 
@@ -191,13 +191,14 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 							for (AbstractController vertex : entities
 									.get("Vertices"))
 								if (tempVertex.equals(vertex)) {
-									newEdge.addEntity(vertex);
+									newEdge.addEntityByCategory(vertex,
+											"Vertices");
 								}
 
 						}
 
 						// Save the cloned edge to the map
-						addEntity(newEdge);
+						addEntityByCategory(newEdge, "Edges");
 
 					}
 				}

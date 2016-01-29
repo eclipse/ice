@@ -97,10 +97,10 @@ public class MeshTester {
 		polygon = new NekPolygonController(new EdgeAndVertexFaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntity(e);
+			polygon.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntity(v);
+			polygon.addEntityByCategory(v, "Vertices");
 		}
 		polygon.setProperty("Id", Integer.toString(counter++));
 
@@ -141,10 +141,10 @@ public class MeshTester {
 		polygon = new NekPolygonController(new EdgeAndVertexFaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntity(e);
+			polygon.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntity(v);
+			polygon.addEntityByCategory(v, "Vertices");
 		}
 		polygon.setProperty("Id", Integer.toString(counter++));
 
@@ -203,10 +203,10 @@ public class MeshTester {
 		polygon = new NekPolygonController(new EdgeAndVertexFaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntity(e);
+			polygon.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntity(v);
+			polygon.addEntityByCategory(v, "Vertices");
 		}
 		polygon.setProperty("Id", Integer.toString(counter++));
 
@@ -239,11 +239,11 @@ public class MeshTester {
 
 		// Check the length of the first edge. Make sure it's been updated.
 		assertTrue(((TestEdge) edges.get(0)).wasUpdated());
-		assertEquals(2.82843, edges.get(0).getLength(), 1e-5f);
+		assertEquals(1.41421, edges.get(0).getLength(), 1e-5f);
 
 		// Check the length of the fourth edge. Make sure it's been updated.
 		assertTrue(((TestEdge) edges.get(2)).wasUpdated());
-		assertEquals(2.23606797, edges.get(2).getLength(), 1e-5f);
+		assertEquals(1d, edges.get(2).getLength(), 1e-5f);
 		/* ------------------------ */
 
 		return;

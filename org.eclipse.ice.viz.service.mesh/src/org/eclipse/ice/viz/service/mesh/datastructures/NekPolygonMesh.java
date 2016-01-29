@@ -13,8 +13,8 @@ package org.eclipse.ice.viz.service.mesh.datastructures;
 import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceMesh;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.FaceEdgeController;
 
 /**
@@ -96,7 +96,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 			updateManager.enqueue();
 
 			for (AbstractController edge : edges) {
-				edge.addEntity(controller);
+				edge.addEntityByCategory(controller, "Edges");
 			}
 
 			// Send messages from all changed edges

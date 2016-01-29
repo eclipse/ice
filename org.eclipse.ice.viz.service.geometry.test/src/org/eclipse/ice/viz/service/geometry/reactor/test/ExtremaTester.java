@@ -32,19 +32,19 @@ public class ExtremaTester {
 	public void checkConstruction() {
 
 		// Create some extrema and check the initial values.
-		Extrema first = new Extrema(-1d, 0d, 0.5d, 0.5d, 0d, 1d);
+		Extrema first = new Extrema(-1d, 0d, -0.5d, 0.5d, 0d, 1d);
 		assertTrue(first.getMinX() == -1d);
 		assertTrue(first.getMinY() == -0.5d);
 		assertTrue(first.getMaxY() == 0.5d);
 		assertTrue(first.getMaxZ() == 1d);
 
-		Extrema second = new Extrema(0d, 1d, -1d, 0d, 0.5d, 0.5d);
+		Extrema second = new Extrema(0d, 1d, -1d, 0d, -0.5d, 0.5d);
 		assertTrue(second.getMinY() == -1d);
 		assertTrue(second.getMinZ() == -0.5d);
 		assertTrue(second.getMaxZ() == 0.5d);
 		assertTrue(second.getMaxX() == 1d);
 
-		Extrema third = new Extrema(0.5d, 0.5d, 0d, 1d, -1d, 0d);
+		Extrema third = new Extrema(-0.5d, 0.5d, 0d, 1d, -1d, 0d);
 		assertTrue(third.getMinZ() == -1d);
 		assertTrue(third.getMinX() == -0.5d);
 		assertTrue(third.getMaxX() == 0.5d);

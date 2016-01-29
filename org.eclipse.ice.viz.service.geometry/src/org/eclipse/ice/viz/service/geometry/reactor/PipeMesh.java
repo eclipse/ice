@@ -152,8 +152,7 @@ public class PipeMesh extends TubeMesh {
 			entities.put(category, catList);
 
 			// Notify listeners of the new child
-			SubscriptionType[] eventTypes = {
-					SubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -194,5 +193,20 @@ public class PipeMesh extends TubeMesh {
 		// Pipes are always drawn with infinite thinness, so their inner and
 		// outer radii are identical
 		return getRadius();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Make a new shape component and copy the data into it
+		PipeMesh clone = new PipeMesh();
+		clone.copy(this);
+
+		return clone;
 	}
 }

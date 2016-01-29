@@ -18,6 +18,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.junit.Ignore;
 
 /**
  * This abstract class provides a basic framework for performing SWTBot tests
@@ -46,6 +47,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
  * @author Jordan Deyton
  *
  */
+@Ignore
 public class AbstractSWTTester extends AbstractICEUITester<SWTBot> {
 
 	/**

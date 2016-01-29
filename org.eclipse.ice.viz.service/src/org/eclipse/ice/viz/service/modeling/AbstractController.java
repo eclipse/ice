@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
 
 /**
  * A class which is responsible for user interactions with the underlying data
@@ -513,14 +513,15 @@ public class AbstractController
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
 
-		// Refresh the view
-		view.refresh(model);
+		// Refresh the view, if one exists
+		if (view != null) {
+			view.refresh(model);
+		}
 
 		// Notify own listeners of the change.
 		updateManager.notifyListeners(type);
