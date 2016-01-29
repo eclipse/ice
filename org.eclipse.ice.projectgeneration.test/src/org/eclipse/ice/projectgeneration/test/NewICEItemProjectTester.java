@@ -56,8 +56,6 @@ public class NewICEItemProjectTester {
 	private static final String VERSION = "1.0.0";
 	private static final String NAME = "Newitem";
 	private static final String INSTITUTE = "Oak Ridge National Laboratory";
-	private static final String EXTENSION_NAME = "org.eclipse.ice.newitem";
-	private static final String PACKAGE_NAME = "org.eclipse.ice.newitem";
 	private static final String CLASS_NAME = "NewItem";
 
 	/**
@@ -75,10 +73,7 @@ public class NewICEItemProjectTester {
 		bot.button("Next >").click();
 		bot.comboBox().setText("Oak Ridge National Laborator");
 		bot.button("Next >").click();
-		bot.textWithLabel("Extension Base Name").setText("org.eclipse.ice.newitem");
-		bot.textWithLabel("Package Name").setText("org.eclipse.ice.newitem");
 		bot.textWithLabel("Class Base Name").setText("NewItem");
 		bot.button("Finish").click();
-
 	}
 }

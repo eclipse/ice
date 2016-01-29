@@ -41,15 +41,13 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String EXTENSION_POINT = "org.eclipse.ice.item.itemBuilder";
 	protected static final String KEY_CLASS_NAME = "className";
 	protected static final String KEY_EXTENSION_NAME = "extensionName";
-	protected String PACKAGE_NAME;
 
 	/**
 	 * Constructor
 	 */
-	public ICEItemTemplate(String projectName) {
+	public ICEItemTemplate() {
 		setPageCount(1);
 		setOptions();
-		PACKAGE_NAME = projectName;
 	}
 	
 	
@@ -116,13 +114,14 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
 		// Model builder plugin.xml entry
 		IPluginBase plugin = model.getPluginBase();
+		String pluginId = plugin.getId();
 		IPluginExtension extension = createExtension(EXTENSION_POINT, false);
-		extension.setName(splitCamelCase(PACKAGE_NAME + " Model"));
+		extension.setName(splitCamelCase(getStringOption(KEY_CLASS_NAME) + " Model"));
 		extension.setId(getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
 		IPluginModelFactory factory = model.getPluginFactory();
 		IPluginElement element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", PACKAGE_NAME + "." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
+		element.setAttribute("class", pluginId + "." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);
@@ -130,12 +129,12 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		// Job launcher builder plugin.xml entry
 		plugin = model.getPluginBase();
 		extension = createExtension(EXTENSION_POINT, false);
-		extension.setName(splitCamelCase(PACKAGE_NAME + " Launcher"));
+		extension.setName(splitCamelCase(getStringOption(KEY_CLASS_NAME)+ " Launcher"));
 		extension.setId(getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
 		factory = model.getPluginFactory();
 		element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", PACKAGE_NAME + "." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
+		element.setAttribute("class", pluginId + "." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);

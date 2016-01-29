@@ -15,6 +15,15 @@
    				name="ICE Item Project Creation Wizard">
 		</wizard>
 	</extension>
+	<extension 
+		id="iceNature"
+		point="org.eclipse.core.resources.natures">
+	 	<runtime>
+	 		<run
+	 			class="org.eclipse.ice.projectgeneration.ICEItemNature">
+	 		</run>
+	 	</runtime>
+	</extension>
     <extension
    		point="org.eclipse.pde.ui.templates">
    		<template

@@ -52,6 +52,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.eclipse.ice.projectgeneration.ICEItemNature;
+import org.eclipse.ice.projectgeneration.templates.ICEItemWizard;
 
 /**
  * This class defines the steps for creating a new New ICE Item project via the
@@ -71,7 +72,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	private AbstractFieldData fPluginData;
 	private NewProjectCreationPage fProjectPage;
 	private PluginContentPage fContentPage;
-	private IPluginContentWizard fTemplateWizard;
+	private ICEItemWizard fTemplateWizard;
 	private IProjectProvider fProjectProvider;
 	private IConfigurationElement fConfig;
 
@@ -121,7 +122,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		fContentPage = new PluginContentPage("page2", fProjectProvider, fProjectPage, fPluginData); //$NON-NLS-1$
 		addPage(fContentPage);
 		try {
-			fTemplateWizard = (IPluginContentWizard) templateWizardElement.createExecutableExtension();
+			fTemplateWizard = (ICEItemWizard) templateWizardElement.createExecutableExtension();
 			fTemplateWizard.init(fPluginData);
 			fTemplateWizard.addPages();
 			IWizardPage[] pages = fTemplateWizard.getPages();
@@ -197,7 +198,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	 * @param project
 	 */
 	public static void setNature(IProject project) throws CoreException {
-		if (false && !project.hasNature(ICEItemNature.NATURE_ID)) {
+		if (!project.hasNature(ICEItemNature.NATURE_ID)) {
 			IProjectDescription description = project.getDescription();
 			String[] projNatures = description.getNatureIds();
 			projNatures = Arrays.copyOf(projNatures, projNatures.length + 1);

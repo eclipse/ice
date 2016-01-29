@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration.templates;
 
+import org.eclipse.pde.internal.ui.wizards.IProjectProvider;
 import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
@@ -23,21 +24,17 @@ import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
  */
 public class ICEItemWizard extends NewPluginTemplateWizard {
 
-	private String projectName;
-	
 	public ICEItemWizard() {
 		super();
 	}
 	
-	@Override
 	public void init(IFieldData data) {
 		super.init(data);
-		projectName = data.getName();
 	}
 	
 	@Override
 	public ITemplateSection[] createTemplateSections() {
-		return new ITemplateSection[] {new ICEItemTemplate(projectName)};
+		return new ITemplateSection[] {new ICEItemTemplate()};
 	}
 
 }
