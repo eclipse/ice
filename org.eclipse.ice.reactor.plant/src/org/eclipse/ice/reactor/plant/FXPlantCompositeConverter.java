@@ -358,7 +358,7 @@ public class FXPlantCompositeConverter
 
 			// Simply add the reactor, as the plant view assumes there is only
 			// one and the root will take care of adding the core channels.
-			root.addEntity(reactor);
+			root.addEntityByCategory(reactor, "Reactors");
 
 		}
 

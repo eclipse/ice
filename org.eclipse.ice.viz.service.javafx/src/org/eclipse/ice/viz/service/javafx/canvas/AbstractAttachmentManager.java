@@ -43,9 +43,6 @@ abstract public class AbstractAttachmentManager implements IAttachmentManager {
 	 */
 	@Override
 	public void destroy(IAttachment attach) {
-		if (!(attach instanceof IAttachment)) {
-			return;
-		}
 
 		if (removalQueue == null) {
 			removalQueue = new ArrayList<>();

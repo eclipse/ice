@@ -22,7 +22,6 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListen
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.FaceController;
 import org.eclipse.ice.viz.service.modeling.FaceMesh;
 
@@ -34,7 +33,8 @@ import org.eclipse.ice.viz.service.modeling.FaceMesh;
  * @author Robert Smith
  *
  */
-public class NekPolygonController extends FaceController implements IVizUpdateableListener {
+public class NekPolygonController extends FaceController
+		implements IVizUpdateableListener {
 	/**
 	 * <p>
 	 * The properties for each polygon defined in the MESH DATA section of a Nek
@@ -370,24 +370,6 @@ public class NekPolygonController extends FaceController implements IVizUpdateab
 		SubscriptionType[] eventType = new SubscriptionType[1];
 		eventType[0] = SubscriptionType.PROPERTY;
 		updateManager.notifyListeners(eventType);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractController#addEntity(org.
-	 * eclipse.ice.viz.service.modeling.AbstractController)
-	 */
-	@Override
-	public void addEntity(AbstractController entity) {
-
-		// When edges are added, create boundary conditions for them.
-		if (entity instanceof EdgeController) {
-			initializeBoundaryConditions(entity);
-		}
-
-		super.addEntity(entity);
 	}
 
 	/*

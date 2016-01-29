@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceMesh;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
 import org.eclipse.ice.viz.service.modeling.FaceEdgeController;
 
 /**
@@ -51,16 +50,17 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 * eclipse.ice.viz.service.modeling.AbstractController)
 	 */
 	@Override
-	public void addEntity(AbstractController entity) {
+	public void addEntityByCategory(AbstractController entity,
+			String category) {
 
 		// If adding an edge, handle it apprioriately
-		if (entity instanceof EdgeController) {
+		if ("Edges".equals(category)) {
 
 			// Queue messages from adding the entity
 			updateManager.enqueue();
 
 			// Add the edge to the Edges category by default
-			super.addEntity(entity);
+			super.addEntityByCategory(entity, category);
 
 			// If the controller already exists, give a reference to it to the
 			// edge.
@@ -72,7 +72,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 			updateManager.flushQueue();
 
 		} else {
-			super.addEntity(entity);
+			super.addEntityByCategory(entity, category);
 		}
 	}
 

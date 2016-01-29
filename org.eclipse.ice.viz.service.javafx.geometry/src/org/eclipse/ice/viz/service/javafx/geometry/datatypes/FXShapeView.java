@@ -162,7 +162,6 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		case Cone:
 			return;
 		case Cube:
-			if (!(shape instanceof Box)) {
 				// Save the old shape
 				prevShape = shape;
 
@@ -182,11 +181,11 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 					box.setMaterial(customMaterial);
 				}
 				shape = box;
-			}
+
 
 			break;
 		case Cylinder:
-			if (!(shape instanceof Cylinder)) {
+
 				// Save the old shape
 				prevShape = shape;
 
@@ -203,14 +202,14 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 					cyl.setMaterial(customMaterial);
 				}
 				shape = cyl;
-			}
+
 
 			break;
 		case None:
 			return;
 		case Sphere:
-			if (!(shape instanceof Sphere)) {
-				// Save the old shape
+
+			// Save the old shape
 				prevShape = shape;
 
 				Sphere sphere = new Sphere(50, 50);
@@ -226,13 +225,10 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 					sphere.setMaterial(customMaterial);
 				}
 				shape = sphere;
-			}
+
 
 			break;
 		case Tube:
-			// There is no conditional on Tubes as tubes are set to draw based
-			// on information from the model's properties, and thus may require
-			// redrawing even without a change in type.
 
 			// Get the previous shape, if any
 			if (shape != null) {

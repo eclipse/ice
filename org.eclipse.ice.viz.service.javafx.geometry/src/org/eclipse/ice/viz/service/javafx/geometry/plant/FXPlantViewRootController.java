@@ -11,7 +11,6 @@
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
@@ -75,8 +74,25 @@ public class FXPlantViewRootController extends AbstractController
 			updateManager.notifyListeners(eventTypes);
 		}
 
+		// For other types of part, add it normally
+		else {
+			model.addEntity(entity);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#
+	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
+	 * AbstractController, java.lang.String)
+	 */
+	@Override
+	public void addEntityByCategory(AbstractController entity,
+			String category) {
+
 		// If the entity is a reactor, add all core channels to it
-		else if (entity instanceof ReactorController) {
+		if ("Reactors".equals(category)) {
 
 			// Queue updates from adding children
 			updateManager.enqueue();
@@ -95,9 +111,9 @@ public class FXPlantViewRootController extends AbstractController
 			updateManager.notifyListeners(eventTypes);
 		}
 
-		// For other types of part, add it normally
+		// Otherwise, add it normally
 		else {
-			model.addEntity(entity);
+			model.addEntityByCategory(entity, category);
 		}
 	}
 

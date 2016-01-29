@@ -102,7 +102,7 @@ public class FXShapeController extends ShapeController
 		// If the removed entity is a parent FXShape, detach the child's JavaFX
 		// node from the parent group
 		if (model.getEntitiesByCategory("Parent").contains(entity)
-				&& entity instanceof FXShapeController) {
+				&& ((Group) entity.getRepresentation()).getChildren().contains(view.getRepresentation())) {
 			((Group) entity.getRepresentation()).getChildren()
 					.remove(view.getRepresentation());
 		}
