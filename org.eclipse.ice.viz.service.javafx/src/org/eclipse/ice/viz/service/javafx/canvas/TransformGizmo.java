@@ -122,9 +122,13 @@ public class TransformGizmo extends Group {
 	 * @param handles
 	 */
 	public void showHandles(boolean handles) {
-		handleX.setVisible(handles);
-		handleY.setVisible(handles);
-		handleZ.setVisible(handles);
+
+		// Set the handles' visibility, if they exist
+		if (handleX != null) {
+			handleX.setVisible(handles);
+			handleY.setVisible(handles);
+			handleZ.setVisible(handles);
+		}
 	}
 
 	public Node getOwner() {

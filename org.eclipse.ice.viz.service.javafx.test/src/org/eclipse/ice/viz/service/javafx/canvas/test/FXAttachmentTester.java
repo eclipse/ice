@@ -24,6 +24,8 @@ import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
+import javafx.scene.Group;
+
 /**
  * A class to test the functionality of the FXAttachment.
  * 
@@ -71,9 +73,53 @@ public class FXAttachmentTester {
 		attachment.addGeometry(empty);
 		assertTrue(attachment.getKnownParts().contains(empty));
 
+		// Create a new part
 		ShapeMesh mesh = new ShapeMesh();
-		mesh.setProperty("Type", "Cube");
-		FXShapeController controller = new FXShapeController(mesh,
-				new FXShapeView(mesh));
+		AbstractController controller = new AbstractController(mesh,
+				new TestFXView("Node 1"));
+
+		// Add it to the attachment and check that its representation is present
+		// in the attachment's tree
+		attachment.addGeometry(controller);
+		assertTrue(attachment.getFxNode().getChildren()
+				.contains(controller.getRepresentation()));
+
+		// Create a second new part
+		AbstractController controller2 = new AbstractController(mesh,
+				new TestFXView("Node 2"));
+
+		// Add the second part to the attachment and check that both
+		// representations are still present
+		attachment.addGeometry(controller2);
+		assertTrue(attachment.getFxNode().getChildren()
+				.contains(controller.getRepresentation()));
+		assertTrue(attachment.getFxNode().getChildren()
+				.contains(controller2.getRepresentation()));
+
+	}
+
+	private class TestFXView extends AbstractView {
+
+		/**
+		 * The JavaFX node that will serve as this view's representation
+		 */
+		private Group node = new Group();
+
+		public TestFXView(String name) {
+			super();
+
+			node.getProperties().put("Name", name);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+		 */
+		@Override
+		public Object getRepresentation() {
+			return node;
+		}
 	}
 }

@@ -14,30 +14,35 @@ import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 
 /**
+ * A class for utility functions related to testing an object's validity.
  * 
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
 public class ModelUtil {
 
-    /**
-     * <p>
-     * </p>
-     * 
-     * @param obj
-     * @return
-     */
-    public static boolean isNode(Object obj) {
-        return obj != null && obj instanceof INode;
-    }
+	/**
+	 * Tests whether the given object is a node.
+	 * 
+	 * @param obj
+	 *            The object to be tested.
+	 * @return True if the object is a non-null instance of INode. False
+	 *         otherwise.
+	 */
+	public static boolean isNode(Object obj) {
+		return obj != null && obj instanceof INode;
+	}
 
-    /**
-     * 
-     * @param obj
-     * @return
-     */
-    public static boolean isAttachment(Object obj) {
-        return obj != null && obj instanceof IAttachment;
-    }
+	/**
+	 * Tests whether the given object is an Attachment.
+	 * 
+	 * @param obj
+	 *            The object to be tested.
+	 * @return True if the object is a non-null instance of IAttachment. False
+	 *         otherwise.
+	 */
+	public static boolean isAttachment(Object obj) {
+		return obj != null && obj instanceof IAttachment;
+	}
 
 }

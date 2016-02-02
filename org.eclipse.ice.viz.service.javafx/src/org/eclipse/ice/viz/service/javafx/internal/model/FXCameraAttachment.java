@@ -12,6 +12,7 @@ package org.eclipse.ice.viz.service.javafx.internal.model;
 
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.javafx.scene.base.CameraAttachment;
+import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 
 import javafx.scene.Camera;
@@ -28,63 +29,65 @@ import javafx.scene.PerspectiveCamera;
  */
 public class FXCameraAttachment extends CameraAttachment {
 
-    /** The JavaFX camera used with this attachment. */
-    private Camera camera;
+	/** The JavaFX camera used with this attachment. */
+	private Camera camera;
 
-    /**
-     * <p>
-     * Creates a JavaFX camera attachment.
-     * </p>
-     * 
-     * @param cam
-     */
-    public FXCameraAttachment(Camera cam) {
-        this.camera = cam;
-    }
+	/**
+	 * <p>
+	 * Creates a JavaFX camera attachment.
+	 * </p>
+	 * 
+	 * @param cam
+	 */
+	public FXCameraAttachment(Camera cam) {
+		this.camera = cam;
+	}
 
-    /**
-     * @see IAttachment#attach(INode)
-     */
-    @Override
-    public void attach(INode owner) {
-        super.attach(owner);
+	/**
+	 * @see IAttachment#attach(INode)
+	 */
+	@Override
+	public void attach(INode owner) {
+		super.attach(owner);
 
-        if (camera == null) {
-            camera = new PerspectiveCamera(true);
-        }
+		if (camera == null) {
+			camera = new PerspectiveCamera(true);
+		}
 
-        Group fxGroup = Util.getFxGroup(owner);
+		Group fxGroup = Util.getFxGroup(owner);
 
-        fxGroup.getChildren().add(fxGroup);
-    }
+		fxGroup.getChildren().add(camera);
+	}
 
-    /**
-     * @see IAttachment#detach(INode)
-     */
-    public void detach(INode owner) {
-        super.attach(owner);
+	/**
+	 * @see IAttachment#detach(INode)
+	 */
+	@Override
+	public void detach(INode owner) {
+		super.attach(owner);
 
-        Group fxGroup = Util.getFxGroup(owner);
+		Group fxGroup = Util.getFxGroup(owner);
 
-        fxGroup.getChildren().remove(camera);
-    }
+		fxGroup.getChildren().remove(camera);
+	}
 
-    /**
-     * <p>
-     * Returns the JavaFX camera for this attachment.
-     * </p>
-     * 
-     * @return the camera for this attachment
-     */
-    public Camera getFxCamera() {
-        return camera;
-    }
+	/**
+	 * <p>
+	 * Returns the JavaFX camera for this attachment.
+	 * </p>
+	 * 
+	 * @return the camera for this attachment
+	 */
+	public Camera getFxCamera() {
+		return camera;
+	}
 
-    /**
-     * @see IAttachment#getType()
-     */
-    public Class<?> getType() {
-        return CameraAttachment.class;
-    }
+	/**
+	 * @see IAttachment#getType()
+	 */
+	@Override
+	public Class<?> getType() {
+		return CameraAttachment.class;
+	}
 
 }

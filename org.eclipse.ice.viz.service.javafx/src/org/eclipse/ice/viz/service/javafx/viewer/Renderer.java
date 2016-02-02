@@ -25,61 +25,64 @@ import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
  */
 public abstract class Renderer implements IRenderer {
 
-    /** Stores attachment manager associations. */
-    private Map<Class<? extends IAttachment>, IAttachmentManager> attachmentMgr;
+	/** Stores attachment manager associations. */
+	protected Map<Class<? extends IAttachment>, IAttachmentManager> attachmentMgr;
 
-    /**
-     * @see IRenderer#supportsAttachment(Class)
-     */
-    public boolean supportsAttachment(Class<? extends IAttachment> clazz) {
-        if (attachmentMgr == null) {
-            return false;
-        }
+	/**
+	 * @see IRenderer#supportsAttachment(Class)
+	 */
+	@Override
+	public boolean supportsAttachment(Class<? extends IAttachment> clazz) {
+		if (attachmentMgr == null) {
+			return false;
+		}
 
-        return attachmentMgr.containsKey(clazz);
-    }
+		return attachmentMgr.containsKey(clazz);
+	}
 
-    /**
-     * @see IRenderer#createAttachment(Class)
-     */
-    public IAttachment createAttachment(Class<? extends IAttachment> clazz) {
-        if (attachmentMgr == null) {
-            attachmentMgr = new HashMap<>();
-        }
+	/**
+	 * @see IRenderer#createAttachment(Class)
+	 */
+	@Override
+	public IAttachment createAttachment(Class<? extends IAttachment> clazz) {
+		if (attachmentMgr == null) {
+			attachmentMgr = new HashMap<>();
+		}
 
-        IAttachmentManager attachManagerInst = attachmentMgr.get(clazz);
+		IAttachmentManager attachManagerInst = attachmentMgr.get(clazz);
 
-        if (attachManagerInst == null) {
-            return null;
-        }
+		if (attachManagerInst == null) {
+			return null;
+		}
 
-        IAttachment allocation = attachManagerInst.allocate();
+		IAttachment allocation = attachManagerInst.allocate();
 
-        return allocation;
-    }
+		return allocation;
+	}
 
-    /**
-     * @see IRenderer#register(Class, IAttachmentManager)
-     */
-    @Override
-    public void register(Class<? extends IAttachment> type, IAttachmentManager mgr) {
-        if (attachmentMgr == null) {
-            attachmentMgr = new HashMap<>();
-        }
+	/**
+	 * @see IRenderer#register(Class, IAttachmentManager)
+	 */
+	@Override
+	public void register(Class<? extends IAttachment> type,
+			IAttachmentManager mgr) {
+		if (attachmentMgr == null) {
+			attachmentMgr = new HashMap<>();
+		}
 
-        attachmentMgr.put(type, mgr);
-    }
+		attachmentMgr.put(type, mgr);
+	}
 
-    /**
-     * @see IRenderer#unregister(Class)
-     */
-    @Override
-    public void unregister(Class<? extends IAttachment> type) {
-        if (attachmentMgr == null) {
-            return;
-        }
+	/**
+	 * @see IRenderer#unregister(Class)
+	 */
+	@Override
+	public void unregister(Class<? extends IAttachment> type) {
+		if (attachmentMgr == null) {
+			return;
+		}
 
-        attachmentMgr.remove(type);
-    }
+		attachmentMgr.remove(type);
+	}
 
 }

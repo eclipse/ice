@@ -81,7 +81,9 @@ public class FXViewer extends AbstractViewer {
 	public FXViewer(Composite parent) {
 		super(parent);
 
+		// Create a renderer that creates FXAttachments
 		renderer = new FXRenderer();
+		renderer.register(FXAttachment.class, new FXAttachmentManager());
 	}
 
 	/**
@@ -288,7 +290,7 @@ public class FXViewer extends AbstractViewer {
 	 */
 	@Override
 	public void refresh() {
-
+		// Nothing to do
 	}
 
 	/**

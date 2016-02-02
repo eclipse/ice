@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.javafx.scene.base.GNode;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -37,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  * 
  */
-public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
+public class FXVizCanvas implements IVizCanvas {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -103,6 +101,9 @@ public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
 				handleSelectionChanged(event);
 			}
 		});
+
+		// Create an attachment for the canvas
+		createAttachment();
 
 		loadPart(root);
 
@@ -177,7 +178,7 @@ public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
 	 */
 	protected void createAttachment() {
 		rootAtachment = (AbstractAttachment) viewer.getRenderer()
-				.createAttachment(AbstractAttachment.class);
+				.createAttachment(FXAttachment.class);
 	}
 
 	/**
@@ -212,27 +213,6 @@ public class FXVizCanvas implements IVizCanvas, IVizUpdateableListener {
 	 */
 	public AbstractViewer getViewer() {
 		return viewer;
-	}
-
-	/**
-	 * <p>
-	 * Listens for updates coming in from the geometry provider.
-	 * </p>
-	 * 
-	 * @see IVizUpdateable#update
-	 */
-	@Override
-	public void update(final IVizUpdateable component) {
-
-		// Invoke this on the JavaFX UI thread
-		javafx.application.Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				if (component == root) {
-					// rootGeometry.addGeometry(geometry);
-				}
-			}
-		});
 	}
 
 	/**

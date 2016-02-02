@@ -15,6 +15,7 @@ import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -64,24 +65,23 @@ public class FXMeshAttachment extends FXAttachment {
 			// Get each part which is managed by that controller
 			for (AbstractController entity : group.getEntities()) {
 
-				// Add each child of a polygon to the scene, without repeats
-				if (entity.getEntitiesByCategory("Edges") != null
-						&& entity.getEntitiesByCategory("Vertices") != null) {
-
-					for (AbstractController child : entity.getEntities()) {
-
-						Group render = (Group) child.getRepresentation();
-
-						if (!fxAttachmentNode.getChildren().contains(render)) {
-							// Add the representation to the scene's node
-							fxAttachmentNode.getChildren().add(render);
-						}
-					}
-				} else {
-
-					// Simply add the representations of other objects
+				// Add the entity's own representation, if it has one and is not
+				// already present in the scene
+				if (entity.getRepresentation() != null && !fxAttachmentNode
+						.getChildren().contains(entity.getRepresentation())) {
 					fxAttachmentNode.getChildren()
-							.add((Group) entity.getRepresentation());
+							.add((Node) entity.getRepresentation());
+				}
+
+				// Add each child of a polygon to the scene, without repeats
+				for (AbstractController child : entity.getEntities()) {
+
+					Group render = (Group) child.getRepresentation();
+
+					if (!fxAttachmentNode.getChildren().contains(render)) {
+						// Add the representation to the scene's node
+						fxAttachmentNode.getChildren().add(render);
+					}
 				}
 			}
 		}
