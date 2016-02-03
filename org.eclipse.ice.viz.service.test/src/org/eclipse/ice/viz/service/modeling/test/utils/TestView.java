@@ -84,6 +84,11 @@ public class TestView extends AbstractView {
 	@Override
 	public boolean equals(Object otherObject) {
 
+		// If the other object is null or not a TestView, they are not equal
+		if (otherObject == null || !(otherObject instanceof TestView)) {
+			return false;
+		}
+
 		// If the views have identical data, they are equal
 		if (data == ((TestView) otherObject).data) {
 			return true;
