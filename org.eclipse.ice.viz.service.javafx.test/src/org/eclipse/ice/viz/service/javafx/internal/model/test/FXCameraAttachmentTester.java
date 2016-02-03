@@ -10,9 +10,17 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.internal.model.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.eclipse.ice.viz.service.javafx.internal.Util;
+import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
+import org.eclipse.ice.viz.service.javafx.scene.base.GNode;
+import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 import org.junit.Test;
 
 import javafx.scene.Camera;
+import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 
 /**
@@ -30,6 +38,24 @@ public class FXCameraAttachmentTester {
 	@Test
 	public void checkCamera() {
 
+		// Create a camera, an attachment containing that camera, and the node
 		Camera camera = new PerspectiveCamera();
+		FXCameraAttachment attachment = new FXCameraAttachment(camera);
+		GNode node = new GNode();
+		Group fxNode = new Group();
+		node.setProperty(INode.RENDERER_NODE_PROP, fxNode);
+
+		// Check that the attachment has the camera
+		assertTrue(attachment.getFxCamera() == camera);
+
+		// Attach to the node and check that the camera has been added to the
+		// JavaFX node
+		attachment.attach(node);
+		assertTrue(Util.getFxGroup(node).getChildren().contains(camera));
+
+		// Detach from the node and check that the camera has been removed from
+		// the JavaFX node.
+		attachment.detach(node);
+		assertFalse(Util.getFxGroup(node).getChildren().contains(camera));
 	}
 }

@@ -28,7 +28,7 @@ import javafx.scene.paint.PhongMaterial;
 /**
  * A controller for Shapes which have been rendered in JavaFX
  * 
- * @author r8s
+ * @author Robert Smith
  *
  */
 public class FXShapeController extends ShapeController
@@ -102,9 +102,16 @@ public class FXShapeController extends ShapeController
 		// If the removed entity is a parent FXShape, detach the child's JavaFX
 		// node from the parent group
 		if (model.getEntitiesByCategory("Parent").contains(entity)
-				&& ((Group) entity.getRepresentation()).getChildren().contains(view.getRepresentation())) {
+				&& ((Group) entity.getRepresentation()).getChildren()
+						.contains(view.getRepresentation())) {
 			((Group) entity.getRepresentation()).getChildren()
 					.remove(view.getRepresentation());
+		}
+
+		// Otherwise, remove its representation from this object's JavaFX node
+		else {
+			((Group) view.getRepresentation()).getChildren()
+					.remove(entity.getRepresentation());
 		}
 
 		super.removeEntity(entity);
@@ -253,8 +260,7 @@ public class FXShapeController extends ShapeController
 	 * eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// If the view updated, recursively refresh all children and propagate
 		// the update to own listeners
@@ -263,44 +269,8 @@ public class FXShapeController extends ShapeController
 		}
 
 		// Otherwise just propagate to own listeners
-		else {
-			super.update(component, type);
-		}
+		super.update(component, type);
 	}
-
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
-	// * ice.viz.service.modeling.AbstractController)
-	// */
-	// @Override
-	// public void copy(AbstractController source) {
-	// super.copy(source);
-	//
-	// List<AbstractController> parentList = model
-	// .getEntitiesByCategory("Parent");
-	// if (!parentList.isEmpty()) {
-	// parentList.get(0).addEntity(this);
-	//
-	// // AbstractController parent = model.getEntitiesByCategory("Parent")
-	// // .get(0);
-	// // String operator = parent.getProperty("Operator");
-	// // if (operator != null && OperatorType.valueOf(
-	// // parent.getProperty("Operator")) == OperatorType.Union) {
-	// // ((Group) parent.getRepresentation()).getChildren()
-	// // .add((Group) view.getRepresentation());
-	// // }
-	// }
-	//
-	// for (AbstractController shape : model
-	// .getEntitiesByCategory("Children")) {
-	// model.addEntity((AbstractController) shape.clone());
-	// }
-	//
-	// }
 
 	/*
 	 * (non-Javadoc)

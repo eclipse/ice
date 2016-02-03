@@ -45,6 +45,7 @@ import org.junit.Test;
  * @author Jordan H. Deyton
  * @author Robert Smith
  */
+@Ignore
 public class NekPolygonTester {
 
 	/**

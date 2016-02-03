@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 UT-Battelle, LLC.
+ * Copyright (c) 2015-2016 UT-Battelle, LLC.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,18 +22,23 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
 /**
- * <p>
- * ArcBallController provides 3D editor like features to a camera, by rotating
- * around a point and letting the user zoom in and out.
- * </p>
+ * A controller which sets the camera to a top down view, with the camera
+ * pointed down to look perpendicular to the XY plane.
  */
 public class TopDownCameraController extends AbstractCameraController {
 
 	/**
-	 * <p>
-	 * </p>
+	 * The default constructor.
+	 * 
+	 * @param camera
+	 *            The camera this controller will manage.
+	 * @param scene
+	 *            The scene the camera is viewing.
+	 * @param canvas
+	 *            The FXCanvas displaying the scene.
 	 */
-	public TopDownCameraController(Camera camera, Scene scene, FXCanvas canvas) {
+	public TopDownCameraController(Camera camera, Scene scene,
+			FXCanvas canvas) {
 		super(camera, scene, canvas);
 	}
 
@@ -94,28 +99,38 @@ public class TopDownCameraController extends AbstractCameraController {
 		Point3D yDir = new Point3D(yx, yy, yz).normalize();
 		Point3D xDir = new Point3D(xx, xy, xz).normalize();
 
+		// W moves the camera up
 		if (keyCode == KeyCode.W) {
 			Point3D moveVec = yDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), -moveVec.getY(),
 					moveVec.getZ());
+
+			// S moves the camera down
 		} else if (keyCode == KeyCode.S) {
 			Point3D moveVec = yDir.multiply(speed);
 			Point3D invVec = new Point3D(-moveVec.getX(), moveVec.getY(),
 					-moveVec.getZ());
 			affine.appendTranslation(invVec.getX(), invVec.getY(),
 					invVec.getZ());
+
+			// A moves the camera to the left
 		} else if (keyCode == KeyCode.A) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
 					-moveVec.getZ());
+
+			// D moves the camera to the right
 		} else if (keyCode == KeyCode.D) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), moveVec.getY(),
 					moveVec.getZ());
 		}
 
+		// The spacebar zooms the camera out
 		if (keyCode == KeyCode.SPACE) {
 			zoomCamera(-speed);
+
+			// C zooms the camera in
 		} else if (keyCode == KeyCode.C) {
 			zoomCamera(speed);
 		}

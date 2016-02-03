@@ -109,7 +109,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	public FXShapeView(ShapeMesh model) {
 		super();
 
-		// Initialize the JavaFX ndoe
+		// Initialize the JavaFX node
 		node = new Group();
 		node.setId(model.getProperty("Name"));
 
@@ -162,47 +162,45 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		case Cone:
 			return;
 		case Cube:
-				// Save the old shape
-				prevShape = shape;
+			// Save the old shape
+			prevShape = shape;
 
-				// Remove the old shape from the node
-				node.getChildren().remove(shape);
+			// Remove the old shape from the node
+			node.getChildren().remove(shape);
 
-				Box box = new Box(50, 50, 50);
+			Box box = new Box(50, 50, 50);
 
-				// If a material is not specified, create a new one
-				if (customMaterial == null) {
-					defaultMaterial = new PhongMaterial(Color.rgb(50, 50, 255));
-					defaultMaterial.setSpecularColor(Color.WHITE);
-					box.setMaterial(defaultMaterial);
-				} else {
+			// If a material is not specified, create a new one
+			if (customMaterial == null) {
+				defaultMaterial = new PhongMaterial(Color.rgb(50, 50, 255));
+				defaultMaterial.setSpecularColor(Color.WHITE);
+				box.setMaterial(defaultMaterial);
+			} else {
 
-					// If a material is specified, set it
-					box.setMaterial(customMaterial);
-				}
-				shape = box;
-
+				// If a material is specified, set it
+				box.setMaterial(customMaterial);
+			}
+			shape = box;
 
 			break;
 		case Cylinder:
 
-				// Save the old shape
-				prevShape = shape;
+			// Save the old shape
+			prevShape = shape;
 
-				Cylinder cyl = new Cylinder(50, 50);
+			Cylinder cyl = new Cylinder(50, 50);
 
-				// If a material is not specified, create a new one
-				if (customMaterial == null) {
-					defaultMaterial = new PhongMaterial(Color.rgb(0, 181, 255));
-					defaultMaterial.setSpecularColor(Color.WHITE);
-					cyl.setMaterial(defaultMaterial);
-				} else {
+			// If a material is not specified, create a new one
+			if (customMaterial == null) {
+				defaultMaterial = new PhongMaterial(Color.rgb(0, 181, 255));
+				defaultMaterial.setSpecularColor(Color.WHITE);
+				cyl.setMaterial(defaultMaterial);
+			} else {
 
-					// If a material is specified, set it
-					cyl.setMaterial(customMaterial);
-				}
-				shape = cyl;
-
+				// If a material is specified, set it
+				cyl.setMaterial(customMaterial);
+			}
+			shape = cyl;
 
 			break;
 		case None:
@@ -210,22 +208,21 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		case Sphere:
 
 			// Save the old shape
-				prevShape = shape;
+			prevShape = shape;
 
-				Sphere sphere = new Sphere(50, 50);
+			Sphere sphere = new Sphere(50, 50);
 
-				// If a material is not specified, create a new one
-				if (customMaterial == null) {
-					defaultMaterial = new PhongMaterial(Color.rgb(131, 0, 157));
-					defaultMaterial.setSpecularColor(Color.WHITE);
-					sphere.setMaterial(defaultMaterial);
-				} else {
+			// If a material is not specified, create a new one
+			if (customMaterial == null) {
+				defaultMaterial = new PhongMaterial(Color.rgb(131, 0, 157));
+				defaultMaterial.setSpecularColor(Color.WHITE);
+				sphere.setMaterial(defaultMaterial);
+			} else {
 
-					// If a material is specified, set it
-					sphere.setMaterial(customMaterial);
-				}
-				shape = sphere;
-
+				// If a material is specified, set it
+				sphere.setMaterial(customMaterial);
+			}
+			shape = sphere;
 
 			break;
 		case Tube:
@@ -395,16 +392,22 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	public Object clone() {
 		FXShapeView clone = new FXShapeView();
 		clone.copy(this);
-		// clone.update(clone.transformation);
 
 		// Force an update from the transformation
 		clone.transformation.setSize(clone.transformation.getSize());
 		return clone;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractView#update(org.eclipse.ice.
+	 * viz.service.datastructures.VizObject.IManagedUpdateable,
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType[])
+	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {
@@ -437,8 +440,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		}
 
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.WIREFRAME };
+		SubscriptionType[] eventTypes = { SubscriptionType.WIREFRAME };
 		updateManager.notifyListeners(eventTypes);
 	}
 
