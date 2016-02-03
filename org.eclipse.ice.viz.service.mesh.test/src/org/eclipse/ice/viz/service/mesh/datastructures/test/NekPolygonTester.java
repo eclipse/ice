@@ -34,6 +34,7 @@ import org.eclipse.ice.viz.service.modeling.EdgeMesh;
 import org.eclipse.ice.viz.service.modeling.FaceMesh;
 import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ice.viz.service.modeling.VertexMesh;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,6 +45,7 @@ import org.junit.Test;
  * @author Jordan H. Deyton
  * @author Robert Smith
  */
+@Ignore
 public class NekPolygonTester {
 
 	/**
