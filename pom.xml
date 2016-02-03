@@ -75,10 +75,8 @@
 		<module>org.eclipse.ice.client.widgets</module>
 		<module>org.eclipse.ice.client.widgets.moose</module>
 		<module>org.eclipse.ice.client.widgets.moose.test</module> 
-		<!-- <module>org.eclipse.ice.client.widgets.rcp</module> -->
 		<module>org.eclipse.ice.client.widgets.test</module> 
 		<module>org.eclipse.ice.client.widgets.test.utils</module>
-		<!-- <module>org.eclipse.ice.client.widgets.rcp.test</module> --> 
 		<module>org.eclipse.ice.client.rcp</module>
 		<module>org.eclipse.ice.datastructures</module>
 		<module>org.eclipse.ice.datastructures.test</module> 
@@ -113,8 +111,6 @@
 		<!-- <module>org.eclipse.ice.viz.service.javafx.test</module> --> 
 		<module>org.eclipse.ice.viz.service.javafx.geometry</module> 
 		<module>org.eclipse.ice.viz.service.javafx.mesh</module>
-		<!-- <module>org.eclipse.ice.viz.service.jme3</module> 
-		<module>org.eclipse.ice.viz.service.jme3.test</module> -->
 		<module>org.eclipse.ice.viz.service.mesh</module>
 		<module>org.eclipse.ice.viz.service.mesh.test</module> 
 		<module>org.eclipse.ice.viz.service.visit</module>
