@@ -128,6 +128,10 @@
 		<module>org.eclipse.ice.reflectivity.ui</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
 			LAST! -->
+		
+		
+		<module>org.eclipse.ice.projectgeneration</module>
+		<module>org.eclipse.ice.projectgeneration.test</module>
 		<module>org.eclipse.ice.feature</module>
 		<module>org.eclipse.ice.materials.feature</module>
 		<module>org.eclipse.ice.repository</module>
