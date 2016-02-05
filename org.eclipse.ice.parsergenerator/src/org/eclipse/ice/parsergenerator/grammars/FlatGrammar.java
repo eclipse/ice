@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.parsergenerator.antlr;
+package org.eclipse.ice.parsergenerator.grammars;
 
 import java.util.function.BiFunction;
 
@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
  * 
  * @author arbennett
  */
-public class ANTLRFlatGrammar {
+public class FlatGrammar {
 
 	private StringBuilder sb;
 
@@ -47,7 +47,7 @@ public class ANTLRFlatGrammar {
 
 	private BiFunction<String, String, String> build = (k,v) -> (k + ":" + sep + "    " + v + ";" + sep);	
 	
-	public ANTLRFlatGrammar() {
+	public FlatGrammar() {
 		sb = new StringBuilder();
 	}
 	

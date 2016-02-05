@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.internal.resources,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.eclipse.ice.datastructures.form
 Export-Package: org.eclipse.ice.parsergenerator,
- org.eclipse.ice.parsergenerator.ebnf
+ org.eclipse.ice.parsergenerator.grammars

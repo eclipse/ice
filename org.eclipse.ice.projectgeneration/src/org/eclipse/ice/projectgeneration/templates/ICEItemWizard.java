@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration.templates;
 
+import org.eclipse.pde.internal.ui.wizards.IProjectProvider;
 import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.templates.ITemplateSection;
 import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
@@ -27,10 +28,8 @@ public class ICEItemWizard extends NewPluginTemplateWizard {
 		super();
 	}
 	
-	@Override
 	public void init(IFieldData data) {
 		super.init(data);
-		setWindowTitle("New ICE Item Parameters");
 	}
 	
 	@Override

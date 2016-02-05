@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
  */
 public class ICEItemNature implements IProjectNature {
 
-	public static final String NATURE_ID = "org.eclipse.ice.projectgeneration";
+	public static final String NATURE_ID = "org.eclipse.ice.projectgeneration.iceNature";
 	
 	@Override
 	public void configure() throws CoreException {
