@@ -1,6 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.reactor.sfr.test.SFReactorIOHandlerTester
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 1, Time elapsed: 7.612 sec - in org.eclipse.ice.reactor.sfr.test.SFReactorIOHandlerTester
-checkWriteAndRead(org.eclipse.ice.reactor.sfr.test.SFReactorIOHandlerTester)  Time elapsed: 7.61 sec
-checkRead(org.eclipse.ice.reactor.sfr.test.SFReactorIOHandlerTester) skipped

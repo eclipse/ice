@@ -1,6 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.client.widgets.reactoreditor.test.ActionTreeTester
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.379 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.ActionTreeTester
-checkTree(org.eclipse.ice.client.widgets.reactoreditor.test.ActionTreeTester)  Time elapsed: 0.377 sec
-checkSingleNode(org.eclipse.ice.client.widgets.reactoreditor.test.ActionTreeTester)  Time elapsed: 0.001 sec

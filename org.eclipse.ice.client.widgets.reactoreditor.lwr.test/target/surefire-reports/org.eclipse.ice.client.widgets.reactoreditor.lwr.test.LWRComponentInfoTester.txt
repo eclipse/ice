@@ -1,6 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.client.widgets.reactoreditor.lwr.test.LWRComponentInfoTester
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec - in org.eclipse.ice.client.widgets.reactoreditor.lwr.test.LWRComponentInfoTester
-checkConstruction(org.eclipse.ice.client.widgets.reactoreditor.lwr.test.LWRComponentInfoTester)  Time elapsed: 0.002 sec
-checkMatches(org.eclipse.ice.client.widgets.reactoreditor.lwr.test.LWRComponentInfoTester)  Time elapsed: 0 sec

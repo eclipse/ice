@@ -1,9 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester
--------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.037 sec - in org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester
-checkHDF5Readables(org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester)  Time elapsed: 0.017 sec
-checkEquality(org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester)  Time elapsed: 0 sec
-checkConstruction(org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester)  Time elapsed: 0 sec
-checkHDF5Writeables(org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester)  Time elapsed: 0.016 sec
-checkCopying(org.eclipse.ice.reactor.test.pwr.RodClusterAssemblyTester)  Time elapsed: 0.001 sec

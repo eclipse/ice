@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.sassena.tests.SassenaCoherentModelBuilderTester
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.044 sec - in org.eclipse.ice.sassena.tests.SassenaCoherentModelBuilderTester
-checkBuild(org.eclipse.ice.sassena.tests.SassenaCoherentModelBuilderTester)  Time elapsed: 0.015 sec
-checkGetItemName(org.eclipse.ice.sassena.tests.SassenaCoherentModelBuilderTester)  Time elapsed: 0 sec
-checkGetItemType(org.eclipse.ice.sassena.tests.SassenaCoherentModelBuilderTester)  Time elapsed: 0 sec

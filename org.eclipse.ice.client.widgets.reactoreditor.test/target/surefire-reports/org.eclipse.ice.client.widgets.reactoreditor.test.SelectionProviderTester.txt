@@ -1,5 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.client.widgets.reactoreditor.test.SelectionProviderTester
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.SelectionProviderTester
-checkISelectionProvider(org.eclipse.ice.client.widgets.reactoreditor.test.SelectionProviderTester)  Time elapsed: 0.002 sec

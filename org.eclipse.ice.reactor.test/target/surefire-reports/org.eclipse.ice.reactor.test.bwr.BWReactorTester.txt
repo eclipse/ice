@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.reactor.test.bwr.BWReactorTester
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.035 sec - in org.eclipse.ice.reactor.test.bwr.BWReactorTester
-checkEquality(org.eclipse.ice.reactor.test.bwr.BWReactorTester)  Time elapsed: 0.007 sec
-checkConstruction(org.eclipse.ice.reactor.test.bwr.BWReactorTester)  Time elapsed: 0 sec
-checkCopying(org.eclipse.ice.reactor.test.bwr.BWReactorTester)  Time elapsed: 0.001 sec

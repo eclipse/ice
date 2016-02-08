@@ -1,8 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.client.widgets.reactoreditor.test.StateBrokerTester
--------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 sec - in org.eclipse.ice.client.widgets.reactoreditor.test.StateBrokerTester
-checkSourceReset(org.eclipse.ice.client.widgets.reactoreditor.test.StateBrokerTester)  Time elapsed: 0.001 sec
-checkAccessors(org.eclipse.ice.client.widgets.reactoreditor.test.StateBrokerTester)  Time elapsed: 0 sec
-checkRegistration(org.eclipse.ice.client.widgets.reactoreditor.test.StateBrokerTester)  Time elapsed: 0 sec
-checkCopying(org.eclipse.ice.client.widgets.reactoreditor.test.StateBrokerTester)  Time elapsed: 0 sec
