@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: jMonkeyEngine Visualization Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.jme3;singleton:=true
-Bundle-Version: 2.1.8
+Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/vizGeometryService.xml,
  OSGI-INF/vizMeshService.xml,

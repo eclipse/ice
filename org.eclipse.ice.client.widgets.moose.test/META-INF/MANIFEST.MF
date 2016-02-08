@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MOOSE Widgets Test
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.moose.test
-Bundle-Version: 2.1.8
+Bundle-Version: 2.1.8.20160208
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ice.client.widgets.moose,
