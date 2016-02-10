@@ -586,6 +586,8 @@ public class JobLauncher extends Item {
 			// all valid too
 			for (Entry entry : fileData.retrieveAllEntries()) {
 				if (entry.getValue() == null || entry.getValue().isEmpty()) {
+					throwErrorMessage("JobLauncher File Error", "org.eclipse.ice.item", 														"File Error. File Entry with (name = " + entry.getName() + ") was null or empty. "
+					    + "Check that the file is available in project " + project.getName() + ".");
 					logger.info("JobLauncher Error: All input file " + "entries must be set!");
 					return FormStatus.InfoError;
 				}
