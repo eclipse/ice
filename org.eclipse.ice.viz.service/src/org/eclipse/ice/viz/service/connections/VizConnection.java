@@ -746,9 +746,19 @@ public abstract class VizConnection<T> implements IVizConnection<T> {
 				// Add a helpful message if the connection attempt failed.
 				if (state != ConnectionState.Connected) {
 					statusFlag = Status.ERROR;
-					message += "\nPlease check the settings for \""
-							+ VizConnection.this.getName()
-							+ "\" under Windows > Preferences > Vizualization.";
+										
+					String OStype = System.getProperty("os.name").toLowerCase();
+					
+					if (OStype.indexOf("mac")>=0){
+						message += "\nPlease check the settings for \""
+								+ VizConnection.this.getName()
+								+ "\" under Eclipse ICE > Preferences > Vizualization.";
+					}else{
+						message += "\nPlease check the settings for \""
+								+ VizConnection.this.getName()
+								+ "\" under Window > Preferences > Vizualization.";
+					}
+					
 				}
 				return new Status(statusFlag, "org.eclipse.viz.service", 1,
 						message, null);
