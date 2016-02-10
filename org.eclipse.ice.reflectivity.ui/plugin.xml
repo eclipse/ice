@@ -105,5 +105,32 @@
        </contentTypeBinding>
     </editor>
  </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:org.eclipse.ui.main.toolbar">
+       <toolbar
+             id="org.eclipse.ice.reflectivity.ui.toolbar"
+             label="Reflectivity Toolbar">
+          <command
+                commandId="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler"
+                icon="icons/sns_small.png"
+                label="Reflectivity Task Launch Command"
+                style="push"
+                tooltip="Launch Reflectivity Tasks">
+          </command>
+       </toolbar>
+    </menuContribution>
+ </extension>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          defaultHandler="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler"
+          description="Reflectivity Task Launch Handler"
+          id="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler"
+          name="Reflectivity Task Launch Handler">
+    </command>
+ </extension>
 
 </plugin>
