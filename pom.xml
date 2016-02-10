@@ -100,7 +100,6 @@
 		<module>org.eclipse.ice.mesh.test</module> 
 		<module>org.eclipse.ice.nek5000</module>
 		<module>org.eclipse.ice.nek5000.test</module> 
-		<module>../visit_java_client/gov.lbnl.visit.swt</module>
 		<module>org.eclipse.ice.viz</module>
 		<module>org.eclipse.ice.viz.test</module> 
 		<module>org.eclipse.ice.viz.service</module>
@@ -128,8 +127,6 @@
 		<module>org.eclipse.ice.reflectivity.ui</module>
 		<!-- DO NOT ADD PLUGINS AFTER THIS LINE! THE FOLLOWING BUNDLE MUST BUILD 
 			LAST! -->
-		
-		
 		<module>org.eclipse.ice.projectgeneration</module>
 		<module>org.eclipse.ice.projectgeneration.test</module>
 		<module>org.eclipse.ice.feature</module>
