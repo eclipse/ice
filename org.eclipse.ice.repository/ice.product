@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.8" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.8.20160208" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

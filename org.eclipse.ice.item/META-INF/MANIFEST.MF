@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICEItem
 Bundle-SymbolicName: org.eclipse.ice.item;singleton:=true
-Bundle-Version: 2.1.8
+Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.jcraft.jsch;version="0.1.51",
  org.apache.commons.io,

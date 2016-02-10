@@ -15,7 +15,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.8</version>
+	<version>2.1.8.20160208</version>
 	<packaging>pom</packaging>
 
 	<!-- This enables the repository for the latest nightly builds of Tycho. -->
@@ -155,7 +155,7 @@
 							<tasks>
 								<echo>Displaying full POM filename:</echo>
 								<echo>[pom-filename] ${pom-filename}</echo>
-								<echo>${target-version}</echo>
+								<echo>2.1.8.20160208</echo>
 								<echo>${newVersion}</echo>
 							</tasks>
 						</configuration>
@@ -231,7 +231,7 @@
 						<artifact>
 							<groupId>ICE</groupId>
 							<artifactId>org.eclipse.ice.target.mars</artifactId>
-							<version>${target-version}</version>
+							<version>2.1.8.20160208</version>
 							<classifier>mars</classifier>
 						</artifact>
 					</target>
