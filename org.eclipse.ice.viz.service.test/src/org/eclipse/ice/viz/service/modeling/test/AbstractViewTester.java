@@ -131,7 +131,7 @@ public class AbstractViewTester {
 		assertTrue(prev.equals(view.getPreviousTransformation()));
 
 		// Synchronize the controller
-		view.synched();
+		view.setSynched();
 
 		// Make sure the previous transformation has been updated.
 		assertTrue(view.getTransformation()

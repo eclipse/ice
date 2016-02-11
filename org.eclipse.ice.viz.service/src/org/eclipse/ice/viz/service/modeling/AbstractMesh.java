@@ -20,6 +20,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A component of the model. All models are built from collections of components
@@ -56,6 +58,12 @@ public class AbstractMesh
 	 * The controller which manages this component
 	 */
 	protected AbstractController controller;
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbstractController.class);
 
 	/**
 	 * The default constructor
@@ -177,6 +185,13 @@ public class AbstractMesh
 	 * Setter method for the mesh's type
 	 */
 	public void setType(MeshType type) {
+
+		// Log an error and fail silently if the type is null
+		if (type == null) {
+			logger.error("An AbstractMesh's type must not be null.");
+			return;
+		}
+
 		this.type = type;
 		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
@@ -531,6 +546,12 @@ public class AbstractMesh
 	 *            The AbstractController which manages this component
 	 */
 	public void setController(AbstractController controller) {
+
+		// If the controller is null, log an error and fail
+		if (controller == null) {
+			logger.error("An AbstractMesh's controller must not be null.");
+		}
+
 		this.controller = controller;
 
 		// Set the manager's parent as well
@@ -571,13 +592,14 @@ public class AbstractMesh
 	 */
 	@Override
 	public int hashCode() {
-		int hash = type.hashCode();
+		int hash = 9;
+		hash += 31 * type.hashCode();
 		for (String category : entities.keySet()) {
 			for (AbstractController entity : getEntitiesByCategory(category)) {
-				hash += entity.hashCode();
+				hash += 31 * entity.hashCode();
 			}
 		}
-		hash += properties.hashCode();
+		hash += 31 * properties.hashCode();
 		return hash;
 	}
 

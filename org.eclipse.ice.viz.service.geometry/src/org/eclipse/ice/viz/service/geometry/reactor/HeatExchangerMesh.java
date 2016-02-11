@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 
@@ -105,6 +107,58 @@ public class HeatExchangerMesh extends AbstractMesh {
 
 		// Add the pipe under the Primary Pipe category
 		addEntityByCategory(pipe, "Secondary Pipe");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractMesh#addEntityByCategory(org
+	 * .eclipse.ice.viz.service.modeling.AbstractController, java.lang.String)
+	 */
+	@Override
+	public void addEntityByCategory(AbstractController newEntity,
+			String category) {
+
+		// Don't listen to junctions, to avoid circular listening
+		if ("Secondary Input".equals(category)
+				|| "Secondary Output".equals(category)) {
+
+			// Get the entities for the given category
+			List<AbstractController> catList = entities.get(category);
+
+			// If the list is null, make an empty one
+			if (catList == null) {
+				catList = new ArrayList<AbstractController>();
+			}
+
+			// Prevent a part from being added multiple times
+			else if (catList.contains(newEntity)) {
+				return;
+			}
+
+			// If the entity is already present in this category, don't add a
+			// second
+			// entry for it
+			else
+				for (AbstractController entity : catList) {
+					if (entity == newEntity) {
+						return;
+					}
+				}
+
+			// Add the entity to the list and put it in the map
+			catList.add(newEntity);
+			entities.put(category, catList);
+
+			SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
+			updateManager.notifyListeners(eventTypes);
+		}
+
+		// Otherwise, add the entity normally
+		else {
+			super.addEntityByCategory(newEntity, category);
+		}
 	}
 
 	/*

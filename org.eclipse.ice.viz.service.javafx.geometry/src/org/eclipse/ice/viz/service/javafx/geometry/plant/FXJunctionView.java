@@ -11,6 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
@@ -101,13 +102,41 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 
 		// Get the bottom end of each input pipe
 		for (AbstractController input : model.getEntitiesByCategory("Input")) {
-			pipeEdges.add(((PipeController) input).getUpperExtrema());
+
+			// Check if the input is has a pipe or is a pipe
+			List<AbstractController> primaryPipe = input
+					.getEntitiesByCategory("Primary Pipe");
+
+			// If the input is a pipe, add its extrema
+			if (primaryPipe.isEmpty()) {
+				pipeEdges.add(((PipeController) input).getUpperExtrema());
+			}
+
+			// Otherwise, get its primary pipe and add that pipe's extrema
+			else {
+				pipeEdges.add(((PipeController) primaryPipe.get(0))
+						.getUpperExtrema());
+			}
 		}
 
 		// Get the top end of each output pipe
 		for (AbstractController output : model
 				.getEntitiesByCategory("Output")) {
-			pipeEdges.add(((PipeController) output).getLowerExtrema());
+
+			// Check if the output is has a pipe or is a pipe
+			List<AbstractController> primaryPipe = output
+					.getEntitiesByCategory("Primary Pipe");
+
+			// If the input is a pipe, add its extrema
+			if (primaryPipe.isEmpty()) {
+				pipeEdges.add(((PipeController) output).getLowerExtrema());
+			}
+
+			// Otherwise, get its primary pipe and add that pipe's extrema
+			else {
+				pipeEdges.add(((PipeController) primaryPipe.get(0))
+						.getLowerExtrema());
+			}
 		}
 
 		// Get the bounds of the region encompassing all pipe ends

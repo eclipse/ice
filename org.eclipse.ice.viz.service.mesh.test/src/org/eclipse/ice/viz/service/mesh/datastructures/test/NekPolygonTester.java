@@ -34,7 +34,6 @@ import org.eclipse.ice.viz.service.modeling.EdgeMesh;
 import org.eclipse.ice.viz.service.modeling.FaceMesh;
 import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ice.viz.service.modeling.VertexMesh;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -45,7 +44,6 @@ import org.junit.Test;
  * @author Jordan H. Deyton
  * @author Robert Smith
  */
-@Ignore
 public class NekPolygonTester {
 
 	/**
@@ -168,7 +166,6 @@ public class NekPolygonTester {
 	 * </p>
 	 *
 	 */
-	@Ignore
 	@Test
 	public void checkBoundaryConditions() {
 
@@ -216,10 +213,10 @@ public class NekPolygonTester {
 		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntity(e);
+			polygon.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntity(v);
+			polygon.addEntityByCategory(v, "Vertices");
 		}
 		/* --------------------------- */
 
@@ -379,7 +376,6 @@ public class NekPolygonTester {
 	 * </p>
 	 *
 	 */
-	@Ignore
 	@Test
 	public void checkNotifications() {
 
@@ -429,10 +425,10 @@ public class NekPolygonTester {
 		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntity(e);
+			polygon.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntity(v);
+			polygon.addEntityByCategory(v, "Vertices");
 		}
 		/* --------------------------- */
 
@@ -603,18 +599,18 @@ public class NekPolygonTester {
 		NekPolygonController object = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			object.addEntity(e);
+			object.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			object.addEntity(v);
+			object.addEntityByCategory(v, "Vertices");
 		}
 		NekPolygonController equalObject = new NekPolygonController(
 				new FaceMesh(), new AbstractView());
 		for (EdgeController e : edges) {
-			equalObject.addEntity(e);
+			equalObject.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			equalObject.addEntity(v);
+			equalObject.addEntityByCategory(v, "Vertices");
 		}
 
 		// Change one of the vertices.
@@ -638,10 +634,10 @@ public class NekPolygonTester {
 		NekPolygonController unequalObject = new NekPolygonController(
 				new FaceMesh(), new AbstractView());
 		for (EdgeController e : edges) {
-			unequalObject.addEntity(e);
+			unequalObject.addEntityByCategory(e, "Edges");
 		}
 		for (VertexController v : vertices) {
-			unequalObject.addEntity(v);
+			unequalObject.addEntityByCategory(v, "Vertices");
 		}
 
 		// Make sure the references are different.
@@ -714,7 +710,7 @@ public class NekPolygonTester {
 		NekPolygonController object = new NekPolygonController(
 				new NekPolygonMesh(), new AbstractView());
 		for (EdgeController e : edges) {
-			object.addEntity(e);
+			object.addEntityByCategory(e, "Edges");
 		}
 
 		NekPolygonController copy = new NekPolygonController(

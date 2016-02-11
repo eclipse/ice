@@ -19,18 +19,16 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.Transformation;
-import org.junit.Before;
-import org.junit.Test;
 import org.eclipse.ice.viz.service.modeling.test.utils.TestController;
 import org.eclipse.ice.viz.service.modeling.test.utils.TestMesh;
 import org.eclipse.ice.viz.service.modeling.test.utils.TestView;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * A test class for the AbstractController
@@ -275,7 +273,7 @@ public class AbstractControllerTester {
 		assertTrue(prev.equals(controller.getPreviousTransformation()));
 
 		// Synchronize the controller
-		controller.synched();
+		controller.setSynched();
 
 		// Make sure the previous transformation has been updated.
 		assertTrue(controller.getTransformation()
@@ -553,5 +551,3 @@ public class AbstractControllerTester {
 		assertTrue(((TestView) object.getView()).isRefreshed());
 	}
 }
-
-

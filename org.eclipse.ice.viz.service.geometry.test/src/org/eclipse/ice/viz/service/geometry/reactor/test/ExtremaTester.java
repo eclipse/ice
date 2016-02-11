@@ -61,17 +61,20 @@ public class ExtremaTester {
 		// from
 		assertTrue(all.getMinX() == -1d);
 		assertTrue(all.getMaxX() == 1d);
-
-		// Check that the new Extrema covers all the sub-regions it was made
-		// from
 		assertTrue(all.getMinY() == -1d);
 		assertTrue(all.getMaxY() == 1d);
-
-		// Check that the new Extrema covers all the sub-regions it was made
-		// from
 		assertTrue(all.getMinZ() == -1d);
 		assertTrue(all.getMaxZ() == 1d);
 
+		// Create an extrema from an empty list and check that it creates a
+		// region with 0 for all its values
+		Extrema empty = new Extrema(new ArrayList<Extrema>());
+		assertTrue(empty.getMinX() == 0d);
+		assertTrue(empty.getMaxX() == 0d);
+		assertTrue(empty.getMinY() == 0d);
+		assertTrue(empty.getMaxY() == 0d);
+		assertTrue(empty.getMinZ() == 0d);
+		assertTrue(empty.getMaxZ() == 0d);
 	}
 
 }

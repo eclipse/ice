@@ -17,6 +17,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableLi
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The view of an AbstractMeshComponent shown to the user. The view is
@@ -45,6 +47,12 @@ public class AbstractView
 	 * The list of listeners observing this object.
 	 */
 	private ArrayList<IVizUpdateableListener> listeners;
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbstractController.class);
 
 	/**
 	 * The listeners registered for updates from this object.
@@ -81,6 +89,12 @@ public class AbstractView
 	 *            The transformation to apply to this part.
 	 */
 	public void setTransformation(Transformation newTransformation) {
+
+		// If the transformation is null, log an error and fail silently
+		if (newTransformation == null) {
+			logger.error("An AbstractView's transformation must not be null.");
+		}
+
 		transformation = newTransformation;
 
 		// Notify own listeners of the change
@@ -102,7 +116,7 @@ public class AbstractView
 	 * Notifies the part that the rendering engine has graphically applied the
 	 * newest transformation to it.
 	 */
-	public void synched() {
+	public void setSynched() {
 		// Update the previous transformation to the part's current status.
 		previousTransformation = (Transformation) transformation.clone();
 	}
@@ -248,8 +262,9 @@ public class AbstractView
 	 */
 	@Override
 	public int hashCode() {
-		int hash = transformation.hashCode();
-		hash += previousTransformation.hashCode();
+		int hash = 9;
+		hash += 31 * transformation.hashCode();
+		hash += 31 * previousTransformation.hashCode();
 		return hash;
 	}
 }

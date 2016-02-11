@@ -91,7 +91,8 @@ public class Extrema {
 	/**
 	 * A constructor which creates an extrema from a list of the extrema of
 	 * other sub-regions. The new extrema will be the extrema of the smallest
-	 * region possible which contains all given sub-regions.
+	 * region possible which contains all given sub-regions. If subRegions is
+	 * null, the extrema will have 0 for all minimum and maximum values.
 	 * 
 	 * @param subRegions
 	 *            The list of regions which this extrema will contain.
@@ -100,6 +101,16 @@ public class Extrema {
 
 		// Allocate the logger
 		logger = LoggerFactory.getLogger(getClass());
+
+		// If the list is empty, set everything to 0
+		if (subRegions.isEmpty()) {
+			minX = 0;
+			maxX = 0;
+			minY = 0;
+			maxY = 0;
+			minZ = 0;
+			maxZ = 0;
+		}
 
 		for (Extrema region : subRegions) {
 

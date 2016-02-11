@@ -243,7 +243,7 @@ public class FXMeshViewer extends FXViewer {
 					tempRoot.addEntity(tempVertex);
 
 					// Add the temp root to the attachment
-					((FXAttachment) attachmentManager.getAttachments().get(0))
+					((FXAttachment) attachmentManager.getAttachments().get(1))
 							.addGeometry(tempRoot);
 
 					tempVertex.refresh();
@@ -348,7 +348,7 @@ public class FXMeshViewer extends FXViewer {
 
 						// Add the new polygon to the mesh permanently
 						((FXAttachment) attachmentManager.getAttachments()
-								.get(0)).getKnownParts().get(0)
+								.get(1)).getKnownParts().get(0)
 										.addEntity(newFace);
 
 						// Empty the lists of temporary constructs
@@ -497,7 +497,7 @@ public class FXMeshViewer extends FXViewer {
 								}
 
 								((FXAttachment) attachmentManager
-										.getAttachments().get(0)).getFxNode()
+										.getAttachments().get(1)).getFxNode()
 												.getChildren().add(marker);
 
 							}
@@ -555,7 +555,7 @@ public class FXMeshViewer extends FXViewer {
 						// Remove the markers from the scene
 						for (Sphere marker : vertexMarkers) {
 							((FXAttachment) attachmentManager.getAttachments()
-									.get(0)).getFxNode().getChildren()
+									.get(1)).getFxNode().getChildren()
 											.remove(marker);
 						}
 
@@ -791,7 +791,7 @@ public class FXMeshViewer extends FXViewer {
 	public EdgeController getEdge(VertexController start,
 			VertexController end) {
 
-		// If the start point shares and edge with the endp oint, return it
+		// If the start point shares and edge with the end point, return it
 		for (AbstractController edge : start.getEntitiesByCategory("Edges")) {
 			if (edge.getEntitiesByCategory("Vertices").contains(end)) {
 

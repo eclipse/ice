@@ -173,7 +173,7 @@ public class FXVizCanvas implements IVizCanvas {
 	}
 
 	/**
-	 * Directs the renderer to create a new root attachment of the apprioriate
+	 * Directs the renderer to create a new root attachment of the appropriate
 	 * type.
 	 */
 	protected void createAttachment() {

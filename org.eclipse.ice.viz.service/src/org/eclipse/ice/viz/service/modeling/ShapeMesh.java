@@ -53,14 +53,19 @@ public class ShapeMesh extends AbstractMesh {
 
 		// Put the new Parent in the entities map, replacing any other.
 		ArrayList<AbstractController> newParentList = new ArrayList<AbstractController>();
-		newParentList.add(parent);
+
+		// If parent is null, an empty list should be saved, essentially
+		// removing the parent object.
+		if (parent != null) {
+			newParentList.add(parent);
+		}
+
 		entities.put("Parent", newParentList);
 
 		// Register the parent as a listener and fire an update notification
 		register(parent);
 
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.CHILD };
+		SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
 		updateManager.notifyListeners(eventTypes);
 
 	}
@@ -180,8 +185,7 @@ public class ShapeMesh extends AbstractMesh {
 		type = source.type;
 		properties = new HashMap<String, String>(source.properties);
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.ALL };
+		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -241,18 +245,19 @@ public class ShapeMesh extends AbstractMesh {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = type.hashCode();
+		int hash = 9;
+		hash += 31 * type.hashCode();
 		for (String category : entities.keySet()) {
 
 			// Do not hash the parent shape, to avoid circular hashing
 			if (!"Parent".equals(category)) {
 				for (AbstractController entity : getEntitiesByCategory(
 						category)) {
-					hash += entity.hashCode();
+					hash += 31 * entity.hashCode();
 				}
 			}
 		}
-		hash += properties.hashCode();
+		hash += 31 * properties.hashCode();
 		return hash;
 	}
 

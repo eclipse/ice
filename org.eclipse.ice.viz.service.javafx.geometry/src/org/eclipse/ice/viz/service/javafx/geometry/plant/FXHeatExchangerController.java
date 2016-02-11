@@ -55,16 +55,14 @@ public class FXHeatExchangerController extends HeatExchangerController {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
 
 		// Refresh the view, ignoring wireframe events from anything except this
 		// object's view
-		if (type[0] != SubscriptionType.WIREFRAME
-				|| component == view) {
+		if (type[0] != SubscriptionType.WIREFRAME || component == view) {
 			view.refresh(model);
 		}
 

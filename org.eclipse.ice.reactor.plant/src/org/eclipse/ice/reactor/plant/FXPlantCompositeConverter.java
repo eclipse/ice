@@ -385,95 +385,6 @@ public class FXPlantCompositeConverter
 			applyTransformation(heatExchanger, plantComp.getPosition(),
 					plantComp.getOrientation(), plantComp.getLength());
 
-			// // Get the primary pipe
-			// Pipe primary = plantComp.getPrimaryPipe();
-			//
-			// // Whether or not a match was found
-			// boolean found = false;
-			//
-			// // Create a list of all pipes in the plant by combining the pipes
-			// // with the core channels
-			// List<AbstractController> pipeList = root
-			// .getEntitiesByCategory("Pipes");
-			// pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
-			//
-			// // Check the root to see if a pipe with that id already exists
-			// for (AbstractController pipe : pipeList) {
-			// if (Integer.parseInt(pipe.getProperty("Id")) == primary
-			// .getId()) {
-			//
-			// // If found, set the pipe as the exchanger's primary
-			// heatExchanger.setPrimaryPipe((PipeController) pipe);
-			//
-			// // Match found, stop the search
-			// found = true;
-			// break;
-			// }
-			// }
-			//
-			// // If a match was not found, create a new pipe
-			// if (!found) {
-			//
-			// // Convert the pipe into a modeling data structure
-			// // primary.accept(this);
-			// source.getPlantComponent(primary.getId()).accept(this);
-			//
-			// // Refresh the list of pipes
-			// pipeList = root.getEntitiesByCategory("Pipes");
-			// pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
-			//
-			// // Now that the pipe is guaranteed to be in the root, as it was
-			// // added when visited, find the pipe with that id and add it
-			// for (AbstractController pipe : pipeList) {
-			// if (Integer.parseInt(pipe.getProperty("Id")) == primary
-			// .getId()) {
-			// heatExchanger.setPrimaryPipe((PipeController) pipe);
-			// break;
-			// }
-			// }
-			// }
-			//
-			// // Get the secondary pipe
-			// Pipe secondary = plantComp.getSecondaryPipe();
-			//
-			// found = false;
-			//
-			// // Check the root to see if a pipe with that id already exists
-			// for (AbstractController pipe : pipeList) {
-			// if (Integer.parseInt(pipe.getProperty("Id")) == secondary
-			// .getId()) {
-			//
-			// // If found, set the pipe as the exchanger's primary
-			// heatExchanger.setSecondaryPipe((PipeController) pipe);
-			//
-			// // Match found, stop the search
-			// found = true;
-			// break;
-			// }
-			// }
-			//
-			// // If a match was not found, create a new pipe
-			// if (!found) {
-			//
-			// // Convert the pipe into a modeling data structure
-			// // primary.accept(this);
-			// source.getPlantComponent(secondary.getId()).accept(this);
-			//
-			// // Refresh the list of pipes
-			// pipeList = root.getEntitiesByCategory("Pipes");
-			// pipeList.addAll(root.getEntitiesByCategory("Core Channels"));
-			//
-			// // Now that the pipe is guaranteed to be in the root, as it was
-			// // added when visited, find the pipe with that id and add it
-			// for (AbstractController pipe : pipeList) {
-			// if (Integer.parseInt(pipe.getProperty("Id")) == secondary
-			// .getId()) {
-			// heatExchanger.setSecondaryPipe((PipeController) pipe);
-			// break;
-			// }
-			// }
-			// }
-
 			// Add the heat exchanger to the root
 			root.addEntityByCategory(heatExchanger, "Heat Exchangers");
 
@@ -833,25 +744,6 @@ public class FXPlantCompositeConverter
 			// Apply the position and orientation
 			applyTransformation(pipe, plantComp.getPosition(),
 					plantComp.getOrientation(), plantComp.getLength());
-
-			//
-			// // Calculate the amount of z rotation in the formula, applying
-			// none
-			// // if the normalized vector has a 0 X component. This is done to
-			// // avoid division by 0.
-			// double zRotation;
-			// if (normalized[0] != 0) {
-			// zRotation = normalized[1] / normalized[0] + 90;
-			// } else {
-			// zRotation = 90d;
-			// }
-			//
-			// // The normalized orientation vector can be represented by an
-			// // XY-plane angle calculated by arctan(y/x) and an angle from the
-			// z
-			// // vector, calculated by arccos(z).
-			// pipe.setRotation(Math.acos(normalized[2] * 180 / Math.PI), 0,
-			// Math.atan(zRotation * 180 / Math.PI));
 
 			return pipe;
 		}

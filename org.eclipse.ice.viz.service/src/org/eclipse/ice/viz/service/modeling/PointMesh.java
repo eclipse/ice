@@ -85,8 +85,7 @@ public class PointMesh extends AbstractMesh {
 	public void setX(double x) {
 		this.x = x;
 
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -108,8 +107,7 @@ public class PointMesh extends AbstractMesh {
 	public void setY(double y) {
 		this.y = y;
 
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -131,8 +129,7 @@ public class PointMesh extends AbstractMesh {
 	public void setZ(double z) {
 		this.z = z;
 
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 
@@ -214,12 +211,9 @@ public class PointMesh extends AbstractMesh {
 		}
 
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
-	
-
 
 	/*
 	 * (non-Javadoc)
@@ -288,7 +282,8 @@ public class PointMesh extends AbstractMesh {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = type.hashCode();
+		int hash = 9;
+		hash += 31 * type.hashCode();
 		for (String category : entities.keySet()) {
 
 			// Ignore the Edges to prevent circular hashing
@@ -297,13 +292,13 @@ public class PointMesh extends AbstractMesh {
 			}
 
 			for (AbstractController entity : getEntitiesByCategory(category)) {
-				hash += entity.hashCode();
+				hash += 31 * entity.hashCode();
 			}
 		}
-		hash += properties.hashCode();
-		hash += x;
-		hash += y;
-		hash += z;
+		hash += 31 * properties.hashCode();
+		hash += 31 * x;
+		hash += 31 * y;
+		hash += 31 * z;
 		return hash;
 	}
 }

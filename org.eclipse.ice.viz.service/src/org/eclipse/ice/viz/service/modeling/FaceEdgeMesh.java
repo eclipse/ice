@@ -70,8 +70,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			SubscriptionType[] eventTypes = {
-					SubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -127,8 +126,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 		properties = new HashMap<String, String>(otherObject.properties);
 
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.ALL };
+		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
 
 		// Release all queued messages
@@ -200,7 +198,8 @@ public class FaceEdgeMesh extends EdgeMesh {
 	 */
 	@Override
 	public int hashCode() {
-		int hash = type.hashCode();
+		int hash = 9;
+		hash += 31 * type.hashCode();
 		for (String category : entities.keySet()) {
 
 			// Ignore the faces category to prevent circular hashing
@@ -209,10 +208,10 @@ public class FaceEdgeMesh extends EdgeMesh {
 			}
 
 			for (AbstractController entity : getEntitiesByCategory(category)) {
-				hash += entity.hashCode();
+				hash += 31 * entity.hashCode();
 			}
 		}
-		hash += properties.hashCode();
+		hash += 31 * properties.hashCode();
 		return hash;
 	}
 

@@ -18,6 +18,8 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.datastructures.VizObject.UpdateableSubscriptionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class which is responsible for user interactions with the underlying data
@@ -57,8 +59,13 @@ public class AbstractController
 	/**
 	 * The manager for the part's updates.
 	 */
-	protected UpdateableSubscriptionManager updateManager = new UpdateableSubscriptionManager(
-			this);
+	protected UpdateableSubscriptionManager updateManager;
+
+	/**
+	 * Logger for handling event messages and other information.
+	 */
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbstractController.class);
 
 	/**
 	 * The default constructor.
@@ -66,6 +73,7 @@ public class AbstractController
 	public AbstractController() {
 		disposed = new AtomicBoolean();
 		disposed.set(false);
+		updateManager = new UpdateableSubscriptionManager(this);
 	}
 
 	/**
@@ -89,6 +97,7 @@ public class AbstractController
 		this.view = view;
 		disposed = new AtomicBoolean();
 		disposed.set(false);
+		updateManager = new UpdateableSubscriptionManager(this);
 
 		// Give model a reference to its controller
 		model.setController(this);
@@ -113,8 +122,8 @@ public class AbstractController
 	 * 
 	 * @generated NOT
 	 */
-	public void synched() {
-		view.synched();
+	public void setSynched() {
+		view.setSynched();
 	}
 
 	/**
@@ -165,6 +174,14 @@ public class AbstractController
 	 * @generated
 	 */
 	public void setView(AbstractView newView) {
+
+		// Log an error and fail silently if the view is null
+		if (newView == null) {
+			logger.error(
+					"Attempted to set an AbstractController's view to null.");
+			return;
+		}
+
 		view = newView;
 	}
 
@@ -486,7 +503,12 @@ public class AbstractController
 	 */
 	@Override
 	public int hashCode() {
-		return model.hashCode() + view.hashCode();
+
+		int hash = 9;
+		hash += 31 * model.hashCode();
+		hash += 31 * view.hashCode();
+
+		return hash;
 	}
 
 	/*
