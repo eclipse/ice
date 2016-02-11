@@ -27,7 +27,6 @@
   	<module>../org.eclipse.ice.core.test</module>
   	<module>../org.eclipse.ice.datastructures</module>
   	<module>../org.eclipse.ice.datastructures.test</module>
-  	<module>../../ICEDeps/org.eclipse.ice.dependencies</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.moose</module>
   	<module>../org.eclipse.ice.io</module>
