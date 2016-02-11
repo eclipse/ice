@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.developer.actions;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -26,6 +31,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.m2e.core.MavenPlugin;
+import org.eclipse.m2e.core.internal.lifecyclemapping.model.LifecycleMappingMetadataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,23 +63,20 @@ public class BuildICEHandler extends AbstractHandler {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 
 		if (manager != null) {
-			IProject iceProject = ResourcesPlugin.getWorkspace().getRoot().getProject("ice");
+			IProject aggregatorProject = ResourcesPlugin.getWorkspace().getRoot().getProject("org.eclipse.ice.aggregator");
 
-			if (iceProject != null) {
+			if (aggregatorProject != null) {
 				// Get the Launch Configurations files
-				IFile mvnInitialInstall = iceProject.getFile("ICE Build - Initial Install.launch");
-				IFile mvnCleanInstall = iceProject.getFile("ICE Build - Clean and Install.launch");
+				IFile mvnInstall = aggregatorProject.getFile("Build ICE.launch");
 
 				// Get the Launch Configuration from those files
-				ILaunchConfiguration initialConfig = manager.getLaunchConfiguration(mvnInitialInstall);
-				ILaunchConfiguration installConfig = manager.getLaunchConfiguration(mvnCleanInstall);
+				ILaunchConfiguration installConfig = manager.getLaunchConfiguration(mvnInstall);
 
 				// Create and launch the Job. 
 				Job job = new WorkspaceJob("Building ICE") {
 
 					@Override
 					public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-						initialConfig.launch(ILaunchManager.RUN_MODE, monitor);
 						installConfig.launch(ILaunchManager.RUN_MODE, monitor);
 						return Status.OK_STATUS;
 					}
