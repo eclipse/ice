@@ -1,0 +1,6 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.kdd.test.RawKMeansStrategyTester
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 sec - in org.eclipse.ice.kdd.test.RawKMeansStrategyTester
+checkExecuteStrategy(org.eclipse.ice.kdd.test.RawKMeansStrategyTester)  Time elapsed: 0.002 sec
+checkGetSetProperties(org.eclipse.ice.kdd.test.RawKMeansStrategyTester)  Time elapsed: 0.003 sec

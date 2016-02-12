@@ -187,6 +187,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 	private IManagedForm managedForm;
 
+	private String itemName;
+
 	/**
 	 * The Constructor
 	 */
@@ -351,7 +353,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				}
 			}
 		});
-
 	}
 
 	/**
@@ -580,8 +581,6 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		return;
 	}
-
-	private String itemName;
 
 	/**
 	 * This operation overrides init so that the ICE Form, passed as an
@@ -1139,11 +1138,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
 			@Override
 			public void run() {
 				// Just set the dirty bit (wow that reads naughty...) ;)
 				setDirty(true);
 			}
+
 		});
 
 	}

@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -35,7 +34,8 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 	 *            <p>
 	 *            An IShape to produce its image
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The icon associated with the given IShape element
 	 *         </p>
 	 */
@@ -57,7 +57,8 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 	 *            <p>
 	 *            The ICEObject or AbstractShape to produce its text
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The name associated with the element's ICEObject properties
 	 *         </p>
 	 */
@@ -66,13 +67,13 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 
 		// Check that the element is an ICEObject and is not null
 
-		if (element instanceof IVizObject) {
+		if (element instanceof AbstractController) {
 
 			// Return the ICEObject's name property with its ICEObject ID
 			// appended with a space separator
 
-			VizObject iceElement = (VizObject) element;
-			return iceElement.getName() + " " + iceElement.getId();
+			AbstractController iceElement = (AbstractController) element;
+			return iceElement.getProperty("Name") + " " + iceElement.getProperty("Id");
 		}
 
 		else if (element instanceof ShapeTreeContentProvider.BlankShape) {

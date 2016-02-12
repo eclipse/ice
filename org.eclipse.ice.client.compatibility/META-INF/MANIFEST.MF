@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Compability Bundle for Eclipse RCP/RAP
 Bundle-SymbolicName: org.eclipse.ice.client.compatibility
-Bundle-Version: 2.1.8
+Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.jface.action,
  org.eclipse.jface.databinding.swt,

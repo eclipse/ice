@@ -24,7 +24,7 @@ import org.eclipse.ice.datastructures.form.Material;
 public class MaterialSelection {
 
 	/**
-	 * The mateiral for this selection (the row)
+	 * The material for this selection (the row)
 	 */
 	private Material material;
 
@@ -81,11 +81,28 @@ public class MaterialSelection {
 			} else {
 				MaterialSelection selection = (MaterialSelection) other;
 				equal = this.material.equals(selection.material)
-						&& this.selectedProperty
-								.equals(selection.selectedProperty);
+						&& this.selectedProperty.equals(selection.selectedProperty);
 			}
 		}
 		return equal;
+	}
+
+	/**
+	 * Returns the hashCode of the object.
+	 * 
+	 * @return The hashCode of the Object.
+	 */
+	@Override
+	public int hashCode() {
+
+		// Call the super's hashCode.
+		int hash = super.hashCode();
+
+		// Add local hashes.
+		hash = 31 * hash + material.hashCode();
+		hash = 31 * hash + selectedProperty.hashCode();
+
+		return hash;
 	}
 
 }

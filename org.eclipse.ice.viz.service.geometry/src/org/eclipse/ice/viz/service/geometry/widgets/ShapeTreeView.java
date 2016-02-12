@@ -14,11 +14,12 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -39,8 +40,8 @@ import org.eclipse.ui.part.ViewPart;
  * 
  * @author Andrew P. Belt
  */
-public class ShapeTreeView extends ViewPart implements
-		ISelectionChangedListener {
+public class ShapeTreeView extends ViewPart
+		implements ISelectionChangedListener {
 
 	/**
 	 * <p>
@@ -48,7 +49,7 @@ public class ShapeTreeView extends ViewPart implements
 	 * </p>
 	 * 
 	 */
-	private Geometry geometry;
+	private AbstractController geometry;
 
 	/**
 	 * <p>
@@ -59,6 +60,12 @@ public class ShapeTreeView extends ViewPart implements
 	TreeViewer treeViewer;
 
 	/**
+	 * The factory responsible for creating graphics program specific
+	 * representations of the tree's contents.
+	 */
+	IControllerFactory factory;
+
+	/**
 	 * Eclipse view ID
 	 */
 	public static final String ID = "org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView";
@@ -66,7 +73,7 @@ public class ShapeTreeView extends ViewPart implements
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+	private ArrayList<ShapeController> selectedShapes = new ArrayList<ShapeController>();
 
 	// The actions for manipulating shapes
 	private DropdownAction addPrimitiveShapes;
@@ -153,7 +160,8 @@ public class ShapeTreeView extends ViewPart implements
 		addIntersection.setEnabled(false);
 		addComplexShapes.addAction(addIntersection);
 
-		Action addComplement = new ActionAddShape(this, OperatorType.Complement);
+		Action addComplement = new ActionAddShape(this,
+				OperatorType.Complement);
 		addComplement.setEnabled(false);
 		addComplexShapes.addAction(addComplement);
 
@@ -182,7 +190,7 @@ public class ShapeTreeView extends ViewPart implements
 	 * 
 	 * @param geometry
 	 */
-	public void setGeometry(Geometry geometry) {
+	public void setGeometry(AbstractController geometry) {
 
 		this.geometry = geometry;
 
@@ -226,8 +234,8 @@ public class ShapeTreeView extends ViewPart implements
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+			if (selectedObject instanceof ShapeController) {
+				ShapeController selectedShape = (ShapeController) selectedObject;
 
 				// Set the TransformationView's shape
 
@@ -291,8 +299,8 @@ public class ShapeTreeView extends ViewPart implements
 
 		// Edit the shapes' selection property
 
-		for (IShape selectedShape : selectedShapes) {
-			selectedShape.removeProperty("selected");
+		for (ShapeController selectedShape : selectedShapes) {
+			selectedShape.setProperty("Selected", "False");
 		}
 
 		// Update the list of last-selected shapes
@@ -304,12 +312,31 @@ public class ShapeTreeView extends ViewPart implements
 
 			// Only include IShapes, not ShapeTreeLabelProvider::BlankShapes
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ShapeController) {
 
-				IShape selectedShape = (IShape) selectedObject;
-				selectedShape.setProperty("selected", "true");
+				ShapeController selectedShape = (ShapeController) selectedObject;
+				selectedShape.setProperty("Selected", "True");
 				selectedShapes.add(selectedShape);
 			}
 		}
+	}
+
+	/**
+	 * Getter method for the factory.
+	 * 
+	 * @return The factory
+	 */
+	public IControllerFactory getFactory() {
+		return factory;
+	}
+
+	/**
+	 * Setter method for the factory
+	 * 
+	 * @param factory
+	 *            The new factory to store in this view
+	 */
+	public void setFactory(IControllerFactory factory) {
+		this.factory = factory;
 	}
 }

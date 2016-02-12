@@ -13,12 +13,10 @@
 package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.ice.viz.service.geometry.shapes.AbstractShape;
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -77,13 +75,11 @@ public class ActionDuplicateShape extends Action {
 	@Override
 	public void run() {
 
-		Geometry geometry = (Geometry) view.treeViewer
-				.getInput();
+		AbstractController geometry = (AbstractController) view.treeViewer.getInput();
 
 		// Get selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer
-				.getSelection();
+		ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
 		TreePath[] paths = selection.getPaths();
 
 		// Iterate through the paths
@@ -91,29 +87,28 @@ public class ActionDuplicateShape extends Action {
 		for (TreePath path : paths) {
 			Object selectedObject = path.getLastSegment();
 
-			if (selectedObject instanceof AbstractShape) {
-				AbstractShape selectedShape = (AbstractShape) selectedObject;
+			if (selectedObject instanceof ShapeController) {
+				ShapeController selectedShape = (ShapeController) selectedObject;
 
 				// Clone the shape
 
-				IShape clonedShape = (IShape) selectedShape.clone();
+				ShapeController clonedShape = (ShapeController) selectedShape.clone();
 
 				// Remove the selected state from the cloned shape
 
-				clonedShape.removeProperty("selected");
+				clonedShape.setProperty("Selected", "False");
 
 				// Try to get the selected shape's parent shape
 				// We can assume that if the parent exists, it is a ComplexShape
 
-				ComplexShape parentShape = (ComplexShape) selectedShape
-						.getParent();
+				ShapeController parentShape = (ShapeController) selectedShape.getEntitiesByCategory("Parent").get(0);
 
 				if (parentShape != null) {
 
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					ArrayList<IShape> childShapes = parentShape.getShapes();
+					List<AbstractController> childShapes = parentShape.getEntitiesByCategory("Children");
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					if (selectedShapeIndex < 0) {
@@ -122,8 +117,7 @@ public class ActionDuplicateShape extends Action {
 					// Add the cloned shape to the original shape's parent
 
 					synchronized (geometry) {
-						childShapes.add(selectedShapeIndex + 1, clonedShape);
-						parentShape.setShapes(childShapes);
+						parentShape.addEntity(clonedShape);
 					}
 
 					view.treeViewer.refresh(parentShape);
@@ -132,14 +126,13 @@ public class ActionDuplicateShape extends Action {
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					ArrayList<IShape> childShapes = geometry.getShapes();
+					List<AbstractController> childShapes = geometry.getEntitiesByCategory("Children");
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					// Add the cloned shape to the root GeometryComponent
 
 					synchronized (geometry) {
-						childShapes.add(selectedShapeIndex + 1, clonedShape);
-						geometry.setShapes(childShapes);
+						geometry.addEntity(clonedShape);
 					}
 
 					view.treeViewer.refresh();
@@ -151,8 +144,7 @@ public class ActionDuplicateShape extends Action {
 
 				// Change the current selection to the new duplicated shape
 
-				TreePath clonedPath = path.getParentPath().createChildPath(
-						clonedShape);
+				TreePath clonedPath = path.getParentPath().createChildPath(clonedShape);
 				TreeSelection clonedSelection = new TreeSelection(clonedPath);
 				view.treeViewer.setSelection(clonedSelection);
 			}

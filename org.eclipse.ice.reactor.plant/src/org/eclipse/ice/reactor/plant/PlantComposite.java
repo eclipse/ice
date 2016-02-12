@@ -18,6 +18,8 @@ import java.util.TreeMap;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Composite;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 
 /**
  * A PlantComposite is a container for {@link PlantComponent}s. Duplicate
@@ -26,7 +28,8 @@ import org.eclipse.ice.datastructures.ICEObject.Composite;
  * @author Jordan H. Deyton
  * 
  */
-public class PlantComposite extends PlantComponent implements Composite {
+public class PlantComposite extends PlantComponent
+		implements Composite, IVizUpdateable {
 
 	/**
 	 * A map of all PlantComponents contained by this PlantComposite, keyed on
@@ -41,6 +44,12 @@ public class PlantComposite extends PlantComponent implements Composite {
 	private final List<IPlantCompositeListener> listeners;
 
 	/**
+	 * A list of IVizUpdateableListeners who are to be updated when changes
+	 * occur to this object.
+	 */
+	private List<IVizUpdateableListener> basicListeners;
+
+	/**
 	 * The default, nullary constructor. Initializes all default values.
 	 */
 	public PlantComposite() {
@@ -53,8 +62,9 @@ public class PlantComposite extends PlantComponent implements Composite {
 		// Initialize the map of PlantComponents.
 		components = new TreeMap<Integer, PlantComponent>();
 
-		// Initialize the list of listeners.
+		// Initialize the lists of listeners.
 		listeners = new ArrayList<IPlantCompositeListener>();
+		basicListeners = new ArrayList<IVizUpdateableListener>();
 
 		return;
 	}
@@ -80,7 +90,7 @@ public class PlantComposite extends PlantComponent implements Composite {
 		if (component != null) {
 			int id = component.getId();
 
-			// If the ID is availalble, add the component and notify listeners
+			// If the ID is available, add the component and notify listeners
 			// that a component has been added.
 			if (!components.containsKey(id)) {
 				components.put(id, component);
@@ -178,7 +188,8 @@ public class PlantComposite extends PlantComponent implements Composite {
 	 *            The listener to register. <b>Duplicate listeners are not
 	 *            accepted.</b>
 	 */
-	public void registerPlantCompositeListener(IPlantCompositeListener listener) {
+	public void registerPlantCompositeListener(
+			IPlantCompositeListener listener) {
 
 		if (listener != null) {
 
@@ -252,6 +263,10 @@ public class PlantComposite extends PlantComponent implements Composite {
 									components);
 						}
 					}
+
+					for (IVizUpdateableListener listener : basicListeners) {
+						listener.update(PlantComposite.this);
+					}
 				}
 			};
 			notifierThread.start();
@@ -263,9 +278,8 @@ public class PlantComposite extends PlantComponent implements Composite {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.reactor.plant.PlantComponent#accept(org.eclipse.ice.reactor
-	 * .plant.IPlantComponentVisitor)
+	 * @see org.eclipse.ice.reactor.plant.PlantComponent#accept(org.eclipse.ice.
+	 * reactor .plant.IPlantComponentVisitor)
 	 */
 	@Override
 	public void accept(IPlantComponentVisitor visitor) {
@@ -358,6 +372,30 @@ public class PlantComposite extends PlantComponent implements Composite {
 		}
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * register(org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener)
+	 */
+	@Override
+	public void register(IVizUpdateableListener listener) {
+		basicListeners.add(listener);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * unregister(org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener)
+	 */
+	@Override
+	public void unregister(IVizUpdateableListener listener) {
+		basicListeners.remove(listener);
 	}
 
 }

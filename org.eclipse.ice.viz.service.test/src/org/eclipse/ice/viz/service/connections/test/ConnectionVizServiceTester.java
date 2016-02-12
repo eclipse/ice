@@ -28,6 +28,7 @@ import org.eclipse.ice.viz.service.connections.ConnectionVizService;
 import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
 import org.eclipse.ice.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Before;
@@ -134,6 +135,11 @@ public class ConnectionVizServiceTester {
 				Set<String> extensions = new HashSet<String>();
 				extensions.add("csv");
 				return extensions;
+			}
+
+			@Override
+			public IControllerFactory getFactory() {
+				return null;
 			}
 		};
 

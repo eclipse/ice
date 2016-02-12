@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
+import org.eclipse.ice.viz.service.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.widgets.ComboDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.swt.finder.SWTBot;

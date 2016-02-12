@@ -14,9 +14,8 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.net.URL;
 
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -97,12 +96,10 @@ public class ActionDeleteShape extends Action {
 
 		// Get the tree paths of the current selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer
-				.getSelection();
+		ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
 		TreePath[] paths = selection.getPaths();
 
-		Geometry geometry = (Geometry) view.treeViewer
-				.getInput();
+		AbstractController geometry = (AbstractController) view.treeViewer.getInput();
 
 		// Loop through each TreePath
 
@@ -112,19 +109,17 @@ public class ActionDeleteShape extends Action {
 
 			// Check if the selected object is an IShape
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ShapeController) {
 
-				IShape selectedShape = (IShape) selectedObject;
-				IShape parentShape = selectedShape.getParent();
+				ShapeController selectedShape = (ShapeController) selectedObject;
+				ShapeController parentShape = (ShapeController) selectedShape.getEntitiesByCategory("Parent").get(0);
 
-				if (parentShape instanceof ComplexShape) {
+				if (parentShape instanceof ShapeController) {
 
 					// Remove the selected shape from the parent
 
-					ComplexShape parentComplexShape = (ComplexShape) parentShape;
-
 					synchronized (geometry) {
-						parentComplexShape.removeShape(selectedShape);
+						parentShape.removeEntity(selectedShape);
 					}
 
 					view.treeViewer.refresh(parentShape);
@@ -136,7 +131,7 @@ public class ActionDeleteShape extends Action {
 					// so try removing it from there.
 
 					synchronized (geometry) {
-						geometry.removeShape(selectedShape);
+						geometry.removeEntity(selectedShape);
 					}
 					view.treeViewer.refresh();
 				}

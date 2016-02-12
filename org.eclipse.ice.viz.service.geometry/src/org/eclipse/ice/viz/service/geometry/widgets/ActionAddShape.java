@@ -16,14 +16,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.viz.service.geometry.shapes.AbstractShape;
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.PrimitiveShape;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -199,7 +197,7 @@ public class ActionAddShape extends Action {
 		}
 		// Get the GeometryComponent from the ShapeTreeView's TreeViewer
 
-		Geometry geometry = (Geometry) view.treeViewer
+		AbstractController geometry = (AbstractController) view.treeViewer
 				.getInput();
 
 		if (geometry == null) {
@@ -208,7 +206,7 @@ public class ActionAddShape extends Action {
 		// Get the parent shape, regardless of whether an IShape or BlankShape
 		// is selected
 
-		ComplexShape parentComplexShape = null;
+		AbstractController parentComplexShape = null;
 
 		if (paths.length == 1) {
 
@@ -216,18 +214,19 @@ public class ActionAddShape extends Action {
 
 			Object selectedObject = paths[0].getLastSegment();
 
-			if (selectedObject instanceof IShape) {
+			if (selectedObject instanceof ShapeController) {
 
 				// Get the selected shape's parent
 
-				IShape selectedShape = (IShape) selectedObject;
-				parentComplexShape = (ComplexShape) selectedShape.getParent();
+				ShapeController selectedShape = (ShapeController) selectedObject;
+				parentComplexShape = selectedShape
+						.getEntitiesByCategory("Parent").get(0);
 			} else if (selectedObject instanceof BlankShape) {
 
 				// Get the selected blank shape's parent
 
 				BlankShape selectedBlank = (BlankShape) selectedObject;
-				parentComplexShape = (ComplexShape) selectedBlank.getParent();
+				parentComplexShape = selectedBlank.getParent();
 			}
 
 		}
@@ -235,14 +234,14 @@ public class ActionAddShape extends Action {
 		// Add a child shape to either the GeometryComponent or the parent
 		// ComplexShape
 
-		IShape childShape = createShape();
+		ShapeController childShape = createShape();
 
 		if (parentComplexShape == null) {
 
 			// Add a new shape to the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(childShape);
+				geometry.addEntity(childShape);
 			}
 
 			view.treeViewer.refresh();
@@ -253,7 +252,7 @@ public class ActionAddShape extends Action {
 			// Create a new shape and add it to the parentComplexShape
 
 			synchronized (geometry) {
-				parentComplexShape.addShape(childShape);
+				parentComplexShape.addEntity(childShape);
 			}
 
 			view.treeViewer.refresh(parentComplexShape);
@@ -283,13 +282,14 @@ public class ActionAddShape extends Action {
 	 * Creates a shape corresponding to this Action's ShapeType or OperatorType
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The newly created shape
 	 *         </p>
 	 */
-	public IShape createShape() {
+	public ShapeController createShape() {
 
-		AbstractShape shape = null;
+		ShapeController shape = null;
 
 		// Determine which type of shape should be created
 
@@ -297,22 +297,28 @@ public class ActionAddShape extends Action {
 
 			// Instantiate a PrimitiveShape and set its name and ID
 
-			shape = new PrimitiveShape(shapeType);
+			ShapeMesh shapeComponent = new ShapeMesh();
+			shape = (ShapeController) view.getFactory().createController(shapeComponent);
+
+			shape.setProperty("Type", shapeType.toString());
 
 			currentShapeId++;
-			shape.setName(shapeType.toString());
-			shape.setId(currentShapeId);
+			shape.setProperty("Name", shapeType.toString());
+			shape.setProperty("Id", Integer.toString(currentShapeId));
 		}
 
 		else if (operatorType != null && shapeType == null) {
 
 			// Instantiate a ComplexShape and set its name
 
-			shape = new ComplexShape(operatorType);
+			ShapeMesh shapeComponent = new ShapeMesh();
+			shape = (ShapeController) view.getFactory().createController(shapeComponent);
+
+			shape.setProperty("Operator", operatorType.toString());
 
 			currentShapeId++;
-			shape.setName(operatorType.toString());
-			shape.setId(currentShapeId);
+			shape.setProperty("Name", operatorType.toString());
+			shape.setProperty("Id", Integer.toString(currentShapeId));
 		}
 
 		// Return the shape

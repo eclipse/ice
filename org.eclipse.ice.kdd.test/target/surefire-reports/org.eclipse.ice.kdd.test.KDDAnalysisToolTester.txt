@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.kdd.test.KDDAnalysisToolTester
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec - in org.eclipse.ice.kdd.test.KDDAnalysisToolTester
+checkReady(org.eclipse.ice.kdd.test.KDDAnalysisToolTester)  Time elapsed: 0 sec
+checkVersion(org.eclipse.ice.kdd.test.KDDAnalysisToolTester)  Time elapsed: 0.001 sec
+checkName(org.eclipse.ice.kdd.test.KDDAnalysisToolTester)  Time elapsed: 0 sec
+checkCreateDocument(org.eclipse.ice.kdd.test.KDDAnalysisToolTester)  Time elapsed: 0 sec

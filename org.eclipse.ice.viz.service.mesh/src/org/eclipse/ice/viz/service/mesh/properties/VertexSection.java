@@ -16,16 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ice.viz.service.mesh.datastructures.BezierEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Hex;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPartVisitor;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.PolynomialEdge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
-import org.eclipse.ice.viz.service.mesh.datastructures.VizMeshComponent;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -46,7 +38,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * This class provides an {@link ISection} for displaying the location of a
- * {@link Vertex} in a modifiable manner.<br>
+ * {@link VertexController} in a modifiable manner.<br>
  * <br>
  * Eventually, this may include the ability to modify the locations of multiple
  * vertices in a single selection.
@@ -59,7 +51,7 @@ public class VertexSection extends AbstractPropertySection {
 	/**
 	 * The Vertex whose location is being displayed and/or modified.
 	 */
-	private Vertex vertex;
+	private VertexController vertex;
 
 	// ---- Section configuration ---- //
 	/**
@@ -119,18 +111,17 @@ public class VertexSection extends AbstractPropertySection {
 		xListener = new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				float[] location = vertex.getLocation();
+				double[] location = vertex.getLocation();
 				// Try to parse the number and set it as the vertex's x
 				// coordinate.
 				try {
-					Float x = Float.parseFloat(xText.getText());
-					location[0] = x;
-					vertex.setLocation(location);
+					Double x = Double.parseDouble(xText.getText());
+					vertex.setX(x);
 				}
 				// If the number is incorrectly formatted, restore the previous
 				// x coordinate.
 				catch (NumberFormatException exception) {
-					xText.setText(Float.toString(location[0]));
+					xText.setText(Double.toString(location[0]));
 					// No change in the vertex's location.
 				}
 				return;
@@ -141,19 +132,18 @@ public class VertexSection extends AbstractPropertySection {
 		yListener = new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent e) {
-				float[] location = vertex.getLocation();
+				double[] location = vertex.getLocation();
 				// Try to parse the number and set it as the vertex's x
 				// coordinate.
-				Float y;
+				Double y;
 				try {
-					y = Float.parseFloat(yText.getText());
-					location[1] = y;
-					vertex.setLocation(location);
+					y = Double.parseDouble(yText.getText());
+					vertex.setY(y);
 				}
 				// If the number is incorrectly formatted, restore the previous
 				// x coordinate.
 				catch (NumberFormatException exception) {
-					yText.setText(Float.toString(location[1]));
+					yText.setText(Double.toString(location[1]));
 					// No change in the vertex's location.
 				}
 				return;
@@ -187,8 +177,8 @@ public class VertexSection extends AbstractPropertySection {
 		Label label = new Label(composite, SWT.LEFT);
 		disposableControls.add(label);
 		label.setText("Location");
-		label.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2,
-				1));
+		label.setLayoutData(
+				new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		label.setBackground(bg);
 		// ---------------------------------- //
 
@@ -248,76 +238,26 @@ public class VertexSection extends AbstractPropertySection {
 			MeshSelection meshSelection = (MeshSelection) element;
 
 			// Get the selected IMeshPart and mesh from the selection.
-			IMeshPart meshPart = meshSelection.selectedMeshPart;
-			final VizMeshComponent mesh = meshSelection.mesh;
+			AbstractController meshPart = meshSelection.selectedMeshPart;
+			final AbstractController mesh = meshSelection.mesh;
 
-			// Create a visitor that can determine the appropriate Vertex
-			// instance whose properties are being exposed based on the type of
-			// IMeshPart passed in through the selection.
-			IMeshPartVisitor visitor = new IMeshPartVisitor() {
-				@Override
-				public void visit(VizMeshComponent mesh) {
-					// Do nothing.
-				}
-
-				@Override
-				public void visit(Polygon polygon) {
-					// Get the vertex from the polygon.
-					ArrayList<Vertex> vertices = polygon.getVertices();
-					if (index < vertices.size()) {
-						VertexSection.this.vertex = vertices.get(index);
-					}
-				}
-
-				@Override
-				public void visit(Quad quad) {
-					// Re-direct to the standard polygon operation for now.
-					visit((Polygon) quad);
-				}
-
-				@Override
-				public void visit(Hex hex) {
-					// Re-direct to the standard polygon operation for now.
-					visit((Polygon) hex);
-				}
-
-				@Override
-				public void visit(Edge edge) {
-					// Get the vertex ID from the edge, then use the ID to get
-					// the vertex from the mesh.
-					int[] vertices = edge.getVertexIds();
-					if (index < vertices.length && mesh != null) {
-						VertexSection.this.vertex = mesh
-								.getVertex(vertices[index]);
-					}
-				}
-
-				@Override
-				public void visit(BezierEdge edge) {
-					// Re-direct to the standard edge operation for now.
-					visit((Edge) edge);
-				}
-
-				@Override
-				public void visit(PolynomialEdge edge) {
-					// Re-direct to the standard edge operation for now.
-					visit((Edge) edge);
-				}
-
-				@Override
-				public void visit(Vertex vertex) {
-					VertexSection.this.vertex = vertex;
-				}
-
-				@Override
-				public void visit(Object object) {
-					// Do nothing.
-				}
-			};
-
-			// Reset the vertex and set it based on the visited IMeshPart.
+			// Reset the vertex and set it based on the selected part.
 			vertex = null;
-			meshPart.acceptMeshVisitor(visitor);
+
+			if (meshPart instanceof VertexController) {
+				vertex = (VertexController) meshPart;
+			}
+
+			else {
+				// Determine the appropriate Vertex instance whose properties
+				// are
+				// being exposed
+				List<AbstractController> vertices = meshPart
+						.getEntitiesByCategory("Vertices");
+				if (index < vertices.size()) {
+					VertexSection.this.vertex = (VertexController) vertices.get(index);
+				}
+			}
 		}
 
 		return;
@@ -352,9 +292,9 @@ public class VertexSection extends AbstractPropertySection {
 	public void refresh() {
 		if (vertex != null) {
 			// Update the Text fields with their appropriate coordinates.
-			float[] location = vertex.getLocation();
-			xText.setText(Float.toString(location[0]));
-			yText.setText(Float.toString(location[1]));
+			double[] location = vertex.getLocation();
+			xText.setText(Double.toString(location[0]));
+			yText.setText(Double.toString(location[1]));
 
 			// Enable the text fields.
 			xText.setEnabled(true);

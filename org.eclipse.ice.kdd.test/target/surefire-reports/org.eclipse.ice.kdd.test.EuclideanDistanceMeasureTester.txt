@@ -1,0 +1,5 @@
+-------------------------------------------------------------------------------
+Test set: org.eclipse.ice.kdd.test.EuclideanDistanceMeasureTester
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec - in org.eclipse.ice.kdd.test.EuclideanDistanceMeasureTester
+checkGetDistance(org.eclipse.ice.kdd.test.EuclideanDistanceMeasureTester)  Time elapsed: 0 sec

@@ -111,10 +111,12 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#setId(int id)
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#setId(
+	 * int)
 	 */
 	@Override
 	public void setId(int id) {
@@ -127,10 +129,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#getId()
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#getId()
 	 */
 	@Override
 	@XmlAttribute()
@@ -138,10 +141,12 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return uniqueId;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#setName(String name)
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#setName(
+	 * java.lang.String)
 	 */
 	@Override
 	public void setName(String name) {
@@ -154,10 +159,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#getName()
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#getName()
 	 */
 	@Override
 	@XmlAttribute()
@@ -165,10 +171,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return objectName;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#setDescription(String description)
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#
+	 * setDescription(java.lang.String)
 	 */
 	@Override
 	public void setDescription(String description) {
@@ -181,10 +188,11 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#getDescription()
+	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject#
+	 * getDescription()
 	 */
 	@Override
 	@XmlAttribute()
@@ -200,6 +208,7 @@ public class VizObject implements IVizObject, IVizUpdateable {
 	 *            The Identifiable entity from which the values should be
 	 *            copied.
 	 */
+	@Override
 	public void copy(VizObject entity) {
 
 		// Return if null
@@ -225,19 +234,19 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		// Only process the update if there are listeners
 		if (listeners != null && !listeners.isEmpty()) {
 			// Create a thread on which to notify the listeners.
-			Thread notifierThread = new Thread() {
-				@Override
-				public void run() {
-					// Loop over all listeners and update them
-					for (int i = 0; i < listeners.size(); i++) {
-						listeners.get(i).update(VizObject.this);
-					}
-					return;
-				}
-			};
-
-			// Launch the thread and do the notifications
-			notifierThread.start();
+			// Thread notifierThread = new Thread() {
+			// @Override
+			// public void run() {
+			// Loop over all listeners and update them
+			for (int i = 0; i < listeners.size(); i++) {
+				listeners.get(i).update(VizObject.this);
+			}
+			return;
+			// }
+			// };
+			//
+			// // Launch the thread and do the notifications
+			// notifierThread.start();
 		}
 
 		return;
@@ -248,7 +257,8 @@ public class VizObject implements IVizObject, IVizUpdateable {
 	 * This operation returns a clone of the ICEObject using a deep copy.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The new clone.
 	 *         </p>
 	 */
@@ -266,10 +276,10 @@ public class VizObject implements IVizObject, IVizUpdateable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#equals(Object otherObject)
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object otherObject) {
@@ -298,10 +308,10 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return retVal;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see Identifiable#hashCode()
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -313,9 +323,8 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		hash = 31 * hash + uniqueId;
 		// If objectName is null, add 0, otherwise add String.hashcode()
 		hash = 31 * hash + (null == objectName ? 0 : objectName.hashCode());
-		hash = 31
-				* hash
-				+ (null == objectDescription ? 0 : objectDescription.hashCode());
+		hash = 31 * hash + (null == objectDescription ? 0
+				: objectDescription.hashCode());
 		// Return the computed hash code
 		return hash;
 
@@ -349,8 +358,12 @@ public class VizObject implements IVizObject, IVizUpdateable {
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.datastructures.IVizObject#unregister(org.eclipse.ice.viz.service.datastructures.IVizUpdateableListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.datastructures.IVizObject#unregister(org.
+	 * eclipse.ice.viz.service.datastructures.IVizUpdateableListener)
 	 */
 	@Override
 	public void unregister(IVizUpdateableListener listener) {

@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -48,7 +47,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 	/**
 	 * The {@link IMeshPart} whose properties are being exposed.
 	 */
-	protected VizObject object;
+	protected AbstractController object;
 
 	// ---- General Info widgets ---- //
 	/**
@@ -129,7 +128,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				if (object != null) {
-					object.setDescription(descText.getText());
+					object.setProperty("Description", descText.getText());
 				}
 				return;
 			}
@@ -175,7 +174,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 			MeshSelection meshSelection = (MeshSelection) element;
 
 			// Convert the selected IMeshPart to an ICEObject.
-			object = (VizObject) meshSelection.selectedMeshPart;
+			object = meshSelection.selectedMeshPart;
 		}
 
 		return;
@@ -211,10 +210,18 @@ public class GeneralInfoSection extends AbstractPropertySection {
 		// If there is a valid object, refresh all of the editable controls.
 		if (object != null) {
 			// Update the Text fields with their appropriate values.
-			nameText.setText(object.getName());
-			descText.setText(object.getDescription());
+			nameText.setText(object.getProperty("Name"));
+
+			// It is permissible for an object to lack a description, in which
+			// case the text is simply empty
+			String desc = object.getProperty("Description");
+			if (desc == null) {
+				desc = "";
+			}
+
+			descText.setText(desc);
 			descText.setEnabled(true);
-			idLabel.setText(Integer.toString(object.getId()));
+			idLabel.setText(object.getProperty("Id"));
 		}
 		// Otherwise, disable all of the editable controls.
 		else {

@@ -15,7 +15,8 @@ package org.eclipse.ice.viz.service;
 import java.net.URI;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * This is a pluggable service interface whereby visualization engines can
@@ -55,8 +56,17 @@ public interface IVizService {
 	 *             An exception indicating that the IVizService could not create
 	 *             a canvas with the given object and giving the reason why.
 	 */
-	public IVizCanvas createCanvas(IVizObject object) throws Exception;
-	
+	public IVizCanvas createCanvas(AbstractController object) throws Exception;
+
+	/**
+	 * Returns a factory which will create views and controllers for model parts
+	 * specific to the service's rendering program.
+	 * 
+	 * @return A factory that will create controllers compatible with this
+	 *         service
+	 */
+	public IControllerFactory getFactory();
+
 	/**
 	 * This operation returns the name of the service. The name should be
 	 * something simple and human-readable.
@@ -88,8 +98,6 @@ public interface IVizService {
 	 */
 	public IPlot createPlot(URI file) throws Exception;
 
-
-
 	/**
 	 * Gets a set containing all supported file extensions for which an IPlot
 	 * can be created. Extensions in the set are expected to conform to the
@@ -103,6 +111,5 @@ public interface IVizService {
 	 * @return A set containing all supported extensions.
 	 */
 	public Set<String> getSupportedExtensions();
-
 
 }

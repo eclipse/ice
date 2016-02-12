@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.junit.Test;
 
 /**
@@ -249,6 +250,15 @@ public class AbstractVizServiceTester {
 		@Override
 		protected Set<String> findSupportedExtensions() {
 			return supportedExtensions;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+		 */
+		@Override
+		public IControllerFactory getFactory() {
+			return null;
 		}
 	}
 }

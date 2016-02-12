@@ -18,12 +18,9 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.IMeshPart;
-import org.eclipse.ice.viz.service.mesh.datastructures.Polygon;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.FaceController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -194,12 +191,12 @@ public class MeshElementTreeView extends ViewPart
 			public Object[] getElements(Object inputElement) {
 
 				// Local Declaration
-				ArrayList<Polygon> allElements = (ArrayList<Polygon>) inputElement;
+				ArrayList<AbstractController> allElements = (ArrayList<AbstractController>) inputElement;
 				ArrayList<MeshSelection> contents = new ArrayList<MeshSelection>();
 
 				// Wrap the Polygons into PropertySources and add them to
 				// the array
-				for (Polygon i : allElements) {
+				for (AbstractController i : allElements) {
 					contents.add(new MeshSelection(meshComponent.getMesh(), i));
 				}
 
@@ -226,15 +223,29 @@ public class MeshElementTreeView extends ViewPart
 					// Load edges and vertices as children of polygons
 					ArrayList<MeshSelection> children = new ArrayList<MeshSelection>();
 
-					if (selection.selectedMeshPart instanceof Polygon) {
-						Polygon polygon = (Polygon) selection.selectedMeshPart;
+					// An array of every unique vertex from the selection
+					ArrayList<AbstractController> vertices = new ArrayList<AbstractController>();
+
+					if (selection.selectedMeshPart instanceof FaceController) {
+						FaceController polygon = (FaceController) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
-						for (Edge e : polygon.getEdges()) {
+						for (AbstractController e : polygon
+								.getEntitiesByCategory("Edges")) {
 							children.add(new MeshSelection(
 									meshComponent.getMesh(), e));
+
+							// Add each of the edge's vertices to the list if
+							// they are nto already present
+							for (AbstractController v : e
+									.getEntitiesByCategory("Vertices")) {
+								if (!vertices.contains(v)) {
+									vertices.add(v);
+								}
+							}
 						}
+
 						// Add new MeshSelections for the vertices.
-						for (Vertex v : polygon.getVertices()) {
+						for (AbstractController v : vertices) {
 							children.add(new MeshSelection(
 									meshComponent.getMesh(), v));
 						}
@@ -267,7 +278,7 @@ public class MeshElementTreeView extends ViewPart
 
 				// Only selected Polygons will have children.
 				return (element instanceof MeshSelection
-						&& ((MeshSelection) element).selectedMeshPart instanceof Polygon);
+						&& ((MeshSelection) element).selectedMeshPart instanceof FaceController);
 			}
 		});
 
@@ -298,12 +309,12 @@ public class MeshElementTreeView extends ViewPart
 				if (element instanceof MeshSelection) {
 
 					// Get the wrapped IMeshPart.
-					IMeshPart meshPart = ((MeshSelection) element).selectedMeshPart;
+					AbstractController meshPart = ((MeshSelection) element).selectedMeshPart;
 
 					// Cast the IMeshPart to an ICEObject and set the label text
 					// from its name and ID.
-					VizObject object = (VizObject) meshPart;
-					label = object.getName() + " " + object.getId();
+					label = meshPart.getProperty("Name") + " "
+							+ meshPart.getProperty("Id");
 
 					return label;
 				}

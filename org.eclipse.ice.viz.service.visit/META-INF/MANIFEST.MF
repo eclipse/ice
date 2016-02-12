@@ -2,16 +2,16 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VisIt Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.ice.viz.service.visit;singleton:=true
-Bundle-Version: 2.1.8
+Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.lbnl.visit.swt,
  gov.lbnl.visit.swt.widgets,
- org.eclipse.ice.client.common,
  org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.connections,
  org.eclipse.ice.viz.service.connections.preferences,
  org.eclipse.ice.viz.service.datastructures,
  org.eclipse.ice.viz.service.datastructures.VizObject,
+ org.eclipse.ice.viz.service.modeling,
  org.eclipse.ice.viz.service.preferences,
  org.eclipse.ice.viz.service.widgets,
  org.eclipse.jface.preference,

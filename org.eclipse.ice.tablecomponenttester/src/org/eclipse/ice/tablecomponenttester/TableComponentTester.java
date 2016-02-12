@@ -14,9 +14,6 @@ package org.eclipse.ice.tablecomponenttester;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,9 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Entry;
@@ -38,10 +32,11 @@ import org.eclipse.ice.datastructures.form.MasterDetailsPair;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
-import org.osgi.framework.Bundle;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {
@@ -66,7 +61,8 @@ public class TableComponentTester extends Item {
 		ArrayList<String> masterTypeTemplate;
 		Entry entry1, entry2, entry3, entry4;
 		ResourceComponent resourceComp = new ResourceComponent();
-		TreeComposite parent = null, child1 = null, child2 = null, child3 = null;
+		TreeComposite parent = null, child1 = null, child2 = null,
+				child3 = null;
 
 		// Create the Form
 		form = new Form();
@@ -235,8 +231,14 @@ public class TableComponentTester extends Item {
 
 		// ===========================================================================Try
 		// making geometry page
+		// Create a shape
+		ShapeMesh geometryModel = new ShapeMesh();
+		AbstractView geometryView = new AbstractView();
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
+
 		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(new ICEGeometry());
+		geometryComponent.setGeometry(geometryShape);
 		geometryComponent.setId(108);
 		geometryComponent.setName("ICE Geometry Editor");
 		geometryComponent.setDescription("Create or edit a geometry in 3D.");
@@ -260,8 +262,8 @@ public class TableComponentTester extends Item {
 					if (resources[i].getType() == IResource.FILE) {
 						IFile file = (IFile) resources[i];
 						// Create resource
-						ICEResource iceResource = new ICEResource(new File(
-								file.getRawLocationURI()));
+						ICEResource iceResource = new ICEResource(
+								new File(file.getRawLocationURI()));
 						iceResource.setId(i);
 						iceResource.setName("File " + i);
 						iceResource.setPath(file.getLocationURI());

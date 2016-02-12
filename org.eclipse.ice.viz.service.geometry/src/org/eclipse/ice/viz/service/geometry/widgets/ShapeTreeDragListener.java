@@ -21,30 +21,30 @@ package org.eclipse.ice.viz.service.geometry.widgets;
  * @author Jay Jay Billings
  */
 public class ShapeTreeDragListener {
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragFinished(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragFinished(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragSetData(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragSetData(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	/**
-	 * 
-	 * @param event
-	 */
-	public void dragStart(Class event) {
-		// TODO Auto-generated method stub
+    /**
+     * 
+     * @param event
+     */
+    public void dragStart(Class event) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }
