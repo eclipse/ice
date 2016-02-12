@@ -13,6 +13,8 @@
 package org.eclipse.ice.materials;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -196,20 +198,24 @@ public class XMLMaterialsDatabase
 	 */
 	private void loadDatabase(File fileToLoad) {
 		try {
+
+			// Create the input stream
+			FileInputStream stream = new FileInputStream(fileToLoad);
 			// Create the necessary JAXB equipment to load the file
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			// And unmarshall it into the list
 			ICEList<Material> rawList = (ICEList<Material>) jaxbUnmarshaller
-					.unmarshal(fileToLoad);
+					.unmarshal(stream);
 
 			// Load the list into the material map
 			materialsMap = new Hashtable<String, Material>();
 			for (Material material : rawList.getList()) {
 				materialsMap.put(material.getName(), material);
 			}
-		} catch (JAXBException e) {
+		} catch (JAXBException | FileNotFoundException e) {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
+		return;
 	}
 
 	/**
@@ -262,16 +268,15 @@ public class XMLMaterialsDatabase
 			logger.error("Unable to initialize JAXB!", e);
 		}
 
-		// Choose which database to load
+		// Choose which database to load and do so
 		if (userDatabase.exists()) {
 			logger.info("Loading user-modified database.");
-			fileToLoad = userDatabase;
+			loadDatabase(userDatabase);
 		} else {
-			fileToLoad = defaultDatabase;
+			loadDatabase(defaultDatabase);
 		}
 
-		// Load it up and throw some info in the log
-		loadDatabase(fileToLoad);
+		// Throw some info in the log
 		logger.info("Started!");
 
 		return;
