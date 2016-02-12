@@ -17,9 +17,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 /**
  * <p>
@@ -84,14 +86,17 @@ public class GeometryEditor extends Item {
 		// Set the name, description and type
 		setName("Geometry Editor");
 		itemType = ItemType.Geometry;
-		setDescription("This tool allows you to create and edit a 3D geometry.");
+		setDescription(
+				"This tool allows you to create and edit a 3D geometry.");
 
 		// Instantiate the Form. It's just a regular Form for this Item.
 		form = new Form();
 
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
-		geometryComp.setGeometry(new ICEGeometry());
+
+		geometryComp.setGeometry(
+				new ShapeController(new ShapeMesh(), new AbstractView()));
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());

@@ -14,13 +14,10 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.net.URL;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizObject;
-import org.eclipse.ice.viz.service.geometry.shapes.AbstractShape;
-import org.eclipse.ice.viz.service.geometry.shapes.ComplexShape;
-import org.eclipse.ice.viz.service.geometry.shapes.Geometry;
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.Transformation;
+import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -93,7 +90,7 @@ public class ActionReplicateShape extends Action {
 	@Override
 	public void run() {
 
-		Geometry geometry = (Geometry) view.treeViewer
+		AbstractController geometry = (AbstractController) view.treeViewer
 				.getInput();
 
 		// Check that only one shape is selected
@@ -109,10 +106,10 @@ public class ActionReplicateShape extends Action {
 
 		Object selectedObject = paths[0].getLastSegment();
 
-		if (!(selectedObject instanceof IShape)) {
+		if (!(selectedObject instanceof ShapeController)) {
 			return;
 		}
-		IShape selectedShape = (IShape) selectedObject;
+		ShapeController selectedShape = (ShapeController) selectedObject;
 
 		// Create a transformation, initialized from the selected shape's
 		// transformation
@@ -122,8 +119,8 @@ public class ActionReplicateShape extends Action {
 
 		// Open the dialog
 
-		ReplicateDialog replicateDialog = new ReplicateDialog(view.getSite()
-				.getShell());
+		ReplicateDialog replicateDialog = new ReplicateDialog(
+				view.getSite().getShell());
 
 		if (replicateDialog.open() != IDialogConstants.OK_ID) {
 			return;
@@ -142,42 +139,45 @@ public class ActionReplicateShape extends Action {
 		// If the selected shape is a direct child of a GeometryComponent,
 		// its parent shape is null.
 
-		ComplexShape parentShape = (ComplexShape) selectedShape.getParent();
+		ShapeController parentShape = (ShapeController) selectedShape
+				.getEntitiesByCategory("Parent").get(0);
 
 		// Remove the selected shape from its original parent
 
 		synchronized (geometry) {
 			if (parentShape != null) {
-				parentShape.removeShape(selectedShape);
+				parentShape.removeEntity(selectedShape);
 			} else {
-				geometry.removeShape(selectedShape);
+				geometry.removeEntity(selectedShape);
 			}
 		}
 
 		// Create a new parent union shape
 
-		ComplexShape replicateUnion = new ComplexShape(OperatorType.Union);
-		replicateUnion.setName("Replication");
-		replicateUnion.setId(((VizObject) selectedShape).getId());
+		ShapeMesh replicateUnionComponent = new ShapeMesh();
+		ShapeController replicateUnion = (ShapeController) view.getFactory()
+				.createController(replicateUnionComponent);
+		replicateUnion.setProperty("Operator", "Union");
+
+		replicateUnion.setProperty("Name", "Replication");
+		replicateUnion.setProperty("Id", selectedShape.getProperty("Id"));
 
 		for (int i = 1; i <= quantity; i++) {
 
 			// Clone the selected shape and remove its "selected" property
 
-			IShape clonedShape = (IShape) ((AbstractShape) selectedShape)
-					.clone();
-			clonedShape.removeProperty("selected");
-			((VizObject) clonedShape).setId(i);
+			ShapeController clonedShape = (ShapeController) selectedShape.clone();
+			clonedShape.setProperty("Selected", "False");
+			clonedShape.setProperty("Id", Integer.toString(i));
 
 			// Add the translation
 
-			clonedShape
-					.setTransformation((Transformation) accumulatedTransformation
-							.clone());
+			clonedShape.setTransformation(
+					(Transformation) accumulatedTransformation.clone());
 
 			// Add it to the replicated union
 
-			replicateUnion.addShape(clonedShape);
+			replicateUnion.addEntity(clonedShape);
 
 			// Shift the transform for the next shape
 
@@ -191,7 +191,8 @@ public class ActionReplicateShape extends Action {
 			// The parent is an IShape
 
 			synchronized (geometry) {
-				parentShape.addShape(replicateUnion);
+				parentShape.addEntity(replicateUnion);
+				replicateUnion.setParent(parentShape);
 			}
 
 			view.treeViewer.refresh(parentShape);
@@ -200,7 +201,7 @@ public class ActionReplicateShape extends Action {
 			// The parent is the root GeometryComponent
 
 			synchronized (geometry) {
-				geometry.addShape(replicateUnion);
+				geometry.addEntity(replicateUnion);
 			}
 
 			view.treeViewer.refresh();

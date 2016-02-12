@@ -13,10 +13,10 @@ package org.eclipse.ice.viz.service.connections.preferences.test;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.connections.preferences.TableComponentComposite;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizTableComponent;
+import org.eclipse.ice.viz.service.test.utils.AbstractSWTTester;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;

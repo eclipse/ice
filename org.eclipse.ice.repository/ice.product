@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.8" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.product" id="org.eclipse.platform.ide" application="org.eclipse.ui.ide.workbench" version="2.1.8.20160208" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -9,7 +9,9 @@
    <launcherArgs>
       <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault
       </programArgs>
-      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
+      <programArgsLin>--launcher.GTK_version 2
+      </programArgsLin>
+      <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080 -Dosgi.framework.extensions=org.eclipse.fx.osgi
       </vmArgs>
       <vmArgsLin>-Dvisit.binpath=@user.home/visit/bin
       </vmArgsLin>
@@ -98,8 +100,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    </plugins>
 
    <features>
-      <feature id="org.eclipse.ice"/>
-      <feature id="org.eclipse.ice.materials.feature"/>
       <feature id="org.eclipse.emf.ecore"/>
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.e4.rcp"/>
@@ -173,6 +173,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ptp.rm.ibm.platform.lsf"/>
       <feature id="org.eclipse.ptp.rm.jaxb.contrib"/>
       <feature id="org.eclipse.ptp.rm.slurm"/>
+      <feature id="org.eclipse.ice"/>
       <feature id="org.eclipse.cdt.bupc"/>
       <feature id="org.eclipse.cdt.core.lrparser.feature"/>
       <feature id="org.eclipse.cdt.core.parser.upc.feature"/>
@@ -256,6 +257,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.draw2d"/>
       <feature id="org.eclipse.draw2d.sdk"/>
       <feature id="org.eclipse.e4.core.tools.feature"/>
+      <feature id="org.eclipse.fx.runtime.min.feature" version="2.1.0.201508240501"/>
    </features>
 
    <configurations>
@@ -271,7 +273,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.caebat.batml" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.client.widgets" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.client.widgets.rcp" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.dependencies" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
@@ -289,7 +290,8 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.jme3" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.javafx.geometry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.viz.service.javafx.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />

@@ -21,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.BasicVizServiceFactory;
 import org.eclipse.ice.viz.service.IPlot;
@@ -30,8 +29,10 @@ import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.csv.CSVSeries;
 import org.eclipse.ice.viz.service.internal.VizServiceFactoryHolder;
+import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.test.FakePlot;
 import org.eclipse.ice.viz.service.test.FakeSeries;
+import org.eclipse.ice.viz.service.test.utils.AbstractSWTTester;
 import org.eclipse.ice.viz.service.widgets.PlotGridComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -149,6 +150,11 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 				Set<String> extensions = new HashSet<String>();
 				extensions.add("ext");
 				return extensions;
+			}
+
+			@Override
+			public IControllerFactory getFactory() {
+				return null;
 			}
 		};
 		factory.register(vizService);

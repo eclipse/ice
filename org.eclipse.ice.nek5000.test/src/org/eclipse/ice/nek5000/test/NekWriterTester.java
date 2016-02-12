@@ -39,14 +39,14 @@ import org.junit.Test;
  *
  */
 public class NekWriterTester {
-		
+
 	@Test
 	public void checkConj_ht() {
-		
+
 		// Local declarations
 		NekWriter writer = null;
 		NekReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
@@ -56,7 +56,7 @@ public class NekWriterTester {
 		String exampleFilePath = userDir + separator + "conj_ht.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
-		
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -66,13 +66,13 @@ public class NekWriterTester {
 				fail("Failed to create output file: conj_ht_WriterTester.rea");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
 			try {
 				emptyFileStream = new FileOutputStream(outputFile);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				fail("Failed to set FileOutputStream to output file: conj_ht_WriterTester.rea");
@@ -90,7 +90,7 @@ public class NekWriterTester {
 				fail("Failed to close FileOutputStream");
 			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -99,33 +99,33 @@ public class NekWriterTester {
 			fail("Failed to create FileReader for output file: conj_ht_WriterTester.rea");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
-		
+
 		// Check the writer constructs
 		writer = new NekWriter();
 		assertNotNull(writer);
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
-		
+
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
 		File fakeFile = null;
@@ -138,15 +138,19 @@ public class NekWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components and ProblemProperties to test with
 		reader = new NekReader();
+
+		// Give it a test factory to use
+		reader.setControllerFactory(new TestNekControllerFactory());
+
 		try {
 			components = reader.loadREAFile(exampleFile);
 		} catch (FileNotFoundException e2) {
@@ -157,7 +161,7 @@ public class NekWriterTester {
 			e2.printStackTrace();
 		}
 		properties = new ProblemProperties(2, 64, 32, 0);
-		
+
 		// Try to write with all valid parameters
 		try {
 			writer.writeReaFile(components, outputFile, properties);
@@ -165,7 +169,7 @@ public class NekWriterTester {
 			e1.printStackTrace();
 			fail("Failed to write conj_ht_WriterTester.rea with valid parameters");
 		}
-			
+
 		// Check that the file now is not empty, and contains 745 lines
 		int numLines = 0;
 		try {
@@ -178,7 +182,7 @@ public class NekWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 		assertEquals(745, numLines);
-				
+
 		// Close the buffered reader
 		try {
 			buffer.close();
@@ -186,7 +190,7 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		
+
 		// Now try reading from the test file just generated and creating a
 		// second set of Components from that
 		ArrayList<Component> testComponents = new ArrayList<Component>();
@@ -199,26 +203,26 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from conj_ht_WriterTester.rea file");
 		}
-		
+
 		// Compare the second set of Components with the first one,
 		// they should be identical
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
+		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).equals(testComponents.get(i)));
 		}
-		
+
 		// Delete the test output file
 		outputFile.delete();
-		
+
 		return;
 	}
-	
+
 	@Test
 	public void checkEddy_uv() {
 		// Local declarations
 		NekWriter writer = null;
 		NekReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
@@ -228,7 +232,7 @@ public class NekWriterTester {
 		String exampleFilePath = userDir + separator + "eddy_uv.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
-		
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -238,13 +242,13 @@ public class NekWriterTester {
 				fail("Failed to create output file: eddy_uv_WriterTester.rea");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
 			try {
 				emptyFileStream = new FileOutputStream(outputFile);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				fail("Failed to set FileOutputStream to output file: eddy_uv_WriterTester.rea");
@@ -262,7 +266,7 @@ public class NekWriterTester {
 				fail("Failed to close FileOutputStream");
 			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -271,33 +275,33 @@ public class NekWriterTester {
 			fail("Failed create FileReader for output file: eddy_uv_WriterTester.rea");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
-		
+
 		// Check the writer constructs
 		writer = new NekWriter();
 		assertNotNull(writer);
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
-		
+
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
 		File fakeFile = null;
@@ -310,15 +314,19 @@ public class NekWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components and ProblemProperties to test with
 		reader = new NekReader();
+
+		// Give it a test factory to use
+		reader.setControllerFactory(new TestNekControllerFactory());
+
 		try {
 			components = reader.loadREAFile(exampleFile);
 		} catch (FileNotFoundException e2) {
@@ -329,7 +337,7 @@ public class NekWriterTester {
 			e2.printStackTrace();
 		}
 		properties = new ProblemProperties(2, 256, 256, 0);
-		
+
 		// Try to write with all valid parameters
 		try {
 			writer.writeReaFile(components, outputFile, properties);
@@ -337,7 +345,7 @@ public class NekWriterTester {
 			e1.printStackTrace();
 			fail("Failed to write eddy_uv_WriterTester.rea with valid parameters");
 		}
-			
+
 		// Check that the file now is not empty, and contains 1961 lines
 		int numLines = 0;
 		try {
@@ -350,7 +358,7 @@ public class NekWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 		assertEquals(1961, numLines);
-				
+
 		// Close the buffered reader
 		try {
 			buffer.close();
@@ -358,7 +366,7 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		
+
 		// Now try reading from the test file just generated and creating a
 		// second set of Components from that
 		ArrayList<Component> testComponents = new ArrayList<Component>();
@@ -371,27 +379,27 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from eddy_uv_WriterTester.rea file");
 		}
-		
+
 		// Compare the second set of Components with the first one,
 		// they should be identical
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
+		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).equals(testComponents.get(i)));
 		}
-		
+
 		// Delete the test output file
 		outputFile.delete();
-		
+
 		return;
 	}
-	
+
 	@Test
 	public void checkKov() {
-		
+
 		// Local declarations
 		NekWriter writer = null;
 		NekReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
@@ -401,7 +409,7 @@ public class NekWriterTester {
 		String exampleFilePath = userDir + separator + "kov.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
-		
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -411,13 +419,13 @@ public class NekWriterTester {
 				fail("Failed to create output file: kov_WriterTester.rea");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
 			try {
 				emptyFileStream = new FileOutputStream(outputFile);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				fail("Failed to set FileOutputStream to output file: kov_WriterTester.rea");
@@ -435,7 +443,7 @@ public class NekWriterTester {
 				fail("Failed to close FileOutputStream");
 			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -444,33 +452,33 @@ public class NekWriterTester {
 			fail("Failed create FileReader for output file: kov_WriterTester.rea");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
-		
+
 		// Check the writer constructs
 		writer = new NekWriter();
 		assertNotNull(writer);
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
-		
+
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
 		File fakeFile = null;
@@ -483,15 +491,19 @@ public class NekWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components and ProblemProperties to test with
 		reader = new NekReader();
+
+		// Give it a test factory to use
+		reader.setControllerFactory(new TestNekControllerFactory());
+
 		try {
 			components = reader.loadREAFile(exampleFile);
 		} catch (FileNotFoundException e2) {
@@ -502,7 +514,7 @@ public class NekWriterTester {
 			e2.printStackTrace();
 		}
 		properties = new ProblemProperties(2, 8, 8, 0);
-		
+
 		// Try to write with all valid parameters
 		try {
 			writer.writeReaFile(components, outputFile, properties);
@@ -510,7 +522,7 @@ public class NekWriterTester {
 			e1.printStackTrace();
 			fail("Failed to write kov_WriterTester.rea with valid parameters");
 		}
-			
+
 		// Check that the file now is not empty, and contains 241 lines
 		int numLines = 0;
 		try {
@@ -523,7 +535,7 @@ public class NekWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 		assertEquals(241, numLines);
-				
+
 		// Close the buffered reader
 		try {
 			buffer.close();
@@ -531,7 +543,7 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		
+
 		// Now try reading from the test file just generated and creating a
 		// second set of Components from that
 		ArrayList<Component> testComponents = new ArrayList<Component>();
@@ -544,27 +556,27 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from kov_WriterTester.rea file");
 		}
-		
+
 		// Compare the second set of Components with the first one,
 		// they should be identical
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
+		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).equals(testComponents.get(i)));
 		}
-		
+
 		// Delete the test output file
 		outputFile.delete();
-		
+
 		return;
 	}
-	
+
 	@Test
 	public void checkRay_dd() {
-		
+
 		// Local declarations
 		NekWriter writer = null;
 		NekReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
@@ -574,7 +586,7 @@ public class NekWriterTester {
 		String exampleFilePath = userDir + separator + "ray_dd.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
-		
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -584,13 +596,13 @@ public class NekWriterTester {
 				fail("Failed to create output file: ray_dd_WriterTest.rea");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
 			try {
 				emptyFileStream = new FileOutputStream(outputFile);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				fail("Failed to set FileOutputStream to output file: ray_dd_WriterTest.rea");
@@ -608,7 +620,7 @@ public class NekWriterTester {
 				fail("Failed to close FileOutputStream");
 			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -617,33 +629,33 @@ public class NekWriterTester {
 			fail("Failed create FileReader for output file: ray_dd_WriterTest.rea");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
-		
+
 		// Check the writer constructs
 		writer = new NekWriter();
 		assertNotNull(writer);
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
-		
+
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
 		File fakeFile = null;
@@ -656,15 +668,19 @@ public class NekWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components and ProblemProperties to test with
 		reader = new NekReader();
+
+		// Give it a test factory to use
+		reader.setControllerFactory(new TestNekControllerFactory());
+
 		try {
 			components = reader.loadREAFile(exampleFile);
 		} catch (FileNotFoundException e2) {
@@ -675,7 +691,7 @@ public class NekWriterTester {
 			e2.printStackTrace();
 		}
 		properties = new ProblemProperties(2, 3, 3, 0);
-		
+
 		// Try to write with all valid parameters
 		try {
 			writer.writeReaFile(components, outputFile, properties);
@@ -683,7 +699,7 @@ public class NekWriterTester {
 			e1.printStackTrace();
 			fail("Failed to write ray_dd_WriterTest.rea with valid parameters");
 		}
-			
+
 		// Check that the file now is not empty, and contains 203 lines
 		int numLines = 0;
 		try {
@@ -696,7 +712,7 @@ public class NekWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 		assertEquals(203, numLines);
-				
+
 		// Close the buffered reader
 		try {
 			buffer.close();
@@ -704,7 +720,7 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		
+
 		// Now try reading from the test file just generated and creating a
 		// second set of Components from that
 		ArrayList<Component> testComponents = new ArrayList<Component>();
@@ -717,27 +733,27 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from ray_dd_WriterTester.rea file");
 		}
-		
+
 		// Compare the second set of Components with the first one,
 		// they should be identical
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
+		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).equals(testComponents.get(i)));
 		}
-		
+
 		// Delete the test output file
 		outputFile.delete();
-		
+
 		return;
 	}
-	
+
 	@Test
 	public void checkRay_nn() {
-		
+
 		// Local declarations
 		NekWriter writer = null;
 		NekReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
@@ -747,7 +763,7 @@ public class NekWriterTester {
 		String exampleFilePath = userDir + separator + "ray_nn.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
-		
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -757,13 +773,13 @@ public class NekWriterTester {
 				fail("Failed to create output file: ray_nn_WriterTest.rea");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
 			try {
 				emptyFileStream = new FileOutputStream(outputFile);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				fail("Failed to set FileOutputStream to output file: ray_nn_WriterTest.rea");
@@ -781,7 +797,7 @@ public class NekWriterTester {
 				fail("Failed to close FileOutputStream");
 			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -790,33 +806,33 @@ public class NekWriterTester {
 			fail("Failed create FileReader for output file: ray_nn_WriterTest.rea");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
-		
+
 		// Check the writer constructs
 		writer = new NekWriter();
 		assertNotNull(writer);
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
-		
+
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
 		File fakeFile = null;
@@ -829,15 +845,19 @@ public class NekWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components and ProblemProperties to test with
 		reader = new NekReader();
+
+		// Give it a test factory to use
+		reader.setControllerFactory(new TestNekControllerFactory());
+
 		try {
 			components = reader.loadREAFile(exampleFile);
 		} catch (FileNotFoundException e2) {
@@ -848,7 +868,7 @@ public class NekWriterTester {
 			e2.printStackTrace();
 		}
 		properties = new ProblemProperties(2, 3, 3, 0);
-		
+
 		// Try to write with all valid parameters
 		try {
 			writer.writeReaFile(components, outputFile, properties);
@@ -856,7 +876,7 @@ public class NekWriterTester {
 			e1.printStackTrace();
 			fail("Failed to write ray_nn_WriterTest.rea with valid parameters");
 		}
-			
+
 		// Check that the file now is not empty, and contains 203 lines
 		int numLines = 0;
 		try {
@@ -869,7 +889,7 @@ public class NekWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 		assertEquals(203, numLines);
-				
+
 		// Close the buffered reader
 		try {
 			buffer.close();
@@ -877,7 +897,7 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		
+
 		// Now try reading from the test file just generated and creating a
 		// second set of Components from that
 		ArrayList<Component> testComponents = new ArrayList<Component>();
@@ -890,27 +910,27 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from ray_nn_WriterTester.rea file");
 		}
-		
+
 		// Compare the second set of Components with the first one,
 		// they should be identical
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
+		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).equals(testComponents.get(i)));
 		}
-		
+
 		// Delete the test output file
 		outputFile.delete();
-		
+
 		return;
 	}
-	
+
 	@Test
 	public void checkV2d() {
-		
+
 		// Local declarations
 		NekWriter writer = null;
 		NekReader reader = null;
-		
+
 		FileReader fileReader = null;
 		BufferedReader buffer = null;
 		String separator = System.getProperty("file.separator");
@@ -920,7 +940,7 @@ public class NekWriterTester {
 		String exampleFilePath = userDir + separator + "v2d.rea";
 		File outputFile = new File(outputFilePath);
 		File exampleFile = new File(exampleFilePath);
-		
+
 		// If the tester output file doesn't exist, create it
 		if (!outputFile.exists()) {
 			try {
@@ -930,13 +950,13 @@ public class NekWriterTester {
 				fail("Failed to create output file: v2d_WriterTest.rea");
 			}
 		}
-		
+
 		// Otherwise, if it already exists, clear its contents
 		else {
 			FileOutputStream emptyFileStream = null;
 			try {
 				emptyFileStream = new FileOutputStream(outputFile);
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				fail("Failed to set FileOutputStream to output file: v2d_WriterTest.rea");
@@ -954,7 +974,7 @@ public class NekWriterTester {
 				fail("Failed to close FileOutputStream");
 			}
 		}
-		
+
 		// Create a buffered reader to access the contents of the output file
 		try {
 			fileReader = new FileReader(outputFile);
@@ -963,33 +983,33 @@ public class NekWriterTester {
 			fail("Failed create FileReader for output file: v2d_WriterTest.rea");
 		}
 		buffer = new BufferedReader(fileReader);
-		
+
 		// Test that the output file is valid but empty
 		assertNotNull(outputFile);
 		assertTrue(outputFile.isFile());
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing CONSTRUCTION --- */
-		
+
 		// Check the writer constructs
 		writer = new NekWriter();
 		assertNotNull(writer);
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		/* --- Testing WRITING --- */
-		
+
 		// Try to write with invalid parameters
 		ArrayList<Component> components = null;
 		File fakeFile = null;
@@ -1002,15 +1022,19 @@ public class NekWriterTester {
 		}
 
 		// Check that the file is still empty
-		try {									
+		try {
 			assertTrue(buffer.read() == -1);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail("Failed to read BufferedReader");
 		}
-		
+
 		// Generate valid Components and ProblemProperties to test with
 		reader = new NekReader();
+
+		// Give it a test factory to use
+		reader.setControllerFactory(new TestNekControllerFactory());
+
 		try {
 			components = reader.loadREAFile(exampleFile);
 		} catch (FileNotFoundException e2) {
@@ -1021,7 +1045,7 @@ public class NekWriterTester {
 			e2.printStackTrace();
 		}
 		properties = new ProblemProperties(2, 20, 20, 0);
-		
+
 		// Try to write with all valid parameters
 		try {
 			writer.writeReaFile(components, outputFile, properties);
@@ -1029,7 +1053,7 @@ public class NekWriterTester {
 			e1.printStackTrace();
 			fail("Failed to write v2d_WriterTest.rea with valid parameters");
 		}
-			
+
 		// Check that the file now is not empty, and contains 388 lines
 		int numLines = 0;
 		try {
@@ -1042,7 +1066,7 @@ public class NekWriterTester {
 			fail("Failed to read BufferedReader");
 		}
 		assertEquals(388, numLines);
-				
+
 		// Close the buffered reader
 		try {
 			buffer.close();
@@ -1050,7 +1074,7 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to close BufferedReader");
 		}
-		
+
 		// Now try reading from the test file just generated and creating a
 		// second set of Components from that
 		ArrayList<Component> testComponents = new ArrayList<Component>();
@@ -1063,17 +1087,17 @@ public class NekWriterTester {
 			e.printStackTrace();
 			fail("Failed to read from v2d_WriterTester.rea file");
 		}
-		
+
 		// Compare the second set of Components with the first one,
 		// they should be identical
 		assertEquals(components.size(), testComponents.size());
-		for ( int i = 0; i < components.size(); i++ ) {
+		for (int i = 0; i < components.size(); i++) {
 			assertTrue(components.get(i).equals(testComponents.get(i)));
 		}
-		
+
 		// Delete the test output file
 		outputFile.delete();
-		
+
 		return;
 	}
 

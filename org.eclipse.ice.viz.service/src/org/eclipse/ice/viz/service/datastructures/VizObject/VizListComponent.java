@@ -277,7 +277,6 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	/**
 	 * @see Identifiable#setId(int id)
 	 */
-	@Override
 	public void setId(int id) {
 		if (id >= 0) {
 			idList.set(0, String.valueOf(id));
@@ -287,7 +286,6 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	/**
 	 * @see Identifiable#getDescription()
 	 */
-	@Override
 	public String getDescription() {
 		return idList.get(2);
 	}
@@ -295,7 +293,6 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	/**
 	 * @see Identifiable#getId()
 	 */
-	@Override
 	public int getId() {
 		return Integer.valueOf(idList.get(0));
 	}
@@ -303,7 +300,6 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	/**
 	 * @see Identifiable#setName(String name)
 	 */
-	@Override
 	public void setName(String name) {
 		if (name != null) {
 			idList.set(1, name);
@@ -313,7 +309,6 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	/**
 	 * @see Identifiable#getName()
 	 */
-	@Override
 	public String getName() {
 		return idList.get(1);
 	}
@@ -321,7 +316,6 @@ public class VizListComponent<T> extends TransformedList<T, T> implements IListC
 	/**
 	 * @see Identifiable#setDescription(String description)
 	 */
-	@Override
 	public void setDescription(String description) {
 		if (description != null) {
 			idList.set(2, description);

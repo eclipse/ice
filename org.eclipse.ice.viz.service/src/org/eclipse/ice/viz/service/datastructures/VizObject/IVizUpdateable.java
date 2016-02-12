@@ -26,7 +26,7 @@ import org.eclipse.ice.viz.service.datastructures.VizIdentifiable;
  * @author Jay Jay Billings
  */
 
-public interface IVizUpdateable extends VizIdentifiable{
+public interface IVizUpdateable{
 	/**
 	 * 
 	 */

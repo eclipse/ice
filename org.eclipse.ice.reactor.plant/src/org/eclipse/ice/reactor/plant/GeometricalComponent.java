@@ -193,10 +193,9 @@ public class GeometricalComponent extends PlantComponent {
 				notifyListeners();
 			}
 		} else {
-			throw new InvalidParameterException(
-					"GeometricalComponent error:"
-							+ "The orientation array must be non-null and 3 elements in"
-							+ "size.");
+			throw new InvalidParameterException("GeometricalComponent error:"
+					+ "The orientation array must be non-null and 3 elements in"
+					+ "size.");
 		}
 		return;
 	}
@@ -263,7 +262,8 @@ public class GeometricalComponent extends PlantComponent {
 	 *            <p>
 	 *            The other Object to compare against.
 	 *            </p>
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         Returns true if the two objects are equal, otherwise false.
 	 *         </p>
 	 */
@@ -292,7 +292,8 @@ public class GeometricalComponent extends PlantComponent {
 			equals = (super.equals(component)
 					&& Arrays.equals(position, component.position)
 					&& Arrays.equals(orientation, component.orientation)
-					&& rotation == component.rotation && numElements == component.numElements);
+					&& rotation == component.rotation
+					&& numElements == component.numElements);
 		}
 
 		return equals;
@@ -303,7 +304,8 @@ public class GeometricalComponent extends PlantComponent {
 	 * Performs a deep copy and returns a newly instantiated Object.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The newly instantiated Object.
 	 *         </p>
 	 */
@@ -351,7 +353,8 @@ public class GeometricalComponent extends PlantComponent {
 	 * Returns the hashCode of the object.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The hashCode of the Object.
 	 *         </p>
 	 */

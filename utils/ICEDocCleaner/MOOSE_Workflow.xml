@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<MOOSE itemType="Basic" status="2" builderName="MOOSE Workflow" description="The Multiphysics Object-Oriented Simulation Environment (MOOSE) is a multiphysics framework developed by Idaho National Laboratory." id="1" name="MOOSE Workflow">
+    <Form itemID="1" description="The Multiphysics Object-Oriented Simulation Environment (MOOSE) is a multiphysics framework developed by Idaho National Laboratory." id="1" name="MOOSE Workflow">
+        <componentList>
+            <DataComponent description="Global parameters for the output file that ICE will create." id="1" name="Output File Parameters">
+                <Entry defaultValue="Import Application" value="ssh://Megafluffy.ornl.gov/home/moose/relap-7/relap-7-opt" ready="true" changeState="true" secretFlag="false" parent="orphan" description="The name of the MOOSE-based application for which you would like to create an input file." id="1" name="MOOSE-Based Application">
+                    <AllowedValues>Import Application</AllowedValues>
+                    <AllowedValues>ssh://Megafluffy.ornl.gov/home/</AllowedValues>
+                    <AllowedValues>ssh://Megafluffy.ornl.gov/home/moose/relap-7/relap-7-opt</AllowedValues>
+                    <AllowedValueType>Executable</AllowedValueType>
+                    <Comment></Comment>
+                    <BasicEntryContentProvider DefaultValue="Import Application" Parent="orphan" description="ICE Object" id="1" name="ICE Object">
+                        <AllowedValueType>Executable</AllowedValueType>
+                        <AllowedValues>Import Application</AllowedValues>
+                        <AllowedValues>ssh://Megafluffy.ornl.gov/home/</AllowedValues>
+                        <AllowedValues>ssh://Megafluffy.ornl.gov/home/moose/relap-7/relap-7-opt</AllowedValues>
+                    </BasicEntryContentProvider>
+                    <required>false</required>
+                </Entry>
+                <Entry defaultValue="mooseModel.i" value="mooseModel.i" ready="true" changeState

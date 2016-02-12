@@ -17,9 +17,13 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
+import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.ice.viz.service.modeling.EdgeController;
+import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.ice.viz.service.modeling.LinearEdgeMesh;
+import org.eclipse.ice.viz.service.modeling.VertexController;
 
 /**
  * <p>
@@ -30,7 +34,7 @@ import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
  * 
  * @author Jordan H. Deyton
  */
-public class TestEdge extends Edge {
+public class TestEdge extends EdgeController {
 	/**
 	 * <p>
 	 * Whether or not the Edge's update method was called.
@@ -53,8 +57,8 @@ public class TestEdge extends Edge {
 	 *            The second Vertex in this Edge.
 	 *            </p>
 	 */
-	public TestEdge(Vertex start, Vertex end) {
-		super(start, end);
+	public TestEdge(VertexController start, VertexController end) {
+		super(new LinearEdgeMesh(start, end), new AbstractView());
 	}
 
 	/**
@@ -67,8 +71,21 @@ public class TestEdge extends Edge {
 	 *            The two Vertices this Edge connects.
 	 *            </p>
 	 */
-	public TestEdge(ArrayList<Vertex> vertices) {
-		super(vertices);
+	public TestEdge(ArrayList<VertexController> vertices) {
+		super(new EdgeMesh(vertices.get(0), vertices.get(1)),
+				new AbstractView());
+	}
+
+	/**
+	 * The default constructor.
+	 * 
+	 * @param model
+	 *            The controller's model
+	 * @param view
+	 *            The controller's view
+	 */
+	public TestEdge(EdgeMesh model, AbstractView view) {
+		super(model, view);
 	}
 
 	/**
@@ -83,10 +100,11 @@ public class TestEdge extends Edge {
 	 *            </p>
 	 */
 	@Override
-	public void update(IVizUpdateable component) {
+	public void update(IManagedUpdateable component,
+			SubscriptionType[] type) {
 
 		// Call the super's update method and update the flag.
-		super.update(component);
+		super.update(component, type);
 		wasUpdated.set(true);
 
 		return;
@@ -98,7 +116,8 @@ public class TestEdge extends Edge {
 	 * the value to false after the call.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         True if the Edge's update method was called, false otherwise.
 	 *         </p>
 	 */

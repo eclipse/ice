@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.widgets.test;
 
-import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
+import org.eclipse.ice.viz.service.test.utils.AbstractSWTTester;
 import org.junit.Ignore;
 import org.junit.Test;
 

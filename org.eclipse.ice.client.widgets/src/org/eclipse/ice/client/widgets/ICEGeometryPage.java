@@ -32,7 +32,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * <p>
- * This class is ICEFormPage that displays the GeometryEditor powered by JME3.
+ * This class is ICEFormPage that displays the GeometryEditor powered by JavaFX.
  * It automatically opens the ShapeTreeView and TransformationView to allow the
  * user to add and edit geometry.
  * </p>
@@ -56,6 +56,12 @@ public class ICEGeometryPage extends ICEFormPage
 	 * 
 	 */
 	private GeometryComponent geometryComp;
+
+	/**
+	 * The visualization service that is providing the graphical implementation
+	 * for the geometry editor.
+	 */
+	private IVizService service;
 
 	/**
 	 * <p>
@@ -125,7 +131,7 @@ public class ICEGeometryPage extends ICEFormPage
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
-		shapeTreeView.setGeometry(geometryComp.getGeometry().getGeometry());
+		shapeTreeView.setGeometry(geometryComp.getGeometry());
 
 		return;
 	}
@@ -169,15 +175,16 @@ public class ICEGeometryPage extends ICEFormPage
 				.getForm();
 		Composite parent = pageForm.getBody();
 
-		// Get JME3 Geometry service from factory
-		IVizServiceFactory factory = ((ICEFormEditor) editor)
-				.getVizServiceFactory();
-		IVizService service = factory.get("JME3 Geometry Editor");
+		// Get Geometry service from factory
+		IVizServiceFactory factory = editor.getVizServiceFactory();
+		service = factory.get("ICE Geometry Editor");
+		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
+				.findView(ShapeTreeView.ID)).setFactory(service.getFactory());
 
 		// Create and draw geometry canvas
 		try {
 			IVizCanvas vizCanvas = service
-					.createCanvas(geometryComp.getGeometry().getGeometry());
+					.createCanvas(geometryComp.getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {

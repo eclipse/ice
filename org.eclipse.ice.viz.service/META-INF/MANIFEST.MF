@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Visualization Service
 Bundle-SymbolicName: org.eclipse.ice.viz.service;singleton:=true
-Bundle-Version: 2.1.8
+Bundle-Version: 2.1.8.20160208
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: ca.odell.glazedlists,
@@ -55,6 +55,7 @@ Export-Package: org.eclipse.ice.viz.service,
  org.eclipse.ice.viz.service.datastructures.VizObject,
  org.eclipse.ice.viz.service.datastructures.resource,
  org.eclipse.ice.viz.service.internal,
+ org.eclipse.ice.viz.service.modeling,
  org.eclipse.ice.viz.service.preferences,
  org.eclipse.ice.viz.service.styles,
  org.eclipse.ice.viz.service.widgets

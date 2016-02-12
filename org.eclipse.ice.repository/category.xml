@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ice_2.1.8.jar" id="org.eclipse.ice" version="2.1.8" os="linux,macosx,win32" ws="cocoa,gtk,win32" arch="x86,x86_64">
+   <feature url="features/org.eclipse.ice_2.1.8.20160208.jar" id="org.eclipse.ice" version="2.1.8.20160208" os="linux,macosx,win32" ws="cocoa,gtk,win32" arch="x86,x86_64">
       <category name="org.eclipse.ice"/>
    </feature>
    <feature url="features/org.eclipse.ice.materials.feature_2.1.8.jar" id="org.eclipse.ice.materials.feature" version="2.1.8" os="linux,macosx,win32" ws="cocoa,gtk,win32" arch="x86,x86_64">

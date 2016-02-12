@@ -3,9 +3,9 @@ package org.eclipse.ice.client.widgets.moose.test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import org.eclipse.ice.client.widgets.moose.MooseXMLFormContentDescriber;
 import org.eclipse.ice.persistence.xml.XMLFormContentDescriber;
 import org.eclipse.ice.persistence.xml.test.XMLFormContentDescriberTester;
+import org.eclipse.ice.client.widgets.moose.MooseXMLFormContentDescriber;
 
 /**
  * This class is responsible for testing

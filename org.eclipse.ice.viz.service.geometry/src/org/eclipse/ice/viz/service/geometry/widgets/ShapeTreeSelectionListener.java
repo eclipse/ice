@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.geometry.shapes.IShape;
+import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -40,7 +40,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 	/**
 	 * A list of shapes of the last selection event
 	 */
-	private ArrayList<IShape> selectedShapes = new ArrayList<IShape>();
+	private ArrayList<ShapeController> selectedShapes = new ArrayList<ShapeController>();
 
 	/**
 	 * <p>
@@ -90,8 +90,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 
 		// Get the TransformationView if it is open
 
-		TransformationView transformationView = (TransformationView) workbenchPage
-				.findView(TransformationView.ID);
+		TransformationView transformationView = (TransformationView) workbenchPage.findView(TransformationView.ID);
 
 		// Return if not
 
@@ -105,8 +104,8 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 
 		// Remove the "selected" value from previously selected shapes
 
-		for (IShape shape : selectedShapes) {
-			shape.removeProperty("selected");
+		for (ShapeController shape : selectedShapes) {
+			shape.setProperty("Selected", "False");
 		}
 
 		selectedShapes.clear();
@@ -119,10 +118,10 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 			// Only perform the action for selected IShapes
 			// (rather than GeometryComponents or null)
 
-			if (selectedObject instanceof IShape) {
-				IShape selectedShape = (IShape) selectedObject;
+			if (selectedObject instanceof ShapeController) {
+				ShapeController selectedShape = (ShapeController) selectedObject;
 
-				selectedShape.setProperty("selected", "true");
+				selectedShape.setProperty("Selected", "True");
 				selectedShapes.add(selectedShape);
 			}
 		}
@@ -139,8 +138,8 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 
 		// Determine if the shape of the TransformationView should be set
 
-		if (selectedObject instanceof IShape) {
-			transformationView.setShape((IShape) selectedObject);
+		if (selectedObject instanceof ShapeController) {
+			transformationView.setShape((ShapeController) selectedObject);
 		}
 
 		else {
