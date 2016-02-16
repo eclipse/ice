@@ -27,12 +27,12 @@ import org.eclipse.ice.viz.service.modeling.AbstractMesh;
  * @author Robert Smith
  *
  */
-public class FXPlantViewFactory extends AbstractControllerFactory {
+public class FXPlantViewControllerFactory extends AbstractControllerFactory {
 
 	/**
-	 * The default cosntructor.
+	 * The default constructor.
 	 */
-	public FXPlantViewFactory() {
+	public FXPlantViewControllerFactory() {
 		super();
 
 		// Set the JunctionMesh provider

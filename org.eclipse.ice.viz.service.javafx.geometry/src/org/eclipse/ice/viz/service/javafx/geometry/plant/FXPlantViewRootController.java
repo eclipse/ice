@@ -29,6 +29,19 @@ public class FXPlantViewRootController extends AbstractController
 		implements IWireFramePart {
 
 	/**
+	 * Whether or not the scene is in wireframe mode
+	 */
+	boolean wireframe;
+
+	/**
+	 * The nullary constructor
+	 */
+	public FXPlantViewRootController() {
+		super();
+		wireframe = false;
+	}
+
+	/**
 	 * The default constructor
 	 * 
 	 * @param model
@@ -39,6 +52,7 @@ public class FXPlantViewRootController extends AbstractController
 	 */
 	public FXPlantViewRootController(AbstractMesh model, AbstractView view) {
 		super(model, view);
+		wireframe = false;
 
 		// Identify this object as the root of the tree
 		model.setProperty("Root", "True");
@@ -78,6 +92,9 @@ public class FXPlantViewRootController extends AbstractController
 		else {
 			model.addEntity(entity);
 		}
+
+		// Set the entity to the correct wireframe mode
+		((IWireFramePart) entity).setWireFrameMode(wireframe);
 	}
 
 	/*
@@ -115,6 +132,9 @@ public class FXPlantViewRootController extends AbstractController
 		else {
 			model.addEntityByCategory(entity, category);
 		}
+
+		// Set the entity to the correct wireframe mode
+		((IWireFramePart) entity).setWireFrameMode(wireframe);
 	}
 
 	/*
@@ -125,6 +145,11 @@ public class FXPlantViewRootController extends AbstractController
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
+
+		// Save the wireframe state
+		wireframe = on;
+
+		// Set all the children to the proper wireframe mode
 		for (AbstractController child : model.getEntities()) {
 			((IWireFramePart) child).setWireFrameMode(on);
 		}

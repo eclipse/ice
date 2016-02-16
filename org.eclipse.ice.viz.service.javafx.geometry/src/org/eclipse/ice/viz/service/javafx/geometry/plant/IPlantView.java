@@ -75,44 +75,12 @@ public interface IPlantView {
 	 */
 	public void setDefaultCameraZByX();
 
-	// /**
-	// * Sets the default orientation of the view's camera. The vectors formed
-	// by
-	// * the direction coordinates and the up coordinates must be orthogonal, or
-	// * else an exception will be thrown.
-	// *
-	// * @param directionX
-	// * The x direction of the new default direction in which the
-	// * camera will point.
-	// * @param directionX
-	// * The x direction of the new default direction in which the
-	// * camera will point.
-	// * @param directionX
-	// * The x direction of the new default direction in which the
-	// * camera will point.
-	// * @param upX
-	// * The x direction of the new default up direction.
-	// * @param upY
-	// * The y direction of the new default up direction.
-	// * @param upZ
-	// * The z direction of the new default up direction.
-	// */
-	// public void setDefaultCameraOrientation(float directionX, float
-	// directionY,
-	// float directionZ, float upX, float upY, float upZ);
-	//
-	// /**
-	// * Sets the default position of the view's camera.
-	// *
-	// * @param x
-	// * The new default position x coordinate.
-	// * @param y
-	// * The new default position y coordinate.
-	// * @param z
-	// * The new default position z coordinate.
-	// */
-	// public void setDefaultCameraPosition(float x, float y, float z);
-
+	/**
+	 * Set the IPlantData object from which the view will render.
+	 * 
+	 * @param plant
+	 *            The new data source for the view.
+	 */
 	public void setPlant(IPlantData plant);
 
 	/**

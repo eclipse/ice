@@ -76,4 +76,17 @@ public class EdgeMeshTester {
 		assertFalse(vertices.contains(vertex2));
 		assertTrue(vertices.contains(vertex3));
 	}
+
+	/**
+	 * Checks that the mesh is cloned correctly.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Clone a mesh and check that the result is identical
+		EdgeMesh mesh = new EdgeMesh();
+		mesh.setProperty("Test", "Property");
+		EdgeMesh clone = (EdgeMesh) mesh.clone();
+		assertTrue(mesh.equals(clone));
+	}
 }

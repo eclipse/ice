@@ -42,9 +42,6 @@ public class FXVertexView extends AbstractView {
 	private Sphere mesh;
 
 	/** */
-	// private TransformGizmo gizmo;
-
-	/** */
 	private PhongMaterial defaultMaterial;
 
 	/** */
@@ -188,8 +185,7 @@ public class FXVertexView extends AbstractView {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {

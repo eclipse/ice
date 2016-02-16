@@ -231,11 +231,11 @@ public class PointMesh extends AbstractMesh {
 		}
 
 		// Check if the other object is an AbstractMeshComponent and cast it
-		if (!(otherObject instanceof VertexMesh)) {
+		if (!(otherObject instanceof PointMesh)) {
 			return false;
 		}
 
-		VertexMesh castObject = (VertexMesh) otherObject;
+		PointMesh castObject = (PointMesh) otherObject;
 
 		// Check the types and properties for equality
 		if (type != castObject.type

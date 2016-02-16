@@ -115,6 +115,10 @@ public class TransformationTester {
 
 	}
 
+	/**
+	 * Reimplement this test if the JAXB support is ever added to the modeling
+	 * packages.
+	 */
 	// /**
 	// * This operation checks the ability of the Transformation to persist
 	// itself

@@ -45,9 +45,6 @@ public class FXLinearEdgeView extends AbstractView {
 	private Cylinder mesh;
 
 	/** */
-	// private TransformGizmo gizmo;
-
-	/** */
 	private PhongMaterial defaultMaterial;
 
 	/** */
@@ -213,8 +210,7 @@ public class FXLinearEdgeView extends AbstractView {
 	}
 
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {

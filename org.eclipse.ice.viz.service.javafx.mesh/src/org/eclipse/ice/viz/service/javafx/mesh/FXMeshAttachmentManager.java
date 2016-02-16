@@ -36,7 +36,7 @@ public class FXMeshAttachmentManager extends AbstractAttachmentManager {
 			active = new ArrayList<>();
 		}
 
-		// Create a geometry attachment and add it to the list of active
+		// Create a mesh attachment and add it to the list of active
 		// attachments
 		FXAttachment attach = new FXMeshAttachment(this);
 		active.add(attach);

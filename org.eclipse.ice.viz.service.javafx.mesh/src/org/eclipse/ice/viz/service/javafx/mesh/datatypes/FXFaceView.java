@@ -37,12 +37,6 @@ public class FXFaceView extends AbstractView {
 	 */
 	public FXFaceView(AbstractMesh model) {
 		super();
-
-		// // Instantiate the node
-		// node = new Group();
-		//
-		// // Set the initial graphical representations
-		// refresh(model);
 	}
 
 	/*
@@ -54,33 +48,5 @@ public class FXFaceView extends AbstractView {
 	@Override
 	public Object getRepresentation() {
 		return node;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMeshComponent)
-	 */
-	@Override
-	public void refresh(AbstractMesh model) {
-
-		// // Clear the list of children so it can be rebuilt
-		// node.getChildren().clear();
-		//
-		// // Add each edge to the node
-		// for (AbstractController edge : model.getEntitiesByCategory("Edges"))
-		// {
-		// node.getChildren().add((Node) edge.getRepresentation());
-		// }
-		//
-		// // Add each vertex to the node
-		// for (AbstractController vertex : model
-		// .getEntitiesByCategory("Vertices")) {
-		// if (!node.getChildren().contains(vertex.getRepresentation())) {
-		// node.getChildren().add((Node) vertex.getRepresentation());
-		// }
-		// }
 	}
 }

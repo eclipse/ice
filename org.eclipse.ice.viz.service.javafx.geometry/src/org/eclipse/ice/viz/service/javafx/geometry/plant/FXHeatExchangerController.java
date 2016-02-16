@@ -72,4 +72,24 @@ public class FXHeatExchangerController extends HeatExchangerController {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController#
+	 * clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a copy of the model
+		FXHeatExchangerController clone = new FXHeatExchangerController();
+		clone.copy(this);
+
+		// Refresh the view to be in sync with the model
+		clone.refresh();
+
+		return clone;
+	}
+
 }

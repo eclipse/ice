@@ -62,7 +62,7 @@ public class FXMeshViewer extends FXViewer {
 	/**
 	 * The number of units long each side of the squares in the grid will be
 	 */
-	final double SCALE = 3d;
+	final protected double SCALE = 3d;
 
 	/**
 	 * A handler which places new polygons on the screen based on mouse clicks.
@@ -149,7 +149,7 @@ public class FXMeshViewer extends FXViewer {
 	/**
 	 * The gizmo containing the axis.
 	 */
-	private AxisGridGizmo gizmo;
+	protected AxisGridGizmo gizmo;
 
 	/**
 	 * The manager for attachments to the renderer
@@ -212,151 +212,7 @@ public class FXMeshViewer extends FXViewer {
 
 			@Override
 			public void handle(MouseEvent event) {
-
-				// Get the user's selection
-				PickResult pickResult = event.getPickResult();
-				Node intersectedNode = pickResult.getIntersectedNode();
-
-				// Whether or not a new vertex has been added
-				boolean changed = false;
-
-				// If the user didn't select a shape, add a new shape where they
-				// clicked
-				if (intersectedNode instanceof Box) {
-
-					// Create a new vertex at that point
-					VertexMesh tempComponent = new VertexMesh(event.getX(),
-							event.getY(), 0);
-					tempComponent.setProperty("Constructing", "True");
-					VertexController tempVertex = (VertexController) factory
-							.createController(tempComponent);
-
-					// Set the vertex's name and ID
-					tempVertex.setProperty("Name", "Vertex");
-					tempVertex.setProperty("Id", String.valueOf(nextVertexID));
-					nextVertexID++;
-
-					// Add the new vertex to the list
-					selectedVertices.add(tempVertex);
-
-					// Add it to the temp root
-					tempRoot.addEntity(tempVertex);
-
-					// Add the temp root to the attachment
-					((FXAttachment) attachmentManager.getAttachments().get(1))
-							.addGeometry(tempRoot);
-
-					tempVertex.refresh();
-					changed = true;
-				}
-
-				// If the user clicked a shape, try to add it to a polygon
-				else if (intersectedNode instanceof Shape3D) {
-
-					// Resolve the parent
-					Group nodeParent = (Group) intersectedNode.getParent();
-
-					// Resolve the shape
-					AbstractController modelShape = (AbstractController) nodeParent
-							.getProperties().get(AbstractController.class);
-
-					// If four or more vertices have already been selected
-					// through some other method, then clear the selection and
-					// start over
-					if (selectedVertices.size() >= 4) {
-						clearSelection();
-					}
-
-					// If the vertex is already in the polygon currently being
-					// constructed, ignore it
-					if (selectedVertices.contains(modelShape)) {
-						return;
-					}
-
-					// If the selected shape is a vertex, add it to the list
-					if (modelShape instanceof VertexController) {
-						selectedVertices.add(modelShape);
-						changed = true;
-
-						// Change the vertex's color to show that it is part of
-						// the new polygon
-						modelShape.setProperty("Constructing", "True");
-					}
-
-				}
-
-				// If a new vertex was added, then construct edges/polygons as
-				// needed
-				if (changed) {
-
-					// The number of vertices in the polygon under construction
-					int numVertices = selectedVertices.size();
-
-					// If this is not the first vertex, create an edge between
-					// it and the last one
-					if (numVertices > 1) {
-
-						EdgeController tempEdge = getEdge(
-								(VertexController) selectedVertices
-										.get(numVertices - 2),
-								(VertexController) selectedVertices
-										.get(numVertices - 1));
-
-						// Add the edge to the list
-						tempEdges.add(tempEdge);
-
-						// Refresh the edge
-						tempEdge.refresh();
-					}
-
-					// If this was the fourth vertex, the quadrilateral is done
-					// so finish up the polygon
-					if (numVertices == 4) {
-
-						EdgeController tempEdge = getEdge(
-								(VertexController) selectedVertices
-										.get(numVertices - 1),
-								(VertexController) selectedVertices.get(0));
-
-						tempEdges.add(tempEdge);
-
-						// Create a face out of all the edges
-						NekPolygonMesh faceComponent = new NekPolygonMesh();
-						NekPolygonController newFace = (NekPolygonController) factory
-								.createController(faceComponent);
-
-						// Set the polygon's name and ID
-						newFace.setProperty("Name", "Polygon");
-						newFace.setProperty("Id",
-								String.valueOf(nextPolygonID));
-						nextPolygonID++;
-
-						for (AbstractController edge : tempEdges) {
-							newFace.addEntityByCategory(edge, "Edges");
-
-							// Remove the edge from the temporary root
-							tempRoot.removeEntity(edge);
-						}
-
-						// Remove the vertices from the temporary root
-						for (AbstractController vertex : selectedVertices) {
-							tempRoot.removeEntity(vertex);
-						}
-
-						// Set the new polygon to the default color
-						newFace.setProperty("Constructing", "False");
-
-						// Add the new polygon to the mesh permanently
-						((FXAttachment) attachmentManager.getAttachments()
-								.get(1)).getKnownParts().get(0)
-										.addEntity(newFace);
-
-						// Empty the lists of temporary constructs
-						selectedVertices = new ArrayList<AbstractController>();
-						tempEdges = new ArrayList<AbstractController>();
-
-					}
-				}
+				handleAddModeEvent(event);
 			}
 		};
 
@@ -368,227 +224,32 @@ public class FXMeshViewer extends FXViewer {
 
 			@Override
 			public void handle(MouseEvent event) {
-
-				// Get the mouse position
-				mousePosX = event.getSceneX();
-				mousePosY = event.getSceneY();
-				mouseOldX = event.getSceneX();
-				mouseOldY = event.getSceneY();
-
-				// Get the user's selection
-				PickResult pickResult = event.getPickResult();
-				Node intersectedNode = pickResult.getIntersectedNode();
-
-				if (intersectedNode instanceof Shape3D) {
-					// Resolve the parent
-					Group nodeParent = (Group) intersectedNode.getParent();
-
-					// Resolve the shape
-					AbstractController modelShape = (AbstractController) nodeParent
-							.getProperties().get(AbstractController.class);
-
-					// If the user clicked a vertex, handle it
-					if (modelShape instanceof VertexController) {
-
-						// If shift is down, add the vertex to the selection
-						if (event.isShiftDown()) {
-							selectedVertices.add(modelShape);
-							modelShape.setProperty("Selected", "True");
-						}
-
-						// If shift is not down and control is, either add the
-						// vertex to the selection if it is not present already
-						// or remove it if it is.
-						else if (event.isControlDown()) {
-							if (selectedVertices.contains(modelShape)) {
-								selectedVertices.remove(modelShape);
-								modelShape.setProperty("Selected", "False");
-							}
-
-							else {
-								selectedVertices.add(modelShape);
-								modelShape.setProperty("Selected", "True");
-							}
-						}
-
-						// If nothing is pressed, select that vertex and nothing
-						// else
-						else {
-							clearSelection();
-
-							selectedVertices.add(modelShape);
-							modelShape.setProperty("Selected", "True");
-						}
-					}
-				}
+				handleEditModeClick(event);
 			}
 		};
 
 		editDragHandler = new EventHandler<MouseEvent>() {
 
-			// The marker the user is dragging with the mouse
-			Sphere dragMarker;
-
 			@Override
 			public void handle(MouseEvent event) {
-
-				// Get the mouse position
-				mouseOldX = mousePosX;
-				mouseOldY = mousePosY;
-				mousePosX = event.getX();
-				mousePosY = event.getY();
-
-				// Get the user's selection
-				PickResult pickResult = event.getPickResult();
-				Node intersectedNode = pickResult.getIntersectedNode();
-
-				// If the user is not dragging a shape, ignore the motion
-				if (intersectedNode instanceof Shape3D || dragStarted) {
-
-					// The drag has started, so continue dragging even if the
-					// mouse has moved off a shape
-					dragStarted = true;
-
-					// Resolve the parent
-					Group nodeParent = (Group) intersectedNode.getParent();
-
-					// Resolve the shape
-					AbstractController modelShape = (AbstractController) nodeParent
-							.getProperties().get(AbstractController.class);
-
-					// If the user has selected a vertex, drag it
-					if (selectedVertices.contains(modelShape) || dragStarted) {
-
-						// If the vertex markers have not yet been made,
-						// create them
-						if (vertexMarkers.isEmpty()) {
-
-							// Get the location of the vertex which was clicked
-							double[] cursorLocation = ((VertexController) modelShape)
-									.getTranslation();
-
-							for (AbstractController vertex : selectedVertices) {
-
-								// Create the circle
-								Sphere marker = new Sphere(1);
-								// marker.setScaleZ(.25d);
-
-								// Place it at the vertex's position
-								double[] position = ((VertexController) vertex)
-										.getTranslation();
-								marker.setTranslateX(position[0]);
-								marker.setTranslateY(position[1]);
-
-								// Add it to the list
-								vertexMarkers.add(marker);
-
-								// Get the relative position of this vertex from
-								// the vertex being dragged
-								relativeXCords
-										.add(position[0] - cursorLocation[0]);
-								relativeYCords
-										.add(position[1] - cursorLocation[1]);
-
-								// If this is the vertex on which the user
-								// started the drag, its marker will be the
-								// target for the drag action
-								if (vertex == modelShape) {
-									dragMarker = marker;
-								}
-
-								((FXAttachment) attachmentManager
-										.getAttachments().get(1)).getFxNode()
-												.getChildren().add(marker);
-
-							}
-						}
-
-						// Move each vertex
-						for (int i = 0; i < vertexMarkers.size(); i++) {
-
-							// Get the vertex marker for this index
-							Sphere marker = vertexMarkers.get(i);
-
-							// Move the vertex to the mouse's current
-							// position, offset by the original distance
-							// between the vertices.
-							marker.setTranslateX(
-									relativeXCords.get(i) + mousePosX);
-							marker.setTranslateY(
-									relativeYCords.get(i) + mousePosY);
-						}
-
-					}
-
-				}
-
-			};
-
+				handleEditModeDrag(event);
+			}
 		};
 
 		editMouseUpHandler = new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-
-				// Move the selected vertices at the end of a drag, ignoring
-				// other clicks
-				if (dragStarted) {
-					dragStarted = false;
-
-					// Get the mouse position
-					mouseOldX = mousePosX;
-					mouseOldY = mousePosY;
-					mousePosX = event.getX();
-					mousePosY = event.getY();
-
-					for (int i = 0; i < selectedVertices.size(); i++) {
-
-						// Get the vertex
-						VertexController vertex = (VertexController) selectedVertices
-								.get(i);
-
-						// Update its position
-						vertex.updateLocation(relativeXCords.get(i) + mousePosX,
-								relativeYCords.get(i) + mousePosY, 0);
-
-						// Remove the markers from the scene
-						for (Sphere marker : vertexMarkers) {
-							((FXAttachment) attachmentManager.getAttachments()
-									.get(1)).getFxNode().getChildren()
-											.remove(marker);
-						}
-
-					}
-
-					// Empty the lists of markers and coordinates
-					vertexMarkers.clear();
-					relativeXCords.clear();
-					relativeYCords.clear();
-				}
-
+				handleEditModeMouseUp(event);
 			}
 
 		};
 
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+
 			@Override
-			public void handle(MouseEvent me) {
-
-				DecimalFormat format = new DecimalFormat("#.##");
-				cursorPosition.setText(
-						"Cursor position (x,y): (" + format.format(me.getX())
-								+ "," + format.format(me.getY()) + ")");
-				cursorPosition.setTranslateZ(-5);
-
-				// cursorPosition.setTranslateX(-0.1 * scene.getX());
-				// cursorPosition.setTranslateY(0.1 * scene.getY());
-
-				// cursorPosition.getTransforms()
-				// .setAll(defaultCamera.getTransforms());
-				// cursorPosition
-				// .setTranslateZ(cursorPosition.getTranslateX() - 5);
-
+			public void handle(MouseEvent event) {
+				handleMouseMoved(event);
 			}
 		});
 	}
@@ -601,23 +262,6 @@ public class FXMeshViewer extends FXViewer {
 	@Override
 	protected void createControl(Composite parent) {
 		super.createControl(parent);
-
-		// PerspectiveCamera hudCam = new PerspectiveCamera();
-		// hudCam.setTranslateZ(-100);
-		//
-		// Pane pane = new Pane();
-		//
-		// Label label = new Label();
-		// label.setText("hello world");
-		// pane.getChildren().add(label);
-
-		// Group hudRoot = new Group();
-		// HUD = new SubScene(hudRoot, 100, 100, true,
-		// SceneAntialiasing.BALANCED);
-		// HUD.setFill(Color.TRANSPARENT);
-		// hudRoot.getChildren().add(cursorPosition);
-		// HUD.setCamera(hudCam);
-		// internalRoot.getChildren().add(pane);
 
 		// Get the current key handler from the camera
 		final EventHandler<? super KeyEvent> handler = scene.getOnKeyPressed();
@@ -641,6 +285,363 @@ public class FXMeshViewer extends FXViewer {
 				}
 			}
 		});
+	}
+
+	/**
+	 * The function called whenever the user clicks the mouse in Add Mode.
+	 */
+	private void handleAddModeEvent(MouseEvent event) {
+
+		// Get the user's selection
+		PickResult pickResult = event.getPickResult();
+		Node intersectedNode = pickResult.getIntersectedNode();
+
+		// Whether or not a new vertex has been added
+		boolean changed = false;
+
+		// If the user didn't select a shape, add a new shape where they
+		// clicked
+		if (intersectedNode instanceof Box) {
+
+			// Create a new vertex at that point
+			VertexMesh tempComponent = new VertexMesh(event.getX(),
+					event.getY(), 0);
+			tempComponent.setProperty("Constructing", "True");
+			VertexController tempVertex = (VertexController) factory
+					.createController(tempComponent);
+
+			// Set the vertex's name and ID
+			tempVertex.setProperty("Name", "Vertex");
+			tempVertex.setProperty("Id", String.valueOf(nextVertexID));
+			nextVertexID++;
+
+			// Add the new vertex to the list
+			selectedVertices.add(tempVertex);
+
+			// Add it to the temp root
+			tempRoot.addEntity(tempVertex);
+
+			// Add the temp root to the attachment
+			((FXAttachment) attachmentManager.getAttachments().get(1))
+					.addGeometry(tempRoot);
+
+			tempVertex.refresh();
+			changed = true;
+		}
+
+		// If the user clicked a shape, try to add it to a polygon
+		else if (intersectedNode instanceof Shape3D) {
+
+			// Resolve the parent
+			Group nodeParent = (Group) intersectedNode.getParent();
+
+			// Resolve the shape
+			AbstractController modelShape = (AbstractController) nodeParent
+					.getProperties().get(AbstractController.class);
+
+			// If four or more vertices have already been selected
+			// through some other method, then clear the selection and
+			// start over
+			if (selectedVertices.size() >= 4) {
+				clearSelection();
+			}
+
+			// If the vertex is already in the polygon currently being
+			// constructed, ignore it
+			if (selectedVertices.contains(modelShape)) {
+				return;
+			}
+
+			// If the selected shape is a vertex, add it to the list
+			if (modelShape instanceof VertexController) {
+				selectedVertices.add(modelShape);
+				changed = true;
+
+				// Change the vertex's color to show that it is part of
+				// the new polygon
+				modelShape.setProperty("Constructing", "True");
+			}
+
+		}
+
+		// If a new vertex was added, then construct edges/polygons as
+		// needed
+		if (changed) {
+
+			// The number of vertices in the polygon under construction
+			int numVertices = selectedVertices.size();
+
+			// If this is not the first vertex, create an edge between
+			// it and the last one
+			if (numVertices > 1) {
+
+				EdgeController tempEdge = getEdge(
+						(VertexController) selectedVertices
+								.get(numVertices - 2),
+						(VertexController) selectedVertices
+								.get(numVertices - 1));
+
+				// Add the edge to the list
+				tempEdges.add(tempEdge);
+
+				// Refresh the edge
+				tempEdge.refresh();
+			}
+
+			// If this was the fourth vertex, the quadrilateral is done
+			// so finish up the polygon
+			if (numVertices == 4) {
+
+				EdgeController tempEdge = getEdge(
+						(VertexController) selectedVertices
+								.get(numVertices - 1),
+						(VertexController) selectedVertices.get(0));
+
+				tempEdges.add(tempEdge);
+
+				// Create a face out of all the edges
+				NekPolygonMesh faceComponent = new NekPolygonMesh();
+				NekPolygonController newFace = (NekPolygonController) factory
+						.createController(faceComponent);
+
+				// Set the polygon's name and ID
+				newFace.setProperty("Name", "Polygon");
+				newFace.setProperty("Id", String.valueOf(nextPolygonID));
+				nextPolygonID++;
+
+				for (AbstractController edge : tempEdges) {
+					newFace.addEntityByCategory(edge, "Edges");
+
+					// Remove the edge from the temporary root
+					tempRoot.removeEntity(edge);
+				}
+
+				// Remove the vertices from the temporary root
+				for (AbstractController vertex : selectedVertices) {
+					tempRoot.removeEntity(vertex);
+				}
+
+				// Set the new polygon to the default color
+				newFace.setProperty("Constructing", "False");
+
+				// Add the new polygon to the mesh permanently
+				((FXAttachment) attachmentManager.getAttachments().get(1))
+						.getKnownParts().get(0).addEntity(newFace);
+
+				// Empty the lists of temporary constructs
+				selectedVertices = new ArrayList<AbstractController>();
+				tempEdges = new ArrayList<AbstractController>();
+
+			}
+		}
+	}
+
+	/**
+	 * The function called whenever the user clicks the mouse while in Edit
+	 * mode.
+	 * 
+	 * @param event
+	 *            The event that prompted the invocation of this function.
+	 */
+	private void handleEditModeClick(MouseEvent event) {
+
+		// Get the mouse position
+		mousePosX = event.getSceneX();
+		mousePosY = event.getSceneY();
+		mouseOldX = event.getSceneX();
+		mouseOldY = event.getSceneY();
+
+		// Get the user's selection
+		PickResult pickResult = event.getPickResult();
+		Node intersectedNode = pickResult.getIntersectedNode();
+
+		if (intersectedNode instanceof Shape3D) {
+			// Resolve the parent
+			Group nodeParent = (Group) intersectedNode.getParent();
+
+			// Resolve the shape
+			AbstractController modelShape = (AbstractController) nodeParent
+					.getProperties().get(AbstractController.class);
+
+			// If the user clicked a vertex, handle it
+			if (modelShape instanceof VertexController) {
+
+				// If shift is down, add the vertex to the selection
+				if (event.isShiftDown()) {
+					selectedVertices.add(modelShape);
+					modelShape.setProperty("Selected", "True");
+				}
+
+				// If shift is not down and control is, either add the
+				// vertex to the selection if it is not present already
+				// or remove it if it is.
+				else if (event.isControlDown()) {
+					if (selectedVertices.contains(modelShape)) {
+						selectedVertices.remove(modelShape);
+						modelShape.setProperty("Selected", "False");
+					}
+
+					else {
+						selectedVertices.add(modelShape);
+						modelShape.setProperty("Selected", "True");
+					}
+				}
+
+				// If nothing is pressed, select that vertex and nothing
+				// else
+				else {
+					clearSelection();
+
+					selectedVertices.add(modelShape);
+					modelShape.setProperty("Selected", "True");
+				}
+			}
+		}
+	}
+
+	/**
+	 * The function called whenever the mouse is dragged in Edit Mode.
+	 * 
+	 * @param event
+	 *            The event which prompted the invocation of this function.
+	 */
+	private void handleEditModeDrag(MouseEvent event) {
+
+		// Get the mouse position
+		mouseOldX = mousePosX;
+		mouseOldY = mousePosY;
+		mousePosX = event.getX();
+		mousePosY = event.getY();
+
+		// Get the user's selection
+		PickResult pickResult = event.getPickResult();
+		Node intersectedNode = pickResult.getIntersectedNode();
+
+		// If the user is not dragging a shape, ignore the motion
+		if (intersectedNode instanceof Shape3D || dragStarted) {
+
+			// The drag has started, so continue dragging even if the
+			// mouse has moved off a shape
+			dragStarted = true;
+
+			// Resolve the parent
+			Group nodeParent = (Group) intersectedNode.getParent();
+
+			// Resolve the shape
+			AbstractController modelShape = (AbstractController) nodeParent
+					.getProperties().get(AbstractController.class);
+
+			// If the user has selected a vertex, drag it
+			if (selectedVertices.contains(modelShape) || dragStarted) {
+
+				// If the vertex markers have not yet been made,
+				// create them
+				if (vertexMarkers.isEmpty()) {
+
+					// Get the location of the vertex which was clicked
+					double[] cursorLocation = ((VertexController) modelShape)
+							.getTranslation();
+
+					for (AbstractController vertex : selectedVertices) {
+
+						// Create the circle
+						Sphere marker = new Sphere(1);
+						// marker.setScaleZ(.25d);
+
+						// Place it at the vertex's position
+						double[] position = ((VertexController) vertex)
+								.getTranslation();
+						marker.setTranslateX(position[0]);
+						marker.setTranslateY(position[1]);
+
+						// Add it to the list
+						vertexMarkers.add(marker);
+
+						// Get the relative position of this vertex from
+						// the vertex being dragged
+						relativeXCords.add(position[0] - cursorLocation[0]);
+						relativeYCords.add(position[1] - cursorLocation[1]);
+
+						((FXAttachment) attachmentManager.getAttachments()
+								.get(1)).getFxNode().getChildren().add(marker);
+
+					}
+				}
+
+				// Move each vertex
+				for (int i = 0; i < vertexMarkers.size(); i++) {
+
+					// Get the vertex marker for this index
+					Sphere marker = vertexMarkers.get(i);
+
+					// Move the vertex to the mouse's current
+					// position, offset by the original distance
+					// between the vertices.
+					marker.setTranslateX(relativeXCords.get(i) + mousePosX);
+					marker.setTranslateY(relativeYCords.get(i) + mousePosY);
+				}
+
+			}
+
+		}
+	}
+
+	/**
+	 * The function called whenever the mouse button is released in Edit Mode.
+	 * 
+	 * @param event
+	 *            The mouse event which prompted the invocation of this
+	 *            function.
+	 */
+	private void handleEditModeMouseUp(MouseEvent event) {
+		// Move the selected vertices at the end of a drag, ignoring
+		// other clicks
+		if (dragStarted) {
+			dragStarted = false;
+
+			// Get the mouse position
+			mouseOldX = mousePosX;
+			mouseOldY = mousePosY;
+			mousePosX = event.getX();
+			mousePosY = event.getY();
+
+			for (int i = 0; i < selectedVertices.size(); i++) {
+
+				// Get the vertex
+				VertexController vertex = (VertexController) selectedVertices
+						.get(i);
+
+				// Update its position
+				vertex.updateLocation(relativeXCords.get(i) + mousePosX,
+						relativeYCords.get(i) + mousePosY, 0);
+
+				// Remove the markers from the scene
+				for (Sphere marker : vertexMarkers) {
+					((FXAttachment) attachmentManager.getAttachments().get(1))
+							.getFxNode().getChildren().remove(marker);
+				}
+
+			}
+
+			// Empty the lists of markers and coordinates
+			vertexMarkers.clear();
+			relativeXCords.clear();
+			relativeYCords.clear();
+		}
+	}
+
+	/**
+	 * The function called whenever the user moves the mouse.
+	 * 
+	 * @param event
+	 *            The event that prompted this function's invocation.
+	 */
+	private void handleMouseMoved(MouseEvent event) {
+		DecimalFormat format = new DecimalFormat("#.##");
+		cursorPosition.setText(
+				"Cursor position (x,y): (" + format.format(event.getX()) + ","
+						+ format.format(event.getY()) + ")");
+		cursorPosition.setTranslateZ(-5);
 	}
 
 	/**
@@ -883,6 +884,12 @@ public class FXMeshViewer extends FXViewer {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.canvas.FXViewer#updateCamera(org.
+	 * eclipse.ice.viz.service.javafx.scene.base.ICamera)
+	 */
 	@Override
 	protected void updateCamera(ICamera camera) {
 		if (!(camera instanceof FXCameraAttachment)) {
@@ -904,8 +911,6 @@ public class FXMeshViewer extends FXViewer {
 		scene.setCamera(fxCamera);
 
 		defaultCamera = fxCamera;
-
-		// ((TopDownController) cameraController).fixToCamera(cursorPosition);
 
 	}
 

@@ -28,6 +28,19 @@ import org.junit.Test;
 public class LinearEdgeMeshTester {
 
 	/**
+	 * Check that LinearEdgeMeshes are cloned correctly.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Clone a mesh and check that the result is identical
+		LinearEdgeMesh mesh = new LinearEdgeMesh();
+		mesh.setProperty("Test", "Property");
+		LinearEdgeMesh clone = (LinearEdgeMesh) mesh.clone();
+		assertTrue(mesh.equals(clone));
+	}
+
+	/**
 	 * Tests the line's length as the vertices are changed
 	 */
 	@Test
@@ -51,7 +64,6 @@ public class LinearEdgeMeshTester {
 		edge.addEntityByCategory(vertex2, "Vertices");
 
 		// Check that the edge has the correct length
-		double l = edge.getLength();
 		assertTrue(Double.compare(1.73, edge.getLength()) <= .1d);
 
 		// Replace the second vertex with the third
