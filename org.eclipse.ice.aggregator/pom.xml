@@ -36,6 +36,7 @@
   	<module>../org.eclipse.ice.materials</module>
   	<module>../org.eclipse.ice.materials.test</module>
   	<module>../org.eclipse.ice.materials.ui</module>
+   	<module>../org.eclipse.ice.materials.feature</module>
   	<module>../org.eclipse.ice.mesh</module>
   	<module>../org.eclipse.ice.mesh.test</module>
   	<module>../org.eclipse.ice.nek5000</module>
