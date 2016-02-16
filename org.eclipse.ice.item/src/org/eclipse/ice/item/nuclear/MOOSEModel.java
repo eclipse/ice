@@ -13,10 +13,12 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -461,9 +463,9 @@ public class MOOSEModel extends Item {
 
 				// Create the yaml and syntax exec strings
 				String[] yamlCmd = { "/bin/sh", "-c",
-						execFile.getAbsolutePath() + " --yaml > " + yamlFile.getLocation().toOSString() };
+						execFile.getAbsolutePath() + " --yaml > " + yamlFile.getLocation().toOSString().replaceAll(" ", "\\\\ ") };
 				String[] syntaxCmd = { "/bin/sh", "-c",
-						execFile.getAbsolutePath() + " --syntax > " + syntaxFile.getLocation().toOSString() };
+						execFile.getAbsolutePath() + " --syntax > " + syntaxFile.getLocation().toOSString().replaceAll(" ", "\\\\ ") };
 
 				// Create the YAML and Syntax files
 				Process p1 = Runtime.getRuntime().exec(yamlCmd);
@@ -482,8 +484,8 @@ public class MOOSEModel extends Item {
 			}
 
 			// Clean up the comments in the files
-			createCleanMOOSEFile(yamlFile.getLocation().toOSString());
-			createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
+			createCleanMOOSEFile(yamlFile.getName());
+			createCleanMOOSEFile(syntaxFile.getName());
 
 			// Refresh the space
 			refreshProjectSpace();
@@ -1749,25 +1751,26 @@ public class MOOSEModel extends Item {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	private void createCleanMOOSEFile(String filePath) throws IOException, CoreException {
+	private void createCleanMOOSEFile(String fileName) throws IOException, CoreException {
 
 		// Local declarations
 		String fileExt, fileType = null;
 		boolean hasHeader = false, hasFooter = false;
 		int headerLine = 0, footerLine = 0;
-		String separator = System.getProperty("file.separator");
-		ArrayList<String> fileLines;
+		String line = "";
+		ArrayList<String> fileLines = new ArrayList<String>();
 
 		// Check if the MOOSE folder exists; create it if it doesn't
 		IFolder mooseFolder = project.getFolder("MOOSE");
 
+		refreshProjectSpace();
 		// If the MOOSE folder doesn't exist, create it
 		if (!mooseFolder.exists()) {
 			mooseFolder.create(true, true, null);
 		}
 
 		// Define where the "clean" MOOSE file will be written
-		fileExt = filePath.substring(filePath.lastIndexOf("."));
+		fileExt = fileName.substring(fileName.lastIndexOf("."));
 
 		if (".yaml".equals(fileExt)) {
 			fileType = "YAML";
@@ -1779,8 +1782,11 @@ public class MOOSEModel extends Item {
 		}
 
 		// Read in the MOOSE file into an ArrayList of Strings
-		java.nio.file.Path readPath = Paths.get(filePath);
-		fileLines = (ArrayList<String>) Files.readAllLines(readPath, Charset.defaultCharset());
+		IFile file = mooseFolder.getFile(fileName);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+		while ((line = reader.readLine()) != null) {
+			fileLines.add(line);
+		}
 
 		// Define what the header/footer lines look like
 		String header = "**START " + fileType + " DATA**";
@@ -1795,7 +1801,8 @@ public class MOOSEModel extends Item {
 
 			// Record the line number of the footer
 			footerLine = fileLines.indexOf(footer);
-			deleteLines(filePath, footerLine, fileLines.size() - footerLine + 1);
+			deleteLines(file, footerLine, fileLines.size() - footerLine + 1);
+			refreshProjectSpace();
 		}
 
 		// Cut off the header, if there is one
@@ -1803,7 +1810,8 @@ public class MOOSEModel extends Item {
 
 			// Record the line number
 			headerLine = fileLines.indexOf(header);
-			deleteLines(filePath, 1, headerLine + 1);
+			deleteLines(file, 1, headerLine + 1);
+			refreshProjectSpace();
 
 		}
 
@@ -1817,9 +1825,10 @@ public class MOOSEModel extends Item {
 	 * @param startline
 	 * @param numlines
 	 */
-	private void deleteLines(String filename, int startline, int numlines) {
+	private void deleteLines(IFile file, int startline, int numlines) {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			BufferedReader br = new BufferedReader(new InputStreamReader(file.getContents()));
+//			BufferedReader br = new BufferedReader(new FileReader(filename));
 
 			// String buffer to store contents of the file
 			StringBuffer sb = new StringBuffer("");
@@ -1840,7 +1849,7 @@ public class MOOSEModel extends Item {
 			}
 			br.close();
 
-			FileWriter fw = new FileWriter(new File(filename));
+			FileWriter fw = new FileWriter(file.getLocation().toFile());
 			// Write entire string buffer into the file
 			fw.write(sb.toString());
 			fw.close();
