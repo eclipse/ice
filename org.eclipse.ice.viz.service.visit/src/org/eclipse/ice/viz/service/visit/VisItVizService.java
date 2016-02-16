@@ -87,6 +87,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 		extensions.add("gen");
 		extensions.add("exodus");
 		extensions.add("nemesis");
+		extensions.add("visit");
 		// Add supported Silo file format extensions.
 		extensions.add("silo");
 		return extensions;
