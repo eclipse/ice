@@ -808,23 +808,17 @@ public class MOOSE extends Item {
 			Double value = Double.valueOf(data[2]);
 
 			// We need the jobLaunch directory to create new VizResources
-			String directory = mooseLauncher.getJobLaunchDirectory();
-			if (directory == null) {
+			IFolder directory = mooseLauncher.getJobLaunchFolder();
+			if (directory == null || !directory.exists()) {
+				logger.info("MOOSE Job Launch directory was null or did not exist. Cannot show real-time plots.");
 				return false;
 			}
 
 			// Refresh the project space
 			refreshProjectSpace();
 
-			// Get this job launch folder
-			IFolder jobFolder = project.getFolder("jobs")
-					.getFolder(directory.substring(directory.lastIndexOf("/") + 1, directory.length()));
-			if (!jobFolder.exists()) {
-				return false;
-			}
-
 			// Grab the new Postprocessor CSV file
-			IFile dataFile = jobFolder.getFile(name + ".csv");
+			IFile dataFile = directory.getFile(name + ".csv");
 
 			// Get a reference to the ResourceComponent
 			ResourceComponent comp = (ResourceComponent) form.getComponent(3);
