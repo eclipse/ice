@@ -1905,12 +1905,8 @@ public class JobLauncher extends Item {
 	 * 
 	 * @return directory The directory where the job is launched from.
 	 */
-	protected String getWorkingDirectory() {
-		if (actionDataMap != null) {
-			return actionDataMap.get("workingDir");
-		} else {
-			return null;
-		}
+	public IFolder getJobLaunchFolder() {
+		return currentJobFolder;
 	}
 
 	/**

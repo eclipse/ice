@@ -524,9 +524,9 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 	 *
 	 * @return
 	 */
-	public String getJobLaunchDirectory() {
-		return getWorkingDirectory();
-	}
+//	public String getJobLaunchDirectory() {
+//		return getWorkingDirectory();
+//	}
 
 	/*
 	 * (non-Javadoc)
