@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.action.LoginInfoForm;
 import org.junit.Test;
 
@@ -51,7 +51,7 @@ public class LoginInfoFormTester {
 	public void checkForm() {
 
 		// Local Declarations
-		ArrayList<Entry> entries = null;
+		ArrayList<IEntry> entries = null;
 
 		// Allocate the login Form
 		loginInfoForm = new LoginInfoForm();
@@ -88,8 +88,8 @@ public class LoginInfoFormTester {
 	public void checkConvenienceMethods() {
 
 		// Local Declarations
-		ArrayList<Entry> entries = null;
-		Entry username = null, password = null;
+		ArrayList<IEntry> entries = null;
+		IEntry username = null, password = null;
 
 		// Allocate the login Form
 		loginInfoForm = new LoginInfoForm();

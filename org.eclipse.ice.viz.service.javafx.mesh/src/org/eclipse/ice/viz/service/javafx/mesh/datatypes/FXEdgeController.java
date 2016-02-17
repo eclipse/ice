@@ -64,4 +64,20 @@ public class FXEdgeController extends EdgeController {
 		updateManager.flushQueue();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Clone the model and view
+		EdgeMesh modelClone = (EdgeMesh) model.clone();
+		AbstractView viewClone = (AbstractView) view.clone();
+
+		// Create a new controller for the clones and return it
+		FXEdgeController clone = new FXEdgeController(modelClone, viewClone);
+		return clone;
+	}
 }

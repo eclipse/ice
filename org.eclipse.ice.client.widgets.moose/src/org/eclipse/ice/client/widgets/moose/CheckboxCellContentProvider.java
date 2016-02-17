@@ -18,7 +18,7 @@ import org.eclipse.ice.client.common.properties.IButtonCellContentProvider;
 import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.ice.client.common.properties.TreeProperty;
 import org.eclipse.ice.client.common.properties.TreePropertyCellContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -190,7 +190,7 @@ public class CheckboxCellContentProvider extends
 
 		if (isValid(element) && value != null) {
 			String newValue = ((Boolean) value).toString();
-			Entry entry = ((TreeProperty) element).getEntry();
+			IEntry entry = ((TreeProperty) element).getEntry();
 			// If the value has changed, mark the changed flag and set the new
 			// value.
 			if (changed = !newValue.equals(entry.getTag())) {

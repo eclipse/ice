@@ -12,7 +12,9 @@ Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.nebula.widgets.nattable.extension.glazedlists;bundle-version="1.3.0",
  org.eclipse.remote.ui;bundle-version="2.0.0",
  org.eclipse.swt
-Import-Package: org.apache.commons.io,
+Import-Package: 
+ org.apache.commons.io,
+ org.apache.log4j.spi;version="1.2.15",
  org.eclipse.core.commands.common,
  org.eclipse.core.expressions,
  org.eclipse.core.filesystem,

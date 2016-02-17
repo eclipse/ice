@@ -13,13 +13,14 @@
 package org.eclipse.ice.item.nuclear;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -44,10 +45,14 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.AbstractEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.ExecutableEntry;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -205,7 +210,7 @@ public class MOOSEModel extends Item {
 
 		// Local Declarations
 		FormStatus retStatus = FormStatus.InfoError;
-		Entry outputFileEntry = ((DataComponent) form.getComponent(fileDataComponentId))
+		IEntry outputFileEntry = ((DataComponent) form.getComponent(fileDataComponentId))
 				.retrieveEntry("Output File Name");
 		String outputFilename = outputFileEntry.getValue();
 		IWriter writer = getWriter();
@@ -261,7 +266,7 @@ public class MOOSEModel extends Item {
 	protected void setupForm() {
 
 		// Local Declarations
-		Entry mooseAppEntry;
+		ExecutableEntry mooseAppEntry;
 
 		// Create the Form
 		form = new Form();
@@ -284,59 +289,21 @@ public class MOOSEModel extends Item {
 		mooseApps = new ArrayList<String>();
 
 		// Get the Application preferences
-		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
-		try {
-			for (String key : prefs.keys()) {
-				String app = prefs.get(key, "");
-				if (!app.isEmpty()) {
-					mooseApps.add(app);
-				}
-			}
-		} catch (BackingStoreException e) {
-			logger.error(getClass().getName() + " Exception!",e);
-		}
-
-		// Only load up the Entry if some MOOSE apps were discovered.
-		if (!mooseApps.isEmpty()) {
-			mooseApps.add(0, "Select Application");
-			// Set the default to "none", forcing the user to make a selection.
-			loadedApp = mooseApps.get(0);
-			// Create the MOOSE application Entry. Add all of the files if any
-			// were found.
-			mooseAppEntry = new Entry() {
-				@Override
-				protected void setup() {
-					allowedValues = mooseApps;
-					allowedValueType = AllowedValueType.Executable;
-					defaultValue = loadedApp;
-				}
-			};
-		} else {
-			mooseApps.add("Import Application");
-			loadedApp = mooseApps.get(0);
-			mooseAppEntry = new Entry() {
-				@Override
-				protected void setup() {
-					defaultValue = loadedApp;
-					allowedValues = mooseApps;
-					allowedValueType = AllowedValueType.Executable;
-				}
-			};
-		}
+		mooseAppEntry = new ExecutableEntry();
+		mooseAppEntry.loadFromPreferences("org.eclipse.ice.item.moose");
 		mooseAppEntry.setId(1);
 		mooseAppEntry.setName("MOOSE-Based Application");
 		mooseAppEntry.setDescription(
-				"The name of the MOOSE-based application " + "for which you would like to create an input file.");
+				"The name of the MOOSE-based application for which you would like to create an input file.");
 		// Add it to the DataComponent
 		fileDataComponent.addEntry(mooseAppEntry);
 
+		loadedApp = mooseAppEntry.getValue();
+		
 		// Create the output file Entry on the form
-		Entry outputFileEntry = new Entry() {
-			@Override
-			protected void setup() {
-				defaultValue = "mooseModel.i";
-			}
-		};
+		IEntry outputFileEntry = new StringEntry();
+		outputFileEntry.setDefaultValue("mooseModel.i");
+		outputFileEntry.setValue("mooseModel.i");
 		outputFileEntry.setId(2);
 		outputFileEntry.setName("Output File Name");
 		outputFileEntry.setDescription("The file name of the output file, " + "including extension.");
@@ -399,13 +366,13 @@ public class MOOSEModel extends Item {
 	 * with the name "executuableName.yaml" that it can load. It throws an
 	 * IOException if it cannot find a match.
 	 *
-	 * @param mooseExecutableName
+	 * @param mooseSpecFileEntry
 	 *            The name of the MOOSE executable whose YAML input
 	 *            specification should be loaded into the Form's TreeComposite.
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	protected void loadTreeContents(String mooseExecutableName) throws IOException, CoreException {
+	protected void loadTreeContents(ExecutableEntry mooseSpecFileEntry) throws IOException, CoreException {
 
 		// Local Declarations
 		TreeComposite mooseParentTree = (TreeComposite) form.getComponent(mooseTreeCompositeId), tmpParentTree;
@@ -422,7 +389,7 @@ public class MOOSEModel extends Item {
 			}
 
 			// Create the URI from the user's application path
-			URI uri = URI.create(mooseExecutableName);
+			URI uri = mooseSpecFileEntry.getExecutableURI();
 			IFile yamlFile = null, syntaxFile = null;
 
 			if ("ssh".equals(uri.getScheme())) {
@@ -461,9 +428,9 @@ public class MOOSEModel extends Item {
 
 				// Create the yaml and syntax exec strings
 				String[] yamlCmd = { "/bin/sh", "-c",
-						execFile.getAbsolutePath() + " --yaml > " + yamlFile.getLocation().toOSString() };
+						execFile.getAbsolutePath() + " --yaml > " + yamlFile.getLocation().toOSString().replaceAll(" ", "\\\\ ") };
 				String[] syntaxCmd = { "/bin/sh", "-c",
-						execFile.getAbsolutePath() + " --syntax > " + syntaxFile.getLocation().toOSString() };
+						execFile.getAbsolutePath() + " --syntax > " + syntaxFile.getLocation().toOSString().replaceAll(" ", "\\\\ ") };
 
 				// Create the YAML and Syntax files
 				Process p1 = Runtime.getRuntime().exec(yamlCmd);
@@ -482,8 +449,8 @@ public class MOOSEModel extends Item {
 			}
 
 			// Clean up the comments in the files
-			createCleanMOOSEFile(yamlFile.getLocation().toOSString());
-			createCleanMOOSEFile(syntaxFile.getLocation().toOSString());
+			createCleanMOOSEFile(yamlFile.getName());
+			createCleanMOOSEFile(syntaxFile.getName());
 
 			// Refresh the space
 			refreshProjectSpace();
@@ -570,7 +537,7 @@ public class MOOSEModel extends Item {
 		if (mooseFileComponent != null) {
 
 			// Get the entry that stores the currently-selected MOOSE app name
-			Entry mooseSpecFileEntry = mooseFileComponent.retrieveEntry("MOOSE-Based Application");
+			ExecutableEntry mooseSpecFileEntry = (ExecutableEntry) mooseFileComponent.retrieveEntry("MOOSE-Based Application");
 
 			// Load the MOOSE-based application if it is different than the one
 			// currently loaded.
@@ -589,7 +556,7 @@ public class MOOSEModel extends Item {
 					TreeComposite inputTree = (TreeComposite) preparedForm.getComponent(mooseTreeCompositeId).clone();
 
 					try {
-						loadTreeContents(loadedApp);
+						loadTreeContents(mooseSpecFileEntry);
 					} catch (IOException | CoreException e) {
 						logger.error(getClass().getName() + " Exception!",e);
 					}
@@ -601,19 +568,7 @@ public class MOOSEModel extends Item {
 					mergeTrees(inputTree, yamlTree);
 
 					// Save this App as a Preference
-					IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode("org.eclipse.ice.item.moose");
-					try {
-						URI uri = new URI(loadedApp);
-						if ("ssh".equals(uri.getScheme())) {
-							prefs.put(uri.getRawPath(), loadedApp);
-						} else {
-							prefs.put(uri.getRawPath(), loadedApp);
-						}
-						prefs.flush();
-					} catch (BackingStoreException | URISyntaxException e) {
-						logger.error(getClass().getName() + " Exception!",e);
-					}
-
+					mooseSpecFileEntry.persistToPreferences("org.eclipse.ice.item.moose");
 				}
 
 				// Try to find a mesh file and append it as an ICEResource
@@ -946,28 +901,6 @@ public class MOOSEModel extends Item {
 	}
 
 	/**
-	 * This method is responsible for append a "blank" TreeComposite to the
-	 * input tree's list of child exemplars. This enables a MOOSE user to add
-	 * their own, customized blocks.
-	 *
-	 * @param tree
-	 *            The tree to which a blank child exemplar will be appended.
-	 */
-	private void addBlankChildExemplar(TreeComposite tree) {
-
-		// Create a blank child exemplar
-		TreeComposite blankTree = new TreeComposite();
-		blankTree.setName("BlankBlock");
-		DataComponent dataNode = new DataComponent();
-		blankTree.visit(dataNode);
-
-		// Add it to the tree
-		tree.addChildExemplar(blankTree);
-
-		return;
-	}
-
-	/**
 	 * This method is responsible for iterating through a HashMap of MOOSE input
 	 * data, comparing it to a HashMap of child exemplars. While it does this,
 	 * it copies over any exemplar children, plus converts parameters that are
@@ -1085,7 +1018,7 @@ public class MOOSEModel extends Item {
 				inputNode = (DataComponent) inputCur.getDataNodes().get(0);
 
 				// Get the "type" parameter from the Node (if it exists)
-				Entry typeEntry = inputNode.retrieveEntry("type");
+				IEntry typeEntry = inputNode.retrieveEntry("type");
 
 				// If there's a "type" parameter, make note of its value
 				if (typeEntry != null) {
@@ -1220,7 +1153,7 @@ public class MOOSEModel extends Item {
 
 		// Local declarations
 		DataComponent exemplarNode = null, inputNode = null;
-		Entry exemplarParam = null;
+		IEntry exemplarParam = null;
 
 		// Get the DataComponent on the exemplarCur
 		exemplarNode = (DataComponent) exemplarCur.getDataNodes().get(0);
@@ -1230,7 +1163,7 @@ public class MOOSEModel extends Item {
 
 			exemplarParam = exemplarNode.retrieveAllEntries().get(i);
 
-			if ((AllowedValueType.Discrete).equals(exemplarParam.getValueType())) {
+			if (exemplarParam instanceof DiscreteEntry) {
 
 				// Get the data node on the input tree
 				inputNode = (DataComponent) inputCur.getDataNodes().get(0);
@@ -1239,12 +1172,12 @@ public class MOOSEModel extends Item {
 				for (int j = 0; j < inputNode.retrieveAllEntries().size(); j++) {
 
 					// Get the next inputParameter
-					Entry inputParameter = inputNode.retrieveAllEntries().get(j);
+					IEntry inputParameter = inputNode.retrieveAllEntries().get(j);
 
 					if (inputParameter.getName().equals(exemplarParam.getName())) {
 
 						// Clone the YAML parameter
-						Entry paramClone = (Entry) exemplarParam.clone();
+						IEntry paramClone = (IEntry) exemplarParam.clone();
 
 						// Merge Data from the input parameter into it
 						paramClone.setDescription(inputParameter.getDescription());
@@ -1255,8 +1188,9 @@ public class MOOSEModel extends Item {
 
 						// Set the value
 						String oldValue = inputParameter.getValue();
+						//System.out.println("Param: " + paramClone.getName() + ", " + inputParameter.getName() + ", " + inputParameter.getValue());
 						paramClone.setValue(paramClone.getAllowedValues().contains(oldValue) ? oldValue
-								: paramClone.getAllowedValues().get(0));
+								: (!paramClone.getAllowedValues().isEmpty() ? paramClone.getAllowedValues().get(0) : ""));
 
 						// Set the new parameter on the data node
 						inputNode.deleteEntry(inputParameter.getName());
@@ -1362,7 +1296,7 @@ public class MOOSEModel extends Item {
 
 					// Get the mesh file entry on the Mesh block
 					DataComponent dataComp = (DataComponent) yamlCur.getDataNodes().get(0);
-					Entry meshEntry = dataComp.retrieveEntry("file");
+					IEntry meshEntry = dataComp.retrieveEntry("file");
 
 					// Convert the Entry to a "File" type Entry
 					if (meshEntry != null) {
@@ -1480,7 +1414,7 @@ public class MOOSEModel extends Item {
 
 			// Try to find the Entry with the mesh filename
 			DataComponent meshDataComp = (DataComponent) meshBlock.getDataNodes().get(0);
-			Entry meshEntry = meshDataComp.retrieveEntry("file");
+			IEntry meshEntry = meshDataComp.retrieveEntry("file");
 			if (meshEntry != null) {
 
 				// Convert the Mesh entry to a File Entry
@@ -1503,27 +1437,17 @@ public class MOOSEModel extends Item {
 	 * @param meshEntry
 	 *            The "file" Entry on the Mesh TreeComposite
 	 */
-	protected void convertToFileEntry(Entry meshEntry) {
+	protected void convertToFileEntry(IEntry meshEntry) {
 
 		// If the "file" Entry isn't a File Entry, convert it, otherwise do
 		// nothing
-		if (meshEntry != null && !meshEntry.getValueType().equals(AllowedValueType.File)) {
+		if (meshEntry != null && !(meshEntry instanceof FileEntry)) {
 
 			final ArrayList<String> meshAllowedValues = new ArrayList<String>(Arrays.asList(meshEntry.getValue()));
 
 			// Create an Entry with the mesh filename
-			Entry fileEntry = new Entry() {
-				// Setup the filenames
-				@Override
-				public void setup() {
-					this.allowedValues = meshAllowedValues;
-					this.allowedValueType = AllowedValueType.File;
-
-					return;
-				}
-
-			};
-
+			IEntry fileEntry = new FileEntry();
+			fileEntry.setAllowedValues(meshAllowedValues);
 			// Copy the meshEntry information in
 			fileEntry.setName(meshEntry.getName());
 			fileEntry.setId(meshEntry.getId());
@@ -1534,7 +1458,7 @@ public class MOOSEModel extends Item {
 			fileEntry.setTag(meshEntry.getTag());
 
 			// Now copy it all back into the original Entry on the Mesh block
-			meshEntry.copy(fileEntry);
+			((AbstractEntry)meshEntry).copy((AbstractEntry) fileEntry);
 
 			// Register the Model to listen to changes in the mesh Entry
 			meshEntry.register(this);
@@ -1604,8 +1528,8 @@ public class MOOSEModel extends Item {
 		DataComponent dataNode = (DataComponent) tree.getDataNodes().get(0);
 
 		// Get the "type" and "file" parameters
-		Entry typeEntry = dataNode.retrieveEntry("type");
-		Entry fileEntry = dataNode.retrieveEntry("file");
+		IEntry typeEntry = dataNode.retrieveEntry("type");
+		IEntry fileEntry = dataNode.retrieveEntry("file");
 
 		// Check if we're given a valid type name
 		if (typeEntry != null && typeEntry.getValue() != null && !typeEntry.getValue().isEmpty()) {
@@ -1645,9 +1569,9 @@ public class MOOSEModel extends Item {
 
 		// If the mesh file name is different, update the ResourceComponent and
 		// the Mesh block type
-		if (component instanceof Entry) {
+		if (component instanceof FileEntry) {
 
-			Entry fileEntry = (Entry) component;
+			FileEntry fileEntry = (FileEntry) component;
 			if (meshFileName == null || meshFileName.isEmpty() || !fileEntry.getValue().equals(meshFileName)) {
 				try {
 					// Update the mesh resource
@@ -1681,7 +1605,7 @@ public class MOOSEModel extends Item {
 
 				// Get the "file" Entry/parameter
 				DataComponent dataComp = (DataComponent) meshBlock.getActiveDataNode();
-				Entry fileParam = dataComp.retrieveEntry("file");
+				IEntry fileParam = dataComp.retrieveEntry("file");
 
 				if (fileParam != null) {
 
@@ -1714,7 +1638,7 @@ public class MOOSEModel extends Item {
 			DataComponent dataComp = (DataComponent) component;
 			if (dataComp.retrieveEntry("file") != null) {
 
-				Entry fileEntry = dataComp.retrieveEntry("file");
+				IEntry fileEntry = dataComp.retrieveEntry("file");
 				if (!fileEntry.getValue().isEmpty()) {
 
 					// Re-register the fileEntry in case this "file" parameter
@@ -1749,25 +1673,26 @@ public class MOOSEModel extends Item {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	private void createCleanMOOSEFile(String filePath) throws IOException, CoreException {
+	private void createCleanMOOSEFile(String fileName) throws IOException, CoreException {
 
 		// Local declarations
 		String fileExt, fileType = null;
 		boolean hasHeader = false, hasFooter = false;
 		int headerLine = 0, footerLine = 0;
-		String separator = System.getProperty("file.separator");
-		ArrayList<String> fileLines;
+		String line = "";
+		ArrayList<String> fileLines = new ArrayList<String>();
 
 		// Check if the MOOSE folder exists; create it if it doesn't
 		IFolder mooseFolder = project.getFolder("MOOSE");
 
+		refreshProjectSpace();
 		// If the MOOSE folder doesn't exist, create it
 		if (!mooseFolder.exists()) {
 			mooseFolder.create(true, true, null);
 		}
 
 		// Define where the "clean" MOOSE file will be written
-		fileExt = filePath.substring(filePath.lastIndexOf("."));
+		fileExt = fileName.substring(fileName.lastIndexOf("."));
 
 		if (".yaml".equals(fileExt)) {
 			fileType = "YAML";
@@ -1779,8 +1704,11 @@ public class MOOSEModel extends Item {
 		}
 
 		// Read in the MOOSE file into an ArrayList of Strings
-		java.nio.file.Path readPath = Paths.get(filePath);
-		fileLines = (ArrayList<String>) Files.readAllLines(readPath, Charset.defaultCharset());
+		IFile file = mooseFolder.getFile(fileName);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(file.getContents()));
+		while ((line = reader.readLine()) != null) {
+			fileLines.add(line);
+		}
 
 		// Define what the header/footer lines look like
 		String header = "**START " + fileType + " DATA**";
@@ -1795,7 +1723,8 @@ public class MOOSEModel extends Item {
 
 			// Record the line number of the footer
 			footerLine = fileLines.indexOf(footer);
-			deleteLines(filePath, footerLine, fileLines.size() - footerLine + 1);
+			deleteLines(file, footerLine, fileLines.size() - footerLine + 1);
+			refreshProjectSpace();
 		}
 
 		// Cut off the header, if there is one
@@ -1803,7 +1732,8 @@ public class MOOSEModel extends Item {
 
 			// Record the line number
 			headerLine = fileLines.indexOf(header);
-			deleteLines(filePath, 1, headerLine + 1);
+			deleteLines(file, 1, headerLine + 1);
+			refreshProjectSpace();
 
 		}
 
@@ -1817,9 +1747,10 @@ public class MOOSEModel extends Item {
 	 * @param startline
 	 * @param numlines
 	 */
-	private void deleteLines(String filename, int startline, int numlines) {
+	private void deleteLines(IFile file, int startline, int numlines) {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			BufferedReader br = new BufferedReader(new InputStreamReader(file.getContents()));
+//			BufferedReader br = new BufferedReader(new FileReader(filename));
 
 			// String buffer to store contents of the file
 			StringBuffer sb = new StringBuffer("");
@@ -1840,7 +1771,7 @@ public class MOOSEModel extends Item {
 			}
 			br.close();
 
-			FileWriter fw = new FileWriter(new File(filename));
+			FileWriter fw = new FileWriter(file.getLocation().toFile());
 			// Write entire string buffer into the file
 			fw.write(sb.toString());
 			fw.close();

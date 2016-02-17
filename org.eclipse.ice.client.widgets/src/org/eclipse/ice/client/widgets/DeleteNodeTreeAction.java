@@ -42,8 +42,8 @@ public class DeleteNodeTreeAction extends AbstractTreeAction {
 
 		// Create the image descriptor from the file path
 		Bundle bundle = FrameworkUtil.getBundle(DeleteNodeTreeAction.class);
-		Path imagePath = new Path("icons"
-				+ System.getProperty("file.separator") + "delete_X.png");
+		Path imagePath = new Path("icons" + System.getProperty("file.separator")
+				+ "delete_X.png");
 		URL imageURL = FileLocator.find(bundle, imagePath, null);
 		setImageDescriptor(ImageDescriptor.createFromURL(imageURL));
 

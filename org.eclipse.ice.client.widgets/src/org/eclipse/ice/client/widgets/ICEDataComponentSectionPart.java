@@ -38,8 +38,8 @@ import org.eclipse.ui.forms.widgets.Section;
  *
  * @author Jay Jay Billings, Anna Wojtowicz
  */
-public class ICEDataComponentSectionPart extends SectionPart implements
-		IUpdateableListener {
+public class ICEDataComponentSectionPart extends SectionPart
+		implements IUpdateableListener {
 	/**
 	 * This attribute is a reference to an ICE DataComponent that stores the
 	 * data that should be displayed by this SectionPart. The DataComponent will
@@ -99,6 +99,7 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 					+ "constructor cannot be null.");
 		}
 
+
 		return;
 	}
 
@@ -149,8 +150,8 @@ public class ICEDataComponentSectionPart extends SectionPart implements
 		dataComposite.addListener(SWT.Selection, listener);
 
 		// Add the message manager
-		dataComposite.setMessageManager(editor.getHeaderForm()
-				.getMessageManager());
+		dataComposite
+				.setMessageManager(editor.getHeaderForm().getMessageManager());
 
 		// Set the data composite's layout to a single column GridLayout. This
 		// overrides the default layout used by DataComponentComposite.

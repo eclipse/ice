@@ -15,13 +15,6 @@
  # the layers in the model from scratch. 
  # ****************************************************************************
 
-# Usual imports
-from org.eclipse.ease.modules import EnvironmentModule
-EnvironmentModule().loadModule("/System/Environment")
-import java
-import org
-import com
-
 # Needed imports from ICE
 from org.eclipse.ice.datastructures.form import Material
 

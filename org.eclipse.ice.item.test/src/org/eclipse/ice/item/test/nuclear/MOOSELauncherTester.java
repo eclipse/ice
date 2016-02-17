@@ -14,7 +14,6 @@ package org.eclipse.ice.item.test.nuclear;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,9 +31,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
@@ -154,6 +151,9 @@ public class MOOSELauncherTester {
 		return;
 	}
 
+	/**
+	 * 
+	 */
 	@Test
 	public void checkDynamicFileGeneration() {
 		
@@ -179,30 +179,6 @@ public class MOOSELauncherTester {
 			e.printStackTrace();
 		}
 		assertEquals(3, fileDataComp.retrieveAllEntries().size());
-	}
-	
-	@Test
-	public void checkCustomAppEntry() {
-		
-		// Local declarations
-		DataComponent execDataComp = 
-				(DataComponent) launcher.getForm().getComponent(5);
-		final String customExecName = "Custom executable name";
-		Entry standardExecEntry = execDataComp.retrieveEntry("Executable");
-		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-		
-		// Verify the DataComponent that holds the executable Entries
-		assertEquals(execDataComp.retrieveAllEntries().size(), 2);
-		assertNotNull(standardExecEntry);
-		assertNotNull(customExecEntry);
-		
-		// Verify the standard Entry contains an option for a custom app
-		assertTrue(standardExecEntry.getAllowedValues().contains(customExecName));
-		
-		// Verify the custom app Entry's type
-		assertEquals(customExecEntry.getValueType(), AllowedValueType.Undefined);
-		
-		return;
 	}
 
 	/**

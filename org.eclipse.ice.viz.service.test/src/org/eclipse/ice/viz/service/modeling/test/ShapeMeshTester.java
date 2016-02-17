@@ -29,6 +29,19 @@ import org.junit.Test;
 public class ShapeMeshTester {
 
 	/**
+	 * Test that the mesh is correctly cloned
+	 */
+	@Test
+	public void checkClone() {
+
+		// Clone a mesh and check that the result is identical
+		ShapeMesh mesh = new ShapeMesh();
+		mesh.setProperty("Test", "Property");
+		ShapeMesh clone = (ShapeMesh) mesh.clone();
+		assertTrue(mesh.equals(clone));
+	}
+
+	/**
 	 * Check the special behavior for parent entities
 	 */
 	@Test

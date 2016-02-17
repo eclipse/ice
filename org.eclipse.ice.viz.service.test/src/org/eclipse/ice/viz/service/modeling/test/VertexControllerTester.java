@@ -39,6 +39,20 @@ import org.junit.Test;
 public class VertexControllerTester {
 
 	/**
+	 * Check that VertexControllers can be properly cloned.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned vertex and check that it is identical to the original
+		VertexController vertex = new VertexController(new VertexMesh(),
+				new AbstractView());
+		vertex.setProperty("Test", "Property");
+		VertexController clone = (VertexController) vertex.clone();
+		assertTrue(vertex.equals(clone));
+	}
+
+	/**
 	 * Tests the Vertex's ability to correctly manage its edges
 	 */
 	@Test

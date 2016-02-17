@@ -14,9 +14,9 @@ package org.eclipse.ice.item.jobLauncher.multiLauncher;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -64,23 +64,13 @@ class MultiLauncherForm extends Form {
 				+ "although they may not all be launched at the same time.");
 
 		// Create an Entry for the parallel launch flag
-		Entry parallelLaunchEntry = new Entry() {
-			// The only thing we need to do is set it up
-			@Override
-			protected void setup() {
-
-				setName("Enable Parallel Execution");
-				setId(1);
-				setDescription("Set to true to enable parallel launch of "
+		IEntry parallelLaunchEntry = new DiscreteEntry("true","false");
+		parallelLaunchEntry.setName("Enable Parallel Execution");
+		parallelLaunchEntry.setId(1);
+		parallelLaunchEntry.setDescription("Set to true to enable parallel launch of "
 						+ "the jobs.");
-				allowedValueType = AllowedValueType.Discrete;
-				allowedValues.add("true");
-				allowedValues.add("false");
-				defaultValue = "true";
-
-				return;
-			}
-		};
+		parallelLaunchEntry.setDefaultValue("true");
+		parallelLaunchEntry.setValue("true");
 
 		// Add the Entry to the DataComponent
 		execModeComp.addEntry(parallelLaunchEntry);

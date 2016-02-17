@@ -55,7 +55,9 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionManager()
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * createConnectionManager()
 	 */
 	@Override
 	protected IVizConnectionManager<VisItSwtConnection> createConnectionManager() {
@@ -64,7 +66,9 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionPlot()
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * createConnectionPlot()
 	 */
 	@Override
 	protected ConnectionPlot<VisItSwtConnection> createConnectionPlot() {
@@ -73,7 +77,9 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -87,6 +93,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 		extensions.add("gen");
 		extensions.add("exodus");
 		extensions.add("nemesis");
+		extensions.add("visit");
 		// Add supported Silo file format extensions.
 		extensions.add("silo");
 		return extensions;
@@ -94,7 +101,9 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#getConnectionPreferencesNodeId()
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * getConnectionPreferencesNodeId()
 	 */
 	@Override
 	protected String getConnectionPreferencesNodeId() {
@@ -103,6 +112,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
@@ -112,20 +122,23 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {
 		return "1.0";
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
 	 */
 	@Override
 	public IControllerFactory getFactory() {
-		// The VisIt visualization service does not make use of the model framework, so it has no factory
+		// The VisIt visualization service does not make use of the model
+		// framework, so it has no factory
 		return null;
 	}
 }

@@ -26,19 +26,19 @@ import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
  * @author Jay Jay Billings
  *
  */
-public class ListComponentColumnPropertyAccessor<T> implements
-		IColumnPropertyAccessor<T> {
+public class ListComponentColumnPropertyAccessor<T>
+		implements IColumnPropertyAccessor<T> {
 
 	/**
-	 * The list component wrapped by this accessor. 
+	 * The list component wrapped by this accessor.
 	 */
 	private ListComponent<T> component;
-	
+
 	/**
 	 * The list of column names of the component.
 	 */
 	ArrayList<String> columnNames;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -47,13 +47,16 @@ public class ListComponentColumnPropertyAccessor<T> implements
 		// Map the column names to ids
 		columnNames = new ArrayList<String>(component.getColumnCount());
 		for (int i = 0; i < component.getColumnCount(); i++) {
-			columnNames.add(i,component.getColumnName(i));
+			columnNames.add(i, component.getColumnName(i));
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnAccessor#getDataValue(java.lang.Object, int)
+	 * 
+	 * @see
+	 * org.eclipse.nebula.widgets.nattable.data.IColumnAccessor#getDataValue(
+	 * java.lang.Object, int)
 	 */
 	@Override
 	public Object getDataValue(T rowObject, int columnIndex) {
@@ -62,7 +65,10 @@ public class ListComponentColumnPropertyAccessor<T> implements
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnAccessor#setDataValue(java.lang.Object, int, java.lang.Object)
+	 * 
+	 * @see
+	 * org.eclipse.nebula.widgets.nattable.data.IColumnAccessor#setDataValue(
+	 * java.lang.Object, int, java.lang.Object)
 	 */
 	@Override
 	public void setDataValue(T rowObject, int columnIndex, Object newValue) {
@@ -71,7 +77,9 @@ public class ListComponentColumnPropertyAccessor<T> implements
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnAccessor#getColumnCount()
+	 * 
+	 * @see
+	 * org.eclipse.nebula.widgets.nattable.data.IColumnAccessor#getColumnCount()
 	 */
 	@Override
 	public int getColumnCount() {
@@ -80,7 +88,9 @@ public class ListComponentColumnPropertyAccessor<T> implements
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnPropertyResolver#getColumnProperty(int)
+	 * 
+	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnPropertyResolver#
+	 * getColumnProperty(int)
 	 */
 	@Override
 	public String getColumnProperty(int columnIndex) {
@@ -89,7 +99,9 @@ public class ListComponentColumnPropertyAccessor<T> implements
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnPropertyResolver#getColumnIndex(java.lang.String)
+	 * 
+	 * @see org.eclipse.nebula.widgets.nattable.data.IColumnPropertyResolver#
+	 * getColumnIndex(java.lang.String)
 	 */
 	@Override
 	public int getColumnIndex(String propertyName) {

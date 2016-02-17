@@ -6,6 +6,7 @@ Bundle-Version: 2.1.8.20160208
 Fragment-Host: org.eclipse.ice.item;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ice.core.iCore,
+ org.eclipse.ice.datastructures.entry,
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.item,
  org.eclipse.ice.item.action,

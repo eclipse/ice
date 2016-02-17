@@ -21,8 +21,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -184,7 +184,7 @@ public class MultiLauncher extends Item implements Runnable {
 		ArrayList<MasterDetailsPair> pairs = null;
 		MasterDetailsPair tmpPair = null;
 		DataComponent details = null;
-		Entry inputFilesEntry = null;
+		IEntry inputFilesEntry = null;
 		ArrayList<String> inputFilesList = null;
 
 		// Set the launchers
@@ -209,7 +209,7 @@ public class MultiLauncher extends Item implements Runnable {
 				// Get the input files and add the "LAST" value for chaining
 				// jobs.
 				inputFilesEntry = details.retrieveEntry("Input File");
-				inputFilesList = inputFilesEntry.getAllowedValues();
+				inputFilesList = (ArrayList<String>) inputFilesEntry.getAllowedValues();
 				inputFilesList.add("LAST");
 				// Reset the list
 				((JobLauncherForm) launcher.getForm()).setInputFiles(
@@ -540,7 +540,7 @@ public class MultiLauncher extends Item implements Runnable {
 		Form jobForm = null;
 		String inputName = null;
 		DataComponent inputFilesComp = null;
-		Entry inputFilesEntry = null;
+		IEntry inputFilesEntry = null;
 		ArrayList<String> inputFilesList = null;
 
 		// Get the Form
@@ -557,7 +557,7 @@ public class MultiLauncher extends Item implements Runnable {
 			// Add the input file to the list of input files if it does not
 			// exist
 			if (!inputFilesEntry.getAllowedValues().contains(filename)) {
-				inputFilesList = inputFilesEntry.getAllowedValues();
+				inputFilesList = (ArrayList<String>) inputFilesEntry.getAllowedValues();
 				inputFilesList.add(0, filename);
 				logger.info("MultiLauncher Message: "
 						+ "Resetting file name for chained launch to "
@@ -666,11 +666,11 @@ public class MultiLauncher extends Item implements Runnable {
 						&& (!(launchParametersComp.retrieveAllEntries()
 								.isEmpty()))) {
 					// Loop over all of the Entries and transfer the values
-					for (Entry entry : inputLaunchParamsComp
+					for (IEntry entry : inputLaunchParamsComp
 							.retrieveAllEntries()) {
 						// Search for an Entry by the same name in the
 						// component
-						Entry launchEntry = launchParametersComp
+						IEntry launchEntry = launchParametersComp
 								.retrieveEntry(entry.getName());
 						// And set its value if it exists. Note that this
 						// will ignore Entries that do not exist!

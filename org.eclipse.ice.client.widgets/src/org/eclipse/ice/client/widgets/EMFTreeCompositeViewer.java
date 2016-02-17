@@ -38,8 +38,8 @@ import org.eclipse.ui.IWorkbenchPartReference;
  * @author Taylor Patterson, Jordan H. Deyton, Anna Wojtowicz
  * 
  */
-public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
-		IPartListener2 {
+public class EMFTreeCompositeViewer extends TreeCompositeViewer
+		implements IPartListener2 {
 
 	/**
 	 * The ID of this view
@@ -78,25 +78,21 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 		// Call TreeCompositeViewer's createPartControl method
 		super.createPartControl(parent);
 		/*
-		// Change the add and delete child actions to listen for selections from
-		// the EMFTreeCompositeViewer.
-		addAction.setPartId(EMFTreeCompositeViewer.ID);
-		deleteAction.setPartId(EMFTreeCompositeViewer.ID);
-
-		// Create a MenuManager that will enable a context menu in the
-		// TreeViewer.
-		MenuManager menuManager = new MenuManager();
-		menuManager.setRemoveAllWhenShown(true);
-		menuManager.addMenuListener(new IMenuListener() {
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-				EMFTreeCompositeViewer.this.fillContextMenu(manager);
-			}
-		});
-		Control control = treeViewer.getControl();
-		Menu menu = menuManager.createContextMenu(control);
-		control.setMenu(menu);
-		*/
+		 * // Change the add and delete child actions to listen for selections
+		 * from // the EMFTreeCompositeViewer.
+		 * addAction.setPartId(EMFTreeCompositeViewer.ID);
+		 * deleteAction.setPartId(EMFTreeCompositeViewer.ID);
+		 * 
+		 * // Create a MenuManager that will enable a context menu in the //
+		 * TreeViewer. MenuManager menuManager = new MenuManager();
+		 * menuManager.setRemoveAllWhenShown(true);
+		 * menuManager.addMenuListener(new IMenuListener() {
+		 * 
+		 * @Override public void menuAboutToShow(IMenuManager manager) {
+		 * EMFTreeCompositeViewer.this.fillContextMenu(manager); } }); Control
+		 * control = treeViewer.getControl(); Menu menu =
+		 * menuManager.createContextMenu(control); control.setMenu(menu);
+		 */
 		// Register with the PartService to tell which MOOSEModelBuilder is the
 		// most recently activated one.
 		getSite().getWorkbenchWindow().getPartService().addPartListener(this);
@@ -114,7 +110,8 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 	protected void fillContextMenu(IMenuManager menuManager) {
 
 		ISelection iSelection = treeViewer.getSelection();
-		if (!iSelection.isEmpty() && iSelection instanceof IStructuredSelection) {
+		if (!iSelection.isEmpty()
+				&& iSelection instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) iSelection;
 
 			Object object = selection.getFirstElement();
@@ -127,8 +124,8 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 				// components. However, we need to add a better way to set the
 				// branch inputs (probably with their own dialogs with a list of
 				// available inputs/outputs and check boxes).
-				menuManager.add(new Action("Change name of \"" + node.getName()
-						+ "\"") {
+				menuManager.add(new Action(
+						"Change name of \"" + node.getName() + "\"") {
 					@Override
 					public void run() {
 						// Get the required arguments for creating an
@@ -175,9 +172,8 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 								// special characters.
 								else {
 									String specials = "\\-\\_\\+\\(\\)\\[\\]\\{\\}\\:";
-									Pattern pattern = Pattern
-											.compile("[^a-zA-Z0-9" + specials
-													+ "]");
+									Pattern pattern = Pattern.compile(
+											"[^a-zA-Z0-9" + specials + "]");
 									if (pattern.matcher(newText).find()) {
 										error = "Invalid name: Please use only "
 												+ "letters, numbers, and the "
@@ -191,9 +187,8 @@ public class EMFTreeCompositeViewer extends TreeCompositeViewer implements
 						};
 
 						// Create the InputDialog and open it.
-						InputDialog dialog = new InputDialog(shell,
-								dialogTitle, dialogMessage, initialValue,
-								validator);
+						InputDialog dialog = new InputDialog(shell, dialogTitle,
+								dialogMessage, initialValue, validator);
 						// If the dialog was accepted and the string was valid,
 						// set the name of the TreeComposite.
 						if (dialog.open() == Window.OK) {

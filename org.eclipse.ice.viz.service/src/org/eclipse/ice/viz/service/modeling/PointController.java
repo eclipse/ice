@@ -134,4 +134,27 @@ public class PointController extends AbstractController {
 
 		return clone;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void copy(AbstractController otherObject) {
+
+		// Create the model and give it a reference to this
+		model = new PointMesh();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(otherObject.model);
+		view = (AbstractView) otherObject.view.clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
+	}
 }

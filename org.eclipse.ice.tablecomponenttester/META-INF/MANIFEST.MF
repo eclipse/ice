@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: TablecomponentTester
-Bundle-SymbolicName: org.eclipse.ice.tablecomponenttester
+Bundle-SymbolicName: org.eclipse.ice.tablecomponenttester;singleton:=true
 Bundle-Version: 2.1.7.20150825
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",

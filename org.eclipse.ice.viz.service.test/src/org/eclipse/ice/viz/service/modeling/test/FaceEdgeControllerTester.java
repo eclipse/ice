@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.modeling.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
 import org.eclipse.ice.viz.service.modeling.FaceController;
 import org.eclipse.ice.viz.service.modeling.FaceEdgeController;
 import org.eclipse.ice.viz.service.modeling.FaceEdgeMesh;
@@ -43,9 +43,11 @@ public class FaceEdgeControllerTester {
 		FaceEdgeMesh edgeMesh = new FaceEdgeMesh();
 		TestEdge edge = new TestEdge(edgeMesh, new AbstractView());
 		VertexMesh vertexMesh1 = new VertexMesh(0, 0, 0);
-		VertexController vertex1 = new VertexController(vertexMesh1, new AbstractView());
+		VertexController vertex1 = new VertexController(vertexMesh1,
+				new AbstractView());
 		VertexMesh vertexMesh2 = new VertexMesh(1, 1, 1);
-		VertexController vertex2 = new VertexController(vertexMesh2, new AbstractView());
+		VertexController vertex2 = new VertexController(vertexMesh2,
+				new AbstractView());
 		edge.addEntityByCategory(vertex1, "Vertices");
 		edge.addEntityByCategory(vertex2, "Vertices");
 
@@ -60,13 +62,27 @@ public class FaceEdgeControllerTester {
 		FaceMesh faceMesh = new FaceMesh();
 		FaceController face = new FaceController(faceMesh, new AbstractView());
 		edge.addEntityByCategory(face, "Faces");
-		
-		//Reset the edge's updated state
+
+		// Reset the edge's updated state
 		edge.wasUpdated();
 
 		// Change the face and check that the edge didn't get updated
 		face.setProperty("Test", "Value");
 		assertFalse(edge.wasUpdated());
+	}
+
+	/**
+	 * Check that FaceEdgeControllers can be properly cloned.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned edge and check that it is identical to the original
+		FaceEdgeController edge = new FaceEdgeController(new FaceEdgeMesh(),
+				new AbstractView());
+		edge.setProperty("Test", "Property");
+		FaceEdgeController clone = (FaceEdgeController) edge.clone();
+		assertTrue(edge.equals(clone));
 	}
 
 	/**
@@ -104,7 +120,8 @@ public class FaceEdgeControllerTester {
 		 * [])
 		 */
 		@Override
-		public void update(IManagedUpdateable component, SubscriptionType[] type) {
+		public void update(IManagedUpdateable component,
+				SubscriptionType[] type) {
 			updated = true;
 		}
 

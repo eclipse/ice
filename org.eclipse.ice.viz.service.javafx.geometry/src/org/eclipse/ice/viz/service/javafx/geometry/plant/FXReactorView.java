@@ -442,19 +442,41 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 
 		// Set each of the reactor's parts to line mode
 		if (on) {
-			side1.setDrawMode(DrawMode.LINE);
-			side2.setDrawMode(DrawMode.LINE);
-			lowerArch.setDrawMode(DrawMode.LINE);
-			upperArch.setDrawMode(DrawMode.LINE);
+
+			// If side1 exists, the other objects should too
+			if (side1 != null) {
+				side1.setDrawMode(DrawMode.LINE);
+				side2.setDrawMode(DrawMode.LINE);
+				lowerArch.setDrawMode(DrawMode.LINE);
+				upperArch.setDrawMode(DrawMode.LINE);
+			}
 		}
 
 		// Set each of the reactor's parts to fill mode
 		else {
-			side1.setDrawMode(DrawMode.FILL);
-			side2.setDrawMode(DrawMode.FILL);
-			lowerArch.setDrawMode(DrawMode.FILL);
-			upperArch.setDrawMode(DrawMode.FILL);
+
+			// If side1 exists, the other objects should too
+			if (side1 != null) {
+				side1.setDrawMode(DrawMode.FILL);
+				side2.setDrawMode(DrawMode.FILL);
+				lowerArch.setDrawMode(DrawMode.FILL);
+				upperArch.setDrawMode(DrawMode.FILL);
+			}
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new AbstractView and make it a copy of this
+		FXReactorView clone = new FXReactorView();
+		clone.copy(this);
+
+		return clone;
+	}
 }

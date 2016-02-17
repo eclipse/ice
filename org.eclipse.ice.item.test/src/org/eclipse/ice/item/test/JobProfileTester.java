@@ -34,8 +34,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
@@ -181,8 +181,8 @@ public class JobProfileTester {
 
 		// Verify they were set correctly
 		DataComponent component = (DataComponent) form.getComponents().get(3);
-		Entry mpiEntry = (Entry) component.retrieveAllEntries().get(1);
-		Entry openMPEntry = (Entry) component.retrieveAllEntries().get(2);
+		IEntry mpiEntry = component.retrieveAllEntries().get(1);
+		IEntry openMPEntry = component.retrieveAllEntries().get(2);
 		assertEquals("1", mpiEntry.getValue());
 		assertEquals("1", openMPEntry.getValue());
 

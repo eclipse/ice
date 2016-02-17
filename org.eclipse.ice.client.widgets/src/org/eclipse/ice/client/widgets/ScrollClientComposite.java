@@ -109,9 +109,8 @@ public class ScrollClientComposite extends Composite {
 			scrolledAncestor = (SharedScrolledComposite) parent;
 		} else {
 			scrolledAncestor = null;
-			throw new IllegalArgumentException(
-					"HorizontalScrollManager error: "
-							+ "Client Control does not have a ScrolledComposite ancestor.");
+			throw new IllegalArgumentException("HorizontalScrollManager error: "
+					+ "Client Control does not have a ScrolledComposite ancestor.");
 		}
 
 		// We need to add a resize listener to reflow the ancestor
@@ -168,9 +167,8 @@ public class ScrollClientComposite extends Composite {
 		// Check the scrolledAncestor parameter for null.
 		if (scrolledAncestor == null) {
 			this.scrolledAncestor = null;
-			throw new IllegalArgumentException(
-					"HorizontalScrollManager error: "
-							+ "Null ancestor ScrolledComposite passed to constructor!");
+			throw new IllegalArgumentException("HorizontalScrollManager error: "
+					+ "Null ancestor ScrolledComposite passed to constructor!");
 		}
 
 		// Find the scrolledAncestor among this Composite's ancestors.
@@ -184,9 +182,8 @@ public class ScrollClientComposite extends Composite {
 			this.scrolledAncestor = scrolledAncestor;
 		} else {
 			this.scrolledAncestor = null;
-			throw new IllegalArgumentException(
-					"HorizontalScrollManager error: "
-							+ "Specified ScrolledComposite is not an ancestor of client Control.");
+			throw new IllegalArgumentException("HorizontalScrollManager error: "
+					+ "Specified ScrolledComposite is not an ancestor of client Control.");
 		}
 
 		// We need to add a resize listener to reflow the ancestor

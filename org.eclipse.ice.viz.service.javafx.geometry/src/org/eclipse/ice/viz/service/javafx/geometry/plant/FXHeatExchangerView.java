@@ -447,10 +447,24 @@ public class FXHeatExchangerView extends AbstractView
 		}
 
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.WIREFRAME };
+		SubscriptionType[] eventTypes = { SubscriptionType.WIREFRAME };
 		updateManager.notifyListeners(eventTypes);
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new AbstractView and make it a copy of this
+		FXHeatExchangerView clone = new FXHeatExchangerView();
+		clone.copy(this);
+
+		return clone;
 	}
 
 }

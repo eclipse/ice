@@ -44,7 +44,8 @@ import org.eclipse.ui.dialogs.FilteredItemsSelectionDialog;
  * @author Alex McCaskey
  *
  */
-public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelectionDialog {
+public class TreeNodeFilteredItemsSelectionDialog
+		extends FilteredItemsSelectionDialog {
 
 	/**
 	 * The set of elements that this dialog displays.
@@ -52,18 +53,17 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	private Set<String> elements;
 
 	/**
-	 * The list of current children names. 
+	 * The list of current children names.
 	 */
 	private ArrayList<String> currentChildren;
 
 	/**
-	 * Reference to a text box containing the 
-	 * name of the added child. 
+	 * Reference to a text box containing the name of the added child.
 	 */
 	private Text nameText;
 
 	/**
-	 * The string name in the text box. 
+	 * The string name in the text box.
 	 */
 	private String currentNameText;
 
@@ -85,8 +85,8 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	 * @param multi
 	 * @param list
 	 */
-	public TreeNodeFilteredItemsSelectionDialog(Shell shell, boolean multi, Set<String> list,
-			ArrayList<String> currentNames) {
+	public TreeNodeFilteredItemsSelectionDialog(Shell shell, boolean multi,
+			Set<String> list, ArrayList<String> currentNames) {
 		super(shell, multi);
 		elements = list;
 		currentChildren = currentNames;
@@ -228,8 +228,9 @@ public class TreeNodeFilteredItemsSelectionDialog extends FilteredItemsSelection
 	 * org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
-	protected void fillContentProvider(AbstractContentProvider contentProvider, ItemsFilter itemsFilter,
-			IProgressMonitor progressMonitor) throws CoreException {
+	protected void fillContentProvider(AbstractContentProvider contentProvider,
+			ItemsFilter itemsFilter, IProgressMonitor progressMonitor)
+					throws CoreException {
 		progressMonitor.beginTask("Searching", elements.size()); //$NON-NLS-1$
 		for (Iterator iter = elements.iterator(); iter.hasNext();) {
 			contentProvider.add(iter.next(), itemsFilter);

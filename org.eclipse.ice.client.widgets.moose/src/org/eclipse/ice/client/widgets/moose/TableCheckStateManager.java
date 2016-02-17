@@ -13,7 +13,7 @@ package org.eclipse.ice.client.widgets.moose;
 
 import org.eclipse.ice.client.common.properties.TreeProperty;
 import org.eclipse.ice.client.common.properties.TreePropertyCellContentProvider;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
@@ -136,7 +136,7 @@ public class TableCheckStateManager extends TreePropertyCellContentProvider
 
 		if (isValid(element) && value != null && isEnabled(element)) {
 			String newValue = ((Boolean) value).toString();
-			Entry entry = ((TreeProperty) element).getEntry();
+			IEntry entry = ((TreeProperty) element).getEntry();
 			// If the value has changed, mark the changed flag and set the new
 			// value.
 			if (changed = !newValue.equals(entry.getTag())) {

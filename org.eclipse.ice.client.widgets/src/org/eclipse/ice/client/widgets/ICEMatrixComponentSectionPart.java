@@ -66,8 +66,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Jay Jay Billings
  */
-public class ICEMatrixComponentSectionPart extends SectionPart implements
-		IUpdateableListener {
+public class ICEMatrixComponentSectionPart extends SectionPart
+		implements IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -348,7 +348,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 			int counter = -1;
 
 			// Iterate over the list to grab the location of the column.
-			for (int i = 0; i < matrixViewer.getColumnProperties().length; i++) {
+			for (int i = 0; i < matrixViewer
+					.getColumnProperties().length; i++) {
 				if (property.equals(matrixViewer.getColumnProperties()[i])) {
 					// Get the column
 					counter = i;
@@ -371,7 +372,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		public void modify(Object element, String property, Object value) {
 			// Get the column index of the current Cell
 			int counter = -1;
-			for (int i = 0; i < matrixViewer.getColumnProperties().length; i++) {
+			for (int i = 0; i < matrixViewer
+					.getColumnProperties().length; i++) {
 				if (property.equals(matrixViewer.getColumnProperties()[i])) {
 					// Get the column, set to counter
 					counter = i;
@@ -407,10 +409,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 			}
 
 			// Set the value on the RowWrapper instance
-			row.getRowWrapper()
-					.set(counter,
-							matrixComponent.getElementValue(row.getRowIndex(),
-									counter));
+			row.getRowWrapper().set(counter, matrixComponent
+					.getElementValue(row.getRowIndex(), counter));
 
 			// Set the Cell's text and refresh the TableViewer
 			item.setText(row.getRowWrapper().get(counter).toString());
@@ -437,8 +437,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	 *            The ManagedForm for the Section.
 	 *            </p>
 	 */
-	public ICEMatrixComponentSectionPart(Section section,
-			FormEditor formEditor, IManagedForm managedForm) {
+	public ICEMatrixComponentSectionPart(Section section, FormEditor formEditor,
+			IManagedForm managedForm) {
 		super(section);
 
 		// Set the ManagedForm
@@ -463,8 +463,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		}
 		// Instantiate a new JFace TableViewer with the sectionClient as its
 		// parent
-		matrixViewer = new TableViewer(sectionClient, SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION);
+		matrixViewer = new TableViewer(sectionClient,
+				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
 
 		// Enable tooltip support for the individual ColumnViewers
 		// Original version, commented out for RAP testing. ~JJB 20120827
@@ -500,7 +500,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 		// Set up an array of CellEditors, a Combo cell editor if the
 		// Elements are of a Discrete set (like an Adjacency Matrix), and a
 		// regular Text Cell Editor if they are not
-		CellEditor[] editors = new CellEditor[matrixComponent.numberOfColumns()];
+		CellEditor[] editors = new CellEditor[matrixComponent
+				.numberOfColumns()];
 		// Also create a String array list to handle conversion of
 		// MatrixComponents AllowedValues from Double to String (needed by JFace
 		// Viewer Model)
@@ -508,7 +509,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 		// For each Column, set the appropriate CellEditor
 		for (int i = 0; i < matrixComponent.numberOfColumns(); i++) {
-			if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+			if (matrixComponent
+					.getAllowedValueType() == AllowedValueType.Discrete) {
 				editors[i] = new ComboBoxViewerCellEditor(
 						matrixViewer.getTable(), SWT.READ_ONLY);
 				((ComboBoxViewerCellEditor) editors[i])
@@ -595,7 +597,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 	 * updated and monitored by the ICESectionPart.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The TableComponent that is rendered by the SectionPart.
 	 *         </p>
 	 */
@@ -707,8 +710,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 			public void run() {
 				if (!matrixViewer.getTable().isDisposed()) {
 					getSection().setText(matrixComponent.getName());
-					getSection().setDescription(
-							matrixComponent.getDescription());
+					getSection()
+							.setDescription(matrixComponent.getDescription());
 
 					// Get the old input
 					RowWrapper[] rows = (RowWrapper[]) matrixViewer.getInput();
@@ -723,22 +726,25 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									.numberOfColumns(); i++) {
 
 								List<CellEditor> editorList = new ArrayList<CellEditor>(
-										Arrays.asList(matrixViewer
-												.getCellEditors()));
+										Arrays.asList(
+												matrixViewer.getCellEditors()));
 								// Create an Array to hold default Strings for
 								// the case when this MatrixComponent has
 								// Discrete AllowedValueType
 								List<String> stringArray = new ArrayList<String>();
 								// If this Matrix is Discrete, set up Combo Cell
 								// Editors
-								if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+								if (matrixComponent
+										.getAllowedValueType() == AllowedValueType.Discrete) {
 									CellEditor ed = new ComboBoxViewerCellEditor(
 											matrixViewer.getTable(),
 											SWT.READ_ONLY);
 									((ComboBoxViewerCellEditor) ed)
-											.setLabelProvider(new LabelProvider());
+											.setLabelProvider(
+													new LabelProvider());
 									((ComboBoxViewerCellEditor) ed)
-											.setContentProvider(new ArrayContentProvider());
+											.setContentProvider(
+													new ArrayContentProvider());
 									// Here we need to convert the Doubles to
 									// Strings, because the underlying JFace
 									// Viewer model is expecting Strings.
@@ -772,9 +778,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 								List<Object> columnPropertyList = new ArrayList<Object>(
 										Arrays.asList(matrixViewer
 												.getColumnProperties()));
-								columnPropertyList.add(String
-										.valueOf(matrixComponent
-												.numberOfColumns() - 1));
+								columnPropertyList.add(String.valueOf(
+										matrixComponent.numberOfColumns() - 1));
 								String[] columnProperties = new String[columnPropertyList
 										.size()];
 								columnPropertyList.toArray(columnProperties);
@@ -789,8 +794,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 								column.getColumn().setText("Column " + i);
 
 								// Set the ICELableProvider
-								column.setLabelProvider(new ICECellLabelProvider(
-										i - 1));
+								column.setLabelProvider(
+										new ICECellLabelProvider(i - 1));
 							}
 						} else {
 							// Just delete the Columns
@@ -809,18 +814,19 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 						logger.info("Altering Rows: "
 								+ matrixComponent.numberOfRows() + " "
 								+ matrixComponent.numberOfColumns());
-						newRows = new RowWrapper[matrixComponent.numberOfRows()];
-						for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
+						newRows = new RowWrapper[matrixComponent
+								.numberOfRows()];
+						for (int i = 0; i < matrixComponent
+								.numberOfRows(); i++) {
 							logger.info("Row: ");
 							for (int j = 0; j < matrixComponent
 									.numberOfColumns(); j++) {
-								logger.info(matrixComponent.getRow(i).get(
-										j)
-										+ " ");
+								logger.info(
+										matrixComponent.getRow(i).get(j) + " ");
 							}
 							logger.info("");
-							newRows[i] = new RowWrapper(matrixComponent
-									.getRow(i), i);
+							newRows[i] = new RowWrapper(
+									matrixComponent.getRow(i), i);
 						}
 
 					}
@@ -828,13 +834,15 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 					// Resize the column widths
 					int columnWidth = matrixViewer.getTable().getSize().x
 							/ matrixViewer.getTable().getColumnCount();
-					for (TableColumn col : matrixViewer.getTable().getColumns()) {
+					for (TableColumn col : matrixViewer.getTable()
+							.getColumns()) {
 						col.setWidth(columnWidth);
 					}
 
 					// Make sure the individual matrix elements are correct
 					for (int i = 0; i < newRows.length; i++) {
-						for (int j = 0; j < matrixComponent.numberOfColumns(); j++) {
+						for (int j = 0; j < matrixComponent
+								.numberOfColumns(); j++) {
 							newRows[i].getRowWrapper().set(j,
 									matrixComponent.getElementValue(i, j));
 						}
@@ -886,20 +894,23 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// We need to get the old set of CellEditors and add
 							// to it
 							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
-									Arrays.asList(matrixViewer.getCellEditors()));
+									Arrays.asList(
+											matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for the
 							// case when this MatrixComponent has Discrete
 							// AllowedValueType
 							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
-							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+							if (matrixComponent
+									.getAllowedValueType() == AllowedValueType.Discrete) {
 								CellEditor ed = new ComboBoxViewerCellEditor(
 										matrixViewer.getTable(), SWT.READ_ONLY);
 								((ComboBoxViewerCellEditor) ed)
 										.setLabelProvider(new LabelProvider());
 								((ComboBoxViewerCellEditor) ed)
-										.setContentProvider(new ArrayContentProvider());
+										.setContentProvider(
+												new ArrayContentProvider());
 								// Here we need to convert the Doubles to
 								// Strings, because the underlying JFace Viewer
 								// model is expecting Strings.
@@ -932,8 +943,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							List<Object> columnPropertyList = new ArrayList<Object>(
 									Arrays.asList(matrixViewer
 											.getColumnProperties()));
-							columnPropertyList.add(String
-									.valueOf(matrixComponent.numberOfColumns() - 1));
+							columnPropertyList.add(String.valueOf(
+									matrixComponent.numberOfColumns() - 1));
 							String[] columnProperties = new String[columnPropertyList
 									.size()];
 							columnPropertyList.toArray(columnProperties);
@@ -944,11 +955,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// TableViewerColumn
 							TableViewerColumn column = new TableViewerColumn(
 									matrixViewer, SWT.CENTER);
-							column.getColumn()
-									.setText(
-											"Column "
-													+ matrixComponent
-															.numberOfColumns());
+							column.getColumn().setText("Column "
+									+ matrixComponent.numberOfColumns());
 
 							column.setLabelProvider(new ICECellLabelProvider(
 									matrixComponent.numberOfColumns() - 1));
@@ -957,18 +965,21 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// model that is taken from the old input
 							RowWrapper[] rows = (RowWrapper[]) matrixViewer
 									.getInput();
-							RowWrapper[] newRows = new RowWrapper[rows.length + 1];
+							RowWrapper[] newRows = new RowWrapper[rows.length
+									+ 1];
 
 							// Set the new Input
-							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
+							for (int i = 0; i < matrixComponent
+									.numberOfRows(); i++) {
 								if (i == (matrixComponent.numberOfRows() - 1)) {
 									// If this is the last iteration, add a new
 									// RowWrapper
-									newRows[i] = new RowWrapper(matrixComponent
-											.getRow(i), i);
+									newRows[i] = new RowWrapper(
+											matrixComponent.getRow(i), i);
 								} else {
 									// Otherwise, add a column entry to each row
-									if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+									if (matrixComponent
+											.getAllowedValueType() == AllowedValueType.Discrete) {
 										rows[i].add(matrixComponent
 												.getAllowedValues().get(0));
 									} else {
@@ -982,7 +993,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.setInput(newRows);
 
 							// Resize the column widths
-							int columnWidth = matrixViewer.getTable().getSize().x
+							int columnWidth = matrixViewer.getTable()
+									.getSize().x
 									/ matrixViewer.getTable().getColumnCount();
 							for (TableColumn col : matrixViewer.getTable()
 									.getColumns()) {
@@ -1028,20 +1040,23 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// We need to get the old set of CellEditors and
 							// add to it
 							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
-									Arrays.asList(matrixViewer.getCellEditors()));
+									Arrays.asList(
+											matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for
 							// the case when this MatrixComponent has Discrete
 							// AllowedValueType
 							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
-							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+							if (matrixComponent
+									.getAllowedValueType() == AllowedValueType.Discrete) {
 								CellEditor ed = new ComboBoxViewerCellEditor(
 										matrixViewer.getTable(), SWT.READ_ONLY);
 								((ComboBoxViewerCellEditor) ed)
 										.setLabelProvider(new LabelProvider());
 								((ComboBoxViewerCellEditor) ed)
-										.setContentProvider(new ArrayContentProvider());
+										.setContentProvider(
+												new ArrayContentProvider());
 								// Here we need to convert the Doubles to
 								// Strings, because the underlying JFace Viewer
 								// model is expecting Strings.
@@ -1075,8 +1090,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							List<Object> columnPropertyList = new ArrayList<Object>(
 									Arrays.asList(matrixViewer
 											.getColumnProperties()));
-							columnPropertyList.remove(String
-									.valueOf(matrixComponent.numberOfColumns()));
+							columnPropertyList.remove(String.valueOf(
+									matrixComponent.numberOfColumns()));
 							String[] columnProperties = new String[columnPropertyList
 									.size()];
 							columnPropertyList.toArray(columnProperties);
@@ -1085,18 +1100,18 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 							// Remove the old column
 							matrixViewer
-									.getTable()
-									.getColumn(
-											matrixViewer.getTable()
-													.getColumnCount() - 1)
+									.getTable().getColumn(matrixViewer
+											.getTable().getColumnCount() - 1)
 									.dispose();
 
 							// Set up a new Input for the JFace Viewer Model
 							RowWrapper[] rows = (RowWrapper[]) matrixViewer
 									.getInput();
-							RowWrapper[] newRows = new RowWrapper[rows.length - 1];
+							RowWrapper[] newRows = new RowWrapper[rows.length
+									- 1];
 
-							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
+							for (int i = 0; i < matrixComponent
+									.numberOfRows(); i++) {
 								// Remove a column entry from the row wrappers
 								rows[i].remove();
 								newRows[i] = rows[i];
@@ -1106,7 +1121,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.setInput(newRows);
 
 							// Resize the column widths
-							int columnWidth = matrixViewer.getTable().getSize().x
+							int columnWidth = matrixViewer.getTable()
+									.getSize().x
 									/ matrixViewer.getTable().getColumnCount();
 							for (TableColumn col : matrixViewer.getTable()
 									.getColumns()) {
@@ -1152,14 +1168,16 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// Create a new input from the old input
 							RowWrapper[] rows = (RowWrapper[]) matrixViewer
 									.getInput();
-							RowWrapper[] newRows = new RowWrapper[rows.length + 1];
+							RowWrapper[] newRows = new RowWrapper[rows.length
+									+ 1];
 
 							// Add the old rows to the new input, but
 							// add a new row at the end
-							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
+							for (int i = 0; i < matrixComponent
+									.numberOfRows(); i++) {
 								if (i == (matrixComponent.numberOfRows() - 1)) {
-									newRows[i] = new RowWrapper(matrixComponent
-											.getRow(i), i);
+									newRows[i] = new RowWrapper(
+											matrixComponent.getRow(i), i);
 								} else {
 									newRows[i] = rows[i];
 								}
@@ -1169,7 +1187,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.setInput(newRows);
 
 							// Resize the column widths
-							int columnWidth = matrixViewer.getTable().getSize().x
+							int columnWidth = matrixViewer.getTable()
+									.getSize().x
 									/ matrixViewer.getTable().getColumnCount();
 							for (TableColumn col : matrixViewer.getTable()
 									.getColumns()) {
@@ -1212,7 +1231,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									// Create a new input from the old input
 									RowWrapper[] rows = (RowWrapper[]) matrixViewer
 											.getInput();
-									RowWrapper[] newRows = new RowWrapper[rows.length - 1];
+									RowWrapper[] newRows = new RowWrapper[rows.length
+											- 1];
 
 									for (int i = 0; i < matrixComponent
 											.numberOfRows(); i++) {
@@ -1266,20 +1286,23 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// We need to get the old set of CellEditors and add
 							// to it
 							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
-									Arrays.asList(matrixViewer.getCellEditors()));
+									Arrays.asList(
+											matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for the
 							// case when this MatrixComponent has Discrete
 							// AllowedValueType
 							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
-							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+							if (matrixComponent
+									.getAllowedValueType() == AllowedValueType.Discrete) {
 								CellEditor ed = new ComboBoxViewerCellEditor(
 										matrixViewer.getTable(), SWT.READ_ONLY);
 								((ComboBoxViewerCellEditor) ed)
 										.setLabelProvider(new LabelProvider());
 								((ComboBoxViewerCellEditor) ed)
-										.setContentProvider(new ArrayContentProvider());
+										.setContentProvider(
+												new ArrayContentProvider());
 								// Here we need to convert the Doubles to
 								// Strings, because the underlying JFace Viewer
 								// model is expecting Strings.
@@ -1312,8 +1335,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							List<Object> columnPropertyList = new ArrayList<Object>(
 									Arrays.asList(matrixViewer
 											.getColumnProperties()));
-							columnPropertyList.remove(String
-									.valueOf(matrixComponent.numberOfColumns()));
+							columnPropertyList.remove(String.valueOf(
+									matrixComponent.numberOfColumns()));
 							String[] columnProperties = new String[columnPropertyList
 									.size()];
 							columnPropertyList.toArray(columnProperties);
@@ -1322,10 +1345,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 
 							// Remove the old column
 							matrixViewer
-									.getTable()
-									.getColumn(
-											matrixViewer.getTable()
-													.getColumnCount() - 1)
+									.getTable().getColumn(matrixViewer
+											.getTable().getColumnCount() - 1)
 									.dispose();
 
 							// Create a new Input from the old Input
@@ -1333,7 +1354,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									.getInput();
 							RowWrapper[] newRows = new RowWrapper[rows.length];
 
-							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
+							for (int i = 0; i < matrixComponent
+									.numberOfRows(); i++) {
 								rows[i].remove();
 								newRows[i] = rows[i];
 							}
@@ -1342,7 +1364,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.setInput(newRows);
 
 							// Resize the column widths
-							int columnWidth = matrixViewer.getTable().getSize().x
+							int columnWidth = matrixViewer.getTable()
+									.getSize().x
 									/ matrixViewer.getTable().getColumnCount();
 							for (TableColumn col : matrixViewer.getTable()
 									.getColumns()) {
@@ -1383,20 +1406,23 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// We need to get the old set of CellEditors and add
 							// to it
 							List<CellEditor> cellEditorList = new ArrayList<CellEditor>(
-									Arrays.asList(matrixViewer.getCellEditors()));
+									Arrays.asList(
+											matrixViewer.getCellEditors()));
 							// Create an Array to hold default Strings for the
 							// case when this MatrixComponent has Discrete
 							// AllowedValueType
 							List<String> stringArray = new ArrayList<String>();
 							// If this Matrix is Discrete, set up Combo Cell
 							// Editors
-							if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+							if (matrixComponent
+									.getAllowedValueType() == AllowedValueType.Discrete) {
 								CellEditor ed = new ComboBoxViewerCellEditor(
 										matrixViewer.getTable(), SWT.READ_ONLY);
 								((ComboBoxViewerCellEditor) ed)
 										.setLabelProvider(new LabelProvider());
 								((ComboBoxViewerCellEditor) ed)
-										.setContentProvider(new ArrayContentProvider());
+										.setContentProvider(
+												new ArrayContentProvider());
 								// Here we need to convert the Doubles to
 								// Strings, because the underlying JFace Viewer
 								// model is expecting Strings.
@@ -1429,8 +1455,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							List<Object> columnPropertyList = new ArrayList<Object>(
 									Arrays.asList(matrixViewer
 											.getColumnProperties()));
-							columnPropertyList.add(String
-									.valueOf(matrixComponent.numberOfColumns() - 1));
+							columnPropertyList.add(String.valueOf(
+									matrixComponent.numberOfColumns() - 1));
 							String[] columnProperties = new String[columnPropertyList
 									.size()];
 							columnPropertyList.toArray(columnProperties);
@@ -1440,11 +1466,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							// Add a new column
 							TableViewerColumn column = new TableViewerColumn(
 									matrixViewer, SWT.CENTER);
-							column.getColumn()
-									.setText(
-											"Column "
-													+ matrixComponent
-															.numberOfColumns());
+							column.getColumn().setText("Column "
+									+ matrixComponent.numberOfColumns());
 							column.setLabelProvider(new ICECellLabelProvider(
 									matrixComponent.numberOfColumns() - 1));
 
@@ -1453,8 +1476,10 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 									.getInput();
 							RowWrapper[] newRows = new RowWrapper[rows.length];
 
-							for (int i = 0; i < matrixComponent.numberOfRows(); i++) {
-								if (matrixComponent.getAllowedValueType() == AllowedValueType.Discrete) {
+							for (int i = 0; i < matrixComponent
+									.numberOfRows(); i++) {
+								if (matrixComponent
+										.getAllowedValueType() == AllowedValueType.Discrete) {
 									rows[i].add(matrixComponent
 											.getAllowedValues().get(0));
 								} else {
@@ -1467,7 +1492,8 @@ public class ICEMatrixComponentSectionPart extends SectionPart implements
 							matrixViewer.setInput(newRows);
 
 							// Resize the column widths
-							int columnWidth = matrixViewer.getTable().getSize().x
+							int columnWidth = matrixViewer.getTable()
+									.getSize().x
 									/ matrixViewer.getTable().getColumnCount();
 							for (TableColumn col : matrixViewer.getTable()
 									.getColumns()) {

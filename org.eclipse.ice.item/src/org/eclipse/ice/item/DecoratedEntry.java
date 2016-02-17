@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 
 /**
  * <p>
@@ -23,13 +23,13 @@ import org.eclipse.ice.datastructures.form.Entry;
  * 
  * @author Jay Jay Billings
  */
-class DecoratedEntry extends Entry {
+class DecoratedEntry extends StringEntry {
 	/**
 	 * <p>
 	 * The Entry that is to be decorated.
 	 * </p>
 	 */
-	private Entry entry;
+	private StringEntry entry;
 	/**
 	 * <p>
 	 * True if the Entry should be updated, false otherwise.
@@ -47,7 +47,7 @@ class DecoratedEntry extends Entry {
 	 *            The Entry that should be decorated.
 	 *            </p>
 	 */
-	public DecoratedEntry(Entry dEntry) {
+	public DecoratedEntry(StringEntry dEntry) {
 		this.entry = dEntry;
 	}
 

@@ -42,9 +42,6 @@ public class FXVertexView extends AbstractView {
 	private Sphere mesh;
 
 	/** */
-	// private TransformGizmo gizmo;
-
-	/** */
 	private PhongMaterial defaultMaterial;
 
 	/** */
@@ -56,6 +53,12 @@ public class FXVertexView extends AbstractView {
 	private PhongMaterial constructingMaterial;
 
 	/**
+	 * The scale of the application the vertex will be displayed in. The vertex
+	 * will be drawn with each coordinate's value multiplied by the scale
+	 */
+	private int scale;
+
+	/**
 	 * The nullary constructor.
 	 */
 	public FXVertexView() {
@@ -63,6 +66,7 @@ public class FXVertexView extends AbstractView {
 
 		// Instantiate the class variables
 		node = new Group();
+		scale = 1;
 
 		// Create the materials
 		defaultMaterial = new PhongMaterial(Color.rgb(80, 30, 140));
@@ -98,7 +102,15 @@ public class FXVertexView extends AbstractView {
 		// Set the sphere to be the constructing material by default
 		mesh.setMaterial(constructingMaterial);
 		node.getChildren().add(mesh);
+	}
 
+	/**
+	 * Get the scale of the application the view is drawn in.
+	 * 
+	 * @return The conversion rate between internal units and JavaFX units
+	 */
+	public int getApplicationScale() {
+		return scale;
 	}
 
 	/**
@@ -113,6 +125,23 @@ public class FXVertexView extends AbstractView {
 
 		// Put the controller in the node's data structure
 		node.getProperties().put(ShapeController.class, mesh);
+	}
+
+	/**
+	 * Sets the scale of the application this vertex will be displayed in. The
+	 * vertex will now be drawn with all the coordinates in the VertexMesh
+	 * multiplied by the scale.
+	 * 
+	 * @param scale
+	 *            The conversion factor between JavaFX units and the logical
+	 *            units used by the application.
+	 */
+	public void setApplicationScale(int scale) {
+		this.scale = scale;
+
+		// Notify listeners of the change
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
+		updateManager.notifyListeners(eventTypes);
 	}
 
 	/*
@@ -137,8 +166,8 @@ public class FXVertexView extends AbstractView {
 	public void refresh(AbstractMesh model) {
 
 		// Center the node on the vertex's location
-		transformation.setTranslation(((VertexMesh) model).getX(),
-				((VertexMesh) model).getY(), 0);
+		transformation.setTranslation(((VertexMesh) model).getX() * scale,
+				((VertexMesh) model).getY() * scale, 0);
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
@@ -188,8 +217,7 @@ public class FXVertexView extends AbstractView {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] type) {
+	public void update(IManagedUpdateable component, SubscriptionType[] type) {
 
 		// If the transformation updated, update the JavaFX transformation
 		if (component == transformation) {

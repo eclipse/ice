@@ -13,10 +13,13 @@
 package org.eclipse.ice.item.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.item.jobprofile.JobProfileForm;
 import org.junit.Test;
@@ -52,7 +55,7 @@ public class JobProfileFormTester {
 		TableComponent dataFiles = null;
 		int entryId = 1;
 
-		Entry entry = null;
+		IEntry entry = null;
 
 		// Create a new JobProfileForm
 		jobProfileForm = new JobProfileForm();
@@ -90,21 +93,21 @@ public class JobProfileFormTester {
 
 		// check entries of component name, description, and default values;
 		// Job Name
-		entry = (Entry) exeInfo.retrieveAllEntries().get(0);
+		entry = exeInfo.retrieveAllEntries().get(0);
 		// check name, description, and values
 		assertEquals("Job Name", entry.getName());
 		assertEquals("This is a name for the job profile.",
 				entry.getDescription());
 		assertEquals("JobProfile", entry.getDefaultValue());
 		assertEquals("JobProfile", entry.getValue());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("jobName", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Executable Name
-		entry = (Entry) exeInfo.retrieveAllEntries().get(1);
+		entry = exeInfo.retrieveAllEntries().get(1);
 		// check name, description, and values
 		assertEquals("Executable Name", entry.getName());
 		assertEquals("ls", entry.getDefaultValue());
@@ -114,7 +117,7 @@ public class JobProfileFormTester {
 				+ "If the executable is not installed on the path, you "
 				+ "should include the ${installDir} variable in the "
 				+ "appropriate place.", entry.getDescription());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("executableName", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
@@ -134,12 +137,12 @@ public class JobProfileFormTester {
 
 		// Parameters
 		// Input File
-		entry = (Entry) exeInfo.retrieveAllEntries().get(2);
+		entry = exeInfo.retrieveAllEntries().get(2);
 		// check name, description, and values
 		assertEquals("Parameters", entry.getName());
 		assertEquals("Specifies the parameters for a job.",
 				entry.getDescription());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("parameters", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
@@ -169,23 +172,23 @@ public class JobProfileFormTester {
 
 		// check entries of component name, description, and default values;
 		// Enable OpenMP
-		entry = (Entry) threadOps.retrieveAllEntries().get(0);
+		entry = threadOps.retrieveAllEntries().get(0);
 		// check name, description, and values
 		assertEquals("Enable OpenMP", entry.getName());
 		assertEquals("Specifies if the program utilizes OpenMP library.",
 				entry.getDescription());
-		assertEquals("No", entry.getDefaultValue());
-		assertEquals("No", entry.getValue());
-		assertEquals("Yes", entry.getAllowedValues().get(0));
-		assertEquals("No", entry.getAllowedValues().get(1));
-		assertEquals(AllowedValueType.Discrete, entry.getValueType());
+		assertEquals("no", entry.getDefaultValue());
+		assertEquals("no", entry.getValue());
+		assertEquals("yes", entry.getAllowedValues().get(0));
+		assertEquals("no", entry.getAllowedValues().get(1));
+		assertTrue(entry instanceof DiscreteEntry);
 		assertEquals("enableOpenMP", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Number of Threads
-		entry = (Entry) threadOps.retrieveAllEntries().get(1);
+		entry = threadOps.retrieveAllEntries().get(1);
 		// check name, description, and values
 		assertEquals("Default Number of Threads", entry.getName());
 		assertEquals("Specifies the default number of threads for OpenMP.",
@@ -194,30 +197,30 @@ public class JobProfileFormTester {
 		assertEquals("1", entry.getValue());
 		assertEquals("1", entry.getAllowedValues().get(0));
 		assertEquals("128", entry.getAllowedValues().get(1));
-		assertEquals(AllowedValueType.Continuous, entry.getValueType());
+		assertTrue(entry instanceof ContinuousEntry);
 		assertEquals("numOfThreads", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Enable MPI
-		entry = (Entry) threadOps.retrieveAllEntries().get(2);
+		entry = threadOps.retrieveAllEntries().get(2);
 		// check name, description, and values
 		assertEquals("Enable MPI", entry.getName());
 		assertEquals("Specifies if the program utilizes MPI library.",
 				entry.getDescription());
-		assertEquals("No", entry.getDefaultValue());
-		assertEquals("No", entry.getValue());
-		assertEquals("Yes", entry.getAllowedValues().get(0));
-		assertEquals("No", entry.getAllowedValues().get(1));
-		assertEquals(AllowedValueType.Discrete, entry.getValueType());
+		assertEquals("no", entry.getDefaultValue());
+		assertEquals("no", entry.getValue());
+		assertEquals("no", entry.getAllowedValues().get(0));
+		assertEquals("yes", entry.getAllowedValues().get(1));
+		assertTrue(entry instanceof DiscreteEntry);
 		assertEquals("enableMPI", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Number of Processes
-		entry = (Entry) threadOps.retrieveAllEntries().get(3);
+		entry = threadOps.retrieveAllEntries().get(3);
 		// check name, description, and values
 		assertEquals("Default Number of Processes", entry.getName());
 		assertEquals("Specifies the default number of processes for MPI.",
@@ -226,31 +229,31 @@ public class JobProfileFormTester {
 		assertEquals("1", entry.getValue());
 		assertEquals("1", entry.getAllowedValues().get(0));
 		assertEquals("512000", entry.getAllowedValues().get(1));
-		assertEquals(AllowedValueType.Continuous, entry.getValueType());
+		assertTrue(entry instanceof ContinuousEntry);
 		assertEquals("numOfProcesses", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Enable TBB
-		entry = (Entry) threadOps.retrieveAllEntries().get(4);
+		entry = threadOps.retrieveAllEntries().get(4);
 		// check name, description, and values
 		assertEquals("Enable TBB", entry.getName());
 		assertEquals(
 				"Specifies if the program utilizes Thread Building Blocks.",
 				entry.getDescription());
-		assertEquals("No", entry.getDefaultValue());
-		assertEquals("No", entry.getValue());
-		assertEquals("Yes", entry.getAllowedValues().get(0));
-		assertEquals("No", entry.getAllowedValues().get(1));
-		assertEquals(AllowedValueType.Discrete, entry.getValueType());
+		assertEquals("no", entry.getDefaultValue());
+		assertEquals("no", entry.getValue());
+		assertEquals("no", entry.getAllowedValues().get(0));
+		assertEquals("yes", entry.getAllowedValues().get(1));
+		assertTrue(entry instanceof DiscreteEntry);
 		assertEquals("enableTBB", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Number of TBBs
-		entry = (Entry) threadOps.retrieveAllEntries().get(5);
+		entry = threadOps.retrieveAllEntries().get(5);
 		// check name, description, and values
 		assertEquals("Default Number of TBBs", entry.getName());
 		assertEquals("Specifies the default number of Thread Blocks.",
@@ -259,7 +262,7 @@ public class JobProfileFormTester {
 		assertEquals("1", entry.getValue());
 		assertEquals("1", entry.getAllowedValues().get(0));
 		assertEquals("128", entry.getAllowedValues().get(1));
-		assertEquals(AllowedValueType.Continuous, entry.getValueType());
+		assertTrue(entry instanceof ContinuousEntry);
 		assertEquals("numOfTBBs", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
@@ -287,7 +290,7 @@ public class JobProfileFormTester {
 
 		// check entries of component name, description, and default values;
 		// Hostname
-		entry = (Entry) hostnames.getRowTemplate().get(0);
+		entry = hostnames.getRowTemplate().get(0);
 		// check name, description, and values
 		assertEquals("Hostname", entry.getName());
 		assertEquals(
@@ -295,14 +298,14 @@ public class JobProfileFormTester {
 				entry.getDescription());
 		assertEquals("localhost", entry.getDefaultValue());
 		assertEquals("localhost", entry.getValue());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("hostname", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Operating System
-		entry = (Entry) hostnames.getRowTemplate().get(1);
+		entry = hostnames.getRowTemplate().get(1);
 		// check name, description, and values
 		assertEquals("Operating System", entry.getName());
 		assertEquals(
@@ -315,33 +318,33 @@ public class JobProfileFormTester {
 		assertEquals("Windows x86", entry.getAllowedValues().get(2));
 		assertEquals("Windows x64", entry.getAllowedValues().get(3));
 		assertEquals("Mac OSX", entry.getAllowedValues().get(4));
-		assertEquals(AllowedValueType.Discrete, entry.getValueType());
+		assertTrue(entry instanceof DiscreteEntry);
 		assertEquals("operatingSystem", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// Install Directory
-		entry = (Entry) hostnames.getRowTemplate().get(2);
+		entry = hostnames.getRowTemplate().get(2);
 		// check name, description, and values
 		assertEquals("Install Directory", entry.getName());
 		assertEquals("Specifies the install directory for a hostname.",
 				entry.getDescription());
 		assertEquals("/bin", entry.getDefaultValue());
 		assertEquals("/bin", entry.getValue());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("installDirectory", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// check the first row's values
-		Entry entry1 = null;
-		Entry entry2 = null;
-		Entry entry3 = null;
-		entry1 = (Entry) hostnames.getRow(0).get(0);
-		entry2 = (Entry) hostnames.getRow(0).get(1);
-		entry3 = (Entry) hostnames.getRow(0).get(2);
+		IEntry entry1 = null;
+		IEntry entry2 = null;
+		IEntry entry3 = null;
+		entry1 = hostnames.getRow(0).get(0);
+		entry2 = hostnames.getRow(0).get(1);
+		entry3 = hostnames.getRow(0).get(2);
 
 		assertEquals("localhost", entry1.getValue());
 		assertEquals("Linux x86_x64", entry2.getValue());
@@ -367,28 +370,28 @@ public class JobProfileFormTester {
 
 		// check entries of component name, description, and default values;
 		// Data File
-		entry = (Entry) dataFiles.getRowTemplate().get(0);
+		entry = dataFiles.getRowTemplate().get(0);
 		// check name, description, and values
 		assertEquals("Data File", entry.getName());
 		assertEquals("Specifies a data file required to run an executable.",
 				entry.getDescription());
 		assertEquals("text.txt", entry.getDefaultValue());
 		assertEquals("text.txt", entry.getValue());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("dataFile", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());
 		entryId++;
 
 		// File Path
-		entry = (Entry) dataFiles.getRowTemplate().get(1);
+		entry = dataFiles.getRowTemplate().get(1);
 		// check name, description, and values
 		assertEquals("File Path", entry.getName());
 		assertEquals("Specifies the install directory for a data file.",
 				entry.getDescription());
 		assertEquals("/opt/bin", entry.getDefaultValue());
 		assertEquals("/opt/bin", entry.getValue());
-		assertEquals(AllowedValueType.Undefined, entry.getValueType());
+		assertTrue(entry instanceof StringEntry);
 		assertEquals("filePath", entry.getTag());
 		// Check the Entry's id and increment the counter.
 		assertEquals(entryId, entry.getId());

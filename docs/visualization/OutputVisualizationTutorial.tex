@@ -13,130 +13,135 @@
 Currently, ICE features two plugins for visualizing and plotting simulation
 output data:
 
-\textbf{VisIt Tools} - An interactive 3D visualization tool for rendering
-meshes, scalar plots, contour plots, and more. 
+\textbf{VisIt Tools} - An interactive visualization tool for rendering data
+defined on 2D and 3D meshes.
 
-\textbf{CSV Plotting Tools} - A customizable, 2D data plotting utility for data 
-from .csv files.
+\textbf{CSV Plotting Tools} - A customizable, 2D data plotting utility for data
+in CSV format.
 
 \section{Installation and Configuration}
 
 The CSV Plotting Tools require no additional software or preparation before use.
-The VisIt Tools need both an instance of VisIt and a connection between ICE and
-the VisIt session.
+The VisIt Tools need both a VisIt installation and a connection between ICE and
+a VisIt session.
 
 \subsection{VisIt Installation} 
 
 Before preparing ICE,
-\href{https://wci.llnl.gov/simulation/computer-codes/visit/}{VisIt}, developed
-by Lawrence Livermore National Laboratory, must be downloaded. This must be
-version 2.8.2 or higher, and does not need to be on the same machine that ICE is
-installed on, as ICE is capable of launching a VisIt session on a remote machine. Make
-note of the folder where you installed VisIt for use in the next step.
+\href{https://wci.llnl.gov/simulation/computer-codes/visit/}{VisIt} must be
+downloaded and installed. The ICE development team recommends using the latest
+version of VisIt but acknowledges that any version greater than or equal to
+2.8.2 should work. VisIt does not need to be installed on the same machine where
+ICE is installed since ICE is capable of launching a VisIt session on a remote
+machine. Regardless of the host, make note of the directory where VisIt is
+installed as it will be necessary in the next step.
 
 \subsection{Configuring the VisIt Connection}
 
-Once VisIt is installed, ICE must connect to a VisIt session in order to provide
-data visualization. There are two different parts of ICE which connect with
-VisIt, both providing slightly different functionalities. These are the Plot
-Editor, which is slightly more user friendly, and the Visualization Perspective,
-which allows for arbitrary Python commands to be sent to the VisIt client. 
+Once VisIt is installed, ICE must connect to a running instance of VisIt in
+order to make use of its rendering capabilities. ICE provides two different
+tools that utilize VisIt, the Plot Editor and the Visualization Perspective.
+Both utilities provide slightly different functionality and are accessed
+through different means.
 
 \subsubsection{Connecting for the Plot Editor} 
 
-This process will set up a default connection to VisIt in the ICE Preferences
-page, and so only needs to be performed once. After creating the connection, ICE
-will launch and connect with VisIt each time it is started.
+The Plot Editor uses a default connection to VisIt established in the ICE
+Preferences page. This process only needs to be performed once. After initially
+creating the connection, ICE will launch and connect with VisIt upon each
+subsequent launch of ICE.
 
-To set the connection, select Window $\rightarrow$ Preferences in ICE's
-toolbar. (If you are using Mac OSx, this will instead be located at Eclipse
-$\rightarrow$ Preferences.) Then select Visualization $\rightarrow$ VisIt in the
-tree of the Preferences page.
+To set the connection, select Window $\rightarrow$ Preferences\ldots in ICE's
+menu bar. (On Mac OS X, Preferences\ldots is instead located under Eclipse
+ICE in the menu bar.) Select Visualization $\rightarrow$ VisIt
+in the tree on the left side of the Preferences window.
 
 \begin{center}
 \includegraphics[width=12cm]{images/VisItPreferencePage_ICE}
 \end{center}
 
-Press the new row button, the button with a "+" symbol in the upper right,
-highlighted in the image above. You can then click on each of the cells of the
-new row to edit them. The default values automatically supplied by ICE should
-be fine for most users. However, two fields may need to be changed:
+Press the button with a ''+" symbol in the upper right (highlighted in the image
+above) to add a new row to the table. Click on cells in the new row to edit
+their values. The default values automatically supplied by ICE should be
+appropriate for most users. However, two fields may need to be changed:
 
-\textbf{Host:} The default value of "localhost" is for connections to local
-installations of VisIt on your computer. If you want to launch a remote VisIt
-connection, you must change this to the hostname of the machine to connect to.
+\textbf{Host:} The default value of ''localhost" allows for connections to VisIt
+installations on the same machine where ICE is running. To launch a remote VisIt
+connection, change this to the hostname of that machine.
 
-\textbf{Path:} You need to put the full path to the VisIt folder here. The path
-should end with the folder containing the VisIt executable. For example, if
-VisIt.exe is in a folder called VisIt 2.9.1, the the path should end in
-\textbackslash{}VisIt 2.9.1\textbackslash , not \textbackslash{}VisIt
-2.9.1\textbackslash VisIt.exe.
+\textbf{Path:} Enter the full path to the directory containing the VisIt
+executable, not the executable itself. The VisIt executable is named
+\testem{visit} on Linux and Mac OS X. On Windows, \textem{VisIt.exe} is the
+appropriate file.
 
-Once finished, press Apply, then OK. ICE will then open VisIt and connect to it.
+Once finished editing the cells in the new row, press Apply, then OK. ICE will
+then launch an instance of VisIt and connect to it.
 
 \subsubsection{Connecting for the Visualization Perspective} 
 
-First, open the Visualization perspective. On the main menu bar at the top of
-the window, click Window $\rightarrow$ Perspective $\rightarrow$ Open
-Perspective $\rightarrow$ Other\ldots, select Visualization in the dialog that pops up and click OK.
-Alternatively, you can also access the same pop-up dialog by clicking the Open Perspective button in
-the main toolbar in the upper right-hand corner of the ICE workbench. 
+To establish a VisIt connection in the Visualization perspective, begin by
+opening this utility. In the main menu bar at the top of the window, select
+Window $\rightarrow$ Perspective $\rightarrow$ Open Perspective $\rightarrow$
+Other\ldots. Select Visualization in the dialog that appears and click OK.
+Alternatively, the same dialog may be accessed by clicking the Open Perspective
+button in the toolbar in the upper right-hand corner of the ICE workbench.
 
 \begin{center}
 \includegraphics{images/ICE_OpenPerspective}
 \end{center}
 
-Now click the Launch VisIt button in the menu bar.
+Click the Launch VisIt button in the tool bar to enter the VisIt connection
+parameters.
 
 \begin{center}
 \includegraphics{images/ICE_VisItLaunchButton}
 \end{center}
 
-This will open a dialog offering you three options for connecting to VisIt.
+The resulting dialog offers three options for connecting to VisIt.
 
 \begin{center}
 \includegraphics[width=12cm]{images/ICE_VisItLaunchOptions}
 \end{center}
 
-\textbf{1) Launch VisIt locally -} If you installed VisIt on your local machine,
-use the Browse button to direct ICE to your local installation directory. Using this
-method of connecting will launch a new VisIt session. Optionally, you can also
-set a port number (default 9600) and--if you want to share your VisIt session
-with another user--a password.
+\textbf{1) Launch VisIt locally -} This connection option will launch a new
+VisIt session on the machine running ICE. If VisIt in installed on this machine,
+use the Browse button to enter the directory containing the VisIt executable
+into the Path to VisIt field. Optionally, set a port number (default 9600) that
+VisIt will use to serve data to ICE, and if this VisIt session will be shared
+with multiple userd, set a password.
 
-\textbf{2) Launch VisIt remotely -} If you installed VisIt on a remote machine,
-specify the hostname and full path to the VisIt installation directory. Using this
-method of connecting will launch a new VisIt session. Optionally, you can
-specify a port number (default 9600) and--if you want to share your VisIt
-session with another user--a password. If you need or want to use an external
-gateway or proxy to access the remote VisIt installation, you may specify its
-URL and port number as well.
+\textbf{2) Launch VisIt remotely -} Using this method of connecting will launch
+a new VisIt session on a machine other than the one used to run ICE. Specify the
+hostname and full path to the directory containing the VisIt executable.
+Optionally, enter a port number (default 9600), and if VisIt session will be
+shared with multiple users, enter a password. If access to the remote machine
+where VisIt is installed requires the use of an external gateway or proxy,
+specify its URL and port number, as well.
 
-\textbf{3) Connect to VisIt -} If you would like to connect to a session of VisIt
-already running somewhere else, specify the hostname, port number, and password set on
-the VisIt session; you will need to obtain this information from the person who
-initially launched the VisIt session. If you need or want to use an external
-gateway or proxy to access the remote VisIt installation, you may specify its
-URL and port number as well.
+\textbf{3) Connect to VisIt -} To connect to a previously launched VisIt
+session, specify the hostname, port number, and password set on the lanuch of
+that session. This information will need to be obtained from the person who
+initially launched the VisIt session. If access to the machine hosting the VisIt
+session requires the use of an external gateway or proxy, enter its URL and port
+number, as well.
 
-If you've forgotten where VisIt is installed on Windows, find a shortcut to
-VisIt either on your desktop or in the start menu. Right-click the shortcut and
-open its Properties. The path to the VisIt executable's directoy will be shown
-next to Target.
+For a reminder of where VisIt is installed on Windows, find a shortcut to
+VisIt on the desktop or in the start menu. Right-click the shortcut and open its
+Properties. The path to the VisIt executable's directoy will be shown next to
+Target.
 
-Regardless of which method you choose to connect to VisIt, enter a Connection
-name at the bottom of the pop-up dialog. 
+Regardless of the method used to connect to VisIt, enter a Connection
+name at the bottom of the dialog. 
 
-If you are connecting to an existing session, specify a Window ID between 1 and
-16. Which Window ID you use depends on how you would like to connect to VisIt.
-If multiple users connect using the same Window ID, they will all see and be
-able to interact with the same VisIt view. However, if you would like multiple
-users to each have their own unique session each with its own controls, assign a
-unique Window ID to each user. The VisIt installation can support up to 16
-unique window IDs at a time.
+When connecting to an existing session, specify a Window ID between 1 and 16.
+The Window ID used determines how ICE will connect to VisIt. If multiple users
+connect using the same Window ID, they will all see and be able to interact with
+the same VisIt view. However, if multiple users wish to each have their own
+unique session with its own controls, assign a unique Window ID to each user.
+The VisIt installation can support up to 16 unique window IDs at a time.
 
-Once you are done, click the Finish button at the bottom, and ICE should begin
-connecting to VisIt.
+Once the required fields are complete, click the Finish button at the bottom,
+and ICE should begin connecting to VisIt.
 
 \section{VisIt}
 
@@ -144,25 +149,28 @@ connecting to VisIt.
 
 \subsubsection{Opening a Plot Editor} 
 
-To open a plot editor, first the file must be placed in the Project Explorer.
-This view lists files imported into ICE. To access the Project Explorer, use the
-the main menu bar at the top of the window and navigate to Window $\rightarrow$
-Show View $\rightarrow$ Project Explorer. 
+To open a Plot Editor, a file that uses this editor must first be placed in the
+Project Explorer. This view lists files imported into ICE. To access the Project
+Explorer, use the the menu bar at the top of the window and navigate to Window
+$\rightarrow$ Show View $\rightarrow$ Project Explorer. Depending on the active
+Eclipse perspective, opening this view may require selecting Other\ldots and
+finding the Project Explorer in the dialog under the General category in the
+tree.
 
 By default, the Project Explorer should automatically import the
-ICEFiles/default and ICEFiles/itemDB folders. If it does not, or it you want to
+ICEFiles/default and ICEFiles/itemDB folders. If it does not, or if you want to
 import a different folder into ICE, right click in the Project Explorer and
-select Import... from the context menu. Then select General $\rightarrow$ File
-System from the tree and press the Next button. You can then select directories
-and/or files to import into the Project Explorer and which folder they should be
-imported under, as seen below.
+select Import\ldots from the context menu. Then, select General $\rightarrow$
+File System from the tree, and press the Next button. Select directories and/or
+files to import into the Project Explorer, and enter which folder they should
+be imported into, as shown below.
 
 \begin{center}
 \includegraphics[width=12cm]{images/ImportFileDialog}
 \end{center}
 
-Once a file is in the Project Explorer, you can simply double click on it to 
-open it in VisIt.
+Once a file is in the Project Explorer, simply double click on it to open it in
+VisIt.
 
 \subsubsection{Opening in the Visualization Perspective}
 
@@ -170,45 +178,45 @@ open it in VisIt.
 \includegraphics[width=12cm]{images/VisualizationPerspectiveOverview}
 \end{center}
 
-To open a file in the Visualization Perspective, it must first be imported into
-the Visualization File Viewer, located in the upper left of the screen. To do
-this, click the Open a File button, with a green plus sign icon. This will open
-a dialog to let you select a local file to import.
+To open a file in the Visualization Perspective, first import the file into the
+Visualization File Viewer, located in the upper left of the screen. Click the
+Open a File button (green plus sign icon). The resulting dialog allows for the
+selection of local files to import.
 
 \begin{center}
 \includegraphics[width=12cm]{images/VisualizationAddFile}
 \end{center}
 
-Currently, ICE can only open files in VisIt on the same machine as that VisIt
-session is running. If you are connected to a remote VisIt installation, you
-will instead need to click the arrow beside the Open a File button and select
-``Add a remote file'' from the drop down menu. This will open a dialog box to
-browse the file system of the remote machine VisIt is hosted on, which can be
-used to select a file as normal.
+Currently, ICE can only open files in VisIt on the same machine that is running
+the VisIt session. For a connection to a remote VisIt installation, click the
+arrow beside the Open a File button, and select ``Add a remote file'' from the
+drop down menu. The resulting dialog box allows the user to browse the file
+system of the remote machine hosting the VisIt session.
 
 \begin{center}
 \includegraphics[width=12cm]{images/VisualizationAddPlots}
 \end{center}
 
-Once your file is in the Visualization File Viewer, you will need to create a
-plot from it. To do this, select the file and then click the Add a Plot to the
-List button located in the VisIt Plot Viewer on the left of the screen. A window
-will open, prompting you to select which plots from the file you would like
-to view. After you have made your selection and hit OK, these plots will be
+Once a file is in the Visualization File Viewer, create a plot by selecting the
+file, and then clicking the Add a Plot to the List button located in the VisIt
+Plot Viewer in the lower part of the column on the left side of the workbench.
+The resulting dialog allows the user to select plots from the file to view.
+After mading a selection or selctions and pressing OK, these plots will be
 placed in the VisIt Plot Viewer.
 
 \begin{center}
 \includegraphics[width=12cm]{images/VisualizationSelectPlots}
 \end{center}
 
-Finally, you may double click a plot in the VisIt Plot Viewer to open that plot
-in VisIt. 
+Finally, double click a plot in the VisIt Plot Viewer to render the data to the
+screen.
 
 \subsection{Using VisIt}
 
-Both methods of accessing VisIt allow the user to rotate the model by clicking
-and dragging inside the display area or zoom it by scrolling the mouse wheel.
-Other commands require slightly different actions between the two. 
+Both the Plot Editor and the Visualization Perspective allow the user to rotate
+the model by clicking and dragging inside the display area or adjust the zoom by
+scrolling the mouse wheel. Other commands vary slightly between the two
+utilities.
 
 \subsubsection{Selecting the Plot}
 
@@ -228,8 +236,8 @@ Plot Viewer. Double click on one to open it.
 VisIt is capable of displaying plots in several different representations, such
 as pseudocolor, contour, or volume.
 
-To switch between these in the Plot Editor, right click inside the display area
-and select one of the listed options under the Representation category in the
+To switch between plot types in the Plot Editor, right click inside the display
+area and select one of the listed options under the Representation category in the
 context menu.
 
 The Visualization Perspective features a drop down menu at the top of the VisIt
@@ -304,11 +312,11 @@ Python code can be written into the shell directly, but the Load from File
 button will import an existing .py script into the console. Once done, hit the
 Execute button to send the python command(s) to VisIt.
 
-Writing Python scripts for VisIt is beyond the scope of this tutorial. However,
-you are welcome to refer to the
+Writing Python scripts for VisIt is beyond the scope of this tutorial. Please
+refer to the
 \href{https://wci.llnl.gov/simulation/computer-codes/visit/manuals}{VisIt Python
 Interface Manual} provided by the VisIt development team at Lawrence Livermore
-National Laboratory.
+National Laboratory for information on Python commands for VisIt.
 
 \section{CSV Plot Viewer}
 
@@ -353,22 +361,21 @@ The final button will export a screenshot of the graph.
 
 By default, the first column in the file will serve as the independent series
 setting the graph's x axis. By right clicking the Plot Viewer and selecting Set
-Independent Series\ldots you can replace it with any other series in the file.
+Independent Series\ldots, the user can set the independent series to any other
+series in the file.
 
 \subsubsection{Setting the Dependent Series}
 
 When first opened, only the series defined by the second column in the file will
 be displayed. There are several ways to change this. 
 
-The Select Series\ldots button in the upper lefthand corer will display a list
+The Select series\ldots button in the upper left hand corner will display a list
 of all the series in the file. Selecting one and pressing OK will graph that
 series and removing all others.
 
 Right clicking and choosing Select series\ldots from the context menu will open
-a dialog in which any of the series will be selected. All selected series will
-be graphed at once, with deselected series removed.
-
- 
+a dialog in which any of the available series may be selected. All selected
+series will be graphed at once with deselected series removed.
 
 Finally, the Remove all series option in the context menu will completely clear
 the graph.

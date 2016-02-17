@@ -55,9 +55,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * 
  * @author Taylor Patterson, Jordan H. Deyton
  */
-public class ICEMeshPage extends ICEFormPage
-		implements ISelectionListener, ISelectionProvider, 
-		ITabbedPropertySheetPageContributor {
+public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
+		ISelectionProvider, ITabbedPropertySheetPageContributor {
 
 	/**
 	 * Eclipse view ID
@@ -109,6 +108,9 @@ public class ICEMeshPage extends ICEFormPage
 	 */
 	private ArrayList<ICEObject> selectedMeshParts;
 
+	/**
+	 * The canvas on which the mesh is visualized.
+	 */
 	private IMeshVizCanvas canvas;
 
 	/**
@@ -231,8 +233,7 @@ public class ICEMeshPage extends ICEFormPage
 					new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		} catch (Exception e) {
-			logger.error(
-					"Error creating Mesh Canvas with Mesh Service.", e);
+			logger.error("Error creating Mesh Canvas with Mesh Service.", e);
 		}
 
 		// The MeshPage should also listen for changes to the MeshApplication's
@@ -308,8 +309,6 @@ public class ICEMeshPage extends ICEFormPage
 		// TODO Add actions for toggling the hud based on JME3/JavaFX specific
 		// implementation
 		// Create the toggle switch to show or hide the heads-up display
-		// action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleHUDAction(
-		// canvas);
 		action = new Action() {
 
 			@Override
@@ -326,8 +325,6 @@ public class ICEMeshPage extends ICEFormPage
 		// TODO Add the action for toggling the axes based on JME3/JavaFX
 		// specific implementation
 		// Create the toggle switch to show or hide the axes.
-		// action = new org.eclipse.ice.viz.service.jme3.mesh.ToggleAxesAction(
-		// canvas);
 		action = new Action() {
 
 			@Override

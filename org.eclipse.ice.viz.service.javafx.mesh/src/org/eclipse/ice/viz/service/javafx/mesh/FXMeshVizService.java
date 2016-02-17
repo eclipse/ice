@@ -42,9 +42,8 @@ public class FXMeshVizService extends AbstractVizService {
 	 * </p>
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController geometry)
-			throws Exception {
-		FXMeshCanvas canvas = new FXMeshCanvas(geometry);
+	public IVizCanvas createCanvas(AbstractController mesh) throws Exception {
+		FXMeshCanvas canvas = new FXMeshCanvas(mesh);
 
 		return canvas;
 	}

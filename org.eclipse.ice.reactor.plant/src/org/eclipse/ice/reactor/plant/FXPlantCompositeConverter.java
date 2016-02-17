@@ -22,7 +22,7 @@ import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewFactory;
+import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantData;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
@@ -112,7 +112,7 @@ public class FXPlantCompositeConverter
 		/**
 		 * The factory for constructing controllers and views for the meshs.
 		 */
-		FXPlantViewFactory factory;
+		FXPlantViewControllerFactory factory;
 
 		/**
 		 * The default constructor.
@@ -122,7 +122,7 @@ public class FXPlantCompositeConverter
 		 */
 		public FXPlantComponentVisitor(FXPlantViewRootController root) {
 			this.root = root;
-			factory = new FXPlantViewFactory();
+			factory = new FXPlantViewControllerFactory();
 		}
 
 		/**

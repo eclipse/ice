@@ -17,13 +17,21 @@ import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IDetailsPageProvider;
 
-/** 
- * <p>This class implements the IDetailsPageProvider interface to provide a Details pages for a MasterDetailsBlock. The only way to provide the MasterDetailsComponent handle for this class is through the constructor.</p>
+/**
+ * <p>
+ * This class implements the IDetailsPageProvider interface to provide a Details
+ * pages for a MasterDetailsBlock. The only way to provide the
+ * MasterDetailsComponent handle for this class is through the constructor.
+ * </p>
+ * 
  * @author Jay Jay Billings
  */
 public class ICEDetailsPageProvider implements IDetailsPageProvider {
-	/** 
-	 * <p>The MasterDetailsComponent which should be queried for DataComponents to add to DetailsPages.</p>
+	/**
+	 * <p>
+	 * The MasterDetailsComponent which should be queried for DataComponents to
+	 * add to DetailsPages.
+	 * </p>
 	 */
 	private MasterDetailsComponent component;
 
@@ -37,29 +45,50 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 	 */
 	private ICEFormEditor formEditor;
 
-	/** 
-	 * <p>The constructor. If the is null, this class will be unable to render anything to the screen.</p>
-	 * @param masterDetailsComponent <p>The MasterDetailsComponent that has the DataComponents that will be used as Details blocks in the MasterDetails table.</p>
-	 * @param editor <p>The ICEFormEditor in which the pages will exist. This editor is marked as dirty when the page changes.</p>
+	/**
+	 * <p>
+	 * The constructor. If the is null, this class will be unable to render
+	 * anything to the screen.
+	 * </p>
+	 * 
+	 * @param masterDetailsComponent
+	 *            <p>
+	 *            The MasterDetailsComponent that has the DataComponents that
+	 *            will be used as Details blocks in the MasterDetails table.
+	 *            </p>
+	 * @param editor
+	 *            <p>
+	 *            The ICEFormEditor in which the pages will exist. This editor
+	 *            is marked as dirty when the page changes.
+	 *            </p>
 	 */
-	public ICEDetailsPageProvider(
-			MasterDetailsComponent masterDetailsComponent, ICEFormEditor editor) {
+	public ICEDetailsPageProvider(MasterDetailsComponent masterDetailsComponent,
+			ICEFormEditor editor) {
 
 		component = masterDetailsComponent;
 		formEditor = editor;
 
 	};
 
-	/** 
-	 * <p>This operation returns the component that is used to gather details information or null if it was not set in the constructor.</p>
-	 * @return <p>The MasterDetailsComponent used in this provider or null if it was not set.</p>
+	/**
+	 * <p>
+	 * This operation returns the component that is used to gather details
+	 * information or null if it was not set in the constructor.
+	 * </p>
+	 * 
+	 * @return
+	 * 		<p>
+	 *         The MasterDetailsComponent used in this provider or null if it
+	 *         was not set.
+	 *         </p>
 	 */
 	public MasterDetailsComponent getComponent() {
 		return component;
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IDetailsPageProvider#getPageKey(Object object)
 	 */
 	@Override
@@ -67,8 +96,9 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 		return object;
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IDetailsPageProvider#getPage(Object key)
 	 */
 	@Override
@@ -81,7 +111,8 @@ public class ICEDetailsPageProvider implements IDetailsPageProvider {
 
 		if (keyId != null) {
 			// Grab the right details
-			DataComponent detailsComp = component.getDetails(Integer.parseInt(keyId));
+			DataComponent detailsComp = component
+					.getDetails(Integer.parseInt(keyId));
 			ICEDataComponentDetailsPage = new ICEDataComponentDetailsPage(
 					detailsComp, formEditor);
 		}

@@ -39,8 +39,8 @@ import org.eclipse.ui.PlatformUI;
  * @author Jordan H. Deyton
  * 
  */
-public abstract class AbstractTreeAction extends Action implements
-		ISelectionListener {
+public abstract class AbstractTreeAction extends Action
+		implements ISelectionListener {
 
 	/**
 	 * The currently selected <code>TreeComposite</code> in the

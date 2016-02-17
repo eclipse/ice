@@ -100,8 +100,8 @@ public class RenameNodeTreeAction extends AbstractTreeAction {
 					// special characters.
 					else {
 						String specials = "\\-\\_\\+\\(\\)\\[\\]\\{\\}\\:";
-						Pattern pattern = Pattern.compile("[^a-zA-Z0-9"
-								+ specials + "]");
+						Pattern pattern = Pattern
+								.compile("[^a-zA-Z0-9" + specials + "]");
 						if (pattern.matcher(newText).find()) {
 							error = "Invalid name: Please use only "
 									+ "letters, numbers, and the "

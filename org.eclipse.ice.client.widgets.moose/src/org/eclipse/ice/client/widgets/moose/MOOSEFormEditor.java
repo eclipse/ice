@@ -27,8 +27,8 @@ import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.moose.components.PlantBlockManager;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
@@ -173,8 +173,7 @@ public class MOOSEFormEditor extends ICEFormEditor {
 							// names
 							// to the String list if they are enabled by the
 							// user
-							for (Entry postProcessor : postProcessors
-									.retrieveAllEntries()) {
+							for (IEntry postProcessor : postProcessors.retrieveAllEntries()) {
 								if ("yes".equals(postProcessor.getValue())) {
 									enabledPPs.add(postProcessor.getName());
 								}

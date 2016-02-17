@@ -236,7 +236,7 @@ public class AbstractView
 				.clone();
 
 		// Notify own listeners of the change
-		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 

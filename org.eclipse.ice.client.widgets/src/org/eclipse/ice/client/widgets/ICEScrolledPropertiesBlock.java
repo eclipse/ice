@@ -80,7 +80,8 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		}
 
 		@Override
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		public void inputChanged(Viewer viewer, Object oldInput,
+				Object newInput) {
 		}
 
 		@Override
@@ -161,7 +162,8 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 * the constructor.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The MasterDetailsComponent that is used to populate the
 	 *         MasterDetailsBlock/ScrolledPropertiesBlock or null if it was not
 	 *         set.
@@ -177,7 +179,8 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 * constructor.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The IDetailsPageProvider or null if it was not set.
 	 *         </p>
 	 */
@@ -200,13 +203,14 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 	 *            </p>
 	 */
 	@Override
-	protected void createMasterPart(IManagedForm managedForm, Composite parent) {
+	protected void createMasterPart(IManagedForm managedForm,
+			Composite parent) {
 
 		FormToolkit toolkit = managedForm.getToolkit();
 
 		// Define key features for the ScrolledPropertiesBlock
-		Section section = toolkit.createSection(parent, Section.DESCRIPTION
-				| ExpandableComposite.TITLE_BAR);
+		Section section = toolkit.createSection(parent,
+				Section.DESCRIPTION | ExpandableComposite.TITLE_BAR);
 		section.setText(masterDetailsComponent.getName());
 		section.setDescription(masterDetailsComponent.getDescription());
 		section.marginWidth = 10;
@@ -254,7 +258,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		viewer.setInput(masterDetailsComponent);
 
 		// Define the button to add MasterComponents to the table
-		Button button = toolkit.createButton(client, "  Add  ", SWT.PUSH);
+		Button button = toolkit.createButton(client, " Add  ", SWT.PUSH);
 		button.addSelectionListener(new SelectionListener() {
 
 			// What to do when the add button is clicked
@@ -292,10 +296,9 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 					// made
 					if (masterCreatorDialog.getResult() != null) {
 						int id = masterDetailsComponent.addMaster();
-						masterDetailsComponent
-								.setMasterInstanceValue(id,
-										(masterCreatorDialog.getResult()[0])
-												.toString());
+						masterDetailsComponent.setMasterInstanceValue(id,
+								(masterCreatorDialog.getResult()[0])
+										.toString());
 						// Mark the editor as dirty since information has
 						// changed
 						formEditor.setDirty(true);
@@ -308,9 +311,10 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 
 				} else {
 					// Throw an error if no masters are available
-					errorBox.setErrorString("There are no items to add to the list."
-							+ " If you believe this is a serious error, please "
-							+ "contact your system's administrator.");
+					errorBox.setErrorString(
+							"There are no items to add to the list."
+									+ " If you believe this is a serious error, please "
+									+ "contact your system's administrator.");
 					errorBox.display();
 				}
 
@@ -347,12 +351,13 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		});
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		button2.setLayoutData(gd);
-		System.err.println("ICEScrolledPropertiesBlock Message: "
-				+ "Printing out status: "
-				+ this.masterDetailsComponent.canAddRemoveButton());
+		System.err.println(
+				"ICEScrolledPropertiesBlock Message: " + "Printing out status: "
+						+ this.masterDetailsComponent.canAddRemoveButton());
 		// Disable buttons if set to false
 		if (!this.masterDetailsComponent.canAddRemoveButton()) {
-			System.err.println("ICEScrolledPropertiesBlock Message: Buttons disabled!");
+			System.err.println(
+					"ICEScrolledPropertiesBlock Message: Buttons disabled!");
 			// disable buttons
 			button.setEnabled(false);
 			button2.setEnabled(false);

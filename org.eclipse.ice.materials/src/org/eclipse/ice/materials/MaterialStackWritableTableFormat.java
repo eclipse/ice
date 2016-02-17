@@ -111,7 +111,7 @@ public class MaterialStackWritableTableFormat implements
 		} else {
 			val = true;
 		}
-		val = true;
+//		val = true;
 		return val;
 	}
 
@@ -143,6 +143,8 @@ public class MaterialStackWritableTableFormat implements
 				} catch (Exception e) {
 					logger.error(getClass().getName() + " Exception!", e);
 				}
+			} else if (newValue instanceof Double) {
+				value = ((Double)newValue).intValue();
 			} else {
 				try {
 					value = (Integer) newValue;

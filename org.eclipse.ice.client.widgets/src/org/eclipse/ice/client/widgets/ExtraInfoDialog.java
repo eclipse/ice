@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Jay Jay Billings
  */
 public class ExtraInfoDialog extends Dialog {
-	
+
 	/**
 	 * The DataComponent displayed for editing by this dialog.
 	 */
@@ -52,7 +52,7 @@ public class ExtraInfoDialog extends Dialog {
 	/**
 	 * The set of EntryComposites used to display Entries.
 	 */
-	private ArrayList<EntryComposite> entryComposites;
+	private ArrayList<AbstractEntryComposite> entryComposites;
 
 	/**
 	 * The DataComponentComposite that renders the data
@@ -63,8 +63,7 @@ public class ExtraInfoDialog extends Dialog {
 	 * This operation retrieves the DataComponent that is currently rendered by
 	 * the ExtraInfoDialog.
 	 * 
-	 * @return
-	 *         The DataComponent
+	 * @return The DataComponent
 	 */
 	public DataComponent getDataComponent() {
 		return dataComp;
@@ -96,7 +95,7 @@ public class ExtraInfoDialog extends Dialog {
 		listeners = new ArrayList<IWidgetClosedListener>();
 
 		// Initialize the list of Composites
-		entryComposites = new ArrayList<EntryComposite>();
+		entryComposites = new ArrayList<AbstractEntryComposite>();
 
 		return;
 	}
@@ -118,7 +117,10 @@ public class ExtraInfoDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+	 * 
+	 * @see
+	 * org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.
+	 * Shell)
 	 */
 	@Override
 	protected void configureShell(Shell shell) {
@@ -128,7 +130,10 @@ public class ExtraInfoDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 * 
+	 * @see
+	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
+	 * .Composite)
 	 */
 	@Override
 	protected Control createDialogArea(Composite parent) {
@@ -136,8 +141,8 @@ public class ExtraInfoDialog extends Dialog {
 		// Local Declarations
 		Composite swtComposite = (Composite) super.createDialogArea(parent);
 		GridLayout layout = (GridLayout) swtComposite.getLayout();
-		Color backgroundColor = getParentShell().getDisplay().getSystemColor(
-				SWT.COLOR_WIDGET_BACKGROUND);
+		Color backgroundColor = getParentShell().getDisplay()
+				.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
 
 		// Set the column layout to one so that everything will stack
 		layout.numColumns = 1;
@@ -166,6 +171,7 @@ public class ExtraInfoDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
 	 */
 	@Override
@@ -193,6 +199,7 @@ public class ExtraInfoDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
 	 */
 	@Override

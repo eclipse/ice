@@ -65,8 +65,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
  * @author Alex McCaskey
  *
  */
-public class ICEResourcePage extends ICEFormPage
-		implements ISelectionListener, IUpdateableListener, IResourceChangeListener {
+public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
+		IUpdateableListener, IResourceChangeListener {
 
 	/**
 	 * The ResourceComponent drawn by this page.
@@ -131,7 +131,8 @@ public class ICEResourcePage extends ICEFormPage
 		String[] extensions = { "txt", "sh", "i", "csv" };
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
 
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
+				IResourceChangeEvent.POST_CHANGE);
 		return;
 	}
 
@@ -151,7 +152,8 @@ public class ICEResourcePage extends ICEFormPage
 
 		// Try to show the Resource View.
 		try {
-			getSite().getWorkbenchWindow().getActivePage().showView(ICEResourceView.ID);
+			getSite().getWorkbenchWindow().getActivePage()
+					.showView(ICEResourceView.ID);
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
 		}
@@ -164,13 +166,15 @@ public class ICEResourcePage extends ICEFormPage
 		// Register the page with the SelectionService as a listener. Note that
 		// this call can be updated to only listen for selections from a
 		// particular part.
-		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addSelectionListener(this);
 		// If the page is disposed, then this should be removed as a selection
 		// listener.
 		pageComposite.addDisposeListener(new DisposeListener() {
 			@Override
 			public void widgetDisposed(DisposeEvent event) {
-				getSite().getWorkbenchWindow().getSelectionService().removeSelectionListener(ICEResourcePage.this);
+				getSite().getWorkbenchWindow().getSelectionService()
+						.removeSelectionListener(ICEResourcePage.this);
 			}
 		});
 
@@ -184,7 +188,8 @@ public class ICEResourcePage extends ICEFormPage
 		toolkit.adapt(plotGridComposite);
 
 		// Set the workbench page reference
-		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage();
 
 		return;
 	}
@@ -221,11 +226,15 @@ public class ICEResourcePage extends ICEFormPage
 			// Display the default-selected Resource from the Resource View in
 			// the browser, or a message.
 			if (!resourceComponent.isEmpty()) {
-				browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">Select a resource to view</p>" + "</body></html>");
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>"
+						+ "</body></html>");
 			} else {
-				browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">No resources available</p>" + "</body></html>");
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">No resources available</p>"
+						+ "</body></html>");
 			}
 		} catch (SWTError e) {
 			logger.error(getClass().getName() + " Exception! ", e);
@@ -258,8 +267,10 @@ public class ICEResourcePage extends ICEFormPage
 			Control topControl = stackLayout.topControl;
 			if (topControl != browser) {
 				// Update the browser.
-				browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">Select a resource to view</p>" + "</body></html>");
+				browser.setText("<html><body>"
+						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+						+ "align=\"center\">Select a resource to view</p>"
+						+ "</body></html>");
 				stackLayout.topControl = browser;
 				pageComposite.layout();
 
@@ -305,11 +316,14 @@ public class ICEResourcePage extends ICEFormPage
 		// text editor
 		if (useEditor) {
 			// Get the content of the file
-			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem().getStore(resource.getPath());
-			FileStoreEditorInput editorInput = new FileStoreEditorInput(fileOnLocalDisk);
+			IFileStore fileOnLocalDisk = EFS.getLocalFileSystem()
+					.getStore(resource.getPath());
+			FileStoreEditorInput editorInput = new FileStoreEditorInput(
+					fileOnLocalDisk);
 
 			// Open the contents in the text editor
-			IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+			IWorkbenchWindow window = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow();
 			IWorkbenchPage page = window.getActivePage();
 			page.openEditor(editorInput, "org.eclipse.ui.DefaultTextEditor");
 		}
@@ -317,7 +331,8 @@ public class ICEResourcePage extends ICEFormPage
 		// If the Resource is a regular Resource or cannot be rendered via
 		// the VizServices or a text editor, try to open it in the browser
 		// as a last resort.
-		if (useBrowser && !useEditor && browser != null && !browser.isDisposed()) {
+		if (useBrowser && !useEditor && browser != null
+				&& !browser.isDisposed()) {
 			// Update the browser.
 			browser.setUrl(path);
 			stackLayout.topControl = browser;
@@ -352,13 +367,15 @@ public class ICEResourcePage extends ICEFormPage
 		if (workbenchPage != null) {
 
 			// Reactivate the editor tab if it's not in the front
-			if (getEditor() != null && workbenchPage.getActiveEditor() != getEditor()) {
+			if (getEditor() != null
+					&& workbenchPage.getActiveEditor() != getEditor()) {
 				workbenchPage.activate(getEditor());
 			}
 		} else {
 
 			// Set the workbench page and try activating the editor again
-			workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			workbenchPage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage();
 			activateEditor();
 		}
 
@@ -401,8 +418,10 @@ public class ICEResourcePage extends ICEFormPage
 					@Override
 					public void run() {
 						// Clear the browser and make it the top widget.
-						browser.setText("<html><body>" + "<p style=\"font-family:Tahoma;font-size:x-small\" "
-								+ "align=\"center\">No resources available</p>" + "</body></html>");
+						browser.setText("<html><body>"
+								+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+								+ "align=\"center\">No resources available</p>"
+								+ "</body></html>");
 						stackLayout.topControl = browser;
 						pageComposite.layout();
 
@@ -512,9 +531,12 @@ public class ICEResourcePage extends ICEFormPage
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			try {
 				event.getDelta().accept(new IResourceDeltaVisitor() {
-					public boolean visit(IResourceDelta delta) throws CoreException {
-						for (ICEResource r : ICEResourcePage.this.resourceComponent.getResources()) {
-							if (delta.getResource().getName().equals((new File(r.getPath()).getName()))) {
+					public boolean visit(IResourceDelta delta)
+							throws CoreException {
+						for (ICEResource r : ICEResourcePage.this.resourceComponent
+								.getResources()) {
+							if (delta.getResource().getName().equals(
+									(new File(r.getPath()).getName()))) {
 								ICEResourcePage.this.update(r);
 							}
 						}

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh;
 
+import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 
 /**
  * <p>
@@ -80,27 +80,6 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 		rootAtachment = (AbstractAttachment) viewer.getRenderer()
 				.createAttachment(FXMeshAttachment.class);
 	}
-
-	// /**
-	// * <p>
-	// * Listens for updates coming in from the geometry provider.
-	// * </p>
-	// *
-	// * @see IVizUpdateable#update
-	// */
-	// @Override
-	// public void update(final IVizUpdateable component) {
-	//
-	// // Invoke this on the JavaFX UI thread
-	// javafx.application.Platform.runLater(new Runnable() {
-	// @Override
-	// public void run() {
-	// if (component == mesh) {
-	// // rootGeometry.addGeometry(geometry);
-	// }
-	// }
-	// });
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -187,13 +166,12 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 				}
 			}
 
-			// If all the vertices were selected, remove the polygon form the
+			// If all the vertices were selected, remove the polygon from the
 			// mesh
 			if (selected) {
 				root.removeEntity(polygon);
 			}
 		}
-
 	}
 
 	/*

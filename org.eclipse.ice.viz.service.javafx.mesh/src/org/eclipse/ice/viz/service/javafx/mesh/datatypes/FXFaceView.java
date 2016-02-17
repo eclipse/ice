@@ -31,18 +31,19 @@ public class FXFaceView extends AbstractView {
 	Group node;
 
 	/**
+	 * The nullary constructor.
+	 */
+	public FXFaceView() {
+		super();
+	}
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param model
 	 */
 	public FXFaceView(AbstractMesh model) {
 		super();
-
-		// // Instantiate the node
-		// node = new Group();
-		//
-		// // Set the initial graphical representations
-		// refresh(model);
 	}
 
 	/*
@@ -59,28 +60,15 @@ public class FXFaceView extends AbstractView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMeshComponent)
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public void refresh(AbstractMesh model) {
+	public Object clone() {
 
-		// // Clear the list of children so it can be rebuilt
-		// node.getChildren().clear();
-		//
-		// // Add each edge to the node
-		// for (AbstractController edge : model.getEntitiesByCategory("Edges"))
-		// {
-		// node.getChildren().add((Node) edge.getRepresentation());
-		// }
-		//
-		// // Add each vertex to the node
-		// for (AbstractController vertex : model
-		// .getEntitiesByCategory("Vertices")) {
-		// if (!node.getChildren().contains(vertex.getRepresentation())) {
-		// node.getChildren().add((Node) vertex.getRepresentation());
-		// }
-		// }
+		// Create a new AbstractView and make it a copy of this
+		FXFaceView clone = new FXFaceView();
+		clone.copy(this);
+
+		return clone;
 	}
 }

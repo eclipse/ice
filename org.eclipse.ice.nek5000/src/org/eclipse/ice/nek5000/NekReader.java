@@ -23,7 +23,9 @@ import java.util.HashMap;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
@@ -40,7 +42,7 @@ import org.eclipse.ice.viz.service.modeling.VertexMesh;
  * file and converting it into appropriate data structures for ICE to use. Data
  * structures used are broken down by the section of a reafile as follows:
  * 
- * ID Section Component Type Default Entry Status
+ * ID Section Component Type Default IEntry Status
  * 
  * 2) Parameters DataComponent ready 3) Passive Scalar Data DataComponent ready
  * (but empty if NPSCAL = 0) 4) Logical Switches DataComponent ready 5) Pre-Nek
@@ -230,7 +232,7 @@ public class NekReader {
 
 	/**
 	 * Loads the PARAMETERS section of a reafile and returns the contents as a
-	 * DataComponent of Entries. Each line is set as an Entry.
+	 * DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -246,7 +248,7 @@ public class NekReader {
 				+ "section of a Nek5000 reafile");
 		parameters.setId(2);
 
-		Entry entry;
+		IEntry entry;
 		// Begin reading in the lines
 		for (int i = 0; i < reaLines.size(); i++) {
 
@@ -285,7 +287,7 @@ public class NekReader {
 								.parseInt(npscalArray.get(0).substring(0, 1));
 					}
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					// Construct the parameter description
@@ -316,7 +318,7 @@ public class NekReader {
 
 	/**
 	 * Loads the PASSIVE SCALAR DATA section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set as an Entry. If
+	 * contents as a DataComponent of Entries. Each line is set as an IEntry. If
 	 * NPSCAL = 0, this DataComponent will have no entries.
 	 * 
 	 * @param reaLines
@@ -336,7 +338,7 @@ public class NekReader {
 		// Only write these entries if there are >0 passive scalars defined
 		if (numPassiveScalars > 0) {
 
-			Entry entry;
+			IEntry entry;
 			for (int i = 0; i < reaLines.size(); i++) {
 
 				// Search for the passive scalar heading
@@ -363,7 +365,7 @@ public class NekReader {
 						currLine = reaLines.get(i + j);
 						splitLine = currLine.trim().split("\\s+");
 
-						// Create a Nek Entry
+						// Create a Nek IEntry
 						entry = makeNekEntry(false);
 
 						// Construct the current value
@@ -395,7 +397,7 @@ public class NekReader {
 
 	/**
 	 * Loads the LOGICAL SWITCHES section of a reafile and returns the contents
-	 * as a DataComponent of Entries. Each line is set as an Entry.
+	 * as a DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -411,7 +413,7 @@ public class NekReader {
 				+ "section of a Nek5000 reafile");
 		switches.setId(4);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the logical switches heading indicating how many
@@ -525,7 +527,7 @@ public class NekReader {
 
 	/**
 	 * Loads the PRE-NEK AXES section of a reafile and returns the contents as a
-	 * DataComponent of Entries. Each line is set as an Entry. This
+	 * DataComponent of Entries. Each line is set as an IEntry. This
 	 * DataComponent will have no entries if NPSCAL = 0.
 	 * 
 	 * @param reaLines
@@ -542,7 +544,7 @@ public class NekReader {
 				+ "section of a Nek5000 reafile");
 		preNekAxes.setId(5);
 
-		Entry entry;
+		IEntry entry;
 		String[] splitLine;
 		String currValue;
 		String currName;
@@ -555,7 +557,7 @@ public class NekReader {
 				String currLine = reaLines.get(i);
 				splitLine = currLine.trim().split("\\s+");
 
-				// Create a Nek Entry
+				// Create a Nek IEntry
 				entry = makeNekEntry(false);
 
 				// Construct the current value and name
@@ -1074,7 +1076,7 @@ public class NekReader {
 
 	/**
 	 * Loads the PRESOLVE/RESTART OPTIONS section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set an Entry.
+	 * contents as a DataComponent of Entries. Each line is set an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -1090,7 +1092,7 @@ public class NekReader {
 				+ "Restart Options section of a Nek5000 reafile");
 		presolveRestart.setId(8);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the presolve/restart options heading
@@ -1115,7 +1117,7 @@ public class NekReader {
 					currLine = reaLines.get(i + j);
 					splitLine = currLine.trim().split("\\s+");
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					// Construct the current value
@@ -1144,7 +1146,7 @@ public class NekReader {
 
 	/**
 	 * Loads the INITIAL CONDITIONS section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set as an Entry.
+	 * contents as a DataComponent of Entries. Each line is set as an IEntry.
 	 * Since Nek5000 no longer uses the Initial Conditions section, Entries are
 	 * tagged as not ready and thus won't be exposed to the user.
 	 * 
@@ -1162,7 +1164,7 @@ public class NekReader {
 				+ "Conditions section of a Nek5000 reafile");
 		initialConditions.setId(9);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
@@ -1184,7 +1186,7 @@ public class NekReader {
 					// Grab the current line
 					currLine = reaLines.get(i + j);
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					// Set the name, value and ID
@@ -1204,7 +1206,7 @@ public class NekReader {
 
 	/**
 	 * Loads the DRIVE FORCE DATA section of a reafile and returns the contents
-	 * as a DataComponent of Entries. Each line is set as an Entry.
+	 * as a DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -1220,7 +1222,7 @@ public class NekReader {
 				+ "Data section of a Nek5000 reafile");
 		driveForceData.setId(10);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the drive force data heading
@@ -1245,7 +1247,7 @@ public class NekReader {
 					// Grab the current line
 					currLine = reaLines.get(i + j);
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					// Set the name, value and ID
@@ -1265,7 +1267,7 @@ public class NekReader {
 
 	/**
 	 * Loads the VARIABLE PROPERTY DATA section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set as an Entry.
+	 * contents as a DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -1281,7 +1283,7 @@ public class NekReader {
 				+ "Property Data section of a Nek5000 reafile");
 		varPropertyData.setId(11);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
@@ -1304,7 +1306,7 @@ public class NekReader {
 					// Grab the current line
 					currLine = reaLines.get(i + j);
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					// Set the name, value and ID
@@ -1323,7 +1325,7 @@ public class NekReader {
 
 	/**
 	 * Loads the HISTORY AND INTEGRAL DATA section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set as an Entry.
+	 * contents as a DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -1339,7 +1341,7 @@ public class NekReader {
 				+ "and Integral Data section of a Nek5000 reafile");
 		historyIntegralData.setId(12);
 
-		Entry entry;
+		IEntry entry;
 		for (int i = 0; i < reaLines.size(); i++) {
 
 			// Search for the initial conditions heading
@@ -1363,7 +1365,7 @@ public class NekReader {
 					// Grab the current line
 					currLine = reaLines.get(i + j);
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					/*
@@ -1397,7 +1399,7 @@ public class NekReader {
 
 	/**
 	 * Loads the OUTPUT FIELD SPECIFICATION section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set as an Entry.
+	 * contents as a DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -1413,7 +1415,7 @@ public class NekReader {
 				+ "Specification section of a Nek5000 reafile");
 		outputFieldSpec.setId(13);
 
-		Entry entry;
+		IEntry entry;
 		boolean isDiscrete;
 		for (int i = 0; i < reaLines.size(); i++) {
 
@@ -1449,7 +1451,7 @@ public class NekReader {
 							|| currLine.contains("PRESSURE")
 							|| currLine.contains("TEMPERATURE"));
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(isDiscrete);
 
 					// Define the name and value
@@ -1482,7 +1484,7 @@ public class NekReader {
 
 	/**
 	 * Loads the OBJECT SPECIFICATION section of a reafile and returns the
-	 * contents as a DataComponent of Entries. Each line is set as an Entry.
+	 * contents as a DataComponent of Entries. Each line is set as an IEntry.
 	 * 
 	 * @param reaLines
 	 *            Lines of the reafile as an ArrayList of Strings.
@@ -1498,7 +1500,7 @@ public class NekReader {
 				+ "Specification section of a Nek5000 reafile");
 		objectSpec.setId(14);
 
-		Entry entry;
+		IEntry entry;
 		// Begin reading in the lines
 		for (int i = 0; i < reaLines.size(); i++) {
 
@@ -1518,7 +1520,7 @@ public class NekReader {
 					currLine = reaLines.get(i + j);
 					splitLine = currLine.trim().split("\\s+");
 
-					// Create a Nek Entry
+					// Create a Nek IEntry
 					entry = makeNekEntry(false);
 
 					// Specify the name and value
@@ -1540,53 +1542,29 @@ public class NekReader {
 	}
 
 	/**
-	 * Utility class to construct an Entry with default Nek values.
+	 * Utility class to construct an IEntry with default Nek values.
 	 * 
-	 * @return Constructed Entry with default Nek values.
+	 * @return Constructed IEntry with default Nek values.
 	 */
-	private Entry makeNekEntry(boolean isDiscrete) {
+	private IEntry makeNekEntry(boolean isDiscrete) {
 
-		Entry entry;
+		IEntry entry;
 
 		// If entry's value can only be T/F
 		if (isDiscrete) {
-			entry = new Entry() {
-				@Override
-				protected void setup() {
+			entry = new DiscreteEntry();
+			entry.setAllowedValues(Arrays.asList("no", "yes"));
 
-					// Set up the allowed discrete values
-					ArrayList<String> allowedValues = new ArrayList<String>();
-					allowedValues.add("NO");
-					allowedValues.add("YES");
-
-					this.setName("Nek5000 Default Entry");
-					this.tag = "";
-					this.ready = true;
-					this.setDescription("");
-					this.allowedValues = allowedValues;
-					this.defaultValue = "NO";
-					this.value = this.defaultValue;
-					this.allowedValueType = AllowedValueType.Discrete;
-				}
-			};
+			entry.setName("Nek5000 Default Entry");
+			entry.setDescription("");
+			entry.setDefaultValue("NO");
+			entry.setValue(entry.getDefaultValue());
+		} else {
+			entry = new StringEntry();
+			entry.setName("Nek5000 Default Entry");
+			entry.setDescription("");
+			entry.setValue("");
 		}
-
-		else {
-			entry = new Entry() {
-				@Override
-				protected void setup() {
-					this.setName("Nek5000 Default Entry");
-					this.tag = "";
-					this.ready = true;
-					this.setDescription("");
-					this.allowedValues = new ArrayList<String>();
-					this.defaultValue = "";
-					this.value = this.defaultValue;
-					this.allowedValueType = AllowedValueType.Undefined;
-				}
-			};
-		}
-
 		return entry;
 	}
 
