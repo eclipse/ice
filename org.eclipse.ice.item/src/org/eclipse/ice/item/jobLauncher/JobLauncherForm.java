@@ -28,6 +28,12 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.DockerCertificateException;
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.messages.Image;
+
 /**
  * <p>
  * The JobLauncherForm is a subclass of Form that is specialized to work with
@@ -82,6 +88,11 @@ public class JobLauncherForm extends Form {
 	public static final int parallelId = 3;
 
 	/**
+	 * 
+	 */
+	public static final int dockerId = 44;
+
+	/**
 	 * True if the parallel component has been created, false otherwise.
 	 */
 	private boolean parallelComponentEnabled = false;
@@ -110,6 +121,8 @@ public class JobLauncherForm extends Form {
 	 */
 	private static final String TBBEntryName = "Number of TBB Threads";
 
+	private boolean dockerAvailable;
+	
 	/**
 	 * <p>
 	 * The constructor.
@@ -128,10 +141,13 @@ public class JobLauncherForm extends Form {
 		// Make a DataComponent for the input files
 		DataComponent fileComponent = new DataComponent();
 		fileComponent.setId(filesId);
-		fileComponent
-				.setDescription("This section contains the name of the file(s) "
-						+ "used by this Job.");
+		fileComponent.setDescription("This section contains the name of the file(s) " + "used by this Job.");
 		fileComponent.setName("Input File(s)");
+
+		DataComponent dockerComponent = new DataComponent();
+		dockerComponent.setName("Docker Configuration");
+		dockerComponent.setDescription("This section enables the use of docker for this Job Launch.");
+		dockerComponent.setId(dockerId);
 		
 		// Create a docker launch check box.
 		IEntry dockerLaunch = new DiscreteEntry("true", "false");
@@ -139,43 +155,63 @@ public class JobLauncherForm extends Form {
 		dockerLaunch.setName("Launch with Docker");
 		dockerLaunch.setDescription("Check to perform this job launch in a docker container.");
 		dockerLaunch.setId(33);
-		fileComponent.addEntry(dockerLaunch);
-		
-		IEntry imagesList = new DiscreteEntry() {
+		dockerComponent.addEntry(dockerLaunch);
+
+		// Create the list of images that displays itself
+		// when the docker launch check box is checked.
+		IEntry imagesList = new DiscreteEntry("Select Image") {
 			@Override
 			public void update(IUpdateable component) {
 				if (component instanceof DiscreteEntry && "Launch with Docker".equals(component.getName())) {
-					boolean enable = Boolean.valueOf(((IEntry)component).getValue());
-					
+					boolean enable = Boolean.valueOf(((IEntry) component).getValue());
+					setReady(enable);
 					if (enable) {
 						// Set up the allowed values
-						
-					} else {
-						// Clear the allowed values
-						
+						DockerClient dockerClient;
+						try {
+							dockerClient = DefaultDockerClient.fromEnv().build();
+							allowedValues = new ArrayList<String>();
+							for (Image i : dockerClient.listImages()) {
+								allowedValues.add(i.repoTags().get(0));
+							}
+							if (allowedValues.isEmpty()) {
+								allowedValues.add("No Images Found.");
+							}
+							setValue(allowedValues.get(0));
+						} catch (DockerCertificateException | DockerException | InterruptedException e1) {
+							e1.printStackTrace();
+							logger.error("Error in getting a reference to Docker or listing available Images.", e1);
+							allowedValues = new ArrayList<String>();
+							allowedValues.add("Error connecting to Docker.");
+							setValue(allowedValues.get(0));
+							return;
+						}
 					}
 				}
+				return;
 			}
 		};
-		
+
 		imagesList.setName("Available Images");
 		imagesList.setDescription("Select the docker image to use for this docker launch.");
 		imagesList.setReady(false);
 		imagesList.setId(34);
+		dockerComponent.addEntry(imagesList);
 		
-		// Register the list of images as a listener 
+		// Register the list of images as a listener
 		// of the docker launch entry.
 		dockerLaunch.register(imagesList);
-		
+
 		// Add the data components
 		addComponent(fileComponent);
-
+		addComponent(dockerComponent);
+		
 		// Create a ResourceComponent
 		ResourceComponent outputData = new ResourceComponent();
 		outputData.setName("Output Files and Data");
 		outputData.setId(outputId);
-		outputData.setDescription("This section describes all of the data "
-				+ "and additional output created by the job launch.");
+		outputData.setDescription(
+				"This section describes all of the data " + "and additional output created by the job launch.");
 
 		// Add the ResourceComponent
 		addComponent(outputData);
@@ -209,8 +245,7 @@ public class JobLauncherForm extends Form {
 	 *            The default number of processes for MPI to use.
 	 *            </p>
 	 */
-	public void enableMPI(int minProcesses, int maxProcesses,
-			int defaultProcesses) {
+	public void enableMPI(int minProcesses, int maxProcesses, int defaultProcesses) {
 
 		// Local Declarations - Check for negative or zero values
 		final int minProcessesFixed = Math.max(minProcesses, 1);
@@ -219,11 +254,10 @@ public class JobLauncherForm extends Form {
 		DataComponent parallelismComponent = null;
 		IEntry mpiEntry = null;
 		List<String> allowed = new ArrayList<String>();
-		
+
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
-		if (minProcessesFixed <= maxProcessesFixed
-				&& defaultProcessesFixed >= minProcessesFixed
+		if (minProcessesFixed <= maxProcessesFixed && defaultProcessesFixed >= minProcessesFixed
 				&& defaultProcessesFixed <= maxProcessesFixed) {
 			// Get the parallelism component.
 			parallelismComponent = getParallelismComponent();
@@ -249,8 +283,7 @@ public class JobLauncherForm extends Form {
 
 			mpiEntry.setName(mpiEntryName);
 			mpiEntry.setId(1);
-			mpiEntry.setDescription("The number of processes to use with "
-					+ "MPI");
+			mpiEntry.setDescription("The number of processes to use with " + "MPI");
 			// Add the Entry to the Component
 			parallelismComponent.addEntry(mpiEntry);
 		}
@@ -325,11 +358,10 @@ public class JobLauncherForm extends Form {
 		DataComponent parallelismComponent = null;
 		IEntry openMPEntry = null;
 		List<String> allowed = new ArrayList<String>();
-		
+
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
-		if (minThreadsFixed <= maxThreadsFixed
-				&& defaultThreadsFixed >= minThreadsFixed
+		if (minThreadsFixed <= maxThreadsFixed && defaultThreadsFixed >= minThreadsFixed
 				&& defaultThreadsFixed <= maxThreadsFixed) {
 			// Get the parallelism component)
 			parallelismComponent = getParallelismComponent();
@@ -337,7 +369,7 @@ public class JobLauncherForm extends Form {
 			if (parallelismComponent.contains(openMPEntryName)) {
 				parallelismComponent.deleteEntry(openMPEntryName);
 			}
-			
+
 			if (minThreadsFixed != maxThreadsFixed) {
 				openMPEntry = new ContinuousEntry();
 				allowed.add(String.valueOf(minThreadsFixed));
@@ -352,11 +384,10 @@ public class JobLauncherForm extends Form {
 				openMPEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
 				openMPEntry.setValue(String.valueOf(defaultThreadsFixed));
 			}
-			
+
 			openMPEntry.setName(openMPEntryName);
 			openMPEntry.setId(1);
-			openMPEntry.setDescription("The number of threads to use with "
-					+ "OpenMP");
+			openMPEntry.setDescription("The number of threads to use with " + "OpenMP");
 			// Add the Entry to the Component
 			parallelismComponent.addEntry(openMPEntry);
 		}
@@ -430,11 +461,10 @@ public class JobLauncherForm extends Form {
 		DataComponent parallelismComponent = null;
 		IEntry tBBEntry = null;
 		List<String> allowedValues = new ArrayList<String>();
-		
+
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
-		if (minThreadsFixed <= maxThreadsFixed
-				&& defaultThreadsFixed >= minThreadsFixed
+		if (minThreadsFixed <= maxThreadsFixed && defaultThreadsFixed >= minThreadsFixed
 				&& defaultThreadsFixed <= maxThreadsFixed) {
 			// Get the parallelism component)
 			parallelismComponent = getParallelismComponent();
@@ -442,7 +472,7 @@ public class JobLauncherForm extends Form {
 			if (parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
 				parallelismComponent.deleteEntry(JobLauncherForm.TBBEntryName);
 			}
-			
+
 			if (minThreadsFixed != maxThreadsFixed) {
 				tBBEntry = new ContinuousEntry();
 				allowedValues.add(String.valueOf(minThreadsFixed));
@@ -462,8 +492,7 @@ public class JobLauncherForm extends Form {
 
 			tBBEntry.setName(JobLauncherForm.TBBEntryName);
 			tBBEntry.setId(2);
-			tBBEntry.setDescription("The number of threads to use with "
-					+ "Thread Building Blocks");
+			tBBEntry.setDescription("The number of threads to use with " + "Thread Building Blocks");
 			// Add the Entry to the Component
 			parallelismComponent.addEntry(tBBEntry);
 		}
@@ -509,19 +538,21 @@ public class JobLauncherForm extends Form {
 	 * list will not make any changes to the Form.
 	 * </p>
 	 * 
-	 * @param name	Name of the input file type.
-	 * @param desc	Description of the file type.
-	 * @param files	List of files available for the job.
+	 * @param name
+	 *            Name of the input file type.
+	 * @param desc
+	 *            Description of the file type.
+	 * @param files
+	 *            List of files available for the job.
 	 */
-	public void setInputFiles(String name, String desc, 
-			ArrayList<String> files) {
+	public void setInputFiles(String name, String desc, ArrayList<String> files) {
 
 		// Local Declarations
 		int oldId = 0;
 		IEntry oldEntry = null;
 		DataComponent fileComponent = ((DataComponent) getComponent(1));
-		final ArrayList<String> finalFiles = (files != null) ? 
-				(ArrayList<String>) files.clone() : new ArrayList<String>();
+		final ArrayList<String> finalFiles = (files != null) ? (ArrayList<String>) files.clone()
+				: new ArrayList<String>();
 		String oldValue = "";
 
 		// Determine if the Entry already exists in the component and remove it
@@ -536,12 +567,17 @@ public class JobLauncherForm extends Form {
 		// Create an Entry with the filenames
 		IEntry fileEntry = new FileEntry();
 		fileEntry.setAllowedValues(finalFiles);
-		
+
 		// Set the name and description of the Filename entry
 		fileEntry.setDescription(desc);
 		fileEntry.setName(name);
-		fileEntry.setId((oldId > 0) ? oldId : fileComponent
-				.retrieveAllEntries().size()); // FIXME! Bug - needs a unique id
+		fileEntry.setId((oldId > 0) ? oldId : fileComponent.retrieveAllEntries().size()); // FIXME!
+																							// Bug
+																							// -
+																							// needs
+																							// a
+																							// unique
+																							// id
 		// Keep the original value, if possible
 		if (fileEntry.getAllowedValues().contains(oldValue)) {
 			fileEntry.setValue(oldValue);
@@ -556,7 +592,7 @@ public class JobLauncherForm extends Form {
 		}
 		// Determine if the Entry already exists in the component and reuse it
 		if (oldEntry != null) {
-			((FileEntry)oldEntry).copy((FileEntry) fileEntry);
+			((FileEntry) oldEntry).copy((FileEntry) fileEntry);
 		} else {
 			// Or just add it
 			fileComponent.addEntry(fileEntry);
@@ -564,51 +600,53 @@ public class JobLauncherForm extends Form {
 
 		return;
 	}
-	
-//	/**
-//	 * This method is the same as {@link #setInputFiles}, except that is does 
-//	 * not take a boolean flag in the parameters. This method calls the other
-//	 * {@link #setInputFiles} with the boolean isFileEntry flag as false.
-//	 * 
-//	 * @param name	Name of the input file type.
-//	 * @param desc	Description of the file type.
-//	 * @param files	List of files available for the job.
-//	 */
-//	public void setInputFiles(String name, String desc, 
-//			ArrayList<String> files) {
-//		
-//		// Call the other method with the boolean flag as false
-//		setInputFiles(name, desc, files, false);
-//		
-//		return;
-//	
-//	}
+
+	// /**
+	// * This method is the same as {@link #setInputFiles}, except that is does
+	// * not take a boolean flag in the parameters. This method calls the other
+	// * {@link #setInputFiles} with the boolean isFileEntry flag as false.
+	// *
+	// * @param name Name of the input file type.
+	// * @param desc Description of the file type.
+	// * @param files List of files available for the job.
+	// */
+	// public void setInputFiles(String name, String desc,
+	// ArrayList<String> files) {
+	//
+	// // Call the other method with the boolean flag as false
+	// setInputFiles(name, desc, files, false);
+	//
+	// return;
+	//
+	// }
 
 	/**
 	 * This method removes an input file type from the Form. If null is passed
 	 * in, nothing is changed.
 	 * 
-	 * @param name	The name of the input file type
+	 * @param name
+	 *            The name of the input file type
 	 */
 	public void removeInputFiles(String name) {
-		
+
 		// Get the file(s) component on the form
 		DataComponent fileComponent = ((DataComponent) getComponent(1));
-		
+
 		if (name != null && fileComponent.contains(name)) {
 			fileComponent.deleteEntry(name);
 		}
-		
+
 		return;
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation creates the parallelism component for the Form and returns
 	 * it. It also adds it to the Form.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The parallelism component.
 	 *         </p>
 	 */
@@ -621,9 +659,8 @@ public class JobLauncherForm extends Form {
 		// TBB, MPI or OpenMP support is specifically requested.
 		parallelismComponent.setId(parallelId);
 		parallelismComponent.setName("Parallel Execution");
-		parallelismComponent
-				.setDescription("Specify the number of OpenMP "
-						+ "threads, TBB Threads, or MPI processes that should be used for the Job.");
+		parallelismComponent.setDescription("Specify the number of OpenMP "
+				+ "threads, TBB Threads, or MPI processes that should be used for the Job.");
 
 		// Create an Entry to hold an account code/project name
 		IEntry accountEntry = new StringEntry();
@@ -631,12 +668,12 @@ public class JobLauncherForm extends Form {
 		accountEntry.setValue("none");
 		accountEntry.setId(3);
 		accountEntry.setName("Account Code/Project Code");
-		accountEntry.setDescription("Account code or project name that "
-						+ "should be used when launching the simulation.");
-		
+		accountEntry
+				.setDescription("Account code or project name that " + "should be used when launching the simulation.");
+
 		// Add the Entry to the component
 		parallelismComponent.addEntry(accountEntry);
-		
+
 		// Add the component
 		addComponent(parallelismComponent);
 
@@ -653,14 +690,14 @@ public class JobLauncherForm extends Form {
 	 * then it creates it.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The parallelism component.
 	 *         </p>
 	 */
 	private DataComponent getParallelismComponent() {
 
-		return (parallelComponentEnabled) ? (DataComponent) getComponent(parallelId)
-				: createParallelismComponent();
+		return (parallelComponentEnabled) ? (DataComponent) getComponent(parallelId) : createParallelismComponent();
 	}
 
 	/**

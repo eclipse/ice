@@ -31,6 +31,7 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
@@ -105,7 +106,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// Check the number of Components in the JobLauncherForm. It should have
 		// two, a DataComponent and an OutputComponent.
-		assertEquals(2, jobLauncherForm.getNumberOfComponents());
+		assertEquals(3, jobLauncherForm.getNumberOfComponents());
 
 		// Get the Entries in the input files component
 		ArrayList<IEntry> entries = ((DataComponent) jobLauncherForm
@@ -120,6 +121,40 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		assertNotNull(retFiles);
 		assertEquals(files, retFiles);
 
+		// Check our Docker entries. 
+		DataComponent docker = (DataComponent) jobLauncherForm.getComponent(JobLauncherForm.dockerId);
+		assertNotNull(docker);
+		assertEquals(2, docker.retrieveAllEntries().size());
+		
+		IEntry enableDocker = docker.retrieveEntry("Launch with Docker");
+		assertNotNull(enableDocker);
+		assertEquals("false", enableDocker.getValue());
+		assertTrue(enableDocker instanceof DiscreteEntry);
+		
+		IEntry imagesList = docker.retrieveEntry("Available Images");
+		assertNotNull(imagesList);
+		assertFalse(imagesList.isReady());
+		
+		assertTrue(enableDocker.setValue("true"));
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
+		assertTrue(imagesList.isReady());
+		
+		assertTrue(enableDocker.setValue("false"));
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
+		assertFalse(imagesList.isReady());
+		
 		return;
 	}
 
