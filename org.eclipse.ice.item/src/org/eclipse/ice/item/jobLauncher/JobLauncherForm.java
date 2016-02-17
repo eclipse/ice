@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.FileEntry;
@@ -131,6 +132,41 @@ public class JobLauncherForm extends Form {
 				.setDescription("This section contains the name of the file(s) "
 						+ "used by this Job.");
 		fileComponent.setName("Input File(s)");
+		
+		// Create a docker launch check box.
+		IEntry dockerLaunch = new DiscreteEntry("true", "false");
+		dockerLaunch.setDefaultValue("false");
+		dockerLaunch.setName("Launch with Docker");
+		dockerLaunch.setDescription("Check to perform this job launch in a docker container.");
+		dockerLaunch.setId(33);
+		fileComponent.addEntry(dockerLaunch);
+		
+		IEntry imagesList = new DiscreteEntry() {
+			@Override
+			public void update(IUpdateable component) {
+				if (component instanceof DiscreteEntry && "Launch with Docker".equals(component.getName())) {
+					boolean enable = Boolean.valueOf(((IEntry)component).getValue());
+					
+					if (enable) {
+						// Set up the allowed values
+						
+					} else {
+						// Clear the allowed values
+						
+					}
+				}
+			}
+		};
+		
+		imagesList.setName("Available Images");
+		imagesList.setDescription("Select the docker image to use for this docker launch.");
+		imagesList.setReady(false);
+		imagesList.setId(34);
+		
+		// Register the list of images as a listener 
+		// of the docker launch entry.
+		dockerLaunch.register(imagesList);
+		
 		// Add the data components
 		addComponent(fileComponent);
 
