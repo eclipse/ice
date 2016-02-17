@@ -156,4 +156,12 @@
             class="org.eclipse.ice.item.action.RemoteExecutionAction">
       </action>
    </extension>
+   <extension
+         id="org.eclipse.ice.item.action.DockerExecution"
+         name="Docker Execution"
+         point="org.eclipse.ice.item.actions">
+      <action
+            class="org.eclipse.ice.item.action.DockerExecutionAction">
+      </action>
+   </extension>
 </plugin>

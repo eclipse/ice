@@ -566,7 +566,7 @@ public class JobLauncher extends Item {
 		String installDir = ".";
 		IResource fileResource = null;
 		String os = "linux", accountCode = "";
-		DataComponent fileData = null, parallelData = null;
+		DataComponent fileData = null, parallelData = null, dockerComponent;
 		IEntry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
@@ -576,6 +576,8 @@ public class JobLauncher extends Item {
 		// Assign the data components
 		fileData = (DataComponent) form.getComponent(JobLauncherForm.filesId);
 		parallelData = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		dockerComponent = (DataComponent) form.getComponent(JobLauncherForm.dockerId);
+		
 		// Check the components and fail if they are null
 		if (fileData == null) {
 			return FormStatus.InfoError;
@@ -681,11 +683,21 @@ public class JobLauncher extends Item {
 			actionDataMap.put("downloadDirectory", remoteDownloadDir);
 		}
 
+		IEntry enableDockerEntry = dockerComponent.retrieveEntry("Launch with Docker");
+		if (enableDockerEntry != null) {
+			enableDocker = Boolean.valueOf(enableDockerEntry.getValue());
+			if (enableDocker) {
+				String imageName = dockerComponent.retrieveEntry("Available Images").getValue();
+				actionDataMap.put("imageName", imageName);
+			}
+		}
 		logger.debug("JobLauncher Message: " + "Action Data Map = " + actionDataMap);
 
 		return FormStatus.ReadyToProcess;
 	}
 
+	private boolean enableDocker = false;
+	
 	/**
 	 * This operation adds an output file to the output data resource. It is a
 	 * utility function used primarily by createOutputFiles().
@@ -1060,7 +1072,7 @@ public class JobLauncher extends Item {
 		if (isLocalhost(actionDataMap.get("hostname"))) {
 			// For a local execution, we just need the Local Execution
 			// Action
-			actionList.add(actionFactory.getAction("Local Execution"));
+			actionList.add(actionFactory.getAction(enableDocker ? "Docker Execution" : "Local Execution"));
 		} else {
 			// For a remote execution, we need to push files to the
 			// remote host, execute remotely, then download resultant files.
