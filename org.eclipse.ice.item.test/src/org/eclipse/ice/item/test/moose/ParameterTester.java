@@ -14,9 +14,10 @@ package org.eclipse.ice.item.test.moose;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.item.utilities.moose.Parameter;
 import org.junit.Test;
 
@@ -92,7 +93,7 @@ public class ParameterTester {
 		param.setOptions(options);
 
 		// Get the Entry
-		Entry entry = param.toEntry();
+		IEntry entry = param.toEntry();
 
 		// Check the Entry
 		assertEquals(name, entry.getName());
@@ -100,7 +101,7 @@ public class ParameterTester {
 		assertEquals(comment, entry.getComment());
 		assertEquals(defaultValue, entry.getDefaultValue());
 		assertEquals(required, entry.isRequired());
-		assertEquals(entry.getValueType(), AllowedValueType.Discrete);
+		assertTrue(entry instanceof DiscreteEntry);
 		assertEquals(entry.getAllowedValues().toString(), 
 										"[option1, option2, option3]");
 
@@ -168,7 +169,7 @@ public class ParameterTester {
 		boolean required = true;
 		String options = "option1 option2 option3";
 		Parameter param = new Parameter(), testParam = null;
-		Entry paramEntry = null;
+		IEntry paramEntry = null;
 
 		// Setup the parameter
 		param.setName(name);

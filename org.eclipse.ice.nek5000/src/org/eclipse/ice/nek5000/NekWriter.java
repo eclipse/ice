@@ -29,9 +29,9 @@ import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
@@ -196,7 +196,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent parameters = (DataComponent) componentMap
 				.get("Parameters");
 		int numEntries = parameters.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currDesc;
@@ -249,7 +249,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent passiveScalars = (DataComponent) componentMap
 				.get("Passive Scalar Data");
 		int numEntries = passiveScalars.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currLine;
 
@@ -293,7 +293,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent logicalSwitches = (DataComponent) componentMap
 				.get("Logical Switches");
 		int numEntries = logicalSwitches.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
@@ -357,7 +357,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent preNekAxes = (DataComponent) componentMap
 				.get("Pre-Nek Axes");
 		int numEntries = preNekAxes.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
@@ -744,7 +744,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent presolveRestartOpts = (DataComponent) componentMap
 				.get("Pre-solve/Restart Options");
 		int numEntries = presolveRestartOpts.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
@@ -785,7 +785,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent initialConditions = (DataComponent) componentMap
 				.get("Initial Conditions");
 		int numEntries = initialConditions.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
@@ -826,7 +826,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent driveForceData = (DataComponent) componentMap
 				.get("Drive Force Data");
 		int numEntries = driveForceData.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
@@ -868,7 +868,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent varPropertyData = (DataComponent) componentMap
 				.get("Variable Property Data");
 		int numEntries = varPropertyData.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
@@ -910,7 +910,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent historyIntegralData = (DataComponent) componentMap
 				.get("History and Integral Data");
 		int numEntries = historyIntegralData.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
@@ -953,7 +953,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent outputFieldSpec = (DataComponent) componentMap
 				.get("Output Field Specification");
 		int numEntries = outputFieldSpec.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
@@ -1001,7 +1001,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent objectSpec = (DataComponent) componentMap
 				.get("Object Specification");
 		int numEntries = objectSpec.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;

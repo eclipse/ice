@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
-import org.eclipse.ice.datastructures.form.IEntryContentProvider;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.swt.SWT;
@@ -176,16 +173,10 @@ public class FileComboBoxCellEditor extends ComboBoxCellEditor {
 					FileComboBoxCellEditor.this.setItems(newItems);
 					doSetValue(new Integer(currentItems.length));
 
-					IEntryContentProvider prov = new BasicEntryContentProvider();
 					ArrayList<String> valueList = new ArrayList<String>(Arrays.asList(newItems));
-					prov.setAllowedValueType(AllowedValueType.File);
 
-					// Finish setting the allowed values and default
-					// value
-					prov.setAllowedValues(valueList);
-
-					// Set the new provider
-					element.getEntry().setContentProvider(prov);
+					// Set the new list
+					element.getEntry().setAllowedValues(valueList);
 
 					support.setValue(element, currentItems.length);
 					markDirty();

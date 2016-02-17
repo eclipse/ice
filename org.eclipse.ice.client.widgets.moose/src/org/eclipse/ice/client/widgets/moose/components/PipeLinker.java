@@ -14,8 +14,8 @@ package org.eclipse.ice.client.widgets.moose.components;
 
 import java.util.List;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 
@@ -60,7 +60,7 @@ public class PipeLinker extends GeometricalComponentLinker {
 				 */
 				@Override
 				public void visit(final Pipe comp) {
-					Entry entry;
+					IEntry entry;
 
 					// Get the "length" entry.
 					entry = dataComp.retrieveEntry("length");

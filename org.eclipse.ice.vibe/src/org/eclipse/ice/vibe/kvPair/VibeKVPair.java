@@ -37,7 +37,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -371,10 +372,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 		//
 		TableComponent kvTable = new TableComponent();
-		ArrayList<Entry> row;
-		ArrayList<Entry> kvEntries = new ArrayList<Entry>();
-		Entry key = new Entry();
-		Entry value = new Entry();
+		ArrayList<IEntry> row;
+		ArrayList<IEntry> kvEntries = new ArrayList<IEntry>();
+		IEntry key = new StringEntry();
+		IEntry value = new StringEntry();
 		key.setName("Key");
 		value.setName("Value");
 		kvEntries.add(key);
@@ -429,7 +430,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 				int numComponents = components.size();
 				String configString = "";
-				ArrayList<Entry> row;
+				ArrayList<IEntry> row;
 				byte[] byteArray;
 
 				// Build the output by going through each row
@@ -463,7 +464,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	}
 
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import org.eclipse.ice.client.widgets.EntryComposite;
+import org.eclipse.ice.client.widgets.IEntryComposite;
+import org.eclipse.ice.client.widgets.StringEntryComposite;
 import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.swt.SWT;
 import org.junit.Test;
 
@@ -32,12 +34,12 @@ public class EntryCompositeTester extends AbstractSWTTester {
 	 * The shared {@link Entry} that will be represented by the Entry
 	 * {@link #composite}.
 	 */
-	private static Entry entry;
+	private static IEntry entry;
 
 	/**
 	 * The shared {@link EntryComposite} that will be tested.
 	 */
-	private static EntryComposite composite;
+	private static IEntryComposite composite;
 
 	/*
 	 * (non-Javadoc)
@@ -51,13 +53,13 @@ public class EntryCompositeTester extends AbstractSWTTester {
 
 		// Initialize static or otherwise shared resources here.
 		// Set up a new Entry.
-		entry = new Entry();
+		entry = new StringEntry();
 
 		// Create the composite that will be tested.
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				composite = new EntryComposite(getShell(), SWT.NONE, entry);
+				composite = new StringEntryComposite(getShell(), entry, SWT.NONE);
 			}
 		});
 
@@ -103,7 +105,7 @@ public class EntryCompositeTester extends AbstractSWTTester {
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				composite.dispose();
+				composite.getComposite().dispose();
 			}
 		});
 		composite = null;

@@ -53,6 +53,9 @@ public class NekLauncher extends SuiteLauncher {
 		// Local Declarations
 		String baseInstallDir = "/home/jay/Programs/nek";
 
+		// Setup the Form
+		super.setupForm();
+		
 		// Create the list of executables
 		ArrayList<String> executables = new ArrayList<String>();
 		executables.add("2d_eigtest");
@@ -93,9 +96,6 @@ public class NekLauncher extends SuiteLauncher {
 
 		// Add the list to the suite
 		addExecutables(executables);
-
-		// Setup the Form
-		super.setupForm();
 
 		// Add localhost
 		addHost("localhost", "linux", baseInstallDir);

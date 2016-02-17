@@ -14,9 +14,12 @@ package org.eclipse.ice.item.jobprofile;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
 
@@ -510,14 +513,15 @@ public class JobProfileForm extends Form {
 		TableComponent dataFiles = null;
 		int entryId = 1;
 
-		Entry entry = null;
-
-		ArrayList<Entry> rowTemplate = null;
+		IEntry jobName = null, execName = null, params = null;
+		IEntry openMPEntry = null, nThreads = null, mpiEntry = null, 
+				nProcs = null, tbbEntry = null, nTbbThreads = null;
+		
+		ArrayList<IEntry> rowTemplate = null;
 
 		// Setup JobProfile name and description
 		setName("Job Profile Editor");
-		setDescription("Create or edit a Job Profile that will be used "
-				+ "by ICE to launch jobs.");
+		setDescription("Create or edit a Job Profile that will be used " + "by ICE to launch jobs.");
 
 		// Create Components
 		exeInfo = new DataComponent();
@@ -535,234 +539,195 @@ public class JobProfileForm extends Form {
 		exeInfo.setName("Execution Information");
 		exeInfo.setDescription("This block contains information pertaining to"
 				+ " the execution of the program.  This includes the name of "
-				+ "the job, input file and output types, the executable, and "
-				+ "parameters.");
+				+ "the job, input file and output types, the executable, and " + "parameters.");
 
 		// Setup the Entry - Job Profile
-		entry = new Entry() {
+		jobName = new StringEntry();
+		jobName.setName("Job Name");
+		jobName.setDescription("This is a name for the job profile.");
+		jobName.setDefaultValue("JobProfile");
+		jobName.setTag("jobName");
 
-			@Override
-			protected void setup() {
-				this.setName("Job Name");
-				this.setDescription("This is a name for the job profile.");
-				this.defaultValue = "JobProfile";
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "jobName";
-			}
-		};
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		jobName.setId(entryId);
 		entryId++;
 		// Add to component
-		exeInfo.addEntry(entry);
+		exeInfo.addEntry(jobName);
 
 		// Setup the Entry - Executable Name
-		entry = new Entry() {
-
-			@Override
-			protected void setup() {
-				this.setName("Executable Name");
-				this.setDescription("Specifies the command line argument to "
-						+ "execute the job (excludes parameters for the job). "
+		execName = new StringEntry();
+		execName.setName("Executable Name");
+		execName.setDescription(
+				"Specifies the command line argument to " + "execute the job (excludes parameters for the job). "
 						+ "If the executable is not installed on the path, you "
-						+ "should include the ${installDir} variable in the "
-						+ "appropriate place.");
-				this.defaultValue = "ls";
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "executableName";
-			}
-		};
+						+ "should include the ${installDir} variable in the " + "appropriate place.");
+		execName.setDefaultValue("ls");
+		execName.setTag("executableName");
+
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		execName.setId(entryId);
 		entryId++;
 		// Add to component
-		exeInfo.addEntry(entry);
+		exeInfo.addEntry(execName);
 
 		// Setup the Entry - Parameters
-		entry = new Entry() {
+		params = new StringEntry();
+		params.setName("Parameters");
+		params.setDescription("Specifies the parameters for a job.");
+		params.setTag("parameters");
 
-			@Override
-			protected void setup() {
-				this.setName("Parameters");
-				this.setDescription("Specifies the parameters for a job.");
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "parameters";
-			}
-		};
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		params.setId(entryId);
 		entryId++;
 		// Add to component
-		exeInfo.addEntry(entry);
+		exeInfo.addEntry(params);
 
 		// Setup the Threading Options
 		threadOps.setName("Threading Options");
 		threadOps.setDescription("This section contains tools to enable "
-				+ "certain threading or processes options for MPI "
-				+ "and OpenMP.");
+				+ "certain threading or processes options for MPI " + "and OpenMP.");
 
 		// Setup the Entry - Enable OpenMP
-		entry = new Entry() {
+		openMPEntry = new DiscreteEntry("yes", "no");
+		openMPEntry.setName("Enable OpenMP");
+		openMPEntry.setDescription("Specifies if the program utilizes OpenMP library.");
+		openMPEntry.setDefaultValue("no");
+		openMPEntry.setTag("enableOpenMP");
 
-			@Override
-			protected void setup() {
-				this.setName("Enable OpenMP");
-				this.setDescription("Specifies if the program utilizes "
-						+ "OpenMP library.");
-				this.defaultValue = "No";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("Yes");
-				this.allowedValues.add("No");
-				this.allowedValueType = AllowedValueType.Discrete;
-				this.tag = "enableOpenMP";
-			}
-		};
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		openMPEntry.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(openMPEntry);
 
 		// Setup the Entry - Number of Threads
-		entry = new Entry() {
-
+		nThreads = new ContinuousEntry("1","128")  {
 			@Override
-			protected void setup() {
-				this.setName("Default Number of Threads");
-				this.setDescription("Specifies the default number of threads "
-						+ "for OpenMP.");
-				this.defaultValue = "1";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("1");
-				this.allowedValues.add("128");
-				this.allowedValueType = AllowedValueType.Continuous;
-				this.tag = "numOfThreads";
-				this.setParent("Enable OpenMP");
-				this.setReady(false);
+			public void update(IUpdateable updateable) {
+				if (updateable instanceof DiscreteEntry) {
+					DiscreteEntry entry = (DiscreteEntry) updateable;
+					if ("Enable OpenMP".equals(entry.getName())) {
+						boolean turnOn = entry.getValue().equals("yes") ? true : false;
+						setReady(turnOn);
+					}
+				}
 			}
 		};
+		nThreads.setName("Default Number of Threads");
+		nThreads.setDescription("Specifies the default number of threads " + "for OpenMP.");
+		nThreads.setDefaultValue("1");
+		nThreads.setTag("numOfThreads");
+		nThreads.setReady(false);
+
+		// Register for selections of the Open MP Entry
+		openMPEntry.register(nThreads);
+		
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		nThreads.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(nThreads);
 
 		// Setup the Entry - Enable MPI
-		entry = new Entry() {
+		mpiEntry = new DiscreteEntry("no", "yes");
+		mpiEntry.setName("Enable MPI");
+		mpiEntry.setDescription("Specifies if the program utilizes " + "MPI library.");
+		mpiEntry.setDefaultValue("no");
+		mpiEntry.setValue("no");
+		mpiEntry.setTag("enableMPI");
 
-			@Override
-			protected void setup() {
-				this.setName("Enable MPI");
-				this.setDescription("Specifies if the program utilizes "
-						+ "MPI library.");
-				this.defaultValue = "No";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("Yes");
-				this.allowedValues.add("No");
-				this.allowedValueType = AllowedValueType.Discrete;
-				this.tag = "enableMPI";
-			}
-		};
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		mpiEntry.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(mpiEntry);
 
 		// Setup the Entry - Number of Processes
-		entry = new Entry() {
-
+		nProcs = new ContinuousEntry("1", "512000") {
 			@Override
-			protected void setup() {
-				this.setName("Default Number of Processes");
-				this.setDescription("Specifies the default number of processes "
-						+ "for MPI.");
-				this.defaultValue = "1";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("1");
-				this.allowedValues.add("512000");
-				this.allowedValueType = AllowedValueType.Continuous;
-				this.tag = "numOfProcesses";
-				this.setParent("Enable MPI");
-				this.setReady(false);
+			public void update(IUpdateable updateable) {
+				if (updateable instanceof DiscreteEntry) {
+					DiscreteEntry entry = (DiscreteEntry) updateable;
+					if ("Enable MPI".equals(entry.getName())) {
+						boolean turnOn = entry.getValue().equals("yes") ? true : false;
+						setReady(turnOn);
+					}
+				}
 			}
 		};
+		nProcs.setName("Default Number of Processes");
+		nProcs.setDescription("Specifies the default number of processes " + "for MPI.");
+		nProcs.setDefaultValue("1");
+		nProcs.setTag("numOfProcesses");
+		nProcs.setReady(false);
+		
+		// Register for selections of the MPI Entry
+		mpiEntry.register(nProcs);
+		
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		nProcs.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(nProcs);
 
 		// Setup the Entry - Enable Thread Building Block
-		entry = new Entry() {
+		tbbEntry = new DiscreteEntry("no", "yes");
+		tbbEntry.setName("Enable TBB");
+		tbbEntry.setDescription("Specifies if the program utilizes " + "Thread Building Blocks.");
+		tbbEntry.setDefaultValue("no");
+		tbbEntry.setTag("enableTBB");
 
-			@Override
-			protected void setup() {
-				this.setName("Enable TBB");
-				this.setDescription("Specifies if the program utilizes "
-						+ "Thread Building Blocks.");
-				this.defaultValue = "No";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("Yes");
-				this.allowedValues.add("No");
-				this.allowedValueType = AllowedValueType.Discrete;
-				this.tag = "enableTBB";
-			}
-		};
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		tbbEntry.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(tbbEntry);
 
 		// Setup the Entry - Number of Thread Building Blocks
-		entry = new Entry() {
-
+		nTbbThreads = new ContinuousEntry("1", "128") {
 			@Override
-			protected void setup() {
-				this.setName("Default Number of TBBs");
-				this.setDescription("Specifies the default number of "
-						+ "Thread Blocks.");
-				this.defaultValue = "1";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("1");
-				this.allowedValues.add("128");
-				this.allowedValueType = AllowedValueType.Continuous;
-				this.tag = "numOfTBBs";
-				this.setParent("Enable TBB");
-				this.setReady(false);
+			public void update(IUpdateable updateable) {
+				if (updateable instanceof DiscreteEntry) {
+					DiscreteEntry entry = (DiscreteEntry) updateable;
+					if ("Enable TBB".equals(entry.getName())) {
+						boolean turnOn = entry.getValue().equals("yes") ? true : false;
+						setReady(turnOn);
+					}
+				}
 			}
 		};
+		nTbbThreads.setName("Default Number of TBBs");
+		nTbbThreads.setDescription("Specifies the default number of " + "Thread Blocks.");
+		nTbbThreads.setDefaultValue("1");
+		nTbbThreads.setTag("numOfTBBs");
+		nTbbThreads.setReady(false);
+		
+		// Register for selections of the TBB Entry
+		tbbEntry.register(nTbbThreads);
+		
 		// Set the id and increment the counter
-		entry.setId(entryId);
+		nTbbThreads.setId(entryId);
 		entryId++;
 		// Add to component
-		threadOps.addEntry(entry);
+		threadOps.addEntry(nTbbThreads);
 
 		// Setup the Hostnames
 		hostnames.setName("Hostnames");
-		hostnames
-				.setDescription("This section contains information pertaining "
-						+ "to the hostname, operating system, and installed "
-						+ "directories for the executables.");
+		hostnames.setDescription("This section contains information pertaining "
+				+ "to the hostname, operating system, and installed " + "directories for the executables.");
 
 		// Setup Template
-		rowTemplate = new ArrayList<Entry>();
+		rowTemplate = new ArrayList<IEntry>();
 		// Setup Entries to Template
 
 		// Setup the Entry - Hostname
-		entry = new Entry() {
-
-			@Override
-			protected void setup() {
-				this.setName("Hostname");
-				this.setDescription("Specifies the location of the executable. "
-						+ " Use localhost for executables stored locally.");
-				this.defaultValue = "localhost";
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "hostname";
-			}
-		};
+		IEntry entry = new StringEntry();
+		entry.setName("Hostname");
+		entry.setDescription(
+				"Specifies the location of the executable. " + " Use localhost for executables stored locally.");
+		entry.setDefaultValue("localhost");
+		entry.setValue("localhost");
+		entry.setTag("hostname");
 		// Set the id and increment the counter
 		entry.setId(entryId);
 		entryId++;
@@ -770,24 +735,13 @@ public class JobProfileForm extends Form {
 		rowTemplate.add(entry);
 
 		// Setup the Entry - Operating System
-		entry = new Entry() {
+		entry = new DiscreteEntry("Linux x86_x64", "Linux x86", "Windows x86", "Windows x64", "Mac OSX");
+		entry.setName("Operating System");
+		entry.setDescription("Specifies the operating system installed " + "for the hostname.");
+		entry.setDefaultValue("Linux x86_x64");
+		entry.setValue(entry.getDefaultValue());
+		entry.setTag("operatingSystem");
 
-			@Override
-			protected void setup() {
-				this.setName("Operating System");
-				this.setDescription("Specifies the operating system installed "
-						+ "for the hostname.");
-				this.defaultValue = "Linux x86_x64";
-				this.allowedValues = new ArrayList<String>();
-				this.allowedValues.add("Linux x86_x64");
-				this.allowedValues.add("Linux x86");
-				this.allowedValues.add("Windows x86");
-				this.allowedValues.add("Windows x64");
-				this.allowedValues.add("Mac OSX");
-				this.allowedValueType = AllowedValueType.Discrete;
-				this.tag = "operatingSystem";
-			}
-		};
 		// Set the id and increment the counter
 		entry.setId(entryId);
 		entryId++;
@@ -795,17 +749,12 @@ public class JobProfileForm extends Form {
 		rowTemplate.add(entry);
 
 		// Setup the Entry - Install Directory
-		entry = new Entry() {
-
-			@Override
-			protected void setup() {
-				this.setName("Install Directory");
-				this.setDescription("Specifies the install directory for a hostname.");
-				this.defaultValue = "/bin";
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "installDirectory";
-			}
-		};
+		entry = new StringEntry();
+		entry.setName("Install Directory");
+		entry.setDescription("Specifies the install directory for a hostname.");
+		entry.setDefaultValue("/bin");
+		entry.setValue("/bin");
+		entry.setTag("installDirectory");
 		// Set the id and increment the counter
 		entry.setId(entryId);
 		entryId++;
@@ -820,27 +769,20 @@ public class JobProfileForm extends Form {
 
 		// Setup the Data Files
 		dataFiles.setName("Data Files");
-		dataFiles.setDescription("This section contains information "
-				+ "pertaining to required files for the program "
+		dataFiles.setDescription("This section contains information " + "pertaining to required files for the program "
 				+ "to function nominally.");
 
 		// Setup Template
-		ArrayList<Entry> rowTemplate2 = new ArrayList<Entry>();
+		ArrayList<IEntry> rowTemplate2 = new ArrayList<IEntry>();
 		// Setup Entries to Template
 
 		// Setup the Entry - Data File
-		entry = new Entry() {
-
-			@Override
-			protected void setup() {
-				this.setName("Data File");
-				this.setDescription("Specifies a data file required to run "
-						+ "an executable.");
-				this.defaultValue = "text.txt";
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "dataFile";
-			}
-		};
+		entry = new StringEntry();
+		entry.setName("Data File");
+		entry.setDescription("Specifies a data file required to run " + "an executable.");
+		entry.setDefaultValue("text.txt");
+		entry.setValue(entry.getDefaultValue());
+		entry.setTag("dataFile");
 		// Set the id and increment the counter
 		entry.setId(entryId);
 		entryId++;
@@ -848,18 +790,12 @@ public class JobProfileForm extends Form {
 		rowTemplate2.add(entry);
 
 		// Setup the Entry - File Path
-		entry = new Entry() {
-
-			@Override
-			protected void setup() {
-				this.setName("File Path");
-				this.setDescription("Specifies the install directory "
-						+ "for a data file.");
-				this.defaultValue = "/opt/bin";
-				this.allowedValueType = AllowedValueType.Undefined;
-				this.tag = "filePath";
-			}
-		};
+		entry = new StringEntry();
+		entry.setName("File Path");
+		entry.setDescription("Specifies the install directory " + "for a data file.");
+		entry.setDefaultValue("/opt/bin");
+		entry.setValue("/opt/bin");
+		entry.setTag("filePath");
 		// Set the id and increment the counter
 		entry.setId(entryId);
 		entryId++;

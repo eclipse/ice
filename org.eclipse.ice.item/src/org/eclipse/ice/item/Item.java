@@ -55,15 +55,14 @@ import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -356,7 +355,7 @@ public class Item
 	 * speed of reviewEntries() and is created in setupForm() when it is called
 	 * by loadFromXML() or loadFromPSF().
 	 */
-	protected ArrayList<Entry> entryList;
+	protected ArrayList<IEntry> entryList;
 
 	/**
 	 * The string that is used to describe the process by which the Item class
@@ -949,6 +948,7 @@ public class Item
 				// Set the status
 				retStatus = FormStatus.Processed;
 			} else if (actionName.equals(taggedExportActionString)) {
+				System.out.println("Executing Tagged Output Writer");
 				// Otherwise write the file to a tagged output if requested -
 				// first create the action
 				action = actionFactory.getAction("Tagged Output Writer");
@@ -966,9 +966,11 @@ public class Item
 					propsDictionary.put("iceTaggedOutputFileName",
 							outputFile.getLocationURI().getPath());
 					// Add the key-value pairs
-					for (Entry i : entryList) {
+					for (IEntry i : entryList) {
+						System.out.println("Looping - " + i.getName());
 						// Use tags if they are available
 						if (i.getTag() != null) {
+							System.out.println("Putting in " + i.getTag() + ", " + i.getValue());
 							propsDictionary.put(i.getTag(), i.getValue());
 						} else {
 							// Otherwise just use the Entry's name
@@ -1154,7 +1156,7 @@ public class Item
 		registerUpdateables();
 
 		// Update the values of the Entries in the Registry
-		for (Entry entry : entryList) {
+		for (IEntry entry : entryList) {
 			if (registry.containsKey(entry.getName())) {
 				updateStatus = registry.updateValue(entry.getName(),
 						entry.getValue());
@@ -1209,14 +1211,16 @@ public class Item
 			entryList.addAll(((DataComponent) component).retrieveAllEntries());
 		}
 		// Register the Entries
-		for (Entry entry : entryList) {
+		for (IEntry entry : entryList) {
 			// Register the Entry name and its default value
 			registry.setValue(entry.getName(), entry.getDefaultValue());
 			// Register parent dependencies so that they can be notified
 			// when the parent changes
-			if (entry.getParent() != null) {
-				registry.register(entry, entry.getParent());
-			}
+			
+			// FIXME ABOUT THE PARENTS
+//			if (entry.getParent() != null) {
+//				registry.register(entry, entry.getParent());
+//			}
 		}
 		// Dispatch the values the first time around so that children
 		// can mark themselves ready.
@@ -1425,7 +1429,7 @@ public class Item
 
 		// Setup the list of Entries. This list is recreated every time this
 		// operation is called.
-		entryList = new ArrayList<Entry>();
+		entryList = new ArrayList<IEntry>();
 
 		// Setup the map of components
 		componentMap = new HashMap<String, ArrayList<Component>>();
@@ -1708,7 +1712,7 @@ public class Item
 	 *         invalid, returns null.
 	 * @throws IOException
 	 */
-	public ICEResource getResource(Entry file) throws IOException {
+	public ICEResource getResource(IEntry file) throws IOException {
 
 		// Local declarations
 		ICEResource resource = null;

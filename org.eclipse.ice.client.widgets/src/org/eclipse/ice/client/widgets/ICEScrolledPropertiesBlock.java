@@ -258,7 +258,7 @@ public class ICEScrolledPropertiesBlock extends MasterDetailsBlock {
 		viewer.setInput(masterDetailsComponent);
 
 		// Define the button to add MasterComponents to the table
-		Button button = toolkit.createButton(client, "  Add  ", SWT.PUSH);
+		Button button = toolkit.createButton(client, " Add  ", SWT.PUSH);
 		button.addSelectionListener(new SelectionListener() {
 
 			// What to do when the add button is clicked

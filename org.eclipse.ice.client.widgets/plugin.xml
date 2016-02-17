@@ -3,6 +3,7 @@
 
 <plugin>
    <extension-point id="org.eclipse.ice.client.widgets.iformwidgetbuilder" name="IForm Widget Builder" schema="schema/iformwidgetbuilder.exsd"/>
+   <extension-point id="org.eclipse.ice.client.widgets.entryCompositeProvider" name="Entry Composite Provider" schema="schema/entryCompositeProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.listPageProvider" name="List Page Provider" schema="schema/org.eclipse.ice.client.widgets.listPageProvider.exsd"/>
    <extension-point id="errorPageProvider" name="Error Page Provider" schema="schema/errorPageProvider.exsd"/>
    <extension-point id="org.eclipse.ice.client.widgets.resourcePageProvider" name="Resource Page Provider" schema="schema/org.eclipse.ice.client.widgets.resourcePageProvider.exsd"/>
@@ -386,8 +387,7 @@
        </contentTypeBinding>
     </editor>
  </extension>
- <extension
-       id="defaultErrorPageProvider"
+      <extension id="defaultErrorPageProvider"
        name="Default Error Page Provider"
        point="org.eclipse.ice.client.widgets.errorPageProvider">
     <implementation

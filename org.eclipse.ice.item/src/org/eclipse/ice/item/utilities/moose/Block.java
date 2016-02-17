@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -443,7 +443,7 @@ public class Block {
 					// Get the parameter, determine if it has a comment
 					Parameter param = parameters.get(i);
 					hasComment = !param.getComment().isEmpty();
-
+					
 					// Always write out required parameters
 					if (param.isRequired()) {
 
@@ -470,6 +470,7 @@ public class Block {
 					// If the parameter is not explicitly required, check if it
 					// is currently enabled
 					else if (param.isEnabled()) {
+
 						if (hasComment) {
 							// Remove newline characters from comment
 							commentString = param.getComment().replaceAll(
@@ -491,6 +492,7 @@ public class Block {
 					}
 					// Otherwise, the parameter will be commented out
 					else {
+
 						if (hasComment) {
 							// Remove newline characters from comment
 							commentString = param.getComment().replaceAll(
@@ -938,7 +940,7 @@ public class Block {
 					if (compParameters != null) {
 						// Loop over all the Entries and convert them to
 						// Parameters
-						for (Entry paramEntry : compParameters
+						for (IEntry paramEntry : compParameters
 								.retrieveAllEntries()) {
 							Parameter param = new Parameter();
 							param.fromEntry(paramEntry);
@@ -949,7 +951,7 @@ public class Block {
 				}
 			} catch (ClassCastException e) {
 				logger.info("Block.fromTreeComposite() Message: "
-						+ "Unexpected component in TreeComposite. Aborting.");
+						+ "Unexpected component in TreeComposite. Aborting.", e);
 			}
 			// Convert the children to subblocks
 			if (comp.getNumberOfChildren() > 0) {
