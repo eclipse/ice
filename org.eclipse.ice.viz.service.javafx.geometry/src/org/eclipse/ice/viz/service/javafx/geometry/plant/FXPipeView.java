@@ -11,8 +11,8 @@
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
-import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.IPipeView;
+import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 
@@ -60,10 +60,12 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 
 	}
 
-    /*
-     * (non-Javadoc)
-     * @see org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getLowerExtrema()
-     */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getLowerExtrema()
+	 */
 	@Override
 	public Extrema getLowerExtrema() {
 
@@ -74,7 +76,9 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getUpperExtrema()
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getUpperExtrema()
 	 */
 	@Override
 	public Extrema getUpperExtrema() {
@@ -216,36 +220,19 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 
 	}
 
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see
-	// *
-	// org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	// * .viz.service.modeling.AbstractMeshComponent)
-	// */
-	// @Override
-	// public void refresh(AbstractMeshComponent model) {
-	//
-	// //Remove the current mesh from the node
-	// node.getChildren().remove(mesh);
-	//
-	// // Cast the model as a PipeComponent and get the parameters
-	// PipeComponent pipe = (PipeComponent) model;
-	// int axialSamples = pipe.getAxialSamples();
-	// double height = pipe.getLength();
-	// double outerRadius = pipe.getRadius();
-	// double innerRadius = pipe.getInnerRadius();
-	//
-	// // Create the mesh
-	// mesh = new FXTubeMesh(height, innerRadius, outerRadius, axialSamples,
-	// 50);
-	//
-	// super.refresh(model);
-	//
-	// // Set the node's transformation and children
-	// node.getTransforms().setAll(Util.convertTransformation(transformation));
-	// node.getChildren().add(mesh.getMesh());
-	// }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 */
+	@Override
+	public Object clone() {
+		FXPipeView clone = new FXPipeView();
+		clone.copy(this);
+
+		// Force an update from the transformation
+		clone.transformation.setSize(clone.transformation.getSize());
+		return clone;
+	}
 
 }

@@ -49,9 +49,6 @@ public class VertexController extends PointController {
 		VertexController clone = new VertexController();
 		clone.copy(this);
 
-		// Refresh the view to be in sync with the model
-		clone.refresh();
-
 		return clone;
 	}
 

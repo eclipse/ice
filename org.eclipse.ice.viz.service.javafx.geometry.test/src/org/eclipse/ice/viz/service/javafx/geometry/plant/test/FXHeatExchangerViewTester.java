@@ -11,6 +11,7 @@
 package org.eclipse.ice.viz.service.javafx.geometry.plant.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
@@ -35,6 +36,19 @@ import javafx.scene.shape.MeshView;
  *
  */
 public class FXHeatExchangerViewTester {
+
+	/**
+	 * Test that FXHeatExchangerViews are cloned correctly
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned view and check that it is identical to the original
+		HeatExchangerMesh mesh = new HeatExchangerMesh();
+		FXHeatExchangerView view = new FXHeatExchangerView(mesh);
+		FXHeatExchangerView clone = (FXHeatExchangerView) view.clone();
+		assertTrue(view.equals(clone));
+	}
 
 	/**
 	 * Check that the view produces the correct JavaFX output.

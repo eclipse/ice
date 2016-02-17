@@ -189,12 +189,6 @@ public class FXViewer extends AbstractViewer {
 
 				setSelection(selection);
 
-				// nodeParent.setSelected(true);
-
-				// if (lastSelection != null) {
-				// lastSelection.setSelected(false);
-				// }
-
 				lastSelection = nodeParent;
 			}
 		});

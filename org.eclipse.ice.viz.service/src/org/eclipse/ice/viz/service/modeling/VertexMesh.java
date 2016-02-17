@@ -13,7 +13,6 @@ package org.eclipse.ice.viz.service.modeling;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 
@@ -92,8 +91,7 @@ public class VertexMesh extends PointMesh {
 			catList.add(entity);
 			entities.put(category, catList);
 
-			SubscriptionType[] eventTypes = {
-					SubscriptionType.CHILD };
+			SubscriptionType[] eventTypes = { SubscriptionType.CHILD };
 			updateManager.notifyListeners(eventTypes);
 		}
 
@@ -112,7 +110,7 @@ public class VertexMesh extends PointMesh {
 	public Object clone() {
 
 		// Create a new component, and make it a copy of this one.
-		PointMesh clone = new PointMesh();
+		VertexMesh clone = new VertexMesh();
 		clone.copy(this);
 		return clone;
 	}
@@ -150,8 +148,7 @@ public class VertexMesh extends PointMesh {
 		}
 
 		// Notify listeners of the change
-		SubscriptionType[] eventTypes = {
-				SubscriptionType.PROPERTY };
+		SubscriptionType[] eventTypes = { SubscriptionType.PROPERTY };
 		updateManager.notifyListeners(eventTypes);
 	}
 }

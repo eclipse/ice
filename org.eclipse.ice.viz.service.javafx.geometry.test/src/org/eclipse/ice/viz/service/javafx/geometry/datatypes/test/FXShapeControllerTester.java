@@ -36,6 +36,22 @@ import javafx.scene.Group;
 public class FXShapeControllerTester {
 
 	/**
+	 * Check that FXShapeControllers can be properly cloned.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned FXShape and check that it is identical to the
+		// original
+		ShapeMesh mesh = new ShapeMesh();
+		FXShapeController shape = new FXShapeController(mesh,
+				new FXShapeView(mesh));
+		shape.setProperty("Test", "Property");
+		FXShapeController clone = (FXShapeController) shape.clone();
+		assertTrue(shape.equals(clone));
+	}
+
+	/**
 	 * Test the FXShapeController's handling of the JavaFX Nodes' associations
 	 * with ICE datastructures.
 	 */

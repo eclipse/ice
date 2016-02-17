@@ -27,9 +27,9 @@ import javafx.scene.shape.Box;
 public class AxisGridGizmo extends Group {
 
 	/** */
-	private Box axisX;
-	private Box axisY;
-	private Box axisZ;
+	protected Box axisX;
+	protected Box axisY;
+	protected Box axisZ;
 
 	/** */
 	private float axisWidth = .25f;
@@ -124,60 +124,6 @@ public class AxisGridGizmo extends Group {
 		children.add(axisX);
 		children.add(axisY);
 		children.add(axisZ);
-	}
-
-	/**
-	 * Create two dimensional square with its upper left corner at (i,j) on the
-	 * xy plane and side length gridSize * 4. Inside this outer square there
-	 * will be a grid of 16 smaller squares of side length gridSize.
-	 * 
-	 * @param i
-	 *            The box's upper left corner's x coordinate
-	 * @param j
-	 *            The box's upper right corner's y coordinate
-	 * @param gridSize
-	 *            The side length of the smaller 16 squares in the grid
-	 */
-	public void createGrid(double i, double j, double gridSize) {
-
-		// // Create the boundary box
-		// Box boundary = new Box(gridSize * 4, gridSize * 4, 0);
-		// boundary.setMouseTransparent(true);
-		// boundary.setDrawMode(DrawMode.LINE);
-		// boundary.setMaterial(new PhongMaterial(Color.ANTIQUEWHITE));
-		//
-		// // Set it so that the corner is at point (i, j)
-		// boundary.setTranslateX(i + gridSize / 2);
-		// boundary.setTranslateY(j + gridSize / 2);
-		// boundary.setTranslateZ(-0.5);
-		//
-		// // Add it to the node
-		// ObservableList<Node> children = getChildren();
-		// children.add(boundary);
-		//
-		// // Iterate across each of the box's columns
-		// for (double k = -1; k < 3; k++) {
-		//
-		// // Iterate across each of the grid squares inside the column
-		// for (double l = -1; l < 3; l++) {
-		//
-		// // Create the grid box
-		// Box box = new Box(gridSize, gridSize, 0);
-		// box.setMouseTransparent(true);
-		// box.setDrawMode(DrawMode.LINE);
-		// box.setMaterial(new PhongMaterial(Color.ANTIQUEWHITE));
-		//
-		// // Set it so that it is in position (k, l) of the parent
-		// // boundary box's layout
-		// box.setTranslateX(i + k * gridSize);
-		// box.setTranslateY(j + l * gridSize);
-		// box.setTranslateZ(-0.5);
-		//
-		// // Add it to the node
-		// children.add(box);
-		// }
-		// }
-
 	}
 
 	public Node getOwner() {

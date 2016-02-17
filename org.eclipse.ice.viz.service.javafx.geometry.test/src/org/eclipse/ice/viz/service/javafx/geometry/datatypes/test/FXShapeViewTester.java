@@ -34,6 +34,20 @@ import javafx.scene.shape.Sphere;
 public class FXShapeViewTester {
 
 	/**
+	 * Test that FXShapeViews are cloned correctly
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned view and check that it is identical to the original
+		ShapeMesh mesh = new ShapeMesh();
+		mesh.setProperty("Type", "Cube");
+		FXShapeView view = new FXShapeView(mesh);
+		FXShapeView clone = (FXShapeView) view.clone();
+		assertTrue(view.equals(clone));
+	}
+
+	/**
 	 * Check that the view is constructed properly.
 	 */
 	@Test
@@ -62,7 +76,7 @@ public class FXShapeViewTester {
 				assertTrue(((Shape3D) node).getDrawMode() == DrawMode.FILL);
 
 				// Check if a box has been found
-				if (view.getRepresentation() instanceof Box) {
+				if (node instanceof Box) {
 					boxFound = true;
 				}
 			}
