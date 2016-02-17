@@ -16,9 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
 import static java.nio.file.StandardCopyOption.*;
 import java.util.Arrays;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -33,22 +35,18 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.pde.internal.core.PDECore;
 import org.eclipse.pde.internal.ui.PDEPlugin;
 import org.eclipse.pde.internal.ui.wizards.IProjectProvider;
 import org.eclipse.pde.internal.ui.wizards.WizardElement;
 import org.eclipse.pde.internal.ui.wizards.plugin.AbstractFieldData;
-import org.eclipse.pde.internal.ui.wizards.plugin.NewPluginProjectWizard;
 import org.eclipse.pde.internal.ui.wizards.plugin.NewProjectCreationFromTemplatePage;
 import org.eclipse.pde.internal.ui.wizards.plugin.NewProjectCreationOperation;
 import org.eclipse.pde.internal.ui.wizards.plugin.NewProjectCreationPage;
 import org.eclipse.pde.internal.ui.wizards.plugin.PluginContentPage;
 import org.eclipse.pde.internal.ui.wizards.plugin.PluginFieldData;
-import org.eclipse.pde.ui.IPluginContentWizard;
 import org.eclipse.pde.ui.templates.NewPluginProjectFromTemplateWizard;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.eclipse.ice.projectgeneration.ICEItemNature;
@@ -65,7 +63,6 @@ import org.eclipse.ice.projectgeneration.templates.ICEItemWizard;
 public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard {
 
 	private static final String DESCRIPTION = "Create a new ICE item project.";
-	private static final String WIZARD_NAME = "New ICE Item Project";
 	private static final String WIZARD_TITLE = "Create a new ICE item project";
 	private static final String TEMPLATE_ID = "org.eclipse.ice.projectgeneration.pluginContent.ICEItem";
 
@@ -75,9 +72,6 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	private ICEItemWizard fTemplateWizard;
 	private IProjectProvider fProjectProvider;
 	private IConfigurationElement fConfig;
-
-	private IStructuredSelection selection;
-	private IWorkbench workbench;
 
 	/**
 	 * Constructor
@@ -130,10 +124,11 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 				addPage(pages[i]);
 			}
 		} catch (CoreException e) {
+			e.printStackTrace();
 			System.out.println("adding wizard pages fails!");
 		}
-	}
-
+	}	
+	
 	/**
 	 * Takes all of the information from the wizard pages and uses it to create
 	 * the plugin and java classes.
@@ -151,6 +146,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 				fProjectPage.saveSettings(settings);
 				fContentPage.saveSettings(settings);
 			}
+			fTemplateWizard.setTemplateExtension(fProjectPage.getProjectName());
 			BasicNewProjectResourceWizard.updatePerspective(fConfig);
 
 			// If the PDE models are not initialized, initialize with option to
@@ -179,6 +175,8 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 				getWorkbench().getWorkingSetManager().addToWorkingSets(fProjectProvider.getProject(), workingSets);
 			setNature(fProjectProvider.getProject());
 			setPackageLayout();
+			addPackageImports();
+			fProjectProvider.getProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 			successful = true;
 		} catch (InvocationTargetException e) {
 			PDEPlugin.logException(e);
@@ -252,16 +250,36 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 					Files.move(f.toPath(), (new File(launcherDir.getAbsolutePath() + sep + f.getName())).toPath(), REPLACE_EXISTING);
 				} else if (f.getName().endsWith("Model.java") || f.getName().endsWith("ModelBuilder.java")) {
 					Files.move(f.toPath(), (new File(modelDir.getAbsolutePath() + sep + f.getName())).toPath(), REPLACE_EXISTING);
-				}
+				} 
 			}
-			fProjectProvider.getProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
-		} catch (CoreException ce) {
-			ce.printStackTrace();
 		}
 	}
 
+	/**
+	 * TODO: Description
+	 */
+	private void addPackageImports() {
+		String sep = System.getProperty("file.separator");
+		String manifestFile = fProjectProvider.getLocationPath().makeAbsolute().toOSString() +sep
+				+ fProjectProvider.getProjectName() + sep + "META-INF" + sep +"MANIFEST.MF";
+		StringBuilder importLines = new StringBuilder();
+		importLines.append("Import-Package: org.eclipse.ice.datastructures.form,\n");
+        importLines.append(" org.eclipse.ice.io.serializable,\n");
+        importLines.append(" org.eclipse.ice.item,\n");
+        importLines.append(" org.eclipse.ice.item.jobLauncher,\n");
+        importLines.append(" org.eclipse.ice.item.model,\n");
+        importLines.append(" org.eclipse.ice.datastructures.ICEObject,\n");
+        importLines.append(" org.eclipse.core.resources\n");
+        
+        try {
+        	Files.write(Paths.get(manifestFile), importLines.toString().getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+	}
+	
 	@Override
 	protected String getTemplateID() {
 		return TEMPLATE_ID;

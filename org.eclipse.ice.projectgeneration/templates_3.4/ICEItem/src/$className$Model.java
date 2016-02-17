@@ -5,7 +5,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
@@ -41,11 +40,13 @@ public class $className$Model extends Item {
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 		// TODO: Add User Code Here
+		return null;
 	}
 
 	@Override
 	public FormStatus process(String actionName) {
 		// TODO: Add User Code Here
+		return null;
 	}
 
 	@Override

@@ -1,6 +1,11 @@
 package $packageName$.launcher;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.core.resources.IProject;
+
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 
 @XmlRootElement(name = "$className$Launcher")
@@ -35,5 +40,6 @@ public class $className$Launcher extends JobLauncher {
 	@Override
 	public FormStatus process(String actionName) {
 		// TODO: Add User Code Here
+		return null;
 	}
 }
