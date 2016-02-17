@@ -97,11 +97,22 @@ public class FXLinearEdgeView extends AbstractView {
 	 * @return A JavaFX Cylinder representing the given LinearEdgeComponent
 	 */
 	private Cylinder createShape(EdgeMesh edgeComponent) {
+
+		// Get the scale the vertices are being drawn at
+		int scale = ((FXVertexController) edgeComponent
+				.getEntitiesByCategory("Vertices").get(0))
+						.getApplicationScale();
+
 		// Get the edge's endpoints
 		double[] start = ((org.eclipse.ice.viz.service.modeling.EdgeController) edgeComponent
 				.getController()).getStartLocation();
 		double[] end = ((org.eclipse.ice.viz.service.modeling.EdgeController) edgeComponent
 				.getController()).getEndLocation();
+
+		for (int i = 0; i < 3; i++) {
+			start[i] = start[i] * scale;
+			end[i] = end[i] * scale;
+		}
 
 		// Create a cylinder situated at the edge's midpoint with the edge's
 		// length.

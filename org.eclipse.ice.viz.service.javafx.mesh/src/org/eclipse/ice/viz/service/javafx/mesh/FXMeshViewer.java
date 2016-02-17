@@ -18,6 +18,7 @@ import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.scene.camera.TopDownCameraController;
 import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
+import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXVertexController;
 import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
@@ -228,6 +229,7 @@ public class FXMeshViewer extends FXViewer {
 			}
 		};
 
+		// Create the handler for edit mode dragging
 		editDragHandler = new EventHandler<MouseEvent>() {
 
 			@Override
@@ -236,6 +238,7 @@ public class FXMeshViewer extends FXViewer {
 			}
 		};
 
+		// Create the handler for edit mode releasing the mouse button
 		editMouseUpHandler = new EventHandler<MouseEvent>() {
 
 			@Override
@@ -245,6 +248,7 @@ public class FXMeshViewer extends FXViewer {
 
 		};
 
+		// Create the handler for moving the mouse
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -272,10 +276,52 @@ public class FXMeshViewer extends FXViewer {
 			@Override
 			public void handle(KeyEvent event) {
 
-				// If Escape is pressed, any polygon under construction will be
+				// If Escape or Backspace is pressed, any polygon under
+				// construction will be
 				// removed
-				if (event.getCode() == KeyCode.ESCAPE) {
+				if (event.getCode() == KeyCode.ESCAPE
+						|| event.getCode() == KeyCode.BACK_SPACE) {
 
+					clearSelection();
+				}
+
+				// If Delete is pressed remove the currently selected polygons
+				else if (event.getCode() == KeyCode.DELETE) {
+
+					// Check each polygon in the mesh to see if it should be
+					// deleted
+					for (AbstractController polygon : ((FXAttachment) attachmentManager
+							.getAttachments().get(1)).getKnownParts().get(0)
+									.getEntities()) {
+
+						// Whether or not the polygon is completely selected
+						boolean selected = true;
+
+						// Check each of the polygon's vertices
+						for (AbstractController vertex : polygon
+								.getEntitiesByCategory("Vertices")) {
+
+							// If any vertex is not selected, stop and move on
+							// to the next
+							// polygon
+							if (!"True"
+									.equals(vertex.getProperty("Selected"))) {
+								selected = false;
+								break;
+							}
+						}
+
+						// If all the vertices were selected, remove the polygon
+						// from the
+						// mesh
+						if (selected) {
+							((FXAttachment) attachmentManager.getAttachments()
+									.get(1)).getKnownParts().get(0)
+											.removeEntity(polygon);
+						}
+					}
+
+					// Remove any selection
 					clearSelection();
 				}
 
@@ -299,18 +345,61 @@ public class FXMeshViewer extends FXViewer {
 		// Whether or not a new vertex has been added
 		boolean changed = false;
 
+		// If there are already four vertices already, confirm the addition of
+		// the polygon
+		if (selectedVertices.size() == 4) {
+
+			// Create a face out of all the edges
+			NekPolygonMesh faceComponent = new NekPolygonMesh();
+			NekPolygonController newFace = (NekPolygonController) factory
+					.createController(faceComponent);
+
+			// Set the polygon's name and ID
+			newFace.setProperty("Name", "Polygon");
+			newFace.setProperty("Id", String.valueOf(nextPolygonID));
+			nextPolygonID++;
+
+			for (AbstractController edge : tempEdges) {
+				newFace.addEntityByCategory(edge, "Edges");
+
+				// Remove the edge from the temporary root
+				tempRoot.removeEntity(edge);
+			}
+
+			// Remove the vertices from the temporary root
+			for (AbstractController vertex : selectedVertices) {
+				tempRoot.removeEntity(vertex);
+			}
+
+			// Set the new polygon to the default color
+			newFace.setProperty("Constructing", "False");
+
+			// Add the new polygon to the mesh permanently
+			((FXAttachment) attachmentManager.getAttachments().get(1))
+					.getKnownParts().get(0).addEntity(newFace);
+
+			// Empty the lists of temporary constructs
+			selectedVertices = new ArrayList<AbstractController>();
+			tempEdges = new ArrayList<AbstractController>();
+
+			return;
+		}
+
 		// If the user didn't select a shape, add a new shape where they
 		// clicked
 		if (intersectedNode instanceof Box) {
 
-			// Create a new vertex at that point
-			VertexMesh tempComponent = new VertexMesh(event.getX(),
-					event.getY(), 0);
+			// Create a new vertex at that point, divided by SCALE so that the
+			// internal representation is kept separate from the size things are
+			// being drawn at
+			VertexMesh tempComponent = new VertexMesh(event.getX() / SCALE,
+					event.getY() / SCALE, 0);
 			tempComponent.setProperty("Constructing", "True");
-			VertexController tempVertex = (VertexController) factory
+			FXVertexController tempVertex = (FXVertexController) factory
 					.createController(tempComponent);
 
-			// Set the vertex's name and ID
+			// Set the vertex's scale, name, and ID
+			tempVertex.setApplicationScale((int) SCALE);
 			tempVertex.setProperty("Name", "Vertex");
 			tempVertex.setProperty("Id", String.valueOf(nextVertexID));
 			nextVertexID++;
@@ -384,6 +473,9 @@ public class FXMeshViewer extends FXViewer {
 				// Add the edge to the list
 				tempEdges.add(tempEdge);
 
+				// Add it to the temp root
+				tempRoot.addEntity(tempEdge);
+
 				// Refresh the edge
 				tempEdge.refresh();
 			}
@@ -397,41 +489,14 @@ public class FXMeshViewer extends FXViewer {
 								.get(numVertices - 1),
 						(VertexController) selectedVertices.get(0));
 
+				// Add the edge to the list
 				tempEdges.add(tempEdge);
 
-				// Create a face out of all the edges
-				NekPolygonMesh faceComponent = new NekPolygonMesh();
-				NekPolygonController newFace = (NekPolygonController) factory
-						.createController(faceComponent);
+				// Add it to the temp root
+				tempRoot.addEntity(tempEdge);
 
-				// Set the polygon's name and ID
-				newFace.setProperty("Name", "Polygon");
-				newFace.setProperty("Id", String.valueOf(nextPolygonID));
-				nextPolygonID++;
-
-				for (AbstractController edge : tempEdges) {
-					newFace.addEntityByCategory(edge, "Edges");
-
-					// Remove the edge from the temporary root
-					tempRoot.removeEntity(edge);
-				}
-
-				// Remove the vertices from the temporary root
-				for (AbstractController vertex : selectedVertices) {
-					tempRoot.removeEntity(vertex);
-				}
-
-				// Set the new polygon to the default color
-				newFace.setProperty("Constructing", "False");
-
-				// Add the new polygon to the mesh permanently
-				((FXAttachment) attachmentManager.getAttachments().get(1))
-						.getKnownParts().get(0).addEntity(newFace);
-
-				// Empty the lists of temporary constructs
-				selectedVertices = new ArrayList<AbstractController>();
-				tempEdges = new ArrayList<AbstractController>();
-
+				// Refresh the edge
+				tempEdge.refresh();
 			}
 		}
 	}
@@ -611,9 +676,11 @@ public class FXMeshViewer extends FXViewer {
 				VertexController vertex = (VertexController) selectedVertices
 						.get(i);
 
-				// Update its position
-				vertex.updateLocation(relativeXCords.get(i) + mousePosX,
-						relativeYCords.get(i) + mousePosY, 0);
+				// Update its position, corected for the scale the editor is
+				// drawn at
+				vertex.updateLocation(
+						(relativeXCords.get(i) + mousePosX) / SCALE,
+						(relativeYCords.get(i) + mousePosY) / SCALE, 0);
 
 				// Remove the markers from the scene
 				for (Sphere marker : vertexMarkers) {
@@ -638,10 +705,15 @@ public class FXMeshViewer extends FXViewer {
 	 */
 	private void handleMouseMoved(MouseEvent event) {
 		DecimalFormat format = new DecimalFormat("#.##");
-		cursorPosition.setText(
-				"Cursor position (x,y): (" + format.format(event.getX()) + ","
-						+ format.format(event.getY()) + ")");
-		cursorPosition.setTranslateZ(-5);
+		// cursorPosition
+		// .setText("Cursor position (x,y): ("
+		// + format.format(event.getPickResult()
+		// .getIntersectedPoint().getX() / 3)
+		// + ","
+		// + event.getPickResult().getIntersectedPoint().getY() / 3
+		// + ")");
+		// cursorPosition.setTranslateX(scene.getWidth() / -20);
+		// cursorPosition.setTranslateZ(-5);
 	}
 
 	/**
@@ -912,6 +984,9 @@ public class FXMeshViewer extends FXViewer {
 
 		defaultCamera = fxCamera;
 
+		cursorPosition = new Text();
+		cursorPosition.setTranslateZ(-5);
+		internalRoot.getChildren().add(cursorPosition);
 	}
 
 }

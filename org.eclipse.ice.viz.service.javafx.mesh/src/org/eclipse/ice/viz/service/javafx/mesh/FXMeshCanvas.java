@@ -172,7 +172,6 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 				root.removeEntity(polygon);
 			}
 		}
-
 	}
 
 	/*
