@@ -73,7 +73,8 @@ public class Circle extends Shape {
 		// (inside circle, use <; on it, use ==; outside it, use >)
 
 		// Compute the radius in pixels.
-		long r = (long) (Math.min(bounds.width, bounds.height) * radius / (2.0 * maxRadius));
+		long r = (long) (Math.min(bounds.width, bounds.height) * radius
+				/ (2.0 * maxRadius));
 
 		// Calculate the offset of x and y w.r.t. the center.
 		long nx = x - bounds.x - bounds.width / 2;
@@ -97,7 +98,8 @@ public class Circle extends Shape {
 		int centerY = bounds.y + bounds.height / 2;
 
 		// Compute the radius in pixels.
-		int r = (int) (Math.min(bounds.width, bounds.height) * radius / (2.0 * maxRadius));
+		int r = (int) (Math.min(bounds.width, bounds.height) * radius
+				/ (2.0 * maxRadius));
 
 		// Use the computed bounds to draw the circle.
 		g.fillOval(centerX - r, centerY - r, r * 2, r * 2);

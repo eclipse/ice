@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+
+<!-- Product -->
+<extension id="org.eclipse.ice.reflectivity.product" point="org.eclipse.core.runtime.products"> 
+	<product name="LRAC Reflectivity Simulator" application="org.eclipse.ui.ide.workbench" description="LRAC Reflectivity Simulator">
+	<property name="preferenceCustomization" value="plugin_customization.ini"/>
+	</product> 
+</extension>
+
    <!-- Perspective -->
    <extension
          point="org.eclipse.ui.perspectives">
@@ -96,6 +104,33 @@
              contentTypeId="org.eclipse.ice.reflectivity.ui.xml.contentType.Form">
        </contentTypeBinding>
     </editor>
+ </extension>
+ <extension
+       point="org.eclipse.ui.menus">
+    <menuContribution
+          allPopups="false"
+          locationURI="toolbar:org.eclipse.ui.main.toolbar">
+       <toolbar
+             id="org.eclipse.ice.reflectivity.ui.toolbar"
+             label="Reflectivity Toolbar">
+          <command
+                commandId="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler"
+                icon="icons/sns_small.png"
+                label="Reflectivity Task Launch Command"
+                style="push"
+                tooltip="Launch Reflectivity Tasks">
+          </command>
+       </toolbar>
+    </menuContribution>
+ </extension>
+ <extension
+       point="org.eclipse.ui.commands">
+    <command
+          defaultHandler="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler"
+          description="Reflectivity Task Launch Handler"
+          id="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler"
+          name="Reflectivity Task Launch Handler">
+    </command>
  </extension>
 
 </plugin>

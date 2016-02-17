@@ -192,12 +192,12 @@ public class GridLayout extends AbstractHintLayout {
 		int size, paddingX = 0, paddingY = 0;
 		if (maxWidth > maxHeight) { // Height-restricted.
 			size = maxHeight;
-			paddingX = (limit.width - size * columns - horizontalSpacing
-					* (columns - 1)) / 2;
+			paddingX = (limit.width - size * columns
+					- horizontalSpacing * (columns - 1)) / 2;
 		} else { // Width-restricted.
 			size = maxWidth;
-			paddingY = (limit.height - size * rows - verticalSpacing
-					* (rows - 1)) / 2;
+			paddingY = (limit.height - size * rows
+					- verticalSpacing * (rows - 1)) / 2;
 		}
 
 		int i, row, column, x, y, w, h;

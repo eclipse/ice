@@ -15,13 +15,6 @@
  # to the table beforehand. 
  # ****************************************************************************
 
-# Usual imports
-from org.eclipse.ease.modules import EnvironmentModule
-EnvironmentModule().loadModule("/System/Environment")
-import java
-import org
-import com
-
 # Load the Platform module for accessing OSGi services
 loadModule('/System/Platform')
 

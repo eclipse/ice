@@ -44,18 +44,15 @@ public class Cell {
 		/**
 		 * The Cell is not selected.
 		 */
-		UNSELECTED,
-		/**
-		 * The Cell is selected.
-		 */
-		SELECTED,
-		/**
-		 * The Cell is disabled (grayed out).
-		 */
-		DISABLED,
-		/**
-		 * The Cell is invalid (invisible).
-		 */
+		UNSELECTED, /**
+					 * The Cell is selected.
+					 */
+		SELECTED, /**
+					 * The Cell is disabled (grayed out).
+					 */
+		DISABLED, /**
+					 * The Cell is invalid (invisible).
+					 */
 		INVALID;
 	}
 

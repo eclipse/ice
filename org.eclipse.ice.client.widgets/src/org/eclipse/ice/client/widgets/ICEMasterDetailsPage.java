@@ -142,7 +142,8 @@ public class ICEMasterDetailsPage extends ICEFormPage {
 	 * managed by the ICEMasterDetailsPage.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The MasterDetailsComponent or null if the component has not yet
 	 *         been set in the page.
 	 *         </p>

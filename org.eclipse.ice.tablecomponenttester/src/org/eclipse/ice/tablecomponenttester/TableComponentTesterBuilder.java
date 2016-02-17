@@ -36,7 +36,7 @@ public class TableComponentTesterBuilder implements ItemBuilder {
 
 	@Override
 	public boolean isPublishable() {
-		return false;
+		return true;
 	}
 
 }

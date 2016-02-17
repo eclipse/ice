@@ -213,8 +213,7 @@ public class AnalysisView implements IAnalysisView, IStateListener {
 	 */
 	@Override
 	public void getToolBarContributions(ToolBar toolBar) {
-		logger.info("AnalysisView message: "
-						+ "Populating provided ToolBar.");
+		logger.info("AnalysisView message: " + "Populating provided ToolBar.");
 
 		// To populate a pre-existing ToolBar, we *have* to re-initialize the
 		// ToolBarManager and pass the ToolBar as a parameter to the

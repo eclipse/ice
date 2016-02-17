@@ -86,9 +86,10 @@ public class ElementSourceDialog<T> extends Dialog {
 		list.setTableFormat((WritableTableFormat<T>) source.getTableFormat());
 		elements = source.getElements();
 		list.addAll(elements);
-		
+
 		try {
-			Object o = list.get(0).getClass().getConstructors()[0].newInstance();
+			Object o = list.get(0).getClass().getConstructors()[0]
+					.newInstance();
 			list.add((T) o);
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException
@@ -125,11 +126,13 @@ public class ElementSourceDialog<T> extends Dialog {
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// Set the background to white (visible on the borders)
-		comp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		comp.setBackground(
+				Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		// Add filter to the Dialog to filter the table results
 		final Text filter = new Text(comp, SWT.BORDER | SWT.SEARCH);
-		filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		filter.setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 
 		// Get a copy of the list to give to the NatTable so that we can keep a
 		// fresh copy to compare to.
@@ -172,8 +175,8 @@ public class ElementSourceDialog<T> extends Dialog {
 				// Checks to see if this is a search for a specific
 				// isotope or a element (in which case all isotopes should be
 				// shown through the filter).
-				boolean useElementName = !((filterText.length() > 0) && (Character
-						.isDigit(filterText.charAt(0))));
+				boolean useElementName = !((filterText.length() > 0)
+						&& (Character.isDigit(filterText.charAt(0))));
 
 				// Iterate over the list and pick the items to keep from the
 				// filter text.
@@ -265,12 +268,13 @@ public class ElementSourceDialog<T> extends Dialog {
 	public T getSelection() {
 		return selection;
 	}
-	
+
 	/**
-	 * Override the superclass method to force the shell to always be resizeable.
+	 * Override the superclass method to force the shell to always be
+	 * resizeable.
 	 */
 	@Override
-	protected int getShellStyle(){
+	protected int getShellStyle() {
 		return super.getShellStyle() | SWT.RESIZE;
 	}
 
