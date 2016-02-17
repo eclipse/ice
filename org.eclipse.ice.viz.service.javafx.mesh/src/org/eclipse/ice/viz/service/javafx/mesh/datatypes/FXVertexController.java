@@ -53,6 +53,28 @@ public class FXVertexController extends VertexController {
 				.put(AbstractController.class, this);
 	}
 
+	/**
+	 * Get the scale of the application the view is drawn in.
+	 * 
+	 * @return The conversion rate between internal units and JavaFX units
+	 */
+	public int getApplicationScale() {
+		return ((FXVertexView) view).getApplicationScale();
+	}
+
+	/**
+	 * Sets the scale of the application this vertex will be displayed in. The
+	 * vertex will now be drawn with all the coordinates in the VertexMesh
+	 * multiplied by the scale.
+	 * 
+	 * @param scale
+	 *            The conversion factor between JavaFX units and the logical
+	 *            units used by the application.
+	 */
+	public void setApplicationScale(int scale) {
+		((FXVertexView) view).setApplicationScale(scale);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

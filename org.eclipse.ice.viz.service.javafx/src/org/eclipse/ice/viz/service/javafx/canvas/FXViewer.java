@@ -51,7 +51,7 @@ public class FXViewer extends AbstractViewer {
 	/**
 	 * The internally used root that cannot be modified by clients.
 	 */
-	private Group internalRoot;
+	protected Group internalRoot;
 
 	/** The root of the scene as exposed to clients. */
 	protected Group root;

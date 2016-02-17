@@ -100,13 +100,13 @@ public class TopDownCameraController extends AbstractCameraController {
 		Point3D xDir = new Point3D(xx, xy, xz).normalize();
 
 		// W moves the camera up
-		if (keyCode == KeyCode.W) {
+		if (keyCode == KeyCode.W || keyCode == KeyCode.UP) {
 			Point3D moveVec = yDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), -moveVec.getY(),
 					moveVec.getZ());
 
 			// S moves the camera down
-		} else if (keyCode == KeyCode.S) {
+		} else if (keyCode == KeyCode.S || keyCode == KeyCode.DOWN) {
 			Point3D moveVec = yDir.multiply(speed);
 			Point3D invVec = new Point3D(-moveVec.getX(), moveVec.getY(),
 					-moveVec.getZ());
@@ -114,13 +114,13 @@ public class TopDownCameraController extends AbstractCameraController {
 					invVec.getZ());
 
 			// A moves the camera to the left
-		} else if (keyCode == KeyCode.A) {
+		} else if (keyCode == KeyCode.A || keyCode == KeyCode.LEFT) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
 					-moveVec.getZ());
 
 			// D moves the camera to the right
-		} else if (keyCode == KeyCode.D) {
+		} else if (keyCode == KeyCode.D || keyCode == KeyCode.RIGHT) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), moveVec.getY(),
 					moveVec.getZ());
