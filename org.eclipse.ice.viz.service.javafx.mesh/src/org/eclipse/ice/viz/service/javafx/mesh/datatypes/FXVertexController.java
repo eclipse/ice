@@ -30,6 +30,13 @@ import javafx.scene.Group;
 public class FXVertexController extends VertexController {
 
 	/**
+	 * The nullary cosntructor
+	 */
+	public FXVertexController() {
+		super();
+	}
+
+	/**
 	 * The default constructor
 	 * 
 	 * @param model
@@ -55,8 +62,7 @@ public class FXVertexController extends VertexController {
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] types) {
+	public void update(IManagedUpdateable component, SubscriptionType[] types) {
 
 		// Queue any messages from the view refresh
 		updateManager.enqueue();
@@ -79,6 +85,43 @@ public class FXVertexController extends VertexController {
 		updateManager.notifyListeners(types);
 		updateManager.flushQueue();
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a copy of the model
+		FXVertexController clone = new FXVertexController();
+		clone.copy(this);
+
+		return clone;
+	}
+
+	/**
+	 * Deep copy the given object's data into this one.
+	 * 
+	 * @param otherObject
+	 *            The object to copy into this one.
+	 */
+	@Override
+	public void copy(AbstractController otherObject) {
+
+		// Create the model and give it a reference to this
+		model = new VertexMesh();
+		model.setController(this);
+
+		// Copy the other object's data members
+		model.copy(otherObject.getModel());
+		view = (AbstractView) otherObject.getView().clone();
+
+		// Register as a listener to the model and view
+		model.register(this);
+		view.register(this);
 	}
 
 }

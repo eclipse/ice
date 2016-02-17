@@ -28,6 +28,24 @@ import org.junit.Test;
 public class FXHeatExchangerControllerTester {
 
 	/**
+	 * Test that the FXHeatExchangerController is cloned correctly.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned FXHeatExchangerController and check that it is
+		// identical to the
+		// original
+		HeatExchangerMesh mesh = new HeatExchangerMesh();
+		FXHeatExchangerController exchanger = new FXHeatExchangerController(
+				mesh, new FXHeatExchangerView(mesh));
+		exchanger.setProperty("Test", "Property");
+		FXHeatExchangerController clone = (FXHeatExchangerController) exchanger
+				.clone();
+		assertTrue(exchanger.equals(clone));
+	}
+
+	/**
 	 * Check that the exchanger will ignore Wireframe type messages except when
 	 * they are sent by the controller's view.
 	 */

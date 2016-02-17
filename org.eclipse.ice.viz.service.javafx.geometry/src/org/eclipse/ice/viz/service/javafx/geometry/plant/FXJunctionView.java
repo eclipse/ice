@@ -224,6 +224,20 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		} else {
 			box.setDrawMode(DrawMode.FILL);
 		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new AbstractView and make it a copy of this
+		FXJunctionView clone = new FXJunctionView();
+		clone.copy(this);
+
+		return clone;
 	}
 }

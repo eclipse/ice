@@ -155,4 +155,21 @@ public class FXPlantViewRootController extends AbstractController
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new shape from clones of the model and view
+		FXPlantViewRootController clone = new FXPlantViewRootController();
+
+		// Copy any other data into the clone
+		clone.copy(this);
+
+		return clone;
+	}
+
 }

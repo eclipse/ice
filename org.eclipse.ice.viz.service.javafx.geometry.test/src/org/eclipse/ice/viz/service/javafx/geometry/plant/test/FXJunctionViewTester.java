@@ -33,6 +33,19 @@ import javafx.scene.shape.Shape3D;
 public class FXJunctionViewTester {
 
 	/**
+	 * Test that FXJunctionViews are cloned correctly
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned view and check that it is identical to the original
+		JunctionMesh mesh = new JunctionMesh();
+		FXJunctionView view = new FXJunctionView(mesh);
+		FXJunctionView clone = (FXJunctionView) view.clone();
+		assertTrue(view.equals(clone));
+	}
+
+	/**
 	 * Check that the junction is drawn in the right position to cover the ends
 	 * of its pipes.
 	 */

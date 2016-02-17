@@ -28,6 +28,22 @@ import org.junit.Test;
 public class FXEdgeControllerTester {
 
 	/**
+	 * Check that FXEdgeControllers can be properly cloned.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned FXShape and check that it is identical to the
+		// original
+		EdgeMesh mesh = new EdgeMesh();
+		FXEdgeController edge = new FXEdgeController(mesh,
+				new FXLinearEdgeView(mesh));
+		edge.setProperty("Test", "Property");
+		FXEdgeController clone = (FXEdgeController) edge.clone();
+		assertTrue(edge.equals(clone));
+	}
+
+	/**
 	 * Check that the controller propagates properties changes to its children
 	 * correctly.
 	 */

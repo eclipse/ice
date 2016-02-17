@@ -31,6 +31,13 @@ public class FXFaceView extends AbstractView {
 	Group node;
 
 	/**
+	 * The nullary constructor.
+	 */
+	public FXFaceView() {
+		super();
+	}
+
+	/**
 	 * The default constructor.
 	 * 
 	 * @param model
@@ -48,5 +55,20 @@ public class FXFaceView extends AbstractView {
 	@Override
 	public Object getRepresentation() {
 		return node;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Object clone() {
+
+		// Create a new AbstractView and make it a copy of this
+		FXFaceView clone = new FXFaceView();
+		clone.copy(this);
+
+		return clone;
 	}
 }

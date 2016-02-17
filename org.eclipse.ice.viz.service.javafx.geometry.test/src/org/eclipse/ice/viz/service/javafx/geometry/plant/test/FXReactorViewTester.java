@@ -36,6 +36,19 @@ import javafx.scene.shape.Shape3D;
 public class FXReactorViewTester {
 
 	/**
+	 * Test that FXReactorViews are cloned correctly
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned view and check that it is identical to the original
+		ReactorMesh mesh = new ReactorMesh();
+		FXReactorView view = new FXReactorView(mesh);
+		FXReactorView clone = (FXReactorView) view.clone();
+		assertTrue(view.equals(clone));
+	}
+
+	/**
 	 * Check that the view sets its shapes to the proper drawmode for
 	 * wireframes.
 	 */

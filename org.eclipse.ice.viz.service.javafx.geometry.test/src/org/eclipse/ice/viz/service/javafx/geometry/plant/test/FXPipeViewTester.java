@@ -27,6 +27,23 @@ import org.junit.Test;
 public class FXPipeViewTester {
 
 	/**
+	 * Test that FXPipeViews are cloned correctly
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned view and check that it is identical to the original
+		PipeMesh mesh = new PipeMesh();
+		mesh.setLength(100);
+		mesh.setInnerRadius(5);
+		mesh.setRadius(5);
+		mesh.setAxialSamples(3);
+		FXPipeView view = new FXPipeView(mesh);
+		FXPipeView clone = (FXPipeView) view.clone();
+		assertTrue(view.equals(clone));
+	}
+
+	/**
 	 * Check that a pipe returns the bounds of its ends correctly
 	 */
 	@Test

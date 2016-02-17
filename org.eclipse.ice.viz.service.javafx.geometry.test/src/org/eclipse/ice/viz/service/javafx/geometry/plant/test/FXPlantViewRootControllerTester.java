@@ -70,8 +70,7 @@ public class FXPlantViewRootControllerTester {
 
 		// The core channel should have been added to the reactor. The non-core
 		// channel pipe should not have been
-		assertTrue(
-				reactor.getEntitiesByCategory("Core Channels").contains(core));
+		assertTrue(reactor.getEntities().contains(core));
 		assertFalse(reactor.getEntities().contains(pipe));
 
 		// Create a second set of objects
@@ -95,6 +94,23 @@ public class FXPlantViewRootControllerTester {
 		assertTrue(reactor2.getEntitiesByCategory("Core Channels")
 				.contains(core2));
 		assertFalse(reactor2.getEntities().contains(pipe2));
+	}
+
+	/**
+	 * Test that the FXPlantViewRootController is cloned correctly.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned FXPlantViewRootController and check that it is
+		// identical to the original
+		AbstractMesh mesh = new AbstractMesh();
+		FXPlantViewRootController root = new FXPlantViewRootController(mesh,
+				new AbstractView());
+		root.setProperty("Test", "Property");
+		FXPlantViewRootController clone = (FXPlantViewRootController) root
+				.clone();
+		assertTrue(root.equals(clone));
 	}
 
 	/**

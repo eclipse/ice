@@ -28,6 +28,22 @@ import org.junit.Test;
 public class FXVertexControllerTester {
 
 	/**
+	 * Check that FXEdgeControllers can be properly cloned.
+	 */
+	@Test
+	public void checkClone() {
+
+		// Create a cloned FXVertex and check that it is identical to the
+		// original
+		VertexMesh mesh = new VertexMesh();
+		FXVertexController vertex = new FXVertexController(mesh,
+				new FXVertexView(mesh));
+		vertex.setProperty("Test", "Property");
+		FXVertexController clone = (FXVertexController) vertex.clone();
+		assertTrue(vertex.equals(clone));
+	}
+
+	/**
 	 * Checks that the controller correctly triggers refreshes in its view
 	 */
 	@Test

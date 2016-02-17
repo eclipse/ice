@@ -220,4 +220,19 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 */
+	@Override
+	public Object clone() {
+		FXPipeView clone = new FXPipeView();
+		clone.copy(this);
+
+		// Force an update from the transformation
+		clone.transformation.setSize(clone.transformation.getSize());
+		return clone;
+	}
+
 }
