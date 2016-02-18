@@ -132,7 +132,7 @@ public class ShapeMesh extends AbstractMesh {
 		if (category != "Parent") {
 
 			// Set self as parent to any children
-			if (category == "Children") {
+			if (category == "Children" && controller != null) {
 				((ShapeController) newEntity).setParent((controller));
 			}
 
@@ -143,6 +143,22 @@ public class ShapeMesh extends AbstractMesh {
 		// function
 		else {
 			setParent(newEntity);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.modeling.AbstractMesh#setController(org.
+	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 */
+	@Override
+	public void setController(AbstractController controller) {
+		super.setController(controller);
+
+		// Set the new controller as the parent to any children
+		for (AbstractController child : getEntitiesByCategory("Children")) {
+			((ShapeController) child).setParent(controller);
 		}
 	}
 

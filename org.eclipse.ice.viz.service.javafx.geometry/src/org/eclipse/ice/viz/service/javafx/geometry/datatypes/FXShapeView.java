@@ -247,7 +247,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 			// Create the mesh
 			tubeShape = new FXTube(height, innerRadius, outerRadius,
-					axialSamples, 10);
+					axialSamples, 40);
 
 			// Get the actual mesh and set it to a view
 			TriangleMesh tubeMesh = tubeShape.getMesh();

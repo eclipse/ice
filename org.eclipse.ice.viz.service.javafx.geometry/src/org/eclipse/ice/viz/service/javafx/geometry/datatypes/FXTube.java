@@ -125,7 +125,7 @@ public class FXTube {
 			return null;
 		}
 
-		if (outerRadius > innerRadius) {
+		if (outerRadius < innerRadius) {
 			logger.error(
 					"A pipe's inner radius must not be larger than its outer radius");
 			return null;

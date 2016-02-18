@@ -22,6 +22,7 @@ import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.Bla
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.ice.viz.service.modeling.TubeMesh;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -296,9 +297,20 @@ public class ActionAddShape extends Action {
 		if (shapeType != null && operatorType == null) {
 
 			// Instantiate a PrimitiveShape and set its name and ID
+			ShapeMesh shapeComponent;
 
-			ShapeMesh shapeComponent = new ShapeMesh();
-			shape = (ShapeController) view.getFactory().createController(shapeComponent);
+			// Tubes require a tubemesh instead of a generic shapemesh
+			if (shapeType != ShapeType.Tube) {
+				shapeComponent = new ShapeMesh();
+			} else {
+				shapeComponent = new TubeMesh();
+				((TubeMesh) shapeComponent).setAxialSamples(3);
+				((TubeMesh) shapeComponent).setInnerRadius(40);
+				((TubeMesh) shapeComponent).setLength(50);
+				((TubeMesh) shapeComponent).setRadius(50);
+			}
+			shape = (ShapeController) view.getFactory()
+					.createController(shapeComponent);
 
 			shape.setProperty("Type", shapeType.toString());
 
@@ -312,7 +324,8 @@ public class ActionAddShape extends Action {
 			// Instantiate a ComplexShape and set its name
 
 			ShapeMesh shapeComponent = new ShapeMesh();
-			shape = (ShapeController) view.getFactory().createController(shapeComponent);
+			shape = (ShapeController) view.getFactory()
+					.createController(shapeComponent);
 
 			shape.setProperty("Operator", operatorType.toString());
 
