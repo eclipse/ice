@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.eavp.feature_2.1.8.20160208.jar" id="org.eclipse.eavp.feature" version="2.1.8.20160208">
+      <category name="org.eclipse.eavp.category"/>
+   </feature>
+   <category-def name="org.eclipse.eavp.category" label="Eclipse Advanced Visualization Project">
+      <description>
+         This category contains the feature and plugins for the Eclipse Advanced Visualization Project.
+      </description>
+   </category-def>
+</site>

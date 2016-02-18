@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<!-- Custom properties -->
+	<properties>
+		<tycho-version>0.23.0</tycho-version>
+		<pom-filename>pom.xml</pom-filename>	
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+	</properties>
+
+	<!-- This is the parent POM from which all ICE modules inherit common settings -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.eclipse.eavp</groupId>
+	<artifactId>org.eclipse.eavp.build</artifactId>
+	<version>2.1.8.20160208</version>
+	<packaging>pom</packaging>
+
+	<profiles>
+		<profile>
+			<id>macosx</id>
+			<activation>
+				<os>
+					<name>mac os x</name>
+					<family>mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs>-XstartOnFirstThread</ui.test.vmargs>
+			</properties>
+		</profile>
+		<profile>
+			<id>other-os</id>
+			<activation>
+				<os>
+					<name>not-mac</name>
+					<family>!mac</family>
+				</os>
+			</activation>
+			<properties>
+				<ui.test.vmargs></ui.test.vmargs>
+			</properties>
+		</profile>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.jdbc.url>
+					jdbc:mysql://${sonarHost}:${sonarJDBCPort}/sonar?useUnicode=true&amp;characterEncoding=utf8&amp;rewriteBatchedStatements=true&amp;useConfigs=maxPerformance
+				</sonar.jdbc.url>
+				<sonar.jdbc.username>${sonarUser}</sonar.jdbc.username>
+				<sonar.jdbc.password>${sonarPassword}</sonar.jdbc.password>
+				<sonar.host.url>
+					http://${sonarHost}:${sonarPort}/sonar
+				</sonar.host.url>
+			</properties>
+		</profile>
+	</profiles>
+
+	<!-- This is the main build part that sets up all of the rules. -->
+	<build>
+		<plugins>
+
+			<!-- Setup all the tycho build extensions -->
+			<plugin>
+				<!-- enable tycho build extension -->
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includes>
+						<include>**/*Tester.class</include>
+						<include>*/*Test.class</include>
+					</includes>
+					<argLine>${ui.test.vmargs}</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includeAllDependencies>true</includeAllDependencies>
+				</configuration>
+			</plugin>
+
+			<!-- This configures the target platform and the supported architectures. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<pomDependencies>consider</pomDependencies>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>org.eclipse.ice</groupId>
+							<artifactId>org.eclipse.ice.target.mars</artifactId>
+							<version>2.1.8.20160208</version>
+							<classifier>mars</classifier>
+						</artifact>
+					</target>
+					<filters>
+						<!-- Restrict javax.ws.rs version -->
+						<filter>
+							<type>eclipse-plugin</type>
+								<id>javax.ws.rs</id>
+								<restrictTo>
+									<version>1.1.1.v20130318-1750</version> 
+								</restrictTo>
+						</filter>
+					</filters>
+				</configuration>
+			</plugin>
+
+			<!-- This updates the version numbers of the POM, bundles, etc. -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<!-- <executions> <execution> <id>versions</id> <phase>validate</phase> 
+					<goals> <goal>set-version</goal> <goal>update-pom</goal> </goals> </execution> 
+					</executions> -->
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
