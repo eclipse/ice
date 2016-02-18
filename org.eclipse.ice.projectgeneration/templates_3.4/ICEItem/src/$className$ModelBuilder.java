@@ -18,7 +18,7 @@ public class $className$ModelBuilder extends AbstractModelBuilder {
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {
-		Item item = new $className$(projectSpace);
+		Item item = new $className$Model(projectSpace);
 		item.setItemBuilderName(this.getItemName());
 		return item;
 	}

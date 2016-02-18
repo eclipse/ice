@@ -24,6 +24,8 @@ import org.eclipse.pde.ui.templates.NewPluginTemplateWizard;
  */
 public class ICEItemWizard extends NewPluginTemplateWizard {
 
+	ITemplateSection[] templateSections;
+	
 	public ICEItemWizard() {
 		super();
 	}
@@ -34,7 +36,12 @@ public class ICEItemWizard extends NewPluginTemplateWizard {
 	
 	@Override
 	public ITemplateSection[] createTemplateSections() {
-		return new ITemplateSection[] {new ICEItemTemplate()};
+		templateSections = new ITemplateSection[] {new ICEItemTemplate()};
+		return templateSections;
+	}
+	
+	public void setTemplateExtension(String extName) {
+		((ICEItemTemplate) templateSections[0]).setExtensionName(extName);
 	}
 
 }
