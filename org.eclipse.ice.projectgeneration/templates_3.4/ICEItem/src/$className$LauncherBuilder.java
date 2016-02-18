@@ -18,7 +18,7 @@ public class $className$LauncherBuilder extends AbstractItemBuilder {
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {
-		Item item = new $className$(projectSpace);
+		Item item = new $className$Launcher(projectSpace);
 		item.setItemBuilderName(this.getItemName());
 		return item;
 	}
