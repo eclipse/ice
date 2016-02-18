@@ -12,6 +12,7 @@ package org.eclipse.ice.ui.swtbot.test;
 
 import org.eclipse.ice.client.widgets.test.utils.AbstractWorkbenchTester;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.keyboard.Keystrokes;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.junit.Test;
@@ -29,8 +30,6 @@ public class MOOSETester extends AbstractWorkbenchTester {
 	// Test the functionality of the Moose Actions drop down button
 	@Test
 	public void checkMooseActions() {
-
-		
 		
 		// Open the MOOSE perspective
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
@@ -61,7 +60,8 @@ public class MOOSETester extends AbstractWorkbenchTester {
 
 		// Open the add item dialog and add a MOOSE workflow
 		bot.viewByPartName("Item Viewer").setFocus();
-		bot.toolbarButton(0).click();
+		//bot.toolbarButton(0).click();
+		bot.toolbarButtonWithTooltip("Create an Item").click();
 		bot.list(0).select("MOOSE Workflow");
 		bot.button("Finish").click();
 
@@ -85,14 +85,20 @@ public class MOOSETester extends AbstractWorkbenchTester {
 				.equals("There are unsaved changes on the form."));
 
 		// Save and check that the header's text returned to normal.
+		try{
 		bot.toolbarButtonWithTooltip("Save (Ctrl+S)").click();
-		//assertTrue(bot.clabel(0).getText().equals("Ready to process."));
+		
+		//If the save button wasn't found with the windows/linux tooltip, try the mac tooltip
+		}catch(WidgetNotFoundException e){
+			bot.toolbarButtonWithTooltip("Save (\u2318S)").click();
+		}
+		assertTrue(bot.clabel(0).getText().equals("Ready to process."));
 
 		// Try an invalid input string. The header should reflect this and give
 		// an appropriate error message.
 		enterText("Number of MPI Processes:", "Invalid Input");
-		//assertTrue(bot.clabel(0).getText().equals(
-		//		"'Invalid Input' is an unacceptable value. The value must be between 1 and 10000."));
+		assertTrue(bot.clabel(0).getText().equals(
+				"'Invalid Input' is an unacceptable value. The value must be between 1 and 10000."));
 
 		// Try an invalid input number. The header should reflect the detection
 		// of two errors.
