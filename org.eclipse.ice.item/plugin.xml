@@ -157,11 +157,11 @@
       </action>
    </extension>
    <extension
-         id="org.eclipse.ice.item.action.DockerExecution"
-         name="Docker Execution"
+         id="org.eclipse.ice.item.action.CreateDockerContainerAction"
+         name="Create Docker Container"
          point="org.eclipse.ice.item.actions">
       <action
-            class="org.eclipse.ice.item.action.DockerExecutionAction">
+            class="org.eclipse.ice.item.action.CreateDockerContainerAction">
       </action>
    </extension>
 </plugin>

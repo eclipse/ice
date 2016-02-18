@@ -29,12 +29,14 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.core.IRemoteConnectionType;
 import org.eclipse.remote.core.IRemoteConnectionWorkingCopy;
 import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemotePortForwardingService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
+import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
@@ -302,12 +304,21 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 			// Get the Remote Connection if available
 			// If subclasses set it, then don't do anything
-			if (connection == null) {
+			String connectionName = dictionary.get("remoteConnectionName");
+			if (connectionName == null) {
 				connection = getRemoteConnection(hostName);
-				if (connection == null) {
-					return actionError("Remote Execution Action could not get a valid connection to " + hostName + ".",
-							null);
+			} else {
+				IRemoteConnectionType connectionType = getService(IRemoteServicesManager.class)
+						.getRemoteConnectionTypes().get(0);
+				for (IRemoteConnection c : connectionType.getConnections()) {
+					if (connectionName.equals(c.getName())) {
+						connection = c;
+					}
 				}
+			}
+			if (connection == null) {
+				return actionError("Remote Execution Action could not get a valid connection to " + hostName + ".",
+						null);
 			}
 
 			// Start the remote execution thread.

@@ -1066,14 +1066,27 @@ public class JobLauncher extends Item {
 		// moved to the job launch directory.
 		actionList.add(actionFactory.getAction("Local Files Copy"));
 
+		// If docker launch is enabled, then 
+		// we need to launch the correct container and 
+		// modify the hostname/port in the action data map 
+		// to point to that container 
+		if (enableDocker) {
+			Action dockerAction = actionFactory.getAction("Create Docker Container");
+			
+			// This execution should create the container and remote connection 
+			// and modify the host/port/connectionName in the map.
+			dockerAction.execute(actionDataMap);
+		}
+		
 		// Create the List of Actions to execute... The list is
 		// different depending on whether we are local or remote,
 		// or using Docker or not...
 		if (isLocalhost(actionDataMap.get("hostname"))) {
 			// For a local execution, we just need the Local Execution
 			// Action
-			actionList.add(actionFactory.getAction(enableDocker ? "Docker Execution" : "Local Execution"));
+			actionList.add(actionFactory.getAction("Local Execution"));
 		} else {
+			System.out.println("Setting up remote launch");
 			// For a remote execution, we need to push files to the
 			// remote host, execute remotely, then download resultant files.
 			actionList.add(actionFactory.getAction("Remote File Upload"));

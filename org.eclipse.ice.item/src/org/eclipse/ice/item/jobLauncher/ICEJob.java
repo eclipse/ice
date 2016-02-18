@@ -20,8 +20,20 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.action.Action;
+import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionType;
+import org.eclipse.remote.core.IRemoteServicesManager;
+import org.eclipse.remote.core.exception.RemoteConnectionException;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.DockerCertificateException;
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DockerException;
 
 /**
  * The ICEJob is a subclass of the Eclipse Job class that provides a run
@@ -89,7 +101,7 @@ public class ICEJob extends Job {
 
 		// Clear any existing Eclipse Console content
 		Action.clearConsole();
-		
+
 		// Execute the Actions
 		for (Action action : actions) {
 			// Get a reference to the Current Action
@@ -135,7 +147,67 @@ public class ICEJob extends Job {
 		status = FormStatus.Processed;
 		monitor.worked(ticks);
 		monitor.done();
+
+		// Clean up the docker container if this was a 
+		// launch using docker
+		if (actionDataMap.get("containerId") != null) {
+			cleanDockerExecution();
+		}
 		return Status.OK_STATUS;
+	}
+
+	/**
+	 * This private utility method cleans up the docker 
+	 * container used in this launch, and removes the 
+	 * remote connection used.
+	 */
+	private void cleanDockerExecution() {
+		String id = actionDataMap.get("containerId");
+		String connectionName = actionDataMap.get("remoteConnectionName");
+		DockerClient dockerClient = null;
+		try {
+			dockerClient = DefaultDockerClient.fromEnv().build();
+		} catch (DockerCertificateException e1) {
+			e1.printStackTrace();
+		}
+
+		if (dockerClient != null) {
+
+			// If it's finished, we should
+			// remove the docker container and
+			// the remote connection
+			try {
+				dockerClient.killContainer(id);
+				dockerClient.removeContainer(id);
+			} catch (DockerException | InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			// Create the connection to the container
+			IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
+
+			// If valid, continue on an get the IRemoteConnection
+			if (remoteManager != null) {
+
+				// Get the connection type - basically Jsch is index 0
+				IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
+				IRemoteConnection connection = null;
+				for (IRemoteConnection c : connectionType.getConnections()) {
+					if (connectionName.equals(c.getName())) {
+						connection = c;
+					}
+				}
+
+				if (connection != null) {
+					try {
+						connectionType.removeConnection(connection);
+					} catch (RemoteConnectionException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -170,8 +242,8 @@ public class ICEJob extends Job {
 	}
 
 	/**
-	 * This protected utility method is used to report errors in the 
-	 * Job execution. 
+	 * This protected utility method is used to report errors in the Job
+	 * execution.
 	 * 
 	 * @param message
 	 * @param e
@@ -186,4 +258,22 @@ public class ICEJob extends Job {
 		status = FormStatus.InfoError;
 		return new Status(Status.ERROR, "org.eclipse.ice.item.jobLauncher.ICEJob", 1, message, null);
 	}
+
+	/**
+	 * Return the OSGi service with the given service interface.
+	 *
+	 * @param service
+	 *            service interface
+	 * @return the specified service or null if it's not registered
+	 */
+	protected <T> T getService(Class<T> service) {
+		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
+		if (context != null) {
+			ServiceReference<T> ref = context.getServiceReference(service);
+			return ref != null ? context.getService(ref) : null;
+		} else {
+			return null;
+		}
+	}
+
 }
