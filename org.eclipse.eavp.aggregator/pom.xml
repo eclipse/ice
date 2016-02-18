@@ -33,6 +33,7 @@
   	<module>../org.eclipse.ice.viz.service.visit</module>
   	<module>../org.eclipse.ice.viz.service.visit.test</module>
   	<module>../org.eclipse.ice.viz.test</module>
+  	<module>../org.eclipse.eavp.parent</module>
   	<module>../org.eclipse.eavp.feature</module>  	
   	<module>../org.eclipse.eavp.repository</module>
   </modules>
