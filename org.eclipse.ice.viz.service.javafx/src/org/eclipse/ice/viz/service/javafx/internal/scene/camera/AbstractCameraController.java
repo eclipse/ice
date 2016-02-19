@@ -173,6 +173,15 @@ public class AbstractCameraController implements ICameraController {
 
 		});
 
+		// Set the handler for releasing the mouse button
+		scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {
+				handleMouseReleased(arg0);
+			}
+
+		});
+
 		// Set the behavior for mouse scroll events
 		scene.setOnScroll(new EventHandler<ScrollEvent>() {
 			@Override
@@ -224,6 +233,18 @@ public class AbstractCameraController implements ICameraController {
 	 *            An event sent to the scene.
 	 */
 	public void handleMousePressed(MouseEvent event) {
+
+	}
+
+	/**
+	 * This function defines the camera's behavior when a mouse button is
+	 * released. By default, it does nothing. It is intended to be overwritten
+	 * by subclasses.
+	 * 
+	 * @param event
+	 *            An event sent to the scene.
+	 */
+	public void handleMouseReleased(MouseEvent event) {
 
 	}
 

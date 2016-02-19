@@ -43,6 +43,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Shape3D;
@@ -582,70 +583,92 @@ public class FXMeshViewer extends FXViewer {
 		PickResult pickResult = event.getPickResult();
 		Node intersectedNode = pickResult.getIntersectedNode();
 
-		// If the user is not dragging a shape, ignore the motion
-		if (intersectedNode instanceof Shape3D || dragStarted) {
+		// The drag has started, so continue dragging even if the
+		// mouse has moved off a shape
+		dragStarted = true;
 
-			// The drag has started, so continue dragging even if the
-			// mouse has moved off a shape
-			dragStarted = true;
+		// Resolve the parent
+		Group nodeParent = (Group) intersectedNode.getParent();
 
-			// Resolve the parent
-			Group nodeParent = (Group) intersectedNode.getParent();
+		// Resolve the shape
+		AbstractController modelShape = (AbstractController) nodeParent
+				.getProperties().get(AbstractController.class);
 
-			// Resolve the shape
-			AbstractController modelShape = (AbstractController) nodeParent
-					.getProperties().get(AbstractController.class);
+		// If the user has selected a vertex, drag it
+		if (selectedVertices.contains(modelShape) || dragStarted) {
 
-			// If the user has selected a vertex, drag it
-			if (selectedVertices.contains(modelShape) || dragStarted) {
+			// If the vertex markers have not yet been made,
+			// create them
+			if (vertexMarkers.isEmpty()) {
 
-				// If the vertex markers have not yet been made,
-				// create them
-				if (vertexMarkers.isEmpty()) {
+				// Get the location of the vertex which was clicked
+				double[] cursorLocation = ((VertexController) modelShape)
+						.getTranslation();
 
-					// Get the location of the vertex which was clicked
-					double[] cursorLocation = ((VertexController) modelShape)
+				for (AbstractController vertex : selectedVertices) {
+
+					// Create the circle
+					Sphere marker = new Sphere(1);
+
+					// Place it at the vertex's position
+					double[] position = ((VertexController) vertex)
 							.getTranslation();
+					marker.setTranslateX(position[0]);
+					marker.setTranslateY(position[1]);
 
-					for (AbstractController vertex : selectedVertices) {
+					// Add it to the list
+					vertexMarkers.add(marker);
 
-						// Create the circle
-						Sphere marker = new Sphere(1);
-						// marker.setScaleZ(.25d);
+					// Get the relative position of this vertex from
+					// the vertex being dragged
+					relativeXCords.add(position[0] - cursorLocation[0]);
+					relativeYCords.add(position[1] - cursorLocation[1]);
 
-						// Place it at the vertex's position
-						double[] position = ((VertexController) vertex)
-								.getTranslation();
-						marker.setTranslateX(position[0]);
-						marker.setTranslateY(position[1]);
+					((FXAttachment) attachmentManager.getAttachments().get(1))
+							.getFxNode().getChildren().add(marker);
 
-						// Add it to the list
-						vertexMarkers.add(marker);
+				}
+			}
 
-						// Get the relative position of this vertex from
-						// the vertex being dragged
-						relativeXCords.add(position[0] - cursorLocation[0]);
-						relativeYCords.add(position[1] - cursorLocation[1]);
+			// Move each vertex
+			for (int i = 0; i < vertexMarkers.size(); i++) {
 
-						((FXAttachment) attachmentManager.getAttachments()
-								.get(1)).getFxNode().getChildren().add(marker);
+				// Get the vertex marker for this index
+				Sphere marker = vertexMarkers.get(i);
 
+				// The adjustments to the markers needed to keep them inside
+				// the grid
+				double xAdjust = 0;
+				double yAdjust = 0;
+
+				// Set the xAdjust so that all coordinates are within the
+				// bounds of the grid, adjusted for drawing scale
+				for (Double x : relativeXCords) {
+					if (x + mousePosX + xAdjust < -16d * SCALE) {
+						xAdjust = -16d * SCALE - x - mousePosX;
+					} else if (x + mousePosX + xAdjust > 16d * SCALE) {
+						xAdjust = 16d * SCALE - x - mousePosX;
 					}
 				}
 
-				// Move each vertex
-				for (int i = 0; i < vertexMarkers.size(); i++) {
-
-					// Get the vertex marker for this index
-					Sphere marker = vertexMarkers.get(i);
-
-					// Move the vertex to the mouse's current
-					// position, offset by the original distance
-					// between the vertices.
-					marker.setTranslateX(relativeXCords.get(i) + mousePosX);
-					marker.setTranslateY(relativeYCords.get(i) + mousePosY);
+				// Set the yAdjust so that all coordinates are within the
+				// bounds of the grid, adjusted for drawing scale
+				for (Double y : relativeYCords) {
+					if (y + mousePosY + yAdjust < -8d * SCALE) {
+						yAdjust = -8d * SCALE - y - mousePosY;
+					} else if (y + mousePosY + yAdjust > 8d * SCALE) {
+						yAdjust = 8d * SCALE - y - mousePosY;
+					}
 				}
 
+				// Move the vertex to the mouse's current
+				// position, offset by the original distance
+				// between the vertices and adjusted to lay within the
+				// bounds of the grid.
+				marker.setTranslateX(
+						relativeXCords.get(i) + mousePosX + xAdjust);
+				marker.setTranslateY(
+						relativeYCords.get(i) + mousePosY + yAdjust);
 			}
 
 		}
@@ -670,17 +693,19 @@ public class FXMeshViewer extends FXViewer {
 			mousePosX = event.getX();
 			mousePosY = event.getY();
 
+			// Update the vertices
 			for (int i = 0; i < selectedVertices.size(); i++) {
 
 				// Get the vertex
 				VertexController vertex = (VertexController) selectedVertices
 						.get(i);
 
-				// Update its position, corected for the scale the editor is
-				// drawn at
+				// Set the vertex's location to the current location of the
+				// temporary marker in the scene
 				vertex.updateLocation(
-						(relativeXCords.get(i) + mousePosX) / SCALE,
-						(relativeYCords.get(i) + mousePosY) / SCALE, 0);
+						vertexMarkers.get(i).getTranslateX() / SCALE,
+						vertexMarkers.get(i).getTranslateY() / SCALE,
+						vertexMarkers.get(i).getTranslateZ() / SCALE);
 
 				// Remove the markers from the scene
 				for (Sphere marker : vertexMarkers) {
@@ -705,15 +730,15 @@ public class FXMeshViewer extends FXViewer {
 	 */
 	private void handleMouseMoved(MouseEvent event) {
 		DecimalFormat format = new DecimalFormat("#.##");
-		// cursorPosition
-		// .setText("Cursor position (x,y): ("
-		// + format.format(event.getPickResult()
-		// .getIntersectedPoint().getX() / 3)
-		// + ","
-		// + event.getPickResult().getIntersectedPoint().getY() / 3
-		// + ")");
-		// cursorPosition.setTranslateX(scene.getWidth() / -20);
-		// cursorPosition.setTranslateZ(-5);
+		cursorPosition
+				.setText("Cursor position (x,y): ("
+						+ format.format(event.getPickResult()
+								.getIntersectedPoint().getX() / 3)
+						+ ","
+						+ event.getPickResult().getIntersectedPoint().getY() / 3
+						+ ")");
+		cursorPosition.setTranslateX(scene.getWidth() / -20);
+		cursorPosition.setTranslateZ(-5);
 	}
 
 	/**
@@ -987,6 +1012,8 @@ public class FXMeshViewer extends FXViewer {
 		cursorPosition = new Text();
 		cursorPosition.setTranslateZ(-5);
 		internalRoot.getChildren().add(cursorPosition);
+		BorderPane pane = new BorderPane();
+		internalRoot.getChildren().add(pane);
 	}
 
 }

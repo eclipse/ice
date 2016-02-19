@@ -33,32 +33,32 @@ public class Extrema {
 	/**
 	 * The region's maximum x coordinate.
 	 */
-	double maxX;
+	private double maxX;
 
 	/**
 	 * The region's maximum y coordinate.
 	 */
-	double maxY;
+	private double maxY;
 
 	/**
 	 * The region's maximum z coordinate.
 	 */
-	double maxZ;
+	private double maxZ;
 
 	/**
 	 * The region's minimum x coordinate.
 	 */
-	double minX;
+	private double minX;
 
 	/**
 	 * The region's minimum y coordinate.
 	 */
-	double minY;
+	private double minY;
 
 	/**
 	 * The region's minimum z coordinate.
 	 */
-	double minZ;
+	private double minZ;
 
 	/**
 	 * A constructor which initializes the extrema to the given values

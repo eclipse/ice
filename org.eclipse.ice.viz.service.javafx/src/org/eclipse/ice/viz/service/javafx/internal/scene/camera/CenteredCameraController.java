@@ -40,6 +40,8 @@ public class CenteredCameraController extends AbstractCameraController {
 	 */
 	final private double SPEED = 50;
 
+	private boolean dragStarted;
+
 	/**
 	 * The X rotation applied to the camera.
 	 */
@@ -68,6 +70,9 @@ public class CenteredCameraController extends AbstractCameraController {
 	public CenteredCameraController(Camera camera, Scene scene,
 			FXCanvas canvas) {
 		super(camera, scene, canvas);
+
+		// Initialize the data members
+		dragStarted = false;
 
 		// Set the x axis rotation for the affine transformation
 		x = new Rotate();
@@ -101,19 +106,43 @@ public class CenteredCameraController extends AbstractCameraController {
 		mouseOldX = mousePosX;
 		mouseOldY = mousePosY;
 
-		// Get the current mouse position and calculate the deltas
+		// Get the current mouse position
 		mousePosX = event.getSceneX();
 		mousePosY = event.getSceneY();
-		mouseDeltaX = (mousePosX - mouseOldX);
-		mouseDeltaY = (mousePosY - mouseOldY);
 
-		// Apply the change in mouse position to the camera's angle
-		if (event.isPrimaryButtonDown()) {
+		// If a drag action is in progress, adjust the camera angle
+		if (dragStarted) {
 
-			y.setAngle(y.getAngle() - mouseDeltaX);
-			x.setAngle(x.getAngle() + mouseDeltaY);
+			// Calculate the change in mouse position
+			mouseDeltaX = (mousePosX - mouseOldX);
+			mouseDeltaY = (mousePosY - mouseOldY);
 
+			// Apply the change in mouse position to the camera's angle
+			if (event.isPrimaryButtonDown()) {
+				y.setAngle(y.getAngle() - mouseDeltaX);
+				x.setAngle(x.getAngle() + mouseDeltaY);
+			}
 		}
+
+		// Ignore the first event of a drag action, as the mouse position will
+		// not be properly initialized during it
+		else {
+			dragStarted = true;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * AbstractCameraController#handleMouseReleased(javafx.scene.input.
+	 * MouseEvent)
+	 */
+	@Override
+	public void handleMouseReleased(MouseEvent event) {
+
+		// End the current drag action, if any
+		dragStarted = false;
 	}
 
 	/*
