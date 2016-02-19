@@ -14,6 +14,7 @@ import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.AbstractControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.ice.viz.service.modeling.TubeMesh;
 
 /**
  * A factory for creating instances of Shape with FXShapeViews for use with
@@ -38,6 +39,18 @@ public class FXShapeControllerFactory extends AbstractControllerFactory {
 				// Create an FXShapeView for the model, then wrap them both in a
 				// shape controller
 				FXShapeView view = new FXShapeView((ShapeMesh) model);
+				return new FXShapeController((ShapeMesh) model, view);
+			}
+		});
+
+		// Set the TubeMesh provider
+		typeMap.put(TubeMesh.class, new IControllerProvider() {
+			@Override
+			public AbstractController createController(AbstractMesh model) {
+
+				// Create an FXShapeView for the model, then wrap them both in a
+				// shape controller
+				FXShapeView view = new FXShapeView((TubeMesh) model);
 				return new FXShapeController((ShapeMesh) model, view);
 			}
 		});

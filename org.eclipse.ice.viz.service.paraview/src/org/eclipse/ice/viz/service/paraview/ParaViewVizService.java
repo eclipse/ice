@@ -25,6 +25,8 @@ import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyFactory;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * This class is responsible for providing a service to connect to (or launch)
@@ -68,7 +70,9 @@ public class ParaViewVizService
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionManager()
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * createConnectionManager()
 	 */
 	@Override
 	protected IVizConnectionManager<IParaViewWebClient> createConnectionManager() {
@@ -77,7 +81,10 @@ public class ParaViewVizService
 		return new VizConnectionManager<IParaViewWebClient>() {
 			/*
 			 * (non-Javadoc)
-			 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#createConnection(java.lang.String, java.lang.String)
+			 * 
+			 * @see
+			 * org.eclipse.ice.viz.service.connections.VizConnectionManager#
+			 * createConnection(java.lang.String, java.lang.String)
 			 */
 			@Override
 			protected VizConnection<IParaViewWebClient> createConnection(
@@ -89,7 +96,9 @@ public class ParaViewVizService
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#createConnectionPlot()
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * createConnectionPlot()
 	 */
 	@Override
 	protected ConnectionPlot<IParaViewWebClient> createConnectionPlot() {
@@ -98,7 +107,9 @@ public class ParaViewVizService
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -108,7 +119,9 @@ public class ParaViewVizService
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#getConnectionPreferencesNodeId()
+	 * 
+	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * getConnectionPreferencesNodeId()
 	 */
 	@Override
 	protected String getConnectionPreferencesNodeId() {
@@ -117,6 +130,7 @@ public class ParaViewVizService
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getName()
 	 */
 	@Override
@@ -136,6 +150,7 @@ public class ParaViewVizService
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 	 */
 	@Override
@@ -176,14 +191,40 @@ public class ParaViewVizService
 		}
 		return;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
 	 */
 	@Override
 	public IControllerFactory getFactory() {
-		// The ParaView visualization service does not make use of the model framework, so it has no factory
+		// The ParaView visualization service does not make use of the model
+		// framework, so it has no factory
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * swt.widgets.Composite, java.net.URI, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent,
+			IFileEditorInput file, int pageNum) {
+		// No additional pages, so nothing to do
 		return null;
 	}
 

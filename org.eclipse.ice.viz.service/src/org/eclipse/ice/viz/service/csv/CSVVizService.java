@@ -22,6 +22,13 @@ import org.eclipse.ice.viz.service.IPlot;
 import org.eclipse.ice.viz.service.IVizCanvas;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.MultiPageEditorPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
@@ -36,6 +43,14 @@ import org.eclipse.ice.viz.service.modeling.IControllerFactory;
  */
 public class CSVVizService extends AbstractVizService {
 
+	/**
+	 * The logger for error messages.
+	 */
+	Logger logger = LoggerFactory.getLogger(CSVVizService.class);
+
+	/**
+	 * A map from file URIs to the plots created from them.
+	 */
 	private final Map<URI, CSVPlot> dataPlots = new HashMap<URI, CSVPlot>();
 
 	/**
@@ -121,6 +136,50 @@ public class CSVVizService extends AbstractVizService {
 	public IControllerFactory getFactory() {
 		// CSV visualization service does not make use of the model framework,
 		// so it has no factory
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 1;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * swt.widgets.Composite, java.net.URI, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent,
+			IFileEditorInput file, int pageNum) {
+
+		// Create the specified page
+		switch (pageNum) {
+
+		// Page 2 is the file's data displayed in text
+		case 1:
+
+			// Create a text editor with the file as input and add its page with
+			// the name Data
+			int index;
+			try {
+				index = parent.addPage((IEditorPart) new TextEditor(), file);
+				return "Data";
+			} catch (PartInitException e) {
+				logger.error(
+						"Error initializing text editor for CSV Plot Editor.");
+			}
+			break;
+		}
+
+		// If the page number is not supported, return null
 		return null;
 	}
 

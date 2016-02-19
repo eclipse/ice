@@ -25,7 +25,8 @@ Import-Package: javafx.collections;version="2.2.0",
  org.eclipse.ice.viz.service.javafx.viewer,
  org.eclipse.ice.viz.service.mesh.datastructures,
  org.eclipse.ice.viz.service.mesh.properties,
- org.eclipse.ice.viz.service.modeling
+ org.eclipse.ice.viz.service.modeling,
+ org.eclipse.ui
 Export-Package: org.eclipse.ice.viz.service.javafx.mesh,
  org.eclipse.ice.viz.service.javafx.mesh.datatypes
 

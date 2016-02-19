@@ -42,6 +42,8 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotSpinner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -156,6 +158,19 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			public IControllerFactory getFactory() {
 				return null;
 			}
+
+			@Override
+			public int getNumAdditionalPages() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String createAdditionalPage(MultiPageEditorPart parent,
+					IFileEditorInput file, int pageNum) {
+				// TODO Auto-generated method stub
+				return null;
+			}
 		};
 		factory.register(vizService);
 
@@ -259,7 +274,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			}
 		}
 		assertTrue(found);
-		
+
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
 		assertEquals(2, spinner.getSelection());
@@ -290,7 +305,7 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			}
 		}
 		assertTrue(found);
-		
+
 		// Check the spinner's specifications.
 		assertEquals(1, spinner.getIncrement());
 		assertEquals(2, spinner.getSelection());

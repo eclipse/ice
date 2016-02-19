@@ -24,6 +24,7 @@ Import-Package: ca.odell.glazedlists,
  org.eclipse.ice.viz.service.styles,
  org.eclipse.ice.viz.service.widgets,
  org.eclipse.swt.widgets,
+ org.eclipse.ui,
  org.eclipse.ui.forms,
  org.slf4j;version="1.7.2"
 Require-Bundle: org.junit,
@@ -31,5 +32,6 @@ Require-Bundle: org.junit,
  org.eclipse.swtbot.go;bundle-version="2.2.1",
  org.eclipse.swtbot.junit4_x;bundle-version="2.2.1",
  org.eclipse.swtbot.swt.finder;bundle-version="2.2.1",
- org.eclipse.swtbot.eclipse.gef.finder;bundle-version="2.2.1"
+ org.eclipse.swtbot.eclipse.gef.finder;bundle-version="2.2.1",
+ org.eclipse.ui.workbench
 Export-Package: org.eclipse.ice.viz.service.modeling.test.utils

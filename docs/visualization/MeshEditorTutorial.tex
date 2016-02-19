@@ -31,17 +31,22 @@ highlighted. Instruction for how to use each one, from top to bottom, left to
 right, are given below.
 
  
-1) Click the File menu, then New, then Create Item Wizard.
+1) Click the File menu, then New, then Other\ldots and select the Create Item
+Wizard in the new dialog and press next. Then select Mesh Editor from the list
+and press Finish.
 
  
-2) Click the New Item Button and select Create Item Wizard.
+2) Click the New button and select Create Item Wizard in the new dialog and
+press next. Then select Mesh Editor from the list and press Finish.
 
 
 3) Click the Mesh Editor button.
 
 
-4) In the ICE Perspective, click the Create an Item button, select Mesh Editor,
-and click OK.
+4) Enter the ICE Perspective by clicking the Open Perspective button in the
+upper right corder of the screen, selecting ICE from the dialog that pops up,
+and clicking OK. Afterwords, click the Create an Item button, select
+Mesh Editor, and click OK.
 
 \section{Working With the Mesh Editor}
 
@@ -75,10 +80,10 @@ clicking inside of it.
     \multicolumn{2}{|c|}{\textbf{Camera Controls}} \\
   	\hline
     \textbf{Action} & \textbf{Key(s)} \\ \hline
-    Scroll Up & W \\ \hline
-    Scroll Down & S \\ \hline
-    Scroll Left & A \\ \hline
-    Scroll Right & D \\ \hline
+    Scroll Up & W or Up Arrow\\ \hline
+    Scroll Down & S or Left Arrow\\ \hline
+    Scroll Left & A or Right Arrow\\ \hline
+    Scroll Right & D or Down Arrow\\ \hline
     Zoom In & Scroll mouse wheel up \\ \hline
     Zoom out & Scroll mouse wheel down \\
     \hline
@@ -114,10 +119,11 @@ in the creation of the current polygon.}
 \end{center}
 \end{figure}
 
-Once the fourth vertex has been specified, the polygon will change to purple to
-show that it has been completed. At any time before this, you can press the Esc
-button to cancel the new polygon, removing it from the editor and allowing you
-to start the process over. 
+Once the fourth vertex has been specified, the polygon will be displayed
+in full. Clicking one more time will change it to purple to show that it has
+been completed. At any time before this, you can press the backspace, delete,
+or escape buttons to cancel the new polygon, removing it from the editor and
+allowing you to start the process over.
 
 \subsection{Editing Elements}
 
@@ -134,7 +140,8 @@ selecting it from the tree in the ICE Perspective's Mesh Elements View. Holding
 down shift while clicking will allow multiple vertices to be selected at once,
 while holding down control during a click will toggle a vertex's state either
 into or out of the selection. Selected elements are displayed in blue.
-The current selection can be cleared by pressing the Esc button.
+The current selection can be cleared by pressing the backspace, delete, or
+escape buttons.
 
 \begin{center}
 \includegraphics[width=12cm]{images/MeshEditorSelection}
@@ -143,8 +150,9 @@ The current selection can be cleared by pressing the Esc button.
 Click on a selected vertex and drag it to change its location. The clicked
 vertex will stay beneath your mouse cursor, while all other selected vertices
 will be moved as well, keeping their relative position to the dragged vertex.
-White circles are displayed to show each vertex's new location. Pressing Escape
-during the drag will deselect the vertices and cancel the movement.
+White circles are displayed to show each vertex's new location. Pressing
+backspace, delete, or escape during the drag will deselect the vertices and
+cancel the movement.
 
 \begin{figure}
 \begin{center}
@@ -164,7 +172,7 @@ top vertex is moved left by an equal amount.}
     Add to selection & Shift + left click \\ \hline
     Toggle (Add/Remove) Selection & Ctrl + left click \\ \hline
     Move selected vertices & Left click on vertex and drag mouse \\ \hline
-    Clear selection/Cancel move & Escape \\ 
+    Clear selection/Cancel move & Backspace, Delete, or Escape \\ 
     \hline
     \end{tabular}
 \end{center}

@@ -31,6 +31,8 @@ import org.eclipse.ice.viz.service.connections.VizConnectionManager;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -139,6 +141,19 @@ public class ConnectionVizServiceTester {
 
 			@Override
 			public IControllerFactory getFactory() {
+				return null;
+			}
+
+			@Override
+			public int getNumAdditionalPages() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public String createAdditionalPage(MultiPageEditorPart parent,
+					IFileEditorInput file, int pageNum) {
+				// TODO Auto-generated method stub
 				return null;
 			}
 		};
