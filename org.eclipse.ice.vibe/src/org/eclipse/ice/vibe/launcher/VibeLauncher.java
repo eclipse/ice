@@ -25,10 +25,9 @@ import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.io.ips.IPSReader;
-import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**
@@ -78,11 +77,7 @@ public class VibeLauncher extends JobLauncher {
 	 *            </p>
 	 */
 	public VibeLauncher(IProject project) {
-
-		// Call the JobLauncher constructor
 		super(project);
-
-		return;
 	}
 
 	/**
@@ -106,13 +101,6 @@ public class VibeLauncher extends JobLauncher {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-		if (ioService.getReader("IPSReader") == null) {
-			ioService.addReader(new IPSReader());
-		}
-		if (ioService.getWriter("IPSWriter") == null) {
-			ioService.addWriter(new IPSWriter());
-		}
-		return;
 	}
 
 	/**
@@ -158,8 +146,6 @@ public class VibeLauncher extends JobLauncher {
 		form.removeComponent(1);
 		form.addComponent(fileComponent);
 		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));
-
-		return;
 	}
 
 	/**
@@ -177,10 +163,7 @@ public class VibeLauncher extends JobLauncher {
 	@Override
 	public FormStatus process(String actionName) {
 
-		// Local Declarations
-		String separator = System.getProperty("file.separator");
-		IPSReader reader = (IPSReader) ioService.getReader("IPSReader");
-		IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter");
+		IReader reader = (IReader) ioService.getReader("IPSReader");
 		DataComponent fileComponent = (DataComponent) form.getComponent(1);
 		IEntry inputFileEntry = fileComponent.retrieveEntry("Input File");
 		IEntry kvPairFileEntry = fileComponent.retrieveEntry("Use custom key-value pair file?");
@@ -220,13 +203,6 @@ public class VibeLauncher extends JobLauncher {
 			dataDir = dataDir.substring(0, dataDir.length() - (caseName.length() + 1));
 		}
 
-		// Get the input file directory for the simulation
-		String inputDir = "";
-		ArrayList<IEntry> inputDirMatches = reader.findAll(inputFile, ".*INPUT_DIR.*");
-		if (inputDirMatches != null && !inputDirMatches.isEmpty()) {
-			inputDir = inputDirMatches.get(0).getName().split("=")[1];
-		}
-
 		// If we are supplying a new KV Pair file replace it in the input file
 		update(fileComponent.retrieveEntry("Use custom key-value pair file?"));
 		String setKVPerms = "";
@@ -258,7 +234,6 @@ public class VibeLauncher extends JobLauncher {
 		setExecutable(getName(), getDescription(), this.fullExecCMD);
 
 		return super.process(actionName);
-
 	}
 
 	/**
