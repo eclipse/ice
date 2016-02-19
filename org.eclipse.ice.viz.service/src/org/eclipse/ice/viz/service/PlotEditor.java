@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author Kasper Gammeltoft- Viz refactor for series
  *
  */
-public class PlotEditor extends EditorPart {
+public class PlotEditor extends MultiPageEditorPart {
 	/**
 	 * Plot editor ID for external reference.
 	 */
@@ -122,96 +122,6 @@ public class PlotEditor extends EditorPart {
 		parent.layout();
 
 		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		setPartName("Plot Editor");
-		shouldCancelLoading = false;
-
-		// Get the plot from the input.
-		plot = null;
-		IEditorInput editorInput = getEditorInput();
-		// If the input is file input, we'll have to use the URI.
-		if (editorInput instanceof FileEditorInput) {
-			URI uri = ((FileEditorInput) editorInput).getURI();
-			// Try to create a plot using the available viz services, prompting
-			// the user if two or more services can create a plot.
-			PlotDialogProvider provider = new PlotDialogProvider();
-			if (provider.openDialog(getEditorSite().getShell(),
-					uri) == Window.OK) {
-				plot = provider.getSelectedPlot();
-			}
-		}
-		// If the input is plot input, we can just get the plot from it.
-		else if (editorInput instanceof PlotEditorInput) {
-			plot = ((PlotEditorInput) editorInput).getPlot();
-		}
-
-		// If no plot could be created, close the editor.
-		if (plot == null) {
-			logger.error(getClass().getName()
-					+ " No plot available from the input.");
-			Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
-					"The file could not be rendered.", null);
-			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
-					"Visualization Failed",
-					"The selection could not be rendered by any available "
-							+ "visualization services. Please check the format "
-							+ "of the file and that visualization services are "
-							+ "available for that file type.",
-					status);
-			// Close the editor.
-			getEditorSite().getPage().closeEditor(PlotEditor.this, false);
-			return;
-		}
-
-		createContent(parent);
-		
-//		// Finish loading and drawing the plot in a new thread.
-//		final Composite parentRef = parent;
-//		Job loadJob = new Job("Plot Editor Loading and Rendering") {
-//			@Override
-//			protected IStatus run(IProgressMonitor monitor) {
-//				// If the plot was loaded, draw it in the editor.
-//				if (waitForLoad(2000)) {
-//					parentRef.getDisplay().asyncExec(new Runnable() {
-//						@Override
-//						public void run() {
-//							createContent(parentRef);
-//						}
-//					});
-//				}
-//				// Otherwise, we should cancel the job.
-//				else {
-//					cancel();
-//					throwCriticalException(
-//							"Timeout while waiting for plot data to load.",
-//							"The visualization service took too long to load "
-//									+ "the plot. Please check the file format "
-//									+ "to ensure it is compatible with the "
-//									+ "selected visualization service.",
-//							null);
-//
-//				}
-//				return Status.OK_STATUS;
-//			}
-//
-//			// Set the loading process to cancel
-//			@Override
-//			protected void canceling() {
-//				shouldCancelLoading = true;
-//			}
-//
-//		};
-//		loadJob.schedule();
-
-		return;
-
 	}
 
 	/**
@@ -333,7 +243,9 @@ public class PlotEditor extends EditorPart {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
+	 * 
+	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
+	 * IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -342,6 +254,7 @@ public class PlotEditor extends EditorPart {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.part.EditorPart#doSaveAs()
 	 */
 	@Override
@@ -369,7 +282,9 @@ public class PlotEditor extends EditorPart {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
+	 * 
+	 * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
+	 * org.eclipse.ui.IEditorInput)
 	 */
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -380,6 +295,7 @@ public class PlotEditor extends EditorPart {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.part.EditorPart#isDirty()
 	 */
 	@Override
@@ -389,6 +305,7 @@ public class PlotEditor extends EditorPart {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
 	 */
 	@Override
@@ -398,6 +315,7 @@ public class PlotEditor extends EditorPart {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
 	 */
 	@Override
@@ -428,6 +346,7 @@ public class PlotEditor extends EditorPart {
 				logMessage, e);
 		final String message = dialogMessage;
 		shell.getDisplay().asyncExec(new Runnable() {
+			@Override
 			public void run() {
 				// Open an error dialog.
 				ErrorDialog.openError(shell, "Visualization Failed", message,
@@ -475,6 +394,71 @@ public class PlotEditor extends EditorPart {
 		}
 
 		return loaded;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.MultiPageEditorPart#createPages()
+	 */
+	@Override
+	protected void createPages() {
+
+		setPartName("Plot Editor");
+		shouldCancelLoading = false;
+
+		// Get the plot from the input.
+		plot = null;
+		IEditorInput editorInput = getEditorInput();
+		// If the input is file input, we'll have to use the URI.
+		if (editorInput instanceof FileEditorInput) {
+			URI uri = ((FileEditorInput) editorInput).getURI();
+			// Try to create a plot using the available viz services, prompting
+			// the user if two or more services can create a plot.
+			PlotDialogProvider provider = new PlotDialogProvider();
+			if (provider.openDialog(getEditorSite().getShell(),
+					uri) == Window.OK) {
+				plot = provider.getSelectedPlot();
+
+				// Put the plot in the first tab with the name Plot
+				Composite mainPage = new Composite(getContainer(), SWT.NONE);
+				createContent(mainPage);
+				int index = addPage(mainPage);
+				setPageText(index, "Plot");
+
+				// Add any additional pages the service provides
+				IVizService service = provider.getSelectedService();
+				int numPages = service.getNumAdditionalPages();
+				for (int i = 1; i <= numPages; i++) {
+					String name = service.createAdditionalPage(this,
+							(FileEditorInput) editorInput, i);
+					setPageText(i, name);
+				}
+			}
+		}
+		// If the input is plot input, we can just get the plot from it.
+		else if (editorInput instanceof PlotEditorInput) {
+			plot = ((PlotEditorInput) editorInput).getPlot();
+		}
+
+		// If no plot could be created, close the editor.
+		if (plot == null) {
+			logger.error(getClass().getName()
+					+ " No plot available from the input.");
+			Status status = new Status(IStatus.ERROR, "org.eclipse.ice", 0,
+					"The file could not be rendered.", null);
+			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
+					"Visualization Failed",
+					"The selection could not be rendered by any available "
+							+ "visualization services. Please check the format "
+							+ "of the file and that visualization services are "
+							+ "available for that file type.",
+					status);
+			// Close the editor.
+			getEditorSite().getPage().closeEditor(PlotEditor.this, false);
+			return;
+		}
+
 	}
 
 }

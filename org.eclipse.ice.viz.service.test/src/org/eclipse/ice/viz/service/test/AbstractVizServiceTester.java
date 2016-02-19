@@ -24,6 +24,8 @@ import java.util.Set;
 
 import org.eclipse.ice.viz.service.AbstractVizService;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.junit.Test;
 
 /**
@@ -227,6 +229,7 @@ public class AbstractVizServiceTester {
 
 		/*
 		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.ice.viz.service.IVizService#getName()
 		 */
 		@Override
@@ -236,6 +239,7 @@ public class AbstractVizServiceTester {
 
 		/*
 		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
 		 */
 		@Override
@@ -245,7 +249,9 @@ public class AbstractVizServiceTester {
 
 		/*
 		 * (non-Javadoc)
-		 * @see org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+		 * 
+		 * @see org.eclipse.ice.viz.service.AbstractVizService#
+		 * findSupportedExtensions()
 		 */
 		@Override
 		protected Set<String> findSupportedExtensions() {
@@ -254,10 +260,24 @@ public class AbstractVizServiceTester {
 
 		/*
 		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
 		 */
 		@Override
 		public IControllerFactory getFactory() {
+			return null;
+		}
+
+		@Override
+		public int getNumAdditionalPages() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public String createAdditionalPage(MultiPageEditorPart parent,
+				IFileEditorInput file, int pageNum) {
+			// TODO Auto-generated method stub
 			return null;
 		}
 	}

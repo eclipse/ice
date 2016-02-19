@@ -19,6 +19,8 @@ import org.eclipse.ice.viz.service.IVizService;
 import org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * <p>
@@ -80,6 +82,30 @@ public class FXMeshVizService extends AbstractVizService {
 	@Override
 	public IControllerFactory getFactory() {
 		return new FXMeshControllerFactory();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * swt.widgets.Composite, java.net.URI, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent,
+			IFileEditorInput file, int pageNum) {
+		// No additional pages, so nothing to do
+		return null;
 	}
 
 }

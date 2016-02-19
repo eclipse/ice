@@ -131,6 +131,10 @@ public class PlotEditorTester {
 		bot.tree().select("f(x)");
 		bot.button("OK").click();
 
+		// Check that the data tab is present
+		bot.cTabItem("Data").activate();
+		bot.cTabItem("Plot").activate();
+
 		// Test the editor closing menu option.
 		button = bot.activeEditor().bot().toolbarButton(1).click();
 

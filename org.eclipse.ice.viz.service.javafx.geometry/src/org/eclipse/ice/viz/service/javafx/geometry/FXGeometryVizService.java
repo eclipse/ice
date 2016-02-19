@@ -22,6 +22,8 @@ import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootControll
 import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * <p>
@@ -92,6 +94,30 @@ public class FXGeometryVizService extends AbstractVizService {
 	@Override
 	public IControllerFactory getFactory() {
 		return new FXShapeControllerFactory();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * swt.widgets.Composite, java.net.URI, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent,
+			IFileEditorInput file, int pageNum) {
+		// No additional pages, so nothing to do
+		return null;
 	}
 
 }
