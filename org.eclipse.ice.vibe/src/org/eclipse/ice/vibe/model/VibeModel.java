@@ -30,10 +30,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.ips.IPSReader;
-import org.eclipse.ice.io.ips.IPSWriter;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 
 /**
@@ -95,6 +95,13 @@ public class VibeModel extends Item {
 		// Create a fresh form to start with
 		form = new Form();
 
+		// Set up the necessary io services if they aren't already done.
+		ioService = getIOService();
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
 		if (project != null) {
@@ -117,19 +124,6 @@ public class VibeModel extends Item {
 		customTaggedExportString = "Export to VIBE INI format";
 		allowedActions.add(0, customTaggedExportString);
 		actionItems = getAvailableActions();
-		
-		// Set up the necessary io services if they aren't already done.
-		ioService = getIOService();
-		if (ioService == null) {
-			setIOService(new IOService());
-			ioService = getIOService();
-		}
-		if (ioService.getReader("IPSReader") == null) {
-			ioService.addReader(new IPSReader());
-		}
-		if (ioService.getWriter("IPSWriter") == null) {
-			ioService.addWriter(new IPSWriter());
-		}
 	}
 
 	/**
@@ -144,7 +138,6 @@ public class VibeModel extends Item {
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
-		Component dataComp = null;
 
 		// Grab the data component from the Form and only proceed if it exists
 		ArrayList<Component> components = preparedForm.getComponents();
@@ -184,7 +177,7 @@ public class VibeModel extends Item {
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
-				IPSWriter writer = (IPSWriter) ioService.getWriter("IPSWriter");
+				IWriter writer = (IWriter) ioService.getWriter("IPSWriter");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);
@@ -274,7 +267,7 @@ public class VibeModel extends Item {
 		
 		// Load the components from the file and setup the form
 		logger.info("VibeModel Message: Loading " + inputFile.getName());		
-		IPSReader reader = (IPSReader) ioService.getReader("IPSReader"); //new IPSReader();
+		IReader reader = (IReader) ioService.getReader("IPSReader"); //new IPSReader();
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
