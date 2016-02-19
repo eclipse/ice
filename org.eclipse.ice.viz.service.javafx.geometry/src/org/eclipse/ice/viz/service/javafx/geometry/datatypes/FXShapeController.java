@@ -17,6 +17,7 @@ import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.modeling.ShapeController;
@@ -164,14 +165,6 @@ public class FXShapeController extends ShapeController
 		// Copy any other data into the clone
 		clone.copy(this);
 
-		// Add each child shape's JavaFX node as a child to the clone's JavaFX
-		// node
-		for (AbstractController child : clone
-				.getEntitiesByCategory("Children")) {
-			((Group) clone.getRepresentation()).getChildren()
-					.add((Group) child.getRepresentation());
-		}
-
 		return clone;
 	}
 
@@ -185,25 +178,14 @@ public class FXShapeController extends ShapeController
 	@Override
 	public void copy(AbstractController source) {
 
-		// Create the model and give it a reference to this
-		model = new ShapeMesh();
+		// Create the model and view
+		model = (AbstractMesh) source.getModel().clone();
+		view = new FXShapeView((ShapeMesh) model);
+		view.copy(source.getView());
+		view.refresh(model);
+
+		// Give the model a reference to this
 		model.setController(this);
-
-		// For simple objects, copy the model and create a new view based on the
-		// copy
-		if (source.getProperty("Operator") == null) {
-			model.copy(source.getModel());
-			view = new FXShapeView((ShapeMesh) model);
-			view.copy(source.getView());
-		}
-
-		// If the object is complex, create the view first so that cloned
-		// children can be collected under this object's JavaFX node.
-		else {
-			view = new FXShapeView();
-			model.copy(source.getModel());
-			view.copy(source.getView());
-		}
 
 		// Register as a listener to the model and view
 		model.register(this);
