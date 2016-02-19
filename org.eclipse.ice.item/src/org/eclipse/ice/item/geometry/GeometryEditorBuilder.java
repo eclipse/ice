@@ -18,27 +18,21 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 
 /**
- * <p>
  * This class realizes the ItemBuilder interface to provide instances of the
  * GeometryEditor to ICE. Calling GeometryEditorBuilder.build() will return an
  * instance of the GeometryEditor that is fully-initialized and ready for use.
- * </p>
  * 
  * @author Jay Jay Billings
  */
 public class GeometryEditorBuilder extends AbstractItemBuilder {
+
 	/**
-	 * <p>
 	 * The name of the Geometry Editor.
-	 * </p>
-	 * 
 	 */
 	public static final String name = "Geometry Editor";
+
 	/**
-	 * <p>
 	 * The Item type of the Geometry Editor.
-	 * </p>
-	 * 
 	 */
 	public static final ItemType type = ItemType.Geometry;
 
@@ -49,10 +43,13 @@ public class GeometryEditorBuilder extends AbstractItemBuilder {
 		setName(name);
 		setType(type);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.resources.IProject)
+	 * 
+	 * @see
+	 * org.eclipse.ice.item.AbstractItemBuilder#getInstance(org.eclipse.core.
+	 * resources.IProject)
 	 */
 	@Override
 	public Item getInstance(IProject projectSpace) {
