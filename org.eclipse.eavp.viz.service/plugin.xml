@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.eclipse.ice.viz.service.IVizServiceFactory" name="IVizServiceFactory" schema="schema/org.eclipse.ice.viz.service.IVizServiceFactory.exsd"/>
-   <extension-point id="org.eclipse.ice.viz.service.IVizService" name="IVizService" schema="schema/org.eclipse.ice.viz.service.IVizService.exsd"/>
+   <extension-point id="org.eclipse.eavp.viz.service.IVizServiceFactory" name="IVizServiceFactory" schema="schema/org.eclipse.eavp.viz.service.IVizServiceFactory.exsd"/>
+   <extension-point id="org.eclipse.eavp.viz.service.IVizService" name="IVizService" schema="schema/org.eclipse.eavp.viz.service.IVizService.exsd"/>
    <extension
          id="org.eclipse.ice.viz.service.preferencePage"
          name="Visualization Preferences"
@@ -30,7 +30,7 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ice.viz.service.IVizServiceFactory">
+         point="org.eclipse.eavp.viz.service.IVizServiceFactory">
       <client
             class="org.eclipse.eavp.viz.service.BasicVizServiceFactory">
       </client>
