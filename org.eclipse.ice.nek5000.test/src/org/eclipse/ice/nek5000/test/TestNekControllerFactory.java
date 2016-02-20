@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.nek5000.test;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
@@ -21,8 +23,6 @@ import org.eclipse.eavp.viz.service.modeling.FaceMesh;
 import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 
 /**
  * A factory which produces controllers with dummy views for meshes read from

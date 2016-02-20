@@ -19,13 +19,13 @@ import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXLinearEdgeView;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexController;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexView;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.junit.Test;
 
 /**

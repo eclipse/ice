@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mesh Visualization Service Plugin
+Bundle-SymbolicName: org.eclipse.eavp.viz.service.mesh;singleton:=true
+Bundle-Version: 2.1.8.20160208
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: gov.lbnl.visit.swt,
+ gov.lbnl.visit.swt.widgets,
+ org.eclipse.eavp.viz.service,
+ org.eclipse.eavp.viz.service.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.modeling,
+ org.eclipse.ui.views.properties.tabbed
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.eavp.viz.service.mesh.datastructures,
+ org.eclipse.eavp.viz.service.mesh.properties

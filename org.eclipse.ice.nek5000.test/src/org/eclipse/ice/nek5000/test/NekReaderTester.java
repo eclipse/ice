@@ -23,13 +23,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.nek5000.NekReader;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.junit.Test;
 
 /**

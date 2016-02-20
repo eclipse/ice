@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -43,9 +46,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 
 /**
  * This class is responsible for writing the contents of a Component collection

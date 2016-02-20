@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
@@ -32,10 +36,6 @@ import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 
 /**
  * NekReader class is responsible for reading in the contents of a Nek5000 .rea

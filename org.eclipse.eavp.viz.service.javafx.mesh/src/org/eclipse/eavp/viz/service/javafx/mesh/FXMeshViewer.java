@@ -20,6 +20,9 @@ import org.eclipse.eavp.viz.service.javafx.internal.scene.camera.TopDownCameraCo
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexController;
 import org.eclipse.eavp.viz.service.javafx.scene.base.ICamera;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
+import org.eclipse.eavp.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
@@ -28,9 +31,6 @@ import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.swt.widgets.Composite;
 
 import javafx.event.EventHandler;
