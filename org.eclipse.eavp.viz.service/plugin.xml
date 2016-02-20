@@ -4,12 +4,12 @@
    <extension-point id="org.eclipse.eavp.viz.service.IVizServiceFactory" name="IVizServiceFactory" schema="schema/org.eclipse.eavp.viz.service.IVizServiceFactory.exsd"/>
    <extension-point id="org.eclipse.eavp.viz.service.IVizService" name="IVizService" schema="schema/org.eclipse.eavp.viz.service.IVizService.exsd"/>
    <extension
-         id="org.eclipse.ice.viz.service.preferencePage"
+         id="org.eclipse.eavp.viz.service.preferencePage"
          name="Visualization Preferences"
          point="org.eclipse.ui.preferencePages">
       <page
             class="org.eclipse.eavp.viz.service.preferences.VizPreferencePage"
-            id="org.eclipse.ice.viz.service.preferences"
+            id="org.eclipse.eavp.viz.service.preferences"
             name="Visualization">
       </page>
    </extension>
@@ -25,7 +25,7 @@
       <editor
             class="org.eclipse.eavp.viz.service.PlotEditor"
             default="false"
-            id="org.eclipse.ice.viz.service.PlotEditor"
+            id="org.eclipse.eavp.viz.service.PlotEditor"
             name="PlotEditor">
       </editor>
    </extension>

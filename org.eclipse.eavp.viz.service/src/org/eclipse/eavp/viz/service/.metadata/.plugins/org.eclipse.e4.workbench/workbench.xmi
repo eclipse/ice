@@ -1410,19 +1410,19 @@
     <tags>View</tags>
     <tags>categoryTag:Other</tags>
   </descriptors>
-  <descriptors xmi:id="_nOsm4BnAEeWPL7TxleLwVg" elementId="org.eclipse.ice.viz.visit.VisitPlotViewer" label="VisIt Plot Viewer" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_nOsm4BnAEeWPL7TxleLwVg" elementId="org.eclipse.eavp.viz.visit.VisitPlotViewer" label="VisIt Plot Viewer" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <tags>View</tags>
     <tags>categoryTag:Other</tags>
   </descriptors>
-  <descriptors xmi:id="_nOsm4RnAEeWPL7TxleLwVg" elementId="org.eclipse.ice.viz.plotviewer.CSVPlotViewer" label="CSV Plot Viewer" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_nOsm4RnAEeWPL7TxleLwVg" elementId="org.eclipse.eavp.viz.plotviewer.CSVPlotViewer" label="CSV Plot Viewer" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <tags>View</tags>
     <tags>categoryTag:Other</tags>
   </descriptors>
-  <descriptors xmi:id="_nOsm4hnAEeWPL7TxleLwVg" elementId="org.eclipse.ice.viz.VizFileViewer" label="Visualization File Viewer" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_nOsm4hnAEeWPL7TxleLwVg" elementId="org.eclipse.eavp.viz.VizFileViewer" label="Visualization File Viewer" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <tags>View</tags>
     <tags>categoryTag:Other</tags>
   </descriptors>
-  <descriptors xmi:id="_nOtN8BnAEeWPL7TxleLwVg" elementId="org.eclipse.ice.viz.plotviewer.CSVDataTableViewer" label="CSV Data View" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
+  <descriptors xmi:id="_nOtN8BnAEeWPL7TxleLwVg" elementId="org.eclipse.eavp.viz.plotviewer.CSVDataTableViewer" label="CSV Data View" iconURI="platform:/plugin/org.eclipse.ui/icons/full/eview16/defaultview_misc.gif" category="org.eclipse.e4.secondaryDataStack" closeable="true" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView">
     <tags>View</tags>
     <tags>categoryTag:Other</tags>
   </descriptors>
@@ -2916,7 +2916,7 @@
   <commands xmi:id="_nK4eHBnAEeWPL7TxleLwVg" elementId="org.eclipse.pde.ui.openManifest" commandName="Open Manifest" description="Open the plug-in manifest" category="_nKrCnRnAEeWPL7TxleLwVg"/>
   <commands xmi:id="_nK4eHRnAEeWPL7TxleLwVg" elementId="org.eclipse.ui.window.previousView" commandName="Previous View" description="Switch to the previous view" category="_nKrCgRnAEeWPL7TxleLwVg"/>
   <commands xmi:id="_nK4eHhnAEeWPL7TxleLwVg" elementId="org.eclipse.team.cvs.ui.replaceWithBase" commandName="Revert to Base" description="Revert to Base revisions" category="_nKrCiRnAEeWPL7TxleLwVg"/>
-  <commands xmi:id="_nK4eHxnAEeWPL7TxleLwVg" elementId="org.eclipse.ice.viz.LaunchVisitCommand" commandName="Launch VisIt" category="_nKrCkxnAEeWPL7TxleLwVg"/>
+  <commands xmi:id="_nK4eHxnAEeWPL7TxleLwVg" elementId="org.eclipse.eavp.viz.LaunchVisitCommand" commandName="Launch VisIt" category="_nKrCkxnAEeWPL7TxleLwVg"/>
   <commands xmi:id="_nK4eIBnAEeWPL7TxleLwVg" elementId="org.eclipse.wst.jsdt.ui.edit.text.java.self.encapsulate.field" commandName="Encapsulate Var" description="Create getting and setting functions for the var and use only those to access the var" category="_nKrClBnAEeWPL7TxleLwVg"/>
   <commands xmi:id="_nK4eIRnAEeWPL7TxleLwVg" elementId="org.eclipse.jdt.ui.edit.text.java.generate.tostring" commandName="Generate toString()" description="Generates the toString() method for the type" category="_nKrCsBnAEeWPL7TxleLwVg"/>
   <commands xmi:id="_nK4eIhnAEeWPL7TxleLwVg" elementId="org.eclipse.jdt.ui.edit.text.java.organize.imports" commandName="Organize Imports" description="Evaluate all required imports and replace the current imports" category="_nKrCsBnAEeWPL7TxleLwVg"/>

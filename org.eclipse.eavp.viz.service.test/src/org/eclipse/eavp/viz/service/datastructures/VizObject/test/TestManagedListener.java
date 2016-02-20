@@ -73,7 +73,7 @@ public class TestManagedListener implements IManagedUpdateableListener {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
-	 * IManagedUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * IManagedUpdateableListener#getSubscriptions(org.eclipse.eavp.viz.
 	 * service.datastructures.VizObject.IManagedUpdateable)
 	 */
 	@Override

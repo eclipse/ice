@@ -16,14 +16,14 @@
       <provided namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.feature.feature.group' version='2.1.8.20160208'/>
     </provides>
     <requires size='10'>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.geometry' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.javafx' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.javafx.geometry' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.javafx.mesh' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.mesh' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.paraview' range='[2.1.8.20160208,2.1.8.20160208]'/>
-      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ice.viz.service.paraview.web' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.geometry' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.javafx' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.javafx.geometry' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.javafx.mesh' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.mesh' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.paraview' range='[2.1.8.20160208,2.1.8.20160208]'/>
+      <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz.service.paraview.web' range='[2.1.8.20160208,2.1.8.20160208]'/>
       <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.viz' range='[2.1.8.20160208,2.1.8.20160208]'/>
       <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.eavp.feature.feature.jar' range='[2.1.8.20160208,2.1.8.20160208]'>
         <filter>

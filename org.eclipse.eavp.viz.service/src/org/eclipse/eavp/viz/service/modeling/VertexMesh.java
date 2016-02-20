@@ -119,7 +119,7 @@ public class VertexMesh extends PointMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.PointMesh#copy(org.eclipse.ice.viz.
+	 * org.eclipse.eavp.viz.service.modeling.PointMesh#copy(org.eclipse.eavp.viz.
 	 * service.modeling.AbstractMesh)
 	 */
 	@Override

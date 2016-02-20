@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This is an editor for displaying an SWT XYGraph used to draw plots from CSV
  * files. It is opened by the associated visualization views in
- * org.eclipse.ice.viz.
+ * org.eclipse.eavp.viz.
  * 
  * @author Matthew Wang
  * @author Taylor Patterson

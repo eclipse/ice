@@ -38,7 +38,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/**
 	 * The ID of the preferences node under which all connections will be added.
 	 */
-	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.visit.connections";
+	public static final String CONNECTIONS_NODE_ID = "org.eclipse.eavp.viz.visit.connections";
 
 	/**
 	 * The ID of the preferences page.

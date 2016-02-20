@@ -45,7 +45,7 @@ public class ParaViewVizService
 	/**
 	 * The ID of the preferences node under which all connections will be added.
 	 */
-	public static final String CONNECTIONS_NODE_ID = "org.eclipse.ice.viz.paraview.connections";
+	public static final String CONNECTIONS_NODE_ID = "org.eclipse.eavp.viz.paraview.connections";
 
 	/**
 	 * The ID of the preferences page.

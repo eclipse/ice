@@ -574,7 +574,7 @@ public class AbstractMesh
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.eavp.viz.
 	 * service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override

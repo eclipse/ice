@@ -8,7 +8,7 @@
  * Contributors:
  *    Claire N. Saunders (UT-Battelle, LLC.) - initial API and implementation 
  *      and/or initial documentation
- *    Jay Jay Billings (UT-Battelle, LLC.) - relocated from org.eclipse.ice.viz 
+ *    Jay Jay Billings (UT-Battelle, LLC.) - relocated from org.eclipse.eavp.viz 
  *      bundle
  *    Jordan Deyton (UT-Battelle, LLC.) - doc cleanup
  *******************************************************************************/

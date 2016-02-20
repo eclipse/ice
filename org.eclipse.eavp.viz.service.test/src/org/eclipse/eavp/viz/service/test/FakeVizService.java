@@ -94,7 +94,7 @@ public class FakeVizService implements IVizService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.
+	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.eavp.viz.
 	 * service.datastructures.VizObject)
 	 */
 	@Override

@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class implements the IVizService interface to provide CSV plotting tools
  * to the platform via the IVizServiceFactory. It used the classes already
- * available in org.eclipse.ice.viz and provides a rudimentary plotting
+ * available in org.eclipse.eavp.viz and provides a rudimentary plotting
  * capability.
  * 
  * It is the default "ice-plot" implementation provided by the platform.
@@ -123,7 +123,7 @@ public class CSVVizService extends AbstractVizService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.ice.viz.
+	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.eavp.viz.
 	 * service.datastructures.VizObject)
 	 */
 	@Override

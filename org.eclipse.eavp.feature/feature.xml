@@ -18,56 +18,56 @@
    </license>
 
    <plugin
-         id="org.eclipse.ice.viz.service"
+         id="org.eclipse.eavp.viz.service"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.geometry"
+         id="org.eclipse.eavp.viz.service.geometry"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.javafx"
+         id="org.eclipse.eavp.viz.service.javafx"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.javafx.geometry"
+         id="org.eclipse.eavp.viz.service.javafx.geometry"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.javafx.mesh"
+         id="org.eclipse.eavp.viz.service.javafx.mesh"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.mesh"
+         id="org.eclipse.eavp.viz.service.mesh"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.paraview"
+         id="org.eclipse.eavp.viz.service.paraview"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.viz.service.paraview.web"
+         id="org.eclipse.eavp.viz.service.paraview.web"
          download-size="0"
          install-size="0"
          version="0.0.0"
