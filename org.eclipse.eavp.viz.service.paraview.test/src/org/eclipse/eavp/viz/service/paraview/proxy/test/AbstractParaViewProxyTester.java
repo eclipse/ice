@@ -36,7 +36,7 @@ import org.eclipse.eavp.viz.service.paraview.proxy.ProxyProperty;
 import org.eclipse.eavp.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.eavp.viz.service.paraview.test.FakeParaViewWebClient;
 import org.eclipse.eavp.viz.service.paraview.test.TestUtils;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

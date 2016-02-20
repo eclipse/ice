@@ -24,7 +24,7 @@ import org.eclipse.eavp.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxyBuilder;
 import org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxyFactory;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 

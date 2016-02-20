@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import org.eclipse.eavp.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 
 /**
  * A proxy serves as an intermediary between client code and a particular file

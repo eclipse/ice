@@ -13,10 +13,10 @@ package org.eclipse.eavp.viz.service.paraview.test;
 
 import java.util.concurrent.ExecutionException;
 
+import org.eclipse.eavp.viz.service.paraview.web.HttpParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.eavp.viz.service.paraview.widgets.ParaViewCanvas;
 import org.eclipse.eavp.viz.service.paraview.widgets.ParaViewMouseAdapter;
-import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;

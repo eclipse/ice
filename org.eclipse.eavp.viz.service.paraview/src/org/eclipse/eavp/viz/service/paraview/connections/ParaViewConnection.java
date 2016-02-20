@@ -15,8 +15,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.eavp.viz.service.connections.VizConnection;
-import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.HttpParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 
 /**
  * Provides an {@link IVizConnection} for connecting to

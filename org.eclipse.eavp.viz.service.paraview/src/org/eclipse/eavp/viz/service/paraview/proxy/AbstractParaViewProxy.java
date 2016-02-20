@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 import org.eclipse.eavp.viz.service.connections.ConnectionState;
 import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.eavp.viz.service.paraview.proxy.ProxyProperty.PropertyType;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

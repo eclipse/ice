@@ -9,13 +9,12 @@
  *   Jordan Deyton - Initial API and implementation and/or initial documentation
  *   
  *******************************************************************************/
-package org.eclipse.eavp.viz.service.paraview;
+package org.eclipse.eavp.viz.service.visit;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.eavp.viz.service.IPlot;
@@ -25,10 +24,6 @@ import org.eclipse.eavp.viz.service.connections.ConnectionPlot;
 import org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite;
 import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.eavp.viz.service.datastructures.VizActionTree;
-import org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxy;
-import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
-import org.eclipse.eavp.viz.service.paraview.widgets.ParaViewCanvas;
-import org.eclipse.eavp.viz.service.paraview.widgets.ParaViewMouseAdapter;
 import org.eclipse.eavp.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -40,48 +35,57 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import gov.lbnl.visit.swt.VisItSwtConnection;
+import gov.lbnl.visit.swt.VisItSwtWidget;
+import visit.java.client.ViewerMethods;
+
 /**
  * This class provides a composite in which resources can be rendered from an
- * associated {@link ParaViewPlot}.
+ * associated {@link VisItPlot}.
  * 
  * @author Jordan
  *
  */
-public class ParaViewPlotComposite extends
-		ConnectionPlotComposite<IParaViewWebClient>implements IPlotListener {
+public class VisItPlotComposite extends
+		ConnectionPlotComposite<VisItSwtConnection>implements IPlotListener {
 
 	/**
-	 * The canvas that is used to render the remote ParaView view.
+	 * The plot {@code Composite} that renders the files through the VisIt
+	 * connection.
 	 */
-	private ParaViewCanvas canvas;
-	/**
-	 * The mouse event listener that triggers updates (movement, scrolling,
-	 * dragging, etc.) for the {@link #canvas}.
-	 */
-	private ParaViewMouseAdapter canvasMouseListener;
+	private VisItSwtWidget canvas;
 
 	/**
-	 * A reference to the current plot cast as its actual type.
+	 * The current category used to render the plot.
 	 */
-	private ParaViewPlot plot;
+	private String category;
 
 	/**
-	 * The {@code ActionTree} that can be used to update the available plot
-	 * properties.
+	 * The current representation used to render the plot.
 	 */
-	private VizActionTree propertiesTree;
+	private String representation;
 
 	/**
-	 * The current proxy rendered by this class. The lifecycle of the
-	 * {@link #canvas} is dependent on this proxy as it is tied to the proxy's
-	 * underlying view ID.
+	 * An ActionTree for populating the context menu with a list of allowed
+	 * representations. This should be updated (as necessary) when the context
+	 * menu is opened.
 	 */
-	private IParaViewProxy proxy;
+	private VizActionTree repTree;
+
+	/**
+	 * The current plot type rendered in the canvas.
+	 */
+	private String type;
 
 	/**
 	 * The widget used to adjust the current timestep.
 	 */
 	private TimeSliderComposite timeSlider;
+
+	/**
+	 * The currently associated {@link VisItPlot}.
+	 */
+	private VisItPlot plot;
 
 	/**
 	 * The default constructor.
@@ -92,8 +96,9 @@ public class ParaViewPlotComposite extends
 	 * @param style
 	 *            the style of widget to construct
 	 */
-	public ParaViewPlotComposite(Composite parent, int style) {
+	public VisItPlotComposite(Composite parent, int style) {
 		super(parent, style);
+
 		// Nothing to do yet.
 	}
 
@@ -107,105 +112,55 @@ public class ParaViewPlotComposite extends
 		return false;
 	}
 
-	/**
-	 * When the proxy changes (which happens on a data load/reload), the UI
-	 * widgets will need to be updated. This includes:
-	 * <ul>
-	 * <li>{@link #canvas} - it needs the proxy's view ID</li>
-	 * <li>{@link #canvasMouseListener} - it needs the proxy's view ID</li>
-	 * <li>{@link #timeSlider} - it needs the proxy's timesteps</li>
-	 * <li>{@link #propertiesTree} - this is populated based on the proxy's
-	 * properties</li>
-	 * </ul>
-	 */
-	private boolean checkProxy() {
-		IParaViewWebClient widget = getConnection().getWidget();
-
-		boolean changed = false;
-
-		final IParaViewProxy proxy = plot.getParaViewProxy();
-		if (proxy != this.proxy) {
-			changed = true;
-			this.proxy = proxy;
-			int viewId = proxy.getViewId();
-
-			// Set the view ID for the canvas.
-			canvas.setViewId(viewId);
-
-			// Set the view ID for the mouse control adapter, creating it if
-			// necessary.
-			if (canvasMouseListener == null) {
-				canvasMouseListener = new ParaViewMouseAdapter(widget, viewId,
-						canvas);
-				canvasMouseListener.setCanvas(canvas);
-			}
-			canvasMouseListener.setViewId(viewId);
-
-			// Set the times for the time slider.
-			timeSlider.setTimes(proxy.getTimesteps());
-
-			// Refresh the plot actions.
-			propertiesTree.removeAll();
-			for (final String property : proxy.getProperties().keySet()) {
-				VizActionTree tree = new VizActionTree(property);
-				for (final String value : proxy
-						.getPropertyAllowedValues(property)) {
-					tree.add(new VizActionTree(new Action(value) {
-						@Override
-						public void run() {
-							Future<Boolean> task = proxy.setProperty(property,
-									value);
-							refreshWidgetAfterTask(task);
-						}
-					}));
-				}
-				propertiesTree.add(tree);
-			}
-
-			// Refresh the canvas.
-			canvas.refresh();
-		}
-
-		return changed;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#createPlotContent(org.eclipse.swt.widgets.Composite, int, org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	protected Composite createPlotContent(Composite parent, int style,
-			IVizConnection<IParaViewWebClient> connection) throws Exception {
+			IVizConnection<VisItSwtConnection> connection) throws Exception {
 		// Validate the connection.
 		super.createPlotContent(parent, style, connection);
 
 		// Throw an exception if the plot hasn't finished loading.
 		if (!plot.isLoaded()) {
 			throw new Exception(getClass().getName() + " error: "
-					+ "The ParaView plot has not finished loading.");
+					+ "The VisIt plot has not finished loading.");
 		}
 
-		// Create the overall container.
+		// Create a new window on the VisIt server if one does not already
+		// exist. We will need the corresponding connection and a window ID. If
+		// the window ID is -1, a new one is created.
+
 		Composite container = new Composite(parent, style);
 		container.setBackground(parent.getBackground());
-		container.setFont(parent.getFont());
-		GridLayout gridLayout = new GridLayout();
-		// Get rid of the default margins (5 px on top, bottom, left, right).
-		gridLayout.marginWidth = 0;
-		gridLayout.marginHeight = 0;
-		container.setLayout(gridLayout);
+		container.setLayout(new GridLayout(1, false));
 
-		// Create the ParaView Canvas.
-		canvas = new ParaViewCanvas(container, SWT.NONE);
-		canvas.setBackground(parent.getBackground());
+		// Create the canvas.
+		canvas = new VisItSwtWidget(container, SWT.DOUBLE_BUFFERED);
 		canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		canvas.setClient(connection.getWidget());
+		canvas.setBackground(parent.getBackground());
+		int windowWidth = Integer
+				.parseInt(connection.getProperty("windowWidth"));
+		int windowHeight = Integer
+				.parseInt(connection.getProperty("windowHeight"));
+
+		// Establish the canvas' connection to the VisIt server. This may throw
+		// an exception.
+		// FIXME int windowId = connection.getNextWindowId();
+		int windowId = 1;
+		canvas.setVisItSwtConnection(connection.getWidget(), windowId,
+				windowWidth, windowHeight);
+
+		// Create a mouse manager to handle mouse events inside the
+		// canvas.
+		new VisItMouseManager(canvas);
 
 		// Add a time slider widget.
 		timeSlider = createTimeSlider(container);
 		timeSlider.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		// Set the context Menu for the ParaView canvas.
+		// Set the context Menu for the VisIt canvas.
 		addContextMenu(canvas);
 
 		return container;
@@ -219,8 +174,12 @@ public class ParaViewPlotComposite extends
 	 * @return The created widget.
 	 */
 	private TimeSliderComposite createTimeSlider(Composite parent) {
+
 		// The widget that will be created.
 		final TimeSliderComposite timeSlider;
+
+		// // The associated connection web client.
+		// final VisItSwtConnection widget = null;
 
 		// The currently rendered timestep and the slider's timestep.
 		final AtomicInteger renderedTimestep = new AtomicInteger();
@@ -239,21 +198,27 @@ public class ParaViewPlotComposite extends
 			@Override
 			public void run() {
 
-				// Until the timesteps match, keep setting it to the next
-				// timestep.
-				int targetStep = widgetTimestep.get();
-				while (renderedTimestep.getAndSet(targetStep) != targetStep) {
-					try {
-						proxy.setTimestep(targetStep).get();
-					} catch (InterruptedException | ExecutionException e) {
-						e.printStackTrace();
+				// FIXME We need a way to move to a specific timestep
+				// rather than cycling through them.
+
+				VisItSwtConnection widget = getConnection().getWidget();
+				ViewerMethods methods = widget.getViewerMethods();
+
+				// Send next or previous timestep requests to the VisIt
+				// widget until it matches the current timestep in the
+				// TimeSliderComposite.
+				int currentStep = renderedTimestep.get();
+				int targetStep;
+				while (currentStep != (targetStep = widgetTimestep.get())) {
+					if (currentStep < targetStep) {
+						methods.animationNextState();
+						currentStep++;
+					} else {
+						methods.animationPreviousState();
+						currentStep--;
 					}
-					targetStep = widgetTimestep.get();
 				}
-
-				// The canvas will need to be refreshed.
-				canvas.refresh();
-
+				renderedTimestep.set(currentStep);
 				return;
 			}
 		};
@@ -276,6 +241,22 @@ public class ParaViewPlotComposite extends
 			}
 		});
 
+		// The independent series contains the times (floats) or cycles
+		// (integers). Convert these to doubles for the time slider widget.
+		ISeries series = getPlot().getIndependentSeries();
+		Object[] pointArray = series.getDataPoints();
+		List<Double> times = new ArrayList<Double>(pointArray.length);
+		if ("Time".equals(series.getLabel())) {
+			for (Object value : pointArray) {
+				times.add(((Float) value).doubleValue());
+			}
+		} else {
+			for (Object value : pointArray) {
+				times.add(((Integer) value).doubleValue());
+			}
+		}
+		timeSlider.setTimes(times);
+
 		return timeSlider;
 	}
 
@@ -285,7 +266,7 @@ public class ParaViewPlotComposite extends
 	 */
 	@Override
 	protected void disposePlotContent(Composite plotContent,
-			IVizConnection<IParaViewWebClient> connection) {
+			IVizConnection<VisItSwtConnection> connection) {
 		// Dispose the custom UI widgets.
 		if (canvas != null && !canvas.isDisposed()) {
 			canvas.dispose();
@@ -304,7 +285,7 @@ public class ParaViewPlotComposite extends
 	 */
 	@Override
 	protected String getConnectionPreferencePageID() {
-		return ParaViewVizService.PREFERENCE_PAGE_ID;
+		return VisItVizService.PREFERENCE_PAGE_ID;
 	}
 
 	/*
@@ -316,8 +297,8 @@ public class ParaViewPlotComposite extends
 		// In addition to the default actions, add the action to set the
 		// "representation".
 		List<VizActionTree> actions = super.getPlotActions();
-		propertiesTree = new VizActionTree("Properties");
-		actions.add(propertiesTree);
+		repTree = new VizActionTree("Representation");
+		actions.add(repTree);
 		return actions;
 	}
 
@@ -334,26 +315,29 @@ public class ParaViewPlotComposite extends
 	}
 
 	/**
-	 * Refreshes the {@link #canvas} after the task completes. Waiting is
-	 * performed on a separate thread.
-	 * 
-	 * @param task
-	 *            The task to wait on.
+	 * Refreshes the canvas by querying the {@link ViewerMethods} object with
+	 * the current plot {@link #representation} and {@link #type}.
 	 */
-	private void refreshWidgetAfterTask(final Future<?> task) {
-		Thread thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					task.get();
-					canvas.refresh();
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		thread.setDaemon(true);
-		thread.start();
+	private void refreshCanvas() {
+		// Draw the specified plot on the Canvas.
+		ViewerMethods widget = canvas.getViewerMethods();
+
+		// Get the source path from the VisItPlot class. We can't,
+		// unfortunately, use the URI as specified.
+		VisItPlot plot = (VisItPlot) getPlot();
+		String sourcePath = plot.getSourcePath(plot.getDataSource());
+
+		// Make sure the Canvas is activated.
+		canvas.activate();
+
+		// Remove all existing plots.
+		widget.deleteActivePlots();
+
+		// FIXME How do we handle invalid paths?
+		widget.openDatabase(sourcePath);
+		widget.addPlot(representation, type);
+		widget.drawPlots();
+
 		return;
 	}
 
@@ -362,7 +346,7 @@ public class ParaViewPlotComposite extends
 	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#setConnectionPlot(org.eclipse.eavp.viz.service.connections.ConnectionPlot)
 	 */
 	@Override
-	public boolean setConnectionPlot(ConnectionPlot<IParaViewWebClient> plot) {
+	public boolean setConnectionPlot(ConnectionPlot<VisItSwtConnection> plot) {
 		boolean changed = super.setConnectionPlot(plot);
 		// We need to listen for updates from the plot telling us when the data
 		// is loaded.
@@ -374,7 +358,7 @@ public class ParaViewPlotComposite extends
 			}
 
 			// Register with the new plot.
-			this.plot = (ParaViewPlot) plot;
+			this.plot = (VisItPlot) plot;
 			this.plot.addPlotListener(this);
 		}
 		return changed;
@@ -386,17 +370,36 @@ public class ParaViewPlotComposite extends
 	 */
 	@Override
 	protected void showSeries(ISeries series,
-			IVizConnection<IParaViewWebClient> connection) throws Exception {
-
-		// Check if the proxy has changed first. If so, there's some reloading
-		// that must be done.
-		checkProxy();
-
-		// Set the feature for the proxy and refresh afterward.
+			IVizConnection<VisItSwtConnection> connection) throws Exception {
+		// Get the plot category and type.
 		String category = series.getCategory();
-		String feature = series.getLabel();
-		Future<Boolean> task = proxy.setFeature(category, feature);
-		refreshWidgetAfterTask(task);
+		// Update the drawn type.
+		type = series.getLabel();
+
+		// If the category changed, we need to update the set of representations
+		// from which the user can select AND pick one of them.
+		if (!category.equals(this.category)) {
+			// Update the category, too.
+			this.category = category;
+			// Update the representations based on the current category.
+			VisItPlot plot = (VisItPlot) getPlot();
+			repTree.removeAll();
+			for (final String rep : plot.getRepresentations(category)) {
+				repTree.add(new VizActionTree(new Action(rep) {
+					@Override
+					public void run() {
+						representation = rep;
+						refreshCanvas();
+					}
+				}));
+				// Set the initial representation to the specified one.
+				representation = plot.getRepresentations(category).iterator()
+						.next();
+			}
+		}
+
+		// We may now refresh the canvas.
+		refreshCanvas();
 
 		// Proceed with the default behavior.
 		super.showSeries(series, connection);
@@ -408,7 +411,7 @@ public class ParaViewPlotComposite extends
 	 */
 	@Override
 	protected void updatePlotContent(Composite plotContent,
-			IVizConnection<IParaViewWebClient> connection) throws Exception {
+			IVizConnection<VisItSwtConnection> connection) throws Exception {
 		// Validate the connection. This also makes the necessary calls to
 		// hide/show series.
 		super.updatePlotContent(plotContent, connection);
@@ -416,14 +419,10 @@ public class ParaViewPlotComposite extends
 		// Throw an exception if the plot hasn't finished loading.
 		if (!plot.isLoaded()) {
 			throw new Exception(getClass().getName() + " error: "
-					+ "The ParaView plot has not finished loading.");
+					+ "The VisIt plot has not finished loading.");
 		}
 
-		// Check for a new proxy. This updates the canvas and time slider if
-		// necessary. If the proxy did not change, just redraw the canvas.
-		if (!checkProxy()) {
-			canvas.refresh();
-		}
+		// Nothing to do yet.
 
 		return;
 	}

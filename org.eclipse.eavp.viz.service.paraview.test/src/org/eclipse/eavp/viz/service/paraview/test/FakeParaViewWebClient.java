@@ -29,7 +29,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.eclipse.eavp.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.eavp.viz.service.paraview.proxy.test.FakeProxyFeature;
-import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
+import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

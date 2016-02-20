@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: VisIt Visualization Service Plugin
+Bundle-SymbolicName: org.eclipse.eavp.viz.service.visit;singleton:=true
+Bundle-Version: 2.1.8.20160208
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: gov.lbnl.visit.swt,
+ gov.lbnl.visit.swt.widgets,
+ org.eclipse.eavp.viz.service,
+ org.eclipse.eavp.viz.service.connections,
+ org.eclipse.eavp.viz.service.connections.preferences,
+ org.eclipse.eavp.viz.service.datastructures,
+ org.eclipse.eavp.viz.service.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.modeling,
+ org.eclipse.eavp.viz.service.preferences,
+ org.eclipse.eavp.viz.service.widgets,
+ org.eclipse.jface.preference,
+ org.eclipse.swt,
+ org.eclipse.swt.graphics,
+ org.eclipse.swt.widgets,
+ org.eclipse.ui,
+ org.eclipse.ui.forms.events,
+ org.eclipse.ui.forms.widgets,
+ org.slf4j;version="1.7.2",
+ visit.java.client
+Export-Package: org.eclipse.eavp.viz.service.visit
+Service-Component: OSGI-INF/vizService.xml
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Vendor: Oak Ridge National Laboratory
