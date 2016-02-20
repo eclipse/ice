@@ -287,14 +287,14 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.reactor.plant" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.reflectivity" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.vibe" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.javafx.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.javafx.mesh" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.paraview" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.paraview.web" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.ice.viz.service.visit" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.geometry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.javafx.geometry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.javafx.mesh" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.paraview" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.paraview.web" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.visit" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
       <plugin id="org.eclipse.platform" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ui.forms" autoStart="true" startLevel="0" />

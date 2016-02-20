@@ -17,17 +17,17 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateableListe
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
-import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
-import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
-import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
-import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
-import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
-import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
-import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
-import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
-import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantData;
+import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerController;
+import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
+import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
+import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
 
 /**
  * A class which interfaces between a PlantComposite and a tree of

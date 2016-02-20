@@ -12,7 +12,7 @@ Import-Package: org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.modeling,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.componentVisitor,
- org.eclipse.ice.viz.service.geometry.reactor,
+ org.eclipse.eavp.viz.service.geometry.reactor,
  org.eclipse.swt.widgets,
  org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/PlantIOFactory.xml

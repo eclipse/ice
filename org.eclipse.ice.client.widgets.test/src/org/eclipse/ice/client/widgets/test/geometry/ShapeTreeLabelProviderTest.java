@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeLabelProvider;
+import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeLabelProvider;
 import org.junit.Test;
 
 /**
