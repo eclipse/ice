@@ -50,7 +50,7 @@ public class SiloProxy extends AbstractParaViewProxy {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy#findFeatures()
+	 * @see org.eclipse.eavp.viz.service.paraview.proxy.AbstractParaViewProxy#findFeatures()
 	 */
 	@Override
 	protected List<ProxyFeature> findFeatures() {

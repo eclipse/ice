@@ -95,7 +95,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseDragged(javafx.scene.input.
 	 * MouseEvent)
 	 */
@@ -134,7 +134,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseReleased(javafx.scene.input.
 	 * MouseEvent)
 	 */
@@ -148,7 +148,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseScroll(javafx.scene.input.
 	 * ScrollEvent)
 	 */
@@ -164,7 +164,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#reset()
 	 */
 	@Override
@@ -197,7 +197,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#pitchCamera(double)
 	 */
 	@Override
@@ -209,7 +209,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#rollCamera(double)
 	 */
 	@Override
@@ -221,7 +221,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#raiseCamera(double)
 	 */
 	@Override
@@ -232,7 +232,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#strafeCamera(double)
 	 */
 	@Override
@@ -243,7 +243,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#thrustCamera(double)
 	 */
 	@Override
@@ -254,7 +254,7 @@ public class CenteredCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#yawCamera(double)
 	 */
 	@Override

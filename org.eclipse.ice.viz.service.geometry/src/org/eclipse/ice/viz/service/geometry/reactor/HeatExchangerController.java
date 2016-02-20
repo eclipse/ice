@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -106,7 +106,7 @@ public class HeatExchangerController extends AbstractController
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.IWireFramePart#setWireFrameMode(
+	 * org.eclipse.eavp.viz.service.modeling.IWireFramePart#setWireFrameMode(
 	 * boolean)
 	 */
 	@Override

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

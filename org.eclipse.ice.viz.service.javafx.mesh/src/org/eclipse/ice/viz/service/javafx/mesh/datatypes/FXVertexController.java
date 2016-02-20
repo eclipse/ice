@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.VertexController;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 
 import javafx.scene.Group;
 
@@ -78,9 +78,9 @@ public class FXVertexController extends VertexController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#update(org.
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#update(org.
 	 * eclipse.ice.viz.service.datastructures.VizObject.IManagedVizUpdateable,
-	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override

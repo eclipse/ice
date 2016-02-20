@@ -15,11 +15,11 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.FaceController;
-import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;

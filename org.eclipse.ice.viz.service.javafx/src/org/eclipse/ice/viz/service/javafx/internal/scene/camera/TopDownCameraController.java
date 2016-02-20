@@ -73,7 +73,7 @@ public class TopDownCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleKeyPressed(javafx.scene.input.KeyEvent)
 	 */
 	@Override
@@ -139,7 +139,7 @@ public class TopDownCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseScroll(javafx.scene.input.
 	 * ScrollEvent)
 	 */
@@ -154,7 +154,7 @@ public class TopDownCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#reset()
 	 */
 	@Override

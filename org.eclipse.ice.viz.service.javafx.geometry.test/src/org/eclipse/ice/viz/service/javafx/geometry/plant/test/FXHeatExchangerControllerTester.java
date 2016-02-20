@@ -13,10 +13,10 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXHeatExchangerController;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXHeatExchangerView;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 import org.junit.Test;
 
 /**
@@ -110,8 +110,8 @@ public class FXHeatExchangerControllerTester {
 		 * (non-Javadoc)
 		 * 
 		 * @see
-		 * org.eclipse.ice.viz.service.javafx.geometry.plant.FXHeatExchangerView
-		 * #refresh(org.eclipse.ice.viz.service.modeling.AbstractMesh)
+		 * org.eclipse.eavp.viz.service.javafx.geometry.plant.FXHeatExchangerView
+		 * #refresh(org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 		 */
 		@Override
 		public void refresh(AbstractMesh model) {

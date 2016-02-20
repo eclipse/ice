@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 
 /**
  * A controller that manages all the parts present in a Reactor Analyzer. This
@@ -62,7 +62,7 @@ public class FXPlantViewRootController extends AbstractController
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractController#addEntity(org.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController#addEntity(org.
 	 * eclipse.ice.viz.service.modeling.AbstractController)
 	 */
 	@Override
@@ -100,8 +100,8 @@ public class FXPlantViewRootController extends AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#
-	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
 	 * AbstractController, java.lang.String)
 	 */
 	@Override
@@ -140,7 +140,7 @@ public class FXPlantViewRootController extends AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.WireFramePart#
+	 * @see org.eclipse.eavp.viz.service.reactor.javafx.datatypes.WireFramePart#
 	 * setWireFrameMode(boolean)
 	 */
 	@Override
@@ -158,7 +158,7 @@ public class FXPlantViewRootController extends AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
 	 */
 	@Override
 	public Object clone() {

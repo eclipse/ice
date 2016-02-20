@@ -29,7 +29,7 @@ public class FXGeometryAttachmentManager extends AbstractAttachmentManager {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.model.geometry.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.model.geometry.
 	 * AbstractAttachmentManager#allocate()
 	 */
 	@Override

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.client.widgets.providers.DefaultPageFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -47,7 +48,6 @@ import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -232,7 +232,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(
-						"org.eclipse.ice.viz.service.IVizServiceFactory");
+						"org.eclipse.eavp.viz.service.IVizServiceFactory");
 		staticLogger.info("ICEFormEditor: Available configuration elements");
 		for (IConfigurationElement element : elements) {
 			staticLogger.info(element.getName());

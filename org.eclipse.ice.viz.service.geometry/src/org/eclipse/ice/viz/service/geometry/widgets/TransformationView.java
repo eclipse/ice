@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.widgets;
 
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.Transformation;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.Transformation;
 import org.eclipse.jface.databinding.swt.IWidgetValueProperty;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
@@ -37,7 +37,7 @@ public class TransformationView extends ViewPart {
 	/**
 	 * Eclipse view ID
 	 */
-	public static final String ID = "org.eclipse.ice.viz.service.geometry.widgets.TransformationView";
+	public static final String ID = "org.eclipse.eavp.viz.service.geometry.widgets.TransformationView";
 	/**
 	 * 
 	 */

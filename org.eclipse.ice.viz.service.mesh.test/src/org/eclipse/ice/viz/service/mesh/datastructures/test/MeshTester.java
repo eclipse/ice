@@ -18,15 +18,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeAndVertexFaceMesh;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceMesh;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
-import org.eclipse.ice.viz.service.modeling.VertexController;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
 /**

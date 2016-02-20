@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 
 import javafx.scene.Group;
 
@@ -50,7 +50,7 @@ public class FXFaceView extends AbstractView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
 	public Object getRepresentation() {

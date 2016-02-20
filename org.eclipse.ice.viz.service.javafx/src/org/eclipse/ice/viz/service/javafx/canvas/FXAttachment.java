@@ -13,14 +13,14 @@ package org.eclipse.ice.viz.service.javafx.canvas;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateableListener;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 import org.eclipse.ice.viz.service.javafx.viewer.IAttachmentManager;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 import javafx.scene.Group;
 import javafx.scene.Node;

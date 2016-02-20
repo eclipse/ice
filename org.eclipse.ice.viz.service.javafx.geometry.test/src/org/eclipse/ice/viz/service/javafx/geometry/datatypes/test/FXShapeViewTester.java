@@ -12,8 +12,8 @@ package org.eclipse.ice.viz.service.javafx.geometry.datatypes.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 import javafx.scene.Group;

@@ -17,13 +17,13 @@ import java.util.HashMap;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.FaceController;
-import org.eclipse.ice.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.FaceMesh;
 
 /**
  * A Face which maintains the information needed for a Polygon in a Nek5000
@@ -328,7 +328,7 @@ public class NekPolygonController extends FaceController
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractController#setProperty(java.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController#setProperty(java.
 	 * lang.String, java.lang.String)
 	 */
 	@Override
@@ -357,8 +357,8 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener#update(org.eclipse.eavp.viz.service.datastructures.
 	 * VizObject.IVizUpdateable)
 	 */
 	@Override
@@ -375,8 +375,8 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#
-	 * addEntityByCategory(org.eclipse.ice.viz.service.modeling.
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
 	 * AbstractController, java.lang.String)
 	 */
 	@Override
@@ -394,7 +394,7 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -413,7 +413,7 @@ public class NekPolygonController extends FaceController
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController#copy(org.eclipse.
 	 * ice.viz.service.modeling.AbstractController)
 	 */
 	@Override

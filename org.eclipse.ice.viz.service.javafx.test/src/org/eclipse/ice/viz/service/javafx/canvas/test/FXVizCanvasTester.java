@@ -13,12 +13,12 @@ package org.eclipse.ice.viz.service.javafx.canvas.test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -83,7 +83,7 @@ public class FXVizCanvasTester {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas#
+		 * @see org.eclipse.eavp.viz.service.javafx.canvas.FXVizCanvas#
 		 * handleSelectionChanged(org.eclipse.jface.viewers.
 		 * SelectionChangedEvent)
 		 */

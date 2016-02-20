@@ -16,13 +16,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.modeling.TubeMesh;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
-import org.eclipse.ice.viz.service.modeling.TubeMesh;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ITreeSelection;

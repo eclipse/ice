@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyProperty.PropertyType;
 import org.eclipse.ice.viz.service.paraview.test.FakeParaViewWebClient;

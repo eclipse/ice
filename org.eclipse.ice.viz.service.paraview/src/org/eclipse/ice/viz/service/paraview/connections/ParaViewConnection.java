@@ -13,8 +13,8 @@ package org.eclipse.ice.viz.service.paraview.connections;
 
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.paraview.web.HttpParaViewWebClient;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
@@ -30,7 +30,7 @@ public class ParaViewConnection extends VizConnection<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#connectToWidget()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#connectToWidget()
 	 */
 	@Override
 	protected IParaViewWebClient connectToWidget() {
@@ -64,7 +64,7 @@ public class ParaViewConnection extends VizConnection<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#disconnectFromWidget(java.lang.Object)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#disconnectFromWidget(java.lang.Object)
 	 */
 	@Override
 	protected boolean disconnectFromWidget(IParaViewWebClient widget) {

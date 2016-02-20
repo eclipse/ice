@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
 
 import javafx.scene.Group;
 
@@ -39,7 +39,7 @@ public class FXGeometryAttachment extends FXAttachment {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.javafx.internal.model.geometry.FXAttachment#
+	 * org.eclipse.eavp.viz.service.javafx.internal.model.geometry.FXAttachment#
 	 * handleUpdate()
 	 */
 	@Override

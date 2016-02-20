@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.mesh.datastructures;
 
-import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizCanvas;
 
 /**
  * An extension of IVizCanvas which provides functionality needed for a Mesh to

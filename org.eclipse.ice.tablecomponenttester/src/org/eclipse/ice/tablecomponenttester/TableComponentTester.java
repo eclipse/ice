@@ -23,6 +23,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -37,9 +40,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {

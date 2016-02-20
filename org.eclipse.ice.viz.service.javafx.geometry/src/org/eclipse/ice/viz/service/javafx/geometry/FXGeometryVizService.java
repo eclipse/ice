@@ -13,15 +13,15 @@ package org.eclipse.ice.viz.service.javafx.geometry;
 import java.util.Collections;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.AbstractVizService;
-import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.eavp.viz.service.AbstractVizService;
+import org.eclipse.eavp.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizObject;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -89,7 +89,7 @@ public class FXGeometryVizService extends AbstractVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getFactory()
 	 */
 	@Override
 	public IControllerFactory getFactory() {
@@ -99,7 +99,7 @@ public class FXGeometryVizService extends AbstractVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getNumAdditionalPages()
 	 */
 	@Override
 	public int getNumAdditionalPages() {
@@ -110,7 +110,7 @@ public class FXGeometryVizService extends AbstractVizService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
 	 * swt.widgets.Composite, java.net.URI, int)
 	 */
 	@Override

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnection;
 import org.junit.Before;
 import org.junit.Test;

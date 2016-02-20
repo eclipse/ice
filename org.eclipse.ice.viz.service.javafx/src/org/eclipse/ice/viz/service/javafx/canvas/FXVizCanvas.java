@@ -14,10 +14,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
 
-import org.eclipse.ice.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.javafx.scene.base.GNode;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -44,7 +44,7 @@ public class FXVizCanvas implements IVizCanvas {
 			.getLogger(FXVizCanvas.class);
 
 	/** Factory class to be implemented by renderer implementations. */
-	private static final String GEOMETRY_VIEWER_FACTORY = "org.eclipse.ice.viz.service.geometry.viewer.factory.GeometryViewerFactory";
+	private static final String GEOMETRY_VIEWER_FACTORY = "org.eclipse.eavp.viz.service.geometry.viewer.factory.GeometryViewerFactory";
 
 	/**
 	 * Number of dimensions supported for visualization. GeometryCanvas supports

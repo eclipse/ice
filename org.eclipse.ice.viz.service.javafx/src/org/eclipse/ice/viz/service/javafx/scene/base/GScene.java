@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
 import org.eclipse.ice.viz.service.javafx.scene.model.IScene;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 /**
  * <p>

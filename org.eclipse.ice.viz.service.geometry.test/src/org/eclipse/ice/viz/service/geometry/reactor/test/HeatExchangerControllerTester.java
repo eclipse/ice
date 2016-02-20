@@ -12,13 +12,13 @@ package org.eclipse.ice.viz.service.geometry.reactor.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeAndVertexFaceMesh;
+import org.eclipse.eavp.viz.service.modeling.Transformation;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceMesh;
-import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.junit.Test;
 
 /**

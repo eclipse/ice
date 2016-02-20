@@ -12,11 +12,11 @@ package org.eclipse.ice.viz.service.geometry.reactor.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.junit.Test;
 
 /**

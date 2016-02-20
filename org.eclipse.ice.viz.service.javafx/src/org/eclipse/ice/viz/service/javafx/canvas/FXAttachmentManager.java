@@ -23,7 +23,7 @@ public class FXAttachmentManager extends AbstractAttachmentManager {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachmentManager#
+	 * @see org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager#
 	 * allocate()
 	 */
 	@Override

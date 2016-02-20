@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.ice.viz.service.paraview</name>
+	<name>org.eclipse.eavp.viz.service.paraview</name>
 	<comment></comment>
 	<projects>
 	</projects>

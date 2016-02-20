@@ -58,7 +58,7 @@ public class FXPipeController extends PipeController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
 	 */
 	@Override
 	public Object clone() {

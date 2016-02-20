@@ -16,10 +16,10 @@ package org.eclipse.ice.viz.service.visit;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionVizService;
-import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlot;
+import org.eclipse.eavp.viz.service.connections.ConnectionVizService;
+import org.eclipse.eavp.viz.service.connections.IVizConnectionManager;
+import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -43,7 +43,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/**
 	 * The ID of the preferences page.
 	 */
-	public static final String PREFERENCE_PAGE_ID = "org.eclipse.ice.viz.service.visit.preferences";
+	public static final String PREFERENCE_PAGE_ID = "org.eclipse.eavp.viz.service.visit.preferences";
 
 	/**
 	 * The default constructor.
@@ -58,7 +58,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionVizService#
 	 * createConnectionManager()
 	 */
 	@Override
@@ -69,7 +69,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionVizService#
 	 * createConnectionPlot()
 	 */
 	@Override
@@ -81,7 +81,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+	 * org.eclipse.eavp.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -104,7 +104,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionVizService#
 	 * getConnectionPreferencesNodeId()
 	 */
 	@Override
@@ -115,7 +115,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getName()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -125,7 +125,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {
@@ -135,7 +135,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getFactory()
 	 */
 	@Override
 	public IControllerFactory getFactory() {
@@ -147,7 +147,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getNumAdditionalPages()
 	 */
 	@Override
 	public int getNumAdditionalPages() {
@@ -158,7 +158,7 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
 	 * swt.widgets.Composite, java.net.URI, int)
 	 */
 	@Override

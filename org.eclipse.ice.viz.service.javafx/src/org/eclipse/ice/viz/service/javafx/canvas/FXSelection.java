@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.canvas;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 /**

@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractControllerFactory;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
-import org.eclipse.ice.viz.service.modeling.FaceEdgeMesh;
-import org.eclipse.ice.viz.service.modeling.FaceMesh;
-import org.eclipse.ice.viz.service.modeling.LinearEdgeMesh;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
 
 /**
  * A factory which creates JavaFX specific AbstractViews and AbstractControllers

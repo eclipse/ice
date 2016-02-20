@@ -15,12 +15,12 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.ice.viz.service.javafx.scene.model.INode;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.junit.Test;
 
 /**

@@ -12,9 +12,9 @@ package org.eclipse.ice.viz.service.mesh.datastructures;
 
 import java.util.List;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.EdgeAndVertexFaceMesh;
-import org.eclipse.ice.viz.service.modeling.FaceEdgeController;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.EdgeAndVertexFaceMesh;
+import org.eclipse.eavp.viz.service.modeling.FaceEdgeController;
 
 /**
  * A component for Faces within the Mesh Editor, making use of FaceEdges to
@@ -46,7 +46,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#addEntity(org.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#addEntity(org.
 	 * eclipse.ice.viz.service.modeling.AbstractController)
 	 */
 	@Override
@@ -81,8 +81,8 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 *
 	 * @see
 	 *
-	 * org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#setController(
-	 * org.eclipse.ice.viz.service.modeling.AbstractController)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#setController(
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController)
 	 */
 	@Override
 	public void setController(AbstractController controller) {
@@ -108,7 +108,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractMeshComponent#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#clone()
 	 */
 	@Override
 	public Object clone() {

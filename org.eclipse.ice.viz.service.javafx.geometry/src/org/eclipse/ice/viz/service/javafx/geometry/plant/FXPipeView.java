@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.IPipeView;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -64,7 +64,7 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getLowerExtrema()
+	 * org.eclipse.eavp.viz.service.geometry.reactor.IPipeView#getLowerExtrema()
 	 */
 	@Override
 	public Extrema getLowerExtrema() {
@@ -78,7 +78,7 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.reactor.IPipeView#getUpperExtrema()
+	 * org.eclipse.eavp.viz.service.geometry.reactor.IPipeView#getUpperExtrema()
 	 */
 	@Override
 	public Extrema getUpperExtrema() {
@@ -196,8 +196,8 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView#refresh
-	 * (org.eclipse.ice.viz.service.modeling.AbstractMesh)
+	 * org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView#refresh
+	 * (org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 	 */
 	@Override
 	public void refresh(AbstractMesh model) {
@@ -223,7 +223,7 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractView#clone()
 	 */
 	@Override
 	public Object clone() {

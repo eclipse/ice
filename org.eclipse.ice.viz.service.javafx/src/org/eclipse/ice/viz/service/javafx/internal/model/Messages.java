@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.javafx.internal.model;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.eclipse.ice.viz.service.javafx.internal.renderer.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.eclipse.eavp.viz.service.javafx.internal.renderer.messages"; //$NON-NLS-1$
     public static String FXGeometryAttachment_IncompatibleNodeGeometry;
     public static String FXGeometryAttachment_IncompatibleNodeMesh;
     public static String FXMesh_IncompatibleMesh;

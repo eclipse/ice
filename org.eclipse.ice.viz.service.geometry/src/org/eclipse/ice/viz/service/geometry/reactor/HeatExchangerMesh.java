@@ -13,9 +13,9 @@ package org.eclipse.ice.viz.service.geometry.reactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -113,7 +113,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractMesh#addEntityByCategory(org
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMesh#addEntityByCategory(org
 	 * .eclipse.ice.viz.service.modeling.AbstractController, java.lang.String)
 	 */
 	@Override

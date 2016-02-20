@@ -13,10 +13,10 @@ package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
 /**
@@ -112,8 +112,8 @@ public class FXVertexControllerTester {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.ice.viz.service.javafx.mesh.datatypes.FXVertexView#
-		 * refresh(org.eclipse.ice.viz.service.modeling.AbstractMesh)
+		 * @see org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexView#
+		 * refresh(org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 		 */
 		@Override
 		public void refresh(AbstractMesh model) {

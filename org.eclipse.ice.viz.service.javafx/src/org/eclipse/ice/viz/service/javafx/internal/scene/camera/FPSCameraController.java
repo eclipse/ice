@@ -62,7 +62,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleKeyPressed(javafx.scene.input.KeyEvent)
 	 */
 	@Override
@@ -118,7 +118,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseDragged(javafx.scene.input.
 	 * MouseEvent)
 	 */
@@ -145,7 +145,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMousePressed(javafx.scene.input.
 	 * MouseEvent)
 	 */
@@ -162,7 +162,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#handleMouseScroll(javafx.scene.input.
 	 * ScrollEvent)
 	 */
@@ -178,7 +178,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#initCamera()
 	 */
 	@Override
@@ -192,7 +192,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#reset()
 	 */
 	@Override
@@ -218,7 +218,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#pitchCamera(double)
 	 */
 	@Override
@@ -239,7 +239,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#rollCamera(double)
 	 */
 	@Override
@@ -260,7 +260,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#strafeCamera(double)
 	 */
 	@Override
@@ -271,7 +271,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#strafeCamera(double)
 	 */
 	@Override
@@ -292,7 +292,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#thrustCamera(double)
 	 */
 	@Override
@@ -313,7 +313,7 @@ public class FPSCameraController extends AbstractCameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * AbstractCameraController#yawCamera(double)
 	 */
 	@Override

@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractControllerFactory;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
 
 /**
  * A factory for creating JavaFX views and controllers for Reactor Analyzer

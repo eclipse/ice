@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.properties.BoundaryConditionSection.Type;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.FaceController;
-import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;

@@ -24,12 +24,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ice.viz.service.AbstractSeries;
-import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
-import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.AbstractSeries;
+import org.eclipse.eavp.viz.service.ISeries;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlot;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite;
+import org.eclipse.eavp.viz.service.connections.ConnectionState;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.swt.SWT;
@@ -175,7 +175,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#connectionStateChanged(org.eclipse.ice.viz.service.connections.IVizConnection, org.eclipse.ice.viz.service.connections.ConnectionState, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#connectionStateChanged(org.eclipse.eavp.viz.service.connections.IVizConnection, org.eclipse.eavp.viz.service.connections.ConnectionState, java.lang.String)
 	 */
 	@Override
 	public void connectionStateChanged(
@@ -189,7 +189,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#createPlotComposite(org.eclipse.swt.widgets.Composite)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#createPlotComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected ConnectionPlotComposite<IParaViewWebClient> createPlotComposite(
@@ -228,7 +228,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#getCategories()
+	 * @see org.eclipse.eavp.viz.service.AbstractPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -237,7 +237,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -312,7 +312,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 						} catch (Exception e) {
 							// The proxy could not be opened.
 							return new Status(Status.ERROR,
-									"org.eclipse.ice.viz.service", 1,
+									"org.eclipse.eavp.viz.service", 1,
 									"ParaViewPlot could not load the file.", e);
 						}
 						monitor.worked(30);
@@ -356,7 +356,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 						// Return a status.
 						return new Status(Status.OK,
-								"org.eclipse.ice.viz.service", 1,
+								"org.eclipse.eavp.viz.service", 1,
 								"ParaView Plot Loaded", null);
 					}
 				};
@@ -371,7 +371,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#setConnection(org.eclipse.ice.viz.service.connections.IVizConnection)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#setConnection(org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	public boolean setConnection(IVizConnection<IParaViewWebClient> connection)
@@ -386,7 +386,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#setDataSource(java.net.URI)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#setDataSource(java.net.URI)
 	 */
 	@Override
 	public boolean setDataSource(URI uri) throws Exception {
@@ -400,7 +400,7 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#setIndependentSeries(org.eclipse.ice.viz.service.ISeries)
+	 * @see org.eclipse.eavp.viz.service.AbstractPlot#setIndependentSeries(org.eclipse.eavp.viz.service.ISeries)
 	 */
 	@Override
 	public void setIndependentSeries(ISeries series) {

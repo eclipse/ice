@@ -17,14 +17,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.eclipse.ice.viz.service.IPlot;
-import org.eclipse.ice.viz.service.IPlotListener;
-import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.datastructures.VizActionTree;
-import org.eclipse.ice.viz.service.widgets.TimeSliderComposite;
+import org.eclipse.eavp.viz.service.IPlot;
+import org.eclipse.eavp.viz.service.IPlotListener;
+import org.eclipse.eavp.viz.service.ISeries;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlot;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.datastructures.VizActionTree;
+import org.eclipse.eavp.viz.service.widgets.TimeSliderComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -104,7 +104,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#canShowMultipleSeries()
+	 * @see org.eclipse.eavp.viz.service.widgets.PlotComposite#canShowMultipleSeries()
 	 */
 	@Override
 	protected boolean canShowMultipleSeries() {
@@ -114,7 +114,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotComposite#createPlotContent(org.eclipse.swt.widgets.Composite, int, org.eclipse.ice.viz.service.connections.IVizConnection)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#createPlotContent(org.eclipse.swt.widgets.Composite, int, org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	protected Composite createPlotContent(Composite parent, int style,
@@ -262,7 +262,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotComposite#disposePlotContent(org.eclipse.swt.widgets.Composite, org.eclipse.ice.viz.service.connections.IVizConnection)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#disposePlotContent(org.eclipse.swt.widgets.Composite, org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	protected void disposePlotContent(Composite plotContent,
@@ -281,7 +281,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotComposite#getConnectionPreferencePageID()
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#getConnectionPreferencePageID()
 	 */
 	@Override
 	protected String getConnectionPreferencePageID() {
@@ -290,7 +290,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.widgets.PlotComposite#getPlotActions()
+	 * @see org.eclipse.eavp.viz.service.widgets.PlotComposite#getPlotActions()
 	 */
 	@Override
 	protected List<VizActionTree> getPlotActions() {
@@ -304,7 +304,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.IPlotListener#plotUpdated(org.eclipse.ice.viz.service.IPlot, java.lang.String, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.IPlotListener#plotUpdated(org.eclipse.eavp.viz.service.IPlot, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void plotUpdated(IPlot plot, String key, String value) {
@@ -343,7 +343,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotComposite#setConnectionPlot(org.eclipse.ice.viz.service.connections.ConnectionPlot)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#setConnectionPlot(org.eclipse.eavp.viz.service.connections.ConnectionPlot)
 	 */
 	@Override
 	public boolean setConnectionPlot(ConnectionPlot<VisItSwtConnection> plot) {
@@ -366,7 +366,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotComposite#showSeries(org.eclipse.ice.viz.service.ISeries, org.eclipse.ice.viz.service.connections.IVizConnection)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#showSeries(org.eclipse.eavp.viz.service.ISeries, org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	protected void showSeries(ISeries series,
@@ -407,7 +407,7 @@ public class VisItPlotComposite extends
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlotComposite#updatePlotContent(org.eclipse.swt.widgets.Composite, org.eclipse.ice.viz.service.connections.IVizConnection)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite#updatePlotContent(org.eclipse.swt.widgets.Composite, org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	protected void updatePlotContent(Composite plotContent,

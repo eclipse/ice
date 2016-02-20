@@ -13,14 +13,14 @@ package org.eclipse.ice.viz.service.javafx.geometry.datatypes.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.modeling.Transformation;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeController;
 import org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
-import org.eclipse.ice.viz.service.modeling.Transformation;
 import org.eclipse.ice.viz.service.modeling.test.utils.TestController;
 import org.eclipse.ice.viz.service.modeling.test.utils.TestMesh;
 import org.junit.Test;
@@ -201,8 +201,8 @@ public class FXShapeControllerTester {
 		 * (non-Javadoc)
 		 * 
 		 * @see
-		 * org.eclipse.ice.viz.service.javafx.geometry.datatypes.FXShapeView#
-		 * refresh(org.eclipse.ice.viz.service.modeling.AbstractMesh)
+		 * org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView#
+		 * refresh(org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 		 */
 		@Override
 		public void refresh(AbstractMesh model) {

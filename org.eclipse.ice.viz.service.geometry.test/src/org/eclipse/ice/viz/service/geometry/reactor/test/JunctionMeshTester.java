@@ -12,10 +12,10 @@ package org.eclipse.ice.viz.service.geometry.reactor.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.junit.Test;
 
 /**

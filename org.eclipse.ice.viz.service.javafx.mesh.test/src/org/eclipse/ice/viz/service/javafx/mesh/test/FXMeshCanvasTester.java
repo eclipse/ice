@@ -16,11 +16,11 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.mesh.FXMeshCanvas;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -240,7 +240,7 @@ public class FXMeshCanvasTester {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.eclipse.ice.viz.service.javafx.mesh.FXMeshCanvas#
+		 * @see org.eclipse.eavp.viz.service.javafx.mesh.FXMeshCanvas#
 		 * materializeViewer(org.eclipse.swt.widgets.Composite)
 		 */
 		@Override

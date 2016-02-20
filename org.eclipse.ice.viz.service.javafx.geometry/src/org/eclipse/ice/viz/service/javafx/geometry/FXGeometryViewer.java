@@ -37,7 +37,7 @@ public class FXGeometryViewer extends FXViewer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.canvas.FXViewer#updateCamera(org.
+	 * @see org.eclipse.eavp.viz.service.javafx.canvas.FXViewer#updateCamera(org.
 	 * eclipse.ice.viz.service.javafx.scene.base.ICamera)
 	 */
 	@Override

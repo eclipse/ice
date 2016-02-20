@@ -14,7 +14,7 @@ package org.eclipse.ice.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;

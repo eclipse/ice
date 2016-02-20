@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Future;
 
-import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 
 /**

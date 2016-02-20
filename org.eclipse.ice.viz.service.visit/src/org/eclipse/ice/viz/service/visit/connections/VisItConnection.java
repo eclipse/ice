@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.visit.connections;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -129,7 +129,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#connectToWidget()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#connectToWidget()
 	 */
 	@Override
 	protected VisItSwtConnection connectToWidget() {
@@ -189,7 +189,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#disconnectFromWidget(java.lang.Object)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#disconnectFromWidget(java.lang.Object)
 	 */
 	@Override
 	protected boolean disconnectFromWidget(VisItSwtConnection widget) {
@@ -203,7 +203,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#getDescription()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -212,7 +212,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#getHost()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#getHost()
 	 */
 	@Override
 	public String getHost() {
@@ -221,7 +221,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#getName()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#getName()
 	 */
 	@Override
 	public String getName() {
@@ -257,7 +257,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#getPath()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#getPath()
 	 */
 	@Override
 	public String getPath() {
@@ -266,7 +266,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#getPort()
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#getPort()
 	 */
 	@Override
 	public int getPort() {
@@ -275,7 +275,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#setDescription(java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#setDescription(java.lang.String)
 	 */
 	@Override
 	public boolean setDescription(String description) {
@@ -284,7 +284,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#setHost(java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#setHost(java.lang.String)
 	 */
 	@Override
 	public boolean setHost(String host) {
@@ -293,7 +293,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#setName(java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#setName(java.lang.String)
 	 */
 	@Override
 	public boolean setName(String name) {
@@ -302,7 +302,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#setPath(java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#setPath(java.lang.String)
 	 */
 	@Override
 	public boolean setPath(String path) {
@@ -311,7 +311,7 @@ public class VisItConnection extends VizConnection<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnection#setPort(int)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnection#setPort(int)
 	 */
 	@Override
 	public boolean setPort(int port) {

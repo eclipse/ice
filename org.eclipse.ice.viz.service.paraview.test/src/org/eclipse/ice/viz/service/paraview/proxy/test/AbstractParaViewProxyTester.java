@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.ProxyFeature;

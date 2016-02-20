@@ -15,9 +15,9 @@ package org.eclipse.eavp.viz;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.eavp.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.eavp.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.eavp.viz.visit.VisitEditor;
-import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
-import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;

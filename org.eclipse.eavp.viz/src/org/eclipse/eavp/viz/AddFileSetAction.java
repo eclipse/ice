@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz;
 
-import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
-import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
+import org.eclipse.eavp.viz.service.datastructures.resource.IVizResource;
+import org.eclipse.eavp.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;

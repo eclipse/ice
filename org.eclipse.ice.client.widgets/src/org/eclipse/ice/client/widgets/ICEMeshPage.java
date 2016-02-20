@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;

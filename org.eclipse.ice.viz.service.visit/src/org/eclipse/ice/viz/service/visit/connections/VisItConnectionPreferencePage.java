@@ -14,14 +14,14 @@ package org.eclipse.ice.viz.service.visit.connections;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.ice.viz.service.connections.preferences.ConnectionTable;
-import org.eclipse.ice.viz.service.connections.preferences.PortEntry;
-import org.eclipse.ice.viz.service.connections.preferences.PortEntryContentProvider;
-import org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage;
-import org.eclipse.ice.viz.service.datastructures.BasicVizEntryContentProvider;
-import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
-import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
-import org.eclipse.ice.viz.service.datastructures.VizEntry;
+import org.eclipse.eavp.viz.service.connections.preferences.ConnectionTable;
+import org.eclipse.eavp.viz.service.connections.preferences.PortEntry;
+import org.eclipse.eavp.viz.service.connections.preferences.PortEntryContentProvider;
+import org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage;
+import org.eclipse.eavp.viz.service.datastructures.BasicVizEntryContentProvider;
+import org.eclipse.eavp.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.eavp.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.eavp.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.visit.VisItVizService;
 import org.eclipse.ui.IWorkbench;
 
@@ -36,7 +36,7 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#createConnectionTable()
+	 * @see org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage#createConnectionTable()
 	 */
 	@Override
 	protected ConnectionTable createConnectionTable() {
@@ -103,7 +103,7 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#getConnectionsPreferenceNodeId()
+	 * @see org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage#getConnectionsPreferenceNodeId()
 	 */
 	@Override
 	protected String getConnectionsPreferenceNodeId() {
@@ -112,7 +112,7 @@ public class VisItConnectionPreferencePage extends VizConnectionPreferencePage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
-import org.eclipse.ice.viz.service.modeling.TubeController;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.TubeController;
 
 /**
  * A Pipe part for the Reactor Analyzer.
@@ -132,7 +132,7 @@ public class PipeController extends TubeController implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.WireFramePart#
+	 * @see org.eclipse.eavp.viz.service.reactor.javafx.datatypes.WireFramePart#
 	 * setWireFrameMode(boolean)
 	 */
 	@Override
@@ -143,7 +143,7 @@ public class PipeController extends TubeController implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -161,7 +161,7 @@ public class PipeController extends TubeController implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractController#copy(org.eclipse.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController#copy(org.eclipse.
 	 * ice.viz.service.modeling.AbstractController)
 	 */
 	@Override

@@ -12,10 +12,10 @@ package org.eclipse.ice.viz.service.javafx.canvas.test;
 
 import static org.junit.Assert.*;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachmentManager;
 import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.junit.Test;
 
 /**

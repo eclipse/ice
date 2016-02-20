@@ -30,9 +30,9 @@
             name="VisIt Editor">
       </editor>
       <editor
-            class="org.eclipse.ice.viz.service.csv.CSVPlotEditor"
+            class="org.eclipse.eavp.viz.service.csv.CSVPlotEditor"
             default="false"
-            id="org.eclipse.ice.viz.service.csv.CSVPlotEditor"
+            id="org.eclipse.eavp.viz.service.csv.CSVPlotEditor"
             name="CSV Plot Editor">
       </editor>
    </extension>

@@ -14,8 +14,8 @@ package org.eclipse.eavp.viz;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
-import org.eclipse.ice.viz.service.datastructures.VizAllowedValueType;
+import org.eclipse.eavp.viz.service.datastructures.IVizEntryContentProvider;
+import org.eclipse.eavp.viz.service.datastructures.VizAllowedValueType;
 
 /**
  * This class provides an IEntryContentProvider for plots, which are stored as

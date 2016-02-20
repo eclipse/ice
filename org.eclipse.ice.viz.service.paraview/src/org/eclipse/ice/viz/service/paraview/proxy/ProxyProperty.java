@@ -19,8 +19,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
 
-import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.ConnectionState;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.ice.viz.service.paraview.web.IParaViewWebClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

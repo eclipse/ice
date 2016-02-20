@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.javafx.geometry;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.eclipse.ice.viz.service.javafx.geometry.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.eclipse.eavp.viz.service.javafx.geometry.messages"; //$NON-NLS-1$
     public static String GeometryCanvas_ErrorCreatingViewer;
     public static String GeometryVizService_InvalidInput;
 

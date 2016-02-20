@@ -22,18 +22,18 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.ice.viz.service.mesh.datastructures.PolygonProperties;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
-import org.eclipse.ice.viz.service.modeling.FaceMesh;
-import org.eclipse.ice.viz.service.modeling.VertexController;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
 /**

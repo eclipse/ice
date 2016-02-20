@@ -15,9 +15,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnectionManager;
-import org.eclipse.ice.viz.service.preferences.CustomScopedPreferenceStore;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnectionManager;
+import org.eclipse.eavp.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.ice.viz.service.visit.connections.VisItConnectionManager;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class VisItConnectionManagerTester {
 	 * The ID of the preference node under which connection preferences will be
 	 * stored.
 	 */
-	private static final String NODE_ID = "org.eclipse.ice.viz.service.connections.paraview.test";
+	private static final String NODE_ID = "org.eclipse.eavp.viz.service.connections.paraview.test";
 
 	/**
 	 * Checks that, when a connection is added to the preferences, an

@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.datatypes;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.modeling.TubeMesh;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
-import org.eclipse.ice.viz.service.modeling.TubeMesh;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -331,7 +331,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
 	public Object getRepresentation() {
@@ -342,7 +342,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
@@ -386,7 +386,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractView#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -402,9 +402,9 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#update(org.eclipse.ice.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#update(org.eclipse.ice.
 	 * viz.service.datastructures.VizObject.IManagedUpdateable,
-	 * org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType[])
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType[])
 	 */
 	@Override
 	public void update(IManagedUpdateable component, SubscriptionType[] type) {
@@ -423,7 +423,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.WireFramePart#setWireFrameMode(
+	 * @see org.eclipse.eavp.viz.service.modeling.WireFramePart#setWireFrameMode(
 	 * boolean)
 	 */
 	@Override

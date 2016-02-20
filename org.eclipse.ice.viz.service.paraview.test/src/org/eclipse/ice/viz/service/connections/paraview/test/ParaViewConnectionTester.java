@@ -14,8 +14,8 @@ package org.eclipse.ice.viz.service.connections.paraview.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.connections.IVizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.junit.Before;
 import org.junit.Test;

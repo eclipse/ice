@@ -12,7 +12,7 @@ package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.junit.Test;
 
 /**

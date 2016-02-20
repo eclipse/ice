@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 
 /**
  * The internal representation of a plant component
@@ -32,8 +32,8 @@ public class ReactorMesh extends ShapeMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.ShapeComponent#addEntityByCategory(
-	 * org.eclipse.ice.viz.service.modeling.AbstractController,
+	 * org.eclipse.eavp.viz.service.modeling.ShapeComponent#addEntityByCategory(
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController,
 	 * java.lang.String)
 	 */
 	@Override

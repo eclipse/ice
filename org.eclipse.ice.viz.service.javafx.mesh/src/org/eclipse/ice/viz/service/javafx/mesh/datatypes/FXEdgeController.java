@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 
 /**
  * An extension of edge that manages its vertices' states as being selected and
@@ -40,7 +40,7 @@ public class FXEdgeController extends EdgeController {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractController#setProperty(java.
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController#setProperty(java.
 	 * lang.String, java.lang.String)
 	 */
 	@Override
@@ -67,7 +67,7 @@ public class FXEdgeController extends EdgeController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
 	 */
 	@Override
 	public Object clone() {

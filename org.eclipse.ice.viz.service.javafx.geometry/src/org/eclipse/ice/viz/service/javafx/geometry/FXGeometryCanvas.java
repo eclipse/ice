@@ -15,6 +15,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
@@ -23,9 +26,6 @@ import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantData;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantView;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -69,7 +69,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.javafx.internal.FXVizCanvas#createAttachment(
+	 * org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#createAttachment(
 	 * )
 	 */
 	@Override
@@ -81,7 +81,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.FXVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#
 	 * handleSelectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
 	 */
 	@Override
@@ -104,7 +104,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.javafx.internal.FXVizCanvas#materializeViewer
+	 * org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#materializeViewer
 	 * (org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
@@ -120,7 +120,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#createComposite
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#createComposite
 	 * (org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
@@ -138,7 +138,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#exportImage()
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#exportImage()
 	 */
 	@Override
 	public void exportImage() {
@@ -176,7 +176,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#resetCamera()
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#resetCamera()
 	 */
 	@Override
 	public void resetCamera() {
@@ -188,7 +188,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#setWireframe(
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#setWireframe(
 	 * boolean)
 	 */
 	@Override
@@ -228,7 +228,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#thrustCamera(
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#thrustCamera(
 	 * float)
 	 */
 	@Override
@@ -240,7 +240,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#strafeCamera(
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#strafeCamera(
 	 * float)
 	 */
 	@Override
@@ -252,7 +252,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#raiseCamera(
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#raiseCamera(
 	 * float)
 	 */
 	@Override
@@ -264,7 +264,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#rollCamera(
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#rollCamera(
 	 * float)
 	 */
 	@Override
@@ -276,7 +276,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.plantView.IPlantView#pitchCamera(
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#pitchCamera(
 	 * float)
 	 */
 	@Override
@@ -287,7 +287,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#yawCamera(
+	 * @see org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#yawCamera(
 	 * float)
 	 */
 	@Override
@@ -298,7 +298,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * @see org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#
 	 * setDefaultCameraYByZ()
 	 */
 	@Override
@@ -309,7 +309,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * @see org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#
 	 * setDefaultCameraXByY()
 	 */
 	@Override
@@ -320,7 +320,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.geometry.plantView.IPlantView#
+	 * @see org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#
 	 * setDefaultCameraZByX()
 	 */
 	@Override

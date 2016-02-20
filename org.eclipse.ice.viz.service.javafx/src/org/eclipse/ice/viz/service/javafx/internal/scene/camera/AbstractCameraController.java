@@ -263,7 +263,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#reset()
 	 */
 	@Override
@@ -275,7 +275,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#pitchCamera(double)
 	 */
 	@Override
@@ -286,7 +286,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#rollCamera(double)
 	 */
 	@Override
@@ -297,7 +297,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#raiseCamera(double)
 	 */
 	@Override
@@ -308,7 +308,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#strafeCamera(double)
 	 */
 	@Override
@@ -319,7 +319,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#thrustCamera(double)
 	 */
 	@Override
@@ -330,7 +330,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#yawCamera(double)
 	 */
 	@Override
@@ -341,7 +341,7 @@ public class AbstractCameraController implements ICameraController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.internal.scene.camera.
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.scene.camera.
 	 * ICameraController#setDefaultAngle(double, double, double)
 	 */
 	@Override

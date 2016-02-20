@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.preferences;
 
-import org.eclipse.ice.viz.service.preferences.AbstractVizPreferenceInitializer;
+import org.eclipse.eavp.viz.service.preferences.AbstractVizPreferenceInitializer;
 
 /**
  * This class initializes default preferences for the ParaView visualization

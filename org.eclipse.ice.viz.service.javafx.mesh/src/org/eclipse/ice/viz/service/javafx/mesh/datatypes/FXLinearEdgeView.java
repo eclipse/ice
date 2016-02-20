@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
@@ -104,9 +104,9 @@ public class FXLinearEdgeView extends AbstractView {
 						.getApplicationScale();
 
 		// Get the edge's endpoints
-		double[] start = ((org.eclipse.ice.viz.service.modeling.EdgeController) edgeComponent
+		double[] start = ((org.eclipse.eavp.viz.service.modeling.EdgeController) edgeComponent
 				.getController()).getStartLocation();
-		double[] end = ((org.eclipse.ice.viz.service.modeling.EdgeController) edgeComponent
+		double[] end = ((org.eclipse.eavp.viz.service.modeling.EdgeController) edgeComponent
 				.getController()).getEndLocation();
 
 		for (int i = 0; i < 3; i++) {
@@ -161,7 +161,7 @@ public class FXLinearEdgeView extends AbstractView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
 	public Object getRepresentation() {
@@ -172,7 +172,7 @@ public class FXLinearEdgeView extends AbstractView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
 	 * .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
@@ -208,7 +208,7 @@ public class FXLinearEdgeView extends AbstractView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.modeling.AbstractView#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractView#clone()
 	 */
 	@Override
 	public Object clone() {

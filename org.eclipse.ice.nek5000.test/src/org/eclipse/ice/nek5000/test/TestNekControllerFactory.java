@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.ice.nek5000.test;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.EdgeMesh;
-import org.eclipse.ice.viz.service.modeling.FaceMesh;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
-import org.eclipse.ice.viz.service.modeling.VertexController;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
 
 /**
  * A factory which produces controllers with dummy views for meshes read from
@@ -37,8 +37,8 @@ public class TestNekControllerFactory implements IControllerFactory {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.IControllerFactory#createController(
-	 * org.eclipse.ice.viz.service.modeling.AbstractMesh)
+	 * org.eclipse.eavp.viz.service.modeling.IControllerFactory#createController(
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 	 */
 	@Override
 	public AbstractController createController(AbstractMesh model) {

@@ -50,17 +50,17 @@
             <!-- Geometry Editor Views -->
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView"
+               class="org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView"
                fastViewWidthRatio="0.25f"
-               id="org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView"
+               id="org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView"
                name="Shapes"
                restorable="true">
          </view>
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.service.geometry.widgets.TransformationView"
+               class="org.eclipse.eavp.viz.service.geometry.widgets.TransformationView"
                fastViewWidthRatio="0.75f"
-               id="org.eclipse.ice.viz.service.geometry.widgets.TransformationView"
+               id="org.eclipse.eavp.viz.service.geometry.widgets.TransformationView"
                name="Transformation View"
                restorable="true">
          </view>
@@ -140,7 +140,7 @@
          </view>
          <view
                closeable="false"
-               id="org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView"
+               id="org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView"
                ratio="0.25f"
                relationship="stack"
                relative="org.eclipse.ice.client.widgets.TreeCompositeViewer"
@@ -157,7 +157,7 @@
          </view>
          <view
                closeable="false"
-               id="org.eclipse.ice.viz.service.geometry.widgets.TransformationView"
+               id="org.eclipse.eavp.viz.service.geometry.widgets.TransformationView"
                minimized="false"
                ratio="0.25f"
                relationship="left"
@@ -231,7 +231,7 @@
 	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor 
 			contributorId="org.eclipse.ice.client.widgets.MeshElementTreeView"
-			tabDescriptorProvider="org.eclipse.ice.viz.service.mesh.properties.TabDescriptorProvider">
+			tabDescriptorProvider="org.eclipse.eavp.viz.service.mesh.properties.TabDescriptorProvider">
 			<propertyCategory category="MeshSelection"/>
 		</propertyContributor>
 	</extension>
@@ -239,7 +239,7 @@
 	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
 		<propertyContributor 
 			contributorId="org.eclipse.ice.client.widgets.ICEMeshPage"
-			tabDescriptorProvider="org.eclipse.ice.viz.service.mesh.properties.TabDescriptorProvider">
+			tabDescriptorProvider="org.eclipse.eavp.viz.service.mesh.properties.TabDescriptorProvider">
 			<propertyCategory category="MeshSelection"/>
 		</propertyContributor>
 	</extension>

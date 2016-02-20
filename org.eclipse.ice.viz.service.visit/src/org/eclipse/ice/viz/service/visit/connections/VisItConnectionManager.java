@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.visit.connections;
 
-import org.eclipse.ice.viz.service.connections.VizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnectionManager;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnectionManager;
 
 import gov.lbnl.visit.swt.VisItSwtConnection;
 
@@ -28,7 +28,7 @@ public class VisItConnectionManager
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#createConnection(java.lang.String, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnectionManager#createConnection(java.lang.String, java.lang.String)
 	 */
 	@Override
 	protected VizConnection<VisItSwtConnection> createConnection(String name,
@@ -62,7 +62,7 @@ public class VisItConnectionManager
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.VizConnectionManager#updateConnectionPreferences(org.eclipse.ice.viz.service.connections.VizConnection, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.VizConnectionManager#updateConnectionPreferences(org.eclipse.eavp.viz.service.connections.VizConnection, java.lang.String)
 	 */
 	@Override
 	protected boolean updateConnectionPreferences(

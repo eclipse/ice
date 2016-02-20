@@ -12,8 +12,11 @@ package org.eclipse.ice.reactor.plant;
 
 import java.util.List;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.JunctionController;
@@ -25,9 +28,6 @@ import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantData;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 
 /**
  * A class which interfaces between a PlantComposite and a tree of
@@ -753,8 +753,8 @@ public class FXPlantCompositeConverter
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener#update(org.eclipse.ice.viz.service.datastructures.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
+	 * IVizUpdateableListener#update(org.eclipse.eavp.viz.service.datastructures.
 	 * VizObject.IVizUpdateable)
 	 */
 	@Override

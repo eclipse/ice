@@ -13,7 +13,7 @@ package org.eclipse.ice.viz.service.javafx.internal;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.eclipse.ice.viz.service.javafx.internal.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.eclipse.eavp.viz.service.javafx.internal.messages"; //$NON-NLS-1$
     public static String FXContentProvider_InvalidInputNode;
     public static String FXContentProvider_InvalidInputType;
     public static String FXContentProvider_InvalidViewerType;

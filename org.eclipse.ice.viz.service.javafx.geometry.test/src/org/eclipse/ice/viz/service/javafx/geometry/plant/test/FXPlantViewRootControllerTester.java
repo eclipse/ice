@@ -13,6 +13,8 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
@@ -20,8 +22,6 @@ import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPipeController;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPipeView;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.FXReactorView;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 import org.junit.Test;
 
 import javafx.scene.Group;

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import org.eclipse.ice.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 
 /**
  * An interface for AbstractViews which represent JunctionComponents.

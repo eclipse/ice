@@ -14,12 +14,12 @@ package org.eclipse.ice.viz.service.paraview;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionVizService;
-import org.eclipse.ice.viz.service.connections.IVizConnectionManager;
-import org.eclipse.ice.viz.service.connections.VizConnection;
-import org.eclipse.ice.viz.service.connections.VizConnectionManager;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlot;
+import org.eclipse.eavp.viz.service.connections.ConnectionVizService;
+import org.eclipse.eavp.viz.service.connections.IVizConnectionManager;
+import org.eclipse.eavp.viz.service.connections.VizConnection;
+import org.eclipse.eavp.viz.service.connections.VizConnectionManager;
+import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
 import org.eclipse.ice.viz.service.paraview.connections.ParaViewConnection;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder;
@@ -50,7 +50,7 @@ public class ParaViewVizService
 	/**
 	 * The ID of the preferences page.
 	 */
-	public static final String PREFERENCE_PAGE_ID = "org.eclipse.ice.viz.service.paraview.preferences";
+	public static final String PREFERENCE_PAGE_ID = "org.eclipse.eavp.viz.service.paraview.preferences";
 
 	/**
 	 * The factory of builders used to get {@link IParaViewProxy}s for
@@ -71,7 +71,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionVizService#
 	 * createConnectionManager()
 	 */
 	@Override
@@ -83,7 +83,7 @@ public class ParaViewVizService
 			 * (non-Javadoc)
 			 * 
 			 * @see
-			 * org.eclipse.ice.viz.service.connections.VizConnectionManager#
+			 * org.eclipse.eavp.viz.service.connections.VizConnectionManager#
 			 * createConnection(java.lang.String, java.lang.String)
 			 */
 			@Override
@@ -97,7 +97,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionVizService#
 	 * createConnectionPlot()
 	 */
 	@Override
@@ -109,7 +109,7 @@ public class ParaViewVizService
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.AbstractVizService#findSupportedExtensions()
+	 * org.eclipse.eavp.viz.service.AbstractVizService#findSupportedExtensions()
 	 */
 	@Override
 	protected Set<String> findSupportedExtensions() {
@@ -120,7 +120,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionVizService#
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionVizService#
 	 * getConnectionPreferencesNodeId()
 	 */
 	@Override
@@ -131,7 +131,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getName()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getName()
 	 */
 	@Override
 	public String getName() {
@@ -151,7 +151,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getVersion()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getVersion()
 	 */
 	@Override
 	public String getVersion() {
@@ -195,7 +195,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getFactory()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getFactory()
 	 */
 	@Override
 	public IControllerFactory getFactory() {
@@ -207,7 +207,7 @@ public class ParaViewVizService
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.IVizService#getNumAdditionalPages()
+	 * @see org.eclipse.eavp.viz.service.IVizService#getNumAdditionalPages()
 	 */
 	@Override
 	public int getNumAdditionalPages() {
@@ -218,7 +218,7 @@ public class ParaViewVizService
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.IVizService#createAdditionalPage(org.eclipse.
+	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
 	 * swt.widgets.Composite, java.net.URI, int)
 	 */
 	@Override

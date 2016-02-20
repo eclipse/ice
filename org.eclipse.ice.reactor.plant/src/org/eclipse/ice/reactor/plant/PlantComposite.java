@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Composite;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
 
 /**
  * A PlantComposite is a container for {@link PlantComponent}s. Duplicate
@@ -377,8 +377,8 @@ public class PlantComposite extends PlantComponent
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * register(org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * register(org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
 	@Override
@@ -389,8 +389,8 @@ public class PlantComposite extends PlantComponent
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable#
-	 * unregister(org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * unregister(org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
 	@Override

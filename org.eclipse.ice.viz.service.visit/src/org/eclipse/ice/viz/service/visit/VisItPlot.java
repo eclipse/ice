@@ -25,12 +25,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.ice.viz.service.AbstractSeries;
-import org.eclipse.ice.viz.service.ISeries;
-import org.eclipse.ice.viz.service.connections.ConnectionPlot;
-import org.eclipse.ice.viz.service.connections.ConnectionPlotComposite;
-import org.eclipse.ice.viz.service.connections.ConnectionState;
-import org.eclipse.ice.viz.service.connections.IVizConnection;
+import org.eclipse.eavp.viz.service.AbstractSeries;
+import org.eclipse.eavp.viz.service.ISeries;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlot;
+import org.eclipse.eavp.viz.service.connections.ConnectionPlotComposite;
+import org.eclipse.eavp.viz.service.connections.ConnectionState;
+import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
@@ -245,7 +245,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#connectionStateChanged(org.eclipse.ice.viz.service.connections.IVizConnection, org.eclipse.ice.viz.service.connections.ConnectionState, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#connectionStateChanged(org.eclipse.eavp.viz.service.connections.IVizConnection, org.eclipse.eavp.viz.service.connections.ConnectionState, java.lang.String)
 	 */
 	@Override
 	public void connectionStateChanged(
@@ -259,7 +259,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#createPlotComposite(org.eclipse.swt.widgets.Composite)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#createPlotComposite(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected ConnectionPlotComposite<VisItSwtConnection> createPlotComposite(
@@ -269,7 +269,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#getCategories()
+	 * @see org.eclipse.eavp.viz.service.AbstractPlot#getCategories()
 	 */
 	@Override
 	public List<String> getCategories() {
@@ -278,7 +278,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.AbstractPlot#getDependentSeries(java.lang.String)
 	 */
 	@Override
 	public List<ISeries> getDependentSeries(String category) {
@@ -432,7 +432,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 						// Return a status.
 						return new Status(Status.OK,
-								"org.eclipse.ice.viz.service", 1,
+								"org.eclipse.eavp.viz.service", 1,
 								"VisIt Plot Loaded", null);
 					}
 				};
@@ -447,7 +447,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#setConnection(org.eclipse.ice.viz.service.connections.IVizConnection)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#setConnection(org.eclipse.eavp.viz.service.connections.IVizConnection)
 	 */
 	@Override
 	public boolean setConnection(IVizConnection<VisItSwtConnection> connection)
@@ -462,7 +462,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.ConnectionPlot#setDataSource(java.net.URI)
+	 * @see org.eclipse.eavp.viz.service.connections.ConnectionPlot#setDataSource(java.net.URI)
 	 */
 	@Override
 	public boolean setDataSource(URI uri) throws Exception {
@@ -476,7 +476,7 @@ public class VisItPlot extends ConnectionPlot<VisItSwtConnection> {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.AbstractPlot#setIndependentSeries(org.eclipse.ice.viz.service.ISeries)
+	 * @see org.eclipse.eavp.viz.service.AbstractPlot#setIndependentSeries(org.eclipse.eavp.viz.service.ISeries)
 	 */
 	@Override
 	public void setIndependentSeries(ISeries series) {

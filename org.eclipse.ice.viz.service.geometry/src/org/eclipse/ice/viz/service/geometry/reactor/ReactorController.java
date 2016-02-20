@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.geometry.reactor;
 
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 
 /**
  * A reactor part for a Reactor Analyzer. Reactors represent a container around
@@ -47,7 +47,7 @@ public class ReactorController extends AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.WireFramePart#
+	 * @see org.eclipse.eavp.viz.service.reactor.javafx.datatypes.WireFramePart#
 	 * setWireFrameMode(boolean)
 	 */
 	@Override

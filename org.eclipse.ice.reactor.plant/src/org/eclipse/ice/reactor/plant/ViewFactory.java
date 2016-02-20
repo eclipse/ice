@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.reactor.plant;
 
-import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
+import org.eclipse.eavp.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.viz.service.javafx.geometry.FXGeometryVizService;
 import org.eclipse.ice.viz.service.javafx.geometry.plant.IPlantView;
 import org.slf4j.Logger;

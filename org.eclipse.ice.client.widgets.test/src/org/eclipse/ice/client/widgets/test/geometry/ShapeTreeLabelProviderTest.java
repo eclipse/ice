@@ -15,12 +15,12 @@ package org.eclipse.ice.client.widgets.test.geometry;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeLabelProvider;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**

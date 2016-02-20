@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.paraview.connections;
 
-import org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage;
+import org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage;
 import org.eclipse.ice.viz.service.paraview.ParaViewVizService;
 import org.eclipse.ui.IWorkbench;
 
@@ -26,7 +26,7 @@ public class ParaViewConnectionPreferencePage extends VizConnectionPreferencePag
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#getConnectionsPreferenceNodeId()
+	 * @see org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage#getConnectionsPreferenceNodeId()
 	 */
 	@Override
 	protected String getConnectionsPreferenceNodeId() {
@@ -35,7 +35,7 @@ public class ParaViewConnectionPreferencePage extends VizConnectionPreferencePag
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.connections.preferences.VizConnectionPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see org.eclipse.eavp.viz.service.connections.preferences.VizConnectionPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	@Override
 	public void init(IWorkbench workbench) {

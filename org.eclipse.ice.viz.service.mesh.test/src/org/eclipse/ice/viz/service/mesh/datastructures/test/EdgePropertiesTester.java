@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.VizJAXBHandler;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.VizJAXBHandler;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.ice.viz.service.mesh.datastructures.EdgeProperties;

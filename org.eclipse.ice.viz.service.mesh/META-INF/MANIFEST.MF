@@ -6,9 +6,9 @@ Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.lbnl.visit.swt,
  gov.lbnl.visit.swt.widgets,
- org.eclipse.ice.viz.service,
- org.eclipse.ice.viz.service.datastructures.VizObject,
- org.eclipse.ice.viz.service.modeling,
+ org.eclipse.eavp.viz.service,
+ org.eclipse.eavp.viz.service.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.modeling,
  org.eclipse.ui.views.properties.tabbed
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui

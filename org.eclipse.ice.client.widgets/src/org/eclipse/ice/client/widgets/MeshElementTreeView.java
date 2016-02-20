@@ -14,13 +14,13 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.FaceController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;

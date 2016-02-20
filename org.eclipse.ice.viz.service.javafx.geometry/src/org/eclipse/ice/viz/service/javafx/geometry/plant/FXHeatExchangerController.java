@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
 
 /**
  * A HeatExchangerController specifically tailored to the functionality of
@@ -48,10 +48,10 @@ public class FXHeatExchangerController extends HeatExchangerController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#update(org.eclipse.eavp.viz.service.
 	 * datastructures.VizObject.IVizUpdateable,
-	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
@@ -76,7 +76,7 @@ public class FXHeatExchangerController extends HeatExchangerController {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.geometry.reactor.HeatExchangerController#
+	 * org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerController#
 	 * clone()
 	 */
 	@Override

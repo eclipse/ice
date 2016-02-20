@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.ice.viz.service.paraview" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.eavp.viz.service.paraview" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.eclipse.ice.viz.service.paraview" id="org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder" name="IParaViewProxyBuilder"/>
+         <meta.schema plugin="org.eclipse.eavp.viz.service.paraview" id="org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxyBuilder" name="IParaViewProxyBuilder"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxyBuilder"/>
                </appinfo>
             </annotation>
          </attribute>

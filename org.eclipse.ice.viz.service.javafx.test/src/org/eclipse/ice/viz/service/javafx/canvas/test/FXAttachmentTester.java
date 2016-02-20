@@ -13,15 +13,15 @@ package org.eclipse.ice.viz.service.javafx.canvas.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachmentManager;
 import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.ice.viz.service.javafx.internal.Util;
 import org.eclipse.ice.viz.service.javafx.scene.base.GNode;
 import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 import javafx.scene.Group;
@@ -115,7 +115,7 @@ public class FXAttachmentTester {
 		 * (non-Javadoc)
 		 * 
 		 * @see
-		 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+		 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 		 */
 		@Override
 		public Object getRepresentation() {

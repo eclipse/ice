@@ -12,13 +12,13 @@ package org.eclipse.ice.viz.service.javafx.geometry.plant;
 
 import java.util.ArrayList;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 import org.eclipse.ice.viz.service.geometry.reactor.Extrema;
 import org.eclipse.ice.viz.service.geometry.reactor.PipeController;
 import org.eclipse.ice.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -407,7 +407,7 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#getRepresentation()
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
 	public Object getRepresentation() {
@@ -418,7 +418,7 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
 	 * .viz.service.modeling.AbstractMesh)
 	 */
 	@Override
@@ -431,7 +431,7 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.reactor.javafx.datatypes.WireFrameView#
+	 * @see org.eclipse.eavp.viz.service.reactor.javafx.datatypes.WireFrameView#
 	 * setWireFrameMode(boolean)
 	 */
 	@Override

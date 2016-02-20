@@ -13,6 +13,14 @@ package org.eclipse.ice.viz.service.javafx.mesh;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
+import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.ice.viz.service.javafx.internal.model.FXCameraAttachment;
@@ -23,14 +31,6 @@ import org.eclipse.ice.viz.service.javafx.scene.base.ICamera;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.FaceController;
-import org.eclipse.ice.viz.service.modeling.FaceEdgeMesh;
-import org.eclipse.ice.viz.service.modeling.VertexController;
-import org.eclipse.ice.viz.service.modeling.VertexMesh;
 import org.eclipse.swt.widgets.Composite;
 
 import javafx.event.EventHandler;
@@ -984,7 +984,7 @@ public class FXMeshViewer extends FXViewer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.javafx.canvas.FXViewer#updateCamera(org.
+	 * @see org.eclipse.eavp.viz.service.javafx.canvas.FXViewer#updateCamera(org.
 	 * eclipse.ice.viz.service.javafx.scene.base.ICamera)
 	 */
 	@Override

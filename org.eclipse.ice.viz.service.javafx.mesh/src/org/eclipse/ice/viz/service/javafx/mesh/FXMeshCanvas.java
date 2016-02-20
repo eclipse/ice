@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh;
 
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -72,7 +72,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.ice.viz.service.javafx.internal.FXVizCanvas#createAttachment(
+	 * org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#createAttachment(
 	 * )
 	 */
 	@Override
@@ -84,7 +84,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * setEditMode(boolean)
 	 */
 	@Override
@@ -96,7 +96,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * setVisibleHUD(boolean)
 	 */
 	@Override
@@ -108,7 +108,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * setVisibleAxis(boolean)
 	 */
 	@Override
@@ -120,7 +120,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * HUDIsVisible()
 	 */
 	@Override
@@ -131,7 +131,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * AxisAreVisible()
 	 */
 	@Override
@@ -142,7 +142,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * deleteSelection()
 	 */
 	@Override
@@ -177,7 +177,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas#
+	 * @see org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas#
 	 * setSelection(java.lang.Object[])
 	 */
 	@Override

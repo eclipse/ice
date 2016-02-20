@@ -34,7 +34,7 @@ public class SiloProxyBuilder extends AbstractParaViewProxyBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder#createConcreteProxy(java.net.URI)
+	 * @see org.eclipse.eavp.viz.service.paraview.proxy.AbstractParaViewProxyBuilder#createConcreteProxy(java.net.URI)
 	 */
 	@Override
 	protected IParaViewProxy createConcreteProxy(URI uri) {
@@ -43,7 +43,7 @@ public class SiloProxyBuilder extends AbstractParaViewProxyBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.paraview.proxy.AbstractParaViewProxyBuilder#findExtensions()
+	 * @see org.eclipse.eavp.viz.service.paraview.proxy.AbstractParaViewProxyBuilder#findExtensions()
 	 */
 	@Override
 	protected Set<String> findExtensions() {
@@ -54,7 +54,7 @@ public class SiloProxyBuilder extends AbstractParaViewProxyBuilder {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ice.viz.service.paraview.proxy.IParaViewProxyBuilder#getName()
+	 * @see org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxyBuilder#getName()
 	 */
 	@Override
 	public String getName() {
