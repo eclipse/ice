@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.visit;
+package org.eclipse.eavp.viz.visit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.viz.DeletePlotAction;
-import org.eclipse.ice.viz.IDeletePlotActionViewPart;
-import org.eclipse.ice.viz.VizFileViewer;
+import org.eclipse.eavp.viz.DeletePlotAction;
+import org.eclipse.eavp.viz.IDeletePlotActionViewPart;
+import org.eclipse.eavp.viz.VizFileViewer;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.ice.viz.service.datastructures.VizObject.IVizUpdateableListener;
@@ -80,7 +80,7 @@ public class VisitPlotViewer extends ViewPart implements
 	/**
 	 * The ID for this view
 	 */
-	public static final String ID = "org.eclipse.ice.viz.visit.VisitPlotViewer";
+	public static final String ID = "org.eclipse.eavp.viz.visit.VisitPlotViewer";
 
 	/**
 	 * The currently selected VisIt-compatible ICEResource.

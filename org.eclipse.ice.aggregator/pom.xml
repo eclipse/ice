@@ -56,7 +56,7 @@
   	<module>../org.eclipse.ice.target.mars</module>
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
-  	<module>../org.eclipse.ice.viz</module>
+  	<module>../org.eclipse.eavp.viz</module>
   	<module>../org.eclipse.ice.viz.service</module>
   	<module>../org.eclipse.ice.viz.service.geometry</module>
   	<module>../org.eclipse.ice.viz.service.geometry.test</module>

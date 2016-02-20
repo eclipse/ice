@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz, Kasper Gammeltoft
  *******************************************************************************/
-package org.eclipse.ice.viz;
+package org.eclipse.eavp.viz;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +18,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.eavp.viz.visit.VisitPlotViewer;
 import org.eclipse.ice.viz.service.PlotEditor;
 import org.eclipse.ice.viz.service.PlotEditorInput;
 import org.eclipse.ice.viz.service.csv.CSVPlot;
@@ -28,7 +29,6 @@ import org.eclipse.ice.viz.service.datastructures.resource.IResource;
 import org.eclipse.ice.viz.service.datastructures.resource.IVizResource;
 import org.eclipse.ice.viz.service.datastructures.resource.VisualizationResource;
 import org.eclipse.ice.viz.service.datastructures.resource.VizResourceComponent;
-import org.eclipse.ice.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -75,7 +75,7 @@ public class VizFileViewer extends ViewPart implements IVizUpdateableListener,
 	/**
 	 * The ID for this view.
 	 */
-	public static final String ID = "org.eclipse.ice.viz.VizFileViewer";
+	public static final String ID = "org.eclipse.eavp.viz.VizFileViewer";
 
 	/**
 	 * The active ResourceComponent.

@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz.visit;
+package org.eclipse.eavp.viz.visit;
 
 import java.util.HashMap;
 
@@ -41,7 +41,7 @@ import gov.lbnl.visit.swt.VisItSwtWidget;
 
 /**
  * This is an editor for interacting with the VisIt SWT Widget. It is opened by
- * the associated visualization views in org.eclipse.ice.viz.
+ * the associated visualization views in org.eclipse.eavp.viz.
  *
  * @author Jay Jay Billings
  * @author Taylor Patterson
@@ -57,7 +57,7 @@ public class VisitEditor extends EditorPart {
 	/**
 	 * The ID for this editor.
 	 */
-	public static final String ID = "org.eclipse.ice.viz.visit.VisitEditor";
+	public static final String ID = "org.eclipse.eavp.viz.visit.VisitEditor";
 
 	/**
 	 *

@@ -24,7 +24,7 @@
       <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.eclipse.ice.viz.visit.VisitEditor"
+            class="org.eclipse.eavp.viz.visit.VisitEditor"
             default="false"
             id="org.eclipse.ice.viz.visit.VisitEditor"
             name="VisIt Editor">
@@ -41,7 +41,7 @@
             point="org.eclipse.ui.views">
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.visit.VisitPlotViewer"
+               class="org.eclipse.eavp.viz.visit.VisitPlotViewer"
                fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.visit.VisitPlotViewer"
                name="VisIt Plot Viewer"
@@ -49,7 +49,7 @@
          </view>
          <view
                allowMultiple="false"
-               class="org.eclipse.ice.viz.VizFileViewer"
+               class="org.eclipse.eavp.viz.VizFileViewer"
                fastViewWidthRatio="0.23f"
                id="org.eclipse.ice.viz.VizFileViewer"
                name="Visualization File Viewer"
@@ -69,7 +69,7 @@
       <extension
             point="org.eclipse.ui.perspectives">
          <perspective
-               class="org.eclipse.ice.viz.VisualizationPerspective"
+               class="org.eclipse.eavp.viz.VisualizationPerspective"
                fixed="true"
                id="org.eclipse.ice.viz.VisualizationPerspective"
                name="Visualization">
@@ -135,7 +135,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.eclipse.ice.viz.visit.LaunchVisitHandler"
+            defaultHandler="org.eclipse.eavp.viz.visit.LaunchVisitHandler"
             id="org.eclipse.ice.viz.LaunchVisitCommand"
             name="Launch VisIt">
       </command>

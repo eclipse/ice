@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz;
+package org.eclipse.eavp.viz;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -27,7 +27,7 @@ public class VisualizationPerspective implements IPerspectiveFactory {
 	/**
 	 * The id of this perspective.
 	 */
-	public static final String ID = "org.eclipse.ice.viz.VisualizationPerspective";
+	public static final String ID = "org.eclipse.eavp.viz.VisualizationPerspective";
 
 	/*
 	 * (non-Javadoc)

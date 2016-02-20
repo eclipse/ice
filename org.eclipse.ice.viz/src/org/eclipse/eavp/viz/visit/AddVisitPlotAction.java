@@ -11,7 +11,7 @@
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *   Jordan Deyton - replaced the selection dialog with something simpler
  *******************************************************************************/
-package org.eclipse.ice.viz.visit;
+package org.eclipse.eavp.viz.visit;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,8 +21,8 @@ import java.util.TreeMap;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.viz.PlotEntryContentProvider;
-import org.eclipse.ice.viz.VizFileViewer;
+import org.eclipse.eavp.viz.PlotEntryContentProvider;
+import org.eclipse.eavp.viz.VizFileViewer;
 import org.eclipse.ice.viz.service.datastructures.IVizEntryContentProvider;
 import org.eclipse.ice.viz.service.datastructures.VizEntry;
 import org.eclipse.ice.viz.service.datastructures.resource.IResource;

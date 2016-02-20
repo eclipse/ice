@@ -10,13 +10,13 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.viz;
+package org.eclipse.eavp.viz;
 
 import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.viz.visit.VisitPlotViewer;
+import org.eclipse.eavp.viz.visit.VisitPlotViewer;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
