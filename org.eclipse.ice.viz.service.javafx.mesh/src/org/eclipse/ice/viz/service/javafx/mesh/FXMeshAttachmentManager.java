@@ -12,9 +12,9 @@ package org.eclipse.ice.viz.service.javafx.mesh;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachmentManager;
-import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
-import org.eclipse.ice.viz.service.javafx.scene.model.IAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
+import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 
 /**
  * Manages Mesh Editor attachments.

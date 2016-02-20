@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh;
 
+import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachment;
-import org.eclipse.ice.viz.service.javafx.canvas.AbstractViewer;
-import org.eclipse.ice.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.ice.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.swt.widgets.Composite;

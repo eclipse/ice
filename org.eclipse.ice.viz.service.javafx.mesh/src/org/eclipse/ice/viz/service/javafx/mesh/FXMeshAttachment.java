@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.ice.viz.service.javafx.mesh;
 
+import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.javafx.canvas.AbstractAttachmentManager;
-import org.eclipse.ice.viz.service.javafx.canvas.FXAttachment;
 
 import javafx.scene.Group;
 import javafx.scene.Node;

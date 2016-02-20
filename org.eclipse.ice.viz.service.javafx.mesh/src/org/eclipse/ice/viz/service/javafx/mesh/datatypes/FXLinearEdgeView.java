@@ -12,12 +12,12 @@ package org.eclipse.ice.viz.service.javafx.mesh.datatypes;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.javafx.internal.Util;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.javafx.internal.Util;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
