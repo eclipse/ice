@@ -6,13 +6,13 @@ Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.javafx.geometry,
+ org.eclipse.eavp.viz.service.javafx.geometry.datatypes,
+ org.eclipse.eavp.viz.service.javafx.geometry.plant,
  org.eclipse.eavp.viz.service.modeling,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.componentVisitor,
  org.eclipse.ice.viz.service.geometry.reactor,
- org.eclipse.ice.viz.service.javafx.geometry,
- org.eclipse.ice.viz.service.javafx.geometry.datatypes,
- org.eclipse.ice.viz.service.javafx.geometry.plant,
  org.eclipse.swt.widgets,
  org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/PlantIOFactory.xml
