@@ -5,27 +5,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
-import org.eclipse.ice.item.Item;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.ice.item.model.Model;
 
 @XmlRootElement(name = "$className$Model")
-public class $className$Model extends Item {
+public class $className$Model extends Model {
 
 	// TODO: 
 	//   These need to be filled in before using this item
-	//	 They can be set in the $className$Model(IProject) method
-	private String writerName;  
-	private String readerName;  
-	private String outputName; 
+	private String writerName = "$className$DefaultWriterName";
+	private String readerName = "$className$DefaultReaderName";     	
+	private String outputName = "$className$DefaultOutputName"; writerName;  
 	// End required variables
 	
-    private String exportString 
+    private String exportString;
 	private IIOService ioService;
-
+    private IReader reader;
+    private IWriter writer;
+    
 	public $className$Model() {
 		this(null);
 	}
@@ -33,14 +37,6 @@ public class $className$Model extends Item {
 	public $className$Model(IProject project) {
 		super(project);
 		exportString = "Export to $className$ input format";	
-		
-		// TODO: Assign these values depending on 
-		//       the reader/writer classes and the 
-		//       desired output file name
-		writerName = "$className$DefaultWriterName";
-		readerName = "$className$DefaultReaderName";     	
-		outputName = "$className$DefaultOutputName";                                                     	
-		// End required variables
 		
 		// TODO: (optional) Add User Code Here
 	}
@@ -131,11 +127,12 @@ public class $className$Model extends Item {
 		// The default processing option is defined in the last line of the 
 		// setupItemInfo() method defined above.
 		if (actionName == exportString) {
-			IWriter writer = ioService.getWriter(writerName); 
+			IFile outputFile = project.getFile(outputName);
+			writer = ioService.getWriter(writerName); 
 			try {
 				retStatus = FormStatus.Processing;
-				writer.write(form, outputName);
-				project.refreshLocal(IResource.DEPTH_ONE, null);
+				writer.write(form, outputFile);
+				project.refreshLocal(1, null);
 				retStatus = FormStatus.Processed;
 			} catch (CoreException e) {
 				logger.error(getClass().getName() + " CoreException!", e);
