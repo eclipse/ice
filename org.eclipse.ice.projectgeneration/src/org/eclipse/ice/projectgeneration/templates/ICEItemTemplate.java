@@ -127,7 +127,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		IPluginModelFactory factory = model.getPluginFactory();
 		IPluginElement element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", pluginId + "." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
+		element.setAttribute("class", pluginId + ".model." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);
@@ -140,7 +140,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		factory = model.getPluginFactory();
 		element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", pluginId + "." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
+		element.setAttribute("class", pluginId + ".launcher." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);

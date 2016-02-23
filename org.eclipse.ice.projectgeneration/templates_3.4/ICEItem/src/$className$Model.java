@@ -22,7 +22,7 @@ public class $className$Model extends Model {
 	//   These need to be filled in before using this item
 	private String writerName = "$className$DefaultWriterName";
 	private String readerName = "$className$DefaultReaderName";     	
-	private String outputName = "$className$DefaultOutputName"; writerName;  
+	private String outputName = "$className$DefaultOutputName";   
 	// End required variables
 	
     private String exportString;
