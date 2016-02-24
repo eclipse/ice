@@ -24,6 +24,9 @@ import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestController;
@@ -47,7 +50,7 @@ public class VertexControllerTester {
 		// Create a cloned vertex and check that it is identical to the original
 		VertexController vertex = new VertexController(new VertexMesh(),
 				new AbstractView());
-		vertex.setProperty("Test", "Property");
+		vertex.setProperty(MeshProperty.DESCRIPTION, "Property");
 		VertexController clone = (VertexController) vertex.clone();
 		assertTrue(vertex.equals(clone));
 	}
@@ -66,7 +69,8 @@ public class VertexControllerTester {
 		// Add an entity and check that it did not go into the edges category
 		vertex.addEntity(
 				new AbstractController(new AbstractMesh(), new AbstractView()));
-		assertEquals(0, vertex.getEntitiesByCategory("Edges").size());
+		assertEquals(0,
+				vertex.getEntitiesByCategory(MeshCategory.EDGES).size());
 
 		// Create some edges
 		EdgeController edge1 = new EdgeController(new EdgeMesh(),
@@ -76,19 +80,21 @@ public class VertexControllerTester {
 		EdgeController edge3 = new EdgeController(new EdgeMesh(),
 				new AbstractView());
 
-		// Add two edges to the vertex and a thrid explicitly under a different
+		// Add two edges to the vertex and a third explicitly under a different
 		// category
 		vertex.addEntity(edge1);
 		vertex.addEntity(edge2);
-		vertex.addEntityByCategory(edge3, "test");
+		vertex.addEntityByCategory(edge3, MeshCategory.CHILDREN);
 
 		// The first two edges should go into the Edges category
-		List<AbstractController> edges = vertex.getEntitiesByCategory("Edges");
+		List<IController> edges = vertex
+				.getEntitiesByCategory(MeshCategory.EDGES);
 		assertTrue(edges.contains(edge1));
 		assertTrue(edges.contains(edge2));
 
 		// The last edge should have been put in the specified custom category
-		assertTrue(vertex.getEntitiesByCategory("test").contains(edge3));
+		assertTrue(vertex.getEntitiesByCategory(MeshCategory.CHILDREN)
+				.contains(edge3));
 	}
 
 	/**
@@ -103,7 +109,7 @@ public class VertexControllerTester {
 				new AbstractView());
 
 		// Create a test object to receive updates
-		TestMesh otherMesh = new TestMesh(new ArrayList<AbstractController>());
+		TestMesh otherMesh = new TestMesh(new ArrayList<IController>());
 		TestController other = new TestController(otherMesh,
 				new AbstractView());
 
@@ -117,19 +123,19 @@ public class VertexControllerTester {
 		EdgeController edge = new EdgeController(edgeMesh, new AbstractView());
 
 		// Add the test object and edge to the vertex.
-		vertex.addEntityByCategory(other, "Test");
-		vertex.addEntityByCategory(edge, "Edges");
+		vertex.addEntityByCategory(other, MeshCategory.CHILDREN);
+		vertex.addEntityByCategory(edge, MeshCategory.EDGES);
 
 		// Clear the vertex's updated state
 		vertex.wasUpdated();
 
 		// The vertex should receive updates from child entities by default
-		other.setProperty("Send", "Update");
+		other.setProperty(MeshProperty.DESCRIPTION, "Update");
 		assertTrue(vertex.wasUpdated());
 
 		// The vertex should not receive updates from objects in the Edges
 		// category.
-		edge.setProperty("Send", "Update");
+		edge.setProperty(MeshProperty.DESCRIPTION, "Update");
 		assertFalse(vertex.wasUpdated());
 	}
 
@@ -165,8 +171,8 @@ public class VertexControllerTester {
 		 * @see
 		 * org.eclipse.eavp.viz.service.modeling.AbstractController#update(org.
 		 * eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable,
-		 * org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType
-		 * [])
+		 * org.eclipse.eavp.viz.service.datastructures.VizObject.
+		 * SubscriptionType [])
 		 */
 		@Override
 		public void update(IManagedUpdateable component,

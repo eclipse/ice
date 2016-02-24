@@ -45,13 +45,13 @@ public class LinearEdgeMesh extends EdgeMesh {
 	public double calculateLength() {
 
 		// If the edge has two vertices, calculate its length
-		if (getEntitiesByCategory("Vertices").size() == 2) {
+		if (getEntitiesByCategory(MeshCategory.VERTICES).size() == 2) {
 
 			// Calculate the distance between the start and end points
-			double[] startPoint = ((VertexController) entities.get("Vertices")
-					.get(0)).getLocation();
-			double[] endPoint = ((VertexController) entities.get("Vertices")
-					.get(1)).getLocation();
+			double[] startPoint = ((VertexController) entities
+					.get(MeshCategory.VERTICES).get(0)).getLocation();
+			double[] endPoint = ((VertexController) entities
+					.get(MeshCategory.VERTICES).get(1)).getLocation();
 			length = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2)
 					+ Math.pow(startPoint[1] - endPoint[1], 2)
 					+ Math.pow(startPoint[2] - endPoint[2], 2));

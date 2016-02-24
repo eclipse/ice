@@ -14,6 +14,7 @@ package org.eclipse.eavp.viz.service.geometry.widgets;
 
 import java.util.ArrayList;
 
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -90,7 +91,8 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 
 		// Get the TransformationView if it is open
 
-		TransformationView transformationView = (TransformationView) workbenchPage.findView(TransformationView.ID);
+		TransformationView transformationView = (TransformationView) workbenchPage
+				.findView(TransformationView.ID);
 
 		// Return if not
 
@@ -105,7 +107,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 		// Remove the "selected" value from previously selected shapes
 
 		for (ShapeController shape : selectedShapes) {
-			shape.setProperty("Selected", "False");
+			shape.setProperty(MeshProperty.SELECTED, "False");
 		}
 
 		selectedShapes.clear();
@@ -121,7 +123,7 @@ public class ShapeTreeSelectionListener implements ISelectionChangedListener {
 			if (selectedObject instanceof ShapeController) {
 				ShapeController selectedShape = (ShapeController) selectedObject;
 
-				selectedShape.setProperty("Selected", "True");
+				selectedShape.setProperty(MeshProperty.SELECTED, "True");
 				selectedShapes.add(selectedShape);
 			}
 		}

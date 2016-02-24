@@ -16,6 +16,7 @@ import org.eclipse.eavp.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.junit.Test;
 
 /**
@@ -33,7 +34,7 @@ public class FXSelectionTester {
 	public void checkContents() {
 
 		// Create a part
-		AbstractController part = new AbstractController(new AbstractMesh(),
+		IController part = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 
 		// Create a selection on the part

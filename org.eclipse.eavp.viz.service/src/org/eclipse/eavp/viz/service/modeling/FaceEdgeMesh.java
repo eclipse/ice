@@ -12,7 +12,6 @@ package org.eclipse.eavp.viz.service.modeling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
@@ -48,22 +47,22 @@ public class FaceEdgeMesh extends EdgeMesh {
 	 * (non-Javadoc)
 	 *
 	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#
-	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
-	 * AbstractController, java.lang.String)
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling. IController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// If the category is Faces, do not register as a listener, as the face
 		// is already listening to this
-		if ("Faces".equals(category)) {
+		if (MeshCategory.FACES.equals(category)) {
 			// Get the entities for the given category
-			List<AbstractController> catList = entities.get(category);
+			ArrayList<IController> catList = entities.get(category);
 
 			// If the list is empty, make an empty one
 			if (catList == null) {
-				catList = new ArrayList<AbstractController>();
+				catList = new ArrayList<IController>();
 			}
 
 			// Add the entity to the list and put it in the map
@@ -99,31 +98,35 @@ public class FaceEdgeMesh extends EdgeMesh {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#copy(org.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#copy(org.
 	 * eclipse.ice.viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void copy(AbstractMesh otherObject) {
+	public void copy(IMesh otherObject) {
 
 		// Queue messages from all the vertices being added
 		updateManager.enqueue();
 
+		FaceEdgeMesh castObject = (FaceEdgeMesh) otherObject;
+
 		// Clone each child entity
-		for (String category : otherObject.entities.keySet()) {
+		for (IMeshCategory category : castObject.entities.keySet()) {
 
 			// Do not clone the faces the edge forms
-			if (!"Faces".equals(category)) {
-				for (AbstractController entity : otherObject
+			if (!MeshCategory.FACES.equals(category)) {
+				for (IController entity : castObject
 						.getEntitiesByCategory(category)) {
-					addEntityByCategory((AbstractController) entity.clone(),
+					addEntityByCategory(
+							(IController) ((AbstractController) entity).clone(),
 							category);
 				}
 			}
 		}
 
 		// Copy each of the other component's data members
-		type = otherObject.type;
-		properties = new HashMap<String, String>(otherObject.properties);
+		type = castObject.type;
+		properties = new HashMap<IMeshProperty, String>(castObject.properties);
 
 		// Notify listeners of the change
 		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
@@ -162,10 +165,10 @@ public class FaceEdgeMesh extends EdgeMesh {
 		// Get the two sets of categories, removing Faces from both as the faces
 		// an edge belong to are not relevant to whether or not it is equal to
 		// another
-		Set<String> categories = entities.keySet();
-		categories.remove("Faces");
-		Set<String> categories2 = castObject.entities.keySet();
-		categories2.remove("Faces");
+		Set<IMeshCategory> categories = entities.keySet();
+		categories.remove(MeshCategory.FACES);
+		Set<IMeshCategory> categories2 = castObject.entities.keySet();
+		categories2.remove(MeshCategory.FACES);
 
 		// Check that they have the same categories
 		if (!categories.equals(categories2)) {
@@ -174,10 +177,10 @@ public class FaceEdgeMesh extends EdgeMesh {
 
 		// For each category, check that the two objects' lists of child
 		// entities in that category are equal.
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 
 			// Two edges should not need to be part of the same face to be equal
-			if (!"Faces".equals(category)) {
+			if (!MeshCategory.FACES.equals(category)) {
 				if (!entities.get(category)
 						.containsAll(castObject.entities.get(category))
 						|| !castObject.entities.get(category)
@@ -200,14 +203,14 @@ public class FaceEdgeMesh extends EdgeMesh {
 	public int hashCode() {
 		int hash = 9;
 		hash += 31 * type.hashCode();
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 
 			// Ignore the faces category to prevent circular hashing
-			if ("Faces".equals(category)) {
+			if (MeshCategory.FACES.equals(category)) {
 				continue;
 			}
 
-			for (AbstractController entity : getEntitiesByCategory(category)) {
+			for (IController entity : getEntitiesByCategory(category)) {
 				hash += 31 * entity.hashCode();
 			}
 		}

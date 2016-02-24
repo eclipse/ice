@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.javafx.mesh;
 
 import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -54,16 +54,16 @@ public class FXMeshAttachment extends FXAttachment {
 	}
 
 	@Override
-	protected void handleUpdate(AbstractController source) {
+	protected void handleUpdate(IController source) {
 
 		// On update, refresh the list of top level nodes
 		fxAttachmentNode.getChildren().clear();
 
 		// For each group which has been added to the attachment
-		for (AbstractController group : knownParts) {
+		for (IController group : knownParts) {
 
 			// Get each part which is managed by that controller
-			for (AbstractController entity : group.getEntities()) {
+			for (IController entity : group.getEntities()) {
 
 				// Add the entity's own representation, if it has one and is not
 				// already present in the scene
@@ -74,7 +74,7 @@ public class FXMeshAttachment extends FXAttachment {
 				}
 
 				// Add each child of a polygon to the scene, without repeats
-				for (AbstractController child : entity.getEntities()) {
+				for (IController child : entity.getEntities()) {
 
 					Group render = (Group) child.getRepresentation();
 

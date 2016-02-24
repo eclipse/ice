@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import org.eclipse.eavp.viz.service.mesh.properties.MeshSelection;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.Form;
@@ -224,20 +227,20 @@ public class MeshElementTreeView extends ViewPart
 					ArrayList<MeshSelection> children = new ArrayList<MeshSelection>();
 
 					// An array of every unique vertex from the selection
-					ArrayList<AbstractController> vertices = new ArrayList<AbstractController>();
+					ArrayList<IController> vertices = new ArrayList<IController>();
 
 					if (selection.selectedMeshPart instanceof FaceController) {
 						FaceController polygon = (FaceController) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
-						for (AbstractController e : polygon
-								.getEntitiesByCategory("Edges")) {
+						for (IController e : polygon
+								.getEntitiesByCategory(MeshCategory.EDGES)) {
 							children.add(new MeshSelection(
 									meshComponent.getMesh(), e));
 
 							// Add each of the edge's vertices to the list if
 							// they are nto already present
-							for (AbstractController v : e
-									.getEntitiesByCategory("Vertices")) {
+							for (IController v : e.getEntitiesByCategory(
+									MeshCategory.VERTICES)) {
 								if (!vertices.contains(v)) {
 									vertices.add(v);
 								}
@@ -245,7 +248,7 @@ public class MeshElementTreeView extends ViewPart
 						}
 
 						// Add new MeshSelections for the vertices.
-						for (AbstractController v : vertices) {
+						for (IController v : vertices) {
 							children.add(new MeshSelection(
 									meshComponent.getMesh(), v));
 						}
@@ -309,12 +312,12 @@ public class MeshElementTreeView extends ViewPart
 				if (element instanceof MeshSelection) {
 
 					// Get the wrapped IMeshPart.
-					AbstractController meshPart = ((MeshSelection) element).selectedMeshPart;
+					IController meshPart = ((MeshSelection) element).selectedMeshPart;
 
 					// Cast the IMeshPart to an ICEObject and set the label text
 					// from its name and ID.
-					label = meshPart.getProperty("Name") + " "
-							+ meshPart.getProperty("Id");
+					label = meshPart.getProperty(MeshProperty.NAME) + " "
+							+ meshPart.getProperty(MeshProperty.ID);
 
 					return label;
 				}

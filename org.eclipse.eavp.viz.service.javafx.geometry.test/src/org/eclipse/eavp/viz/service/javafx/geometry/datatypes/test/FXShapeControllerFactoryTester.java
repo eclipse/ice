@@ -41,7 +41,7 @@ public class FXShapeControllerFactoryTester {
 		// Create a mesh and send it to the factory
 		ShapeMesh shapeMesh = new ShapeMesh();
 		FXShapeController shapeController = (FXShapeController) factory
-				.createController(shapeMesh);
+				.createProvider(shapeMesh).createController(shapeMesh);
 
 		// The resultant controller should have the mesh as its model and a
 		// FXShapeView for a view
@@ -50,7 +50,7 @@ public class FXShapeControllerFactoryTester {
 
 		// Try to send an unrecognized input mesh to the factory
 		EdgeMesh edgeMesh = new EdgeMesh();
-		assertNull(factory.createController(edgeMesh));
+		assertNull(factory.createProvider(edgeMesh));
 
 	}
 }

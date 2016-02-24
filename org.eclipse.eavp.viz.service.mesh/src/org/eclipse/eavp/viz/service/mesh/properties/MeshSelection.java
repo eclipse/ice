@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.mesh.properties;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 
 public class MeshSelection {
 
-	public final AbstractController mesh;
+	public final IController mesh;
 
-	public final AbstractController selectedMeshPart;
+	public final IController selectedMeshPart;
 
-	public MeshSelection(AbstractController mesh,
-			AbstractController selectedMeshPart) {
+	public MeshSelection(IController mesh, IController selectedMeshPart) {
 		this.mesh = mesh;
 		this.selectedMeshPart = selectedMeshPart;
 	}

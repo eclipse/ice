@@ -20,7 +20,7 @@ import org.eclipse.eavp.viz.service.javafx.internal.Util;
 import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
 import org.eclipse.eavp.viz.service.javafx.viewer.IAttachmentManager;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -45,7 +45,7 @@ public class FXAttachment extends AbstractAttachment {
 	private final IAttachmentManager manager;
 
 	/** */
-	protected List<AbstractController> knownParts;
+	protected List<IController> knownParts;
 
 	/**
 	 * <p>
@@ -57,6 +57,7 @@ public class FXAttachment extends AbstractAttachment {
 	 */
 	public FXAttachment(IAttachmentManager manager) {
 		this.manager = manager;
+		fxAttachmentNode = new Group();
 	}
 
 	/**
@@ -67,7 +68,7 @@ public class FXAttachment extends AbstractAttachment {
 	 * @param source
 	 *            The controller which triggered the update
 	 */
-	protected void handleUpdate(AbstractController source) {
+	protected void handleUpdate(IController source) {
 		// Nothing to do
 	}
 
@@ -77,7 +78,7 @@ public class FXAttachment extends AbstractAttachment {
 	 * 
 	 * @return All parts contained in this attachment
 	 */
-	public List<AbstractController> getKnownParts() {
+	public List<IController> getKnownParts() {
 		return knownParts;
 	}
 
@@ -129,7 +130,7 @@ public class FXAttachment extends AbstractAttachment {
 	}
 
 	@Override
-	public void addGeometry(AbstractController geom) {
+	public void addGeometry(IController geom) {
 		super.addGeometry(geom);
 
 		if (fxAttachmentNode == null) {
@@ -184,7 +185,7 @@ public class FXAttachment extends AbstractAttachment {
 	 *            an ICE Geometry IShape
 	 */
 	@Override
-	public void processShape(AbstractController shape) {
+	public void processShape(IController shape) {
 		// Nothing to do.
 	}
 
@@ -192,7 +193,7 @@ public class FXAttachment extends AbstractAttachment {
 	 * 
 	 */
 	@Override
-	protected void disposeShape(AbstractController shape) {
+	protected void disposeShape(IController shape) {
 		Node node = (Group) shape.getRepresentation();
 
 		if (node == null) {
@@ -208,7 +209,7 @@ public class FXAttachment extends AbstractAttachment {
 	 * @return
 	 */
 	@Override
-	public List<AbstractController> getShapes(boolean copy) {
+	public List<IController> getShapes(boolean copy) {
 		return super.getShapes(copy);
 
 	}
@@ -265,7 +266,7 @@ public class FXAttachment extends AbstractAttachment {
 	}
 
 	@Override
-	public void removeGeometry(AbstractController geom) {
+	public void removeGeometry(IController geom) {
 
 		// Remove the part from the list of seen parts
 		knownParts.remove(geom);

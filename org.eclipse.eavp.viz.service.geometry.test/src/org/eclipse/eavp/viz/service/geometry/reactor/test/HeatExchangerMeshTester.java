@@ -13,6 +13,7 @@ package org.eclipse.eavp.viz.service.geometry.reactor.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
 
 /**
@@ -22,18 +23,18 @@ import org.junit.Test;
  *
  */
 public class HeatExchangerMeshTester {
-	
+
 	/**
 	 * Check that the part is cloned correctly.
 	 */
 	@Test
-	public void checkClone(){
-		
-		//Create an exchanger
-		HeatExchangerMesh exchanger= new HeatExchangerMesh();
-		exchanger.setProperty("Test", "Property");
-		
-		//Clone it and check that they are identical
+	public void checkClone() {
+
+		// Create an exchanger
+		HeatExchangerMesh exchanger = new HeatExchangerMesh();
+		exchanger.setProperty(MeshProperty.INNER_RADIUS, "Property");
+
+		// Clone it and check that they are identical
 		HeatExchangerMesh clone = (HeatExchangerMesh) exchanger.clone();
 		assertTrue(exchanger.equals(clone));
 	}

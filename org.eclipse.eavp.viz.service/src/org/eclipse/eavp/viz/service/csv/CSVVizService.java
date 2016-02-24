@@ -20,8 +20,8 @@ import java.util.Set;
 import org.eclipse.eavp.viz.service.AbstractVizService;
 import org.eclipse.eavp.viz.service.IPlot;
 import org.eclipse.eavp.viz.service.IVizCanvas;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
@@ -123,17 +123,17 @@ public class CSVVizService extends AbstractVizService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.eavp.viz.
-	 * service.datastructures.VizObject)
+	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.eavp.
+	 * viz. service.datastructures.VizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController object) throws Exception {
+	public IVizCanvas createCanvas(IController object) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public IControllerFactory getFactory() {
+	public IControllerProviderFactory getFactory() {
 		// CSV visualization service does not make use of the model framework,
 		// so it has no factory
 		return null;
@@ -152,9 +152,8 @@ public class CSVVizService extends AbstractVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
-	 * swt.widgets.Composite, java.net.URI, int)
+	 * @see org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.
+	 * eclipse. swt.widgets.Composite, java.net.URI, int)
 	 */
 	@Override
 	public String createAdditionalPage(MultiPageEditorPart parent,

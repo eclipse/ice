@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -40,8 +41,8 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 */
 	public PipeController getPrimaryPipe() {
 
-		List<AbstractController> category = getEntitiesByCategory(
-				"Primary Pipe");
+		List<IController> category = getEntitiesByCategory(
+				ReactorMeshCategory.PRIMARY_PIPE);
 
 		return !category.isEmpty() ? (PipeController) category.get(0) : null;
 	}
@@ -53,8 +54,8 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *         one.
 	 */
 	public PipeController getSecondaryPipe() {
-		List<AbstractController> category = getEntitiesByCategory(
-				"Secondary Pipe");
+		List<IController> category = getEntitiesByCategory(
+				ReactorMeshCategory.SECONDARY_PIPE);
 
 		return !category.isEmpty() ? (PipeController) category.get(0) : null;
 	}
@@ -73,7 +74,8 @@ public class HeatExchangerMesh extends AbstractMesh {
 		controller.setTransformation(pipe.getTransformation());
 
 		// Get the current primary pipe, if any
-		List<AbstractController> primary = entities.get("Primary Pipe");
+		List<IController> primary = entities
+				.get(ReactorMeshCategory.PRIMARY_PIPE);
 
 		// If there is already one, remove it.
 		if (primary != null) {
@@ -83,7 +85,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 		}
 
 		// Add the pipe under the Primary Pipe category
-		addEntityByCategory(pipe, "Primary Pipe");
+		addEntityByCategory(pipe, ReactorMeshCategory.PRIMARY_PIPE);
 	}
 
 	/**
@@ -96,7 +98,8 @@ public class HeatExchangerMesh extends AbstractMesh {
 	public void setSecondaryPipe(PipeController pipe) {
 
 		// Get the current secondary pipe, if any
-		List<AbstractController> secondary = entities.get("Secondary Pipe");
+		List<IController> secondary = entities
+				.get(ReactorMeshCategory.SECONDARY_PIPE);
 
 		// If there is already one, remove it.
 		if (secondary != null) {
@@ -106,30 +109,31 @@ public class HeatExchangerMesh extends AbstractMesh {
 		}
 
 		// Add the pipe under the Primary Pipe category
-		addEntityByCategory(pipe, "Secondary Pipe");
+		addEntityByCategory(pipe, ReactorMeshCategory.SECONDARY_PIPE);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractMesh#addEntityByCategory(org
-	 * .eclipse.ice.viz.service.modeling.AbstractController, java.lang.String)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMesh#addEntityByCategory(
+	 * org .eclipse.ice.viz.service.modeling.AbstractController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController newEntity,
-			String category) {
+	public void addEntityByCategory(IController newEntity,
+			IMeshCategory category) {
 
 		// Don't listen to junctions, to avoid circular listening
-		if ("Secondary Input".equals(category)
-				|| "Secondary Output".equals(category)) {
+		if (ReactorMeshCategory.SECONDARY_INPUT.equals(category)
+				|| ReactorMeshCategory.SECONDARY_OUTPUT.equals(category)) {
 
 			// Get the entities for the given category
-			List<AbstractController> catList = entities.get(category);
+			ArrayList<IController> catList = entities.get(category);
 
 			// If the list is null, make an empty one
 			if (catList == null) {
-				catList = new ArrayList<AbstractController>();
+				catList = new ArrayList<IController>();
 			}
 
 			// Prevent a part from being added multiple times
@@ -141,7 +145,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 			// second
 			// entry for it
 			else
-				for (AbstractController entity : catList) {
+				for (IController entity : catList) {
 					if (entity == newEntity) {
 						return;
 					}

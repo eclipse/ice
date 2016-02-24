@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.geometry.reactor;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 
 /**
@@ -37,13 +38,13 @@ public class ReactorMesh extends ShapeMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// If the entity is a Core Channel, set this shape as its parent, so
 		// that when the reactor is transformed all core channels will also be
 		// transformed
-		if ("Core Channels".equals(category)) {
+		if (ReactorMeshCategory.CORE_CHANNELS.equals(category)) {
 			((PipeController) entity).setParent(controller);
 		}
 

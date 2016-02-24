@@ -4,7 +4,7 @@ Bundle-Name: ICE Visualization Service
 Bundle-SymbolicName: org.eclipse.eavp.viz.service;singleton:=true
 Bundle-Version: 2.1.8.20160208
 Bundle-Vendor: Oak Ridge National Laboratory
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: ca.odell.glazedlists,
  ca.odell.glazedlists.event,
  ca.odell.glazedlists.gui,

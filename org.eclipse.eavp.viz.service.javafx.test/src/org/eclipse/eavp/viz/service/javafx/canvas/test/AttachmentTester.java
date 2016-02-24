@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.canvas.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -32,32 +33,32 @@ public class AttachmentTester {
 	 * Test the attachment's ability to attach and detach from a node.
 	 */
 	@Test
-	public void checkAttach(){
-		
-		//Create an attachment and node
+	public void checkAttach() {
+
+		// Create an attachment and node
 		TestAttachment attachment = new TestAttachment();
 		TestNode node = new TestNode();
-		
-		//The attachment should start off unattached
+
+		// The attachment should start off unattached
 		assertTrue(attachment.getOwner() == null);
-		
-		//Attach to the node and check that the parent is properly set
+
+		// Attach to the node and check that the parent is properly set
 		attachment.attach(node);
 		assertTrue(attachment.getOwner() == node);
-		
-		//Detach from the node and check that the attachment is now parentless
+
+		// Detach from the node and check that the attachment is now parentless
 		attachment.detach(node);
-		assertTrue(attachment.getOwner() == node);
-		
+		assertFalse(attachment.getOwner() == node);
+
 	}
-	
+
 	/**
 	 * A basic extension of Attachment for testing purposes.
 	 * 
 	 * @author Robert Smith
 	 *
 	 */
-	private class TestAttachment extends Attachment{
+	private class TestAttachment extends Attachment {
 
 		@Override
 		public Class<?> getType() {
@@ -65,14 +66,14 @@ public class AttachmentTester {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * A basic implementation of INode.
 	 * 
 	 * @author Robert Smith
 	 *
 	 */
-	private class TestNode implements INode{
+	private class TestNode implements INode {
 
 		@Override
 		public INode getParent() {
@@ -83,7 +84,7 @@ public class AttachmentTester {
 		@Override
 		public void setParent(INode parent) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -95,19 +96,19 @@ public class AttachmentTester {
 		@Override
 		public void addChild(INode node) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void removeChild(INode node) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void removeAllChildren() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -119,7 +120,7 @@ public class AttachmentTester {
 		@Override
 		public void setVisible(boolean visible) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -131,13 +132,13 @@ public class AttachmentTester {
 		@Override
 		public void attach(IAttachment attachment) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void detach(IAttachment attachment) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -179,7 +180,7 @@ public class AttachmentTester {
 		@Override
 		public void setProperty(String key, Object value) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
@@ -187,6 +188,6 @@ public class AttachmentTester {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
+
 	}
 }

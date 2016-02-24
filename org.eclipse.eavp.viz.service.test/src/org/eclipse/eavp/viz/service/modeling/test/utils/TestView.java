@@ -13,8 +13,8 @@ package org.eclipse.eavp.viz.service.modeling.test.utils;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.VizObject;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 
 /**
  * A simple AbstractView implementation that keeps track of whether it has been
@@ -119,7 +119,7 @@ public class TestView extends AbstractView {
 	 * .viz.service.modeling.AbstractMesh)
 	 */
 	@Override
-	public void refresh(AbstractMesh mesh) {
+	public void refresh(IMesh mesh) {
 		refreshed = true;
 	}
 

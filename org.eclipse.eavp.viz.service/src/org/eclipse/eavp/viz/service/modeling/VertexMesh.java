@@ -12,7 +12,6 @@ package org.eclipse.eavp.viz.service.modeling;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 
@@ -51,15 +50,15 @@ public class VertexMesh extends PointMesh {
 	 *
 	 * @see
 	 *
-	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#addEntity(org.
-	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#addEntity(
+	 * org. eclipse.ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void addEntity(AbstractController entity) {
+	public void addEntity(IController entity) {
 
 		// If not specified, assume all edges go in the Edges category
 		if (entity instanceof EdgeController) {
-			addEntityByCategory(entity, "Edges");
+			addEntityByCategory(entity, MeshCategory.EDGES);
 		} else {
 			super.addEntity(entity);
 		}
@@ -69,22 +68,22 @@ public class VertexMesh extends PointMesh {
 	 * (non-Javadoc)
 	 *
 	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#
-	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
-	 * AbstractController, java.lang.String)
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling. IController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// If the category is Edges, do not register as a listener, as the edge
 		// is already listening to this
-		if ("Edges".equals(category)) {
+		if (MeshCategory.EDGES.equals(category)) {
 			// Get the entities for the given category
-			List<AbstractController> catList = entities.get(category);
+			ArrayList<IController> catList = entities.get(category);
 
 			// If the list is empty, make an empty one
 			if (catList == null) {
-				catList = new ArrayList<AbstractController>();
+				catList = new ArrayList<IController>();
 			}
 
 			// Add the entity to the list and put it in the map
@@ -119,15 +118,23 @@ public class VertexMesh extends PointMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.PointMesh#copy(org.eclipse.eavp.viz.
-	 * service.modeling.AbstractMesh)
+	 * org.eclipse.eavp.viz.service.modeling.PointMesh#copy(org.eclipse.eavp.
+	 * viz. service.modeling.AbstractMesh)
 	 */
 	@Override
-	public void copy(AbstractMesh otherObject) {
+	public void copy(IMesh otherObject) {
+
+		// Fail silently if the other object is not a VertexMesh
+		if (!(otherObject instanceof VertexMesh)) {
+			return;
+		}
+
+		// Cast the object
+		VertexMesh castObject = (VertexMesh) otherObject;
 
 		// Copy each of the other component's data members
-		type = otherObject.type;
-		properties = new HashMap<String, String>(otherObject.properties);
+		type = castObject.type;
+		properties = new HashMap<IMeshProperty, String>(castObject.properties);
 
 		// Copy the coordinates
 		x = ((PointMesh) otherObject).getX();
@@ -135,13 +142,14 @@ public class VertexMesh extends PointMesh {
 		z = ((PointMesh) otherObject).getZ();
 
 		// Clone each child entity
-		for (String category : otherObject.entities.keySet()) {
+		for (IMeshCategory category : castObject.entities.keySet()) {
 
 			// Do not clone the edges containing the vertex
-			if (!"Edges".equals(category)) {
-				for (AbstractController entity : otherObject
+			if (!MeshCategory.EDGES.equals(category)) {
+				for (IController entity : otherObject
 						.getEntitiesByCategory(category)) {
-					addEntityByCategory((AbstractController) entity.clone(),
+					addEntityByCategory(
+							(IController) ((AbstractController) entity).clone(),
 							category);
 				}
 			}

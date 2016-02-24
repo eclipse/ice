@@ -14,7 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
@@ -35,7 +37,7 @@ public class LinearEdgeMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		LinearEdgeMesh mesh = new LinearEdgeMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		LinearEdgeMesh clone = (LinearEdgeMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}
@@ -60,15 +62,15 @@ public class LinearEdgeMeshTester {
 				new AbstractView());
 
 		// Add the first two vertices to the edge.
-		edge.addEntityByCategory(vertex1, "Vertices");
-		edge.addEntityByCategory(vertex2, "Vertices");
+		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
 
 		// Check that the edge has the correct length
 		assertTrue(Double.compare(1.73, edge.getLength()) <= .1d);
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntityByCategory(vertex3, "Vertices");
+		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check that the edge's length has been updated
 		assertTrue(Double.compare(3.46, edge.getLength()) <= .1d);

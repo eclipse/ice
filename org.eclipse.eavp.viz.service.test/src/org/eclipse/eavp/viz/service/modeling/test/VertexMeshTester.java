@@ -12,6 +12,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class VertexMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		VertexMesh mesh = new VertexMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		VertexMesh clone = (VertexMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}

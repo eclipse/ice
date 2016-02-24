@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.geometry.plant;
 
-import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.Extrema;
 import org.eclipse.eavp.viz.service.geometry.reactor.IPipeView;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
+import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -45,7 +46,7 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 		super(model);
 
 		// Pipes are cyan by default
-		if (!"True".equals(model.getProperty("Core Channel"))) {
+		if (!"True".equals(model.getProperty(ReactorMeshProperty.CORE_CHANNEL))) {
 			PhongMaterial material = new PhongMaterial(Color.CYAN);
 			material.setSpecularColor(Color.WHITE);
 			setMaterial(material);
@@ -195,15 +196,14 @@ public class FXPipeView extends FXShapeView implements IPipeView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView#refresh
-	 * (org.eclipse.eavp.viz.service.modeling.AbstractMesh)
+	 * @see org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView#
+	 * refresh (org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 	 */
 	@Override
-	public void refresh(AbstractMesh model) {
+	public void refresh(IMesh model) {
 
 		// Pipes are cyan by default
-		if (!"True".equals(model.getProperty("Core Channel"))) {
+		if (!"True".equals(model.getProperty(ReactorMeshProperty.CORE_CHANNEL))) {
 			PhongMaterial material = new PhongMaterial(Color.CYAN);
 			material.setSpecularColor(Color.WHITE);
 			setMaterial(material);

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.geometry.datatypes;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
 
@@ -32,28 +32,32 @@ public class FXShapeControllerFactory extends AbstractControllerFactory {
 		super();
 
 		// Set the ShapeMesh provider
-		typeMap.put(ShapeMesh.class, new IControllerProvider() {
-			@Override
-			public AbstractController createController(AbstractMesh model) {
+		typeMap.put(ShapeMesh.class,
+				new IControllerProvider<FXShapeController>() {
+					@Override
+					public FXShapeController createController(IMesh model) {
 
-				// Create an FXShapeView for the model, then wrap them both in a
-				// shape controller
-				FXShapeView view = new FXShapeView((ShapeMesh) model);
-				return new FXShapeController((ShapeMesh) model, view);
-			}
-		});
+						// Create an FXShapeView for the model, then wrap them
+						// both in a
+						// shape controller
+						FXShapeView view = new FXShapeView((ShapeMesh) model);
+						return new FXShapeController((ShapeMesh) model, view);
+					}
+				});
 
 		// Set the TubeMesh provider
-		typeMap.put(TubeMesh.class, new IControllerProvider() {
-			@Override
-			public AbstractController createController(AbstractMesh model) {
+		typeMap.put(TubeMesh.class,
+				new IControllerProvider<FXShapeController>() {
+					@Override
+					public FXShapeController createController(IMesh model) {
 
-				// Create an FXShapeView for the model, then wrap them both in a
-				// shape controller
-				FXShapeView view = new FXShapeView((TubeMesh) model);
-				return new FXShapeController((ShapeMesh) model, view);
-			}
-		});
+						// Create an FXShapeView for the model, then wrap them
+						// both in a
+						// shape controller
+						FXShapeView view = new FXShapeView((TubeMesh) model);
+						return new FXShapeController((ShapeMesh) model, view);
+					}
+				});
 	}
 
 }

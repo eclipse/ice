@@ -13,6 +13,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.modeling.PointMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
 
 /**
@@ -31,7 +32,7 @@ public class PointMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		PointMesh mesh = new PointMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		PointMesh clone = (PointMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}

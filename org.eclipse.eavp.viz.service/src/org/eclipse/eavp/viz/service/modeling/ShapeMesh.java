@@ -31,7 +31,7 @@ public class ShapeMesh extends AbstractMesh {
 	public ShapeMesh() {
 		super();
 		type = MeshType.CONSTRUCTIVE;
-		properties.put("Type", "None");
+		properties.put(MeshProperty.TYPE, "None");
 	}
 
 	/**
@@ -41,10 +41,11 @@ public class ShapeMesh extends AbstractMesh {
 	 * @param parent
 	 *            The new shape which serves as this shape's parent.
 	 */
-	public void setParent(AbstractController parent) {
+	public void setParent(IController parent) {
 
 		// Get the current list of parents
-		List<AbstractController> parentList = getEntitiesByCategory("Parent");
+		List<IController> parentList = getEntitiesByCategory(
+				MeshCategory.PARENT);
 
 		// If there is a parent, unregister it as a listener
 		if (parentList != null && !parentList.isEmpty()) {
@@ -52,7 +53,7 @@ public class ShapeMesh extends AbstractMesh {
 		}
 
 		// Put the new Parent in the entities map, replacing any other.
-		ArrayList<AbstractController> newParentList = new ArrayList<AbstractController>();
+		ArrayList<IController> newParentList = new ArrayList<IController>();
 
 		// If parent is null, an empty list should be saved, essentially
 		// removing the parent object.
@@ -60,7 +61,7 @@ public class ShapeMesh extends AbstractMesh {
 			newParentList.add(parent);
 		}
 
-		entities.put("Parent", newParentList);
+		entities.put(MeshCategory.PARENT, newParentList);
 
 		// Register the parent as a listener and fire an update notification
 		register(parent);
@@ -78,7 +79,7 @@ public class ShapeMesh extends AbstractMesh {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void setProperty(String property, String value) {
+	public void setProperty(IMeshProperty property, String value) {
 
 		// Queue updates for all selections
 		updateManager.enqueue();
@@ -87,10 +88,10 @@ public class ShapeMesh extends AbstractMesh {
 		super.setProperty(property, value);
 
 		// Select/deselect all children as well
-		if ("Selected".equals(property)) {
-			if (entities.get("Children") != null) {
-				for (AbstractController entity : entities.get("Children")) {
-					entity.setProperty("Selected", value);
+		if (MeshProperty.SELECTED.equals(property)) {
+			if (entities.get(MeshCategory.CHILDREN) != null) {
+				for (IController entity : entities.get(MeshCategory.CHILDREN)) {
+					entity.setProperty(MeshProperty.SELECTED, value);
 				}
 			}
 		}
@@ -106,22 +107,22 @@ public class ShapeMesh extends AbstractMesh {
 	 * prototype5.impl.AbstractMeshComponentImpl#addEntity(prototype5.VizObject)
 	 */
 	@Override
-	public void addEntity(AbstractController newEntity) {
+	public void addEntity(IController newEntity) {
 
 		// By default, add an entity as a child shape.
-		addEntityByCategory(newEntity, "Children");
+		addEntityByCategory(newEntity, MeshCategory.CHILDREN);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#
-	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
-	 * AbstractController, java.lang.String)
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling. IController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController newEntity,
-			String category) {
+	public void addEntityByCategory(IController newEntity,
+			IMeshCategory category) {
 
 		// Fail silently for null objects
 		if (newEntity == null) {
@@ -129,10 +130,10 @@ public class ShapeMesh extends AbstractMesh {
 		}
 
 		// If the category is not parent, add the entity normally
-		if (category != "Parent") {
+		if (category != MeshCategory.PARENT) {
 
 			// Set self as parent to any children
-			if (category == "Children" && controller != null) {
+			if (category == MeshCategory.CHILDREN && controller != null) {
 				((ShapeController) newEntity).setParent((controller));
 			}
 
@@ -149,15 +150,16 @@ public class ShapeMesh extends AbstractMesh {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMesh#setController(org.
-	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMesh#setController(org.
+	 * eclipse.ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void setController(AbstractController controller) {
+	public void setController(IController controller) {
 		super.setController(controller);
 
 		// Set the new controller as the parent to any children
-		for (AbstractController child : getEntitiesByCategory("Children")) {
+		for (IController child : getEntitiesByCategory(MeshCategory.CHILDREN)) {
 			((ShapeController) child).setParent(controller);
 		}
 	}
@@ -180,26 +182,36 @@ public class ShapeMesh extends AbstractMesh {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#copy(org.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#copy(org.
 	 * eclipse.ice.viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void copy(AbstractMesh source) {
+	public void copy(IMesh source) {
+
+		// If the other object is not a ShapeMesh, fail silently
+		if (!(source instanceof ShapeMesh)) {
+			return;
+		}
+
+		// Cast the object
+		ShapeMesh castObject = (ShapeMesh) source;
 
 		// Copy the map of entities
-		entities = new HashMap<String, List<AbstractController>>();
+		entities = new HashMap<IMeshCategory, ArrayList<IController>>();
 
 		// Copy each child in the entities map
-		List<AbstractController> children = source.entities.get("Children");
+		List<IController> children = castObject.entities
+				.get(MeshCategory.CHILDREN);
 		if (children != null) {
-			for (AbstractController entity : children) {
-				addEntity((AbstractController) entity.clone());
+			for (IController entity : children) {
+				addEntity((IController) ((AbstractController) entity).clone());
 			}
 		}
 
 		// Copy each of the other component's data members
-		type = source.type;
-		properties = new HashMap<String, String>(source.properties);
+		type = castObject.type;
+		properties = new HashMap<IMeshProperty, String>(castObject.properties);
 		// Notify listeners of the change
 		SubscriptionType[] eventTypes = { SubscriptionType.ALL };
 		updateManager.notifyListeners(eventTypes);
@@ -235,12 +247,12 @@ public class ShapeMesh extends AbstractMesh {
 
 		// For each category, check that the two objects' lists of child
 		// entities in that category are equal.
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 
 			// Skip this check for the Parent category. Two parts can be
 			// considered equal even if they are in different parts of the
 			// model.
-			if (!"Parent".equals(category)) {
+			if (!MeshCategory.PARENT.equals(category)) {
 				if (!entities.get(category)
 						.containsAll(castObject.entities.get(category))
 						|| !castObject.entities.get(category)
@@ -263,12 +275,11 @@ public class ShapeMesh extends AbstractMesh {
 	public int hashCode() {
 		int hash = 9;
 		hash += 31 * type.hashCode();
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 
 			// Do not hash the parent shape, to avoid circular hashing
-			if (!"Parent".equals(category)) {
-				for (AbstractController entity : getEntitiesByCategory(
-						category)) {
+			if (!MeshCategory.PARENT.equals(category)) {
+				for (IController entity : getEntitiesByCategory(category)) {
 					hash += 31 * entity.hashCode();
 				}
 			}
@@ -289,8 +300,8 @@ public class ShapeMesh extends AbstractMesh {
 
 		// Ignore requests to register own children to prevent circular
 		// observation
-		if (entities.get("Children") == null
-				|| !entities.get("Children").contains(listener)) {
+		if (entities.get(MeshCategory.CHILDREN) == null
+				|| !entities.get(MeshCategory.CHILDREN).contains(listener)) {
 			super.register(listener);
 		}
 	}

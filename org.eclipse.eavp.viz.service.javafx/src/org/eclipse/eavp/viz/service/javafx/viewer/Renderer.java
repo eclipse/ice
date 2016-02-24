@@ -23,7 +23,7 @@ import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
-public abstract class Renderer implements IRenderer {
+public class Renderer implements IRenderer {
 
 	/** Stores attachment manager associations. */
 	protected Map<Class<? extends IAttachment>, IAttachmentManager> attachmentMgr;

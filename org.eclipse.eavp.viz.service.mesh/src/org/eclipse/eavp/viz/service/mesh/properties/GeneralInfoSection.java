@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -47,7 +48,7 @@ public class GeneralInfoSection extends AbstractPropertySection {
 	/**
 	 * The {@link IMeshPart} whose properties are being exposed.
 	 */
-	protected AbstractController object;
+	protected IController object;
 
 	// ---- General Info widgets ---- //
 	/**
@@ -128,7 +129,8 @@ public class GeneralInfoSection extends AbstractPropertySection {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				if (object != null) {
-					object.setProperty("Description", descText.getText());
+					object.setProperty(MeshProperty.DESCRIPTION,
+							descText.getText());
 				}
 				return;
 			}
@@ -210,18 +212,18 @@ public class GeneralInfoSection extends AbstractPropertySection {
 		// If there is a valid object, refresh all of the editable controls.
 		if (object != null) {
 			// Update the Text fields with their appropriate values.
-			nameText.setText(object.getProperty("Name"));
+			nameText.setText(object.getProperty(MeshProperty.NAME));
 
 			// It is permissible for an object to lack a description, in which
 			// case the text is simply empty
-			String desc = object.getProperty("Description");
+			String desc = object.getProperty(MeshProperty.DESCRIPTION);
 			if (desc == null) {
 				desc = "";
 			}
 
 			descText.setText(desc);
 			descText.setEnabled(true);
-			idLabel.setText(object.getProperty("Id"));
+			idLabel.setText(object.getProperty(MeshProperty.ID));
 		}
 		// Otherwise, disable all of the editable controls.
 		else {

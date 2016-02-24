@@ -11,7 +11,6 @@
 package org.eclipse.eavp.viz.service.modeling;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
@@ -22,24 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A class which is responsible for user interactions with the underlying data
- * structures which represent a part in a model. An AbstractController is
- * associated with an AbstractMeshComponent, which is the internal
- * representation of the part and any associated data, and an AbstractView,
- * which holds the graphical representation of the object in the native data
- * types of the rendering engine.
- * 
- * The AbstractController is meant to completely encapsulate the functionality
- * of the part. All client interactions with a part should take place through
- * function calls to the part's AbstractController, without regard as to whether
- * they are internally delegated to the model, the view, or both. The controller
- * should not expose the model or view, or their implementation details, to the
- * client.
+ * A base implementation of IController.
  * 
  * @author Robert Smith
  */
 public class AbstractController
-		implements IManagedUpdateable, IManagedUpdateableListener {
+		implements IManagedUpdateable, IManagedUpdateableListener, IController {
 
 	/**
 	 * The internal representation of this part.
@@ -65,7 +52,7 @@ public class AbstractController
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractController.class);
+			.getLogger(IController.class);
 
 	/**
 	 * The default constructor.
@@ -77,7 +64,7 @@ public class AbstractController
 	}
 
 	/**
-	 * Constructor for an AbstractController with its associated model and view.
+	 * Constructor for an IController with its associated model and view.
 	 * 
 	 * @param model
 	 *            The model to be managed.
@@ -89,7 +76,7 @@ public class AbstractController
 		// Check that the model and view are valid
 		if (model == null || view == null) {
 			throw new IllegalArgumentException(
-					"An AbstractController must have a non-null model and view.");
+					"An IController must have a non-null model and view.");
 		}
 
 		// Initialize the class variables
@@ -107,11 +94,12 @@ public class AbstractController
 		view.register(this);
 	}
 
-	/**
-	 * Alerts the view to refresh itself based on changes in the model
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#refresh()
 	 */
+	@Override
 	public void refresh() {
 		view.refresh(model);
 	}
@@ -126,20 +114,23 @@ public class AbstractController
 		view.setSynched();
 	}
 
-	/**
-	 * Checks whether or not this part and its resources have been disposed.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getDisposed()
 	 */
+	@Override
 	public AtomicBoolean getDisposed() {
 		return disposed;
 	}
 
-	/**
-	 * Set the the controller as being disposed.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @newDisposed Whether or not the controller is disposed.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setDisposed(boolean)
 	 */
+	@Override
 	public void setDisposed(boolean newDisposed) {
 
 		// Atomically set the controller as disposed
@@ -150,279 +141,295 @@ public class AbstractController
 		updateManager.notifyListeners(eventType);
 	}
 
-	/**
-	 * Getter method for the part's model
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The controller's managed model.
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getModel()
 	 */
-	public AbstractMesh getModel() {
+	@Override
+	public IMesh getModel() {
 		return model;
 	}
 
-	/**
-	 * Getter method for the part's view.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The controller's managed view.
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getView()
 	 */
+	@Override
 	public AbstractView getView() {
 		return view;
 	}
 
-	/**
-	 * Setter method for the model's view.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setView(org.eclipse.
+	 * eavp.viz.service.modeling.AbstractView)
 	 */
+	@Override
 	public void setView(AbstractView newView) {
 
 		// Log an error and fail silently if the view is null
 		if (newView == null) {
-			logger.error(
-					"Attempted to set an AbstractController's view to null.");
+			logger.error("Attempted to set an IController's view to null.");
 			return;
 		}
 
 		view = newView;
 	}
 
-	/**
-	 * Adds an entity to the model.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#addEntity(org.eclipse.
+	 * eavp.viz.service.modeling.IController)
 	 */
-	public void addEntity(AbstractController newEntity) {
+	@Override
+	public void addEntity(IController newEntity) {
 		model.addEntity(newEntity);
 	}
 
-	/**
-	 * Dispose the controller and its resources.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#dispose()
 	 */
+	@Override
 	public void dispose() {
 		setDisposed(true);
 	}
 
-	/**
-	 * Gets a list of all the part's children entities.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getEntities()
 	 */
-	public List<AbstractController> getEntities() {
+	@Override
+	public ArrayList<IController> getEntities() {
 		return model.getEntities();
 	}
 
-	/**
-	 * Returns all the part's child entities of the given category
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @category The category of entities to get.
-	 * @generated NOT
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#getEntitiesByCategory(
+	 * java.lang.String)
 	 */
-	public List<AbstractController> getEntitiesByCategory(String category) {
+	@Override
+	public ArrayList<IController> getEntitiesByCategory(
+			IMeshCategory category) {
 		return model.getEntitiesByCategory(category);
 	}
 
-	/**
-	 * Gets the last transformation fully applied to this part.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#
+	 * getPreviousTransformation()
 	 */
+	@Override
 	public Transformation getPreviousTransformation() {
 		return view.getPreviousTransformation();
 	}
 
-	/**
-	 * Get the specified property's value.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @property The property to get.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#getProperty(java.lang.
+	 * String)
 	 */
-	public String getProperty(String property) {
+	@Override
+	public String getProperty(IMeshProperty property) {
 		return model.getProperty(property);
 	}
 
-	/**
-	 * Get the part's representation as an object specific to the application
-	 * rendering it.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#getRepresentation()
 	 */
+	@Override
 	public Object getRepresentation() {
 		return view.getRepresentation();
 	}
 
-	/**
-	 * Get the part's rotation in the x, y, and z directions
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getRotation()
 	 */
+	@Override
 	public double[] getRotation() {
 		return view.getTransformation().getRotation();
 	}
 
-	/**
-	 * Get the part's scale in the x, y, and z directions.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getScale()
 	 */
+	@Override
 	public double[] getScale() {
 		return view.getTransformation().getScale();
 	}
 
-	/**
-	 * Get the part's size.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getSize()
 	 */
+	@Override
 	public double getSize() {
 		return view.getTransformation().getSize();
 	}
 
-	/**
-	 * Get the part's skew in the x, y, and z directions
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getSkew()
 	 */
+	@Override
 	public double[] getSkew() {
 		return view.getTransformation().getSkew();
 	}
 
-	/**
-	 * Get the part's transformation.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#getTransformation()
 	 */
+	@Override
 	public Transformation getTransformation() {
 		return view.getTransformation();
 	}
 
-	/**
-	 * Get the part's translation in the x, y, and z directions
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getTranslation()
 	 */
+	@Override
 	public double[] getTranslation() {
 		return view.getTransformation().getTranslation();
 	}
 
-	/**
-	 * Remove an entity from the part's child entities.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @entity The entity to be removed
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#removeEntity(org.
+	 * eclipse.eavp.viz.service.modeling.IController)
 	 */
-	public void removeEntity(AbstractController entity) {
+	@Override
+	public void removeEntity(IController entity) {
 		model.removeEntity(entity);
 	}
 
-	/**
-	 * Set the given property to a new value
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @property The property to modify
-	 * @value The property's new value
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setProperty(java.lang.
+	 * String, java.lang.String)
 	 */
-	public void setProperty(String property, String value) {
+	@Override
+	public void setProperty(IMeshProperty property, String value) {
 		model.setProperty(property, value);
 	}
 
-	/**
-	 * Set the part's rotation in the x, y, and x directions.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @x The amount of x rotation to apply
-	 * @y The amount of y rotation to apply
-	 * @z The amount of z rotation to apply
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setRotation(double,
+	 * double, double)
 	 */
+	@Override
 	public void setRotation(double x, double y, double z) {
 		view.getTransformation().setRotation(x, y, z);
 	}
 
-	/**
-	 * Set the part's scale in the x, y, and x directions.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @x The part's x scale
-	 * @y The part's y scale
-	 * @z The part's z scale
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#setScale(double,
+	 * double, double)
 	 */
+	@Override
 	public void setScale(double x, double y, double z) {
 		view.getTransformation().setScale(x, y, z);
 	}
 
-	/**
-	 * Set the part's size
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @newSize The new multiplier for the part's size
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#setSize(double)
 	 */
+	@Override
 	public void setSize(double newSize) {
 		view.getTransformation().setSize(newSize);
 	}
 
-	/**
-	 * Set the part's skew in the x, y, and x directions.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @x The amount of x skew to apply
-	 * @y The amount of y skew to apply
-	 * @z The amount of z skew to apply
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#setSkew(double,
+	 * double, double)
 	 */
+	@Override
 	public void setSkew(double x, double y, double z) {
 		view.getTransformation().setSkew(x, y, z);
 	}
 
-	/**
-	 * Set the part's transformation
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @newTransformation The transformation to apply to the part.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setTransformation(org.
+	 * eclipse.eavp.viz.service.modeling.Transformation)
 	 */
+	@Override
 	public void setTransformation(Transformation newTransformation) {
 		view.setTransformation(newTransformation);
 	}
 
-	/**
-	 * Set the part's translation in the x, y, and x directions.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @x The amount of x translation to apply
-	 * @y The amount of y translation to apply
-	 * @z The amount of z translation to apply
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setTranslation(double,
+	 * double, double)
 	 */
+	@Override
 	public void setTranslation(double x, double y, double z) {
 		view.getTransformation().setTranslation(x, y, z);
 	}
 
-	/**
-	 * Add an entity to the part under the given category.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @param newEntity
-	 *            The child entity to be added to this part
-	 * @param category
-	 *            The category under which to add the new child entity
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#addEntityByCategory(org
+	 * .eclipse.eavp.viz.service.modeling.IController, java.lang.String)
 	 */
-	public void addEntityByCategory(AbstractController newEntity,
-			String category) {
+	@Override
+	public void addEntityByCategory(IController newEntity,
+			IMeshCategory category) {
 		model.addEntityByCategory(newEntity, category);
 	}
 
-	/**
-	 * Getter method for the update manager.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The update subscription manager
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#getUpdateManager()
 	 */
+	@Override
 	public UpdateableSubscriptionManager getUpdateManager() {
 		return updateManager;
 	}
@@ -440,8 +447,8 @@ public class AbstractController
 			return true;
 		}
 
-		// Check that the other object is an AbstractController
-		if (!(otherObject instanceof AbstractController)) {
+		// Check that the other object is an IController
+		if (!(otherObject instanceof IController)) {
 			return false;
 		}
 
@@ -475,21 +482,29 @@ public class AbstractController
 		return clone;
 	}
 
-	/**
-	 * Deep copy the given object's data into this one.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param otherObject
-	 *            The object to copy into this one.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#copy(org.eclipse.eavp.
+	 * viz.service.modeling.IController)
 	 */
-	public void copy(AbstractController otherObject) {
+	@Override
+	public void copy(IController otherObject) {
+
+		// Check that the source object is an AbstractController, failing
+		// silently if not and casting it if so
+		if (!(otherObject instanceof IController)) {
+			return;
+		}
+		AbstractController castObject = (AbstractController) otherObject;
 
 		// Create the model and give it a reference to this
-		model = new AbstractMesh();
+		model = (AbstractMesh) castObject.model.clone();
 		model.setController(this);
 
 		// Copy the other object's data members
-		model.copy(otherObject.model);
-		view = (AbstractView) otherObject.view.clone();
+		view = (AbstractView) castObject.view.clone();
 
 		// Register as a listener to the model and view
 		model.register(this);
@@ -514,7 +529,8 @@ public class AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * @see
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
 	 * unregister(org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
@@ -555,8 +571,8 @@ public class AbstractController
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateable#register(org.eclipse.eavp.viz.service.datastructures
-	 * .VizObject.IVizUpdateableListener, java.util.ArrayList)
+	 * IManagedVizUpdateable#register(org.eclipse.eavp.viz.service.
+	 * datastructures .VizObject.IVizUpdateableListener, java.util.ArrayList)
 	 */
 	@Override
 	public void register(IManagedUpdateableListener listener) {

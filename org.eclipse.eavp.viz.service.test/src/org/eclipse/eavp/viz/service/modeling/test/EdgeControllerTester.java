@@ -20,7 +20,10 @@ import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
@@ -48,7 +51,8 @@ public class EdgeControllerTester {
 
 		// Try adding a non-vertex. It should be put in the Default category
 		edge.addEntity(new AbstractController());
-		assertEquals(1, edge.getEntitiesByCategory("Default").size());
+		assertEquals(1,
+				edge.getEntitiesByCategory(MeshCategory.DEFAULT).size());
 
 		// Create some vertices
 		VertexController vertex1 = new VertexController(new VertexMesh(0, 0, 0),
@@ -59,14 +63,14 @@ public class EdgeControllerTester {
 				new AbstractView());
 
 		// Add all three vertices to the edge.
-		edge.addEntityByCategory(vertex1, "Vertices");
-		edge.addEntityByCategory(vertex2, "Vertices");
-		edge.addEntityByCategory(vertex3, "Vertices");
+		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check the Vertices category to ensure that the edge accepted the
 		// first two vertices and ignored the third
-		List<AbstractController> vertices = edge
-				.getEntitiesByCategory("Vertices");
+		List<IController> vertices = edge
+				.getEntitiesByCategory(MeshCategory.VERTICES);
 		assertTrue(vertices.contains(vertex1));
 		assertTrue(vertices.contains(vertex2));
 		assertFalse(vertices.contains(vertex3));
@@ -74,11 +78,11 @@ public class EdgeControllerTester {
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntityByCategory(vertex3, "Vertices");
+		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check the Vertices category to ensure that the last vertex was
 		// replaced
-		vertices = edge.getEntitiesByCategory("Vertices");
+		vertices = edge.getEntitiesByCategory(MeshCategory.VERTICES);
 		assertTrue(vertices.contains(vertex1));
 		assertFalse(vertices.contains(vertex2));
 		assertTrue(vertices.contains(vertex3));
@@ -93,7 +97,7 @@ public class EdgeControllerTester {
 		// Create an edge
 		EdgeController edge = new EdgeController(new EdgeMesh(),
 				new AbstractView());
-		edge.setProperty("Test", "Property");
+		edge.setProperty(MeshProperty.DESCRIPTION, "Property");
 
 		// Clone it and check that they are identical
 		EdgeController clone = (EdgeController) edge.clone();

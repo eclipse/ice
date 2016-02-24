@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.canvas;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.jface.viewers.StructuredSelection;
 
 /**
@@ -21,19 +21,19 @@ import org.eclipse.jface.viewers.StructuredSelection;
 public class FXSelection extends StructuredSelection {
 
 	/** */
-	private final AbstractController shape;
+	private final IController shape;
 
 	/**
 	 * 
 	 * @param modelShape
 	 */
-	public FXSelection(AbstractController modelShape) {
+	public FXSelection(IController modelShape) {
 		super(modelShape);
 
 		this.shape = modelShape;
 	}
 
-	public AbstractController getShape() {
+	public IController getShape() {
 		return shape;
 	}
 

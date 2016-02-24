@@ -28,7 +28,7 @@ import javafx.scene.transform.Rotate;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
-public class AbstractCameraController implements ICameraController {
+public abstract class AbstractCameraController implements ICameraController {
 
 	/**
 	 * The Camera this object is managing.
@@ -197,9 +197,7 @@ public class AbstractCameraController implements ICameraController {
 	 * This method is to be invoked before input listeners are registered and
 	 * does nothing by default. It is intended to be overwritten by subclasses.
 	 */
-	protected void initCamera() {
-
-	}
+	abstract protected void initCamera();
 
 	/**
 	 * This function defines the camera's behavior when a keyboard button is
@@ -209,9 +207,7 @@ public class AbstractCameraController implements ICameraController {
 	 * @param event
 	 *            An event sent to the scene.
 	 */
-	public void handleKeyPressed(KeyEvent event) {
-
-	}
+	abstract public void handleKeyPressed(KeyEvent event);
 
 	/**
 	 * This function defines the camera's behavior when the mouse is dragged. By
@@ -220,9 +216,7 @@ public class AbstractCameraController implements ICameraController {
 	 * @param event
 	 *            An event sent to the scene.
 	 */
-	public void handleMouseDragged(MouseEvent event) {
-
-	}
+	abstract public void handleMouseDragged(MouseEvent event);
 
 	/**
 	 * This function defines the camera's behavior when a mouse button is
@@ -232,9 +226,7 @@ public class AbstractCameraController implements ICameraController {
 	 * @param event
 	 *            An event sent to the scene.
 	 */
-	public void handleMousePressed(MouseEvent event) {
-
-	}
+	abstract public void handleMousePressed(MouseEvent event);
 
 	/**
 	 * This function defines the camera's behavior when a mouse button is
@@ -244,9 +236,7 @@ public class AbstractCameraController implements ICameraController {
 	 * @param event
 	 *            An event sent to the scene.
 	 */
-	public void handleMouseReleased(MouseEvent event) {
-
-	}
+	abstract public void handleMouseReleased(MouseEvent event);
 
 	/**
 	 * This function defines the camera's behavior when the mouse wheel is
@@ -256,9 +246,7 @@ public class AbstractCameraController implements ICameraController {
 	 * @param event
 	 *            An event sent to the scene.
 	 */
-	public void handleMouseScroll(ScrollEvent event) {
-
-	}
+	abstract public void handleMouseScroll(ScrollEvent event);
 
 	/*
 	 * (non-Javadoc)
@@ -267,10 +255,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#reset()
 	 */
 	@Override
-	public void reset() {
-		// Nothing to do, as the AbstractController does not actually move the
-		// camera.
-	}
+	abstract public void reset();
 
 	/*
 	 * (non-Javadoc)
@@ -279,9 +264,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#pitchCamera(double)
 	 */
 	@Override
-	public void pitchCamera(double radians) {
-		// Nothing to do
-	}
+	abstract public void pitchCamera(double radians);
 
 	/*
 	 * (non-Javadoc)
@@ -290,9 +273,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#rollCamera(double)
 	 */
 	@Override
-	public void rollCamera(double radians) {
-		// Nothing to do
-	}
+	abstract public void rollCamera(double radians);
 
 	/*
 	 * (non-Javadoc)
@@ -301,9 +282,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#raiseCamera(double)
 	 */
 	@Override
-	public void raiseCamera(double distance) {
-		// Nothing to do
-	}
+	abstract public void raiseCamera(double distance);
 
 	/*
 	 * (non-Javadoc)
@@ -312,9 +291,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#strafeCamera(double)
 	 */
 	@Override
-	public void strafeCamera(double distance) {
-		// Nothing to do
-	}
+	abstract public void strafeCamera(double distance);
 
 	/*
 	 * (non-Javadoc)
@@ -323,9 +300,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#thrustCamera(double)
 	 */
 	@Override
-	public void thrustCamera(double distance) {
-		// Nothing to do
-	}
+	abstract public void thrustCamera(double distance);
 
 	/*
 	 * (non-Javadoc)
@@ -334,9 +309,7 @@ public class AbstractCameraController implements ICameraController {
 	 * ICameraController#yawCamera(double)
 	 */
 	@Override
-	public void yawCamera(double radians) {
-		// Nothing to do
-	}
+	abstract public void yawCamera(double radians);
 
 	/*
 	 * (non-Javadoc)

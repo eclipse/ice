@@ -17,8 +17,8 @@ import org.eclipse.eavp.viz.service.AbstractVizService;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -44,7 +44,7 @@ public class FXMeshVizService extends AbstractVizService {
 	 * </p>
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController mesh) throws Exception {
+	public IVizCanvas createCanvas(IController mesh) throws Exception {
 		FXMeshCanvas canvas = new FXMeshCanvas(mesh);
 
 		return canvas;
@@ -80,7 +80,7 @@ public class FXMeshVizService extends AbstractVizService {
 	 * @see org.eclipse.eavp.viz.service.IVizService#getFactory()
 	 */
 	@Override
-	public IControllerFactory getFactory() {
+	public IControllerProviderFactory getFactory() {
 		return new FXMeshControllerFactory();
 	}
 
@@ -97,9 +97,8 @@ public class FXMeshVizService extends AbstractVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
-	 * swt.widgets.Composite, java.net.URI, int)
+	 * @see org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.
+	 * eclipse. swt.widgets.Composite, java.net.URI, int)
 	 */
 	@Override
 	public String createAdditionalPage(MultiPageEditorPart parent,

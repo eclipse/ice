@@ -44,14 +44,14 @@ public class ShapeController extends AbstractController {
 	 * @param parent
 	 *            The new shape which serves as this shape's parent.
 	 */
-	public void setParent(AbstractController parent) {
+	public void setParent(IController parent) {
 		((ShapeMesh) model).setParent(parent);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -68,20 +68,26 @@ public class ShapeController extends AbstractController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController#copy(org.eclipse.
-	 * ice.viz.service.modeling.AbstractController)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#copy(org. eclipse.
+	 * ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void copy(AbstractController source) {
+	public void copy(IController source) {
+
+		// Check that the source object is an IController, failing
+		// silently if not and casting it if so
+		if (!(source instanceof ShapeController)) {
+			return;
+		}
+		AbstractController castObject = (AbstractController) source;
 
 		// Create the model and give it a reference to this
 		model = new ShapeMesh();
 		model.setController(this);
 
 		// Copy the other object's data members
-		model.copy(source.model);
-		view = (AbstractView) source.view.clone();
+		model.copy(castObject.model);
+		view = (AbstractView) castObject.view.clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

@@ -12,16 +12,18 @@ package org.eclipse.eavp.viz.service.javafx.geometry.datatypes;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
+import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
-import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -111,13 +113,13 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 		// Initialize the JavaFX node
 		node = new Group();
-		node.setId(model.getProperty("Name"));
+		node.setId(model.getProperty(MeshProperty.NAME));
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
 		// Create a gizmo with axis for the root node
-		if ("True".equals(model.getProperty("Root"))) {
+		if ("True".equals(model.getProperty(MeshProperty.ROOT))) {
 			gizmo = new TransformGizmo(100);
 			gizmo.showHandles(false);
 		} else {
@@ -128,7 +130,8 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		node.getChildren().add(gizmo);
 
 		// Create a Shape3D for the model
-		createShape(model, ShapeType.valueOf(model.getProperty("Type")));
+		createShape(model,
+				ShapeType.valueOf(model.getProperty(MeshProperty.TYPE)));
 
 	}
 
@@ -142,7 +145,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * @param type
 	 *            The type of shape to display
 	 */
-	protected void createShape(AbstractMesh model, ShapeType type) {
+	protected void createShape(IMesh model, ShapeType type) {
 
 		// Fail silently for complex shapes
 		if (type == null) {
@@ -298,7 +301,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * @param controller
 	 *            This view's controller
 	 */
-	public void setController(AbstractController controller) {
+	public void setController(IController controller) {
 
 		// Put the controller in the node's data structure
 		node.getProperties().put(ShapeController.class, shape);
@@ -318,7 +321,7 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 
 		// If the shape is currently displaying the default material, set it to
 		// the new one
-		if (shape.getMaterial() == defaultMaterial) {
+		if (shape != null && shape.getMaterial() == defaultMaterial) {
 			shape.setMaterial(material);
 		}
 
@@ -342,24 +345,26 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMeshComponent)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.
+	 * ice .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMesh model) {
+	public void refresh(IMesh model) {
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
 		// Complex shapes have nothing else to refresh, as their children will
 		// handle their own views.
-		if (model.getProperty("Operator") == null) {
+		if (model.getProperty(GeometryMeshProperty.OPERATOR) == null) {
 
 			// Create the shape if necessary
-			createShape(model, ShapeType.valueOf(model.getProperty("Type")));
+			createShape(model,
+					ShapeType.valueOf(model.getProperty(MeshProperty.TYPE)));
 
 			// Convert the model's selected property to a boolean
-			Boolean newSelected = "True".equals(model.getProperty("Selected"));
+			Boolean newSelected = "True"
+					.equals(model.getProperty(MeshProperty.SELECTED));
 
 			// If the selected property has changed, update
 			if (selected != newSelected) {
@@ -402,8 +407,8 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#update(org.eclipse.ice.
-	 * viz.service.datastructures.VizObject.IManagedUpdateable,
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#update(org.eclipse.
+	 * ice. viz.service.datastructures.VizObject.IManagedUpdateable,
 	 * org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType[])
 	 */
 	@Override
@@ -423,7 +428,8 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.WireFramePart#setWireFrameMode(
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.WireFramePart#setWireFrameMode(
 	 * boolean)
 	 */
 	@Override
@@ -433,10 +439,12 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 		wireframe = on;
 
 		// Set the current shape to the correct draw mode
-		if (on) {
-			shape.setDrawMode(DrawMode.LINE);
-		} else {
-			shape.setDrawMode(DrawMode.FILL);
+		if (shape != null) {
+			if (on) {
+				shape.setDrawMode(DrawMode.LINE);
+			} else {
+				shape.setDrawMode(DrawMode.FILL);
+			}
 		}
 
 		// Notify listeners of the change

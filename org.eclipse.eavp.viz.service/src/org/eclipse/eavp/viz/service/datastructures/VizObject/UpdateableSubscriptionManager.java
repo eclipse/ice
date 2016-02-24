@@ -164,8 +164,7 @@ public class UpdateableSubscriptionManager {
 			int nextID = 0;
 
 			// Check each event type with registered listeners in the map
-			for (SubscriptionType listenerType : subscriptionMap
-					.keySet()) {
+			for (SubscriptionType listenerType : subscriptionMap.keySet()) {
 
 				// Whether there are any matches for this event type
 				boolean match = false;
@@ -251,8 +250,8 @@ public class UpdateableSubscriptionManager {
 
 			// For each listener, send it the message types it is subscribed for
 			for (int i = 0; i < nextID; i++) {
-				SubscriptionType[] list = new SubscriptionType[messageMap
-						.get(i).size()];
+				SubscriptionType[] list = new SubscriptionType[messageMap.get(i)
+						.size()];
 				list = messageMap.get(i).toArray(list);
 				listenerMap.get(i).update(source, list);
 			}
@@ -271,26 +270,32 @@ public class UpdateableSubscriptionManager {
 	 */
 	public void register(IManagedUpdateableListener listener) {
 
-		// Poll the listener as to which event types it wants to receive updates
-		// for
-		ArrayList<SubscriptionType> types = listener
-				.getSubscriptions(source);
+		// Silently fail if listener is null
+		if (listener != null) {
 
-		// Add the listener to each type's list in the map
-		for (SubscriptionType type : types) {
+			// Poll the listener as to which event types it wants to receive
+			// updates
+			// for
+			ArrayList<SubscriptionType> types = listener
+					.getSubscriptions(source);
 
-			// Get the current list of subscribers
-			ArrayList<IManagedUpdateableListener> tempListeners = subscriptionMap
-					.get(type);
+			// Add the listener to each type's list in the map
+			for (SubscriptionType type : types) {
 
-			// If it is empty, create a new list
-			if (tempListeners == null) {
-				tempListeners = new ArrayList<IManagedUpdateableListener>();
+				// Get the current list of subscribers
+				ArrayList<IManagedUpdateableListener> tempListeners = subscriptionMap
+						.get(type);
+
+				// If it is empty, create a new list
+				if (tempListeners == null) {
+					tempListeners = new ArrayList<IManagedUpdateableListener>();
+				}
+
+				// Add the listener to the map
+				tempListeners.add(listener);
+				subscriptionMap.put(type, tempListeners);
 			}
 
-			// Add the listener to the map
-			tempListeners.add(listener);
-			subscriptionMap.put(type, tempListeners);
 		}
 	}
 

@@ -12,10 +12,12 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.PointController;
 import org.eclipse.eavp.viz.service.modeling.PointMesh;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
@@ -42,17 +44,19 @@ public class AbstractControllerFactoryTester {
 		// Check that the factory creates the right kind of controller for a
 		// PointMesh
 		PointMesh point = new PointMesh();
-		AbstractController pointC = factory.createController(point);
+		IController pointC = factory.createProvider(point)
+				.createController(point);
 		assertTrue(pointC instanceof PointController);
 
 		// Check that the factory creates the right kind of controller for a
 		// VertexMesh
 		VertexMesh vertex = new VertexMesh();
-		AbstractController vertexC = factory.createController(vertex);
+		IController vertexC = factory.createProvider(vertex)
+				.createController(vertex);
 		assertTrue(vertexC instanceof VertexController);
 
 		// Check that the factory returns null for an unrecognized type.
-		AbstractController nullC = factory.createController(new AbstractMesh());
+		IControllerProvider nullC = factory.createProvider(new AbstractMesh());
 		assertTrue(nullC == null);
 	}
 
@@ -89,11 +93,11 @@ public class AbstractControllerFactoryTester {
 			 * 
 			 * @see
 			 * org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory.
-			 * IControllerProvider#createController(org.eclipse.eavp.viz.service.
-			 * modeling.AbstractMesh)
+			 * IControllerProvider#createController(org.eclipse.eavp.viz.
+			 * service. modeling.AbstractMesh)
 			 */
 			@Override
-			public AbstractController createController(AbstractMesh model) {
+			public IController createController(IMesh model) {
 				return new PointController((PointMesh) model,
 						new AbstractView());
 			}
@@ -113,11 +117,11 @@ public class AbstractControllerFactoryTester {
 			 * 
 			 * @see
 			 * org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory.
-			 * IControllerProvider#createController(org.eclipse.eavp.viz.service.
-			 * modeling.AbstractMesh)
+			 * IControllerProvider#createController(org.eclipse.eavp.viz.
+			 * service. modeling.AbstractMesh)
 			 */
 			@Override
-			public AbstractController createController(AbstractMesh model) {
+			public IController createController(IMesh model) {
 				return new VertexController((VertexMesh) model,
 						new AbstractView());
 			}

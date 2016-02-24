@@ -14,7 +14,8 @@ package org.eclipse.eavp.viz.service.geometry.widgets;
 
 import java.net.URL;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -96,10 +97,11 @@ public class ActionDeleteShape extends Action {
 
 		// Get the tree paths of the current selection
 
-		ITreeSelection selection = (ITreeSelection) view.treeViewer.getSelection();
+		ITreeSelection selection = (ITreeSelection) view.treeViewer
+				.getSelection();
 		TreePath[] paths = selection.getPaths();
 
-		AbstractController geometry = (AbstractController) view.treeViewer.getInput();
+		IController geometry = (IController) view.treeViewer.getInput();
 
 		// Loop through each TreePath
 
@@ -112,7 +114,8 @@ public class ActionDeleteShape extends Action {
 			if (selectedObject instanceof ShapeController) {
 
 				ShapeController selectedShape = (ShapeController) selectedObject;
-				ShapeController parentShape = (ShapeController) selectedShape.getEntitiesByCategory("Parent").get(0);
+				ShapeController parentShape = (ShapeController) selectedShape
+						.getEntitiesByCategory(MeshCategory.PARENT).get(0);
 
 				if (parentShape instanceof ShapeController) {
 

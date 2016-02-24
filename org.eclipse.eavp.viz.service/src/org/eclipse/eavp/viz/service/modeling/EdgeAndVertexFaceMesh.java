@@ -35,7 +35,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	 * 
 	 * @param entities
 	 */
-	public EdgeAndVertexFaceMesh(List<AbstractController> entities) {
+	public EdgeAndVertexFaceMesh(List<IController> entities) {
 		super(entities);
 	}
 
@@ -44,23 +44,23 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	 * 
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController newEntity,
-			String category) {
+	public void addEntityByCategory(IController newEntity,
+			IMeshCategory category) {
 
 		// If the new entity is an edge, add it and its vertices under the
 		// appropriate categories.
-		if ("Edges".equals(category)) {
+		if (MeshCategory.EDGES.equals(category)) {
 
 			// Queue updates for all the new children
 			updateManager.enqueue();
 
 			// Add the edge under the Edges category
-			super.addEntityByCategory(newEntity, "Edges");
+			super.addEntityByCategory(newEntity, MeshCategory.EDGES);
 
 			// Add each of the edge's vertices under the "Vertices" category
-			for (AbstractController vertex : newEntity
-					.getEntitiesByCategory("Vertices")) {
-				super.addEntityByCategory(vertex, "Vertices");
+			for (IController vertex : newEntity
+					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+				super.addEntityByCategory(vertex, MeshCategory.VERTICES);
 			}
 
 			// Send notifications for all children
@@ -79,30 +79,30 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	 * eclipse.ice.viz.service.modeling.AbstractController)
 	 */
 	@Override
-	public void removeEntity(AbstractController entity) {
+	public void removeEntity(IController entity) {
 
 		// Ignore requests to remove a vertex, to keep the Vertex category
 		// consistent with the Edges category
-		if (!getEntitiesByCategory("Vertices").contains(entity)) {
+		if (!getEntitiesByCategory(MeshCategory.VERTICES).contains(entity)) {
 
 			// Queue messages from all the removals
 			updateManager.enqueue();
 
 			// If the entity is an edge, also remove its vertices
-			if (getEntitiesByCategory("Edges").contains(entity)) {
-				for (AbstractController vertex : entity
-						.getEntitiesByCategory("Vertices")) {
+			if (getEntitiesByCategory(MeshCategory.EDGES).contains(entity)) {
+				for (IController vertex : entity
+						.getEntitiesByCategory(MeshCategory.VERTICES)) {
 
 					// Whether or not the vertex is incident upon another edge
 					boolean found = false;
 
 					// Search all the other edges to see if any of them have
 					// this vertex
-					for (AbstractController edge : getEntitiesByCategory(
-							"Edges")) {
-						if (edge != entity
-								&& edge.getEntitiesByCategory("Vertices")
-										.contains(vertex)) {
+					for (IController edge : getEntitiesByCategory(
+							MeshCategory.EDGES)) {
+						if (edge != entity && edge
+								.getEntitiesByCategory(MeshCategory.VERTICES)
+								.contains(vertex)) {
 							found = true;
 							break;
 						}
@@ -146,73 +146,81 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	 * service.modeling.AbstractMesh)
 	 */
 	@Override
-	public void copy(AbstractMesh otherObject) {
+	public void copy(IMesh otherObject) {
 
 		// Copy only if the other object is an EdgeAndVertexFaceComponent
 		if (otherObject instanceof EdgeAndVertexFaceMesh) {
+
+			// Cast the object
+			EdgeAndVertexFaceMesh castObject = (EdgeAndVertexFaceMesh) otherObject;
 
 			// Queue messages from the new edges added
 			updateManager.enqueue();
 
 			// Create clones of all the vertices. This should be done first, so
 			// the copies can be used to construct the edges
-			for (AbstractController entity : otherObject
-					.getEntitiesByCategory("Vertices")) {
-				addEntityByCategory((VertexController) entity.clone(),
-						"Vertices");
+			for (IController entity : otherObject
+					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+				addEntityByCategory(
+						(VertexController) ((AbstractController) entity)
+								.clone(),
+						MeshCategory.VERTICES);
 			}
 
 			// Deep copy each category of child entities
-			for (String category : otherObject.entities.keySet()) {
+			for (IMeshCategory category : castObject.entities.keySet()) {
 
 				// Clone each edge, making use of the vertices clones above as
 				// their endpoints.
-				if ("Edges".equals(category)) {
+				if (MeshCategory.EDGES.equals(category)) {
 
 					// Copy each edge
-					for (AbstractController edge : otherObject
+					for (IController edge : otherObject
 							.getEntitiesByCategory(category)) {
 
 						// Create a clone of the edge
-						EdgeController newEdge = (EdgeController) edge.clone();
+						EdgeController newEdge = (EdgeController) ((AbstractController) edge)
+								.clone();
 
 						// Get the clone's vertices
-						List<AbstractController> tempVertices = edge
-								.getEntitiesByCategory("Vertices");
+						List<IController> tempVertices = edge
+								.getEntitiesByCategory(MeshCategory.VERTICES);
 
 						// Remove the vertices from the cloned edge and add an
 						// equivalent one in their place
-						for (AbstractController tempVertex : tempVertices) {
+						for (IController tempVertex : tempVertices) {
 							newEdge.removeEntity(tempVertex);
 
 							// Search the copied vertices from above for the
 							// equivalent vertices which should belong to the
 							// edge.
-							for (AbstractController vertex : entities
-									.get("Vertices"))
+							for (IController vertex : entities
+									.get(MeshCategory.VERTICES))
 								if (tempVertex.equals(vertex)) {
 									newEdge.addEntityByCategory(vertex,
-											"Vertices");
+											MeshCategory.VERTICES);
 								}
 
 						}
 
 						// Save the cloned edge to the map
-						addEntityByCategory(newEdge, "Edges");
+						addEntityByCategory(newEdge, MeshCategory.EDGES);
 
 					}
 				}
 
 				// Vertices were copied above, so ignore them
-				else if ("Vertices".equals(category)) {
+				else if (MeshCategory.VERTICES.equals(category)) {
 					continue;
 				}
 
 				// For other categories, clone all the child entities
 				else {
-					for (AbstractController entity : otherObject
+					for (IController entity : otherObject
 							.getEntitiesByCategory(category)) {
-						addEntityByCategory((EdgeController) entity.clone(),
+						addEntityByCategory(
+								(EdgeController) ((AbstractController) entity)
+										.clone(),
 								category);
 					}
 				}
@@ -220,8 +228,9 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 
 			// Copy the rest of the object data
 			// Copy each of the other component's data members
-			type = otherObject.type;
-			properties = new HashMap<String, String>(otherObject.properties);
+			type = castObject.type;
+			properties = new HashMap<IMeshProperty, String>(
+					castObject.properties);
 
 			// Notify listeners of the change
 			SubscriptionType[] eventTypes = { SubscriptionType.ALL };

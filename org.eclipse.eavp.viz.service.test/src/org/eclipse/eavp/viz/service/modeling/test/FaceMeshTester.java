@@ -13,6 +13,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
 
 /**
@@ -31,7 +32,7 @@ public class FaceMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		FaceMesh mesh = new FaceMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		FaceMesh clone = (FaceMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}

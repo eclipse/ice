@@ -13,10 +13,12 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 
 import javafx.geometry.Point3D;
@@ -84,7 +86,7 @@ public class FXLinearEdgeView extends AbstractView {
 		this();
 
 		// Initialize the JavaFX node
-		node.setId(model.getProperty("Name"));
+		node.setId(model.getProperty(MeshProperty.NAME));
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
@@ -98,9 +100,15 @@ public class FXLinearEdgeView extends AbstractView {
 	 */
 	private Cylinder createShape(EdgeMesh edgeComponent) {
 
+		// If the edge does not have two vertices, a new shape cannot be created
+		if (edgeComponent.getEntitiesByCategory(MeshCategory.VERTICES)
+				.size() != 2) {
+			return null;
+		}
+
 		// Get the scale the vertices are being drawn at
 		int scale = ((FXVertexController) edgeComponent
-				.getEntitiesByCategory("Vertices").get(0))
+				.getEntitiesByCategory(MeshCategory.VERTICES).get(0))
 						.getApplicationScale();
 
 		// Get the edge's endpoints
@@ -151,7 +159,7 @@ public class FXLinearEdgeView extends AbstractView {
 	 * @param controller
 	 *            This view's controller
 	 */
-	public void setController(AbstractController controller) {
+	public void setController(IController controller) {
 
 		// Put the controller in the node's data structure
 		node.getProperties().put(ShapeController.class, mesh);
@@ -172,36 +180,44 @@ public class FXLinearEdgeView extends AbstractView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMeshComponent)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.
+	 * ice .viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void refresh(AbstractMesh model) {
+	public void refresh(IMesh model) {
 
 		// Set the node's transformation
 		node.getTransforms().setAll(Util.convertTransformation(transformation));
 
-		// Redraw the cylinder and set it as the node's child
-		mesh = createShape(((EdgeMesh) model));
+		// Clear the current shapes
 		node.getChildren().clear();
-		node.getChildren().add(mesh);
 
-		// If the vertex is under construction, leave the material unchanged,
-		// otherwise set it based on whether or not the vertex is selected
-		if (!"True".equals(model.getProperty("Constructing"))) {
+		// If the edge does not have two vertices, there is nothing to draw
+		if (model.getEntitiesByCategory(MeshCategory.VERTICES).size() == 2) {
 
-			// Convert the model's selected property to a boolean
-			if ("True".equals(model.getProperty("Selected"))) {
-				mesh.setMaterial(selectedMaterial);
+			// Create a shape based on the model and set it as the node's child
+			mesh = createShape(((EdgeMesh) model));
+			node.getChildren().add(mesh);
+
+			// If the vertex is under construction, leave the material
+			// unchanged,
+			// otherwise set it based on whether or not the vertex is selected
+			if (!"True".equals(model
+					.getProperty(MeshEditorMeshProperty.UNDER_CONSTRUCTION))) {
+
+				// Convert the model's selected property to a boolean
+				if ("True".equals(model.getProperty(MeshProperty.SELECTED))) {
+					mesh.setMaterial(selectedMaterial);
+				}
+
+				else {
+					mesh.setMaterial(defaultMaterial);
+				}
 			}
 
 			else {
-				mesh.setMaterial(defaultMaterial);
+				mesh.setMaterial(constructingMaterial);
 			}
-		}
-
-		else {
-			mesh.setMaterial(constructingMaterial);
 		}
 	}
 

@@ -24,6 +24,12 @@ import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 
 /**
  * A Face which maintains the information needed for a Polygon in a Nek5000
@@ -81,12 +87,13 @@ public class NekPolygonController extends FaceController
 		polygonProperties = new PolygonProperties();
 
 		// Set the default name, id, and description.
-		model.setProperty("Name", "Polygon");
-		model.setProperty("Description", "");
+		model.setProperty(MeshProperty.NAME, "Polygon");
+		model.setProperty(MeshProperty.DESCRIPTION, "");
 
 		// Initialize the polygon's relationship to each edge property and
 		// boundary condition
-		for (AbstractController edge : model.getEntitiesByCategory("Edges")) {
+		for (IController edge : model
+				.getEntitiesByCategory(MeshCategory.EDGES)) {
 			initializeBoundaryConditions(edge);
 		}
 
@@ -99,10 +106,11 @@ public class NekPolygonController extends FaceController
 	 * @param edge
 	 *            The edge for which boundary conditions are being created
 	 */
-	public void initializeBoundaryConditions(AbstractController edge) {
+	public void initializeBoundaryConditions(IController edge) {
 		// Create an entry for the edge in the map of edge properties.
 		EdgeProperties properties = new EdgeProperties();
-		edgeProperties.put(Integer.valueOf(edge.getProperty("Id")), properties);
+		edgeProperties.put(Integer.valueOf(edge.getProperty(MeshProperty.ID)),
+				properties);
 
 		// Register with all of the boundary conditions in the properties.
 		properties.getFluidBoundaryCondition().register(this);
@@ -327,12 +335,11 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController#setProperty(java.
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#setProperty( java.
 	 * lang.String, java.lang.String)
 	 */
 	@Override
-	public void setProperty(String property, String value) {
+	public void setProperty(IMeshProperty property, String value) {
 
 		// If the Edge's constructing or selected properties are being changed,
 		// propagate that change to its vertices
@@ -341,8 +348,8 @@ public class NekPolygonController extends FaceController
 			// Queue notifications from changing own edges
 			updateManager.enqueue();
 
-			for (AbstractController vertex : model
-					.getEntitiesByCategory("Edges")) {
+			for (IController vertex : model
+					.getEntitiesByCategory(MeshCategory.EDGES)) {
 				vertex.setProperty(property, value);
 			}
 
@@ -358,8 +365,8 @@ public class NekPolygonController extends FaceController
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
-	 * IVizUpdateableListener#update(org.eclipse.eavp.viz.service.datastructures.
-	 * VizObject.IVizUpdateable)
+	 * IVizUpdateableListener#update(org.eclipse.eavp.viz.service.
+	 * datastructures. VizObject.IVizUpdateable)
 	 */
 	@Override
 	public void update(IVizUpdateable component) {
@@ -375,16 +382,16 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#
-	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
-	 * AbstractController, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling. IController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// When edges are added, create boundary conditions for them.
-		if ("Edges".equals(category)) {
+		if (MeshCategory.EDGES.equals(category)) {
 			initializeBoundaryConditions(entity);
 		}
 
@@ -394,7 +401,7 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#clone()
 	 */
 	@Override
 	public Object clone() {
@@ -412,19 +419,26 @@ public class NekPolygonController extends FaceController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController#copy(org.eclipse.
-	 * ice.viz.service.modeling.AbstractController)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#copy(org. eclipse.
+	 * ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void copy(AbstractController otherObject) {
+	public void copy(IController otherObject) {
+
+		// Check that the source object is an IController, failing
+		// silently if not and casting it if so
+		if (!(otherObject instanceof NekPolygonController)) {
+			return;
+		}
+		AbstractController castObject = (AbstractController) otherObject;
+
 		// Create the model and give it a reference to this
 		model = new NekPolygonMesh();
 		model.setController(this);
 
 		// Copy the other object's data members
 		model.copy(otherObject.getModel());
-		view = (AbstractView) otherObject.getView().clone();
+		view = (AbstractView) ((AbstractView) otherObject.getView()).clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

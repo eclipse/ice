@@ -13,11 +13,11 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexController;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexView;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class FXVertexControllerTester {
 		VertexMesh mesh = new VertexMesh();
 		FXVertexController vertex = new FXVertexController(mesh,
 				new FXVertexView(mesh));
-		vertex.setProperty("Test", "Property");
+		vertex.setProperty(MeshProperty.INNER_RADIUS, "Property");
 		FXVertexController clone = (FXVertexController) vertex.clone();
 		assertTrue(vertex.equals(clone));
 	}
@@ -60,11 +60,11 @@ public class FXVertexControllerTester {
 		view.wasRefreshed();
 
 		// The view should be refreshed when a property is changed
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.INNER_RADIUS, "Property");
 		assertTrue(view.wasRefreshed());
 
 		// The view should be refreshed when the part is selected
-		mesh.setProperty("Selected", "True");
+		mesh.setProperty(MeshProperty.SELECTED, "True");
 		assertTrue(view.wasRefreshed());
 
 		// The view should not be refreshed when a child is added
@@ -118,7 +118,7 @@ public class FXVertexControllerTester {
 		 * refresh(org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 		 */
 		@Override
-		public void refresh(AbstractMesh model) {
+		public void refresh(IMesh model) {
 			refreshed = true;
 		}
 

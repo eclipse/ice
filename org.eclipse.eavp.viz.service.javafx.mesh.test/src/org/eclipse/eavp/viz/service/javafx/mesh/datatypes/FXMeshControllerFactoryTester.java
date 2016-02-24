@@ -13,17 +13,12 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXEdgeController;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXFaceView;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXLinearEdgeView;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexController;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexView;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
@@ -49,7 +44,7 @@ public class FXMeshControllerFactoryTester {
 		// Create an edge mesh and send it to the factory
 		EdgeMesh edgeMesh = new EdgeMesh();
 		FXEdgeController edge = (FXEdgeController) factory
-				.createController(edgeMesh);
+				.createProvider(edgeMesh).createController(edgeMesh);
 
 		// The controller's model should be the mesh and its view should be an
 		// FXLinearEdgeView
@@ -59,7 +54,7 @@ public class FXMeshControllerFactoryTester {
 		// Create a face edge mesh and send it to the factory
 		FaceEdgeMesh faceEdgeMesh = new FaceEdgeMesh();
 		FXEdgeController faceEdge = (FXEdgeController) factory
-				.createController(faceEdgeMesh);
+				.createProvider(faceEdgeMesh).createController(faceEdgeMesh);
 
 		// The controller's model should be the mesh and its view should be an
 		// FXLinearEdgeView
@@ -69,6 +64,7 @@ public class FXMeshControllerFactoryTester {
 		// Create a face edge mesh and send it to the factory
 		LinearEdgeMesh linearEdgeMesh = new LinearEdgeMesh();
 		FXEdgeController linearEdge = (FXEdgeController) factory
+				.createProvider(linearEdgeMesh)
 				.createController(linearEdgeMesh);
 
 		// The controller's model should be the mesh and its view should be an
@@ -79,6 +75,7 @@ public class FXMeshControllerFactoryTester {
 		// Create a Nek polygon mesh and send it to the factory
 		NekPolygonMesh nekPolygonMesh = new NekPolygonMesh();
 		NekPolygonController nekPolygon = (NekPolygonController) factory
+				.createProvider(nekPolygonMesh)
 				.createController(nekPolygonMesh);
 
 		// The controller's model should be the mesh and its view should be a
@@ -89,7 +86,7 @@ public class FXMeshControllerFactoryTester {
 		// Create a vertex mesh and send it to the factory
 		VertexMesh vertexMesh = new VertexMesh();
 		FXVertexController vertex = (FXVertexController) (factory
-				.createController(vertexMesh));
+				.createProvider(vertexMesh).createController(vertexMesh));
 
 		// The controller's model should be the mesh and its view should be a
 		// FXVertexView
@@ -97,7 +94,7 @@ public class FXMeshControllerFactoryTester {
 		assertTrue(vertex.getView() instanceof FXVertexView);
 
 		// Try to send an unrecognized input mesh to the factory
-		AbstractMesh mesh = new AbstractMesh();
-		assertNull(factory.createController(mesh));
+		IMesh mesh = new AbstractMesh();
+		assertNull(factory.createProvider(mesh));
 	}
 }

@@ -37,7 +37,8 @@ public class FXGeometryViewer extends FXViewer {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.javafx.canvas.FXViewer#updateCamera(org.
+	 * @see
+	 * org.eclipse.eavp.viz.service.javafx.canvas.FXViewer#updateCamera(org.
 	 * eclipse.ice.viz.service.javafx.scene.base.ICamera)
 	 */
 	@Override
@@ -59,7 +60,8 @@ public class FXGeometryViewer extends FXViewer {
 		}
 
 		// Create a controller
-		cameraController = new CenteredCameraController(fxCamera, scene, fxCanvas);
+		cameraController = new CenteredCameraController(fxCamera, scene,
+				fxCanvas);
 
 		// Set the camera on the scene
 		scene.setCamera(fxCamera);

@@ -19,8 +19,8 @@ import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizObject;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -49,8 +49,7 @@ public class FXGeometryVizService extends AbstractVizService {
 	 * @see IVizService#createCanvas(IVizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController geometry)
-			throws Exception {
+	public IVizCanvas createCanvas(IController geometry) throws Exception {
 		if (geometry instanceof ShapeController
 				|| geometry instanceof FXPlantViewRootController) {
 			FXGeometryCanvas canvas = new FXGeometryCanvas(geometry);
@@ -92,7 +91,7 @@ public class FXGeometryVizService extends AbstractVizService {
 	 * @see org.eclipse.eavp.viz.service.IVizService#getFactory()
 	 */
 	@Override
-	public IControllerFactory getFactory() {
+	public IControllerProviderFactory getFactory() {
 		return new FXShapeControllerFactory();
 	}
 
@@ -109,9 +108,8 @@ public class FXGeometryVizService extends AbstractVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
-	 * swt.widgets.Composite, java.net.URI, int)
+	 * @see org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.
+	 * eclipse. swt.widgets.Composite, java.net.URI, int)
 	 */
 	@Override
 	public String createAdditionalPage(MultiPageEditorPart parent,

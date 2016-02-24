@@ -12,6 +12,7 @@ package org.eclipse.eavp.viz.service.geometry.reactor;
 
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 import org.eclipse.eavp.viz.service.modeling.TubeController;
 
@@ -160,20 +161,26 @@ public class PipeController extends TubeController implements IWireFramePart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController#copy(org.eclipse.
-	 * ice.viz.service.modeling.AbstractController)
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#copy(org.
+	 * eclipse. ice.viz.service.modeling.AbstractController)
 	 */
 	@Override
-	public void copy(AbstractController source) {
+	public void copy(IController source) {
+
+		// Check that the source object is an IController, failing
+		// silently if not and casting it if so
+		if (!(source instanceof PipeController)) {
+			return;
+		}
+		AbstractController castObject = (AbstractController) source;
 
 		// Create the model and give it a reference to this
 		model = new PipeMesh();
 		model.setController(this);
 
 		// Copy the other object's data members
-		model.copy(source.getModel());
-		view = (AbstractView) source.getView().clone();
+		model.copy(castObject.getModel());
+		view = (AbstractView) castObject.getView().clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

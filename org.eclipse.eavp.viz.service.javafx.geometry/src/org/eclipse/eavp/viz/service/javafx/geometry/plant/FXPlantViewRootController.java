@@ -11,10 +11,16 @@
 package org.eclipse.eavp.viz.service.javafx.geometry.plant;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
 import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 
 /**
  * A controller that manages all the parts present in a Reactor Analyzer. This
@@ -31,7 +37,7 @@ public class FXPlantViewRootController extends AbstractController
 	/**
 	 * Whether or not the scene is in wireframe mode
 	 */
-	boolean wireframe;
+	private boolean wireframe;
 
 	/**
 	 * The nullary constructor
@@ -55,30 +61,31 @@ public class FXPlantViewRootController extends AbstractController
 		wireframe = false;
 
 		// Identify this object as the root of the tree
-		model.setProperty("Root", "True");
+		model.setProperty(MeshProperty.ROOT, "True");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController#addEntity(org.
-	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#addEntity(org.
+	 * eclipse.ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void addEntity(AbstractController entity) {
+	public void addEntity(IController entity) {
 
 		// If the entity is a core channel, add it to all reactors
-		if ("True".equals(entity.getProperty("Core Channel"))) {
+		if ("True"
+				.equals(entity.getProperty(ReactorMeshProperty.CORE_CHANNEL))) {
 
 			// Queue updates from adding children
 			updateManager.enqueue();
 
 			// Add the entity to this, then to all reactors
-			model.addEntityByCategory(entity, "Core Channels");
+			model.addEntityByCategory(entity,
+					ReactorMeshCategory.CORE_CHANNELS);
 
-			for (AbstractController reactor : model
-					.getEntitiesByCategory("Reactors")) {
+			for (IController reactor : model
+					.getEntitiesByCategory(ReactorMeshCategory.REACTORS)) {
 				reactor.addEntity(entity);
 			}
 
@@ -100,26 +107,27 @@ public class FXPlantViewRootController extends AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#
-	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
-	 * AbstractController, java.lang.String)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling. IController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// If the entity is a reactor, add all core channels to it
-		if ("Reactors".equals(category)) {
+		if (ReactorMeshCategory.REACTORS.equals(category)) {
 
 			// Queue updates from adding children
 			updateManager.enqueue();
 
 			// Add the entity to this, then put all the core channels in it
-			model.addEntityByCategory(entity, "Reactors");
+			model.addEntityByCategory(entity, ReactorMeshCategory.REACTORS);
 
-			for (AbstractController channel : model
-					.getEntitiesByCategory("Core Channels")) {
-				entity.addEntity(channel);
+			for (IController channel : model
+					.getEntitiesByCategory(ReactorMeshCategory.CORE_CHANNELS)) {
+				entity.addEntityByCategory(channel,
+						ReactorMeshCategory.CORE_CHANNELS);
 			}
 
 			// Fire update for the added child
@@ -150,7 +158,7 @@ public class FXPlantViewRootController extends AbstractController
 		wireframe = on;
 
 		// Set all the children to the proper wireframe mode
-		for (AbstractController child : model.getEntities()) {
+		for (IController child : model.getEntities()) {
 			((IWireFramePart) child).setWireFrameMode(on);
 		}
 	}
@@ -158,7 +166,7 @@ public class FXPlantViewRootController extends AbstractController
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractController#clone()
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#clone()
 	 */
 	@Override
 	public Object clone() {
