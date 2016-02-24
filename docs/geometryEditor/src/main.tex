@@ -7,7 +7,7 @@
 
 \begin{document}
 
-
+ 
 \title{Editing Geometries}
 
 This article is designed to outline the basic controls of ICE's Geometry Editor.
@@ -22,7 +22,7 @@ preparation required to use the Geometry Editor.
 To open a Geometry Editor in ICE, you have three options:
 
 \begin{center}
-\includegraphics[height=5cm]{images/CreateNewMeshOptions.jpg}
+\includegraphics[width=12cm]{images/CreateNewGeometryOptions.jpg}
 \end{center}
 
 Top to bottom, they are:
@@ -53,96 +53,93 @@ mouse wheel will zoom the camera in or out.
 \section{Primitive Shapes}
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryAddPrimitive.jpg}
+\includegraphics[width=12cm]{images/GeometryAddPrimitive.jpg}
 \end{center}
 
 Simple shapes can be added with the Add Primitives dropdown menu in the Shapes
 view. Simply select an object from the menu to add it to the scene
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryAddCube.jpg}
+\includegraphics[width=12cm]{images/GeometryAddCube.jpg}
 \end{center}
 
 Clicking on the shape's name in the Shapes view will cause that shape to turn
 red in the editor.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometrySelectCube.jpg}
+\includegraphics[width=12cm]{images/GeometrySelectCube.jpg}
 \end{center}
 
-It will also activate the Transformation View in the lower left corder. Editing
+It will also activate the Transformation View in the lower left corner. Editing
 the values here will change the displayed shape accordingly. 
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryCubeSize.jpg}
+\includegraphics[width=12cm]{images/GeometryCubeSize.jpg}
 \end{center}
 
-\textbm{Size} - Controls the overall size of the shape. Setting size to X is
+\textbf{Size} - Controls the overall size of the shape. Setting size to X is
 equivalent to setting the shape's three scales to X times their current value.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryCubeTranslate.jpg}
+\includegraphics[width=12cm]{images/GeometryCubeTranslate.jpg}
 \end{center}
 
-\textbm{Translate} - Controls the position of the shape. Setting one of the
+\textbf{Translate} - Controls the position of the shape. Setting one of the
 translations will move the shape that many units along the given axis.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryCubeRotate.jpg}
+\includegraphics[width=12cm]{images/GeometryCubeRotate.jpg}
 \end{center}
 
-\textbm{Rotation} - Controls the orientation of the shape. Setting one of the
+\textbf{Rotation} - Controls the orientation of the shape. Setting one of the
 rotations will rotate that shape the given number of degrees about that axis.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryCubeScale.jpg}
+\includegraphics[width=12cm]{images/GeometryCubeScale.jpg}
 \end{center}
 
-\textbm{Scale} - Controls the size of the shape in three directions. Setting one
+\textbf{Scale} - Controls the size of the shape in three directions. Setting one
 of the scales will stretch or compress the shape in that direction by a factor
 of the scale's new setting.
 
-\Section{Complex Shapes}
+\section{Complex Shapes}
 
 Multiple primitive shapes can be combined withing a single grouping for easier
 editing. First, create a complex shape using the Add Complex button. 
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryAddComplex.jpg}
+\includegraphics[width=12cm]{images/GeometryAddComplex.jpg}
 \end{center}
 
 Currently, only unions are supported. The union will appear in the Shapes view
 with an empty spot for a child shape. 
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryUnionAddShape.jpg}
+\includegraphics[width=12cm]{images/GeometryUnionAddShape.jpg}
 \end{center}
 
-Select <add shape> and add a primitive shape as before to add the shape as a
-child of the union. To add additional shapes, select the child shape and add
+Select \textless add shape\textgreater and add a primitive shape as before to
+add the shape as a child of the union. To add additional shapes, select the child shape and add
 another as normal.
 
 Selecting the union will select all its child shapes, and changes to the
-transformation view will affect the entire complex shape. 
+transformation view will affect the entire complex shape. Individual shapes can
+still be selected for editing on their own.
 
 You can add a complex shape as a child to a complex shape in the same way as a
 primitive shape, allowing for nested unions
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryStackedUnions.jpg}
+\includegraphics[width=12cm]{images/GeometryStackedUnions.jpg}
 \end{center}
 
-\Section{Copying}
+\section{Copying}
 
 Once you have a shape created, you can automatically create copies of that
 shape. 
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryStackedUnions.jpg}
-\end{center}
-
-\begin{center}
-\includegraphics[height=5cm]{images/GeometryDuplicateShape.jpg}
+\includegraphics[width=12cm]{images/GeometryDuplicateShape.jpg}
 \end{center}
 
 Press the Duplicate Shape button, highlighted above, to create an exact copy of
@@ -151,14 +148,14 @@ complex shape as the original, if any, and can be modified independently after
 creation.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryReplicateShape.jpg}
+\includegraphics[width=12cm]{images/GeometryReplicateShape.jpg}
 \end{center}
 
 You can systematically create many copies of a shape with the Replicate Shape
 button highlighted above. This will open a new dialog.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryReplicateDialog.jpg}
+\includegraphics[width=12cm]{images/GeometryReplicateDialog.jpg}
 \end{center}
 
 The quantity is the number of desired copies of the shape which should be in the
@@ -178,7 +175,7 @@ You may remove a shape and all its children by selecting it in the Shapes view
 and clicking the Delete button, highlighted below.
 
 \begin{center}
-\includegraphics[height=5cm]{images/GeometryDeleteButton.jpg}
+\includegraphics[width=12cm]{images/GeometryDeleteButton.jpg}
 \end{center}
 
-
+\end{document}
