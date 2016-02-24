@@ -1,14 +1,14 @@
 #TeXlipse project settings
-#Thu Feb 04 13:36:18 EST 2016
+#Wed Feb 24 14:19:49 EST 2016
 markTmpDer=true
 builderNum=2
-outputDir=
+outputDir=bin/
 makeIndSty=
 bibrefDir=
 outputFormat=pdf
 tempDir=tmp
-mainTexFile=OutputVisualizationTutorial.tex
-outputFile=document.pdf
+mainTexFile=main.tex
+outputFile=vizTutorial.pdf
 langSpell=en
 markDer=true
-srcDir=
+srcDir=src/

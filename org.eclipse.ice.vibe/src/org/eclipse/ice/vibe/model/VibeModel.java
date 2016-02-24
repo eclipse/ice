@@ -34,7 +34,7 @@ import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
-import org.eclipse.ice.item.Item;
+import org.eclipse.ice.item.model.Model;
 
 /**
  * <p>
@@ -47,7 +47,7 @@ import org.eclipse.ice.item.Item;
  * @author Scott Forest Hull II, Andrew Bennett
  */
 @XmlRootElement(name = "VibeModel")
-public class VibeModel extends Item {
+public class VibeModel extends Model {
 
 	/**
 	 * <p>
