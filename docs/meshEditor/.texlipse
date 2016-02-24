@@ -1,5 +1,5 @@
 #TeXlipse project settings
-#Wed Feb 24 14:19:49 EST 2016
+#Wed Feb 24 13:30:21 EST 2016
 markTmpDer=true
 builderNum=2
 outputDir=bin/
@@ -8,7 +8,7 @@ bibrefDir=
 outputFormat=pdf
 tempDir=tmp
 mainTexFile=main.tex
-outputFile=vizTutorial.pdf
+outputFile=meshEditorTutorial.pdf
 langSpell=en
 markDer=true
 srcDir=src/
