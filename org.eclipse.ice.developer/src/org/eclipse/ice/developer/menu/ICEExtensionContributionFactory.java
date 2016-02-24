@@ -322,7 +322,9 @@ public class ICEExtensionContributionFactory extends ExtensionContributionFactor
 
 		Physics,
 
-		DensityFunctionalTheory
+		DensityFunctionalTheory, 
+		
+		Other
 
 	}
 
