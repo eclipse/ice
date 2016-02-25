@@ -4,9 +4,11 @@
 
 	<!-- Custom properties -->
 	<properties>
+		<ice-version>next</ice-version>
 		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>pom.xml</pom-filename>	
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+		<ice-install-dir>/home/data/httpd/download.eclipse.org/ice/builds/${ice-version}</ice-install-dir>
 	</properties>
 
 	<!-- This is the parent POM from which all ICE modules inherit common settings -->

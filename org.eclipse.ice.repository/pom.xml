@@ -65,6 +65,67 @@
 			</plugin>
 		</plugins>
 	</build>
+			
+	<profiles>
+		<profile>
+			<id>production</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>deploy</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<mkdir dir="${ice-install-dir}" />
+										<delete includeemptydirs="true">
+											<fileset dir="${ice-install-dir}">
+												<include name="**/*" />
+											</fileset>
+										</delete>
+										
+										<!-- Unzip p2 repo into install dir -->
+										<unzip
+											src="${project.build.directory}/${project.build.finalName}.zip"
+											dest="${ice-install-dir}" />
+											
+										<!-- Put copy of master repo zip into install dir -->
+										<copy
+											file="${project.build.directory}/${project.build.finalName}.zip"
+											tofile="${ice-install-dir}/ice-master-${unqualifiedVersion}.${buildQualifier}.zip" />
+											
+										<!-- Copy application bundles -->
+										<copy file="${project.build.directory}/products/ice.product-linux.gtk.x86.zip"
+											tofile="${ice-install-dir}/ice-linux-gtk-x86-${unqualifiedVersion}.zip"/>
+										<copy file="${project.build.directory}/products/ice.product-linux.gtk.x86_64.zip"
+											tofile="${ice-install-dir}/ice-linux-gtk-x86_64-${unqualifiedVersion}.zip"/>
+										<copy file="${project.build.directory}/products/ice.product-win32.win32.x86.zip"
+											tofile="${ice-install-dir}/ice-win32-x86-${unqualifiedVersion}.zip"/>
+										<copy file="${project.build.directory}/products/ice.product-win32.win32.x86_64.zip"
+											tofile="${ice-install-dir}/ice-win32-x86_64-${unqualifiedVersion}.zip"/>
+										<copy file="${project.build.directory}/products/ice.product-macosx.cocoa.x86_64.zip"
+											tofile="${ice-install-dir}/ice-macosx-cocoa-x86_64-${unqualifiedVersion}.zip"/>
+										
+										<!--  Make sure the install dir is writable to the group -->
+										<chmod perm="g+w">
+											<fileset dir="${ice-install-dir}">
+												<include name="**" />
+											</fileset>
+										</chmod>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<version>2.1.8.20160208</version>
 </project>
