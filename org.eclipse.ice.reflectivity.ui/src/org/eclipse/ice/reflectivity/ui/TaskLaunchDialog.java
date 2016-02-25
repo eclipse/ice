@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Initial API and implementation and/or initial documentation - 
+ *   Initial API and implementation and/or initial documentation -
  *   Jay Jay Billings
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.ui;
@@ -28,7 +28,7 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * This is a custom JFace dialog that shows the Task Launcher for the
  * Reflectivity tools.
- * 
+ *
  * @author Jay Jay Billings
  *
  */
@@ -36,7 +36,7 @@ public class TaskLaunchDialog extends Dialog {
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param parentShell
 	 *            The shell in which this dialog is drawn and which is also the
 	 *            shell of the parent application.
@@ -57,7 +57,7 @@ public class TaskLaunchDialog extends Dialog {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets
 	 * .Composite)
@@ -85,8 +85,10 @@ public class TaskLaunchDialog extends Dialog {
 			// The URL for the file must be properly resolved by the file
 			// locator class because FrameworUtil only returns the path relative
 			// to the bundle running in the OSGi instance.
-			imageString = FileLocator.resolve(FrameworkUtil
-					.getBundle(getClass()).getEntry("icons/sns.png")).getPath();
+			imageString = FileLocator
+					.resolve(FrameworkUtil.getBundle(getClass())
+							.getEntry("icons/reflectivityCalc.png"))
+					.getPath();
 			// Create the image
 			Image image = new Image(swtComposite.getDisplay(), imageString);
 			// Set the button
@@ -106,8 +108,10 @@ public class TaskLaunchDialog extends Dialog {
 		imageString = null;
 		try {
 			// Exact same process as above
-			imageString = FileLocator.resolve(FrameworkUtil
-					.getBundle(getClass()).getEntry("icons/sns.png")).getPath();
+			imageString = FileLocator
+					.resolve(FrameworkUtil.getBundle(getClass())
+							.getEntry("icons/materialProperties.png"))
+					.getPath();
 			Image image = new Image(swtComposite.getDisplay(), imageString);
 			editMatsButton.setImage(image);
 		} catch (IOException e) {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.eavp.viz.service.visit.preferencePage"
+         name="VisIt Preferences"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.eavp.viz.service.preferences"
+            class="org.eclipse.eavp.viz.service.visit.connections.VisItConnectionPreferencePage"
+            id="org.eclipse.eavp.viz.service.visit.preferences"
+            name="VisIt">
+      </page>
+   </extension>
+   <extension
+   		point="org.eclipse.core.runtime.preferences">
+   		<initializer 
+   			class="org.eclipse.eavp.viz.service.visit.preferences.VisItPreferenceInitializer">
+   		</initializer>
+   </extension>
+   <extension
+         point="org.eclipse.eavp.viz.service.IVizService">
+      <client
+            class="org.eclipse.eavp.viz.service.visit.VisItVizService">
+      </client>
+   </extension>
+</plugin>

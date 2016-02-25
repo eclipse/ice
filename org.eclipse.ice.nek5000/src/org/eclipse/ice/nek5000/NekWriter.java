@@ -25,6 +25,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
@@ -41,11 +48,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.VertexController;
 
 /**
  * This class is responsible for writing the contents of a Component collection
@@ -397,7 +399,7 @@ public class NekWriter implements IComponentVisitor {
 		// Local declarations
 		MeshComponent mesh = (MeshComponent) componentMap.get("Mesh Data");
 		NekPolygonController currQuad;
-		AbstractController currEdge;
+		IController currEdge;
 		int currEdgeId;
 		ArrayList<VertexController> currVertices = new ArrayList<VertexController>();
 		String currValue;
@@ -436,10 +438,10 @@ public class NekWriter implements IComponentVisitor {
 
 			// Check each descendent vertex. If it is not yet in the list of
 			// vertices, add it
-			for (AbstractController entity : currQuad
-					.getEntitiesByCategory("Edges")) {
-				for (AbstractController v : entity
-						.getEntitiesByCategory("Vertices")) {
+			for (IController entity : currQuad
+					.getEntitiesByCategory(MeshCategory.EDGES)) {
+				for (IController v : entity
+						.getEntitiesByCategory(MeshCategory.VERTICES)) {
 					if (!currVertices.contains(v)) {
 						currVertices.add((VertexController) v);
 					}
@@ -456,8 +458,9 @@ public class NekWriter implements IComponentVisitor {
 			for (int j = 0; j < 4; j++) {
 
 				// Define the current edge
-				currEdge = currQuad.getEntitiesByCategory("Edges").get(j);
-				currEdgeId = Integer.valueOf(currEdge.getProperty("Id"));
+				currEdge = currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+						.get(j);
+				currEdgeId = Integer.valueOf(currEdge.getProperty(MeshProperty.ID));
 
 				/*
 				 * Boundary condition format strings:

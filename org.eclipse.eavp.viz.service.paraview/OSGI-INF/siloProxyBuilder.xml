@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.eavp.viz.service.paraview.proxy.silo.proxyBuilder">
+   <implementation class="org.eclipse.eavp.viz.service.paraview.proxy.silo.SiloProxyBuilder"/>
+   <service>
+      <provide interface="org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxyBuilder"/>
+   </service>
+</scr:component>

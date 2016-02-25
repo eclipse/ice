@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.ice</groupId>
+		<artifactId>org.eclipse.ice.build</artifactId>
+		<version>2.1.8.20160208</version>
+		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
+	</parent>
+
+	<name>ICE Infrastructure Product</name>
+	<artifactId>org.eclipse.ice.repository</artifactId>
+	<packaging>eclipse-repository</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<includeAllDependencies>true</includeAllDependencies>
+					<profileProperties>
+						<macosx-bundled>true</macosx-bundled>
+					</profileProperties>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<version>2.1.8.20160208</version>
+</project>

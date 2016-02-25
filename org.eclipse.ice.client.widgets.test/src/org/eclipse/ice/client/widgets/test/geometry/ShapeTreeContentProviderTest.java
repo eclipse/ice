@@ -18,13 +18,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
+import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -51,19 +53,22 @@ public class ShapeTreeContentProviderTest {
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
 		ShapeController sphere1 = (ShapeController) geometryShape.clone();
-		sphere1.setProperty("Type", ShapeType.Sphere.toString());
+		sphere1.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
 		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty("Type", ShapeType.Cube.toString());
+		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
 
 		ShapeController union1 = (ShapeController) geometryShape.clone();
-		union1.setProperty("Operator", OperatorType.Union.toString());
+		union1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Union.toString());
 		ShapeController complement1 = (ShapeController) geometryShape.clone();
-		complement1.setProperty("Operator", OperatorType.Complement.toString());
+		complement1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Complement.toString());
 		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty("Operator",
+		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
 				OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
@@ -127,19 +132,22 @@ public class ShapeTreeContentProviderTest {
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
 		ShapeController sphere1 = (ShapeController) geometryShape.clone();
-		sphere1.setProperty("Type", ShapeType.Sphere.toString());
+		sphere1.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
 		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty("Type", ShapeType.Cube.toString());
+		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
 
 		ShapeController union1 = (ShapeController) geometryShape.clone();
-		union1.setProperty("Operator", OperatorType.Union.toString());
+		union1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Union.toString());
 		ShapeController complement1 = (ShapeController) geometryShape.clone();
-		complement1.setProperty("Operator", OperatorType.Complement.toString());
+		complement1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Complement.toString());
 		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty("Operator",
+		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
 				OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
@@ -201,9 +209,10 @@ public class ShapeTreeContentProviderTest {
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
 		ShapeMesh geometryModel = new ShapeMesh();
-		geometryModel.setProperty("Type", ShapeType.Sphere.toString());
+		geometryModel.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
 		AbstractView geometryView = new AbstractView();
-		ShapeController geometry = new ShapeController(geometryModel, geometryView);
+		ShapeController geometry = new ShapeController(geometryModel,
+				geometryView);
 
 		ShapeController sphere1 = (ShapeController) geometry.clone();
 		ShapeController cube1 = (ShapeController) geometry.clone();

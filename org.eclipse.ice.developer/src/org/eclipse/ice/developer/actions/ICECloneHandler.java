@@ -55,6 +55,7 @@ public class ICECloneHandler extends GitCloneHandler {
 	 * This implementation of addPostCloneTask adds an action for importing all
 	 * cloned projects.
 	 */
+	@Override
 	protected void addPostCloneTasks() {
 
 		// Import all ICE projects
@@ -74,47 +75,14 @@ public class ICECloneHandler extends GitCloneHandler {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				importProjects(repository, new IWorkingSet[0]);
 			}
 
 		});
+		
+		// Import all projects
+		super.addPostCloneTasks();
 	}
 
-	/**
-	 * This private method is used to import existing projects into the project
-	 * explorer.
-	 * 
-	 * @param repository
-	 * @param sets
-	 */
-	private void importProjects(final Repository repository, final IWorkingSet[] sets) {
-		String repoName = Activator.getDefault().getRepositoryUtil().getRepositoryName(repository);
-		Job importJob = new WorkspaceJob(MessageFormat.format(UIText.GitCloneWizard_jobImportProjects, repoName)) {
-
-			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor) {
-				List<File> files = new ArrayList<File>();
-				ProjectUtil.findProjectFiles(files, repository.getWorkTree(), true, monitor);
-				if (files.isEmpty()) {
-					return Status.OK_STATUS;
-				}
-
-				Set<ProjectRecord> projectRecords = new LinkedHashSet<ProjectRecord>();
-				for (File file : files) {
-					projectRecords.add(new ProjectRecord(file));
-				}
-				try {
-					ProjectUtils.createProjects(projectRecords, sets, monitor);
-				} catch (InvocationTargetException | InterruptedException e) {
-					Activator.logError(e.getLocalizedMessage(), e);
-				}
-
-				return Status.OK_STATUS;
-			}
-		};
-		importJob.schedule();
-	}
-	
 	/**
 	 * Reference to the XML file contents we need for life cycle management M2e file. 
 	 */

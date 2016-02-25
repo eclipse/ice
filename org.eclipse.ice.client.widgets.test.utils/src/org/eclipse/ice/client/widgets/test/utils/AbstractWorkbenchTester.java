@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -109,6 +110,7 @@ public abstract class AbstractWorkbenchTester extends
 
 		// Set up the SWTBot for the workbench.
 		bot = new SWTWorkbenchBot();
+		SWTBotPreferences.TIMEOUT = 2000;
 	}
 
 	/*

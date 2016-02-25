@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JavaFX Geometry Visualization Services Test Plugin
+Bundle-SymbolicName: org.eclipse.eavp.viz.service.javafx.geometry.test;singleton:=true
+Bundle-Version: 2.1.8.20160208
+Fragment-Host: org.eclipse.eavp.viz.service.javafx.geometry
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Oak Ridge National Laboratory
+Eclipse-ExtensibleAPI: true
+Import-Package: javafx.scene;version="2.2.0",
+ junit.framework;version="4.12.0",
+ org.eclipse.eavp.viz.service.geometry.reactor,
+ org.eclipse.eavp.viz.service.modeling.test.utils,
+ org.hamcrest.core;version="1.3.0",
+ org.junit;version="4.12.0"
+

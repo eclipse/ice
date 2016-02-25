@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import org.eclipse.eavp.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
-import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
+import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;

@@ -25,6 +25,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -34,7 +35,6 @@ import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
-import org.eclipse.ice.viz.service.modeling.IControllerFactory;
 
 /**
  * This class extends the Item to create a modeler for Nek5000 input files. It
@@ -120,7 +120,7 @@ public class NekModel extends Item {
 	 *            The factory which will create views and controllers for meshes
 	 *            read from the files.
 	 */
-	public NekModel(IProject projectSpace, IControllerFactory factory) {
+	public NekModel(IProject projectSpace, IControllerProviderFactory factory) {
 		super(projectSpace);
 
 		reader = new NekReader();
@@ -536,7 +536,7 @@ public class NekModel extends Item {
 	 * @param factory
 	 *            The reader's new factory
 	 */
-	public void setControllerFactory(IControllerFactory factory) {
+	public void setControllerFactory(IControllerProviderFactory factory) {
 		reader.setControllerFactory(factory);
 	}
 

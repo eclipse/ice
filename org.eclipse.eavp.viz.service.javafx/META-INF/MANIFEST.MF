@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JavaFX Visualization Services Plugin
+Bundle-SymbolicName: org.eclipse.eavp.viz.service.javafx;singleton:=true
+Bundle-Version: 2.1.8.20160208
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-Vendor: Oak Ridge National Laboratory
+Eclipse-ExtensibleAPI: true
+Import-Package: javafx.scene.input;version="2.2.0",
+ javafx.scene.transform;version="2.2.0",
+ org.eclipse.eavp.viz.service,
+ org.eclipse.eavp.viz.service.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.modeling,
+ org.eclipse.eavp.viz.service.geometry.shapes,
+ org.slf4j;version="1.7.2"
+Export-Package: org.eclipse.eavp.viz.service.javafx.canvas,
+ org.eclipse.eavp.viz.service.javafx.internal,
+ org.eclipse.eavp.viz.service.javafx.internal.model,
+ org.eclipse.eavp.viz.service.javafx.internal.scene.camera,
+ org.eclipse.eavp.viz.service.javafx.scene.base,
+ org.eclipse.eavp.viz.service.javafx.scene.model,
+ org.eclipse.eavp.viz.service.javafx.viewer
+

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Geometry Visualization Service Plugin
+Bundle-SymbolicName: org.eclipse.eavp.viz.service.geometry;singleton:=true
+Bundle-Version: 2.1.8.20160208
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/ControllerFactory.xml
+Import-Package: javafx.embed.swt;version="2.2.0",
+ org.eclipse.eavp.viz.service,
+ org.eclipse.eavp.viz.service.datastructures,
+ org.eclipse.eavp.viz.service.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.modeling,
+ org.eclipse.jface.databinding.swt,
+ org.slf4j;version="1.7.2"
+Bundle-Vendor: Oak Ridge National Laboratory
+Eclipse-ExtensibleAPI: true
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.0",
+ org.eclipse.ui;bundle-version="3.107.0"
+Export-Package: org.eclipse.eavp.viz.service.geometry.reactor,
+ org.eclipse.eavp.viz.service.geometry.shapes,
+ org.eclipse.eavp.viz.service.geometry.widgets
+

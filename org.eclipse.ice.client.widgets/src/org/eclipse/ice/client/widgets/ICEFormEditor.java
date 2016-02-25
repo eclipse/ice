@@ -21,6 +21,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.client.widgets.providers.DefaultPageFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -36,7 +39,6 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
@@ -47,7 +49,6 @@ import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -185,9 +186,20 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	 */
 	protected ICEMeshPage meshPage;
 
+	/**
+	 * The managed form where content is actually drawn.
+	 */
 	private IManagedForm managedForm;
 
+	/**
+	 * The name of the Item to which the Form belongs.
+	 */
 	private String itemName;
+
+	/**
+	 * The Eclipse 4 context that stores the running application model.
+	 */
+	private IEclipseContext e4Context;
 
 	/**
 	 * The Constructor
@@ -232,7 +244,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(
-						"org.eclipse.ice.viz.service.IVizServiceFactory");
+						"org.eclipse.eavp.viz.service.IVizServiceFactory");
 		staticLogger.info("ICEFormEditor: Available configuration elements");
 		for (IConfigurationElement element : elements) {
 			staticLogger.info(element.getName());
@@ -454,6 +466,18 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.forms.editor.SharedHeaderFormEditor#dispose()
+	 */
+	@Override
+	public void dispose() {
+		super.dispose();
+		// Clean up the dependency injection
+		ContextInjectionFactory.uninject(this, e4Context);
+	}
+
 	/**
 	 * This operation overrides the createHeaderContents operations from the
 	 * SharedHeaderFormEditor super class to create a common header across the
@@ -594,6 +618,16 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws RuntimeException {
+
+		// Get the E4 Context. This is how you get into the E4 application model
+		// if you are running from a 3.x part and don't have your own
+		// application model. See bugs.eclipse.org/bugs/show_bug.cgi?id=376486
+		// and chapter 101 of Lar Vogel's e4 book.
+		e4Context = site.getService(IEclipseContext.class);
+
+		// Instruct the framework to perform dependency injection for
+		// this Form using the ContextInjectionFactory.
+		ContextInjectionFactory.inject(this, e4Context);
 
 		// Get the Client Reference
 		IClient client = null;

@@ -15,11 +15,13 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.ice.client.common.PropertySource;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.EdgeController;
-import org.eclipse.ice.viz.service.modeling.FaceController;
-import org.eclipse.ice.viz.service.modeling.VertexController;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -130,18 +132,18 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// If the caller seeks the edges, get them from the wrapped
 				// Polygon.
 				if (ID_EDGES.equals(id)) {
-					for (AbstractController e : polygon
-							.getEntitiesByCategory("Edges")) {
-						propertySet.add("Edge " + e.getProperty("Id"));
+					for (IController e : polygon
+							.getEntitiesByCategory(MeshCategory.EDGES)) {
+						propertySet.add("Edge " + e.getProperty(MeshProperty.ID));
 					}
 					return propertySet;
 				}
 				// If the caller seeks the vertices, get them from the wrapped
 				// Polygon.
 				else if (ID_VERTICES.equals(id)) {
-					for (AbstractController v : polygon
-							.getEntitiesByCategory("Vertices")) {
-						propertySet.add("Vertex " + v.getProperty("Id"));
+					for (IController v : polygon
+							.getEntitiesByCategory(MeshCategory.VERTICES)) {
+						propertySet.add("Vertex " + v.getProperty(MeshProperty.ID));
 					}
 					return propertySet;
 				}
@@ -167,10 +169,10 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 
 				// Collect the given edge's vertices
 				if (ID_VERTICES.equals(id)) {
-					for (AbstractController vertex : edge
-							.getEntitiesByCategory("Vertices")) {
-						propertySet.add("Vertex "
-								+ Integer.valueOf(vertex.getProperty("Id")));
+					for (IController vertex : edge
+							.getEntitiesByCategory(MeshCategory.VERTICES)) {
+						propertySet.add("Vertex " + Integer
+								.valueOf(vertex.getProperty(MeshProperty.ID)));
 					}
 					return propertySet;
 				}
@@ -245,7 +247,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 	 *            The object to be wrapped by PropertySource. For this subclass,
 	 *            this will be a Polygon, Edge, or Vertex.
 	 */
-	public MeshElementTreeViewPropertySource(AbstractController part) {
+	public MeshElementTreeViewPropertySource(IController part) {
 
 		// Just call the superclass constructor
 		super(part);

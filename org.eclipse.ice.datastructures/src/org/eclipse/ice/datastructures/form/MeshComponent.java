@@ -19,17 +19,17 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateableListener;
+import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.FaceController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateable;
-import org.eclipse.ice.viz.service.datastructures.VizObject.IManagedUpdateableListener;
-import org.eclipse.ice.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractController;
-import org.eclipse.ice.viz.service.modeling.AbstractMesh;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.FaceController;
 
 /**
  * <p>
@@ -75,8 +75,7 @@ public class MeshComponent extends ICEObject
 	 */
 	public MeshComponent() {
 		super();
-		mesh = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		mesh = new AbstractController(new AbstractMesh(), new AbstractView());
 		mesh.register(this);
 		return;
 	}
@@ -86,7 +85,7 @@ public class MeshComponent extends ICEObject
 	 * 
 	 * @return The wrapped VizMeshComponent
 	 */
-	public AbstractController getMesh() {
+	public IController getMesh() {
 		return mesh;
 	}
 
@@ -120,13 +119,14 @@ public class MeshComponent extends ICEObject
 
 		return;
 	}
-	
+
 	/**
 	 * Remove the given polygon from the MeshComponent.
 	 * 
-	 * @param polygon The polygon to be removed from the list.
+	 * @param polygon
+	 *            The polygon to be removed from the list.
 	 */
-	public void removePolygon(FaceController polygon){
+	public void removePolygon(FaceController polygon) {
 		mesh.removeEntity(polygon);
 		notifyListeners();
 	}
@@ -142,7 +142,7 @@ public class MeshComponent extends ICEObject
 	 *         A list of polygons contained in this MeshComponent.
 	 *         </p>
 	 */
-	public List<AbstractController> getPolygons() {
+	public List<IController> getPolygons() {
 		return mesh.getEntities();
 	}
 
@@ -321,15 +321,14 @@ public class MeshComponent extends ICEObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateableListener#update(org.eclipse.ice.viz.service.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#update(org.eclipse.eavp.viz.service.
 	 * datastructures.VizObject.IManagedVizUpdateable,
-	 * org.eclipse.ice.viz.service.datastructures.VizObject.
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * UpdateableSubscriptionType[])
 	 */
 	@Override
-	public void update(IManagedUpdateable component,
-			SubscriptionType[] types) {
+	public void update(IManagedUpdateable component, SubscriptionType[] types) {
 
 		// Only pass on updates for the root part's list of children changing,
 		// in order to refresh the tree view of components.
@@ -344,8 +343,8 @@ public class MeshComponent extends ICEObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ice.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.ice.viz.
+	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
+	 * IManagedVizUpdateableListener#getSubscriptions(org.eclipse.eavp.viz.
 	 * service.datastructures.VizObject.IVizUpdateable)
 	 */
 	@Override

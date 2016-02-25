@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.eavp.aggregator</groupId>
+  <artifactId>org.eclipse.eavp.aggregator</artifactId>
+  <packaging>pom</packaging>
+  <name>EAVP Build Aggregator</name>
+  <description>Aggregator Bundle for building the Eclipse Advanced Visualization Project</description>
+  <parent>
+  	<groupId>org.eclipse.eavp</groupId>
+  	<artifactId>org.eclipse.eavp.build</artifactId>
+  	<version>2.1.8.20160208</version>
+  	<relativePath>../org.eclipse.eavp.parent/pom.xml</relativePath>
+  </parent>
+  <modules>
+  	<module>../org.eclipse.ice.target.mars</module>
+  	<module>../org.eclipse.eavp.viz</module>
+  	<module>../org.eclipse.eavp.viz.service</module>
+  	<module>../org.eclipse.eavp.viz.service.geometry</module>
+  	<module>../org.eclipse.eavp.viz.service.geometry.test</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx.geometry</module>
+  	<module>
+  		../org.eclipse.eavp.viz.service.javafx.geometry.test
+  	</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx.mesh</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx.test</module>
+  	<module>../org.eclipse.eavp.viz.service.mesh</module>
+  	<module>../org.eclipse.eavp.viz.service.mesh.test</module>
+  	<module>../org.eclipse.eavp.viz.service.paraview</module>
+  	<module>../org.eclipse.eavp.viz.service.paraview.test</module>
+  	<module>../org.eclipse.eavp.viz.service.paraview.web</module>
+  	<module>../org.eclipse.eavp.viz.service.test</module>
+  	<module>../org.eclipse.eavp.viz.service.visit</module>
+  	<module>../org.eclipse.eavp.viz.service.visit.test</module>
+  	<module>../org.eclipse.eavp.viz.test</module>
+  	<module>../org.eclipse.eavp.parent</module>
+  	<module>../org.eclipse.eavp.feature</module>  	
+  	<module>../org.eclipse.eavp.repository</module>
+  </modules>
+</project>

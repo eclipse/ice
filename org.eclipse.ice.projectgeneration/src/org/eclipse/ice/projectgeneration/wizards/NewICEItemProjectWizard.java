@@ -127,8 +127,8 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			e.printStackTrace();
 			System.out.println("adding wizard pages fails!");
 		}
-	}	
-	
+	}
+
 	/**
 	 * Takes all of the information from the wizard pages and uses it to create
 	 * the plugin and java classes.
@@ -175,7 +175,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 				getWorkbench().getWorkingSetManager().addToWorkingSets(fProjectProvider.getProject(), workingSets);
 			setNature(fProjectProvider.getProject());
 			setPackageLayout();
-			addPackageImports();
+			updateManifest();
 			fProjectProvider.getProject().refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 			successful = true;
 		} catch (InvocationTargetException e) {
@@ -247,10 +247,12 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			launcherDir.mkdirs();
 			for (File f : projectSrcs) {
 				if (f.getName().endsWith("Launcher.java") || f.getName().endsWith("LauncherBuilder.java")) {
-					Files.move(f.toPath(), (new File(launcherDir.getAbsolutePath() + sep + f.getName())).toPath(), REPLACE_EXISTING);
+					Files.move(f.toPath(), (new File(launcherDir.getAbsolutePath() + sep + f.getName())).toPath(),
+							REPLACE_EXISTING);
 				} else if (f.getName().endsWith("Model.java") || f.getName().endsWith("ModelBuilder.java")) {
-					Files.move(f.toPath(), (new File(modelDir.getAbsolutePath() + sep + f.getName())).toPath(), REPLACE_EXISTING);
-				} 
+					Files.move(f.toPath(), (new File(modelDir.getAbsolutePath() + sep + f.getName())).toPath(),
+							REPLACE_EXISTING);
+				}
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -260,26 +262,32 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	/**
 	 * TODO: Description
 	 */
-	private void addPackageImports() {
+	private void updateManifest() {
+		String packageBase = fProjectProvider.getProjectName();
 		String sep = System.getProperty("file.separator");
-		String manifestFile = fProjectProvider.getLocationPath().makeAbsolute().toOSString() +sep
-				+ fProjectProvider.getProjectName() + sep + "META-INF" + sep +"MANIFEST.MF";
-		StringBuilder importLines = new StringBuilder();
-		importLines.append("Import-Package: org.eclipse.ice.datastructures.form,\n");
-        importLines.append(" org.eclipse.ice.io.serializable,\n");
-        importLines.append(" org.eclipse.ice.item,\n");
-        importLines.append(" org.eclipse.ice.item.jobLauncher,\n");
-        importLines.append(" org.eclipse.ice.item.model,\n");
-        importLines.append(" org.eclipse.ice.datastructures.ICEObject,\n");
-        importLines.append(" org.eclipse.core.resources\n");
-        
-        try {
-        	Files.write(Paths.get(manifestFile), importLines.toString().getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
+		String manifestFile = fProjectProvider.getLocationPath().makeAbsolute().toOSString() + sep
+				+ fProjectProvider.getProjectName() + sep + "META-INF" + sep + "MANIFEST.MF";
+		StringBuilder manifestLines = new StringBuilder();
+		manifestLines.append("Import-Package: org.eclipse.ice.datastructures.form,\n");
+		manifestLines.append(" org.eclipse.ice.io.serializable,\n");
+		manifestLines.append(" org.eclipse.ice.item,\n");
+		manifestLines.append(" org.eclipse.ice.item.jobLauncher,\n");
+		manifestLines.append(" org.eclipse.ice.item.model,\n");
+		manifestLines.append(" org.eclipse.ice.datastructures.ICEObject,\n");
+		manifestLines.append(" org.eclipse.core.resources,\n");
+		manifestLines.append(" org.eclipse.core.runtime,\n");
+		manifestLines.append(" org.eclipse.core.runtime.jobs,\n");
+		manifestLines.append(" org.slf4j\n");
+		manifestLines.append("Export-Package: " + packageBase + ".model,\n");
+		manifestLines.append(" " + packageBase + ".launcher\n");
+		
+		try {
+			Files.write(Paths.get(manifestFile), manifestLines.toString().getBytes(), StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	@Override
 	protected String getTemplateID() {
 		return TEMPLATE_ID;

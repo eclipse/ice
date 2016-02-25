@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.eclipse.eavp.viz.service.IVizServiceFactory" name="IVizServiceFactory" schema="schema/org.eclipse.eavp.viz.service.IVizServiceFactory.exsd"/>
+   <extension-point id="org.eclipse.eavp.viz.service.IVizService" name="IVizService" schema="schema/org.eclipse.eavp.viz.service.IVizService.exsd"/>
+   <extension
+         id="org.eclipse.eavp.viz.service.preferencePage"
+         name="Visualization Preferences"
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.eavp.viz.service.preferences.VizPreferencePage"
+            id="org.eclipse.eavp.viz.service.preferences"
+            name="Visualization">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.eavp.viz.service.preferences.VizPreferenceInitializer">
+      </initializer>
+   </extension>	
+   		
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.eclipse.eavp.viz.service.PlotEditor"
+            default="false"
+            id="org.eclipse.eavp.viz.service.PlotEditor"
+            name="PlotEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.eavp.viz.service.IVizServiceFactory">
+      <client
+            class="org.eclipse.eavp.viz.service.BasicVizServiceFactory">
+      </client>
+   </extension>
+   
+</plugin>

@@ -56,26 +56,27 @@
   	<module>../org.eclipse.ice.target.mars</module>
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
-  	<module>../org.eclipse.ice.viz</module>
-  	<module>../org.eclipse.ice.viz.service</module>
-  	<module>../org.eclipse.ice.viz.service.geometry</module>
-  	<module>../org.eclipse.ice.viz.service.geometry.test</module>
-  	<module>../org.eclipse.ice.viz.service.javafx</module>
-  	<module>../org.eclipse.ice.viz.service.javafx.geometry</module>
+  	<module>../org.eclipse.eavp.feature</module>
+  	<module>../org.eclipse.eavp.viz</module>
+  	<module>../org.eclipse.eavp.viz.service</module>
+  	<module>../org.eclipse.eavp.viz.service.geometry</module>
+  	<module>../org.eclipse.eavp.viz.service.geometry.test</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx.geometry</module>
   	<module>
-  		../org.eclipse.ice.viz.service.javafx.geometry.test
+  		../org.eclipse.eavp.viz.service.javafx.geometry.test
   	</module>
-  	<module>../org.eclipse.ice.viz.service.javafx.mesh</module>
-  	<module>../org.eclipse.ice.viz.service.javafx.test</module>
-  	<module>../org.eclipse.ice.viz.service.mesh</module>
-  	<module>../org.eclipse.ice.viz.service.mesh.test</module>
-  	<module>../org.eclipse.ice.viz.service.paraview</module>
-  	<module>../org.eclipse.ice.viz.service.paraview.test</module>
-  	<module>../org.eclipse.ice.viz.service.paraview.web</module>
-  	<module>../org.eclipse.ice.viz.service.test</module>
-  	<module>../org.eclipse.ice.viz.service.visit</module>
-  	<module>../org.eclipse.ice.viz.service.visit.test</module>
-  	<module>../org.eclipse.ice.viz.test</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx.mesh</module>
+  	<module>../org.eclipse.eavp.viz.service.javafx.test</module>
+  	<module>../org.eclipse.eavp.viz.service.mesh</module>
+  	<module>../org.eclipse.eavp.viz.service.mesh.test</module>
+  	<module>../org.eclipse.eavp.viz.service.paraview</module>
+  	<module>../org.eclipse.eavp.viz.service.paraview.test</module>
+  	<module>../org.eclipse.eavp.viz.service.paraview.web</module>
+  	<module>../org.eclipse.eavp.viz.service.test</module>
+  	<module>../org.eclipse.eavp.viz.service.visit</module>
+  	<module>../org.eclipse.eavp.viz.service.visit.test</module>
+  	<module>../org.eclipse.eavp.viz.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
   	<module>../org.eclipse.ice.repository</module>
   </modules>

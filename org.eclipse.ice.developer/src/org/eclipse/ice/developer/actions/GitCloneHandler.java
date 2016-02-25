@@ -12,26 +12,49 @@
 package org.eclipse.ice.developer.actions;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.egit.core.RepositoryUtil;
+import org.eclipse.egit.core.internal.util.ProjectUtil;
 import org.eclipse.egit.core.op.CloneOperation;
+import org.eclipse.egit.core.op.CloneOperation.PostCloneTask;
 import org.eclipse.egit.core.securestorage.UserPasswordCredentials;
 import org.eclipse.egit.ui.Activator;
 import org.eclipse.egit.ui.internal.SecureStoreUtils;
+import org.eclipse.egit.ui.internal.UIText;
+import org.eclipse.egit.ui.internal.clone.ProjectRecord;
+import org.eclipse.egit.ui.internal.clone.ProjectUtils;
 import org.eclipse.equinox.security.storage.StorageException;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.m2e.core.MavenPlugin;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.progress.IProgressConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,7 +156,18 @@ public class GitCloneHandler extends AbstractHandler {
 			@Override
 			public IStatus runInWorkspace(IProgressMonitor monitor) {
 
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						try {
+							HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
+									.showView(IProgressConstants.PROGRESS_VIEW_ID);
+						} catch (PartInitException e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				try {
+
 					// FIXME MASTER OR NEXT MAKE IT VARIABLE
 					cloneOperation = new CloneOperation(new URIish(repo), true, null, cloneLocation, branch, "origin",
 							100);
@@ -171,6 +205,50 @@ public class GitCloneHandler extends AbstractHandler {
 	 * GitCloneHandler's cloneOperation attribute.
 	 */
 	protected void addPostCloneTasks() {
+		// Import all Eclipse projects
+		cloneOperation.addPostCloneTask(new PostCloneTask() {
+			@Override
+			public void execute(Repository repository, IProgressMonitor monitor) throws CoreException {
+				importProjects(repository, new IWorkingSet[0]);
+			}
+
+		});
 	}
+	
+	/**
+	 * This private method is used to import existing projects into the project
+	 * explorer.
+	 * 
+	 * @param repository
+	 * @param sets
+	 */
+	protected void importProjects(final Repository repository, final IWorkingSet[] sets) {
+		String repoName = Activator.getDefault().getRepositoryUtil().getRepositoryName(repository);
+		Job importJob = new WorkspaceJob(MessageFormat.format(UIText.GitCloneWizard_jobImportProjects, repoName)) {
+
+			@Override
+			public IStatus runInWorkspace(IProgressMonitor monitor) {
+				List<File> files = new ArrayList<File>();
+				ProjectUtil.findProjectFiles(files, repository.getWorkTree(), true, monitor);
+				if (files.isEmpty()) {
+					return Status.OK_STATUS;
+				}
+
+				Set<ProjectRecord> projectRecords = new LinkedHashSet<ProjectRecord>();
+				for (File file : files) {
+					projectRecords.add(new ProjectRecord(file));
+				}
+				try {
+					ProjectUtils.createProjects(projectRecords, sets, monitor);
+				} catch (InvocationTargetException | InterruptedException e) {
+					Activator.logError(e.getLocalizedMessage(), e);
+				}
+
+				return Status.OK_STATUS;
+			}
+		};
+		importJob.schedule();
+	}
+
 
 }

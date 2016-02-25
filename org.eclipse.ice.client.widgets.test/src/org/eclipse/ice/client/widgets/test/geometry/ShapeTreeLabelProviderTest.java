@@ -15,12 +15,14 @@ package org.eclipse.ice.client.widgets.test.geometry;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeLabelProvider;
-import org.eclipse.ice.viz.service.modeling.AbstractView;
-import org.eclipse.ice.viz.service.modeling.ShapeController;
-import org.eclipse.ice.viz.service.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
+import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeLabelProvider;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
 /**
@@ -67,12 +69,13 @@ public class ShapeTreeLabelProviderTest {
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
 		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty("Type", ShapeType.Cube.toString());
+		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
 		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty("Operator",
+		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
 				OperatorType.Intersection.toString());
 
 		assertNull(labelProvider.getImage(cube1));
@@ -97,38 +100,40 @@ public class ShapeTreeLabelProviderTest {
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
 		AbstractView geometryView = new AbstractView();
-		ShapeController geometryShape = new ShapeController(geometryModel, geometryView);
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
 		ShapeController cube1 = (ShapeController) geometryShape.clone();
-		cube1.setProperty("Type", ShapeType.Cube.toString());
+		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
 
 		ShapeController union1 = (ShapeController) geometryShape.clone();
-		union1.setProperty("Operator", OperatorType.Union.toString());
+		union1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Union.toString());
 		ShapeController intersection1 = (ShapeController) geometryShape.clone();
-		intersection1.setProperty("Operator",
+		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
 				OperatorType.Intersection.toString());
 
-		cube1.setProperty("Name", "KUB");
+		cube1.setProperty(MeshProperty.NAME, "KUB");
 
-		intersection1.setProperty("Name", "INTRASECSION");
+		intersection1.setProperty(MeshProperty.NAME, "INTRASECSION");
 
-		union1.setProperty("Name", "Not a name");
-		union1.setProperty("Id", "1111");
+		union1.setProperty(MeshProperty.NAME, "Not a name");
+		union1.setProperty(MeshProperty.ID, "1111");
 
 		// Check that the ShapeTreeLabelProvider returns the correct names
 		// with the format "<name> <id>"
 
-		String expectedCube1Text = cube1.getProperty("Name") + " "
-				+ cube1.getProperty("Id");
+		String expectedCube1Text = cube1.getProperty(MeshProperty.NAME) + " "
+				+ cube1.getProperty(MeshProperty.ID);
 		assertTrue(labelProvider.getText(cube1).equals(expectedCube1Text));
 
-		String expectedIntersection1Text = intersection1.getProperty("Name")
-				+ " " + intersection1.getProperty("Id");
+		String expectedIntersection1Text = intersection1.getProperty(
+				MeshProperty.NAME) + " " + intersection1.getProperty(MeshProperty.ID);
 		assertTrue(labelProvider.getText(intersection1)
 				.equals(expectedIntersection1Text));
 
-		String expectedUnion1Text = union1.getProperty("Name") + " "
-				+ union1.getProperty("Id");
+		String expectedUnion1Text = union1.getProperty(MeshProperty.NAME) + " "
+				+ union1.getProperty(MeshProperty.ID);
 		assertTrue(labelProvider.getText(union1).equals(expectedUnion1Text));
 
 		// Check a null parameter
