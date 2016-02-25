@@ -174,7 +174,7 @@ public class MOOSELauncherTester {
 				.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
 
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
