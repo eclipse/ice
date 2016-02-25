@@ -63,7 +63,7 @@ public class FXViewer extends AbstractViewer {
 	 * The content provider that generates JavaFX scene data from the geometry
 	 * editor scene model.
 	 */
-	private FXContentProvider contentProvider;
+	protected FXContentProvider contentProvider;
 
 	/** Default camera controller. */
 	protected ICameraController cameraController;
@@ -126,7 +126,7 @@ public class FXViewer extends AbstractViewer {
 	 *            the parent to create the camera on
 	 * 
 	 */
-	private void createDefaultCamera(Group parent) {
+	protected void createDefaultCamera(Group parent) {
 		PerspectiveCamera perspCamera = new PerspectiveCamera(true);
 		perspCamera.setNearClip(0.1);
 		perspCamera.setFarClip(4000.0);
@@ -147,7 +147,7 @@ public class FXViewer extends AbstractViewer {
 	 * Hooks up JavaFX picking with JFace selections.
 	 * </p>
 	 */
-	private void wireSelectionHandling() {
+	protected void wireSelectionHandling() {
 
 		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 

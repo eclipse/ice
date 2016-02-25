@@ -29,6 +29,16 @@ import javafx.scene.transform.Transform;
 public class TopDownCameraController extends AbstractCameraController {
 
 	/**
+	 * The x component of the 2D point that the camera is currently centered on
+	 */
+	double centerX;
+	
+	/**
+	 * The y component of the 2D point that the camera is currently centered on
+	 */
+	double centerY;
+	
+	/**
 	 * The default constructor.
 	 * 
 	 * @param camera
@@ -41,6 +51,9 @@ public class TopDownCameraController extends AbstractCameraController {
 	public TopDownCameraController(Camera camera, Scene scene,
 			FXCanvas canvas) {
 		super(camera, scene, canvas);
+		
+		centerX = 0;
+		centerY = 0;
 	}
 
 	/**
@@ -52,6 +65,24 @@ public class TopDownCameraController extends AbstractCameraController {
 	 */
 	public void fixToCamera(Node node) {
 		xform.getChildren().add(node);
+	}
+	
+	/**
+	 * Get the x component of the center of the camera's view.
+	 * 
+	 * @return The x component of the center of the camera's view.
+	 */
+	public double getCenterX(){
+		return centerX;
+	}
+	
+	/**
+	 * Get the y component of the center of the camera's view.
+	 * 
+	 * @return The y component of the center of the camera's view.
+	 */
+	public double getCenterY(){
+		return centerY;
 	}
 
 	/**
@@ -105,6 +136,9 @@ public class TopDownCameraController extends AbstractCameraController {
 			Point3D moveVec = yDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), -moveVec.getY(),
 					moveVec.getZ());
+			
+			//Keep track of the new center
+			centerY -= speed;
 
 			// S moves the camera down
 		} else if (keyCode == KeyCode.S || keyCode == KeyCode.DOWN) {
@@ -113,18 +147,27 @@ public class TopDownCameraController extends AbstractCameraController {
 					-moveVec.getZ());
 			affine.appendTranslation(invVec.getX(), invVec.getY(),
 					invVec.getZ());
+			
+			//Keep track of the new center
+			centerY += speed;
 
 			// A moves the camera to the left
 		} else if (keyCode == KeyCode.A || keyCode == KeyCode.LEFT) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
 					-moveVec.getZ());
+			
+			//Keep track of the new center
+			centerX -= speed;
 
 			// D moves the camera to the right
 		} else if (keyCode == KeyCode.D || keyCode == KeyCode.RIGHT) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), moveVec.getY(),
 					moveVec.getZ());
+			
+			//Keep track of the new center
+			centerX += speed;
 		}
 
 		// The spacebar zooms the camera out

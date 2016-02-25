@@ -14,6 +14,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXContentProvider;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.eavp.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.eavp.viz.service.javafx.internal.scene.camera.TopDownCameraController;
@@ -39,19 +40,28 @@ import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
+import javafx.beans.property.Property;
+import javafx.embed.swt.FXCanvas;
 import javafx.event.EventHandler;
 import javafx.scene.AmbientLight;
 import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.PointLight;
+import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
+import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.PickResult;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.Shape3D;
@@ -136,6 +146,11 @@ public class FXMeshViewer extends FXViewer {
 	private double mousePosY;
 
 	/**
+	 * A JavaFX Text shape displaying the camera's center's current x and y coordinates.
+	 */
+	private Text cameraPosition;
+	
+	/**
 	 * A JavaFX Text shape displaying the mouse cursor's current x and y
 	 * coordinates.
 	 */
@@ -212,6 +227,26 @@ public class FXMeshViewer extends FXViewer {
 	 * A provider for Vertices' views and controllers.
 	 */
 	private IControllerProvider<FXVertexController> vertexProvider;
+	
+	/**
+	 * The BorderPane which will surround the mesh editor
+	 */
+	private BorderPane pane;
+	
+	/**
+	 * The subscene containing the mesh editor.
+	 */
+	private SubScene subScene;
+	
+	/**
+	 * A list of shapes which have been temporarily disabled as interacting with the mouse, so their intersection points will not be counted during a drag action
+	 */
+	private ArrayList<Node> tempTransparant;
+	
+	/**
+	 * A ToolBar in which the camera and mouse positions can be displayed.
+	 */
+	private ToolBar hud;
 
 	/**
 	 * <p>
@@ -226,13 +261,13 @@ public class FXMeshViewer extends FXViewer {
 		// Initialize the class variables
 		attachmentManager = new FXMeshAttachmentManager();
 		renderer.register(FXMeshAttachment.class, attachmentManager);
-
 		factory = new FXMeshControllerFactory();
 		selectedVertices = new ArrayList<IController>();
 		tempEdges = new ArrayList<IController>();
 		vertexMarkers = new ArrayList<Sphere>();
+		tempTransparant = new ArrayList<Node>();
 
-		// Get the controller providers from teh factory
+		// Get the controller providers from the factory
 		edgeProvider = factory.createProvider(new EdgeMesh());
 		faceProvider = factory.createProvider(new NekPolygonMesh());
 		vertexProvider = factory.createProvider(new VertexMesh());
@@ -294,7 +329,47 @@ public class FXMeshViewer extends FXViewer {
 	 */
 	@Override
 	protected void createControl(Composite parent) {
-		super.createControl(parent);
+
+			contentProvider = new FXContentProvider();
+
+			fxCanvas = new FXCanvas(parent, SWT.NONE);
+
+			//Create a pane with a toolbar containing the camera and cursor positions at the bottom and set it as the root of the scene
+			pane = new BorderPane();
+			cameraPosition = new Text("Camera center (x, y): (0.0 , 0.0)");
+			cursorPosition = new Text();
+			hud = new ToolBar(cameraPosition, cursorPosition);
+			pane.setBottom(hud);
+			scene = new Scene(pane, 100, 100, true);
+			
+			// Create the root nodes
+			internalRoot = new Group();
+			root = new Group();
+			internalRoot.getChildren().add(root);
+
+			//Create a subscene which will house the mesh editor and set it to the center of the pane
+			subScene = new SubScene(internalRoot, 2000, 2000, true, SceneAntialiasing.DISABLED);
+			pane.setCenter(subScene);
+			
+			//Set the subscene to take up all the space it can get in the pane
+			subScene.heightProperty().bind(pane.heightProperty().subtract(hud.heightProperty()));
+			subScene.widthProperty().bind(pane.widthProperty());
+			
+			//The pane should be ignored by mouse interactions, allowing them to intersect the fxCanvas's nodes.
+			pane.setPickOnBounds(false);
+			
+			
+			setupSceneInternals(internalRoot);
+			
+			// Set the scene's background color
+			subScene.setFill(Color.rgb(24, 30, 31));
+
+			// Setup camera and input
+			createDefaultCamera(internalRoot);
+			wireSelectionHandling();
+
+			fxCanvas.setScene(scene);
+
 
 		// Get the current key handler from the camera
 		final EventHandler<? super KeyEvent> handler = scene.getOnKeyPressed();
@@ -341,8 +416,7 @@ public class FXMeshViewer extends FXViewer {
 						}
 
 						// If all the vertices were selected, remove the polygon
-						// from the
-						// mesh
+						// from the mesh
 						if (selected) {
 							((FXAttachment) attachmentManager.getAttachments()
 									.get(1)).getKnownParts().get(0)
@@ -357,6 +431,10 @@ public class FXMeshViewer extends FXViewer {
 				// If another key was pressed, invoke the camera's key handler
 				else {
 					handler.handle(event);
+					
+					//Update the text display of the camera's center
+					DecimalFormat format = new DecimalFormat("#.##");
+					cameraPosition.setText("Camera center (x, y): (" + format.format(((TopDownCameraController) cameraController).getCenterX() / 3) + " , " + format.format(((TopDownCameraController) cameraController).getCenterY() / 3 + ")"));
 				}
 			}
 		});
@@ -368,7 +446,7 @@ public class FXMeshViewer extends FXViewer {
 	private void handleAddModeEvent(MouseEvent event) {
 
 		// Get the user's selection
-		PickResult pickResult = event.getPickResult();
+		PickResult pickResult = event .getPickResult();
 		Node intersectedNode = pickResult.getIntersectedNode();
 
 		// Whether or not a new vertex has been added
@@ -423,8 +501,8 @@ public class FXMeshViewer extends FXViewer {
 			// Create a new vertex at that point, divided by SCALE so that the
 			// internal representation is kept separate from the size things are
 			// being drawn at
-			VertexMesh tempComponent = new VertexMesh(event.getX() / SCALE,
-					event.getY() / SCALE, 0);
+			VertexMesh tempComponent = new VertexMesh(event.getPickResult().getIntersectedPoint().getX() / SCALE,
+					event.getPickResult().getIntersectedPoint().getY() / SCALE, 0);
 			tempComponent.setProperty(MeshEditorMeshProperty.UNDER_CONSTRUCTION,
 					"True");
 			FXVertexController tempVertex = vertexProvider
@@ -609,8 +687,8 @@ public class FXMeshViewer extends FXViewer {
 		// Get the mouse position
 		mouseOldX = mousePosX;
 		mouseOldY = mousePosY;
-		mousePosX = event.getX();
-		mousePosY = event.getY();
+		mousePosX = event.getPickResult().getIntersectedPoint().getX();
+		mousePosY = event.getPickResult().getIntersectedPoint().getY();
 
 		// Get the user's selection
 		PickResult pickResult = event.getPickResult();
@@ -626,7 +704,7 @@ public class FXMeshViewer extends FXViewer {
 		// Resolve the shape
 		IController modelShape = (IController) nodeParent.getProperties()
 				.get(IController.class);
-
+		
 		// If the user has selected a vertex, drag it
 		if (selectedVertices.contains(modelShape) || dragStarted) {
 
@@ -637,11 +715,14 @@ public class FXMeshViewer extends FXViewer {
 				// Get the location of the vertex which was clicked
 				double[] cursorLocation = ((VertexController) modelShape)
 						.getTranslation();
-
+				
 				for (IController vertex : selectedVertices) {
 
 					// Create the circle
 					Sphere marker = new Sphere(1);
+					
+					//Set it as transparant to the mouse
+					marker.setMouseTransparent(true);
 
 					// Place it at the vertex's position
 					double[] position = ((VertexController) vertex)
@@ -666,6 +747,12 @@ public class FXMeshViewer extends FXViewer {
 			// Move each vertex
 			for (int i = 0; i < vertexMarkers.size(); i++) {
 
+				//If something other than the backgroun box is found, set it as transparant temporarily. This allows us to always use the box's coordinate system, instead of whatever vertex the mouse is over
+				if(!(intersectedNode instanceof Box)){
+					intersectedNode.setMouseTransparent(true);
+					tempTransparant.add(intersectedNode);
+				}
+				
 				// Get the vertex marker for this index
 				Sphere marker = vertexMarkers.get(i);
 
@@ -752,6 +839,11 @@ public class FXMeshViewer extends FXViewer {
 			vertexMarkers.clear();
 			relativeXCords.clear();
 			relativeYCords.clear();
+			
+			//Reset any temporarily disabled vertices for mouse interaction
+			for(Node node : tempTransparant){
+				node.setMouseTransparent(false);
+			}
 		}
 	}
 
@@ -763,15 +855,19 @@ public class FXMeshViewer extends FXViewer {
 	 */
 	private void handleMouseMoved(MouseEvent event) {
 		DecimalFormat format = new DecimalFormat("#.##");
+		double x = event.getPickResult().getIntersectedPoint().getX() / 3;
+		double y  = event.getPickResult().getIntersectedPoint().getY() / 3;
+		
+		//Output coordinates if they are valid
+		if(x >= -16d && x <= 16d && y >= -8d && y <= 8d){
 		cursorPosition
-				.setText("Cursor position (x,y): ("
-						+ format.format(event.getPickResult()
-								.getIntersectedPoint().getX() / 3)
-						+ ","
-						+ event.getPickResult().getIntersectedPoint().getY() / 3
-						+ ")");
-		cursorPosition.setTranslateX(scene.getWidth() / -20);
-		cursorPosition.setTranslateZ(-5);
+				.setText("Cursor position (x,y): ("	+ format.format(x) + "," + format.format(y)	+ ")");
+		}
+		
+		//If the mouse is off the grid, output NA instead of coordinates.
+		else{
+			cursorPosition.setText("Cursor position (x,y): NA");
+		}
 	}
 
 	/**
@@ -852,7 +948,16 @@ public class FXMeshViewer extends FXViewer {
 	 *            Whether or not the viewer should display the HUD.
 	 */
 	public void setHUDVisible(boolean visible) {
-		cursorPosition.setVisible(visible);
+		
+		//To make the HUD visible, assign it to the pane
+		if(visible){
+			pane.setBottom(hud);
+		}
+		
+		//To make the HUD invisible, remove it from the pane
+		else{
+			pane.setBottom(null);
+		}
 	}
 
 	/**
@@ -861,7 +966,9 @@ public class FXMeshViewer extends FXViewer {
 	 * @return True if the HUD is being displayed, false if it is not.
 	 */
 	public boolean isHUDVisible() {
-		return cursorPosition.isVisible();
+		
+		//The HUD is visible if the pane has its bottom slot filled
+		return pane.getBottom() != null;
 	}
 
 	/**
@@ -906,6 +1013,12 @@ public class FXMeshViewer extends FXViewer {
 			edge.setProperty(MeshEditorMeshProperty.UNDER_CONSTRUCTION,
 					"False");
 			edge.refresh();
+		}
+		
+		// Remove the markers from the scene
+		for (Sphere marker : vertexMarkers) {
+			((FXAttachment) attachmentManager.getAttachments().get(1))
+					.getFxNode().getChildren().remove(marker);
 		}
 
 		// Empty the lists
@@ -1044,15 +1157,12 @@ public class FXMeshViewer extends FXViewer {
 		cameraController = new TopDownCameraController(fxCamera, scene,
 				fxCanvas);
 
-		scene.setCamera(fxCamera);
+		//scene.setCamera(fxCamera);
+		scene.setCamera(null);
+		
+		subScene.setCamera(fxCamera);
 
 		defaultCamera = fxCamera;
-
-		cursorPosition = new Text();
-		cursorPosition.setTranslateZ(-5);
-		internalRoot.getChildren().add(cursorPosition);
-		BorderPane pane = new BorderPane();
-		internalRoot.getChildren().add(pane);
 	}
 
 }
