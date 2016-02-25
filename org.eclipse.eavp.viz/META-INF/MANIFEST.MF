@@ -46,3 +46,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100",
  org.eclipse.nebula.visualization.widgets
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.eavp.viz
