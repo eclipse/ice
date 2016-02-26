@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.AbstractControllerProviderFactory;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IController;
@@ -67,7 +67,7 @@ public class AbstractControllerFactoryTester {
 	 * @author Robert Smith
 	 *
 	 */
-	public class TestControllerFactory extends AbstractControllerFactory {
+	public class TestControllerFactory extends AbstractControllerProviderFactory {
 
 		/**
 		 * The default constructor.

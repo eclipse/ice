@@ -24,7 +24,7 @@ import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
@@ -116,7 +116,7 @@ public class FXPlantCompositeConverter
 		/**
 		 * The factory for constructing controllers and views for the meshs.
 		 */
-		FXPlantViewControllerFactory factory;
+		FXPlantViewControllerProviderFactory factory;
 
 		/**
 		 * The default constructor.
@@ -126,7 +126,7 @@ public class FXPlantCompositeConverter
 		 */
 		public FXPlantComponentVisitor(FXPlantViewRootController root) {
 			this.root = root;
-			factory = new FXPlantViewControllerFactory();
+			factory = new FXPlantViewControllerProviderFactory();
 		}
 
 		/**
