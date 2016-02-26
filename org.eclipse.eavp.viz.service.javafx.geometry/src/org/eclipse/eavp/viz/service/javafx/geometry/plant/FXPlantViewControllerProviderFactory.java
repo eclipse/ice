@@ -16,7 +16,7 @@ import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.AbstractControllerProviderFactory;
 import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 
@@ -27,12 +27,12 @@ import org.eclipse.eavp.viz.service.modeling.IMesh;
  * @author Robert Smith
  *
  */
-public class FXPlantViewControllerFactory extends AbstractControllerFactory {
+public class FXPlantViewControllerProviderFactory extends AbstractControllerProviderFactory {
 
 	/**
 	 * The default constructor.
 	 */
-	public FXPlantViewControllerFactory() {
+	public FXPlantViewControllerProviderFactory() {
 		super();
 
 		// Set the JunctionMesh provider

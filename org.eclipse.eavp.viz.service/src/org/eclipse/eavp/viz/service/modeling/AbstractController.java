@@ -594,4 +594,54 @@ public class AbstractController
 		types.add(SubscriptionType.ALL);
 		return types;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#isRoot()
+	 */
+	@Override
+	public boolean isRoot() {
+		return "True".equals(model.getProperty(MeshProperty.ROOT));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#isSelected()
+	 */
+	@Override
+	public boolean isSelected() {
+		return "True".equals(model.getProperty(MeshProperty.SELECTED));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#setRoot(boolean)
+	 */
+	@Override
+	public void setRoot(boolean root) {
+		
+		//Set the model's root property to a string representation of the boolean
+		if(root){
+			model.setProperty(MeshProperty.ROOT, "True");
+		}
+		else{
+			model.setProperty(MeshProperty.ROOT, "False");
+		}	
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.modeling.IController#setSelected(boolean)
+	 */
+	@Override
+	public void setSelected(boolean selected) {
+		
+		//Set the model's selected property to a string representation of the boolean
+		if(selected){
+			model.setProperty(MeshProperty.SELECTED, "True");
+		}
+		else{
+			model.setProperty(MeshProperty.SELECTED, "False");
+		}			
+	}
 }

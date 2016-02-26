@@ -14,7 +14,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeController;
-import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
+import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeControllerProviderFactory;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
@@ -36,7 +36,7 @@ public class FXShapeControllerFactoryTester {
 	public void checkCreation() {
 
 		// The factory to be tested
-		FXShapeControllerFactory factory = new FXShapeControllerFactory();
+		FXShapeControllerProviderFactory factory = new FXShapeControllerProviderFactory();
 
 		// Create a mesh and send it to the factory
 		ShapeMesh shapeMesh = new ShapeMesh();

@@ -17,7 +17,7 @@ import org.eclipse.eavp.viz.service.AbstractVizService;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizObject;
-import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeControllerFactory;
+import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeControllerProviderFactory;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
@@ -92,7 +92,7 @@ public class FXGeometryVizService extends AbstractVizService {
 	 */
 	@Override
 	public IControllerProviderFactory getFactory() {
-		return new FXShapeControllerFactory();
+		return new FXShapeControllerProviderFactory();
 	}
 
 	/*
