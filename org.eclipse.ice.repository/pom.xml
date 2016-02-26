@@ -163,7 +163,7 @@
 					<plugin>
 						<groupId>org.eclipse.cbi.maven.plugins</groupId>
 						<artifactId>eclipse-jarsigner-plugin</artifactId>
-						<version>1.0.1</version>
+						<version>${cbi-plugins.version}</version>
 						<executions>
 							<execution>
 								<id>sign</id>
@@ -205,6 +205,34 @@
 							<defaultP2Metadata>false</defaultP2Metadata>
 						</configuration>
 					</plugin>
+					
+					<plugin>
+                        <groupId>org.eclipse.cbi.maven.plugins</groupId>
+                        <artifactId>eclipse-winsigner-plugin</artifactId>
+                        <version>${cbi-plugins.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    
+                    <plugin>
+                        <groupId>org.eclipse.cbi.maven.plugins</groupId>
+                        <artifactId>eclipse-macsigner-plugin</artifactId>
+                        <version>${cbi-plugins.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
 				</plugins>
 			</build>
 		</profile>
