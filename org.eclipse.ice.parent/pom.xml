@@ -11,6 +11,8 @@
 		<pom-filename>pom.xml</pom-filename>	
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 		<ice-install-dir>/home/data/httpd/download.eclipse.org/ice/builds/${ice-version}</ice-install-dir>
+		<!-- Repo for released versions of CBI -->
+    	<eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
 	</properties>
 
 	<!-- This is the parent POM from which all ICE modules inherit common settings -->
@@ -20,6 +22,19 @@
 	<version>2.1.8.20160208</version>
 	<packaging>pom</packaging>
 
+  	<pluginRepositories>
+	    <pluginRepository>
+			<id>eclipse-repo</id>
+			<url>${eclipse-repo.url}</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+	    </pluginRepository>
+	</pluginRepositories>
+	
 	<profiles>
 		<profile>
 			<id>macosx</id>
