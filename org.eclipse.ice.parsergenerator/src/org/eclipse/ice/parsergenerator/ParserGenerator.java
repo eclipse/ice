@@ -1,21 +1,37 @@
 package org.eclipse.ice.parsergenerator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.IWorkingSet;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.xtext.ui.XtextProjectHelper;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
+import org.eclipse.xtext.ui.util.FileOpener;
+import org.eclipse.xtext.util.JavaVersion;
+import org.eclipse.xtext.xtext.ui.internal.XtextUIModuleInternal;
+import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
+import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
+import org.eclipse.xtext.xtext.wizard.BuildSystem;
+import org.eclipse.xtext.xtext.wizard.ProjectLayout;
+import org.eclipse.xtext.xtext.wizard.SourceLayout;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -30,7 +46,6 @@ import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.model.Model;
 import org.eclipse.ice.projectgeneration.ICEItemNature;
 
-
 @XmlRootElement(name = "ParserGenerator")
 public class ParserGenerator extends Model {
 
@@ -38,7 +53,9 @@ public class ParserGenerator extends Model {
 	private String itemDesc; 
     private String exportString; 
 	private IIOService ioService;
-	
+	private XtextProjectInfo info;
+	private XtextProjectCreator creator;
+	private FileOpener fileOpener;
 	
 	public ParserGenerator() {
 		this(null);
@@ -137,11 +154,9 @@ public class ParserGenerator extends Model {
 	@Override
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
-	
 		ArrayList<Component> components = form.getComponents();
 		ArrayList<IEntry> projectEntries = ((DataComponent)components.get(0)).retrieveAllEntries();
 		ArrayList<IEntry> parserEntries = ((DataComponent)components.get(1)).retrieveAllEntries();
-		
 		String outputName     = projectEntries.get(1).getValue();
 		String projectName    = projectEntries.get(0).getValue(); 
 		String parserName     = projectEntries.get(1).getValue();
@@ -157,23 +172,38 @@ public class ParserGenerator extends Model {
 				retStatus = FormStatus.Processing;
 				
 				// Create a new Xtext/Plugin Project
-				IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-				IProject parserProject = root.getProject(projectName);
-				parserProject.create(null);
-				parserProject.open(null);
-				IProjectDescription description = parserProject.getDescription();
-				description.setNatureIds(new String[] { JavaCore.NATURE_ID,
-														XtextProjectHelper.NATURE_ID,
-														ICEItemNature.NATURE_ID });
-				IJavaProject javaProject = JavaCore.create(parserProject);
+				fileOpener = new FileOpener();
+				info = new XtextProjectInfo();
+				info.setBaseName(projectName);
+				info.setWorkingSets(Arrays.asList(new IWorkingSet[] {}));
+				info.setRootLocation(ResourcesPlugin.getWorkspace().getRoot().toString());
+				info.setEncoding(Charset.defaultCharset());
+				info.setPreferredBuildSystem(BuildSystem.MAVEN);
+				info.setSourceLayout(SourceLayout.PLAIN);
+				info.setJavaVersion(JavaVersion.JAVA8);
+				info.setProjectLayout(ProjectLayout.HIERARCHICAL);
+				info.getIdeProject().setEnabled(false);
+				info.getIntellijProject().setEnabled(false);
+				info.getWebProject().setEnabled(false);
 				
-				// Get the grammar file handle
-				// Write out the new grammar file
-				// Generate Xtext artifacts
-				// Create new io package / add plugin nature to project
-				// Generate IReader wrapper class
-				// Generate IWriter wrapper class
-			
+				IRunnableWithProgress op = new IRunnableWithProgress() {
+					@Override
+					public void run(IProgressMonitor monitor) throws InvocationTargetException {
+						try {
+							Injector injector = Guice.createInjector();
+							creator = injector.getInstance(XtextProjectCreator.class);
+							creator.setProjectInfo(info);
+							creator.run(monitor);
+							fileOpener.selectAndReveal(creator.getResult());
+						} catch(Exception e) {
+							throw new InvocationTargetException(e);
+						} finally {
+							monitor.done();
+						}
+					}
+				};
+				
+				
 				project.refreshLocal(1, new NullProgressMonitor());
 				retStatus = FormStatus.Processed;
 			} catch (CoreException e) {
@@ -186,22 +216,8 @@ public class ParserGenerator extends Model {
 		} else {
 			retStatus = super.process(actionName);
 		}
-		
 		return retStatus;
 	}
-
-	/**
-	 * This method is called when loading a new item either via the item 
-	 * creation button or through importing a file associated with this
-	 * item.  It is responsible for setting up the form for user interaction.
-	 *  
-	 * @param fileName
-	 */
-	@Override
-	public void loadInput(String fileName) {
-		return;
-	}
-	
 
 	private String buildGrammar(String open, String close, String assign, String comment) {
 		String sep = System.lineSeparator();
