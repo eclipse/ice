@@ -10,9 +10,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.PlatformUI;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -25,9 +27,13 @@ import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
 import org.eclipse.xtext.xtext.wizard.BuildSystem;
 import org.eclipse.xtext.xtext.wizard.ProjectLayout;
 import org.eclipse.xtext.xtext.wizard.SourceLayout;
+import org.eclipse.core.internal.resources.Workspace;
+import org.eclipse.xtext.xtext.wizard.LanguageDescriptor;
+import org.eclipse.xtext.xtext.wizard.LanguageDescriptor.FileExtensions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -151,6 +157,7 @@ public class ParserGenerator extends Model {
 	 * @param actionName
 	 * @return
 	 */
+	@SuppressWarnings("restriction")
 	@Override
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
@@ -170,27 +177,39 @@ public class ParserGenerator extends Model {
 			IFile outputFile = project.getFile(outputName);
 			try {
 				retStatus = FormStatus.Processing;
+			
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
 				
 				// Create a new Xtext/Plugin Project
 				fileOpener = new FileOpener();
 				info = new XtextProjectInfo();
+				LanguageDescriptor lang = info.getLanguage();
+				lang.setFileExtensions(FileExtensions.fromString(fileExt));
+				lang.setName(projectName + "." + parserName);
 				info.setBaseName(projectName);
 				info.setWorkingSets(Arrays.asList(new IWorkingSet[] {}));
-				info.setRootLocation(ResourcesPlugin.getWorkspace().getRoot().toString());
+				info.setRootLocation(workspace.getRoot().getLocation().toOSString());
+				info.setWorkbench(PlatformUI.getWorkbench());
 				info.setEncoding(Charset.defaultCharset());
-				info.setPreferredBuildSystem(BuildSystem.MAVEN);
+				info.setPreferredBuildSystem(BuildSystem.NONE);
 				info.setSourceLayout(SourceLayout.PLAIN);
 				info.setJavaVersion(JavaVersion.JAVA8);
-				info.setProjectLayout(ProjectLayout.HIERARCHICAL);
+				info.setProjectLayout(ProjectLayout.FLAT);
 				info.getIdeProject().setEnabled(false);
 				info.getIntellijProject().setEnabled(false);
 				info.getWebProject().setEnabled(false);
+				info.getUiProject().setEnabled(false);
 				
 				IRunnableWithProgress op = new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException {
 						try {
-							Injector injector = Guice.createInjector();
+							Injector injector = Guice.createInjector(new Module() {
+								@Override
+								public void configure(Binder binder) {
+									binder.bind(IWorkspace.class).toInstance(workspace);
+								}
+							});
 							creator = injector.getInstance(XtextProjectCreator.class);
 							creator.setProjectInfo(info);
 							creator.run(monitor);
@@ -202,7 +221,7 @@ public class ParserGenerator extends Model {
 						}
 					}
 				};
-				
+				op.run(new NullProgressMonitor());
 				
 				project.refreshLocal(1, new NullProgressMonitor());
 				retStatus = FormStatus.Processed;
