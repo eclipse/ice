@@ -7,40 +7,53 @@
  *
  * Contributors:
  *   Initial API and implementation and/or initial documentation - 
- *   Nick Stanish, Jay Jay Billings
+ *   Jay Jay Billings
  *******************************************************************************/
-
-package org.eclipse.ice.client.widgets.providers;
+package org.eclipse.ice.client.widgets.providers.Default;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-import org.eclipse.ice.client.widgets.ErrorMessageFormPage;
+import org.eclipse.ice.client.widgets.providers.IPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
- * This class is a default extension for providing error pages
+ * This is the default implementation of IPageProvider and it is responsible for
+ * generating the default set of pages for ICEFormEditor.
  * 
- * @author Nick Stanish, Jay Jay Billings
+ * @author Jay Jay Billings
  *
  */
-public class DefaultErrorPageProvider extends DefaultPageProvider
-		implements IErrorPageProvider {
+public class DefaultPageProvider implements IPageProvider {
+
+	/**
+	 * Default provider name
+	 */
+	public static final String PROVIDER_NAME = "default";
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getName()
+	 */
+	@Override
+	public String getName() {
+		return PROVIDER_NAME;
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ice.client.widgets.providers.IPageProvider#getPages(org.
-	 * eclipse.ui.forms.editor.FormEditor, java.util.ArrayList)
+	 * eclipse.ui.forms.editor.FormEditor, java.util.Map)
 	 */
 	@Override
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
 			ArrayList<Component> components) {
-		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
-		pages.add(new ErrorMessageFormPage(formEditor, "Error Page",
-				"Error Page"));
-		return pages;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

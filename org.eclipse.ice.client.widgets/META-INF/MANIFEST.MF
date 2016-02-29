@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.ice.datastructures,
  org.eclipse.remote.ui;bundle-version="2.0.0",
  org.eclipse.swt
 Import-Package: 
+ com.sun.jersey.api.client;version="1.17.0",
  org.apache.commons.io,
  org.apache.log4j.spi;version="1.2.15",
  org.eclipse.core.commands.common,
@@ -25,6 +26,10 @@ Import-Package:
  org.eclipse.draw2d.geometry,
  org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di,
+ org.eclipse.e4.core.di.annotations,
+ org.eclipse.e4.ui.model,
+ org.eclipse.e4.ui.model.application,
+ org.eclipse.e4.ui.model.application.ui,
  org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.csv,
  org.eclipse.eavp.viz.service.datastructures,
@@ -53,6 +58,8 @@ Import-Package:
  org.slf4j;version="1.7.2"
 Export-Package: org.eclipse.ice.client.widgets,
  org.eclipse.ice.client.widgets.analysis,
- org.eclipse.ice.client.widgets.grid
-Service-Component: OSGI-INF/formEditorVizService.xml
+ org.eclipse.ice.client.widgets.grid,
+ org.eclipse.ice.client.widgets.providers,
+ org.eclipse.ice.client.widgets.providers.Default
+Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Oak Ridge National Laboratory
