@@ -16,7 +16,10 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.EdgeController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
@@ -84,14 +87,14 @@ public class EdgeInfoSection extends GeneralInfoSection {
 			MeshSelection meshSelection = (MeshSelection) element;
 
 			// Get the selected IMeshPart.
-			AbstractController meshPart = meshSelection.selectedMeshPart;
+			IController meshPart = meshSelection.selectedMeshPart;
 
 			// If the selected object is a Polygon, then we need to get an edge
 			// from the Polygon.
 			if (meshPart instanceof NekPolygonController) {
 				NekPolygonController polygon = (NekPolygonController) meshPart;
-				List<AbstractController> edges = polygon
-						.getEntitiesByCategory("Edges");
+				List<IController> edges = polygon
+						.getEntitiesByCategory(MeshCategory.EDGES);
 				// Set the parent class' ICEObject to the appropriate edge.
 				if (index < edges.size()) {
 					object = edges.get(index);

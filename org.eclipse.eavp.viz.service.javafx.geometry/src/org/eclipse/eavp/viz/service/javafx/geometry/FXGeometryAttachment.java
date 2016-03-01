@@ -11,7 +11,7 @@
 package org.eclipse.eavp.viz.service.javafx.geometry;
 
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 
 import javafx.scene.Group;
 
@@ -43,12 +43,12 @@ public class FXGeometryAttachment extends FXAttachment {
 	 * handleUpdate()
 	 */
 	@Override
-	public void handleUpdate(AbstractController source) {
+	public void handleUpdate(IController source) {
 
 		// On update, refresh the list of top level nodes
 		fxAttachmentNode.getChildren().clear();
 
-		for (AbstractController child : source.getEntities()) {
+		for (IController child : source.getEntities()) {
 			fxAttachmentNode.getChildren()
 					.add((Group) child.getRepresentation());
 

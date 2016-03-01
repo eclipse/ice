@@ -13,6 +13,7 @@ package org.eclipse.eavp.viz.service.javafx.geometry.datatypes.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.junit.Test;
 
@@ -41,7 +42,7 @@ public class FXShapeViewTester {
 
 		// Create a cloned view and check that it is identical to the original
 		ShapeMesh mesh = new ShapeMesh();
-		mesh.setProperty("Type", "Cube");
+		mesh.setProperty(MeshProperty.TYPE, "Cube");
 		FXShapeView view = new FXShapeView(mesh);
 		FXShapeView clone = (FXShapeView) view.clone();
 		assertTrue(view.equals(clone));
@@ -55,8 +56,8 @@ public class FXShapeViewTester {
 
 		// Create a cube named "test"
 		ShapeMesh mesh = new ShapeMesh();
-		mesh.setProperty("Name", "test");
-		mesh.setProperty("Type", "Cube");
+		mesh.setProperty(MeshProperty.NAME, "test");
+		mesh.setProperty(MeshProperty.TYPE, "Cube");
 
 		// Create a view for it
 		FXShapeView view = new FXShapeView(mesh);
@@ -95,7 +96,7 @@ public class FXShapeViewTester {
 
 		// Create a cube
 		ShapeMesh mesh = new ShapeMesh();
-		mesh.setProperty("Type", "Cube");
+		mesh.setProperty(MeshProperty.TYPE, "Cube");
 
 		// Create a view for it
 		FXShapeView view = new FXShapeView(mesh);
@@ -119,7 +120,7 @@ public class FXShapeViewTester {
 		}
 
 		// Change the shape to a cylinder
-		mesh.setProperty("Type", "Cylinder");
+		mesh.setProperty(MeshProperty.TYPE, "Cylinder");
 
 		// Search all of the node's children
 		found = false;
@@ -136,7 +137,7 @@ public class FXShapeViewTester {
 			}
 		}
 
-		mesh.setProperty("Type", "Sphere");
+		mesh.setProperty(MeshProperty.TYPE, "Sphere");
 
 		found = false;
 
@@ -154,7 +155,7 @@ public class FXShapeViewTester {
 			}
 		}
 
-		mesh.setProperty("Type", "Tube");
+		mesh.setProperty(MeshProperty.TYPE, "Tube");
 
 		found = false;
 

@@ -13,11 +13,15 @@ package org.eclipse.eavp.viz.service.javafx.geometry.datatypes.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeController;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.Transformation;
@@ -46,7 +50,7 @@ public class FXShapeControllerTester {
 		ShapeMesh mesh = new ShapeMesh();
 		FXShapeController shape = new FXShapeController(mesh,
 				new FXShapeView(mesh));
-		shape.setProperty("Test", "Property");
+		shape.setProperty(MeshProperty.INNER_RADIUS, "Property");
 		FXShapeController clone = (FXShapeController) shape.clone();
 		assertTrue(shape.equals(clone));
 	}
@@ -60,7 +64,7 @@ public class FXShapeControllerTester {
 
 		// Create a cube
 		ShapeMesh mesh = new ShapeMesh();
-		mesh.setProperty("Type", "Cube");
+		mesh.setProperty(MeshProperty.TYPE, "Cube");
 		FXShapeView view = new FXShapeView(mesh);
 		FXShapeController shape = new FXShapeController(mesh, view);
 
@@ -70,7 +74,7 @@ public class FXShapeControllerTester {
 
 		// Create a sphere
 		ShapeMesh mesh2 = new ShapeMesh();
-		mesh2.setProperty("Type", "Sphere");
+		mesh2.setProperty(MeshProperty.TYPE, "Sphere");
 		FXShapeView view2 = new FXShapeView(mesh2);
 		FXShapeController shape2 = new FXShapeController(mesh2, view2);
 
@@ -82,7 +86,7 @@ public class FXShapeControllerTester {
 
 		// Create a cylinder
 		ShapeMesh mesh3 = new ShapeMesh();
-		mesh2.setProperty("Type", "Cylinder");
+		mesh2.setProperty(MeshProperty.TYPE, "Cylinder");
 		FXShapeView view3 = new FXShapeView(mesh3);
 		FXShapeController shape3 = new FXShapeController(mesh3, view3);
 
@@ -108,7 +112,7 @@ public class FXShapeControllerTester {
 
 		// Create a union
 		ShapeMesh unionMesh = new ShapeMesh();
-		unionMesh.setProperty("Operator", "Union");
+		unionMesh.setProperty(GeometryMeshProperty.OPERATOR, "Union");
 		FXShapeView unionView = new FXShapeView(unionMesh);
 		FXShapeController unionShape = new FXShapeController(unionMesh,
 				unionView);
@@ -128,7 +132,7 @@ public class FXShapeControllerTester {
 
 		// Create a cube
 		ShapeMesh mesh = new ShapeMesh();
-		mesh.setProperty("Type", "Cube");
+		mesh.setProperty(MeshProperty.TYPE, "Cube");
 		FXShapeView view = new FXShapeView(mesh);
 		FXShapeController shape = new FXShapeController(mesh, view);
 
@@ -143,19 +147,19 @@ public class FXShapeControllerTester {
 		// Add a child to the mesh
 		mesh.addEntityByCategory(
 				new AbstractController(new AbstractMesh(), new AbstractView()),
-				"Test");
+				MeshCategory.DEFAULT);
 
 		// This should have sent an update to the controller
 		assertTrue(controller.isUpdated());
 
 		// Select the mesh
-		mesh.setProperty("Selected", "True");
+		mesh.setProperty(MeshProperty.SELECTED, "True");
 
 		// The controller should have been updated
 		assertTrue(controller.isUpdated());
 
 		// Change one of the mesh's properties
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.INNER_RADIUS, "Property");
 
 		// The controller should not be subscribed to general property messages
 		// from the mesh
@@ -205,7 +209,7 @@ public class FXShapeControllerTester {
 		 * refresh(org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 		 */
 		@Override
-		public void refresh(AbstractMesh model) {
+		public void refresh(IMesh model) {
 			refreshed = true;
 			super.refresh(model);
 		}

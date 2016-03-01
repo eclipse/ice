@@ -21,15 +21,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The view of an AbstractMeshComponent shown to the user. The view is
- * responsible for creating, managing, and updating the datastructure(s) which
- * display the associated AbstractMeshComponent in the view's rendering engine's
- * native data types.
+ * A base implementation of IView.
  * 
  * @author Robert Smith
  */
 public class AbstractView
-		implements IManagedUpdateableListener, IManagedUpdateable {
+		implements IManagedUpdateableListener, IManagedUpdateable, IView {
 
 	/**
 	 * The transformation representing the part's intended state. This may not
@@ -73,21 +70,24 @@ public class AbstractView
 		transformation.register(this);
 	}
 
-	/**
-	 * Getter function for the part's transformation.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The part's current transformation.
+	 * @see org.eclipse.eavp.viz.service.modeling.IView#getTransformation()
 	 */
+	@Override
 	public Transformation getTransformation() {
 		return transformation;
 	}
 
-	/**
-	 * Setter function for the part's transformation.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param newTransformation
-	 *            The transformation to apply to this part.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IView#setTransformation(org.eclipse
+	 * .eavp.viz.service.modeling.Transformation)
 	 */
+	@Override
 	public void setTransformation(Transformation newTransformation) {
 
 		// If the transformation is null, log an error and fail silently
@@ -102,49 +102,56 @@ public class AbstractView
 		updateManager.notifyListeners(eventTypes);
 	}
 
-	/**
-	 * Getter for the part's previous transformation.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The last transformation which was fully applied to the part by
-	 *         the graphics engine.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IView#getPreviousTransformation()
 	 */
+	@Override
 	public Transformation getPreviousTransformation() {
 		return previousTransformation;
 	}
 
-	/**
-	 * Notifies the part that the rendering engine has graphically applied the
-	 * newest transformation to it.
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.eavp.viz.service.modeling.IView#setSynched()
 	 */
+	@Override
 	public void setSynched() {
 		// Update the previous transformation to the part's current status.
 		previousTransformation = (Transformation) transformation.clone();
 	}
 
-	/**
-	 * Creates an object which represents the part's model in a native data type
-	 * for the application associated with this view.
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.eavp.viz.service.modeling.IView#getRepresentation()
 	 */
+	@Override
 	public Object getRepresentation() {
 		// Nothing to do.
 		return null;
 	}
 
-	/**
-	 * Refreshes the representation of the model.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param model
-	 *            A reference to the view's model
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IView#refresh(org.eclipse.eavp.viz.
+	 * service.modeling.IMesh)
 	 */
-	public void refresh(AbstractMesh model) {
+	@Override
+	public void refresh(IMesh model) {
 		// Nothing to do
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * @see
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
 	 * register(org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
@@ -157,7 +164,8 @@ public class AbstractView
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * @see
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
 	 * unregister(org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
@@ -188,7 +196,7 @@ public class AbstractView
 
 		// Check that the transformations are equal
 		if (!(transformation
-				.equals(((AbstractView) otherObject).getTransformation()))) {
+				.equals(((IView) otherObject).getTransformation()))) {
 			return false;
 		}
 
@@ -222,17 +230,32 @@ public class AbstractView
 	public Object clone() {
 
 		// Create a new AbstractView and make it a copy of this
-		AbstractView clone = new AbstractView();
+		IView clone = new AbstractView();
 		clone.copy(this);
 
 		return clone;
 	}
 
-	public void copy(AbstractView otherObject) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IView#copy(org.eclipse.eavp.viz.
+	 * service.modeling.AbstractView)
+	 */
+	@Override
+	public void copy(IView otherObject) {
+
+		// Check that the source object is an IView, failing
+		// silently if not and casting it if so
+		if (!(otherObject instanceof AbstractView)) {
+			return;
+		}
+		AbstractView castObject = (AbstractView) otherObject;
 
 		// Copy the other view's data members
-		transformation = (Transformation) otherObject.transformation.clone();
-		previousTransformation = (Transformation) otherObject.previousTransformation
+		transformation = (Transformation) castObject.transformation.clone();
+		previousTransformation = (Transformation) castObject.previousTransformation
 				.clone();
 
 		// Notify own listeners of the change

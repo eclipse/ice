@@ -24,6 +24,10 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.test.TestManagedLis
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestController;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestMesh;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestView;
@@ -41,7 +45,7 @@ public class AbstractMeshTester {
 	/**
 	 * The entities for the component
 	 */
-	List<AbstractController> entities;
+	List<IController> entities;
 
 	/**
 	 * The controller's model
@@ -63,7 +67,7 @@ public class AbstractMeshTester {
 	 */
 	@Before
 	public void beforeEachTest() {
-		entities = new ArrayList<AbstractController>();
+		entities = new ArrayList<IController>();
 		component = new TestMesh(entities);
 		view = new TestView();
 		controller = new TestController(component, view);
@@ -75,16 +79,18 @@ public class AbstractMeshTester {
 	@Test
 	public void testGetProperty() {
 		// An empty property should return null
-		assertNull(component.getProperty("empty"));
+		assertNull(component.getProperty(MeshProperty.DESCRIPTION));
 
 		// Set a property and test that its value is correct
-		component.setProperty("test property", "test value");
-		assertTrue("test value".equals(component.getProperty("test property")));
+		component.setProperty(MeshProperty.DESCRIPTION, "test value");
+		assertTrue("test value"
+				.equals(component.getProperty(MeshProperty.DESCRIPTION)));
 
 		// Set a new value to the previous property and test that the value is
 		// changed
-		component.setProperty("test property", "new value");
-		assertTrue("new value".equals(component.getProperty("test property")));
+		component.setProperty(MeshProperty.DESCRIPTION, "new value");
+		assertTrue("new value"
+				.equals(component.getProperty(MeshProperty.DESCRIPTION)));
 	}
 
 	/**
@@ -98,7 +104,7 @@ public class AbstractMeshTester {
 		// Create a new VizObject with id 2
 		AbstractController object = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		object.setProperty("Id", "2");
+		object.setProperty(MeshProperty.ID, "2");
 
 		// Add the object as a child
 		component.addEntity(object);
@@ -108,13 +114,13 @@ public class AbstractMeshTester {
 
 		// Check that the controller now has a map with one entity with id 2.
 		assertEquals(1, component.getEntities().size());
-		assertTrue(
-				"2".equals(component.getEntities().get(0).getProperty("Id")));
+		assertTrue("2".equals(
+				component.getEntities().get(0).getProperty(MeshProperty.ID)));
 
 		// Create a new part with id 3
 		AbstractController secondObject = new AbstractController(
 				new AbstractMesh(), new AbstractView());
-		object.setProperty("Id", "3");
+		object.setProperty(MeshProperty.ID, "3");
 
 		// Add a second entity
 		component.addEntity(secondObject);
@@ -123,7 +129,8 @@ public class AbstractMeshTester {
 		assertTrue(controller.isUpdated());
 
 		// Check that there are two entities
-		assertEquals(2, component.getEntitiesByCategory("Default").size());
+		assertEquals(2,
+				component.getEntitiesByCategory(MeshCategory.DEFAULT).size());
 
 		// Remove one of the entities
 		component.removeEntity(object);
@@ -151,8 +158,8 @@ public class AbstractMeshTester {
 		// Create an edge entity
 		AbstractController edge = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		edge.setProperty("Name", "edge");
-		component.addEntityByCategory(edge, "Edges");
+		edge.setProperty(MeshProperty.NAME, "edge");
+		component.addEntityByCategory(edge, MeshCategory.EDGES);
 
 		// Check that the controller was notified
 		assertTrue(controller.isUpdated());
@@ -160,28 +167,31 @@ public class AbstractMeshTester {
 		// Create a vertex entity
 		AbstractController vertex1 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		vertex1.setProperty("Name", "vertex1");
-		component.addEntityByCategory(vertex1, "Vertices");
+		vertex1.setProperty(MeshProperty.NAME, "vertex1");
+		component.addEntityByCategory(vertex1, MeshCategory.VERTICES);
 
 		// Create another vertex entity
 		AbstractController vertex2 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		vertex2.setProperty("Name", "vertex2");
-		component.addEntityByCategory(vertex2, "Vertices");
+		vertex2.setProperty(MeshProperty.NAME, "vertex2");
+		component.addEntityByCategory(vertex2, MeshCategory.VERTICES);
 
 		// Check that there are three entities, 1 edge, and 2 vertices
-		assertEquals(1, component.getEntitiesByCategory("Edges").size());
-		assertEquals(2, component.getEntitiesByCategory("Vertices").size());
+		assertEquals(1,
+				component.getEntitiesByCategory(MeshCategory.EDGES).size());
+		assertEquals(2,
+				component.getEntitiesByCategory(MeshCategory.VERTICES).size());
 
 		// Check that the edge is in the Edges category
-		assertTrue("edge".equals(component.getEntitiesByCategory("Edges").get(0)
-				.getProperty("Name")));
+		assertTrue("edge"
+				.equals(component.getEntitiesByCategory(MeshCategory.EDGES)
+						.get(0).getProperty(MeshProperty.NAME)));
 
 		// Create a list of all the names in the Vertices category
 		ArrayList<String> vertexNames = new ArrayList<String>();
-		for (AbstractController object : component
-				.getEntitiesByCategory("Vertices")) {
-			vertexNames.add(object.getProperty("Name"));
+		for (IController object : component
+				.getEntitiesByCategory(MeshCategory.VERTICES)) {
+			vertexNames.add(object.getProperty(MeshProperty.NAME));
 		}
 
 		// Check that the two vertices were in the right category
@@ -189,9 +199,9 @@ public class AbstractMeshTester {
 		assertTrue(vertexNames.contains("vertex2"));
 
 		// Check that empty categories return empty lists
-		assertNotNull(component.getEntitiesByCategory("empty category"));
+		assertNotNull(component.getEntitiesByCategory(MeshCategory.FACES));
 		assertEquals(0,
-				component.getEntitiesByCategory("empty category").size());
+				component.getEntitiesByCategory(MeshCategory.FACES).size());
 	}
 
 	/**
@@ -206,7 +216,7 @@ public class AbstractMeshTester {
 		object.register(component);
 
 		// Set the object's id. This should trigger an update.
-		object.setProperty("Id", "2");
+		object.setProperty(MeshProperty.ID, "2");
 
 		// Wait for the notification thread
 		try {
@@ -225,7 +235,7 @@ public class AbstractMeshTester {
 		component.isUpdated();
 
 		// Set the object's id, triggering an update.
-		object.setProperty("Id", "3");
+		object.setProperty(MeshProperty.ID, "3");
 
 		// The component should not have received the update.
 		assertFalse(component.isUpdated());
@@ -238,18 +248,16 @@ public class AbstractMeshTester {
 	public void testEquality() {
 
 		// Create a mesh
-		AbstractMesh mesh = new TestMesh(new ArrayList<AbstractController>());
-		mesh.setProperty("Equal", "True");
+		IMesh mesh = new TestMesh(new ArrayList<IController>());
+		mesh.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// Create a mesh equal to the first
-		AbstractMesh equalMesh = new TestMesh(
-				new ArrayList<AbstractController>());
-		equalMesh.setProperty("Equal", "True");
+		AbstractMesh equalMesh = new TestMesh(new ArrayList<IController>());
+		equalMesh.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// Create a mesh which is not equal to the first
-		AbstractMesh inequalMesh = new TestMesh(
-				new ArrayList<AbstractController>());
-		inequalMesh.setProperty("Equal", "False");
+		IMesh inequalMesh = new TestMesh(new ArrayList<IController>());
+		inequalMesh.setProperty(MeshProperty.DESCRIPTION, "False");
 
 		// A mesh should equal itself
 		assertTrue(mesh.equals(mesh));
@@ -262,7 +270,7 @@ public class AbstractMeshTester {
 		assertFalse(mesh.equals(inequalMesh));
 
 		// Set the properties to be equal
-		inequalMesh.setProperty("Equal", "True");
+		inequalMesh.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// The two objects should now be equal
 		assertTrue(mesh.equals(inequalMesh));
@@ -270,24 +278,24 @@ public class AbstractMeshTester {
 		// Set the entities to be inequal
 		AbstractController child = new AbstractController(equalMesh,
 				new AbstractView());
-		inequalMesh.addEntityByCategory(child, "Test");
+		inequalMesh.addEntityByCategory(child, MeshCategory.FACES);
 
 		// The objects should be inequal again
 		assertFalse(mesh.equals(inequalMesh));
 
 		// Add the same object under a different category
-		mesh.addEntityByCategory(child, "Wrong");
+		mesh.addEntityByCategory(child, MeshCategory.EDGES);
 		assertFalse(mesh.equals(inequalMesh));
 
 		// Remove the child and put it in the same category
 		mesh.removeEntity(child);
-		mesh.addEntityByCategory(child, "Test");
+		mesh.addEntityByCategory(child, MeshCategory.FACES);
 
 		// The meshes should be equal again
 		assertTrue(mesh.equals(inequalMesh));
 
 		// Check that a cloned controller is equal to the original
-		AbstractMesh clone = (AbstractMesh) mesh.clone();
+		IMesh clone = (IMesh) ((AbstractMesh) mesh).clone();
 		assertTrue(mesh.equals(clone));
 	}
 
@@ -304,12 +312,12 @@ public class AbstractMeshTester {
 		component.register(listener);
 
 		// Changing a mesh's properties should fire a PROPERTY update
-		component.setProperty("Test", "Value");
+		component.setProperty(MeshProperty.DESCRIPTION, "Value");
 		assertTrue(listener.gotProperty());
 		assertFalse(listener.gotSelection());
 
 		// Changing the Selected property should instead fire a SELECTION update
-		component.setProperty("Selected", "True");
+		component.setProperty(MeshProperty.SELECTED, "True");
 		assertFalse(listener.gotProperty());
 		assertTrue(listener.gotSelection());
 

@@ -21,6 +21,9 @@ import org.eclipse.eavp.viz.service.javafx.mesh.FXMeshCanvas;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -82,7 +85,7 @@ public class FXMeshCanvasTester {
 	public void checkSelection() {
 
 		// The root for the tree of shapes in the canvas
-		AbstractController root = new AbstractController(new AbstractMesh(),
+		IController root = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 
 		// The canvas for testing
@@ -92,58 +95,58 @@ public class FXMeshCanvasTester {
 		// Create the polygons for the test
 		AbstractController neighbor1 = new AbstractController(
 				new AbstractMesh(), new AbstractView());
-		neighbor1.setProperty("Name", "neighbor1");
+		neighbor1.setProperty(MeshProperty.NAME, "neighbor1");
 		AbstractController neighbor2 = new AbstractController(
 				new AbstractMesh(), new AbstractView());
-		neighbor2.setProperty("Name", "neighbor2");
+		neighbor2.setProperty(MeshProperty.NAME, "neighbor2");
 		AbstractController independent = new AbstractController(
 				new AbstractMesh(), new AbstractView());
-		independent.setProperty("Name", "independent");
+		independent.setProperty(MeshProperty.NAME, "independent");
 
 		// Create the points used for the test. These points will be used by
 		// exactly one polygon apiece
 		AbstractController point1 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		point1.setProperty("Name", "point1");
+		point1.setProperty(MeshProperty.NAME, "point1");
 		AbstractController point2 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		point2.setProperty("Name", "point2");
+		point2.setProperty(MeshProperty.NAME, "point2");
 		AbstractController point3 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		point3.setProperty("Name", "point3");
+		point3.setProperty(MeshProperty.NAME, "point3");
 		AbstractController point4 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		point4.setProperty("Name", "point4");
+		point4.setProperty(MeshProperty.NAME, "point4");
 		AbstractController point5 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		point5.setProperty("Name", "point5");
+		point5.setProperty(MeshProperty.NAME, "point5");
 		AbstractController point6 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		point6.setProperty("Name", "point6");
+		point6.setProperty(MeshProperty.NAME, "point6");
 
 		// Create more points. These will be shared by the two triangles
 		AbstractController shared1 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		shared1.setProperty("Name", "shared1");
+		shared1.setProperty(MeshProperty.NAME, "shared1");
 		AbstractController shared2 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		shared2.setProperty("Name", "shared2");
+		shared2.setProperty(MeshProperty.NAME, "shared2");
 
 		// Add the vertices to the polygons. The polygons should be two
 		// triangles which share an edge and a rectangle that is not connected
 		// to either of them.
-		neighbor1.addEntityByCategory(point1, "Vertices");
-		neighbor1.addEntityByCategory(shared1, "Vertices");
-		neighbor1.addEntityByCategory(shared2, "Vertices");
+		neighbor1.addEntityByCategory(point1, MeshCategory.VERTICES);
+		neighbor1.addEntityByCategory(shared1, MeshCategory.VERTICES);
+		neighbor1.addEntityByCategory(shared2, MeshCategory.VERTICES);
 
-		neighbor2.addEntityByCategory(point2, "Vertices");
-		neighbor2.addEntityByCategory(shared1, "Vertices");
-		neighbor2.addEntityByCategory(shared2, "Vertices");
+		neighbor2.addEntityByCategory(point2, MeshCategory.VERTICES);
+		neighbor2.addEntityByCategory(shared1, MeshCategory.VERTICES);
+		neighbor2.addEntityByCategory(shared2, MeshCategory.VERTICES);
 
-		independent.addEntityByCategory(point3, "Vertices");
-		independent.addEntityByCategory(point4, "Vertices");
-		independent.addEntityByCategory(point5, "Vertices");
-		independent.addEntityByCategory(point6, "Vertices");
+		independent.addEntityByCategory(point3, MeshCategory.VERTICES);
+		independent.addEntityByCategory(point4, MeshCategory.VERTICES);
+		independent.addEntityByCategory(point5, MeshCategory.VERTICES);
+		independent.addEntityByCategory(point6, MeshCategory.VERTICES);
 
 		// Try deleting with nothing selected and no polygons. Nothing should
 		// happen.
@@ -172,11 +175,11 @@ public class FXMeshCanvasTester {
 
 		// The four points of the rectangle should be selected. Other points
 		// should not be
-		assertFalse("True".equals(point1.getProperty("Selected")));
-		assertTrue("True".equals(point3.getProperty("Selected")));
-		assertTrue("True".equals(point4.getProperty("Selected")));
-		assertTrue("True".equals(point5.getProperty("Selected")));
-		assertTrue("True".equals(point6.getProperty("Selected")));
+		assertFalse("True".equals(point1.getProperty(MeshProperty.SELECTED)));
+		assertTrue("True".equals(point3.getProperty(MeshProperty.SELECTED)));
+		assertTrue("True".equals(point4.getProperty(MeshProperty.SELECTED)));
+		assertTrue("True".equals(point5.getProperty(MeshProperty.SELECTED)));
+		assertTrue("True".equals(point6.getProperty(MeshProperty.SELECTED)));
 
 		// Create a selection for the first triangle
 		Object[] selectionShared1 = new Object[3];
@@ -187,13 +190,13 @@ public class FXMeshCanvasTester {
 		// Select the triangle. The three vertices of the triangle should be
 		// selected, while the vertices of the rectangle should be deselected.
 		canvas.setSelection(selectionShared1);
-		assertTrue("True".equals(point1.getProperty("Selected")));
-		assertTrue("True".equals(shared1.getProperty("Selected")));
-		assertTrue("True".equals(shared2.getProperty("Selected")));
-		assertFalse("True".equals(point3.getProperty("Selected")));
-		assertFalse("True".equals(point4.getProperty("Selected")));
-		assertFalse("True".equals(point5.getProperty("Selected")));
-		assertFalse("True".equals(point6.getProperty("Selected")));
+		assertTrue("True".equals(point1.getProperty(MeshProperty.SELECTED)));
+		assertTrue("True".equals(shared1.getProperty(MeshProperty.SELECTED)));
+		assertTrue("True".equals(shared2.getProperty(MeshProperty.SELECTED)));
+		assertFalse("True".equals(point3.getProperty(MeshProperty.SELECTED)));
+		assertFalse("True".equals(point4.getProperty(MeshProperty.SELECTED)));
+		assertFalse("True".equals(point5.getProperty(MeshProperty.SELECTED)));
+		assertFalse("True".equals(point6.getProperty(MeshProperty.SELECTED)));
 
 		// Delete the first triangle and check that it, and nothing else, is
 		// gone

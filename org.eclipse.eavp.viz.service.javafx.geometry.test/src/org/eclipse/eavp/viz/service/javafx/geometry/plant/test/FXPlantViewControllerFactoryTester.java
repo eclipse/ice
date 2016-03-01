@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.geometry.plant.test;
 
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXHeatExchangerController;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXHeatExchangerController;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
 import org.junit.Test;
 
 /**
@@ -36,26 +36,27 @@ public class FXPlantViewControllerFactoryTester {
 	public void checkCreation() {
 
 		// The factory to test
-		FXPlantViewControllerFactory factory = new FXPlantViewControllerFactory();
+		FXPlantViewControllerProviderFactory factory = new FXPlantViewControllerProviderFactory();
 
 		// A HeatExchangerMesh should be given a FXHeatExchangerController
 		HeatExchangerMesh heatExchangerMesh = new HeatExchangerMesh();
 		FXHeatExchangerController exchanger = (FXHeatExchangerController) factory
+				.createProvider(heatExchangerMesh)
 				.createController(heatExchangerMesh);
 
 		// A JunctionMesh should be given a JunctionController
 		JunctionMesh junctionMesh = new JunctionMesh();
 		JunctionController junction = (JunctionController) factory
-				.createController(junctionMesh);
+				.createProvider(junctionMesh).createController(junctionMesh);
 
 		// A PipeMesh should be given a FXPipeController
 		PipeMesh pipeMesh = new PipeMesh();
 		FXPipeController pipeController = (FXPipeController) factory
-				.createController(pipeMesh);
+				.createProvider(pipeMesh).createController(pipeMesh);
 
 		// A ReactorMesh should be given a ReactorController
 		ReactorMesh reactorMesh = new ReactorMesh();
 		ReactorController reactorController = (ReactorController) factory
-				.createController(reactorMesh);
+				.createProvider(reactorMesh).createController(reactorMesh);
 	}
 }

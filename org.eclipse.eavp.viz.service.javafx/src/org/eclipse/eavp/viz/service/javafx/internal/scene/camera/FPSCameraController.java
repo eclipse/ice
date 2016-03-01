@@ -183,8 +183,6 @@ public class FPSCameraController extends AbstractCameraController {
 	 */
 	@Override
 	public void initCamera() {
-		super.initCamera();
-
 		// Reset the camera to its default position
 		reset();
 	}
@@ -329,6 +327,12 @@ public class FPSCameraController extends AbstractCameraController {
 		// Create a new rotation along that axis and apply it to the camera
 		Rotate rotation = new Rotate(radians * 180 / Math.PI, yDir);
 		affine.append(rotation);
+	}
+
+	@Override
+	public void handleMouseReleased(MouseEvent event) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

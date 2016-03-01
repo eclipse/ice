@@ -18,8 +18,8 @@ import java.util.Set;
 import org.eclipse.eavp.viz.service.IPlot;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -94,11 +94,11 @@ public class FakeVizService implements IVizService {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.eavp.viz.
-	 * service.datastructures.VizObject)
+	 * org.eclipse.eavp.viz.service.IVizService#createCanvas(org.eclipse.eavp.
+	 * viz. service.datastructures.VizObject)
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController object) throws Exception {
+	public IVizCanvas createCanvas(IController object) throws Exception {
 		return null;
 	}
 
@@ -108,7 +108,7 @@ public class FakeVizService implements IVizService {
 	 * @see org.eclipse.eavp.viz.service.IVizService#getFactory()
 	 */
 	@Override
-	public IControllerFactory getFactory() {
+	public IControllerProviderFactory getFactory() {
 		return null;
 	}
 
@@ -126,9 +126,9 @@ public class FakeVizService implements IVizService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
-	 * ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput, int)
+	 * @see org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.
+	 * eclipse. ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput,
+	 * int)
 	 */
 	@Override
 	public String createAdditionalPage(MultiPageEditorPart parent,

@@ -16,10 +16,12 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeController;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
@@ -40,7 +42,7 @@ public class FaceEdgeMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		FaceEdgeMesh mesh = new FaceEdgeMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		FaceEdgeMesh clone = (FaceEdgeMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}
@@ -60,23 +62,23 @@ public class FaceEdgeMeshTester {
 		VertexMesh vertexMesh2 = new VertexMesh(1, 1, 1);
 		VertexController vertex2 = new VertexController(vertexMesh2,
 				new AbstractView());
-		edge.addEntityByCategory(vertex1, "Vertices");
-		edge.addEntityByCategory(vertex2, "Vertices");
+		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
 
 		// Clear the edge's updated state
 		edge.wasUpdated();
 
 		// Change a vertex and check that the edge was updated
-		vertex1.setProperty("Test", "Value");
+		vertex1.setProperty(MeshProperty.DESCRIPTION, "Value");
 		assertTrue(edge.wasUpdated());
 
 		// Add a face to the edge
 		FaceMesh faceMesh = new FaceMesh();
 		FaceController face = new FaceController(faceMesh, new AbstractView());
-		edge.addEntityByCategory(face, "Faces");
+		edge.addEntityByCategory(face, MeshCategory.FACES);
 
 		// Change the face and check that the edge didn't get updated
-		face.setProperty("Test", "Value");
+		face.setProperty(MeshProperty.DESCRIPTION, "Value");
 		assertFalse(edge.wasUpdated());
 	}
 
@@ -90,28 +92,28 @@ public class FaceEdgeMeshTester {
 		FaceEdgeMesh edgeMesh1 = new FaceEdgeMesh();
 		FaceEdgeController edge1 = new FaceEdgeController(edgeMesh1,
 				new AbstractView());
-		edge1.setProperty("Equal", "True");
+		edge1.setProperty(MeshProperty.DESCRIPTION, "True");
 		FaceEdgeMesh edgeMesh2 = new FaceEdgeMesh();
 		FaceEdgeController edge2 = new FaceEdgeController(edgeMesh2,
 				new AbstractView());
-		edge2.setProperty("Equal", "True");
+		edge2.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// Check that the two edges are equal
 		assertTrue(edge1.equals(edge2));
 
 		// Create two unequal faces
 		FaceMesh faceMesh1 = new FaceMesh();
-		faceMesh1.setProperty("ID", "1");
+		faceMesh1.setProperty(MeshProperty.DESCRIPTION, "1");
 		FaceController face1 = new FaceController(faceMesh1,
 				new AbstractView());
 		FaceMesh faceMesh2 = new FaceMesh();
-		faceMesh2.setProperty("ID", "2");
+		faceMesh2.setProperty(MeshProperty.DESCRIPTION, "2");
 		FaceController face2 = new FaceController(faceMesh2,
 				new AbstractView());
 
 		// Add each edge to a face
-		edge1.addEntityByCategory(face1, "Faces");
-		edge2.addEntityByCategory(face2, "Faces");
+		edge1.addEntityByCategory(face1, MeshCategory.FACES);
+		edge2.addEntityByCategory(face2, MeshCategory.FACES);
 
 		// Edges should be equal regardless of having different parents
 		assertTrue(edge1.equals(edge2));
@@ -135,11 +137,10 @@ public class FaceEdgeMeshTester {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.eavp.viz.service.modeling.AbstractMesh#update(org.eclipse.
-		 * ice.viz.service.datastructures.VizObject.IManagedUpdateable,
-		 * org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType
-		 * [])
+		 * @see org.eclipse.eavp.viz.service.modeling.AbstractMesh#update(org.
+		 * eclipse. ice.viz.service.datastructures.VizObject.IManagedUpdateable,
+		 * org.eclipse.eavp.viz.service.datastructures.VizObject.
+		 * SubscriptionType [])
 		 */
 		@Override
 		public void update(IManagedUpdateable component,

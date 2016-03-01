@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.preferences.CustomScopedPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 
@@ -90,7 +90,7 @@ public abstract class AbstractVizService implements IVizService {
 	 * Nothing to do for the basic implementation for creating a canvas.
 	 */
 	@Override
-	public IVizCanvas createCanvas(AbstractController object) throws Exception {
+	public IVizCanvas createCanvas(IController object) throws Exception {
 		return null;
 	}
 

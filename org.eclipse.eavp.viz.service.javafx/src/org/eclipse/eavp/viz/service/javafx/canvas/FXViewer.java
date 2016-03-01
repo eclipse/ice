@@ -11,10 +11,10 @@
 package org.eclipse.eavp.viz.service.javafx.canvas;
 
 import org.eclipse.eavp.viz.service.javafx.internal.model.FXCameraAttachment;
-import org.eclipse.eavp.viz.service.javafx.internal.model.FXRenderer;
 import org.eclipse.eavp.viz.service.javafx.internal.scene.camera.CenteredCameraController;
 import org.eclipse.eavp.viz.service.javafx.internal.scene.camera.ICameraController;
 import org.eclipse.eavp.viz.service.javafx.scene.base.ICamera;
+import org.eclipse.eavp.viz.service.javafx.viewer.Renderer;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -63,7 +63,7 @@ public class FXViewer extends AbstractViewer {
 	 * The content provider that generates JavaFX scene data from the geometry
 	 * editor scene model.
 	 */
-	private FXContentProvider contentProvider;
+	protected FXContentProvider contentProvider;
 
 	/** Default camera controller. */
 	protected ICameraController cameraController;
@@ -82,7 +82,7 @@ public class FXViewer extends AbstractViewer {
 		super(parent);
 
 		// Create a renderer that creates FXAttachments
-		renderer = new FXRenderer();
+		renderer = new Renderer();
 		renderer.register(FXAttachment.class, new FXAttachmentManager());
 	}
 
@@ -126,7 +126,7 @@ public class FXViewer extends AbstractViewer {
 	 *            the parent to create the camera on
 	 * 
 	 */
-	private void createDefaultCamera(Group parent) {
+	protected void createDefaultCamera(Group parent) {
 		PerspectiveCamera perspCamera = new PerspectiveCamera(true);
 		perspCamera.setNearClip(0.1);
 		perspCamera.setFarClip(4000.0);
@@ -147,7 +147,7 @@ public class FXViewer extends AbstractViewer {
 	 * Hooks up JavaFX picking with JFace selections.
 	 * </p>
 	 */
-	private void wireSelectionHandling() {
+	protected void wireSelectionHandling() {
 
 		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
 

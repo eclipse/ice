@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.geometry.widgets;
 
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -67,18 +70,20 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 
 			ShapeController parentShape = (ShapeController) parentElement;
 
-			if (parentShape.getProperty("Operator") != null) {
+			if (parentShape.getProperty(GeometryMeshProperty.OPERATOR) != null) {
 
 				// IShape is a ComplexShape, so put its children in the
 				// temporary
 				// children field
 
-				temporaryChildren = parentShape.getEntitiesByCategory("Children").toArray();
+				temporaryChildren = parentShape
+						.getEntitiesByCategory(MeshCategory.CHILDREN).toArray();
 
 				// Use a blank state if there are no children to display
 
 				if (temporaryChildren.length == 0) {
-					temporaryChildren = new Object[] { new BlankShape(parentShape) };
+					temporaryChildren = new Object[] {
+							new BlankShape(parentShape) };
 				}
 			} else {
 
@@ -118,8 +123,9 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		// If the element is a GeometryComponent, return its shapes
 		if (inputElement instanceof AbstractController) {
 			// Return an array of the GeometryComponent's shapes
-			AbstractController parentGeometry = (AbstractController) inputElement;
-			return parentGeometry.getEntitiesByCategory("Children").toArray();
+			IController parentGeometry = (IController) inputElement;
+			return parentGeometry.getEntitiesByCategory(MeshCategory.CHILDREN)
+					.toArray();
 		} else {
 			return null;
 		}
@@ -151,7 +157,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		// Return the object's parent
 
 		ShapeController shape = (ShapeController) element;
-		return shape.getEntitiesByCategory("Parent");
+		return shape.getEntitiesByCategory(MeshCategory.PARENT);
 
 	}
 

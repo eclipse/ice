@@ -18,7 +18,9 @@ import org.eclipse.eavp.viz.service.javafx.canvas.Attachment;
 import org.eclipse.eavp.viz.service.javafx.scene.base.IGeometry;
 import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.jface.util.Geometry;
 
 /**
  * <p>
@@ -36,10 +38,10 @@ public abstract class GeometryAttachment extends Attachment
 	 * Geometry that has been added but has not been integrated as the node
 	 * hasn't been attached yet.
 	 */
-	private List<AbstractController> queuedGeometry;
+	private List<IController> queuedGeometry;
 
 	/** List of shapes that have been added via Geometry instances. */
-	private List<AbstractController> shapes;
+	private List<IController> shapes;
 
 	/** */
 	private boolean visible;
@@ -51,7 +53,7 @@ public abstract class GeometryAttachment extends Attachment
 	private boolean immutable;
 
 	/** */
-	protected AbstractController currentGeom = null;
+	protected IController currentGeom = null;
 
 	/**
 	 * 
@@ -64,14 +66,14 @@ public abstract class GeometryAttachment extends Attachment
 	 * 
 	 * @param shape
 	 */
-	protected void checkMesh(AbstractController shape) {
+	protected void checkMesh(IController shape) {
 	}
 
 	/**
 	 * @see IGeometry#addGeometry(Geometry)
 	 */
 	@Override
-	public void addGeometry(AbstractController geom) {
+	public void addGeometry(IController geom) {
 		if (geom == null) {
 			return;
 		}
@@ -98,7 +100,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * @see IGeometry#addShape(Geometry)
 	 */
 	@Override
-	public void addShape(AbstractController shape) {
+	public void addShape(IController shape) {
 		checkMesh(shape);
 
 		if (shapes == null) {
@@ -121,8 +123,8 @@ public abstract class GeometryAttachment extends Attachment
 			return;
 		}
 
-		for (AbstractController geom : queuedGeometry) {
-			for (AbstractController shape : geom.getEntities()) {
+		for (IController geom : queuedGeometry) {
+			for (IController shape : geom.getEntities()) {
 				addShape(shape);
 			}
 		}
@@ -154,13 +156,13 @@ public abstract class GeometryAttachment extends Attachment
 	 * @param shape
 	 *            ICE shape to visualize
 	 */
-	protected abstract void processShape(AbstractController shape);
+	protected abstract void processShape(IController shape);
 
 	/**
 	 * @see IGeometry#addShape(Geometry)
 	 */
 	@Override
-	public void removeShape(AbstractController shape) {
+	public void removeShape(IController shape) {
 		if (shapes == null) {
 			return;
 		}
@@ -178,13 +180,13 @@ public abstract class GeometryAttachment extends Attachment
 	 * 
 	 * @param shape
 	 */
-	protected abstract void disposeShape(AbstractController shape);
+	protected abstract void disposeShape(IController shape);
 
 	/**
 	 * 
 	 */
 	@Override
-	public boolean hasShape(AbstractController shape) {
+	public boolean hasShape(IController shape) {
 		if (shapes == null) {
 			return false;
 		}
@@ -196,7 +198,7 @@ public abstract class GeometryAttachment extends Attachment
 	 * 
 	 */
 	@Override
-	public AbstractController getShape(int index) {
+	public IController getShape(int index) {
 		if (shapes == null) {
 			return null;
 		}
@@ -210,13 +212,13 @@ public abstract class GeometryAttachment extends Attachment
 	 * @return
 	 */
 	@Override
-	public List<AbstractController> getShapes(boolean copy) {
+	public List<IController> getShapes(boolean copy) {
 		if (shapes == null) {
 			return Collections.emptyList();
 		}
 
 		if (copy) {
-			return new ArrayList<AbstractController>(shapes);
+			return new ArrayList<IController>(shapes);
 		} else {
 			return shapes;
 		}

@@ -14,13 +14,12 @@ package org.eclipse.ice.nek5000.test;
 
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
-import org.eclipse.eavp.viz.service.modeling.FaceMesh;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 
@@ -31,35 +30,66 @@ import org.eclipse.eavp.viz.service.modeling.VertexMesh;
  * @author Robert Smith
  *
  */
-public class TestNekControllerFactory implements IControllerFactory {
+public class TestNekControllerFactory implements IControllerProviderFactory {
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.IControllerFactory#createController(
-	 * org.eclipse.eavp.viz.service.modeling.AbstractMesh)
+	 * @see org.eclipse.eavp.viz.service.modeling.IControllerFactory#
+	 * createController( org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 	 */
 	@Override
-	public AbstractController createController(AbstractMesh model) {
+	public IControllerProvider createProvider(IMesh model) {
 
-		// If the model is an edge component, create an edge with a linear
-		// edge view
+		// If the model is an edge component, create an IControllerProvider that
+		// creates EdgeControllers
 		if (model instanceof EdgeMesh) {
-			AbstractView view = new AbstractView();
-			return new EdgeController((EdgeMesh) model, view);
+
+			return new IControllerProvider<EdgeController>() {
+				@Override
+				public EdgeController createController(IMesh model) {
+
+					// Create an FXShapeView for the model, then wrap them
+					// both in a
+					// shape controller
+					AbstractView view = new AbstractView();
+					return new EdgeController((EdgeMesh) model, view);
+				}
+			};
 		}
 
-		// If it is a vertex component, create a vertex
+		// If the model is an vertex component, create an IControllerProvider
+		// that creates VertexControllers
 		else if (model instanceof VertexMesh) {
-			AbstractView view = new AbstractView();
-			return new VertexController((VertexMesh) model, view);
+
+			return new IControllerProvider<VertexController>() {
+				@Override
+				public VertexController createController(IMesh model) {
+
+					// Create an FXShapeView for the model, then wrap them
+					// both in a
+					// shape controller
+					AbstractView view = new AbstractView();
+					return new VertexController((VertexMesh) model, view);
+				}
+			};
 		}
 
-		// If it is a face component, create a face
+		// If the model is a face component, create an IControllerProvider that
+		// creates NekPolygonControllers
 		else if (model instanceof NekPolygonMesh) {
-			AbstractView view = new AbstractView();
-			return new NekPolygonController((FaceMesh) model, view);
+			return new IControllerProvider<NekPolygonController>() {
+				@Override
+				public NekPolygonController createController(IMesh model) {
+
+					// Create an FXShapeView for the model, then wrap them
+					// both in a
+					// shape controller
+					AbstractView view = new AbstractView();
+					return new NekPolygonController((NekPolygonMesh) model,
+							view);
+				}
+			};
 		}
 
 		// If the component type is not recognized, return null

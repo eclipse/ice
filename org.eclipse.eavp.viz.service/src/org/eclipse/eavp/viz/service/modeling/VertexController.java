@@ -59,15 +59,22 @@ public class VertexController extends PointController {
 	 *            The object to copy into this one.
 	 */
 	@Override
-	public void copy(AbstractController otherObject) {
+	public void copy(IController otherObject) {
+
+		// Check that the source object is an IController, failing
+		// silently if not and casting it if so
+		if (!(otherObject instanceof VertexController)) {
+			return;
+		}
+		AbstractController castObject = (AbstractController) otherObject;
 
 		// Create the model and give it a reference to this
 		model = new VertexMesh();
 		model.setController(this);
 
 		// Copy the other object's data members
-		model.copy(otherObject.model);
-		view = (AbstractView) otherObject.view.clone();
+		model.copy(castObject.model);
+		view = (AbstractView) castObject.view.clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

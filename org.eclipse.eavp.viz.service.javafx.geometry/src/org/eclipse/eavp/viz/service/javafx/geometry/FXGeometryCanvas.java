@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXSelection;
@@ -22,10 +23,10 @@ import org.eclipse.eavp.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantView;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -61,16 +62,15 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 *            The shape under which all parts in the model will be contained
 	 *            as children
 	 */
-	public FXGeometryCanvas(AbstractController source) {
+	public FXGeometryCanvas(IController source) {
 		super(source);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#createAttachment(
-	 * )
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#
+	 * createAttachment( )
 	 */
 	@Override
 	protected void createAttachment() {
@@ -103,9 +103,8 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#materializeViewer
-	 * (org.eclipse.swt.widgets.Composite)
+	 * @see org.eclipse.eavp.viz.service.javafx.internal.FXVizCanvas#
+	 * materializeViewer (org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected AbstractViewer materializeViewer(Composite viewerParent)
@@ -119,9 +118,8 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#createComposite
-	 * (org.eclipse.swt.widgets.Composite)
+	 * @see org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#
+	 * createComposite (org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	public Composite createComposite(Composite parent) {
@@ -195,7 +193,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	public void setWireframe(boolean wireframe) {
 
 		// Set all objects in the tree to wireframe mode
-		for (AbstractController entity : root.getEntities()) {
+		for (IController entity : root.getEntities()) {
 			recursiveSetWireframe(entity, wireframe);
 		}
 	}
@@ -211,15 +209,14 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 *            If true, the parts will be set to wireframe mode. Otherwise,
 	 *            they will be removed from wireframe mode.
 	 */
-	private void recursiveSetWireframe(AbstractController target,
-			boolean wireframe) {
+	private void recursiveSetWireframe(IController target, boolean wireframe) {
 
 		// Set this object to the correct mode
 		((IWireFramePart) target).setWireFrameMode(wireframe);
 
 		// Iterate over each of its children, setting them to the correct mode
-		for (AbstractController child : target
-				.getEntitiesByCategory("Children")) {
+		for (IController child : target
+				.getEntitiesByCategory(MeshCategory.CHILDREN)) {
 			((IWireFramePart) child).setWireFrameMode(wireframe);
 		}
 	}
@@ -287,7 +284,8 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#yawCamera(
+	 * @see
+	 * org.eclipse.eavp.viz.service.geometry.plantView.IPlantView#yawCamera(
 	 * float)
 	 */
 	@Override
@@ -350,10 +348,10 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	public void setPlant(IPlantData plant) {
 
 		// Convert the plant composite into an AbstractController
-		AbstractController newRoot = plant.getPlant();
+		IController newRoot = plant.getPlant();
 
 		// Remove everything from the root to ensure it will be
-		for (AbstractController entity : root.getEntities()) {
+		for (IController entity : root.getEntities()) {
 			root.removeEntity(entity);
 		}
 

@@ -16,7 +16,8 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXHeatExchangerController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXHeatExchangerView;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
 
 /**
@@ -34,12 +35,11 @@ public class FXHeatExchangerControllerTester {
 	public void checkClone() {
 
 		// Create a cloned FXHeatExchangerController and check that it is
-		// identical to the
-		// original
+		// identical to the original
 		HeatExchangerMesh mesh = new HeatExchangerMesh();
 		FXHeatExchangerController exchanger = new FXHeatExchangerController(
 				mesh, new FXHeatExchangerView(mesh));
-		exchanger.setProperty("Test", "Property");
+		exchanger.setProperty(MeshProperty.ID, "Property");
 		FXHeatExchangerController clone = (FXHeatExchangerController) exchanger
 				.clone();
 		assertTrue(exchanger.equals(clone));
@@ -102,7 +102,7 @@ public class FXHeatExchangerControllerTester {
 		 * @param model
 		 *            The internal model to be dispalyed.
 		 */
-		public TestHeatExchangerView(AbstractMesh model) {
+		public TestHeatExchangerView(IMesh model) {
 			super(model);
 		}
 
@@ -114,7 +114,7 @@ public class FXHeatExchangerControllerTester {
 		 * #refresh(org.eclipse.eavp.viz.service.modeling.AbstractMesh)
 		 */
 		@Override
-		public void refresh(AbstractMesh model) {
+		public void refresh(IMesh model) {
 			super.refresh(model);
 			refreshed = true;
 		}

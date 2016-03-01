@@ -16,10 +16,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
@@ -198,8 +201,7 @@ public class ActionAddShape extends Action {
 		}
 		// Get the GeometryComponent from the ShapeTreeView's TreeViewer
 
-		AbstractController geometry = (AbstractController) view.treeViewer
-				.getInput();
+		IController geometry = (IController) view.treeViewer.getInput();
 
 		if (geometry == null) {
 			return;
@@ -207,7 +209,7 @@ public class ActionAddShape extends Action {
 		// Get the parent shape, regardless of whether an IShape or BlankShape
 		// is selected
 
-		AbstractController parentComplexShape = null;
+		IController parentComplexShape = null;
 
 		if (paths.length == 1) {
 
@@ -221,7 +223,7 @@ public class ActionAddShape extends Action {
 
 				ShapeController selectedShape = (ShapeController) selectedObject;
 				parentComplexShape = selectedShape
-						.getEntitiesByCategory("Parent").get(0);
+						.getEntitiesByCategory(MeshCategory.PARENT).get(0);
 			} else if (selectedObject instanceof BlankShape) {
 
 				// Get the selected blank shape's parent
@@ -310,13 +312,15 @@ public class ActionAddShape extends Action {
 				((TubeMesh) shapeComponent).setRadius(50);
 			}
 			shape = (ShapeController) view.getFactory()
+					.createProvider(shapeComponent)
 					.createController(shapeComponent);
 
-			shape.setProperty("Type", shapeType.toString());
+			shape.setProperty(MeshProperty.TYPE, shapeType.toString());
 
 			currentShapeId++;
-			shape.setProperty("Name", shapeType.toString());
-			shape.setProperty("Id", Integer.toString(currentShapeId));
+			shape.setProperty(MeshProperty.NAME, shapeType.toString());
+			shape.setProperty(MeshProperty.ID,
+					Integer.toString(currentShapeId));
 		}
 
 		else if (operatorType != null && shapeType == null) {
@@ -325,13 +329,16 @@ public class ActionAddShape extends Action {
 
 			ShapeMesh shapeComponent = new ShapeMesh();
 			shape = (ShapeController) view.getFactory()
+					.createProvider(shapeComponent)
 					.createController(shapeComponent);
 
-			shape.setProperty("Operator", operatorType.toString());
+			shape.setProperty(GeometryMeshProperty.OPERATOR,
+					operatorType.toString());
 
 			currentShapeId++;
-			shape.setProperty("Name", operatorType.toString());
-			shape.setProperty("Id", Integer.toString(currentShapeId));
+			shape.setProperty(MeshProperty.NAME, operatorType.toString());
+			shape.setProperty(MeshProperty.ID,
+					Integer.toString(currentShapeId));
 		}
 
 		// Return the shape

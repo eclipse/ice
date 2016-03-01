@@ -14,6 +14,7 @@ import javafx.embed.swt.FXCanvas;
 import javafx.geometry.Point3D;
 import javafx.scene.Camera;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Affine;
@@ -261,6 +262,24 @@ public class CenteredCameraController extends AbstractCameraController {
 	public void yawCamera(double radians) {
 		affine.append(
 				new Rotate(radians * 180 / Math.PI, new Point3D(0, 1, 0)));
+	}
+
+	@Override
+	protected void initCamera() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleKeyPressed(KeyEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleMousePressed(MouseEvent event) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

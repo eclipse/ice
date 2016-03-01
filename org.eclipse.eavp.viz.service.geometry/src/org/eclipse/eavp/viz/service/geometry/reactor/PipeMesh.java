@@ -11,10 +11,12 @@
 package org.eclipse.eavp.viz.service.geometry.reactor;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
+import org.eclipse.eavp.viz.service.modeling.IMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +60,7 @@ public class PipeMesh extends TubeMesh {
 	 * @return The number of rods in a SubChannel pipe
 	 */
 	public int getNumRods() {
-		return Integer.parseInt(properties.get("NumRods"));
+		return Integer.parseInt(properties.get(ReactorMeshProperty.NUM_RODS));
 	}
 
 	/**
@@ -67,7 +69,7 @@ public class PipeMesh extends TubeMesh {
 	 * @return The pipe's pitch
 	 */
 	public double getPitch() {
-		return Double.parseDouble(properties.get("Pitch"));
+		return Double.parseDouble(properties.get(ReactorMeshProperty.PITCH));
 	}
 
 	/**
@@ -77,7 +79,8 @@ public class PipeMesh extends TubeMesh {
 	 *         of uniform size.
 	 */
 	public double getRodDiameter() {
-		return Double.parseDouble(properties.get("Rod Diameter"));
+		return Double
+				.parseDouble(properties.get(ReactorMeshProperty.ROD_DIAMETER));
 	}
 
 	/**
@@ -88,7 +91,7 @@ public class PipeMesh extends TubeMesh {
 	 *            The number of rods in the SubChannel
 	 */
 	public void setNumRods(int numRods) {
-		setProperty("NumRods", Integer.toString(numRods));
+		setProperty(ReactorMeshProperty.NUM_RODS, Integer.toString(numRods));
 	}
 
 	/**
@@ -97,7 +100,7 @@ public class PipeMesh extends TubeMesh {
 	 * @param pitch
 	 */
 	public void setPitch(double pitch) {
-		setProperty("Pitch", Double.toString(pitch));
+		setProperty(ReactorMeshProperty.PITCH, Double.toString(pitch));
 	}
 
 	/**
@@ -107,7 +110,8 @@ public class PipeMesh extends TubeMesh {
 	 *            The pipe's rod diameter
 	 */
 	public void setRodDiameter(double rodDiameter) {
-		setProperty("Rod Diameter", Double.toString(rodDiameter));
+		setProperty(ReactorMeshProperty.ROD_DIAMETER,
+				Double.toString(rodDiameter));
 	}
 
 	/*
@@ -118,19 +122,20 @@ public class PipeMesh extends TubeMesh {
 	 * eclipse.ice.viz.service.modeling.AbstractController, java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// If adding an input or output, add it without registering
 		// as a listener, to avoid circular updates
-		if ("Input".equals(category) || "Output".equals(category)) {
+		if (ReactorMeshCategory.INPUT.equals(category)
+				|| ReactorMeshCategory.OUTPUT.equals(category)) {
 
 			// Get the entities for the given category
-			List<AbstractController> catList = entities.get(category);
+			ArrayList<IController> catList = entities.get(category);
 
 			// If the list is null, make an empty one
 			if (catList == null) {
-				catList = new ArrayList<AbstractController>();
+				catList = new ArrayList<IController>();
 			}
 
 			// Prevent a part from being added multiple times
@@ -141,7 +146,7 @@ public class PipeMesh extends TubeMesh {
 			// If the entity is already present in this category, don't add a
 			// second entry for it
 			else
-				for (AbstractController currentEntity : catList) {
+				for (IController currentEntity : catList) {
 					if (entity == currentEntity) {
 						return;
 					}
@@ -170,10 +175,10 @@ public class PipeMesh extends TubeMesh {
 	 * String, java.lang.String)
 	 */
 	@Override
-	public void setProperty(String property, String value) {
+	public void setProperty(IMeshProperty property, String value) {
 
 		// Validate input
-		if ("Inner Radius".equals(property)) {
+		if (MeshProperty.INNER_RADIUS.equals(property)) {
 			logger.error(
 					"Pipes are specified as always having an inner radius equal to their outer radius. Inner radius cannot be set.");
 			return;

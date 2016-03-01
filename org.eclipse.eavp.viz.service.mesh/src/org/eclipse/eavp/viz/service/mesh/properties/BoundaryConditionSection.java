@@ -18,7 +18,10 @@ import java.util.List;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -367,8 +370,8 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 						.getFirstElement();
 
 				// Get the selected IMeshPart and mesh from the selection.
-				AbstractController meshPart = meshSelection.selectedMeshPart;
-				final AbstractController mesh = meshSelection.mesh;
+				IController meshPart = meshSelection.selectedMeshPart;
+				final IController mesh = meshSelection.mesh;
 
 				// Reset the condition and set it based on the visited
 				// IMeshPart.
@@ -376,15 +379,15 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 				condition = null;
 
 				// Get the list of edges for the selection
-				List<AbstractController> edges = meshPart
-						.getEntitiesByCategory("Edges");
+				List<IController> edges = meshPart
+						.getEntitiesByCategory(MeshCategory.EDGES);
 
 				// If the selection has edges, get the boundary condition for
 				// the edge with the correct id
 				if (!edges.isEmpty()) {
 					if (id < edges.size()) {
-						int edgeId = Integer
-								.valueOf(edges.get(id).getProperty("Id"));
+						int edgeId = Integer.valueOf(
+								edges.get(id).getProperty(MeshProperty.ID));
 
 						NekPolygonController polygon = (NekPolygonController) meshPart;
 
@@ -407,13 +410,15 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 				// face with the correct Id
 				else {
 					// Get the ID of the edge.
-					int edgeId = Integer.valueOf(meshPart.getProperty("Id"));
+					int edgeId = Integer
+							.valueOf(meshPart.getProperty(MeshProperty.ID));
 
 					// First, get the polygon according to the id variable.
-					List<AbstractController> polygons = meshPart
-							.getEntitiesByCategory("Faces");
+					List<IController> polygons = meshPart
+							.getEntitiesByCategory(MeshCategory.FACES);
 					if (id < polygons.size()) {
-						NekPolygonController polygon = (NekPolygonController) polygons.get(id);
+						NekPolygonController polygon = (NekPolygonController) polygons
+								.get(id);
 
 						// Now get the condition based on the type of
 						// boundary condition we are displaying.

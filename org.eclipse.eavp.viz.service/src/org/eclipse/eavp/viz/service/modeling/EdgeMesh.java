@@ -26,7 +26,7 @@ public class EdgeMesh extends AbstractMesh {
 	/**
 	 * The edge's length.
 	 */
-	public double length;
+	protected double length;
 
 	/**
 	 * The default constructor.
@@ -46,8 +46,8 @@ public class EdgeMesh extends AbstractMesh {
 		super();
 
 		// Add the vertices to the list of entities.
-		addEntityByCategory(start, "Vertices");
-		addEntityByCategory(end, "Vertices");
+		addEntityByCategory(start, MeshCategory.VERTICES);
+		addEntityByCategory(end, MeshCategory.VERTICES);
 	}
 
 	/**
@@ -63,19 +63,19 @@ public class EdgeMesh extends AbstractMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#
-	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling.
-	 * AbstractController, java.lang.String)
+	 * addEntityByCategory(org.eclipse.eavp.viz.service.modeling. IController,
+	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// When a vertex is added, take action to ensure the edge maintains a
 		// proper state
-		if ("Vertices".equals(category)) {
+		if (MeshCategory.VERTICES.equals(category)) {
 
 			// The number of vertices
-			List<AbstractController> vertices = entities.get("Vertices");
+			List<IController> vertices = entities.get(MeshCategory.VERTICES);
 			int verticesNum = (vertices != null ? vertices.size() : 0);
 
 			// If the object is a vertex and the edge already has both vertices,
@@ -125,8 +125,9 @@ public class EdgeMesh extends AbstractMesh {
 
 		// Do not register the edge's vertices, as the edge will listen to them
 		// instead
-		List<AbstractController> vertices = entities.get("Vertices");
-		if (vertices == null || !entities.get("Vertices").contains(listener)) {
+		List<IController> vertices = entities.get(MeshCategory.VERTICES);
+		if (vertices == null
+				|| !entities.get(MeshCategory.VERTICES).contains(listener)) {
 			super.register(listener);
 		}
 	}
@@ -134,19 +135,18 @@ public class EdgeMesh extends AbstractMesh {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#setController(
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController)
+	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#
+	 * setController( org.eclipse.eavp.viz.service.modeling.IController)
 	 */
 	@Override
-	public void setController(AbstractController controller) {
+	public void setController(IController controller) {
 		super.setController(controller);
 
 		// Give a reference to the controller to the edge's vertices
-		List<AbstractController> vertices = entities.get("Vertices");
+		List<IController> vertices = entities.get(MeshCategory.VERTICES);
 
 		if (vertices != null) {
-			for (AbstractController vertex : vertices) {
+			for (IController vertex : vertices) {
 				vertex.addEntity(controller);
 			}
 		}
@@ -171,27 +171,37 @@ public class EdgeMesh extends AbstractMesh {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#copy(org.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#copy(org.
 	 * eclipse.ice.viz.service.modeling.AbstractMeshComponent)
 	 */
 	@Override
-	public void copy(AbstractMesh otherObject) {
+	public void copy(IMesh otherObject) {
+
+		// If the other object is not an EdgeMesh, fail silently
+		if (!(otherObject instanceof EdgeMesh)) {
+			return;
+		}
+
+		// Cast the object
+		EdgeMesh castObject = (EdgeMesh) otherObject;
 
 		// Queue messages from all the vertices being added
 		updateManager.enqueue();
 
 		// Clone each child entity
-		for (String category : otherObject.entities.keySet()) {
-			for (AbstractController entity : otherObject
+		for (IMeshCategory category : castObject.entities.keySet()) {
+			for (IController entity : castObject
 					.getEntitiesByCategory(category)) {
-				addEntityByCategory((AbstractController) entity.clone(),
+				addEntityByCategory(
+						(IController) ((AbstractController) entity).clone(),
 						category);
 			}
 		}
 
 		// Copy each of the other component's data members
-		type = otherObject.type;
-		properties = new HashMap<String, String>(otherObject.properties);
+		type = castObject.type;
+		properties = new HashMap<IMeshProperty, String>(castObject.properties);
 
 		// Calculate the new length
 		calculateLength();
@@ -210,7 +220,8 @@ public class EdgeMesh extends AbstractMesh {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getStartLocation() {
-		List<AbstractController> vertices = getEntitiesByCategory("Vertices");
+		List<IController> vertices = getEntitiesByCategory(
+				MeshCategory.VERTICES);
 		return (vertices != null && !vertices.isEmpty())
 				? ((VertexController) vertices.get(0)).getLocation()
 				: new double[3];
@@ -222,7 +233,8 @@ public class EdgeMesh extends AbstractMesh {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getEndLocation() {
-		List<AbstractController> vertices = getEntitiesByCategory("Vertices");
+		List<IController> vertices = getEntitiesByCategory(
+				MeshCategory.VERTICES);
 		return (vertices != null && vertices.size() > 1)
 				? ((VertexController) vertices.get(1)).getLocation()
 				: new double[3];

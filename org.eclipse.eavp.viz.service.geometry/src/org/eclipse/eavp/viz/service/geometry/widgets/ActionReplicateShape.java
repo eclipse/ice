@@ -14,7 +14,11 @@ package org.eclipse.eavp.viz.service.geometry.widgets;
 
 import java.net.URL;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.Transformation;
@@ -50,6 +54,12 @@ public class ActionReplicateShape extends Action {
 	 * The image descriptor associated with the duplicate action's icon
 	 */
 	private ImageDescriptor imageDescriptor;
+
+	/**
+	 * The controller provider that creates views and controllers for the
+	 * replicated meshes
+	 */
+	private IControllerProvider provider;
 
 	/**
 	 * <p>
@@ -90,8 +100,12 @@ public class ActionReplicateShape extends Action {
 	@Override
 	public void run() {
 
-		AbstractController geometry = (AbstractController) view.treeViewer
-				.getInput();
+		// Get the provider from the factory if it is currently null
+		if (provider == null) {
+			provider = view.getFactory().createProvider(new ShapeMesh());
+		}
+
+		IController geometry = (IController) view.treeViewer.getInput();
 
 		// Check that only one shape is selected
 
@@ -140,7 +154,7 @@ public class ActionReplicateShape extends Action {
 		// its parent shape is null.
 
 		ShapeController parentShape = (ShapeController) selectedShape
-				.getEntitiesByCategory("Parent").get(0);
+				.getEntitiesByCategory(MeshCategory.PARENT).get(0);
 
 		// Remove the selected shape from its original parent
 
@@ -155,20 +169,22 @@ public class ActionReplicateShape extends Action {
 		// Create a new parent union shape
 
 		ShapeMesh replicateUnionComponent = new ShapeMesh();
-		ShapeController replicateUnion = (ShapeController) view.getFactory()
+		ShapeController replicateUnion = (ShapeController) provider
 				.createController(replicateUnionComponent);
-		replicateUnion.setProperty("Operator", "Union");
+		replicateUnion.setProperty(GeometryMeshProperty.OPERATOR, "Union");
 
-		replicateUnion.setProperty("Name", "Replication");
-		replicateUnion.setProperty("Id", selectedShape.getProperty("Id"));
+		replicateUnion.setProperty(MeshProperty.NAME, "Replication");
+		replicateUnion.setProperty(MeshProperty.ID,
+				selectedShape.getProperty(MeshProperty.ID));
 
 		for (int i = 1; i <= quantity; i++) {
 
 			// Clone the selected shape and remove its "selected" property
 
-			ShapeController clonedShape = (ShapeController) selectedShape.clone();
-			clonedShape.setProperty("Selected", "False");
-			clonedShape.setProperty("Id", Integer.toString(i));
+			ShapeController clonedShape = (ShapeController) selectedShape
+					.clone();
+			clonedShape.setProperty(MeshProperty.SELECTED, "False");
+			clonedShape.setProperty(MeshProperty.ID, Integer.toString(i));
 
 			// Add the translation
 

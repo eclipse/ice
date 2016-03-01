@@ -23,7 +23,7 @@ public class TubeMesh extends ShapeMesh {
 	 */
 	public TubeMesh() {
 		super();
-		properties.put("Type", "Tube");
+		properties.put(MeshProperty.TYPE, "Tube");
 	}
 
 	/**
@@ -46,7 +46,13 @@ public class TubeMesh extends ShapeMesh {
 	 * @return The tube's length
 	 */
 	public int getAxialSamples() {
-		return Integer.parseInt(properties.get("Num Elements"));
+
+		// If the property is not set, return 0
+		String axialSamples = properties.get(MeshProperty.RESOLUTION);
+		if (axialSamples == null) {
+			return 0;
+		}
+		return Integer.parseInt(axialSamples);
 	}
 
 	/**
@@ -55,7 +61,13 @@ public class TubeMesh extends ShapeMesh {
 	 * @return The tube's length
 	 */
 	public double getLength() {
-		return Double.parseDouble(properties.get("Length"));
+
+		// If the property is not set, return 0
+		String length = properties.get(MeshProperty.LENGTH);
+		if (length == null) {
+			return 0;
+		}
+		return Double.parseDouble(length);
 	}
 
 	/**
@@ -64,7 +76,13 @@ public class TubeMesh extends ShapeMesh {
 	 * @return The tube's radius
 	 */
 	public double getRadius() {
-		return Double.parseDouble(properties.get("Radius"));
+
+		// If the property is not set, return 0
+		String radius = properties.get(MeshProperty.RADIUS);
+		if (radius == null) {
+			return 0;
+		}
+		return Double.parseDouble(radius);
 	}
 
 	/**
@@ -73,7 +91,12 @@ public class TubeMesh extends ShapeMesh {
 	 * @return The hole's radius
 	 */
 	public double getInnerRadius() {
-		return Double.parseDouble(properties.get("Inner Radius"));
+		// If the property is not set, return 0
+		String radius = properties.get(MeshProperty.INNER_RADIUS);
+		if (radius == null) {
+			return 0;
+		}
+		return Double.parseDouble(radius);
 	}
 
 	/**
@@ -83,7 +106,7 @@ public class TubeMesh extends ShapeMesh {
 	 *            The tube's new axial samples
 	 */
 	public void setAxialSamples(int axialSamples) {
-		setProperty("Num Elements", Integer.toString(axialSamples));
+		setProperty(MeshProperty.RESOLUTION, Integer.toString(axialSamples));
 	}
 
 	/**
@@ -93,7 +116,7 @@ public class TubeMesh extends ShapeMesh {
 	 *            The tube's new length
 	 */
 	public void setLength(double length) {
-		setProperty("Length", Double.toString(length));
+		setProperty(MeshProperty.LENGTH, Double.toString(length));
 	}
 
 	/**
@@ -103,7 +126,7 @@ public class TubeMesh extends ShapeMesh {
 	 *            The tube's new radius
 	 */
 	public void setRadius(double radius) {
-		setProperty("Radius", Double.toString(radius));
+		setProperty(MeshProperty.RADIUS, Double.toString(radius));
 	}
 
 	/**
@@ -113,9 +136,8 @@ public class TubeMesh extends ShapeMesh {
 	 *            The hole's new radius
 	 */
 	public void setInnerRadius(double radius) {
-		setProperty("Inner Radius", Double.toString(radius));
+		setProperty(MeshProperty.INNER_RADIUS, Double.toString(radius));
 	}
-	
 
 	/*
 	 * (non-Javadoc)

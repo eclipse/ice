@@ -15,7 +15,9 @@ package org.eclipse.eavp.viz.service.geometry.widgets;
 import java.net.URL;
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -75,8 +77,7 @@ public class ActionDuplicateShape extends Action {
 	@Override
 	public void run() {
 
-		AbstractController geometry = (AbstractController) view.treeViewer
-				.getInput();
+		IController geometry = (IController) view.treeViewer.getInput();
 
 		// Get selection
 
@@ -99,21 +100,21 @@ public class ActionDuplicateShape extends Action {
 
 				// Remove the selected state from the cloned shape
 
-				clonedShape.setProperty("Selected", "False");
+				clonedShape.setProperty(MeshProperty.SELECTED, "False");
 
 				// Try to get the selected shape's parent shape
 				// We can assume that if the parent exists, it is a ComplexShape
 
 				ShapeController parentShape = (ShapeController) selectedShape
-						.getEntitiesByCategory("Parent").get(0);
+						.getEntitiesByCategory(MeshCategory.PARENT).get(0);
 
 				if (parentShape != null) {
 
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					List<AbstractController> childShapes = parentShape
-							.getEntitiesByCategory("Children");
+					List<IController> childShapes = parentShape
+							.getEntitiesByCategory(MeshCategory.CHILDREN);
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					if (selectedShapeIndex < 0) {
@@ -131,8 +132,8 @@ public class ActionDuplicateShape extends Action {
 					// Find the index of the selected shape in the list of its
 					// siblings
 
-					List<AbstractController> childShapes = geometry
-							.getEntitiesByCategory("Children");
+					List<IController> childShapes = geometry
+							.getEntitiesByCategory(MeshCategory.CHILDREN);
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					// Add the cloned shape to the root GeometryComponent

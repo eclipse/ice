@@ -18,6 +18,7 @@ import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.javafx.scene.base.GNode;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
@@ -56,7 +57,7 @@ public class FXVizCanvas implements IVizCanvas {
 	protected AbstractViewer viewer;
 
 	/** The modeling object that is currently set on the viewer. */
-	protected AbstractController root;
+	protected IController root;
 
 	/** The active rootnode in the scene. */
 	private INode rootNode;
@@ -75,7 +76,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 * @param geometry
 	 *            ICE Geometry instance to visualizer in the canvas.
 	 */
-	public FXVizCanvas(AbstractController geometry) {
+	public FXVizCanvas(IController geometry) {
 		this.root = geometry;
 	}
 
@@ -144,7 +145,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 * @param root
 	 *            the geometry to visualize
 	 */
-	protected void loadPart(AbstractController root) {
+	protected void loadPart(IController root) {
 		if (root == null) {
 			return;
 		}
@@ -200,7 +201,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 * @param part
 	 *            The part to be removed
 	 */
-	public void removeRoot(AbstractController part) {
+	public void removeRoot(IController part) {
 		rootAtachment.removeGeometry(part);
 	}
 

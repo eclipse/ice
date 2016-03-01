@@ -190,11 +190,19 @@ public class PointMesh extends AbstractMesh {
 	 *            The object which will be copied into this.
 	 */
 	@Override
-	public void copy(AbstractMesh otherObject) {
+	public void copy(IMesh otherObject) {
+
+		// If the other object is not a PointMesh, fail silently
+		if (!(otherObject instanceof PointMesh)) {
+			return;
+		}
+
+		// Cast the other object
+		PointMesh castObject = (PointMesh) otherObject;
 
 		// Copy each of the other component's data members
-		type = otherObject.type;
-		properties = new HashMap<String, String>(otherObject.properties);
+		type = castObject.type;
+		properties = new HashMap<IMeshProperty, String>(castObject.properties);
 
 		// Copy the coordinates
 		x = ((PointMesh) otherObject).getX();
@@ -202,10 +210,12 @@ public class PointMesh extends AbstractMesh {
 		z = ((PointMesh) otherObject).getZ();
 
 		// Clone each child entity
-		for (String category : otherObject.entities.keySet()) {
-			for (AbstractController entity : otherObject
+		for (IMeshCategory category : castObject.entities.keySet()) {
+			for (IController entity : otherObject
 					.getEntitiesByCategory(category)) {
-				addEntityByCategory((AbstractController) entity.clone(),
+				addEntityByCategory(
+						(AbstractController) ((AbstractController) entity)
+								.clone(),
 						category);
 			}
 		}
@@ -244,10 +254,10 @@ public class PointMesh extends AbstractMesh {
 		}
 
 		// Get the categories of the entities map, disregarding edges
-		Set<String> categories = entities.keySet();
-		categories.remove("Edges");
-		Set<String> newCategories = entities.keySet();
-		newCategories.remove("Edges");
+		Set<IMeshCategory> categories = entities.keySet();
+		categories.remove(MeshCategory.EDGES);
+		Set<IMeshCategory> newCategories = entities.keySet();
+		newCategories.remove(MeshCategory.EDGES);
 
 		// If the vertices have different categories, they are not equal
 		if (!categories.equals(newCategories)) {
@@ -262,7 +272,7 @@ public class PointMesh extends AbstractMesh {
 
 		// For each category, check that the two objects' lists of child
 		// entities in that category are equal.
-		for (String category : categories) {
+		for (IMeshCategory category : categories) {
 			if (!entities.get(category)
 					.containsAll(castObject.entities.get(category))
 					|| !castObject.entities.get(category)
@@ -284,14 +294,14 @@ public class PointMesh extends AbstractMesh {
 	public int hashCode() {
 		int hash = 9;
 		hash += 31 * type.hashCode();
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 
 			// Ignore the Edges to prevent circular hashing
-			if ("Edges".equals(category)) {
+			if (MeshCategory.EDGES.equals(category)) {
 				continue;
 			}
 
-			for (AbstractController entity : getEntitiesByCategory(category)) {
+			for (IController entity : getEntitiesByCategory(category)) {
 				hash += 31 * entity.hashCode();
 			}
 		}

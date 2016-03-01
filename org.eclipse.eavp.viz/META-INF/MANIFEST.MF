@@ -44,6 +44,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.9.100",
  org.eclipse.draw2d,
  org.eclipse.nebula.visualization.xygraph,
  org.eclipse.nebula.visualization.widgets
-Export-Package: org.eclipse.eavp.viz
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Oak Ridge National Laboratory
+Export-Package: org.eclipse.eavp.viz

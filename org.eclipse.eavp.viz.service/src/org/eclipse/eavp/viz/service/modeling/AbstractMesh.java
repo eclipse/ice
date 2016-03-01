@@ -24,14 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A component of the model. All models are built from collections of components
- * in a hierarchical structure. A component represents some concrete entity
- * which can be displayed inside the graphics engine.
+ * base implementation of IMesh.
  * 
  * @author Robert Smith
  */
 public class AbstractMesh
-		implements IManagedUpdateableListener, IManagedUpdateable {
+		implements IManagedUpdateableListener, IManagedUpdateable, IMesh {
 
 	/**
 	 * The mesh's type, which defines how the part internally stores its data.
@@ -42,12 +40,12 @@ public class AbstractMesh
 	 * A list of other mesh components which are connected to this one, such as
 	 * children.
 	 */
-	protected Map<String, List<AbstractController>> entities;
+	protected Map<IMeshCategory, ArrayList<IController>> entities;
 
 	/**
 	 * A map of properties for the component.
 	 */
-	protected Map<String, String> properties;
+	protected Map<IMeshProperty, String> properties;
 
 	/**
 	 * The listeners registered for updates from this object.
@@ -57,21 +55,21 @@ public class AbstractMesh
 	/**
 	 * The controller which manages this component
 	 */
-	protected AbstractController controller;
+	protected IController controller;
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractController.class);
+			.getLogger(IController.class);
 
 	/**
 	 * The default constructor
 	 */
 	public AbstractMesh() {
 		// Instantiate the class variables
-		entities = new HashMap<String, List<AbstractController>>();
-		properties = new HashMap<String, String>();
+		entities = new HashMap<IMeshCategory, ArrayList<IController>>();
+		properties = new HashMap<IMeshProperty, String>();
 		type = MeshType.SIMPLE;
 		updateManager = new UpdateableSubscriptionManager(this);
 	}
@@ -96,17 +94,17 @@ public class AbstractMesh
 	 * @param entities
 	 *            The list of initial entities.
 	 */
-	public AbstractMesh(List<AbstractController> entities) {
+	public AbstractMesh(List<IController> entities) {
 		// Create a map of entities
-		this.entities = new HashMap<String, List<AbstractController>>();
+		this.entities = new HashMap<IMeshCategory, ArrayList<IController>>();
 
 		// Add the input into the map of entities
-		for (AbstractController entity : entities) {
+		for (IController entity : entities) {
 			addEntity(entity);
 		}
 
 		// Instantiate the class variables
-		properties = new HashMap<String, String>();
+		properties = new HashMap<IMeshProperty, String>();
 		type = MeshType.SIMPLE;
 		updateManager = new UpdateableSubscriptionManager(this);
 	}
@@ -119,14 +117,14 @@ public class AbstractMesh
 	 * @param type
 	 *            The mesh's type
 	 */
-	public AbstractMesh(List<AbstractController> entities, MeshType type) {
+	public AbstractMesh(ArrayList<IController> entities, MeshType type) {
 		// Create a list of entities
-		this.entities = new HashMap<String, List<AbstractController>>();
+		this.entities = new HashMap<IMeshCategory, ArrayList<IController>>();
 
-		this.entities.put("Default", entities);
+		this.entities.put(MeshCategory.DEFAULT, entities);
 
 		// Instantiate the class variables
-		properties = new HashMap<String, String>();
+		properties = new HashMap<IMeshProperty, String>();
 		this.type = type;
 		updateManager = new UpdateableSubscriptionManager(this);
 	}
@@ -144,7 +142,7 @@ public class AbstractMesh
 	 * @param type
 	 *            The type of component the mesh represents.
 	 */
-	public AbstractMesh(Map<String, Object> input, MeshType type) {
+	public AbstractMesh(Map<Object, Object> input, MeshType type) {
 		// Instantiate the class variables
 		this();
 		this.type = type;
@@ -153,8 +151,9 @@ public class AbstractMesh
 		if (type == MeshType.CUSTOM_PART) {
 
 			// For each property, create an entry and add it to the list
-			for (String property : input.keySet()) {
-				properties.put(property, (String) input.get(property));
+			for (Object property : input.keySet()) {
+				properties.put((IMeshProperty) property,
+						(String) input.get(property));
 			}
 		}
 
@@ -162,33 +161,38 @@ public class AbstractMesh
 		else {
 
 			// For each category, create an entry and add it to the map
-			for (String category : input.keySet()) {
-				List<AbstractController> tempList = (List<AbstractController>) input
+			for (Object category : input.keySet()) {
+				List<IController> tempList = (List<IController>) input
 						.get(category);
-				entities.put(category,
-						(List<AbstractController>) input.get(category));
+				entities.put((IMeshCategory) category,
+						(ArrayList<IController>) input.get(category));
 			}
 		}
-
 	}
 
-	/**
-	 * Getter method for type.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The mesh's type
+	 * @see org.eclipse.eavp.viz.service.modeling.IMesh#getType()
 	 */
+	@Override
 	public MeshType getType() {
 		return type;
 	}
 
-	/**
-	 * Setter method for the mesh's type
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#setType(org.eclipse.eavp.viz.
+	 * service.modeling.MeshType)
 	 */
+	@Override
 	public void setType(MeshType type) {
 
 		// Log an error and fail silently if the type is null
 		if (type == null) {
-			logger.error("An AbstractMesh's type must not be null.");
+			logger.error("An IMesh's type must not be null.");
 			return;
 		}
 
@@ -197,18 +201,19 @@ public class AbstractMesh
 		updateManager.notifyListeners(eventTypes);
 	}
 
-	/**
-	 * Returns a list of all related entities.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return All related entities.
+	 * @see org.eclipse.eavp.viz.service.modeling.IMesh#getEntities()
 	 */
-	public List<AbstractController> getEntities() {
+	@Override
+	public ArrayList<IController> getEntities() {
 
 		// A temporary list of entities
-		List<AbstractController> entityList = new ArrayList<AbstractController>();
+		ArrayList<IController> entityList = new ArrayList<IController>();
 
 		// Add the entities of each category to the list
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 			entityList.addAll(entities.get(category));
 		}
 
@@ -216,40 +221,45 @@ public class AbstractMesh
 
 	}
 
-	/**
-	 * Return all of the part's children entities of a given category.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @category The category of entities to return
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#getEntitiesByCategory(java.
+	 * lang.String)
 	 */
-	public List<AbstractController> getEntitiesByCategory(String category) {
+	@Override
+	public ArrayList<IController> getEntitiesByCategory(
+			IMeshCategory category) {
 
 		// Get the entities under the given category
-		List<AbstractController> temp = entities.get(category);
+		ArrayList<IController> temp = entities.get(category);
 
 		// If the list is null, return an empty list instead
-		return (temp != null ? new ArrayList<AbstractController>(temp)
-				: new ArrayList<AbstractController>());
+		return (temp != null ? new ArrayList<IController>(temp)
+				: new ArrayList<IController>());
 	}
 
-	/**
-	 * Return the value of the given property
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @property The property to return
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#getProperty(java.lang.String)
 	 */
-	public String getProperty(String property) {
+	@Override
+	public String getProperty(IMeshProperty property) {
 		return properties.get(property);
 	}
 
-	/**
-	 * Set the given property, creating it in the map if it is not already
-	 * present.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @property The property to set
-	 * @value The property's new value
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#setProperty(java.lang.String,
+	 * java.lang.String)
 	 */
-	public void setProperty(String property, String value) {
+	@Override
+	public void setProperty(IMeshProperty property, String value) {
 
 		// Whether the property was actually changed
 		boolean changed = true;
@@ -267,7 +277,7 @@ public class AbstractMesh
 
 			// Check if the changed property was selection to send the proper
 			// update event.
-			if (!"Selected".equals(property)) {
+			if (!MeshProperty.SELECTED.equals(property)) {
 				eventTypes[0] = SubscriptionType.PROPERTY;
 			} else {
 				eventTypes[0] = SubscriptionType.SELECTION;
@@ -276,27 +286,27 @@ public class AbstractMesh
 		}
 	}
 
-	/**
-	 * Add a new entity to the part. A convenience method which allows for the
-	 * specification of a default behavior for new entities when no category is
-	 * specified.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @generated NOT
-	 * 
-	 * @newEntity The child entity to add to the part.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#addEntity(org.eclipse.eavp.
+	 * viz.service.modeling.IController)
 	 */
-	public void addEntity(AbstractController newEntity) {
-		addEntityByCategory(newEntity, "Default");
+	@Override
+	public void addEntity(IController newEntity) {
+		addEntityByCategory(newEntity, MeshCategory.DEFAULT);
 	}
 
-	/**
-	 * Removes the given entity from the part's children
-	 *
-	 * @generated NOT
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @entity The entity to be removed
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#removeEntity(org.eclipse.eavp
+	 * .viz.service.modeling.IController)
 	 */
-	public void removeEntity(AbstractController entity) {
+	@Override
+	public void removeEntity(IController entity) {
 
 		// Do not try to add null objects to the map
 		if (entity == null) {
@@ -307,7 +317,7 @@ public class AbstractMesh
 		boolean found = false;
 
 		// If the map contains the given entity
-		for (String category : entities.keySet()) {
+		for (IMeshCategory category : entities.keySet()) {
 			if (entities.get(category).contains(entity)) {
 
 				// Remove all copies of the entity from the map
@@ -328,25 +338,22 @@ public class AbstractMesh
 		}
 	}
 
-	/**
-	 * Adds a new child entity under the given category.
-	 *
-	 * @generated NOT
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param newEntity
-	 *            The new child entity to be added
-	 * @param category
-	 *            The new entity's category
+	 * @see org.eclipse.eavp.viz.service.modeling.IMesh#addEntityByCategory(org.
+	 * eclipse.eavp.viz.service.modeling.IController, java.lang.String)
 	 */
-	public void addEntityByCategory(AbstractController newEntity,
-			String category) {
+	@Override
+	public void addEntityByCategory(IController newEntity,
+			IMeshCategory category) {
 
 		// Get the entities for the given category
-		List<AbstractController> catList = entities.get(category);
+		ArrayList<IController> catList = entities.get(category);
 
 		// If the list is null, make an empty one
 		if (catList == null) {
-			catList = new ArrayList<AbstractController>();
+			catList = new ArrayList<IController>();
 		}
 
 		// Prevent a part from being added multiple times
@@ -357,7 +364,7 @@ public class AbstractMesh
 		// If the entity is already present in this category, don't add a second
 		// entry for it
 		else
-			for (AbstractController entity : catList) {
+			for (IController entity : catList) {
 				if (entity == newEntity) {
 					return;
 				}
@@ -377,7 +384,8 @@ public class AbstractMesh
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
+	 * @see
+	 * org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable#
 	 * unregister(org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * IVizUpdateableListener)
 	 */
@@ -417,8 +425,8 @@ public class AbstractMesh
 			return true;
 		}
 
-		// Check if the other object is an AbstractMeshComponent and cast it
-		if (!(otherObject instanceof AbstractMesh)) {
+		// Check if the other object is an IMeshComponent and cast it
+		if (!(otherObject instanceof IMesh)) {
 			return false;
 		}
 
@@ -436,12 +444,11 @@ public class AbstractMesh
 
 			// For each category, check that the two objects' lists of child
 			// entities in that category are equal.
-			for (String category : entities.keySet()) {
+			for (IMeshCategory category : entities.keySet()) {
 
 				// Get the lists for this category
-				List<AbstractController> cat = entities.get(category);
-				List<AbstractController> otherCat = castObject.entities
-						.get(category);
+				List<IController> cat = entities.get(category);
+				List<IController> otherCat = castObject.entities.get(category);
 
 				// Handle the case where the category is not found in the first
 				// object
@@ -502,25 +509,35 @@ public class AbstractMesh
 		return clone;
 	}
 
-	/**
-	 * Deep copies the contents of another AbstractMeshComponent into this one.
-	 * This does not copy the reference to any parent AbstractController, as an
-	 * AbstractController should have exactly one AbstractMesh as a model.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param otherObject
-	 *            The object which will be copied into this.
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#copy(org.eclipse.eavp.viz.
+	 * service.modeling.IMesh)
 	 */
-	public void copy(AbstractMesh otherObject) {
+	@Override
+	public void copy(IMesh otherObject) {
+
+		/**
+		 * If the other object is not an abstract mesh, fail silently.
+		 */
+		if (!(otherObject instanceof IMesh)) {
+			return;
+		}
+
+		AbstractMesh castObject = (AbstractMesh) otherObject;
 
 		// Copy each of the other component's data members
-		type = otherObject.type;
-		properties = new HashMap<String, String>(otherObject.properties);
+		type = castObject.type;
+		properties = new HashMap<IMeshProperty, String>(castObject.properties);
 
 		// Clone each child entity
-		for (String category : otherObject.entities.keySet()) {
-			for (AbstractController entity : otherObject
+		for (IMeshCategory category : castObject.entities.keySet()) {
+			for (IController entity : otherObject
 					.getEntitiesByCategory(category)) {
-				addEntityByCategory((AbstractController) entity.clone(),
+				addEntityByCategory(
+						(IController) ((AbstractController) entity).clone(),
 						category);
 			}
 		}
@@ -530,26 +547,29 @@ public class AbstractMesh
 		updateManager.notifyListeners(eventTypes);
 	}
 
-	/**
-	 * Getter method for the controller.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return The AbstractController which manages this component
+	 * @see org.eclipse.eavp.viz.service.modeling.IMesh#getController()
 	 */
-	public AbstractController getController() {
+	@Override
+	public IController getController() {
 		return controller;
 	}
 
-	/**
-	 * Setter method for the controller.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param controller
-	 *            The AbstractController which manages this component
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IMesh#setController(org.eclipse.
+	 * eavp.viz.service.modeling.IController)
 	 */
-	public void setController(AbstractController controller) {
+	@Override
+	public void setController(IController controller) {
 
 		// If the controller is null, log an error and fail
 		if (controller == null) {
-			logger.error("An AbstractMesh's controller must not be null.");
+			logger.error("An IMesh's controller must not be null.");
 		}
 
 		this.controller = controller;
@@ -562,8 +582,8 @@ public class AbstractMesh
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.eavp.viz.service.datastructures.VizObject.
-	 * IManagedVizUpdateable#register(org.eclipse.eavp.viz.service.datastructures
-	 * .VizObject.IManagedVizUpdateableListener)
+	 * IManagedVizUpdateable#register(org.eclipse.eavp.viz.service.
+	 * datastructures .VizObject.IManagedVizUpdateableListener)
 	 */
 	@Override
 	public void register(IManagedUpdateableListener listener) {
@@ -594,8 +614,8 @@ public class AbstractMesh
 	public int hashCode() {
 		int hash = 9;
 		hash += 31 * type.hashCode();
-		for (String category : entities.keySet()) {
-			for (AbstractController entity : getEntitiesByCategory(category)) {
+		for (IMeshCategory category : entities.keySet()) {
+			for (IController entity : getEntitiesByCategory(category)) {
 				hash += 31 * entity.hashCode();
 			}
 		}

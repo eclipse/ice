@@ -17,8 +17,9 @@ import java.util.ArrayList;
 import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -49,7 +50,7 @@ public class ShapeTreeView extends ViewPart
 	 * </p>
 	 * 
 	 */
-	private AbstractController geometry;
+	private IController geometry;
 
 	/**
 	 * <p>
@@ -63,7 +64,7 @@ public class ShapeTreeView extends ViewPart
 	 * The factory responsible for creating graphics program specific
 	 * representations of the tree's contents.
 	 */
-	IControllerFactory factory;
+	IControllerProviderFactory factory;
 
 	/**
 	 * Eclipse view ID
@@ -190,7 +191,7 @@ public class ShapeTreeView extends ViewPart
 	 * 
 	 * @param geometry
 	 */
-	public void setGeometry(AbstractController geometry) {
+	public void setGeometry(IController geometry) {
 
 		this.geometry = geometry;
 
@@ -300,7 +301,7 @@ public class ShapeTreeView extends ViewPart
 		// Edit the shapes' selection property
 
 		for (ShapeController selectedShape : selectedShapes) {
-			selectedShape.setProperty("Selected", "False");
+			selectedShape.setProperty(MeshProperty.SELECTED, "False");
 		}
 
 		// Update the list of last-selected shapes
@@ -315,7 +316,7 @@ public class ShapeTreeView extends ViewPart
 			if (selectedObject instanceof ShapeController) {
 
 				ShapeController selectedShape = (ShapeController) selectedObject;
-				selectedShape.setProperty("Selected", "True");
+				selectedShape.setProperty(MeshProperty.SELECTED, "True");
 				selectedShapes.add(selectedShape);
 			}
 		}
@@ -326,7 +327,7 @@ public class ShapeTreeView extends ViewPart
 	 * 
 	 * @return The factory
 	 */
-	public IControllerFactory getFactory() {
+	public IControllerProviderFactory getFactory() {
 		return factory;
 	}
 
@@ -336,7 +337,7 @@ public class ShapeTreeView extends ViewPart
 	 * @param factory
 	 *            The new factory to store in this view
 	 */
-	public void setFactory(IControllerFactory factory) {
+	public void setFactory(IControllerProviderFactory factory) {
 		this.factory = factory;
 	}
 }

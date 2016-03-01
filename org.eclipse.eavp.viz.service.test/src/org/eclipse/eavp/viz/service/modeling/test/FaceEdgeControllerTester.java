@@ -16,10 +16,12 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeController;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
@@ -48,26 +50,26 @@ public class FaceEdgeControllerTester {
 		VertexMesh vertexMesh2 = new VertexMesh(1, 1, 1);
 		VertexController vertex2 = new VertexController(vertexMesh2,
 				new AbstractView());
-		edge.addEntityByCategory(vertex1, "Vertices");
-		edge.addEntityByCategory(vertex2, "Vertices");
+		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
 
 		// Clear the edge's updated state
 		edge.wasUpdated();
 
 		// Change a vertex and check that the edge was updated
-		vertex1.setProperty("Test", "Value");
+		vertex1.setProperty(MeshProperty.DESCRIPTION, "Value");
 		assertTrue(edge.wasUpdated());
 
 		// Add a face to the edge
 		FaceMesh faceMesh = new FaceMesh();
 		FaceController face = new FaceController(faceMesh, new AbstractView());
-		edge.addEntityByCategory(face, "Faces");
+		edge.addEntityByCategory(face, MeshCategory.FACES);
 
 		// Reset the edge's updated state
 		edge.wasUpdated();
 
 		// Change the face and check that the edge didn't get updated
-		face.setProperty("Test", "Value");
+		face.setProperty(MeshProperty.DESCRIPTION, "Value");
 		assertFalse(edge.wasUpdated());
 	}
 
@@ -80,7 +82,7 @@ public class FaceEdgeControllerTester {
 		// Create a cloned edge and check that it is identical to the original
 		FaceEdgeController edge = new FaceEdgeController(new FaceEdgeMesh(),
 				new AbstractView());
-		edge.setProperty("Test", "Property");
+		edge.setProperty(MeshProperty.DESCRIPTION, "Property");
 		FaceEdgeController clone = (FaceEdgeController) edge.clone();
 		assertTrue(edge.equals(clone));
 	}
@@ -113,11 +115,10 @@ public class FaceEdgeControllerTester {
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see
-		 * org.eclipse.eavp.viz.service.modeling.AbstractMesh#update(org.eclipse.
-		 * ice.viz.service.datastructures.VizObject.IManagedUpdateable,
-		 * org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType
-		 * [])
+		 * @see org.eclipse.eavp.viz.service.modeling.AbstractMesh#update(org.
+		 * eclipse. ice.viz.service.datastructures.VizObject.IManagedUpdateable,
+		 * org.eclipse.eavp.viz.service.datastructures.VizObject.
+		 * SubscriptionType [])
 		 */
 		@Override
 		public void update(IManagedUpdateable component,

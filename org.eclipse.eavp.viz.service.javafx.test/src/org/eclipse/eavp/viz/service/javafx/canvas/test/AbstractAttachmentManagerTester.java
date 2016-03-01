@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.canvas.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
 
 import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
 import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 import org.junit.Test;
 
 /**
@@ -25,26 +30,26 @@ import org.junit.Test;
  *
  */
 public class AbstractAttachmentManagerTester {
-	
+
 	/**
 	 * Test the manager's ability to properly handle its attachments.
 	 */
 	@Test
-	public void checkAttachments(){
-		
-		//Create a manager that creates AbstractAttachments 
-		AbstractAttachmentManager manager = new AbstractAttachmentManager(){
+	public void checkAttachments() {
+
+		// Create a manager that creates AbstractAttachments
+		AbstractAttachmentManager manager = new TestAttachmentManager() {
 
 			@Override
 			public IAttachment allocate() {
 
-				//Create a new attachment
-				AbstractAttachment attachment = new AbstractAttachment(){
+				// Create a new attachment
+				AbstractAttachment attachment = new AbstractAttachment() {
 
 					@Override
-					public void removeGeometry(AbstractController geom) {
+					public void removeGeometry(IController geom) {
 						// TODO Auto-generated method stub
-						
+
 					}
 
 					@Override
@@ -54,49 +59,79 @@ public class AbstractAttachmentManagerTester {
 					}
 
 					@Override
-					protected void processShape(AbstractController shape) {
+					protected void processShape(IController shape) {
 						// TODO Auto-generated method stub
-						
+
 					}
 
 					@Override
-					protected void disposeShape(AbstractController shape) {
+					protected void disposeShape(IController shape) {
 						// TODO Auto-generated method stub
-						
+
 					}
-					
+
 				};
-				
-				//Add it to the list of active attachments and return it
+
+				// Add it to the list of active attachments and return it
 				active.add(attachment);
 				return attachment;
 			}
-			
+
 		};
-		
-		//The manager should start off without attachments
+
+		// The manager should start off without attachments
 		assertTrue(manager.getAttachments().isEmpty());
-		
-		//Allocate a new attachment and check that it is there
+
+		// Allocate a new attachment and check that it is there
 		manager.allocate();
 		assertFalse(manager.getAttachments().isEmpty());
-		
-		//Allocate a second attachment and check that both are contained by the manager
+
+		// Allocate a second attachment and check that both are contained by the
+		// manager
 		IAttachment attachment = manager.allocate();
 		assertEquals(2, manager.getAttachments().size());
-		
-		//Order the manager to destroy the attachment. It should not be removed yet
+
+		// Order the manager to destroy the attachment.
 		manager.destroy(attachment);
-		assertEquals(2, manager.getAttachments().size());
-		
-		//Update the manager, which should cause it to delete the attachment
-		manager.update();
 		assertEquals(1, manager.getAttachments().size());
-		
-		//Try destroying a missing attachment and updating with nothing to delete. Nothing should happen.
+
+		// Try destroying a missing attachment and updating with nothing to
+		// delete. Nothing should happen.
 		manager.destroy(attachment);
 		manager.update();
 		assertEquals(1, manager.getAttachments().size());
-		
+
+	}
+
+	/**
+	 * A simple implementation of AbstractAttachmentManager for testing.
+	 * 
+	 * @author Robert Smith
+	 *
+	 */
+	private class TestAttachmentManager extends AbstractAttachmentManager {
+
+		/**
+		 * The default constructor.
+		 */
+		public TestAttachmentManager() {
+			active = new ArrayList<IAttachment>();
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager#
+		 * allocate()
+		 */
+		@Override
+		public IAttachment allocate() {
+
+			IAttachment attachment = new FXAttachment(this);
+			active.add(attachment);
+			return attachment;
+		}
+
 	}
 }

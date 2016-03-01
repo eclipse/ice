@@ -12,9 +12,12 @@ package org.eclipse.eavp.viz.service.mesh.datastructures;
 
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.EdgeAndVertexFaceMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceEdgeController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 
 /**
  * A component for Faces within the Mesh Editor, making use of FaceEdges to
@@ -38,7 +41,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 * @param entities
 	 *            The child entities comprising the face
 	 */
-	public NekPolygonMesh(List<AbstractController> entities) {
+	public NekPolygonMesh(List<IController> entities) {
 		super(entities);
 	}
 
@@ -46,15 +49,15 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#addEntity(org.
-	 * eclipse.ice.viz.service.modeling.AbstractController)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#addEntity(
+	 * org. eclipse.ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void addEntityByCategory(AbstractController entity,
-			String category) {
+	public void addEntityByCategory(IController entity,
+			IMeshCategory category) {
 
 		// If adding an edge, handle it apprioriately
-		if ("Edges".equals(category)) {
+		if (MeshCategory.EDGES.equals(category)) {
 
 			// Queue messages from adding the entity
 			updateManager.enqueue();
@@ -65,7 +68,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 			// If the controller already exists, give a reference to it to the
 			// edge.
 			if (entity instanceof FaceEdgeController && controller != null) {
-				entity.addEntityByCategory(controller, "Faces");
+				entity.addEntityByCategory(controller, MeshCategory.FACES);
 			}
 
 			// Send own update along with the new edge's, if there was one
@@ -81,22 +84,22 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 *
 	 * @see
 	 *
-	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#setController(
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractMeshComponent#
+	 * setController( org.eclipse.eavp.viz.service.modeling.IController)
 	 */
 	@Override
-	public void setController(AbstractController controller) {
+	public void setController(IController controller) {
 		super.setController(controller);
 
 		// Give a reference to the controller to the edge's faces
-		List<AbstractController> edges = entities.get("Edges");
+		List<IController> edges = entities.get(MeshCategory.EDGES);
 		if (edges != null) {
 
 			// Queue messages from all edges
 			updateManager.enqueue();
 
-			for (AbstractController edge : edges) {
-				edge.addEntityByCategory(controller, "Edges");
+			for (IController edge : edges) {
+				edge.addEntityByCategory(controller, MeshCategory.EDGES);
 			}
 
 			// Send messages from all changed edges

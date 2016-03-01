@@ -13,15 +13,17 @@ package org.eclipse.eavp.viz.service.javafx.geometry.plant;
 import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXTube;
-import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 import org.eclipse.eavp.viz.service.geometry.reactor.Extrema;
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
+import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXTube;
+import org.eclipse.eavp.viz.service.javafx.internal.Util;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
@@ -49,38 +51,38 @@ public class FXHeatExchangerView extends AbstractView
 	/**
 	 * A separating wall drawn around Heat Exchanger pipes.
 	 */
-	Box wall;
+	private Box wall;
 
 	/**
 	 * A node containing the primary pipe's mesh.
 	 */
-	Group primaryPipe;
+	private Group primaryPipe;
 
 	/**
 	 * The inlet for the secondary loop of Heat Exchanger pipes
 	 */
-	FXTube secondaryInlet;
+	private FXTube secondaryInlet;
 
 	/**
 	 * A view on the secondary inlet's mesh
 	 */
-	MeshView inletView;
+	private MeshView inletView;
 
 	/**
 	 * The outlet for the secondary loop of Heat Exchanger pipes
 	 */
-	FXTube secondaryOutlet;
+	private FXTube secondaryOutlet;
 
 	/**
 	 * A view on the secondary outlet's mesh
 	 */
-	MeshView outletView;
+	private MeshView outletView;
 
 	/**
 	 * Whether to display this part in wireframe mode. It will be displayed as a
 	 * wireframe if true or as a solid if false.
 	 */
-	boolean wireframe;
+	private boolean wireframe;
 
 	/**
 	 * The nullary constructor.
@@ -98,7 +100,7 @@ public class FXHeatExchangerView extends AbstractView
 	 * @param model
 	 *            The model to be rendered.
 	 */
-	public FXHeatExchangerView(AbstractMesh model) {
+	public FXHeatExchangerView(IMesh model) {
 		super();
 
 		// Initialize the node
@@ -329,11 +331,11 @@ public class FXHeatExchangerView extends AbstractView
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMesh)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.
+	 * ice .viz.service.modeling.AbstractMesh)
 	 */
 	@Override
-	public void refresh(AbstractMesh model) {
+	public void refresh(IMesh model) {
 
 		// Remove the extra parts from the node
 		node.getChildren().remove(primaryPipe);
@@ -375,14 +377,15 @@ public class FXHeatExchangerView extends AbstractView
 		wall.getTransforms().setAll(Util.convertTransformation(transformation));
 
 		// Get the secondary input junction
-		List<AbstractController> secondaryInputList = model
-				.getEntitiesByCategory("Secondary Input");
+		List<IController> secondaryInputList = model
+				.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_INPUT);
 
 		// If there is a secondary input, draw its pipe
 		if (!secondaryInputList.isEmpty()) {
 			// Create the secondary inlet
-			AbstractController inletJunction = model
-					.getEntitiesByCategory("Secondary Input").get(0);
+			IController inletJunction = model
+					.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_INPUT)
+					.get(0);
 			secondaryInlet = createTubeToPoint(
 					((JunctionController) inletJunction).getCenter(),
 					(HeatExchangerMesh) model, inletView, wireframe);
@@ -394,14 +397,15 @@ public class FXHeatExchangerView extends AbstractView
 		}
 
 		// Get the secondary input junction
-		List<AbstractController> secondaryOutputList = model
-				.getEntitiesByCategory("Secondary Output");
+		List<IController> secondaryOutputList = model
+				.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_OUTPUT);
 
 		// If there is a secondary input, draw its pipe
 		if (!secondaryOutputList.isEmpty()) {
 			// Create the secondary inlet
-			AbstractController outletJunction = model
-					.getEntitiesByCategory("Secondary Output").get(0);
+			IController outletJunction = model
+					.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_OUTPUT)
+					.get(0);
 			secondaryOutlet = createTubeToPoint(
 					((JunctionController) outletJunction).getCenter(),
 					(HeatExchangerMesh) model, outletView, wireframe);

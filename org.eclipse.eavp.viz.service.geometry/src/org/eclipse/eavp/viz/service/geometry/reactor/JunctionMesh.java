@@ -41,7 +41,7 @@ public class JunctionMesh extends ShapeMesh {
 	 * @return The tube's height
 	 */
 	public double getHeight() {
-		return Double.parseDouble(properties.get("Height"));
+		return Double.parseDouble(properties.get(ReactorMeshProperty.HEIGHT));
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class JunctionMesh extends ShapeMesh {
 	 * @return The tube's intake's z coordinate
 	 */
 	public double getZIn() {
-		return Double.parseDouble(properties.get("Z Intake"));
+		return Double.parseDouble(properties.get(ReactorMeshProperty.Z_INTAKE));
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class JunctionMesh extends ShapeMesh {
 	 * @return The tube's output's z coordinate
 	 */
 	public double getZOut() {
-		return Double.parseDouble(properties.get("Z Output"));
+		return Double.parseDouble(properties.get(ReactorMeshProperty.Z_OUTPUT));
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class JunctionMesh extends ShapeMesh {
 	 *            The tube's new height
 	 */
 	public void setHeight(double height) {
-		setProperty("Height", Double.toString(height));
+		setProperty(ReactorMeshProperty.HEIGHT, Double.toString(height));
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class JunctionMesh extends ShapeMesh {
 	 *            The tube's new intake z coordinate
 	 */
 	public void setZIn(double ZIn) {
-		setProperty("Z Intake", Double.toString(ZIn));
+		setProperty(ReactorMeshProperty.Z_INTAKE, Double.toString(ZIn));
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class JunctionMesh extends ShapeMesh {
 	 *            The tube's new output z coordinate
 	 */
 	public void setZOut(double ZOut) {
-		setProperty("Z Output", Double.toString(ZOut));
+		setProperty(ReactorMeshProperty.Z_OUTPUT, Double.toString(ZOut));
 	}
 
 	/*

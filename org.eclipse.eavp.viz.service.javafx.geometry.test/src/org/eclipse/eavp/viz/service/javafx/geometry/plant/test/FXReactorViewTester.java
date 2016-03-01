@@ -12,12 +12,14 @@ package org.eclipse.eavp.viz.service.javafx.geometry.plant.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeView;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXReactorView;
-import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
 import org.junit.Test;
 
 import javafx.collections.ObservableList;
@@ -66,12 +68,12 @@ public class FXReactorViewTester {
 		pipeMesh.setInnerRadius(5);
 		pipeMesh.setRadius(5);
 		pipeMesh.setAxialSamples(3);
-		pipeMesh.setProperty("Core Channel", "True");
+		pipeMesh.setProperty(ReactorMeshProperty.CORE_CHANNEL, "True");
 		FXPipeView pipeView = new FXPipeView(pipeMesh);
 		FXPipeController pipe = new FXPipeController(pipeMesh, pipeView);
 
 		// Add the pipe to the reactor
-		reactor.addEntityByCategory(pipe, "Core Channels");
+		reactor.addEntityByCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);
 
 		// Get the four shapes that make up the reactor's representation
 		ObservableList<Node> children = ((Group) ((Group) reactor

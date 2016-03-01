@@ -15,8 +15,8 @@ package org.eclipse.eavp.viz.service;
 import java.net.URI;
 import java.util.Set;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.IControllerFactory;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -58,7 +58,7 @@ public interface IVizService {
 	 *             An exception indicating that the IVizService could not create
 	 *             a canvas with the given object and giving the reason why.
 	 */
-	public IVizCanvas createCanvas(AbstractController object) throws Exception;
+	public IVizCanvas createCanvas(IController object) throws Exception;
 
 	/**
 	 * Returns a factory which will create views and controllers for model parts
@@ -67,7 +67,7 @@ public interface IVizService {
 	 * @return A factory that will create controllers compatible with this
 	 *         service
 	 */
-	public IControllerFactory getFactory();
+	public IControllerProviderFactory getFactory();
 
 	/**
 	 * This operation returns the name of the service. The name should be

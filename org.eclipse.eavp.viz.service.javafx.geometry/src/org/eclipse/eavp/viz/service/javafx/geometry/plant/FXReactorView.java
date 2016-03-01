@@ -11,14 +11,17 @@
 package org.eclipse.eavp.viz.service.javafx.geometry.plant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 import org.eclipse.eavp.viz.service.geometry.reactor.Extrema;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
+import org.eclipse.eavp.viz.service.javafx.internal.Util;
+import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -40,39 +43,39 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	/**
 	 * The JavaFX node containing the reactor's mesh
 	 */
-	Group node;
+	private Group node;
 
 	/**
 	 * The JavaFX node which will collect all the individual JavaFX objects
 	 * which will make up the completed mesh,
 	 */
-	Group reactorNode;
+	private Group reactorNode;
 
 	/**
 	 * The first of the reactor's straight sides
 	 */
-	Box side1;
+	private Box side1;
 
 	/**
 	 * The second of the reactor's straight sides
 	 */
-	Box side2;
+	private Box side2;
 
 	/**
 	 * The reactor's bottom curved side.
 	 */
-	MeshView lowerArch;
+	private MeshView lowerArch;
 
 	/**
 	 * The reactor's top curved side.
 	 */
-	MeshView upperArch;
+	private MeshView upperArch;
 
 	/**
 	 * Whether or not the reactor will display in wireframe mode. It will be a
 	 * wireframe if true, or solid if false.
 	 */
-	boolean wireframe;
+	private boolean wireframe;
 
 	/**
 	 * The nullary constructor.
@@ -120,8 +123,9 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		ArrayList<Extrema> extrema = new ArrayList<Extrema>();
 
 		// Check all the reactor's children for core channels
-		for (AbstractController channel : model.getEntities()) {
-			if ("True".equals(channel.getProperty("Core Channel"))) {
+		for (IController channel : model.getEntities()) {
+			if ("True".equals(
+					channel.getProperty(ReactorMeshProperty.CORE_CHANNEL))) {
 
 				// Add the extrema of core channels to the list
 				extrema.add(((PipeController) channel).getLowerExtrema());
@@ -149,16 +153,19 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 		double sizeY = bounds.getMaxY() - bounds.getMinY();
 		double sizeZ = bounds.getMaxZ() - bounds.getMinZ();
 
-		// Set the characteristics based on the sizes
-		depth = Math.min(Math.min(sizeX, sizeY), sizeZ);
-		height = Math.max(Math.max(sizeX, sizeY), sizeZ);
-		if (sizeX < height && sizeX > depth) {
-			width = sizeX;
-		} else if (sizeY < height && sizeY > depth) {
-			width = sizeY;
-		} else {
-			width = sizeZ;
-		}
+		// Sort the sizes
+		ArrayList<Double> sizes = new ArrayList<Double>();
+		sizes.add(sizeX);
+		sizes.add(sizeY);
+		sizes.add(sizeZ);
+		Collections.sort(sizes);
+
+		// The greatest size will be the distance from curved side to curved
+		// side, the middle size will the the distance between the two straight
+		// sides, and the smallest size will be the object's depth
+		depth = sizes.get(0);
+		width = sizes.get(1);
+		height = sizes.get(2);
 
 		// Widen the reactor so that the inner wall is touching the bounds of
 		// the core channels, saving the original width for later comparisons
@@ -418,14 +425,17 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMesh)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.
+	 * ice .viz.service.modeling.AbstractMesh)
 	 */
 	@Override
-	public void refresh(AbstractMesh model) {
+	public void refresh(IMesh model) {
 
 		// Redraw the mesh
 		createShape((ReactorMesh) model);
+
+		// Set the transformation
+		node.getTransforms().setAll(Util.convertTransformation(transformation));
 	}
 
 	/*

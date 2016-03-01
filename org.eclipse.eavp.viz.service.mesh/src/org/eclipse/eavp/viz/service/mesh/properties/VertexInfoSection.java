@@ -15,7 +15,9 @@ package org.eclipse.eavp.viz.service.mesh.properties;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -84,12 +86,12 @@ public class VertexInfoSection extends GeneralInfoSection {
 			MeshSelection meshSelection = (MeshSelection) element;
 
 			// Get the selected IMeshPart and mesh from the selection.
-			AbstractController meshPart = meshSelection.selectedMeshPart;
-			final AbstractController mesh = meshSelection.mesh;
+			IController meshPart = meshSelection.selectedMeshPart;
+			final IController mesh = meshSelection.mesh;
 
 			// Get the vertex at the given index
-			List<AbstractController> vertices = meshPart
-					.getEntitiesByCategory("Vertices");
+			List<IController> vertices = meshPart
+					.getEntitiesByCategory(MeshCategory.VERTICES);
 			if (index < vertices.size()) {
 				object = vertices.get(index);
 			}

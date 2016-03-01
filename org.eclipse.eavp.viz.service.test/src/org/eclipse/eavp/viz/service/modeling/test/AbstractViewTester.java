@@ -17,8 +17,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IView;
 import org.eclipse.eavp.viz.service.modeling.Transformation;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestController;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestMesh;
@@ -37,7 +38,7 @@ public class AbstractViewTester {
 	/**
 	 * The entities for the component
 	 */
-	List<AbstractController> entities;
+	List<IController> entities;
 
 	/**
 	 * The controller's model
@@ -59,7 +60,7 @@ public class AbstractViewTester {
 	 */
 	@Before
 	public void beforeEachTest() {
-		entities = new ArrayList<AbstractController>();
+		entities = new ArrayList<IController>();
 		component = new TestMesh(entities);
 		view = new TestView();
 		controller = new TestController(component, view);
@@ -176,9 +177,9 @@ public class AbstractViewTester {
 	public void checkEquality() {
 
 		// Create objects for testing
-		AbstractView object = new AbstractView();
-		AbstractView equalObject = new AbstractView();
-		AbstractView unequalObject = new AbstractView();
+		IView object = new AbstractView();
+		IView equalObject = new AbstractView();
+		IView unequalObject = new AbstractView();
 
 		// Give one view a different transformation
 		Transformation transformation = new Transformation();

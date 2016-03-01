@@ -12,7 +12,8 @@ package org.eclipse.eavp.viz.service.javafx.scene.base;
 
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IController;
 
 /**
  * <p>
@@ -32,7 +33,7 @@ public interface IGeometry {
 	 * @param geom
 	 *            an ICE Geometry instance
 	 */
-	public void addGeometry(AbstractController geom);
+	public void addGeometry(IController geom);
 
 	/**
 	 * <p>
@@ -42,7 +43,7 @@ public interface IGeometry {
 	 * @param shape
 	 *            an ICE IShape instance
 	 */
-	public void addShape(AbstractController shape);
+	public void addShape(IController shape);
 
 	/**
 	 * <p>
@@ -52,7 +53,7 @@ public interface IGeometry {
 	 * @param shape
 	 *            the ICE IShape to remove
 	 */
-	public void removeShape(AbstractController shape);
+	public void removeShape(IController shape);
 
 	/**
 	 * <p>
@@ -64,7 +65,7 @@ public interface IGeometry {
 	 * 
 	 * @return true if the entity contains the supplied IShape, false otherwise.
 	 */
-	public boolean hasShape(AbstractController shape);
+	public boolean hasShape(IController shape);
 
 	/**
 	 * <p>
@@ -76,7 +77,7 @@ public interface IGeometry {
 	 * 
 	 * @return an IShape instance or null if one cannot be found
 	 */
-	public AbstractController getShape(int index);
+	public IController getShape(int index);
 
 	/**
 	 * <p>
@@ -92,7 +93,7 @@ public interface IGeometry {
 	 * 
 	 * @return a List of IShapes associated with this shape.
 	 */
-	public List<AbstractController> getShapes(boolean copy);
+	public List<IController> getShapes(boolean copy);
 
 	/**
 	 * <p>

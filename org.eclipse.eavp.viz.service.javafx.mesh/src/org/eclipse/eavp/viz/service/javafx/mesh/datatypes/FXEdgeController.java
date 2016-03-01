@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.IMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 
 /**
  * An extension of edge that manages its vertices' states as being selected and
@@ -40,20 +43,21 @@ public class FXEdgeController extends EdgeController {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractController#setProperty(java.
-	 * lang.String, java.lang.String)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractController#setProperty(
+	 * java. lang.String, java.lang.String)
 	 */
 	@Override
-	public void setProperty(String property, String value) {
+	public void setProperty(IMeshProperty property, String value) {
 
 		// If the Edge's constructing or selected properties are being changed,
 		// propagate that change to its vertices
-		if ("Constructing".equals(property) || "Selected".equals(property)) {
+		if (MeshEditorMeshProperty.UNDER_CONSTRUCTION.equals(property)
+				|| MeshProperty.SELECTED.equals(property)) {
 
 			// Lock notifications from changing own vertices
 			updateManager.enqueue();
-			for (AbstractController vertex : model
-					.getEntitiesByCategory("Vertices")) {
+			for (IController vertex : model
+					.getEntitiesByCategory(MeshCategory.VERTICES)) {
 				vertex.setProperty(property, value);
 			}
 		}

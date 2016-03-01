@@ -17,6 +17,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
@@ -27,6 +28,16 @@ import javafx.scene.transform.Transform;
  */
 public class TopDownCameraController extends AbstractCameraController {
 
+	/**
+	 * The x component of the 2D point that the camera is currently centered on
+	 */
+	double centerX;
+	
+	/**
+	 * The y component of the 2D point that the camera is currently centered on
+	 */
+	double centerY;
+	
 	/**
 	 * The default constructor.
 	 * 
@@ -40,6 +51,9 @@ public class TopDownCameraController extends AbstractCameraController {
 	public TopDownCameraController(Camera camera, Scene scene,
 			FXCanvas canvas) {
 		super(camera, scene, canvas);
+		
+		centerX = 0;
+		centerY = 0;
 	}
 
 	/**
@@ -51,6 +65,24 @@ public class TopDownCameraController extends AbstractCameraController {
 	 */
 	public void fixToCamera(Node node) {
 		xform.getChildren().add(node);
+	}
+	
+	/**
+	 * Get the x component of the center of the camera's view.
+	 * 
+	 * @return The x component of the center of the camera's view.
+	 */
+	public double getCenterX(){
+		return centerX;
+	}
+	
+	/**
+	 * Get the y component of the center of the camera's view.
+	 * 
+	 * @return The y component of the center of the camera's view.
+	 */
+	public double getCenterY(){
+		return centerY;
 	}
 
 	/**
@@ -104,6 +136,9 @@ public class TopDownCameraController extends AbstractCameraController {
 			Point3D moveVec = yDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), -moveVec.getY(),
 					moveVec.getZ());
+			
+			//Keep track of the new center
+			centerY -= speed;
 
 			// S moves the camera down
 		} else if (keyCode == KeyCode.S || keyCode == KeyCode.DOWN) {
@@ -112,18 +147,27 @@ public class TopDownCameraController extends AbstractCameraController {
 					-moveVec.getZ());
 			affine.appendTranslation(invVec.getX(), invVec.getY(),
 					invVec.getZ());
+			
+			//Keep track of the new center
+			centerY += speed;
 
 			// A moves the camera to the left
 		} else if (keyCode == KeyCode.A || keyCode == KeyCode.LEFT) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(-moveVec.getX(), -moveVec.getY(),
 					-moveVec.getZ());
+			
+			//Keep track of the new center
+			centerX -= speed;
 
 			// D moves the camera to the right
 		} else if (keyCode == KeyCode.D || keyCode == KeyCode.RIGHT) {
 			Point3D moveVec = xDir.multiply(speed);
 			affine.appendTranslation(moveVec.getX(), moveVec.getY(),
 					moveVec.getZ());
+			
+			//Keep track of the new center
+			centerX += speed;
 		}
 
 		// The spacebar zooms the camera out
@@ -165,6 +209,66 @@ public class TopDownCameraController extends AbstractCameraController {
 		affine = new Affine();
 		affine.appendTranslation(0, 0, -85);
 		xform.getTransforms().setAll(affine);
+	}
+
+	@Override
+	protected void initCamera() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleMouseDragged(MouseEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleMousePressed(MouseEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void handleMouseReleased(MouseEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void pitchCamera(double radians) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void rollCamera(double radians) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void raiseCamera(double distance) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void strafeCamera(double distance) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void thrustCamera(double distance) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void yawCamera(double radians) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

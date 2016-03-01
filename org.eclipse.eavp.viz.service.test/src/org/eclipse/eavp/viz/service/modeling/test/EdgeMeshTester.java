@@ -16,9 +16,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 import org.junit.Test;
@@ -52,14 +54,14 @@ public class EdgeMeshTester {
 				new AbstractView());
 
 		// Add all three vertices to the edge.
-		edge.addEntityByCategory(vertex1, "Vertices");
-		edge.addEntityByCategory(vertex2, "Vertices");
-		edge.addEntityByCategory(vertex3, "Vertices");
+		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check the Vertices category to ensure that the edge accepted the
 		// first two vertices and ignored the third
-		List<AbstractController> vertices = edge
-				.getEntitiesByCategory("Vertices");
+		List<IController> vertices = edge
+				.getEntitiesByCategory(MeshCategory.VERTICES);
 		assertTrue(vertices.contains(vertex1));
 		assertTrue(vertices.contains(vertex2));
 		assertFalse(vertices.contains(vertex3));
@@ -67,11 +69,11 @@ public class EdgeMeshTester {
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntityByCategory(vertex3, "Vertices");
+		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check the Vertices category to ensure that the last vertex was
 		// replaced
-		vertices = edge.getEntitiesByCategory("Vertices");
+		vertices = edge.getEntitiesByCategory(MeshCategory.VERTICES);
 		assertTrue(vertices.contains(vertex1));
 		assertFalse(vertices.contains(vertex2));
 		assertTrue(vertices.contains(vertex3));
@@ -85,7 +87,7 @@ public class EdgeMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		EdgeMesh mesh = new EdgeMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		EdgeMesh clone = (EdgeMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}

@@ -14,9 +14,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.junit.Test;
 
 /**
@@ -28,19 +30,23 @@ import org.junit.Test;
 public class ReactorControllerTester {
 
 	/**
-	 * Test that the Reactor sets itself as the parent to any core channel which is added to it.
+	 * Test that the Reactor sets itself as the parent to any core channel which
+	 * is added to it.
 	 */
 	@Test
-	public void checkPipes(){
-		
-		//Create a reactor and pipe
-		ReactorController reactor = new ReactorController(new ReactorMesh(), new AbstractView());
-		PipeController pipe = new PipeController(new PipeMesh(), new AbstractView());
-		
-		//Add the pipe as a core channel
-		reactor.addEntityByCategory(pipe, "Core Channels");
-		
-		//Check that the pipe has the reactor as a parent
-		assertTrue(pipe.getEntitiesByCategory("Parent").get(0) == reactor);
+	public void checkPipes() {
+
+		// Create a reactor and pipe
+		ReactorController reactor = new ReactorController(new ReactorMesh(),
+				new AbstractView());
+		PipeController pipe = new PipeController(new PipeMesh(),
+				new AbstractView());
+
+		// Add the pipe as a core channel
+		reactor.addEntityByCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);
+
+		// Check that the pipe has the reactor as a parent
+		assertTrue(pipe.getEntitiesByCategory(MeshCategory.PARENT)
+				.get(0) == reactor);
 	}
 }

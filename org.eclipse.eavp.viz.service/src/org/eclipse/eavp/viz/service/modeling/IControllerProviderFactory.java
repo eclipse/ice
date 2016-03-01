@@ -11,18 +11,17 @@
 package org.eclipse.eavp.viz.service.modeling;
 
 /**
- * A interface for classes automating the creation of AbstractControllers. An
- * IControllerFactory takes as input an AbstractMeshComponent and creates an
- * appropriate AbstractView for it. The factory then creates an
- * AbstractController to manage both of them. An IControllerFactory
+ * A interface for classes which serve IControllerProviders. An
+ * IControllerFactory takes as input an IMesh and returns an IControllerProvider
+ * which is capable of processing that IMesh. An IControllerFactory
  * implementation should be specific as to what kind of view and/or controller
- * it creates, as the same AbstractMeshComponent may be valid for use with
- * multiple separate implementations of Abstract View and AbstractController.
+ * its IControllerProviders create, as the same IMesh may be valid for use with
+ * multiple separate implementations of IView and IController.
  * 
  * @author Robert Smith
  *
  */
-public interface IControllerFactory {
+public interface IControllerProviderFactory {
 
 	/**
 	 * Creates a controller and associated view for the given model.
@@ -32,5 +31,5 @@ public interface IControllerFactory {
 	 * @return The new controller, which contains the input model and the new
 	 *         view
 	 */
-	public AbstractController createController(AbstractMesh model);
+	public IControllerProvider createProvider(IMesh model);
 }

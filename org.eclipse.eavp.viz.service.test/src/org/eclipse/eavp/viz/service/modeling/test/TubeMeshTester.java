@@ -12,6 +12,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class TubeMeshTester {
 
 		// Clone a mesh and check that the result is identical
 		TubeMesh mesh = new TubeMesh();
-		mesh.setProperty("Test", "Property");
+		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
 		TubeMesh clone = (TubeMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}

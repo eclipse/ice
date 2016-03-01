@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
 
 /**
@@ -29,13 +30,14 @@ public class JunctionControllerTester {
 	 * Check that the part is cloned correctly.
 	 */
 	@Test
-	public void checkClone(){
-		
-		//Create a junction
-		JunctionController exchanger = new JunctionController(new JunctionMesh(), new AbstractView());
-		exchanger.setProperty("Test", "Property");
-		
-		//Clone it and check that they are identical
+	public void checkClone() {
+
+		// Create a junction
+		JunctionController exchanger = new JunctionController(
+				new JunctionMesh(), new AbstractView());
+		exchanger.setProperty(MeshProperty.INNER_RADIUS, "Property");
+
+		// Clone it and check that they are identical
 		JunctionController clone = (JunctionController) exchanger.clone();
 		assertTrue(exchanger.equals(clone));
 	}

@@ -15,9 +15,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestController;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestMesh;
 import org.junit.Test;
@@ -34,82 +36,89 @@ public class PipeControllerTester {
 	 * Test the PipeMesh convenience methods and properties management.
 	 */
 	@Test
-	public void checkProperties(){
-		
-		//Create a pipe
+	public void checkProperties() {
+
+		// Create a pipe
 		PipeMesh pipeMesh = new PipeMesh();
 		PipeController pipe = new PipeController(pipeMesh, new AbstractView());
-		
-		//Check the number of rods
+
+		// Check the number of rods
 		pipe.setNumRods(1);
 		assertTrue(pipe.getNumRods() == 1);
-		
-		//Check the pitch
+
+		// Check the pitch
 		pipe.setPitch(2d);
 		assertTrue(pipe.getPitch() == 2d);
-		
-		//Check the rod diameter
+
+		// Check the rod diameter
 		pipe.setRodDiameter(3d);
 		assertTrue(pipe.getRodDiameter() == 3d);
-		
-		//Set the radius and inner radius to different values
+
+		// Set the radius and inner radius to different values
 		pipe.setRadius(5d);
 		pipe.setInnerRadius(4d);
-		
-		//Check that the radius is set and that the inner radius simply redirects to the outer radius, as pipes are to be displayed as infinitely thin.
+
+		// Check that the radius is set and that the inner radius simply
+		// redirects to the outer radius, as pipes are to be displayed as
+		// infinitely thin.
 		assertTrue(pipe.getRadius() == 5d);
 		assertTrue(pipe.getInnerRadius() == 5d);
 	}
-	
+
 	/**
 	 * Test that the PipeMesh sends updates correctly.
 	 */
 	@Test
-	public void checkUpdates(){
-	
-		//Create a pipe
+	public void checkUpdates() {
+
+		// Create a pipe
 		PipeMesh pipeMesh = new PipeMesh();
 		PipeController pipe = new PipeController(pipeMesh, new AbstractView());
-		
-		//Create a test object to receive and track updates from the pipe
-		TestController parent = new TestController(new TestMesh(), new AbstractView());
+
+		// Create a test object to receive and track updates from the pipe
+		TestController parent = new TestController(new TestMesh(),
+				new AbstractView());
 		parent.addEntity(pipe);
-		
-		//Add an input and output, as well as another pipe
-		AbstractController input = new AbstractController(new AbstractMesh(), new AbstractView());
-		pipe.addEntityByCategory(input, "Input");
-		AbstractController output = new AbstractController(new AbstractMesh(), new AbstractView());
-		pipe.addEntityByCategory(output, "Output");
-		PipeController child = new PipeController(new PipeMesh(), new AbstractView());
+
+		// Add an input and output, as well as another pipe
+		AbstractController input = new AbstractController(new AbstractMesh(),
+				new AbstractView());
+		pipe.addEntityByCategory(input, ReactorMeshCategory.INPUT);
+		AbstractController output = new AbstractController(new AbstractMesh(),
+				new AbstractView());
+		pipe.addEntityByCategory(output, ReactorMeshCategory.OUTPUT);
+		PipeController child = new PipeController(new PipeMesh(),
+				new AbstractView());
 		pipe.addEntity(child);
-		
-		//Clear the received messages	
+
+		// Clear the received messages
 		parent.isUpdated();
-		
-		//Updates from input should be ignored
-		input.setProperty("Send", "Update");
+
+		// Updates from input should be ignored
+		input.setProperty(MeshProperty.ID, "Update");
 		assertFalse(parent.isUpdated());
-		
-		//Updates from output should be ignored
-		output.setProperty("Send", "Update");
-		assertFalse(parent.isUpdated());		
-		
-		//The pipe should receive updates from other entities
-		child.setProperty("Send", "Update");
+
+		// Updates from output should be ignored
+		output.setProperty(MeshProperty.ID, "Update");
+		assertFalse(parent.isUpdated());
+
+		// The pipe should receive updates from other entities
+		child.setProperty(MeshProperty.ID, "Update");
 		assertTrue(parent.isUpdated());
 	}
-	
+
 	/**
 	 * Check that the part is cloned correctly.
 	 */
 	@Test
-	public void checkClone(){
-		
-		//Create a junction
-		PipeController pipe = new PipeController(new PipeMesh(), new AbstractView());
-		pipe.setProperty("Test", "Property");
-		
-		//Clone it and check that they are identical
+	public void checkClone() {
+
+		// Create a junction
+		PipeController pipe = new PipeController(new PipeMesh(),
+				new AbstractView());
+		pipe.setProperty(MeshProperty.ID, "Property");
+
+		// Clone it and check that they are identical
 		PipeController clone = (PipeController) pipe.clone();
 		assertTrue(pipe.equals(clone));
 	}
