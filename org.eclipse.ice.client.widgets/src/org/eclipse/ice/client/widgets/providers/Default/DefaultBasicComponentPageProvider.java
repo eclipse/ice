@@ -9,11 +9,12 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings, Nick Stanish
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.providers;
+package org.eclipse.ice.client.widgets.providers.Default;
 
 import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ICESectionPage;
+import org.eclipse.ice.client.widgets.providers.IBasicComponentPageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ui.forms.editor.FormEditor;

@@ -15,8 +15,8 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.client.widgets.providers.DefaultEntryCompositeProvider;
 import org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider;
+import org.eclipse.ice.client.widgets.providers.Default.DefaultEntryCompositeProvider;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.jface.viewers.ISelection;

@@ -10,11 +10,12 @@
  *   Minor updates for architecture compliance, original implementation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.providers;
+package org.eclipse.ice.client.widgets.providers.Default;
 
 import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ICEResourcePage;
+import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
