@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
-import org.eclipse.ice.client.widgets.providers.DefaultPageFactory;
+import org.eclipse.ice.client.widgets.providers.IPageFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -844,7 +844,8 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
 		// Just allocate it directly for now!
-		DefaultPageFactory factory = new DefaultPageFactory();
+		IPageFactory factory = (IPageFactory) e4Context
+				.get(iceDataForm.getContext());
 
 		// Load data pages if they are available.
 		if (!iceDataForm.getComponents().isEmpty()) {
@@ -865,6 +866,7 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 				comps.addAll(componentMap.get("data"));
 				comps.addAll(componentMap.get("table"));
 				comps.addAll(componentMap.get("matrix"));
+				// ArrayList<IFormPage> pages = ;
 				formPages.addAll(factory.getBasicComponentPages(this, comps));
 			}
 

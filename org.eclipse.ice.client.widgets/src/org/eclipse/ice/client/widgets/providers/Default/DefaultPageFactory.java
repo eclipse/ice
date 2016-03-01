@@ -9,11 +9,20 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Jay Jay Billings
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.providers;
+package org.eclipse.ice.client.widgets.providers.Default;
 
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.client.widgets.providers.IBasicComponentPageProvider;
+import org.eclipse.ice.client.widgets.providers.IEMFSectionPageProvider;
+import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
+import org.eclipse.ice.client.widgets.providers.IGeometryPageProvider;
+import org.eclipse.ice.client.widgets.providers.IListPageProvider;
+import org.eclipse.ice.client.widgets.providers.IMasterDetailsPageProvider;
+import org.eclipse.ice.client.widgets.providers.IMeshPageProvider;
+import org.eclipse.ice.client.widgets.providers.IPageFactory;
+import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
