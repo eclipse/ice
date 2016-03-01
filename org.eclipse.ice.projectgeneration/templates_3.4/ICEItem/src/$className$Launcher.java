@@ -16,7 +16,7 @@ public class $className$Launcher extends JobLauncher {
 
 	// TODO: 
 	//   These need to be filled in before using this item
-	//	 They can be set in the $className$Model(IProject) method
+	//	 They can be set in the setupItemInfo() method
 	private String execCommand;
 	// End required variables
 	
@@ -32,27 +32,22 @@ public class $className$Launcher extends JobLauncher {
 
 	/**
 	 * Main constructor
-	 * 
-	 * Developer is required to update the class variables that are
-	 * 
 	 */
 	public $className$Launcher(IProject project) {
 		super(project);
-
-		// TODO: These must be customized before using this item
-		execCommand = "$className$DefaultExecCommand";
-		// End required variables
-			
-		// TODO: Add User Code Here
 	}
 
 	/**
-	 * Sets the name and description for the item. 
+	 * Sets the name and description for the item.  This will
+	 * have to be updated so that the execCommand is set correctly 
 	 */
 	@Override
 	protected void setupItemInfo() {
 		setName("$className$ Launcher");
 		setDescription("Provide information to launch $className$");
+		// TODO: These must be customized before using this item
+		execCommand = "$className$DefaultExecCommand";
+		// End required variables
 	}
 
 	/**
@@ -72,7 +67,7 @@ public class $className$Launcher extends JobLauncher {
 	}
 
 	/**
-	 *
+	 * Complete the launch command
 	 * 
 	 * @param actionName
 	 * 		The action to take when processing

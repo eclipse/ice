@@ -22,9 +22,10 @@ public class $className$Model extends Model {
 
 	// TODO: 
 	//   These need to be filled in before using this item
-	private String writerName = "$className$DefaultWriterName";
-	private String readerName = "$className$DefaultReaderName";     	
-	private String outputName = "$className$DefaultOutputName";   
+	//   They can be set in the setupItemInfo() method
+	private String writerName;
+	private String readerName;
+	private String outputName;
 	// End required variables
 	
     private String exportString;
@@ -38,9 +39,6 @@ public class $className$Model extends Model {
 
 	public $className$Model(IProject project) {
 		super(project);
-		exportString = "Export to $className$ input format";	
-		
-		// TODO: (optional) Add User Code Here
 	}
 
 	/**
@@ -53,11 +51,6 @@ public class $className$Model extends Model {
 		form = new Form();
 		
 		ioService = getIOService();
-		if (ioService == null) {
-			setIOService(new IOService());
-			ioService = getIOService();
-		}
-		
 		// TODO: Add User Code Here
 		
 		/**
@@ -84,6 +77,10 @@ public class $className$Model extends Model {
 		setName("$className$ Model");
 		setDescription("Specify information about $className$");
 		allowedActions.add(0, exportString);
+		writerName = "$className$DefaultWriterName";
+		readerName = "$className$DefaultReaderName";     	
+		outputName = "$className$DefaultOutputName";   
+		exportString = "Export to $className$ input format";	
 	}
 
 	/**
@@ -93,8 +90,8 @@ public class $className$Model extends Model {
 	 * to have this method return FormStatus.InfoError.
 	 * 
 	 * @param preparedForm
-	 * 
-	 * @return
+	 *		the form to validate 
+	 * @return whether the form was correctly set up
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
@@ -107,11 +104,11 @@ public class $className$Model extends Model {
 
 	/**
 	 * Use this method to process the data that has been 
-	 * specified in the form.  Data being processed should
-	 * be written usint 
+	 * specified in the form. 
 	 * 
 	 * @param actionName
-	 * @return
+	 * 		a string representation of the action to perform
+	 * @return whether the form was processed successfully
 	 */
 	@Override
 	public FormStatus process(String actionName) {
@@ -154,6 +151,7 @@ public class $className$Model extends Model {
 	 * item.  It is responsible for setting up the form for user interaction.
 	 *  
 	 * @param fileName
+	 * 		the file to load
 	 */
 	@Override
 	public void loadInput(String fileName) {
@@ -183,9 +181,12 @@ public class $className$Model extends Model {
 	/**
 	 * Creates an appropriate entry type with some initial setup.
 	 * 
-	 * @param name The name to display
-	 * @param value The default value
-	 * @param entryType The type of entry to use
+	 * @param name 
+	 * 		The name to display
+	 * @param value 
+	 * 		The default value
+	 * @param entryType 
+	 * 		The type of entry to use
 	 * @return the constructed entry
 	 */
 	public IEntry createNumEntry(String name, String value, AllowedValueType entryType) {
