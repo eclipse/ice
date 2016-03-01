@@ -8,6 +8,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
@@ -59,7 +61,7 @@ public class $className$Model extends Model {
 		// TODO: Add User Code Here
 		
 		/**
-		 * The following two lines of code can be uncommented
+		 * The following two lines of code can be changed
 		 * if there is supposed to be some default information
 		 * populated in the form when creating this item from
 		 * the new item button in the ICE perspective.
@@ -68,9 +70,9 @@ public class $className$Model extends Model {
 		 * loadInput() method so that it will correctly handle 
 		 * a null argument.
 		 */
-		//if (project != null) 
-		//	loadInput(null);
-		
+		if (project != null) { 
+			loadInput(null);
+		}
 	}
 	
 	/**
@@ -162,14 +164,41 @@ public class $className$Model extends Model {
 		if (readerName == "$className$DefaultReaderName") {
 			return;
 		}
+
+		if (fileName == null) {
+			// TODO: Add User Code Here
+			return;
+		} else {
+			// Read in the file and set up the form
+			IFile inputFile = project.getFile(fileName);
+			reader = ioService.getReader(readerName);
+			form = reader.read(inputFile);
+			form.setName(getName());
+			form.setDescription(getDescription());
+			form.setId(getId());
+			form.setItemID(getId());
+		}
+	}
 	
-		// Read in the file and set up the form
-		IFile inputFile = project.getFile(fileName);
-		reader = ioService.getReader(readerName);
-		form = reader.read(inputFile);
-		form.setName(getName());
-		form.setDescription(getDescription());
-		form.setId(getId());
-		form.setItemID(getId());
+	/**
+	 * Creates an appropriate entry type with some initial setup.
+	 * 
+	 * @param name The name to display
+	 * @param value The default value
+	 * @param entryType The type of entry to use
+	 * @return the constructed entry
+	 */
+	public IEntry createNumEntry(String name, String value, AllowedValueType entryType) {
+	    IEntry entry = null;
+	    if (entryType == AllowedValueType.Continuous) {
+	        entry = new ContinuousEntry();
+	    } else if (entryType = AllowedValueType.Undefined) {
+	        entry = new StringEntry();
+	    } else {
+	        entry = new StringEntry();
+	    }
+	    entry.setName(name);
+	    entry.setValue(value);
+	    return entry;
 	}
 }
