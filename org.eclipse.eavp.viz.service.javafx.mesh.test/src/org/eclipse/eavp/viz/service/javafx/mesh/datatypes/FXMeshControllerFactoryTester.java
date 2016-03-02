@@ -39,7 +39,7 @@ public class FXMeshControllerFactoryTester {
 	public void checkCreation() {
 
 		// The factory to be tested
-		FXMeshControllerFactory factory = new FXMeshControllerFactory();
+		FXMeshControllerProviderFactory factory = new FXMeshControllerProviderFactory();
 
 		// Create an edge mesh and send it to the factory
 		EdgeMesh edgeMesh = new EdgeMesh();

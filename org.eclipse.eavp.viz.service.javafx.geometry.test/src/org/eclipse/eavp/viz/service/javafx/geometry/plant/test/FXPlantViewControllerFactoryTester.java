@@ -18,7 +18,7 @@ import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXHeatExchangerController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerFactory;
+import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
 import org.junit.Test;
 
 /**
@@ -36,7 +36,7 @@ public class FXPlantViewControllerFactoryTester {
 	public void checkCreation() {
 
 		// The factory to test
-		FXPlantViewControllerFactory factory = new FXPlantViewControllerFactory();
+		FXPlantViewControllerProviderFactory factory = new FXPlantViewControllerProviderFactory();
 
 		// A HeatExchangerMesh should be given a FXHeatExchangerController
 		HeatExchangerMesh heatExchangerMesh = new HeatExchangerMesh();

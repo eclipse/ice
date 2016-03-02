@@ -273,6 +273,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		manifestLines.append(" org.eclipse.ice.item,\n");
 		manifestLines.append(" org.eclipse.ice.item.jobLauncher,\n");
 		manifestLines.append(" org.eclipse.ice.item.model,\n");
+		manifestLines.append(" org.eclipse.ice.datastructures.entry,\n");
 		manifestLines.append(" org.eclipse.ice.datastructures.ICEObject,\n");
 		manifestLines.append(" org.eclipse.core.resources,\n");
 		manifestLines.append(" org.eclipse.core.runtime,\n");

@@ -19,7 +19,7 @@ import org.eclipse.eavp.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.eavp.viz.service.javafx.internal.model.FXCameraAttachment;
 import org.eclipse.eavp.viz.service.javafx.internal.scene.camera.TopDownCameraController;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXEdgeController;
-import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXMeshControllerFactory;
+import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXMeshControllerProviderFactory;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.FXVertexController;
 import org.eclipse.eavp.viz.service.javafx.mesh.datatypes.MeshEditorMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.scene.base.ICamera;
@@ -123,7 +123,7 @@ public class FXMeshViewer extends FXViewer {
 	 * The factory responsible for creating views/controllers for new model
 	 * components.
 	 */
-	private FXMeshControllerFactory factory;
+	private FXMeshControllerProviderFactory factory;
 
 	/**
 	 * The mouse's last recorded x position
@@ -261,7 +261,7 @@ public class FXMeshViewer extends FXViewer {
 		// Initialize the class variables
 		attachmentManager = new FXMeshAttachmentManager();
 		renderer.register(FXMeshAttachment.class, attachmentManager);
-		factory = new FXMeshControllerFactory();
+		factory = new FXMeshControllerProviderFactory();
 		selectedVertices = new ArrayList<IController>();
 		tempEdges = new ArrayList<IController>();
 		vertexMarkers = new ArrayList<Sphere>();

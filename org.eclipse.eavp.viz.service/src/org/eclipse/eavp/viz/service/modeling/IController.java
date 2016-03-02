@@ -265,6 +265,34 @@ public interface IController
 	 *            The category under which to add the new child entity
 	 */
 	void addEntityByCategory(IController newEntity, IMeshCategory category);
+	
+	/**
+	 * Checks whether the part is the root node of the tree. A convenience method equivalent to getProperty(MeshProperty.ROOT) except it returns a boolean instead of a String.
+	 * 
+	 * @return True if the part is selected and false if it is not.
+	 */
+	boolean isRoot();
+	
+	/**
+	 * Checks whether the part is selected. A convenience method equivalent to getProperty(MeshProperty.SELECTED) except it returns a boolean instead of a String.
+	 * 
+	 * @return True if the part is selected and false if it is not.
+	 */
+	boolean isSelected();
+	
+	/**
+	 * Set the part as being the root node of the tree. A convenience method equivalent to setProperty(MeshProperty.ROOT, ___) except it takes a boolean instead of a String.
+	 * 
+	 * @param root Whether the part is the root node or not
+	 */
+	void setRoot(boolean root);
+	
+	/**
+	 * Set the part as being selected. A convenience method equivalent to setProperty(MeshProperty.SELECTED, ___) except it takes a boolean instead of a String.
+	 * 
+	 * @param selected Whether the part is selected or not.
+	 */
+	void setSelected(boolean selected);
 
 	/**
 	 * Getter method for the update manager.

@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.parsergenerator.test;
 
-import org.eclipse.ice.parsergenerator.grammars.FlatGrammar;
 import org.junit.Test;
 
 /**
@@ -57,13 +56,6 @@ public class GrammarTester {
 				
 	@Test
 	public void TestGrammar() {
-		FlatGrammar g = new FlatGrammar();
-		g.setAssignmentOperator("=");
-		g.setCommentSymbol("#");
-		g.setSection("[", "]");
-		String grammar = g.toString();
-		System.out.println(iniGrammar);
-		
 		
 	}
 }
