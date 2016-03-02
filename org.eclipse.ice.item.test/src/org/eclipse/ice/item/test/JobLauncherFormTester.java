@@ -643,7 +643,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// Check the number of Components in the JobLauncherForm. It should have
 		// two, a DataComponent and an OutputComponent.
-		assertEquals(2, jobLauncherForm.getNumberOfComponents());
+		assertEquals(3, jobLauncherForm.getNumberOfComponents());
 
 		// Get the Entries
 		ArrayList<IEntry> entries = ((DataComponent) jobLauncherForm

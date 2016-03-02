@@ -6,6 +6,8 @@ Bundle-Version: 2.1.8.20160208
 Fragment-Host: org.eclipse.ice.item;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.spotify.docker.client,
+ org.apache.http.conn;version="4.3.4",
+ org.bouncycastle.openssl;version="1.51.0",
  org.eclipse.eavp.viz.service.mesh.datastructures,
  org.eclipse.ice.core.iCore,
  org.eclipse.ice.datastructures.entry,

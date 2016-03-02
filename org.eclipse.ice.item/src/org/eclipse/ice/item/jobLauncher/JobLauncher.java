@@ -1397,7 +1397,7 @@ public class JobLauncher extends Item {
 		((JobLauncherForm) form).enableMPI(minProcesses, maxProcesses, defaultProcesses);
 
 		// If the components are not greater than 2, then it is false
-		if (form.getComponents().size() > 3) {
+		if (form.getComponents().size() > 4) {
 			DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 			IEntry entry = dataC.retrieveEntry("Number of MPI Processes");
 			if (entry != null) {
@@ -1462,7 +1462,7 @@ public class JobLauncher extends Item {
 			((JobLauncherForm) form).enableOpenMP(minThreads, maxThreads, defaultThreads);
 
 			// If the components are not greater than 2, then it is false
-			if (form.getComponents().size() > 3) {
+			if (form.getComponents().size() > 4) {
 				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 				IEntry entry = dataC.retrieveEntry("Number of OpenMP Threads");
 				if (entry != null) {
@@ -1537,7 +1537,7 @@ public class JobLauncher extends Item {
 			JobLauncherForm form = (JobLauncherForm) this.getForm();
 
 			// If there are more than 3 components, then parallelism is enabled.
-			if (form.getComponents().size() > 3) {
+			if (form.getComponents().size() > 4) {
 				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 				IEntry entry = dataC.retrieveEntry("Number of TBB Threads");
 				if (entry != null) {

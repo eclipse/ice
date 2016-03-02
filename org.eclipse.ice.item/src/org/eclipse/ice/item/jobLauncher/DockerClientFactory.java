@@ -23,10 +23,10 @@ import com.spotify.docker.client.DockerCertificates;
 import com.spotify.docker.client.DockerClient;
 
 /**
- * This class provides a factory method for creating 
- * the DefaultDockerClient in a way that is OS independent. 
+ * This class provides a factory method for creating the DefaultDockerClient in
+ * a way that is OS independent.
  * 
- * @author Alex McCAskey 
+ * @author Alex McCAskey
  *
  */
 public class DockerClientFactory {
@@ -49,7 +49,7 @@ public class DockerClientFactory {
 
 		// If this is not Linux, then we have to find DOCKER_HOST
 		if (!Platform.getOS().equals(Platform.OS_LINUX)) {
-			
+
 			// See if we can get the DOCKER_HOST environment variaable
 			String dockerHost = System.getenv("DOCKER_HOST");
 			if (dockerHost == null) {
@@ -58,11 +58,11 @@ public class DockerClientFactory {
 				File script = getDockerConnectionScript();
 				String[] scriptExec = null;
 				if (Platform.getOS().equals(Platform.OS_MACOSX)) {
-					scriptExec = new String[]{script.getAbsolutePath()};
+					scriptExec = new String[] { script.getAbsolutePath() };
 				} else if (Platform.getOS().equals(Platform.OS_WIN32)) {
-					scriptExec = new String[]{"cmd.exe", "/C", script.getAbsolutePath()};
+					scriptExec = new String[] { "cmd.exe", "/C", script.getAbsolutePath() };
 				}
-				
+
 				// Execute the script to get the DOCKER vars.
 				Process process = new ProcessBuilder(scriptExec).start();
 				process.waitFor();
@@ -73,7 +73,7 @@ public class DockerClientFactory {
 					InputStream processInputStream = process.getInputStream();
 					Properties dockerSettings = new Properties();
 					dockerSettings.load(processInputStream);
-					
+
 					// Create the Builder object that wil build the DockerClient
 					Builder builder = new Builder();
 
@@ -85,12 +85,12 @@ public class DockerClientFactory {
 					DockerCertificates certs = DockerCertificates.builder().dockerCertPath(dockerCertPath).build();
 
 					// Set the data need for the builder.
-					final String stripped = endpoint.replaceAll(".*://", "");
-					final HostAndPort hostAndPort = HostAndPort.fromString(stripped);
-					final String hostText = hostAndPort.getHostText();
-					final String scheme = certs != null ? "https" : "http";
-					final int port = hostAndPort.getPortOrDefault(2375);
-					final String address = hostText;
+					String stripped = endpoint.replaceAll(".*://", "");
+					HostAndPort hostAndPort = HostAndPort.fromString(stripped);
+					String hostText = hostAndPort.getHostText();
+					String scheme = certs != null ? "https" : "http";
+					int port = hostAndPort.getPortOrDefault(2375);
+					String address = hostText;
 					builder.uri(scheme + "://" + address + ":" + port);
 					if (certs != null) {
 						builder.dockerCertificates(certs);
@@ -109,14 +109,17 @@ public class DockerClientFactory {
 			} else {
 				client = DefaultDockerClient.fromEnv().build();
 			}
+		} else {
+			// It was equal to Linux, so just use the default stuff.
+			client = DefaultDockerClient.fromEnv().build();
 		}
 
 		return client;
 	}
 
 	/**
-	 * This method gets the script file for finding the Docker 
-	 * environment variables.
+	 * This method gets the script file for finding the Docker environment
+	 * variables.
 	 * 
 	 * @return
 	 */
@@ -127,19 +130,14 @@ public class DockerClientFactory {
 		} else if (Platform.getOS().equals(Platform.OS_WIN32)) {
 			scriptName = "script.bat";
 		}
-		
+
 		Bundle bundle = Platform.getBundle("org.eclipse.ice.item");
-		final File script = bundle
-				.getDataFile(scriptName);
-		
+		final File script = bundle.getDataFile(scriptName);
+
 		// if the script file does not exist or is outdated.
-		if (script != null
-				&& (!script.exists() || script.lastModified() < bundle.getLastModified())) {
-			try (final FileOutputStream output = new FileOutputStream(
-					script);
-					final InputStream is = DockerClientFactory.class
-							.getResourceAsStream(
-									"/resources/" + scriptName)) { 
+		if (script != null && (!script.exists() || script.lastModified() < bundle.getLastModified())) {
+			try (final FileOutputStream output = new FileOutputStream(script);
+					final InputStream is = DockerClientFactory.class.getResourceAsStream("/resources/" + scriptName)) {
 				byte[] buff = new byte[1024];
 				int n;
 				while ((n = is.read(buff)) > 0) {
@@ -152,9 +150,10 @@ public class DockerClientFactory {
 		}
 		return script;
 	}
-	
+
 	/**
 	 * Private utility for getting string from InputStream.
+	 * 
 	 * @param stream
 	 * @return
 	 */
