@@ -19,6 +19,7 @@ import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXJunctionView;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeView;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.junit.Test;
 
 import javafx.scene.Group;
@@ -73,7 +74,7 @@ public class FXJunctionViewTester {
 		FXPipeController pipe = new FXPipeController(pipeMesh, pipeView);
 
 		// Add the pipe as input
-		junction.addEntityByCategory(pipe, ReactorMeshCategory.INPUT);
+		junction.addEntityToCategory(pipe, ReactorMeshCategory.INPUT);
 
 		// The junction's center point
 		double[] center = view.getCenter();
@@ -86,7 +87,7 @@ public class FXJunctionViewTester {
 
 		// Add the other end of the pipe to the junction, so that the junction
 		// is completely enveloping the pipe
-		junction.addEntityByCategory(pipe, ReactorMeshCategory.OUTPUT);
+		junction.addEntityToCategory(pipe, ReactorMeshCategory.OUTPUT);
 
 		// The junction should now be centered at the origin, as it is a
 		// rectangular bounding box around the pipe which is also centered on
@@ -98,7 +99,7 @@ public class FXJunctionViewTester {
 
 		// Set the junction to only have the pipe as output
 		junction.removeEntity(pipe);
-		junction.addEntityByCategory(pipe, ReactorMeshCategory.OUTPUT);
+		junction.addEntityToCategory(pipe, ReactorMeshCategory.OUTPUT);
 
 		// The junction should centered on the other side of the pipe, at (0,
 		// -50, 0)
@@ -127,7 +128,7 @@ public class FXJunctionViewTester {
 		FXPipeController pipe2 = new FXPipeController(pipeMesh2, pipeView2);
 
 		// Set the pipe as input
-		junction.addEntityByCategory(pipe2, ReactorMeshCategory.INPUT);
+		junction.addEntityToCategory(pipe2, ReactorMeshCategory.INPUT);
 
 		// The junction is now covering two circles of radius 5, one centered
 		// on (0, 50, 0) on the XZ plane and the other centered on (0, 0, 50) on
@@ -150,20 +151,23 @@ public class FXJunctionViewTester {
 		JunctionController junction = new JunctionController(mesh, view);
 
 		// The box should be solid by default
-		assertTrue(((Shape3D) ((Group) junction.getRepresentation())
-				.getChildren().get(0)).getDrawMode() == DrawMode.FILL);
+		Representation<Group> representation = junction.getRepresentation();
+		assertTrue(((Shape3D) representation.getData().getChildren().get(0))
+				.getDrawMode() == DrawMode.FILL);
 
 		// Set the junction to wireframe mode and check that the box is drawn
 		// correctly
 		junction.setWireFrameMode(true);
-		assertTrue(((Shape3D) ((Group) junction.getRepresentation())
-				.getChildren().get(0)).getDrawMode() == DrawMode.LINE);
+		representation = junction.getRepresentation();
+		assertTrue(((Shape3D) representation.getData().getChildren().get(0))
+				.getDrawMode() == DrawMode.LINE);
 
 		// Turn off wireframe mode and check that the box has been returned to
 		// normal
 		junction.setWireFrameMode(false);
-		assertTrue(((Shape3D) ((Group) junction.getRepresentation())
-				.getChildren().get(0)).getDrawMode() == DrawMode.FILL);
+		representation = junction.getRepresentation();
+		assertTrue(((Shape3D) representation.getData().getChildren().get(0))
+				.getDrawMode() == DrawMode.FILL);
 	}
 
 }

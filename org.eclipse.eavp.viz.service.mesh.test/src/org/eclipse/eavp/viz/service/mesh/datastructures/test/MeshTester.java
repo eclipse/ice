@@ -102,10 +102,10 @@ public class MeshTester {
 		polygon = new NekPolygonController(new EdgeAndVertexFaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntityByCategory(e, MeshCategory.EDGES);
+			polygon.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntityByCategory(v, MeshCategory.VERTICES);
+			polygon.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 		polygon.setProperty(MeshProperty.ID, Integer.toString(counter++));
 
@@ -148,10 +148,10 @@ public class MeshTester {
 		polygon = new NekPolygonController(new EdgeAndVertexFaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntityByCategory(e, MeshCategory.EDGES);
+			polygon.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntityByCategory(v, MeshCategory.VERTICES);
+			polygon.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 		polygon.setProperty(MeshProperty.ID, Integer.toString(counter++));
 
@@ -212,10 +212,10 @@ public class MeshTester {
 		polygon = new NekPolygonController(new EdgeAndVertexFaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntityByCategory(e, MeshCategory.EDGES);
+			polygon.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntityByCategory(v, MeshCategory.VERTICES);
+			polygon.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 		polygon.setProperty(MeshProperty.ID, Integer.toString(counter++));
 
@@ -242,8 +242,8 @@ public class MeshTester {
 		assertEquals(1d, edges.get(2).getLength(), 1e-5f);
 
 		// Move the vertex.
-		vertex = (VertexController) edges.get(0)
-				.getEntitiesByCategory(MeshCategory.VERTICES).get(0);
+		vertex = edges.get(0)
+				.getEntitiesFromCategory(MeshCategory.VERTICES, VertexController.class).get(0);
 		vertex.updateLocation(0d, 0d, -1d);
 
 		// Check the length of the first edge. Make sure it's been updated.
@@ -286,7 +286,7 @@ public class MeshTester {
 
 			// Get the edges
 			for (IController edge : face
-					.getEntitiesByCategory(MeshCategory.EDGES)) {
+					.getEntitiesFromCategory(MeshCategory.EDGES)) {
 				if (!meshEdges.contains(edge)) {
 					meshEdges.add(edge);
 				}
@@ -294,7 +294,7 @@ public class MeshTester {
 
 			// Get the vertices
 			for (IController vertex : face
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 				if (!meshVertices.contains(vertex)) {
 					meshVertices.add(vertex);
 				}

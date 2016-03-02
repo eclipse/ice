@@ -21,6 +21,7 @@ import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
 import org.eclipse.eavp.viz.service.javafx.viewer.IAttachmentManager;
 import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -194,7 +195,8 @@ public class FXAttachment extends AbstractAttachment {
 	 */
 	@Override
 	protected void disposeShape(IController shape) {
-		Node node = (Group) shape.getRepresentation();
+		Representation<Group> representation = shape.getRepresentation();
+		Node node = representation.getData();
 
 		if (node == null) {
 			return;

@@ -64,7 +64,7 @@ public class ShapeMeshTester {
 		parent1.wasUpdated();
 
 		// The parent category should now contain the parent
-		assertTrue(shape.getEntitiesByCategory(MeshCategory.PARENT)
+		assertTrue(shape.getEntitiesFromCategory(MeshCategory.PARENT)
 				.contains(parent1));
 
 		// Trigger an update from the shape and check that the parent received
@@ -87,9 +87,9 @@ public class ShapeMeshTester {
 		parent1.equals(parent2);
 
 		// The parent category should contain only parent2
-		assertFalse(shape.getEntitiesByCategory(MeshCategory.PARENT)
+		assertFalse(shape.getEntitiesFromCategory(MeshCategory.PARENT)
 				.contains(parent1));
-		assertTrue(shape.getEntitiesByCategory(MeshCategory.PARENT)
+		assertTrue(shape.getEntitiesFromCategory(MeshCategory.PARENT)
 				.contains(parent2));
 
 		// Trigger an updated. The old parent should not receive it, while the
@@ -100,10 +100,10 @@ public class ShapeMeshTester {
 
 		// Check that trying to change the parent through addEntityByCategory
 		// does not allow adding a second parent
-		shape.addEntityByCategory(parent1, MeshCategory.PARENT);
-		assertFalse(shape.getEntitiesByCategory(MeshCategory.PARENT)
+		shape.addEntityToCategory(parent1, MeshCategory.PARENT);
+		assertFalse(shape.getEntitiesFromCategory(MeshCategory.PARENT)
 				.contains(parent2));
-		assertTrue(shape.getEntitiesByCategory(MeshCategory.PARENT)
+		assertTrue(shape.getEntitiesFromCategory(MeshCategory.PARENT)
 				.contains(parent1));
 
 	}

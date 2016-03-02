@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.geometry.reactor;
 
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -21,7 +21,7 @@ import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
  *
  */
 public class HeatExchangerController extends AbstractController
-		implements IWireFramePart {
+		implements IWireframeController {
 
 	/**
 	 * The nullary constructor.
@@ -111,7 +111,7 @@ public class HeatExchangerController extends AbstractController
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
-		((IWireFramePart) view).setWireFrameMode(on);
+		((IWireframeController) view).setWireFrameMode(on);
 	}
 
 }

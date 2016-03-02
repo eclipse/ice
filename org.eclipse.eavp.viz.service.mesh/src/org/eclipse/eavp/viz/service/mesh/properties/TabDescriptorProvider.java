@@ -21,7 +21,6 @@ import org.eclipse.eavp.viz.service.mesh.properties.BoundaryConditionSection.Typ
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
@@ -119,8 +118,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 			// Create the right collection of tabs based on the part's type
 			if (meshSelection.selectedMeshPart instanceof FaceController) {
 				createTabs((FaceController) meshSelection.selectedMeshPart);
-			} else
-				if (meshSelection.selectedMeshPart instanceof EdgeController) {
+			} else if (meshSelection.selectedMeshPart instanceof EdgeController) {
 				createTabs((EdgeController) meshSelection.selectedMeshPart);
 			} else if (meshSelection.selectedMeshPart instanceof VertexController) {
 				createTabs((VertexController) meshSelection.selectedMeshPart);
@@ -199,7 +197,7 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 
 		// ---- Create tabs for each of the edges. ---- //
 		List<IController> edges = polygon
-				.getEntitiesByCategory(MeshCategory.EDGES);
+				.getEntitiesFromCategory(MeshCategory.EDGES);
 		size = edges.size();
 		lastTabId = polygonTabId;
 		for (int i = 0; i < size; i++) {
@@ -321,9 +319,9 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// edges
 		ArrayList<IController> vertices = new ArrayList<IController>();
 		for (IController edge : polygon
-				.getEntitiesByCategory(MeshCategory.EDGES)) {
+				.getEntitiesFromCategory(MeshCategory.EDGES)) {
 			for (IController vertex : edge
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 				if (!vertices.contains(vertex)) {
 					vertices.add(vertex);
 				}
@@ -488,8 +486,8 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// ---- Create tabs for the vertices. ---- //
 		lastTabId = edgeTabId;
 		for (int i = 0; i < 2; i++) {
-			VertexController vertex = (VertexController) edge
-					.getEntitiesByCategory(MeshCategory.VERTICES).get(i);
+			VertexController vertex = edge.getEntitiesFromCategory(
+					MeshCategory.VERTICES, VertexController.class).get(i);
 
 			// Set the current tab ID.
 			final String tabLabel = vertex.getProperty(MeshProperty.NAME) + " "
@@ -578,11 +576,10 @@ public class TabDescriptorProvider implements ITabDescriptorProvider {
 		// --------------------------------------- //
 
 		// ---- Create tabs for the BoundaryConditions. ---- //
-		List<IController> polygons = edge
-				.getEntitiesByCategory(MeshCategory.FACES);
+		List<NekPolygonController> polygons = edge.getEntitiesFromCategory(
+				MeshCategory.FACES, NekPolygonController.class);
 		for (int i = 0; i < polygons.size(); i++) {
-			NekPolygonController polygon = (NekPolygonController) polygons
-					.get(i);
+			NekPolygonController polygon = polygons.get(i);
 
 			// Set the current tab ID.
 			final String tabLabel = "Boundary Conditions ("

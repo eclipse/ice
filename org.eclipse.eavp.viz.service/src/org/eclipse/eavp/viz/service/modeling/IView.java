@@ -20,7 +20,8 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateableL
  * 
  * @author Robert Smith
  */
-public interface IView extends IManagedUpdateable, IManagedUpdateableListener {
+public interface IView<T>
+		extends IManagedUpdateable, IManagedUpdateableListener {
 
 	/**
 	 * Getter function for the part's transformation.
@@ -38,25 +39,12 @@ public interface IView extends IManagedUpdateable, IManagedUpdateableListener {
 	void setTransformation(Transformation newTransformation);
 
 	/**
-	 * Getter for the part's previous transformation.
-	 * 
-	 * @return The last transformation which was fully applied to the part by
-	 *         the graphics engine.
-	 */
-	Transformation getPreviousTransformation();
-
-	/**
-	 * Notifies the part that the rendering engine has graphically applied the
-	 * newest transformation to it.
-	 */
-	void setSynched();
-
-	/**
-	 * Creates an object which represents the part's model in a native data type
-	 * for the application associated with this view.
+	 * Creates a representation wrapping an object which represents the part's
+	 * model in a native data type for the application associated with this
+	 * view.
 	 * 
 	 */
-	Object getRepresentation();
+	Representation<T> getRepresentation();
 
 	/**
 	 * Refreshes the representation of the model.
@@ -66,6 +54,6 @@ public interface IView extends IManagedUpdateable, IManagedUpdateableListener {
 	 */
 	void refresh(IMesh model);
 
-	void copy(IView otherObject);
+	void copy(IView<T> otherObject);
 
 }

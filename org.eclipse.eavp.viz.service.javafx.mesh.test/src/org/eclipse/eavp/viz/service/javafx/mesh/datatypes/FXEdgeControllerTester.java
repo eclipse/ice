@@ -13,6 +13,7 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
@@ -59,7 +60,7 @@ public class FXEdgeControllerTester {
 		// Give a child entity to the edge
 		AbstractController child = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		edge.addEntityByCategory(child, MeshCategory.VERTICES);
+		edge.addEntityToCategory(child, MeshCategory.VERTICES);
 
 		// Set the Constructing property. This change should be mirrored in the
 		// edge's children.

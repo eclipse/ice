@@ -19,7 +19,7 @@ import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.eavp.viz.service.modeling.MeshProperty;
  *
  */
 public class FXPlantViewRootController extends AbstractController
-		implements IWireFramePart {
+		implements IWireframeController {
 
 	/**
 	 * Whether or not the scene is in wireframe mode
@@ -81,11 +81,11 @@ public class FXPlantViewRootController extends AbstractController
 			updateManager.enqueue();
 
 			// Add the entity to this, then to all reactors
-			model.addEntityByCategory(entity,
+			model.addEntityToCategory(entity,
 					ReactorMeshCategory.CORE_CHANNELS);
 
 			for (IController reactor : model
-					.getEntitiesByCategory(ReactorMeshCategory.REACTORS)) {
+					.getEntitiesFromCategory(ReactorMeshCategory.REACTORS)) {
 				reactor.addEntity(entity);
 			}
 
@@ -101,7 +101,7 @@ public class FXPlantViewRootController extends AbstractController
 		}
 
 		// Set the entity to the correct wireframe mode
-		((IWireFramePart) entity).setWireFrameMode(wireframe);
+		((IWireframeController) entity).setWireFrameMode(wireframe);
 	}
 
 	/*
@@ -112,7 +112,7 @@ public class FXPlantViewRootController extends AbstractController
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// If the entity is a reactor, add all core channels to it
@@ -122,11 +122,11 @@ public class FXPlantViewRootController extends AbstractController
 			updateManager.enqueue();
 
 			// Add the entity to this, then put all the core channels in it
-			model.addEntityByCategory(entity, ReactorMeshCategory.REACTORS);
+			model.addEntityToCategory(entity, ReactorMeshCategory.REACTORS);
 
 			for (IController channel : model
-					.getEntitiesByCategory(ReactorMeshCategory.CORE_CHANNELS)) {
-				entity.addEntityByCategory(channel,
+					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS)) {
+				entity.addEntityToCategory(channel,
 						ReactorMeshCategory.CORE_CHANNELS);
 			}
 
@@ -138,11 +138,11 @@ public class FXPlantViewRootController extends AbstractController
 
 		// Otherwise, add it normally
 		else {
-			model.addEntityByCategory(entity, category);
+			model.addEntityToCategory(entity, category);
 		}
 
 		// Set the entity to the correct wireframe mode
-		((IWireFramePart) entity).setWireFrameMode(wireframe);
+		((IWireframeController) entity).setWireFrameMode(wireframe);
 	}
 
 	/*
@@ -159,7 +159,7 @@ public class FXPlantViewRootController extends AbstractController
 
 		// Set all the children to the proper wireframe mode
 		for (IController child : model.getEntities()) {
-			((IWireFramePart) child).setWireFrameMode(on);
+			((IWireframeController) child).setWireFrameMode(on);
 		}
 	}
 

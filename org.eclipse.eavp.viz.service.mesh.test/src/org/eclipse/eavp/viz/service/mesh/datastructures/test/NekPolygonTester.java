@@ -102,33 +102,33 @@ public class NekPolygonTester {
 		polygon = new NekPolygonController(new FaceMesh(), new AbstractView());
 
 		// Check the edges.
-		assertNotNull(polygon.getEntitiesByCategory(MeshCategory.EDGES));
-		assertTrue(polygon.getEntitiesByCategory(MeshCategory.EDGES).isEmpty());
+		assertNotNull(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
+		assertTrue(polygon.getEntitiesFromCategory(MeshCategory.EDGES).isEmpty());
 
 		// Check the vertices.
-		assertNotNull(polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+		assertNotNull(polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		assertTrue(
-				polygon.getEntitiesByCategory(MeshCategory.VERTICES).isEmpty());
+				polygon.getEntitiesFromCategory(MeshCategory.VERTICES).isEmpty());
 				/* --------------------------------------- */
 
 		/* ---- Try a valid polygon. ---- */
 		for (EdgeController e : edges) {
-			polygon.addEntityByCategory(e, MeshCategory.EDGES);
+			polygon.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntityByCategory(v, MeshCategory.VERTICES);
+			polygon.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 
 		// Check the contents of the polygon's Edge List.
 		List<IController> polygonEdges = polygon
-				.getEntitiesByCategory(MeshCategory.EDGES);
+				.getEntitiesFromCategory(MeshCategory.EDGES);
 		assertNotNull(polygonEdges);
 		assertEquals(size, polygonEdges.size());
 		assertEquals(edges, polygonEdges);
 
 		// Check the contents of the polygon's Vertex List.
 		List<IController> polygonVertices = polygon
-				.getEntitiesByCategory(MeshCategory.VERTICES);
+				.getEntitiesFromCategory(MeshCategory.VERTICES);
 		assertNotNull(polygonVertices);
 		assertEquals(size, polygonVertices.size());
 		assertEquals(vertices, polygonVertices);
@@ -136,13 +136,13 @@ public class NekPolygonTester {
 
 		/* ---- Make sure we cannot modify the Edge/Vertex Lists. ---- */
 		// Try to remove an edge.
-		polygon.getEntitiesByCategory(MeshCategory.EDGES).remove(0);
-		polygonEdges = polygon.getEntitiesByCategory(MeshCategory.EDGES);
+		polygon.getEntitiesFromCategory(MeshCategory.EDGES).remove(0);
+		polygonEdges = polygon.getEntitiesFromCategory(MeshCategory.EDGES);
 		assertEquals(size, polygonEdges.size());
 		assertEquals(edges, polygonEdges);
 
 		// Try to remove a vertex.
-		polygon.getEntitiesByCategory(MeshCategory.VERTICES).clear();
+		polygon.getEntitiesFromCategory(MeshCategory.VERTICES).clear();
 		assertEquals(size, polygonVertices.size());
 		assertEquals(vertices, polygonVertices);
 		/* ----------------------------------------------------------- */
@@ -218,10 +218,10 @@ public class NekPolygonTester {
 		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntityByCategory(e, MeshCategory.EDGES);
+			polygon.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntityByCategory(v, MeshCategory.VERTICES);
+			polygon.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 		/* --------------------------- */
 
@@ -431,10 +431,10 @@ public class NekPolygonTester {
 		NekPolygonController polygon = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			polygon.addEntityByCategory(e, MeshCategory.EDGES);
+			polygon.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			polygon.addEntityByCategory(v, MeshCategory.VERTICES);
+			polygon.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 		/* --------------------------- */
 
@@ -606,18 +606,18 @@ public class NekPolygonTester {
 		NekPolygonController object = new NekPolygonController(new FaceMesh(),
 				new AbstractView());
 		for (EdgeController e : edges) {
-			object.addEntityByCategory(e, MeshCategory.EDGES);
+			object.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			object.addEntityByCategory(v, MeshCategory.VERTICES);
+			object.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 		NekPolygonController equalObject = new NekPolygonController(
 				new FaceMesh(), new AbstractView());
 		for (EdgeController e : edges) {
-			equalObject.addEntityByCategory(e, MeshCategory.EDGES);
+			equalObject.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			equalObject.addEntityByCategory(v, MeshCategory.VERTICES);
+			equalObject.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 
 		// Change one of the vertices.
@@ -641,10 +641,10 @@ public class NekPolygonTester {
 		NekPolygonController unequalObject = new NekPolygonController(
 				new FaceMesh(), new AbstractView());
 		for (EdgeController e : edges) {
-			unequalObject.addEntityByCategory(e, MeshCategory.EDGES);
+			unequalObject.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 		for (VertexController v : vertices) {
-			unequalObject.addEntityByCategory(v, MeshCategory.VERTICES);
+			unequalObject.addEntityToCategory(v, MeshCategory.VERTICES);
 		}
 
 		// Make sure the references are different.
@@ -718,7 +718,7 @@ public class NekPolygonTester {
 		NekPolygonController object = new NekPolygonController(
 				new NekPolygonMesh(), new AbstractView());
 		for (EdgeController e : edges) {
-			object.addEntityByCategory(e, MeshCategory.EDGES);
+			object.addEntityToCategory(e, MeshCategory.EDGES);
 		}
 
 		NekPolygonController copy = new NekPolygonController(

@@ -46,9 +46,19 @@ public interface IMesh extends IManagedUpdateable, IManagedUpdateableListener {
 	/**
 	 * Return all of the part's children entities of a given category.
 	 * 
-	 * @category The category of entities to return
+	 * @param category The category of entities to return
+	 * @return All the entities in the map for the specified category.
 	 */
-	ArrayList<IController> getEntitiesByCategory(IMeshCategory category);
+	ArrayList<IController> getEntitiesFromCategory(IMeshCategory category);
+	
+	/**
+	 * Return all of the part's children entities of a given category cast to a list of the specified return type.
+	 * 
+	 * @param category The category of entities to return
+	 * @param returnType The class to which members of the category belong.
+	 * @return All the entities in the map for the specified category, cast to the given type.
+	 */
+	<T extends IController> ArrayList<T> getEntitiesFromCategory(IMeshCategory category, Class<T> returnType);
 
 	/**
 	 * Return the value of the given property
@@ -98,7 +108,7 @@ public interface IMesh extends IManagedUpdateable, IManagedUpdateableListener {
 	 * @param category
 	 *            The new entity's category
 	 */
-	void addEntityByCategory(IController newEntity, IMeshCategory category);
+	void addEntityToCategory(IController newEntity, IMeshCategory category);
 
 	/**
 	 * Deep copies the contents of another AbstractMeshComponent into this one.

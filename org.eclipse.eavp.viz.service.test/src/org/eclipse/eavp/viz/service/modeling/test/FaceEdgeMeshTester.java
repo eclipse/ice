@@ -62,8 +62,8 @@ public class FaceEdgeMeshTester {
 		VertexMesh vertexMesh2 = new VertexMesh(1, 1, 1);
 		VertexController vertex2 = new VertexController(vertexMesh2,
 				new AbstractView());
-		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
-		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
 		// Clear the edge's updated state
 		edge.wasUpdated();
@@ -75,7 +75,7 @@ public class FaceEdgeMeshTester {
 		// Add a face to the edge
 		FaceMesh faceMesh = new FaceMesh();
 		FaceController face = new FaceController(faceMesh, new AbstractView());
-		edge.addEntityByCategory(face, MeshCategory.FACES);
+		edge.addEntityToCategory(face, MeshCategory.FACES);
 
 		// Change the face and check that the edge didn't get updated
 		face.setProperty(MeshProperty.DESCRIPTION, "Value");
@@ -112,8 +112,8 @@ public class FaceEdgeMeshTester {
 				new AbstractView());
 
 		// Add each edge to a face
-		edge1.addEntityByCategory(face1, MeshCategory.FACES);
-		edge2.addEntityByCategory(face2, MeshCategory.FACES);
+		edge1.addEntityToCategory(face1, MeshCategory.FACES);
+		edge2.addEntityToCategory(face2, MeshCategory.FACES);
 
 		// Edges should be equal regardless of having different parents
 		assertTrue(edge1.equals(edge2));

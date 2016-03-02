@@ -229,7 +229,7 @@ public class AbstractMesh
 	 * lang.String)
 	 */
 	@Override
-	public ArrayList<IController> getEntitiesByCategory(
+	public ArrayList<IController> getEntitiesFromCategory(
 			IMeshCategory category) {
 
 		// Get the entities under the given category
@@ -240,6 +240,32 @@ public class AbstractMesh
 				: new ArrayList<IController>());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.modeling.IMesh#getEntitiesFromCategory(org.eclipse.eavp.viz.service.modeling.IMeshCategory, java.lang.Class)
+	 */
+	@Override
+	public <T extends IController> ArrayList<T> getEntitiesFromCategory(IMeshCategory category, Class<T> returnType) {
+
+		//The list of cast entities
+		ArrayList<T> temp = new ArrayList<T>();
+		
+		//Add each of the entities in category to the list
+		for(IController entity : entities.get(category)){	
+			try{
+				temp.add((T) entity);
+			}
+			
+			//If an entity could not be cast to T, log an error and return an empty list.
+			catch(ClassCastException e){
+				logger.error("IMesh attempted to cast entity, but entity was not a subtype of the specified return type. Returning empty list instead.");
+				return new ArrayList<T>();
+			}
+		}
+		
+		return temp;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -295,7 +321,7 @@ public class AbstractMesh
 	 */
 	@Override
 	public void addEntity(IController newEntity) {
-		addEntityByCategory(newEntity, MeshCategory.DEFAULT);
+		addEntityToCategory(newEntity, MeshCategory.DEFAULT);
 	}
 
 	/*
@@ -345,7 +371,7 @@ public class AbstractMesh
 	 * eclipse.eavp.viz.service.modeling.IController, java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController newEntity,
+	public void addEntityToCategory(IController newEntity,
 			IMeshCategory category) {
 
 		// Get the entities for the given category
@@ -535,8 +561,8 @@ public class AbstractMesh
 		// Clone each child entity
 		for (IMeshCategory category : castObject.entities.keySet()) {
 			for (IController entity : otherObject
-					.getEntitiesByCategory(category)) {
-				addEntityByCategory(
+					.getEntitiesFromCategory(category)) {
+				addEntityToCategory(
 						(IController) ((AbstractController) entity).clone(),
 						category);
 			}
@@ -615,12 +641,14 @@ public class AbstractMesh
 		int hash = 9;
 		hash += 31 * type.hashCode();
 		for (IMeshCategory category : entities.keySet()) {
-			for (IController entity : getEntitiesByCategory(category)) {
+			for (IController entity : getEntitiesFromCategory(category)) {
 				hash += 31 * entity.hashCode();
 			}
 		}
 		hash += 31 * properties.hashCode();
 		return hash;
 	}
+
+
 
 }

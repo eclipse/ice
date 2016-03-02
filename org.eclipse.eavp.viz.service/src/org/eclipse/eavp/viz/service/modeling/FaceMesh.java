@@ -80,15 +80,15 @@ public class FaceMesh extends AbstractMesh {
 			// Create clones of all the vertices. This should be done first, so
 			// the copies can be used to construct the edges
 			for (IController edge : otherObject
-					.getEntitiesByCategory(MeshCategory.EDGES)) {
+					.getEntitiesFromCategory(MeshCategory.EDGES)) {
 				for (IController vertex : edge
-						.getEntitiesByCategory(MeshCategory.VERTICES)) {
+						.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 					if (!sharedVertices.contains(vertex)) {
 						sharedVertices.add(vertex);
 					}
 				}
 
-				edge.getEntitiesByCategory(MeshCategory.CHILDREN);
+				edge.getEntitiesFromCategory(MeshCategory.CHILDREN);
 			}
 
 			// Deep copy each category of child entities
@@ -100,7 +100,7 @@ public class FaceMesh extends AbstractMesh {
 
 					// Copy each edge
 					for (IController edge : otherObject
-							.getEntitiesByCategory(category)) {
+							.getEntitiesFromCategory(category)) {
 
 						// Create a clone of the edge
 						EdgeController newEdge = (EdgeController) ((AbstractController) edge)
@@ -108,7 +108,7 @@ public class FaceMesh extends AbstractMesh {
 
 						// Get the clone's vertices
 						List<IController> tempVertices = edge
-								.getEntitiesByCategory(MeshCategory.VERTICES);
+								.getEntitiesFromCategory(MeshCategory.VERTICES);
 
 						// Remove the vertices from the cloned edge and add an
 						// equivalent one in their place
@@ -139,8 +139,8 @@ public class FaceMesh extends AbstractMesh {
 				// For other categories, clone all the child entities
 				else {
 					for (IController entity : otherObject
-							.getEntitiesByCategory(category)) {
-						addEntityByCategory(
+							.getEntitiesFromCategory(category)) {
+						addEntityToCategory(
 								(EdgeController) ((AbstractController) entity)
 										.clone(),
 								category);

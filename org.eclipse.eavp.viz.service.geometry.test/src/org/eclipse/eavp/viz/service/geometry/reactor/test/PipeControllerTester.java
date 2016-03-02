@@ -83,10 +83,10 @@ public class PipeControllerTester {
 		// Add an input and output, as well as another pipe
 		AbstractController input = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		pipe.addEntityByCategory(input, ReactorMeshCategory.INPUT);
+		pipe.addEntityToCategory(input, ReactorMeshCategory.INPUT);
 		AbstractController output = new AbstractController(new AbstractMesh(),
 				new AbstractView());
-		pipe.addEntityByCategory(output, ReactorMeshCategory.OUTPUT);
+		pipe.addEntityToCategory(output, ReactorMeshCategory.OUTPUT);
 		PipeController child = new PipeController(new PipeMesh(),
 				new AbstractView());
 		pipe.addEntity(child);

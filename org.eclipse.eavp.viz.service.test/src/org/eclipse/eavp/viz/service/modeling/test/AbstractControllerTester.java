@@ -149,9 +149,9 @@ public class AbstractControllerTester {
 		assertEquals(1, controller.getEntities().size());
 
 		// Check that empty categories return empty lists
-		assertNotNull(controller.getEntitiesByCategory(MeshCategory.FACES));
+		assertNotNull(controller.getEntitiesFromCategory(MeshCategory.FACES));
 		assertEquals(0,
-				controller.getEntitiesByCategory(MeshCategory.FACES).size());
+				controller.getEntitiesFromCategory(MeshCategory.FACES).size());
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class AbstractControllerTester {
 		AbstractController edge = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 		edge.setProperty(MeshProperty.NAME, "edge");
-		controller.addEntityByCategory(edge, MeshCategory.EDGES);
+		controller.addEntityToCategory(edge, MeshCategory.EDGES);
 
 		// Check that the controller was notified
 		assertTrue(controller.isUpdated());
@@ -188,106 +188,36 @@ public class AbstractControllerTester {
 		AbstractController vertex1 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 		vertex1.setProperty(MeshProperty.NAME, "vertex1");
-		controller.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		controller.addEntityToCategory(vertex1, MeshCategory.VERTICES);
 
 		// Create another vertex entity
 		AbstractController vertex2 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 		vertex2.setProperty(MeshProperty.NAME, "vertex2");
-		controller.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		controller.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
 		// Check that there are three entities, 1 edge, and 2 vertices
 		assertEquals(3, controller.getEntities().size());
 		assertEquals(1,
-				controller.getEntitiesByCategory(MeshCategory.EDGES).size());
+				controller.getEntitiesFromCategory(MeshCategory.EDGES).size());
 		assertEquals(2,
-				controller.getEntitiesByCategory(MeshCategory.VERTICES).size());
+				controller.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 		// Check that the edge is in the Edges category
 		assertTrue("edge"
-				.equals(controller.getEntitiesByCategory(MeshCategory.EDGES)
+				.equals(controller.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(0).getProperty(MeshProperty.NAME)));
 
 		// Create a list of all the names in the Vertices category
 		ArrayList<String> vertexNames = new ArrayList<String>();
 		for (IController object : controller
-				.getEntitiesByCategory(MeshCategory.VERTICES)) {
+				.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 			vertexNames.add(object.getProperty(MeshProperty.NAME));
 		}
 
 		// Check that the two vertices were in the right category
 		assertTrue(vertexNames.contains("vertex1"));
 		assertTrue(vertexNames.contains("vertex2"));
-	}
-
-	/**
-	 * Tests that the controlelr properly maintains the previous transformation
-	 * through various operations.
-	 */
-	@Test
-	public void testPreviousTransformation() {
-		// Get the previous transformation
-		Transformation prev = controller.getPreviousTransformation();
-
-		// Initially, the previous and current transformations should be
-		// identical
-		assertTrue(controller.getTransformation().equals(prev));
-
-		// Change the transformation
-		controller.getTransformation().setSize(5);
-
-		// Wait for the notification thread
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// Check that the controller was notified
-		assertTrue(controller.isUpdated());
-
-		// Makes sure the previous transformation is different from the current
-		// one
-		assertFalse(controller.getTransformation()
-				.equals(controller.getPreviousTransformation()));
-
-		// Change the transformation a second time
-		controller.getTransformation().setSize(10);
-
-		// Make sure the previous transformation is different from the current
-		// one
-		assertFalse(controller.getTransformation()
-				.equals(controller.getPreviousTransformation()));
-
-		// Make sure that the previous transformation hasn't changed
-		assertTrue(prev.equals(controller.getPreviousTransformation()));
-
-		// Create a new transformation and set it as the controller's
-		// transformation
-		Transformation transform = new Transformation();
-		transform.setSize(20);
-		controller.setTransformation(transform);
-
-		// Check that the controller was notified
-		assertTrue(controller.isUpdated());
-
-		// Make sure that the previous transformation hasn't changed
-		assertFalse(controller.getTransformation()
-				.equals(controller.getPreviousTransformation()));
-
-		// Make sure that the previous transformation hasn't changed
-		assertTrue(prev.equals(controller.getPreviousTransformation()));
-
-		// Synchronize the controller
-		controller.setSynched();
-
-		// Make sure the previous transformation has been updated.
-		assertTrue(controller.getTransformation()
-				.equals(controller.getPreviousTransformation()));
-
-		// Assert the previous transformation has the correct size
-		assertEquals(0, Double.compare(20,
-				controller.getPreviousTransformation().getSize()));
 	}
 
 	/**

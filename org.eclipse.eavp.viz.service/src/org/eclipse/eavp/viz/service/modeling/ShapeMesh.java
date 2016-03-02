@@ -44,7 +44,7 @@ public class ShapeMesh extends AbstractMesh {
 	public void setParent(IController parent) {
 
 		// Get the current list of parents
-		List<IController> parentList = getEntitiesByCategory(
+		List<IController> parentList = getEntitiesFromCategory(
 				MeshCategory.PARENT);
 
 		// If there is a parent, unregister it as a listener
@@ -110,7 +110,7 @@ public class ShapeMesh extends AbstractMesh {
 	public void addEntity(IController newEntity) {
 
 		// By default, add an entity as a child shape.
-		addEntityByCategory(newEntity, MeshCategory.CHILDREN);
+		addEntityToCategory(newEntity, MeshCategory.CHILDREN);
 	}
 
 	/*
@@ -121,7 +121,7 @@ public class ShapeMesh extends AbstractMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController newEntity,
+	public void addEntityToCategory(IController newEntity,
 			IMeshCategory category) {
 
 		// Fail silently for null objects
@@ -137,7 +137,7 @@ public class ShapeMesh extends AbstractMesh {
 				((ShapeController) newEntity).setParent((controller));
 			}
 
-			super.addEntityByCategory(newEntity, category);
+			super.addEntityToCategory(newEntity, category);
 		}
 
 		// Force changes to the parent category to go through the setParent()
@@ -159,7 +159,7 @@ public class ShapeMesh extends AbstractMesh {
 		super.setController(controller);
 
 		// Set the new controller as the parent to any children
-		for (IController child : getEntitiesByCategory(MeshCategory.CHILDREN)) {
+		for (IController child : getEntitiesFromCategory(MeshCategory.CHILDREN)) {
 			((ShapeController) child).setParent(controller);
 		}
 	}
@@ -279,7 +279,7 @@ public class ShapeMesh extends AbstractMesh {
 
 			// Do not hash the parent shape, to avoid circular hashing
 			if (!MeshCategory.PARENT.equals(category)) {
-				for (IController entity : getEntitiesByCategory(category)) {
+				for (IController entity : getEntitiesFromCategory(category)) {
 					hash += 31 * entity.hashCode();
 				}
 			}

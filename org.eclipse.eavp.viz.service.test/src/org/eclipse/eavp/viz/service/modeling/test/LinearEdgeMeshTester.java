@@ -62,15 +62,15 @@ public class LinearEdgeMeshTester {
 				new AbstractView());
 
 		// Add the first two vertices to the edge.
-		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
-		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
 		// Check that the edge has the correct length
 		assertTrue(Double.compare(1.73, edge.getLength()) <= .1d);
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check that the edge's length has been updated
 		assertTrue(Double.compare(3.46, edge.getLength()) <= .1d);

@@ -133,7 +133,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// Polygon.
 				if (ID_EDGES.equals(id)) {
 					for (IController e : polygon
-							.getEntitiesByCategory(MeshCategory.EDGES)) {
+							.getEntitiesFromCategory(MeshCategory.EDGES)) {
 						propertySet.add("Edge " + e.getProperty(MeshProperty.ID));
 					}
 					return propertySet;
@@ -142,7 +142,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// Polygon.
 				else if (ID_VERTICES.equals(id)) {
 					for (IController v : polygon
-							.getEntitiesByCategory(MeshCategory.VERTICES)) {
+							.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 						propertySet.add("Vertex " + v.getProperty(MeshProperty.ID));
 					}
 					return propertySet;
@@ -170,7 +170,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// Collect the given edge's vertices
 				if (ID_VERTICES.equals(id)) {
 					for (IController vertex : edge
-							.getEntitiesByCategory(MeshCategory.VERTICES)) {
+							.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 						propertySet.add("Vertex " + Integer
 								.valueOf(vertex.getProperty(MeshProperty.ID)));
 					}

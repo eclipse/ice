@@ -105,32 +105,10 @@ public class AbstractView
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.IView#getPreviousTransformation()
-	 */
-	@Override
-	public Transformation getPreviousTransformation() {
-		return previousTransformation;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.IView#setSynched()
-	 */
-	@Override
-	public void setSynched() {
-		// Update the previous transformation to the part's current status.
-		previousTransformation = (Transformation) transformation.clone();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.eavp.viz.service.modeling.IView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
+	public Representation getRepresentation() {
 		// Nothing to do.
 		return null;
 	}

@@ -51,7 +51,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// If the category is Faces, do not register as a listener, as the face
@@ -75,7 +75,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 
 		// Otherwise, add the entity normally
 		else {
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 		}
 	}
 
@@ -116,8 +116,8 @@ public class FaceEdgeMesh extends EdgeMesh {
 			// Do not clone the faces the edge forms
 			if (!MeshCategory.FACES.equals(category)) {
 				for (IController entity : castObject
-						.getEntitiesByCategory(category)) {
-					addEntityByCategory(
+						.getEntitiesFromCategory(category)) {
+					addEntityToCategory(
 							(IController) ((AbstractController) entity).clone(),
 							category);
 				}
@@ -210,7 +210,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 				continue;
 			}
 
-			for (IController entity : getEntitiesByCategory(category)) {
+			for (IController entity : getEntitiesFromCategory(category)) {
 				hash += 31 * entity.hashCode();
 			}
 		}

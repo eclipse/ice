@@ -835,7 +835,7 @@ public class NekReader {
 								.createController(quadComponent);
 
 						for (EdgeController e : edges) {
-							quad.addEntityByCategory(e, MeshCategory.EDGES);
+							quad.addEntityToCategory(e, MeshCategory.EDGES);
 						}
 
 						quad.setPolygonProperties(materialId, groupNum);

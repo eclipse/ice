@@ -223,7 +223,7 @@ public class ActionAddShape extends Action {
 
 				ShapeController selectedShape = (ShapeController) selectedObject;
 				parentComplexShape = selectedShape
-						.getEntitiesByCategory(MeshCategory.PARENT).get(0);
+						.getEntitiesFromCategory(MeshCategory.PARENT).get(0);
 			} else if (selectedObject instanceof BlankShape) {
 
 				// Get the selected blank shape's parent

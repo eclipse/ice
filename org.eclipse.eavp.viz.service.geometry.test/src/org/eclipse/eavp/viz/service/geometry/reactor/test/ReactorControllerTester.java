@@ -43,10 +43,10 @@ public class ReactorControllerTester {
 				new AbstractView());
 
 		// Add the pipe as a core channel
-		reactor.addEntityByCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);
+		reactor.addEntityToCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);
 
 		// Check that the pipe has the reactor as a parent
-		assertTrue(pipe.getEntitiesByCategory(MeshCategory.PARENT)
+		assertTrue(pipe.getEntitiesFromCategory(MeshCategory.PARENT)
 				.get(0) == reactor);
 	}
 }

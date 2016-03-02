@@ -58,7 +58,7 @@ public class VertexMesh extends PointMesh {
 
 		// If not specified, assume all edges go in the Edges category
 		if (entity instanceof EdgeController) {
-			addEntityByCategory(entity, MeshCategory.EDGES);
+			addEntityToCategory(entity, MeshCategory.EDGES);
 		} else {
 			super.addEntity(entity);
 		}
@@ -72,7 +72,7 @@ public class VertexMesh extends PointMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// If the category is Edges, do not register as a listener, as the edge
@@ -96,7 +96,7 @@ public class VertexMesh extends PointMesh {
 
 		// Otherwise, add the entity normally
 		else {
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 		}
 	}
 
@@ -147,8 +147,8 @@ public class VertexMesh extends PointMesh {
 			// Do not clone the edges containing the vertex
 			if (!MeshCategory.EDGES.equals(category)) {
 				for (IController entity : otherObject
-						.getEntitiesByCategory(category)) {
-					addEntityByCategory(
+						.getEntitiesFromCategory(category)) {
+					addEntityToCategory(
 							(IController) ((AbstractController) entity).clone(),
 							category);
 				}

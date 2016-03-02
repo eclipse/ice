@@ -50,8 +50,8 @@ public class FaceEdgeControllerTester {
 		VertexMesh vertexMesh2 = new VertexMesh(1, 1, 1);
 		VertexController vertex2 = new VertexController(vertexMesh2,
 				new AbstractView());
-		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
-		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
 		// Clear the edge's updated state
 		edge.wasUpdated();
@@ -63,7 +63,7 @@ public class FaceEdgeControllerTester {
 		// Add a face to the edge
 		FaceMesh faceMesh = new FaceMesh();
 		FaceController face = new FaceController(faceMesh, new AbstractView());
-		edge.addEntityByCategory(face, MeshCategory.FACES);
+		edge.addEntityToCategory(face, MeshCategory.FACES);
 
 		// Reset the edge's updated state
 		edge.wasUpdated();

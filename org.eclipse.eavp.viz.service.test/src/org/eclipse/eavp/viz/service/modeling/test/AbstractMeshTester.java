@@ -130,7 +130,7 @@ public class AbstractMeshTester {
 
 		// Check that there are two entities
 		assertEquals(2,
-				component.getEntitiesByCategory(MeshCategory.DEFAULT).size());
+				component.getEntitiesFromCategory(MeshCategory.DEFAULT).size());
 
 		// Remove one of the entities
 		component.removeEntity(object);
@@ -159,7 +159,7 @@ public class AbstractMeshTester {
 		AbstractController edge = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 		edge.setProperty(MeshProperty.NAME, "edge");
-		component.addEntityByCategory(edge, MeshCategory.EDGES);
+		component.addEntityToCategory(edge, MeshCategory.EDGES);
 
 		// Check that the controller was notified
 		assertTrue(controller.isUpdated());
@@ -168,29 +168,29 @@ public class AbstractMeshTester {
 		AbstractController vertex1 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 		vertex1.setProperty(MeshProperty.NAME, "vertex1");
-		component.addEntityByCategory(vertex1, MeshCategory.VERTICES);
+		component.addEntityToCategory(vertex1, MeshCategory.VERTICES);
 
 		// Create another vertex entity
 		AbstractController vertex2 = new AbstractController(new AbstractMesh(),
 				new AbstractView());
 		vertex2.setProperty(MeshProperty.NAME, "vertex2");
-		component.addEntityByCategory(vertex2, MeshCategory.VERTICES);
+		component.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
 		// Check that there are three entities, 1 edge, and 2 vertices
 		assertEquals(1,
-				component.getEntitiesByCategory(MeshCategory.EDGES).size());
+				component.getEntitiesFromCategory(MeshCategory.EDGES).size());
 		assertEquals(2,
-				component.getEntitiesByCategory(MeshCategory.VERTICES).size());
+				component.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 		// Check that the edge is in the Edges category
 		assertTrue("edge"
-				.equals(component.getEntitiesByCategory(MeshCategory.EDGES)
+				.equals(component.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(0).getProperty(MeshProperty.NAME)));
 
 		// Create a list of all the names in the Vertices category
 		ArrayList<String> vertexNames = new ArrayList<String>();
 		for (IController object : component
-				.getEntitiesByCategory(MeshCategory.VERTICES)) {
+				.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 			vertexNames.add(object.getProperty(MeshProperty.NAME));
 		}
 
@@ -199,9 +199,9 @@ public class AbstractMeshTester {
 		assertTrue(vertexNames.contains("vertex2"));
 
 		// Check that empty categories return empty lists
-		assertNotNull(component.getEntitiesByCategory(MeshCategory.FACES));
+		assertNotNull(component.getEntitiesFromCategory(MeshCategory.FACES));
 		assertEquals(0,
-				component.getEntitiesByCategory(MeshCategory.FACES).size());
+				component.getEntitiesFromCategory(MeshCategory.FACES).size());
 	}
 
 	/**
@@ -278,18 +278,18 @@ public class AbstractMeshTester {
 		// Set the entities to be inequal
 		AbstractController child = new AbstractController(equalMesh,
 				new AbstractView());
-		inequalMesh.addEntityByCategory(child, MeshCategory.FACES);
+		inequalMesh.addEntityToCategory(child, MeshCategory.FACES);
 
 		// The objects should be inequal again
 		assertFalse(mesh.equals(inequalMesh));
 
 		// Add the same object under a different category
-		mesh.addEntityByCategory(child, MeshCategory.EDGES);
+		mesh.addEntityToCategory(child, MeshCategory.EDGES);
 		assertFalse(mesh.equals(inequalMesh));
 
 		// Remove the child and put it in the same category
 		mesh.removeEntity(child);
-		mesh.addEntityByCategory(child, MeshCategory.FACES);
+		mesh.addEntityToCategory(child, MeshCategory.FACES);
 
 		// The meshes should be equal again
 		assertTrue(mesh.equals(inequalMesh));

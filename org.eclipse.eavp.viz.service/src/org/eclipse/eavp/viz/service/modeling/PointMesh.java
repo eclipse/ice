@@ -212,8 +212,8 @@ public class PointMesh extends AbstractMesh {
 		// Clone each child entity
 		for (IMeshCategory category : castObject.entities.keySet()) {
 			for (IController entity : otherObject
-					.getEntitiesByCategory(category)) {
-				addEntityByCategory(
+					.getEntitiesFromCategory(category)) {
+				addEntityToCategory(
 						(AbstractController) ((AbstractController) entity)
 								.clone(),
 						category);
@@ -301,7 +301,7 @@ public class PointMesh extends AbstractMesh {
 				continue;
 			}
 
-			for (IController entity : getEntitiesByCategory(category)) {
+			for (IController entity : getEntitiesFromCategory(category)) {
 				hash += 31 * entity.hashCode();
 			}
 		}

@@ -25,6 +25,7 @@ import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXReactorView;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.junit.Test;
 
 import javafx.scene.Group;
@@ -67,7 +68,7 @@ public class FXPlantViewRootControllerTester {
 				new FXReactorView());
 
 		// Add the reactor and two pipes to the root
-		root.addEntityByCategory(reactor, ReactorMeshCategory.REACTORS);
+		root.addEntityToCategory(reactor, ReactorMeshCategory.REACTORS);
 		root.addEntity(pipe);
 		root.addEntity(core);
 
@@ -90,12 +91,12 @@ public class FXPlantViewRootControllerTester {
 		// Add the pipes then the reactor.
 		root2.addEntity(core2);
 		root2.addEntity(pipe2);
-		root2.addEntityByCategory(reactor2, ReactorMeshCategory.REACTORS);
+		root2.addEntityToCategory(reactor2, ReactorMeshCategory.REACTORS);
 
 		// The same thing should have happenned, regardless of what order the
 		// children were added to the root.
 		assertTrue(reactor2
-				.getEntitiesByCategory(ReactorMeshCategory.CORE_CHANNELS)
+				.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS)
 				.contains(core2));
 		assertFalse(reactor2.getEntities().contains(pipe2));
 	}
@@ -136,13 +137,15 @@ public class FXPlantViewRootControllerTester {
 
 		// Add the pipe to the root. It should still be drawn normally
 		root.addEntity(pipe);
-		assertTrue(((MeshView) ((Group) pipe.getRepresentation()).getChildren()
-				.get(1)).getDrawMode() == DrawMode.FILL);
+		Representation<Group> representation = pipe.getRepresentation();
+		assertTrue(((MeshView) representation.getData().getChildren().get(1))
+				.getDrawMode() == DrawMode.FILL);
 
 		// Set the root to wireframe mode. The pipe should be set as well
 		root.setWireFrameMode(true);
-		assertTrue(((MeshView) ((Group) pipe.getRepresentation()).getChildren()
-				.get(1)).getDrawMode() == DrawMode.LINE);
+		representation = pipe.getRepresentation();
+		assertTrue(((MeshView) representation.getData().getChildren().get(1))
+				.getDrawMode() == DrawMode.LINE);
 
 		// Create another pipe
 		PipeMesh pipeMesh2 = new PipeMesh();
@@ -157,16 +160,19 @@ public class FXPlantViewRootControllerTester {
 		// Add the second pipe. Since the root is set to wireframe mode, the
 		// pipe should also be set when added
 		root.addEntity(pipe2);
-		assertTrue(((MeshView) ((Group) pipe2.getRepresentation()).getChildren()
-				.get(1)).getDrawMode() == DrawMode.LINE);
+		Representation<Group> representation2 = pipe2.getRepresentation();
+		assertTrue(((MeshView) representation2.getData().getChildren().get(1))
+				.getDrawMode() == DrawMode.LINE);
 
 		// Return the root to normal mode and check that the pipes are also
 		// reset.
 		root.setWireFrameMode(false);
-		assertTrue(((MeshView) ((Group) pipe.getRepresentation()).getChildren()
-				.get(1)).getDrawMode() == DrawMode.FILL);
-		assertTrue(((MeshView) ((Group) pipe2.getRepresentation()).getChildren()
-				.get(1)).getDrawMode() == DrawMode.FILL);
+		representation = pipe.getRepresentation();
+		representation2 = pipe2.getRepresentation();
+		assertTrue(((MeshView) representation.getData().getChildren().get(1))
+				.getDrawMode() == DrawMode.FILL);
+		assertTrue(((MeshView) representation2.getData().getChildren().get(1))
+				.getDrawMode() == DrawMode.FILL);
 
 	}
 

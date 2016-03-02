@@ -73,11 +73,10 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 			if (parentShape.getProperty(GeometryMeshProperty.OPERATOR) != null) {
 
 				// IShape is a ComplexShape, so put its children in the
-				// temporary
-				// children field
+				// temporary children field
 
 				temporaryChildren = parentShape
-						.getEntitiesByCategory(MeshCategory.CHILDREN).toArray();
+						.getEntitiesFromCategory(MeshCategory.CHILDREN).toArray();
 
 				// Use a blank state if there are no children to display
 
@@ -124,7 +123,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		if (inputElement instanceof AbstractController) {
 			// Return an array of the GeometryComponent's shapes
 			IController parentGeometry = (IController) inputElement;
-			return parentGeometry.getEntitiesByCategory(MeshCategory.CHILDREN)
+			return parentGeometry.getEntitiesFromCategory(MeshCategory.CHILDREN)
 					.toArray();
 		} else {
 			return null;
@@ -157,7 +156,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		// Return the object's parent
 
 		ShapeController shape = (ShapeController) element;
-		return shape.getEntitiesByCategory(MeshCategory.PARENT);
+		return shape.getEntitiesFromCategory(MeshCategory.PARENT);
 
 	}
 

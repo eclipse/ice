@@ -135,18 +135,18 @@ public class FXMeshCanvasTester {
 		// Add the vertices to the polygons. The polygons should be two
 		// triangles which share an edge and a rectangle that is not connected
 		// to either of them.
-		neighbor1.addEntityByCategory(point1, MeshCategory.VERTICES);
-		neighbor1.addEntityByCategory(shared1, MeshCategory.VERTICES);
-		neighbor1.addEntityByCategory(shared2, MeshCategory.VERTICES);
+		neighbor1.addEntityToCategory(point1, MeshCategory.VERTICES);
+		neighbor1.addEntityToCategory(shared1, MeshCategory.VERTICES);
+		neighbor1.addEntityToCategory(shared2, MeshCategory.VERTICES);
 
-		neighbor2.addEntityByCategory(point2, MeshCategory.VERTICES);
-		neighbor2.addEntityByCategory(shared1, MeshCategory.VERTICES);
-		neighbor2.addEntityByCategory(shared2, MeshCategory.VERTICES);
+		neighbor2.addEntityToCategory(point2, MeshCategory.VERTICES);
+		neighbor2.addEntityToCategory(shared1, MeshCategory.VERTICES);
+		neighbor2.addEntityToCategory(shared2, MeshCategory.VERTICES);
 
-		independent.addEntityByCategory(point3, MeshCategory.VERTICES);
-		independent.addEntityByCategory(point4, MeshCategory.VERTICES);
-		independent.addEntityByCategory(point5, MeshCategory.VERTICES);
-		independent.addEntityByCategory(point6, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point3, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point4, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point5, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point6, MeshCategory.VERTICES);
 
 		// Try deleting with nothing selected and no polygons. Nothing should
 		// happen.

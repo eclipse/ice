@@ -19,9 +19,10 @@ import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.Transformation;
@@ -69,7 +70,8 @@ public class FXShapeControllerTester {
 		FXShapeController shape = new FXShapeController(mesh, view);
 
 		// The JavaFX node should have a reference to the FXShapeController
-		assertTrue(shape == ((Group) shape.getRepresentation()).getProperties()
+		Representation<Group> representation = shape.getRepresentation();
+		assertTrue(shape == representation.getData().getProperties()
 				.get(ShapeController.class));
 
 		// Create a sphere
@@ -81,8 +83,10 @@ public class FXShapeControllerTester {
 		// Add the sphere shape as a child to the cube shape. The cube JavaFX
 		// node should now have the sphere JavaFX node as a child
 		shape.addEntity(shape2);
-		assertTrue(((Group) shape.getRepresentation()).getChildren()
-				.contains(shape2.getRepresentation()));
+		representation = shape.getRepresentation();
+		Representation<Group> representation2 = shape2.getRepresentation();
+		assertTrue(representation.getData().getChildren()
+				.contains(representation2.getData()));
 
 		// Create a cylinder
 		ShapeMesh mesh3 = new ShapeMesh();
@@ -93,22 +97,28 @@ public class FXShapeControllerTester {
 		// Add the cylinder shape as a child to the cube shape. The cube JavaFX
 		// node should now have both JavaFX nodes as children.
 		shape.addEntity(shape3);
-		assertTrue(((Group) shape.getRepresentation()).getChildren()
-				.contains(shape2.getRepresentation()));
-		assertTrue(((Group) shape.getRepresentation()).getChildren()
-				.contains(shape3.getRepresentation()));
+		representation = shape.getRepresentation();
+		Representation<Group> representation3 = shape3.getRepresentation();
+		assertTrue(representation.getData().getChildren()
+				.contains(representation2.getData()));
+		assertTrue(representation.getData().getChildren()
+				.contains(representation3.getData()));
 
 		// Remove the cube from being the sphere's parent. This should remove
 		// its JavaFX node from the cube's JavaFX node's children.
 		shape2.removeEntity(shape);
-		assertFalse(((Group) shape.getRepresentation()).getChildren()
-				.contains(shape2.getRepresentation()));
+		representation = shape.getRepresentation();
+		representation2 = shape2.getRepresentation();
+		assertFalse(representation.getData().getChildren()
+				.contains(representation2.getData()));
 
 		// Remove the cylinder from the sphere's children. This should also
 		// remove its JavaFX node from the cube's JavaFX node's children
 		shape.removeEntity(shape3);
-		assertFalse(((Group) shape.getRepresentation()).getChildren()
-				.contains(shape3.getRepresentation()));
+		representation = shape.getRepresentation();
+		representation3 = shape3.getRepresentation();
+		assertFalse(representation.getData().getChildren()
+				.contains(representation3.getData()));
 
 		// Create a union
 		ShapeMesh unionMesh = new ShapeMesh();
@@ -120,8 +130,11 @@ public class FXShapeControllerTester {
 		// Set the shape's parent as the union. This should add its JavaFX node
 		// to the union's java fxnode's children.
 		shape.setParent(unionShape);
-		assertTrue(((Group) unionShape.getRepresentation()).getChildren()
-				.contains(shape.getRepresentation()));
+		Representation<Group> unionRepresentation = unionShape
+				.getRepresentation();
+		representation = shape.getRepresentation();
+		assertTrue(unionRepresentation.getData().getChildren()
+				.contains(unionRepresentation.getData()));
 	}
 
 	/**
@@ -145,7 +158,7 @@ public class FXShapeControllerTester {
 		controller.isUpdated();
 
 		// Add a child to the mesh
-		mesh.addEntityByCategory(
+		mesh.addEntityToCategory(
 				new AbstractController(new AbstractMesh(), new AbstractView()),
 				MeshCategory.DEFAULT);
 

@@ -54,14 +54,14 @@ public class EdgeMeshTester {
 				new AbstractView());
 
 		// Add all three vertices to the edge.
-		edge.addEntityByCategory(vertex1, MeshCategory.VERTICES);
-		edge.addEntityByCategory(vertex2, MeshCategory.VERTICES);
-		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex2, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check the Vertices category to ensure that the edge accepted the
 		// first two vertices and ignored the third
 		List<IController> vertices = edge
-				.getEntitiesByCategory(MeshCategory.VERTICES);
+				.getEntitiesFromCategory(MeshCategory.VERTICES);
 		assertTrue(vertices.contains(vertex1));
 		assertTrue(vertices.contains(vertex2));
 		assertFalse(vertices.contains(vertex3));
@@ -69,11 +69,11 @@ public class EdgeMeshTester {
 
 		// Replace the second vertex with the third
 		edge.removeEntity(vertex2);
-		edge.addEntityByCategory(vertex3, MeshCategory.VERTICES);
+		edge.addEntityToCategory(vertex3, MeshCategory.VERTICES);
 
 		// Check the Vertices category to ensure that the last vertex was
 		// replaced
-		vertices = edge.getEntitiesByCategory(MeshCategory.VERTICES);
+		vertices = edge.getEntitiesFromCategory(MeshCategory.VERTICES);
 		assertTrue(vertices.contains(vertex1));
 		assertFalse(vertices.contains(vertex2));
 		assertTrue(vertices.contains(vertex3));

@@ -70,7 +70,7 @@ public class VertexControllerTester {
 		vertex.addEntity(
 				new AbstractController(new AbstractMesh(), new AbstractView()));
 		assertEquals(0,
-				vertex.getEntitiesByCategory(MeshCategory.EDGES).size());
+				vertex.getEntitiesFromCategory(MeshCategory.EDGES).size());
 
 		// Create some edges
 		EdgeController edge1 = new EdgeController(new EdgeMesh(),
@@ -84,16 +84,16 @@ public class VertexControllerTester {
 		// category
 		vertex.addEntity(edge1);
 		vertex.addEntity(edge2);
-		vertex.addEntityByCategory(edge3, MeshCategory.CHILDREN);
+		vertex.addEntityToCategory(edge3, MeshCategory.CHILDREN);
 
 		// The first two edges should go into the Edges category
 		List<IController> edges = vertex
-				.getEntitiesByCategory(MeshCategory.EDGES);
+				.getEntitiesFromCategory(MeshCategory.EDGES);
 		assertTrue(edges.contains(edge1));
 		assertTrue(edges.contains(edge2));
 
 		// The last edge should have been put in the specified custom category
-		assertTrue(vertex.getEntitiesByCategory(MeshCategory.CHILDREN)
+		assertTrue(vertex.getEntitiesFromCategory(MeshCategory.CHILDREN)
 				.contains(edge3));
 	}
 
@@ -123,8 +123,8 @@ public class VertexControllerTester {
 		EdgeController edge = new EdgeController(edgeMesh, new AbstractView());
 
 		// Add the test object and edge to the vertex.
-		vertex.addEntityByCategory(other, MeshCategory.CHILDREN);
-		vertex.addEntityByCategory(edge, MeshCategory.EDGES);
+		vertex.addEntityToCategory(other, MeshCategory.CHILDREN);
+		vertex.addEntityToCategory(edge, MeshCategory.EDGES);
 
 		// Clear the vertex's updated state
 		vertex.wasUpdated();

@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.geometry.reactor;
 
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 
 /**
  * A Junction part for the Reactor Analyzer.
@@ -21,7 +21,7 @@ import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
  *
  */
 public class JunctionController extends AbstractController
-		implements IWireFramePart {
+		implements IWireframeController {
 
 	/**
 	 * The nullary constructor
@@ -58,7 +58,7 @@ public class JunctionController extends AbstractController
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
-		((IWireFramePart) view).setWireFrameMode(on);
+		((IWireframeController) view).setWireFrameMode(on);
 	}
 
 	/*

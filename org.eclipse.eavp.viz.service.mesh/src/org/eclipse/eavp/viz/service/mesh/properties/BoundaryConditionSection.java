@@ -19,7 +19,6 @@ import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.jface.viewers.ISelection;
@@ -380,7 +379,7 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 
 				// Get the list of edges for the selection
 				List<IController> edges = meshPart
-						.getEntitiesByCategory(MeshCategory.EDGES);
+						.getEntitiesFromCategory(MeshCategory.EDGES);
 
 				// If the selection has edges, get the boundary condition for
 				// the edge with the correct id
@@ -414,11 +413,11 @@ public class BoundaryConditionSection extends AbstractPropertySection {
 							.valueOf(meshPart.getProperty(MeshProperty.ID));
 
 					// First, get the polygon according to the id variable.
-					List<IController> polygons = meshPart
-							.getEntitiesByCategory(MeshCategory.FACES);
+					List<NekPolygonController> polygons = meshPart
+							.getEntitiesFromCategory(MeshCategory.FACES,
+									NekPolygonController.class);
 					if (id < polygons.size()) {
-						NekPolygonController polygon = (NekPolygonController) polygons
-								.get(id);
+						NekPolygonController polygon = polygons.get(id);
 
 						// Now get the condition based on the type of
 						// boundary condition we are displaying.

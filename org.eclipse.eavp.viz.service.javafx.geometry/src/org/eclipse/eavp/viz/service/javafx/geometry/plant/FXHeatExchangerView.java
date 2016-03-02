@@ -21,9 +21,9 @@ import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXTube;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeView;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
@@ -41,7 +41,7 @@ import javafx.scene.transform.Rotate;
  *
  */
 public class FXHeatExchangerView extends AbstractView
-		implements IWireFramePart {
+		implements IWireframeView {
 
 	/**
 	 * A group containing the shape which represents the part.
@@ -322,9 +322,8 @@ public class FXHeatExchangerView extends AbstractView
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*
@@ -360,7 +359,9 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Recolor the primary pipe to blue and add its mesh to the node
 		primaryPipeController.setMaterial(new PhongMaterial(Color.BLUE));
-		primaryPipe = (Group) primaryPipeController.getRepresentation();
+		Representation<Group> representation = primaryPipeController
+				.getRepresentation();
+		primaryPipe = representation.getData();
 		node.getChildren().add(primaryPipe);
 
 		// Create the wall around the primary pipe
@@ -378,14 +379,13 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Get the secondary input junction
 		List<IController> secondaryInputList = model
-				.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_INPUT);
+				.getEntitiesFromCategory(ReactorMeshCategory.SECONDARY_INPUT);
 
 		// If there is a secondary input, draw its pipe
 		if (!secondaryInputList.isEmpty()) {
 			// Create the secondary inlet
-			IController inletJunction = model
-					.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_INPUT)
-					.get(0);
+			IController inletJunction = model.getEntitiesFromCategory(
+					ReactorMeshCategory.SECONDARY_INPUT).get(0);
 			secondaryInlet = createTubeToPoint(
 					((JunctionController) inletJunction).getCenter(),
 					(HeatExchangerMesh) model, inletView, wireframe);
@@ -398,14 +398,13 @@ public class FXHeatExchangerView extends AbstractView
 
 		// Get the secondary input junction
 		List<IController> secondaryOutputList = model
-				.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_OUTPUT);
+				.getEntitiesFromCategory(ReactorMeshCategory.SECONDARY_OUTPUT);
 
 		// If there is a secondary input, draw its pipe
 		if (!secondaryOutputList.isEmpty()) {
 			// Create the secondary inlet
-			IController outletJunction = model
-					.getEntitiesByCategory(ReactorMeshCategory.SECONDARY_OUTPUT)
-					.get(0);
+			IController outletJunction = model.getEntitiesFromCategory(
+					ReactorMeshCategory.SECONDARY_OUTPUT).get(0);
 			secondaryOutlet = createTubeToPoint(
 					((JunctionController) outletJunction).getCenter(),
 					(HeatExchangerMesh) model, outletView, wireframe);

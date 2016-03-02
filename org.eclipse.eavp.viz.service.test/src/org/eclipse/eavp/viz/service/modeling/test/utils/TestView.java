@@ -15,6 +15,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.VizObject;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 /**
  * A simple AbstractView implementation that keeps track of whether it has been
@@ -107,16 +108,16 @@ public class TestView extends AbstractView {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return new VizObject();
+	public Representation<VizObject> getRepresentation() {
+		return new Representation<VizObject>(new VizObject());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.ice
-	 * .viz.service.modeling.AbstractMesh)
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#refresh(org.eclipse.
+	 * ice .viz.service.modeling.AbstractMesh)
 	 */
 	@Override
 	public void refresh(IMesh mesh) {
@@ -127,8 +128,8 @@ public class TestView extends AbstractView {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.eavp.viz.service.modeling.AbstractView#update(org.eclipse.ice.
-	 * viz.service.datastructures.VizObject.IManagedVizUpdateable,
+	 * org.eclipse.eavp.viz.service.modeling.AbstractView#update(org.eclipse.
+	 * ice. viz.service.datastructures.VizObject.IManagedVizUpdateable,
 	 * org.eclipse.eavp.viz.service.datastructures.VizObject.
 	 * UpdateableSubscriptionType[])
 	 */

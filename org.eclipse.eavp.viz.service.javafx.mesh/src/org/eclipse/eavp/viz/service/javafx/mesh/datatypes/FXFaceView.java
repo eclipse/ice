@@ -12,6 +12,7 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
 
@@ -53,8 +54,8 @@ public class FXFaceView extends AbstractView {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*

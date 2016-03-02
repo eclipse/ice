@@ -44,7 +44,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	 * 
 	 */
 	@Override
-	public void addEntityByCategory(IController newEntity,
+	public void addEntityToCategory(IController newEntity,
 			IMeshCategory category) {
 
 		// If the new entity is an edge, add it and its vertices under the
@@ -55,12 +55,12 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 			updateManager.enqueue();
 
 			// Add the edge under the Edges category
-			super.addEntityByCategory(newEntity, MeshCategory.EDGES);
+			super.addEntityToCategory(newEntity, MeshCategory.EDGES);
 
 			// Add each of the edge's vertices under the "Vertices" category
 			for (IController vertex : newEntity
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
-				super.addEntityByCategory(vertex, MeshCategory.VERTICES);
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
+				super.addEntityToCategory(vertex, MeshCategory.VERTICES);
 			}
 
 			// Send notifications for all children
@@ -68,7 +68,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 		}
 
 		// Otherwise, add the entity normally
-		super.addEntityByCategory(newEntity, category);
+		super.addEntityToCategory(newEntity, category);
 
 	}
 
@@ -83,25 +83,25 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 
 		// Ignore requests to remove a vertex, to keep the Vertex category
 		// consistent with the Edges category
-		if (!getEntitiesByCategory(MeshCategory.VERTICES).contains(entity)) {
+		if (!getEntitiesFromCategory(MeshCategory.VERTICES).contains(entity)) {
 
 			// Queue messages from all the removals
 			updateManager.enqueue();
 
 			// If the entity is an edge, also remove its vertices
-			if (getEntitiesByCategory(MeshCategory.EDGES).contains(entity)) {
+			if (getEntitiesFromCategory(MeshCategory.EDGES).contains(entity)) {
 				for (IController vertex : entity
-						.getEntitiesByCategory(MeshCategory.VERTICES)) {
+						.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 
 					// Whether or not the vertex is incident upon another edge
 					boolean found = false;
 
 					// Search all the other edges to see if any of them have
 					// this vertex
-					for (IController edge : getEntitiesByCategory(
+					for (IController edge : getEntitiesFromCategory(
 							MeshCategory.EDGES)) {
 						if (edge != entity && edge
-								.getEntitiesByCategory(MeshCategory.VERTICES)
+								.getEntitiesFromCategory(MeshCategory.VERTICES)
 								.contains(vertex)) {
 							found = true;
 							break;
@@ -160,8 +160,8 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 			// Create clones of all the vertices. This should be done first, so
 			// the copies can be used to construct the edges
 			for (IController entity : otherObject
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
-				addEntityByCategory(
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
+				addEntityToCategory(
 						(VertexController) ((AbstractController) entity)
 								.clone(),
 						MeshCategory.VERTICES);
@@ -176,7 +176,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 
 					// Copy each edge
 					for (IController edge : otherObject
-							.getEntitiesByCategory(category)) {
+							.getEntitiesFromCategory(category)) {
 
 						// Create a clone of the edge
 						EdgeController newEdge = (EdgeController) ((AbstractController) edge)
@@ -184,7 +184,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 
 						// Get the clone's vertices
 						List<IController> tempVertices = edge
-								.getEntitiesByCategory(MeshCategory.VERTICES);
+								.getEntitiesFromCategory(MeshCategory.VERTICES);
 
 						// Remove the vertices from the cloned edge and add an
 						// equivalent one in their place
@@ -197,14 +197,14 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 							for (IController vertex : entities
 									.get(MeshCategory.VERTICES))
 								if (tempVertex.equals(vertex)) {
-									newEdge.addEntityByCategory(vertex,
+									newEdge.addEntityToCategory(vertex,
 											MeshCategory.VERTICES);
 								}
 
 						}
 
 						// Save the cloned edge to the map
-						addEntityByCategory(newEdge, MeshCategory.EDGES);
+						addEntityToCategory(newEdge, MeshCategory.EDGES);
 
 					}
 				}
@@ -217,8 +217,8 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 				// For other categories, clone all the child entities
 				else {
 					for (IController entity : otherObject
-							.getEntitiesByCategory(category)) {
-						addEntityByCategory(
+							.getEntitiesFromCategory(category)) {
+						addEntityToCategory(
 								(EdgeController) ((AbstractController) entity)
 										.clone(),
 								category);

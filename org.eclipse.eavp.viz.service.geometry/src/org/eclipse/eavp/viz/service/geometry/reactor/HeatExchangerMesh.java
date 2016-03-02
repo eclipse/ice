@@ -41,7 +41,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 */
 	public PipeController getPrimaryPipe() {
 
-		List<IController> category = getEntitiesByCategory(
+		List<IController> category = getEntitiesFromCategory(
 				ReactorMeshCategory.PRIMARY_PIPE);
 
 		return !category.isEmpty() ? (PipeController) category.get(0) : null;
@@ -54,7 +54,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 *         one.
 	 */
 	public PipeController getSecondaryPipe() {
-		List<IController> category = getEntitiesByCategory(
+		List<IController> category = getEntitiesFromCategory(
 				ReactorMeshCategory.SECONDARY_PIPE);
 
 		return !category.isEmpty() ? (PipeController) category.get(0) : null;
@@ -85,7 +85,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 		}
 
 		// Add the pipe under the Primary Pipe category
-		addEntityByCategory(pipe, ReactorMeshCategory.PRIMARY_PIPE);
+		addEntityToCategory(pipe, ReactorMeshCategory.PRIMARY_PIPE);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 		}
 
 		// Add the pipe under the Primary Pipe category
-		addEntityByCategory(pipe, ReactorMeshCategory.SECONDARY_PIPE);
+		addEntityToCategory(pipe, ReactorMeshCategory.SECONDARY_PIPE);
 	}
 
 	/*
@@ -121,7 +121,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController newEntity,
+	public void addEntityToCategory(IController newEntity,
 			IMeshCategory category) {
 
 		// Don't listen to junctions, to avoid circular listening
@@ -161,7 +161,7 @@ public class HeatExchangerMesh extends AbstractMesh {
 
 		// Otherwise, add the entity normally
 		else {
-			super.addEntityByCategory(newEntity, category);
+			super.addEntityToCategory(newEntity, category);
 		}
 	}
 

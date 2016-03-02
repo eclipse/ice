@@ -13,7 +13,7 @@ package org.eclipse.eavp.viz.service.geometry.reactor;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 import org.eclipse.eavp.viz.service.modeling.TubeController;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.eavp.viz.service.modeling.TubeController;
  * @author Robert Smith
  *
  */
-public class PipeController extends TubeController implements IWireFramePart {
+public class PipeController extends TubeController implements IWireframeController {
 
 	/**
 	 * The nullary constructor.
@@ -138,7 +138,7 @@ public class PipeController extends TubeController implements IWireFramePart {
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
-		((IWireFramePart) view).setWireFrameMode(on);
+		((IWireframeController) view).setWireFrameMode(on);
 	}
 
 	/*

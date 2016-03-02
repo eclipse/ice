@@ -106,7 +106,7 @@ public class ActionDuplicateShape extends Action {
 				// We can assume that if the parent exists, it is a ComplexShape
 
 				ShapeController parentShape = (ShapeController) selectedShape
-						.getEntitiesByCategory(MeshCategory.PARENT).get(0);
+						.getEntitiesFromCategory(MeshCategory.PARENT).get(0);
 
 				if (parentShape != null) {
 
@@ -114,7 +114,7 @@ public class ActionDuplicateShape extends Action {
 					// siblings
 
 					List<IController> childShapes = parentShape
-							.getEntitiesByCategory(MeshCategory.CHILDREN);
+							.getEntitiesFromCategory(MeshCategory.CHILDREN);
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					if (selectedShapeIndex < 0) {
@@ -133,7 +133,7 @@ public class ActionDuplicateShape extends Action {
 					// siblings
 
 					List<IController> childShapes = geometry
-							.getEntitiesByCategory(MeshCategory.CHILDREN);
+							.getEntitiesFromCategory(MeshCategory.CHILDREN);
 					int selectedShapeIndex = childShapes.indexOf(selectedShape);
 
 					// Add the cloned shape to the root GeometryComponent

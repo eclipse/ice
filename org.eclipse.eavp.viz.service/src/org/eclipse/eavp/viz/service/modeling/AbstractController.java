@@ -104,16 +104,6 @@ public class AbstractController
 		view.refresh(model);
 	}
 
-	/**
-	 * Informs the controller that the graphics engine's rendering of the part
-	 * has been synchronized with the controller's state.
-	 * 
-	 * @generated NOT
-	 */
-	public void setSynched() {
-		view.setSynched();
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -220,20 +210,22 @@ public class AbstractController
 	 * java.lang.String)
 	 */
 	@Override
-	public ArrayList<IController> getEntitiesByCategory(
+	public ArrayList<IController> getEntitiesFromCategory(
 			IMeshCategory category) {
-		return model.getEntitiesByCategory(category);
+		return model.getEntitiesFromCategory(category);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.IController#
-	 * getPreviousTransformation()
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#getEntitiesFromCategory
+	 * (org.eclipse.eavp.viz.service.modeling.IMeshCategory, java.lang.Class)
 	 */
 	@Override
-	public Transformation getPreviousTransformation() {
-		return view.getPreviousTransformation();
+	public <T extends IController> ArrayList<T> getEntitiesFromCategory(
+			IMeshCategory category, Class<T> returnType) {
+		return model.getEntitiesFromCategory(category, returnType);
 	}
 
 	/*
@@ -255,7 +247,7 @@ public class AbstractController
 	 * org.eclipse.eavp.viz.service.modeling.IController#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
+	public Representation getRepresentation() {
 		return view.getRepresentation();
 	}
 
@@ -419,9 +411,9 @@ public class AbstractController
 	 * .eclipse.eavp.viz.service.modeling.IController, java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController newEntity,
+	public void addEntityToCategory(IController newEntity,
 			IMeshCategory category) {
-		model.addEntityByCategory(newEntity, category);
+		model.addEntityToCategory(newEntity, category);
 	}
 
 	/*
@@ -597,6 +589,7 @@ public class AbstractController
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.eavp.viz.service.modeling.IController#isRoot()
 	 */
 	@Override
@@ -606,6 +599,7 @@ public class AbstractController
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.eavp.viz.service.modeling.IController#isSelected()
 	 */
 	@Override
@@ -615,33 +609,36 @@ public class AbstractController
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.eavp.viz.service.modeling.IController#setRoot(boolean)
 	 */
 	@Override
 	public void setRoot(boolean root) {
-		
-		//Set the model's root property to a string representation of the boolean
-		if(root){
+
+		// Set the model's root property to a string representation of the
+		// boolean
+		if (root) {
 			model.setProperty(MeshProperty.ROOT, "True");
-		}
-		else{
+		} else {
 			model.setProperty(MeshProperty.ROOT, "False");
-		}	
+		}
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.eavp.viz.service.modeling.IController#setSelected(boolean)
+	 * 
+	 * @see
+	 * org.eclipse.eavp.viz.service.modeling.IController#setSelected(boolean)
 	 */
 	@Override
 	public void setSelected(boolean selected) {
-		
-		//Set the model's selected property to a string representation of the boolean
-		if(selected){
+
+		// Set the model's selected property to a string representation of the
+		// boolean
+		if (selected) {
 			model.setProperty(MeshProperty.SELECTED, "True");
-		}
-		else{
+		} else {
 			model.setProperty(MeshProperty.SELECTED, "False");
-		}			
+		}
 	}
 }

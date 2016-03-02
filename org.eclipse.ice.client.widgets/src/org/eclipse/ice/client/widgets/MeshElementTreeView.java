@@ -233,13 +233,13 @@ public class MeshElementTreeView extends ViewPart
 						FaceController polygon = (FaceController) selection.selectedMeshPart;
 						// Add new MeshSelections for the edges.
 						for (IController e : polygon
-								.getEntitiesByCategory(MeshCategory.EDGES)) {
+								.getEntitiesFromCategory(MeshCategory.EDGES)) {
 							children.add(new MeshSelection(
 									meshComponent.getMesh(), e));
 
 							// Add each of the edge's vertices to the list if
 							// they are nto already present
-							for (IController v : e.getEntitiesByCategory(
+							for (IController v : e.getEntitiesFromCategory(
 									MeshCategory.VERTICES)) {
 								if (!vertices.contains(v)) {
 									vertices.add(v);

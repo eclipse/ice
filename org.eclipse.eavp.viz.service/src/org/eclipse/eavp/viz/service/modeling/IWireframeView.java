@@ -8,21 +8,22 @@
  * Contributors:
  *   Robert Smith
  *******************************************************************************/
-package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
-
-import org.eclipse.eavp.viz.service.modeling.IMeshProperty;
+package org.eclipse.eavp.viz.service.modeling;
 
 /**
- * Additional properties for parts from the Mesh Editor
+ * An interface for view which can be rendered in wireframe mode.
  * 
  * @author Robert Smith
  *
  */
-public enum MeshEditorMeshProperty implements IMeshProperty {
+public interface IWireframeView {
 
 	/**
-	 * A property which marks a part as currently being created and not yet
-	 * finalized. Expected values are "True" and "False".
+	 * Set the view to display in either wireframe or filled mode
+	 * 
+	 * @param on
+	 *            If true, sets the view to display its mesh in wireframe mode.
+	 *            If false, sets the view to display its mesh normally.
 	 */
-	UNDER_CONSTRUCTION
+	public void setWireFrameMode(boolean on);
 }

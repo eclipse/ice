@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 
+import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
@@ -57,7 +58,7 @@ public class FXEdgeController extends EdgeController {
 			// Lock notifications from changing own vertices
 			updateManager.enqueue();
 			for (IController vertex : model
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 				vertex.setProperty(property, value);
 			}
 		}

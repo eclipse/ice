@@ -12,6 +12,7 @@ package org.eclipse.eavp.viz.service.javafx.geometry;
 
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
 
@@ -49,8 +50,8 @@ public class FXGeometryAttachment extends FXAttachment {
 		fxAttachmentNode.getChildren().clear();
 
 		for (IController child : source.getEntities()) {
-			fxAttachmentNode.getChildren()
-					.add((Group) child.getRepresentation());
+			Representation<Group> representation = child.getRepresentation();
+			fxAttachmentNode.getChildren().add(representation.getData());
 
 		}
 	}

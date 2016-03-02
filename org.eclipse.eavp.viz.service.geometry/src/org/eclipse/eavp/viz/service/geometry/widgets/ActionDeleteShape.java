@@ -115,7 +115,7 @@ public class ActionDeleteShape extends Action {
 
 				ShapeController selectedShape = (ShapeController) selectedObject;
 				ShapeController parentShape = (ShapeController) selectedShape
-						.getEntitiesByCategory(MeshCategory.PARENT).get(0);
+						.getEntitiesFromCategory(MeshCategory.PARENT).get(0);
 
 				if (parentShape instanceof ShapeController) {
 

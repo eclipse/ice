@@ -31,10 +31,10 @@ import javafx.scene.transform.Transform;
 public class ArcBallCameraController extends AbstractCameraController {
 
 	/** */
-	Transform xform;
+	protected Transform xform;
 
 	/** */
-	Affine transform;
+	protected Affine transform;
 
 	/** */
 	private Camera camera;

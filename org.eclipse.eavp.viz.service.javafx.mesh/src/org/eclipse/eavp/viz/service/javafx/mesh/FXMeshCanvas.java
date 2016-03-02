@@ -158,7 +158,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 
 			// Check each of the polygon's vertices
 			for (IController vertex : polygon
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 
 				// If any vertex is not selected, stop and move on to the next
 				// polygon

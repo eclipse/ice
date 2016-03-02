@@ -18,11 +18,10 @@ import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionView;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
-import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -36,7 +35,7 @@ import javafx.scene.shape.DrawMode;
  * @author Robert Smith
  *
  */
-public class FXJunctionView extends JunctionView implements IWireFramePart {
+public class FXJunctionView extends JunctionView implements IWireframeView {
 
 	/**
 	 * The box which represents the Junction part
@@ -104,42 +103,40 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 		ArrayList<Extrema> pipeEdges = new ArrayList<Extrema>();
 
 		// Get the bottom end of each input pipe
-		for (IController input : model
-				.getEntitiesByCategory(ReactorMeshCategory.INPUT)) {
+		for (PipeController input : model.getEntitiesFromCategory(
+				ReactorMeshCategory.INPUT, PipeController.class)) {
 
 			// Check if the input is has a pipe or is a pipe
-			List<IController> primaryPipe = input
-					.getEntitiesByCategory(ReactorMeshCategory.PRIMARY_PIPE);
+			List<PipeController> primaryPipe = input.getEntitiesFromCategory(
+					ReactorMeshCategory.PRIMARY_PIPE, PipeController.class);
 
 			// If the input is a pipe, add its extrema
 			if (primaryPipe.isEmpty()) {
-				pipeEdges.add(((PipeController) input).getUpperExtrema());
+				pipeEdges.add(input.getUpperExtrema());
 			}
 
 			// Otherwise, get its primary pipe and add that pipe's extrema
 			else {
-				pipeEdges.add(((PipeController) primaryPipe.get(0))
-						.getUpperExtrema());
+				pipeEdges.add(primaryPipe.get(0).getUpperExtrema());
 			}
 		}
 
 		// Get the top end of each output pipe
-		for (IController output : model
-				.getEntitiesByCategory(ReactorMeshCategory.OUTPUT)) {
+		for (PipeController output : model.getEntitiesFromCategory(
+				ReactorMeshCategory.OUTPUT, PipeController.class)) {
 
 			// Check if the output is has a pipe or is a pipe
-			List<IController> primaryPipe = output
-					.getEntitiesByCategory(ReactorMeshCategory.PRIMARY_PIPE);
+			List<PipeController> primaryPipe = output.getEntitiesFromCategory(
+					ReactorMeshCategory.PRIMARY_PIPE, PipeController.class);
 
 			// If the input is a pipe, add its extrema
 			if (primaryPipe.isEmpty()) {
-				pipeEdges.add(((PipeController) output).getLowerExtrema());
+				pipeEdges.add(output.getLowerExtrema());
 			}
 
 			// Otherwise, get its primary pipe and add that pipe's extrema
 			else {
-				pipeEdges.add(((PipeController) primaryPipe.get(0))
-						.getLowerExtrema());
+				pipeEdges.add(primaryPipe.get(0).getLowerExtrema());
 			}
 		}
 
@@ -189,8 +186,8 @@ public class FXJunctionView extends JunctionView implements IWireFramePart {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*

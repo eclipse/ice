@@ -15,6 +15,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.modeling.AbstractController;
 import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 
@@ -50,8 +51,8 @@ public class FXVertexController extends VertexController {
 
 		// Add a reference to this controller to the view's JavaFX node
 		// properties
-		((Group) view.getRepresentation()).getProperties()
-				.put(IController.class, this);
+		Representation<Group> representation = view.getRepresentation();
+		representation.getData().getProperties().put(IController.class, this);
 	}
 
 	/**
