@@ -124,6 +124,18 @@ public class ConnectionVizServiceTester {
 						// This shouldn't be called.
 						return null;
 					}
+
+					@Override
+					public String createAdditionalPage(MultiPageEditorPart parent, IFileEditorInput file, int pageNum) {
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					public int getNumAdditionalPages() {
+						// TODO Auto-generated method stub
+						return 0;
+					}
 				};
 			}
 
@@ -141,19 +153,6 @@ public class ConnectionVizServiceTester {
 
 			@Override
 			public IControllerProviderFactory getFactory() {
-				return null;
-			}
-
-			@Override
-			public int getNumAdditionalPages() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public String createAdditionalPage(MultiPageEditorPart parent,
-					IFileEditorInput file, int pageNum) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		};

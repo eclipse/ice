@@ -13,6 +13,7 @@ package org.eclipse.eavp.viz.service.csv;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.eavp.viz.service.IPlot;
 import org.eclipse.eavp.viz.service.IPlotListener;
 import org.eclipse.eavp.viz.service.ISeries;
@@ -24,6 +25,8 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * This class serves as a proxy for a normal {@link CSVPlot}, which is itself
@@ -267,6 +270,42 @@ public class CSVProxyPlot extends ProxyPlot implements IPlotListener {
 		// Register as a listener to be notified when the data has been
 		// reloaded.
 		((CSVPlot) source).addPlotListener(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#createAdditionalPage(org.eclipse.ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent, IFileEditorInput file, int pageNum) {
+		return source.createAdditionalPage(parent, file, pageNum);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return source.getNumAdditionalPages();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#save()
+	 */
+	@Override
+	public void save(IProgressMonitor monitor) {
+		source.save(monitor);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#saveAs()
+	 */
+	@Override
+	public void saveAs() {
+		source.saveAs();
 	}
 
 }

@@ -78,15 +78,6 @@ public interface IVizService {
 	public String getName();
 
 	/**
-	 * Gets the number of pages this service will display in the plot editor in
-	 * addition to the main canvas.
-	 * 
-	 * @return The number of additional pages displayed by the plot editor. 0 if
-	 *         there is only one page.
-	 */
-	public int getNumAdditionalPages();
-
-	/**
 	 * This operation returns a version number for the service. It should be
 	 * more or less human readable and contain a major and a minor version
 	 * (Version 2.1 instead of just 2, for example).
@@ -94,25 +85,6 @@ public interface IVizService {
 	 * @return The version of the IVizService
 	 */
 	public String getVersion();
-
-	/**
-	 * Directs the service to draw one of its additional pages and add it to the
-	 * MultiPageEditorPart. The expected use is to call
-	 * creatAddionalPage(parent, file, 1), createAdditonalPage(parent, file, 2),
-	 * etc. until all additional pages have been drawn in separate tabs.
-	 * 
-	 * @param parent
-	 *            The part which the page will be added to.
-	 * @param file
-	 *            The file to use as input for the page.
-	 * @param pageNum
-	 *            The id of the page to be drawn.
-	 * 
-	 * @return The name of the new page, to be displayed as the title of the tab
-	 *         containing it
-	 */
-	public String createAdditionalPage(MultiPageEditorPart parent,
-			IFileEditorInput file, int pageNum);
 
 	/**
 	 * This operation directs the IVizService to create a new plot using the

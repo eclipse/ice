@@ -118,7 +118,7 @@ public class PlotEditorTester {
 		bot.menu("Window").menu("Show View").menu("Project Explorer").click();
 
 		// Open the fib8.csv file in the plot editor.
-		SWTBotTreeItem node = bot.tree().getTreeItem("CSVVizService");
+		SWTBotTreeItem node = bot.tree().getAllItems()[0];
 		node.expand();
 		node.getNode("fib8.csv").select();
 		node.getNode("fib8.csv").doubleClick();

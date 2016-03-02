@@ -26,6 +26,8 @@ import org.eclipse.eavp.viz.service.connections.ConnectionState;
 import org.eclipse.eavp.viz.service.connections.IVizConnection;
 import org.eclipse.eavp.viz.service.connections.VizConnection;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -198,6 +200,18 @@ class TestConnectionPlot<T> extends ConnectionPlot<T> {
 	public void connectionStateChanged(IVizConnection<T> connection,
 			ConnectionState state, String message) {
 		// Nothing to do.
+	}
+
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent, IFileEditorInput file, int pageNum) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getNumAdditionalPages() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -26,6 +26,7 @@ import org.eclipse.eavp.viz.service.modeling.AbstractView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.eclipse.eavp.viz.service.modeling.Transformation;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestController;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestMesh;
@@ -248,10 +249,10 @@ public class AbstractControllerTester {
 	public void testGetRepresentation() {
 
 		// Get the representation from the TestView
-		Object representation = controller.getRepresentation();
+		Representation<VizObject> representation = controller.getRepresentation();
 
 		// The representation should be a TestObject
-		assertTrue(representation instanceof VizObject);
+		assertTrue(representation.getData() instanceof VizObject);
 	}
 
 	/**

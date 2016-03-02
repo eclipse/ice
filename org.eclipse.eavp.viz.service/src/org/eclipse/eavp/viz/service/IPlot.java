@@ -18,6 +18,10 @@ package org.eclipse.eavp.viz.service;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
+
 /**
  * This interface defines the principle type for plots created and handled by
  * the platform. Its primary purpose is to provide a specific interface for
@@ -39,6 +43,25 @@ public interface IPlot extends IVizCanvas {
 	 */
 	public static final String DEFAULT_CATEGORY = "Other";
 
+	/**
+	 * Directs the service to draw one of its additional pages and add it to the
+	 * MultiPageEditorPart. The expected use is to call
+	 * creatAddionalPage(parent, file, 1), createAdditonalPage(parent, file, 2),
+	 * etc. until all additional pages have been drawn in separate tabs.
+	 * 
+	 * @param parent
+	 *            The part which the page will be added to.
+	 * @param file
+	 *            The file to use as input for the page.
+	 * @param pageNum
+	 *            The id of the page to be drawn.
+	 * 
+	 * @return The name of the new page, to be displayed as the title of the tab
+	 *         containing it
+	 */
+	public String createAdditionalPage(MultiPageEditorPart parent,
+			IFileEditorInput file, int pageNum);
+	
 	/**
 	 * Gets all of the categories currently associated with this plot.
 	 * 
@@ -64,12 +87,33 @@ public interface IPlot extends IVizCanvas {
 	public ISeries getIndependentSeries();
 
 	/**
+	 * Gets the number of pages this service will display in the plot editor in
+	 * addition to the main canvas.
+	 * 
+	 * @return The number of additional pages displayed by the plot editor. 0 if
+	 *         there is only one page.
+	 */
+	public int getNumAdditionalPages();
+	
+	/**
 	 * Gets the title of the plot to be displayed in whatever visualization
 	 * service is rendering this plot
 	 * 
 	 * @return String The plot title
 	 */
 	public String getPlotTitle();
+	
+	/**
+	 * Save the contents of the plot to the source file.
+	 * 
+	 * @param monitor The monitor for the save action's progress.
+	 */
+	public void save(IProgressMonitor monitor);
+	
+	/**
+	 * Open a dialog to save the plot's contents.
+	 */
+	public void saveAs();
 
 	/**
 	 * Sets the series that will be on the independent axis for this plot. All

@@ -110,7 +110,7 @@ public abstract class AbstractWorkbenchTester extends
 
 		// Set up the SWTBot for the workbench.
 		bot = new SWTWorkbenchBot();
-		SWTBotPreferences.TIMEOUT = 2000;
+		SWTBotPreferences.TIMEOUT = 5000;
 	}
 
 	/*
