@@ -46,7 +46,7 @@ import javafx.scene.shape.Shape3D;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
-public class FXViewer extends AbstractViewer {
+public class FXViewer extends BasicViewer {
 
 	/**
 	 * The internally used root that cannot be modified by clients.
@@ -246,7 +246,7 @@ public class FXViewer extends AbstractViewer {
 	}
 
 	/**
-	 * @see AbstractViewer#updateCamera(ICamera)
+	 * @see BasicViewer#updateCamera(ICamera)
 	 */
 	@Override
 	protected void updateCamera(ICamera camera) {

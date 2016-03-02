@@ -28,7 +28,7 @@ import javafx.scene.transform.Rotate;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
-public abstract class AbstractCameraController implements ICameraController {
+public abstract class BasicCameraController implements ICameraController {
 
 	/**
 	 * The Camera this object is managing.
@@ -121,7 +121,7 @@ public abstract class AbstractCameraController implements ICameraController {
 	 * @param canvas
 	 *            The FXCanvas containing the scene.
 	 */
-	public AbstractCameraController(Camera camera, Scene scene,
+	public BasicCameraController(Camera camera, Scene scene,
 			FXCanvas canvas) {
 
 		// Initialize the data members

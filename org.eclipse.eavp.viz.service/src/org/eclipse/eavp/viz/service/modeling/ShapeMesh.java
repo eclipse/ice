@@ -23,7 +23,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * @author Robert Smith
  *
  */
-public class ShapeMesh extends AbstractMesh {
+public class ShapeMesh extends BasicMesh {
 
 	/**
 	 * The default constructor.
@@ -205,7 +205,7 @@ public class ShapeMesh extends AbstractMesh {
 				.get(MeshCategory.CHILDREN);
 		if (children != null) {
 			for (IController entity : children) {
-				addEntity((IController) ((AbstractController) entity).clone());
+				addEntity((IController) ((BasicController) entity).clone());
 			}
 		}
 
@@ -233,11 +233,11 @@ public class ShapeMesh extends AbstractMesh {
 		}
 
 		// Check if the other object is an AbstractMeshComponent and cast it
-		if (!(otherObject instanceof AbstractMesh)) {
+		if (!(otherObject instanceof BasicMesh)) {
 			return false;
 		}
 
-		AbstractMesh castObject = (AbstractMesh) otherObject;
+		BasicMesh castObject = (BasicMesh) otherObject;
 
 		// Check the types, properties, and entity category for equality
 		if (type != castObject.type || !properties.equals(castObject.properties)

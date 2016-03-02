@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.geometry.reactor;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.eavp.viz.service.modeling.IWireframeController;
  * @author Robert Smith
  *
  */
-public class ReactorController extends AbstractController
+public class ReactorController extends BasicController
 		implements IWireframeController {
 
 	/**
@@ -40,7 +40,7 @@ public class ReactorController extends AbstractController
 	 * @param view
 	 *            The graphical representation of the reactor
 	 */
-	public ReactorController(ReactorMesh model, AbstractView view) {
+	public ReactorController(ReactorMesh model, BasicView view) {
 		super(model, view);
 	}
 

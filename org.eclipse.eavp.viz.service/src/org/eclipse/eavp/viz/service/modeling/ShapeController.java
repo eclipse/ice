@@ -16,7 +16,7 @@ package org.eclipse.eavp.viz.service.modeling;
  * @author Robert Smith
  *
  */
-public class ShapeController extends AbstractController {
+public class ShapeController extends BasicController {
 
 	/**
 	 * THe nullary constructor
@@ -33,7 +33,7 @@ public class ShapeController extends AbstractController {
 	 * @param view
 	 *            The controller's view
 	 */
-	public ShapeController(ShapeMesh model, AbstractView view) {
+	public ShapeController(ShapeMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -79,7 +79,7 @@ public class ShapeController extends AbstractController {
 		if (!(source instanceof ShapeController)) {
 			return;
 		}
-		AbstractController castObject = (AbstractController) source;
+		BasicController castObject = (BasicController) source;
 
 		// Create the model and give it a reference to this
 		model = new ShapeMesh();
@@ -87,7 +87,7 @@ public class ShapeController extends AbstractController {
 
 		// Copy the other object's data members
 		model.copy(castObject.model);
-		view = (AbstractView) castObject.view.clone();
+		view = (BasicView) castObject.view.clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

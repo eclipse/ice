@@ -16,7 +16,7 @@ package org.eclipse.eavp.viz.service.modeling;
  * @author Robert Smith
  *
  */
-public class FaceController extends AbstractController {
+public class FaceController extends BasicController {
 
 	/**
 	 * The nullary constructor.
@@ -33,7 +33,7 @@ public class FaceController extends AbstractController {
 	 * @param view
 	 *            The view representing this Face in the graphics engine
 	 */
-	public FaceController(FaceMesh model, AbstractView view) {
+	public FaceController(FaceMesh model, BasicView view) {
 		super(model, view);
 	}
 

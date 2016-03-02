@@ -20,7 +20,7 @@ import java.util.Map;
  * @author Robert Smith
  *
  */
-public class AbstractControllerProviderFactory implements IControllerProviderFactory {
+public class BasicControllerProviderFactory implements IControllerProviderFactory {
 
 	/**
 	 * A map from class types to IControllerProviders, where each entry maps a
@@ -32,7 +32,7 @@ public class AbstractControllerProviderFactory implements IControllerProviderFac
 	/**
 	 * The default constructor.
 	 */
-	public AbstractControllerProviderFactory() {
+	public BasicControllerProviderFactory() {
 		typeMap = new HashMap<Class, IControllerProvider>();
 	}
 

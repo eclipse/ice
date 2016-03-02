@@ -17,8 +17,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.EdgeAndVertexFaceMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
+import org.eclipse.eavp.viz.service.modeling.DetailedFaceMesh;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class EdgeAndVertexFaceMeshTester {
+public class DetailedFaceMeshTester {
 
 	/**
 	 * Tests that the face adds and removes all child entities in the correct
@@ -45,18 +45,18 @@ public class EdgeAndVertexFaceMeshTester {
 
 		// Create the face
 		ArrayList<IController> entities = new ArrayList<IController>();
-		EdgeAndVertexFaceMesh face = new EdgeAndVertexFaceMesh(entities);
+		DetailedFaceMesh face = new DetailedFaceMesh(entities);
 
 		// The children should start out empty.
 		assertEquals(0, face.getEntities().size());
 
 		// Create an edge and add it to the face
 		VertexController vertex1 = new VertexController(new VertexMesh(0, 0, 0),
-				new AbstractView());
+				new BasicView());
 		VertexController vertex2 = new VertexController(new VertexMesh(1, 1, 1),
-				new AbstractView());
+				new BasicView());
 		EdgeController edge = new EdgeController(
-				new LinearEdgeMesh(vertex1, vertex2), new AbstractView());
+				new LinearEdgeMesh(vertex1, vertex2), new BasicView());
 		face.addEntityToCategory(edge, MeshCategory.EDGES);
 
 		// The Edges category should have one object, the edge
@@ -87,9 +87,9 @@ public class EdgeAndVertexFaceMeshTester {
 
 		// Add a second edge, sharing a vertex with the first, to the face
 		VertexController vertex3 = new VertexController(new VertexMesh(2, 2, 2),
-				new AbstractView());
+				new BasicView());
 		EdgeController edge3 = new EdgeController(
-				new LinearEdgeMesh(vertex2, vertex3), new AbstractView());
+				new LinearEdgeMesh(vertex2, vertex3), new BasicView());
 		face.addEntityToCategory(edge3, MeshCategory.EDGES);
 
 		// The face should have three edges
@@ -132,11 +132,11 @@ public class EdgeAndVertexFaceMeshTester {
 	public void checkClone() {
 
 		// Create a face
-		EdgeAndVertexFaceMesh face = new EdgeAndVertexFaceMesh();
+		DetailedFaceMesh face = new DetailedFaceMesh();
 		face.setProperty(MeshProperty.DESCRIPTION, "Property");
 
 		// Clone it and check that they are identical
-		EdgeAndVertexFaceMesh clone = (EdgeAndVertexFaceMesh) face.clone();
+		DetailedFaceMesh clone = (DetailedFaceMesh) face.clone();
 		assertTrue(face.equals(clone));
 	}
 }

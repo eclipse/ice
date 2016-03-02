@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeController;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXShapeView;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -151,7 +151,7 @@ public class FXShapeControllerTester {
 
 		// Create a test controller to monitor when the shape is updated
 		TestController controller = new TestController(new TestMesh(),
-				new AbstractView());
+				new BasicView());
 		controller.addEntity(shape);
 
 		// Clear the controller's updated state
@@ -159,7 +159,7 @@ public class FXShapeControllerTester {
 
 		// Add a child to the mesh
 		mesh.addEntityToCategory(
-				new AbstractController(new AbstractMesh(), new AbstractView()),
+				new BasicController(new BasicMesh(), new BasicView()),
 				MeshCategory.DEFAULT);
 
 		// This should have sent an update to the controller

@@ -17,12 +17,12 @@ package org.eclipse.eavp.viz.service.modeling;
  * @author Robert Smith
  *
  */
-public class FaceEdgeController extends EdgeController {
+public class DetailedEdgeController extends EdgeController {
 
 	/**
 	 * The default constructor
 	 */
-	public FaceEdgeController(FaceEdgeMesh model, AbstractView view) {
+	public DetailedEdgeController(DetailedEdgeMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -35,11 +35,11 @@ public class FaceEdgeController extends EdgeController {
 	public Object clone() {
 
 		// Clone the model and view
-		FaceEdgeMesh modelClone = (FaceEdgeMesh) model.clone();
-		AbstractView viewClone = (AbstractView) view.clone();
+		DetailedEdgeMesh modelClone = (DetailedEdgeMesh) model.clone();
+		BasicView viewClone = (BasicView) view.clone();
 
 		// Create a new controller for the clones and return it
-		FaceEdgeController clone = new FaceEdgeController(modelClone,
+		DetailedEdgeController clone = new DetailedEdgeController(modelClone,
 				viewClone);
 		return clone;
 	}

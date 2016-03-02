@@ -27,9 +27,9 @@ import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 
@@ -80,7 +80,7 @@ public class FXPlantCompositeConverter
 	 * @return A JavaFX modeling data structure representation fo the plant.
 	 */
 	@Override
-	public AbstractController getPlant() {
+	public BasicController getPlant() {
 
 		// If the output has not been initialized, create it
 		if (output == null) {
@@ -96,8 +96,8 @@ public class FXPlantCompositeConverter
 	private void refresh() {
 
 		// Create a new root
-		output = new FXPlantViewRootController(new AbstractMesh(),
-				new AbstractView());
+		output = new FXPlantViewRootController(new BasicMesh(),
+				new BasicView());
 
 		// Visit each plant component, converting it for the new data structure
 		FXPlantComponentVisitor visitor = new FXPlantComponentVisitor(output);

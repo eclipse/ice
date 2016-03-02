@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Robert Smith
  */
-public class AbstractMesh
+public class BasicMesh
 		implements IManagedUpdateableListener, IManagedUpdateable, IMesh {
 
 	/**
@@ -66,7 +66,7 @@ public class AbstractMesh
 	/**
 	 * The default constructor
 	 */
-	public AbstractMesh() {
+	public BasicMesh() {
 		// Instantiate the class variables
 		entities = new HashMap<IMeshCategory, ArrayList<IController>>();
 		properties = new HashMap<IMeshProperty, String>();
@@ -80,7 +80,7 @@ public class AbstractMesh
 	 * @param type
 	 *            The type of mesh this component models.
 	 */
-	public AbstractMesh(MeshType type) {
+	public BasicMesh(MeshType type) {
 
 		// Instantiate the class variables
 		this();
@@ -94,7 +94,7 @@ public class AbstractMesh
 	 * @param entities
 	 *            The list of initial entities.
 	 */
-	public AbstractMesh(List<IController> entities) {
+	public BasicMesh(List<IController> entities) {
 		// Create a map of entities
 		this.entities = new HashMap<IMeshCategory, ArrayList<IController>>();
 
@@ -117,7 +117,7 @@ public class AbstractMesh
 	 * @param type
 	 *            The mesh's type
 	 */
-	public AbstractMesh(ArrayList<IController> entities, MeshType type) {
+	public BasicMesh(ArrayList<IController> entities, MeshType type) {
 		// Create a list of entities
 		this.entities = new HashMap<IMeshCategory, ArrayList<IController>>();
 
@@ -142,7 +142,7 @@ public class AbstractMesh
 	 * @param type
 	 *            The type of component the mesh represents.
 	 */
-	public AbstractMesh(Map<Object, Object> input, MeshType type) {
+	public BasicMesh(Map<Object, Object> input, MeshType type) {
 		// Instantiate the class variables
 		this();
 		this.type = type;
@@ -456,7 +456,7 @@ public class AbstractMesh
 			return false;
 		}
 
-		AbstractMesh castObject = (AbstractMesh) otherObject;
+		BasicMesh castObject = (BasicMesh) otherObject;
 
 		// Check the types and properties for equality
 		if (type != castObject.type
@@ -530,7 +530,7 @@ public class AbstractMesh
 	public Object clone() {
 
 		// Create a new component, and make it a copy of this one.
-		AbstractMesh clone = new AbstractMesh();
+		BasicMesh clone = new BasicMesh();
 		clone.copy(this);
 		return clone;
 	}
@@ -552,7 +552,7 @@ public class AbstractMesh
 			return;
 		}
 
-		AbstractMesh castObject = (AbstractMesh) otherObject;
+		BasicMesh castObject = (BasicMesh) otherObject;
 
 		// Copy each of the other component's data members
 		type = castObject.type;
@@ -563,7 +563,7 @@ public class AbstractMesh
 			for (IController entity : otherObject
 					.getEntitiesFromCategory(category)) {
 				addEntityToCategory(
-						(IController) ((AbstractController) entity).clone(),
+						(IController) ((BasicController) entity).clone(),
 						category);
 			}
 		}

@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.test.TestManagedListener;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
@@ -40,7 +40,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class AbstractMeshTester {
+public class BasicMeshTester {
 
 	/**
 	 * The entities for the component
@@ -102,8 +102,8 @@ public class AbstractMeshTester {
 		assertEquals(0, component.getEntities().size());
 
 		// Create a new VizObject with id 2
-		AbstractController object = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController object = new BasicController(new BasicMesh(),
+				new BasicView());
 		object.setProperty(MeshProperty.ID, "2");
 
 		// Add the object as a child
@@ -118,8 +118,8 @@ public class AbstractMeshTester {
 				component.getEntities().get(0).getProperty(MeshProperty.ID)));
 
 		// Create a new part with id 3
-		AbstractController secondObject = new AbstractController(
-				new AbstractMesh(), new AbstractView());
+		BasicController secondObject = new BasicController(
+				new BasicMesh(), new BasicView());
 		object.setProperty(MeshProperty.ID, "3");
 
 		// Add a second entity
@@ -156,8 +156,8 @@ public class AbstractMeshTester {
 	public void testEntityCategories() {
 
 		// Create an edge entity
-		AbstractController edge = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController edge = new BasicController(new BasicMesh(),
+				new BasicView());
 		edge.setProperty(MeshProperty.NAME, "edge");
 		component.addEntityToCategory(edge, MeshCategory.EDGES);
 
@@ -165,14 +165,14 @@ public class AbstractMeshTester {
 		assertTrue(controller.isUpdated());
 
 		// Create a vertex entity
-		AbstractController vertex1 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController vertex1 = new BasicController(new BasicMesh(),
+				new BasicView());
 		vertex1.setProperty(MeshProperty.NAME, "vertex1");
 		component.addEntityToCategory(vertex1, MeshCategory.VERTICES);
 
 		// Create another vertex entity
-		AbstractController vertex2 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController vertex2 = new BasicController(new BasicMesh(),
+				new BasicView());
 		vertex2.setProperty(MeshProperty.NAME, "vertex2");
 		component.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
@@ -211,8 +211,8 @@ public class AbstractMeshTester {
 	public void testRegisteration() {
 
 		// Create and register an object
-		AbstractController object = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController object = new BasicController(new BasicMesh(),
+				new BasicView());
 		object.register(component);
 
 		// Set the object's id. This should trigger an update.
@@ -252,7 +252,7 @@ public class AbstractMeshTester {
 		mesh.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// Create a mesh equal to the first
-		AbstractMesh equalMesh = new TestMesh(new ArrayList<IController>());
+		BasicMesh equalMesh = new TestMesh(new ArrayList<IController>());
 		equalMesh.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// Create a mesh which is not equal to the first
@@ -276,8 +276,8 @@ public class AbstractMeshTester {
 		assertTrue(mesh.equals(inequalMesh));
 
 		// Set the entities to be inequal
-		AbstractController child = new AbstractController(equalMesh,
-				new AbstractView());
+		BasicController child = new BasicController(equalMesh,
+				new BasicView());
 		inequalMesh.addEntityToCategory(child, MeshCategory.FACES);
 
 		// The objects should be inequal again
@@ -295,7 +295,7 @@ public class AbstractMeshTester {
 		assertTrue(mesh.equals(inequalMesh));
 
 		// Check that a cloned controller is equal to the original
-		IMesh clone = (IMesh) ((AbstractMesh) mesh).clone();
+		IMesh clone = (IMesh) ((BasicMesh) mesh).clone();
 		assertTrue(mesh.equals(clone));
 	}
 
@@ -323,8 +323,8 @@ public class AbstractMeshTester {
 
 		// Create a second object, add it to the mesh, and check that a CHILD
 		// update was fired
-		AbstractController child = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController child = new BasicController(new BasicMesh(),
+				new BasicView());
 		component.addEntity(child);
 		assertTrue(listener.gotChild());
 
@@ -338,7 +338,7 @@ public class AbstractMeshTester {
 
 		// Make the component a copy of something else. This should fire every
 		// type of update.
-		component.copy(new AbstractMesh());
+		component.copy(new BasicMesh());
 		assertTrue(listener.gotChild());
 		assertTrue(listener.gotProperty());
 		assertTrue(listener.gotSelection());

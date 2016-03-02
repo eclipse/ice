@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.geometry.reactor;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 import org.eclipse.eavp.viz.service.modeling.TubeController;
@@ -37,7 +37,7 @@ public class PipeController extends TubeController implements IWireframeControll
 	 * @param model
 	 * @param view
 	 */
-	public PipeController(PipeMesh model, AbstractView view) {
+	public PipeController(PipeMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -172,7 +172,7 @@ public class PipeController extends TubeController implements IWireframeControll
 		if (!(source instanceof PipeController)) {
 			return;
 		}
-		AbstractController castObject = (AbstractController) source;
+		BasicController castObject = (BasicController) source;
 
 		// Create the model and give it a reference to this
 		model = new PipeMesh();
@@ -180,7 +180,7 @@ public class PipeController extends TubeController implements IWireframeControll
 
 		// Copy the other object's data members
 		model.copy(castObject.getModel());
-		view = (AbstractView) castObject.getView().clone();
+		view = (BasicView) castObject.getView().clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

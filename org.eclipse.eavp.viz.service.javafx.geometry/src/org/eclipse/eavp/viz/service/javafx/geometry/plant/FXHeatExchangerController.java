@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.javafx.geometry.plant;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerController;
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
 
@@ -41,7 +41,7 @@ public class FXHeatExchangerController extends HeatExchangerController {
 	 *            The view containing the graphical representation of this part.
 	 */
 	public FXHeatExchangerController(HeatExchangerMesh model,
-			AbstractView view) {
+			BasicView view) {
 		super(model, view);
 	}
 

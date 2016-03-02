@@ -13,7 +13,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -55,11 +55,11 @@ public class LinearEdgeMeshTester {
 
 		// Create some vertices
 		VertexController vertex1 = new VertexController(new VertexMesh(0, 0, 0),
-				new AbstractView());
+				new BasicView());
 		VertexController vertex2 = new VertexController(new VertexMesh(1, 1, 1),
-				new AbstractView());
+				new BasicView());
 		VertexController vertex3 = new VertexController(new VertexMesh(2, 2, 2),
-				new AbstractView());
+				new BasicView());
 
 		// Add the first two vertices to the edge.
 		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);

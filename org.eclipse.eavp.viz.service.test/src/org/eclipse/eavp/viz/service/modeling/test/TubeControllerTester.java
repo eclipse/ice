@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.TubeController;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
@@ -34,7 +34,7 @@ public class TubeControllerTester {
 
 		// Create a cloned tube and check that it is identical to the original
 		TubeController shape = new TubeController(new TubeMesh(),
-				new AbstractView());
+				new BasicView());
 		shape.setProperty(MeshProperty.DESCRIPTION, "Property");
 		TubeController clone = (TubeController) shape.clone();
 		assertTrue(shape.equals(clone));

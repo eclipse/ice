@@ -149,7 +149,7 @@ public class VertexMesh extends PointMesh {
 				for (IController entity : otherObject
 						.getEntitiesFromCategory(category)) {
 					addEntityToCategory(
-							(IController) ((AbstractController) entity).clone(),
+							(IController) ((BasicController) entity).clone(),
 							category);
 				}
 			}

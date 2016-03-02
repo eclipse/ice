@@ -16,7 +16,7 @@ import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.IWireframeView;
@@ -45,7 +45,7 @@ import javafx.scene.shape.TriangleMesh;
  * @author Tony McCrary, Robert Smith
  *
  */
-public class FXShapeView extends AbstractView implements IWireframeView {
+public class FXShapeView extends BasicView implements IWireframeView {
 
 	/**
 	 * A group containing the shape which represents the part and a gizmo which

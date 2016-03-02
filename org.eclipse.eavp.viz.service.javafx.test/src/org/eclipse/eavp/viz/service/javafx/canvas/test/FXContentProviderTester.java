@@ -16,7 +16,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXContentProvider;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
@@ -274,7 +274,7 @@ public class FXContentProviderTester {
 	 * @author Robert Smith
 	 *
 	 */
-	private class TestViewer extends AbstractViewer {
+	private class TestViewer extends BasicViewer {
 
 		public TestViewer(Composite parent) {
 			super(parent);

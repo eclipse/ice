@@ -19,7 +19,7 @@ import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.javafx.geometry.datatypes.FXTube;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.IWireframeView;
@@ -40,7 +40,7 @@ import javafx.scene.transform.Rotate;
  * @author Robert Smith
  *
  */
-public class FXHeatExchangerView extends AbstractView
+public class FXHeatExchangerView extends BasicView
 		implements IWireframeView {
 
 	/**

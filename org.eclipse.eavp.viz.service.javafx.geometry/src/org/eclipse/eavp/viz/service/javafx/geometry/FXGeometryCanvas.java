@@ -16,8 +16,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXVizCanvas;
@@ -74,7 +74,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 */
 	@Override
 	protected void createAttachment() {
-		rootAtachment = (AbstractAttachment) viewer.getRenderer()
+		rootAtachment = (BasicAttachment) viewer.getRenderer()
 				.createAttachment(FXGeometryAttachment.class);
 	}
 
@@ -107,7 +107,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * materializeViewer (org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected AbstractViewer materializeViewer(Composite viewerParent)
+	protected BasicViewer materializeViewer(Composite viewerParent)
 			throws Exception {
 
 		// Create a geometry viewer, throwing an exception if the operation

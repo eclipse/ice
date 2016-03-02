@@ -29,7 +29,7 @@ import javafx.scene.Group;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
-public abstract class AbstractViewer extends Viewer {
+public abstract class BasicViewer extends Viewer {
 
 	/** The parent the viewer is created on. */
 	protected final Composite parent;
@@ -57,7 +57,7 @@ public abstract class AbstractViewer extends Viewer {
 	 * @param parent
 	 *            the parent widget to create the viewer in
 	 */
-	public AbstractViewer(Composite parent) {
+	public BasicViewer(Composite parent) {
 		this.parent = parent;
 
 		createControl(parent);

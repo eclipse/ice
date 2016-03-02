@@ -25,18 +25,18 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Robert Smith
  */
-public class AbstractController
+public class BasicController
 		implements IManagedUpdateable, IManagedUpdateableListener, IController {
 
 	/**
 	 * The internal representation of this part.
 	 */
-	protected AbstractMesh model;
+	protected BasicMesh model;
 
 	/**
 	 * This part's representation in the graphics rendering program.
 	 */
-	protected AbstractView view;
+	protected BasicView view;
 
 	/**
 	 * A flag for whether or not the part has been disposed.
@@ -57,7 +57,7 @@ public class AbstractController
 	/**
 	 * The default constructor.
 	 */
-	public AbstractController() {
+	public BasicController() {
 		disposed = new AtomicBoolean();
 		disposed.set(false);
 		updateManager = new UpdateableSubscriptionManager(this);
@@ -71,7 +71,7 @@ public class AbstractController
 	 * @param view
 	 *            The model's view.
 	 */
-	public AbstractController(AbstractMesh model, AbstractView view) {
+	public BasicController(BasicMesh model, BasicView view) {
 
 		// Check that the model and view are valid
 		if (model == null || view == null) {
@@ -147,7 +147,7 @@ public class AbstractController
 	 * @see org.eclipse.eavp.viz.service.modeling.IController#getView()
 	 */
 	@Override
-	public AbstractView getView() {
+	public BasicView getView() {
 		return view;
 	}
 
@@ -159,7 +159,7 @@ public class AbstractController
 	 * eavp.viz.service.modeling.AbstractView)
 	 */
 	@Override
-	public void setView(AbstractView newView) {
+	public void setView(BasicView newView) {
 
 		// Log an error and fail silently if the view is null
 		if (newView == null) {
@@ -445,7 +445,7 @@ public class AbstractController
 		}
 
 		// Cast the other object
-		AbstractController castObject = (AbstractController) otherObject;
+		BasicController castObject = (BasicController) otherObject;
 
 		// Check that the model and view are equal
 		if (!model.equals(castObject.model) || !view.equals(castObject.view)) {
@@ -465,7 +465,7 @@ public class AbstractController
 	public Object clone() {
 
 		// Create a copy of the model
-		AbstractController clone = new AbstractController();
+		BasicController clone = new BasicController();
 		clone.copy(this);
 
 		// Refresh the view to be in sync with the model
@@ -489,14 +489,14 @@ public class AbstractController
 		if (!(otherObject instanceof IController)) {
 			return;
 		}
-		AbstractController castObject = (AbstractController) otherObject;
+		BasicController castObject = (BasicController) otherObject;
 
 		// Create the model and give it a reference to this
-		model = (AbstractMesh) castObject.model.clone();
+		model = (BasicMesh) castObject.model.clone();
 		model.setController(this);
 
 		// Copy the other object's data members
-		view = (AbstractView) castObject.view.clone();
+		view = (BasicView) castObject.view.clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

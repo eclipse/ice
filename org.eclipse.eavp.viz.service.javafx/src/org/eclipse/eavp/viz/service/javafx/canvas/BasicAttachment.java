@@ -28,7 +28,7 @@ import org.eclipse.jface.util.Geometry;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
-public abstract class AbstractAttachment extends Attachment
+public abstract class BasicAttachment extends Attachment
 		implements IModelPart {
 
 	/**

@@ -21,12 +21,12 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  *
  * @author Robert Smith
  */
-public class EdgeAndVertexFaceMesh extends FaceMesh {
+public class DetailedFaceMesh extends FaceMesh {
 
 	/**
 	 * The default constructor
 	 */
-	public EdgeAndVertexFaceMesh() {
+	public DetailedFaceMesh() {
 		super();
 	}
 
@@ -35,7 +35,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	 * 
 	 * @param entities
 	 */
-	public EdgeAndVertexFaceMesh(List<IController> entities) {
+	public DetailedFaceMesh(List<IController> entities) {
 		super(entities);
 	}
 
@@ -133,7 +133,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	public Object clone() {
 
 		// Create a new component, and make it a copy of this one.
-		EdgeAndVertexFaceMesh clone = new EdgeAndVertexFaceMesh();
+		DetailedFaceMesh clone = new DetailedFaceMesh();
 		clone.copy(this);
 		return clone;
 	}
@@ -149,10 +149,10 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 	public void copy(IMesh otherObject) {
 
 		// Copy only if the other object is an EdgeAndVertexFaceComponent
-		if (otherObject instanceof EdgeAndVertexFaceMesh) {
+		if (otherObject instanceof DetailedFaceMesh) {
 
 			// Cast the object
-			EdgeAndVertexFaceMesh castObject = (EdgeAndVertexFaceMesh) otherObject;
+			DetailedFaceMesh castObject = (DetailedFaceMesh) otherObject;
 
 			// Queue messages from the new edges added
 			updateManager.enqueue();
@@ -162,7 +162,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 			for (IController entity : otherObject
 					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 				addEntityToCategory(
-						(VertexController) ((AbstractController) entity)
+						(VertexController) ((BasicController) entity)
 								.clone(),
 						MeshCategory.VERTICES);
 			}
@@ -179,7 +179,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 							.getEntitiesFromCategory(category)) {
 
 						// Create a clone of the edge
-						EdgeController newEdge = (EdgeController) ((AbstractController) edge)
+						EdgeController newEdge = (EdgeController) ((BasicController) edge)
 								.clone();
 
 						// Get the clone's vertices
@@ -219,7 +219,7 @@ public class EdgeAndVertexFaceMesh extends FaceMesh {
 					for (IController entity : otherObject
 							.getEntitiesFromCategory(category)) {
 						addEntityToCategory(
-								(EdgeController) ((AbstractController) entity)
+								(EdgeController) ((BasicController) entity)
 										.clone(),
 								category);
 					}

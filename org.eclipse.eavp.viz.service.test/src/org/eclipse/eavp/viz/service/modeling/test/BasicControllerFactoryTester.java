@@ -12,9 +12,9 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractControllerProviderFactory;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicControllerProviderFactory;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
@@ -30,7 +30,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class AbstractControllerFactoryTester {
+public class BasicControllerFactoryTester {
 
 	/**
 	 * Test that the controller invokes the proper provider for the given
@@ -56,7 +56,7 @@ public class AbstractControllerFactoryTester {
 		assertTrue(vertexC instanceof VertexController);
 
 		// Check that the factory returns null for an unrecognized type.
-		IControllerProvider nullC = factory.createProvider(new AbstractMesh());
+		IControllerProvider nullC = factory.createProvider(new BasicMesh());
 		assertTrue(nullC == null);
 	}
 
@@ -67,7 +67,7 @@ public class AbstractControllerFactoryTester {
 	 * @author Robert Smith
 	 *
 	 */
-	public class TestControllerFactory extends AbstractControllerProviderFactory {
+	public class TestControllerFactory extends BasicControllerProviderFactory {
 
 		/**
 		 * The default constructor.
@@ -99,7 +99,7 @@ public class AbstractControllerFactoryTester {
 			@Override
 			public IController createController(IMesh model) {
 				return new PointController((PointMesh) model,
-						new AbstractView());
+						new BasicView());
 			}
 
 		}
@@ -123,7 +123,7 @@ public class AbstractControllerFactoryTester {
 			@Override
 			public IController createController(IMesh model) {
 				return new VertexController((VertexMesh) model,
-						new AbstractView());
+						new BasicView());
 			}
 
 		}

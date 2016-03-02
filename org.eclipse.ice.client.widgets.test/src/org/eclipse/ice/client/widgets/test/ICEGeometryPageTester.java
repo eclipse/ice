@@ -14,7 +14,7 @@ package org.eclipse.ice.client.widgets.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
@@ -44,9 +44,9 @@ public class ICEGeometryPageTester {
 		GeometryComponent geometryComponent = new GeometryComponent();
 		GeometryComponent otherGeometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(
-				new ShapeController(new ShapeMesh(), new AbstractView()));
+				new ShapeController(new ShapeMesh(), new BasicView()));
 		geometryComponent.setGeometry(
-				new ShapeController(new ShapeMesh(), new AbstractView()));
+				new ShapeController(new ShapeMesh(), new BasicView()));
 
 		// Get ICEGeometryPage to check accessor
 		ICEFormEditor ICEFormEditor = new ICEFormEditor();

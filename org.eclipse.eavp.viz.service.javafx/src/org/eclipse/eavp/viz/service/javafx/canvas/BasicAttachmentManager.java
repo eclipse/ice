@@ -24,7 +24,7 @@ import org.eclipse.eavp.viz.service.javafx.viewer.IAttachmentManager;
  * @author Tony McCrary (tmccrary@l33tlabs.com)
  *
  */
-abstract public class AbstractAttachmentManager implements IAttachmentManager {
+abstract public class BasicAttachmentManager implements IAttachmentManager {
 
 	/** The active list of attachments. */
 	protected List<IAttachment> active;

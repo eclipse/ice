@@ -22,8 +22,8 @@ import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeView;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXReactorView;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class FXPlantViewRootControllerTester {
 
 		// Create objects for testing
 		FXPlantViewRootController root = new FXPlantViewRootController(
-				new AbstractMesh(), new AbstractView());
+				new BasicMesh(), new BasicView());
 		PipeMesh pipeMesh = new PipeMesh();
 		pipeMesh.setLength(100);
 		pipeMesh.setInnerRadius(5);
@@ -79,7 +79,7 @@ public class FXPlantViewRootControllerTester {
 
 		// Create a second set of objects
 		FXPlantViewRootController root2 = new FXPlantViewRootController(
-				new AbstractMesh(), new AbstractView());
+				new BasicMesh(), new BasicView());
 		FXPipeController pipe2 = new FXPipeController(new PipeMesh(),
 				new FXPipeView());
 		FXPipeController core2 = new FXPipeController(new PipeMesh(),
@@ -109,9 +109,9 @@ public class FXPlantViewRootControllerTester {
 
 		// Create a cloned FXPlantViewRootController and check that it is
 		// identical to the original
-		AbstractMesh mesh = new AbstractMesh();
+		BasicMesh mesh = new BasicMesh();
 		FXPlantViewRootController root = new FXPlantViewRootController(mesh,
-				new AbstractView());
+				new BasicView());
 		root.setProperty(MeshProperty.INNER_RADIUS, "Property");
 		FXPlantViewRootController clone = (FXPlantViewRootController) root
 				.clone();
@@ -126,7 +126,7 @@ public class FXPlantViewRootControllerTester {
 
 		// Create some objects for testing
 		FXPlantViewRootController root = new FXPlantViewRootController(
-				new AbstractMesh(), new AbstractView());
+				new BasicMesh(), new BasicView());
 		PipeMesh pipeMesh = new PipeMesh();
 		pipeMesh.setLength(100);
 		pipeMesh.setInnerRadius(5);
