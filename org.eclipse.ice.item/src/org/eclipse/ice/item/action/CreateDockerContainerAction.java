@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.item.jobLauncher.DockerClientFactory;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;
@@ -75,8 +76,8 @@ public class CreateDockerContainerAction extends RemoteExecutionAction {
 		status = FormStatus.Processing;
 		
 		try {
-			dockerClient = DefaultDockerClient.fromEnv().build();
-		} catch (DockerCertificateException e1) {
+			dockerClient = new DockerClientFactory().getDockerClient();
+		} catch (DockerCertificateException | IOException | InterruptedException e1) {
 			actionError("Error in getting a reference to Docker or listing available Images.", e1);
 			return status;
 		}
@@ -117,8 +118,7 @@ public class CreateDockerContainerAction extends RemoteExecutionAction {
 			port = result.split(":")[1];
 	
 			// Get the hostname for the Docker container
-			String dockerHost = System.getenv("DOCKER_HOST");
-			String hostName = dockerHost.split(":")[1].replace("/", "");
+			String hostName = dockerClient.getHost();
 			dictionary.put("hostname", hostName);
 			dictionary.put("remoteConnectionName", "Docker Host - " + hostName + ":" + port);
 			dictionary.put("containerId", containerId);

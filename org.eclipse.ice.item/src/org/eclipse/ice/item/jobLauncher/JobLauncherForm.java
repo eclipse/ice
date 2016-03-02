@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,7 +122,7 @@ public class JobLauncherForm extends Form {
 	 */
 	private static final String TBBEntryName = "Number of TBB Threads";
 
-	private boolean dockerAvailable;
+	private DockerClientFactory clientFactory;
 	
 	/**
 	 * <p>
@@ -169,16 +170,24 @@ public class JobLauncherForm extends Form {
 						// Set up the allowed values
 						DockerClient dockerClient;
 						try {
-							dockerClient = DefaultDockerClient.fromEnv().build();
-							allowedValues = new ArrayList<String>();
-							for (Image i : dockerClient.listImages()) {
-								allowedValues.add(i.repoTags().get(0));
+							dockerClient = new DockerClientFactory().getDockerClient();
+							if (dockerClient != null) {
+								allowedValues = new ArrayList<String>();
+								for (Image i : dockerClient.listImages()) {
+									allowedValues.add(i.repoTags().get(0));
+								}
+								if (allowedValues.isEmpty()) {
+									allowedValues.add("No Images Found.");
+								}
+								setValue(allowedValues.get(0));
+							} else {
+								logger.error("Error in getting a reference to Docker or listing available Images.");
+								allowedValues = new ArrayList<String>();
+								allowedValues.add("Error connecting to Docker.");
+								setValue(allowedValues.get(0));
+								return;
 							}
-							if (allowedValues.isEmpty()) {
-								allowedValues.add("No Images Found.");
-							}
-							setValue(allowedValues.get(0));
-						} catch (DockerCertificateException | DockerException | InterruptedException e1) {
+						} catch (DockerCertificateException | DockerException | InterruptedException | IOException e1) {
 							e1.printStackTrace();
 							logger.error("Error in getting a reference to Docker or listing available Images.", e1);
 							allowedValues = new ArrayList<String>();
