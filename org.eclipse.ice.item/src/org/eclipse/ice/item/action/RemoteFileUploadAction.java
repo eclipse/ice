@@ -34,8 +34,10 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionType;
 import org.eclipse.remote.core.IRemoteFileService;
 import org.eclipse.remote.core.IRemoteProcessService;
+import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
@@ -165,7 +167,9 @@ public class RemoteFileUploadAction extends RemoteAction {
 
 		// Validate hostname and projectDir input parameters first
 		if (hostName == null || projectDir == null) {
-			return actionError("Invalid Host Name or Project Directory input parameters for RemoteFileUpload. See class documentation.", null);
+			return actionError("Invalid Host Name or Project Directory "
+					+ "input parameters for RemoteFileUpload. See class "
+					+ "documentation.", null);
 		}
 
 		// Get the project reference
@@ -207,7 +211,18 @@ public class RemoteFileUploadAction extends RemoteAction {
 		}
 
 		// Get the remote connection
-		connection = getRemoteConnection(hostName);
+		String connectionName = dictionary.get("remoteConnectionName");
+		if (connectionName == null) {
+			connection = getRemoteConnection(hostName);
+		} else {
+			IRemoteConnectionType connectionType = getService(IRemoteServicesManager.class).getRemoteConnectionTypes()
+					.get(0);
+			for (IRemoteConnection c : connectionType.getConnections()) {
+				if (connectionName.equals(c.getName())) {
+					connection = c;
+				}
+			}
+		}
 		if (connection == null) {
 			return actionError("Remote File Upload could not get a valid connection to " + hostName + ".", null);
 		}

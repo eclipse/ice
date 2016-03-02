@@ -566,7 +566,7 @@ public class JobLauncher extends Item {
 		String installDir = ".";
 		IResource fileResource = null;
 		String os = "linux", accountCode = "";
-		DataComponent fileData = null, parallelData = null;
+		DataComponent fileData = null, parallelData = null, dockerComponent;
 		IEntry fileEntry = null, mpiEntry = null;
 		int numProcs = 1, numTBBThreads = 1;
 
@@ -576,6 +576,8 @@ public class JobLauncher extends Item {
 		// Assign the data components
 		fileData = (DataComponent) form.getComponent(JobLauncherForm.filesId);
 		parallelData = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		dockerComponent = (DataComponent) form.getComponent(JobLauncherForm.dockerId);
+		
 		// Check the components and fail if they are null
 		if (fileData == null) {
 			return FormStatus.InfoError;
@@ -681,11 +683,21 @@ public class JobLauncher extends Item {
 			actionDataMap.put("downloadDirectory", remoteDownloadDir);
 		}
 
+		IEntry enableDockerEntry = dockerComponent.retrieveEntry("Launch with Docker");
+		if (enableDockerEntry != null) {
+			enableDocker = Boolean.valueOf(enableDockerEntry.getValue());
+			if (enableDocker) {
+				String imageName = dockerComponent.retrieveEntry("Available Images").getValue();
+				actionDataMap.put("imageName", imageName);
+			}
+		}
 		logger.debug("JobLauncher Message: " + "Action Data Map = " + actionDataMap);
 
 		return FormStatus.ReadyToProcess;
 	}
 
+	private boolean enableDocker = false;
+	
 	/**
 	 * This operation adds an output file to the output data resource. It is a
 	 * utility function used primarily by createOutputFiles().
@@ -1054,6 +1066,18 @@ public class JobLauncher extends Item {
 		// moved to the job launch directory.
 		actionList.add(actionFactory.getAction("Local Files Copy"));
 
+		// If docker launch is enabled, then 
+		// we need to launch the correct container and 
+		// modify the hostname/port in the action data map 
+		// to point to that container 
+		if (enableDocker) {
+			Action dockerAction = actionFactory.getAction("Create Docker Container");
+			
+			// This execution should create the container and remote connection 
+			// and modify the host/port/connectionName in the map.
+			dockerAction.execute(actionDataMap);
+		}
+		
 		// Create the List of Actions to execute... The list is
 		// different depending on whether we are local or remote,
 		// or using Docker or not...
@@ -1062,6 +1086,7 @@ public class JobLauncher extends Item {
 			// Action
 			actionList.add(actionFactory.getAction("Local Execution"));
 		} else {
+			System.out.println("Setting up remote launch");
 			// For a remote execution, we need to push files to the
 			// remote host, execute remotely, then download resultant files.
 			actionList.add(actionFactory.getAction("Remote File Upload"));
@@ -1372,7 +1397,7 @@ public class JobLauncher extends Item {
 		((JobLauncherForm) form).enableMPI(minProcesses, maxProcesses, defaultProcesses);
 
 		// If the components are not greater than 2, then it is false
-		if (form.getComponents().size() > 3) {
+		if (form.getComponents().size() > 4) {
 			DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 			IEntry entry = dataC.retrieveEntry("Number of MPI Processes");
 			if (entry != null) {
@@ -1437,7 +1462,7 @@ public class JobLauncher extends Item {
 			((JobLauncherForm) form).enableOpenMP(minThreads, maxThreads, defaultThreads);
 
 			// If the components are not greater than 2, then it is false
-			if (form.getComponents().size() > 3) {
+			if (form.getComponents().size() > 4) {
 				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 				IEntry entry = dataC.retrieveEntry("Number of OpenMP Threads");
 				if (entry != null) {
@@ -1512,7 +1537,7 @@ public class JobLauncher extends Item {
 			JobLauncherForm form = (JobLauncherForm) this.getForm();
 
 			// If there are more than 3 components, then parallelism is enabled.
-			if (form.getComponents().size() > 3) {
+			if (form.getComponents().size() > 4) {
 				DataComponent dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 				IEntry entry = dataC.retrieveEntry("Number of TBB Threads");
 				if (entry != null) {

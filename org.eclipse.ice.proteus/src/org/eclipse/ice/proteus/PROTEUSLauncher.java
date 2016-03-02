@@ -94,8 +94,8 @@ public class PROTEUSLauncher extends JobLauncher {
 		String relinkStep = "ln -s ${inputFile} sahex1_unic.inp;";
 		String launchStep = "${installDir}sn2nd.x -input sahex1_unic.inp;";
 		String allLaunchSteps = cpDataStep + relinkStep + launchStep;
-		String localInstallDir = "sharp/trunk/modules/unic/src/bin";
-		String remoteInstallDir = "/home/nfs/Anna Wojtowicz/sharp/defaultBuild/modules/unic/src/bin";
+		String localInstallDir = "/sharp/trunk/modules/unic/src/bin";
+		String remoteInstallDir = "/home/nfs/sharp/defaultBuild/modules/unic/src/bin";
 
 		// Setup the Form
 		super.setupForm();
