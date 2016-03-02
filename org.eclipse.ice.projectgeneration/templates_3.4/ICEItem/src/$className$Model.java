@@ -76,11 +76,11 @@ public class $className$Model extends Model {
 	protected void setupItemInfo() {
 		setName("$className$ Model");
 		setDescription("Specify information about $className$");
-		allowedActions.add(0, exportString);
 		writerName = "$className$DefaultWriterName";
 		readerName = "$className$DefaultReaderName";     	
 		outputName = "$className$DefaultOutputName";   
-		exportString = "Export to $className$ input format";	
+		exportString = "Export to $className$ input format";
+		allowedActions.add(0, exportString);
 	}
 
 	/**
