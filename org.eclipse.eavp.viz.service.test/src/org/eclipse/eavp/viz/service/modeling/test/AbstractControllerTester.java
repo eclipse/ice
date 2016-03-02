@@ -34,6 +34,8 @@ import org.eclipse.eavp.viz.service.modeling.test.utils.TestView;
 import org.junit.Before;
 import org.junit.Test;
 
+import javafx.scene.Group;
+
 /**
  * A test class for the AbstractController
  * 

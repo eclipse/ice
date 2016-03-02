@@ -32,13 +32,17 @@
 		    name="startupProgressRect"
 		    value="5,470,665,15">
 		</property>
-		<property
-		    name="preferenceCustomization"
-		    value="plugin_customization.ini">
-		</property>
         <property
             name="applicationCSSResources" 
             value="platform:/plugin/org.eclipse.platform/images/"> 
+        </property>
+        <property
+              name="windowImages"
+              value="/icons/ice_logo_16x16.png,/icons/ice_logo_32x32.png,/icons/ice_logo_64x64.png,/icons/ice_logo_128x128.png,/icons/ice_logo_256x256.png">
+        </property>
+        <property
+              name="preferenceCustomization"
+              value="plugin_customization.ini">
         </property>
       </product>
   </extension>

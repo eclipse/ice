@@ -23,7 +23,7 @@
       </vmArgsWin>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/icons/ice_logo_16x16.png" i32="/icons/ice_logo_32x32.png" i64="/icons/ice_logo_64x64.png" i128="/icons/ice_logo_128x128.png" i256="/icons/ice_logo_256x256.png"/>
 
    <splash
       location="org.eclipse.ice.client.rcp"
