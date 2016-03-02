@@ -91,32 +91,23 @@ public class CreateDockerContainerAction extends RemoteExecutionAction {
 					.tty(true).attachStdout(true).attachStderr(true)
 					.exposedPorts(new String[] { "22" }).build();
 
+			ContainerInfo info  = null;
 			try {
 				ContainerCreation creation = dockerClient.createContainer(containerConfig);
 				containerId = creation.id();
 				dockerClient.startContainer(containerId);
 
+				// Query the info on the new container.
+				info = dockerClient.inspectContainer(containerId);
+				
 			} catch (DockerException | InterruptedException e) {
 				actionError("Error in creating the container.", e);
 				return status;
 			}
 
-			// Get the docker port
-			ProcessBuilder jobBuilder = new ProcessBuilder("docker", "port", containerId, "22");
-			Process job = null;
-			try {
-				job = jobBuilder.start();
-			} catch (IOException e1) {
-				actionError("Error in getting the dynamically allocated port.", e1);
-				return status;
-			}
-			
-			// Get the Port
-			InputStream stdOutStream = job.getInputStream();
-			String result = new BufferedReader(new InputStreamReader(stdOutStream)).lines()
-					.collect(Collectors.joining("\n"));
-			port = result.split(":")[1];
-	
+			// Get the dynamically assigned port
+			port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
+
 			// Get the hostname for the Docker container
 			String hostName = dockerClient.getHost();
 			dictionary.put("hostname", hostName);
@@ -175,4 +166,24 @@ public class CreateDockerContainerAction extends RemoteExecutionAction {
 		return "Create Docker Container";
 	}
 
+	/**
+	 * Private utility for getting string from InputStream.
+	 * 
+	 * @param stream
+	 * @return
+	 */
+	private String streamToString(InputStream stream) {
+		BufferedReader buff = new BufferedReader(new InputStreamReader(stream));
+		StringBuffer res = new StringBuffer();
+		String line = ""; //$NON-NLS-1$
+		try {
+			while ((line = buff.readLine()) != null) {
+				res.append(System.getProperty("line.separator"));
+				res.append(line);
+			}
+			buff.close();
+		} catch (IOException e) {
+		}
+		return res.length() > 0 ? res.substring(1) : "";
+	}
 }

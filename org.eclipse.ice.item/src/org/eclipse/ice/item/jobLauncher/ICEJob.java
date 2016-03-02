@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher;
 
+import java.io.IOException;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -166,8 +167,8 @@ public class ICEJob extends Job {
 		String connectionName = actionDataMap.get("remoteConnectionName");
 		DockerClient dockerClient = null;
 		try {
-			dockerClient = DefaultDockerClient.fromEnv().build();
-		} catch (DockerCertificateException e1) {
+			dockerClient = new DockerClientFactory().getDockerClient();
+		} catch (DockerCertificateException | IOException | InterruptedException e1) {
 			e1.printStackTrace();
 		}
 
