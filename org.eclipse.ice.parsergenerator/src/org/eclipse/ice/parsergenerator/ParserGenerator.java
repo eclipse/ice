@@ -1,13 +1,15 @@
 package org.eclipse.ice.parsergenerator;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
@@ -21,24 +23,24 @@ import com.google.inject.Module;
 
 import org.eclipse.xtext.ui.util.FileOpener;
 import org.eclipse.xtext.util.JavaVersion;
-import org.eclipse.xtext.xtext.ui.internal.XtextUIModuleInternal;
 import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
 import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
 import org.eclipse.xtext.xtext.wizard.BuildSystem;
 import org.eclipse.xtext.xtext.wizard.ProjectLayout;
 import org.eclipse.xtext.xtext.wizard.SourceLayout;
-import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.xtext.xtext.wizard.LanguageDescriptor;
 import org.eclipse.xtext.xtext.wizard.LanguageDescriptor.FileExtensions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
+import org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher;
+import org.eclipse.emf.mwe2.launch.runtime.Mwe2Runner;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -47,11 +49,9 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
-import org.eclipse.ice.io.serializable.IWriter;
-import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.model.Model;
-import org.eclipse.ice.projectgeneration.ICEItemNature;
 
+@SuppressWarnings("restriction")
 @XmlRootElement(name = "ParserGenerator")
 public class ParserGenerator extends Model {
 
@@ -89,9 +89,9 @@ public class ParserGenerator extends Model {
 		DataComponent projectComponent = new DataComponent();
 		projectComponent.setName("Project Details");
 		projectComponent.setId(0);
-		projectComponent.addEntry(createEntry("Project Name", ""));
-		projectComponent.addEntry(createEntry("Parser Name", ""));
-		projectComponent.addEntry(createEntry("File Extension", ""));
+		projectComponent.addEntry(createEntry("Project Name", "org.eclipse.ice.example"));
+		projectComponent.addEntry(createEntry("Parser Name", "Example"));
+		projectComponent.addEntry(createEntry("File Extension", "ini"));
 		DataComponent parserComponent = new DataComponent();
 		parserComponent.setName("Parser Details");
 		parserComponent.setId(1);
@@ -161,6 +161,7 @@ public class ParserGenerator extends Model {
 	@Override
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
+		Injector injector = Guice.createInjector();
 		ArrayList<Component> components = form.getComponents();
 		ArrayList<IEntry> projectEntries = ((DataComponent)components.get(0)).retrieveAllEntries();
 		ArrayList<IEntry> parserEntries = ((DataComponent)components.get(1)).retrieveAllEntries();
@@ -168,10 +169,6 @@ public class ParserGenerator extends Model {
 		String projectName    = projectEntries.get(0).getValue(); 
 		String parserName     = projectEntries.get(1).getValue();
 		String fileExt        = projectEntries.get(2).getValue();
-		String sectionOpen    = parserEntries.get(0).getValue();
-		String sectionClose   = parserEntries.get(1).getValue(); 
-		String assignOperator = parserEntries.get(2).getValue(); 
-		String commentSymbol  = parserEntries.get(3).getValue();
 		
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
@@ -191,7 +188,7 @@ public class ParserGenerator extends Model {
 				info.setRootLocation(workspace.getRoot().getLocation().toOSString());
 				info.setWorkbench(PlatformUI.getWorkbench());
 				info.setEncoding(Charset.defaultCharset());
-				info.setPreferredBuildSystem(BuildSystem.NONE);
+				info.setPreferredBuildSystem(BuildSystem.MAVEN);
 				info.setSourceLayout(SourceLayout.PLAIN);
 				info.setJavaVersion(JavaVersion.JAVA8);
 				info.setProjectLayout(ProjectLayout.FLAT);
@@ -213,7 +210,7 @@ public class ParserGenerator extends Model {
 							creator = injector.getInstance(XtextProjectCreator.class);
 							creator.setProjectInfo(info);
 							creator.run(monitor);
-							fileOpener.selectAndReveal(creator.getResult());
+							//fileOpener.selectAndReveal(creator.getResult());
 						} catch(Exception e) {
 							throw new InvocationTargetException(e);
 						} finally {
@@ -222,6 +219,36 @@ public class ParserGenerator extends Model {
 					}
 				};
 				op.run(new NullProgressMonitor());
+			
+				// Write out the grammar file
+				StringJoiner sj = new StringJoiner(System.getProperty("file.separator"));
+				sj.add(workspace.getRoot().getLocation().toOSString());
+				sj.add(projectName);
+				sj.add("src");
+				for (String s : projectName.split("\\."))
+					sj.add(s);
+				sj.add(parserName + ".xtext");
+				String grammarFilePath = sj.toString();
+				String grammarText = buildGrammar(projectName, parserName, parserEntries);
+				FileWriter fw = new FileWriter(new File(grammarFilePath), false);
+				fw.write(grammarText);
+				fw.flush();
+				fw.close();
+				
+				// Need to register the new project as a resource
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+				
+				//URI uri = (new File(grammarFilePath)).toURI();
+				//System.out.println(uri.toString());
+				
+				// Generate the parser
+				injector = new Mwe2StandaloneSetup().createInjectorAndDoEMFRegistration();
+				Mwe2Runner runner = injector.getInstance(Mwe2Runner.class);
+				
+				/*
+				 * There are issues getting the Mwe2Runner or Mwe2Launcher to work due to
+				 * the new project not being registered with the emf plugins.
+				 */
 				
 				project.refreshLocal(1, new NullProgressMonitor());
 				retStatus = FormStatus.Processed;
@@ -238,32 +265,34 @@ public class ParserGenerator extends Model {
 		return retStatus;
 	}
 
-	private String buildGrammar(String open, String close, String assign, String comment) {
+	private String buildGrammar(String projectName, String parserName, ArrayList<IEntry> parserData) {
+		String open    = parserData.get(0).getValue();
+		String close   = parserData.get(1).getValue(); 
+		String assign = parserData.get(2).getValue(); 
+		String comment  = parserData.get(3).getValue();
+		
 		String sep = System.lineSeparator();
-		String header = "grammar ItemParser";
-		String declaration = "sections+=Section*";
-		String content = "section*";
-		String entry = "name=ID + ASSIGN + value=TEXT";
-		String section = "OPEN + name=ID + CLOSE" + sep + 
+		String header = "grammar " + projectName + "." + parserName + " with org.eclipse.xtext.common.Terminals hidden(COMMENT, WHITESPACE)" + sep + 
+				"generate project \"http://www.eclipse.org/" + projectName + "\"" + sep;
+		String declaration = "{Input}" + sep + "    NEWLINE*" + sep + "    sections+=Section*";
+		String line = "name=ID + ASSIGN + value=TEXT";
+		String section = "OPEN + ID + CLOSE" + sep + 
 		             "    (NEWLINE+ lines+=Line)+" + sep + 
 		             "    NEWLINE+";
 		String id = "('A'..'Z' | 'a'..'z') ('A'..'Z' | 'a'..'z' | '_' | '-' | '0'..'9')"; 
-		String whitespace = "(' '|'\t')+;";
-		String newline = "'\r'? '\n'+";
+		String whitespace = "(' '|'\\t')+";
+		String newline = "'\\r'? '\\n'+";
 		String text = "(WHITESPACE+ | STRING+)*";		
 		
 		BiFunction<String, String, String> build = (k,v) -> (k + ":" + sep + "    " + v + ";" + sep); 
 		
 		StringBuilder sb = new StringBuilder();
-		
 		sb.append(header);
-		sb.append(build.apply("ItemParser", declaration));
+		sb.append(build.apply("Input", declaration));
 		
 		// Intermediate nodes in parse tree
-		sb.append(build.apply("content", content));
-		sb.append(build.apply("section", section));
-		sb.append(build.apply("comment", "COMMENT " + text));
-		sb.append(build.apply("entry", entry));
+		sb.append(build.apply("Section", section));
+		sb.append(build.apply("Line", line));
 		
 		// 'terminal' prefix denotes leaf nodes of parse tree
 		sb.append(build.apply("terminal ID", id));
@@ -271,10 +300,10 @@ public class ParserGenerator extends Model {
 		sb.append(build.apply("terminal NEWLINE", newline));
 		sb.append(build.apply("terminal WHITESPACE", whitespace));
 		
-		sb.append(build.apply("terminal OPEN", open));
-		sb.append(build.apply("terminal CLOSE", close));
-		sb.append(build.apply("terminal ASSIGN", assign));
-		sb.append(build.apply("terminal COMMENT", comment));		
+		sb.append(build.apply("terminal OPEN", "'" + open + "'"));
+		sb.append(build.apply("terminal CLOSE", "'" + close + "'"));
+		sb.append(build.apply("terminal ASSIGN", "'" + assign + "'"));
+		sb.append(build.apply("terminal COMMENT", "'" + comment + "' " + text));		
 	
 		return sb.toString();
 	}
