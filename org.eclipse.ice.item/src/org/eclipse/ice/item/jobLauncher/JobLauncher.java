@@ -1081,7 +1081,7 @@ public class JobLauncher extends Item {
 		// Create the List of Actions to execute... The list is
 		// different depending on whether we are local or remote,
 		// or using Docker or not...
-		if (isLocalhost(actionDataMap.get("hostname"))) {
+		if (isLocalhost(actionDataMap.get("hostname")) && !enableDocker) {
 			// For a local execution, we just need the Local Execution
 			// Action
 			actionList.add(actionFactory.getAction("Local Execution"));
