@@ -375,34 +375,24 @@ public class MOOSELauncher extends SuiteLauncher implements IUpdateableListener 
 
 		if (component instanceof IEntry) {
 
-				// Check if this is the Input File entry and has a valid value
-				IEntry entry = (IEntry) component;
-				if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
+			// Check if this is the Input File entry and has a valid value
+			IEntry entry = (IEntry) component;
+			if (entry.getName().equals("Input File") && !entry.getValue().isEmpty()) {
 
-					// First, check if the file extension on the value is valid
-					if (!entry.getValue().contains(".i")) {
-						// Complain and exit
-						logger.info("MOOSELauncher Message: Input files" + "must have a *.i extension!");
-						return;
-					}
-
+				// First, check if the file extension on the value is valid
+				if (!entry.getValue().contains(".i")) {
+					// Complain and exit
+					logger.info("MOOSELauncher Message: Input files" + "must have a *.i extension!");
+					return;
 				}
+
+			}
 
 			super.update(entry);
 		}
 
 		return;
 	}
-
-	/**
-	 * This method is used to get the String representing the working directory
-	 * for this Job launch.
-	 *
-	 * @return
-	 */
-//	public String getJobLaunchDirectory() {
-//		return getWorkingDirectory();
-//	}
 
 	/*
 	 * (non-Javadoc)

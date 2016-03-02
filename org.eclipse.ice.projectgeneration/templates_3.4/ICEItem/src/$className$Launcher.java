@@ -5,6 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IProject;
 
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
@@ -14,9 +16,8 @@ public class $className$Launcher extends JobLauncher {
 
 	// TODO: 
 	//   These need to be filled in before using this item
-	//	 They can be set in the $className$Model(IProject) method
+	//	 They can be set in the setupItemInfo() method
 	private String execCommand;
-	private String readerName;
 	// End required variables
 	
 	private IIOService ioService;
@@ -31,28 +32,22 @@ public class $className$Launcher extends JobLauncher {
 
 	/**
 	 * Main constructor
-	 * 
-	 * Developer is required to update the class variables that are
-	 * 
 	 */
 	public $className$Launcher(IProject project) {
 		super(project);
-
-		// TODO: These must be customized before using this item
-		execCommand = "$className$DefaultExecCommand";
-		readerName = "$className$DefaultReaderName";
-		// End required variables
-			
-		// TODO: Add User Code Here
 	}
 
 	/**
-	 * Sets the name and description for the item. 
+	 * Sets the name and description for the item.  This will
+	 * have to be updated so that the execCommand is set correctly 
 	 */
 	@Override
 	protected void setupItemInfo() {
 		setName("$className$ Launcher");
 		setDescription("Provide information to launch $className$");
+		// TODO: These must be customized before using this item
+		execCommand = "$className$DefaultExecCommand";
+		// End required variables
 	}
 
 	/**
@@ -72,7 +67,7 @@ public class $className$Launcher extends JobLauncher {
 	}
 
 	/**
-	 *
+	 * Complete the launch command
 	 * 
 	 * @param actionName
 	 * 		The action to take when processing
@@ -84,14 +79,9 @@ public class $className$Launcher extends JobLauncher {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 	
 		// Make sure that the launcher code has been updated
-		if (execCommand == "$className$DefaultExecCommand" ||
-				readerName == "$className$DefaultReaderName") {
+		if (execCommand == "$className$DefaultExecCommand") {
 			return FormStatus.InfoError;
 		}
-		
-		// TODO: Add User Code Here
-		reader = ioService.getReader(readerName);
-		// TODO: Add User Code Here
 		
 		setExecutable(getName(), getDescription(), execCommand);
 		retStatus = super.process(actionName);

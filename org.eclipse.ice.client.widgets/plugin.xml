@@ -391,7 +391,7 @@
        name="Default Error Page Provider"
        point="org.eclipse.ice.client.widgets.errorPageProvider">
     <implementation
-          class="org.eclipse.ice.client.widgets.providers.DefaultErrorPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultErrorPageProvider">
     </implementation>
  </extension>
  <extension
@@ -399,7 +399,7 @@
        name="Default List Page Provider"
        point="org.eclipse.ice.client.widgets.listPageProvider">
     <implementation
-          class="org.eclipse.ice.client.widgets.providers.DefaultListPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultListPageProvider">
     </implementation>
  </extension>
  <extension
@@ -408,7 +408,7 @@
        point="org.eclipse.ice.client.widgets.resourcePageProvider">
     <Implementation
           Class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider"
-          class="org.eclipse.ice.client.widgets.providers.DefaultResourcePageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultResourcePageProvider">
     </Implementation>
  </extension>
  <extension
@@ -416,7 +416,7 @@
        name="Basic Components Page Provider"
        point="org.eclipse.ice.client.widgets.basicComponentPageProvider">
     <implementation
-          class="org.eclipse.ice.client.widgets.providers.DefaultBasicComponentPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultBasicComponentPageProvider">
     </implementation>
  </extension>
  <extension
@@ -424,7 +424,7 @@
        name="Geometry Page Provider"
        point="org.eclipse.ice.client.widgets.geometryPageProvider">
     <client
-          class="org.eclipse.ice.client.widgets.providers.DefaultGeometryPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultGeometryPageProvider">
     </client>
  </extension>
  <extension
@@ -432,7 +432,7 @@
        name="EMF Section Page Provider"
        point="org.eclipse.ice.client.widgets.IEMFSectionPageProvider">
     <client
-          class="org.eclipse.ice.client.widgets.providers.DefaultIEMFSectionPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultIEMFSectionPageProvider">
     </client>
  </extension>
  <extension
@@ -440,7 +440,7 @@
        name="Mesh Page Provider"
        point="org.eclipse.ice.client.widgets.meshPageProvider">
     <client
-          class="org.eclipse.ice.client.widgets.providers.DefaultMeshPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultMeshPageProvider">
     </client>
  </extension>
  <extension 
@@ -448,7 +448,7 @@
        name="Master Details Page Provider"
        point="org.eclipse.ice.client.widgets.masterDetailsPageProvider">
     <Implementation
-          class="org.eclipse.ice.client.widgets.providers.DefaultMasterDetailsPageProvider">
+          class="org.eclipse.ice.client.widgets.providers.Default.DefaultMasterDetailsPageProvider">
     </Implementation>
  </extension>
 </plugin>

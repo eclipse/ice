@@ -9,13 +9,14 @@
  *   Initial API and implementation and/or initial documentation - 
  *   Alex McCaskey
  *******************************************************************************/
-package org.eclipse.ice.client.widgets.providers;
+package org.eclipse.ice.client.widgets.providers.Default;
 
 import org.eclipse.ice.client.widgets.DiscreteEntryComposite;
 import org.eclipse.ice.client.widgets.ExecutableEntryComposite;
 import org.eclipse.ice.client.widgets.FileEntryComposite;
 import org.eclipse.ice.client.widgets.IEntryComposite;
 import org.eclipse.ice.client.widgets.StringEntryComposite;
+import org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.ExecutableEntry;
