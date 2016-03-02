@@ -238,7 +238,7 @@
                                 <phase>package</phase>
 								<configuration>
 									<signFiles>
-										<signFile>ICE.app</signFile>
+										<signFile>${project.build.directory}/products/ice.product/macosx/cocoa/x86_64/ICE.app</signFile>
 									</signFiles>
 								</configuration>
                             </execution>
