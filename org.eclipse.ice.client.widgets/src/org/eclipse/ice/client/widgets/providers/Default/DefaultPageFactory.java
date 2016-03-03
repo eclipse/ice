@@ -20,6 +20,7 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.ice.client.widgets.providers.IBasicComponentPageProvider;
 import org.eclipse.ice.client.widgets.providers.IEMFSectionPageProvider;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
+import org.eclipse.ice.client.widgets.providers.IGeometryPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.client.widgets.providers.IMasterDetailsPageProvider;
 import org.eclipse.ice.client.widgets.providers.IMeshPageProvider;
@@ -219,23 +220,28 @@ public class DefaultPageFactory implements IPageFactory {
 	public ArrayList<IFormPage> getGeometryComponentPages(FormEditor editor,
 			ArrayList<Component> components) {
 
-		// List for storing the pages
+		// List for the pages
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
-
-		IPageProvider provider = null;
-		String contextKey = components.get(0).getContext();
-		// Get the appropriate page provider if indicated and available in the
-		// e4 context
-		if (context.containsKey(contextKey)) {
-			provider = (IPageProvider) context.get(contextKey);
-		} else {
-			// Otherwise fall back to the default
-			provider = new DefaultGeometryPageProvider();
+		try {
+			// Create the provider and get the pages from it
+			ArrayList<IGeometryPageProvider> GeometryComponentPages = IGeometryPageProvider
+					.getProviders();
+			if (GeometryComponentPages != null && GeometryComponentPages.size() > 0) {
+				// Use the default error page provider
+				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
+				// Do a linear search to find the correct provider
+				for (IGeometryPageProvider currentProvider : GeometryComponentPages) {
+					if (providerNameToUse.equals(currentProvider.getName())) {
+						pages = currentProvider.getPages(editor, components);
+						break;
+					}
+				}
+			} else {
+				logger.error("No GeometryComponentPages registered");
+			}
+		} catch (CoreException e) {
+			logger.error("Unable to get GeometryComponentPages", e);
 		}
-
-		// Get the pages
-		pages = provider.getPages(editor, components);
-
 		return pages;
 	}
 
