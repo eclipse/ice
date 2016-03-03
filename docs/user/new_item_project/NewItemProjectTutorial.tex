@@ -114,39 +114,62 @@ if (readerName == "FernDefaultReaderName") {
 
 // This is our new code
 if (fileName == "null") {
-    // Create a section for the network information
+    ContinuousEntry ce;
+    StringEntry se;
+
+    // Create the network section
     DataComponent networkComp = new DataComponent();
     networkComp.setName("Network");
     networkComp.setId(0);
-    // Put some information in the network section
-    networkComp.addEntry(createEntry("numSpecies", "0", 
-        AllowedValueType.Continuous));
-    networkComp.addEntry(createEntry("numReactions", "0", 
-        AllowedValueType.Continuous));
-    networkComp.addEntry(createEntry("numReactionGroups", "0", 
-        AllowedValueType.Continuous));
-    networkComp.addEntry(createEntry("massTol", "0", 
-        AllowedValueType.Continuous));
-    networkComp.addEntry(createEntry("networkFile", 
-        "/home/user/input.inp", AllowedValueType.Undefined));
-    networkComp.addEntry(createEntry("rateFile", 
-        "/home/user/data.data", AllowedValueType.Undefined));
-
+    ce = new ContinuousEntry();
+    ce.setName("numSpecies");
+    ce.setValue("0");
+    networkComp.addEntry(ce);
+    ce = new ContinuousEntry();
+    ce.setName("numReactions");
+    ce.setValue("0");
+    networkComp.addEntry(cd);
+    ce = new ContinuousEntry();
+    ce.setName("numReactionGroups");
+    ce.setValue("0");
+    networkComp.addEntry(ce); 
+    ce = new ContinuousEntry();
+    ce.setName("massTol");
+    ce.setValue("0");
+    se = new StringEntry();
+    se.setName("networkFile");
+    se.setValue("/home/user/input.inp");
+    networkComp.addEntry(se);
+    se = new StringEntry();
+    se.setName("rateFile");
+    se.setValue("/home/user/data.data");
+    networkComp.add(se);
+    
     // Create the initial conditions section
     DataComponent initConditionsComp = new DataComponent();
     initConditionsComp.setName("Initial Conditions");
     initConditionsComp.setId(1);
-    // Put some information in the inital conditions section
-    initConditionsComp.addEntry(createEntry("T9", "0", 
-        AllowedValueType.Continuous));
-    initConditionsComp.addEntry(createEntry("startTime", "0", 
-        AllowedValueType.Continuous));
-    initConditionsComp.addEntry(createEntry("endTime", "0", 
-        AllowedValueType.Continuous));
-    initConditionsComp.addEntry(createEntry("initialTimeStep", "0", 
-        AllowedValueType.Continuous));
-    initConditionsComp.addEntry(createEntry("density", "0", 
-        AllowedValueType));
+    ce = new ContinuousEntry();
+    ce.setName("T9");
+    ce.setValue("0");
+    initConditionsComp.addEntry(ce);
+    ce = new ContinuousEntry();
+    ce.setName("startTime");
+    ce.setValue("0");
+    initConditionsComp.addEntry(ce);
+    ce = new ContinuousEntry();
+    ce.setName("endTime");
+    ce.setValue("0");
+    initConditionsComp.addEntry(ce);
+    ce = new ContinuousEntry();
+    ce.setName("initialTimeStep");
+    ce.setValue("0");
+    initConditionsComp.addEntry(ce);
+    ce = new ContinuousEntry();
+    ce.setName("density");
+    ce.setValue("0");
+    initConditionsComp.addEntry(ce);
+    form.add(initConditionsComp);
 } else {
     IFile inputFile = project.getFile(fileName);
     reader = ioService.getReader(readerName);

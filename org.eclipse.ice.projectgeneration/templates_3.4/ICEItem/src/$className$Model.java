@@ -165,6 +165,23 @@ public class $className$Model extends Model {
 
 		if (fileName == null) {
 			// TODO: Add User Code Here
+			// These are examples of how you could add data to your form.
+			//
+			//IEntry someEntry = new StringEntry();
+			//someEntry.setName("Some Entry");
+			//someEntry.setValue("Some value");
+			//
+			//IEntry discreteEntry = new DiscreteEntry("val1", "val2", "val3");
+			//discreteEntry.setName("Discrete Entry Name");
+			//
+			// DataComponents can hold any number of different entries to display
+			// information to users. 
+			//DataComponent comp = new DataComponent();
+			//comp.setName("Default component");
+			//...
+			//comp.addEntry(someEntry);
+			//comp.addEntry(discreteEntry);
+			//form.add(comp);
 			return;
 		} else {
 			// Read in the file and set up the form
@@ -176,30 +193,5 @@ public class $className$Model extends Model {
 			form.setId(getId());
 			form.setItemID(getId());
 		}
-	}
-	
-	/**
-	 * Creates an appropriate entry type with some initial setup.
-	 * 
-	 * @param name 
-	 * 		The name to display
-	 * @param value 
-	 * 		The default value
-	 * @param entryType 
-	 * 		The type of entry to use
-	 * @return the constructed entry
-	 */
-	public IEntry createNumEntry(String name, String value, AllowedValueType entryType) {
-	    IEntry entry = null;
-	    if (entryType == AllowedValueType.Continuous) {
-	        entry = new ContinuousEntry();
-	    } else if (entryType = AllowedValueType.Undefined) {
-	        entry = new StringEntry();
-	    } else {
-	        entry = new StringEntry();
-	    }
-	    entry.setName(name);
-	    entry.setValue(value);
-	    return entry;
 	}
 }
