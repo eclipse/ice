@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.geometry.reactor;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 
 /**
  * An interface for AbstractViews which represent JunctionComponents.
@@ -18,7 +18,7 @@ import org.eclipse.eavp.viz.service.modeling.AbstractView;
  * @author Robert Smith
  *
  */
-public class JunctionView extends AbstractView {
+public class JunctionView extends BasicView {
 
 	/**
 	 * The x coordinate of the junction's center

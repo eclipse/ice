@@ -14,9 +14,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -55,11 +55,11 @@ public class FXEdgeControllerTester {
 
 		// Create an edge for testing
 		EdgeMesh mesh = new EdgeMesh();
-		FXEdgeController edge = new FXEdgeController(mesh, new AbstractView());
+		FXEdgeController edge = new FXEdgeController(mesh, new BasicView());
 
 		// Give a child entity to the edge
-		AbstractController child = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController child = new BasicController(new BasicMesh(),
+				new BasicView());
 		edge.addEntityToCategory(child, MeshCategory.VERTICES);
 
 		// Set the Constructing property. This change should be mirrored in the

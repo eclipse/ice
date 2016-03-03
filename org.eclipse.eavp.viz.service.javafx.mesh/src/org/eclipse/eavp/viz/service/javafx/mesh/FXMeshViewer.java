@@ -26,13 +26,13 @@ import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
 import org.eclipse.eavp.viz.service.mesh.properties.MeshSelection;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
-import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.DetailedEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
@@ -160,8 +160,8 @@ public class FXMeshViewer extends FXViewer {
 	 * separately so that such parts will not appear in the tree view until
 	 * their parent polygon is completed.
 	 */
-	private IController tempRoot = new AbstractController(new AbstractMesh(),
-			new AbstractView());
+	private IController tempRoot = new BasicController(new BasicMesh(),
+			new BasicView());
 
 	/**
 	 * A list of displayed circles to show the user the location that selectice
@@ -1066,7 +1066,7 @@ public class FXMeshViewer extends FXViewer {
 		}
 
 		// If there is not already an edge, create a new one
-		FaceEdgeMesh tempComponent = new FaceEdgeMesh(start, end);
+		DetailedEdgeMesh tempComponent = new DetailedEdgeMesh(start, end);
 		tempComponent.setProperty(MeshEditorMeshProperty.UNDER_CONSTRUCTION,
 				"True");
 		EdgeController tempEdge = edgeProvider.createController(tempComponent);

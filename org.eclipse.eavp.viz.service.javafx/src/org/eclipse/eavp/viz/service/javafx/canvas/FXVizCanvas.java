@@ -17,7 +17,7 @@ import java.util.Map;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.javafx.scene.base.GNode;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -54,7 +54,7 @@ public class FXVizCanvas implements IVizCanvas {
 	private static final int SUPPORTED_AXES = 3;
 
 	/** The JFace viewer for displaying viz geometry. */
-	protected AbstractViewer viewer;
+	protected BasicViewer viewer;
 
 	/** The modeling object that is currently set on the viewer. */
 	protected IController root;
@@ -63,7 +63,7 @@ public class FXVizCanvas implements IVizCanvas {
 	private INode rootNode;
 
 	/** The active root geometry. */
-	protected AbstractAttachment rootAtachment;
+	protected BasicAttachment rootAtachment;
 
 	/** ICE properties. */
 	private Map<String, String> properties;
@@ -126,7 +126,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 *             throws an exception if a concrete implementation cannot be
 	 *             found
 	 */
-	protected AbstractViewer materializeViewer(Composite viewerParent)
+	protected BasicViewer materializeViewer(Composite viewerParent)
 			throws Exception {
 		try {
 			return new FXViewer(viewerParent);
@@ -169,7 +169,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 * @param part
 	 *            The part to be added
 	 */
-	public void addRoot(AbstractController part) {
+	public void addRoot(BasicController part) {
 		rootAtachment.addGeometry(part);
 	}
 
@@ -178,7 +178,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 * type.
 	 */
 	protected void createAttachment() {
-		rootAtachment = (AbstractAttachment) viewer.getRenderer()
+		rootAtachment = (BasicAttachment) viewer.getRenderer()
 				.createAttachment(FXAttachment.class);
 	}
 
@@ -212,7 +212,7 @@ public class FXVizCanvas implements IVizCanvas {
 	 * 
 	 * @return a GeometryViewer instance that is used to visualize scenes
 	 */
-	public AbstractViewer getViewer() {
+	public BasicViewer getViewer() {
 		return viewer;
 	}
 

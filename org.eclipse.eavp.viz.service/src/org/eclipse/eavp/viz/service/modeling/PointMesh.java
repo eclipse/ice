@@ -20,7 +20,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * 
  * @Author Robert Smith
  */
-public class PointMesh extends AbstractMesh {
+public class PointMesh extends BasicMesh {
 
 	/**
 	 * The point's x coordinate
@@ -214,7 +214,7 @@ public class PointMesh extends AbstractMesh {
 			for (IController entity : otherObject
 					.getEntitiesFromCategory(category)) {
 				addEntityToCategory(
-						(AbstractController) ((AbstractController) entity)
+						(BasicController) ((BasicController) entity)
 								.clone(),
 						category);
 			}

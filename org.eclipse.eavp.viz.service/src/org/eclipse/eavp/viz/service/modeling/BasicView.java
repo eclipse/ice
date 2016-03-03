@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Robert Smith
  */
-public class AbstractView
+public class BasicView
 		implements IManagedUpdateableListener, IManagedUpdateable, IView {
 
 	/**
@@ -49,7 +49,7 @@ public class AbstractView
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
-			.getLogger(AbstractController.class);
+			.getLogger(BasicController.class);
 
 	/**
 	 * The listeners registered for updates from this object.
@@ -60,7 +60,7 @@ public class AbstractView
 	/**
 	 * The default constructor.
 	 */
-	public AbstractView() {
+	public BasicView() {
 		// Initialize the class variables
 		transformation = new Transformation();
 		previousTransformation = new Transformation();
@@ -168,7 +168,7 @@ public class AbstractView
 		}
 
 		// Check that the other object is an abstractview
-		if (!(otherObject instanceof AbstractView)) {
+		if (!(otherObject instanceof BasicView)) {
 			return false;
 		}
 
@@ -208,7 +208,7 @@ public class AbstractView
 	public Object clone() {
 
 		// Create a new AbstractView and make it a copy of this
-		IView clone = new AbstractView();
+		IView clone = new BasicView();
 		clone.copy(this);
 
 		return clone;
@@ -226,10 +226,10 @@ public class AbstractView
 
 		// Check that the source object is an IView, failing
 		// silently if not and casting it if so
-		if (!(otherObject instanceof AbstractView)) {
+		if (!(otherObject instanceof BasicView)) {
 			return;
 		}
-		AbstractView castObject = (AbstractView) otherObject;
+		BasicView castObject = (BasicView) otherObject;
 
 		// Copy the other view's data members
 		transformation = (Transformation) castObject.transformation.clone();

@@ -34,7 +34,7 @@ import javafx.scene.Node;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
-public class FXAttachment extends AbstractAttachment {
+public class FXAttachment extends BasicAttachment {
 
 	/**
 	 * Node used to attach geometry to (instead of the root, to keep things
@@ -84,7 +84,7 @@ public class FXAttachment extends AbstractAttachment {
 	}
 
 	/**
-	 * @see AbstractAttachment#attach(INode)
+	 * @see BasicAttachment#attach(INode)
 	 */
 	@Override
 	public void attach(INode owner) {
@@ -253,7 +253,7 @@ public class FXAttachment extends AbstractAttachment {
 	 */
 	@Override
 	public Class<?> getType() {
-		return AbstractAttachment.class;
+		return BasicAttachment.class;
 	}
 
 	/**

@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.modeling.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -34,7 +34,7 @@ public class FaceControllerTester {
 
 		// Create a cloned face and check that it is identical to the original
 		FaceController face = new FaceController(new FaceMesh(),
-				new AbstractView());
+				new BasicView());
 		face.setProperty(MeshProperty.DESCRIPTION, "Property");
 		FaceController clone = (FaceController) face.clone();
 		assertTrue(face.equals(clone));

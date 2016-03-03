@@ -76,7 +76,7 @@ public interface IController
 	 * 
 	 * @generated
 	 */
-	void setView(AbstractView newView);
+	void setView(BasicView newView);
 
 	/**
 	 * Adds an entity to the model.

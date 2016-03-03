@@ -17,7 +17,7 @@ import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.junit.Test;
 
@@ -38,9 +38,9 @@ public class ReactorMeshTester {
 
 		// Create a reactor and pipe
 		ReactorController reactor = new ReactorController(new ReactorMesh(),
-				new AbstractView());
+				new BasicView());
 		PipeController pipe = new PipeController(new PipeMesh(),
-				new AbstractView());
+				new BasicView());
 
 		// Add the pipe as a core channel
 		reactor.addEntityToCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);

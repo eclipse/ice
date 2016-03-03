@@ -12,7 +12,7 @@ package org.eclipse.eavp.viz.service.javafx.mesh;
 
 import java.util.ArrayList;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachmentManager;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 
@@ -22,7 +22,7 @@ import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
-public class FXMeshAttachmentManager extends AbstractAttachmentManager {
+public class FXMeshAttachmentManager extends BasicAttachmentManager {
 
 	/*
 	 * (non-Javadoc)

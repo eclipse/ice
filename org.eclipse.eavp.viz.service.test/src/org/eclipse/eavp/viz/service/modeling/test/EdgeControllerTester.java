@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IController;
@@ -44,23 +44,23 @@ public class EdgeControllerTester {
 
 		// Create the edge
 		EdgeMesh edgeMesh = new LinearEdgeMesh();
-		EdgeController edge = new EdgeController(edgeMesh, new AbstractView());
+		EdgeController edge = new EdgeController(edgeMesh, new BasicView());
 
 		// The edge should initially have length 0
 		assertEquals(0, Double.compare(edge.getLength(), 0d));
 
 		// Try adding a non-vertex. It should be put in the Default category
-		edge.addEntity(new AbstractController());
+		edge.addEntity(new BasicController());
 		assertEquals(1,
 				edge.getEntitiesFromCategory(MeshCategory.DEFAULT).size());
 
 		// Create some vertices
 		VertexController vertex1 = new VertexController(new VertexMesh(0, 0, 0),
-				new AbstractView());
+				new BasicView());
 		VertexController vertex2 = new VertexController(new VertexMesh(1, 1, 1),
-				new AbstractView());
+				new BasicView());
 		VertexController vertex3 = new VertexController(new VertexMesh(2, 2, 2),
-				new AbstractView());
+				new BasicView());
 
 		// Add all three vertices to the edge.
 		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);
@@ -96,7 +96,7 @@ public class EdgeControllerTester {
 
 		// Create an edge
 		EdgeController edge = new EdgeController(new EdgeMesh(),
-				new AbstractView());
+				new BasicView());
 		edge.setProperty(MeshProperty.DESCRIPTION, "Property");
 
 		// Clone it and check that they are identical

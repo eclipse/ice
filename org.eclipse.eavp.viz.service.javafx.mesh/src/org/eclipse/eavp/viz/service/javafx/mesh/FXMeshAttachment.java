@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachmentManager;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.Representation;
@@ -43,7 +43,7 @@ public class FXMeshAttachment extends FXAttachment {
 	 * @param manager
 	 *            the manager that created this instance.
 	 */
-	public FXMeshAttachment(AbstractAttachmentManager manager) {
+	public FXMeshAttachment(BasicAttachmentManager manager) {
 		super(manager);
 
 		// Create a grey background box

@@ -33,7 +33,7 @@ public class TubeController extends ShapeController {
 	 * @param view
 	 *            The controller's view
 	 */
-	public TubeController(TubeMesh model, AbstractView view) {
+	public TubeController(TubeMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -144,7 +144,7 @@ public class TubeController extends ShapeController {
 		if (!(source instanceof TubeController)) {
 			return;
 		}
-		AbstractController castObject = (AbstractController) source;
+		BasicController castObject = (BasicController) source;
 
 		// Create the model and give it a reference to this
 		model = new TubeMesh();
@@ -152,7 +152,7 @@ public class TubeController extends ShapeController {
 
 		// Copy the other object's data members
 		model.copy(castObject.model);
-		view = (AbstractView) castObject.view.clone();
+		view = (BasicView) castObject.view.clone();
 
 		// Register as a listener to the model and view
 		model.register(this);

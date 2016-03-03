@@ -13,7 +13,7 @@ package org.eclipse.eavp.viz.service.modeling.test.utils;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.VizObject;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.Representation;
 
@@ -24,7 +24,7 @@ import org.eclipse.eavp.viz.service.modeling.Representation;
  * @author Robert Smith
  *
  */
-public class TestView extends AbstractView {
+public class TestView extends BasicView {
 
 	/**
 	 * A dummy variable allowing two TestViews to be equal or inequal to one

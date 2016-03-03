@@ -12,9 +12,9 @@ package org.eclipse.eavp.viz.service.modeling.test.utils;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 
 /**
  * A simple AbstractController implementation that keeps track of whether it has
@@ -23,7 +23,7 @@ import org.eclipse.eavp.viz.service.modeling.AbstractView;
  * @author Robert Smith
  *
  */
-public class TestController extends AbstractController {
+public class TestController extends BasicController {
 
 	/**
 	 * Whether the controller has received an update since the last time it was
@@ -39,7 +39,7 @@ public class TestController extends AbstractController {
 	 * @param view
 	 *            The controller's view
 	 */
-	public TestController(AbstractMesh model, AbstractView view) {
+	public TestController(BasicMesh model, BasicView view) {
 		super(model, view);
 	}
 

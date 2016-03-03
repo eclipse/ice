@@ -14,7 +14,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
 import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -33,7 +33,7 @@ import javafx.scene.shape.Sphere;
  * @author Robert Smith
  *
  */
-public class FXVertexView extends AbstractView {
+public class FXVertexView extends BasicView {
 
 	/**
 	 * A group containing the shape which represents the part and a gizmo which

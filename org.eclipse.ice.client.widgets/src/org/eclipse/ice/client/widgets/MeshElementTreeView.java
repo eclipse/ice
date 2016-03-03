@@ -15,7 +15,7 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 
 import org.eclipse.eavp.viz.service.mesh.properties.MeshSelection;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
@@ -194,12 +194,12 @@ public class MeshElementTreeView extends ViewPart
 			public Object[] getElements(Object inputElement) {
 
 				// Local Declaration
-				ArrayList<AbstractController> allElements = (ArrayList<AbstractController>) inputElement;
+				ArrayList<BasicController> allElements = (ArrayList<BasicController>) inputElement;
 				ArrayList<MeshSelection> contents = new ArrayList<MeshSelection>();
 
 				// Wrap the Polygons into PropertySources and add them to
 				// the array
-				for (AbstractController i : allElements) {
+				for (BasicController i : allElements) {
 					contents.add(new MeshSelection(meshComponent.getMesh(), i));
 				}
 

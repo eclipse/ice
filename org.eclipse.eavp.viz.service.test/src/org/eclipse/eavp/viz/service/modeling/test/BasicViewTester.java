@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IView;
 import org.eclipse.eavp.viz.service.modeling.Transformation;
@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class AbstractViewTester {
+public class BasicViewTester {
 
 	/**
 	 * The entities for the component
@@ -100,9 +100,9 @@ public class AbstractViewTester {
 	public void checkEquality() {
 
 		// Create objects for testing
-		IView object = new AbstractView();
-		IView equalObject = new AbstractView();
-		IView unequalObject = new AbstractView();
+		IView object = new BasicView();
+		IView equalObject = new BasicView();
+		IView unequalObject = new BasicView();
 
 		// Give one view a different transformation
 		Transformation transformation = new Transformation();

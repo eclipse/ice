@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.Representation;
 
@@ -24,7 +24,7 @@ import javafx.scene.Group;
  * @author Robert Smith
  *
  */
-public class FXFaceView extends AbstractView {
+public class FXFaceView extends BasicView {
 
 	/**
 	 * The node which will contain the polygon's children.

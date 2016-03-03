@@ -13,9 +13,9 @@ package org.eclipse.eavp.viz.service.javafx.canvas.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.javafx.canvas.FXSelection;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.junit.Test;
 
@@ -34,8 +34,8 @@ public class FXSelectionTester {
 	public void checkContents() {
 
 		// Create a part
-		IController part = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		IController part = new BasicController(new BasicMesh(),
+				new BasicView());
 
 		// Create a selection on the part
 		FXSelection selection = new FXSelection(part);

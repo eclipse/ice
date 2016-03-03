@@ -13,7 +13,7 @@
 package org.eclipse.eavp.viz.service.geometry.widgets;
 
 import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
@@ -120,7 +120,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 
 		// If the element is a GeometryComponent, return its shapes
-		if (inputElement instanceof AbstractController) {
+		if (inputElement instanceof BasicController) {
 			// Return an array of the GeometryComponent's shapes
 			IController parentGeometry = (IController) inputElement;
 			return parentGeometry.getEntitiesFromCategory(MeshCategory.CHILDREN)

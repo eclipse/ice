@@ -21,7 +21,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * 
  * @author Robert Smith
  */
-public class EdgeMesh extends AbstractMesh {
+public class EdgeMesh extends BasicMesh {
 
 	/**
 	 * The edge's length.
@@ -194,7 +194,7 @@ public class EdgeMesh extends AbstractMesh {
 			for (IController entity : castObject
 					.getEntitiesFromCategory(category)) {
 				addEntityToCategory(
-						(IController) ((AbstractController) entity).clone(),
+						(IController) ((BasicController) entity).clone(),
 						category);
 			}
 		}

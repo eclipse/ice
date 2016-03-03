@@ -22,7 +22,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * @author Robert Smith
  *
  */
-public class FaceMesh extends AbstractMesh {
+public class FaceMesh extends BasicMesh {
 
 	/**
 	 * The default constructor.
@@ -103,7 +103,7 @@ public class FaceMesh extends AbstractMesh {
 							.getEntitiesFromCategory(category)) {
 
 						// Create a clone of the edge
-						EdgeController newEdge = (EdgeController) ((AbstractController) edge)
+						EdgeController newEdge = (EdgeController) ((BasicController) edge)
 								.clone();
 
 						// Get the clone's vertices
@@ -141,7 +141,7 @@ public class FaceMesh extends AbstractMesh {
 					for (IController entity : otherObject
 							.getEntitiesFromCategory(category)) {
 						addEntityToCategory(
-								(EdgeController) ((AbstractController) entity)
+								(EdgeController) ((BasicController) entity)
 										.clone(),
 								category);
 					}

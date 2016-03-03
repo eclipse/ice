@@ -16,12 +16,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
@@ -32,7 +32,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class AbstractAttachmentTester {
+public class BasicAttachmentTester {
 
 	/**
 	 * Check that the AbstractAttachment's process of attaching/detaching to a
@@ -41,7 +41,7 @@ public class AbstractAttachmentTester {
 	@Test
 	public void checkAttachment() {
 
-		AbstractAttachment attachment = new AbstractAttachment() {
+		BasicAttachment attachment = new BasicAttachment() {
 
 			@Override
 			public void removeGeometry(IController geom) {
@@ -70,18 +70,18 @@ public class AbstractAttachmentTester {
 		};
 
 		// Create some AbstractControllers for the attachment to contain
-		AbstractController geometry1 = new AbstractController(
-				new AbstractMesh(), new AbstractView());
-		AbstractController geometry2 = new AbstractController(
-				new AbstractMesh(), new AbstractView());
-		AbstractController shape1 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController geometry1 = new BasicController(
+				new BasicMesh(), new BasicView());
+		BasicController geometry2 = new BasicController(
+				new BasicMesh(), new BasicView());
+		BasicController shape1 = new BasicController(new BasicMesh(),
+				new BasicView());
 		shape1.setProperty(MeshProperty.NAME, "shape1");
-		AbstractController shape2 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController shape2 = new BasicController(new BasicMesh(),
+				new BasicView());
 		shape2.setProperty(MeshProperty.NAME, "shape2");
-		AbstractController shape3 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController shape3 = new BasicController(new BasicMesh(),
+				new BasicView());
 		shape3.setProperty(MeshProperty.NAME, "shape3");
 
 		// Geometry 1 has shape1, geometry2 has the other two shapes
@@ -132,7 +132,7 @@ public class AbstractAttachmentTester {
 	@Test
 	public void checkData() {
 
-		AbstractAttachment attachment = new AbstractAttachment() {
+		BasicAttachment attachment = new BasicAttachment() {
 
 			@Override
 			public void removeGeometry(IController geom) {

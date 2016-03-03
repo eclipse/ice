@@ -16,8 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachmentManager;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.eavp.viz.service.modeling.IController;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class AbstractAttachmentManagerTester {
+public class BasicAttachmentManagerTester {
 
 	/**
 	 * Test the manager's ability to properly handle its attachments.
@@ -38,13 +38,13 @@ public class AbstractAttachmentManagerTester {
 	public void checkAttachments() {
 
 		// Create a manager that creates AbstractAttachments
-		AbstractAttachmentManager manager = new TestAttachmentManager() {
+		BasicAttachmentManager manager = new TestAttachmentManager() {
 
 			@Override
 			public IAttachment allocate() {
 
 				// Create a new attachment
-				AbstractAttachment attachment = new AbstractAttachment() {
+				BasicAttachment attachment = new BasicAttachment() {
 
 					@Override
 					public void removeGeometry(IController geom) {
@@ -109,7 +109,7 @@ public class AbstractAttachmentManagerTester {
 	 * @author Robert Smith
 	 *
 	 */
-	private class TestAttachmentManager extends AbstractAttachmentManager {
+	private class TestAttachmentManager extends BasicAttachmentManager {
 
 		/**
 		 * The default constructor.

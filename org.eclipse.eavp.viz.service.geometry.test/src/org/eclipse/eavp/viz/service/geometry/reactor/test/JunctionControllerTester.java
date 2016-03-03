@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.junit.Test;
 
@@ -34,7 +34,7 @@ public class JunctionControllerTester {
 
 		// Create a junction
 		JunctionController exchanger = new JunctionController(
-				new JunctionMesh(), new AbstractView());
+				new JunctionMesh(), new BasicView());
 		exchanger.setProperty(MeshProperty.INNER_RADIUS, "Property");
 
 		// Clone it and check that they are identical

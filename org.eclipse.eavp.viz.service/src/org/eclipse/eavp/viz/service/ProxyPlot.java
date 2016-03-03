@@ -47,7 +47,7 @@ public abstract class ProxyPlot extends AbstractPlot {
 	/**
 	 * The source plot for the majority of the plot's information.
 	 */
-	private IPlot source;
+	protected IPlot source;
 
 	/**
 	 * The map of series, keyed on category. Only proxies pointing to the actual

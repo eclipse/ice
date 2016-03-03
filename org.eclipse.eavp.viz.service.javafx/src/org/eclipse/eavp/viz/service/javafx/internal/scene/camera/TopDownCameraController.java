@@ -26,7 +26,7 @@ import javafx.scene.transform.Transform;
  * A controller which sets the camera to a top down view, with the camera
  * pointed down to look perpendicular to the XY plane.
  */
-public class TopDownCameraController extends AbstractCameraController {
+public class TopDownCameraController extends BasicCameraController {
 
 	/**
 	 * The x component of the 2D point that the camera is currently centered on

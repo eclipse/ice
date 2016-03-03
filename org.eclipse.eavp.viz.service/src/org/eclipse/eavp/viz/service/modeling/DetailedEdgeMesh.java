@@ -23,12 +23,12 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * @author Robert Smith
  *
  */
-public class FaceEdgeMesh extends EdgeMesh {
+public class DetailedEdgeMesh extends EdgeMesh {
 
 	/**
 	 * The default constructor.
 	 */
-	public FaceEdgeMesh() {
+	public DetailedEdgeMesh() {
 		super();
 	}
 
@@ -39,7 +39,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 	 * @param start
 	 * @param end
 	 */
-	public FaceEdgeMesh(VertexController start, VertexController end) {
+	public DetailedEdgeMesh(VertexController start, VertexController end) {
 		super(start, end);
 	}
 
@@ -88,7 +88,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 	public Object clone() {
 
 		// Create a new object
-		FaceEdgeMesh clone = new FaceEdgeMesh();
+		DetailedEdgeMesh clone = new DetailedEdgeMesh();
 
 		// Make it a copy of this and return it
 		clone.copy(this);
@@ -108,7 +108,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 		// Queue messages from all the vertices being added
 		updateManager.enqueue();
 
-		FaceEdgeMesh castObject = (FaceEdgeMesh) otherObject;
+		DetailedEdgeMesh castObject = (DetailedEdgeMesh) otherObject;
 
 		// Clone each child entity
 		for (IMeshCategory category : castObject.entities.keySet()) {
@@ -118,7 +118,7 @@ public class FaceEdgeMesh extends EdgeMesh {
 				for (IController entity : castObject
 						.getEntitiesFromCategory(category)) {
 					addEntityToCategory(
-							(IController) ((AbstractController) entity).clone(),
+							(IController) ((BasicController) entity).clone(),
 							category);
 				}
 			}
@@ -150,11 +150,11 @@ public class FaceEdgeMesh extends EdgeMesh {
 		}
 
 		// Check if the other object is an AbstractMeshComponent and cast it
-		if (!(otherObject instanceof FaceEdgeMesh)) {
+		if (!(otherObject instanceof DetailedEdgeMesh)) {
 			return false;
 		}
 
-		AbstractMesh castObject = (AbstractMesh) otherObject;
+		BasicMesh castObject = (BasicMesh) otherObject;
 
 		// Check the types, properties, and entity category for equality
 		if (type != castObject.type

@@ -13,9 +13,9 @@ package org.eclipse.eavp.viz.service.javafx.geometry.plant;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
@@ -31,7 +31,7 @@ import org.eclipse.eavp.viz.service.modeling.MeshProperty;
  * @author Robert Smith
  *
  */
-public class FXPlantViewRootController extends AbstractController
+public class FXPlantViewRootController extends BasicController
 		implements IWireframeController {
 
 	/**
@@ -56,7 +56,7 @@ public class FXPlantViewRootController extends AbstractController
 	 * @param view
 	 *            A dummy view which will be unused by the root
 	 */
-	public FXPlantViewRootController(AbstractMesh model, AbstractView view) {
+	public FXPlantViewRootController(BasicMesh model, BasicView view) {
 		super(model, view);
 		wireframe = false;
 

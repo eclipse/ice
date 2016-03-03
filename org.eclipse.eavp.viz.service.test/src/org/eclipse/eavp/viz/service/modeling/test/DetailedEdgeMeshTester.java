@@ -15,11 +15,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.FaceController;
-import org.eclipse.eavp.viz.service.modeling.FaceEdgeController;
-import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.DetailedEdgeController;
+import org.eclipse.eavp.viz.service.modeling.DetailedEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
@@ -32,7 +32,7 @@ import org.junit.Test;
  * @author Robert Smith
  *
  */
-public class FaceEdgeMeshTester {
+public class DetailedEdgeMeshTester {
 
 	/**
 	 * Test that FaceEdgeMeshes can be correctly cloned.
@@ -41,9 +41,9 @@ public class FaceEdgeMeshTester {
 	public void checkClone() {
 
 		// Clone a mesh and check that the result is identical
-		FaceEdgeMesh mesh = new FaceEdgeMesh();
+		DetailedEdgeMesh mesh = new DetailedEdgeMesh();
 		mesh.setProperty(MeshProperty.DESCRIPTION, "Property");
-		FaceEdgeMesh clone = (FaceEdgeMesh) mesh.clone();
+		DetailedEdgeMesh clone = (DetailedEdgeMesh) mesh.clone();
 		assertTrue(mesh.equals(clone));
 	}
 
@@ -58,10 +58,10 @@ public class FaceEdgeMeshTester {
 		TestEdge edge = new TestEdge();
 		VertexMesh vertexMesh1 = new VertexMesh(0, 0, 0);
 		VertexController vertex1 = new VertexController(vertexMesh1,
-				new AbstractView());
+				new BasicView());
 		VertexMesh vertexMesh2 = new VertexMesh(1, 1, 1);
 		VertexController vertex2 = new VertexController(vertexMesh2,
-				new AbstractView());
+				new BasicView());
 		edge.addEntityToCategory(vertex1, MeshCategory.VERTICES);
 		edge.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
@@ -74,7 +74,7 @@ public class FaceEdgeMeshTester {
 
 		// Add a face to the edge
 		FaceMesh faceMesh = new FaceMesh();
-		FaceController face = new FaceController(faceMesh, new AbstractView());
+		FaceController face = new FaceController(faceMesh, new BasicView());
 		edge.addEntityToCategory(face, MeshCategory.FACES);
 
 		// Change the face and check that the edge didn't get updated
@@ -89,13 +89,13 @@ public class FaceEdgeMeshTester {
 	public void checkEquality() {
 
 		// Create two identical edges
-		FaceEdgeMesh edgeMesh1 = new FaceEdgeMesh();
-		FaceEdgeController edge1 = new FaceEdgeController(edgeMesh1,
-				new AbstractView());
+		DetailedEdgeMesh edgeMesh1 = new DetailedEdgeMesh();
+		DetailedEdgeController edge1 = new DetailedEdgeController(edgeMesh1,
+				new BasicView());
 		edge1.setProperty(MeshProperty.DESCRIPTION, "True");
-		FaceEdgeMesh edgeMesh2 = new FaceEdgeMesh();
-		FaceEdgeController edge2 = new FaceEdgeController(edgeMesh2,
-				new AbstractView());
+		DetailedEdgeMesh edgeMesh2 = new DetailedEdgeMesh();
+		DetailedEdgeController edge2 = new DetailedEdgeController(edgeMesh2,
+				new BasicView());
 		edge2.setProperty(MeshProperty.DESCRIPTION, "True");
 
 		// Check that the two edges are equal
@@ -105,11 +105,11 @@ public class FaceEdgeMeshTester {
 		FaceMesh faceMesh1 = new FaceMesh();
 		faceMesh1.setProperty(MeshProperty.DESCRIPTION, "1");
 		FaceController face1 = new FaceController(faceMesh1,
-				new AbstractView());
+				new BasicView());
 		FaceMesh faceMesh2 = new FaceMesh();
 		faceMesh2.setProperty(MeshProperty.DESCRIPTION, "2");
 		FaceController face2 = new FaceController(faceMesh2,
-				new AbstractView());
+				new BasicView());
 
 		// Add each edge to a face
 		edge1.addEntityToCategory(face1, MeshCategory.FACES);
@@ -126,7 +126,7 @@ public class FaceEdgeMeshTester {
 	 * @author Robert Smith
 	 *
 	 */
-	private class TestEdge extends FaceEdgeMesh {
+	private class TestEdge extends DetailedEdgeMesh {
 
 		/**
 		 * Whether this class has received an update since the last time it was

@@ -12,9 +12,9 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractControllerProviderFactory;
+import org.eclipse.eavp.viz.service.modeling.BasicControllerProviderFactory;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
-import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.DetailedEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.FaceMesh;
 import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
@@ -28,7 +28,7 @@ import org.eclipse.eavp.viz.service.modeling.VertexMesh;
  * @author Robert Smith
  *
  */
-public class FXMeshControllerProviderFactory extends AbstractControllerProviderFactory {
+public class FXMeshControllerProviderFactory extends BasicControllerProviderFactory {
 
 	/**
 	 * The default cosntructor.
@@ -54,7 +54,7 @@ public class FXMeshControllerProviderFactory extends AbstractControllerProviderF
 
 		// TODO find a way to avoid enumerating every subclass of EdgeMesh here
 		// Copy the EdgeMesh provider to the other EdgeMesh classes
-		typeMap.put(FaceEdgeMesh.class, typeMap.get(EdgeMesh.class));
+		typeMap.put(DetailedEdgeMesh.class, typeMap.get(EdgeMesh.class));
 		typeMap.put(LinearEdgeMesh.class, typeMap.get(EdgeMesh.class));
 
 		// Set the NekPolygonMesh provider

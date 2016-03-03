@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.VizObject;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -42,7 +42,7 @@ import javafx.scene.Group;
  * @author Robert Smith
  *
  */
-public class AbstractControllerTester {
+public class BasicControllerTester {
 
 	/**
 	 * The entities for the component
@@ -104,8 +104,8 @@ public class AbstractControllerTester {
 		assertEquals(0, controller.getEntities().size());
 
 		// Create a new VizObject with id 2
-		AbstractController object = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController object = new BasicController(new BasicMesh(),
+				new BasicView());
 		object.setProperty(MeshProperty.ID, "2");
 
 		// Add the object as a child
@@ -120,8 +120,8 @@ public class AbstractControllerTester {
 				controller.getEntities().get(0).getProperty(MeshProperty.ID)));
 
 		// Create a new part with id 3
-		AbstractController secondObject = new AbstractController(
-				new AbstractMesh(), new AbstractView());
+		BasicController secondObject = new BasicController(
+				new BasicMesh(), new BasicView());
 		secondObject.setProperty(MeshProperty.ID, "3");
 
 		// Add a second entity
@@ -179,8 +179,8 @@ public class AbstractControllerTester {
 	public void testEntityCategories() {
 
 		// Create an edge entity
-		AbstractController edge = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController edge = new BasicController(new BasicMesh(),
+				new BasicView());
 		edge.setProperty(MeshProperty.NAME, "edge");
 		controller.addEntityToCategory(edge, MeshCategory.EDGES);
 
@@ -188,14 +188,14 @@ public class AbstractControllerTester {
 		assertTrue(controller.isUpdated());
 
 		// Create a vertex entity
-		AbstractController vertex1 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController vertex1 = new BasicController(new BasicMesh(),
+				new BasicView());
 		vertex1.setProperty(MeshProperty.NAME, "vertex1");
 		controller.addEntityToCategory(vertex1, MeshCategory.VERTICES);
 
 		// Create another vertex entity
-		AbstractController vertex2 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController vertex2 = new BasicController(new BasicMesh(),
+				new BasicView());
 		vertex2.setProperty(MeshProperty.NAME, "vertex2");
 		controller.addEntityToCategory(vertex2, MeshCategory.VERTICES);
 
@@ -424,17 +424,17 @@ public class AbstractControllerTester {
 	public void testEquality() {
 
 		// Create a controller
-		AbstractMesh mesh = new TestMesh(new ArrayList<IController>());
+		BasicMesh mesh = new TestMesh(new ArrayList<IController>());
 		mesh.setProperty(MeshProperty.DESCRIPTION, "True");
 		IController object = new TestController(mesh, new TestView());
 
 		// Create a controller equal to the first
-		AbstractMesh equalMesh = new TestMesh(new ArrayList<IController>());
+		BasicMesh equalMesh = new TestMesh(new ArrayList<IController>());
 		equalMesh.setProperty(MeshProperty.DESCRIPTION, "True");
 		IController equalObject = new TestController(equalMesh, new TestView());
 
 		// Create a controller which is not equal to the first
-		AbstractMesh inequalMesh = new TestMesh(new ArrayList<IController>());
+		BasicMesh inequalMesh = new TestMesh(new ArrayList<IController>());
 		inequalMesh.setProperty(MeshProperty.DESCRIPTION, "False");
 		IController inequalObject = new TestController(inequalMesh,
 				new TestView());
@@ -461,7 +461,7 @@ public class AbstractControllerTester {
 		assertFalse(object.equals(inequalObject));
 
 		// Check that a cloned controller is equal to the original
-		IController clone = (IController) ((AbstractController) object).clone();
+		IController clone = (IController) ((BasicController) object).clone();
 		assertTrue(object.equals(clone));
 	}
 

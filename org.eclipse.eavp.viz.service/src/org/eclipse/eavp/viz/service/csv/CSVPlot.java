@@ -25,9 +25,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.beanutils.ConvertUtils;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.eavp.viz.service.AbstractPlot;
 import org.eclipse.eavp.viz.service.IPlot;
 import org.eclipse.eavp.viz.service.ISeries;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +69,11 @@ public class CSVPlot extends AbstractPlot {
 	 * A map containing all dependent series, keyed on the categories.
 	 */
 	private final Map<String, List<ISeries>> dataSeries;
+	
+	/**
+	 * The TextEditor which contains the plot's data in an editable text form.
+	 */
+	private IEditorPart editor;
 
 	/**
 	 * Whether or not the data has been loaded.
@@ -80,6 +91,39 @@ public class CSVPlot extends AbstractPlot {
 		setPlotTitle("");
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.
+	 * eclipse. swt.widgets.Composite, java.net.URI, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent,
+			IFileEditorInput file, int pageNum) {
+
+		// Create the specified page
+		switch (pageNum) {
+
+		// Page 2 is the file's data displayed in text
+		case 1:
+
+			// Create a text editor with the file as input and add its page with
+			// the name Data
+			try {
+				editor = (IEditorPart) new TextEditor();
+				parent.addPage(editor, file);
+				return "Data";
+			} catch (PartInitException e) {
+				logger.error(
+						"Error initializing text editor for CSV Plot Editor.");
+			}
+			break;
+		}
+
+		// If the page number is not supported, return null
+		return null;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -107,6 +151,15 @@ public class CSVPlot extends AbstractPlot {
 			series = new ArrayList<ISeries>(series);
 		}
 		return series;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 1;
 	}
 
 	/**
@@ -322,6 +375,28 @@ public class CSVPlot extends AbstractPlot {
 			load();
 		}
 		return changed;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#save(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	@Override
+	public void save(IProgressMonitor monitor) {
+		
+		//Only the text editor can be saved
+		editor.doSave(monitor);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#saveAs()
+	 */
+	@Override
+	public void saveAs() {
+		
+		//Only the text editor can be saved
+		editor.doSaveAs();
 	}
 
 }
