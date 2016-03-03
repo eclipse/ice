@@ -145,7 +145,7 @@ public class ReflectivityModel extends Model {
 
 		// Local Declarations. Return this value to display the process status
 		// on the form.
-		FormStatus retVal = null;
+		FormStatus retVal = FormStatus.InfoError;
 
 		if (actionName.equals(processActionName)) {
 
@@ -197,227 +197,239 @@ public class ReflectivityModel extends Model {
 			String fileName = ((DataComponent) form.getComponent(paramsCompId))
 					.retrieveEntry(WaveEntryName).getValue();
 
-			// Get the file that should have been pulled into the local project.
-			IFile userDataFile = project.getFile(fileName);
+			if (!fileName.isEmpty() && project.getFile(fileName).exists()) {
 
-			// Get the reader and read in the values.
-			Form dataForm = getIOService().getReader("space-delimited")
-					.read(userDataFile);
-			ListComponent<String[]> userData = (ListComponent<String[]>) dataForm
-					.getComponent(1);
+				// Get the file that should have been pulled into the local
+				// project.
+				IFile userDataFile = project.getFile(fileName);
 
-			// Pull the data from the form into an array.
-			waveVector = new double[userData.size()];
-			rData = new double[userData.size()];
-			error = new double[userData.size()];
-			for (int i = 0; i < userData.size(); i++) {
-				String[] dataLine = userData.get(i);
-				double waveDataPoint = Double.parseDouble(dataLine[0]);
-				waveVector[i] = waveDataPoint;
-				double rDataPoint = Double.parseDouble(dataLine[1]);
-				rData[i] = rDataPoint;
-				double errorDataPoint = Double.parseDouble(dataLine[2]);
-				error[i] = errorDataPoint;
-			}
+				// Get the reader and read in the values.
+				Form dataForm = getIOService().getReader("space-delimited")
+						.read(userDataFile);
+				ListComponent<String[]> userData = (ListComponent<String[]>) dataForm
+						.getComponent(1);
 
-			// Calculate the reflectivity - first is regular R calculation
-			ReflectivityCalculator calculator = new ReflectivityCalculator();
-			ReflectivityProfile profile = calculator.getReflectivityProfile(
-					slabs.toArray(new Slab[slabs.size()]), numRough, deltaQ0,
-					deltaQ1ByQ, wavelength, waveVector, false);
-
-			// The second profile is for the QR^4 data model
-			ReflectivityProfile rq4Profile = calculator.getReflectivityProfile(
-					slabs.toArray(new Slab[slabs.size()]), numRough, deltaQ0,
-					deltaQ1ByQ, wavelength, waveVector, true);
-
-			// Get the data from the profile
-			double[] reflectivity = profile.reflectivity;
-			double[] scatDensity = profile.scatteringDensity;
-			double[] depth = profile.depth;
-			double[] rq4 = rq4Profile.reflectivity;
-			double[] rq4Data = new double[rq4.length];
-
-			// Get the chi squared analysis from the data and calculate rq4
-			// data.
-			double rChiSquare = 0;
-			double rq4ChiSquare = 0;
-			for (int i = 0; i < reflectivity.length; i++) {
-
-				// Get the data points to compare
-				double rPoint = reflectivity[i];
-				double rDataPoint = rData[i];
-				double rq4Point = rq4[i];
-				double rq4DataPoint = rDataPoint * (Math.pow(waveVector[i], 4));
-
-				// Set the rq4 data
-				rq4Data[i] = rq4DataPoint;
-
-				// Calculate chi squared which equals sum((o-e)^2/e)
-				rChiSquare += (rPoint - rDataPoint) * (rPoint - rDataPoint)
-						/ rPoint;
-				rq4ChiSquare += (rq4Point - rq4DataPoint)
-						* (rq4Point - rq4DataPoint) / rq4Point;
-			}
-
-			// Sets the chi squared value in the entry on the output data
-			// component
-			((DataComponent) form.getComponent(outputCompId))
-					.retrieveEntry(ChiSquaredEntryName)
-					.setValue(Double.toString(rChiSquare));
-			// Sets the rq4 chi squared value in the entry on the output data
-			// component
-			((DataComponent) form.getComponent(outputCompId))
-					.retrieveEntry(ChiSquaredRQ4EntryName)
-					.setValue(Double.toString(rq4ChiSquare));
-
-			// Create the csv data for the reflectivity file
-			String reflectData = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
-			for (int i = 0; i < reflectivity.length; i++) {
-				reflectData += Double.toString(waveVector[i]) + ", "
-						+ Double.toString(reflectivity[i]) + ","
-						+ Double.toString(rData[i]) + ","
-						+ Double.toString(error[i]) + "\n";
-			}
-
-			// Create the stream
-			ByteArrayInputStream reflectStream = new ByteArrayInputStream(
-					reflectData.getBytes());
-
-			// Create the data for the scattering density profile
-			String scatData = "Z,b/V\n#units,A,A-2\n";
-			for (int i = 0; i < depth.length; i++) {
-				scatData += Double.toString(depth[i]) + ","
-						+ Double.toString(scatDensity[i]) + "\n";
-			}
-
-			// Create the stream
-			ByteArrayInputStream scatStream = new ByteArrayInputStream(
-					scatData.getBytes());
-
-			// Create the csv data for the rq4 file
-			String rq4DataStr = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
-
-			for (int i = 0; i < rq4.length; i++) {
-				rq4DataStr += Double.toString(waveVector[i]) + ","
-						+ Double.toString(rq4[i]) + ","
-						+ Double.toString(rq4Data[i]) + ","
-						+ Double.toString(error[i]) + "\n";
-			}
-
-			// Create the stream
-			ByteArrayInputStream rq4Stream = new ByteArrayInputStream(
-					rq4DataStr.getBytes());
-
-			// Get the resource component from the form
-			ResourceComponent resources = (ResourceComponent) form
-					.getComponent(resourceCompId);
-
-			// Create the new resources to output the data to!
-			if (resources.isEmpty()) {
-				// Create names with id from the form (should be unique)
-				String basename = "reflectivityModel_" + form.getId() + "_";
-				// Create the output file for the reflectivity data
-				IFile reflectivityFile = project.getFile(basename + "rfd.csv");
-				// Create the output file for the scattering density data
-				IFile scatteringFile = project.getFile(basename + "scdens.csv");
-				// Create the output file for the QR^4 reflectivity data
-				IFile rq4File = project.getFile(basename + "rq4.csv");
-				try {
-					// Reflectivity first
-					if (!reflectivityFile.exists()) {
-						reflectivityFile.create(reflectStream, true, null);
-					}
-
-					// Then the scattering file
-					if (!scatteringFile.exists()) {
-						scatteringFile.create(scatStream, true, null);
-					}
-
-					if (!rq4File.exists()) {
-						rq4File.create(rq4Stream, true, null);
-					}
-
-					// Create the VizResource to hold the reflectivity data
-					VizResource reflectivitySource = new VizResource(
-							reflectivityFile.getLocation().toFile());
-					reflectivitySource.setName("Reflectivity Data File");
-					reflectivitySource.setId(1);
-					reflectivitySource.setDescription(
-							"Data from reflectivity calculation");
-
-					// Create the VizResource to hold the scatDensity data
-					VizResource scatDensitySource = new VizResource(
-							scatteringFile.getLocation().toFile());
-					scatDensitySource.setName("Scattering Density Data File");
-					scatDensitySource.setId(2);
-					scatDensitySource.setDescription(
-							"Data from Stattering " + "Density calculation");
-
-					// Create the VizResource to hold the RQ4 data
-					VizResource rq4Source = new VizResource(
-							rq4File.getLocation().toFile());
-					rq4Source.setName("RQ^4 Data File");
-					rq4Source.setId(3);
-					rq4Source.setDescription(
-							"Data from RQ^4 reflectivity calculation");
-
-					// Add the resources to the component
-					resources.addResource(reflectivitySource);
-					resources.addResource(scatDensitySource);
-					resources.addResource(rq4Source);
-				} catch (CoreException | IOException e) {
-					// Complain
-					logger.error("ReflectivityModel Error: "
-							+ "Problem creating reflectivity files!");
-					logger.error(getClass().getName() + " Exception!", e);
+				// Pull the data from the form into an array.
+				waveVector = new double[userData.size()];
+				rData = new double[userData.size()];
+				error = new double[userData.size()];
+				for (int i = 0; i < userData.size(); i++) {
+					String[] dataLine = userData.get(i);
+					double waveDataPoint = Double.parseDouble(dataLine[0]);
+					waveVector[i] = waveDataPoint;
+					double rDataPoint = Double.parseDouble(dataLine[1]);
+					rData[i] = rDataPoint;
+					double errorDataPoint = Double.parseDouble(dataLine[2]);
+					error[i] = errorDataPoint;
 				}
 
-				// Just override the existing files.
-			} else {
+				// Calculate the reflectivity - first is regular R calculation
+				ReflectivityCalculator calculator = new ReflectivityCalculator();
+				ReflectivityProfile profile = calculator.getReflectivityProfile(
+						slabs.toArray(new Slab[slabs.size()]), numRough,
+						deltaQ0, deltaQ1ByQ, wavelength, waveVector, false);
 
-				// Write the data to the files.
-				try {
-					// First the reflectivity file
-					VizResource reflectSource = (VizResource) resources.get(0);
+				// The second profile is for the QR^4 data model
+				ReflectivityProfile rq4Profile = calculator
+						.getReflectivityProfile(
+								slabs.toArray(new Slab[slabs.size()]), numRough,
+								deltaQ0, deltaQ1ByQ, wavelength, waveVector,
+								true);
+
+				// Get the data from the profile
+				double[] reflectivity = profile.reflectivity;
+				double[] scatDensity = profile.scatteringDensity;
+				double[] depth = profile.depth;
+				double[] rq4 = rq4Profile.reflectivity;
+				double[] rq4Data = new double[rq4.length];
+
+				// Get the chi squared analysis from the data and calculate rq4
+				// data.
+				double rChiSquare = 0;
+				double rq4ChiSquare = 0;
+				for (int i = 0; i < reflectivity.length; i++) {
+
+					// Get the data points to compare
+					double rPoint = reflectivity[i];
+					double rDataPoint = rData[i];
+					double rq4Point = rq4[i];
+					double rq4DataPoint = rDataPoint
+							* (Math.pow(waveVector[i], 4));
+
+					// Set the rq4 data
+					rq4Data[i] = rq4DataPoint;
+
+					// Calculate chi squared which equals sum((o-e)^2/e)
+					rChiSquare += (rPoint - rDataPoint) * (rPoint - rDataPoint)
+							/ rPoint;
+					rq4ChiSquare += (rq4Point - rq4DataPoint)
+							* (rq4Point - rq4DataPoint) / rq4Point;
+				}
+
+				// Sets the chi squared value in the entry on the output data
+				// component
+				((DataComponent) form.getComponent(outputCompId))
+						.retrieveEntry(ChiSquaredEntryName)
+						.setValue(Double.toString(rChiSquare));
+				// Sets the rq4 chi squared value in the entry on the output
+				// data
+				// component
+				((DataComponent) form.getComponent(outputCompId))
+						.retrieveEntry(ChiSquaredRQ4EntryName)
+						.setValue(Double.toString(rq4ChiSquare));
+
+				// Create the csv data for the reflectivity file
+				String reflectData = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
+				for (int i = 0; i < reflectivity.length; i++) {
+					reflectData += Double.toString(waveVector[i]) + ", "
+							+ Double.toString(reflectivity[i]) + ","
+							+ Double.toString(rData[i]) + ","
+							+ Double.toString(error[i]) + "\n";
+				}
+
+				// Create the stream
+				ByteArrayInputStream reflectStream = new ByteArrayInputStream(
+						reflectData.getBytes());
+
+				// Create the data for the scattering density profile
+				String scatData = "Z,b/V\n#units,A,A-2\n";
+				for (int i = 0; i < depth.length; i++) {
+					scatData += Double.toString(depth[i]) + ","
+							+ Double.toString(scatDensity[i]) + "\n";
+				}
+
+				// Create the stream
+				ByteArrayInputStream scatStream = new ByteArrayInputStream(
+						scatData.getBytes());
+
+				// Create the csv data for the rq4 file
+				String rq4DataStr = "Q,R,RData,RData_error\n#units,A-1,R,R,R\n";
+
+				for (int i = 0; i < rq4.length; i++) {
+					rq4DataStr += Double.toString(waveVector[i]) + ","
+							+ Double.toString(rq4[i]) + ","
+							+ Double.toString(rq4Data[i]) + ","
+							+ Double.toString(error[i]) + "\n";
+				}
+
+				// Create the stream
+				ByteArrayInputStream rq4Stream = new ByteArrayInputStream(
+						rq4DataStr.getBytes());
+
+				// Get the resource component from the form
+				ResourceComponent resources = (ResourceComponent) form
+						.getComponent(resourceCompId);
+
+				// Create the new resources to output the data to!
+				if (resources.isEmpty()) {
+					// Create names with id from the form (should be unique)
+					String basename = "reflectivityModel_" + form.getId() + "_";
+					// Create the output file for the reflectivity data
 					IFile reflectivityFile = project
-							.getFile(reflectSource.getContents().getName());
-					reflectivityFile.setContents(
-							new BufferedInputStream(reflectStream), true, false,
-							null);
-
-					// Updates the reflectivity viz resource
-					reflectSource.setName(reflectSource.getName());
-
-					// Then the scattering density file
-					VizResource scatSource = (VizResource) resources.get(1);
+							.getFile(basename + "rfd.csv");
+					// Create the output file for the scattering density data
 					IFile scatteringFile = project
-							.getFile(scatSource.getContents().getName());
-					scatteringFile.setContents(
-							new BufferedInputStream(scatStream), true, false,
-							null);
+							.getFile(basename + "scdens.csv");
+					// Create the output file for the QR^4 reflectivity data
+					IFile rq4File = project.getFile(basename + "rq4.csv");
+					try {
+						// Reflectivity first
+						if (!reflectivityFile.exists()) {
+							reflectivityFile.create(reflectStream, true, null);
+						}
 
-					// Updates the scattering density viz resource
-					scatSource.setName(scatSource.getName());
+						// Then the scattering file
+						if (!scatteringFile.exists()) {
+							scatteringFile.create(scatStream, true, null);
+						}
 
-					// Finally the rq4 data file
-					VizResource rq4Source = (VizResource) resources.get(2);
-					IFile rq4File = project
-							.getFile(rq4Source.getContents().getName());
-					rq4File.setContents(new BufferedInputStream(rq4Stream),
-							true, false, null);
+						if (!rq4File.exists()) {
+							rq4File.create(rq4Stream, true, null);
+						}
 
-					// Update the rq4 viz resource
-					rq4Source.setName(rq4Source.getName());
+						// Create the VizResource to hold the reflectivity data
+						VizResource reflectivitySource = new VizResource(
+								reflectivityFile.getLocation().toFile());
+						reflectivitySource.setName("Reflectivity Data File");
+						reflectivitySource.setId(1);
+						reflectivitySource.setDescription(
+								"Data from reflectivity calculation");
 
-					// Catch exceptions, should return an error.
-				} catch (CoreException | NullPointerException e) {
-					logger.error("Reflectivity Model Error: "
-							+ "Problem writing to reflectivity files.");
-					logger.error(getClass().getName() + " Exception!", e);
-					retVal = FormStatus.InfoError;
+						// Create the VizResource to hold the scatDensity data
+						VizResource scatDensitySource = new VizResource(
+								scatteringFile.getLocation().toFile());
+						scatDensitySource
+								.setName("Scattering Density Data File");
+						scatDensitySource.setId(2);
+						scatDensitySource.setDescription("Data from Stattering "
+								+ "Density calculation");
+
+						// Create the VizResource to hold the RQ4 data
+						VizResource rq4Source = new VizResource(
+								rq4File.getLocation().toFile());
+						rq4Source.setName("RQ^4 Data File");
+						rq4Source.setId(3);
+						rq4Source.setDescription(
+								"Data from RQ^4 reflectivity calculation");
+
+						// Add the resources to the component
+						resources.addResource(reflectivitySource);
+						resources.addResource(scatDensitySource);
+						resources.addResource(rq4Source);
+					} catch (CoreException | IOException e) {
+						// Complain
+						logger.error("ReflectivityModel Error: "
+								+ "Problem creating reflectivity files!");
+						logger.error(getClass().getName() + " Exception!", e);
+					}
+
+					// Just override the existing files.
+				} else {
+
+					// Write the data to the files.
+					try {
+						// First the reflectivity file
+						VizResource reflectSource = (VizResource) resources
+								.get(0);
+						IFile reflectivityFile = project
+								.getFile(reflectSource.getContents().getName());
+						reflectivityFile.setContents(
+								new BufferedInputStream(reflectStream), true,
+								false, null);
+
+						// Updates the reflectivity viz resource
+						reflectSource.setName(reflectSource.getName());
+
+						// Then the scattering density file
+						VizResource scatSource = (VizResource) resources.get(1);
+						IFile scatteringFile = project
+								.getFile(scatSource.getContents().getName());
+						scatteringFile.setContents(
+								new BufferedInputStream(scatStream), true,
+								false, null);
+
+						// Updates the scattering density viz resource
+						scatSource.setName(scatSource.getName());
+
+						// Finally the rq4 data file
+						VizResource rq4Source = (VizResource) resources.get(2);
+						IFile rq4File = project
+								.getFile(rq4Source.getContents().getName());
+						rq4File.setContents(new BufferedInputStream(rq4Stream),
+								true, false, null);
+
+						// Update the rq4 viz resource
+						rq4Source.setName(rq4Source.getName());
+
+						// Catch exceptions, should return an error.
+					} catch (CoreException | NullPointerException e) {
+						logger.error("Reflectivity Model Error: "
+								+ "Problem writing to reflectivity files.");
+						logger.error(getClass().getName() + " Exception!", e);
+						retVal = FormStatus.InfoError;
+					}
+
 				}
-
 			}
 
 			// Return processed if the value has not already been set.
@@ -458,7 +470,7 @@ public class ReflectivityModel extends Model {
 		// Add a file entry for the wave vector file
 		FileEntry fileEntry = new FileEntry();
 		fileEntry.setProject(project);
-		fileEntry.setDefaultValue("waveVector.csv");
+		fileEntry.setDefaultValue("waveVector_space.csv");
 		fileEntry.setId(1);
 		fileEntry.setName(WaveEntryName);
 		fileEntry.setDescription("Wave vector information for this problem.");
@@ -475,7 +487,7 @@ public class ReflectivityModel extends Model {
 		paramComponent.addEntry(numLayersEntry);
 
 		// Add an entry for the deltaQ0
-		IEntry deltaQ0Entry = new ContinuousEntry(".000001","15");
+		IEntry deltaQ0Entry = new ContinuousEntry(".000001", "15");
 		deltaQ0Entry.setDefaultValue(".0002");
 		deltaQ0Entry.setValue(".0002");
 		deltaQ0Entry.setId(3);
@@ -484,7 +496,7 @@ public class ReflectivityModel extends Model {
 		paramComponent.addEntry(deltaQ0Entry);
 
 		// Add an entry for the deltaQ1ByQ
-		IEntry deltaQ1Entry = new ContinuousEntry(".000001","15");
+		IEntry deltaQ1Entry = new ContinuousEntry(".000001", "15");
 		deltaQ1Entry.setDefaultValue(".03");
 		deltaQ1Entry.setValue(".03");
 		deltaQ1Entry.setId(4);
@@ -494,7 +506,7 @@ public class ReflectivityModel extends Model {
 		paramComponent.addEntry(deltaQ1Entry);
 
 		// Add an entry for the wavelength
-		IEntry waveEntry = new ContinuousEntry(".000001","1000");
+		IEntry waveEntry = new ContinuousEntry(".000001", "1000");
 		waveEntry.setDefaultValue("4.25");
 		waveEntry.setValue("4.25");
 		waveEntry.setId(5);
