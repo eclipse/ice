@@ -7,8 +7,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.form.*;
+import org.eclipse.ice.datastructures.entry.*;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
@@ -33,12 +33,35 @@ public class $className$Model extends Model {
     private IReader reader;
     private IWriter writer;
     
+    /**
+     * The Constructor
+     */
 	public $className$Model() {
 		this(null);
 	}
 
+	/**
+	 * The Constructor, takes an IProject reference. 
+	 * 
+	 * @param project The project space this Item will be in.
+	 */
 	public $className$Model(IProject project) {
 		super(project);
+	}
+
+	/**
+	 * Sets the name, description, and custom action name 
+	 * for the item.
+	 */
+	@Override
+	protected void setupItemInfo() {
+		setName("$className$ Model");
+		setDescription("Specify information about $className$");
+		writerName = "$className$DefaultWriterName";
+		readerName = "$className$DefaultReaderName";     	
+		outputName = "$className$DefaultOutputName";   
+		exportString = "Export to $className$ input format";
+		allowedActions.add(0, exportString);
 	}
 
 	/**
@@ -84,21 +107,6 @@ public class $className$Model extends Model {
 	}
 	
 	/**
-	 * Sets the name, description, and custom action name 
-	 * for the item.
-	 */
-	@Override
-	protected void setupItemInfo() {
-		setName("$className$ Model");
-		setDescription("Specify information about $className$");
-		writerName = "$className$DefaultWriterName";
-		readerName = "$className$DefaultReaderName";     	
-		outputName = "$className$DefaultOutputName";   
-		exportString = "Export to $className$ input format";
-		allowedActions.add(0, exportString);
-	}
-
-	/**
 	 * The reviewEntries method is used to ensure that the form is 
 	 * in an acceptable state before processing the information it
 	 * contains.  If the form is not ready to process it is advisable
@@ -132,14 +140,6 @@ public class $className$Model extends Model {
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		
-		// Check to make sure that the item code has been filled in properly
-		// Before going further make sure that the top three variables are 
-		// customized to the appropriate values for your new item.
-		if (writerName == "$className$DefaultWriterName" || 
-				outputName == "$className$DefaultOutputName") {
-			return FormStatus.InfoError;
-		}
-		
 		// This action occurs only when the default processing option is chosen
 		// The default processing option is defined in the last line of the 
 		// setupItemInfo() method defined above.
@@ -149,7 +149,7 @@ public class $className$Model extends Model {
 			try {
 				retStatus = FormStatus.Processing;
 				writer.write(form, outputFile);
-				project.refreshLocal(1, null);
+				refreshProjectSpace();
 				retStatus = FormStatus.Processed;
 			} catch (CoreException e) {
 				logger.error(getClass().getName() + " CoreException!", e);
@@ -157,8 +157,6 @@ public class $className$Model extends Model {
 		} else {
 			retStatus = super.process(actionName);
 		}
-		
-		// TODO: Add User Code Here
 		
 		return retStatus;
 	}

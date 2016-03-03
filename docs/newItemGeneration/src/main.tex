@@ -1,57 +1,66 @@
-\documentclass{article} \usepackage{graphicx} \usepackage{hyperref}
-\usepackage{listings} \usepackage{url}
+\documentclass{article} 
+\usepackage{graphicx} 
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue}
+}
 
 \setlength{\parskip}{1em}
 
 \begin{document}
 
-\title{Building new ICE Item plugins}
-
-
-\section{Setting up the new Item project} 
+\section{Introduction} 
 
 This tutorial will teach you how you
-can create your own ICE Items via the built in tools within ICE.  The only
-requirement for this tutorial is a sufficiently updated version of ICE.  
+can create your own ICE Items via the built in tools within ICE.  To demonstrate
+these tools, we will walk through the development of an ICE Item project for the
+FERN code, a fast efficient nuclear reaction network solver. 
 
-We will walk through the development of an item project for the FERN code.  To
-begin, you will need to have a copy of FERN.  You can find installation
-instructions for FERN at \url{https://github.com/jayjaybillings/fern}.
+So we don't have to worry about building Fern for this tutorial, we have
+provided a convenient Docker image for Fern that you may use.  
+This image must be apart of your local docker daemon images list for use in this
+tutorial. You can add the image to your local Docker daemon in 2 ways: build the
+image with the provided Dockerfile, or load the image through the image tar ball we have provided. To
+build it from scratch, in the same directory as the Dockerfile, run 
+\begin{lstlisting}[language=bash,caption={bash version}]
+docker build -t eclipseice/fern .
+\end{lstlisting}
+To load the image from the provided tar ball, run 
+\begin{lstlisting}[language=bash,caption={bash version}]
+docker load < fernImage.tar.gz
+\end{lstlisting}
 
-Then we will show you how you can incorporate these new plugins into your
-installation of ICE and how to distribute them to others.  To begin launch ICE.
-We will begin from a clean workbench.
+After creating a new ICE Item plugin project, we will demonstrate how to
+provide a few lines of code to get a Model Item showing in ICE that creates
+input files for FERN. After that we will add a little code to the FERN
+JobLauncher to be able to execute FERN locally, remotely, or via the
+provided Docker image. 
 
-\begin{center} \includegraphics[width=8cm]{images/2} \end{center}
+Before we begin, make sure you have ICE cloned (Developer $>$ ICE $>$ Clone ICE)
+into your workspace, and the provided Docker image loaded to your local Docker daemon. 
 
-To create a new ICE Item project click the \texttt{New} button in the left hand
-side of the toolbar.  From the wizard that appears you should find a section
-called \texttt{ICE Item Creation Wizards}; open this and select \texttt{ICE
-Item Creation Wizard} and click the \texttt{Next >} button.
+\section{Creating a New ICE Item Plugin Project}
+\begin{center} \includegraphics[width=\textwidth]{figures/comb12} \end{center}
 
-\begin{center} \includegraphics[width=8cm]{images/3} \end{center}
+To create a new ICE Item project, navigate to \texttt{File $>$ New $>$ Other}
+and open the \texttt{ICE Item Creation Wizards} folder and 
+select \texttt{ICE Item Creation Wizard}. You will be met with a standard new
+project wizard page, in which you can name your project.  We will call ours
+\texttt{org.eclipse.ice.fern}. Once you have named your project click the \texttt{Next >} button.
+\begin{center} \includegraphics[width=\textwidth]{figures/comb23} \end{center}
+Now you are able to customize the plugin-specific portions of the project. We do
+not need an Activator to be generated, so uncheck that box, then select
+\texttt{Next}. 
 
-You will be met with a standard new project wizard page, in which you can name
-your project.  We will call ours \texttt{org.eclipse.ice.fern}.  You do not
-need to prefix your project with the \texttt{org.eclipse.ice} text, though we
-do to showcase the packaging of the generated code.  Once you have named your
-project click the \texttt{Next >} button.
-
-\begin{center} \includegraphics[width=8cm]{images/4} \end{center}
-
-Now you are able to customize the plugin-specific portions of the project.  You
-do not need to do anything at the point unless you have specific requirements.
-We will simply go to the next page by clicking the \texttt{Next >} button
-again.
-
-\begin{center} \includegraphics[width=8cm]{images/5} \end{center}
-
-On this page you will have to tell the wizard what you want to use as a base
-name for your item classes.  We will call it \texttt{Fern}, though you could
-name it anything you want.  When you have entered your base class name you can
-click the \texttt{Finish} button to generate your new item plugin project.
-
-\begin{center} \includegraphics[width=12cm]{images/6} \end{center}
+On this page you simply need to tell the wizard what you want to use as a base
+name for your item classes.  We will call this one \texttt{Fern}. 
+When you have entered your base class name you can
+click the \texttt{Finish} button to generate your new ICE Item plugin project.
 
 When the project has finished generating you should be able to explore the code
 that has been created.  Within the source directory there will be two packages,
@@ -75,115 +84,184 @@ the \texttt{Launcher} and \texttt{Model} classes and can ignore the
 \texttt{LauncherBuilder} and \texttt{ModelBuilder} classes.
 
 
-\section{Adding functionality to the project}
+\section{Adding Functionality to the New Items}
 
-\subsection{Completing the Model}
+\subsection{The Fern Model}
 
-The Model (\texttt{FernModel.java}) will be responsible for creating and
-validating input parameters for FERN.  In order to make the generated code run
-there are several pieces of information that need to be changed.  First, we
-will need to set up information that is necessary to process files for Fern.
-The required variables are at the top of the \texttt{FernModel} class.  Change
-them so that they say:
+The \texttt{FernModel} will be responsible for creating and
+validating input parameters for FERN, in the form of a new FERN input file.  In
+order to make the generated code run there are several pieces of information that need to be changed.  First, we
+will need to set up the basic Item idenfification information. This information
+is set in the setupItemInfo() method. Modify the writerName, readerName, and
+outputName to match the following
 
-\begin{lstlisting}
-private String writerName = "INIWriter";
-private String readerName = "INIReader";
-private String outputName = "fern_config.ini";
+\begin{lstlisting}[language=Java]
+writerName = "INIWriter";
+readerName = "INIReader";
+outputName = "fern_config.ini";
 \end{lstlisting}
 
-With the settings configured properly we can begin to implement the model set
-up.  There are two pieces to this step.  First we will uncomment some code in
-the \texttt{setupForm()} method:
+We also need to provide a name, description, and export action name. The
+generator will provide some default strings for these, but you may modify it
+as you see fit. 
 
-\begin{lstlisting}
-if (project != null)
-    loadInput(null);
-\end{lstlisting}
+The name will serve as the display name for this Item, so set it
+as \texttt{Fern Model}.
+As for the description, this will also be used on the UI for the Item, so
+provide some text like the following: \texttt{This Item constructs input files
+for the FERN reaction network solver}. The export string will serve as the name
+of the action that the user can select to write the provided data to file. Set
+it to something like: \texttt{Export to INI}. You should now have a method that
+looks like this:
 
-Uncommenting these lines will cause the \texttt{loadInput()} method to be
-invoked on loading of the item no matter how it was created.  The \texttt{null}
-argument simply means that we are not loading a predefined file.  To make this
-work how we want, we will also have to modify the logic in the \texttt{loadInput()} 
-method body:
-
-\begin{lstlisting}[language=java]
-if (readerName == "FernDefaultReaderName") {
-    return;
+\begin{lstlisting}[language=Java]
+@Override
+protected void setupItemInfo() {
+	setName("Fern Model");
+	setDescription("This Item constructs " +
+	    "input files for the FERN reaction " +
+	    "network solver"); 
+	writerName = "INIWriter";
+	readerName = "INIReader";     	
+	outputName = "fern_output.ini";   
+	exportString = "Export to INI";
+	allowedActions.add(0, exportString);
 }
+\end{lstlisting}
 
-// This is our new code
-if (fileName == "null") {
-    ContinuousEntry ce;
-    StringEntry se;
+The final line ensures that the export string is provided to ICE as an allowed
+action, and displayed in the Item Process drop down.
+
+With the identification information configured properly we can begin to
+implement the Form for this Fern Model. This is done in the setupForm() method.
+The generator has begun the process of implementing this method by instantiating
+a Form for you to use, getting a reference to the IOService (which provides
+IReader/IWriter realizations), and providing a commented out example of how to
+fill out an ICE Form.
+
+For this FERN input model, we want to add the following sections with data
+entries: a network section with 
+numSpecies, numReactions, numReactionGroups, massTol, fluxFrac, networkFile,
+rateFile data entries, and initialConditions with T9, startTime, endTime,
+initialTimeStep, and density. To achieve this for this Item, we will need to add
+two \texttt{DataComponents}, one for the network section and another for the
+initialConditions section. To each of those DataComponents we will add
+appropriate IEntry instances for each of the data entries we have. 
+
+Add the following to your setupForm() method: 
+
+\begin{lstlisting}[language=Java]
 
     // Create the network section
     DataComponent networkComp = new DataComponent();
-    networkComp.setName("Network");
-    networkComp.setId(0);
-    ce = new ContinuousEntry();
-    ce.setName("numSpecies");
-    ce.setValue("0");
-    networkComp.addEntry(ce);
-    ce = new ContinuousEntry();
-    ce.setName("numReactions");
-    ce.setValue("0");
-    networkComp.addEntry(cd);
-    ce = new ContinuousEntry();
-    ce.setName("numReactionGroups");
-    ce.setValue("0");
-    networkComp.addEntry(ce); 
-    ce = new ContinuousEntry();
-    ce.setName("massTol");
-    ce.setValue("0");
-    se = new StringEntry();
-    se.setName("networkFile");
-    se.setValue("/home/user/input.inp");
-    networkComp.addEntry(se);
-    se = new StringEntry();
-    se.setName("rateFile");
-    se.setValue("/home/user/data.data");
-    networkComp.add(se);
+    networkComp.setName("network");
+    networkComp.setDescription("The parameters needed " +
+        "to describe the nuclear " +
+    	"reaction network"); 
+    networkComp.setId(1);
+    
+    // Create the IEntries we need for this DataComponent
+    StringEntry numSpecies = new StringEntry();
+    numSpecies.setName("numSpecies");
+    numSpecies.setDescription("The number of species to consider");
+    numSpecies.setDefaultValue("16");
+    
+    StringEntry numReactions = new StringEntry();
+    numReactions.setName("numReactions");
+    numReactions.setDescription("The number of reactions to consider");
+    numReactions.setDefaultValue("48");
+    
+    StringEntry numReactionGrps = new StringEntry();
+    numReactionGrps.setName("numReactionsGroups");
+    numReactionGrps.setDescription("The number of reaction " + 
+    	"groups to consider"); 
+    numReactionGrps.setDefaultValue("19");
+
+    StringEntry massTol = new StringEntry();
+    massTol.setName("massTol");
+    massTol.setDescription("The mass tolerance to consider");
+    massTol.setDefaultValue("1e-7");
+    
+    StringEntry fluxFrac = new StringEntry();
+    fluxFrac.setName("fluxFrac");
+    fluxFrac.setDescription("The flux fraction to consider");
+    fluxFrac.setDefaultValue(".01");
+    
+    FileEntry networkFile = new FileEntry(".inp");
+    networkFile.setProject(project);
+    networkFile.setName("networkFile");
+    networkFile.setDescription("The network file for this problem");
+    
+    FileEntry rateFile = new FileEntry(".data");
+    rateFile.setProject(project);
+    rateFile.setName("rateFile");
+    rateFile.setDescription("The rate file for this problem");
+    
+    networkComp.addEntry(numSpecies);
+    networkComp.addEntry(numReactions);
+    networkComp.addEntry(numReactionGrps); 
+    networkComp.addEntry(massTol);
+    networkComp.addEntry(fluxFrac);
+    networkComp.addEntry(networkFile);
+    networkComp.addEntry(rateFile);
     
     // Create the initial conditions section
     DataComponent initConditionsComp = new DataComponent();
     initConditionsComp.setName("Initial Conditions");
-    initConditionsComp.setId(1);
-    ce = new ContinuousEntry();
-    ce.setName("T9");
-    ce.setValue("0");
-    initConditionsComp.addEntry(ce);
-    ce = new ContinuousEntry();
-    ce.setName("startTime");
-    ce.setValue("0");
-    initConditionsComp.addEntry(ce);
-    ce = new ContinuousEntry();
-    ce.setName("endTime");
-    ce.setValue("0");
-    initConditionsComp.addEntry(ce);
-    ce = new ContinuousEntry();
-    ce.setName("initialTimeStep");
-    ce.setValue("0");
-    initConditionsComp.addEntry(ce);
-    ce = new ContinuousEntry();
-    ce.setName("density");
-    ce.setValue("0");
-    initConditionsComp.addEntry(ce);
-    form.add(initConditionsComp);
-} else {
-    IFile inputFile = project.getFile(fileName);
-    reader = ioService.getReader(readerName);
-    form = reader.read(inputFile);
-}
-form.setName(getname());
-form.setDescription(getDescription());
-form.setId(getId());
-form.setItemID(getId());
+    initConditionsComp.setId(2);
+    initConditionsComp.setDescription("The parameters " +
+    	"needed to describe the	initial " + 
+    	"conditions for the problem");
+    
+    StringEntry t9 = new StringEntry();
+    t9.setName("T9");
+    t9.setDescription("The temperature in Kelvin x 10^9");
+    t9.setDefaultValue("7.0");
+
+    StringEntry startTime = new StringEntry();
+    startTime.setName("startTime");
+    startTime.setDescription("The start time for the simulation.");
+    startTime.setDefaultValue("1e-20");
+
+    StringEntry endTime = new StringEntry();
+    endTime.setName("endTime");
+    endTime.setDescription("The end time for the simulation");
+    endTime.setDefaultValue("1e-3");
+
+    StringEntry initialTimeStep = new StringEntry();
+    initialTimeStep.setName("initialTimeStep");
+    initialTimeStep.setDescription("The initial time step " + 
+    	"for the simulation."); 
+    initialTimeStep.setDefaultValue("1.2345e-22");
+
+    StringEntry density = new StringEntry();
+    density.setName("density");
+    density.setDescription("The initial density.");
+    density.setDefaultValue("1e8");
+    
+    initConditionsComp.addEntry(t9);
+    initConditionsComp.addEntry(startTime);
+    initConditionsComp.addEntry(endTime);
+    initConditionsComp.addEntry(initialTimeStep);
+    initConditionsComp.addEntry(density);
+    
+    // Add the components to the Form
+    form.addComponent(networkComp);    
+    form.addComponent(initConditionsComp);
+    
+    // Set the Form ID info
+    form.setName(getName());
+    form.setDescription(getDescription());
+    form.setId(getId());
+    form.setItemID(getId());
 \end{lstlisting}
 
+Now we have a Form constructed for a typical FERN execution.
 
 \subsection{Completing the Launcher}
-The launcher handles the actual running of the FERN code.  In order to make it work we will have to provide information about how to run FERN.  In this case we can simply edit the \texttt{execCommand} variable:
+The launcher handles the actual running of the FERN code.  
+In order to make it work we will have to provide information 
+about how to run FERN.  In this case we can simply edit the \texttt{execCommand} variable:
 
 \begin{lstlisting}[language=java]
 execCommand = ${installDir}fern-exec ${inputFile}
