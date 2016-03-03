@@ -309,6 +309,42 @@ this launch configuration. Then click Apply and Run.
 
 With a new ICE instance open, go to \texttt{File $>$ New $>$ Other} and select
 the Create New Item Wizard. 
+\begin{center} \includegraphics[width=\textwidth]{figures/creatingFernModelItem}
+\end{center}
+After selecting the FernModel Item, you will be presented with the view in the
+figure below. 
+\begin{center} \includegraphics[width=\textwidth]{figures/fernModelItem}
+\end{center}
+Here you can modify the various defaults with the values you would like for a
+given Fern simulation. Once done, simply save the Item and click Go on the
+Export to INI Process. This will execute the process of creating a new INI Fern
+input file for use with the Fern Launcher. You can check the result by opening
+the fern\_output.ini file, as shown below. 
+\begin{center} \includegraphics[width=\textwidth]{figures/result}
+\end{center}
 
+Now you can similarly create a new Fern Launcher. After creating the Launcher,
+you should see a view like below. 
+\begin{center} \includegraphics[width=\textwidth]{figures/launcher}
+\end{center}
+To configure a launch, simply set the correct
+input file, along with its dependent network and rate files. 
+
+At this point, if you had Fern built on your local machine, or if you had it
+built on some remote host, you could configure that in the Hosts table. ICE
+would then execute Fern based on that input. Since, for the purposes of this
+tutorial, we don't have either of those configurations, we can use a third mode
+of execution - launching our application via Docker. To do so, check the Launch
+with Docker button, which will show a drop down widget populated with the list
+of locally available Docker images. Select the eclipseice/fern image, and make
+sure that the host table is configured to localhost and that the install path is
+\texttt{/usr/bin}. Then simply launch Fern by clicking Go. This will pop up some
+dialogs related to the connection of ICE to the Docker container, simply provide
+a master password for Eclipse secure storage, and select yes on the known hosts
+dialog. 
+
+After the execution you should see the results in the Console, as shown below.
+\begin{center} \includegraphics[width=\textwidth]{figures/launcherResult}
+\end{center}
 \end{document}
 
