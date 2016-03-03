@@ -76,16 +76,7 @@ public class $className$Launcher extends JobLauncher {
 	 */
 	@Override
 	public FormStatus process(String actionName) {
-		FormStatus retStatus = FormStatus.ReadyToProcess;
-	
-		// Make sure that the launcher code has been updated
-		if (execCommand == "$className$DefaultExecCommand") {
-			return FormStatus.InfoError;
-		}
-		
 		setExecutable(getName(), getDescription(), execCommand);
-		retStatus = super.process(actionName);
-		
-		return retStatus;
+		return super.process(actionName);
 	}
 }

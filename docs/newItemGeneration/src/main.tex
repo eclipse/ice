@@ -14,7 +14,9 @@
 
 \begin{document}
 
-\section{Introduction} 
+\section*{The Eclipse ICE Item Project Generator}
+
+\subsection*{Overview} 
 
 This tutorial will teach you how you
 can create your own ICE Items via the built in tools within ICE.  To demonstrate
@@ -44,7 +46,7 @@ provided Docker image.
 Before we begin, make sure you have ICE cloned (Developer $>$ ICE $>$ Clone ICE)
 into your workspace, and the provided Docker image loaded to your local Docker daemon. 
 
-\section{Creating a New ICE Item Plugin Project}
+\subsection*{Creating a New ICE Item Plugin Project}
 \begin{center} \includegraphics[width=\textwidth]{figures/comb12} \end{center}
 
 To create a new ICE Item project, navigate to \texttt{File $>$ New $>$ Other}
@@ -84,9 +86,9 @@ the \texttt{Launcher} and \texttt{Model} classes and can ignore the
 \texttt{LauncherBuilder} and \texttt{ModelBuilder} classes.
 
 
-\section{Adding Functionality to the New Items}
+\subsection*{Adding Functionality to the New Items}
 
-\subsection{The Fern Model}
+\subsubsection*{The Fern Model}
 
 The \texttt{FernModel} will be responsible for creating and
 validating input parameters for FERN, in the form of a new FERN input file.  In
@@ -258,17 +260,55 @@ Add the following to your setupForm() method:
 
 Now we have a Form constructed for a typical FERN execution.
 
-\subsection{Completing the Launcher}
-The launcher handles the actual running of the FERN code.  
-In order to make it work we will have to provide information 
-about how to run FERN.  In this case we can simply edit the \texttt{execCommand} variable:
+\subsubsection*{Fern Launcher}
+The Fern Launcher handles the actual execution of the FERN application. The
+generator creates the FernLauncher as a subclass of ICE's JobLauncher, which
+provides a large array of features and functionality. As a subclass of
+JobLauncher, the FernLauncher enables users to execute Fern locally, remotely,
+or even through a Docker image. To do so, we just need to add a small amount of
+code that customizes the ICE job launching capabilities for Fern. 
 
-\begin{lstlisting}[language=java]
-execCommand = ${installDir}fern-exec ${inputFile}
+The first bit of code to add to the FernLauncher specifies the name of the
+actual Fern executable. In the setupItemInfo() method, set the execCommand to
+the following: 
+\begin{lstlisting}[language=Java]
+execCommand = "${installDir}fern-exec";
+\end{lstlisting}
+This tells ICE that the Fern executable is called \texttt{fern-exec}, and to
+set the overall execution command to it's install path plus the executable name.
+
+As for the Hosts information in the setupForm() method, let's simply change the
+install path to what we know it will be in the Docker container we will use -
+\texttt{/usr/bin}.
+You can actually just change this on the Fern Launcher UI, but for efficiency, let's
+do it here. 
+\begin{lstlisting}[language=Java]
+addHost("localhost", "linux x86_64", "/usr/bin");
+\end{lstlisting}
+We also need to inform the JobLauncher what other files are involved in this
+execution. To do that, the JobLauncher provides an addInputType() method. Add
+the following to setupForm():
+\begin{lstlisting}[language=Java]
+addInputType("Network File", "networkFile", 
+			"Network File Description", ".inp");
+addInputType("Rate File", "rateFile", "
+			Rate File Description", ".data");
 \end{lstlisting}
 
-\section{Building and incorporating your item into ICE}
-Todo
+And that should be it.
+The generator has taken care of everything else for us.
+We are now ready to launch ICE with our Fern plugin, and use the Fern Items we
+have just created.
+
+\subsection*{Using the New Fern Items}
+Now, using these new Items is easy. Simply open the Run Configurations wizard,
+and open Eclipse Applications to see ICE launch configurations for Mac, Linux,
+and Windows. Select the launch configuration for your OS and open the Plug-ins
+tab. Scroll down to the \texttt{org.eclipse.ice.fern} plugin and turn it on for
+this launch configuration. Then click Apply and Run. 
+
+With a new ICE instance open, go to \texttt{File $>$ New $>$ Other} and select
+the Create New Item Wizard. 
 
 \end{document}
 
