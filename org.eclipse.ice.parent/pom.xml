@@ -13,6 +13,9 @@
     	<buildTimestamp>${maven.build.timestamp}</buildTimestamp>
 		<buildId>${buildTimestamp}</buildId>
 		<ice-install-dir>/home/data/httpd/download.eclipse.org/ice/builds/${releaseName}</ice-install-dir>
+		<macosx-format>zip</macosx-format>
+		<win32-format>zip</win32-format>
+		<linux-format>zip</linux-format>
 		<!-- Repo for released versions of CBI -->
     	<eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
 	</properties>
