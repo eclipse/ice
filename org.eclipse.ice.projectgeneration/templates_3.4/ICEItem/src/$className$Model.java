@@ -50,22 +50,37 @@ public class $className$Model extends Model {
 	public void setupForm() {
 		form = new Form();
 		
+		// Get reference to the IOService
+		// This will let us get IReader/IWriters for 
+		// our specific Model
 		ioService = getIOService();
-		// TODO: Add User Code Here
-		
-		/**
-		 * The following two lines of code can be changed
-		 * if there is supposed to be some default information
-		 * populated in the form when creating this item from
-		 * the new item button in the ICE perspective.
+
+		// Populate the Form with Components for your 
+		// application Model.
+		/* Example:
 		 * 
-		 * Additionally, you will have to add code to the 
-		 * loadInput() method so that it will correctly handle 
-		 * a null argument.
+		 * DataComponent data = new DataComponent();
+		 * data.setName("Example Input Data");
+		 * data.setDescription("DataComponents let you expose Entries for user input.");
+		 * data.setId(1);
+		 * 
+		 * IEntry inputVal1 = new StringEntry();
+		 * inputVal1.setName("Input 1");
+		 * inputVal1.setDescription("A description for this user input.");
+		 * inputVal1.setId(1);
+		 * 
+		 * IEntry inputVal2 = new DiscreteEntry("allowedVal1", "allowedVal2");
+		 * inputVal2.setName("Input 2");
+		 * inputVal2.setDescription("A description for this user input - 
+		 * 							it shows a drop down of discrete values.");
+		 * inputVal2.setId(1);
+		 * 
+		 * data.addEntry(inputVal1);
+		 * data.addEntry(inputVal2);
+		 * 
+		 * form.addComponent(data);
 		 */
-		if (project != null) { 
-			loadInput(null);
-		}
+		
 	}
 	
 	/**
@@ -97,7 +112,10 @@ public class $className$Model extends Model {
 	protected FormStatus reviewEntries(Form preparedForm) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		
-		// TODO: Add User Code Here
+		// Here you can add code that checks the Entries in the Form 
+		// after the user clicks Save. If there are any errors in the 
+		// Entry values, return FormStatus.InfoError. Otherwise 
+		// return FormStatus.ReadyToProcess.
 		
 		return retStatus;
 	}
@@ -155,43 +173,15 @@ public class $className$Model extends Model {
 	 */
 	@Override
 	public void loadInput(String fileName) {
-		
-		// Check to make sure that the item code has been filled in properly
-		// Before going further make sure that the top three variables are 
-		// customized to the appropriate values for your new item.
-		if (readerName == "$className$DefaultReaderName") {
-			return;
-		}
 
-		if (fileName == null) {
-			// TODO: Add User Code Here
-			// These are examples of how you could add data to your form.
-			//
-			//IEntry someEntry = new StringEntry();
-			//someEntry.setName("Some Entry");
-			//someEntry.setValue("Some value");
-			//
-			//IEntry discreteEntry = new DiscreteEntry("val1", "val2", "val3");
-			//discreteEntry.setName("Discrete Entry Name");
-			//
-			// DataComponents can hold any number of different entries to display
-			// information to users. 
-			//DataComponent comp = new DataComponent();
-			//comp.setName("Default component");
-			//...
-			//comp.addEntry(someEntry);
-			//comp.addEntry(discreteEntry);
-			//form.add(comp);
-			return;
-		} else {
-			// Read in the file and set up the form
-			IFile inputFile = project.getFile(fileName);
-			reader = ioService.getReader(readerName);
-			form = reader.read(inputFile);
-			form.setName(getName());
-			form.setDescription(getDescription());
-			form.setId(getId());
-			form.setItemID(getId());
-		}
+		// Read in the file and set up the form
+		IFile inputFile = project.getFile(fileName);
+		reader = ioService.getReader(readerName);
+		form = reader.read(inputFile);
+		form.setName(getName());
+		form.setDescription(getDescription());
+		form.setId(getId());
+		form.setItemID(getId());
+
 	}
 }
