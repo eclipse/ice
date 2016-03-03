@@ -13,7 +13,7 @@
 package org.eclipse.eavp.viz.service.geometry.widgets;
 
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider.BlankShape;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -69,7 +69,7 @@ public class ShapeTreeLabelProvider extends LabelProvider {
 
 		// Check that the element is an ICEObject and is not null
 
-		if (element instanceof AbstractController) {
+		if (element instanceof BasicController) {
 
 			// Return the ICEObject's name property with its ICEObject ID
 			// appended with a space separator

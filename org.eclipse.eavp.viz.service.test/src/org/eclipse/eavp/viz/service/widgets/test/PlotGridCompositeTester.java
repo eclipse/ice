@@ -158,19 +158,6 @@ public class PlotGridCompositeTester extends AbstractSWTTester {
 			public IControllerProviderFactory getFactory() {
 				return null;
 			}
-
-			@Override
-			public int getNumAdditionalPages() {
-				// TODO Auto-generated method stub
-				return 0;
-			}
-
-			@Override
-			public String createAdditionalPage(MultiPageEditorPart parent,
-					IFileEditorInput file, int pageNum) {
-				// TODO Auto-generated method stub
-				return null;
-			}
 		};
 		factory.register(vizService);
 

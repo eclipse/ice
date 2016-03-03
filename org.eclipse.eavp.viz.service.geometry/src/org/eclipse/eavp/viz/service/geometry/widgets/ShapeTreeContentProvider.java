@@ -13,7 +13,7 @@
 package org.eclipse.eavp.viz.service.geometry.widgets;
 
 import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
@@ -73,11 +73,10 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 			if (parentShape.getProperty(GeometryMeshProperty.OPERATOR) != null) {
 
 				// IShape is a ComplexShape, so put its children in the
-				// temporary
-				// children field
+				// temporary children field
 
 				temporaryChildren = parentShape
-						.getEntitiesByCategory(MeshCategory.CHILDREN).toArray();
+						.getEntitiesFromCategory(MeshCategory.CHILDREN).toArray();
 
 				// Use a blank state if there are no children to display
 
@@ -121,10 +120,10 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 	public Object[] getElements(Object inputElement) {
 
 		// If the element is a GeometryComponent, return its shapes
-		if (inputElement instanceof AbstractController) {
+		if (inputElement instanceof BasicController) {
 			// Return an array of the GeometryComponent's shapes
 			IController parentGeometry = (IController) inputElement;
-			return parentGeometry.getEntitiesByCategory(MeshCategory.CHILDREN)
+			return parentGeometry.getEntitiesFromCategory(MeshCategory.CHILDREN)
 					.toArray();
 		} else {
 			return null;
@@ -157,7 +156,7 @@ public class ShapeTreeContentProvider implements ITreeContentProvider {
 		// Return the object's parent
 
 		ShapeController shape = (ShapeController) element;
-		return shape.getEntitiesByCategory(MeshCategory.PARENT);
+		return shape.getEntitiesFromCategory(MeshCategory.PARENT);
 
 	}
 

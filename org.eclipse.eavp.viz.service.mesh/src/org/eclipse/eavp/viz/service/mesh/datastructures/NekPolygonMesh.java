@@ -12,8 +12,8 @@ package org.eclipse.eavp.viz.service.mesh.datastructures;
 
 import java.util.List;
 
-import org.eclipse.eavp.viz.service.modeling.EdgeAndVertexFaceMesh;
-import org.eclipse.eavp.viz.service.modeling.FaceEdgeController;
+import org.eclipse.eavp.viz.service.modeling.DetailedFaceMesh;
+import org.eclipse.eavp.viz.service.modeling.DetailedEdgeController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMeshCategory;
@@ -26,7 +26,7 @@ import org.eclipse.eavp.viz.service.modeling.MeshCategory;
  * @author Robert Smith
  *
  */
-public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
+public class NekPolygonMesh extends DetailedFaceMesh {
 
 	/**
 	 * The default constructore
@@ -53,7 +53,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 	 * org. eclipse.ice.viz.service.modeling.IController)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// If adding an edge, handle it apprioriately
@@ -63,19 +63,19 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 			updateManager.enqueue();
 
 			// Add the edge to the Edges category by default
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 
 			// If the controller already exists, give a reference to it to the
 			// edge.
-			if (entity instanceof FaceEdgeController && controller != null) {
-				entity.addEntityByCategory(controller, MeshCategory.FACES);
+			if (entity instanceof DetailedEdgeController && controller != null) {
+				entity.addEntityToCategory(controller, MeshCategory.FACES);
 			}
 
 			// Send own update along with the new edge's, if there was one
 			updateManager.flushQueue();
 
 		} else {
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class NekPolygonMesh extends EdgeAndVertexFaceMesh {
 			updateManager.enqueue();
 
 			for (IController edge : edges) {
-				edge.addEntityByCategory(controller, MeshCategory.EDGES);
+				edge.addEntityToCategory(controller, MeshCategory.EDGES);
 			}
 
 			// Send messages from all changed edges

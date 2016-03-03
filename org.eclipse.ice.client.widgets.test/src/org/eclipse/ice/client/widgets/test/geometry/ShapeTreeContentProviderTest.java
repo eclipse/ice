@@ -22,7 +22,7 @@ import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
@@ -52,7 +52,7 @@ public class ShapeTreeContentProviderTest {
 
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
-		AbstractView geometryView = new AbstractView();
+		BasicView geometryView = new BasicView();
 		ShapeController geometryShape = new ShapeController(geometryModel,
 				geometryView);
 
@@ -131,7 +131,7 @@ public class ShapeTreeContentProviderTest {
 
 		// Create a shape
 		ShapeMesh geometryModel = new ShapeMesh();
-		AbstractView geometryView = new AbstractView();
+		BasicView geometryView = new BasicView();
 		ShapeController geometryShape = new ShapeController(geometryModel,
 				geometryView);
 
@@ -210,7 +210,7 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeMesh geometryModel = new ShapeMesh();
 		geometryModel.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
-		AbstractView geometryView = new AbstractView();
+		BasicView geometryView = new BasicView();
 		ShapeController geometry = new ShapeController(geometryModel,
 				geometryView);
 

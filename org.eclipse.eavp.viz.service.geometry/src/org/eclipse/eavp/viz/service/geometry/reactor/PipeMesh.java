@@ -122,7 +122,7 @@ public class PipeMesh extends TubeMesh {
 	 * eclipse.ice.viz.service.modeling.AbstractController, java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// If adding an input or output, add it without registering
@@ -163,7 +163,7 @@ public class PipeMesh extends TubeMesh {
 
 		// Otherwise, add it normally
 		else {
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 		}
 	}
 

@@ -18,10 +18,11 @@ import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeView;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -38,7 +39,7 @@ import javafx.scene.transform.Rotate;
  * @author Robert Smith
  *
  */
-public class FXReactorView extends AbstractView implements IWireFramePart {
+public class FXReactorView extends BasicView implements IWireframeView {
 
 	/**
 	 * The JavaFX node containing the reactor's mesh
@@ -417,8 +418,8 @@ public class FXReactorView extends AbstractView implements IWireFramePart {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*

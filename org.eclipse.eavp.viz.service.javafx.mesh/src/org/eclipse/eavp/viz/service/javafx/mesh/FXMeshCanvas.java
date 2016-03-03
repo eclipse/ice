@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.eavp.viz.service.mesh.properties.MeshSelection;
@@ -61,7 +61,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	 *             found
 	 */
 	@Override
-	protected AbstractViewer materializeViewer(Composite viewerParent)
+	protected BasicViewer materializeViewer(Composite viewerParent)
 			throws Exception {
 		try {
 			return new FXMeshViewer(viewerParent);
@@ -79,7 +79,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 	 */
 	@Override
 	protected void createAttachment() {
-		rootAtachment = (AbstractAttachment) viewer.getRenderer()
+		rootAtachment = (BasicAttachment) viewer.getRenderer()
 				.createAttachment(FXMeshAttachment.class);
 	}
 
@@ -158,7 +158,7 @@ public class FXMeshCanvas extends FXVizCanvas implements IMeshVizCanvas {
 
 			// Check each of the polygon's vertices
 			for (IController vertex : polygon
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 
 				// If any vertex is not selected, stop and move on to the next
 				// polygon

@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.jface.viewers.ISelection;
@@ -254,11 +253,11 @@ public class VertexSection extends AbstractPropertySection {
 				// Determine the appropriate Vertex instance whose properties
 				// are
 				// being exposed
-				List<IController> vertices = meshPart
-						.getEntitiesByCategory(MeshCategory.VERTICES);
+				List<VertexController> vertices = meshPart
+						.getEntitiesFromCategory(MeshCategory.VERTICES,
+								VertexController.class);
 				if (index < vertices.size()) {
-					VertexSection.this.vertex = (VertexController) vertices
-							.get(index);
+					VertexSection.this.vertex = vertices.get(index);
 				}
 			}
 		}

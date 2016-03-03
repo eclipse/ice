@@ -17,12 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.eavp.viz.service.IPlot;
 import org.eclipse.eavp.viz.service.ISeries;
 import org.eclipse.eavp.viz.service.csv.CSVSeries;
 import org.eclipse.eavp.viz.service.widgets.PlotGridComposite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * A simple {@link IPlot} implementation for testing things that draw
@@ -240,6 +243,36 @@ public class FakePlot implements IPlot {
 	@Override
 	public void setProperties(Map<String, String> props) throws Exception {
 		// Do nothing.
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#createAdditionalPage(org.eclipse.ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent, IFileEditorInput file, int pageNum) {
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 0;
+	}
+
+	@Override
+	public void save(IProgressMonitor monitor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void saveAs() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

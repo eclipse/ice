@@ -23,7 +23,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * This class provides a basic, limited implementation of certain features of
@@ -348,4 +351,38 @@ public abstract class AbstractPlot implements IPlot {
 		// Nothing to do.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#createAdditionalPage(org.eclipse.ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent, IFileEditorInput file, int pageNum) {
+		//No additional pages, so nothing to do
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 0;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#save(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public void save(IProgressMonitor monitor){
+		//Nothing to do
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#saveAs()
+	 */
+	public void saveAs(){
+		//Nothing to do
+	}
 }

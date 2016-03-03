@@ -13,13 +13,14 @@ package org.eclipse.eavp.viz.service.javafx.geometry.plant.test;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
+import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPipeView;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXReactorView;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.junit.Test;
 
 import javafx.collections.ObservableList;
@@ -73,11 +74,12 @@ public class FXReactorViewTester {
 		FXPipeController pipe = new FXPipeController(pipeMesh, pipeView);
 
 		// Add the pipe to the reactor
-		reactor.addEntityByCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);
+		reactor.addEntityToCategory(pipe, ReactorMeshCategory.CORE_CHANNELS);
 
 		// Get the four shapes that make up the reactor's representation
-		ObservableList<Node> children = ((Group) ((Group) reactor
-				.getRepresentation()).getChildren().get(0)).getChildren();
+		Representation<Group> representation = reactor.getRepresentation();
+		ObservableList<Node> children = ((Group) representation.getData()
+				.getChildren().get(0)).getChildren();
 		assertTrue(children.size() == 4);
 
 		// Check that each shape is drawn normally
@@ -93,8 +95,9 @@ public class FXReactorViewTester {
 		reactor.setWireFrameMode(true);
 
 		// Get the current list of children
-		children = ((Group) ((Group) reactor.getRepresentation()).getChildren()
-				.get(0)).getChildren();
+		representation = reactor.getRepresentation();
+		children = ((Group) representation.getData().getChildren().get(0))
+				.getChildren();
 		assertTrue(children.size() == 4);
 
 		// Check that the children are drawn in wireframe mode
@@ -110,8 +113,9 @@ public class FXReactorViewTester {
 		reactor.setWireFrameMode(false);
 
 		// Get the current list of children
-		children = ((Group) ((Group) reactor.getRepresentation()).getChildren()
-				.get(0)).getChildren();
+		representation = reactor.getRepresentation();
+		children = ((Group) representation.getData().getChildren().get(0))
+				.getChildren();
 		assertTrue(children.size() == 4);
 
 		// Check that the children are drawn normally again

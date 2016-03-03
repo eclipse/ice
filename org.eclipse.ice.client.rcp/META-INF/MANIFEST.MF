@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Client
+Bundle-Name: ICE
 Bundle-SymbolicName: org.eclipse.ice.client.rcp;singleton:=true
 Bundle-Version: 2.1.8.20160208
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -46,3 +46,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ice.datastructures,
  com.sun.jersey
 Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-Localization: plugin

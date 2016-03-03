@@ -112,29 +112,4 @@ public class FakeVizService implements IVizService {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.eavp.viz.service.IVizService#getNumAdditionalPages()
-	 */
-	@Override
-	public int getNumAdditionalPages() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.
-	 * eclipse. ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput,
-	 * int)
-	 */
-	@Override
-	public String createAdditionalPage(MultiPageEditorPart parent,
-			IFileEditorInput file, int pageNum) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

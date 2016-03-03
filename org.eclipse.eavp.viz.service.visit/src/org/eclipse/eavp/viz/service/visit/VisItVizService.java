@@ -143,28 +143,4 @@ public class VisItVizService extends ConnectionVizService<VisItSwtConnection> {
 		// framework, so it has no factory
 		return null;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.eavp.viz.service.IVizService#getNumAdditionalPages()
-	 */
-	@Override
-	public int getNumAdditionalPages() {
-		return 0;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.eavp.viz.service.IVizService#createAdditionalPage(org.eclipse.
-	 * swt.widgets.Composite, java.net.URI, int)
-	 */
-	@Override
-	public String createAdditionalPage(MultiPageEditorPart parent,
-			IFileEditorInput file, int pageNum) {
-		// No additional pages, so nothing to do
-		return null;
-	}
 }

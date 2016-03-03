@@ -13,15 +13,18 @@ package org.eclipse.ice.client.widgets.providers.Default;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.ice.client.widgets.providers.IBasicComponentPageProvider;
 import org.eclipse.ice.client.widgets.providers.IEMFSectionPageProvider;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
-import org.eclipse.ice.client.widgets.providers.IGeometryPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.client.widgets.providers.IMasterDetailsPageProvider;
 import org.eclipse.ice.client.widgets.providers.IMeshPageProvider;
 import org.eclipse.ice.client.widgets.providers.IPageFactory;
+import org.eclipse.ice.client.widgets.providers.IPageProvider;
 import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -37,6 +40,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class DefaultPageFactory implements IPageFactory {
+
+	/**
+	 * The Eclipse 4 context
+	 */
+	@Inject
+	private IEclipseContext context;
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -212,27 +221,20 @@ public class DefaultPageFactory implements IPageFactory {
 
 		// List for storing the pages
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
-		try {
-			ArrayList<IGeometryPageProvider> geometryComponentProviders = IGeometryPageProvider
-					.getProviders();
-			if (geometryComponentProviders != null
-					&& geometryComponentProviders.size() > 0) {
-				// Use the default error page provider
-				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
-				// Do a linear search to find the correct provider
-				for (IGeometryPageProvider currentProvider : geometryComponentProviders) {
-					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages = currentProvider.getPages(editor, components);
-						break;
-					}
-				}
-			} else {
-				logger.error("No GeometryComponentProviders registered");
-			}
 
-		} catch (CoreException e) {
-			logger.error("Unable to get GeometryComponentPageProviders", e);
+		IPageProvider provider = null;
+		String contextKey = components.get(0).getContext();
+		// Get the appropriate page provider if indicated and available in the
+		// e4 context
+		if (context.containsKey(contextKey)) {
+			provider = (IPageProvider) context.get(contextKey);
+		} else {
+			// Otherwise fall back to the default
+			provider = new DefaultGeometryPageProvider();
 		}
+
+		// Get the pages
+		pages = provider.getPages(editor, components);
 
 		return pages;
 	}

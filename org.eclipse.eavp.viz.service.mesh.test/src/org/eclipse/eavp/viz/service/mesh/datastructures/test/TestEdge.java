@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
@@ -58,7 +58,7 @@ public class TestEdge extends EdgeController {
 	 *            </p>
 	 */
 	public TestEdge(VertexController start, VertexController end) {
-		super(new LinearEdgeMesh(start, end), new AbstractView());
+		super(new LinearEdgeMesh(start, end), new BasicView());
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class TestEdge extends EdgeController {
 	 */
 	public TestEdge(ArrayList<VertexController> vertices) {
 		super(new EdgeMesh(vertices.get(0), vertices.get(1)),
-				new AbstractView());
+				new BasicView());
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class TestEdge extends EdgeController {
 	 * @param view
 	 *            The controller's view
 	 */
-	public TestEdge(EdgeMesh model, AbstractView view) {
+	public TestEdge(EdgeMesh model, BasicView view) {
 		super(model, view);
 	}
 

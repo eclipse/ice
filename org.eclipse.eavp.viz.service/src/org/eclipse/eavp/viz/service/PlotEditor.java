@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
@@ -62,7 +63,7 @@ public class PlotEditor extends MultiPageEditorPart {
 	 */
 	private static final Logger logger = LoggerFactory
 			.getLogger(PlotEditor.class);
-
+	
 	/**
 	 * The plot acquired from the input, or {@code null} if it could not be
 	 * created with an appropriate viz service.
@@ -241,6 +242,20 @@ public class PlotEditor extends MultiPageEditorPart {
 		return toolBarManager.createControl(parent);
 	}
 
+	@Override
+	public boolean isDirty(){
+		
+		//Never allow saving non-editors
+		if(getActiveEditor() == null){
+			return false;
+		}
+		
+		//For editors, check for changes normally
+		else{
+			return getActiveEditor().isDirty();
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -249,7 +264,12 @@ public class PlotEditor extends MultiPageEditorPart {
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// Nothing to do.
+		
+		//Save
+		plot.save(monitor);
+		
+		//Refresh the plot
+		plot.redraw();
 	}
 
 	/*
@@ -259,7 +279,12 @@ public class PlotEditor extends MultiPageEditorPart {
 	 */
 	@Override
 	public void doSaveAs() {
-		// Nothing to do.
+		
+		//Open a save dialog
+		plot.saveAs();
+        
+        //Refresh the plot
+        plot.redraw();
 	}
 
 	/**
@@ -296,21 +321,11 @@ public class PlotEditor extends MultiPageEditorPart {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.part.EditorPart#isDirty()
-	 */
-	@Override
-	public boolean isDirty() {
-		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
 	 */
 	@Override
 	public boolean isSaveAsAllowed() {
-		return false;
+		return true;
 	}
 
 	/*
@@ -427,10 +442,9 @@ public class PlotEditor extends MultiPageEditorPart {
 				setPageText(index, "Plot");
 
 				// Add any additional pages the service provides
-				IVizService service = provider.getSelectedService();
-				int numPages = service.getNumAdditionalPages();
+				int numPages = plot.getNumAdditionalPages();
 				for (int i = 1; i <= numPages; i++) {
-					String name = service.createAdditionalPage(this,
+					String name = plot.createAdditionalPage(this,
 							(FileEditorInput) editorInput, i);
 					setPageText(i, name);
 				}

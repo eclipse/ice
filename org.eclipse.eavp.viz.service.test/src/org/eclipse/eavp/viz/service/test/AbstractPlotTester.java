@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.eclipse.eavp.viz.service.AbstractPlot;
 import org.eclipse.eavp.viz.service.ISeries;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 import org.junit.Before;
 import org.junit.Test;
 

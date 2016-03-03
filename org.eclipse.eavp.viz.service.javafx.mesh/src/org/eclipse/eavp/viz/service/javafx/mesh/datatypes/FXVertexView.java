@@ -13,10 +13,12 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 
@@ -31,7 +33,7 @@ import javafx.scene.shape.Sphere;
  * @author Robert Smith
  *
  */
-public class FXVertexView extends AbstractView {
+public class FXVertexView extends BasicView {
 
 	/**
 	 * A group containing the shape which represents the part and a gizmo which
@@ -152,8 +154,8 @@ public class FXVertexView extends AbstractView {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*
@@ -175,8 +177,8 @@ public class FXVertexView extends AbstractView {
 
 		// If the vertex is under construction, leave the material unchanged,
 		// otherwise set it based on whether or not the vertex is selected
-		if (!"True"
-				.equals(model.getProperty(MeshEditorMeshProperty.UNDER_CONSTRUCTION))) {
+		if (!"True".equals(
+				model.getProperty(MeshEditorMeshProperty.UNDER_CONSTRUCTION))) {
 
 			// If the part is selected, set the selected material
 			if ("True".equals(model.getProperty(MeshProperty.SELECTED))) {

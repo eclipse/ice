@@ -15,9 +15,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
-import org.eclipse.eavp.viz.service.modeling.FaceEdgeMesh;
+import org.eclipse.eavp.viz.service.modeling.DetailedEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.LinearEdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.VertexMesh;
@@ -52,7 +52,7 @@ public class FXMeshControllerFactoryTester {
 		assertTrue(edge.getView() instanceof FXLinearEdgeView);
 
 		// Create a face edge mesh and send it to the factory
-		FaceEdgeMesh faceEdgeMesh = new FaceEdgeMesh();
+		DetailedEdgeMesh faceEdgeMesh = new DetailedEdgeMesh();
 		FXEdgeController faceEdge = (FXEdgeController) factory
 				.createProvider(faceEdgeMesh).createController(faceEdgeMesh);
 
@@ -94,7 +94,7 @@ public class FXMeshControllerFactoryTester {
 		assertTrue(vertex.getView() instanceof FXVertexView);
 
 		// Try to send an unrecognized input mesh to the factory
-		IMesh mesh = new AbstractMesh();
+		IMesh mesh = new BasicMesh();
 		assertNull(factory.createProvider(mesh));
 	}
 }

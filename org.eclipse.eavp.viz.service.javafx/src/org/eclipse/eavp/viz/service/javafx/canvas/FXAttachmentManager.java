@@ -18,7 +18,7 @@ import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
  * @author Robert Smith
  *
  */
-public class FXAttachmentManager extends AbstractAttachmentManager {
+public class FXAttachmentManager extends BasicAttachmentManager {
 
 	/*
 	 * (non-Javadoc)

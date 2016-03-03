@@ -34,6 +34,8 @@ import org.eclipse.eavp.viz.service.paraview.proxy.IParaViewProxy;
 import org.eclipse.eavp.viz.service.paraview.web.IParaViewWebClient;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * This class is responsible for embedding ParaView-supported graphics inside
@@ -421,5 +423,24 @@ public class ParaViewPlot extends ConnectionPlot<IParaViewWebClient> {
 			}
 		}
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#createAdditionalPage(org.eclipse.ui.part.MultiPageEditorPart, org.eclipse.ui.IFileEditorInput, int)
+	 */
+	@Override
+	public String createAdditionalPage(MultiPageEditorPart parent, IFileEditorInput file, int pageNum) {
+		//No additional pages, so nothing to do
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.eavp.viz.service.IPlot#getNumAdditionalPages()
+	 */
+	@Override
+	public int getNumAdditionalPages() {
+		return 0;
 	}
 }

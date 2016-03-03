@@ -21,7 +21,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * 
  * @author Robert Smith
  */
-public class EdgeMesh extends AbstractMesh {
+public class EdgeMesh extends BasicMesh {
 
 	/**
 	 * The edge's length.
@@ -46,8 +46,8 @@ public class EdgeMesh extends AbstractMesh {
 		super();
 
 		// Add the vertices to the list of entities.
-		addEntityByCategory(start, MeshCategory.VERTICES);
-		addEntityByCategory(end, MeshCategory.VERTICES);
+		addEntityToCategory(start, MeshCategory.VERTICES);
+		addEntityToCategory(end, MeshCategory.VERTICES);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class EdgeMesh extends AbstractMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// When a vertex is added, take action to ensure the edge maintains a
@@ -85,7 +85,7 @@ public class EdgeMesh extends AbstractMesh {
 			}
 
 			// Add the entity
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 
 			// If this was the second vertex, calculate the edge's new length.
 			if (verticesNum == 1) {
@@ -95,7 +95,7 @@ public class EdgeMesh extends AbstractMesh {
 
 		// Otherwise, add the entity normally
 		else {
-			super.addEntityByCategory(entity, category);
+			super.addEntityToCategory(entity, category);
 		}
 	}
 
@@ -192,9 +192,9 @@ public class EdgeMesh extends AbstractMesh {
 		// Clone each child entity
 		for (IMeshCategory category : castObject.entities.keySet()) {
 			for (IController entity : castObject
-					.getEntitiesByCategory(category)) {
-				addEntityByCategory(
-						(IController) ((AbstractController) entity).clone(),
+					.getEntitiesFromCategory(category)) {
+				addEntityToCategory(
+						(IController) ((BasicController) entity).clone(),
 						category);
 			}
 		}
@@ -220,7 +220,7 @@ public class EdgeMesh extends AbstractMesh {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getStartLocation() {
-		List<IController> vertices = getEntitiesByCategory(
+		List<IController> vertices = getEntitiesFromCategory(
 				MeshCategory.VERTICES);
 		return (vertices != null && !vertices.isEmpty())
 				? ((VertexController) vertices.get(0)).getLocation()
@@ -233,7 +233,7 @@ public class EdgeMesh extends AbstractMesh {
 	 * @return A list of the vertex's 3D coordinates
 	 */
 	public double[] getEndLocation() {
-		List<IController> vertices = getEntitiesByCategory(
+		List<IController> vertices = getEntitiesFromCategory(
 				MeshCategory.VERTICES);
 		return (vertices != null && vertices.size() > 1)
 				? ((VertexController) vertices.get(1)).getLocation()

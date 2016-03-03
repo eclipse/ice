@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
@@ -35,7 +36,7 @@ public class FXEdgeController extends EdgeController {
 	 * @param view
 	 *            The edge's view
 	 */
-	public FXEdgeController(EdgeMesh model, AbstractView view) {
+	public FXEdgeController(EdgeMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -57,7 +58,7 @@ public class FXEdgeController extends EdgeController {
 			// Lock notifications from changing own vertices
 			updateManager.enqueue();
 			for (IController vertex : model
-					.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 				vertex.setProperty(property, value);
 			}
 		}
@@ -78,7 +79,7 @@ public class FXEdgeController extends EdgeController {
 
 		// Clone the model and view
 		EdgeMesh modelClone = (EdgeMesh) model.clone();
-		AbstractView viewClone = (AbstractView) view.clone();
+		BasicView viewClone = (BasicView) view.clone();
 
 		// Create a new controller for the clones and return it
 		FXEdgeController clone = new FXEdgeController(modelClone, viewClone);

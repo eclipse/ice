@@ -94,7 +94,7 @@ public class EdgeInfoSection extends GeneralInfoSection {
 			if (meshPart instanceof NekPolygonController) {
 				NekPolygonController polygon = (NekPolygonController) meshPart;
 				List<IController> edges = polygon
-						.getEntitiesByCategory(MeshCategory.EDGES);
+						.getEntitiesFromCategory(MeshCategory.EDGES);
 				// Set the parent class' ICEObject to the appropriate edge.
 				if (index < edges.size()) {
 					object = edges.get(index);

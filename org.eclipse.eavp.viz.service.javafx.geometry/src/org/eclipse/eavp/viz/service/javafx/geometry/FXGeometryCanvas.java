@@ -16,15 +16,15 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXSelection;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXViewer;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXVizCanvas;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantView;
 import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -74,7 +74,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 */
 	@Override
 	protected void createAttachment() {
-		rootAtachment = (AbstractAttachment) viewer.getRenderer()
+		rootAtachment = (BasicAttachment) viewer.getRenderer()
 				.createAttachment(FXGeometryAttachment.class);
 	}
 
@@ -107,7 +107,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 * materializeViewer (org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected AbstractViewer materializeViewer(Composite viewerParent)
+	protected BasicViewer materializeViewer(Composite viewerParent)
 			throws Exception {
 
 		// Create a geometry viewer, throwing an exception if the operation
@@ -193,9 +193,7 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	public void setWireframe(boolean wireframe) {
 
 		// Set all objects in the tree to wireframe mode
-		for (IController entity : root.getEntities()) {
-			recursiveSetWireframe(entity, wireframe);
-		}
+		setWireframe((IWireframeController) root, wireframe);
 	}
 
 	/**
@@ -209,15 +207,15 @@ public class FXGeometryCanvas extends FXVizCanvas implements IPlantView {
 	 *            If true, the parts will be set to wireframe mode. Otherwise,
 	 *            they will be removed from wireframe mode.
 	 */
-	private void recursiveSetWireframe(IController target, boolean wireframe) {
+	private void setWireframe(IWireframeController target, boolean wireframe) {
 
 		// Set this object to the correct mode
-		((IWireFramePart) target).setWireFrameMode(wireframe);
+		target.setWireFrameMode(wireframe);
 
 		// Iterate over each of its children, setting them to the correct mode
-		for (IController child : target
-				.getEntitiesByCategory(MeshCategory.CHILDREN)) {
-			((IWireFramePart) child).setWireFrameMode(wireframe);
+		for (IWireframeController child : target
+				.getEntitiesFromCategory(MeshCategory.CHILDREN, IWireframeController.class)) {
+			child.setWireFrameMode(wireframe);
 		}
 	}
 

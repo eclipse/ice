@@ -19,9 +19,9 @@ import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IController;
@@ -49,7 +49,7 @@ public class VertexControllerTester {
 
 		// Create a cloned vertex and check that it is identical to the original
 		VertexController vertex = new VertexController(new VertexMesh(),
-				new AbstractView());
+				new BasicView());
 		vertex.setProperty(MeshProperty.DESCRIPTION, "Property");
 		VertexController clone = (VertexController) vertex.clone();
 		assertTrue(vertex.equals(clone));
@@ -63,37 +63,37 @@ public class VertexControllerTester {
 
 		// Create a vertex
 		VertexMesh vertexModel = new VertexMesh();
-		AbstractView view = new AbstractView();
+		BasicView view = new BasicView();
 		VertexController vertex = new VertexController(vertexModel, view);
 
 		// Add an entity and check that it did not go into the edges category
 		vertex.addEntity(
-				new AbstractController(new AbstractMesh(), new AbstractView()));
+				new BasicController(new BasicMesh(), new BasicView()));
 		assertEquals(0,
-				vertex.getEntitiesByCategory(MeshCategory.EDGES).size());
+				vertex.getEntitiesFromCategory(MeshCategory.EDGES).size());
 
 		// Create some edges
 		EdgeController edge1 = new EdgeController(new EdgeMesh(),
-				new AbstractView());
+				new BasicView());
 		EdgeController edge2 = new EdgeController(new EdgeMesh(),
-				new AbstractView());
+				new BasicView());
 		EdgeController edge3 = new EdgeController(new EdgeMesh(),
-				new AbstractView());
+				new BasicView());
 
 		// Add two edges to the vertex and a third explicitly under a different
 		// category
 		vertex.addEntity(edge1);
 		vertex.addEntity(edge2);
-		vertex.addEntityByCategory(edge3, MeshCategory.CHILDREN);
+		vertex.addEntityToCategory(edge3, MeshCategory.CHILDREN);
 
 		// The first two edges should go into the Edges category
 		List<IController> edges = vertex
-				.getEntitiesByCategory(MeshCategory.EDGES);
+				.getEntitiesFromCategory(MeshCategory.EDGES);
 		assertTrue(edges.contains(edge1));
 		assertTrue(edges.contains(edge2));
 
 		// The last edge should have been put in the specified custom category
-		assertTrue(vertex.getEntitiesByCategory(MeshCategory.CHILDREN)
+		assertTrue(vertex.getEntitiesFromCategory(MeshCategory.CHILDREN)
 				.contains(edge3));
 	}
 
@@ -106,25 +106,25 @@ public class VertexControllerTester {
 		// Create the vertex
 		VertexMesh vertexMesh = new VertexMesh(0, 0, 0);
 		TestVertexController vertex = new TestVertexController(vertexMesh,
-				new AbstractView());
+				new BasicView());
 
 		// Create a test object to receive updates
 		TestMesh otherMesh = new TestMesh(new ArrayList<IController>());
 		TestController other = new TestController(otherMesh,
-				new AbstractView());
+				new BasicView());
 
 		// Create a second vertex for the edge
 		VertexMesh otherVertexMesh = new VertexMesh(1, 1, 1);
 		VertexController otherVertex = new VertexController(otherVertexMesh,
-				new AbstractView());
+				new BasicView());
 
 		// Create an edge
 		EdgeMesh edgeMesh = new EdgeMesh(vertex, otherVertex);
-		EdgeController edge = new EdgeController(edgeMesh, new AbstractView());
+		EdgeController edge = new EdgeController(edgeMesh, new BasicView());
 
 		// Add the test object and edge to the vertex.
-		vertex.addEntityByCategory(other, MeshCategory.CHILDREN);
-		vertex.addEntityByCategory(edge, MeshCategory.EDGES);
+		vertex.addEntityToCategory(other, MeshCategory.CHILDREN);
+		vertex.addEntityToCategory(edge, MeshCategory.EDGES);
 
 		// Clear the vertex's updated state
 		vertex.wasUpdated();
@@ -161,7 +161,7 @@ public class VertexControllerTester {
 		 * @param view
 		 *            The graphical representation of the part.
 		 */
-		public TestVertexController(VertexMesh model, AbstractView view) {
+		public TestVertexController(VertexMesh model, BasicView view) {
 			super(model, view);
 		}
 

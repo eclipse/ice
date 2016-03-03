@@ -16,9 +16,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestController;
 import org.eclipse.eavp.viz.service.modeling.test.utils.TestMesh;
@@ -40,7 +40,7 @@ public class PipeControllerTester {
 
 		// Create a pipe
 		PipeMesh pipeMesh = new PipeMesh();
-		PipeController pipe = new PipeController(pipeMesh, new AbstractView());
+		PipeController pipe = new PipeController(pipeMesh, new BasicView());
 
 		// Check the number of rods
 		pipe.setNumRods(1);
@@ -73,22 +73,22 @@ public class PipeControllerTester {
 
 		// Create a pipe
 		PipeMesh pipeMesh = new PipeMesh();
-		PipeController pipe = new PipeController(pipeMesh, new AbstractView());
+		PipeController pipe = new PipeController(pipeMesh, new BasicView());
 
 		// Create a test object to receive and track updates from the pipe
 		TestController parent = new TestController(new TestMesh(),
-				new AbstractView());
+				new BasicView());
 		parent.addEntity(pipe);
 
 		// Add an input and output, as well as another pipe
-		AbstractController input = new AbstractController(new AbstractMesh(),
-				new AbstractView());
-		pipe.addEntityByCategory(input, ReactorMeshCategory.INPUT);
-		AbstractController output = new AbstractController(new AbstractMesh(),
-				new AbstractView());
-		pipe.addEntityByCategory(output, ReactorMeshCategory.OUTPUT);
+		BasicController input = new BasicController(new BasicMesh(),
+				new BasicView());
+		pipe.addEntityToCategory(input, ReactorMeshCategory.INPUT);
+		BasicController output = new BasicController(new BasicMesh(),
+				new BasicView());
+		pipe.addEntityToCategory(output, ReactorMeshCategory.OUTPUT);
 		PipeController child = new PipeController(new PipeMesh(),
-				new AbstractView());
+				new BasicView());
 		pipe.addEntity(child);
 
 		// Clear the received messages
@@ -115,7 +115,7 @@ public class PipeControllerTester {
 
 		// Create a junction
 		PipeController pipe = new PipeController(new PipeMesh(),
-				new AbstractView());
+				new BasicView());
 		pipe.setProperty(MeshProperty.ID, "Property");
 
 		// Clone it and check that they are identical

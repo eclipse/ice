@@ -28,8 +28,8 @@ import java.util.HashMap;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.eavp.viz.service.modeling.VertexController;
 import org.eclipse.ice.datastructures.ICEObject.Component;
@@ -439,11 +439,11 @@ public class NekWriter implements IComponentVisitor {
 			// Check each descendent vertex. If it is not yet in the list of
 			// vertices, add it
 			for (IController entity : currQuad
-					.getEntitiesByCategory(MeshCategory.EDGES)) {
-				for (IController v : entity
-						.getEntitiesByCategory(MeshCategory.VERTICES)) {
+					.getEntitiesFromCategory(MeshCategory.EDGES)) {
+				for (VertexController v : entity.getEntitiesFromCategory(
+						MeshCategory.VERTICES, VertexController.class)) {
 					if (!currVertices.contains(v)) {
-						currVertices.add((VertexController) v);
+						currVertices.add(v);
 					}
 				}
 			}
@@ -458,9 +458,10 @@ public class NekWriter implements IComponentVisitor {
 			for (int j = 0; j < 4; j++) {
 
 				// Define the current edge
-				currEdge = currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+				currEdge = currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(j);
-				currEdgeId = Integer.valueOf(currEdge.getProperty(MeshProperty.ID));
+				currEdgeId = Integer
+						.valueOf(currEdge.getProperty(MeshProperty.ID));
 
 				/*
 				 * Boundary condition format strings:

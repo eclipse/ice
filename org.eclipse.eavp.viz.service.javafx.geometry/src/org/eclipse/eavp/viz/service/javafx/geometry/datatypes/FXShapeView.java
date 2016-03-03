@@ -16,11 +16,12 @@ import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.javafx.canvas.TransformGizmo;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.IWireframeView;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.eavp.viz.service.modeling.TubeMesh;
@@ -44,7 +45,7 @@ import javafx.scene.shape.TriangleMesh;
  * @author Tony McCrary, Robert Smith
  *
  */
-public class FXShapeView extends AbstractView implements IWireFramePart {
+public class FXShapeView extends BasicView implements IWireframeView {
 
 	/**
 	 * A group containing the shape which represents the part and a gizmo which
@@ -337,8 +338,8 @@ public class FXShapeView extends AbstractView implements IWireFramePart {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*

@@ -91,7 +91,7 @@ public class VertexInfoSection extends GeneralInfoSection {
 
 			// Get the vertex at the given index
 			List<IController> vertices = meshPart
-					.getEntitiesByCategory(MeshCategory.VERTICES);
+					.getEntitiesFromCategory(MeshCategory.VERTICES);
 			if (index < vertices.size()) {
 				object = vertices.get(index);
 			}

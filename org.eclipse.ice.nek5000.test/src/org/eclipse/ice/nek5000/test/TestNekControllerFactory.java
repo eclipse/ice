@@ -14,7 +14,7 @@ package org.eclipse.ice.nek5000.test;
 
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.EdgeController;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
@@ -52,7 +52,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// Create an FXShapeView for the model, then wrap them
 					// both in a
 					// shape controller
-					AbstractView view = new AbstractView();
+					BasicView view = new BasicView();
 					return new EdgeController((EdgeMesh) model, view);
 				}
 			};
@@ -69,7 +69,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// Create an FXShapeView for the model, then wrap them
 					// both in a
 					// shape controller
-					AbstractView view = new AbstractView();
+					BasicView view = new BasicView();
 					return new VertexController((VertexMesh) model, view);
 				}
 			};
@@ -85,7 +85,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// Create an FXShapeView for the model, then wrap them
 					// both in a
 					// shape controller
-					AbstractView view = new AbstractView();
+					BasicView view = new BasicView();
 					return new NekPolygonController((NekPolygonMesh) model,
 							view);
 				}

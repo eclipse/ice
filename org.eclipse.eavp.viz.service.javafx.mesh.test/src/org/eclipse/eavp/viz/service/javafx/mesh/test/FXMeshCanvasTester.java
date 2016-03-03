@@ -16,11 +16,11 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractViewer;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicViewer;
 import org.eclipse.eavp.viz.service.javafx.mesh.FXMeshCanvas;
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
@@ -48,7 +48,7 @@ public class FXMeshCanvasTester {
 
 		// The canvas for testing
 		FXMeshCanvas canvas = new TestCanvas(
-				new AbstractController(new AbstractMesh(), new AbstractView()));
+				new BasicController(new BasicMesh(), new BasicView()));
 
 		// Initialize the canvas
 		try {
@@ -85,68 +85,68 @@ public class FXMeshCanvasTester {
 	public void checkSelection() {
 
 		// The root for the tree of shapes in the canvas
-		IController root = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		IController root = new BasicController(new BasicMesh(),
+				new BasicView());
 
 		// The canvas for testing
 		FXMeshCanvas canvas = new TestCanvas(
-				new AbstractController(new AbstractMesh(), new AbstractView()));
+				new BasicController(new BasicMesh(), new BasicView()));
 
 		// Create the polygons for the test
-		AbstractController neighbor1 = new AbstractController(
-				new AbstractMesh(), new AbstractView());
+		BasicController neighbor1 = new BasicController(
+				new BasicMesh(), new BasicView());
 		neighbor1.setProperty(MeshProperty.NAME, "neighbor1");
-		AbstractController neighbor2 = new AbstractController(
-				new AbstractMesh(), new AbstractView());
+		BasicController neighbor2 = new BasicController(
+				new BasicMesh(), new BasicView());
 		neighbor2.setProperty(MeshProperty.NAME, "neighbor2");
-		AbstractController independent = new AbstractController(
-				new AbstractMesh(), new AbstractView());
+		BasicController independent = new BasicController(
+				new BasicMesh(), new BasicView());
 		independent.setProperty(MeshProperty.NAME, "independent");
 
 		// Create the points used for the test. These points will be used by
 		// exactly one polygon apiece
-		AbstractController point1 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController point1 = new BasicController(new BasicMesh(),
+				new BasicView());
 		point1.setProperty(MeshProperty.NAME, "point1");
-		AbstractController point2 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController point2 = new BasicController(new BasicMesh(),
+				new BasicView());
 		point2.setProperty(MeshProperty.NAME, "point2");
-		AbstractController point3 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController point3 = new BasicController(new BasicMesh(),
+				new BasicView());
 		point3.setProperty(MeshProperty.NAME, "point3");
-		AbstractController point4 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController point4 = new BasicController(new BasicMesh(),
+				new BasicView());
 		point4.setProperty(MeshProperty.NAME, "point4");
-		AbstractController point5 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController point5 = new BasicController(new BasicMesh(),
+				new BasicView());
 		point5.setProperty(MeshProperty.NAME, "point5");
-		AbstractController point6 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController point6 = new BasicController(new BasicMesh(),
+				new BasicView());
 		point6.setProperty(MeshProperty.NAME, "point6");
 
 		// Create more points. These will be shared by the two triangles
-		AbstractController shared1 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController shared1 = new BasicController(new BasicMesh(),
+				new BasicView());
 		shared1.setProperty(MeshProperty.NAME, "shared1");
-		AbstractController shared2 = new AbstractController(new AbstractMesh(),
-				new AbstractView());
+		BasicController shared2 = new BasicController(new BasicMesh(),
+				new BasicView());
 		shared2.setProperty(MeshProperty.NAME, "shared2");
 
 		// Add the vertices to the polygons. The polygons should be two
 		// triangles which share an edge and a rectangle that is not connected
 		// to either of them.
-		neighbor1.addEntityByCategory(point1, MeshCategory.VERTICES);
-		neighbor1.addEntityByCategory(shared1, MeshCategory.VERTICES);
-		neighbor1.addEntityByCategory(shared2, MeshCategory.VERTICES);
+		neighbor1.addEntityToCategory(point1, MeshCategory.VERTICES);
+		neighbor1.addEntityToCategory(shared1, MeshCategory.VERTICES);
+		neighbor1.addEntityToCategory(shared2, MeshCategory.VERTICES);
 
-		neighbor2.addEntityByCategory(point2, MeshCategory.VERTICES);
-		neighbor2.addEntityByCategory(shared1, MeshCategory.VERTICES);
-		neighbor2.addEntityByCategory(shared2, MeshCategory.VERTICES);
+		neighbor2.addEntityToCategory(point2, MeshCategory.VERTICES);
+		neighbor2.addEntityToCategory(shared1, MeshCategory.VERTICES);
+		neighbor2.addEntityToCategory(shared2, MeshCategory.VERTICES);
 
-		independent.addEntityByCategory(point3, MeshCategory.VERTICES);
-		independent.addEntityByCategory(point4, MeshCategory.VERTICES);
-		independent.addEntityByCategory(point5, MeshCategory.VERTICES);
-		independent.addEntityByCategory(point6, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point3, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point4, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point5, MeshCategory.VERTICES);
+		independent.addEntityToCategory(point6, MeshCategory.VERTICES);
 
 		// Try deleting with nothing selected and no polygons. Nothing should
 		// happen.
@@ -236,7 +236,7 @@ public class FXMeshCanvasTester {
 		 *            The root node that will contain all the modeling parts to
 		 *            be rendered.
 		 */
-		public TestCanvas(AbstractController mesh) {
+		public TestCanvas(BasicController mesh) {
 			super(mesh);
 		}
 
@@ -247,7 +247,7 @@ public class FXMeshCanvasTester {
 		 * materializeViewer(org.eclipse.swt.widgets.Composite)
 		 */
 		@Override
-		protected AbstractViewer materializeViewer(Composite viewerParent)
+		protected BasicViewer materializeViewer(Composite viewerParent)
 				throws Exception {
 			try {
 				return new TestViewer(viewerParent);

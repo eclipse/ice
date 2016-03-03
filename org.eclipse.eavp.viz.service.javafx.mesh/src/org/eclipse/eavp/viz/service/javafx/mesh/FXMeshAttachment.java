@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.javafx.mesh;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachmentManager;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
@@ -43,7 +43,7 @@ public class FXMeshAttachment extends FXAttachment {
 	 * @param manager
 	 *            the manager that created this instance.
 	 */
-	public FXMeshAttachment(AbstractAttachmentManager manager) {
+	public FXMeshAttachment(BasicAttachmentManager manager) {
 		super(manager);
 
 		// Create a grey background box
@@ -67,16 +67,20 @@ public class FXMeshAttachment extends FXAttachment {
 
 				// Add the entity's own representation, if it has one and is not
 				// already present in the scene
-				if (entity.getRepresentation() != null && !fxAttachmentNode
-						.getChildren().contains(entity.getRepresentation())) {
+				Representation<Group> representation = entity
+						.getRepresentation();
+				if (representation.getData() != null && !fxAttachmentNode
+						.getChildren().contains(representation.getData())) {
 					fxAttachmentNode.getChildren()
-							.add((Node) entity.getRepresentation());
+							.add(representation.getData());
 				}
 
 				// Add each child of a polygon to the scene, without repeats
 				for (IController child : entity.getEntities()) {
 
-					Group render = (Group) child.getRepresentation();
+					Representation<Group> childRepresentation = child
+							.getRepresentation();
+					Group render = childRepresentation.getData();
 
 					if (!fxAttachmentNode.getChildren().contains(render)) {
 						// Add the representation to the scene's node

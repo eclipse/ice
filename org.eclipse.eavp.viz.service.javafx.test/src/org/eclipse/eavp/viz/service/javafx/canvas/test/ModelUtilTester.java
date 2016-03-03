@@ -13,7 +13,7 @@ package org.eclipse.eavp.viz.service.javafx.canvas.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.service.javafx.canvas.AbstractAttachment;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachmentManager;
 import org.eclipse.eavp.viz.service.javafx.canvas.ModelUtil;
@@ -36,7 +36,7 @@ public class ModelUtilTester {
 
 		// Create a node and attachment
 		GNode node = new GNode();
-		AbstractAttachment attachment = new FXAttachment(
+		BasicAttachment attachment = new FXAttachment(
 				new FXAttachmentManager());
 
 		// Check that null values are invalid

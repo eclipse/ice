@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.eavp.viz.service.geometry.reactor;
 
-import org.eclipse.eavp.viz.service.modeling.AbstractController;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
+import org.eclipse.eavp.viz.service.modeling.BasicController;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
+import org.eclipse.eavp.viz.service.modeling.IWireframeController;
 
 /**
  * The internal data representation for a Heat Exchanger part.
@@ -20,8 +20,8 @@ import org.eclipse.eavp.viz.service.modeling.IWireFramePart;
  * @author Robert Smith
  *
  */
-public class HeatExchangerController extends AbstractController
-		implements IWireFramePart {
+public class HeatExchangerController extends BasicController
+		implements IWireframeController {
 
 	/**
 	 * The nullary constructor.
@@ -38,7 +38,7 @@ public class HeatExchangerController extends AbstractController
 	 * @param view
 	 *            The part's graphical representation in the rendering program.
 	 */
-	public HeatExchangerController(HeatExchangerMesh model, AbstractView view) {
+	public HeatExchangerController(HeatExchangerMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -111,7 +111,7 @@ public class HeatExchangerController extends AbstractController
 	 */
 	@Override
 	public void setWireFrameMode(boolean on) {
-		((IWireFramePart) view).setWireFrameMode(on);
+		((IWireframeController) view).setWireFrameMode(on);
 	}
 
 }

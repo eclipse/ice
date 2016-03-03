@@ -38,7 +38,7 @@ public class ReactorMesh extends ShapeMesh {
 	 * java.lang.String)
 	 */
 	@Override
-	public void addEntityByCategory(IController entity,
+	public void addEntityToCategory(IController entity,
 			IMeshCategory category) {
 
 		// If the entity is a Core Channel, set this shape as its parent, so
@@ -48,7 +48,7 @@ public class ReactorMesh extends ShapeMesh {
 			((PipeController) entity).setParent(controller);
 		}
 
-		super.addEntityByCategory(entity, category);
+		super.addEntityToCategory(entity, category);
 
 	}
 }

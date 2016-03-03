@@ -4,13 +4,18 @@
 
 	<!-- Custom properties -->
 	<properties>
-		<ice-version>next</ice-version>
+    	<releaseName>next</releaseName>
 		<tycho-version>0.23.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<cbi-plugins.version>1.1.3</cbi-plugins.version>
 		<pom-filename>pom.xml</pom-filename>	
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
-		<ice-install-dir>/home/data/httpd/download.eclipse.org/ice/builds/${ice-version}</ice-install-dir>
+    	<buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+		<buildId>${buildTimestamp}</buildId>
+		<ice-install-dir>/home/data/httpd/download.eclipse.org/ice/builds/${releaseName}</ice-install-dir>
+		<macosx-format>zip</macosx-format>
+		<win32-format>zip</win32-format>
+		<linux-format>zip</linux-format>
 		<!-- Repo for released versions of CBI -->
     	<eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
 	</properties>
@@ -75,6 +80,89 @@
 					http://${sonarHost}:${sonarPort}/sonar
 				</sonar.host.url>
 			</properties>
+		</profile>
+		
+		<profile>
+			<id>eclipse-sign</id>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>m2e-cbi</id>
+					<url>http://download.eclipse.org/technology/m2e/maven/</url>
+				</pluginRepository>
+			</pluginRepositories>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>target-platform-configuration</artifactId>
+						<version>${tycho-version}</version>
+						<configuration>
+							<includePackedArtifacts>true</includePackedArtifacts>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.eclipse.tycho.extras</groupId>
+						<artifactId>tycho-pack200a-plugin</artifactId>
+						<version>${tycho-extras-version}</version>
+						<executions>
+							<execution>
+								<id>pack200-normalize</id>
+								<goals>
+									<goal>normalize</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.eclipse.cbi.maven.plugins</groupId>
+						<artifactId>eclipse-jarsigner-plugin</artifactId>
+						<version>${cbi-plugins.version}</version>
+						<executions>
+							<execution>
+								<id>sign</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.eclipse.tycho.extras</groupId>
+						<artifactId>tycho-pack200b-plugin</artifactId>
+						<version>${tycho-extras-version}</version>
+						<executions>
+							<execution>
+								<id>pack200-pack</id>
+								<goals>
+									<goal>pack</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.eclipse.tycho</groupId>
+						<artifactId>tycho-p2-plugin</artifactId>
+						<version>${tycho-version}</version>
+						<executions>
+							<execution>
+								<id>p2-metadata</id>
+								<goals>
+									<goal>p2-metadata</goal>
+								</goals>
+								<phase>package</phase>
+							</execution>
+						</executions>
+						<configuration>
+							<defaultP2Metadata>false</defaultP2Metadata>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 
@@ -175,6 +263,50 @@
 				<!-- <executions> <execution> <id>versions</id> <phase>validate</phase> 
 					<goals> <goal>set-version</goal> <goal>update-pom</goal> </goals> </execution> 
 					</executions> -->
+			</plugin>
+
+			<!-- Add build ID to about.mappings -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>process-about.mappings</id>
+						<phase>prepare-package</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${basedir}</directory>
+									<includes>
+										<include>about.mappings</include>
+									</includes>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<additionalFileSets>
+						<fileSet>
+							<directory>${project.build.directory}</directory>
+							<includes>
+								<include>about.mappings</include>
+							</includes>
+						</fileSet>
+					</additionalFileSets>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

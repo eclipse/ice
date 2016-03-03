@@ -154,7 +154,7 @@ public class ActionReplicateShape extends Action {
 		// its parent shape is null.
 
 		ShapeController parentShape = (ShapeController) selectedShape
-				.getEntitiesByCategory(MeshCategory.PARENT).get(0);
+				.getEntitiesFromCategory(MeshCategory.PARENT).get(0);
 
 		// Remove the selected shape from its original parent
 

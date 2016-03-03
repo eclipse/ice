@@ -13,12 +13,14 @@ package org.eclipse.eavp.viz.service.javafx.mesh.datatypes;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
 import org.eclipse.eavp.viz.service.javafx.internal.Util;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
+import org.eclipse.eavp.viz.service.mesh.datastructures.MeshEditorMeshProperty;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
 import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
 import org.eclipse.eavp.viz.service.modeling.IController;
 import org.eclipse.eavp.viz.service.modeling.IMesh;
 import org.eclipse.eavp.viz.service.modeling.MeshCategory;
 import org.eclipse.eavp.viz.service.modeling.MeshProperty;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 import org.eclipse.eavp.viz.service.modeling.ShapeController;
 
 import javafx.geometry.Point3D;
@@ -35,7 +37,7 @@ import javafx.scene.transform.Rotate;
  * @author Robert Smith
  *
  */
-public class FXLinearEdgeView extends AbstractView {
+public class FXLinearEdgeView extends BasicView {
 
 	/**
 	 * A group containing the shape which represents the part and a gizmo which
@@ -101,14 +103,14 @@ public class FXLinearEdgeView extends AbstractView {
 	private Cylinder createShape(EdgeMesh edgeComponent) {
 
 		// If the edge does not have two vertices, a new shape cannot be created
-		if (edgeComponent.getEntitiesByCategory(MeshCategory.VERTICES)
+		if (edgeComponent.getEntitiesFromCategory(MeshCategory.VERTICES)
 				.size() != 2) {
 			return null;
 		}
 
 		// Get the scale the vertices are being drawn at
 		int scale = ((FXVertexController) edgeComponent
-				.getEntitiesByCategory(MeshCategory.VERTICES).get(0))
+				.getEntitiesFromCategory(MeshCategory.VERTICES).get(0))
 						.getApplicationScale();
 
 		// Get the edge's endpoints
@@ -172,8 +174,8 @@ public class FXLinearEdgeView extends AbstractView {
 	 * org.eclipse.eavp.viz.service.modeling.AbstractView#getRepresentation()
 	 */
 	@Override
-	public Object getRepresentation() {
-		return node;
+	public Representation<Group> getRepresentation() {
+		return new Representation<Group>(node);
 	}
 
 	/*
@@ -193,7 +195,7 @@ public class FXLinearEdgeView extends AbstractView {
 		node.getChildren().clear();
 
 		// If the edge does not have two vertices, there is nothing to draw
-		if (model.getEntitiesByCategory(MeshCategory.VERTICES).size() == 2) {
+		if (model.getEntitiesFromCategory(MeshCategory.VERTICES).size() == 2) {
 
 			// Create a shape based on the model and set it as the node's child
 			mesh = createShape(((EdgeMesh) model));

@@ -21,6 +21,7 @@ import org.eclipse.eavp.viz.service.javafx.scene.model.IAttachment;
 import org.eclipse.eavp.viz.service.javafx.scene.model.INode;
 import org.eclipse.eavp.viz.service.javafx.viewer.IAttachmentManager;
 import org.eclipse.eavp.viz.service.modeling.IController;
+import org.eclipse.eavp.viz.service.modeling.Representation;
 
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -33,7 +34,7 @@ import javafx.scene.Node;
  * @author Tony McCrary (tmccrary@l33tlabs.com), Robert Smith
  *
  */
-public class FXAttachment extends AbstractAttachment {
+public class FXAttachment extends BasicAttachment {
 
 	/**
 	 * Node used to attach geometry to (instead of the root, to keep things
@@ -83,7 +84,7 @@ public class FXAttachment extends AbstractAttachment {
 	}
 
 	/**
-	 * @see AbstractAttachment#attach(INode)
+	 * @see BasicAttachment#attach(INode)
 	 */
 	@Override
 	public void attach(INode owner) {
@@ -194,7 +195,8 @@ public class FXAttachment extends AbstractAttachment {
 	 */
 	@Override
 	protected void disposeShape(IController shape) {
-		Node node = (Group) shape.getRepresentation();
+		Representation<Group> representation = shape.getRepresentation();
+		Node node = representation.getData();
 
 		if (node == null) {
 			return;
@@ -251,7 +253,7 @@ public class FXAttachment extends AbstractAttachment {
 	 */
 	@Override
 	public Class<?> getType() {
-		return AbstractAttachment.class;
+		return BasicAttachment.class;
 	}
 
 	/**

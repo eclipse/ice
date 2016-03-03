@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.eclipse.eavp.viz.service.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.service.modeling.AbstractMesh;
+import org.eclipse.eavp.viz.service.modeling.BasicMesh;
 import org.eclipse.eavp.viz.service.modeling.IController;
 
 /**
@@ -24,7 +24,7 @@ import org.eclipse.eavp.viz.service.modeling.IController;
  * @author Robert Smith
  *
  */
-public class TestMesh extends AbstractMesh {
+public class TestMesh extends BasicMesh {
 
 	/**
 	 * Whether the mesh has received an update since the last time it was

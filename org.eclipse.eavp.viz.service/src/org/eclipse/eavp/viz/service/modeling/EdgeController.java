@@ -19,7 +19,7 @@ import org.eclipse.eavp.viz.service.datastructures.VizObject.SubscriptionType;
  * @author Robert Smith
  *
  */
-public class EdgeController extends AbstractController {
+public class EdgeController extends BasicController {
 
 	/**
 	 * The default constructor.
@@ -29,7 +29,7 @@ public class EdgeController extends AbstractController {
 	 * @param view
 	 *            The controller's view
 	 */
-	public EdgeController(EdgeMesh model, AbstractView view) {
+	public EdgeController(EdgeMesh model, BasicView view) {
 		super(model, view);
 	}
 
@@ -90,7 +90,7 @@ public class EdgeController extends AbstractController {
 
 		// Clone the model and view
 		EdgeMesh modelClone = (EdgeMesh) model.clone();
-		AbstractView viewClone = (AbstractView) view.clone();
+		BasicView viewClone = (BasicView) view.clone();
 
 		// Create a new controller for the clones and return it
 		EdgeController clone = new EdgeController(modelClone, viewClone);

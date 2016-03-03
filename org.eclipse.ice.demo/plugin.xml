@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="DemoModelBuilder"
+         name="Demo   Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.model.DemoModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="DemoLauncherBuilder"
+         name="Demo   Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.launcher.DemoLauncherBuilder">
+      </implementation>
+   </extension>
+
+</plugin>

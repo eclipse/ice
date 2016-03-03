@@ -28,7 +28,7 @@ import javafx.scene.transform.Rotate;
  * @author Robert Smith
  *
  */
-public class CenteredCameraController extends AbstractCameraController {
+public class CenteredCameraController extends BasicCameraController {
 
 	/**
 	 * The speed at which the camera turns when using the pitch/roll/yaw
