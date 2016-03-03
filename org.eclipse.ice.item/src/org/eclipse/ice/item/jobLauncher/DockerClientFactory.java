@@ -72,8 +72,19 @@ public class DockerClientFactory {
 					// Read them into a Properties object
 					InputStream processInputStream = process.getInputStream();
 					Properties dockerSettings = new Properties();
-					dockerSettings.load(processInputStream);
-
+					// Properties.load screws up windows path separators
+					// so if windows, just get the string from the stream
+					if (Platform.getOS().equals(Platform.OS_WIN32)) {
+						String result = streamToString(processInputStream).trim();
+						String[] dockerEnvs = result.split(System.lineSeparator());
+						for (String s : dockerEnvs) {
+							String[] env = s.split("=");
+							dockerSettings.put(env[0], env[1]);
+						}
+					} else {
+						dockerSettings.load(processInputStream);
+					}
+					
 					// Create the Builder object that wil build the DockerClient
 					Builder builder = new Builder();
 
@@ -81,6 +92,8 @@ public class DockerClientFactory {
 					String endpoint = dockerSettings.getProperty("DOCKER_HOST");
 					Path dockerCertPath = Paths.get(dockerSettings.getProperty("DOCKER_CERT_PATH"));
 
+					System.out.println("DOCKERHOST: " + endpoint);
+					System.out.println("DOCKER CERT PATH: " + dockerSettings.getProperty("DOCKER_CERT_PATH"));
 					// Set up the certificates
 					DockerCertificates certs = DockerCertificates.builder().dockerCertPath(dockerCertPath).build();
 
