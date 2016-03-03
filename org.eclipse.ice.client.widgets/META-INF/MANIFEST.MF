@@ -63,3 +63,4 @@ Export-Package: org.eclipse.ice.client.widgets,
  org.eclipse.ice.client.widgets.providers.Default
 Service-Component: OSGI-INF/*.xml
 Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-ActivationPolicy: lazy
