@@ -30,7 +30,9 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.ui.forms.editor,
  org.eclipse.ui.forms.widgets,
  org.slf4j
-Export-Package: org.eclipse.ice.demo.model,
- org.eclipse.ice.demo.launcher
+Export-Package: org.eclipse.ice.demo.launcher,
+ org.eclipse.ice.demo.model,
+ org.eclipse.ice.fern.launcher,
+ org.eclipse.ice.fern.model
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/*.xml
