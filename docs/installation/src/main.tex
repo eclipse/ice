@@ -51,8 +51,8 @@ for /f "tokens=*" %i in ('docker-machine env
 \end{lstlisting}
 
 \subsection*{Starting ICE}
-To start ICE, select the correct zip file on the USB stick and unzip it to get
-the ICE Application. Double-click to open up ICE. When the workspace chooser
+To start ICE, select the correct ice-product* zip file on the USB stick and
+unzip it to get the ICE Application. Double-click to open up ICE. When the workspace chooser
 dialog opens, select the workspace we have provided on the USB stick (either to
 the location you copied it to on your local machine, or on the USB stick
 itself, see below image). 
@@ -62,32 +62,19 @@ When ICE opens you should see something similar to the below image.
 \begin{center} \includegraphics[width=\textwidth]{figures/expectedICE}
 \end{center} 
 
-As you see, there are plugins loaded into the Project Explorer already. We have
-created workspace specifically for this tutorial to ease the process of getting
-up and running. We have all of ICE cloned into this workspace, as well as some
-projects containing data files we will use for this tutorial. 
-
-% The first thing you should do is import the existing projects in the workspace
-% we have provided. To do this, first open the Git perspective and select Add and
-% Existing Local Git Repository. Point the wizard to the ice folder in the
-% workspace, and import ICE as a new Git repository (you should have something
-% like the image below).
-% \begin{center} \includegraphics[width=\textwidth]{figures/clone} \end{center}
-% Now, right click on the ICE repository and select Import Projects. You should
-% see the below wizard pages, simply select Next on the first page, and Finish on
-% the second page.
-% \begin{center} \includegraphics[width=\textwidth]{figures/importProjects}
-% \end{center}
-% After this you should see the following:
-% \begin{center} \includegraphics[width=\textwidth]{figures/cloned} \end{center}
-% 
-% On last thing we need to do is to import a project that contains data files for
-% the ICE Advanced Visualization part of the tutorial. To do so, simply use the
-% File $>$ Import $>$ General $>$ Existing Projects Into Workspace functionality.
-% Import the project in the workspace we have provided named \emph{default}, as
-% shown below.
-% \begin{center} \includegraphics[width=\textwidth]{figures/importdefault}
-% \end{center}
+The first thing you should do is import the existing projects in the workspace
+we have provided. To do this, first open the Git perspective and select Add and
+Existing Local Git Repository. Point the wizard to the ice folder in the
+workspace, and import ICE as a new Git repository (you should have something
+like the image below).
+\begin{center} \includegraphics[width=\textwidth]{figures/clone} \end{center}
+Now, right click on the ICE repository and select Import Projects. You should
+see the below wizard pages, simply select Next on the first page, and Finish on
+the second page.
+\begin{center} \includegraphics[width=\textwidth]{figures/importProjects}
+\end{center}
+After this you should see the following:
+\begin{center} \includegraphics[width=\textwidth]{figures/cloned} \end{center}
 
 
 \end{document}
