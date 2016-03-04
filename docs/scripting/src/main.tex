@@ -32,7 +32,6 @@ To installed the Jython engine, select \texttt{Help $\rightarrow$ Install
 EASE Components} from the ICE menu bar. Check the box next to the EASE Jython
 Integration entry and click Finish. Follow the prompts to install the component,
 and restart Eclipse when asked.
-
 \begin{center}
 \includegraphics[width=10cm]{images/ease-marketplace}
 \end{center}
@@ -91,6 +90,28 @@ For additional information on the
 \texttt{Scripting} perspective and other EASE features, see the EASE
 documentation\footnote{\path{http://eclipse.org/ease/documentation}}.
 
+EASE hides many of the details that would normally be required to manipulate
+Java objects and perform actions in the Eclipse IDE. It does this by
+encapsulating typical actions into simple script commands that can be easily
+invoked from scripts that you write. These commands are collected together into
+``modules''. You can see which modules are available, and the commands that they
+contain, using the \texttt{Modules Explorer} view. This view can be opened by
+selecting \texttt{Window $\rightarrow$ Show View $\rightarrow$ Other\ldots} to
+open the \texttt{Show View} dialog, as shown below.
+
+\begin{center}
+\includegraphics[width=6cm]{images/showview}
+\end{center}
+
+Form this dialog, open the \texttt{Scripting} folder and select the
+\texttt{Modules Explorer}, then click on \texttt{OK}. This will open the
+\texttt{Modules Explorer} view which can be used to explore the modules and commands
+that are available for use in EASE scripts.
+
+\begin{center}
+\includegraphics[width=10cm]{images/modulesexplorer}
+\end{center}
+
 \subsection{Creating a Python Script}
 
 The easiest way to create a Python script is to simply create a text file ending
@@ -131,31 +152,15 @@ the context menu. This will display the \texttt{New File} dialog as shown below.
 At this point all that remains to be done is enter the name of the file in the
 \texttt{File name:} field and click on the \texttt{Finish} button. This will
 create the file and automatically open the PyDev editor (assuming you installed
-PyDev).
+PyDev) or a simple text editor. You should see an editor view something like
+that shown below.
+
+\begin{center}
+\includegraphics[width=10cm]{images/editor}
+\end{center}
+
 
 \subsection{Writing a Python Script}
-
-EASE hides many of the details that would normally be required to manipulate
-Java objects and perform actions in the Eclipse IDE. It does this by
-encapsulating typical actions into simple script commands that can be easily
-invoked from scripts that you write. These commands are collected together into
-``modules''. You can see which modules are available, and the commands that they
-contain, using the \texttt{Modules Explorer} view. This view can be opened by
-selecting \texttt{Window $\rightarrow$ Show View $\rightarrow$ Other\ldots} to
-open the \texttt{Show View} dialog, as shown below.
-
-\begin{center}
-\includegraphics[width=6cm]{images/showview}
-\end{center}
-
-Form this dialog, open the \texttt{Scripting} folder and select the
-\texttt{Modules Explorer}, then click on \texttt{OK}. This will open the
-\texttt{Modules Explorer} view which can be used to explore the modules and commands
-that are available for use in EASE scripts.
-
-\begin{center}
-\includegraphics[width=10cm]{images/modulesexplorer}
-\end{center}
 
 For the purposes of this tutorial, we will just be using the
 \texttt{Platform} module. In order to load a module, we use the
@@ -206,6 +211,9 @@ successful.
 \begin{lstlisting}[frame=single,language=Python]
 print "result was: %s" % res
 \end{lstlisting}
+
+Remember to save the editor using \texttt{Ctrl/Cmd-S} or the \texttt{File
+$\rightarrow$ Save} command from the ICE menu bar.
 
 \subsection{Running a Python Script}
 
