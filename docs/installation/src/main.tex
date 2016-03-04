@@ -40,7 +40,7 @@ docker-machine create --driver virtualbox default
 \end{lstlisting}
 then on Mac OS, add the following to your bash\_profile
 \begin{lstlisting}[language=bash]
-eval "${docker-machine env default)"
+eval "$(docker-machine env default)"
 \end{lstlisting}
 On Windows, you will need to run the following after creating the default
 docker-machine:
