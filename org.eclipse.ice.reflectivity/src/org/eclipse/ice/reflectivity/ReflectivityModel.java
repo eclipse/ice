@@ -427,16 +427,12 @@ public class ReflectivityModel extends Model {
 								+ "Problem writing to reflectivity files.");
 						logger.error(getClass().getName() + " Exception!", e);
 						retVal = FormStatus.InfoError;
+						return retVal;
 					}
 
 				}
-			}
-
-			// Return processed if the value has not already been set.
-			if (retVal == null) {
 				retVal = FormStatus.Processed;
 			}
-
 			// Some other process action.
 		} else {
 			retVal = super.process(actionName);
