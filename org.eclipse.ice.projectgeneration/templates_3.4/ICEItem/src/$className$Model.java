@@ -145,15 +145,11 @@ public class $className$Model extends Model {
 		// setupItemInfo() method defined above.
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
-			writer = ioService.getWriter(writerName); 
-			try {
-				retStatus = FormStatus.Processing;
-				writer.write(form, outputFile);
-				refreshProjectSpace();
-				retStatus = FormStatus.Processed;
-			} catch (CoreException e) {
-				logger.error(getClass().getName() + " CoreException!", e);
-			}
+			writer = ioService.getWriter(writerName);
+			retStatus = FormStatus.Processing;
+			writer.write(form, outputFile);
+			refreshProjectSpace();
+			retStatus = FormStatus.Processed;
 		} else {
 			retStatus = super.process(actionName);
 		}
