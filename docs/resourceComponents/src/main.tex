@@ -29,8 +29,13 @@ the ICE repo for details on how to create an Item.
 First, add the neccesary imports for the components being added to your Item. 
 
 \begin{verbatim}
+import java.io.IOException;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.eavp.viz.service.modeling.BasicView;
+import org.eclipse.eavp.viz.service.modeling.ShapeController;
+import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
@@ -52,27 +57,38 @@ resourceComponent.setId(2);
 //Initialize the resources
 VizResource csvResource = null;
 VizResource visItResource = null;
+IFile csvFile = null;
+IFile visItFile = null;
 
 //Open the files
+csvFile = project.getFile("fib8.csv");
+visItFile = project.getFile("wave.visit");
+
+//If the file was found, create the CSV resource and add it to the component
 try{
-    csvResource = new 
-        VizResource(project.getFile("fib8.csv").getLocation()
-        .toFile());
-    visItResource = new 
-        VizResource(project.getFile("wave.visit").getLocation()
-        .toFile());
+	if(csvFile != null){
+		csvResource = new 
+                    VizResource(csvFile.getLocation()
+                    .toFile());
+    	resourceComponent.addResource(csvResource);
+	}
+		        
+	//If the file was found, create the VisIt resource and add it to 
+	//the component
+	if(visItFile != null){
+		visItResource = new 
+                    VizResource(visItFile.getLocation()
+                    .toFile());
+		resourceComponent.addResource(visItResource);
+	}
 }
 catch(IOException e){
-    e.printStackTrace();
+	e.printStackTrace();
 }
-	
-//Add the resources to the component
-resourceComponent.add(csvResource);
-resourceComponent.add(visItResource);
 
 //Create the geometry component
 ShapeController geometryRoot = new ShapeController(new
-    ShapeMesh(), new AbstractView());
+    ShapeMesh(), new BasicView());
 GeometryComponent geometryComponent = new 
     GeometryComponent();
 geometryComponent.setGeometry(geometryRoot);
@@ -121,9 +137,10 @@ will now open and connect to this VisIt installation each time ICE is opened.
 
 \subsection{Managing the Resources}
 
-Once you open your Item in ICE, you should notice a new tab inside containing
-your ResourceComponent. Its title will be whatever you set as its description
-when writing the code for it.
+Before opening your new Item, import your resources into the top level of your 
+project. Afteword, you should notice a new tab inside containing your 
+ResourceComponent. Its title will be whatever you set as its description when 
+writing the code for it.
 
 At the top left of the screen will be controls for the component's layout.
 
