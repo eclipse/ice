@@ -66,7 +66,7 @@ visItFile = project.getFile("wave.visit");
 
 //If the file was found, create the CSV resource and add it to the component
 try{
-	if(csvFile != null){
+	if(csvFile.exists()){
 		csvResource = new 
                     VizResource(csvFile.getLocation()
                     .toFile());
@@ -75,7 +75,7 @@ try{
 		        
 	//If the file was found, create the VisIt resource and add it to 
 	//the component
-	if(visItFile != null){
+	if(visItFile.exists()){
 		visItResource = new 
                     VizResource(visItFile.getLocation()
                     .toFile());
