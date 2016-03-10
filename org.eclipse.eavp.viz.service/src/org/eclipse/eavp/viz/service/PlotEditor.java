@@ -317,6 +317,21 @@ public class PlotEditor extends MultiPageEditorPart {
 		setSite(site);
 		setInput(input);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ui.part.MultiPageEditorPart#pageChange(int)
+	 */
+	@Override
+	protected void pageChange(int newPageIndex){
+		super.pageChange(newPageIndex);
+		
+		//After changing the page, force a check on the editor's 
+		//dirty state. This means that it is impossible to save on 
+		//the graph page, which is not editable and thus not 
+		//saveable.
+		firePropertyChange(IEditorPart.PROP_DIRTY);
+	}
 
 	/*
 	 * (non-Javadoc)
