@@ -67,8 +67,8 @@ import gov.lbnl.visit.swt.widgets.TimeSliderWidget;
  * 
  * @author Jay Jay Billings, Taylor Patterson, Jordan H. Deyton
  */
-public class VisitPlotViewer extends ViewPart implements
-		IDeletePlotActionViewPart, IVizUpdateableListener,
+public class VisitPlotViewer extends ViewPart
+		implements IDeletePlotActionViewPart, IVizUpdateableListener,
 		ISelectionChangedListener, IDoubleClickListener {
 
 	/**
@@ -113,6 +113,11 @@ public class VisitPlotViewer extends ViewPart implements
 	 * The active ResourceComponent
 	 */
 	private VizResourceComponent resourceComponent;
+
+	/**
+	 * A list of all the resources ever used by the viewer.
+	 */
+	private Map<String, IVizResource> resourceMap;
 
 	/**
 	 * The TreeViewer contained in this ViewPart used for managing resources in
@@ -172,14 +177,15 @@ public class VisitPlotViewer extends ViewPart implements
 		// Initialize the lists for the selected plots.
 		plotEntries = new ArrayList<VizEntry>();
 		entryResources = new ArrayList<IVizResource>();
+		resourceMap = new HashMap<String, IVizResource>();
 
 		// Initialize the Map of variable types to plot types
 		varTypePlotTypeMap = new HashMap<String, String[]>();
-		varTypePlotTypeMap.put("Materials", new String[] { "Boundary",
-				"FilledBoundary" });
+		varTypePlotTypeMap.put("Materials",
+				new String[] { "Boundary", "FilledBoundary" });
 		varTypePlotTypeMap.put("Meshes", new String[] { "Mesh" });
-		varTypePlotTypeMap.put("Scalars", new String[] { "Pseudocolor",
-				"Contour", "Volume" });
+		varTypePlotTypeMap.put("Scalars",
+				new String[] { "Pseudocolor", "Contour", "Volume" });
 		varTypePlotTypeMap.put("Vectors", new String[] { "Vector" });
 
 		return;
@@ -212,8 +218,8 @@ public class VisitPlotViewer extends ViewPart implements
 
 		// Add the Combo for selecting from the available plot types
 		plotTypeCombo = new Combo(partComposite, SWT.READ_ONLY);
-		plotTypeCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-				false));
+		plotTypeCombo
+				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		// Add the selection listener
 		plotTypeCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -231,11 +237,11 @@ public class VisitPlotViewer extends ViewPart implements
 				.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Initialize the TreeViewer.
-		plotTreeViewer = new TreeViewer(partComposite, SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER | SWT.MULTI);
+		plotTreeViewer = new TreeViewer(partComposite,
+				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.MULTI);
 		// The TreeViewer should grab all horizontal AND vertical space.
-		plotTreeViewer.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
+		plotTreeViewer.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		plotTreeViewer.addSelectionChangedListener(this);
 		plotTreeViewer.addDoubleClickListener(this);
 
@@ -299,8 +305,7 @@ public class VisitPlotViewer extends ViewPart implements
 	@Override
 	public void update(IVizUpdateable component) {
 
-		logger.info("VisitPlotViewer Message: "
-						+ "Incoming resource update.");
+		logger.info("VisitPlotViewer Message: " + "Incoming resource update.");
 		// Sync with the display
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 			@Override
@@ -598,6 +603,12 @@ public class VisitPlotViewer extends ViewPart implements
 				}
 			}
 
+			// Set the viewer to the correct resource
+			IVizResource parent = resourceMap.get(entry.getDescription());
+			if (parent != null) {
+				setResource(parent);
+			}
+
 			if (index > -1) {
 				// Get the ICEResource associated with this entry.
 
@@ -612,9 +623,33 @@ public class VisitPlotViewer extends ViewPart implements
 				widget.activate();
 				widget.getViewerMethods().deleteActivePlots();
 
+				// TODO - Add some sort of check to use the correct path here.
+				String dbPath = "";
+				// Use this for local
+				if (!resource.isRemote()) {
+					dbPath = resource.getPath().getPath();
+				}
+				// The remote file system only needs the name.
+				else {
+					dbPath = resource.getName();
+				}
+
+				// If this is a Windows system, reformat the path to Windows
+				// style by changing the file separators.
+				if (System.getProperty("os.name").toLowerCase()
+						.contains("windows")) {
+					if (dbPath.startsWith("/")) {
+						dbPath = dbPath.substring(1);
+						dbPath = dbPath.replace("/",
+								System.getProperty("file.separator"));
+					}
+				}
+
+				widget.getViewerMethods().openDatabase(dbPath);
+
 				// Add the plot to the widget.
-				String plotType = (plotTypeCombo.getText() != "") ? plotTypeCombo
-						.getText()
+				String plotType = (plotTypeCombo.getText() != "")
+						? plotTypeCombo.getText()
 						: varTypePlotTypeMap.get(entry.getParent())[0];
 				widget.getViewerMethods().addPlot(plotType, entry.getName());
 
@@ -720,6 +755,15 @@ public class VisitPlotViewer extends ViewPart implements
 		resource = inResource;
 		logger.info("VisitPlotViewer message: The selected file from "
 				+ "the VizFileViewer is \"" + resource.getName() + "\".");
+
+		// Add the resource to the map if it is not null and isn't already
+		// present
+		if (inResource != null) {
+			String file = inResource.getDescription();
+			if (!resourceMap.containsKey(inResource.getDescription())) {
+				resourceMap.put(file, inResource);
+			}
+		}
 
 		// Enable the AddPlotAction.
 		addPlotAction.setEnabled(true);
