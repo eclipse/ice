@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Viz Component
 Bundle-SymbolicName: org.eclipse.eavp.viz;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Import-Package: ca.odell.glazedlists,
  gov.lbnl.visit.swt,
  gov.lbnl.visit.swt.widgets,

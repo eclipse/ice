@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse ICE Demo Plugin
 Bundle-SymbolicName: org.eclipse.ice.demo;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-Vendor: Oak Ridge National Laboratory
 Require-Bundle: org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

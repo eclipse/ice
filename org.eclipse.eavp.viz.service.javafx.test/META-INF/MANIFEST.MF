@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JavaFX Visualization Services Test Plugin
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.javafx.test;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Fragment-Host: org.eclipse.eavp.viz.service.javafx
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/ControllerFactory.xml,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JavaFX Visualization Services Plugin
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.javafx;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime

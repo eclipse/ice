@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Geometry Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.geometry;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/ControllerFactory.xml
 Import-Package: javafx.embed.swt;version="2.2.0",

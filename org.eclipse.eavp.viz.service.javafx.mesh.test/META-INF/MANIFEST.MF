@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JavaFX Mesh Visualization Services Test Plugin
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.javafx.mesh.test;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Fragment-Host: org.eclipse.eavp.viz.service.javafx.mesh
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Oak Ridge National Laboratory

@@ -6,72 +6,14 @@
 	<parent>
 		<groupId>org.eclipse.ice</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
-		<version>2.1.8.20160208</version>
+		<version>2.1.8-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
 	</parent>
 
-	<name>ICE Infrastructure Product</name>
+	<name>ICE Repository</name>
 	<artifactId>org.eclipse.ice.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-repository-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<includeAllDependencies>true</includeAllDependencies>
-					<profileProperties>
-						<macosx-bundled>true</macosx-bundled>
-					</profileProperties>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-p2-director-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<executions>
-					<execution>
-						<!-- (optional) install the product for all configured os/ws/arch environments 
-							using p2 director -->
-						<id>materialize-products</id>
-						<goals>
-							<goal>materialize-products</goal>
-						</goals>
-						<phase>package</phase>
-					</execution>
-					<execution>
-						<!-- (optional) create product zips (one per os/ws/arch) -->
-						<id>archive-products</id>
-						<goals>
-							<goal>archive-products</goal>
-						</goals>
-						<phase>pre-integration-test</phase>
-					</execution>
-				</executions>
-				<!-- (optional) customize the root folder name of the product zip -->
-				<configuration>
-					<formats>
-						<win32>${win32-format}</win32>
-						<linux>${linux-format}</linux>
-						<macosx>${macosx-format}</macosx>
-					</formats>
-					<products>
-						<product>
-							<id>ice.product</id>
-							<rootFolders>
-								<rootFolder>ICE</rootFolder>
-								<macosx>ICE.app</macosx>
-							</rootFolders>
-							<attachId>ICEComplete</attachId>
-						</product>
-					</products>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-			
 	<profiles>
 		<profile>
 			<id>production</id>
@@ -105,18 +47,6 @@
 											file="${project.build.directory}/${project.build.finalName}.zip"
 											tofile="${ice-install-dir}/ice-master-${unqualifiedVersion}.${buildQualifier}.zip" />
 											
-										<!-- Copy application bundles -->
-										<copy file="${project.build.directory}/products/ice.product-linux.gtk.x86.${linux-format}"
-											tofile="${ice-install-dir}/ice-linux-gtk-x86-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-linux.gtk.x86_64.${linux-format}"
-											tofile="${ice-install-dir}/ice-linux-gtk-x86_64-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-win32.win32.x86.${win32-format}"
-											tofile="${ice-install-dir}/ice-win32-x86-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-win32.win32.x86_64.${win32-format}"
-											tofile="${ice-install-dir}/ice-win32-x86_64-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-macosx.cocoa.x86_64.${macosx-format}"
-											tofile="${ice-install-dir}/ice-macosx-cocoa-x86_64-${unqualifiedVersion}.zip"/>
-										
 										<!--  Make sure the install dir is writable to the group -->
 										<chmod perm="g+w">
 											<fileset dir="${ice-install-dir}">
@@ -131,51 +61,5 @@
 				</plugins>
 			</build>
 		</profile>
-		<profile>
-			<id>eclipse-sign</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.eclipse.cbi.maven.plugins</groupId>
-						<artifactId>eclipse-winsigner-plugin</artifactId>
-						<version>${cbi-plugins.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<signFiles>
-										<signFile>${project.build.directory}/products/ice.product/win32/win32/x86/eclipsec.exe</signFile>
-										<signFile>${project.build.directory}/products/ice.product/win32/win32/x86_64/eclipsec.exe</signFile>
-									</signFiles>
-								</configuration>
-							</execution>
-						</executions>
-		             </plugin>
-					<plugin>
-						<groupId>org.eclipse.cbi.maven.plugins</groupId>
-						<artifactId>eclipse-macsigner-plugin</artifactId>
-						<version>${cbi-plugins.version}</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-								<phase>package</phase>
-								<configuration>
-									<signFiles>
-										<signFile>${project.build.directory}/products/ice.product/macosx/cocoa/x86_64/ICE.app</signFile>
-									</signFiles>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
-
-	<version>2.1.8.20160208</version>
 </project>

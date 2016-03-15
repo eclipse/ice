@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mesh Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.mesh;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.datastructures.VizObject,

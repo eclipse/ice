@@ -13,7 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.eavp</groupId>
 	<artifactId>org.eclipse.eavp.build</artifactId>
-	<version>2.1.8.20160208</version>
+	<version>2.1.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<profiles>
@@ -131,7 +131,7 @@
 						<artifact>
 							<groupId>org.eclipse.ice</groupId>
 							<artifactId>org.eclipse.ice.target.mars</artifactId>
-							<version>2.1.8.20160208</version>
+							<version>2.1.8-SNAPSHOT</version>
 							<classifier>mars</classifier>
 						</artifact>
 					</target>

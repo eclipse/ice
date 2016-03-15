@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VisIt Visualization Service Plugin
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.visit;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: gov.lbnl.visit.swt,
  gov.lbnl.visit.swt.widgets,

@@ -8,7 +8,7 @@
   <parent>
   	<groupId>org.eclipse.ice</groupId>
   	<artifactId>org.eclipse.ice.build</artifactId>
-  	<version>2.1.8.20160208</version>
+  	<version>2.1.8-SNAPSHOT</version>
   	<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
   </parent>
   <modules>
@@ -79,5 +79,6 @@
   	<module>../org.eclipse.eavp.viz.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
   	<module>../org.eclipse.ice.repository</module>
+  	<module>../org.eclipse.ice.product</module>  	
   </modules>
 </project>
