@@ -4,7 +4,7 @@
 
 	<!-- Custom properties -->
 	<properties>
-		<tycho-version>0.23.0</tycho-version>
+		<tycho-version>0.24.0</tycho-version>
 		<pom-filename>pom.xml</pom-filename>	
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
