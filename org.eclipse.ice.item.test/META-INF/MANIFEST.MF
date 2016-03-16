@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICEItemTest
 Bundle-SymbolicName: org.eclipse.ice.item.test
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Fragment-Host: org.eclipse.ice.item;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.spotify.docker.client,

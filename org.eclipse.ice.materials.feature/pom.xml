@@ -10,7 +10,7 @@
 	<parent>
 		<artifactId>org.eclipse.ice.build</artifactId>
 		<groupId>org.eclipse.ice</groupId>
-		<version>2.1.8.20160208</version>
+		<version>2.1.8-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
 	</parent>
 </project>

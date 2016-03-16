@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE Visualization Service Test Bundle
 Bundle-SymbolicName: org.eclipse.eavp.viz.service.test
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: ca.odell.glazedlists,
