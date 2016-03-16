@@ -20,7 +20,6 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.ice.client.widgets.providers.IBasicComponentPageProvider;
 import org.eclipse.ice.client.widgets.providers.IEMFSectionPageProvider;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
-import org.eclipse.ice.client.widgets.providers.IGeometryPageProvider;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
 import org.eclipse.ice.client.widgets.providers.IMasterDetailsPageProvider;
 import org.eclipse.ice.client.widgets.providers.IMeshPageProvider;
@@ -222,26 +221,21 @@ public class DefaultPageFactory implements IPageFactory {
 
 		// List for the pages
 		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
-		try {
-			// Create the provider and get the pages from it
-			ArrayList<IGeometryPageProvider> GeometryComponentPages = IGeometryPageProvider
-					.getProviders();
-			if (GeometryComponentPages != null && GeometryComponentPages.size() > 0) {
-				// Use the default error page provider
-				String providerNameToUse = DefaultErrorPageProvider.PROVIDER_NAME;
-				// Do a linear search to find the correct provider
-				for (IGeometryPageProvider currentProvider : GeometryComponentPages) {
-					if (providerNameToUse.equals(currentProvider.getName())) {
-						pages = currentProvider.getPages(editor, components);
-						break;
-					}
-				}
-			} else {
-				logger.error("No GeometryComponentPages registered");
-			}
-		} catch (CoreException e) {
-			logger.error("Unable to get GeometryComponentPages", e);
+		IPageProvider provider = null;
+		String compContext = components.get(0).getContext();
+
+		// Use the default provider if that is what is requested
+		if ("ice-default".equals(compContext)) {
+			provider = new DefaultGeometryPageProvider();
+		} else {
+			// Otherwise see if something registering the context has been
+			// provided in the e4 context.
+			provider = (IPageProvider) context.get(compContext);
 		}
+
+		// Grab the pages
+		pages = provider.getPages(editor, components);
+
 		return pages;
 	}
 

@@ -11,6 +11,7 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime.jobs,
  org.eclipse.e4.core.contexts,
  org.eclipse.e4.core.di,
+ org.eclipse.e4.core.di.annotations,
  org.eclipse.e4.ui.model.application,
  org.eclipse.e4.ui.model.application.ui,
  org.eclipse.eavp.viz.service,
@@ -35,4 +36,3 @@ Export-Package: org.eclipse.ice.demo.launcher,
  org.eclipse.ice.fern.launcher,
  org.eclipse.ice.fern.model
 Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/*.xml
