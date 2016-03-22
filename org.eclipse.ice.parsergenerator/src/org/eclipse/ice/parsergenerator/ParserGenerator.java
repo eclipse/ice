@@ -6,51 +6,41 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
+import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.io.serializable.IIOService;
+import org.eclipse.ice.io.serializable.IOService;
+import org.eclipse.ice.item.model.Model;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.xtext.ui.util.FileOpener;
+import org.eclipse.xtext.util.JavaVersion;
+import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
+import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
+import org.eclipse.xtext.xtext.wizard.BuildSystem;
+import org.eclipse.xtext.xtext.wizard.LanguageDescriptor;
+import org.eclipse.xtext.xtext.wizard.LanguageDescriptor.FileExtensions;
+import org.eclipse.xtext.xtext.wizard.ProjectLayout;
+import org.eclipse.xtext.xtext.wizard.SourceLayout;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-
-import org.eclipse.xtext.ui.util.FileOpener;
-import org.eclipse.xtext.util.JavaVersion;
-import org.eclipse.xtext.xtext.ui.internal.XtextUIModuleInternal;
-import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
-import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
-import org.eclipse.xtext.xtext.wizard.BuildSystem;
-import org.eclipse.xtext.xtext.wizard.ProjectLayout;
-import org.eclipse.xtext.xtext.wizard.SourceLayout;
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.xtext.xtext.wizard.LanguageDescriptor;
-import org.eclipse.xtext.xtext.wizard.LanguageDescriptor.FileExtensions;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.io.serializable.IIOService;
-import org.eclipse.ice.io.serializable.IOService;
-import org.eclipse.ice.io.serializable.IWriter;
-import org.eclipse.ice.io.serializable.IReader;
-import org.eclipse.ice.item.model.Model;
-import org.eclipse.ice.projectgeneration.ICEItemNature;
 
 @XmlRootElement(name = "ParserGenerator")
 public class ParserGenerator extends Model {

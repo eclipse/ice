@@ -4,48 +4,28 @@ Bundle-Name: ICE Moose Widgets
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.moose;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.io;version="2.0.1",
- org.eclipse.cdt.core,
+Import-Package: org.apache.commons.io,
  org.eclipse.cdt.core.model,
- org.eclipse.cdt.core.model.util,
- org.eclipse.cdt.core.settings.model,
- org.eclipse.cdt.core.settings.model.extension,
- org.eclipse.cdt.make.core,
- org.eclipse.cdt.managedbuilder.core,
- org.eclipse.cdt.managedbuilder.internal.core,
- org.eclipse.cdt.managedbuilder.ui.wizards,
- org.eclipse.cdt.newmake.core,
  org.eclipse.core.resources,
- org.eclipse.core.runtime;version="3.4.0",
- org.eclipse.core.runtime.jobs,
- org.eclipse.core.runtime.preferences;version="3.3.0",
+ org.eclipse.core.runtime,
+ org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.internal,
- org.eclipse.eavp.viz.service.javafx.geometry,
  org.eclipse.eavp.viz.service.javafx.geometry.plant,
- org.eclipse.egit.github.core;version="3.2.0",
- org.eclipse.egit.github.core.client;version="3.2.0",
- org.eclipse.egit.github.core.service;version="3.2.0",
  org.eclipse.ice.client.common,
  org.eclipse.ice.client.common.properties,
  org.eclipse.ice.client.widgets,
  org.eclipse.ice.iclient.uiwidgets,
- org.eclipse.ice.item,
- org.eclipse.ice.item.jobLauncher,
  org.eclipse.ice.item.nuclear,
  org.eclipse.ice.persistence.xml,
  org.eclipse.ice.reactor.plant,
- org.eclipse.jgit.api;version="4.0.0",
- org.eclipse.jgit.api.errors;version="4.0.0",
  org.eclipse.ui,
- org.eclipse.ui.views.properties,
  org.eclipse.ui.views.properties.tabbed,
- org.osgi.framework;version="1.7.0",
- org.slf4j;version="1.7.2"
-Require-Bundle: org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
+ org.osgi.framework,
+ org.slf4j
+Require-Bundle: org.eclipse.ice.client.compatibility,
  org.eclipse.ice.datastructures,
- org.eclipse.core.runtime;bundle-version="3.11.0",
- org.eclipse.swt
+ org.eclipse.core.runtime
 Service-Component: OSGI-INF/viewFactory.xml
 Export-Package: org.eclipse.ice.client.widgets.moose
 Bundle-Vendor: Oak Ridge National Laboratory

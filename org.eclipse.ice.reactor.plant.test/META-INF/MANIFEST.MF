@@ -8,5 +8,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.11.0"
 Bundle-Vendor: Oak Ridge National Laboratory
 Import-Package: ca.odell.glazedlists.gui,
- org.eclipse.eavp.viz.service.datastructures,
+ org.eclipse.eavp.viz.datastructures,
  org.eclipse.eavp.viz.service.mesh.datastructures

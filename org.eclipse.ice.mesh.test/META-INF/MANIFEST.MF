@@ -7,3 +7,4 @@ Fragment-Host: org.eclipse.ice.mesh;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit
 Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.eavp.viz.datastructures.VizObject

@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.eavp.viz.service.datastructures.VizObject.IVizUpdateableListener;
+import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.Composite;
 
