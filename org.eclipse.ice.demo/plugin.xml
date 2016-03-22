@@ -34,5 +34,15 @@
             class="org.eclipse.ice.fern.model.FernModelBuilder">
       </implementation>
    </extension>
+   <extension
+         id="org.eclipse.ice.demo.ui.processor"
+         name="ICE Demo UI Processor"
+         point="org.eclipse.e4.workbench.model">
+      <processor
+            apply="always"
+            beforefragment="true"
+            class="org.eclipse.ice.demo.ui.DemoWidgetsProcessor">
+      </processor>
+   </extension>
 
 </plugin>

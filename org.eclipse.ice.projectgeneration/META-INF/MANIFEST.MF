@@ -31,4 +31,5 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.ui,
  org.eclipse.ui.dialogs,
  org.eclipse.ui.wizards.newresource,
- org.osgi.framework;version="1.8.0"
+ org.osgi.framework;version="1.8.0",
+ org.slf4j;version="1.7.2"

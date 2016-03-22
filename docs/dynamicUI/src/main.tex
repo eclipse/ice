@@ -328,15 +328,94 @@ public class DemoEntryCompositeProvider implements IEntryCompositeProvider {
 }
 \end{lstlisting}
 
-\section{Create and publish Context Functions}
+\section{Publishing through the e4 extension point}
+
+The most common way to publish these extensions to the platform is to create an
+extension at the org.eclipse.e4.workbench.model extension point. You can do this
+by creating an executable processor. Create a new class and add the following
+code:
+
+\begin{lstlisting}[language=java]
+
+public class DemoWidgetsProcessor {
+
+	/**
+	 * This operation executes the instructions required to register the demo
+	 * widgets with the e4 workbench.
+	 * 
+	 * @param context
+	 *            The e4 context
+	 * @param app
+	 *            the model application
+	 */
+	@Execute
+	public void execute(IEclipseContext context, MApplication app) {
+
+		// Add the geometry provider
+		IPageProvider provider = ContextInjectionFactory
+				.make(DemoGeometryPageProvider.class, context);
+		context.set("demo-geometry", provider);
+
+		// Add the EntryComposite provider
+		IEntryCompositeProvider compProvider = ContextInjectionFactory
+				.make(DemoEntryCompositeProvider.class, context);
+		context.set("demo-entry", compProvider);
+
+	}
+
+}
+
+\end{lstlisting}
+
+Next, either create an extension point graphically or add the following code to
+your plugin.xml file:
+
+\begin{lstlisting}[language=java]
+
+   <extension
+         id="org.eclipse.ice.demo.ui.processor"
+         name="ICE Demo UI Processor"
+         point="org.eclipse.e4.workbench.model">
+      <processor
+            apply="always"
+            beforefragment="true"
+            class="org.eclipse.ice.demo.ui.DemoWidgetsProcessor">
+      </processor>
+   </extension>
+
+\end{lstlisting}
+
+Your extensions will now be available in the workbench. Your entry composite is
+should look like fig. \ref{fig:iceDemoEntryComposite}.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pics/dynamicUI_demoEntryComposite.png}
+\caption{Updated Entry Widget}
+\label{fig:iceDemoEntryComposite}
+\end{figure}
+
+You geometry component should look like fig. \ref{fig:iceDemoGeometryPage}.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{pics/dynamicUI_demoGeometryPage.png}
+\caption{The updated Geometry page.}
+\label{fig:iceDemoGeometryPage}
+\end{figure}
+
+\section{Publishing through Context Functions}
 
 Make sure to check “Activate this plug-in when one of its classes loaded.” in
 your MANIFEST.mf file.
 
-You need to publish your new extensions to the OSGI framework so that they can
-be dynamically injected into the ICE’s UI code. These extensions are registered
-as standalone services that are dynamically located at runtime based on the
-context name that you specified in your data structures.
+You can alternatively publish your new extensions to the OSGI framework so that
+they can be dynamically injected into the ICE’s UI code. These extensions are
+registered as standalone services that are dynamically located at runtime based
+on the context name that you specified in your data structures. The benefit of
+this method over the extension point is that it can be used to dynamically
+update based on the \textit{present} context of the UI, not the initial
+context. This means that in addition to the type of data structure involved the
+UI can be tailored based on the particular area of the workbench where it would
+be drawn and the current runtime state.
 
 Create a new context function for your IEntryComposite. You should create a
 subclass of ContextFunction with the following code:
@@ -371,15 +450,6 @@ name="org.eclipse.ice.demo.entry"> <implementation
 </scr:component>
 \end{lstlisting}
 
-Once your new context function for your entry composite is published, it should
-look like fig. \ref{fig:iceDemoEntryComposite}.
-
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{pics/dynamicUI_demoEntryComposite.png}
-\caption{Updated Entry Widget}
-\label{fig:iceDemoEntryComposite}
-\end{figure}
-
 Now, create a context function for your Geometry Page. You should create a
 subclass of ContextFunction with the following code:
 
@@ -412,15 +482,6 @@ name="service.context.key" type="String" value="demo-geometry"/> <service>
    </service>
 </scr:component>
 \end{lstlisting}
-
-Once your new context function for your geometry page is published, it should
-look like this fig. \ref{fig:iceDemoGeometryPage}.
-
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{pics/dynamicUI_demoGeometryPage.png}
-\caption{The updated Geometry page.}
-\label{fig:iceDemoGeometryPage}
-\end{figure}
 
 \section{Replacing the whole Page Factory}
 
@@ -483,6 +544,12 @@ class="org.eclipse.ice.demo.ui.DemoGeometryPageFactoryContextFunction"/>
       <provide interface="org.eclipse.e4.core.contexts.IContextFunction"/>
    </service>
 </scr:component>
+\end{lstlisting}
+
+and your MANIFEST.mf file should contain:
+
+\begin{lstlisting}[language=xml]
+Service-Component: OSGI-INF/*.xml
 \end{lstlisting}
 
 \end{document}
