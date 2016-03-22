@@ -49,6 +49,8 @@ import org.eclipse.pde.internal.ui.wizards.plugin.PluginFieldData;
 import org.eclipse.pde.ui.templates.NewPluginProjectFromTemplateWizard;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eclipse.ice.projectgeneration.ICEItemNature;
 import org.eclipse.ice.projectgeneration.templates.ICEItemWizard;
 
@@ -66,6 +68,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	private static final String WIZARD_TITLE = "Create a new ICE item project";
 	private static final String TEMPLATE_ID = "org.eclipse.ice.projectgeneration.pluginContent.ICEItem";
 
+	protected final Logger logger;
 	private AbstractFieldData fPluginData;
 	private NewProjectCreationPage fProjectPage;
 	private PluginContentPage fContentPage;
@@ -77,6 +80,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	 * Constructor
 	 */
 	public NewICEItemProjectWizard() {
+		logger = LoggerFactory.getLogger(getClass());
 		setNeedsProgressMonitor(true);
 		fPluginData = new PluginFieldData();
 		setWindowTitle(WIZARD_TITLE);
@@ -89,6 +93,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	public void addPages() {
 		WizardElement templateWizardElement = getTemplateWizard();
 
+		// New project page
 		fProjectPage = new NewProjectCreationFromTemplatePage("main", fPluginData, getSelection(), //$NON-NLS-1$
 				templateWizardElement);
 		fProjectPage.setTitle(WIZARD_TITLE);
@@ -99,6 +104,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			fProjectPage.setInitialProjectName(projectName);
 		addPage(fProjectPage);
 
+		// Use this to get project parameters
 		fProjectProvider = new IProjectProvider() {
 			public String getProjectName() {
 				return fProjectPage.getProjectName();
@@ -113,8 +119,11 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			}
 		};
 
+		// The plugin content page
 		fContentPage = new PluginContentPage("page2", fProjectProvider, fProjectPage, fPluginData); //$NON-NLS-1$
 		addPage(fContentPage);
+		
+		// The ICE item project page
 		try {
 			fTemplateWizard = (ICEItemWizard) templateWizardElement.createExecutableExtension();
 			fTemplateWizard.init(fPluginData);
@@ -124,8 +133,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 				addPage(pages[i]);
 			}
 		} catch (CoreException e) {
-			e.printStackTrace();
-			System.out.println("adding wizard pages fails!");
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
@@ -149,8 +157,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			fTemplateWizard.setTemplateExtension(fProjectPage.getProjectName());
 			BasicNewProjectResourceWizard.updatePerspective(fConfig);
 
-			// If the PDE models are not initialized, initialize with option to
-			// cancel
+			// If the PDE models are not initialized, initialize with option to cancel
 			if (!PDECore.getDefault().areModelsInitialized()) {
 				try {
 					getContainer().run(true, true, new IRunnableWithProgress() {
@@ -163,7 +170,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 						}
 					});
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 
@@ -180,11 +187,11 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 			successful = true;
 		} catch (InvocationTargetException e) {
 			PDEPlugin.logException(e);
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (CoreException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return successful;
@@ -254,13 +261,13 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 							REPLACE_EXISTING);
 				}
 			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (IOException e) {
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
 	/**
-	 * TODO: Description
+	 * Update the new project manifest to have required packages imported.
 	 */
 	private void updateManifest() {
 		String packageBase = fProjectProvider.getProjectName();
@@ -285,7 +292,7 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		try {
 			Files.write(Paths.get(manifestFile), manifestLines.toString().getBytes(), StandardOpenOption.APPEND);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
 
