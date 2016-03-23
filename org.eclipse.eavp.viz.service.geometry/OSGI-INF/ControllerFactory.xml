@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.eavp.viz.service.geometry.widgets">
-   <implementation class="org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView"/>
-   <reference bind="setFactory" cardinality="1..1" interface="org.eclipse.eavp.viz.service.modeling.IControllerFactory" name="IControllerFactory" policy="static"/>
-</scr:component>
