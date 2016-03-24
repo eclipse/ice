@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>ICE</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
-		<version>2.1.8.qualifier</version>
+		<version>2.1.8-SNAPSHOT</version>
 		<relativePath>../${pom-filename}</relativePath>
 	</parent>
 	<groupId>ICE</groupId>
 	<artifactId>org.eclipse.ice.materials</artifactId>
-	<version>2.1.8.qualifier</version>
+	<version>2.1.8-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>
