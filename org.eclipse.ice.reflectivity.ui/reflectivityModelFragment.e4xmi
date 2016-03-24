@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ASCII"?>
+<fragment:ModelFragments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:commands="http://www.eclipse.org/ui/2010/UIModel/application/commands" xmlns:fragment="http://www.eclipse.org/ui/2010/UIModel/fragment" xmi:id="_iVvzEPHZEeW2huO1DsXEHw">
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_sBNLwPHZEeW2huO1DsXEHw" featurename="commands" parentElementId="org.eclipse.ice.reflectivity.ui.TaskLaunch">
+    <elements xsi:type="commands:Command" xmi:id="_6T1j4PHZEeW2huO1DsXEHw" elementId="org.eclipse.ice.reflectivity.ui.command.TaskLaunchHandler" commandName="Open Reflectivity Menu" description="Reflectivity Task Launch Handler"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_LgjukPHaEeW2huO1DsXEHw" featurename="handlers" parentElementId="org.eclipse.ice.reflectivity.ui.TaskLaunch">
+    <elements xsi:type="commands:Handler" xmi:id="_PjA3YPHaEeW2huO1DsXEHw" elementId="org.eclipse.ice.reflectivity.ui.TaskLaunchHandler" contributionURI="bundleclass://org.eclipse.ice.reflectivity.ui/org.eclipse.ice.reflectivity.ui.TaskLaunchHandler" command="_6T1j4PHZEeW2huO1DsXEHw"/>
+  </fragments>
+  <fragments xsi:type="fragment:StringModelFragment" xmi:id="_lgQKwPHaEeW2huO1DsXEHw" featurename="children" parentElementId="org.eclipse.ui.main.toolbar"/>
+</fragment:ModelFragments>
