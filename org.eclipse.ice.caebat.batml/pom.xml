@@ -11,5 +11,6 @@
 	</parent>
 	<groupId>org.eclipse.ice</groupId>
 	<artifactId>org.eclipse.ice.caebat.batml</artifactId>
+	<version>2.1.8-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>

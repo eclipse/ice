@@ -6,7 +6,6 @@
 	<name>ICE Feature</name>
 	<artifactId>org.eclipse.ice</artifactId>
 	<packaging>eclipse-feature</packaging>
-
 	<parent>
 		<groupId>org.eclipse.ice</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
