@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import org.eclipse.eavp.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.viz.service.IVizCanvas;
-import org.eclipse.ice.viz.service.IVizService;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeView;
-import org.eclipse.ice.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
+import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -32,14 +32,15 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * <p>
- * This class is ICEFormPage that displays the GeometryEditor powered by JME3.
+ * This class is ICEFormPage that displays the GeometryEditor powered by JavaFX.
  * It automatically opens the ShapeTreeView and TransformationView to allow the
  * user to add and edit geometry.
  * </p>
  * 
  * @author Jay Jay Billings
  */
-public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener {
+public class ICEGeometryPage extends ICEFormPage
+		implements IUpdateableListener {
 	/**
 	 * <p>
 	 * The property that determines whether there is a need to Save.
@@ -55,6 +56,12 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 * 
 	 */
 	private GeometryComponent geometryComp;
+
+	/**
+	 * The visualization service that is providing the graphical implementation
+	 * for the geometry editor.
+	 */
+	private IVizService service;
 
 	/**
 	 * <p>
@@ -124,7 +131,7 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
-		shapeTreeView.setGeometry(geometryComp.getGeometry().getGeometry());
+		shapeTreeView.setGeometry(geometryComp.getGeometry());
 
 		return;
 	}
@@ -135,7 +142,8 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 	 * geometry.
 	 * </p>
 	 * 
-	 * @param managedForm the managed form that handles the page
+	 * @param managedForm
+	 *            the managed form that handles the page
 	 */
 	@Override
 	public void createFormContent(IManagedForm managedForm) {
@@ -167,15 +175,16 @@ public class ICEGeometryPage extends ICEFormPage implements IUpdateableListener 
 				.getForm();
 		Composite parent = pageForm.getBody();
 
-		// Get JME3 Geometry service from factory
-		IVizServiceFactory factory = ((ICEFormEditor) editor)
-				.getVizServiceFactory();
-		IVizService service = factory.get("JME3 Geometry Editor");
+		// Get Geometry service from factory
+		IVizServiceFactory factory = editor.getVizServiceFactory();
+		service = factory.get("ICE Geometry Editor");
+		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
+				.findView(ShapeTreeView.ID)).setFactory(service.getFactory());
 
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service.createCanvas(geometryComp
-					.getGeometry().getGeometry());
+			IVizCanvas vizCanvas = service
+					.createCanvas(geometryComp.getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {

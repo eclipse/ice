@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.eclipse.ice.io;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
-Require-Bundle: org.eclipse.ice.datastructures,
- org.eclipse.ice.dependencies;bundle-version="2.0.0";visibility:=reexport
+Require-Bundle: org.eclipse.ice.datastructures
 Service-Component: OSGI-INF/ioservice.xml
 Comment: Service-Component: OSGI-INF/ICEDatabaseHarness.xml
 Export-Package: org.eclipse.ice.io.csv,

@@ -32,7 +32,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
 import org.eclipse.ice.io.serializable.IReader;
@@ -795,7 +795,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * java.lang.String)
 	 */
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 		try {
 			throw new OperationNotSupportedException(
 					"XMLPersistenceProvider Error: " + "IReader.findAll() is not supported.");

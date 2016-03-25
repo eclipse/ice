@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -39,9 +40,11 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.ExecutableEntry;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
@@ -49,7 +52,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.action.Action;
@@ -281,7 +283,7 @@ public class MOOSE extends Item {
 
 			// First and foremost, Get the application URI
 			// and see if it is a remote app or not
-			URI appUri = URI.create(modelFiles.retrieveEntry("MOOSE-Based Application").getValue());
+			URI appUri = ((ExecutableEntry)modelFiles.retrieveEntry("MOOSE-Based Application")).getExecutableURI();
 			boolean isRemote = "ssh".equals(appUri.getScheme());
 
 			System.out.println("APPURI IS " + appUri + ", " + isRemote);
@@ -322,7 +324,6 @@ public class MOOSE extends Item {
 			// Configure the execute string
 			if (isRemote) {
 
-				System.out.println("Setting the New HOST NAME");
 				// Set the remote executable string
 				mooseLauncher.setExecutable(Paths.get(appUri.getRawPath()).getFileName().toString(), "",
 						appUri.getRawPath() + " -i ${inputFile} --no-color");
@@ -331,7 +332,7 @@ public class MOOSE extends Item {
 				TableComponent hostsTable = (TableComponent) mooseLauncher.getForm()
 						.getComponent(JobLauncherForm.parallelId + 1);
 				int index = hostsTable.addRow();
-				ArrayList<Entry> row = hostsTable.getRow(index);
+				ArrayList<IEntry> row = hostsTable.getRow(index);
 				ArrayList<Integer> selected = new ArrayList<Integer>();
 				selected.add(new Integer(index));
 				row.get(0).setValue(remoteHost);
@@ -355,6 +356,8 @@ public class MOOSE extends Item {
 			// so we can add the resources to our resource component
 			((ResourceComponent) mooseLauncher.getForm().getComponent(JobLauncherForm.outputId)).register(this);
 
+			mooseModel.process(MOOSEModel.mooseProcessActionString);
+			
 			// Launch the Moose application
 			retStatus = mooseLauncher.process(actionName);
 
@@ -425,7 +428,7 @@ public class MOOSE extends Item {
 		if (isRemote) {
 			DataComponent filesData = new DataComponent();
 			filesData.addEntry(modelFiles.retrieveEntry("Output File Name"));
-			for (Entry fileE : getFileEntries()) {
+			for (IEntry fileE : getFileEntries()) {
 				filesData.addEntry(fileE);
 			}
 			
@@ -494,12 +497,16 @@ public class MOOSE extends Item {
 
 		// Set the value of the input file to the user-specified
 		// file name
-		launcherFiles.retrieveEntry("Input File").setValue(fileName);
+		FileEntry fileEntry = (FileEntry) launcherFiles.retrieveEntry("Input File");
+		ArrayList<String> allowed = new ArrayList<String>();
+		allowed.add(fileName);
+		fileEntry.setAllowedValues(allowed);
+		fileEntry.setValue(fileName);
 
 		// Update the MooseLauncher's set of input files...
 		mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));
-		for (Entry e : getFileEntries()) {
-			Entry launcherFile = launcherFiles.retrieveEntry(e.getName());
+		for (IEntry e : getFileEntries()) {
+			IEntry launcherFile = launcherFiles.retrieveEntry(e.getName());
 			if (launcherFile != null) {
 				launcherFile.setValue(e.getValue());
 			}
@@ -540,7 +547,7 @@ public class MOOSE extends Item {
 
 		// If we do, see if the user checked any to be displayed
 		DataComponent displayPPs = (DataComponent) form.getComponent(MOOSE.ppDataId);
-		for (Entry e : displayPPs.retrieveAllEntries()) {
+		for (IEntry e : displayPPs.retrieveAllEntries()) {
 			if (e.getValue().equals("yes")) {
 				display = true;
 				break;
@@ -558,7 +565,7 @@ public class MOOSE extends Item {
 					// Check that the current one is configured correctly
 					iceUpdater = outputs.getChildAtIndex(i);
 					DataComponent data = (DataComponent) iceUpdater.getDataNodes().get(0);
-					Entry itemIdEntry = data.retrieveEntry("item_id");
+					IEntry itemIdEntry = data.retrieveEntry("item_id");
 					if (Integer.valueOf(itemIdEntry.getValue()) != getId()) {
 						itemIdEntry.setValue(String.valueOf(getId()));
 					}
@@ -756,10 +763,10 @@ public class MOOSE extends Item {
 	 * This method searches the Model input tree and locates all file Entries
 	 * and loads them on the Model File DataComponent.
 	 */
-	private ArrayList<Entry> getFileEntries() {
+	private ArrayList<IEntry> getFileEntries() {
 		// protected void loadFileEntries() {
 		// Walk the tree and get all Entries that may represent a file
-		ArrayList<Entry> files = new ArrayList<Entry>();
+		ArrayList<IEntry> files = new ArrayList<IEntry>();
 		BreadthFirstTreeCompositeIterator iter = new BreadthFirstTreeCompositeIterator(modelTree);
 		while (iter.hasNext()) {
 			TreeComposite child = iter.next();
@@ -767,14 +774,14 @@ public class MOOSE extends Item {
 			// Make sure we have a valid DataComponent
 			if (child.getActiveDataNode() != null && child.isActive()) {
 				DataComponent data = (DataComponent) child.getActiveDataNode();
-				for (Entry e : data.retrieveAllEntries()) {
+				for (IEntry e : data.retrieveAllEntries()) {
 
 					// If the Entry's tag is "false" it is a commented out
 					// parameter.
 					if (!"false".equals(e.getTag()) && e.getValue() != null && !e.getValue().isEmpty()
-							&& e.getValueType() == AllowedValueType.File) {
+							&& e instanceof FileEntry) {
 
-						Entry clonedEntry = (Entry) e.clone();
+						IEntry clonedEntry = (IEntry) e.clone();
 						files.add(clonedEntry);
 					}
 				}
@@ -808,23 +815,17 @@ public class MOOSE extends Item {
 			Double value = Double.valueOf(data[2]);
 
 			// We need the jobLaunch directory to create new VizResources
-			String directory = mooseLauncher.getJobLaunchDirectory();
-			if (directory == null) {
+			IFolder directory = mooseLauncher.getJobLaunchFolder();
+			if (directory == null || !directory.exists()) {
+				logger.info("MOOSE Job Launch directory was null or did not exist. Cannot show real-time plots.");
 				return false;
 			}
 
 			// Refresh the project space
 			refreshProjectSpace();
 
-			// Get this job launch folder
-			IFolder jobFolder = project.getFolder("jobs")
-					.getFolder(directory.substring(directory.lastIndexOf("/") + 1, directory.length()));
-			if (!jobFolder.exists()) {
-				return false;
-			}
-
 			// Grab the new Postprocessor CSV file
-			IFile dataFile = jobFolder.getFile(name + ".csv");
+			IFile dataFile = directory.getFile(name + ".csv");
 
 			// Get a reference to the ResourceComponent
 			ResourceComponent comp = (ResourceComponent) form.getComponent(3);
@@ -867,15 +868,12 @@ public class MOOSE extends Item {
 		// postProcessorsData.clearEntries();
 		for (int i = 0; i < ppTree.getNumberOfChildren(); i++) {
 			if (!postProcessorsData.contains(ppTree.getChildAtIndex(i).getName())) {
-				Entry ppEntry = new Entry() {
-					@Override
-					public void setup() {
-						allowedValueType = AllowedValueType.Discrete;
-						allowedValues.add("yes");
-						allowedValues.add("no");
-						defaultValue = "no";
-					}
-				};
+				IEntry ppEntry = new DiscreteEntry();
+				List<String> allowedValues = new ArrayList<String>();
+				allowedValues.add("yes");
+				allowedValues.add("no");
+				ppEntry.setAllowedValues(allowedValues);
+				ppEntry.setDefaultValue("no");
 				ppEntry.setName(ppTree.getChildAtIndex(i).getName());
 				ppEntry.setDescription("Select whether this Postprocessor should be displayed in real-time.");
 				ppEntry.setId(i);

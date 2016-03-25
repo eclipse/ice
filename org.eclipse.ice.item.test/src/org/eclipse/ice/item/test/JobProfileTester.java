@@ -34,11 +34,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
 import org.eclipse.ice.item.jobprofile.JobProfile;
 import org.junit.Test;
 
@@ -173,16 +174,16 @@ public class JobProfileTester {
 		assertEquals("JobProfile", form.getName());
 		assertEquals("This operation will execute JobProfile",
 				form.getDescription());
-		assertEquals(3, form.getComponents().size());
+		assertEquals(4, form.getComponents().size());
 
 		// Enable OpenMP and MPI on the launcher
 		launcher.enableMPI(1, 512000, 1);
 		launcher.enableOpenMP(1, 16, 1);
 
 		// Verify they were set correctly
-		DataComponent component = (DataComponent) form.getComponents().get(3);
-		Entry mpiEntry = (Entry) component.retrieveAllEntries().get(1);
-		Entry openMPEntry = (Entry) component.retrieveAllEntries().get(2);
+		DataComponent component = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		IEntry mpiEntry = component.retrieveAllEntries().get(1);
+		IEntry openMPEntry = component.retrieveAllEntries().get(2);
 		assertEquals("1", mpiEntry.getValue());
 		assertEquals("1", openMPEntry.getValue());
 

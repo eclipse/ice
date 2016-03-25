@@ -14,7 +14,6 @@ package org.eclipse.ice.item.test.nuclear;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -32,9 +31,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.nuclear.MOOSE;
 import org.eclipse.ice.item.nuclear.MOOSELauncher;
@@ -66,6 +65,11 @@ public class MOOSELauncherTester {
 	 * A MOOSE Launcher used for testing.
 	 */
 	private static MOOSELauncher launcher;
+
+	/**
+	 * True if notified by File Entry
+	 */
+	private boolean notified = false;
 
 	/**
 	 * This operation sets up the workspace. It copies the necessary MOOSE data
@@ -154,55 +158,33 @@ public class MOOSELauncherTester {
 		return;
 	}
 
+	/**
+	 * Check that we can change the file name and get 
+	 * a notification triggered.
+	 */
 	@Test
-	public void checkDynamicFileGeneration() {
+	public void checkMOOSELauncherFileUpdate() {
 		
 		// Local Declarations
+		MOOSELauncher mooseLauncher = new MOOSELauncher(projectSpace) {
+			@Override
+			public void update(IUpdateable component) {
+				if (component instanceof FileEntry) {
+					notified = true;
+				}
+			}
+		};
 		DataComponent fileDataComp = 
-				(DataComponent) launcher.getForm().getComponent(1);
+				(DataComponent) mooseLauncher.getForm().getComponent(1);
 		assertTrue(fileDataComp
 				.retrieveEntry("Input File").setValue("input_coarse10.i"));
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		assertEquals(4, fileDataComp.retrieveAllEntries().size());
+		assertTrue(notified);
+		notified = false;
 
 		// Now change the file name
 		assertTrue(fileDataComp
 				.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
-
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertEquals(3, fileDataComp.retrieveAllEntries().size());
-	}
-	
-	@Test
-	public void checkCustomAppEntry() {
-		
-		// Local declarations
-		DataComponent execDataComp = 
-				(DataComponent) launcher.getForm().getComponent(5);
-		final String customExecName = "Custom executable name";
-		Entry standardExecEntry = execDataComp.retrieveEntry("Executable");
-		Entry customExecEntry = execDataComp.retrieveEntry(customExecName);
-		
-		// Verify the DataComponent that holds the executable Entries
-		assertEquals(execDataComp.retrieveAllEntries().size(), 2);
-		assertNotNull(standardExecEntry);
-		assertNotNull(customExecEntry);
-		
-		// Verify the standard Entry contains an option for a custom app
-		assertTrue(standardExecEntry.getAllowedValues().contains(customExecName));
-		
-		// Verify the custom app Entry's type
-		assertEquals(customExecEntry.getValueType(), AllowedValueType.Undefined);
-		
-		return;
+		assertTrue(notified);
 	}
 
 	/**

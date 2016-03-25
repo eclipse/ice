@@ -62,7 +62,8 @@ public class SelectionProvider implements ISelectionProvider {
 	 * ISelectionChangedListener to listen for SelectionChangedEvents.
 	 */
 	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+	public void addSelectionChangedListener(
+			ISelectionChangedListener listener) {
 		// Add the listener if it is valid.
 		if (listener != null) {
 			listeners.add(listener);
@@ -111,7 +112,8 @@ public class SelectionProvider implements ISelectionProvider {
 		this.selection = selection;
 
 		// Create a SelectionChangedEvent.
-		SelectionChangedEvent event = new SelectionChangedEvent(this, selection);
+		SelectionChangedEvent event = new SelectionChangedEvent(this,
+				selection);
 
 		// Notify all of the listeners.
 		Object[] list = listeners.getListeners();

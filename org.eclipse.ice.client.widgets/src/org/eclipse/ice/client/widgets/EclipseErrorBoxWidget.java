@@ -17,19 +17,26 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 
-/** 
- * <p>This class implements IErrorBox interface to display an error box using elements of SWT/JFace and the Eclipse Rich Client Platform.</p>
+/**
+ * <p>
+ * This class implements IErrorBox interface to display an error box using
+ * elements of SWT/JFace and the Eclipse Rich Client Platform.
+ * </p>
+ * 
  * @author Jay Jay Billings
  */
 public class EclipseErrorBoxWidget implements IErrorBox {
 
-	/** 
-	 * <p>The error string.</p>
+	/**
+	 * <p>
+	 * The error string.
+	 * </p>
 	 */
 	protected String errorString;
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IErrorBox#setErrorString(String error)
 	 */
 	@Override
@@ -37,8 +44,9 @@ public class EclipseErrorBoxWidget implements IErrorBox {
 		errorString = error;
 	}
 
-	/** 
+	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see IErrorBox#getErrorString()
 	 */
 	@Override
@@ -57,13 +65,14 @@ public class EclipseErrorBoxWidget implements IErrorBox {
 
 		// If the error has been set, throw up an error box with the message
 		if (errorString != null) {
-			MessageDialog.openError(workbench.getActiveWorkbenchWindow()
-					.getShell(), "ICE has encountered an error!",
-					errorString);
+			MessageDialog.openError(
+					workbench.getActiveWorkbenchWindow().getShell(),
+					"ICE has encountered an error!", errorString);
 		} else {
 			// Otherwise throw up a generic error box
-			MessageDialog.openError(workbench.getActiveWorkbenchWindow()
-					.getShell(), "ICE has encountered an error!",
+			MessageDialog.openError(
+					workbench.getActiveWorkbenchWindow().getShell(),
+					"ICE has encountered an error!",
 					"Unable to process your request!");
 		}
 

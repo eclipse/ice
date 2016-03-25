@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +96,7 @@ public class ParameterList {
 		if (parameters != null) {
 			for (int i = 0; i < parameters.size(); i++) {
 				Parameter param = parameters.get(i);
-				Entry paramEntry = param.toEntry();
+				IEntry paramEntry = param.toEntry();
 				paramEntry.setId(i + 1);
 				dataComp.addEntry(paramEntry);
 			}
@@ -137,7 +137,7 @@ public class ParameterList {
 
 		// Local Declarations
 		DataComponent dataComp = null;
-		ArrayList<Entry> entries = null;
+		ArrayList<IEntry> entries = null;
 		ArrayList<TreeComposite> children = new ArrayList<TreeComposite>();
 
 		// Only convert if the tree component is not null

@@ -4,8 +4,7 @@ Bundle-Name: Vibe
 Bundle-SymbolicName: org.eclipse.ice.vibe;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.io.ips,
- org.eclipse.ice.io.serializable,
+Import-Package: org.eclipse.ice.io.serializable,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.7.2"
 Bundle-ActivationPolicy: lazy

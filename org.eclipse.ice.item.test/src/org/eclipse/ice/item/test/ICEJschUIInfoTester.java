@@ -17,8 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.item.action.ICEJschUIInfo;
 import org.eclipse.ice.item.action.LoginInfoForm;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class ICEJschUIInfoTester {
 		// Local Declarations
 		LoginInfoForm testForm = new LoginInfoForm();
 		DataComponent comp = null;
-		Entry passwordEntry = null;
+		IEntry passwordEntry = null;
 		String password = null;
 		String[] keyboardInteractiveArray = null, inputArray = { "D", "E", "F" };
 

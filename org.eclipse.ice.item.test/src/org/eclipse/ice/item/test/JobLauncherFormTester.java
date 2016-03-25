@@ -31,10 +31,11 @@ import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
@@ -105,21 +106,55 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// Check the number of Components in the JobLauncherForm. It should have
 		// two, a DataComponent and an OutputComponent.
-		assertEquals(2, jobLauncherForm.getNumberOfComponents());
+		assertEquals(3, jobLauncherForm.getNumberOfComponents());
 
 		// Get the Entries in the input files component
-		ArrayList<Entry> entries = ((DataComponent) jobLauncherForm
+		ArrayList<IEntry> entries = ((DataComponent) jobLauncherForm
 				.getComponent(1)).retrieveAllEntries();
 		// Check the number of Entries in the input files component
 		assertEquals(1, entries.size());
 		// Check the Entries. The Input File Entry should have files.size()
 		// allowed values.
 		assertEquals("Input file", entries.get(0).getName());
-		retFiles = entries.get(0).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(0).getAllowedValues();
 		// Check the list of files
 		assertNotNull(retFiles);
 		assertEquals(files, retFiles);
 
+		// Check our Docker entries. 
+		DataComponent docker = (DataComponent) jobLauncherForm.getComponent(JobLauncherForm.dockerId);
+		assertNotNull(docker);
+		assertEquals(2, docker.retrieveAllEntries().size());
+		
+		IEntry enableDocker = docker.retrieveEntry("Launch with Docker");
+		assertNotNull(enableDocker);
+		assertEquals("false", enableDocker.getValue());
+		assertTrue(enableDocker instanceof DiscreteEntry);
+		
+		IEntry imagesList = docker.retrieveEntry("Available Images");
+		assertNotNull(imagesList);
+		assertFalse(imagesList.isReady());
+		
+		assertTrue(enableDocker.setValue("true"));
+		
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
+		assertTrue(imagesList.isReady());
+		
+		assertTrue(enableDocker.setValue("false"));
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
+		assertFalse(imagesList.isReady());
+		
 		return;
 	}
 
@@ -134,9 +169,9 @@ public class JobLauncherFormTester implements IComponentVisitor {
 	public void checkParallelism() {
 
 		// Local Declarations
-		Entry openMPEntry = null;
-		Entry mpiEntry = null;
-		Entry tBBEntry = null;
+		IEntry openMPEntry = null;
+		IEntry mpiEntry = null;
+		IEntry tBBEntry = null;
 
 		// Create the JobLauncherForm
 		jobLauncherForm = new JobLauncherForm();
@@ -168,10 +203,10 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		jobLauncherForm.enableMPI(1, 1024, 512);
 		
 		// Check the account code 
-		Entry accountEntry = threadingComponent.retrieveEntry("Account Code/Project Code");
+		IEntry accountEntry = threadingComponent.retrieveEntry("Account Code/Project Code");
 		assertNotNull(accountEntry);
 		assertEquals("none",accountEntry.getValue());
-		assertEquals(accountEntry.getValueType(),AllowedValueType.Undefined);
+		assertTrue(accountEntry instanceof StringEntry);
 
 		// Get the MPI Entry and check it
 		mpiEntry = threadingComponent.retrieveEntry("Number of MPI Processes");
@@ -523,6 +558,7 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// Make sure they match
 		assertTrue(jobForm.equals(loadedForm));
 
+		
 	}
 
 	/**
@@ -607,10 +643,10 @@ public class JobLauncherFormTester implements IComponentVisitor {
 
 		// Check the number of Components in the JobLauncherForm. It should have
 		// two, a DataComponent and an OutputComponent.
-		assertEquals(2, jobLauncherForm.getNumberOfComponents());
+		assertEquals(3, jobLauncherForm.getNumberOfComponents());
 
 		// Get the Entries
-		ArrayList<Entry> entries = ((DataComponent) jobLauncherForm
+		ArrayList<IEntry> entries = ((DataComponent) jobLauncherForm
 				.getComponent(1)).retrieveAllEntries();
 
 		// Check the number of Entries in the Platform component. There should
@@ -621,28 +657,28 @@ public class JobLauncherFormTester implements IComponentVisitor {
 		// files.size()
 		// allowed values.
 		assertEquals(filename1, entries.get(0).getName());
-		retFiles = entries.get(0).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(0).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files1.size(), retFiles.size());
 		assertEquals(files1, retFiles);
 
 		// Check the second file set
 		assertEquals(filename2, entries.get(1).getName());
-		retFiles = entries.get(1).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(1).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files2.size(), retFiles.size());
 		assertEquals(files2, retFiles);
 
 		// Check the third file set
 		assertEquals(filename3, entries.get(2).getName());
-		retFiles = entries.get(2).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(2).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files3.size(), retFiles.size());
 		assertEquals(files3, retFiles);
 
 		// Check the fourth file set
 		assertEquals(filename3, entries.get(2).getName());
-		retFiles = entries.get(2).getAllowedValues();
+		retFiles = (ArrayList<String>) entries.get(2).getAllowedValues();
 		assertNotNull(retFiles);
 		assertEquals(files3.size(), retFiles.size());
 		assertEquals(files3, retFiles);

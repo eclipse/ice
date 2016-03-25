@@ -79,6 +79,16 @@
                   </enumeration>
                   <enumeration value="Framework">
                   </enumeration>
+                  <enumeration value="Nuclear">
+                  </enumeration>
+                  <enumeration value="MolecularDynamics">
+                  </enumeration>
+                  <enumeration value="Physics">
+                  </enumeration>
+                  <enumeration value="DensityFunctionalTheory">
+                  </enumeration>
+                  <enumeration value="Other">
+                  </enumeration>
                </restriction>
             </simpleType>
          </attribute>

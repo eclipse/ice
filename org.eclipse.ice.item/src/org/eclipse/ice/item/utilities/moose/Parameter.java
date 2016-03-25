@@ -13,9 +13,12 @@
 package org.eclipse.ice.item.utilities.moose;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 
 /**
  * This class represents a MOOSE input Parameter. This class is parsed from and
@@ -59,7 +62,7 @@ public class Parameter {
 	 * The list of options of the parameter (if any). Not all parameters have
 	 * options.
 	 */
-	private ArrayList<String> options = null;
+	private List<String> options = null;
 
 	/**
 	 * The name of the group to which the parameter belongs.
@@ -136,7 +139,7 @@ public class Parameter {
 	 * 
 	 * @return The list of options.
 	 */
-	public ArrayList<String> getOptions() {
+	public List<String> getOptions() {
 		return options;
 	}
 
@@ -279,59 +282,47 @@ public class Parameter {
 	 * 
 	 * @return The data components
 	 */
-	public Entry toEntry() {
+	public IEntry toEntry() {
 
 		// Local Declarations
-		Entry entry = null;
-
-		// Setup the Entry Entry
-		entry = new Entry() {
-			@Override
-			// Check the cpp_type and determine what to set the allowed
-			// value types as
-			protected void setup() {
-				// If the type is discrete (MooseEnum) and the options list
-				// isn't empty
-				if ((("MooseEnum").equals(Parameter.this.cpp_type)
-						|| ("MultiMooseEnum").equals(Parameter.this.cpp_type)) && options != null
-						&& !options.isEmpty()) {
-					// Limit the type to discrete values
-					allowedValueType = AllowedValueType.Discrete;
-					// Set the allowed values
-					allowedValues = options;
-					// Set the default value, descri
-					String value = Parameter.this.getDefault();
-					defaultValue = (allowedValues.contains(value) ? value : allowedValues.get(0));
-				}
-				// If the value type is boolean
-				else if (("bool").equals(Parameter.this.cpp_type)) {
-					// Limit the type to discrete values
-					allowedValueType = AllowedValueType.Discrete;
-					// Set the allowed values
-					allowedValues.add("true");
-					allowedValues.add("false");
-					// Set the default value and description
-					defaultValue = (Parameter.this.getDefault().equals(0)) ? "false" : "true";
-				} else
-					if ("FileName".equals(Parameter.this.cpp_type) || "MeshFileName".equals(Parameter.this.cpp_type)) {
-					// Here we have the mesh file name, so let's make this a
-					// file entry
-					allowedValueType = AllowedValueType.File;
-					if (options != null) {
-						allowedValues = options;
-						// Set the default value, descri
-						String value = Parameter.this.getDefault();
-						defaultValue = (allowedValues.contains(value) ? value : allowedValues.get(0));
-					}
-				}
-				// Otherwise, for all other parameters
-				else {
-					allowedValueType = AllowedValueType.Undefined;
-					defaultValue = Parameter.this.getDefault();
-				}
+		IEntry entry = null;
+		
+		// If the type is discrete (MooseEnum) and the options list
+		// isn't empty
+		if ((("MooseEnum").equals(Parameter.this.cpp_type) || ("MultiMooseEnum").equals(Parameter.this.cpp_type))
+				&& options != null && !options.isEmpty()) {
+			entry = new DiscreteEntry();
+			entry.setAllowedValues(options);
+			// Set the default value, descri
+			String value = Parameter.this.getDefault();
+			entry.setDefaultValue((options.contains(value) ? value : options.get(0)));
+		}
+		// If the value type is boolean
+		else if (("bool").equals(Parameter.this.cpp_type)) {
+			entry = new DiscreteEntry("true","false");
+			// Set the default value and description
+			entry.setDefaultValue((Parameter.this.getDefault().equals("false")) ? "false" : "true");
+		} else if ("FileName".equals(Parameter.this.cpp_type) || "MeshFileName".equals(Parameter.this.cpp_type)) {
+			entry = new FileEntry();
+			if (options != null && !options.isEmpty()) {
+				entry.setAllowedValues(options);
+				// Set the default value, descri
+				String value = Parameter.this.getDefault();
+				entry.setDefaultValue((options.contains(value) ? value : options.get(0)));
 			}
-		};
+
+			// Otherwise, for all other parameters
+		} else if ("NonlinearVariableName".equals(cpp_type) || "VariableName".equals(cpp_type) || "AuxVariableName".equals(cpp_type) || "variable".equals(this.name)) {
+			entry = new DiscreteEntry(getDefault());
+			entry.setDefaultValue(getDefault());
+			
+		} else {
+			entry = new StringEntry();
+			entry.setDefaultValue(getDefault());
+		}
+		
 		// Set the rest of the attributes
+		entry.setValue(entry.getDefaultValue());
 		entry.setName(getName());
 		entry.setDescription(getDescription());
 		entry.setComment(getComment());
@@ -371,7 +362,7 @@ public class Parameter {
 	 * @param entry
 	 *            The Entry to load into the Parameter.
 	 */
-	public void fromEntry(Entry entry) {
+	public void fromEntry(IEntry entry) {
 
 		// Only do this with a real Entry
 		if (entry != null) {
@@ -381,7 +372,7 @@ public class Parameter {
 			comment = entry.getComment();
 			required = entry.isRequired();
 			enabled = !"false".equalsIgnoreCase(entry.getTag());
-			options = entry.getAllowedValues();
+			options = entry instanceof DiscreteEntry ? (List<String>) entry.getAllowedValues() : null;
 		}
 
 		return;

@@ -98,8 +98,8 @@ public class EclipseExtraInfoWidget implements IExtraInfoWidget {
 				// Instantiate the dialog, set the DataComponent and set the
 				// listeners
 				infoDialog = new ExtraInfoDialog(shell);
-				infoDialog.setDataComponent((DataComponent) iceForm
-						.getComponents().get(0));
+				infoDialog.setDataComponent(
+						(DataComponent) iceForm.getComponents().get(0));
 				for (IWidgetClosedListener i : listeners) {
 					infoDialog.setCloseListener(i);
 				}

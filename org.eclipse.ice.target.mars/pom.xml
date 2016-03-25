@@ -5,7 +5,7 @@
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
-      <groupId>ICE</groupId>
+      <groupId>org.eclipse.ice</groupId>
       <artifactId>org.eclipse.ice.build</artifactId>
       <version>2.1.8-SNAPSHOT</version>
       <relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>

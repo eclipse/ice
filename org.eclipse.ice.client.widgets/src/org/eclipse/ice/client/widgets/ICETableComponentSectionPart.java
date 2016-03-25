@@ -17,8 +17,8 @@ import java.util.List;
 
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -68,8 +68,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Jay Jay Billings
  */
-public class ICETableComponentSectionPart extends SectionPart implements
-		IUpdateableListener {
+public class ICETableComponentSectionPart extends SectionPart
+		implements IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
@@ -115,7 +115,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		/**
 		 * Holds an ArrayList of Entries in the TableComponent for TableViewer.
 		 */
-		private List<Entry> list;
+		private List<IEntry> list;
 
 		/**
 		 * The Constructor, injects the ArrayList of Entries at this row.
@@ -124,7 +124,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		 *            The list of Entries that make up this RowWrapper.
 		 * 
 		 */
-		public RowWrapper(List<Entry> list) {
+		public RowWrapper(List<IEntry> list) {
 			this.list = list;
 		}
 
@@ -134,7 +134,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		 * </p>
 		 * 
 		 */
-		public List<Entry> getRowWrapper() {
+		public List<IEntry> getRowWrapper() {
 			return list;
 		}
 	}
@@ -323,7 +323,8 @@ public class ICETableComponentSectionPart extends SectionPart implements
 	 * updated and monitored by the ICESectionPart.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The TableComponent that is rendered by the SectionPart.
 	 *         </p>
 	 */
@@ -554,7 +555,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 		// Iterate over lists and add editors - text or menu editor
 		for (int i = 0; i < tableComponent.getRowTemplate().size(); i++) {
 			// Menu editor if the allowedvaluetypes are a discrete list
-			if (tableComponent.getRowTemplate().get(i).getValueType() == AllowedValueType.Discrete) {
+			if (tableComponent.getRowTemplate().get(i) instanceof DiscreteEntry) {
 
 				// Setup the label, content, and input providers for
 				// the combobox with the editors
@@ -713,9 +714,10 @@ public class ICETableComponentSectionPart extends SectionPart implements
 			public Object getValue(Object element, String property) {
 				int counter = -1;
 				// Iterate over the list to grab the location of the column.
-				for (int i = 0; i < tableComponentViewer.getColumnProperties().length; i++) {
-					if (property.equals(tableComponentViewer
-							.getColumnProperties()[i])) {
+				for (int i = 0; i < tableComponentViewer
+						.getColumnProperties().length; i++) {
+					if (property.equals(
+							tableComponentViewer.getColumnProperties()[i])) {
 						// Get the column
 						counter = i;
 					}
@@ -734,9 +736,10 @@ public class ICETableComponentSectionPart extends SectionPart implements
 				// Iterate over the list and get the location of the column in
 				// entries
 				int counter = -1;
-				for (int i = 0; i < tableComponentViewer.getColumnProperties().length; i++) {
-					if (property.equals(tableComponentViewer
-							.getColumnProperties()[i])) {
+				for (int i = 0; i < tableComponentViewer
+						.getColumnProperties().length; i++) {
+					if (property.equals(
+							tableComponentViewer.getColumnProperties()[i])) {
 						// Get the column, set to counter
 						counter = i;
 					}
@@ -758,9 +761,9 @@ public class ICETableComponentSectionPart extends SectionPart implements
 					boolean success = row.getRowWrapper().get(counter)
 							.setValue((String) value);
 					if (System.getProperty("DebugICE") != null) {
-						logger.info("ICETableComponentSectionPart "
-								+ "Message: " + "Setting value returned "
-								+ success);
+						logger.info(
+								"ICETableComponentSectionPart " + "Message: "
+										+ "Setting value returned " + success);
 					}
 
 					// FIXME FUTURE GREG WORK, ADD ERRORS AND FONT CHANGE...
@@ -823,7 +826,7 @@ public class ICETableComponentSectionPart extends SectionPart implements
 				boolean rowStatus = true;
 				if (rows.length == tableComponent.numberOfRows()) {
 					for (int j = 0; j < rows.length; j++) {
-						List<Entry> rowList = rows[j].list;
+						List<IEntry> rowList = rows[j].list;
 
 						// If the number of entries are not the same, needs to
 						// be fixed.
@@ -835,8 +838,8 @@ public class ICETableComponentSectionPart extends SectionPart implements
 						// Check the entries
 						for (int k = 0; k < rowList.size(); k++) {
 							// If the entries are not equal, refresh
-							if (rowList.get(k).equals(
-									tableComponent.getRow(j).get(k))) {
+							if (rowList.get(k)
+									.equals(tableComponent.getRow(j).get(k))) {
 								rowStatus = false;
 								break;
 							}
@@ -846,7 +849,8 @@ public class ICETableComponentSectionPart extends SectionPart implements
 
 				// If the row length is different from the tablecomponent,
 				// then we must update the tableViewer content
-				if (rows.length != tableComponent.numberOfRows() || !rowStatus) {
+				if (rows.length != tableComponent.numberOfRows()
+						|| !rowStatus) {
 					// Reset input for tableViewer
 					RowWrapper[] rowWrappers = new RowWrapper[tableComponent
 							.getRowIds().size()];

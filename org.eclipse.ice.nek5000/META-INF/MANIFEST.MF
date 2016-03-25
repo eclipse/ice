@@ -4,13 +4,16 @@ Bundle-Name: Nek5000 ICE Plug-in
 Bundle-SymbolicName: org.eclipse.ice.nek5000;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.eclipse.ice.datastructures.ICEObject,
+Import-Package: org.eclipse.eavp.viz.modeling,
+ org.eclipse.eavp.viz.modeling.base,
+ org.eclipse.eavp.viz.modeling.factory,
+ org.eclipse.eavp.viz.modeling.properties,
+ org.eclipse.eavp.viz.datastructures.VizObject,
+ org.eclipse.eavp.viz.service.mesh.datastructures,
+ org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.item,
  org.eclipse.ice.item.jobLauncher,
- org.eclipse.ice.viz.service.datastructures,
- org.eclipse.ice.viz.service.datastructures.VizObject,
- org.eclipse.ice.viz.service.mesh.datastructures,
  org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/nekModelComponent.xml,
  OSGI-INF/nek5000LauncherComponent.xml

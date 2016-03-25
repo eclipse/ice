@@ -30,10 +30,10 @@ import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.BasicEntryContentProvider;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -87,14 +87,15 @@ import org.slf4j.LoggerFactory;
  * @author Jordan
  * 
  */
-public class TreePropertySection extends AbstractPropertySection implements
-		IUpdateableListener {
+public class TreePropertySection extends AbstractPropertySection
+		implements IUpdateableListener {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(TreePropertySection.class);	
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(TreePropertySection.class);
+
 	/**
 	 * The <code>TreeComposite</code> whose properties are displayed in this
 	 * section.
@@ -110,7 +111,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 	/**
 	 * The currently selected property or parameter in the {@link #tableViewer}.
 	 */
-	private Entry selectedEntry;
+	private IEntry selectedEntry;
 
 	// ---- Ancestor Controls ---- //
 	// We keep track of these so we can fill the Properties View with the table.
@@ -243,8 +244,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 		if (System.getProperty("DebugICE") == null) {
 			client.setBackground(backgroundColor);
 		} else {
-			client.setBackground(Display.getCurrent().getSystemColor(
-					SWT.COLOR_RED));
+			client.setBackground(
+					Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 		}
 
 		// Set the client area for the section.
@@ -278,15 +279,15 @@ public class TreePropertySection extends AbstractPropertySection implements
 		tableViewer = createTableViewer(client);
 		// Set the table's layout data so it occupies all spare space in the
 		// property section client.
-		tableViewer.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
+		tableViewer.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Create the add/delete buttons.
 		Composite buttonComposite = createButtons(client);
 		// The button Composite shouldn't grab any space. Align it along the
 		// center and top of the space to the right of the table.
-		buttonComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false,
-				false));
+		buttonComposite
+				.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 
 		return;
 	}
@@ -495,8 +496,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// Create the type sub-section Composite that will contain the
 		// type label and combo (dropdown).
 		Composite typeComposite = new Composite(client, SWT.NONE);
-		typeComposite.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING,
-				false, true));
+		typeComposite.setLayoutData(
+				new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true));
 		typeComposite.setBackground(backgroundColor);
 
 		// Set the layout of the Composite to a vertical fill layout.
@@ -603,8 +604,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 			Table table;
 
 			// Create the TableViewer and the underlying Table Control.
-			tableViewer = new TableViewer(client, SWT.BORDER
-					| SWT.FULL_SELECTION | SWT.V_SCROLL);
+			tableViewer = new TableViewer(client,
+					SWT.BORDER | SWT.FULL_SELECTION | SWT.V_SCROLL);
 			// Set some properties for the table.
 			table = tableViewer.getTable();
 			table.setHeaderVisible(true);
@@ -656,11 +657,11 @@ public class TreePropertySection extends AbstractPropertySection implements
 					return changed;
 				}
 			};
-			nameColumn.setLabelProvider(new CellColumnLabelProvider(
-					contentProvider));
-			nameColumn.setEditingSupport(new TextCellEditingSupport(
-					tableViewer, contentProvider));
-			// --------------------------------- //
+			nameColumn.setLabelProvider(
+					new CellColumnLabelProvider(contentProvider));
+			nameColumn.setEditingSupport(
+					new TextCellEditingSupport(tableViewer, contentProvider));
+					// --------------------------------- //
 
 			// ---- Create the value column. ---- //
 			valueColumn = new TableViewerColumn(tableViewer, SWT.LEFT);
@@ -682,8 +683,8 @@ public class TreePropertySection extends AbstractPropertySection implements
 					return changed;
 				}
 			};
-			valueColumn.setLabelProvider(new CellColumnLabelProvider(
-					contentProvider));
+			valueColumn.setLabelProvider(
+					new CellColumnLabelProvider(contentProvider));
 			valueColumn.setEditingSupport(new ComboCellEditingSupport(
 					tableViewer, (IComboCellContentProvider) contentProvider));
 			// ---------------------------------- //
@@ -765,7 +766,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 				ISelection selection = event.getSelection();
 				if (!selection.isEmpty()
 						&& selection instanceof IStructuredSelection) {
-					Entry entry = ((TreeProperty) ((IStructuredSelection) selection)
+					IEntry entry = ((TreeProperty) ((IStructuredSelection) selection)
 							.getFirstElement()).getEntry();
 
 					// If the Entry is not required, we can delete it.
@@ -834,7 +835,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 		// If there is a data node, add a new Entry to it.
 		if (dataNode != null && !dataNode.contains("New parameter")) {
 			// Create an Entry with a BasicEntryContentProvider.
-			Entry entry = new Entry(new BasicEntryContentProvider());
+			IEntry entry = new StringEntry();//new BasicEntryContentProvider());
 			// Set the Entry's initial properties.
 			entry.setName("new_parameter");
 			entry.setDescription("");
@@ -857,7 +858,7 @@ public class TreePropertySection extends AbstractPropertySection implements
 	 *            The property or parameter that is a candidate for deletion.
 	 * @return True if the entry can be deleted, false otherwise.
 	 */
-	private boolean canDelete(Entry entry) {
+	private boolean canDelete(IEntry entry) {
 		return (entry != null && !entry.isRequired());
 	}
 

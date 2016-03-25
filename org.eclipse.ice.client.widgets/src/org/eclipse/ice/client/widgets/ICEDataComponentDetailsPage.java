@@ -14,8 +14,11 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider;
+import org.eclipse.ice.client.widgets.providers.Default.DefaultEntryCompositeProvider;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +33,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -41,6 +46,12 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
  * @author Jay Jay Billings
  */
 public class ICEDataComponentDetailsPage implements IDetailsPage {
+	
+	/**
+	 * Reference to the logger service.
+	 */
+	protected Logger logger = LoggerFactory.getLogger(ICEDataComponentDetailsPage.class);
+
 	/**
 	 * <p>
 	 * The DataComponent whose data should be displayed.
@@ -86,7 +97,8 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 	 * if it was not set in the constructor.
 	 * </p>
 	 * 
-	 * @return <p>
+	 * @return
+	 * 		<p>
 	 *         The DataComponent used in this provider or null if it was not
 	 *         set.
 	 *         </p>
@@ -157,7 +169,10 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
+	 * 
+	 * @see
+	 * org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.
+	 * ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void selectionChanged(IFormPart part, ISelection selection) {
@@ -181,8 +196,8 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		parent.setLayout(layout);
 
 		FormToolkit toolkit = mform.getToolkit();
-		Section section = toolkit.createSection(parent, Section.DESCRIPTION
-				| ExpandableComposite.TITLE_BAR);
+		Section section = toolkit.createSection(parent,
+				Section.DESCRIPTION | ExpandableComposite.TITLE_BAR);
 		section.marginWidth = 10;
 		section.setText(component.getName());
 		section.setDescription(component.getDescription());
@@ -195,13 +210,13 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 		glayout.marginWidth = glayout.marginHeight = 0;
 		client.setLayout(glayout);
 
-		ArrayList<Entry> entries = component.retrieveReadyEntries();
+		ArrayList<IEntry> entries = component.retrieveReadyEntries();
 
 		// Make sure that there are actually Entries to add!
 		if (entries != null) {
 			// Create a Control for each Entry
-			for (Entry entry : entries) {
-				EntryComposite tmpComposite = null;
+			for (IEntry entry : entries) {
+				IEntryComposite tmpComposite = null;
 				// Set an event listener to enable saving
 				Listener listener = new Listener() {
 					@Override
@@ -212,9 +227,24 @@ public class ICEDataComponentDetailsPage implements IDetailsPage {
 				};
 
 				// Create the new Entry
-				tmpComposite = new EntryComposite(client, SWT.FLAT, entry);
+				IEntryCompositeProvider provider = new DefaultEntryCompositeProvider();
+				if (!"default".equals(entry.getContext())) {
+					try {
+						for (IEntryCompositeProvider p : IEntryCompositeProvider.getProviders()) {
+							if (p.getName().equals(entry.getContext())) {
+								provider = p;
+								break;
+							}
+						}
+					} catch (CoreException e) {
+						logger.error("Exception caught in trying to get a custom IEntryCompositeProvider.",e);
+					}
+				}
+
+				
+				tmpComposite = provider.getEntryComposite(client, entry, SWT.FLAT, formEditor.getToolkit());
 				// Set the Listener
-				tmpComposite.addListener(SWT.Selection, listener);
+				tmpComposite.getComposite().addListener(SWT.Selection, listener);
 			}
 		}
 

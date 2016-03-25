@@ -37,24 +37,21 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.item.action.LoginInfoForm;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * This class is responsible for testing the JobLauncher class.
+ * 
  * @author Jay Jay Billings
  */
 public class JobLauncherTester {
-	
+
 	/**
 	 * A fake JobLauncher to use for testing.
 	 */
@@ -166,7 +163,7 @@ public class JobLauncherTester {
 		// Local Declarations:
 		JobLauncherForm form;
 		DataComponent dataC;
-		Entry entry;
+		IEntry entry;
 
 		// check MPI
 		jobLauncher = new TestJobLauncher(null);
@@ -177,8 +174,8 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
 		assertEquals(entry.getValue(), "2");
@@ -190,8 +187,8 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
 		assertEquals(entry.getValue(), "2");
@@ -203,8 +200,8 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
 		assertEquals(entry.getValue(), "2");
@@ -216,8 +213,8 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
 		assertEquals(entry.getValue(), "2");
@@ -230,7 +227,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// disable again, see if it breaks
 		jobLauncher.disableMPI();
@@ -238,7 +235,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// check OpenMP
 		// Just see if it crashes or not
@@ -247,8 +244,8 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
 		assertEquals(entry.getValue(), "2");
@@ -260,11 +257,11 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
-		assertEquals("2",entry.getValue());
+		assertEquals("2", entry.getValue());
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
 
@@ -273,8 +270,8 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
 		assertEquals(entry.getValue(), "2");
@@ -286,8 +283,8 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
 		assertEquals(entry.getValue(), "2");
@@ -300,9 +297,9 @@ public class JobLauncherTester {
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
 
-		entry = (Entry) dataC.retrieveAllEntries().get(0);
+		entry = dataC.retrieveAllEntries().get(0);
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// disable again, see if it breaks
 		jobLauncher.disableOpenMP();
@@ -310,7 +307,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		jobLauncher = new TestJobLauncher(null);
 		jobLauncher.setupForm();
@@ -322,8 +319,8 @@ public class JobLauncherTester {
 		// Check the dataComponent, see if they are both there
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 		assertNotNull(entry);
 
 		// Check values - nothing changed
@@ -333,8 +330,8 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
 		assertEquals(entry.getValue(), "2");
@@ -352,15 +349,15 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// Tests for TBB
 		jobLauncher.enableTBB(1, 5, 3);
 
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveAllEntries().get(1);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
 		assertEquals(entry.getValue(), "3");
@@ -374,21 +371,21 @@ public class JobLauncherTester {
 
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveEntry("Number of TBB Threads");
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveEntry("Number of TBB Threads");
 
 		// Check values - TBB
 		assertEquals(entry.getValue(), "3");
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
 
-		entry = (Entry) dataC.retrieveEntry("Number of MPI Processes");
+		entry = dataC.retrieveEntry("Number of MPI Processes");
 		// Check values - MPI
 		assertEquals(entry.getValue(), "4");
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
 
-		entry = (Entry) dataC.retrieveEntry("Number of OpenMP Threads");
+		entry = dataC.retrieveEntry("Number of OpenMP Threads");
 		// Check values - OpenMP
 		assertEquals(entry.getValue(), "2");
 		assertEquals(entry.getAllowedValues().get(0), "1");
@@ -399,20 +396,20 @@ public class JobLauncherTester {
 
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveEntry("Number of TBB Threads");
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveEntry("Number of TBB Threads");
 
 		// Check values - TBB
 		assertNull(entry);
 
 		// Check values - MPI
-		entry = (Entry) dataC.retrieveEntry("Number of MPI Processes");
+		entry = dataC.retrieveEntry("Number of MPI Processes");
 		assertEquals(entry.getValue(), "4");
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
 
 		// Check values - OpenMP
-		entry = (Entry) dataC.retrieveEntry("Number of OpenMP Threads");
+		entry = dataC.retrieveEntry("Number of OpenMP Threads");
 		assertEquals(entry.getValue(), "2");
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
@@ -421,20 +418,20 @@ public class JobLauncherTester {
 		jobLauncher.enableTBB(20, 10, 5);
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
-		entry = (Entry) dataC.retrieveEntry("Number of TBB Threads");
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
+		entry = dataC.retrieveEntry("Number of TBB Threads");
 
 		// Check values - TBB
 		assertNull(entry);
 
 		// Check values - MPI
-		entry = (Entry) dataC.retrieveEntry("Number of MPI Processes");
+		entry = dataC.retrieveEntry("Number of MPI Processes");
 		assertEquals(entry.getValue(), "4");
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
 
 		// Check values - OpenMP
-		entry = (Entry) dataC.retrieveEntry("Number of OpenMP Threads");
+		entry = dataC.retrieveEntry("Number of OpenMP Threads");
 		assertEquals(entry.getValue(), "2");
 		assertEquals(entry.getAllowedValues().get(0), "1");
 		assertEquals(entry.getAllowedValues().get(1), "5");
@@ -445,17 +442,17 @@ public class JobLauncherTester {
 		jobLauncher.disableOpenMP();
 
 		// Check values - TBB
-		entry = (Entry) dataC.retrieveEntry("Number of TBB Threads");
+		entry = dataC.retrieveEntry("Number of TBB Threads");
 		assertEquals(entry.getValue(), "5");
 		assertEquals(entry.getAllowedValues().get(0), "3");
 		assertEquals(entry.getAllowedValues().get(1), "20");
 
 		// Check values - MPI
-		entry = (Entry) dataC.retrieveEntry("Number of MPI Processes");
+		entry = dataC.retrieveEntry("Number of MPI Processes");
 		assertNull(entry);
 
 		// Check values - OpenMP
-		entry = (Entry) dataC.retrieveEntry("Number of OpenMP Threads");
+		entry = dataC.retrieveEntry("Number of OpenMP Threads");
 		assertNull(entry);
 
 		// Disable TBB thread, show that component disappears
@@ -510,17 +507,14 @@ public class JobLauncherTester {
 		}
 
 		// Assert equals is consistent
-		assertTrue(item.equals(equalItem) && item.equals(equalItem)
-				&& item.equals(equalItem));
-		assertTrue(!item.equals(unEqualItem) && !item.equals(unEqualItem)
-				&& !item.equals(unEqualItem));
+		assertTrue(item.equals(equalItem) && item.equals(equalItem) && item.equals(equalItem));
+		assertTrue(!item.equals(unEqualItem) && !item.equals(unEqualItem) && !item.equals(unEqualItem));
 
 		// Assert checking equality with null is false
-		assertFalse(item==null);
+		assertFalse(item == null);
 
 		// Assert that two equal objects return same hashcode
-		assertTrue(item.equals(equalItem)
-				&& item.hashCode() == equalItem.hashCode());
+		assertTrue(item.equals(equalItem) && item.hashCode() == equalItem.hashCode());
 
 		// Assert that hashcode is consistent
 		assertTrue(item.hashCode() == item.hashCode());
@@ -541,8 +535,7 @@ public class JobLauncherTester {
 	public void checkCopying() {
 
 		// Local Declarations
-		JobLauncher cloneItem = new JobLauncher(null), copyItem = new JobLauncher(
-				null);
+		JobLauncher cloneItem = new JobLauncher(null), copyItem = new JobLauncher(null);
 		JobLauncher jobItem = new JobLauncher();
 
 		jobItem.setDescription("I am a job!");
@@ -553,8 +546,7 @@ public class JobLauncherTester {
 		cloneItem = (JobLauncher) jobItem.clone();
 
 		// check contents
-		assertEquals(jobItem.getAvailableActions(),
-				cloneItem.getAvailableActions());
+		assertEquals(jobItem.getAvailableActions(), cloneItem.getAvailableActions());
 		assertEquals(jobItem.getDescription(), cloneItem.getDescription());
 		assertTrue(jobItem.getForm().equals(cloneItem.getForm()));
 		assertEquals(jobItem.getId(), cloneItem.getId());
@@ -567,8 +559,7 @@ public class JobLauncherTester {
 		copyItem.copy(jobItem);
 
 		// check contents
-		assertEquals(jobItem.getAvailableActions(),
-				copyItem.getAvailableActions());
+		assertEquals(jobItem.getAvailableActions(), copyItem.getAvailableActions());
 		assertEquals(jobItem.getDescription(), copyItem.getDescription());
 		assertTrue(jobItem.getForm().equals(copyItem.getForm()));
 		assertEquals(jobItem.getId(), copyItem.getId());
@@ -581,8 +572,7 @@ public class JobLauncherTester {
 		copyItem.copy(null);
 
 		// check contents - nothing has changed
-		assertEquals(jobItem.getAvailableActions(),
-				copyItem.getAvailableActions());
+		assertEquals(jobItem.getAvailableActions(), copyItem.getAvailableActions());
 		assertEquals(jobItem.getDescription(), copyItem.getDescription());
 		assertTrue(jobItem.getForm().equals(copyItem.getForm()));
 		assertEquals(jobItem.getId(), copyItem.getId());
@@ -597,9 +587,10 @@ public class JobLauncherTester {
 	/**
 	 * This operation checks the ability of the JobLauncher to persist itself to
 	 * XML and to load itself from an XML input stream.
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * @throws NullPointerException 
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
+	 * @throws NullPointerException
 	 */
 	@Test
 	public void checkXMLPersistence() throws NullPointerException, JAXBException, IOException {
@@ -617,7 +608,7 @@ public class JobLauncherTester {
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(JobLauncher.class);
 		classList.addAll(new ICEJAXBClassProvider().getClasses());
-		
+
 		// Set up item
 		JobLauncher persistedItem = new JobLauncher();
 		persistedItem.setDescription("JobLauncher item description");
@@ -630,16 +621,13 @@ public class JobLauncherTester {
 		xmlHandler.write(persistedItem, classList, outputStream);
 
 		// Load an Item from the first
-		loadedItem = (JobLauncher) xmlHandler.read(classList,new ByteArrayInputStream(outputStream
-				.toByteArray()));
+		loadedItem = (JobLauncher) xmlHandler.read(classList, new ByteArrayInputStream(outputStream.toByteArray()));
 		// Make sure they match
 		assertEquals(persistedItem, loadedItem);
 
 		// Check the contents more closely to make sure that JobLauncher Item.
-		assertEquals(persistedItem.getAvailableActions(),
-				loadedItem.getAvailableActions());
-		assertEquals(persistedItem.getDescription(),
-				loadedItem.getDescription());
+		assertEquals(persistedItem.getAvailableActions(), loadedItem.getAvailableActions());
+		assertEquals(persistedItem.getDescription(), loadedItem.getDescription());
 		assertEquals(persistedItem.getForm(), loadedItem.getForm());
 		assertEquals(persistedItem.getId(), loadedItem.getId());
 		assertEquals(persistedItem.getItemType(), loadedItem.getItemType());
@@ -666,7 +654,7 @@ public class JobLauncherTester {
 		int numFiles = 0, numExtraFiles = 0, totalFiles = 0;
 		Form jobForm = null;
 		DataComponent fileComponent = null;
-		ArrayList<Entry> fileEntries = null;
+		ArrayList<IEntry> fileEntries = null;
 		Random rng = new Random(2013052111);
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
@@ -679,13 +667,11 @@ public class JobLauncherTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ "itemTesterWorkspace")).toURI();
+				defaultProjectLocation = (new File(System.getProperty("user.dir") + separator + "itemTesterWorkspace"))
+						.toURI();
 				// Create the project description
-				IProjectDescription projectDesc = ResourcesPlugin
-						.getWorkspace().newProjectDescription(
-								"itemTesterWorkspace");
+				IProjectDescription projectDesc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription("itemTesterWorkspace");
 				// Set the location of the project
 				projectDesc.setLocationURI(defaultProjectLocation);
 				// Create the project
@@ -720,8 +706,7 @@ public class JobLauncherTester {
 		numExtraFiles = rng.nextInt(50) + 1; // +1 such that at least one added
 		totalFiles = 1 + numExtraFiles; // 1 by default + the extras
 		for (int i = 0; i < numExtraFiles; i++) {
-			launcher.addInputType(name + " " + i, name + i + "File", desc + " "
-					+ i, null);
+			launcher.addInputType(name + " " + i, name + i + "File", desc + " " + i, null);
 		}
 
 		// Check that the files were added
@@ -731,8 +716,7 @@ public class JobLauncherTester {
 		// Check the names and descriptions
 		for (int i = 1; i < totalFiles; i++) {
 			assertEquals(name + " " + (i - 1), fileEntries.get(i).getName());
-			assertEquals(desc + " " + (i - 1), fileEntries.get(i)
-					.getDescription());
+			assertEquals(desc + " " + (i - 1), fileEntries.get(i).getDescription());
 		}
 
 		return;
@@ -745,7 +729,7 @@ public class JobLauncherTester {
 	 * </p>
 	 * 
 	 */
-//	@Test
+	// @Test
 	public void checkDataReload() {
 
 		// Local Declarations
@@ -754,7 +738,7 @@ public class JobLauncherTester {
 		int numFileTypes = 0, numFiles = 0;
 		Form jobForm = null;
 		DataComponent fileComponent = null;
-		ArrayList<Entry> fileEntries = null;
+		ArrayList<IEntry> fileEntries = null;
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		URI defaultProjectLocation = null;
 		IProject project = null;
@@ -767,13 +751,11 @@ public class JobLauncherTester {
 			// If the project does not exist, create it
 			if (!project.exists()) {
 				// Set the location as ${workspace_loc}/ItemTesterWorkspace
-				defaultProjectLocation = (new File(
-						System.getProperty("user.dir") + separator
-								+ "itemTesterWorkspace")).toURI();
+				defaultProjectLocation = (new File(System.getProperty("user.dir") + separator + "itemTesterWorkspace"))
+						.toURI();
 				// Create the project description
-				IProjectDescription projectDesc = ResourcesPlugin
-						.getWorkspace().newProjectDescription(
-								"itemTesterWorkspace");
+				IProjectDescription projectDesc = ResourcesPlugin.getWorkspace()
+						.newProjectDescription("itemTesterWorkspace");
 				// Set the location of the project
 				projectDesc.setLocationURI(defaultProjectLocation);
 				// Create the project
@@ -792,8 +774,7 @@ public class JobLauncherTester {
 		try {
 			// Remove any old test files
 			for (IResource resource : project.members()) {
-				if (resource.getType() == IResource.FILE
-						&& !(".project").equals(resource.getName())) {
+				if (resource.getType() == IResource.FILE && !(".project").equals(resource.getName())) {
 
 					resource.delete(true, null);
 				}
@@ -834,8 +815,7 @@ public class JobLauncherTester {
 
 		// Create the test file in the workspace
 		String contents = "contents";
-		ByteArrayInputStream testStream = new ByteArrayInputStream(
-				contents.getBytes());
+		ByteArrayInputStream testStream = new ByteArrayInputStream(contents.getBytes());
 		try {
 			file.create(testStream, true, null);
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -855,10 +835,9 @@ public class JobLauncherTester {
 		// 1 (the test file)
 		numFiles = 3;
 		// Make sure that the number of input files is correct
-		System.out.println("JobLauncherTester Message: " + "NumFiles = "
-				+ (numFiles + 1));
-		System.out.println("JobLauncherTester Message: " + "File Entries = "
-				+ fileEntries.get(0).getAllowedValues().size());
+		System.out.println("JobLauncherTester Message: " + "NumFiles = " + (numFiles + 1));
+		System.out.println(
+				"JobLauncherTester Message: " + "File Entries = " + fileEntries.get(0).getAllowedValues().size());
 		for (String value : fileEntries.get(0).getAllowedValues()) {
 			System.out.println(value);
 		}

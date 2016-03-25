@@ -6,10 +6,10 @@
 	<name>ICE Feature</name>
 	<artifactId>org.eclipse.ice</artifactId>
 	<packaging>eclipse-feature</packaging>
-
 	<parent>
-		<groupId>ICE</groupId>
+		<groupId>org.eclipse.ice</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
 		<version>2.1.8-SNAPSHOT</version>
+		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
 	</parent>
 </project>

@@ -25,13 +25,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.eclipse.eavp.viz.modeling.base.IController;
+import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
+import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
+import org.eclipse.eavp.viz.modeling.VertexController;
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
+import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
@@ -41,11 +48,6 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.form.emf.EMFComponent;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryCondition;
-import org.eclipse.ice.viz.service.mesh.datastructures.BoundaryConditionType;
-import org.eclipse.ice.viz.service.mesh.datastructures.Edge;
-import org.eclipse.ice.viz.service.mesh.datastructures.Quad;
-import org.eclipse.ice.viz.service.mesh.datastructures.Vertex;
 
 /**
  * This class is responsible for writing the contents of a Component collection
@@ -98,8 +100,8 @@ public class NekWriter implements IComponentVisitor {
 	 * 
 	 */
 	public void writeReaFile(ArrayList<Component> components, File outputFile,
-			ProblemProperties properties) throws FileNotFoundException,
-			IOException {
+			ProblemProperties properties)
+					throws FileNotFoundException, IOException {
 
 		// Check that all input parameters are valid
 		if (components != null && outputFile.isFile() && properties != null
@@ -196,17 +198,17 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent parameters = (DataComponent) componentMap
 				.get("Parameters");
 		int numEntries = parameters.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currDesc;
 		String currLine;
 
 		// Construct the header
-		String paramHeader = String.format(" ****** PARAMETERS *****\n"
-				+ "    %9s     NEKTON VERSION\n"
-				+ "            %d DIMENSIONAL RUN\n"
-				+ "          %3d PARAMETERS FOLLOW\n",
+		String paramHeader = String.format(
+				" ****** PARAMETERS *****\n" + "    %9s     NEKTON VERSION\n"
+						+ "            %d DIMENSIONAL RUN\n"
+						+ "          %3d PARAMETERS FOLLOW\n",
 				properties.getNekVersion(), properties.getNumDimensions(),
 				numEntries);
 
@@ -242,19 +244,20 @@ public class NekWriter implements IComponentVisitor {
 	 * @throws IOException
 	 *             Thrown when writing to OutputStream fails
 	 */
-	private void writePassiveScalarData(OutputStream stream) throws IOException {
+	private void writePassiveScalarData(OutputStream stream)
+			throws IOException {
 
 		// Local declarations
 		DataComponent passiveScalars = (DataComponent) componentMap
 				.get("Passive Scalar Data");
 		int numEntries = passiveScalars.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currLine;
 
 		// Construct the header
-		String passiveScalarsHeader = String.format(
-				"    %3s  Lines of passive scalar data follows"
+		String passiveScalarsHeader = String
+				.format("    %3s  Lines of passive scalar data follows"
 						+ "2 CONDUCT; 2RHOCP\n", numEntries);
 
 		// Write the passive scalars header
@@ -292,15 +295,15 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent logicalSwitches = (DataComponent) componentMap
 				.get("Logical Switches");
 		int numEntries = logicalSwitches.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
 		String currDesc;
 
 		// Construct the header
-		String switchesHeader = String.format(
-				"         %3s  LOGICAL SWITCHES FOLLOW\n", numEntries);
+		String switchesHeader = String
+				.format("         %3s  LOGICAL SWITCHES FOLLOW\n", numEntries);
 
 		// Write the logical switches header
 		byte[] byteArray = switchesHeader.getBytes();
@@ -312,8 +315,9 @@ public class NekWriter implements IComponentVisitor {
 			currEntry = logicalSwitches.retrieveAllEntries().get(i);
 			currName = currEntry.getName();
 			currDesc = currEntry.getDescription();
-			currValue = ("YES".equals(currEntry.getValue()) ? "T" : ("NO"
-					.equals(currEntry.getValue()) ? "F" : currEntry.getValue()));
+			currValue = ("YES".equals(currEntry.getValue()) ? "T"
+					: ("NO".equals(currEntry.getValue()) ? "F"
+							: currEntry.getValue()));
 
 			// Construct the current line
 			if (currName.contains("IFNAV") && currName.contains("IFADVC")) {
@@ -355,7 +359,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent preNekAxes = (DataComponent) componentMap
 				.get("Pre-Nek Axes");
 		int numEntries = preNekAxes.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
@@ -394,10 +398,10 @@ public class NekWriter implements IComponentVisitor {
 
 		// Local declarations
 		MeshComponent mesh = (MeshComponent) componentMap.get("Mesh Data");
-		Quad currQuad;
-		Edge currEdge;
+		NekPolygonController currQuad;
+		IController currEdge;
 		int currEdgeId;
-		ArrayList<Vertex> currVertices = new ArrayList<Vertex>();
+		ArrayList<VertexController> currVertices = new ArrayList<VertexController>();
 		String currValue;
 
 		// String buffer used to construct the mesh data, as the MeshComponent
@@ -419,31 +423,45 @@ public class NekWriter implements IComponentVisitor {
 		for (int i = 0; i < mesh.getPolygons().size(); i++) {
 
 			// Define the current mesh element
-			currQuad = (Quad) mesh.getPolygons().get(i);
-			currValue = String.format("           ELEMENT%6s [ %4s]" // FORMAT:
-																		// 18X,I6,4X,I3,A1,11x,i5
-					+ "  GROUP   %5s\n", (i + 1), currQuad
-					.getPolygonProperties().getMaterialId(), currQuad
-					.getPolygonProperties().getGroupNum());
+			currQuad = (NekPolygonController) mesh.getPolygons().get(i);
+			currValue = String.format(
+					"           ELEMENT%6s [ %4s]" // FORMAT:
+													// 18X,I6,4X,I3,A1,11x,i5
+							+ "  GROUP   %5s\n",
+					(i + 1), currQuad.getPolygonProperties().getMaterialId(),
+					currQuad.getPolygonProperties().getGroupNum());
 
 			// Write the mesh element header
 			buffer.append(currValue);
 
 			/* --- Construct mesh elements --- */
 
+			// Check each descendent vertex. If it is not yet in the list of
+			// vertices, add it
+			for (IController entity : currQuad
+					.getEntitiesFromCategory(MeshCategory.EDGES)) {
+				for (VertexController v : entity.getEntitiesFromCategory(
+						MeshCategory.VERTICES, VertexController.class)) {
+					if (!currVertices.contains(v)) {
+						currVertices.add(v);
+					}
+				}
+			}
+
 			// Extract the x, y coordinates of the Quad's vertices
-			currVertices = currQuad.getVertices();
 			for (int k = 0; k < 4; k++) {
-				xCoords.add(currVertices.get(k).getLocation()[0]);
-				yCoords.add(currVertices.get(k).getLocation()[1]);
+				xCoords.add((float) currVertices.get(k).getLocation()[0]);
+				yCoords.add((float) currVertices.get(k).getLocation()[1]);
 			}
 
 			// Iterate through the Edges of the current Quad
 			for (int j = 0; j < 4; j++) {
 
 				// Define the current edge
-				currEdge = currQuad.getEdges().get(j);
-				currEdgeId = currEdge.getId();
+				currEdge = currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
+						.get(j);
+				currEdgeId = Integer
+						.valueOf(currEdge.getProperty(MeshProperty.ID));
 
 				/*
 				 * Boundary condition format strings:
@@ -507,7 +525,8 @@ public class NekWriter implements IComponentVisitor {
 							properties.getNumPassiveScalars());
 
 					// Iterate through as many passive scalars as there are
-					for (int k = 1; k <= properties.getNumPassiveScalars(); k++) {
+					for (int k = 1; k <= properties
+							.getNumPassiveScalars(); k++) {
 
 						// Grab the current element's kth passive scalar
 						// boundary condition
@@ -522,14 +541,12 @@ public class NekWriter implements IComponentVisitor {
 							currBCValues = currBC.getValues();
 
 							// Construct the proper string format
-							currValue = String
-									.format(" %-3s%3d%3d%14.7G%14.7G%14.7G%14.7G%14.7G\n",
-											currBC.getType().id, (i + 1),
-											(j + 1), currBCValues.get(0),
-											currBCValues.get(1),
-											currBCValues.get(2),
-											currBCValues.get(3),
-											currBCValues.get(4));
+							currValue = String.format(
+									" %-3s%3d%3d%14.7G%14.7G%14.7G%14.7G%14.7G\n",
+									currBC.getType().id, (i + 1), (j + 1),
+									currBCValues.get(0), currBCValues.get(1),
+									currBCValues.get(2), currBCValues.get(3),
+									currBCValues.get(4));
 
 							// Add to passive scalar boundary condition list
 							passiveScalarBCs.get(k).add(currValue);
@@ -541,11 +558,12 @@ public class NekWriter implements IComponentVisitor {
 			}
 
 			// Write the coordinates to the buffer
-			currValue = String.format(" %9.6G     %9.6G     %9.6G     %9.6G\n"
-					+ " %9.6G     %9.6G     %9.6G     %9.6G\n", xCoords.get(0),
-					xCoords.get(1), xCoords.get(2), xCoords.get(3),
-					yCoords.get(0), yCoords.get(1), yCoords.get(2),
-					yCoords.get(3));
+			currValue = String.format(
+					" %9.6G     %9.6G     %9.6G     %9.6G\n"
+							+ " %9.6G     %9.6G     %9.6G     %9.6G\n",
+					xCoords.get(0), xCoords.get(1), xCoords.get(2),
+					xCoords.get(3), yCoords.get(0), yCoords.get(1),
+					yCoords.get(2), yCoords.get(3));
 			buffer.append(currValue);
 
 			// Clear the coordinates for the next edge
@@ -559,16 +577,16 @@ public class NekWriter implements IComponentVisitor {
 				thermalBCs.isEmpty() ? properties.getNumThermalElements()
 						: thermalBCs.size() / 4,
 				fluidBCs.isEmpty() ? properties.getNumFluidElements()
-						: fluidBCs.size() / 4, passiveScalarBCs == null ? 0
-						: passiveScalarBCs.size() / 4);
+						: fluidBCs.size() / 4,
+				passiveScalarBCs == null ? 0 : passiveScalarBCs.size() / 4);
 
 		// Construct the header
-		String meshHeader = String
-				.format("  *** MESH DATA ***\n"
+		String meshHeader = String.format(
+				"  *** MESH DATA ***\n"
 						+ "      %3d      %3d      %3d           NEL,NDIM,NELV\n",
-						properties.getNumThermalElements(),
-						properties.getNumDimensions(),
-						properties.getNumFluidElements());
+				properties.getNumThermalElements(),
+				properties.getNumDimensions(),
+				properties.getNumFluidElements());
 
 		// Write the mesh data header to the beginning of the StringBuffer
 		buffer.insert(0, meshHeader);
@@ -603,8 +621,8 @@ public class NekWriter implements IComponentVisitor {
 		int numEntries = 0;
 
 		// Construct the header
-		String curvedSidesHeader = String.format(
-				"  ***** CURVED SIDE DATA *****\n"
+		String curvedSidesHeader = String
+				.format("  ***** CURVED SIDE DATA *****\n"
 						+ "   %3s Curved sides follow "
 						+ "IEDGE,IEL,CURVE(I),I=1,5, CCURVE\n", numEntries);
 
@@ -695,9 +713,9 @@ public class NekWriter implements IComponentVisitor {
 				currPassiveScalarBC = passiveScalarBCs.get(i);
 
 				// Write the passive scalar boundary conditions header
-				String passiveScalarHeader = String
-						.format("  ***** PASSIVE SCALAR         %3s BOUNDARY CONDITIONS *****\n",
-								(i + 1));
+				String passiveScalarHeader = String.format(
+						"  ***** PASSIVE SCALAR         %3s BOUNDARY CONDITIONS *****\n",
+						(i + 1));
 				byteArray = passiveScalarHeader.getBytes();
 				stream.write(byteArray);
 
@@ -730,12 +748,12 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent presolveRestartOpts = (DataComponent) componentMap
 				.get("Pre-solve/Restart Options");
 		int numEntries = presolveRestartOpts.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
-		String presolveRestartOptsHeader = String.format(
-				"%3s PRESOLVE/RESTART OPTIONS  *****\n", numEntries);
+		String presolveRestartOptsHeader = String
+				.format("%3s PRESOLVE/RESTART OPTIONS  *****\n", numEntries);
 
 		// Write the presolve/restart options header
 		byte[] byteArray = presolveRestartOptsHeader.getBytes();
@@ -764,18 +782,19 @@ public class NekWriter implements IComponentVisitor {
 	 * @throws IOException
 	 *             Thrown when writing to OutputStream fails
 	 */
-	private void writeInitialConditions(OutputStream stream) throws IOException {
+	private void writeInitialConditions(OutputStream stream)
+			throws IOException {
 
 		// Local declarations
 		DataComponent initialConditions = (DataComponent) componentMap
 				.get("Initial Conditions");
 		int numEntries = initialConditions.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
-		String initialConditionsHeader = String.format(
-				"%3s         INITIAL CONDITIONS *****\n", numEntries);
+		String initialConditionsHeader = String
+				.format("%3s         INITIAL CONDITIONS *****\n", numEntries);
 
 		// Write the initial conditions header
 		byte[] byteArray = initialConditionsHeader.getBytes();
@@ -811,14 +830,14 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent driveForceData = (DataComponent) componentMap
 				.get("Drive Force Data");
 		int numEntries = driveForceData.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
-		String driveForceDataHeader = String
-				.format("  ***** DRIVE FORCE DATA ***** BODY FORCE, FLOW, Q\n"
+		String driveForceDataHeader = String.format(
+				"  ***** DRIVE FORCE DATA ***** BODY FORCE, FLOW, Q\n"
 						+ "          %3s                 Lines of Drive force data follow\n",
-						numEntries);
+				numEntries);
 
 		// Write the drive force data header
 		byte[] byteArray = driveForceDataHeader.getBytes();
@@ -853,12 +872,12 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent varPropertyData = (DataComponent) componentMap
 				.get("Variable Property Data");
 		int numEntries = varPropertyData.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
-		String varPropertyDataHeader = String.format(
-				"  ***** Variable Property Data ***** Overrrides Parameter data.\n"
+		String varPropertyDataHeader = String
+				.format("  ***** Variable Property Data ***** Overrrides Parameter data.\n"
 						+ "%3s Lines follow.\n", numEntries);
 
 		// Write the variable property data header
@@ -895,7 +914,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent historyIntegralData = (DataComponent) componentMap
 				.get("History and Integral Data");
 		int numEntries = historyIntegralData.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 
 		// Construct the header
@@ -938,14 +957,14 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent outputFieldSpec = (DataComponent) componentMap
 				.get("Output Field Specification");
 		int numEntries = outputFieldSpec.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
 
 		// Construct the header
-		String outputFieldSpecHeader = String.format(
-				"  ***** OUTPUT FIELD SPECIFICATION *****\n"
+		String outputFieldSpecHeader = String
+				.format("  ***** OUTPUT FIELD SPECIFICATION *****\n"
 						+ " %3s  SPECIFICATIONS FOLLOW\n", numEntries);
 
 		// Write the output field specification header
@@ -957,8 +976,9 @@ public class NekWriter implements IComponentVisitor {
 			// Define the current output field spec
 			currEntry = outputFieldSpec.retrieveAllEntries().get(i);
 			currName = currEntry.getName();
-			currValue = ("YES".equals(currEntry.getValue()) ? "T" : ("NO"
-					.equals(currEntry.getValue()) ? "F" : currEntry.getValue()));
+			currValue = ("YES".equals(currEntry.getValue()) ? "T"
+					: ("NO".equals(currEntry.getValue()) ? "F"
+							: currEntry.getValue()));
 			currLine = String.format("  %s       %s\n", currValue, currName);
 
 			// Write to the output stream
@@ -985,7 +1005,7 @@ public class NekWriter implements IComponentVisitor {
 		DataComponent objectSpec = (DataComponent) componentMap
 				.get("Object Specification");
 		int numEntries = objectSpec.retrieveAllEntries().size();
-		Entry currEntry;
+		IEntry currEntry;
 		String currValue;
 		String currName;
 		String currLine;
@@ -1139,12 +1159,12 @@ public class NekWriter implements IComponentVisitor {
 	@Override
 	public void visit(EMFComponent component) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void visit(ListComponent component) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

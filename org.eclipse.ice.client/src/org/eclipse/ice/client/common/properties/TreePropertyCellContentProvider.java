@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.client.common.properties;
 
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.swt.graphics.Image;
 
 /**

@@ -25,6 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
@@ -38,8 +40,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.entry.FileEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
@@ -138,8 +141,8 @@ public class ItemTester implements ItemListener {
 				+ "                      //The upper bound of the range\n");
 		PSFForm.add("tag=coolantTemperature                                    "
 				+ "                      //A tag to mark it\n");
-		PSFForm.add("parent=Full Assembly Flag                         "
-				+ "                              //The parent\n");
+//		PSFForm.add("parent=Full Assembly Flag                         "
+//				+ "                              //The parent\n");
 		PSFForm.add("group=Assembly                                       "
 				+ "                      //The group\n");
 		PSFForm.add("  \t  \n");
@@ -150,7 +153,7 @@ public class ItemTester implements ItemListener {
 		PSFForm.add("allowedValue=196\n");
 		PSFForm.add("allowedValue=289\n");
 		PSFForm.add("tag=numberOfPins\n");
-		PSFForm.add("parent=Full Assembly Flag\n");
+//		PSFForm.add("parent=Full Assembly Flag\n");
 		PSFForm.add("group=Assembly\n");
 		PSFForm.add("  \t  \n");
 		PSFForm.add("name=Full Assembly Flag\n");
@@ -236,6 +239,11 @@ public class ItemTester implements ItemListener {
 		// Check that it is the name from before
 		assertEquals("Item's Builder", loadedItem.getItemBuilderName());
 
+		// Check the context
+		assertTrue(loadedItem.getContext().isEmpty());
+		loadedItem.setContext("foo");
+		assertEquals("foo", loadedItem.getContext());
+
 	}
 
 	/**
@@ -307,7 +315,7 @@ public class ItemTester implements ItemListener {
 		// Local Declarations
 		Form testForm = null;
 		DataComponent dc1 = null;
-		Entry dc1Entry = null;
+		IEntry dc1Entry = null;
 
 		// Get the Form and make sure it isn't null
 		testForm = item.getForm();
@@ -365,10 +373,13 @@ public class ItemTester implements ItemListener {
 		Item unEqualItem = new Item(null);
 		Item transitiveItem = new Item(null);
 		item.setItemBuilderName("Builder");
+		item.setContext("fasten seat belt while seated");
 
 		// Set ICEObject data
 		equalItem.setId(item.getId());
+		equalItem.setContext(item.getContext());
 		transitiveItem.setId(item.getId());
+		transitiveItem.setContext(item.getContext());
 		unEqualItem.setId(2);
 
 		// Set builders
@@ -434,7 +445,7 @@ public class ItemTester implements ItemListener {
 		 * The following sets of operations will be used to test the
 		 * "clone and copy" portion of Item.
 		 */
-		// Local Declarations
+		item.setContext("27E");
 		Item cloneItem = new Item(null), copyItem = new Item(null);
 
 		// run clone operations
@@ -548,7 +559,7 @@ public class ItemTester implements ItemListener {
 		ByteArrayInputStream stream = null;
 		Form form = null;
 		DataComponent dataComp1 = null, dataComp2 = null;
-		Entry entry = null;
+		IEntry entry = null;
 
 		// Create the InputStream
 		stream = new ByteArrayInputStream(psfItemString.getBytes());
@@ -612,7 +623,7 @@ public class ItemTester implements ItemListener {
 
 		Form form = null;
 		DataComponent dataComp1 = null, dataComp2 = null;
-		Entry entry = null;
+		IEntry entry = null;
 
 		System.out.println("PSFItemString = " + psfItemString);
 
@@ -638,7 +649,7 @@ public class ItemTester implements ItemListener {
 		entry = dataComp1.retrieveEntry("Full Assembly Flag");
 		assertNotNull(entry);
 		assertEquals("Full Assembly Flag", entry.getName());
-		assertEquals(null, entry.getParent());
+		//assertEquals(null, entry.getParent());
 
 		// Change its value. By default it is false.
 		entry.setValue("true");
@@ -758,8 +769,9 @@ public class ItemTester implements ItemListener {
 		assertTrue(xmlWriter.written);
 
 		// ----- This should be replaced to use a FakeIWriter
-		
+
 		// Direct the Item to write the Form to a key-value pair output
+		System.out.println("Processing!");
 		assertEquals(FormStatus.Processed,
 				item.process("Export to key-value pair output"));
 
@@ -771,14 +783,10 @@ public class ItemTester implements ItemListener {
 		Properties formDatProps = new Properties();
 		try {
 			formDatProps.load(formDatFile.getContents());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException | CoreException e) {
 			e.printStackTrace();
-		} catch (CoreException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 			fail();
-		}
+		} 
 		assertEquals("Awesome", formDatProps.get("jayjaybillings"));
 		assertEquals("The boss", formDatProps.get("David'sEntry"));
 
@@ -1028,7 +1036,9 @@ public class ItemTester implements ItemListener {
 		assertTrue(vizResource instanceof VizResource);
 
 		// Now construct a file Entry based on a .e file
-		Entry entry = new Entry();
+		IEntry entry = new FileEntry();
+		List<String> places = Arrays.asList("mesh.e");
+		entry.setAllowedValues(places);
 		entry.setValue("mesh.e");
 		vizResource = null;
 
@@ -1223,8 +1233,8 @@ public class ItemTester implements ItemListener {
 			}
 
 			@Override
-			public ArrayList<Entry> findAll(IFile file, String regex) {
-				ArrayList<Entry> fakeEntry = new ArrayList<Entry>();
+			public ArrayList<IEntry> findAll(IFile file, String regex) {
+				ArrayList<IEntry> fakeEntry = new ArrayList<IEntry>();
 				return fakeEntry;
 			}
 

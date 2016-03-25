@@ -185,14 +185,6 @@
          </menu>
       </menuContribution>
    </extension>
-   <extension
-         id="mooseformwidgetbuilder"
-         name="MOOSE Form Widget Builder"
-         point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
-      <implementation
-            class="org.eclipse.ice.client.widgets.moose.MOOSEFormWidgetBuilder">
-      </implementation>
-   </extension> 
         
         
  <extension
@@ -222,6 +214,14 @@
              contentTypeId="org.eclipse.ice.client.widgets.moose.xml.contentType.Form">
        </contentTypeBinding>
     </editor>
+ </extension>
+ <extension
+       id="mooseformwidgetbuilder"
+       name="MOOSE Form Widget Builder"
+       point="org.eclipse.ice.client.widgets.iformwidgetbuilder">
+    <implementation
+          class="org.eclipse.ice.client.widgets.moose.MOOSEFormWidgetBuilder">
+    </implementation>
  </extension>
  
 </plugin>

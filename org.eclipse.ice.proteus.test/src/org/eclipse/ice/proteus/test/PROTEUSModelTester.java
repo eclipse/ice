@@ -203,7 +203,7 @@ public class PROTEUSModelTester {
 	@Test
 	public void checkProcess() {
 
-		String[] fileLines = { "!Required Options ", "option=invalue",
+		String[] fileLines = { "!Required Options ", "option=value",
 				"option2=4", "tabbedOption=tabbedValue",
 				"spacedOption=spacedValue", "section2val=value",
 				"anotherVar=anotherValue", "", "!First Section ",
@@ -242,6 +242,7 @@ public class PROTEUSModelTester {
 		int numberLines = 0;
 		try {
 			while ((line = reader.readLine()) != null) {
+				System.out.println("LINE: " + line + " vs " + fileLines[numberLines]);
 				assertEquals(line, fileLines[numberLines]);
 				++numberLines;
 			}

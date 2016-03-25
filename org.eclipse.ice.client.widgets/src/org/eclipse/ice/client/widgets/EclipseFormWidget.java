@@ -105,7 +105,7 @@ public class EclipseFormWidget implements IFormWidget {
 		this();
 		ICEFormEditor = editor;
 
-		// Get the EditorInput object, more than likely this is 
+		// Get the EditorInput object, more than likely this is
 		// an ICEFormInput
 		IEditorInput input = ICEFormEditor.getEditorInput();
 
@@ -240,7 +240,8 @@ public class EclipseFormWidget implements IFormWidget {
 	public void display() {
 
 		// Local Declarations
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
 
 		// If the Form has been set, load the widget
 		if (widgetForm != null) {
@@ -250,7 +251,8 @@ public class EclipseFormWidget implements IFormWidget {
 
 			// Open the page
 			try {
-				IEditorPart formEditor = page.openEditor(ICEFormInput, org.eclipse.ice.client.widgets.ICEFormEditor.ID);
+				IEditorPart formEditor = page.openEditor(ICEFormInput,
+						org.eclipse.ice.client.widgets.ICEFormEditor.ID);
 				// Set this editor reference so that listeners can be registered
 				// later.
 				ICEFormEditor = (ICEFormEditor) formEditor;

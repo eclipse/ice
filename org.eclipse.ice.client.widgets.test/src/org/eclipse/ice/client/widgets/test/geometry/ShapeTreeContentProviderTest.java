@@ -18,12 +18,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.eavp.viz.modeling.base.BasicView;
+import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
+import org.eclipse.eavp.viz.modeling.ShapeController;
+import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
+import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
+import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.geometry.ICEGeometry;
-import org.eclipse.ice.datastructures.form.geometry.ICEShape;
-import org.eclipse.ice.viz.service.geometry.shapes.OperatorType;
-import org.eclipse.ice.viz.service.geometry.shapes.ShapeType;
-import org.eclipse.ice.viz.service.geometry.widgets.ShapeTreeContentProvider;
 import org.junit.Test;
 
 /**
@@ -47,19 +50,33 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ShapeType.Cube);
+		// Create a shape
+		ShapeMesh geometryModel = new ShapeMesh();
+		BasicView geometryView = new BasicView();
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
-		ICEShape union1 = new ICEShape(OperatorType.Union);
-		ICEShape complement1 = new ICEShape(OperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
+		ShapeController sphere1 = (ShapeController) geometryShape.clone();
+		sphere1.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
+		ShapeController cube1 = (ShapeController) geometryShape.clone();
+		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
+
+		ShapeController union1 = (ShapeController) geometryShape.clone();
+		union1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Union.toString());
+		ShapeController complement1 = (ShapeController) geometryShape.clone();
+		complement1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Complement.toString());
+		ShapeController intersection1 = (ShapeController) geometryShape.clone();
+		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
 
-		union1.addShape(sphere1);
-		union1.addShape(complement1);
-		union1.addShape(intersection1);
-		complement1.addShape(cube1);
+		union1.addEntity(sphere1);
+		union1.addEntity(complement1);
+		union1.addEntity(intersection1);
+		complement1.addEntity(cube1);
 
 		// Using the ShapeTreeContentProvider, get and check the children
 		// of all the previously created shapes
@@ -112,19 +129,33 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ShapeType.Cube);
+		// Create a shape
+		ShapeMesh geometryModel = new ShapeMesh();
+		BasicView geometryView = new BasicView();
+		ShapeController geometryShape = new ShapeController(geometryModel,
+				geometryView);
 
-		ICEShape union1 = new ICEShape(OperatorType.Union);
-		ICEShape complement1 = new ICEShape(OperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
+		ShapeController sphere1 = (ShapeController) geometryShape.clone();
+		sphere1.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
+		ShapeController cube1 = (ShapeController) geometryShape.clone();
+		cube1.setProperty(MeshProperty.TYPE, ShapeType.Cube.toString());
+
+		ShapeController union1 = (ShapeController) geometryShape.clone();
+		union1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Union.toString());
+		ShapeController complement1 = (ShapeController) geometryShape.clone();
+		complement1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Complement.toString());
+		ShapeController intersection1 = (ShapeController) geometryShape.clone();
+		intersection1.setProperty(GeometryMeshProperty.OPERATOR,
+				OperatorType.Intersection.toString());
 
 		// Create a simple CSG tree
 
-		union1.addShape(sphere1);
-		union1.addShape(complement1);
-		union1.addShape(intersection1);
-		complement1.addShape(cube1);
+		union1.addEntity(sphere1);
+		union1.addEntity(complement1);
+		union1.addEntity(intersection1);
+		complement1.addEntity(cube1);
 
 		// Using the ShapeTreeContentProvider, get and check the children
 		// of all the previously created shapes
@@ -177,25 +208,32 @@ public class ShapeTreeContentProviderTest {
 
 		ShapeTreeContentProvider shapeProvider = new ShapeTreeContentProvider();
 
-		ICEShape sphere1 = new ICEShape(ShapeType.Sphere);
-		ICEShape cube1 = new ICEShape(ShapeType.Cube);
-		ICEShape union1 = new ICEShape(OperatorType.Union);
-		ICEShape complement1 = new ICEShape(OperatorType.Complement);
-		ICEShape intersection1 = new ICEShape(OperatorType.Intersection);
+		ShapeMesh geometryModel = new ShapeMesh();
+		geometryModel.setProperty(MeshProperty.TYPE, ShapeType.Sphere.toString());
+		BasicView geometryView = new BasicView();
+		ShapeController geometry = new ShapeController(geometryModel,
+				geometryView);
+
+		ShapeController sphere1 = (ShapeController) geometry.clone();
+		ShapeController cube1 = (ShapeController) geometry.clone();
+		ShapeController union1 = (ShapeController) geometry.clone();
+		ShapeController complement1 = (ShapeController) geometry.clone();
+		ShapeController intersection1 = (ShapeController) geometry.clone();
 
 		// Put them all in a GeometryComponent
 
-		GeometryComponent geometry = new GeometryComponent();
-		geometry.setGeometry(new ICEGeometry());
-		geometry.getGeometry().addShape(sphere1);
-		geometry.getGeometry().addShape(cube1);
-		geometry.getGeometry().addShape(union1);
-		geometry.getGeometry().addShape(complement1);
-		geometry.getGeometry().addShape(sphere1);
+		GeometryComponent geometryComponent = new GeometryComponent();
+		geometryComponent.setGeometry(geometry);
+		geometryComponent.getGeometry().addEntity(sphere1);
+		geometryComponent.getGeometry().addEntity(cube1);
+		geometryComponent.getGeometry().addEntity(union1);
+		geometryComponent.getGeometry().addEntity(complement1);
+		geometryComponent.getGeometry().addEntity(sphere1);
 
 		Object[] expectedElements = new Object[] { sphere1, cube1, union1,
 				complement1, sphere1 };
-		assertArrayEquals(expectedElements, shapeProvider.getElements(geometry));
+		assertArrayEquals(expectedElements,
+				shapeProvider.getElements(geometry));
 
 		// Try getting elements of null and a mistyped object
 

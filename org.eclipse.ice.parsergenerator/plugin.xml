@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="ParserGeneratorBuilder"
+         name="Parser Generator"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.parsergenerator.ParserGeneratorBuilder">
+      </implementation>
+   </extension>
+
+</plugin>

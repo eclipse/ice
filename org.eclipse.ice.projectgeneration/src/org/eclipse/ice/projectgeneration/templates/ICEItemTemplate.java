@@ -25,6 +25,8 @@ import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginElement;
 import org.eclipse.pde.core.plugin.IPluginExtension;
 import org.eclipse.pde.core.plugin.IPluginModelFactory;
+import org.eclipse.pde.ui.IFieldData;
+import org.eclipse.pde.ui.IPluginFieldData;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
 
 /**
@@ -40,7 +42,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	// Strings used for templating
 	protected static final String EXTENSION_POINT = "org.eclipse.ice.item.itemBuilder";
 	protected static final String KEY_CLASS_NAME = "className";
-	protected static final String KEY_EXTENSION_NAME = "extensionName";
+	protected static final String KEY_EXTENSION_NAME = "packageName";
 
 	/**
 	 * Constructor
@@ -67,7 +69,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	  * Define the options, descriptions, default values, and page numbers
 	  */
 	protected void setOptions() {
-		 addOption(KEY_CLASS_NAME     , "Class Base Name"      , "" , 0);
+		addOption(KEY_CLASS_NAME     , "Class Base Name"   , "" , 0);
 	}
 	
 	@Override
@@ -83,6 +85,10 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	@Override public String[] getNewFiles() { return new String[0]; }
 	@Override public String getSectionId() { return "ICEItem"; }
 	@Override public String getUsedExtensionPoint() { return EXTENSION_POINT; }
+	
+	public void setExtensionName(String extName) {
+		addOption(KEY_EXTENSION_NAME, "Extension Base Name", extName, 0);
+	}
 	
 	protected String getFormattedPackageName(String id) {
 		StringBuffer buffer = new StringBuffer();
@@ -121,7 +127,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		IPluginModelFactory factory = model.getPluginFactory();
 		IPluginElement element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", pluginId + "." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
+		element.setAttribute("class", pluginId + ".model." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);
@@ -134,7 +140,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		factory = model.getPluginFactory();
 		element = factory.createElement(extension);
 		element.setName("implementation");
-		element.setAttribute("class", pluginId + "." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
+		element.setAttribute("class", pluginId + ".launcher." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
 		extension.add(element);
 		if (!extension.isInTheModel())
 			plugin.add(extension);

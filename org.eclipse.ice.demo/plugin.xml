@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="DemoModelBuilder"
+         name="Demo   Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.model.DemoModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="DemoLauncherBuilder"
+         name="Demo   Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.launcher.DemoLauncherBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="FernLauncher"
+         name="Fern Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.fern.launcher.FernLauncherBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="Fern Model"
+         name="FernModel"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.fern.model.FernModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="org.eclipse.ice.demo.ui.processor"
+         name="ICE Demo UI Processor"
+         point="org.eclipse.e4.workbench.model">
+      <processor
+            apply="always"
+            beforefragment="true"
+            class="org.eclipse.ice.demo.ui.DemoWidgetsProcessor">
+      </processor>
+   </extension>
+
+</plugin>

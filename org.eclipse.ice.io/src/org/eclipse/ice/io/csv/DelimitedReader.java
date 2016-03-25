@@ -21,7 +21,7 @@ import javax.naming.OperationNotSupportedException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IReader;
 import org.slf4j.Logger;
@@ -128,7 +128,7 @@ public class DelimitedReader implements IReader {
 	 * resources .IFile, java.lang.String)
 	 */
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 		try {
 			throw new OperationNotSupportedException("CSVReader Error: "
 					+ "IReader.findAll() is not supported... yet.");

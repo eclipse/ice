@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ice_2.1.8.qualifier.jar" id="org.eclipse.ice" version="2.1.8.qualifier" os="linux,macosx,win32" ws="cocoa,gtk,win32" arch="x86,x86_64">
+   <feature url="features/org.eclipse.ice_0.0.0.jar" id="org.eclipse.ice" version="0.0.0">
       <category name="org.eclipse.ice"/>
+   </feature>
+   <feature url="features/org.eclipse.eavp.feature_0.0.0.jar" id="org.eclipse.eavp.feature" version="0.0.0">
+      <category name="org.eclipse.eavp"/>
+   </feature>
+   <feature url="features/org.eclipse.ice.materials.feature_0.0.0.jar" id="org.eclipse.ice.materials.feature" version="0.0.0">
+      <category name="org.eclipse.ice.materials"/>
    </feature>
    <category-def name="org.eclipse.ice" label="ICE">
       <description>
-         ICE
+         This category contains the plugins that define the core ICE Infrastructure.
       </description>
    </category-def>
+   <category-def name="org.eclipse.ice.materials" label="ICE Advanced Materials Plugins">
+      <description>
+         This category contains the plugins that define ICE&apos;s support for Advanced Materials.
+      </description>
+   </category-def>
+   <category-def name="org.eclipse.eavp" label="Eclipse Advanced Visualization Project">
+      <description>
+         This category contains the feature and plugins for the Eclipse Advanced Visualization Project.
+      </description>
+   </category-def>
+   <repository-reference location="http://download.eclipse.org/releases/mars/" enabled="true" />
+   <repository-reference location="http://download.eclipse.org/technology/nebula/archives/Q32014/release" enabled="true" />
 </site>

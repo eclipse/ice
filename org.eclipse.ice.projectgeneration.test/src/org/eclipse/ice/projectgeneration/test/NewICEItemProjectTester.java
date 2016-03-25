@@ -12,33 +12,19 @@
 *******************************************************************************/
 package org.eclipse.ice.projectgeneration.test;
 
-import static org.eclipse.swtbot.swt.finder.waits.Conditions.shellCloses;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
-
+import java.io.FileReader;
+import java.io.LineNumberReader;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.eclipse.ice.projectgeneration.ICEItemNature;
-import org.eclipse.swt.SWT;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 
 /**
  * This class tests the creation and configuration of new ICE Item projects.
@@ -48,21 +34,18 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 public class NewICEItemProjectTester {
 
 	private static SWTWorkbenchBot bot;
-	private static SWTBotShell shell;
-	private static SWTBotTree tree;
-	private static SWTBot pBot;
-
+	private static final String SEP = System.getProperty("file.separator");
 	private static final String PROJECT_NAME = "org.eclipse.ice.newitem";
-	private static final String VERSION = "1.0.0";
-	private static final String NAME = "Newitem";
-	private static final String INSTITUTE = "Oak Ridge National Laboratory";
-	private static final String CLASS_NAME = "NewItem";
+	private static final int MANIFEST_LINE_COUNT = 25;
+	private static final int MODEL_LINE_COUNT = 182;
+	private static final int LAUNCHER_LINE_COUNT = 82;
 
 	/**
 	 * Check the setup of a New ICE Item Project
 	 */
 	@Test
 	public void testICEItemWizard() {
+		// Create the project
 		bot = new SWTWorkbenchBot();
 		bot.viewByTitle("Welcome").close();
 		bot.menu("File").menu("New").menu("Other...").click().setFocus();
@@ -71,9 +54,84 @@ public class NewICEItemProjectTester {
 		bot.button("Next >").click();
 		bot.textWithLabel("&Project name:").setText("org.eclipse.ice.newitem");
 		bot.button("Next >").click();
-		bot.comboBox().setText("Oak Ridge National Laborator");
+		bot.comboBox().setText("Oak Ridge National Laboratory");
 		bot.button("Next >").click();
 		bot.textWithLabel("Class Base Name").setText("NewItem");
 		bot.button("Finish").click();
+
+		// Wait for the wizard to complete
+		try {
+			Thread.sleep(8000);
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		// Check whether the project exists
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		try {
+			workspaceRoot.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		IProject project = workspaceRoot.getProject(PROJECT_NAME);
+		assertNotNull(project);
+		assertTrue(project.exists());
+		try {
+			project.open(null);
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+		} catch (CoreException e) {
+			e.printStackTrace();
+			fail("Could not open project!");
+		}
+		
+		// Make sure that manifest is set up
+		IFile manifest = project.getFile("META-INF" + SEP + "MANIFEST.MF");
+		assertTrue(manifest.exists());
+		LineNumberReader lnr = null;
+		int lineCount = 0;
+		try {
+			lnr = new LineNumberReader(new FileReader(manifest.getLocation().toFile()));
+			lnr.skip(Long.MAX_VALUE);
+			lineCount = lnr.getLineNumber() + 1;
+			lnr.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Could not read manifest!");
+		}
+		assertEquals(lineCount, MANIFEST_LINE_COUNT);
+		
+		// Make sure that the launcher and model packages exist
+		String srcPath = "src" + SEP + "org" + SEP + "eclipse" + SEP + "ice" + SEP + "newitem";
+		String modelPath = srcPath + SEP + "model" + SEP + "NewItemModel.java";
+		String launcherPath = srcPath + SEP + "launcher" + SEP + "NewItemLauncher.java";
+		IFile modelFile = project.getFile(modelPath);
+		IFile launcherFile = project.getFile(launcherPath);
+		assertNotNull(modelFile);
+		assertNotNull(launcherFile);
+		
+		// Check that the model and launcher have the correct number of lines
+		try {
+			lnr = new LineNumberReader(new FileReader(modelFile.getLocation().toFile()));
+			lnr.skip(Long.MAX_VALUE);
+			lineCount = lnr.getLineNumber() + 1;
+			lnr.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Could not read model!");
+		}
+		assertEquals(lineCount, MODEL_LINE_COUNT);
+		try {
+			lnr = new LineNumberReader(new FileReader(launcherFile.getLocation().toFile()));
+			lnr.skip(Long.MAX_VALUE);
+			lineCount = lnr.getLineNumber() + 1;
+			lnr.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Could not read launcher!");
+		}
+		assertEquals(lineCount, LAUNCHER_LINE_COUNT);
 	}
 }

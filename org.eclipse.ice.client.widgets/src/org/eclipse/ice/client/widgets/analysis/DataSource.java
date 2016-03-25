@@ -17,25 +17,25 @@ package org.eclipse.ice.client.widgets.analysis;
  * ReactorEditor. This is to centralize it so that no hardcoded Strings for the
  * data sources are necessary.<br>
  * <br>
- * To get the String for a particular value, use {@link DataSource#toString()}.<br>
- * To get the value for a particular String, use {@link DataSource#valueOf(String)}.
+ * To get the String for a particular value, use {@link DataSource#toString()}.
+ * <br>
+ * To get the value for a particular String, use
+ * {@link DataSource#valueOf(String)}.
  * 
  * @author Jordan H. Deyton
  * 
  */
 public enum DataSource {
-	
+
 	/**
 	 * Input data.
 	 */
-	Input,
-	/**
-	 * Reference data.
-	 */
-	Reference,
-	/**
-	 * Comparison data. Currently only available for LWReactor data mining
-	 * strategies.
-	 */
+	Input, /**
+			 * Reference data.
+			 */
+	Reference, /**
+				 * Comparison data. Currently only available for LWReactor data
+				 * mining strategies.
+				 */
 	Comparison;
 }

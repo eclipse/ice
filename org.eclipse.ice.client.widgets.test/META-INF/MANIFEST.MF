@@ -5,11 +5,15 @@ Bundle-SymbolicName: org.eclipse.ice.client.widgets.test
 Bundle-Version: 2.1.8.qualifier
 Fragment-Host: org.eclipse.ice.client.widgets;bundle-version="2.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.ui,
+Import-Package: org.eclipse.eavp.viz.service.geometry.shapes,
+ org.eclipse.eavp.viz.service.geometry.widgets,
+ org.eclipse.eavp.viz.modeling,
+ org.eclipse.ui,
  org.junit
 Require-Bundle: org.eclipse.swtbot.eclipse.core,
  org.eclipse.swtbot.go,
  org.eclipse.swtbot.swt.finder,
  org.eclipse.ice.client.widgets.test.utils,
- org.eclipse.ice.materials
+ org.eclipse.ice.materials,
+ org.eclipse.swt
 Bundle-Vendor: Oak Ridge National Laboratory

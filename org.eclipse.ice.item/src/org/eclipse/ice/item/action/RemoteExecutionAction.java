@@ -25,16 +25,18 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionHostService;
+import org.eclipse.remote.core.IRemoteConnectionType;
 import org.eclipse.remote.core.IRemoteConnectionWorkingCopy;
 import org.eclipse.remote.core.IRemoteFileService;
+import org.eclipse.remote.core.IRemotePortForwardingService;
 import org.eclipse.remote.core.IRemoteProcess;
 import org.eclipse.remote.core.IRemoteProcessBuilder;
 import org.eclipse.remote.core.IRemoteProcessService;
+import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
@@ -301,11 +303,24 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			String hostName = helper.getParameter("hostname");
 
 			// Get the Remote Connection if available
-			connection = getRemoteConnection(hostName);
-			if (connection == null) {
-				return actionError("Remote Execution Action could not get a valid connection to " + hostName + ".", null);
+			// If subclasses set it, then don't do anything
+			String connectionName = dictionary.get("remoteConnectionName");
+			if (connectionName == null) {
+				connection = getRemoteConnection(hostName);
+			} else {
+				IRemoteConnectionType connectionType = getService(IRemoteServicesManager.class)
+						.getRemoteConnectionTypes().get(0);
+				for (IRemoteConnection c : connectionType.getConnections()) {
+					if (connectionName.equals(c.getName())) {
+						connection = c;
+					}
+				}
 			}
-			
+			if (connection == null) {
+				return actionError("Remote Execution Action could not get a valid connection to " + hostName + ".",
+						null);
+			}
+
 			// Start the remote execution thread.
 			processThread.start();
 
@@ -344,6 +359,7 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.action.Action#cancel()
 	 */
 	@Override
@@ -361,6 +377,7 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.action.Action#getActionName()
 	 */
 	@Override
@@ -370,6 +387,7 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	@Override
@@ -416,7 +434,6 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 	protected void launchRemotely() {
 
 		// Local Declarations
-		IRemoteConnectionWorkingCopy workingCopy = null;
 		IRemoteProcessService processService = null;
 		String hostname = helper.getParameter("hostname");
 		String launchCMDFileName = "", launchCMD = "";
@@ -430,13 +447,13 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 				logger.error(getClass().getName() + " Exception!", e1);
 				return;
 			}
-			
+
 			if (cancelled.get()) {
 				logger.info("Remote Execution Action cancelled while waiting for form to be submitted.");
 				status = FormStatus.ReadyToProcess;
 				return;
 			}
-		} 
+		}
 
 		// Write the command script that contains all of the commands to launch.
 		try {
@@ -455,13 +472,22 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			launchCMD = "qsub" + launchCMDFileName;
 		}
 
+		// If we have an alternate port then set it,
+		// otherwise keep it as 22.
+		if (helper.getParameter("port") != null) {
+			int port = Integer.valueOf(helper.getParameter("port"));
+			connection.getService(IRemoteConnectionHostService.class).setPort(port);
+		}
+
 		// Try to open the connection and fail if it will not open
-		try {
-			connection.open(null);
-		} catch (RemoteConnectionException e) {
-			// Print diagnostic information and fail
-			actionError("Remote Execution Action could not open the connection.!", e);
-			return;
+		if (!connection.isOpen()) {
+			try {
+				connection.open(null);
+			} catch (RemoteConnectionException e) {
+				// Print diagnostic information and fail
+				actionError("Remote Execution Action could not open the connection.!", e);
+				return;
+			}
 		}
 
 		// Launch the job!
@@ -479,8 +505,6 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 			// Move the Launch Script to the Remote Directory!!
 			try {
 				File launchScript = localLaunchFolder.getFile(launchCMDFileName).getLocation().toFile();
-				System.out.println(
-						"FILE: " + launchScript.getAbsolutePath() + ", " + String.valueOf(launchScript.exists()));
 				IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
 				IFileStore remoteDirectory = EFS.getStore(fileManager.toURI(processService.getWorkingDirectory()));
 				remoteDirectory.mkdir(EFS.NONE, null);
@@ -509,7 +533,8 @@ public class RemoteExecutionAction extends RemoteAction implements Runnable {
 
 			try {
 				logger.info("Remote Execution Action Message: " + "Attempting to launch with PTP...");
-				logger.info("Remote Execution Action Message: " + "Command sent to PTP = " + "sh ./" + launchCMDFileName);
+				logger.info(
+						"Remote Execution Action Message: " + "Command sent to PTP = " + "sh ./" + launchCMDFileName);
 				remoteJob = processBuilder.start(IRemoteProcessBuilder.FORWARD_X11);
 			} catch (IOException e) {
 				// Print diagnostic information and fail

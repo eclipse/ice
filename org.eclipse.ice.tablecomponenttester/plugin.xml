@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.ice.tablecomponenttester"
+         name="TableComponentTester"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.tablecomponenttester.TableComponentTesterBuilder">
+      </implementation>
+   </extension>
+
+</plugin>

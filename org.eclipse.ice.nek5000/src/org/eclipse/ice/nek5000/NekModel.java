@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,10 +25,11 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.MeshComponent;
@@ -76,10 +78,18 @@ public class NekModel extends Item {
 	public static final String nekWriteActionString = "Write Nek5000 Input";
 
 	/**
+	 * A flag signaling that the construction of the item has finished.
+	 */
+	private boolean constructionFinished = false;
+
+	/**
 	 * The nullary constructor. This should only be used for testing.
 	 */
 	public NekModel() {
 		this(null);
+
+		reader = new NekReader();
+		constructionFinished = true;
 
 		return;
 	}
@@ -92,6 +102,31 @@ public class NekModel extends Item {
 	 */
 	public NekModel(IProject projectSpace) {
 		super(projectSpace);
+
+		reader = new NekReader();
+		constructionFinished = true;
+		setupForm();
+
+		return;
+	}
+
+	/**
+	 * Constructor for specifying the factory to be used to produce data objects
+	 * from the input in the read files.
+	 *
+	 * @param projectSpace
+	 *            The Eclipse IProject that stores data related to this Item.
+	 * @param factory
+	 *            The factory which will create views and controllers for meshes
+	 *            read from the files.
+	 */
+	public NekModel(IProject projectSpace, IControllerProviderFactory factory) {
+		super(projectSpace);
+
+		reader = new NekReader();
+		reader.setControllerFactory(factory);
+		constructionFinished = true;
+		setupForm();
 
 		return;
 	}
@@ -136,7 +171,7 @@ public class NekModel extends Item {
 					return null;
 				}
 			} catch (CoreException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -153,11 +188,12 @@ public class NekModel extends Item {
 	 *            The set of Nek reafiles available to be loaded
 	 * @return the data component
 	 */
-	private DataComponent createSelectorComponent(final ArrayList<String> files) {
+	private DataComponent createSelectorComponent(
+			final ArrayList<String> files) {
 
 		// Local Declaration
 		DataComponent filesComp = new DataComponent();
-		Entry filesEntry = null;
+		IEntry filesEntry = null;
 		final String noFilesValue = "No examples available.";
 		String entryName = "Available examples";
 		String entryDesc = "The example problem file that will be loaded.";
@@ -174,23 +210,17 @@ public class NekModel extends Item {
 		// Configure the values of the file Entry
 		if (files != null && !(files.isEmpty())) {
 			// Setup the Entry with the list of files
-			filesEntry = new Entry() {
-				@Override
-				protected void setup() {
-					allowedValues.addAll(files);
-					allowedValueType = AllowedValueType.Discrete;
-				}
-			};
+			filesEntry = new DiscreteEntry();
+			filesEntry.setAllowedValues(files);
+			filesEntry.setDefaultValue(files.get(0));
+			filesEntry.setValue(files.get(0));
 		} else {
 			// Setup the Entry with only value to describe that there are no
 			// examples.
-			filesEntry = new Entry() {
-				@Override
-				protected void setup() {
-					allowedValues.add(noFilesValue);
-					allowedValueType = AllowedValueType.Discrete;
-				}
-			};
+			filesEntry = new DiscreteEntry();
+			filesEntry.setAllowedValues(Arrays.asList(noFilesValue));
+			filesEntry.setDefaultValue(noFilesValue);
+			filesEntry.setValue(noFilesValue);
 		}
 
 		// Setup the file Entry's descriptive information
@@ -222,7 +252,7 @@ public class NekModel extends Item {
 		// Local Declarations
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		DataComponent dataComp = null;
-		Entry problemEntry = null;
+		IEntry problemEntry = null;
 		String problemName = null;
 		String separator = System.getProperty("file.separator");
 
@@ -254,11 +284,11 @@ public class NekModel extends Item {
 				} catch (FileNotFoundException e) {
 					logger.debug("NekModel Message: " + "Could not find file "
 							+ problemName);
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				} catch (IOException e) {
 					logger.debug("NekModel Message: " + "Could not read file "
 							+ problemName);
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 		} else {
@@ -276,12 +306,11 @@ public class NekModel extends Item {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	private void loadExample(String name) throws FileNotFoundException,
-			IOException {
+	private void loadExample(String name)
+			throws FileNotFoundException, IOException {
 
 		// Load the components from the file
 		File file = new File(name);
-		reader = new NekReader();
 		ArrayList<Component> components = reader.loadREAFile(file);
 		ArrayList<Component> existingComponents = form.getComponents();
 
@@ -326,8 +355,8 @@ public class NekModel extends Item {
 			}
 		} else {
 			// Complain
-			System.err.println("NekModel Message: " + "No components found in form "
-					+ name + ".");
+			System.err.println("NekModel Message: "
+					+ "No components found in form " + name + ".");
 		}
 
 		return;
@@ -363,14 +392,14 @@ public class NekModel extends Item {
 			project.refreshLocal(IResource.DEPTH_ONE, null);
 		} catch (IOException e) {
 			// Complain
-			System.err.println("NekModel Message: "
-					+ "Failed to write the file.");
-			logger.error(getClass().getName() + " Exception!",e);
+			System.err.println(
+					"NekModel Message: " + "Failed to write the file.");
+			logger.error(getClass().getName() + " Exception!", e);
 		} catch (CoreException e) {
 			// Complain
 			System.err.println("NekModel Message: "
 					+ "Failed to refresh the project space.");
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 
 		return;
@@ -413,7 +442,9 @@ public class NekModel extends Item {
 	protected void setupForm() {
 
 		// Create the Form
-		form = new Form();
+		if (form == null) {
+			form = new Form();
+		}
 		ArrayList<String> problemFiles = null;
 		String separator = System.getProperty("file.separator");
 
@@ -423,37 +454,42 @@ public class NekModel extends Item {
 			// Get the Nek5000 folder
 			IFolder nekFolder = getPreferencesDirectory();
 
-			// Get the files from it if it exists
-			if (nekFolder.exists()) {
-				try {
+			if (constructionFinished) {
+				// Get the files from it if it exists
+				if (nekFolder.exists()) {
+					try {
 
-					// Grab the list of problem files in the Nek directory
-					problemFiles = getProjectFiles();
+						// Grab the list of problem files in the Nek directory
+						problemFiles = getProjectFiles();
 
-					// Create the DataComponent that selects which problem to
-					// load
-					form.addComponent(createSelectorComponent(problemFiles));
+						// Create the DataComponent that selects which problem
+						// to
+						// load
+						form.addComponent(
+								createSelectorComponent(problemFiles));
 
-					// If the list of problem files is valid
-					if (problemFiles != null && !(problemFiles.isEmpty())) {
+						// If the list of problem files is valid
+						if (problemFiles != null && !(problemFiles.isEmpty())) {
 
-						// Push the work onto the loader
-						loadExample(nekFolder.getLocation().toOSString()
-								+ separator + exampleName);
+							// Push the work onto the loader
+							loadExample(nekFolder.getLocation().toOSString()
+									+ separator + exampleName);
+						}
+
+					} catch (FileNotFoundException e) {
+						// Complain
+						System.err.println("NekModel Message: "
+								+ "Unable to find REA file.");
+						logger.error(getClass().getName() + " Exception!", e);
+					} catch (IOException e) {
+						// Complain
+						System.err.println("NekModel Message: "
+								+ "Unable to load REA file.");
+						logger.error(getClass().getName() + " Exception!", e);
 					}
-
-				} catch (FileNotFoundException e) {
-					// Complain
-					System.err.println("NekModel Message: "
-							+ "Unable to find REA file.");
-					logger.error(getClass().getName() + " Exception!",e);
-				} catch (IOException e) {
-					// Complain
-					System.err.println("NekModel Message: "
-							+ "Unable to load REA file.");
-					logger.error(getClass().getName() + " Exception!",e);
 				}
 			}
+
 		}
 
 		return;
@@ -491,6 +527,17 @@ public class NekModel extends Item {
 		} else {
 			return retStatus;
 		}
+	}
+
+	/**
+	 * Setter method for the factory which will produce views and controllers
+	 * for the objects read from the Nek file.
+	 * 
+	 * @param factory
+	 *            The reader's new factory
+	 */
+	public void setControllerFactory(IControllerProviderFactory factory) {
+		reader.setControllerFactory(factory);
 	}
 
 }

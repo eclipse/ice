@@ -14,9 +14,9 @@ package org.eclipse.ice.client.widgets.moose;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.client.widgets.IFormWidgetBuilder;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public class MOOSEFormWidgetBuilder implements IFormWidgetBuilder {
 		this.vizServiceFactory = factory;
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor("org.eclipse.ice.viz.service.IVizServiceFactory");
+				.getConfigurationElementsFor("org.eclipse.eavp.viz.service.IVizServiceFactory");
 		logger.info("MOOSEFormWidgetBuilder: Available configuration elements");
 		for(IConfigurationElement element : elements){
 			logger.info(element.getName());

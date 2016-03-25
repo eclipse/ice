@@ -102,8 +102,8 @@ public class GridEditPart extends AbstractGraphicalEditPart {
 				// Add a Label for each row. Set its GridData accordingly.
 				for (int row = 0; row < grid.rows; row++) {
 					Label l = new Label(grid.getRowLabel(row));
-					GridData gridData = new GridData((row + offset)
-							* totalColumns);
+					GridData gridData = new GridData(
+							(row + offset) * totalColumns);
 					rootFigure.add(l, gridData);
 				}
 			}

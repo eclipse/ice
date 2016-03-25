@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.common.properties;
 
-import org.eclipse.ice.datastructures.form.Entry;
+import org.eclipse.ice.datastructures.entry.IEntry;
 
 /**
  * This class provides an {@link ICellContentProvider} geared toward the name of
@@ -58,7 +58,7 @@ public class NameCellContentProvider extends TreePropertyCellContentProvider {
 		if (isValid(element) && value != null) {
 			// Trim the new value to get rid of extra whitespace.
 			String newValue = value.toString().trim();
-			Entry entry = ((TreeProperty) element).getEntry();
+			IEntry entry = ((TreeProperty) element).getEntry();
 			// If the name is different, mark the flag and set the new name.
 			if (changed = !newValue.equals(entry.getName())) {
 				entry.setName(newValue);

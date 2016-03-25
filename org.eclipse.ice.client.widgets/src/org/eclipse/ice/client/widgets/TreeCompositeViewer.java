@@ -62,9 +62,9 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings, Jordan H. Deyton
  * 
  */
-public class TreeCompositeViewer extends ViewPart implements
-		IUpdateableListener, ITabbedPropertySheetPageContributor {
-	
+public class TreeCompositeViewer extends ViewPart
+		implements IUpdateableListener, ITabbedPropertySheetPageContributor {
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
@@ -132,7 +132,7 @@ public class TreeCompositeViewer extends ViewPart implements
 
 		// Create the logger
 		logger = LoggerFactory.getLogger(getClass());
-		
+
 		// Null out the members
 		inputTree = null;
 		treeViewer = null;
@@ -390,13 +390,13 @@ public class TreeCompositeViewer extends ViewPart implements
 
 		if (parent != null) {
 			// Initialize the TreeViewer.
-			treeViewer = new TreeViewer(parent, SWT.VIRTUAL | SWT.MULTI
-					| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
-					| SWT.BORDER);
+			treeViewer = new TreeViewer(parent,
+					SWT.VIRTUAL | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
+							| SWT.FULL_SELECTION | SWT.BORDER);
 
 			// Set and configure the content and label providers
-			treeViewer.setContentProvider(new TreeCompositeContentProvider(
-					this, parentMap));
+			treeViewer.setContentProvider(
+					new TreeCompositeContentProvider(this, parentMap));
 			treeViewer.setLabelProvider(new TreeCompositeLabelProvider());
 		}
 
@@ -412,7 +412,8 @@ public class TreeCompositeViewer extends ViewPart implements
 	protected void fillContextMenu(IMenuManager menuManager) {
 
 		ISelection iSelection = treeViewer.getSelection();
-		if (!iSelection.isEmpty() && iSelection instanceof IStructuredSelection) {
+		if (!iSelection.isEmpty()
+				&& iSelection instanceof IStructuredSelection) {
 			IStructuredSelection selection = (IStructuredSelection) iSelection;
 
 			Object object = selection.getFirstElement();
@@ -594,7 +595,8 @@ public class TreeCompositeViewer extends ViewPart implements
 		// Only proceed if the component is one of the TreeComposites with
 		// allocated UI resources or if it is a child of a displayed
 		// TreeComposite.
-		if (childMap.containsKey(component) || parentMap.containsKey(component)) {
+		if (childMap.containsKey(component)
+				|| parentMap.containsKey(component)) {
 			// Create a final reference to the object that can be used in the
 			// UI thread.
 			final Object element = component;

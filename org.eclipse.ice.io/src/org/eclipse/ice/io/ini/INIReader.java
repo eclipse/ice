@@ -23,9 +23,12 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.ice.datastructures.entry.ContinuousEntry;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
+import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Entry;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.serializable.ITemplatedReader;
@@ -189,9 +192,9 @@ public class INIReader implements ITemplatedReader {
 	 */
 	private Form buildTemplate() {
 		Form templateForm = new Form();
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		Entry variableTemplate = new Entry();
-		Entry valueTemplate = new Entry();
+		ArrayList<IEntry> entries = new ArrayList<IEntry>();
+		IEntry variableTemplate = new StringEntry();
+		IEntry valueTemplate = new StringEntry();
 		int componentNumber = 1;
 		variableTemplate.setName("Name");
 		valueTemplate.setName("Value");
@@ -247,7 +250,7 @@ public class INIReader implements ITemplatedReader {
 
 						// Create the new entry & store which component it goes
 						// in
-						Entry newEntry = makeTemplateEntry(varName, defaultVal,
+						IEntry newEntry = makeTemplateEntry(varName, defaultVal,
 								allowedValues, valueType);
 						sectionComp.addEntry(newEntry);
 						variableToComponentNumber.put(varName,
@@ -282,9 +285,9 @@ public class INIReader implements ITemplatedReader {
 	 */
 	private Form loadIntoTemplate(Form form, IFile file) {
 		// Initialize the form & table row template
-		ArrayList<Entry> entries = new ArrayList<Entry>();
-		Entry variableTemplate = new Entry();
-		Entry valueTemplate = new Entry();
+		ArrayList<IEntry> entries = new ArrayList<IEntry>();
+		IEntry variableTemplate = new StringEntry();
+		IEntry valueTemplate = new StringEntry();
 		variableTemplate.setName("Name");
 		valueTemplate.setName("Value");
 		entries.add(variableTemplate);
@@ -328,7 +331,7 @@ public class INIReader implements ITemplatedReader {
 							DataComponent comp = (DataComponent) form
 									.getComponent(variableToComponentNumber
 											.get(var));
-							for (Entry ent : comp.retrieveAllEntries()) {
+							for (IEntry ent : comp.retrieveAllEntries()) {
 								if (ent.getName().equals(var)) {
 									ent.setValue(val);
 									foundInTemplate = true;
@@ -341,7 +344,7 @@ public class INIReader implements ITemplatedReader {
 						if (!foundInTemplate) {
 							DataComponent comp = (DataComponent) form
 									.getComponents().get(0);
-							Entry newEntry = makeTemplateEntry(var, val,
+							IEntry newEntry = makeTemplateEntry(var, val,
 									new ArrayList<String>(),
 									AllowedValueType.Undefined);
 							comp.addEntry(newEntry);
@@ -366,22 +369,23 @@ public class INIReader implements ITemplatedReader {
 	 *
 	 * @return the entry
 	 */
-	private Entry makeTemplateEntry(final String name, final String defaultVal,
+	private IEntry makeTemplateEntry(final String name, final String defaultVal,
 			final ArrayList<String> allowedVals,
 			final AllowedValueType valueType) {
-		Entry entry = new Entry() {
-			@Override
-			protected void setup() {
-				this.setName(name);
-				this.tag = "";
-				this.ready = true;
-				this.setDescription("");
-				this.allowedValues = allowedVals;
-				this.defaultValue = defaultVal;
-				this.value = this.defaultValue;
-				this.allowedValueType = valueType;
-			}
-		};
+		IEntry entry = null;
+		if (valueType == AllowedValueType.Undefined) {
+			entry = new StringEntry();
+			entry.setDefaultValue(defaultVal);
+		} else if (valueType == AllowedValueType.Discrete) {
+			entry = new DiscreteEntry(allowedVals.stream().toArray(String[]::new));
+			entry.setDefaultValue(allowedVals.get(0));
+		} else if (valueType == AllowedValueType.Continuous) {
+			entry = new ContinuousEntry(allowedVals.stream().toArray(String[]::new));
+			entry.setDefaultValue(allowedVals.get(0));
+		}
+
+		entry.setName(name);
+		entry.setValue(defaultVal);
 
 		return entry;
 	}
@@ -479,7 +483,7 @@ public class INIReader implements ITemplatedReader {
 	 *         value set to the results.
 	 */
 	@Override
-	public ArrayList<Entry> findAll(IFile file, String regex) {
+	public ArrayList<IEntry> findAll(IFile file, String regex) {
 		System.err
 				.println("INIReader Message: The findAll method contains no implementation!");
 		return null;

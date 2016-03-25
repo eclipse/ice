@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.reflectivity.ui;
 
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.ice.client.widgets.EclipseFormWidget;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
-import org.eclipse.ice.viz.service.IVizServiceFactory;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
