@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
 <plugin>
-
    <extension
+         id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            name="LRAC Reflectivity Simulator"
             application="org.eclipse.ui.ide.workbench"
-            description="LRAC Reflectivity Simulator">
+            description="LRAC Reflectivity Simulator"
+            name="LRAC Reflectivity Simulator">
          <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
-                  <property
             name="appName"
             value="LRAC Reflectivity Simulator">
          </property>
