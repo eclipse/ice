@@ -18,44 +18,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.eclipse.ice.materials.ui.perspectives.MaterialsPerspective"
-            id="org.eclipse.ice.materials.ui.MaterialsPerspective"
-            name="Materials">
-      </perspective>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.ice.materials.ui.MaterialsPerspective">
-         <view
-               closeable="true"
-               id="org.eclipse.ice.materials.ui.ScatteringDensityViewPart"
-               minimized="false"
-               moveable="true"
-               ratio="0.30f"
-               relationship="right"
-               relative="org.eclipse.ui.views"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
-         <view
-               closeable="true"
-               id="org.eclipse.ice.materials.ui.ReflectivityViewPart"
-               minimized="false"
-               moveable="true"
-               ratio="0.30f"
-               relationship="bottom"
-               relative="org.eclipse.ice.materials.ui.ScatteringDensityViewPart"
-               showTitle="true"
-               standalone="false"
-               visible="true">
-         </view>
-      </perspectiveExtension>
-   </extension>
-   <extension
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.eclipse.ice.materials.ui.EditMaterialsDatabaseHandler"

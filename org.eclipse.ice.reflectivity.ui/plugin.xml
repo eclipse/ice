@@ -50,9 +50,6 @@
         </property>
       </product>
    </extension>
-   
-   
-   
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -140,12 +137,11 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.menus">
-   </extension>
-   <extension
          id="org.eclipse.ice.reflectivity.ui.fragment"
+         name="Reflectivity Model Extension"
          point="org.eclipse.e4.workbench.model">
       <fragment
+            apply="always"
             uri="reflectivityModelFragment.e4xmi">
       </fragment>
    </extension>

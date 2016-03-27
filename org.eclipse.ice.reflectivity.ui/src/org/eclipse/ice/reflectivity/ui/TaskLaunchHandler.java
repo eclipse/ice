@@ -12,12 +12,10 @@
 
 package org.eclipse.ice.reflectivity.ui;
 
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.iclient.IClient;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * This class handles launch requests for the Reflectivity Task Launcher, which
@@ -27,18 +25,12 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author Jay Jay Billings
  *
  */
-public class TaskLaunchHandler extends AbstractHandler {
-
-	/**
-	 * The ICE Client, which is used to perform the specified task.
-	 */
-	IClient client;
+public class TaskLaunchHandler {
 
 	/**
 	 * Constructor
 	 */
 	public TaskLaunchHandler() throws CoreException {
-		client = IClient.getClient();
 	}
 
 	/*
@@ -48,12 +40,10 @@ public class TaskLaunchHandler extends AbstractHandler {
 	 * org.eclipse.core.commands.IHandler#execute(org.eclipse.core.commands.
 	 * ExecutionEvent)
 	 */
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		TaskLaunchDialog dialog = new TaskLaunchDialog(
-				HandlerUtil.getActiveShell(event));
+	@Execute
+	public void execute(Shell shell) throws ExecutionException {
+		TaskLaunchDialog dialog = new TaskLaunchDialog(shell);
 		dialog.open();
-		return null;
 	}
 
 }
