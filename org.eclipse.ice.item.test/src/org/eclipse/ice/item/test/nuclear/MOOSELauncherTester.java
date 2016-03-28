@@ -159,35 +159,6 @@ public class MOOSELauncherTester {
 	}
 
 	/**
-	 * Check that we can change the file name and get 
-	 * a notification triggered.
-	 */
-	@Test
-	public void checkMOOSELauncherFileUpdate() {
-		
-		// Local Declarations
-		MOOSELauncher mooseLauncher = new MOOSELauncher(projectSpace) {
-			@Override
-			public void update(IUpdateable component) {
-				if (component instanceof FileEntry) {
-					notified = true;
-				}
-			}
-		};
-		DataComponent fileDataComp = 
-				(DataComponent) mooseLauncher.getForm().getComponent(1);
-		assertTrue(fileDataComp
-				.retrieveEntry("Input File").setValue("input_coarse10.i"));
-		assertTrue(notified);
-		notified = false;
-
-		// Now change the file name
-		assertTrue(fileDataComp
-				.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
-		assertTrue(notified);
-	}
-
-	/**
 	 * <p>
 	 * This operation checks the MOOSE Item to ensure that its equals()
 	 * operation works.
