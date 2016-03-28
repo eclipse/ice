@@ -27,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is a handler for launching the materials database editor.
+ * 
  * @author Jay Jay Billings
  *
  */
@@ -53,7 +55,7 @@ public class EditMaterialsDatabaseHandler extends AbstractHandler {
 			page.openEditor(input, MaterialsDatabaseEditor.ID);
 		} catch (PartInitException e) {
 			// Complain
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 			// Throw up an error dialog
 			MessageBox errBox = new MessageBox(window.getShell(),
 					SWT.ICON_ERROR | SWT.OK);

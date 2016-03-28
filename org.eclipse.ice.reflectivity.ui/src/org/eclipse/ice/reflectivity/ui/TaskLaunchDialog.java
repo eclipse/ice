@@ -13,9 +13,20 @@ package org.eclipse.ice.reflectivity.ui;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.e4.core.commands.ECommandService;
+import org.eclipse.e4.core.commands.EHandlerService;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.services.IServiceConstants;
+import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,13 +46,28 @@ import org.osgi.framework.FrameworkUtil;
 public class TaskLaunchDialog extends Dialog {
 
 	/**
+	 * The ICE IClient for creating the Items.
+	 */
+	@Inject
+	private IClient client;
+
+	/**
+	 * The E4 context for manipulating the workbench. This is primarily used for
+	 * opening the materials database editor.
+	 */
+	@Inject
+	private IEclipseContext context;
+
+	/**
 	 * The constructor
 	 *
 	 * @param parentShell
 	 *            The shell in which this dialog is drawn and which is also the
 	 *            shell of the parent application.
 	 */
-	public TaskLaunchDialog(Shell parentShell) {
+	@Inject
+	public TaskLaunchDialog(
+			@Named(IServiceConstants.ACTIVE_SHELL) Shell parentShell) {
 		super(parentShell);
 	}
 
@@ -97,6 +123,34 @@ public class TaskLaunchDialog extends Dialog {
 			// Just set the text instead
 			modelRefButton.setText("Launch New Simulation");
 		}
+		// Add a listener that creates the Reflectivity Model Item
+		modelRefButton.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseUp(MouseEvent e) {
+				// Nothing TODO
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.MouseListener#mouseDown(org.eclipse.swt.
+			 * events.MouseEvent)
+			 */
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// Create the Reflectivity Model Item
+				client.createItem("Reflectivity Model");
+				// Close the dialog since our work is done here
+				TaskLaunchDialog.this.close();
+			}
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				// Nothing TODO
+			}
+		});
 
 		// Create edit materials button
 		Button editMatsButton = new Button(swtComposite, SWT.PUSH);
@@ -118,6 +172,45 @@ public class TaskLaunchDialog extends Dialog {
 			// Just set the text instead
 			editMatsButton.setText("Edit Materials");
 		}
+		// Add the mouse listener to open the materials database editor
+		editMatsButton.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseUp(MouseEvent e) {
+				// Nothing TODO
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * org.eclipse.swt.events.MouseListener#mouseDown(org.eclipse.swt.
+			 * events.MouseEvent)
+			 */
+			@Override
+			public void mouseDown(MouseEvent e) {
+				// Get the services that will make it possible to
+				// programmatically look up commands and associated handlers.
+				ECommandService commandService = context
+						.get(ECommandService.class);
+				EHandlerService handlerService = context
+						.get(EHandlerService.class);
+				// Get the command that can launch the handler that will open
+				// the materials editor.
+				ParameterizedCommand myCommand = commandService.createCommand(
+						"org.eclipse.ice.materials.ui.EditDatabaseCommand",
+						null);
+				// Open the database
+				handlerService.executeHandler(myCommand);
+				// Close the dialog since our work is done here
+				TaskLaunchDialog.this.close();
+			}
+
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				// Nothing TODO
+			}
+		});
 
 		return swtComposite;
 	}

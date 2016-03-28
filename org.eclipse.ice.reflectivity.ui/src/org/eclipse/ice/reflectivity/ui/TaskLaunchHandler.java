@@ -14,8 +14,9 @@ package org.eclipse.ice.reflectivity.ui;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.core.di.annotations.Execute;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * This class handles launch requests for the Reflectivity Task Launcher, which
@@ -41,8 +42,9 @@ public class TaskLaunchHandler {
 	 * ExecutionEvent)
 	 */
 	@Execute
-	public void execute(Shell shell) throws ExecutionException {
-		TaskLaunchDialog dialog = new TaskLaunchDialog(shell);
+	public void execute(IEclipseContext context) throws ExecutionException {
+		TaskLaunchDialog dialog = ContextInjectionFactory
+				.make(TaskLaunchDialog.class, context);
 		dialog.open();
 	}
 
