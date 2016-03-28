@@ -15,12 +15,12 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import org.eclipse.eavp.viz.service.modeling.MeshCategory;
-import org.eclipse.eavp.viz.service.modeling.EdgeController;
-import org.eclipse.eavp.viz.service.modeling.FaceController;
-import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.MeshProperty;
-import org.eclipse.eavp.viz.service.modeling.VertexController;
+import org.eclipse.eavp.viz.modeling.EdgeController;
+import org.eclipse.eavp.viz.modeling.FaceController;
+import org.eclipse.eavp.viz.modeling.base.IController;
+import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
+import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
+import org.eclipse.eavp.viz.modeling.VertexController;
 import org.eclipse.ice.client.common.PropertySource;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -133,7 +133,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// Polygon.
 				if (ID_EDGES.equals(id)) {
 					for (IController e : polygon
-							.getEntitiesByCategory(MeshCategory.EDGES)) {
+							.getEntitiesFromCategory(MeshCategory.EDGES)) {
 						propertySet.add("Edge " + e.getProperty(MeshProperty.ID));
 					}
 					return propertySet;
@@ -142,7 +142,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// Polygon.
 				else if (ID_VERTICES.equals(id)) {
 					for (IController v : polygon
-							.getEntitiesByCategory(MeshCategory.VERTICES)) {
+							.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 						propertySet.add("Vertex " + v.getProperty(MeshProperty.ID));
 					}
 					return propertySet;
@@ -170,7 +170,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 				// Collect the given edge's vertices
 				if (ID_VERTICES.equals(id)) {
 					for (IController vertex : edge
-							.getEntitiesByCategory(MeshCategory.VERTICES)) {
+							.getEntitiesFromCategory(MeshCategory.VERTICES)) {
 						propertySet.add("Vertex " + Integer
 								.valueOf(vertex.getProperty(MeshProperty.ID)));
 					}

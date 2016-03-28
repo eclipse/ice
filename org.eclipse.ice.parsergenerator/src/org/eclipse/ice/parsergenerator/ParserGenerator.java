@@ -3,33 +3,14 @@ package org.eclipse.ice.parsergenerator;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.PlatformUI;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-
-import org.eclipse.xtext.ui.util.FileOpener;
-import org.eclipse.xtext.util.JavaVersion;
-import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
-import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
-import org.eclipse.xtext.xtext.wizard.BuildSystem;
-import org.eclipse.xtext.xtext.wizard.ProjectLayout;
-import org.eclipse.xtext.xtext.wizard.SourceLayout;
-import org.eclipse.xtext.xtext.wizard.LanguageDescriptor;
-import org.eclipse.xtext.xtext.wizard.LanguageDescriptor.FileExtensions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -39,17 +20,33 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
-import org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher;
 import org.eclipse.emf.mwe2.launch.runtime.Mwe2Runner;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
+import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.item.model.Model;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.xtext.ui.util.FileOpener;
+import org.eclipse.xtext.util.JavaVersion;
+import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
+import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectInfo;
+import org.eclipse.xtext.xtext.wizard.BuildSystem;
+import org.eclipse.xtext.xtext.wizard.LanguageDescriptor;
+import org.eclipse.xtext.xtext.wizard.LanguageDescriptor.FileExtensions;
+import org.eclipse.xtext.xtext.wizard.ProjectLayout;
+import org.eclipse.xtext.xtext.wizard.SourceLayout;
+
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 
 @SuppressWarnings("restriction")
 @XmlRootElement(name = "ParserGenerator")

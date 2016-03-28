@@ -103,8 +103,8 @@ public abstract class Action {
 	protected FormStatus status;
 
 	/**
-	 * This static method initializes the data structures necessary 
-	 * for Eclipse Console output for the Action.execute method. 
+	 * This static method initializes the data structures necessary for Eclipse
+	 * Console output for the Action.execute method.
 	 */
 	protected static void initializeConsoleOutput() {
 		// Open the Console for Action output text
@@ -118,16 +118,18 @@ public abstract class Action {
 					consoleView = (IConsoleView) page.showView(IConsoleConstants.ID_CONSOLE_VIEW);
 					// Create the console instance that will be used to display
 					// text from this widget.
-					console = new MessageConsole("CLI", null);
-					// Add the console to the console manager
-					ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { console });
-					// Show the console in the view
-					consoleView.display(console);
-					console.activate();
-					// Get an output stream for the console
-					msgStream = console.newMessageStream();
-					msgStream.setActivateOnWrite(true);
-					msgStream.println("Streaming output console activated.");
+					if (console == null) {
+						console = new MessageConsole("CLI", null);
+						// Add the console to the console manager
+						ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] { console });
+						// Show the console in the view
+						consoleView.display(console);
+						console.activate();
+						// Get an output stream for the console
+						msgStream = console.newMessageStream();
+						msgStream.setActivateOnWrite(true);
+						msgStream.println("Streaming output console activated.");
+					}
 				} catch (PartInitException e) {
 					// Complain
 					logger.error("Action Message: " + "Unable to stream text!");
@@ -140,15 +142,17 @@ public abstract class Action {
 	}
 
 	/**
-	 * This operation allows subclasses to post errors and return the 
-	 * appropriate status to the Item executing the Action. 
+	 * This operation allows subclasses to post errors and return the
+	 * appropriate status to the Item executing the Action.
 	 * 
-	 * @param errorMessage The descriptive message for the error.
-	 * @param exception A possible exception to print to the Logger.
+	 * @param errorMessage
+	 *            The descriptive message for the error.
+	 * @param exception
+	 *            A possible exception to print to the Logger.
 	 * @return status The error status.
 	 */
 	protected FormStatus actionError(String errorMessage, Exception exception) {
-		if(exception == null) { 
+		if (exception == null) {
 			logger.error(errorMessage);
 		} else {
 			logger.error(errorMessage, exception);
@@ -156,12 +160,13 @@ public abstract class Action {
 		status = FormStatus.InfoError;
 		return status;
 	}
-	
+
 	/**
-	 * This operation can be used by subclasses to post text to 
-	 * the Eclipse Console. 
+	 * This operation can be used by subclasses to post text to the Eclipse
+	 * Console.
 	 * 
-	 * @param sText The string to print to the Console.
+	 * @param sText
+	 *            The string to print to the Console.
 	 */
 	protected void postConsoleText(final String sText) {
 
@@ -184,14 +189,14 @@ public abstract class Action {
 	}
 
 	/**
-	 * This operation clears the Eclipse console. 
+	 * This operation clears the Eclipse console.
 	 */
 	public static void clearConsole() {
 		if (console != null) {
 			console.clearConsole();
 		}
 	}
-	
+
 	/**
 	 * <p>
 	 * This operation retrieves a Form from the Action that is used to request
@@ -200,7 +205,7 @@ public abstract class Action {
 	 * </p>
 	 * 
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The second Form created by the Action for retrieving, for
 	 *         example, a username and password.
 	 *         </p>
@@ -223,7 +228,7 @@ public abstract class Action {
 	 *            example, a username and password.
 	 *            </p>
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The ItemStatus value that specifies whether or not the secondary
 	 *         Form was accepted by the Action. By default it is
 	 *         FormStatus.Processing for any non-null Form and
@@ -255,7 +260,7 @@ public abstract class Action {
 	 *            to perform its function.
 	 *            </p>
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The status of the Action.
 	 *         </p>
 	 */
@@ -267,7 +272,7 @@ public abstract class Action {
 	 * </p>
 	 * 
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The ItemStatus value that specifies whether or not the Action was
 	 *         canceled successfully.
 	 *         </p>
@@ -280,7 +285,7 @@ public abstract class Action {
 	 * </p>
 	 * 
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The status
 	 *         </p>
 	 */

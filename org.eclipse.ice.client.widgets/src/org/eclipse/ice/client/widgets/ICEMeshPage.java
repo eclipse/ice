@@ -393,7 +393,8 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
 		// Get the selection made in the MeshElementTreeView.
-		if (part.getSite().getId().equals(MeshElementTreeView.ID)) {
+		if (part.getSite().getId().equals(MeshElementTreeView.ID) && canvas != 
+				null) {
 
 			// Get the array of all selections in the Mesh Elements view
 			Object[] treeSelections = ((ITreeSelection) selection).toArray();

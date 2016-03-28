@@ -23,12 +23,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.eavp.viz.modeling.base.IController;
+import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
+import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.IController;
-import org.eclipse.eavp.viz.service.modeling.MeshCategory;
-import org.eclipse.eavp.viz.service.modeling.MeshProperty;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
@@ -183,9 +182,9 @@ public class NekReaderTester {
 
 		// Populate the list by getting the child objects of each polygon
 		for (IController polygon : meshComponent.getPolygons()) {
-			edges.addAll(polygon.getEntitiesByCategory(MeshCategory.EDGES));
+			edges.addAll(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
 			vertices.addAll(
-					polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+					polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		}
 
 		assertEquals(256, edges.size());
@@ -206,16 +205,16 @@ public class NekReaderTester {
 
 			// Check current polygon has 4 edges and 4 vertices
 			assertEquals(4,
-					currQuad.getEntitiesByCategory(MeshCategory.EDGES).size());
+					currQuad.getEntitiesFromCategory(MeshCategory.EDGES).size());
 			assertEquals(4, currQuad
-					.getEntitiesByCategory(MeshCategory.VERTICES).size());
+					.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 			// Verify it has non-null vertices and edges
 			for (int j = 0; j < 4; j++) {
-				assertNotNull(currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+				assertNotNull(currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(j));
 				assertNotNull(currQuad
-						.getEntitiesByCategory(MeshCategory.VERTICES).get(j));
+						.getEntitiesFromCategory(MeshCategory.VERTICES).get(j));
 			}
 
 			// No need to check if vertices and edges have unique IDs, the
@@ -233,7 +232,7 @@ public class NekReaderTester {
 
 				// Grab the current edge ID
 				currEdgeId = Integer.parseInt(
-						currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+						currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 								.get(j).getProperty(MeshProperty.ID));
 
 				// Check the fluid boundary conditions (note: only the first
@@ -548,9 +547,9 @@ public class NekReaderTester {
 
 		// Populate the list by getting the child objects of each polygon
 		for (IController polygon : meshComponent.getPolygons()) {
-			edges.addAll(polygon.getEntitiesByCategory(MeshCategory.EDGES));
+			edges.addAll(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
 			vertices.addAll(
-					polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+					polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		}
 
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices
@@ -572,16 +571,16 @@ public class NekReaderTester {
 
 			// Check current polygon has 4 edges and 4 vertices
 			assertEquals(4,
-					currQuad1.getEntitiesByCategory(MeshCategory.EDGES).size());
+					currQuad1.getEntitiesFromCategory(MeshCategory.EDGES).size());
 			assertEquals(4, currQuad1
-					.getEntitiesByCategory(MeshCategory.VERTICES).size());
+					.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 			// Verify it has non-null vertices and edges
 			for (int j = 0; j < 4; j++) {
 				assertNotNull(currQuad1
-						.getEntitiesByCategory(MeshCategory.EDGES).get(j));
+						.getEntitiesFromCategory(MeshCategory.EDGES).get(j));
 				assertNotNull(currQuad1
-						.getEntitiesByCategory(MeshCategory.VERTICES).get(j));
+						.getEntitiesFromCategory(MeshCategory.VERTICES).get(j));
 			}
 
 			// No need to check if vertices and edges have unique IDs, the
@@ -599,7 +598,7 @@ public class NekReaderTester {
 
 				// Grab the current edge ID
 				currEdgeId = Integer.parseInt(
-						currQuad1.getEntitiesByCategory(MeshCategory.EDGES)
+						currQuad1.getEntitiesFromCategory(MeshCategory.EDGES)
 								.get(j).getProperty(MeshProperty.ID));
 
 				// Grab the fluid boundary condition associate to this edge
@@ -904,9 +903,9 @@ public class NekReaderTester {
 
 		// Populate the list by getting the child objects of each polygon
 		for (IController polygon : meshComponent.getPolygons()) {
-			edges.addAll(polygon.getEntitiesByCategory(MeshCategory.EDGES));
+			edges.addAll(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
 			vertices.addAll(
-					polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+					polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		}
 
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices
@@ -927,16 +926,16 @@ public class NekReaderTester {
 
 			// Check current polygon has 4 edges and 4 vertices
 			assertEquals(4,
-					currQuad.getEntitiesByCategory(MeshCategory.EDGES).size());
+					currQuad.getEntitiesFromCategory(MeshCategory.EDGES).size());
 			assertEquals(4, currQuad
-					.getEntitiesByCategory(MeshCategory.VERTICES).size());
+					.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 			// Verify it has non-null vertices and edges
 			for (int j = 0; j < 4; j++) {
-				assertNotNull(currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+				assertNotNull(currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(j));
 				assertNotNull(currQuad
-						.getEntitiesByCategory(MeshCategory.VERTICES).get(j));
+						.getEntitiesFromCategory(MeshCategory.VERTICES).get(j));
 			}
 
 			// No need to check if vertices and edges have unique IDs, the
@@ -954,7 +953,7 @@ public class NekReaderTester {
 
 				// Grab the current edge ID
 				currEdgeId = Integer.parseInt(
-						currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+						currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 								.get(j).getProperty(MeshProperty.ID));
 
 				// Grab the fluid boundary condition associate to this edge
@@ -1261,9 +1260,9 @@ public class NekReaderTester {
 
 		// Populate the list by getting the child objects of each polygon
 		for (IController polygon : meshComponent.getPolygons()) {
-			edges.addAll(polygon.getEntitiesByCategory(MeshCategory.EDGES));
+			edges.addAll(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
 			vertices.addAll(
-					polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+					polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		}
 
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices
@@ -1283,16 +1282,16 @@ public class NekReaderTester {
 
 			// Check current polygon has 4 edges and 4 vertices
 			assertEquals(4,
-					currQuad.getEntitiesByCategory(MeshCategory.EDGES).size());
+					currQuad.getEntitiesFromCategory(MeshCategory.EDGES).size());
 			assertEquals(4, currQuad
-					.getEntitiesByCategory(MeshCategory.VERTICES).size());
+					.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 			// Verify it has non-null vertices and edges
 			for (int j = 0; j < 4; j++) {
-				assertNotNull(currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+				assertNotNull(currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(j));
 				assertNotNull(currQuad
-						.getEntitiesByCategory(MeshCategory.VERTICES).get(j));
+						.getEntitiesFromCategory(MeshCategory.VERTICES).get(j));
 			}
 
 			// No need to check if vertices and edges have unique IDs, the
@@ -1310,7 +1309,7 @@ public class NekReaderTester {
 
 				// Grab the current edge ID
 				currEdgeId = Integer.parseInt(
-						currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+						currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 								.get(j).getProperty(MeshProperty.ID));
 
 				// Grab the fluid boundary condition associate to this edge
@@ -1618,9 +1617,9 @@ public class NekReaderTester {
 
 		// Populate the list by getting the child objects of each polygon
 		for (IController polygon : meshComponent.getPolygons()) {
-			edges.addAll(polygon.getEntitiesByCategory(MeshCategory.EDGES));
+			edges.addAll(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
 			vertices.addAll(
-					polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+					polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		}
 
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices
@@ -1640,16 +1639,16 @@ public class NekReaderTester {
 
 			// Check current polygon has 4 edges and 4 vertices
 			assertEquals(4,
-					currQuad.getEntitiesByCategory(MeshCategory.EDGES).size());
+					currQuad.getEntitiesFromCategory(MeshCategory.EDGES).size());
 			assertEquals(4, currQuad
-					.getEntitiesByCategory(MeshCategory.VERTICES).size());
+					.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 			// Verify it has non-null vertices and edges
 			for (int j = 0; j < 4; j++) {
-				assertNotNull(currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+				assertNotNull(currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(j));
 				assertNotNull(currQuad
-						.getEntitiesByCategory(MeshCategory.VERTICES).get(j));
+						.getEntitiesFromCategory(MeshCategory.VERTICES).get(j));
 			}
 
 			// No need to check if vertices and edges have unique IDs, the
@@ -1667,7 +1666,7 @@ public class NekReaderTester {
 
 				// Grab the current edge ID
 				currEdgeId = Integer.parseInt(
-						currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+						currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 								.get(j).getProperty(MeshProperty.ID));
 
 				// Grab the fluid boundary condition associate to this edge
@@ -1975,9 +1974,9 @@ public class NekReaderTester {
 
 		// Populate the list by getting the child objects of each polygon
 		for (IController polygon : meshComponent.getPolygons()) {
-			edges.addAll(polygon.getEntitiesByCategory(MeshCategory.EDGES));
+			edges.addAll(polygon.getEntitiesFromCategory(MeshCategory.EDGES));
 			vertices.addAll(
-					polygon.getEntitiesByCategory(MeshCategory.VERTICES));
+					polygon.getEntitiesFromCategory(MeshCategory.VERTICES));
 		}
 
 		// Check the mesh contains 64 elements/polygons, 4 edges + 4 vertices
@@ -1997,16 +1996,16 @@ public class NekReaderTester {
 
 			// Check current polygon has 4 edges and 4 vertices
 			assertEquals(4,
-					currQuad.getEntitiesByCategory(MeshCategory.EDGES).size());
+					currQuad.getEntitiesFromCategory(MeshCategory.EDGES).size());
 			assertEquals(4, currQuad
-					.getEntitiesByCategory(MeshCategory.VERTICES).size());
+					.getEntitiesFromCategory(MeshCategory.VERTICES).size());
 
 			// Verify it has non-null vertices and edges
 			for (int j = 0; j < 4; j++) {
-				assertNotNull(currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+				assertNotNull(currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 						.get(j));
 				assertNotNull(currQuad
-						.getEntitiesByCategory(MeshCategory.VERTICES).get(j));
+						.getEntitiesFromCategory(MeshCategory.VERTICES).get(j));
 			}
 
 			// No need to check if vertices and edges have unique IDs, the
@@ -2024,7 +2023,7 @@ public class NekReaderTester {
 
 				// Grab the current edge ID
 				currEdgeId = Integer.parseInt(
-						currQuad.getEntitiesByCategory(MeshCategory.EDGES)
+						currQuad.getEntitiesFromCategory(MeshCategory.EDGES)
 								.get(j).getProperty(MeshProperty.ID));
 
 				// Grab the fluid boundary condition associate to this edge

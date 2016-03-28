@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Project Generation
 Bundle-SymbolicName: org.eclipse.ice.projectgeneration;singleton:=true
-Bundle-Version: 2.1.8.20160208
+Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.ice.projectgeneration;uses:="org.eclipse.core.resources",
  org.eclipse.ice.projectgeneration.templates;
@@ -31,4 +31,5 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.ui,
  org.eclipse.ui.dialogs,
  org.eclipse.ui.wizards.newresource,
- org.osgi.framework;version="1.8.0"
+ org.osgi.framework;version="1.8.0",
+ org.slf4j;version="1.7.2"

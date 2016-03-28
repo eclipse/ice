@@ -7,7 +7,7 @@
 		<tycho-version>0.23.0</tycho-version>
 		<pom-filename>pom.xml</pom-filename>
 		<!-- <target-version>2.1.7.${maven.build.timestamp}</target-version>  -->
-		<target-version>2.1.8</target-version>		
+		<!--<target-version>2.1.8</target-version>	-->	
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
 	</properties>
 

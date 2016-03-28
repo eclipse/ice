@@ -497,7 +497,11 @@ public class MOOSE extends Item {
 
 		// Set the value of the input file to the user-specified
 		// file name
-		launcherFiles.retrieveEntry("Input File").setValue(fileName);
+		FileEntry fileEntry = (FileEntry) launcherFiles.retrieveEntry("Input File");
+		ArrayList<String> allowed = new ArrayList<String>();
+		allowed.add(fileName);
+		fileEntry.setAllowedValues(allowed);
+		fileEntry.setValue(fileName);
 
 		// Update the MooseLauncher's set of input files...
 		mooseLauncher.update(launcherFiles.retrieveEntry("Input File"));

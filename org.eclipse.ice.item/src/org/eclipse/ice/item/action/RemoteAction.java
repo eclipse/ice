@@ -38,7 +38,7 @@ public abstract class RemoteAction extends Action {
 	 *            service interface
 	 * @return the specified service or null if it's not registered
 	 */
-	private <T> T getService(Class<T> service) {
+	protected <T> T getService(Class<T> service) {
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
 		if (context != null) {
 			ServiceReference<T> ref = context.getServiceReference(service);

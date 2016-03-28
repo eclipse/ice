@@ -8,7 +8,7 @@
   <parent>
   	<groupId>org.eclipse.ice</groupId>
   	<artifactId>org.eclipse.ice.build</artifactId>
-  	<version>2.1.8.20160208</version>
+  	<version>2.1.8-SNAPSHOT</version>
   	<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
   </parent>
   <modules>
@@ -56,28 +56,8 @@
   	<module>../org.eclipse.ice.target.mars</module>
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
-  	<module>../org.eclipse.eavp.feature</module>
-  	<module>../org.eclipse.eavp.viz</module>
-  	<module>../org.eclipse.eavp.viz.service</module>
-  	<module>../org.eclipse.eavp.viz.service.geometry</module>
-  	<module>../org.eclipse.eavp.viz.service.geometry.test</module>
-  	<module>../org.eclipse.eavp.viz.service.javafx</module>
-  	<module>../org.eclipse.eavp.viz.service.javafx.geometry</module>
-  	<module>
-  		../org.eclipse.eavp.viz.service.javafx.geometry.test
-  	</module>
-  	<module>../org.eclipse.eavp.viz.service.javafx.mesh</module>
-  	<module>../org.eclipse.eavp.viz.service.javafx.test</module>
-  	<module>../org.eclipse.eavp.viz.service.mesh</module>
-  	<module>../org.eclipse.eavp.viz.service.mesh.test</module>
-  	<module>../org.eclipse.eavp.viz.service.paraview</module>
-  	<module>../org.eclipse.eavp.viz.service.paraview.test</module>
-  	<module>../org.eclipse.eavp.viz.service.paraview.web</module>
-  	<module>../org.eclipse.eavp.viz.service.test</module>
-  	<module>../org.eclipse.eavp.viz.service.visit</module>
-  	<module>../org.eclipse.eavp.viz.service.visit.test</module>
-  	<module>../org.eclipse.eavp.viz.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
   	<module>../org.eclipse.ice.repository</module>
+  	<module>../org.eclipse.ice.product</module>  	
   </modules>
 </project>
