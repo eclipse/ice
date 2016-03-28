@@ -147,10 +147,11 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.e4.ui.workbench.addons.swt" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.eavp.viz" autoStart="true" startLevel="0" />
+       <plugin id="org.eclipse.eavp.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service.geometry" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.eavp.viz.service.jme3" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.javafx.geometry" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz.service.javafx.mesh" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service.paraview" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service.paraview.web" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service.visit" autoStart="true" startLevel="0" />

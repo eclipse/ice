@@ -4,7 +4,7 @@ Bundle-Name: Reflectivity Widgets
 Bundle-SymbolicName: org.eclipse.ice.reflectivity.ui;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-Vendor: Oak Ridge National Laboratory
-Export-Package: org.eclipse.ice.reflectivity.ui
+Export-Package: org.eclipse.ice.reflectivity.ui;x-internal:=true
 Require-Bundle: org.eclipse.ice.datastructures
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.inject;version="1.0.0",
