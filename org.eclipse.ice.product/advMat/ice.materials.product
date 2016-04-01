@@ -3,6 +3,7 @@
 
 <product name="LRAC Reflectivity Simulator" uid="ice.materials.product" id="org.eclipse.ice.reflectivity.ui.product" application="org.eclipse.ui.ide.workbench" version="2.1.8" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -20,16 +21,20 @@
       </vmArgsWin>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/org.eclipse.ice.reflectivity.ui/icons/sns_small.png"/>
 
    <splash
-      location="org.eclipse.ice.client.rcp" />
+      location="org.eclipse.ice.reflectivity.ui"
+      startupProgressRect="5,275,445,15"
+      startupMessageRect="7,252,445,20"
+      startupForegroundColor="000000" />
    <launcher name="lrac_reflectivity">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -147,7 +152,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.e4.ui.workbench.addons.swt" autoStart="true" startLevel="0" />
-       <plugin id="org.eclipse.eavp.viz" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.eavp.viz" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service.geometry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.eavp.viz.service.javafx.geometry" autoStart="true" startLevel="0" />
