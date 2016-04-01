@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.nek5000.test;
 
+import org.eclipse.eavp.viz.modeling.base.BasicView;
+import org.eclipse.eavp.viz.modeling.EdgeController;
+import org.eclipse.eavp.viz.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.modeling.factory.IControllerProvider;
+import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
+import org.eclipse.eavp.viz.modeling.base.IMesh;
+import org.eclipse.eavp.viz.modeling.VertexController;
+import org.eclipse.eavp.viz.modeling.VertexMesh;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
-import org.eclipse.eavp.viz.service.modeling.AbstractView;
-import org.eclipse.eavp.viz.service.modeling.EdgeController;
-import org.eclipse.eavp.viz.service.modeling.EdgeMesh;
-import org.eclipse.eavp.viz.service.modeling.IControllerProvider;
-import org.eclipse.eavp.viz.service.modeling.IControllerProviderFactory;
-import org.eclipse.eavp.viz.service.modeling.IMesh;
-import org.eclipse.eavp.viz.service.modeling.VertexController;
-import org.eclipse.eavp.viz.service.modeling.VertexMesh;
 
 /**
  * A factory which produces controllers with dummy views for meshes read from
@@ -35,8 +35,8 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.eavp.viz.service.modeling.IControllerFactory#
-	 * createController( org.eclipse.eavp.viz.service.modeling.AbstractMesh)
+	 * @see org.eclipse.eavp.viz.modeling.IControllerFactory#
+	 * createController( org.eclipse.eavp.viz.modeling.AbstractMesh)
 	 */
 	@Override
 	public IControllerProvider createProvider(IMesh model) {
@@ -52,7 +52,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// Create an FXShapeView for the model, then wrap them
 					// both in a
 					// shape controller
-					AbstractView view = new AbstractView();
+					BasicView view = new BasicView();
 					return new EdgeController((EdgeMesh) model, view);
 				}
 			};
@@ -69,7 +69,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// Create an FXShapeView for the model, then wrap them
 					// both in a
 					// shape controller
-					AbstractView view = new AbstractView();
+					BasicView view = new BasicView();
 					return new VertexController((VertexMesh) model, view);
 				}
 			};
@@ -85,7 +85,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// Create an FXShapeView for the model, then wrap them
 					// both in a
 					// shape controller
-					AbstractView view = new AbstractView();
+					BasicView view = new BasicView();
 					return new NekPolygonController((NekPolygonMesh) model,
 							view);
 				}

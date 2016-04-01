@@ -156,21 +156,12 @@ public class ItemProcessorTester {
 		// Start the ItemProcessor on a separate thread.
 		processThread = new Thread(itemProcessor);
 		processThread.start();
-
-		// The ItemProcessor should eventually notify the (Fake)Core that the
-		// action was processed. Give it some time to do its work, but proceed
-		// when the action is processed.
-		sleepTime = 0;
-		while (core.getLastProcessStatus() != FormStatus.Processed
-				&& sleepTime < sleepLimit) {
-			sleepTime += sleepIncrement;
-			try {
-				Thread.sleep(sleepIncrement);
-			} catch (InterruptedException e) {
-				fail("ItemProcessorTester error: "
-						+ "Cannot sleep while waiting for ItemProcessor to respond.");
-			}
+		try {
+			processThread.join();
+		} catch (InterruptedException e1) {
+			fail("ItemProcessorTester error: Failed to join with ItemProccessor thread.");
 		}
+
 		// Check that the action was processed.
 		assertEquals(FormStatus.Processed, core.getLastProcessStatus());
 

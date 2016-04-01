@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider;
 import org.eclipse.ice.client.widgets.providers.Default.DefaultEntryCompositeProvider;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
@@ -51,12 +52,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jay Jay Billings, Jordan H. Deyton, Anna Wojtowicz, Alex McCaskey
  */
-public class DataComponentComposite extends Composite implements IUpdateableListener {
+public class DataComponentComposite extends Composite
+		implements IUpdateableListener {
 
 	/**
 	 * Reference to the logger service.
 	 */
-	protected Logger logger = LoggerFactory.getLogger(DataComponentComposite.class);
+	protected Logger logger = LoggerFactory
+			.getLogger(DataComponentComposite.class);
 
 	/**
 	 * This attribute is a reference to an ICE DataComponent that stores the
@@ -109,6 +112,11 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 	public FormToolkit formToolkit = null;
 
 	/**
+	 * The eclipse context
+	 */
+	private IEclipseContext context;
+
+	/**
 	 * The constructor.
 	 *
 	 * @param comp
@@ -118,7 +126,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 	 * @param style
 	 *            The style in which the composite should be drawn.
 	 */
-	public DataComponentComposite(DataComponent comp, Composite parentComposite, int style) {
+	public DataComponentComposite(DataComponent comp, Composite parentComposite,
+			int style) {
 
 		// Construct the base composite
 		super(parentComposite, style);
@@ -137,6 +146,13 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		if (dataComp != null) {
 			dataComp.register(this);
 		}
+
+		// Get the E4 Context. For now I need to grab it from the singleton.
+		context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
+
+		// Instruct the framework to perform dependency injection for
+		// this Form using the ContextInjectionFactory.
+		ContextInjectionFactory.inject(this, context);
 
 		// Add a dispose listener which unregisters from the DataComponent
 		addDisposeListener(new DisposeListener() {
@@ -163,7 +179,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 			public void handleEvent(Event e) {
 				// Notify the EntryComposites that the selection was made
 				for (IEntryComposite entryComp : entryMap.values()) {
-					entryComp.getComposite().notifyListeners(SWT.DefaultSelection, e);
+					entryComp.getComposite()
+							.notifyListeners(SWT.DefaultSelection, e);
 				}
 			}
 		};
@@ -193,7 +210,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		for (int i = 0; i < entries.size(); i++) {
 			IEntry entry = dataComp.retrieveAllEntries().get(i);
 			IEntryComposite entryComp = entryMap.get(i);
-			if (entryComp != null && !entry.getValue().equals(entryComp.getEntry().getValue())) {
+			if (entryComp != null && !entry.getValue()
+					.equals(entryComp.getEntry().getValue())) {
 				// Reset the reference to the Entry because depending on the way
 				// its value was updated it could be an entirely new Entry
 				// (reset vs. cloned/destructive copy).
@@ -204,11 +222,13 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 
 		// Begin comparing the list of Entries to the EntryComposites in
 		// entryMap to determine what needs to be done
-		int maxIterations = entries.size() > entryMap.size() ? entries.size() : entryMap.size();
+		int maxIterations = entries.size() > entryMap.size() ? entries.size()
+				: entryMap.size();
 
 		for (int i = 0; i < maxIterations; i++) {
 			IEntry entry = (i < entries.size() ? entries.get(i) : null);
-			IEntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i) : null);
+			IEntryComposite entryComp = (i < entryMap.size() ? entryMap.get(i)
+					: null);
 			String value = (entryComp != null ? entryComp.getEntry().getValue()
 					: (entry != null ? entry.getValue() : ""));
 
@@ -234,21 +254,22 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 				// Iterate through the Entry.AllowedValues and compare to the
 				// values of the corresponding AbstractEntryComposite in the map
 				int nAllowed = 0;
-				
-				// This IEntry may not be a DiscreteEntry, so check 
+
+				// This IEntry may not be a DiscreteEntry, so check
 				// that we can get allowed values here, continue if not.
 				try {
 					nAllowed = entry.getAllowedValues().size();
 				} catch (UnsupportedOperationException e) {
 					continue;
 				}
-				
+
 				for (int j = 0; j < nAllowed; j++) {
 					String allowedValue = entry.getAllowedValues().get(j);
 
 					// Re-render Entries only if they've had a new AllowedValue
 					// added
-					if (!entryComp.getEntry().getAllowedValues().contains(allowedValue)) {
+					if (!entryComp.getEntry().getAllowedValues()
+							.contains(allowedValue)) {
 						disposeEntry(i);
 						renderEntry(entry, i);
 						entryComp = entryMap.get(i);
@@ -327,7 +348,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 	private void renderEntries() {
 
 		// Try to get the list of ready Entries from the DataComponent.
-		List<IEntry> entries = (dataComp != null ? dataComp.retrieveAllEntries() : null);
+		List<IEntry> entries = (dataComp != null ? dataComp.retrieveAllEntries()
+				: null);
 
 		// If the list is not null and not empty, try to render the Entries.
 		if (entries != null && !entries.isEmpty()) {
@@ -357,7 +379,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 			// Create the "no parameters" label.
 			emptyLabel = new Label(this, SWT.NONE);
 			emptyLabel.setText("No parameters available.");
-			emptyLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
+			emptyLabel.setLayoutData(
+					new GridData(SWT.FILL, SWT.BEGINNING, true, true));
 
 			// If not debugging, set the default background to white.
 			if (System.getProperty("DebugICE") == null) {
@@ -365,9 +388,10 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 			} else {
 				// If debugging, set the background to red and add some debug
 				// information to the label's text.
-				emptyLabel.setText(
-						emptyLabel.getText() + "\nDataComponent: " + (dataComp != null ? dataComp.getName() : "null"));
-				emptyLabel.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+				emptyLabel.setText(emptyLabel.getText() + "\nDataComponent: "
+						+ (dataComp != null ? dataComp.getName() : "null"));
+				emptyLabel.setBackground(
+						Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 			}
 		}
 
@@ -418,29 +442,26 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		IEntryComposite entryComposite = null;
 
 		// Create the Provider for Entry Composites
-		IEntryCompositeProvider provider = new DefaultEntryCompositeProvider();
+		IEntryCompositeProvider provider = null;
 
-		// Check if we need to use a custom provider
-		if (!"default".equals(entry.getContext())) {
-			try {
-				for (IEntryCompositeProvider p : IEntryCompositeProvider.getProviders()) {
-					if (p.getName().equals(entry.getContext())) {
-						provider = p;
-						break;
-					}
-				}
-			} catch (CoreException e) {
-				logger.error("Exception caught in trying to get a custom IEntryCompositeProvider.", e);
-			}
+		String contextKey = entry.getContext();
+		// Get the appropriate entry provider if indicated and available in the
+		// e4 context
+		if (context.containsKey(contextKey)) {
+			provider = (IEntryCompositeProvider) context.get(contextKey);
+		} else {
+			// Otherwise fall back to the default
+			provider = new DefaultEntryCompositeProvider();
 		}
 
 		// Create the IEntryComposite.
-		entryComposite = provider.getEntryComposite(this, entry, SWT.FLAT, formToolkit);
+		entryComposite = provider.getEntryComposite(this, entry, SWT.FLAT,
+				formToolkit);
 
 		if (messageManager != null) {
 			entryComposite.setMessageManager(messageManager);
 		}
-		
+
 		// Add theIEntryComposite to the Map
 		entryMap.put(index, entryComposite);
 
@@ -492,7 +513,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 					// Move the UI AbstractEntryComposite into its correct
 					// position
 					if (entryAbove != null) {
-						uiMap.get(uiPosition).getComposite().moveBelow(entryAbove.getComposite());
+						uiMap.get(uiPosition).getComposite()
+								.moveBelow(entryAbove.getComposite());
 					}
 				} else if (i + 1 <= entryMap.size()) {
 					// Try getting the AbstractEntryComposite below the proper
@@ -501,7 +523,8 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 					// Move the UI AbstractEntryComposite into its correct
 					// position
 					if (entryBelow != null) {
-						uiMap.get(uiPosition).getComposite().moveAbove(entryBelow.getComposite());
+						uiMap.get(uiPosition).getComposite()
+								.moveAbove(entryBelow.getComposite());
 					}
 				}
 			}
@@ -527,6 +550,18 @@ public class DataComponentComposite extends Composite implements IUpdateableList
 		}
 
 		return;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.swt.widgets.Widget#dispose()
+	 */
+	@Override
+	public void dispose() {
+		super.dispose();
+		// Clean up the dependency injection
+		ContextInjectionFactory.uninject(this, context);
 	}
 
 	/**

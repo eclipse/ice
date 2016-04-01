@@ -31,6 +31,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.nuclear.MOOSE;
@@ -63,6 +65,11 @@ public class MOOSELauncherTester {
 	 * A MOOSE Launcher used for testing.
 	 */
 	private static MOOSELauncher launcher;
+
+	/**
+	 * True if notified by File Entry
+	 */
+	private boolean notified = false;
 
 	/**
 	 * This operation sets up the workspace. It copies the necessary MOOSE data
@@ -149,36 +156,6 @@ public class MOOSELauncherTester {
 		launcher.setIOService(service);
 
 		return;
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void checkDynamicFileGeneration() {
-		
-		// Local Declarations
-		DataComponent fileDataComp = 
-				(DataComponent) launcher.getForm().getComponent(1);
-		assertTrue(fileDataComp
-				.retrieveEntry("Input File").setValue("input_coarse10.i"));
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		assertEquals(4, fileDataComp.retrieveAllEntries().size());
-
-		// Now change the file name
-		assertTrue(fileDataComp
-				.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		assertEquals(3, fileDataComp.retrieveAllEntries().size());
 	}
 
 	/**

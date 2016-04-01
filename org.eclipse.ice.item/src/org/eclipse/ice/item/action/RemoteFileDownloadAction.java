@@ -19,7 +19,9 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
+import org.eclipse.remote.core.IRemoteConnectionType;
 import org.eclipse.remote.core.IRemoteFileService;
+import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
@@ -136,7 +138,18 @@ public class RemoteFileDownloadAction extends RemoteAction {
 		}
 
 		// Get the remote connection
-		connection = getRemoteConnection(hostName);
+		String connectionName = dictionary.get("remoteConnectionName");
+		if (connectionName == null) {
+			connection = getRemoteConnection(hostName);
+		} else {
+			IRemoteConnectionType connectionType = getService(IRemoteServicesManager.class).getRemoteConnectionTypes()
+					.get(0);
+			for (IRemoteConnection c : connectionType.getConnections()) {
+				if (connectionName.equals(c.getName())) {
+					connection = c;
+				}
+			}
+		}
 		if (connection == null) {
 			return actionError("Could not get a valid connection to " + hostName, null);
 		}

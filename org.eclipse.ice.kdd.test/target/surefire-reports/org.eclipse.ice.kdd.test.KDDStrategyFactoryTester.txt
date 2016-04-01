@@ -1,6 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.kdd.test.KDDStrategyFactoryTester
--------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec - in org.eclipse.ice.kdd.test.KDDStrategyFactoryTester
-checkGetAvailableStrategies(org.eclipse.ice.kdd.test.KDDStrategyFactoryTester)  Time elapsed: 0.001 sec
-checkCreateStrategy(org.eclipse.ice.kdd.test.KDDStrategyFactoryTester)  Time elapsed: 0 sec

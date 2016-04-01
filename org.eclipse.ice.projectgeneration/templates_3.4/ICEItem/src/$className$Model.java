@@ -7,7 +7,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.ice.datastructures.form.*;
+import org.eclipse.ice.datastructures.entry.*;
+import org.eclipse.ice.datastructures.form.AllowedValueType;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
@@ -20,9 +22,10 @@ public class $className$Model extends Model {
 
 	// TODO: 
 	//   These need to be filled in before using this item
-	private String writerName = "$className$DefaultWriterName";
-	private String readerName = "$className$DefaultReaderName";     	
-	private String outputName = "$className$DefaultOutputName";   
+	//   They can be set in the setupItemInfo() method
+	private String writerName;
+	private String readerName;
+	private String outputName;
 	// End required variables
 	
     private String exportString;
@@ -30,15 +33,35 @@ public class $className$Model extends Model {
     private IReader reader;
     private IWriter writer;
     
+    /**
+     * The Constructor
+     */
 	public $className$Model() {
 		this(null);
 	}
 
+	/**
+	 * The Constructor, takes an IProject reference. 
+	 * 
+	 * @param project The project space this Item will be in.
+	 */
 	public $className$Model(IProject project) {
 		super(project);
-		exportString = "Export to $className$ input format";	
-		
-		// TODO: (optional) Add User Code Here
+	}
+
+	/**
+	 * Sets the name, description, and custom action name 
+	 * for the item.
+	 */
+	@Override
+	protected void setupItemInfo() {
+		setName("$className$ Model");
+		setDescription("Specify information about $className$");
+		writerName = "$className$DefaultWriterName";
+		readerName = "$className$DefaultReaderName";     	
+		outputName = "$className$DefaultOutputName";   
+		exportString = "Export to $className$ input format";
+		allowedActions.add(0, exportString);
 	}
 
 	/**
@@ -50,40 +73,39 @@ public class $className$Model extends Model {
 	public void setupForm() {
 		form = new Form();
 		
+		// Get reference to the IOService
+		// This will let us get IReader/IWriters for 
+		// our specific Model
 		ioService = getIOService();
-		if (ioService == null) {
-			setIOService(new IOService());
-			ioService = getIOService();
-		}
-		
-		// TODO: Add User Code Here
-		
-		/**
-		 * The following two lines of code can be uncommented
-		 * if there is supposed to be some default information
-		 * populated in the form when creating this item from
-		 * the new item button in the ICE perspective.
+
+		// Populate the Form with Components for your 
+		// application Model.
+		/* Example:
 		 * 
-		 * Additionally, you will have to add code to the 
-		 * loadInput() method so that it will correctly handle 
-		 * a null argument.
+		 * DataComponent data = new DataComponent();
+		 * data.setName("Example Input Data");
+		 * data.setDescription("DataComponents let you expose Entries for user input.");
+		 * data.setId(1);
+		 * 
+		 * IEntry inputVal1 = new StringEntry();
+		 * inputVal1.setName("Input 1");
+		 * inputVal1.setDescription("A description for this user input.");
+		 * inputVal1.setId(1);
+		 * 
+		 * IEntry inputVal2 = new DiscreteEntry("allowedVal1", "allowedVal2");
+		 * inputVal2.setName("Input 2");
+		 * inputVal2.setDescription("A description for this user input - 
+		 * 							it shows a drop down of discrete values.");
+		 * inputVal2.setId(1);
+		 * 
+		 * data.addEntry(inputVal1);
+		 * data.addEntry(inputVal2);
+		 * 
+		 * form.addComponent(data);
 		 */
-		//if (project != null) 
-		//	loadInput(null);
 		
 	}
 	
-	/**
-	 * Sets the name, description, and custom action name 
-	 * for the item.
-	 */
-	@Override
-	protected void setupItemInfo() {
-		setName("$className$ Model");
-		setDescription("Specify information about $className$");
-		allowedActions.add(0, exportString);
-	}
-
 	/**
 	 * The reviewEntries method is used to ensure that the form is 
 	 * in an acceptable state before processing the information it
@@ -91,57 +113,46 @@ public class $className$Model extends Model {
 	 * to have this method return FormStatus.InfoError.
 	 * 
 	 * @param preparedForm
-	 * 
-	 * @return
+	 *		the form to validate 
+	 * @return whether the form was correctly set up
 	 */
 	@Override
 	protected FormStatus reviewEntries(Form preparedForm) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
 		
-		// TODO: Add User Code Here
+		// Here you can add code that checks the Entries in the Form 
+		// after the user clicks Save. If there are any errors in the 
+		// Entry values, return FormStatus.InfoError. Otherwise 
+		// return FormStatus.ReadyToProcess.
 		
 		return retStatus;
 	}
 
 	/**
 	 * Use this method to process the data that has been 
-	 * specified in the form.  Data being processed should
-	 * be written usint 
+	 * specified in the form. 
 	 * 
 	 * @param actionName
-	 * @return
+	 * 		a string representation of the action to perform
+	 * @return whether the form was processed successfully
 	 */
 	@Override
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
-		
-		// Check to make sure that the item code has been filled in properly
-		// Before going further make sure that the top three variables are 
-		// customized to the appropriate values for your new item.
-		if (writerName == "$className$DefaultWriterName" || 
-				outputName == "$className$DefaultOutputName") {
-			return FormStatus.InfoError;
-		}
 		
 		// This action occurs only when the default processing option is chosen
 		// The default processing option is defined in the last line of the 
 		// setupItemInfo() method defined above.
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
-			writer = ioService.getWriter(writerName); 
-			try {
-				retStatus = FormStatus.Processing;
-				writer.write(form, outputFile);
-				project.refreshLocal(1, null);
-				retStatus = FormStatus.Processed;
-			} catch (CoreException e) {
-				logger.error(getClass().getName() + " CoreException!", e);
-			}
+			writer = ioService.getWriter(writerName);
+			retStatus = FormStatus.Processing;
+			writer.write(form, outputFile);
+			refreshProjectSpace();
+			retStatus = FormStatus.Processed;
 		} else {
 			retStatus = super.process(actionName);
 		}
-		
-		// TODO: Add User Code Here
 		
 		return retStatus;
 	}
@@ -152,17 +163,11 @@ public class $className$Model extends Model {
 	 * item.  It is responsible for setting up the form for user interaction.
 	 *  
 	 * @param fileName
+	 * 		the file to load
 	 */
 	@Override
 	public void loadInput(String fileName) {
-		
-		// Check to make sure that the item code has been filled in properly
-		// Before going further make sure that the top three variables are 
-		// customized to the appropriate values for your new item.
-		if (readerName == "$className$DefaultReaderName") {
-			return;
-		}
-	
+
 		// Read in the file and set up the form
 		IFile inputFile = project.getFile(fileName);
 		reader = ioService.getReader(readerName);
@@ -171,5 +176,6 @@ public class $className$Model extends Model {
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
+
 	}
 }

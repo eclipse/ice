@@ -1,5 +1,0 @@
--------------------------------------------------------------------------------
-Test set: org.eclipse.ice.kdd.test.KMeansIntegrationTester
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.152 sec - in org.eclipse.ice.kdd.test.KMeansIntegrationTester
-checkRunRawKMeans(org.eclipse.ice.kdd.test.KMeansIntegrationTester)  Time elapsed: 0.151 sec

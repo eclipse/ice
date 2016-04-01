@@ -174,7 +174,7 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
@@ -187,7 +187,7 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
@@ -200,7 +200,7 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
@@ -213,7 +213,7 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
@@ -227,7 +227,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// disable again, see if it breaks
 		jobLauncher.disableMPI();
@@ -235,7 +235,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// check OpenMP
 		// Just see if it crashes or not
@@ -244,7 +244,7 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
@@ -257,7 +257,7 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
@@ -270,7 +270,7 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
@@ -283,7 +283,7 @@ public class JobLauncherTester {
 
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
@@ -299,7 +299,7 @@ public class JobLauncherTester {
 
 		entry = dataC.retrieveAllEntries().get(0);
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// disable again, see if it breaks
 		jobLauncher.disableOpenMP();
@@ -307,7 +307,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		jobLauncher = new TestJobLauncher(null);
 		jobLauncher.setupForm();
@@ -319,7 +319,7 @@ public class JobLauncherTester {
 		// Check the dataComponent, see if they are both there
 		// Get the OpenMP data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 		assertNotNull(entry);
 
@@ -330,7 +330,7 @@ public class JobLauncherTester {
 
 		// Get the MPI data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values - nothing changed
@@ -349,14 +349,14 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 3);
+		assertEquals(form.getComponents().size(), 4);
 
 		// Tests for TBB
 		jobLauncher.enableTBB(1, 5, 3);
 
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveAllEntries().get(1);
 
 		// Check values
@@ -371,7 +371,7 @@ public class JobLauncherTester {
 
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveEntry("Number of TBB Threads");
 
 		// Check values - TBB
@@ -396,7 +396,7 @@ public class JobLauncherTester {
 
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveEntry("Number of TBB Threads");
 
 		// Check values - TBB
@@ -418,7 +418,7 @@ public class JobLauncherTester {
 		jobLauncher.enableTBB(20, 10, 5);
 		// Get the data component and the respective values
 		form = (JobLauncherForm) jobLauncher.getForm();
-		dataC = (DataComponent) form.getComponents().get(3);
+		dataC = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
 		entry = dataC.retrieveEntry("Number of TBB Threads");
 
 		// Check values - TBB

@@ -843,9 +843,13 @@ public class ICEFormEditor extends SharedHeaderFormEditor
 		// Local Declaration
 		ArrayList<IFormPage> formPages = new ArrayList<IFormPage>();
 
-		// Just allocate it directly for now!
+		// Try to get the proper page factory from the Context. If it isn't
+		// available, drop back to the default.
 		IPageFactory factory = (IPageFactory) e4Context
 				.get(iceDataForm.getContext());
+		if (factory == null) {
+			factory = (IPageFactory) e4Context.get("ice-default");
+		}
 
 		// Load data pages if they are available.
 		if (!iceDataForm.getComponents().isEmpty()) {
