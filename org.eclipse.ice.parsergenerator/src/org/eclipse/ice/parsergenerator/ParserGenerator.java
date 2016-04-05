@@ -19,8 +19,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.mwe2.language.Mwe2StandaloneSetup;
-import org.eclipse.emf.mwe2.launch.runtime.Mwe2Runner;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
@@ -33,6 +36,10 @@ import org.eclipse.ice.item.model.Model;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.xtext.generator.IGenerator;
+import org.eclipse.xtext.generator.JavaIoFileSystemAccess;
+import org.eclipse.xtext.parser.IEncodingProvider;
+import org.eclipse.xtext.resource.generic.XMLEncodingProvider;
 import org.eclipse.xtext.ui.util.FileOpener;
 import org.eclipse.xtext.util.JavaVersion;
 import org.eclipse.xtext.xtext.ui.wizard.project.XtextProjectCreator;
@@ -45,8 +52,10 @@ import org.eclipse.xtext.xtext.wizard.SourceLayout;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 
 @SuppressWarnings("restriction")
 @XmlRootElement(name = "ParserGenerator")
@@ -158,7 +167,14 @@ public class ParserGenerator extends Model {
 	@Override
 	public FormStatus process(String actionName) {
 		FormStatus retStatus = FormStatus.ReadyToProcess;
-		Injector injector = Guice.createInjector();
+		Injector injector = Guice.createInjector(new Module() {
+			@Override
+			public void configure(Binder binder) {
+				binder.bind(IGenerator.class).to(IOServiceGenerator.class);
+				binder.bind(ResourceSet.class).to(ResourceSetImpl.class);
+				binder.bind(IEncodingProvider.class).to(XMLEncodingProvider.class);
+			}
+		});
 		ArrayList<Component> components = form.getComponents();
 		ArrayList<IEntry> projectEntries = ((DataComponent)components.get(0)).retrieveAllEntries();
 		ArrayList<IEntry> parserEntries = ((DataComponent)components.get(1)).retrieveAllEntries();
@@ -185,7 +201,7 @@ public class ParserGenerator extends Model {
 				info.setRootLocation(workspace.getRoot().getLocation().toOSString());
 				info.setWorkbench(PlatformUI.getWorkbench());
 				info.setEncoding(Charset.defaultCharset());
-				info.setPreferredBuildSystem(BuildSystem.MAVEN);
+				info.setPreferredBuildSystem(BuildSystem.NONE);
 				info.setSourceLayout(SourceLayout.PLAIN);
 				info.setJavaVersion(JavaVersion.JAVA8);
 				info.setProjectLayout(ProjectLayout.FLAT);
@@ -237,10 +253,10 @@ public class ParserGenerator extends Model {
 				
 				//URI uri = (new File(grammarFilePath)).toURI();
 				//System.out.println(uri.toString());
-				
-				// Generate the parser
-				injector = new Mwe2StandaloneSetup().createInjectorAndDoEMFRegistration();
-				Mwe2Runner runner = injector.getInstance(Mwe2Runner.class);
+			
+				// Generate files
+				CodeGenerator generator = injector.getInstance(CodeGenerator.class);
+				generator.run(projectName, fileExt);
 				
 				/*
 				 * There are issues getting the Mwe2Runner or Mwe2Launcher to work due to
@@ -311,5 +327,24 @@ public class ParserGenerator extends Model {
 		entry.setValue(value);
 		entry.setDescription("");
 		return entry;
+	}
+	
+	static class CodeGenerator {
+		@Inject
+		private Provider<ResourceSet> resourceSetProvider;
+		
+		@Inject
+		private IGenerator generator;
+		
+		@Inject
+		private JavaIoFileSystemAccess fsa;
+		
+		protected void run(String projectName, String fileExt) {
+			String uriBase = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+			ResourceSet set = resourceSetProvider.get();
+			set.getResourceFactoryRegistry().getExtensionToFactoryMap().put(fileExt, new XMIResourceFactoryImpl());
+			Resource resource = set.getResource(URI.createURI(uriBase), true); // TODO: Change uriBase to correct path
+			generator.doGenerate(resource, fsa);
+		}
 	}
 }
