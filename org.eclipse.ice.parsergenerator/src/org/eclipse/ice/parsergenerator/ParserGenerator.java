@@ -170,7 +170,6 @@ public class ParserGenerator extends Model {
 		Injector injector = Guice.createInjector(new Module() {
 			@Override
 			public void configure(Binder binder) {
-				binder.bind(IGenerator.class).to(IOServiceGenerator.class);
 				binder.bind(ResourceSet.class).to(ResourceSetImpl.class);
 				binder.bind(IEncodingProvider.class).to(XMLEncodingProvider.class);
 			}
@@ -209,7 +208,8 @@ public class ParserGenerator extends Model {
 				info.getIntellijProject().setEnabled(false);
 				info.getWebProject().setEnabled(false);
 				info.getUiProject().setEnabled(false);
-				
+			
+				// Create the Xtext project
 				IRunnableWithProgress op = new IRunnableWithProgress() {
 					@Override
 					public void run(IProgressMonitor monitor) throws InvocationTargetException {
@@ -223,7 +223,6 @@ public class ParserGenerator extends Model {
 							creator = injector.getInstance(XtextProjectCreator.class);
 							creator.setProjectInfo(info);
 							creator.run(monitor);
-							//fileOpener.selectAndReveal(creator.getResult());
 						} catch(Exception e) {
 							throw new InvocationTargetException(e);
 						} finally {
@@ -233,7 +232,7 @@ public class ParserGenerator extends Model {
 				};
 				op.run(new NullProgressMonitor());
 			
-				// Write out the grammar file
+				// Write out the grammar file with the information from the form
 				StringJoiner sj = new StringJoiner(System.getProperty("file.separator"));
 				sj.add(workspace.getRoot().getLocation().toOSString());
 				sj.add(projectName);
@@ -248,15 +247,11 @@ public class ParserGenerator extends Model {
 				fw.flush();
 				fw.close();
 				
-				// Need to register the new project as a resource
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 				
-				//URI uri = (new File(grammarFilePath)).toURI();
-				//System.out.println(uri.toString());
-			
 				// Generate files
 				CodeGenerator generator = injector.getInstance(CodeGenerator.class);
-				generator.run(projectName, fileExt);
+				generator.run(projectName, parserName, fileExt);
 				
 				/*
 				 * There are issues getting the Mwe2Runner or Mwe2Launcher to work due to
@@ -278,6 +273,14 @@ public class ParserGenerator extends Model {
 		return retStatus;
 	}
 
+	/**
+	 * Creates an Xtext grammar based on the data in the form
+	 * 
+	 * @param projectName: The name of the project to output
+	 * @param parserName: The name of the parser to generate
+	 * @param parserData: A list of the data to be used in the grammar
+	 * @return a string representation of the Xtext grammar
+	 */
 	private String buildGrammar(String projectName, String parserName, ArrayList<IEntry> parserData) {
 		String open    = parserData.get(0).getValue();
 		String close   = parserData.get(1).getValue(); 
@@ -320,7 +323,10 @@ public class ParserGenerator extends Model {
 	
 		return sb.toString();
 	}
-	
+
+	/**
+	 * Creates a new entry with some default value and name.
+	 */
 	private StringEntry createEntry(String name, String value) {
 		StringEntry entry = new StringEntry();
 		entry.setName(name);
@@ -329,21 +335,28 @@ public class ParserGenerator extends Model {
 		return entry;
 	}
 	
+	/**
+	 * This class will kick off the code generation via the run() method.  It should 
+	 * only be used via a Guice injector's getInstance() method. 
+	 */
 	static class CodeGenerator {
 		@Inject
 		private Provider<ResourceSet> resourceSetProvider;
 		
 		@Inject
-		private IGenerator generator;
+		private IOServiceGenerator generator;
 		
 		@Inject
 		private JavaIoFileSystemAccess fsa;
 		
-		protected void run(String projectName, String fileExt) {
+		protected void run(String projectName, String itemName, String fileExt) {
 			String uriBase = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+			String fileName = uriBase + "/" + projectName + "/.project";
 			ResourceSet set = resourceSetProvider.get();
 			set.getResourceFactoryRegistry().getExtensionToFactoryMap().put(fileExt, new XMIResourceFactoryImpl());
-			Resource resource = set.getResource(URI.createURI(uriBase), true); // TODO: Change uriBase to correct path
+			Resource resource = set.createResource(URI.createURI(fileName)); 
+			fsa.setOutputPath(uriBase + "/" + projectName);
+			generator.setParserInfo(projectName, itemName, fileExt);
 			generator.doGenerate(resource, fsa);
 		}
 	}
