@@ -249,16 +249,11 @@ public class ParserGenerator extends Model {
 				
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 				
-				// Generate files
+				// Generate files and update existing infrastructure
 				CodeGenerator generator = injector.getInstance(CodeGenerator.class);
 				generator.run(projectName, parserName, fileExt);
 				
-				/*
-				 * There are issues getting the Mwe2Runner or Mwe2Launcher to work due to
-				 * the new project not being registered with the emf plugins.
-				 */
-				
-				project.refreshLocal(1, new NullProgressMonitor());
+				project.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
 				retStatus = FormStatus.Processed;
 			} catch (CoreException e) {
 				logger.error(getClass().getName() + " CoreException!", e);
