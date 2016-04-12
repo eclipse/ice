@@ -1,7 +1,4 @@
-
-\title{Resource Components}
-\maketitle
-
+\chapter{Working with Resource Components}
 Resource Components are ICE Components which contain a grid of visualization
 resources. These resources can display files from a variety of sources,
 such as CSV files or VisIt visualizations. Geometry and Mesh editors allow for
@@ -33,7 +30,7 @@ Explorer}. For the tutorial, this will be VisualizationModel.java in the
 org.eclipse.ice.demo. visualization.model package. Its location can be seen in
 figure \ref{fig:demostructure}.
 
-\begin{figure}[H]
+\begin{figure}[!H]
 \includegraphics[width=\textwidth]{images/DemoPackageStructure}
 \centering
 \caption{The package structure for org.eclipe.ice.demo bundle}
@@ -153,7 +150,7 @@ $\rightarrow$ \texttt{Preferences...} in ICE's menu bar. (On Mac OS X,
 \texttt{Preferences} is instead located under \texttt{ICE} in the menu
 bar.)
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/ICEPreferences}
 \centering
 \caption{The ICE \texttt{Preferences Menu} for Windows and Linux. It will be
@@ -165,7 +162,7 @@ located under \texttt{ICE} instead of \texttt{Window} on Mac.}
 Select \texttt{Visualization} $\rightarrow$ \texttt{VisIt} in the tree on the
 left side of the \texttt{Preferences} window.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/VisualizationPreferences}
 \centering
 \caption{The \texttt{VisIt} preferences page in the \texttt{Preferences}
@@ -205,7 +202,7 @@ ICE will now open and connect to this VisIt installation each time ICE is opened
 Before opening your new Item, select the itemDB folder in the \texttt{Project
 Explorer} and press the import button, highlighted below.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/ImportButton}
 \centering
 \caption{ICE's \texttt{import} button.}
@@ -226,7 +223,7 @@ Finally, switch to the ICE Perspective to ensure that the neccesary Views will
 be open. To do this, click the \texttt{Open Perspective} button in the upper right
 of the workbench screen.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics{images/ICE_OpenPerspective}
 \centering
 \caption{ICE's \texttt{Open Perspective} button.}
@@ -239,7 +236,7 @@ In the dialog, select \texttt{ICE} and press {OK}.
 
 Your Item should look like this when it loads.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/ItemTabs}
 \centering
 \caption{The \texttt{Visualization Model} after it is initially opened.
@@ -253,7 +250,7 @@ In the lower left of the \texttt{Visualization Model} are three tabs, hilighted
 in Figure \ref{fig:itemtabs}.
 Switch to the \texttt{Resource Component} tab in your Item and tothe \texttt{Resources} tab on the left, as shown below.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/ResourcesTab}
 \centering
 \caption{The \texttt{ICE Perspective}'s \texttt{Resources} tab.}
@@ -265,7 +262,7 @@ Double click on both the file names to load them into the Resource Component.
 At the top left of the \texttt{Visualization Model} will be controls for the
 component's layout.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics{images/ResourceComponentControls}
 \centering
 \caption{The layout controls for the \texttt{Resource Component}.}
@@ -280,7 +277,7 @@ be closed.
 If you hover over a plot, a button will appear in its upper left hand corner.
 Clicking it will close that plot. 
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/ClosePlotButton}
 \centering
 \caption{The X button in the upper left will close the plot.}
@@ -289,7 +286,7 @@ Clicking it will close that plot.
 
 \subsection{Interacting with VisIt Plots}
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/VisItPlot}
 \centering
 \caption{An example of a file open in VisIt displayed in a \texttt{Plot
@@ -305,7 +302,7 @@ the model will be displayed.
 At the bottom of the plot will be a series of controls for animation. If your
 plot does not have time series data, they will be greyed out. 
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/TimeSliderWidget} 
 \centering
 \caption{The \texttt{Plot Editor}'s animation controls.}
@@ -317,7 +314,7 @@ slider or by typing a time into the box to its left.
 
 \subsection{Interacting with CSV Plots}
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/CSVGraph}
 \centering
 \caption{An example of a CSV file. The Y axis is displayed on a logarithmic
@@ -344,7 +341,7 @@ Model} and the \texttt{Shapes} tab on the left.
 Clicking the \texttt{Add Primitives} button will display a drop down of
 primitive shapes which can be added to the scene.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/AddPrimitiveShape}
 \centering
 \caption{The \texttt{Add Primitives} button displays a menu of shapes to add.}
@@ -353,7 +350,7 @@ primitive shapes which can be added to the scene.
 
 Complex shapes can similarly be added using the \texttt{Add Complex} button.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/AddComplexShape}
 \centering
 \caption{The \texttt{Add Complex} button can add a Union of shapes.}
@@ -363,7 +360,7 @@ Complex shapes can similarly be added using the \texttt{Add Complex} button.
 Primitive shapes can be added under complex shapes by selecting anything beneath
 the desired parent complex shape before adding the new primitive.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/ComplexShapeTree}
 \centering
 \caption{An example of a constructive solid geometry tree in the
@@ -378,7 +375,7 @@ selected shapes from the tree.
 The Transformation View, in the lower left of the workbench screen, has spaces
 to set the rotation, scale, and translation of a selected object.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/TransformationView}
 \centering
 \caption{The \texttt{Transformation View}.}
@@ -393,7 +390,7 @@ Elements} tab on your left.
 Clicking within the grid will create a vertex, until the fourth completes the
 polygon.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/AddPolygon}
 \centering
 \caption{A new polygon, colored green because the user has not yet permanently
@@ -404,7 +401,7 @@ added it to the mesh.}
 Click again to make the polygon permanent, signified by turning purple, or hit
 \texttt{Esc} to cancel.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/NewPolygon}
 \centering
 \caption{The polygon turns purple after clicking, showing that it has been
@@ -415,7 +412,7 @@ finished.}
 The \texttt{Mode} button in the top left allows you to switch between
 \texttt{Add Elements} mode, used previously, and \texttt{Edit Elements} mode.
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/EditMode}
 \centering
 \caption{The \texttt{Mode} button allows switching between \texttt{Edit
@@ -425,7 +422,7 @@ Elements} mode and \texttt{Add Elements} mode.}
 
 In edit mode, you can click a vertex (or vertices) to select them. 
 
-\begin{figure}[H]
+\begin{figure}[!h]
 \includegraphics[width=12cm]{images/SelectedVertex}
 \centering
 \caption{A selected vertex will turn blue.}
