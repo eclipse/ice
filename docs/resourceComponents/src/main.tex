@@ -12,17 +12,21 @@
 Resource Components are ICE Components which contain a grid of visualization
 resources. These resources can display files from a variety of sources,
 such as CSV files or VisIt visualizations. Geometry and Mesh editors allow for
-editing of shapes or meshes. Both can be added to an Item to offer visualization
-of data.
+editing of shapes or meshes. All three can be added to an Item to offer
+visualization of data.
 
 \section{Prerequisites}
 
-This tutorial assumes that the class you are writing already has an ICE Form. If
-you are writing an extension of ICE's Item class, then the work of creating and
-managing a Form is already done for you.
+This tutorial assumes you will be making use of the sample classes in the
+org.eclipse.ice.demo.visualization package for convenience. The two relevant
+classes are VisualizationModel and VisualizationModelComplete. The former is an
+example of a bare bones ICE Item, while the latter is the same class with all
+the extra code required for the visualization components already added in.
 
-See the New Item Generation Tutorial, in the docs/newItemGeneration/ folder of 
-the ICE repo for details on how to create an Item.
+If you are writing your own extension of ICE's Item class, then the same
+principles can be used to add these components to it. See the New Item
+Generation Tutorial, in the docs/newItemGeneration/ folder of the ICE repo for
+details on how to create an Item.
 
 \section{Adding the Components}
 
@@ -31,19 +35,18 @@ First, add the neccesary imports for the components being added to your Item.
 \begin{verbatim}
 import java.io.IOException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.eavp.viz.service.modeling.BasicView;
-import org.eclipse.eavp.viz.service.modeling.ShapeController;
-import org.eclipse.eavp.viz.service.modeling.ShapeMesh;
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.eavp.viz.modeling.ShapeController;
+import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.resource.VizResource;
 \end{verbatim}
 
-Next, copy and paste the following example code into your class.
+Next, copy and paste the following example code into the end of your Item's
+setupForm() method.
 
 \begin{verbatim}
 //Create the resource component
@@ -54,25 +57,30 @@ resourceComponent.setName("Resources");
 resourceComponent.setDescription("Results");
 resourceComponent.setId(2);
 
-//Initialize the resources
+//Declare the files and resources
 VizResource csvResource = null;
 VizResource visItResource = null;
 IFile csvFile = null;
 IFile visItFile = null;
 
-//Open the files
-csvFile = project.getFile("fib8.csv");
-visItFile = project.getFile("wave.visit");
 
 //If the file was found, create the CSV resource and add it to the component
 try{
+			
+	//Open the files
+	csvFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB")
+		.getFile("fib8.csv");
+	visItFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB")
+		.getFile("tire.silo");
+			
+	//If the file was found, create the CSV resource and add it to the component.
 	if(csvFile.exists()){
 		csvResource = new 
                     VizResource(csvFile.getLocation()
                     .toFile());
     	resourceComponent.addResource(csvResource);
 	}
-		        
+				        
 	//If the file was found, create the VisIt resource and add it to 
 	//the component
 	if(visItFile.exists()){
@@ -100,11 +108,17 @@ MeshComponent meshComponent = new MeshComponent();
 form.addComponent(resourceComponent);
 form.addComponent(geometryComponent);
 form.addComponent(meshComponent);	
-\end{verbatim}
+		
+//Set the context on the Form
+form.setContext("visualization");
+\end{verbatim} 
 
 This code will add a Resource Component, Geometry Component, and Mesh Component
-to your Item and load fib8.csv and wave.visit, which should be in the workspace
-from your USB drive, into the Resource Component.
+to your Item and load fib8.csv and tire.silo into the Resource Component.
+
+You will also need to add the org.eclipse.ice.demo bundle to your operating
+system's run configuration, as explained in the new item generation tutorial
+(found in docs/newItemGeneration in the ICE repo). 
 
 
 \section{Using the Resource Component}
@@ -114,7 +128,7 @@ from your USB drive, into the Resource Component.
 In order to visualize resources containing VisIt files, ICE must be connected to
 a running VisIt installation. To set up this connection, select \texttt{Windows}
 $\rightarrow$ \texttt{Preferences...} in ICE's menu bar. (On Mac OS X,
-\texttt{Preferences} is instead located under \texttt{Eclipse} ICE in the menu
+\texttt{Preferences} is instead located under \texttt{ICE} in the menu
 bar.)
 
 \begin{center}
@@ -135,12 +149,51 @@ row and put the path of your installation of VisIt.
 Press \texttt{Apply}, then \texttt{OK}, both in the lower right hand corner. ICE
 will now open and connect to this VisIt installation each time ICE is opened.
 
+\subsection{Opening Your Item}
+Before opening your new Item, select the itemDB folder in the \texttt{Project
+Explorer} and press the import button, highlighted below.
+
+\begin{center}
+\includegraphics[width=12cm]{images/ImportButton}
+\end{center}
+
+Select the files you want to visualize and click OK. For the tutorial, these
+should be the fib8.csv and tire.silo files from the USB drive's Data directory.
+You should now see the two files within the itemDB folder.
+
+Then select\texttt{New} $\rightarrow$ \texttt{Other\ldots} from the toolbar. In
+the new dialog, select the \texttt{Create Item Wizard} and hit \texttt{Next}.
+Then select the name of your Item and and press \texttt{Finish}. For the
+tutorial, this will be Visualization Model. You can also select the
+Visualization Model (Pre-completed) if you skipped the first part of the
+tutorial.
+
+Finally, switch to the ICE Perspective to ensure that the neccesary Views will
+be open. To do this, click the \texttt{Open Perspective} button in the upper right
+of the screen.
+
+\begin{center}
+\includegraphics{images/ICE_OpenPerspective}
+\end{center}
+
+In the dialog, select \texttt{ICE} and press {OK}.
+
 \subsection{Managing the Resources}
 
-Before opening your new Item, import your resources into the top level of your 
-project. Afteword, you should notice a new tab inside containing your 
-ResourceComponent. Its title will be whatever you set as its description when 
-writing the code for it.
+Your Item should look like this.
+
+\begin{center}
+\includegraphics[width=12cm]{images/ItemTabs}
+\end{center}
+
+In the lower left are three tabs. Switch to the \texttt{Resource Component} tab
+in your Item and to the \texttt{Resources} tab on the left, as shown below.
+
+\begin{center}
+\includegraphics[width=12cm]{images/ResourcesTab}
+\end{center}
+
+Double click on both the file names to load them into the Resource Component.
 
 At the top left of the screen will be controls for the component's layout.
 
@@ -191,7 +244,6 @@ The top of the CSV plot has a row of buttons which control various aspects of
 the graph's presentation. Right clicking will open a context menu allowing you
 to choose which of the available series to plot.
 
-
 \subsection{Editing 3D Structures}
 
 ICE also contains capabilities to render graphics with the Geometry Editor and
@@ -201,9 +253,8 @@ overview of the editors' functionality.
 
 \subsubsection{The Geometry Editor}
 
-The GeometryComponent you added to the form will create a new tab containing a
-Geometry Editor. Shapes in the editor are structured as a Constructive Solid
-Geometry Tree. 
+Now switch to the \texttt{Geometry Editor} tab in your Item and the
+\texttt{Shapes} tab on the left.
 
 Clicking the \texttt{Add Primitives} button will display a drop down of
 primitive shapes which can be added to the scene.
@@ -237,8 +288,8 @@ and translation of a selected object.
 
 \subsubsection{The Mesh Editor}
 
-Like the Geometry Editor, the MeshComponent will create a Mesh Editor in your
-form.
+Now switch to the \texttt{Mesh Editor} tab in your Item and \texttt{Mesh
+Elements} tab on your left.
 
 Clicking within the grid will create a vertex, until the fourth completes the
 polygon.
