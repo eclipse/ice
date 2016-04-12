@@ -2,6 +2,45 @@
 %%There is just one section and two subsections.
 \documentclass{article}
 \usepackage{authblk}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{url}
+
+\setlength{\parskip}{1em}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue}
+}
+
+\setlength{\parskip}{1em}
 
 \begin{document}
 
@@ -15,7 +54,16 @@
 \affil{Oak Ridge National Laboratory}
 \maketitle{}
 
-\input{../developerMenu/src/main.tex}
-
+\input{../../developerMenu/src/content}
+\input{../../dynamicUI/src/content}
+\input{../../geometryEditor/src/content}
+\input{../../installation/src/content}
+\input{../../meshEditor/src/content}
+%\input{../../moose-tutorial/src/content.tex} % FIXME! Incorrect structure.
+\input{../../newItemGeneration/src/content}
+\input{../../reflectivity/src/content}
+\input{../../resourceComponents/src/content} % FIXME! Name misspelled.
+%\input{../../scripting/src/content}
+\input{../../visualization/src/content}
 
 \end{document}
