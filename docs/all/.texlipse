@@ -1,5 +1,5 @@
 #TeXlipse project settings
-#Tue Apr 12 14:04:27 EDT 2016
+#Tue Apr 12 13:38:16 EDT 2016
 markTmpDer=true
 builderNum=2
 outputDir=bin
@@ -8,7 +8,7 @@ bibrefDir=
 outputFormat=pdf
 tempDir=tmp
 mainTexFile=main.tex
-outputFile=ice_moose_20150505.pdf
+outputFile=ice-fullTutorial.pdf
 langSpell=en
 markDer=true
 srcDir=src

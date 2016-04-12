@@ -1,8 +1,8 @@
 #TeXlipse project settings
-#Mon Jan 18 18:15:25 EST 2016
+#Tue Apr 12 14:10:07 EDT 2016
 markTmpDer=true
 builderNum=2
-outputDir=bin
+outputDir=bin/
 makeIndSty=
 bibrefDir=
 outputFormat=pdf
@@ -11,4 +11,4 @@ mainTexFile=main.tex
 outputFile=developerMenu.pdf
 langSpell=en
 markDer=true
-srcDir=src
+srcDir=src/
