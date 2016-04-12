@@ -14,4 +14,11 @@
 	<natures>
 		<nature>net.sourceforge.texlipse.builder.TexlipseNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/.tex</name>
+			<type>1</type>
+			<location>/usr/share/texlive/texmf-dist/tex/latex/tools/.tex</location>
+		</link>
+	</linkedResources>
 </projectDescription>
