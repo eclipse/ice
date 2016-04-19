@@ -316,9 +316,12 @@ class IOServiceGenerator implements IGenerator {
 			 «packageName».serializer,
 			 «packageName».parser.antlr,
 			 «packageName».io
-			Import-Package: org.apache.log4j,
-			 org.eclipse.ice.io,
-			 org.eclipse.ice.datastructures
+			Import-Package: com.google.inject;version="1.4.0",
+			 org.apache.log4j,
+ 			 org.eclipse.core.resources,
+			 org.eclipse.ice.datastructures.entry,
+			 org.eclipse.ice.datastructures.form,
+			 org.eclipse.ice.io.serializable
 			'''
 		)
 	}
