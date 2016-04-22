@@ -27,7 +27,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ice.datastructures.ICEObject.ICEList;
 import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.datastructures.form.MaterialStack;
@@ -94,6 +97,16 @@ public class XMLMaterialsDatabase
 	 * IMaterialsDatabase service.
 	 */
 	private ServiceRegistration<IMaterialsDatabase> registration;
+
+	/**
+	 * The default path of the database XML file in the bundle.
+	 */
+	private String defaultDBPath = "data/defaultMatDB.xml";
+
+	/**
+	 * The default path of the database as a URL.
+	 */
+	private URL defaultDBURL;
 
 	/**
 	 * The constructor
@@ -213,7 +226,8 @@ public class XMLMaterialsDatabase
 				materialsMap.put(material.getName(), material);
 			}
 		} catch (JAXBException | FileNotFoundException e) {
-			logger.error(getClass().getName() + " Exception!", e);
+			logger.error("Unable to load " + fileToLoad.getAbsolutePath() + ".",
+					e);
 		}
 		return;
 	}
@@ -252,12 +266,10 @@ public class XMLMaterialsDatabase
 	}
 
 	/**
-	 * This operation starts the service.
+	 * This operation starts the service. unlike the activator
+	 * (start(BundleContext)), this operation actually manipulates the files.
 	 */
 	public void start() {
-
-		// Local Declarations
-		File fileToLoad;
 
 		// Create the JAXB context to manipulate the files
 		try {
@@ -268,12 +280,28 @@ public class XMLMaterialsDatabase
 			logger.error("Unable to initialize JAXB!", e);
 		}
 
-		// Choose which database to load and do so
-		if (userDatabase.exists()) {
-			logger.info("Loading user-modified database.");
-			loadDatabase(userDatabase);
-		} else {
-			loadDatabase(defaultDatabase);
+		// Find the default user database if it exists in the workspace.
+		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		IPath userDBPath = workspaceRoot.getLocation().append("userMatDB.xml");
+
+		// Set the default file references
+		try {
+			// This file is in a bundle, so we need to convert its URL.
+			defaultDatabase = new File(
+					FileLocator.toFileURL(defaultDBURL).getPath());
+			// This file is in the workspace, so we need to convert its path.
+			userDatabase = userDBPath.toFile();
+			// Choose which database to load and do so
+			if (userDatabase.exists()) {
+				logger.info("Loading user-modified database.");
+				loadDatabase(userDatabase);
+			} else {
+				loadDatabase(defaultDatabase);
+				// Also create the user database since it doesn't exist.
+				userDatabase.createNewFile();
+			}
+		} catch (IOException e1) {
+			logger.error("Unable to load database.", e1);
 		}
 
 		// Throw some info in the log
@@ -292,28 +320,17 @@ public class XMLMaterialsDatabase
 	@Override
 	public void start(BundleContext context) {
 
-		try {
-			if (context != null) {
-				Bundle bundle = context.getBundle();
-				URL userDBURL = bundle.getEntry("data/userMatDB.xml");
-				URL defaultDBURL = bundle.getEntry("data/defaultMatDB.xml");
-				// Set the file references by converting the bundle:// URLs to
-				// file:// URLs.
-				userDatabase = new File(
-						FileLocator.toFileURL(userDBURL).getPath());
-				defaultDatabase = new File(
-						FileLocator.toFileURL(defaultDBURL).getPath());
+		if (context != null) {
+			// Find the default database that ships with ICE.
+			Bundle bundle = context.getBundle();
+			defaultDBURL = bundle.getEntry(defaultDBPath);
 
-				// Once the files are set, just call the other start operation
-				start();
+			// Once the files are set, just call the other start operation
+			start();
 
-				// Register the service
-				registration = context.registerService(IMaterialsDatabase.class,
-						this, null);
-			}
-		} catch (IOException e) {
-			// Complain
-			logger.error("Unable to start the XMLPersistence service!", e);
+			// Register the service
+			registration = context.registerService(IMaterialsDatabase.class,
+					this, null);
 		}
 
 		return;
