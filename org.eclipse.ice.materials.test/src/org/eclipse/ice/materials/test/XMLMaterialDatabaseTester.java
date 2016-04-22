@@ -227,6 +227,7 @@ public class XMLMaterialDatabaseTester {
 		} catch (NullPointerException | JAXBException e) {
 			// Complain
 			e.printStackTrace();
+			System.err.println("Test failed.");
 			fail();
 		}
 	}

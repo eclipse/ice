@@ -286,11 +286,17 @@ public class XMLMaterialsDatabase
 
 		// Set the default file references
 		try {
-			// This file is in a bundle, so we need to convert its URL.
-			defaultDatabase = new File(
-					FileLocator.toFileURL(defaultDBURL).getPath());
-			// This file is in the workspace, so we need to convert its path.
-			userDatabase = userDBPath.toFile();
+			// The default database and the user database are both injected
+			// during tested, but found programmatically in production. So, only
+			// pull their locations if they are not set already.
+			if (defaultDatabase == null && userDatabase == null) {
+				// This file is in a bundle, so we need to convert its URL.
+				defaultDatabase = new File(
+						FileLocator.toFileURL(defaultDBURL).getPath());
+				// This file is in the workspace, so we need to convert its
+				// path.
+				userDatabase = userDBPath.toFile();
+			}
 			// Choose which database to load and do so
 			if (userDatabase.exists()) {
 				logger.info("Loading user-modified database.");
@@ -300,7 +306,7 @@ public class XMLMaterialsDatabase
 				// Also create the user database since it doesn't exist.
 				userDatabase.createNewFile();
 			}
-		} catch (IOException e1) {
+		} catch (IOException | NullPointerException e1) {
 			logger.error("Unable to load database.", e1);
 		}
 

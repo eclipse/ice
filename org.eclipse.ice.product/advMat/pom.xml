@@ -4,10 +4,10 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>ICE</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
-		<version>2.1.8</version>
-		<relativePath>../..</relativePath>
+		<version>2.1.8-SNAPSHOT</version>
+		<relativePath>../../org.eclipse.ice.parent</relativePath>
+		<groupId>org.eclipse.ice</groupId>
 	</parent>
 
 	<name>ICE Advanced Materials Product</name>
@@ -66,5 +66,5 @@
 		</plugins>
 	</build>
 
-	<version>2.1.8</version>
+	<version>2.1.8-SNAPSHOT</version>
 </project>
