@@ -49,7 +49,7 @@ def parse_args(args):
                 formatter_class=argparse.ArgumentDefaultsHelpFormatter,
                 fromfile_prefix_chars='@')
 
-    parser.add_argument('-u', '--update', nargs='*', default=['all'],
+    parser.add_argument('-u', '--update', nargs='*', default=['ICE', 'VisIt'],
             choices=("all", "none", "VisIt", "HDFJava", "ICE"),
             help='The packages to update.  Leave blank to update all available packages.')
     parser.add_argument('-p', '--prefix', default=os.path.abspath(os.path.join(".","ICE")),
@@ -65,9 +65,10 @@ def parse_args(args):
     opts = parser.parse_args(args)
 
     # If update option was given blank set it to update everything
-    if opts.update == [] or 'all' in opts.update:
+    if opts.update == []:
+        opts.update = ['ICE', 'VisIt']
+    if 'all' in opts.update:
         opts.update = ['ICE', 'VisIt', 'HDFJava']
-
     if opts.with_hdfjava is not None and 'HDFJava' in opts.update:
         print("")
         print("--------------------------- WARNING -----------------------------")
@@ -80,9 +81,9 @@ def parse_args(args):
     if opts.with_visit is not None and 'VisIt' in opts.update:
         print("")
         print("--------------------------- WARNING -----------------------------")
-        print("Options used to install HDFJava and use an existing installation.")
+        print("Options used to install VisIt and use an existing installation.")
         print("We will try to use the existing installation.  If this does not work")
-        print("try running again without the --with-hdfjava option.")
+        print("try running again without the --with-visit option.")
         print("--------------------------- WARNING -----------------------------")
         print("")
     return opts
@@ -132,21 +133,21 @@ def print_header(opts, os_type, arch_type):
 
 
 def get_package_file(pkg, os_type, arch_type):
-    package_files = {"ICE" : {"Windows" : {"x86_64" : "ice.product-win32.win32.x86_64.zip"     ,
-                                           "x86"    : "ice.product-win32.win32.x86.zip"        },
-                              "Darwin"  : {"x86_64" : "ice.product-macosx.cocoa.x86_64.zip"    ,
-                                           "x86"    : "ice.product-macosx.cocoa.x86.zip"       },
-                              "Linux"   : {"x86_64" : "ice.product-linux.gtk.x86_64.zip"       ,
-                                           "x86"    : "ice.product-linux.gtk.x86.zip"          }},
-                 "VisIt"   : {"Windows" : {"x86_64" : "visit2.10.0_x64.exe"                     ,
-                                           "x86"    : "visit2.10.0.exe"                         },
-                              "Darwin"  : {"x86_64" : "VisIt-2.10.0.dmg"                        },
-                              "Linux"   : {"x86_64" : "visit2_10_0.linux-x86_64-rhel6.tar.gz"   }},
-                 "HDFJava" : {"Windows" : {"x86_64" : "HDFView-2.11-win64-vs2012.zip"          ,
-                                           "x86"    : "HDFView-2.11-win32-vs2012.zip"          },
-                              "Darwin"  : {"x86_64" : "HDFView-2.11.0-Darwin.dmg"                     },
-                              "Linux"   : {"x86_64" : "HDFView-2.11-centos6-x64.tar.gz"        }}}
-    return package_files[pkg][os_type][arch_type]
+    VERSION = "2.1.8"
+    pkg_files = {"ICE" : {"Windows"   : {"x86_64" : "ice-win32-x86_64-"+VERSION+".zip"           ,
+                                         "x86"    : "ice-win32-x86-"+VERSION+".zip"              },
+                            "Darwin"  : {"x86_64" : "ice-macosx-cocoa-x86_64"+VERSION+".zip"     },
+                            "Linux"   : {"x86_64" : "ice-linux-gtk-x86_64-"+VERSION+".zip"       ,
+                                         "x86"    : "ice-linux-gtk-x86-"+VERSION+".zip"          }},
+                 "VisIt" : {"Windows" : {"x86_64" : "visit2.10.0_x64.exe"                        ,
+                                         "x86"    : "visit2.10.0.exe"                            },
+                            "Darwin"  : {"x86_64" : "VisIt-2.10.0.dmg"                           },
+                            "Linux"   : {"x86_64" : "visit2_10_0.linux-x86_64-rhel6.tar.gz"      }},
+                 "HDFJava":{"Windows" : {"x86_64" : "HDFView-2.11-win64-vs2012.zip"              ,
+                                         "x86"    : "HDFView-2.11-win32-vs2012.zip"              },
+                            "Darwin"  : {"x86_64" : "HDFView-2.11.0-Darwin.dmg"                  },
+                            "Linux"   : {"x86_64" : "HDFView-2.11-centos6-x64.tar.gz"            }}}
+    return pkg_files[pkg][os_type][arch_type]
 
 
 def download_packages(opts, os_type, arch_type):
@@ -161,7 +162,7 @@ def download_packages(opts, os_type, arch_type):
     packages = opts.update
     if packages == [] or os_type == None or arch_type == None:
         return
-    date = (datetime.date.today()- datetime.timedelta(1)).isoformat().replace('-','')
+    date = "latest" #(datetime.date.today() - datetime.timedelta(1)).isoformat().replace('-','')
     package_urls = {"ICE" : "http://eclipseice.ornl.gov/downloads/ice/",
                     "VisIt" : "http://eclipseice.ornl.gov/downloads/visit/",
                     "HDFJava" : "http://www.hdfgroup.org/ftp/HDF5/hdf-java/current/bin/"}
@@ -286,6 +287,7 @@ def find_dir(dir, dirname):
 
 def nix_install(opts, pkg_dirs):
     """ Install packages for *nix """
+    hdf_libdir = visit_bin_dir = None
     if "HDFJava" in pkg_dirs.keys():
         print("Installing HDFJava...")
         install_script = find_file(opts.prefix, "HDFView*.sh")
@@ -293,21 +295,21 @@ def nix_install(opts, pkg_dirs):
             install_cmd = [install_script, "--exclude-subdir", "--prefix="+os.path.join(opts.prefix,pkg_dirs['HDFJava'])]
             subprocess.call(install_cmd)
 
-    hdf_path = opts.with_hdfjava if opts.with_hdfjava else opts.prefix
-    hdf_libdir = find_file(hdf_path, "libhdf.a")
-    if hdf_libdir is None:
-        print("")
-        print("--------------------------- ERROR -----------------------------")
-        print("Could not find a usable HDFJava library.  Try downloading")
-        print("a fresh copy using this installer by providing the --update")
-        print("")
-        print("Alternatively you may specify the location of an existing")
-        print("HDFJava installation using the --with-hdfjava option.")
-        print("option without any arguments")
-        print("--------------------------- ERROR -----------------------------")
-        print("")
-        exit()
-    hdf_libdir = os.path.abspath(os.path.dirname(hdf_libdir))
+        hdf_path = opts.with_hdfjava if opts.with_hdfjava else opts.prefix
+        hdf_libdir = find_file(hdf_path, "libhdf.a")
+        if hdf_libdir is None:
+            print("")
+            print("--------------------------- ERROR -----------------------------")
+            print("Could not find a usable HDFJava library.  Try downloading")
+            print("a fresh copy using this installer by providing the --update")
+            print("")
+            print("Alternatively you may specify the location of an existing")
+            print("HDFJava installation using the --with-hdfjava option.")
+            print("option without any arguments")
+            print("--------------------------- ERROR -----------------------------")
+            print("")
+            exit()
+        hdf_libdir = os.path.abspath(os.path.dirname(hdf_libdir))
 
     visit_path = opts.with_visit if opts.with_visit is not None else opts.prefix
     visit_bin_dir = find_file(visit_path, "visit")
@@ -353,16 +355,17 @@ def nix_install(opts, pkg_dirs):
 
 def windows_install(opts, pkg_dirs):
     """ Install packages for Windows """
+    hdf_libdir = visit_bin_dir = None
     if "HDFJava" in pkg_dirs.keys():
         print("Installing HDFJava...")
         install_script = find_file(opts.prefix, "HDFView*.exe")
         install_cmd = [install_script]
         subprocess.call(install_cmd, shell=True)
 
-    hdf_libdir = os.path.dirname(find_file("C:\\", "libhdf.lib"))
-    if hdf_libdir is None:
-        print("ERROR: Could not find HDF Java libraries.")
-        exit()
+        hdf_libdir = os.path.dirname(find_file("C:\\", "libhdf.lib"))
+        if hdf_libdir is None:
+            print("ERROR: Could not find HDF Java libraries.")
+            exit()
 
     if "VisIt" in pkg_dirs.keys():
         print("Installing VisIt...")
@@ -389,8 +392,9 @@ def windows_install(opts, pkg_dirs):
     with open(ice_preferences, 'w') as outfile:
         outfile.write(filedata)
 
-    with open(ice_preferences, 'a') as outfile:
-        outfile.write("-Djava.library.path=" + hdf_libdir)
+    if hdf_libdir is not None:
+        with open(ice_preferences, 'a') as outfile:
+            outfile.write("-Djava.library.path=" + hdf_libdir)
 
 
 def linux_post(opts, pkgs):
