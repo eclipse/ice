@@ -35,7 +35,7 @@ import org.junit.Test;
 /**
  * <!-- begin-UML-doc --> Checks the methods of the PlantComponent class. <!--
  * end-UML-doc -->
- * 
+ *
  * @author Anna Wojtowicz
  */
 public class PlantComponentTester {
@@ -43,7 +43,7 @@ public class PlantComponentTester {
 	 * <p>
 	 * Boolean flag to mark if the PlantComponent was successfully visited.
 	 * </p>
-	 * 
+	 *
 	 */
 	private boolean wasVisited = false;
 
@@ -51,7 +51,7 @@ public class PlantComponentTester {
 	 * <p>
 	 * Checks the construction of the component.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkConstruction() {
@@ -97,7 +97,7 @@ public class PlantComponentTester {
 	 * <p>
 	 * Checks the hashCode and equality methods of the component.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkEquality() {
@@ -122,7 +122,7 @@ public class PlantComponentTester {
 		assertFalse(unequalComponent.equals(component));
 
 		// Check that equality also fails with illegal values
-		assertFalse(component==null);
+		assertFalse(component == null);
 		assertFalse(component.equals(13));
 		assertFalse("just a string".equals(component));
 
@@ -155,14 +155,14 @@ public class PlantComponentTester {
 	 * <p>
 	 * Checks the copy and clone methods of the component.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkCopying() {
 
 		// Construct a base component to copy from.
 		PlantComponent component = new PlantComponent("Jon Snow");
-		component.setDescription("Bastard son of Eddard Stark");
+		component.setDescription("Son of Eddard Stark");
 		component.setId(30);
 
 		/* ---- Check copying ---- */
@@ -218,18 +218,20 @@ public class PlantComponentTester {
 
 	/**
 	 * Checks for persistence in the component.
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * @throws NullPointerException 
+	 * 
+	 * @throws IOException
+	 * @throws JAXBException
+	 * @throws NullPointerException
 	 */
 	@Test
-	public void checkPersistence() throws NullPointerException, JAXBException, IOException {
+	public void checkPersistence()
+			throws NullPointerException, JAXBException, IOException {
 
 		// Local Declarations
 		ICEJAXBHandler xmlHandler = new ICEJAXBHandler();
 		ArrayList<Class> classList = new ArrayList<Class>();
 		classList.add(PlantComponent.class);
-		
+
 		// Create a component for XML writing.
 		PlantComponent writeComponent = new PlantComponent();
 		writeComponent.setName("Robb Stark");
@@ -250,7 +252,8 @@ public class PlantComponentTester {
 		PlantComponent loadComponent = new PlantComponent();
 
 		// Load the inputStream into the component.
-		loadComponent = (PlantComponent) xmlHandler.read(classList, inputStream);
+		loadComponent = (PlantComponent) xmlHandler.read(classList,
+				inputStream);
 
 		// Compare the two components, they should be the same.
 		assertTrue(writeComponent.equals(loadComponent));
@@ -262,7 +265,7 @@ public class PlantComponentTester {
 	 * <p>
 	 * Checks the visitation routine of the component.
 	 * </p>
-	 * 
+	 *
 	 */
 	@Test
 	public void checkVisitation() {
@@ -299,7 +302,7 @@ public class PlantComponentTester {
 	 * <p>
 	 * Fake class to test the visitation routine of the component.
 	 * </p>
-	 * 
+	 *
 	 * @author Anna Wojtowicz
 	 */
 	private class FakeComponentVisitor extends SelectiveComponentVisitor {
