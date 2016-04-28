@@ -27,6 +27,7 @@
 	<version>2.1.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
+	<!-- Provide a reference to the repository containing the CBI plugins -->
   	<pluginRepositories>
 	    <pluginRepository>
 			<id>eclipse-repo</id>
@@ -83,6 +84,12 @@
 		</profile>
 		
 		<profile>
+			<!-- Add a profile (activated using '-P eclipse-sign' that will sign the jar files using
+			     the Eclipse jarsigner. Plugins/features must be signed to avoid a warning message
+			     when installing. See org.eclipse.ice.product/pom.xml for executable signing and
+			     https://www.eclipse.org/community/eclipse_newsletter/2013/august/article3.php for
+			     more information.
+			-->
 			<id>eclipse-sign</id>
 			<pluginRepositories>
 				<pluginRepository>
@@ -256,7 +263,11 @@
 					</executions> -->
 			</plugin>
 
-			<!-- Add build ID to about.mappings -->
+			<!-- Add build ID to about.mappings. This file is used to provide replacement text for the
+			     about.properties file, which in turn is used to provide externalized strings for the 
+			     about.ini file. The about.ini file contains values for the branding specified in
+			     the product extension, and that is displayed in the "About" dialog.
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
