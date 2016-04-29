@@ -27,8 +27,8 @@
 	<version>2.1.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<!-- Provide a reference to the repository containing the CBI plugins -->
   	<pluginRepositories>
+		<!-- Provide a reference to the repository containing the CBI plugins -->
 	    <pluginRepository>
 			<id>eclipse-repo</id>
 			<url>${eclipse-repo.url}</url>
@@ -39,6 +39,17 @@
 				<enabled>true</enabled>
 			</snapshots>
 	    </pluginRepository>
+	    <!--  Plugin repos for jboss repository-utils support -->
+	    <pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-snapshots-repository</id>
+			<name>JBoss Snapshots Repository</name>
+			<url>http://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+		</pluginRepository>
 	</pluginRepositories>
 	
 	<profiles>

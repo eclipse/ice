@@ -13,6 +13,61 @@
 	<name>ICE Repository</name>
 	<artifactId>org.eclipse.ice.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
+	
+	<!-- Properties used by jboss repository-utils to customize index.html -->
+	<properties>
+	    <update.site.name>ICE</update.site.name>
+	    <update.site.description>Nightly Build</update.site.description>
+	    <update.site.version>${unqualifiedVersion}.${buildQualifier}</update.site.version>
+	    <update.site.url>http://download.eclipse.org/ice/builds/${releaseName}</update.site.url>
+	    <target.eclipse.version>Neon</target.eclipse.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<!-- Disable xz compression as it is not supported by jboss repository-utils yet -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<xzCompress>false</xzCompress>
+				</configuration>
+			</plugin>
+			
+			<!-- Configure jboss repository-utils to use our index.html and add the nebula update
+			     site to the repository references. This shouldn't be needed once nebula is included
+			     in the simrel repo
+			-->
+			<plugin>
+				<groupId>org.jboss.tools.tycho-plugins</groupId>
+				<artifactId>repository-utils</artifactId>
+				<version>0.23.3</version>
+				<executions>
+					<execution>
+						<id>generate-facade</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-repository-facade</goal>
+						</goals>
+						<configuration>
+	                        <symbols>
+	                            <update.site.name>${update.site.name}</update.site.name>
+	                            <update.site.description>${update.site.description}</update.site.description>
+	                            <update.site.version>${update.site.version}</update.site.version>
+	                            <update.site.url>${update.site.url}</update.site.url>
+	                            <target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
+	                        </symbols>
+	                        <siteTemplateFolder>siteTemplateFolder/</siteTemplateFolder>
+							<associateSites>
+								<site>http://download.eclipse.org/eavp/builds/next</site>
+							</associateSites>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<profiles>
 		<profile>
