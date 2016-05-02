@@ -3,7 +3,6 @@
 
 <product name="ICE" uid="ice.product" id="org.eclipse.ice.client.rcp.product" application="org.eclipse.ui.ide.workbench" version="2.1.8.qualifier" useFeatures="true" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -37,7 +36,6 @@
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -266,6 +264,11 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ice.materials.feature"/>
       <feature id="org.eclipse.fx.ide.feature"/>
       <feature id="org.eclipse.eavp.feature"/>
+      <feature id="org.eclipse.e4.tools.bundle.spy.feature"/>
+      <feature id="org.eclipse.e4.tools.context.spy.feature"/>
+      <feature id="org.eclipse.e4.tools.css.spy.feature"/>
+      <feature id="org.eclipse.e4.tools.event.spy.feature"/>
+      <feature id="org.eclipse.e4.tools.model.spy.feature"/>
    </features>
 
    <configurations>

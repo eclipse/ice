@@ -44,10 +44,6 @@
               name="preferenceCustomization"
               value="plugin_customization.ini">
         </property>
-        <property
-              name="aboutText"
-              value="%aboutText">
-        </property>
       </product>
    </extension>
    <extension
