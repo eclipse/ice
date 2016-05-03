@@ -20,6 +20,7 @@ class IOServiceGenerator implements IGenerator {
 		generatePomXml(fsa)
 		generateReader(fsa)
 		generateWriter(fsa)
+	    generateSwitch(fsa)
 		updateManifest(fsa)
 	}
 
@@ -77,6 +78,161 @@ class IOServiceGenerator implements IGenerator {
 			'''
 		)
 	}
+
+    def generateSwitch(IFileSystemAccess fsa) {
+        val fileName = "src/" + packageName.replace(".","/") + "/io/" + itemName + "ParserSwitch.java"
+        fsa.generateFile(fileName,
+            '''
+            package «packageName».io;
+            
+            import java.util.ArrayList;
+            
+            import org.eclipse.emf.ecore.EObject;
+            import org.eclipse.emf.ecore.EPackage;
+            import org.eclipse.emf.ecore.util.Switch;
+            import org.eclipse.ice.datastructures.ICEObject.Component;
+            import org.eclipse.ice.datastructures.entry.IEntry;
+            import org.eclipse.ice.datastructures.entry.StringEntry;
+            import org.eclipse.ice.datastructures.form.DataComponent;
+            import org.eclipse.ice.datastructures.form.Form;
+            import «packageName».io.ExampleParserSwitch.ContentWrapper;
+            import «packageName».project.Line;
+            import «packageName».project.ProjectPackage;
+            import «packageName».project.Section;
+            import «packageName».project.impl.LineImpl;
+            import «packageName».project.impl.SectionImpl;
+            import org.eclipse.xtext.util.XtextSwitch;
+            
+            public class «itemName»ParserSwitch extends Switch<ContentWrapper<?>> {
+            
+                private Form form;
+                private DataComponent dataComp;
+                private ArrayList<IEntry> entries;
+                private ArrayList<Component> components;
+                
+                public ExampleParserSwitch() {
+                    super();
+                    form = new Form();
+                    components = new ArrayList<Component>();
+                    entries = new ArrayList<IEntry>();
+                }
+            
+                /**
+                 * Gets the internal form being built
+                 */
+                public Form getForm() {
+                    for (Component comp : components) {
+                        form.addComponent(comp);
+                    }
+                    for (IEntry ent : entries) {
+                        dataComp.addEntry(ent);
+                    }
+                    form.addComponent(dataComp);
+                    return form;
+                }
+            
+                @Override 
+                protected ContentWrapper<?> doSwitch(int id, EObject obj) {
+                    switch(id) {
+                        case ProjectPackage.SECTION: {
+                            Section section = (Section) obj;
+                            return caseSection(section);
+                        }
+                        case ProjectPackage.LINE: {
+                            Line line = (Line) obj;
+                            return caseLine(line);
+                        }
+                        default: return defaultCase(obj);
+                    }
+                }
+                
+                /**
+                 * Builds a content wrapper for a data component.  Use the translate()
+                 * method to extract the data.
+                 * 
+                 * @param section: Data parsed into the generated Section class
+                 * @return an instance of the content wrapper
+                 */
+                public ContentWrapper<DataComponent> caseSection(Section content) {
+                    ContentWrapper<DataComponent> cw = new ContentWrapper<DataComponent>(DataComponent.class, content) {
+                        @Override
+                        public DataComponent translate() {
+                            DataComponent c = new DataComponent();
+                            c.setName(((SectionImpl)content).getSectionName());
+                            return c;
+                        }
+                    };
+                    // Add existing data component to the form before abandoning it
+                    if (dataComp != null) {
+                        for (IEntry ent : entries) {
+                            dataComp.addEntry(ent);
+                        }
+                        entries.clear();
+                        components.add(dataComp);
+                    }
+                    dataComp = cw.translate();
+                    
+                    return cw;
+                }
+                
+                /**
+                 * Builds a content wrapper for an entry.  Use the translate()
+                 * method to extract the data. 
+                 * 
+                 * @param line: Data parsed into the generated Line class
+                 * @return an instance of the content wrapper
+                 */
+                public ContentWrapper<StringEntry> caseLine(Line content) {
+                    ContentWrapper<StringEntry> cw = new ContentWrapper<StringEntry>(StringEntry.class, content) {
+                        @Override
+                        public StringEntry translate() {
+                            StringEntry e = new StringEntry();
+                            Line l = (LineImpl) content;
+                            e.setName(l.getVarName());
+                            e.setValue(l.getValue());
+                            return e;
+                        }
+                    };
+                    entries.add(cw.translate());
+                    return cw;
+                }
+            
+                /**
+                 * An inner class to allow dynamic instantiation of data types.  For each new data
+                 * type to be used a new extension of this class implementing the tranlate method
+                 * must be created.
+                 * 
+                 * @param <T> The type of content to get out when the tranlate method is called
+                 */
+                abstract class ContentWrapper<T> {
+                    private EObject content;
+                    private final Class<T> type;
+                    
+                    public ContentWrapper(Class<T> t, EObject e) {
+                        content = e;
+                        type = t;
+                    }
+                
+                    public Class<T> getContentType() {
+                        return type;
+                    }
+                    
+                    abstract T translate();
+                }
+            
+                @Override
+                protected boolean isSwitchFor(EPackage ePackage) {
+                    if (ePackage.getNsURI() == "http://www.eclipse.org/org.eclipse.ice.example") {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            
+            } 
+            '''
+        )
+    }
 	
 	def generateReader(IFileSystemAccess fsa) {
 		val fileName = "src/" + packageName.replace(".","/") + "/io/" + itemName + "Reader.java"
@@ -146,9 +302,15 @@ class IOServiceGenerator implements IGenerator {
 						r = new FileReader(new File(ifile.getLocation().toOSString()));
 						«itemName»Parser p = new «itemName»Parser();
 						EObject fileContents = p.parse(r);
+						TreeIterator<EObject> ti = fileContents.eAllContents();
+						«itemName»ParserSwitch sw = new «itemName»ParserSwitch();
 						
-						// TODO: Translate EObject into components to add onto the form.
-						
+					    EObject eo;
+					    while (ti.hasNext()) {
+					        eo = ti.next();
+					        sw.doSwitch(eo);
+					    }
+	                    form = sw.getForm();
 					} catch (FileNotFoundException e1) {
 						e1.printStackTrace();
 					} catch (IOException e2) {

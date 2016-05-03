@@ -42,6 +42,7 @@
   	<module>../org.eclipse.ice.nek5000</module>
   	<module>../org.eclipse.ice.nek5000.test</module>
   	<module>../org.eclipse.ice.parent</module>
+  	<module>../org.eclipse.ice.parsergenerator</module>
   	<module>../org.eclipse.ice.persistence.xml</module>
   	<module>../org.eclipse.ice.persistence.xml.test</module>
   	<module>../org.eclipse.ice.projectgeneration</module>
@@ -58,6 +59,8 @@
   	<module>../org.eclipse.ice.vibe.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
   	<module>../org.eclipse.ice.repository</module>
-  	<module>../org.eclipse.ice.product</module>  	
+  	<module>../org.eclipse.ice.product</module>
+  	
+  	
   </modules>
 </project>
