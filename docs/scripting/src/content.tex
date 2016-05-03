@@ -18,11 +18,15 @@ using the Eclipse Update Manager, but is more simply achieved using the Install 
 
 To installed the Jython engine, select \texttt{Help $\rightarrow$ Install
 EASE Components} from the ICE menu bar. Check the box next to the EASE Jython
-Integration entry and click Finish. Follow the prompts to install the component,
-and restart Eclipse when asked.
-\begin{center}
-\includegraphics[width=10cm]{images/ease-marketplace}
-\end{center}
+Integration entry as shown in figure \ref{fig:jython} and click Finish. Follow
+the prompts to install the component, and restart Eclipse when asked.
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=7cm]{images/ease-marketplace}
+\caption{Installing the Jython Engine}
+\label{fig:jython}
+\end{figure}
 
 \subsection{PyDev Installation (optional)} 
 
@@ -36,32 +40,60 @@ PyDev can be easily installed from using the Eclipse Marketplace client as
 follows. From the ICE menu bar, select \texttt{Help $\rightarrow$ Eclipse
 Marketplace\ldots}, type ``pydev'' in the Find field, then click the \texttt{Go}
 button.
-After a few seconds, you should see an entry for PyDev. Simply click the
-\texttt{Install} button and follow the prompts to install the feature. Once
+After a few seconds, you should see an entry for PyDev as shown in figure
+\ref{fig:pydev}.
+Simply click the \texttt{Install} button and follow the prompts to install the feature. Once
 Eclipse has been restarted, any Python scripts ending in ``.py'' will be recognized by
 PyDev and opened in the Python editor by default.
 
-\begin{center}
-\includegraphics[width=10cm]{images/pydev-marketplace}
-\end{center}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=8cm]{images/pydev-marketplace}
+\caption{Installing PyDev}
+\label{fig:pydev}
+\end{figure}
 
 \subsection{EASE Configuration}
 
-By default, EASE is configured to use the javascript (Rhino) engine. Since this
-tutorial assumes that the preferred environment is Python, we recommend changing
-this default. This is done through the Scripting preferences.
+There are a number of configuration settings that can be used to customize the
+behavior of EASE. These configuration settings are accessed via the \texttt{Scripting}
+preference page in the Eclipse preferences. To open the \texttt{Scripting}
+preference page, select \texttt{Window $\rightarrow$ Preferences\ldots} in the
+ICE menu bar. (On Mac OS X, Preferences\ldots is instead located under Eclipse
+ICE in the menu bar.) Open the \texttt{Scripting} tree item on the left side of
+the preferences window and you will see the different preferences that can be
+configured.
 
-To set the script engine default, select \texttt{Window $\rightarrow$
-Preferences\ldots} in the ICE menu bar. (On Mac OS X, Preferences\ldots is
-instead located under Eclipse ICE in the menu bar.) Open the \texttt{Scripting}
-tree item on the left side of the preferences window, then select
-\texttt{Shell}. Finally, select \texttt{Python (Jython)} from the
-\texttt{Preferred Engine:} dropdown, then click on \texttt{OK}.
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=8cm]{images/scripting-prefs1}
+\caption{Setting the Script Locations}
+\label{fig:prefs1}
+\end{figure}
 
-\begin{center}
-\includegraphics[width=10cm]{images/scripting-prefs}
-\end{center}
+EASE works best if you keep your scripts in one or more projects in
+your workspace. You can then associate these \emph{Script Locations} so
+that EASE knows they are used for managing your scripts. You can either use an
+existing project, or create new project for the scripts. In this tutorial, we're
+just going to use the existing \texttt{itemDB} project to store our scripts, but
+you could just as easily create a new one. To configure the projects, select the
+\texttt{Script Locations} preference item to reveal the dialog shown in figure
+\ref{fig:prefs1}. You can then use the \texttt{Add Workspace\ldots} button to
+select one or more projects from the workspace.
 
+By default, EASE is configured to use the javascript (Rhino) engine.
+Since this tutorial assumes that the preferred environment is Python, we recommend changing
+this default. To set the script engine default, select the
+\texttt{Shell} preference item. Next, select \texttt{Python (Jython)} from
+the \texttt{Preferred Engine:} dropdown as shown in figure \ref{fig:prefs2},
+then click on \texttt{OK}.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=8cm]{images/scripting-prefs2}
+\caption{Setting the Default Engine}
+\label{fig:prefs2}
+\end{figure}
 
 \section{Creating and Running Scripts}
 
@@ -74,31 +106,30 @@ $\rightarrow$ EASE Script} context menu.
 EASE also provides a perspective for creating, managing, debugging, and running
 scripts called the \texttt{Scripting} perspective. This perspective contains
 views for running script commands interactively, and for exploring script modules.
-For additional information on the
-\texttt{Scripting} perspective and other EASE features, see the EASE
-documentation\footnote{\path{http://eclipse.org/ease/documentation}}.
+To switch to the \texttt{Scripting} perspective use the \texttt{Perspective
+Switcher} icon or select the \texttt{Window $\rightarrow$ Perspective
+$\rightarrow$ Open Perspective $\rightarrow$ Other\ldots} menu, then select 
+\texttt{Scripting} from the list. You should see the perspective shown in figure
+\ref{fig:perspective}.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=\textwidth]{images/perspective.png}
+\caption{Scripting Perspective}
+\label{fig:perspective}
+\end{figure}
 
 EASE hides many of the details that would normally be required to manipulate
 Java objects and perform actions in the Eclipse IDE. It does this by
 encapsulating typical actions into simple script commands that can be easily
 invoked from scripts that you write. These commands are collected together into
 ``modules''. You can see which modules are available, and the commands that they
-contain, using the \texttt{Modules Explorer} view. This view can be opened by
-selecting \texttt{Window $\rightarrow$ Show View $\rightarrow$ Other\ldots} to
-open the \texttt{Show View} dialog, as shown below.
-
-\begin{center}
-\includegraphics[width=6cm]{images/showview}
-\end{center}
-
-Form this dialog, open the \texttt{Scripting} folder and select the
-\texttt{Modules Explorer}, then click on \texttt{OK}. This will open the
-\texttt{Modules Explorer} view which can be used to explore the modules and commands
-that are available for use in EASE scripts.
-
-\begin{center}
-\includegraphics[width=10cm]{images/modulesexplorer}
-\end{center}
+contain, using the \texttt{Modules Explorer} view. This view is visible in
+the top right corner of the \texttt{Scripting} perspective. The \texttt{Modules
+Explorer} view can also be opened by selecting \texttt{Window $\rightarrow$ Show
+View $\rightarrow$ Other\ldots} to open the \texttt{Show View} dialog, the open
+the \texttt{Scripting} folder and select the \texttt{Modules Explorer} and click
+on \texttt{OK}.
 
 \subsection{Creating a Python Script}
 
@@ -107,52 +138,104 @@ in ``.py'' in an existing project. If your scripts will be used with stand-alone
 programs, you can use PyDev to create a Python project, but in general, any kind
 of project will suffice.
 
-First, let's create a project to hold the scripts. To do this, right click
-anywhere in the \texttt{Project Explorer} view and select \texttt{New
-$\rightarrow$ Project\ldots} or click on the \texttt{New} button in the toolbar. Once you do
-this, you should see the \texttt{Select a wizard} dialog like the one shown below.
+For this tutorial, we're going to use the \texttt{itemDB} project that has
+already been created, and should be visible in the \texttt{Project Explorer}
+view. You can now create a Python file in this folder by right clicking on the
+folder and selecting \texttt{New $\rightarrow$ File} from the context menu. 
+This will display the \texttt{New File} dialog as shown in figure \ref{fig:newfile}.
 
-\begin{center}
-\includegraphics[width=10cm]{images/newproject}
-\end{center}
-
-Open the \texttt{General} folder in the list of wizards, and select the \texttt{Project}
-wizard as shown. Then click on the \texttt{Next \textgreater} button which
-should open the \texttt{New Project} wizard. This is shown below.
-
-\begin{center}
-\includegraphics[width=10cm]{images/newproject_wiz}
-\end{center}
-
-Enter a name for the project in the \texttt{Project name:} field and then click the
-\texttt{Finish} button. You can leave all the other options set to their default
-values.
-
-You should now see a folder with the name you specified appear in the
-\texttt{Project Explorer} view. You can now create a Python file in this folder by
-right clicking on the folder and selecting \texttt{New $\rightarrow$ File} from
-the context menu. This will display the \texttt{New File} dialog as shown below.
-
-\begin{center}
-\includegraphics[width=10cm]{images/newfile}
-\end{center}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=8cm]{images/newfile}
+\caption{New File Dialog}
+\label{fig:newfile}
+\end{figure}
 
 At this point all that remains to be done is enter the name of the file in the
 \texttt{File name:} field and click on the \texttt{Finish} button. This will
 create the file and automatically open the PyDev editor (assuming you installed
 PyDev) or a simple text editor. You should see an editor view something like
-that shown below.
+that shown in figure \ref{fig:editor}.
 
-\begin{center}
-\includegraphics[width=10cm]{images/editor}
-\end{center}
+Since the \texttt{itemDB} project was selected as a scripting location
+previously, the new script file should also be visible in the \texttt{Script
+Explorer} view in the \texttt{Scripting} perspective. Make sure the
+\texttt{Scripting} perspective is selected for this view to be visible.
+
+\begin{figure}[!hb]
+\centering
+\includegraphics[width=8cm]{images/editor}
+\caption{Editor View}
+\label{fig:editor}
+\end{figure}
 
 
 \subsection{Writing a Python Script}
 
-For the purposes of this tutorial, we will just be using the
-\texttt{Platform} module. In order to load a module, we use the
-\texttt{loadModule()} function in Python. The argument to this function is a
+Our first python script will just print ``Hello World'' on the console. Enter
+the following text in the editor and select \texttt{File $\rightarrow$ Save}:
+
+\begin{verbatim}
+print 'Hello World'
+\end{verbatim}
+
+Once you have entered the Python script, is can be easily launched using the run
+button (green arrow) on the \texttt{Script Exporer} view. Simply select the
+the script file you want to run and click on the run button. Any (textual)
+output generated by the script will be displayed in the Console view shown in
+figure \ref{fig:console}.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=10cm]{images/console}
+\caption{Console View}
+\label{fig:console}
+\end{figure}
+
+Rather than using the run button, we would like to run this script using our own
+button on the \texttt{Project Explorer} view. To do this, add the following
+lines to the start of the script, then save the file:
+
+{\small
+\begin{verbatim}
+# ********************************************************************  
+# name                 : My Script 
+# toolbar              : Project Explorer  
+# script-type          : Python  
+# description          : Start a file browser using current selection.  
+# ******************************************************************** 
+\end{verbatim}
+}
+
+As soon as you save the file, you should notice a couple of things. The name of
+the script file will change to \texttt{My Script} in the \texttt{Script
+Explorer} view, and if you switch to the \texttt{Project Explorer} view, you
+should see a \texttt{My Script} button in the view toolbar (as shown in figure
+\ref{fig:myscript}).
+
+We can modify the user interface behavior by changing the button to an icon and
+adding a popup conext menu. This is accomplished by adding the following lines
+to the script:
+
+{\small
+\begin{verbatim}
+# popup				   : enableFor(org.eclipse.core.resources.IResource) 
+# image				   : platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/configs.gif
+\end{verbatim}
+}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=6cm]{images/projexplorer}
+\caption{New Button in Project Explorer view}
+\label{fig:myscript}
+\end{figure}
+
+\section{Interacting with ICE}
+
+In order to interact with Java classes from the Python script, we 
+need to include the \texttt{Platform} module. In order to load a module, we use
+the \texttt{loadModule()} function in Python. The argument to this function is a
 string representation of the module path, which in this case will be
 \texttt{/System/Platform}. 
 
@@ -160,69 +243,64 @@ Enter the following command as the first line of the script file:
 
 \lstset{basicstyle=\ttfamily\small, breaklines}
 
-\begin{lstlisting}[frame=single,language=Python]
+{\small
+\begin{verbatim}
 loadModule("/System/Platform")
-\end{lstlisting}
+\end{verbatim}
+}
 
 Once this module has been loaded, a number of additional functions become
 available. We want to obtain a reference to the core ICE service, which is used
 as the starting point for manipulating ICE models. This is done by adding the
 following line:
 
-\begin{lstlisting}[frame=single,language=Python]
+{\small
+\begin{verbatim}
 coreService = getService(org.eclipse.ice.core.iCore.ICore)
-\end{lstlisting}
+\end{verbatim}
+}
 
 Once a reference to the core services has been obtained, we can use this to
-obtain a reference to the Reflectivity Model. This is done by adding the
-following line:
+obtain a reference to the Reflectivity Model and set some parameters. This is
+done by adding the following lines:
 
-\begin{lstlisting}[frame=single,language=Python]
+{\small
+\begin{verbatim}
 reflectModel = coreService.getItem(int(coreService.createItem("Reflectivity Model")))
-\end{lstlisting}
+component = reflectModel.getComponents().get(0)
+entry = component.retrieveAllEntries().get(0)
+entry.setValue("waveVector_space.csv")
+\end{verbatim}
+}
 
 Note that the \texttt{createItem()} method will return a string representing the
 number of that item, so \texttt{int()} is used to convert it to an integer, which is the
 argument expected by \texttt{getItem()}.
 
-In this example, we're just going to accept the default inputs for the model, so
-the only thing left to do it process the model. This is done using the core
+Now the only thing left to do it process the model. This is done using the core
 service \texttt{processItem()} as follows:
 
-\begin{lstlisting}[frame=single,language=Python]
+{\small
+\begin{verbatim}
 res = coreService.processItem(reflectModel.getId(), "Calculate Reflectivity", 1)
-\end{lstlisting}
+\end{verbatim}
+}
 
 Finally, let's print out the result of processing the model to see if it was
 successful.
 
-\begin{lstlisting}[frame=single,language=Python]
+{\small
+\begin{verbatim}
 print "result was: %s" % res
-\end{lstlisting}
+\end{verbatim}
+}
 
 Remember to save the editor using \texttt{Ctrl/Cmd-S} or the \texttt{File
 $\rightarrow$ Save} command from the ICE menu bar.
 
-\subsection{Running a Python Script}
-
-Once you have created Python script, is can be easily launched using the Run As
-context menu. Simply right-click on the Python file, then select \texttt{Run As
-$\rightarrow$ EASE Script}. EASE will automatically recognize the file type and
-run the script with the appropriate engine. Any (textual) output generated by
-the script will be displayed in the Console view shown below\footnote{
-In this case the \texttt{processItem()} function returns \texttt{InfoError}
-because it hasn't been correctly configured before the model was processed. We
-will see how to fix this later in the tutorial.}.
-
-\begin{center}
-\includegraphics[width=12cm]{images/console}
-\end{center}
-
-Re-running the script is simple as ICE has automatically added the most recently
-executed run configuration to the run button. Just click on the
-\includegraphics[width=0.5cm]{images/runbutton} icon to re-run the last script.
-You can also click on the small triangle next to the button to see a list of 
-recent launches and re-run them if desired. 
+Before running this script, you need to copy the \texttt{waveVector\_space.csv}
+file from the \texttt{default} folder to the \texttt{itemDB} folder. You should
+then be able to run the script successfully.
 
 \section{Using the Sample Scripts}
 
@@ -250,7 +328,7 @@ This is a simple script
 that demonstrates how to create a reflectivity model and process the model to
 obtain a result. The default model inputs are used for the computation.
 
-\lstinputlisting[frame=single,language=Python]{samples/createAndProcessPython.py}
+\lstinputlisting[language=Python]{samples/createAndProcessPython.py}
 
 \subsection{createAndEditPython.py} 
 
@@ -258,18 +336,18 @@ This script extends the
 \texttt{createAndProcessPython.py} script by editing the input to the model
 programmatically. The model is then processed to obtain the results.
 
-\lstinputlisting[frame=single,language=Python]{samples/createAndEditPython.py}
+\lstinputlisting[language=Python]{samples/createAndEditPython.py}
 
 \subsection{iterateChangeParameterPython.py} 
 This script demonstrates how to create
 multiple reflectivity models with varying input parameters. The models are created
 and processed sequentially.
 
-\lstinputlisting[frame=single,language=Python]{samples/iterateChangeParameterPython.py}
+\lstinputlisting[language=Python]{samples/iterateChangeParameterPython.py}
 
 \subsection{listFromScratchPython.py} 
 This script demonstrates how to create a
 reflectivity model and programmably create and set up the layers in the model.
 The model is then process to obtain the results.
 
-\lstinputlisting[frame=single,language=Python]{samples/listFromScratchPython.py}
+\lstinputlisting[language=Python]{samples/listFromScratchPython.py}

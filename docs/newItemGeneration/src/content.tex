@@ -1,6 +1,6 @@
-\section*{The Eclipse ICE Item Project Generator}
+\chapter{The Eclipse ICE Item Project Generator}
 
-\subsection*{Overview} 
+\section*{Overview} 
 
 This tutorial will teach you how you
 can create your own ICE Items via the built in tools within ICE.  To demonstrate
@@ -30,8 +30,13 @@ provided Docker image.
 Before we begin, make sure you have ICE cloned (Developer $>$ ICE $>$ Clone ICE)
 into your workspace, and the provided Docker image loaded to your local Docker daemon. 
 
-\subsection*{Creating a New ICE Item Plugin Project}
-\begin{center} \includegraphics[width=\textwidth]{figures/comb12} \end{center}
+\section*{Creating a New ICE Item Plugin Project}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/comb12.png}
+\label{fig:comb12}
+\end{figure}
 
 To create a new ICE Item project, navigate to \texttt{File $>$ New $>$ Other}
 and open the \texttt{ICE Item Creation Wizards} folder and 
@@ -70,9 +75,9 @@ the \texttt{Launcher} and \texttt{Model} classes and can ignore the
 \texttt{LauncherBuilder} and \texttt{ModelBuilder} classes.
 
 
-\subsection*{Adding Functionality to the New Items}
+\section*{Adding Functionality to the New Items}
 
-\subsubsection*{The Fern Model}
+\subsection*{The Fern Model}
 
 The \texttt{FernModel} will be responsible for creating and
 validating input parameters for FERN, in the form of a new FERN input file.  In
@@ -244,7 +249,7 @@ Add the following to your setupForm() method:
 
 Now we have a Form constructed for a typical FERN execution.
 
-\subsubsection*{Fern Launcher}
+\subsection*{Fern Launcher}
 The Fern Launcher handles the actual execution of the FERN application. The
 generator creates the FernLauncher as a subclass of ICE's JobLauncher, which
 provides a large array of features and functionality. As a subclass of
@@ -284,7 +289,7 @@ The generator has taken care of everything else for us.
 We are now ready to launch ICE with our Fern plugin, and use the Fern Items we
 have just created.
 
-\subsection*{Using the New Fern Items}
+\section*{Using the New Fern Items}
 Now, using these new Items is easy. Simply open the Run Configurations wizard,
 and open Eclipse Applications to see ICE launch configurations for Mac, Linux,
 and Windows. Select the launch configuration for your OS and open the Plug-ins

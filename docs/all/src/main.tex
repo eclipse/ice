@@ -1,6 +1,6 @@
 %%This is a very basic article template.
 %%There is just one section and two subsections.
-\documentclass{article}
+\documentclass{report}
 \usepackage{authblk}
 \usepackage{xcolor}
 \usepackage{graphicx}
@@ -10,6 +10,7 @@
 \usepackage{listings}
 \usepackage{color}
 \usepackage{url}
+\usepackage[section]{placeins}
 
 \setlength{\parskip}{1em}
 
@@ -54,16 +55,41 @@
 \affil{Oak Ridge National Laboratory}
 \maketitle{}
 
-\input{../../developerMenu/src/content}
-\input{../../dynamicUI/src/content}
-\input{../../geometryEditor/src/content}
+\graphicspath{{../../installation/src/}}
 \input{../../installation/src/content}
-\input{../../meshEditor/src/content}
-%\input{../../moose-tutorial/src/content.tex} % FIXME! Incorrect structure.
+
+\graphicspath{{../../newItemGeneration/src/}}
 \input{../../newItemGeneration/src/content}
-\input{../../reflectivity/src/content}
-\input{../../resourceComponents/src/content} % FIXME! Name misspelled.
-%\input{../../scripting/src/content}
+
+\graphicspath{{../../resourceComponents/src/}}
+\input{../../resourceComponents/src/content}
+
+\graphicspath{{../../dynamicUI/src/}}
+\input{../../dynamicUI/src/content}
+
+\graphicspath{{../../scripting/src/}}
+\lstset{inputpath=../../scripting/src/}
+\input{../../scripting/src/content}
+
+\graphicspath{{../../developerMenu/src/}}
+\input{../../developerMenu/src/content}
+
+\graphicspath{{../../geometryEditor/src/}}
+\input{../../geometryEditor/src/content}
+
+\graphicspath{{../../meshEditor/src/}}
+\input{../../meshEditor/src/content}
+
+%\input{../../moose-tutorial/src/content.tex} % FIXME! Incorrect structure.
+
+%\graphicspath{{../../reflectivity/src/}}
+%\input{../../reflectivity/src/content}
+
+\graphicspath{{../../visualization/src/}}
 \input{../../visualization/src/content}
+
+\graphicspath{{../../paraviewTutorial/src/}}
+\input{../../paraviewTutorial/src/content}
+
 
 \end{document}

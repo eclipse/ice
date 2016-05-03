@@ -44,12 +44,9 @@
 <unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ecf.remoteservice.sdk.source.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ptp.fortran.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.ide.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ptp.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.remote.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.eclipse.gef.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.tcf.te.tcf.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.cdt.core.parser.upc.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.cdt.gnu.multicorevisualizer.feature.group" version="0.0.0"/>
@@ -73,7 +70,6 @@
 <unit id="org.eclipse.ecf.core.source.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.remote.console.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.linuxtools.cdt.libhover.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.swtbot.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.fx.ide.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
