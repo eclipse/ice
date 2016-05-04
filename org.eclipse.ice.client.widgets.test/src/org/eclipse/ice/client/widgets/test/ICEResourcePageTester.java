@@ -26,6 +26,7 @@ import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
+import org.eclipse.swtbot.swt.finder.utils.SWTBotPreferences;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.ui.IEditorReference;
 import org.junit.Test;
@@ -105,7 +106,7 @@ public class ICEResourcePageTester extends AbstractWorkbenchTester {
 	public void beforeAllTests() {
 		super.beforeAllTests();
 		// Initialize static or otherwise shared resources here.
-
+		SWTBotPreferences.PLAYBACK_DELAY = 100;
 		openView("Other", "Resources");
 
 		// ---- Open an ICEFormEditor with an ICEResourcePage. ---- //
