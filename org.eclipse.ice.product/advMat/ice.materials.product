@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault
+      <programArgs>-product org.eclipse.platform.ide --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault -perspective org.eclipse.ice.reflectivity.ReflectivityPerspective
       </programArgs>
       <vmArgs>-Dvisit.port=5600 -DREFRESH_BUNDLES=FALSE -Xmx2048M -XX:MaxPermSize=1024M -Dmax_download_size=52428800 -Dorg.eclipse.equinox.http.jetty.http.port=8080
       </vmArgs>
@@ -151,6 +151,8 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.e4.tools.css.spy.feature"/>
       <feature id="org.eclipse.e4.tools.event.spy.feature"/>
       <feature id="org.eclipse.e4.tools.model.spy.feature"/>
+      <feature id="org.eclipse.e4.core.tools.feature"/>
+      <feature id="org.eclipse.e4.tools.spies.feature"/>
    </features>
 
    <configurations>

@@ -25,6 +25,7 @@ import org.eclipse.e4.ui.services.IServiceConstants;
 import org.eclipse.ice.iclient.IClient;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Image;
@@ -112,14 +113,14 @@ public class TaskLaunchDialog extends Dialog {
 			// locator class because FrameworUtil only returns the path relative
 			// to the bundle running in the OSGi instance.
 			imageString = FileLocator
-					.resolve(FrameworkUtil.getBundle(getClass())
+					.toFileURL(FrameworkUtil.getBundle(getClass())
 							.getEntry("icons/reflectivityCalc.png"))
 					.getPath();
 			// Create the image
 			Image image = new Image(swtComposite.getDisplay(), imageString);
 			// Set the button
 			modelRefButton.setImage(image);
-		} catch (IOException e) {
+		} catch (IOException | SWTException e) {
 			// Just set the text instead
 			modelRefButton.setText("Launch New Simulation");
 		}
@@ -163,12 +164,12 @@ public class TaskLaunchDialog extends Dialog {
 		try {
 			// Exact same process as above
 			imageString = FileLocator
-					.resolve(FrameworkUtil.getBundle(getClass())
+					.toFileURL(FrameworkUtil.getBundle(getClass())
 							.getEntry("icons/materialProperties.png"))
 					.getPath();
 			Image image = new Image(swtComposite.getDisplay(), imageString);
 			editMatsButton.setImage(image);
-		} catch (IOException e) {
+		} catch (IOException | SWTException e) {
 			// Just set the text instead
 			editMatsButton.setText("Edit Materials");
 		}
