@@ -92,8 +92,11 @@ public class FakeCore implements ICore {
 	 */
 	private boolean imported;
 
+	/**
+	 * True if the Item's name was changed, false otherwise.
+	 */
 	private boolean itemNameChanged;
-	
+
 	/**
 	 * <p>
 	 * True if the client attempted to cancel an Item process request, false
@@ -152,7 +155,7 @@ public class FakeCore implements ICore {
 		cancelled = false;
 		loaded = false;
 		itemNameChanged = false;
-		
+
 		return;
 
 	}
@@ -350,7 +353,8 @@ public class FakeCore implements ICore {
 
 		// Change the name
 		if (form.getId() == 8675309) {
-			System.out.println("FakeCore Message: Failing with " + "FormStatus.InfoError!");
+			System.out.println("FakeCore Message: Failing with "
+					+ "FormStatus.InfoError!");
 			return FormStatus.InfoError;
 		}
 
@@ -371,7 +375,8 @@ public class FakeCore implements ICore {
 	}
 
 	@Override
-	public FormStatus processItem(int itemId, String actionName, int uniqueClientId) {
+	public FormStatus processItem(int itemId, String actionName,
+			int uniqueClientId) {
 
 		// Check the Item id and the action name to make sure they are
 		// acceptable
@@ -388,7 +393,8 @@ public class FakeCore implements ICore {
 		}
 
 		System.out.println("FakeCore Message: Call to process() finished.");
-		System.out.println("Item id = " + itemId + " , actionName = " + actionName);
+		System.out.println(
+				"Item id = " + itemId + " , actionName = " + actionName);
 
 		return lastProcessStatus;
 	}
@@ -408,7 +414,8 @@ public class FakeCore implements ICore {
 		// Set the particular details
 		itemObject.setName("Kathryn Janeway");
 		itemObject.setId(2);
-		itemObject.setDescription("Captain of the starship Voyager. " + "Not actually #2. #1 on that ship.");
+		itemObject.setDescription("Captain of the starship Voyager. "
+				+ "Not actually #2. #1 on that ship.");
 
 		if (!deleted) {
 			// Add the object to the list
@@ -434,8 +441,9 @@ public class FakeCore implements ICore {
 		// Only create this file if the caller is behaving well.
 		if (id > 0) {
 			// Setup the file
-			outputFile = new File(
-					System.getProperty("user.dir") + System.getProperty("file.separator") + "fakeCoreTestFile");
+			outputFile = new File(System.getProperty("user.dir")
+					+ System.getProperty("file.separator")
+					+ "fakeCoreTestFile");
 			try {
 				// Create file writing streams
 				FileWriter fstream = new FileWriter(outputFile);
@@ -511,7 +519,8 @@ public class FakeCore implements ICore {
 	}
 
 	@Override
-	public String importFileAsItem(URI file, String itemType, IProject project) {
+	public String importFileAsItem(URI file, String itemType,
+			IProject project) {
 		// Local Declarations
 		String returnString = String.valueOf(0);
 
@@ -537,7 +546,8 @@ public class FakeCore implements ICore {
 	}
 
 	@Override
-	public String importFileAsItem(URI file, String itemType, String projectName) {
+	public String importFileAsItem(URI file, String itemType,
+			String projectName) {
 		// Local Declarations
 		String returnString = String.valueOf(0);
 
@@ -583,7 +593,7 @@ public class FakeCore implements ICore {
 		}
 		return;
 	}
-	
+
 	public boolean itemNameChanged() {
 		return itemNameChanged;
 	}
