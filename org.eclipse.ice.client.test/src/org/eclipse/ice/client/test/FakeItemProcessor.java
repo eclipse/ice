@@ -10,7 +10,7 @@
  *   Jordan H. Deyton, Dasha Gorin, Alexander J. McCaskey, Taylor Patterson,
  *   Claire Saunders, Matthew Wang, Anna Wojtowicz
  *******************************************************************************/
-package org.eclipse.ice.client.internal;
+package org.eclipse.ice.client.test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This is a fake copy of ItemProcessor that does not use a separate thread.
+ * 
  * <p>
  * This class is responsible for processing a Form for a specific Item. It
  * implements the Runnable interface and should be run on a separate thread from
@@ -39,10 +41,10 @@ import org.slf4j.LoggerFactory;
  * must be set before it is launched. Setting the values while the thread is
  * running will cause it to fail. This strategy is employed to keep clients from
  * updating the process request mid-stream, which could cause problems much
- * worse than a thread exception in the ICE core, because the ItemProcessor is
- * only meant to be launched once per process request. It realizes the
+ * worse than a thread exception in the ICE core, because the FakeItemProcessor
+ * is only meant to be launched once per process request. It realizes the
  * IWidgetClosedListener interface so that it can be notified by
- * IExtraInfoWidgets when they are closed. The ItemProcessor will attempt to
+ * IExtraInfoWidgets when they are closed. The FakeItemProcessor will attempt to
  * push streaming input if it is available for an Item to the
  * IStreamingTextWidget that is supplied during configuration. It will also set
  * the label of the widget.
@@ -51,20 +53,20 @@ import org.slf4j.LoggerFactory;
  * All of the set operations, with the exception of setPollTime() and
  * setStreamingOutputWidget(), must be called before the processor can be
  * launched. There is a default polling time configured in the processor (100ms)
- * and if a streaming text widget is not set the ItemProcessor will not push the
- * output.
+ * and if a streaming text widget is not set the FakeItemProcessor will not push
+ * the output.
  * </p>
  * 
  * @author Jay Jay Billings
  */
-public class ItemProcessor
-		implements Runnable, IWidgetClosedListener, IItemProcessor {
+public class FakeItemProcessor
+		implements IWidgetClosedListener, Runnable, IItemProcessor {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
 	private static final Logger logger = LoggerFactory
-			.getLogger(ItemProcessor.class);
+			.getLogger(FakeItemProcessor.class);
 
 	/**
 	 * A reference to an IExtraInfoWidget that can be used to gather extra
@@ -88,26 +90,26 @@ public class ItemProcessor
 	private int itemId;
 
 	/**
-	 * The ICore to which the ItemProcessor should direct its requests.
+	 * The ICore to which the FakeItemProcessor should direct its requests.
 	 */
 	private ICore iceCore;
 
 	/**
-	 * The period for which the ItemProcessor should poll the Core for updates
-	 * in units of milliseconds. The default value is 100 milliseconds, 0.1
-	 * seconds.
+	 * The period for which the FakeItemProcessor should poll the Core for
+	 * updates in units of milliseconds. The default value is 100 milliseconds,
+	 * 0.1 seconds.
 	 */
 	private int pollTime = 100;
 
 	/**
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the
-	 * ItemProcessor was closed OK and is false otherwise.
+	 * FakeItemProcessor was closed OK and is false otherwise.
 	 */
 	private AtomicBoolean widgetClosedOK;
 
 	/**
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the
-	 * ItemProcessor was cancelled and is false otherwise.
+	 * FakeItemProcessor was cancelled and is false otherwise.
 	 */
 	private AtomicBoolean widgetCancelled;
 
@@ -120,7 +122,7 @@ public class ItemProcessor
 	/**
 	 * The constructor
 	 */
-	public ItemProcessor() {
+	public FakeItemProcessor() {
 
 		// Set the default values
 		infoWidget = null;
@@ -384,106 +386,77 @@ public class ItemProcessor
 		// The event loop - until status != FormStatus.NeedsInfo or
 		// FormStatus.Processing
 		posted.set(false);
-		while (status.equals(FormStatus.NeedsInfo)
-				|| status.equals(FormStatus.Processing)) {
 
-			// Throw up the extra info widget if more information is needed
-			if (status.equals(FormStatus.NeedsInfo)) {
-				// Check whether or not to post to the info widget to the screen
-				if (!posted.get()) {
-					// Set the Form for the InfoWidget
-					form = iceCore.getItem(itemId);
-					infoWidget.setForm(form);
-					// Register as a listener of the infoWidget
-					infoWidget.setCloseListener(this);
-					// Display the widget
-					infoWidget.display();
-					// Set the posted flag so that widget does not continue to
-					// be displayed
-					posted.set(true);
-				} else {
-					// FIXME This is a potential design flaw, as any attempt to
-					// cancel will be ignored if the widget is closed
-					// "successfully" before this thread makes it to this if
-					// condition.
-					// Otherwise if the widget has been posted, see if it has
-					// been closed ok.
-					if (widgetClosedOK.get()) {
-						// Return the extra information
-						iceCore.updateItem(form, 1); // FIXME - hardwired
-														// client id!
-						// Reset the posted flag and the widgetClosedOK flag so
-						// that the widget can be shown again if needed.
-						posted.set(false);
-						widgetClosedOK.set(false);
-					} else if (widgetCancelled.get()) {
-						// If the widget was cancelled, try to kill the task
-						iceCore.cancelItemProcess(itemId, actionName);
-						// Update the status
-						status = iceCore.getItemStatus(itemId);
-						// Update the IFormWidget's status
-						formWidget.updateStatus(statusMessageMap.get(status));
-						return;
-					}
+		// Throw up the extra info widget if more information is needed
+		if (status.equals(FormStatus.NeedsInfo)) {
+			// Check whether or not to post to the info widget to the screen
+			if (!posted.get()) {
+				// Set the Form for the InfoWidget
+				form = iceCore.getItem(itemId);
+				infoWidget.setForm(form);
+				// Register as a listener of the infoWidget
+				infoWidget.setCloseListener(this);
+				// Display the widget
+				infoWidget.display();
+				// Set the posted flag so that widget does not continue to
+				// be displayed
+				posted.set(true);
+
+				// Just update core
+				// Return the extra information
+				iceCore.updateItem(form, 1); // FIXME - hardwired
+												// client id!
+				// Reset the posted flag and the widgetClosedOK flag so
+				// that the widget can be shown again if needed.
+				posted.set(false);
+				widgetClosedOK.set(false);
+
+			}
+		}
+
+		// Update the status
+		status = iceCore.getItemStatus(itemId);
+
+		// Update the IFormWidget's status
+		formWidget.updateStatus(statusMessageMap.get(status));
+
+		// Read the file if it was opened correctly
+		if (outputFileBufferedReader != null && streamingTextWidget != null) {
+			// Get everything currently there
+			try {
+				while ((nextLine = outputFileBufferedReader
+						.readLine()) != null) {
+					// Write it to the streaming text widget
+					streamingTextWidget.postText(nextLine);
 				}
+			} catch (IOException e) {
+				// Complain because the next line could not be read
+				logger.error(getClass().getName() + " Exception!", e);
+			}
+		}
+
+		// The Form is completely processed, it is time to break out of the
+		// loop.
+		if (status.equals(FormStatus.Processed)) {
+			try {
+				// Close the readers
+				if (outputFileBufferedReader != null) {
+					outputFileBufferedReader.close();
+					outputFileReader.close();
+				}
+			} catch (IOException e) {
+				// Complain
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 
-			// Update the status
-			status = iceCore.getItemStatus(itemId);
-
-			// Update the IFormWidget's status
-			formWidget.updateStatus(statusMessageMap.get(status));
-
-			// Read the file if it was opened correctly
-			if (outputFileBufferedReader != null
-					&& streamingTextWidget != null) {
-				// Get everything currently there
-				try {
-					while ((nextLine = outputFileBufferedReader
-							.readLine()) != null) {
-						// Write it to the streaming text widget
-						streamingTextWidget.postText(nextLine);
-					}
-				} catch (IOException e) {
-					// Complain because the next line could not be read
-					logger.error(getClass().getName() + " Exception!", e);
-				}
-			}
-
-			// The Form is completely processed, it is time to break out of the
-			// loop.
-			if (status.equals(FormStatus.Processed)) {
-				try {
-					// Close the readers
-					if (outputFileBufferedReader != null) {
-						outputFileBufferedReader.close();
-						outputFileReader.close();
-					}
-				} catch (IOException e) {
-					// Complain
-					logger.error(getClass().getName() + " Exception!", e);
-				}
-
-				break;
-			} else {
-				// Otherwise, put the thread to sleep for a bit so that it does
-				// not spam requests incessantly.
-				try {
-					Thread.sleep(pollTime);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					logger.error(getClass().getName() + " Exception!", e);
-				}
-			}
-			// Print a debug message for now
-
+			// break;
 		}
 
 		// Update the IFormWidget's status one final time
 		formWidget.updateStatus(statusMessageMap.get(status));
 
 		// Print a debug message for now
-		logger.info("IClient ItemProcessor Message: Status = " + status);
+		logger.info("IClient FakeItemProcessor Message: Status = " + status);
 
 		return;
 
@@ -519,7 +492,6 @@ public class ItemProcessor
 
 	@Override
 	public void launch() {
-		Thread processorThread = new Thread(this);
-		processorThread.start();
+		run();
 	}
 }
