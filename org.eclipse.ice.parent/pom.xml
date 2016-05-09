@@ -39,17 +39,6 @@
 				<enabled>true</enabled>
 			</snapshots>
 	    </pluginRepository>
-	    <!--  Plugin repos for jboss repository-utils support -->
-	    <pluginRepository>
-			<id>jboss-public-repository-group</id>
-			<name>JBoss Public Repository Group</name>
-			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
-		</pluginRepository>
-		<pluginRepository>
-			<id>jboss-snapshots-repository</id>
-			<name>JBoss Snapshots Repository</name>
-			<url>http://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-		</pluginRepository>
 	</pluginRepositories>
 	
 	<profiles>

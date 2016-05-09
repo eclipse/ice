@@ -27,6 +27,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.iclient.IClient;
+import org.eclipse.ice.iclient.IItemProcessor;
 import org.eclipse.ice.iclient.uiwidgets.IErrorBox;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
@@ -75,14 +76,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	private ICore iCore;
 
 	/**
-	 * <p>
-	 * The set of ErroBoxWidgets used by the Client.
-	 * </p>
-	 *
-	 */
-	private ArrayList<IErrorBox> errorBoxWidgets;
-
-	/**
 	 * The widget factory used to create widgets.
 	 */
 	private IWidgetFactory iWidgetFactory;
@@ -114,23 +107,10 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	private AtomicBoolean widgetCancelled;
 
 	/**
-	 * <p>
-	 * The unique id assigned to this client by the ICE server.
-	 * </p>
-	 *
-	 */
-	private int clientId = -1;
-
-	/**
 	 * A set of status messages used by the core to describe the different
 	 * states of Items.
 	 */
 	HashMap<FormStatus, String> statusMessageMap = new HashMap<FormStatus, String>();
-
-	/**
-	 * The BundleContext created by the OSGi for the Client bundle.
-	 */
-	private BundleContext context;
 
 	/**
 	 * A service reference for retrieving the core.
@@ -144,15 +124,36 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	private ServiceRegistration<IClient> registration;
 
 	/**
-	 * <p>
+	 * The processor that handles all Item processing for the Client.
+	 */
+	private IItemProcessor processor;
+
+	/**
 	 * The Constructor
-	 * </p>
-	 *
 	 */
 	public Client() {
+		processor = new ItemProcessor();
+		initialize();
+	}
 
+	/**
+	 * The test constructor for injecting the IItemProcessor used to process
+	 * Forms.
+	 * 
+	 * @param processor
+	 *            the Item Processor that should be used for testing.
+	 */
+	public Client(IItemProcessor processor) {
+		this.processor = processor;
+		initialize();
+	}
+
+	/**
+	 * This operation initializes all of the class variables for the
+	 * constructors.
+	 */
+	private void initialize() {
 		// Create the lists of widgets
-		errorBoxWidgets = new ArrayList<IErrorBox>();
 		formWidgetTable = new Hashtable<Integer, IFormWidget>();
 
 		// Setup the Atomics for the extra info widget
@@ -178,7 +179,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// Set the reference to this in the Singleton for the widget classes to
 		// retrieve as needed.
 		ClientHolder.setClient(this);
-
 	}
 
 	/**
@@ -189,9 +189,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
-
-		// Store the bundle context
-		this.context = context;
 
 		// Acquire the Core service if it is available
 		iCoreServiceRef = context.getServiceReference(ICore.class);
@@ -269,8 +266,6 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 		// Local Declarations
 		IExtraInfoWidget infoWidget = null;
 		IStreamingTextWidget textWidget = null;
-		ItemProcessor processor = new ItemProcessor();
-		Thread processorThread = null;
 
 		// Check the Item Id and forward the request if it is valid
 		if (formWidget != null) {
@@ -285,8 +280,7 @@ public class Client implements IUpdateEventListener, IProcessEventListener,
 			processor.setStreamingTextWidget(textWidget);
 			processor.setItemId(formWidget.getForm().getItemID());
 			// Launch the processor on another thread
-			processorThread = new Thread(processor);
-			processorThread.start();
+			processor.launch();
 		} else {
 			// Otherwise notify the use that the Item is invalid
 			throwSimpleError("IClient Message: "
