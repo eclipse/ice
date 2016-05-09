@@ -484,15 +484,11 @@ public class ICEMeshPage extends ICEFormPage
 	public void update(IUpdateable component) {
 
 		// If the mesh was updated, the editor is now dirty
-		if (component == meshComp) {
-
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					editor.setDirty(true);
-				};
-			});
-		}
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				editor.setDirty(true);
+			};
+		});
 	}
-
 }
