@@ -8,16 +8,17 @@ Simulator. Questions should be directed to billingsjj@ornl.gov.
 You may download the software from the Spallation Neutron Source (SNS) website.
 Locate the file in your downloads directory. It will be named
 \begin{itemize}
-  \item - ice.product-win32.win32.x86.zip on 32-bit Windows
-  \item - ice.product-win32.win32.x86\_64.zip on 64-bit Windows
-  \item - ice.product-linux.gtk.x86.zip on 32-bit Linux
-  \item - ice.product-linux.gtk.x86\_64.zip on 64-bit Linux
-  \item - ice.product-macosx.cocoa.x86\_64.zip on Mac OS/X
+  \item - lrac\_reflectivity-win32.x86.zip on 32-bit Windows
+  \item - lrac\_reflectivity-win32.x86\_64.zip on 64-bit Windows
+  \item - lrac\_reflectivity-linux.x86.zip on 32-bit Linux
+  \item - lrac\_reflectivity-linux.x86\_64.zip on 64-bit Linux
+  \item - lrac\_reflectivity.mac.zip on Mac OS/X
 \end{itemize}
 
 Unzip this file to a directory of your choosing. 
 
 \section{Getting Started}
+\label{gettingStarted}
 
 The LRAC Reflectivity Simulator works by using your data from LRAC and a
 materials configuration that you provide to produce simulated
@@ -25,8 +26,8 @@ neutron reflectivity, scattering density and $RQ^4$ plots. Make sure that you
 have an unaltered data file from LRAC available.
 
 Double click the executable named lrac\_reflectivity or lrac\_reflectivity.exe
-in the directory where you unzipped the simulator. You will be asked to provide the
-name of a directory where data may be stored, (fig. \ref{workspace}.). Use the
+in the directory where you unzipped the download. You will be asked to provide
+the name of a directory where data may be stored, (fig. \ref{workspace}.). Use the
 ``Browse'' button to select your preferred directory if it is not in the dropdown list. If
 this is your first time using the simulator, create a new directory with no
 other contents in it using the ``Browse'' button.
@@ -139,14 +140,52 @@ that you can make your changes, (fig. \ref{matDB}).
 
 \begin{figure}[!h]
 \centering
-\includegraphics[width=10cm]{images/materialsDatabase.png}
-\caption{The reflectivity simulator with the resource view (1) on the left, the
-materials table (2) on the top, and the properties view (3) on the bottom.}
+\includegraphics[width=10cm]{images/materialsDatabase_coated.png}
+\caption{The materials database editor showing at 1 the list of materials in
+the database and at 2 the properties for the selected material.}
 \label{matDB}
 \end{figure}
 
 \section{Viewing the Data Outside the Simulator}
 \label{viz}
 
+The Reflectivity Simulator shows a lot of information in a tight space. It is
+possible to view the final graphs for your data without the properties view,
+Item Viewer, or Materials Table taking up valuable screen space. To do this,
+choose Window$\rightarrow$Perspective$\rightarrow$Open
+Perspective$\rightarrow$Other. A dialog will appear with a list of
+\textit{Perspectives} that allow you to access the workbench in different ways.
+Choose ``Resource (default)'' from the list.
+
+The workbench will change when it loads the new perspective. On the left you
+should see a ``Project Explorer'' menu with a folder in it called ``itemDB.''
+You may also see views such as ``Outline'' or ``Tasks,'' both of which can be
+safely minmized or closed. In the Project Explorer, open the itemDB folder and
+double click one of the files that ends in *.csv. This will open a plot in the
+middle of the screen, (fig. \ref{fullPlotView}).
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=10cm]{images/fullPlotView_coated.png}
+\caption{The ``full plot view'' showing only the plot and no additional tables.
+The red section labeled 1 shows the project explore and the CSV files in the
+itemDB directory. The green section labeled 2 shows the scattering density for
+the simulated material. The blue section labeled 3 shows two tabs that will let
+you switch between the plot and the raw data.}
+\label{fullPlotView}
+\end{figure}
+
+After you are finished you can switch back to the ``Reflectivity'' perspective
+using the Window$\rightarrow$Perspective$\rightarrow$Open
+Perspective$\rightarrow$Other menu or by clicking ``Reflectivity'' in the upper
+right corner of the screen, if it is listed there.
+
 \section{Exporting the Data}
 \label{export}
+
+The Resource Perspective discussed in section \ref{viz} can also be used to
+export your data. You can do that either by using the ``data'' tab in the plot
+through cutting and pasting, or by right-clicking on your file and choosing
+Export. Alternatively, you can use your system's file browser to navigate to the
+workspace directory that you specified in section \ref{gettingStarted}, where
+you will find your data files in the itemDB subdirectory.
