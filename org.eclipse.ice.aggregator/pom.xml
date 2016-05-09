@@ -58,14 +58,7 @@
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
-<<<<<<< HEAD
   	<module>../org.eclipse.ice.repository</module>
   	<module>../org.eclipse.ice.product</module>
-  	
-  	
-=======
-  	<module>../org.eclipse.ice.repository</module>    	
-  	<module>../org.eclipse.ice.product</module>  		  	
->>>>>>> refs/remotes/origin/next
   </modules>
 </project>
