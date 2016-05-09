@@ -66,6 +66,8 @@
 				<ui.test.vmargs></ui.test.vmargs>
 			</properties>
 		</profile>
+		
+		<!-- This profile is used for running SonarQube. -->
 		<profile>
 			<id>sonar</id>
 			<activation>

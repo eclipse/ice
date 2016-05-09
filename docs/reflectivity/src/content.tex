@@ -8,9 +8,11 @@ Simulator. Questions should be directed to billingsjj@ornl.gov.
 You may download the software from the Spallation Neutron Source (SNS) website.
 Locate the file in your downloads directory. It will be named
 \begin{itemize}
-  \item - on Windows
-  \item - on Linux
-  \item - on Mac OS/X
+  \item - ice.product-win32.win32.x86.zip on 32-bit Windows
+  \item - ice.product-win32.win32.x86\_64.zip on 64-bit Windows
+  \item - ice.product-linux.gtk.x86.zip on 32-bit Linux
+  \item - ice.product-linux.gtk.x86\_64.zip on 64-bit Linux
+  \item - ice.product-macosx.cocoa.x86\_64.zip on Mac OS/X
 \end{itemize}
 
 Unzip this file to a directory of your choosing. 
@@ -60,7 +62,7 @@ small SNS logo in the task bar.}
 \end{figure}
 
 Simulating reflectivity (section \ref{simulate}) and manipulating material
-definitions (section \ref{modifyMaterials} are the primary functions of the
+definitions (section \ref{modifyMaterials}) are the primary functions of the
 workbench. However, the workbench is also capable of showing your data in
 standalone visualizations (section \ref{viz}), and you can export your data for
 your own use (section \ref{export}).
@@ -70,8 +72,8 @@ your own use (section \ref{export}).
 
 To load your data from LRAC and simulate the reflectivity of your material, open
 the Reflectivity menu by clicking on the SNS logo in the task bar. Click the
-left button labelled ``Calculate Reflectivity.'' This will create a new
-Reflectivity Simulator for you, (fig. \ref{simulator}).
+left button labeled ``Calculate Reflectivity,'' (see fig. \ref{launcher}).
+This will create a new Reflectivity Simulator for you, (fig. \ref{simulator}).
 
 \begin{figure}[!h]
 \centering
@@ -126,11 +128,22 @@ materials table (2) on the top, and the properties view (3) on the bottom.}
 \label{simulatorPost}
 \end{figure}
 
-
 \section{Adding or Removing Materials}
 \label{modifyMaterials}
 
-More plain text.
+Custom materials can be defined by modifying the Materials Database. To add,
+remove, or modify materials, open the Reflectivity menu by clicking on the SNS
+logo in the task bar. Click the right button labeled ``Set Material
+Properties,'' (see fig.\ref{launcher}). This will open the Materials Database so
+that you can make your changes, (fig. \ref{matDB}).
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=10cm]{images/materialsDatabase.png}
+\caption{The reflectivity simulator with the resource view (1) on the left, the
+materials table (2) on the top, and the properties view (3) on the bottom.}
+\label{matDB}
+\end{figure}
 
 \section{Viewing the Data Outside the Simulator}
 \label{viz}
