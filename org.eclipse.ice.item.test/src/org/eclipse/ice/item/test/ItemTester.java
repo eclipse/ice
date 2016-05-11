@@ -1111,15 +1111,13 @@ public class ItemTester implements ItemListener {
 		ArrayList<String> files = testItem
 				.getYAMLFiles(project.getLocation().toOSString());
 		assertNotNull(files);
-		assertEquals(3, files.size());
-		assertTrue(files.contains("bison.yaml"));
-		assertTrue(files.contains("bison_short.yaml"));
-		assertTrue(files.contains("bison_medium.yaml"));
+		assertEquals(1, files.size());
+		assertTrue(files.contains("moose_test.yaml"));
 
 		// Give it something that is not a directory and make sure we
 		// get no files
 		files = testItem.getYAMLFiles(
-				project.getLocation().toOSString() + separator + "bison.yaml");
+				project.getLocation().toOSString() + separator + "moose_test.yaml");
 		assertTrue(files.isEmpty());
 
 		// Create a new temp directory
@@ -1136,36 +1134,22 @@ public class ItemTester implements ItemListener {
 		// The test here is that the move operation makes a new file in the
 		// target and deletes the file in the source
 		testItem.moveTestFile(project.getLocation().toOSString(),
-				tempDir.getLocation().toOSString(), "bison.yaml");
-		assertFalse(project.getFile("bison.yaml").exists());
-		assertTrue(tempDir.getFile("bison.yaml").exists());
+				tempDir.getLocation().toOSString(), "moose_test.yaml");
+		assertFalse(project.getFile("moose_test.yaml").exists());
+		assertTrue(tempDir.getFile("moose_test.yaml").exists());
 
 		// Move it back to keep our workspace pristine for other item tests
 		testItem.moveTestFile(tempDir.getLocation().toOSString(),
-				project.getLocation().toOSString(), "bison.yaml");
-		assertTrue(project.getFile("bison.yaml").exists());
-		assertFalse(tempDir.getFile("bison.yaml").exists());
+				project.getLocation().toOSString(), "moose_test.yaml");
+		assertTrue(project.getFile("moose_test.yaml").exists());
+		assertFalse(tempDir.getFile("moose_test.yaml").exists());
 
 		// Check that we can copy, that is a new copied file is created
 		// in the target and the source file is left intact
 		testItem.copyTestFile(project.getLocation().toOSString(),
-				tempDir.getLocation().toOSString(), "bison.yaml");
-		assertTrue(project.getFile("bison.yaml").exists());
-		assertTrue(tempDir.getFile("bison.yaml").exists());
-
-		// Make sure we can move multiple files at time
-		testItem.moveMultipleFiles(project.getLocation().toOSString(),
-				tempDir.getLocation().toOSString(), ".yaml");
-		assertTrue(tempDir.getFile("bison.yaml").exists());
-		assertTrue(tempDir.getFile("bison_short.yaml").exists());
-		assertTrue(tempDir.getFile("bison_medium.yaml").exists());
-
-		// Let's check copying multiple files
-		testItem.copyMultipleFiles(tempDir.getLocation().toOSString(),
-				project.getLocation().toOSString(), ".yaml");
-		assertTrue(project.getFile("bison.yaml").exists());
-		assertTrue(project.getFile("bison_short.yaml").exists());
-		assertTrue(project.getFile("bison_medium.yaml").exists());
+				tempDir.getLocation().toOSString(), "moose_test.yaml");
+		assertTrue(project.getFile("moose_test.yaml").exists());
+		assertTrue(tempDir.getFile("moose_test.yaml").exists());
 
 		// Check we can delete directories
 		testItem.deleteTestDirectory(tempDir.getLocation().toOSString());

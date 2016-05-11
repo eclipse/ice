@@ -82,8 +82,8 @@ public class MOOSEModelTester {
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "itemData";
-		String yamlFile = userDir + separator + "bison.yaml";
-		String filePath = userDir + separator + "input_coarse10.i";
+		String yamlFileName = userDir + separator + "moose_test.yaml";
+		String filePath = userDir + separator + "mooseModel.i";
 
 		// Debug information
 		System.out.println("MOOSE Test Data File: " + filePath);
@@ -111,26 +111,26 @@ public class MOOSEModelTester {
 				project.open(null);
 			}
 
-			// Create the File handle and input stream for the Bison YAML
+			// Create the File handle and input stream for the Moose YAML
 			// file
-			IPath bisonPath = new Path(yamlFile);
-			File bisonFile = bisonPath.toFile();
-			FileInputStream bisonStream = new FileInputStream(bisonFile);
-			// Create the file in the workspace for the Bison YAML file
-			IFile bisonYAMLFile = project.getFile("bison.yaml");
-			if (!bisonYAMLFile.exists()) {
-				bisonYAMLFile.create(bisonStream, true, null);
+			IPath yamlPath = new Path(yamlFileName);
+			File yamlFile = yamlPath.toFile();
+			FileInputStream yamlStream = new FileInputStream(yamlFile);
+			// Create the file in the workspace for the Moose YAML file
+			IFile yamlYAMLFile = project.getFile("moose_test.yaml");
+			if (!yamlYAMLFile.exists()) {
+				yamlYAMLFile.create(yamlStream, true, null);
 			}
 
-			// Create the File handle and input stream for the Bison input
+			// Create the File handle and input stream for the Moose input
 			// file
 			IPath moosePath = new Path(filePath);
 			File mooseFile = moosePath.toFile();
 			FileInputStream mooseStream = new FileInputStream(mooseFile);
-			// Create the file in the workspace for the Bison input file
-			IFile bisonInputFile = project.getFile("input_coarse10.i");
-			if (!bisonInputFile.exists()) {
-				bisonInputFile.create(mooseStream, true, null);
+			// Create the file in the workspace for the Moose input file
+			IFile mooseInputFile = project.getFile("mooseModel.i");
+			if (!mooseInputFile.exists()) {
+				mooseInputFile.create(mooseStream, true, null);
 			}
 
 			// Refresh the workspace
@@ -208,7 +208,7 @@ public class MOOSEModelTester {
 	public void checkProcessing() {
 
 		// Local Declarations
-		String testFilename = "bison_test_file.inp";
+		String testFilename = "moose_test_file.i";
 
 		// Create a MOOSEModel to test
 		MOOSEModel model = new MOOSEModel(projectSpace);
@@ -223,11 +223,6 @@ public class MOOSEModelTester {
 		// Check the action list
 		assertEquals(2, form.getActionList().size());
 		assertTrue(form.getActionList().contains("Write MOOSE File"));
-
-		// FIXME REPLACE WITH PATH TO ICETESTS...
-//		Entry appName = ((DataComponent) form.getComponent(1))
-//				.retrieveEntry("MOOSE-Based Application");
-//		appName.setValue("file:/Users/aqw/ICEFiles_prebuiltMoose/moose/test/moose_test-opt");
 
 		// Change the output file name to make sure that it is possible
 		IEntry outputFileEntry = ((DataComponent) form.getComponent(1))
@@ -248,13 +243,13 @@ public class MOOSEModelTester {
 
 	/**
 	 * This operation is responsible for ensuring that the MOOSEModel can load
-	 * input. This operation checks this by passing it an input file for Bison.
+	 * input. This operation checks this by passing it an input file for Moose.
 	 */
 	@Test
 	public void checkLoadingInput() {
 
 		// Local Declarations
-		int numMooseBlocks = 20;
+		int numMooseBlocks = 7;
 
 		// Create a MOOSE Item
 		MOOSEModel mooseItem = new MOOSEModel(projectSpace);
@@ -263,7 +258,7 @@ public class MOOSEModelTester {
 		mooseItem.setIOService(service);
 
 		// Load the input
-		mooseItem.loadInput("input_coarse10.i");
+		mooseItem.loadInput("mooseModel.i");
 
 		// Pull the Form
 		Form form = mooseItem.getForm();
@@ -299,23 +294,10 @@ public class MOOSEModelTester {
 		}
 
 		// Check all of the block names. They should all be in the tree.
-		assertTrue(blockNames.contains("GlobalParams"));
-		assertTrue(blockNames.contains("Problem"));
 		assertTrue(blockNames.contains("Mesh"));
 		assertTrue(blockNames.contains("Variables"));
-		assertTrue(blockNames.contains("AuxVariables"));
-		assertTrue(blockNames.contains("Functions"));
-		assertTrue(blockNames.contains("SolidMechanics"));
 		assertTrue(blockNames.contains("Kernels"));
-		assertTrue(blockNames.contains("Burnup"));
-		assertTrue(blockNames.contains("AuxKernels"));
-		assertTrue(blockNames.contains("AuxBCs"));
-		assertTrue(blockNames.contains("Contact"));
-		assertTrue(blockNames.contains("ThermalContact"));
 		assertTrue(blockNames.contains("BCs"));
-		assertTrue(blockNames.contains("CoolantChannel"));
-		assertTrue(blockNames.contains("Materials"));
-		assertTrue(blockNames.contains("Dampers"));
 		assertTrue(blockNames.contains("Executioner"));
 		assertTrue(blockNames.contains("Postprocessors"));
 		assertTrue(blockNames.contains("Outputs"));
@@ -333,43 +315,16 @@ public class MOOSEModelTester {
 		assertEquals(3, parameters.size());
 		// Check the first one
 		IEntry param = parameters.get(0);
-		assertEquals("interval", param.getName());
-		assertEquals("1", param.getValue());
+		assertEquals("console", param.getName());
+		assertEquals("true", param.getValue());
 		// Check the second one
 		param = parameters.get(1);
-		assertEquals("output_initial", param.getName());
-		assertEquals("true", param.getValue());
-		// Check the third one
-		param = parameters.get(2);
 		assertEquals("exodus", param.getName());
 		assertEquals("true", param.getValue());
-
-		// Get the console block off the output block
-		TreeComposite consoleTree = outputsTree.getChildAtIndex(0);
-		assertNotNull(consoleTree);
-		assertEquals("console", consoleTree.getName());
-
-		// Get the parameters from the console block
-		dataNode = (DataComponent) consoleTree.getActiveDataNode();
-		parameters = dataNode.retrieveAllEntries();
-		assertNotNull(parameters);
-		assertEquals(4, parameters.size());
-		// Check the first one
-		param = parameters.get(0);
-		assertEquals("type", param.getName());
-		assertEquals("Console", param.getValue());
-		// Check the second one
-		param = parameters.get(1);
-		assertEquals("perf_log", param.getName());
-		assertEquals("true", param.getValue());
 		// Check the third one
 		param = parameters.get(2);
-		assertEquals("linear_residuals", param.getName());
-		assertEquals("true", param.getValue());
-		// Check the fourth one
-		param = parameters.get(3);
-		assertEquals("max_rows", param.getName());
-		assertEquals("25", param.getValue());
+		assertEquals("file_base", param.getName());
+		assertEquals("out", param.getValue());
 
 		return;
 	}
@@ -398,9 +353,9 @@ public class MOOSEModelTester {
 		transitiveItem.setIOService(service);
 		
 		// Load the input
-		item.loadInput("input_coarse10.i");
-		equalItem.loadInput("input_coarse10.i");
-		transitiveItem.loadInput("input_coarse10.i");
+		item.loadInput("mooseModel.i");
+		equalItem.loadInput("mooseModel.i");
+		transitiveItem.loadInput("mooseModel.i");
 		
 		// Set ICEObject data
 		equalItem.setId(item.getId());
@@ -467,7 +422,7 @@ public class MOOSEModelTester {
 		MOOSE mooseItem = new MOOSE(projectSpace);
 
 		mooseItem.setIOService(service);
-		mooseItem.loadInput("input_coarse10.i");
+		mooseItem.loadInput("mooseModel.i");
 		
 		mooseItem.setDescription("I am a job!");
 		mooseItem.setProject(null);
