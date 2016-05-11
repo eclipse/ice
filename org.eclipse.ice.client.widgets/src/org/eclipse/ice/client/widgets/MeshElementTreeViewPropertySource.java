@@ -218,7 +218,7 @@ public class MeshElementTreeViewPropertySource extends PropertySource {
 
 				// Get the vertex's location
 				if (ID_LOCATION.equals(id)) {
-					double[] loc = vertex.getLocation();
+					double[] loc = vertex.getTranslation();
 					for (int i = 0; i < loc.length; i++) {
 						propertySet.add(((Double) loc[i]).toString());
 					}
