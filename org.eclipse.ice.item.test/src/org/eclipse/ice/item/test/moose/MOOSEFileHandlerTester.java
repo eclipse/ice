@@ -226,13 +226,9 @@ public class MOOSEFileHandlerTester {
 		DataComponent powerData = (DataComponent) powerHistory.getDataNodes().get(0);
 		powerData.retrieveEntry("type").setTag("true");
 		powerData.retrieveEntry("scale_factor").setTag("true");
-		// Add a parameter for the data file
-		Parameter dataFileParam = new Parameter();
-		dataFileParam.setName("data_file");
-		dataFileParam.setDefault("powerhistory.csv");
-		dataFileParam.setEnabled(true);
-		powerData.addEntry(dataFileParam.toEntry());
-
+		powerData.retrieveEntry("data_file").setValue("defaultMatDB.csv");
+		powerData.retrieveEntry("data_file").setTag("true");
+		
 		// Dump the input file
 		handler.dumpInputFile(outputFilePath, blocks);
 
