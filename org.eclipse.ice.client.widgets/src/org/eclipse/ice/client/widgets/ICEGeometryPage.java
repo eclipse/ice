@@ -180,6 +180,7 @@ public class ICEGeometryPage extends ICEFormPage
 		service = factory.get("ICE Geometry Editor");
 		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID)).setFactory(service.getFactory());
+		geometryComp.setService(service);
 
 		// Create and draw geometry canvas
 		try {
