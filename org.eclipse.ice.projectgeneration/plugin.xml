@@ -4,15 +4,16 @@
    <extension-point id="pluginContent" name="%expoint.pluginContent.name" schema="schema/pluginContent.exsd"/>
    <extension 
    		point="org.eclipse.ui.newWizards">
-   		<category 
-   			id="org.eclipse.ice.projectgeneration.wizards"
-   			name="ICE Item Creation Wizards">
+   		<category
+           id="org.eclipse.ice.projectgeneration.wizards"
+           name="ICE Item Creation Wizards">
 		</category>
 		<wizard
-   				category="org.eclipse.ice.projectgeneration.wizards"
-   				class="org.eclipse.ice.projectgeneration.wizards.NewICEItemProjectWizard"
-   				id="org.eclipse.ice.projectgeneration.wizard.new.item"
-   				name="ICE Item Project Creation Wizard">
+        category="org.eclipse.ice.projectgeneration.wizards"
+        class="org.eclipse.ice.projectgeneration.wizards.NewICEItemProjectWizard"
+        id="org.eclipse.ice.projectgeneration.wizard.new.item"
+        name="ICE Item Project Creation Wizard"
+        project="true">
 		</wizard>
 	</extension>
 	<extension 
@@ -43,7 +44,7 @@
              pureOSGi="false"
              rcp="false"
              requiresActivator="false"
-             ui-content="true">
+             ui-content="false">
           <description>
              Creates a new ICE Item project
           </description>
@@ -53,7 +54,8 @@
           point="org.eclipse.pde.ui.newExtension">
        <category
              id="templates"
-             name="ICE Item Templates">
+             name="ICE Item Templates"
+             parentCategory="templates">
        </category>
        <wizard
              availableAsShortcut="true"

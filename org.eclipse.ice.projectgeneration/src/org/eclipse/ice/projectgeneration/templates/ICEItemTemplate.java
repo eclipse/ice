@@ -43,7 +43,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String EXTENSION_POINT = "org.eclipse.ice.item.itemBuilder";
 	protected static final String KEY_CLASS_NAME = "className";
 	protected static final String KEY_EXTENSION_NAME = "packageName";
-
+	protected static final String KEY_JOB_LAUNCHER_EXT = "createJobLauncher";
+	protected static final String KEY_MODEL_EXT = "createModel";
+	
 	/**
 	 * Constructor
 	 */
@@ -60,7 +62,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		// create one wizard page for the options
 		WizardPage p1 = createPage(0);
 		p1.setTitle("New ICE Item Project");
-		p1.setDescription("Specify ICE Item parameters");
+		p1.setDescription("Specify ICE Item Parameters.");
 		wizard.addPage(p1);
 		markPagesAdded();
 	}
@@ -69,7 +71,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	  * Define the options, descriptions, default values, and page numbers
 	  */
 	protected void setOptions() {
-		addOption(KEY_CLASS_NAME     , "Class Base Name"   , "" , 0);
+		addOption(KEY_CLASS_NAME     , "Item Class Base Name"   , "" , 0);
+		addOption(KEY_JOB_LAUNCHER_EXT, "Create Job Launcher?", true, 0);
+		addOption(KEY_MODEL_EXT, "Create Model?", true, 0);
 	}
 	
 	@Override
@@ -118,31 +122,41 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
+		IPluginBase plugin;
+		String pluginId;
+		IPluginExtension extension;
+		IPluginModelFactory factory;
+		IPluginElement element;
+		
 		// Model builder plugin.xml entry
-		IPluginBase plugin = model.getPluginBase();
-		String pluginId = plugin.getId();
-		IPluginExtension extension = createExtension(EXTENSION_POINT, false);
-		extension.setName(splitCamelCase(getStringOption(KEY_CLASS_NAME) + " Model"));
-		extension.setId(getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
-		IPluginModelFactory factory = model.getPluginFactory();
-		IPluginElement element = factory.createElement(extension);
-		element.setName("implementation");
-		element.setAttribute("class", pluginId + ".model." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
-		extension.add(element);
-		if (!extension.isInTheModel())
-			plugin.add(extension);
-
+		if (getBooleanOption(KEY_MODEL_EXT)) {
+			plugin = model.getPluginBase();
+			pluginId = plugin.getId();
+			extension = createExtension(EXTENSION_POINT, false);
+			extension.setName(splitCamelCase(getStringOption(KEY_CLASS_NAME) + " Model"));
+			extension.setId(getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
+			factory = model.getPluginFactory();
+			element = factory.createElement(extension);
+			element.setName("implementation");
+			element.setAttribute("class", pluginId + ".model." + getStringOption(KEY_CLASS_NAME) + "ModelBuilder");
+			extension.add(element);
+			if (!extension.isInTheModel())
+				plugin.add(extension);
+		}
 		// Job launcher builder plugin.xml entry
-		plugin = model.getPluginBase();
-		extension = createExtension(EXTENSION_POINT, false);
-		extension.setName(splitCamelCase(getStringOption(KEY_CLASS_NAME)+ " Launcher"));
-		extension.setId(getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
-		factory = model.getPluginFactory();
-		element = factory.createElement(extension);
-		element.setName("implementation");
-		element.setAttribute("class", pluginId + ".launcher." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
-		extension.add(element);
-		if (!extension.isInTheModel())
-			plugin.add(extension);
+		if (getBooleanOption(KEY_JOB_LAUNCHER_EXT)) {
+			plugin = model.getPluginBase();
+			pluginId = plugin.getId();
+			extension = createExtension(EXTENSION_POINT, false);
+			extension.setName(splitCamelCase(getStringOption(KEY_CLASS_NAME)+ " Launcher"));
+			extension.setId(getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
+			factory = model.getPluginFactory();
+			element = factory.createElement(extension);
+			element.setName("implementation");
+			element.setAttribute("class", pluginId + ".launcher." + getStringOption(KEY_CLASS_NAME) + "LauncherBuilder");
+			extension.add(element);
+			if (!extension.isInTheModel())
+				plugin.add(extension);
+		}
 	}
 }
