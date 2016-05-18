@@ -61,6 +61,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	public void addPages(Wizard wizard) {
 		// create one wizard page for the options
 		WizardPage p1 = createPage(0);
+		p1.setPageComplete(false);
 		p1.setTitle("New ICE Item Project");
 		p1.setDescription("Specify ICE Item Parameters.");
 		wizard.addPage(p1);

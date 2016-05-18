@@ -56,8 +56,7 @@ import org.eclipse.ice.projectgeneration.templates.ICEItemWizard;
 
 /**
  * This class defines the steps for creating a new New ICE Item project via the
- * wizard that us accessible via: 'File -> New... -> Other -> New ICE Item
- * Project'
+ * wizard that us accessible via: 'File -> New... -> New ICE Item Project'
  * 
  * @author arbennett
  */
@@ -137,6 +136,8 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		}
 	}
 
+	
+	
 	/**
 	 * Takes all of the information from the wizard pages and uses it to create
 	 * the plugin and java classes.
