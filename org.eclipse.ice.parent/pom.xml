@@ -18,6 +18,7 @@
 		<linux-format>zip</linux-format>
 		<!-- Repo for released versions of CBI -->
 		<eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
+		<maven-repo.url>https://repo1.maven.org/maven2/</maven-repo.url>
 	</properties>
 
 	<!-- This is the parent POM from which all ICE modules inherit common settings -->
@@ -30,10 +31,6 @@
 	<pluginRepositories>
 		<!-- Provide a reference to the repository containing the CBI plugins -->
 		<pluginRepository>
-			<id>tycho</id>
-			<url>http://mvnrepository.com/artifact/</url>
-		</pluginRepository>
-		<pluginRepository>
 			<id>eclipse-repo</id>
 			<url>${eclipse-repo.url}</url>
 			<releases>
@@ -43,7 +40,11 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</pluginRepository>
-
+		<!-- Provide a reference to the official Maven repository. -->
+		<pluginRepository>
+			<id>tycho</id>
+			<url>${tycho-repo.url}</url>
+		</pluginRepository>
 	</pluginRepositories>
 
 	<profiles>
