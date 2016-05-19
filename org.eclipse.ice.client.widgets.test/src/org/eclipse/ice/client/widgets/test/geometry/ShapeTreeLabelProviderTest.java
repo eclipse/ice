@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
 import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
@@ -67,7 +67,7 @@ public class ShapeTreeLabelProviderTest {
 		// Any input should produce a null return value
 
 		// Create a shape
-		ShapeMesh geometryModel = new ShapeMesh();
+		Shape geometryModel = new Shape();
 		BasicView geometryView = new BasicView();
 		ShapeController geometryShape = new ShapeController(geometryModel,
 				geometryView);
@@ -98,7 +98,7 @@ public class ShapeTreeLabelProviderTest {
 		// Create some named shapes
 
 		// Create a shape
-		ShapeMesh geometryModel = new ShapeMesh();
+		Shape geometryModel = new Shape();
 		BasicView geometryView = new BasicView();
 		ShapeController geometryShape = new ShapeController(geometryModel,
 				geometryView);
