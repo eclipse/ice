@@ -14,14 +14,14 @@ package org.eclipse.ice.nek5000.test;
 
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.EdgeController;
-import org.eclipse.eavp.viz.modeling.EdgeMesh;
+import org.eclipse.eavp.viz.modeling.Edge;
 import org.eclipse.eavp.viz.modeling.factory.IControllerProvider;
 import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
 import org.eclipse.eavp.viz.modeling.base.IMesh;
 import org.eclipse.eavp.viz.modeling.VertexController;
-import org.eclipse.eavp.viz.modeling.VertexMesh;
+import org.eclipse.eavp.viz.modeling.Vertex;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonMesh;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygon;
 
 /**
  * A factory which produces controllers with dummy views for meshes read from
@@ -43,7 +43,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 
 		// If the model is an edge component, create an IControllerProvider that
 		// creates EdgeControllers
-		if (model instanceof EdgeMesh) {
+		if (model instanceof Edge) {
 
 			return new IControllerProvider<EdgeController>() {
 				@Override
@@ -53,14 +53,14 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// both in a
 					// shape controller
 					BasicView view = new BasicView();
-					return new EdgeController((EdgeMesh) model, view);
+					return new EdgeController((Edge) model, view);
 				}
 			};
 		}
 
 		// If the model is an vertex component, create an IControllerProvider
 		// that creates VertexControllers
-		else if (model instanceof VertexMesh) {
+		else if (model instanceof Vertex) {
 
 			return new IControllerProvider<VertexController>() {
 				@Override
@@ -70,14 +70,14 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// both in a
 					// shape controller
 					BasicView view = new BasicView();
-					return new VertexController((VertexMesh) model, view);
+					return new VertexController((Vertex) model, view);
 				}
 			};
 		}
 
 		// If the model is a face component, create an IControllerProvider that
 		// creates NekPolygonControllers
-		else if (model instanceof NekPolygonMesh) {
+		else if (model instanceof NekPolygon) {
 			return new IControllerProvider<NekPolygonController>() {
 				@Override
 				public NekPolygonController createController(IMesh model) {
@@ -86,7 +86,7 @@ public class TestNekControllerFactory implements IControllerProviderFactory {
 					// both in a
 					// shape controller
 					BasicView view = new BasicView();
-					return new NekPolygonController((NekPolygonMesh) model,
+					return new NekPolygonController((NekPolygon) model,
 							view);
 				}
 			};

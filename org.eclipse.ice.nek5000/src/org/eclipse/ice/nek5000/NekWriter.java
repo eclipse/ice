@@ -450,8 +450,8 @@ public class NekWriter implements IComponentVisitor {
 
 			// Extract the x, y coordinates of the Quad's vertices
 			for (int k = 0; k < 4; k++) {
-				xCoords.add((float) currVertices.get(k).getLocation()[0]);
-				yCoords.add((float) currVertices.get(k).getLocation()[1]);
+				xCoords.add((float) currVertices.get(k).getTranslation()[0]);
+				yCoords.add((float) currVertices.get(k).getTranslation()[1]);
 			}
 
 			// Iterate through the Edges of the current Quad
