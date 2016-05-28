@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
@@ -96,7 +96,7 @@ public class GeometryEditor extends Item {
 		GeometryComponent geometryComp = new GeometryComponent();
 
 		geometryComp.setGeometry(
-				new ShapeController(new ShapeMesh(), new BasicView()));
+				new ShapeController(new Shape(), new BasicView()));
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());

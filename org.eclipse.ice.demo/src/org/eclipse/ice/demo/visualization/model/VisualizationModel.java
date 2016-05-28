@@ -20,7 +20,7 @@ import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;

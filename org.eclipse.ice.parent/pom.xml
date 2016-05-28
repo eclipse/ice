@@ -4,20 +4,21 @@
 
 	<!-- Custom properties -->
 	<properties>
-    	<releaseName>next</releaseName>
+		<releaseName>next</releaseName>
 		<tycho-version>0.24.0</tycho-version>
 		<tycho-extras-version>${tycho-version}</tycho-extras-version>
 		<cbi-plugins.version>1.1.3</cbi-plugins.version>
-		<pom-filename>pom.xml</pom-filename>	
+		<pom-filename>pom.xml</pom-filename>
 		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
-    	<buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+		<buildTimestamp>${maven.build.timestamp}</buildTimestamp>
 		<buildId>${buildTimestamp}</buildId>
 		<ice-install-dir>/home/data/httpd/download.eclipse.org/ice/builds/${releaseName}</ice-install-dir>
 		<macosx-format>zip</macosx-format>
 		<win32-format>zip</win32-format>
 		<linux-format>zip</linux-format>
 		<!-- Repo for released versions of CBI -->
-    	<eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
+		<eclipse-repo.url>https://repo.eclipse.org/content/repositories/cbi/</eclipse-repo.url>
+		<maven-repo.url>https://repo1.maven.org/maven2/</maven-repo.url>
 	</properties>
 
 	<!-- This is the parent POM from which all ICE modules inherit common settings -->
@@ -27,9 +28,9 @@
 	<version>2.1.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-  	<pluginRepositories>
+	<pluginRepositories>
 		<!-- Provide a reference to the repository containing the CBI plugins -->
-	    <pluginRepository>
+		<pluginRepository>
 			<id>eclipse-repo</id>
 			<url>${eclipse-repo.url}</url>
 			<releases>
@@ -38,9 +39,14 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-	    </pluginRepository>
+		</pluginRepository>
+		<!-- Provide a reference to the official Maven repository. -->
+		<pluginRepository>
+			<id>tycho</id>
+			<url>${tycho-repo.url}</url>
+		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<profiles>
 		<profile>
 			<id>macosx</id>
@@ -82,14 +88,13 @@
 				</sonar.host.url>
 			</properties>
 		</profile>
-		
+
 		<profile>
-			<!-- Add a profile (activated using '-P eclipse-sign' that will sign the jar files using
-			     the Eclipse jarsigner. Plugins/features must be signed to avoid a warning message
-			     when installing. See org.eclipse.ice.product/pom.xml for executable signing and
-			     https://www.eclipse.org/community/eclipse_newsletter/2013/august/article3.php for
-			     more information.
-			-->
+			<!-- Add a profile (activated using '-P eclipse-sign' that will sign the 
+				jar files using the Eclipse jarsigner. Plugins/features must be signed to 
+				avoid a warning message when installing. See org.eclipse.ice.product/pom.xml 
+				for executable signing and https://www.eclipse.org/community/eclipse_newsletter/2013/august/article3.php 
+				for more information. -->
 			<id>eclipse-sign</id>
 			<pluginRepositories>
 				<pluginRepository>
@@ -244,10 +249,10 @@
 						<!-- Restrict javax.ws.rs version -->
 						<filter>
 							<type>eclipse-plugin</type>
-								<id>javax.ws.rs</id>
-								<restrictTo>
-									<version>1.1.1.v20130318-1750</version> 
-								</restrictTo>
+							<id>javax.ws.rs</id>
+							<restrictTo>
+								<version>1.1.1.v20130318-1750</version>
+							</restrictTo>
 						</filter>
 					</filters>
 				</configuration>
@@ -263,11 +268,11 @@
 					</executions> -->
 			</plugin>
 
-			<!-- Add build ID to about.mappings. This file is used to provide replacement text for the
-			     about.properties file, which in turn is used to provide externalized strings for the 
-			     about.ini file. The about.ini file contains values for the branding specified in
-			     the product extension, and that is displayed in the "About" dialog.
-			-->
+			<!-- Add build ID to about.mappings. This file is used to provide replacement 
+				text for the about.properties file, which in turn is used to provide externalized 
+				strings for the about.ini file. The about.ini file contains values for the 
+				branding specified in the product extension, and that is displayed in the 
+				"About" dialog. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>

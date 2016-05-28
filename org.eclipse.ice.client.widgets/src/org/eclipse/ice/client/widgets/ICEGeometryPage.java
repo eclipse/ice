@@ -15,17 +15,18 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
+import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -117,7 +118,19 @@ public class ICEGeometryPage extends ICEFormPage
 	 * @param geometryComponent
 	 */
 	public void setGeometry(GeometryComponent geometryComponent) {
+
+		// Unregister from the old component
+		if (geometryComp != null) {
+			geometryComp.unregister(this);
+		}
+
+		// Set the component
 		geometryComp = geometryComponent;
+
+		// Register with the new component
+		if (geometryComp != null) {
+			geometryComp.register(this);
+		}
 	}
 
 	/**
@@ -179,7 +192,8 @@ public class ICEGeometryPage extends ICEFormPage
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		service = factory.get("ICE Geometry Editor");
 		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
-				.findView(ShapeTreeView.ID)).setFactory(service.getFactory());
+				.findView(ShapeTreeView.ID)).setFactory(service.getControllerProviderFactory());
+		geometryComp.setService(service);
 
 		// Create and draw geometry canvas
 		try {
@@ -207,7 +221,14 @@ public class ICEGeometryPage extends ICEFormPage
 	 */
 	@Override
 	public void update(IUpdateable component) {
-		dirty = true;
+
+		// If the geometry was updated, the editor is now dirty
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				editor.setDirty(true);
+			};
+		});
 	}
 
 	@Override

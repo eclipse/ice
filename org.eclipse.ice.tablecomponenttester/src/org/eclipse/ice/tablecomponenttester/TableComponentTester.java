@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -194,7 +194,7 @@ public class TableComponentTester extends Item {
 
 		// ===========================================================================Try
 		// making geometry page
-		ShapeMesh geometryModel = new ShapeMesh();
+		Shape geometryModel = new Shape();
 		BasicView geometryView = new BasicView();
 		ShapeController geometryShape = new ShapeController(geometryModel,
 				geometryView);

@@ -12,21 +12,17 @@ package org.eclipse.ice.reactor.plant;
 
 import java.util.List;
 
+import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateable;
+import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.eavp.viz.modeling.base.BasicController;
 import org.eclipse.eavp.viz.modeling.base.BasicMesh;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
-import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateable;
-import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateableListener;
 import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerController;
-import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
-import org.eclipse.eavp.viz.service.geometry.reactor.JunctionMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
-import org.eclipse.eavp.viz.service.geometry.reactor.PipeMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMesh;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
 import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
@@ -145,8 +141,8 @@ public class FXPlantCompositeConverter
 			// with the core channels
 			List<IController> pipeList = root
 					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+			pipeList.addAll(root.getEntitiesFromCategory(
+					ReactorMeshCategory.CORE_CHANNELS));
 
 			// Check the root to see if a pipe with that id already exists
 			for (IController pipe : pipeList) {
@@ -163,8 +159,8 @@ public class FXPlantCompositeConverter
 
 			// Refresh the list of pipes
 			pipeList = root.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+			pipeList.addAll(root.getEntitiesFromCategory(
+					ReactorMeshCategory.CORE_CHANNELS));
 
 			// Now that the pipe is guaranteed to be in the root, as it
 			// was added when visited, find the pipe with that id and
@@ -228,10 +224,10 @@ public class FXPlantCompositeConverter
 		}
 
 		@Override
-		public void visit(Junction plantComp) {
+		public void visit(org.eclipse.ice.reactor.plant.Junction plantComp) {
 
 			// Create a new junction
-			JunctionMesh mesh = new JunctionMesh();
+			org.eclipse.eavp.viz.service.geometry.reactor.Junction mesh = new org.eclipse.eavp.viz.service.geometry.reactor.Junction();
 			JunctionController junction = (JunctionController) factory
 					.createProvider(mesh).createController(mesh);
 
@@ -241,8 +237,8 @@ public class FXPlantCompositeConverter
 			// with the core channels
 			List<IController> pipeList = root
 					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+			pipeList.addAll(root.getEntitiesFromCategory(
+					ReactorMeshCategory.CORE_CHANNELS));
 
 			// Add all the input pipes to the junction
 			for (PlantComponent input : plantComp.getInputs()) {
@@ -367,7 +363,7 @@ public class FXPlantCompositeConverter
 		public void visit(Reactor plantComp) {
 
 			// Create a new reactor
-			ReactorMesh mesh = new ReactorMesh();
+			org.eclipse.eavp.viz.service.geometry.reactor.Reactor mesh = new org.eclipse.eavp.viz.service.geometry.reactor.Reactor();
 			ReactorController reactor = (ReactorController) factory
 					.createProvider(mesh).createController(mesh);
 
@@ -387,7 +383,7 @@ public class FXPlantCompositeConverter
 		public void visit(HeatExchanger plantComp) {
 
 			// Create a new heat exchanger
-			HeatExchangerMesh mesh = new HeatExchangerMesh();
+			org.eclipse.eavp.viz.service.geometry.reactor.HeatExchanger mesh = new org.eclipse.eavp.viz.service.geometry.reactor.HeatExchanger();
 			HeatExchangerController heatExchanger = (HeatExchangerController) factory
 					.createProvider(mesh).createController(mesh);
 
@@ -416,8 +412,8 @@ public class FXPlantCompositeConverter
 			// with the core channels
 			List<IController> pipeList = root
 					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+			pipeList.addAll(root.getEntitiesFromCategory(
+					ReactorMeshCategory.CORE_CHANNELS));
 
 			// Check the root to see if a pipe with that id already exists
 			for (IController pipe : pipeList) {
@@ -451,8 +447,8 @@ public class FXPlantCompositeConverter
 			// with the core channels
 			List<IController> pipeList = root
 					.getEntitiesFromCategory(ReactorMeshCategory.PIPES);
-			pipeList.addAll(root
-					.getEntitiesFromCategory(ReactorMeshCategory.CORE_CHANNELS));
+			pipeList.addAll(root.getEntitiesFromCategory(
+					ReactorMeshCategory.CORE_CHANNELS));
 
 			// Check the root to see if a pipe with that id already exists
 			for (IController pipe : pipeList) {
@@ -747,7 +743,7 @@ public class FXPlantCompositeConverter
 		 */
 		public PipeController createPipe(Pipe plantComp) {
 			// Create a new pipe
-			PipeMesh mesh = new PipeMesh();
+			org.eclipse.eavp.viz.service.geometry.reactor.Pipe mesh = new org.eclipse.eavp.viz.service.geometry.reactor.Pipe();
 
 			// Set the pipe's properties
 			mesh.setProperty(MeshProperty.ID,

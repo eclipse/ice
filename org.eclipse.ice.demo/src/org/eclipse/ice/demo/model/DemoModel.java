@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
@@ -72,7 +72,7 @@ public class DemoModel extends Model {
 		geomComp.setDescription("A geometry");
 		geomComp.setContext("demo-geometry");
 		geomComp.setGeometry(
-				new ShapeController(new ShapeMesh(), new BasicView()));
+				new ShapeController(new Shape(), new BasicView()));
 
 		// Create a data component
 		DataComponent dataComp = new DataComponent();

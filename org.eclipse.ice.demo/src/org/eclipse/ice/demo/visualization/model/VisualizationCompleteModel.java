@@ -10,7 +10,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.*;
@@ -128,7 +128,7 @@ public class VisualizationCompleteModel extends Model {
 
 		//Create the geometry component
 		ShapeController geometryRoot = new ShapeController(new
-		    ShapeMesh(), new BasicView());
+		    Shape(), new BasicView());
 		GeometryComponent geometryComponent = new 
 		    GeometryComponent();
 		geometryComponent.setGeometry(geometryRoot);
