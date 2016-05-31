@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="mars" sequenceNumber="194">
+<?pde version="3.8"?><target name="mars" sequenceNumber="197">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.ease.ui.feature.feature.group" version="0.0.0"/>
@@ -86,10 +86,6 @@
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/technology/nebula/archives/Q32014/release"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="0.0.0"/>
@@ -127,6 +123,10 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.eavp.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/eavp/builds/next"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.nebula.visualization.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/nebula/releases/1.0.0/"/>
 </location>
 </locations>
 </target>
