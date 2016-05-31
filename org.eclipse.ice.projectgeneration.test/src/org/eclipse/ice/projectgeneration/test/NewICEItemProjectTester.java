@@ -56,12 +56,12 @@ public class NewICEItemProjectTester {
 		bot.button("Next >").click();
 		bot.comboBox().setText("Oak Ridge National Laboratory");
 		bot.button("Next >").click();
-		bot.textWithLabel("Class Base Name").setText("NewItem");
+		bot.textWithLabel("Item Class Base Name").setText("NewItem");
 		bot.button("Finish").click();
 
 		// Wait for the wizard to complete
 		try {
-			Thread.sleep(8000);
+			Thread.sleep(20000);
 		} catch (InterruptedException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
