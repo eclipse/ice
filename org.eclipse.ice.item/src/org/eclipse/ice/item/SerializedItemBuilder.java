@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.january.form.ICEJAXBHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

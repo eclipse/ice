@@ -14,7 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.january.form.MasterDetailsComponent;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ArrayContentProvider;

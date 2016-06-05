@@ -14,7 +14,7 @@ package org.eclipse.ice.reflectivity.ui;
 
 import org.eclipse.ice.client.widgets.DataComponentComposite;
 import org.eclipse.ice.client.widgets.IEntryComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.january.form.DataComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;

@@ -25,15 +25,15 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.ICEJAXBClassProvider;
+import org.eclipse.january.form.ICEJAXBHandler;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.TableComponent;
 
 /**
  * <p>

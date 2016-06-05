@@ -22,20 +22,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.entry.ContinuousEntry;
-import org.eclipse.ice.datastructures.entry.FileEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.item.model.Model;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
+import org.eclipse.january.form.ContinuousEntry;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.FileEntry;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.ResourceComponent;
+import org.eclipse.january.form.StringEntry;
+import org.eclipse.january.form.VizResource;
 
 /**
  * This classes calculates the reflectivity profile of a set of materials

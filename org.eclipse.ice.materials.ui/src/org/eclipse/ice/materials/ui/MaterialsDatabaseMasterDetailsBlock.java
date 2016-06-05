@@ -17,9 +17,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.MaterialStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;

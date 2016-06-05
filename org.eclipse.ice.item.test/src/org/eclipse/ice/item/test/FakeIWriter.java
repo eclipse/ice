@@ -12,8 +12,8 @@
 package org.eclipse.ice.item.test;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.january.form.Form;
 
 /**
  * This class is a fake writer for use when testing the Item. The name of the

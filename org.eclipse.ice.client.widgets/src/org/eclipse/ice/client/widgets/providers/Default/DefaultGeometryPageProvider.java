@@ -17,8 +17,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
 import org.eclipse.ice.client.widgets.providers.IGeometryPageProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.GeometryComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 

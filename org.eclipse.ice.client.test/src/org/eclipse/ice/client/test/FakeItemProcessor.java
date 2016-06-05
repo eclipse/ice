@@ -21,13 +21,13 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.ice.core.iCore.ICore;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.iclient.IItemProcessor;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

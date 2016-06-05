@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.january.form.FormStatus;
 
 /**
  * The LocalExecutionAction is a subclass of Action that executes a specified

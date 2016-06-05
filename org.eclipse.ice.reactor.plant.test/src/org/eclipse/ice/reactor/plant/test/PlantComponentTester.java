@@ -25,11 +25,11 @@ import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.reactor.plant.PlantComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.ICEJAXBHandler;
+import org.eclipse.january.form.IReactorComponent;
+import org.eclipse.january.form.SelectiveComponentVisitor;
 import org.junit.Test;
 
 /**

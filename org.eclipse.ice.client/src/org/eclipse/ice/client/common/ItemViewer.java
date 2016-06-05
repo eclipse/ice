@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.ice.client.common.internal.ClientHolder;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
 import org.eclipse.ice.iclient.IClient;
+import org.eclipse.january.form.Identifiable;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;

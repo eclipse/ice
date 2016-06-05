@@ -13,11 +13,11 @@ package org.eclipse.ice.client.widgets.test;
 
 import org.eclipse.ice.client.widgets.IEntryComposite;
 import org.eclipse.ice.client.widgets.StringEntryComposite;
-import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.StringEntry;
 import org.eclipse.swt.SWT;
 import org.junit.Test;
+import org.eclipse.ice.client.widgets.test.utils.AbstractSWTTester;
 
 /**
  * This class provides some basic UI testing for the {@link EntryComposite}.
@@ -59,7 +59,8 @@ public class EntryCompositeTester extends AbstractSWTTester {
 		getDisplay().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				composite = new StringEntryComposite(getShell(), entry, SWT.NONE);
+				composite = new StringEntryComposite(getShell(), entry,
+						SWT.NONE);
 			}
 		});
 

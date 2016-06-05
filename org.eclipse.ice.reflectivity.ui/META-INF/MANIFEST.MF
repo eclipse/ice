@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.ice.reflectivity.ui;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.reflectivity.ui
-Require-Bundle: org.eclipse.ice.datastructures,
+Require-Bundle: org.eclipse.january.form,
  org.eclipse.ice.client.compatibility,
  org.eclipse.swt,
  org.eclipse.core.resources;bundle-version="3.10.0",

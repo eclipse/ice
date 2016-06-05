@@ -44,11 +44,11 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.ice.client.internal.Client;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.ICEResource;
+import org.eclipse.january.form.Identifiable;
 import org.junit.Before;
 import org.junit.Test;
 

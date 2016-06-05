@@ -15,8 +15,6 @@ package org.eclipse.ice.client.widgets.moose.components;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
 import org.eclipse.ice.reactor.plant.DownComer;
@@ -42,6 +40,8 @@ import org.eclipse.ice.reactor.plant.Turbine;
 import org.eclipse.ice.reactor.plant.Valve;
 import org.eclipse.ice.reactor.plant.VolumeBranch;
 import org.eclipse.ice.reactor.plant.WetWell;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
 
 /**
  * This class is used to create a generic PlantComponent based on a string (or a

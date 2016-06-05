@@ -29,9 +29,9 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.caebat.batml.BatMLModel;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.eclipse.january.form.emf.EMFComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -14,12 +14,12 @@ package org.eclipse.ice.client.test;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IObservableWidget;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.ISimpleResourceProvider;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
+import org.eclipse.january.form.Form;
 
 /**
  * <p>

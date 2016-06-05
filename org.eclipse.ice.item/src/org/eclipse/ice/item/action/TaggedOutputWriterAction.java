@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.january.form.FormStatus;
 
 /**
  * <p>

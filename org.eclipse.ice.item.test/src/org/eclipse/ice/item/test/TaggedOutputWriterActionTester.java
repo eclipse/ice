@@ -24,8 +24,8 @@ import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.action.TaggedOutputWriterAction;
+import org.eclipse.january.form.FormStatus;
 import org.junit.Test;
 
 /**

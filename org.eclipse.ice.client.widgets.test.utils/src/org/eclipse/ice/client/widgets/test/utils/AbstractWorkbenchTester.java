@@ -17,9 +17,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEFormInput;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.ICEResource;
+import org.eclipse.january.form.VizResource;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;

@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.item.Registry;
+import org.eclipse.january.form.DataComponent;
 import org.junit.Test;
 
 /**

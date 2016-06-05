@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ErrorMessageFormPage;
 import org.eclipse.ice.client.widgets.providers.IErrorPageProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.january.form.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 

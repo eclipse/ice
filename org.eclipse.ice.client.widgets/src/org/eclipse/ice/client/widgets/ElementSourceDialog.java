@@ -15,9 +15,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Comparator;
 
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.january.form.IElementSource;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.Material;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;

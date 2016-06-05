@@ -16,8 +16,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ICEResourcePage;
 import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.ResourceComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 

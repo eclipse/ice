@@ -18,13 +18,13 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.reactor.plant.HeatExchanger;
 import org.eclipse.ice.reactor.plant.Junction;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.TimeDependentJunction;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
 
 /**
  * This class provides an {@link PlantComponentLinker} that links

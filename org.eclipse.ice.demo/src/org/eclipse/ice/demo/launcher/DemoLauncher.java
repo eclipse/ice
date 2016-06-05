@@ -14,10 +14,10 @@ package org.eclipse.ice.demo.launcher;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.january.form.FormStatus;
 
 @XmlRootElement(name = "DemoLauncher")
 public class DemoLauncher extends JobLauncher {

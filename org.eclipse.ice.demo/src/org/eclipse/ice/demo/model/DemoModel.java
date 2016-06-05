@@ -19,16 +19,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.ShapeController;
 import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.GeometryComponent;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.StringEntry;
 
 @XmlRootElement(name = "DemoModel")
 public class DemoModel extends Model {

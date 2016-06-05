@@ -27,9 +27,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.csv.SpaceDelimitedReader;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.ListComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -15,7 +15,7 @@ package org.eclipse.ice.item;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.january.form.IUpdateable;
 
 /**
  * <p>

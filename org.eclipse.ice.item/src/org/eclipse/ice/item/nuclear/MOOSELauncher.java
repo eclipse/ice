@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.jobLauncher.SuiteLauncher;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.IUpdateable;
+import org.eclipse.january.form.IUpdateableListener;
+import org.eclipse.january.form.StringEntry;
 
 /**
  * A SuiteLauncher Item for all MOOSE products (MARMOT, BISON, RELAP-7, RAVEN).

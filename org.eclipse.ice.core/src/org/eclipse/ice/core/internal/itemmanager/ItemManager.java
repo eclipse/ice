@@ -20,9 +20,6 @@ import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.Item;
@@ -31,6 +28,9 @@ import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.Identifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

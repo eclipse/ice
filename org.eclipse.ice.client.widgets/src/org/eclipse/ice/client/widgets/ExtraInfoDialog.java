@@ -14,8 +14,8 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetClosedListener;
+import org.eclipse.january.form.DataComponent;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ice.client.widgets.EMFSectionPage;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.eclipse.january.form.emf.EMFComponent;
 import org.junit.Test;
 
 /**

@@ -18,10 +18,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.ShapeController;
 import org.eclipse.eavp.viz.modeling.Shape;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.GeometryComponent;
 
 /**
  * <p>

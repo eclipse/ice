@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.ice.client.widgets.EclipseFormWidget;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.january.form.Form;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -16,7 +16,7 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.TreeComposite;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;

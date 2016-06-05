@@ -18,7 +18,7 @@ import java.util.HashMap;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.TreeComposite;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.ui.IWorkbench;

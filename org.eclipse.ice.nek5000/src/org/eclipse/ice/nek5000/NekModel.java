@@ -26,15 +26,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.MeshComponent;
 
 /**
  * This class extends the Item to create a modeler for Nek5000 input files. It

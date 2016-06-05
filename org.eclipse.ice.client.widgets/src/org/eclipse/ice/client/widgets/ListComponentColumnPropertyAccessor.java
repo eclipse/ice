@@ -13,7 +13,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.january.form.ListComponent;
 import org.eclipse.nebula.widgets.nattable.data.IColumnPropertyAccessor;
 
 /**

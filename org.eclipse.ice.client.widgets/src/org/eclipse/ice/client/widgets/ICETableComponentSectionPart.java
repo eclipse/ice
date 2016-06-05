@@ -15,11 +15,11 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.IUpdateable;
+import org.eclipse.january.form.IUpdateableListener;
+import org.eclipse.january.form.TableComponent;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;

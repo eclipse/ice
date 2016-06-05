@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.client.common.ExtensionHelper;
 import org.eclipse.ice.client.widgets.IEntryComposite;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 

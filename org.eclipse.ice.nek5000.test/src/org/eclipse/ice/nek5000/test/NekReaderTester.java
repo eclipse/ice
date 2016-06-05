@@ -28,10 +28,10 @@ import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.nek5000.NekReader;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.MeshComponent;
 import org.junit.Test;
 
 /**

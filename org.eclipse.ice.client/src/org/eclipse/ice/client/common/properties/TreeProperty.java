@@ -15,12 +15,12 @@ package org.eclipse.ice.client.common.properties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.AdaptiveTreeComposite;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IComponentVisitor;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.SelectiveComponentVisitor;
+import org.eclipse.january.form.TreeComposite;
 
 /**
  * This class provides a wrapper for {@link TreeComposite} properties or

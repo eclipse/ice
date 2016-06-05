@@ -14,9 +14,9 @@ package org.eclipse.ice.item.test;
 
 import java.util.Dictionary;
 
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.action.Action;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 
 /**
  * <p>

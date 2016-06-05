@@ -15,8 +15,8 @@ package org.eclipse.ice.item.action;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

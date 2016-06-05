@@ -13,7 +13,7 @@ package org.eclipse.ice.client.widgets.moose;
 
 import org.eclipse.ice.client.common.properties.TreeProperty;
 import org.eclipse.ice.client.common.properties.TreePropertyCellContentProvider;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;

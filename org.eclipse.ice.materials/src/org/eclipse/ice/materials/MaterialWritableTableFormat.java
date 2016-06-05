@@ -15,7 +15,7 @@ package org.eclipse.ice.materials;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.january.form.Material;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

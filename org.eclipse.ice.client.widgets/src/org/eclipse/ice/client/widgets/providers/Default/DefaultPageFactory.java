@@ -26,7 +26,7 @@ import org.eclipse.ice.client.widgets.providers.IMeshPageProvider;
 import org.eclipse.ice.client.widgets.providers.IPageFactory;
 import org.eclipse.ice.client.widgets.providers.IPageProvider;
 import org.eclipse.ice.client.widgets.providers.IResourcePageProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.january.form.Component;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.slf4j.Logger;

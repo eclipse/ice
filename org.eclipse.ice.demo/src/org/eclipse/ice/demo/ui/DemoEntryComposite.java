@@ -12,7 +12,7 @@
 package org.eclipse.ice.demo.ui;
 
 import org.eclipse.ice.client.widgets.AbstractEntryComposite;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;

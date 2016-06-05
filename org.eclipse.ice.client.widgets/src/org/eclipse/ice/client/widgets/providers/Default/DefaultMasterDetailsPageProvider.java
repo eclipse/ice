@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import org.eclipse.ice.client.widgets.ICEFormPage;
 import org.eclipse.ice.client.widgets.ICEMasterDetailsPage;
 import org.eclipse.ice.client.widgets.providers.IMasterDetailsPageProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.MasterDetailsComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 

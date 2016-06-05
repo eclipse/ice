@@ -15,8 +15,8 @@ import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
 import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.january.form.IJAXBClassProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

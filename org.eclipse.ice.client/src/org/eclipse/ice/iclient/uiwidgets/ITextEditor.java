@@ -12,7 +12,7 @@
 *******************************************************************************/
 package org.eclipse.ice.iclient.uiwidgets;
 
-import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.january.form.ICEResource;
 
 /** 
  * <p>The IErrorBox interface describes the operations that ICE expects from a Widget that can display a text editor to a user.</p>

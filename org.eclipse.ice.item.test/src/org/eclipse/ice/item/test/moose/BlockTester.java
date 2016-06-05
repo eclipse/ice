@@ -18,10 +18,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.utilities.moose.Block;
 import org.eclipse.ice.item.utilities.moose.Parameter;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.TreeComposite;
 import org.junit.Test;
 
 /**

@@ -24,7 +24,7 @@ Import-Package: org.apache.commons.io,
  org.osgi.framework,
  org.slf4j
 Require-Bundle: org.eclipse.ice.client.compatibility,
- org.eclipse.ice.datastructures,
+ org.eclipse.january.form,
  org.eclipse.core.runtime
 Service-Component: OSGI-INF/viewFactory.xml
 Export-Package: org.eclipse.ice.client.widgets.moose

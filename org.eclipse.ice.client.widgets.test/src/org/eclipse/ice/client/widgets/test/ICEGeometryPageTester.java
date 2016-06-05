@@ -19,7 +19,7 @@ import org.eclipse.eavp.viz.modeling.ShapeController;
 import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.january.form.GeometryComponent;
 import org.junit.Test;
 
 /**

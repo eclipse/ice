@@ -26,20 +26,20 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.ShapeController;
 import org.eclipse.eavp.viz.modeling.Shape;
-import org.eclipse.ice.datastructures.entry.ContinuousEntry;
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsPair;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
+import org.eclipse.january.form.ContinuousEntry;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.GeometryComponent;
+import org.eclipse.january.form.ICEResource;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.MasterDetailsComponent;
+import org.eclipse.january.form.MasterDetailsPair;
+import org.eclipse.january.form.ResourceComponent;
+import org.eclipse.january.form.StringEntry;
+import org.eclipse.january.form.TableComponent;
+import org.eclipse.january.form.TreeComposite;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {

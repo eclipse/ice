@@ -19,8 +19,8 @@ import org.eclipse.ice.client.widgets.ICEDetailsPageProvider;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEMasterDetailsPage;
 import org.eclipse.ice.client.widgets.ICEScrolledPropertiesBlock;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.MasterDetailsComponent;
 import org.junit.Test;
 
 /**

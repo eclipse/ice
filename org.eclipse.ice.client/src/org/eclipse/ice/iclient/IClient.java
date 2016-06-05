@@ -22,10 +22,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.core.iCore.ICore;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IWidgetFactory;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.Identifiable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

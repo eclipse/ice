@@ -13,12 +13,12 @@ package org.eclipse.ice.materials.ui;
 
 import org.eclipse.ice.client.widgets.ElementSourceDialog;
 import org.eclipse.ice.client.widgets.ListComponentNattable;
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.MaterialStackWritableTableFormat;
+import org.eclipse.january.form.IElementSource;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.MaterialStack;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;

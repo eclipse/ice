@@ -14,7 +14,6 @@ package org.eclipse.ice.client.widgets.moose.components;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.reactor.plant.Boundary;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
@@ -49,6 +48,7 @@ import org.eclipse.ice.reactor.plant.Turbine;
 import org.eclipse.ice.reactor.plant.Valve;
 import org.eclipse.ice.reactor.plant.VolumeBranch;
 import org.eclipse.ice.reactor.plant.WetWell;
+import org.eclipse.january.form.DataComponent;
 
 /**
  * This class serves as a base for classes that must link {@link Entry} values

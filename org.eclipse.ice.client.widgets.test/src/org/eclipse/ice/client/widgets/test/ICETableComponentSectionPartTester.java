@@ -22,12 +22,12 @@ import java.util.List;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICETableComponentSectionPart;
-import org.eclipse.ice.datastructures.entry.ContinuousEntry;
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.TableComponent;
+import org.eclipse.january.form.AllowedValueType;
+import org.eclipse.january.form.ContinuousEntry;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.StringEntry;
+import org.eclipse.january.form.TableComponent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.ManagedForm;

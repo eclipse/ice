@@ -25,12 +25,12 @@ import javax.ws.rs.Produces;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.ICEObject.ICEList;
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.ICompositeItemBuilder;
 import org.eclipse.ice.item.ItemBuilder;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.ICEList;
+import org.eclipse.january.form.Identifiable;
 
 /**
  * ICore is an interface that is realized by Core and used by clients that

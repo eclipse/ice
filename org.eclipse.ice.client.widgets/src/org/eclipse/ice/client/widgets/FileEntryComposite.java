@@ -15,8 +15,8 @@ import java.io.File;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.iclient.IClient;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;

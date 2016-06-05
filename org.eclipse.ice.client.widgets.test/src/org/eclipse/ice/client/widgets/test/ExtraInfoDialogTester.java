@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.ice.client.widgets.ExtraInfoDialog;
-import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.january.form.DataComponent;
 import org.junit.Test;
 
 /**

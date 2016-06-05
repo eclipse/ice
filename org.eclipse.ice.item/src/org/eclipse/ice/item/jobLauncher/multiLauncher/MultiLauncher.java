@@ -19,18 +19,18 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsPair;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncherForm;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.ICEResource;
+import org.eclipse.january.form.IComponentVisitor;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.MasterDetailsComponent;
+import org.eclipse.january.form.MasterDetailsPair;
+import org.eclipse.january.form.ResourceComponent;
 
 /**
  * <p>

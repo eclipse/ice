@@ -31,12 +31,12 @@ import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygon;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.MeshComponent;
+import org.eclipse.january.form.StringEntry;
 
 /**
  * NekReader class is responsible for reading in the contents of a Nek5000 .rea

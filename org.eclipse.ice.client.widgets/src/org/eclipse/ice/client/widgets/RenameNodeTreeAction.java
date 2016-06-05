@@ -14,7 +14,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.TreeComposite;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;

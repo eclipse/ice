@@ -12,8 +12,8 @@
 *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.MasterDetailsComponent;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IDetailsPageProvider;
 

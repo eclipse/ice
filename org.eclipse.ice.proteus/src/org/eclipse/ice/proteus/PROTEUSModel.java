@@ -22,10 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.ini.INIReader;
 import org.eclipse.ice.io.ini.INIWriter;
 import org.eclipse.ice.io.serializable.IIOService;
@@ -33,6 +29,10 @@ import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.ITemplatedReader;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 
 /**
  * <p>

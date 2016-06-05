@@ -26,10 +26,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEList;
-import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
 import org.eclipse.ice.materials.XMLMaterialsDatabase;
+import org.eclipse.january.form.ICEList;
+import org.eclipse.january.form.Material;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

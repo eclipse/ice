@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.item.utilities.moose.MOOSEFileHandler;
 import org.eclipse.ice.item.utilities.moose.Parameter;
+import org.eclipse.january.form.AdaptiveTreeComposite;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.TreeComposite;
 import org.junit.Test;
 
 /**

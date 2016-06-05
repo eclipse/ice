@@ -13,7 +13,7 @@ package org.eclipse.ice.demo.ui;
 
 import org.eclipse.ice.client.widgets.IEntryComposite;
 import org.eclipse.ice.client.widgets.providers.IEntryCompositeProvider;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 

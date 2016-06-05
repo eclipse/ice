@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
+import org.eclipse.january.form.Material;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -102,7 +102,7 @@ public class MaterialWritableTableFormatTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.materials.MaterialWritableTableFormat#getColumnValue(org.eclipse.ice.datastructures.form.Material, int)}
+	 * {@link org.eclipse.ice.materials.MaterialWritableTableFormat#getColumnValue(org.eclipse.january.form.Material, int)}
 	 * .
 	 */
 	@Test
@@ -127,7 +127,7 @@ public class MaterialWritableTableFormatTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.materials.MaterialWritableTableFormat#isEditable(org.eclipse.ice.datastructures.form.Material, int)}
+	 * {@link org.eclipse.ice.materials.MaterialWritableTableFormat#isEditable(org.eclipse.january.form.Material, int)}
 	 * .
 	 */
 	@Test
@@ -137,7 +137,7 @@ public class MaterialWritableTableFormatTester {
 
 	/**
 	 * Test method for
-	 * {@link org.eclipse.ice.materials.MaterialWritableTableFormat#setColumnValue(org.eclipse.ice.datastructures.form.Material, java.lang.Object, int)}
+	 * {@link org.eclipse.ice.materials.MaterialWritableTableFormat#setColumnValue(org.eclipse.january.form.Material, java.lang.Object, int)}
 	 * .
 	 */
 	@Test

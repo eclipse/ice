@@ -26,7 +26,7 @@ import org.eclipse.eavp.viz.service.geometry.shapes.GeometryMeshProperty;
 import org.eclipse.eavp.viz.service.geometry.shapes.OperatorType;
 import org.eclipse.eavp.viz.service.geometry.shapes.ShapeType;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.january.form.GeometryComponent;
 import org.junit.Test;
 
 /**

@@ -18,7 +18,7 @@ import org.eclipse.ice.client.common.properties.IButtonCellContentProvider;
 import org.eclipse.ice.client.common.properties.ICellContentProvider;
 import org.eclipse.ice.client.common.properties.TreeProperty;
 import org.eclipse.ice.client.common.properties.TreePropertyCellContentProvider;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnViewer;

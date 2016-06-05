@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.TreeComposite;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;

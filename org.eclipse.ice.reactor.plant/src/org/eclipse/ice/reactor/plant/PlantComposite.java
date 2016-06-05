@@ -18,8 +18,8 @@ import java.util.TreeMap;
 
 import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateable;
 import org.eclipse.eavp.viz.datastructures.VizObject.IVizUpdateableListener;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.Composite;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.Composite;
 
 /**
  * A PlantComposite is a container for {@link PlantComponent}s. Duplicate

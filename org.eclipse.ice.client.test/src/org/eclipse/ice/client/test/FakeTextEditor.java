@@ -12,8 +12,8 @@
 *******************************************************************************/
 package org.eclipse.ice.client.test;
 
-import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.iclient.uiwidgets.ITextEditor;
+import org.eclipse.january.form.ICEResource;
 
 /** 
  * <p>The FakeTextEditor is a realization of ITextEditor that is used for testing. It provides several methods in addition to the ITextEditor interface that are used for testing and introspection.</p>

@@ -28,9 +28,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.ice.datastructures.ICEObject.ICEList;
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.MaterialStack;
+import org.eclipse.january.form.ICEList;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.MaterialStack;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

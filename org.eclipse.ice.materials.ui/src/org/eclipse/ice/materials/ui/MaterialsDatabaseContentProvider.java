@@ -15,8 +15,8 @@ package org.eclipse.ice.materials.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.MaterialStack;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.MaterialStack;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;

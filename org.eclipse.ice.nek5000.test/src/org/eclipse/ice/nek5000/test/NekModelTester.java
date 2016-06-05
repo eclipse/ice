@@ -32,9 +32,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.nek5000.NekModel;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

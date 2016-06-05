@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.jobLauncher.DockerClientFactory;
+import org.eclipse.january.form.FormStatus;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;

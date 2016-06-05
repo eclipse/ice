@@ -15,8 +15,8 @@ package org.eclipse.ice.proteus;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
+import org.eclipse.january.form.FormStatus;
 
 /**
  * <p>

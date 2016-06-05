@@ -14,8 +14,8 @@ package org.eclipse.ice.materials;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
-import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.january.form.IElementSource;
+import org.eclipse.january.form.Material;
 
 /**
  * This is a simple interface for managing and dealing with a Materials
