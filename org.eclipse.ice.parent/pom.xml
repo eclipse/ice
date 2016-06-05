@@ -43,7 +43,7 @@
 		<!-- Provide a reference to the official Maven repository. -->
 		<pluginRepository>
 			<id>tycho</id>
-			<url>${tycho-repo.url}</url>
+			<url>${maven-repo.url}</url>
 		</pluginRepository>
 	</pluginRepositories>
 
