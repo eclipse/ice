@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEResourcePage;
+import org.eclipse.ice.client.widgets.test.utils.AbstractWorkbenchTester;
 import org.eclipse.january.form.DataComponent;
 import org.eclipse.january.form.Form;
 import org.eclipse.january.form.ICEResource;
