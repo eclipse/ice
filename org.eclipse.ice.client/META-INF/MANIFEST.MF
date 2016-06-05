@@ -21,7 +21,7 @@ Import-Package: javax.ws.rs.core,
  org.eclipse.ltk.core.refactoring.participants,
  org.osgi.framework;version="1.7.0",
  org.slf4j;version="1.7.2"
-Require-Bundle: org.eclipse.january.form;bundle-version="2.1.7",
+Require-Bundle: org.eclipse.january.form,
  com.sun.jersey;bundle-version="1.17.0",
  org.eclipse.ice.client.compatibility;bundle-version="2.0.0",
  org.eclipse.core.runtime;bundle-version="3.11.0"

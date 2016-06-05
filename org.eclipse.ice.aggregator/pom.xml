@@ -25,8 +25,8 @@
   	<module>../org.eclipse.ice.client.widgets.test.utils</module>
   	<module>../org.eclipse.ice.core</module>
   	<module>../org.eclipse.ice.core.test</module>
-  	<module>../org.eclipse.ice.datastructures</module>
-  	<module>../org.eclipse.ice.datastructures.test</module>
+  	<module>../org.eclipse.january.form</module>
+  	<module>../org.eclipse.january.form.test</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.moose</module>
   	<module>../org.eclipse.ice.io</module>
