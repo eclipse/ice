@@ -26,6 +26,7 @@
   	<module>../org.eclipse.ice.core</module>
   	<module>../org.eclipse.ice.core.test</module>
   	<module>../org.eclipse.january.form</module>
+  	<module>../org.eclipse.january.form.feature</module>  	
   	<module>../org.eclipse.january.form.test</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.moose</module>
