@@ -189,7 +189,7 @@
                class="org.eclipse.ice.client.widgets.TreePropertySection"
                id="DataSection"
                tab="TreeViewer.Data">
-            <input type="org.eclipse.ice.datastructures.form.TreeComposite"/>
+            <input type="org.eclipse.january.form.TreeComposite"/>
          </propertySection>
       </propertySections>
    </extension>
@@ -223,7 +223,7 @@
              id="DataSection"
              tab="TreeViewer.Data">
           <input
-                type="org.eclipse.ice.datastructures.form.TreeComposite">
+                type="org.eclipse.january.form.TreeComposite">
           </input>
        </propertySection>
     </propertySections>
