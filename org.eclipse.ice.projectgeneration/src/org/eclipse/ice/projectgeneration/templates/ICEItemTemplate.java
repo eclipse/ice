@@ -14,10 +14,13 @@ package org.eclipse.ice.projectgeneration.templates;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.ArrayList;
 import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.projectgeneration.ICEProjectResources;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -45,6 +48,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String KEY_EXTENSION_NAME = "packageName";
 	protected static final String KEY_JOB_LAUNCHER_EXT = "createJobLauncher";
 	protected static final String KEY_MODEL_EXT = "createModel";
+	protected static final String KEY_IO_FORMAT_EXT = "ioFormat";
 	
 	/**
 	 * Constructor
@@ -75,6 +79,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		addOption(KEY_CLASS_NAME     , "Item Class Base Name"   , "" , 0);
 		addOption(KEY_JOB_LAUNCHER_EXT, "Create Job Launcher?", true, 0);
 		addOption(KEY_MODEL_EXT, "Create Model?", true, 0);
+		addOption(KEY_IO_FORMAT_EXT, "File Format", getIOFormatOptions(), "", 0);
 	}
 	
 	@Override
@@ -93,6 +98,30 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	
 	public void setExtensionName(String extName) {
 		addOption(KEY_EXTENSION_NAME, "Extension Base Name", extName, 0);
+	}
+
+	private String[][] getIOFormatOptions() {
+		ArrayList<String> readerTypes = new ArrayList<String>();
+		ArrayList<String> writerTypes = new ArrayList<String>();
+		try {
+			for (IReader reader : IReader.getIReaders()) {
+				readerTypes.add(reader.getReaderType().replace("Reader", ""));
+			}
+			for (IWriter writer : IWriter.getIWriters()) {
+				writerTypes.add(writer.getWriterType().replace("Writer", ""));
+			}
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ArrayList<String> ioFormats = new ArrayList<String>();
+		for (String writer : writerTypes) {
+			if (readerTypes.contains(writer))
+				ioFormats.add(writer);
+		}
+		
+		return new String[][] {(String[]) ioFormats.toArray(), (String[]) ioFormats.toArray()};
 	}
 	
 	protected String getFormattedPackageName(String id) {
