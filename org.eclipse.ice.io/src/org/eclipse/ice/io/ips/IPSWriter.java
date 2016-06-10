@@ -231,7 +231,7 @@ public class IPSWriter implements IWriter {
 	 */
 	@Override
 	public String getWriterType() {
-		return "IPSWriter";
+		return "IPS";
 	}
 
 	/**

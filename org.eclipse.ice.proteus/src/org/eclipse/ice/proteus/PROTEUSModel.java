@@ -152,10 +152,10 @@ public class PROTEUSModel extends Item {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-		if (ioService.getTemplatedReader("INIReader") == null) {
+		if (ioService.getTemplatedReader("INI") == null) {
 			ioService.addTemplatedReader(new INIReader());
 		}
-		if (ioService.getWriter("INIWriter") == null) {
+		if (ioService.getWriter("INI") == null) {
 			ioService.addWriter(new INIWriter());
 		}
 

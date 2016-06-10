@@ -15,6 +15,7 @@ package org.eclipse.ice.projectgeneration.templates;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -105,23 +106,25 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		ArrayList<String> writerTypes = new ArrayList<String>();
 		try {
 			for (IReader reader : IReader.getIReaders()) {
-				readerTypes.add(reader.getReaderType().replace("Reader", ""));
+				readerTypes.add(reader.getReaderType());
 			}
 			for (IWriter writer : IWriter.getIWriters()) {
-				writerTypes.add(writer.getWriterType().replace("Writer", ""));
+				writerTypes.add(writer.getWriterType());
 			}
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		ArrayList<String> ioFormats = new ArrayList<String>();
+		ArrayList<String[]> ioFormats = new ArrayList<String[]>();
 		for (String writer : writerTypes) {
 			if (readerTypes.contains(writer))
-				ioFormats.add(writer);
+				ioFormats.add(new String[] {writer, writer});
 		}
-		
-		return new String[][] {(String[]) ioFormats.toArray(), (String[]) ioFormats.toArray()};
+		ioFormats.add(0, new String[] {"", ""});
+		String[][] options = new String[ioFormats.size()][2];
+		options = ioFormats.toArray(options);
+		return options; 
 	}
 	
 	protected String getFormattedPackageName(String id) {

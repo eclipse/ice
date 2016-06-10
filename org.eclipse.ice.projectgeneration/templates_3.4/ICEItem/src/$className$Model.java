@@ -23,8 +23,7 @@ public class $className$Model extends Model {
 	// TODO: 
 	//   These need to be filled in before using this item
 	//   They can be set in the setupItemInfo() method
-	private String writerName;
-	private String readerName;
+	private String ioFormat;
 	private String outputName;
 	// End required variables
 	
@@ -57,11 +56,12 @@ public class $className$Model extends Model {
 	protected void setupItemInfo() {
 		setName("$className$ Model");
 		setDescription("Specify information about $className$");
-		writerName = "$className$DefaultWriterName";
-		readerName = "$className$DefaultReaderName";     	
 		outputName = "$className$DefaultOutputName";   
 		exportString = "Export to $className$ input format";
 		allowedActions.add(0, exportString);
+		ioFormat = $ioFormat$;
+		reader = ioService.getReader(ioFormat);
+		writer = ioService.getWriter(ioFormat);
 	}
 
 	/**
@@ -145,9 +145,7 @@ public class $className$Model extends Model {
 		// setupItemInfo() method defined above.
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
-			writer = ioService.getWriter(writerName);
 			retStatus = FormStatus.Processing;
-			writer.write(form, outputFile);
 			refreshProjectSpace();
 			retStatus = FormStatus.Processed;
 		} else {
@@ -170,7 +168,6 @@ public class $className$Model extends Model {
 
 		// Read in the file and set up the form
 		IFile inputFile = project.getFile(fileName);
-		reader = ioService.getReader(readerName);
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
