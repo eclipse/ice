@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration.templates;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import org.eclipse.pde.core.plugin.IPluginModelFactory;
 import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.IPluginFieldData;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
+import org.eclipse.pde.ui.templates.TemplateOption;
 
 /**
  * Provides the information for the ICEItemWizard, the final page in the 
@@ -50,6 +52,10 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String KEY_JOB_LAUNCHER_EXT = "createJobLauncher";
 	protected static final String KEY_MODEL_EXT = "createModel";
 	protected static final String KEY_IO_FORMAT_EXT = "ioFormat";
+	protected static final String KEY_SET_DEFAULT_FILE = "defaultFile";
+	protected static final String KEY_DEFAULT_FILE_NAME = "defaultFileName";
+	
+	private ArrayList<TemplateOption> options;
 	
 	/**
 	 * Constructor
@@ -81,6 +87,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		addOption(KEY_JOB_LAUNCHER_EXT, "Create Job Launcher?", true, 0);
 		addOption(KEY_MODEL_EXT, "Create Model?", true, 0);
 		addOption(KEY_IO_FORMAT_EXT, "File Format", getIOFormatOptions(), "", 0);
+		addOption(KEY_SET_DEFAULT_FILE, "Include a default dataset?", false, 0);
+		addOption(KEY_DEFAULT_FILE_NAME, "Choose a default dataset:", new File(""), 0);
+		setOptionEnabled(KEY_DEFAULT_FILE_NAME, false);
 	}
 	
 	@Override
@@ -152,6 +161,15 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	      " "
 	   ).trim();
 	}
+
+	
+	protected TemplateOption addOption(String name, String label, File value, int pageIndex) {
+		DataFileOption option = new DataFileOption(this, name, label);
+		option.setValue(value);
+		registerOption(option, value, pageIndex);
+		return option;
+	}
+
 	
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
@@ -190,6 +208,10 @@ public class ICEItemTemplate extends OptionTemplateSection {
 			extension.add(element);
 			if (!extension.isInTheModel())
 				plugin.add(extension);
+		}
+		
+		if (getBooleanOption(KEY_SET_DEFAULT_FILE)) {
+			setOptionEnabled(KEY_DEFAULT_FILE_NAME,true);
 		}
 	}
 }
