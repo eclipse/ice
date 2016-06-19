@@ -13,12 +13,21 @@
 package org.eclipse.ice.projectgeneration.templates;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.io.serializable.IReader;
@@ -29,10 +38,13 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.pde.core.plugin.IPluginBase;
 import org.eclipse.pde.core.plugin.IPluginElement;
 import org.eclipse.pde.core.plugin.IPluginExtension;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.IPluginModelFactory;
 import org.eclipse.pde.ui.IFieldData;
 import org.eclipse.pde.ui.IPluginFieldData;
+import org.eclipse.pde.ui.templates.AbstractChoiceOption;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
+import org.eclipse.pde.ui.templates.StringOption;
 import org.eclipse.pde.ui.templates.TemplateOption;
 
 /**
@@ -52,10 +64,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	protected static final String KEY_JOB_LAUNCHER_EXT = "createJobLauncher";
 	protected static final String KEY_MODEL_EXT = "createModel";
 	protected static final String KEY_IO_FORMAT_EXT = "ioFormat";
-	protected static final String KEY_SET_DEFAULT_FILE = "defaultFile";
 	protected static final String KEY_DEFAULT_FILE_NAME = "defaultFileName";
-	
-	private ArrayList<TemplateOption> options;
 	
 	/**
 	 * Constructor
@@ -87,9 +96,7 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		addOption(KEY_JOB_LAUNCHER_EXT, "Create Job Launcher?", true, 0);
 		addOption(KEY_MODEL_EXT, "Create Model?", true, 0);
 		addOption(KEY_IO_FORMAT_EXT, "File Format", getIOFormatOptions(), "", 0);
-		addOption(KEY_SET_DEFAULT_FILE, "Include a default dataset?", false, 0);
-		addOption(KEY_DEFAULT_FILE_NAME, "Choose a default dataset:", new File(""), 0);
-		setOptionEnabled(KEY_DEFAULT_FILE_NAME, false);
+		addDataOption(KEY_DEFAULT_FILE_NAME, "Choose a default dataset (leave blank for none):", "", 0);
 	}
 	
 	@Override
@@ -162,15 +169,54 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	   ).trim();
 	}
 
-	
-	protected TemplateOption addOption(String name, String label, File value, int pageIndex) {
+	/**
+	 * 
+	 */
+	public void execute(IProject project, IPluginModelBase model, IProgressMonitor monitor) throws CoreException {
+		initializeFields(model);
+		super.execute(project, model, monitor);
+		Path filePath = Paths.get(getStringOption(KEY_DEFAULT_FILE_NAME));
+		if (filePath != null && filePath.toFile().exists()) {
+			String fileName = filePath.getFileName().toString(); 
+			if (project.exists() && !project.isOpen()) {
+				project.open(null);
+			}
+			IFolder dataFolder = project.getFolder("data");
+			if (!dataFolder.exists()) {
+				dataFolder.create(false, true, null);
+			}
+			IFile dataFile = dataFolder.getFile(fileName);
+			FileInputStream dataContents;
+			try {
+				dataContents = new FileInputStream(filePath.toString());
+				dataFile.create(dataContents, false, null);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	/**
+	 * 
+	 * @param name
+	 * @param label
+	 * @param value
+	 * @param pageIndex
+	 * @return
+	 */
+	protected TemplateOption addDataOption(String name, String label, String value, int pageIndex) {
 		DataFileOption option = new DataFileOption(this, name, label);
 		option.setValue(value);
 		registerOption(option, value, pageIndex);
 		return option;
 	}
-
 	
+
+	/**
+	 * 
+	 */
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
 		IPluginBase plugin;
@@ -208,10 +254,6 @@ public class ICEItemTemplate extends OptionTemplateSection {
 			extension.add(element);
 			if (!extension.isInTheModel())
 				plugin.add(extension);
-		}
-		
-		if (getBooleanOption(KEY_SET_DEFAULT_FILE)) {
-			setOptionEnabled(KEY_DEFAULT_FILE_NAME,true);
 		}
 	}
 }

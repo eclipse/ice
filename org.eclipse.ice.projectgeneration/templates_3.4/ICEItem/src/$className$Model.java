@@ -1,5 +1,14 @@
 package $packageName$.model;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
@@ -17,15 +26,12 @@ import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
 
+
 @XmlRootElement(name = "$className$Model")
 public class $className$Model extends Model {
 
-	// TODO: 
-	//   These need to be filled in before using this item
-	//   They can be set in the setupItemInfo() method
 	private String ioFormat;
 	private String outputName;
-	// End required variables
 	
     private String exportString;
 	private IIOService ioService;
@@ -59,7 +65,7 @@ public class $className$Model extends Model {
 		outputName = "$className$DefaultOutputName";   
 		exportString = "Export to $className$ input format";
 		allowedActions.add(0, exportString);
-		ioFormat = $ioFormat$;
+		ioFormat = "$ioFormat$";
 		reader = ioService.getReader(ioFormat);
 		writer = ioService.getWriter(ioFormat);
 	}
@@ -165,14 +171,57 @@ public class $className$Model extends Model {
 	 */
 	@Override
 	public void loadInput(String fileName) {
+		IFile inputFile = null;
+		File temp = null;
+		if (fileName == null) {
+			try {
+				// Create a filepath for the default file
+				fileName = Paths.get("$defaultFileName$").getFileName().toString();
+				if (fileName.isEmpty()) {
+					return;
+				}
+				String defaultFilePath = project.getLocation().toOSString()
+							+ System.getProperty("file.separator")
+							+ fileName;			
+				// Create a temporary location to load the default file
+				temp = new File(defaultFilePath);
+				if (!temp.exists()) {
+					temp.createNewFile();
+				}
+				
+				// Pull the default file from inside the plugin
+				URI uri = new URI(
+						"platform:/plugin/$packageName$/data/" + fileName);
+				InputStream reader = uri.toURL().openStream();
+				FileOutputStream outStream = new FileOutputStream(temp);
 
-		// Read in the file and set up the form
-		IFile inputFile = project.getFile(fileName);
+				// Write out the default file from the plugin to the temp location
+				int fileByte;
+				while ((fileByte = reader.read()) != -1) {
+					outStream.write(fileByte);
+				}
+				outStream.close();
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+				inputFile = project.getFile(fileName);
+
+			} catch (URISyntaxException e) {
+				logger.error(getClass().getName() + " Exception!",e);
+			} catch (MalformedURLException e) {
+				logger.error(getClass().getName() + " Exception!",e);
+			} catch (IOException e) {
+				logger.error(getClass().getName() + " Exception!",e);
+			} catch (CoreException e) {
+				logger.error(getClass().getName() + " Exception!",e);
+			}
+		} else {
+			// Get the file
+			inputFile = project.getFile(fileName);
+		}
+	
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
-
 	}
 }
