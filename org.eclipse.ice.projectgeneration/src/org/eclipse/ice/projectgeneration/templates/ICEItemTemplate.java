@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration.templates;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URL;
@@ -20,19 +19,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
-import org.eclipse.ice.projectgeneration.ICEProjectResources;
+import org.eclipse.ice.projectgeneration.templates.ICEProjectResources;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.pde.core.plugin.IPluginBase;
@@ -40,11 +36,7 @@ import org.eclipse.pde.core.plugin.IPluginElement;
 import org.eclipse.pde.core.plugin.IPluginExtension;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.IPluginModelFactory;
-import org.eclipse.pde.ui.IFieldData;
-import org.eclipse.pde.ui.IPluginFieldData;
-import org.eclipse.pde.ui.templates.AbstractChoiceOption;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
-import org.eclipse.pde.ui.templates.StringOption;
 import org.eclipse.pde.ui.templates.TemplateOption;
 
 /**
@@ -55,10 +47,11 @@ import org.eclipse.pde.ui.templates.TemplateOption;
  */ 
 public class ICEItemTemplate extends OptionTemplateSection {
 
+	protected static final String EXTENSION_POINT = "org.eclipse.ice.item.itemBuilder";
 	protected static final String BUNDLE_ID = "org.eclipse.ice.projectgeneration";
 	
-	// Strings used for templating
-	protected static final String EXTENSION_POINT = "org.eclipse.ice.item.itemBuilder";
+	// Replacement strings in template files.  See the templates_x.x directory 
+	// for the template files.
 	protected static final String KEY_CLASS_NAME = "className";
 	protected static final String KEY_EXTENSION_NAME = "packageName";
 	protected static final String KEY_JOB_LAUNCHER_EXT = "createJobLauncher";
@@ -76,10 +69,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	
 	
 	/**
-	 * Add pages to the wizard
+	 * Adds the page to the wizard.  
 	 */
 	public void addPages(Wizard wizard) {
-		// create one wizard page for the options
 		WizardPage p1 = createPage(0);
 		p1.setPageComplete(false);
 		p1.setTitle("New ICE Item Project");
@@ -99,31 +91,23 @@ public class ICEItemTemplate extends OptionTemplateSection {
 		addDataOption(KEY_DEFAULT_FILE_NAME, "Choose a default dataset (leave blank for none):", "", 0);
 	}
 	
-	@Override
-	protected URL getInstallURL() {	
-		return Platform.getBundle(BUNDLE_ID).getEntry("/");	
-	}
 
-	@Override
-	protected ResourceBundle getPluginResourceBundle() {
-		return new ICEProjectResources();	
-	}
-	
-	@Override public String[] getNewFiles() { return new String[0]; }
-	@Override public String getSectionId() { return "ICEItem"; }
-	@Override public String getUsedExtensionPoint() { return EXTENSION_POINT; }
-	
-	public void setExtensionName(String extName) {
-		addOption(KEY_EXTENSION_NAME, "Extension Base Name", extName, 0);
-	}
-
+	/**
+	 * Determines the supported IO formats provided by ICE's IOService.  These 
+	 * are used to provide the option for users to automatically use readers 
+	 * and writers for their new items.
+	 * 
+	 * @return An array of 2 element arrays with the names of the supported IO formats
+	 */
 	private String[][] getIOFormatOptions() {
 		ArrayList<String> readerTypes = new ArrayList<String>();
 		ArrayList<String> writerTypes = new ArrayList<String>();
 		try {
+			// Find readers
 			for (IReader reader : IReader.getIReaders()) {
 				readerTypes.add(reader.getReaderType());
 			}
+			// Find writers
 			for (IWriter writer : IWriter.getIWriters()) {
 				writerTypes.add(writer.getWriterType());
 			}
@@ -132,45 +116,41 @@ public class ICEItemTemplate extends OptionTemplateSection {
 			e.printStackTrace();
 		}
 		
+		// Get IO formats that have both readers and writers
 		ArrayList<String[]> ioFormats = new ArrayList<String[]>();
 		for (String writer : writerTypes) {
 			if (readerTypes.contains(writer))
 				ioFormats.add(new String[] {writer, writer});
 		}
+		// Provide a blank option for those that will implement their own readers/writers
 		ioFormats.add(0, new String[] {"", ""});
 		String[][] options = new String[ioFormats.size()][2];
 		options = ioFormats.toArray(options);
 		return options; 
 	}
 	
-	protected String getFormattedPackageName(String id) {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < id.length(); i++) {
-			char ch = id.charAt(i);
-			if (buffer.length() == 0) {
-				if (Character.isJavaIdentifierStart(ch))
-					buffer.append(Character.toLowerCase(ch));
-			} else {
-				if (Character.isJavaIdentifierPart(ch) || ch == '.')
-					buffer.append(ch);
-			}
-		}
-		return buffer.toString().toLowerCase(Locale.ENGLISH);
-	}
-	
+	/**
+	 * Convert a camel case string to a capitalized title.  Example:
+	 *     `camelCase` -> `Camel Case`
+	 * 
+	 * @param s 
+	 * 			The string to convert
+	 * @return the converted string
+	 */
 	protected static String splitCamelCase(String s) {
 		return s.replaceAll(
-		String.format("%s|%s|%s",
-	         "(?<=[A-Z])(?=[A-Z][a-z])",
-	         "(?<=[^A-Z])(?=[A-Z])",
-	         "(?<=[A-Za-z])(?=[^A-Za-z])"
-	      ),
-	      " "
-	   ).trim();
+				String.format("%s|%s|%s",
+						      "(?<=[A-Z])(?=[A-Z][a-z])",
+	                          "(?<=[^A-Z])(?=[A-Z])",
+	                          "(?<=[A-Za-z])(?=[^A-Za-z])"
+						     ),
+	            " ").trim();
 	}
 
 	/**
-	 * 
+	 * Extra code to run when the finish button is pressed.  This handles
+	 * the creation of the default dataset inside of the newly created plugin, 
+	 * if one is chosen to be used.
 	 */
 	public void execute(IProject project, IPluginModelBase model, IProgressMonitor monitor) throws CoreException {
 		initializeFields(model);
@@ -199,12 +179,17 @@ public class ICEItemTemplate extends OptionTemplateSection {
 
 
 	/**
+	 * Adds a DataFileOption to the section.
 	 * 
 	 * @param name
+	 * 			The name of the variable that will be used in templating
 	 * @param label
+	 * 			A label to describe the option
 	 * @param value
+	 * 			The default value of the option
 	 * @param pageIndex
-	 * @return
+	 * 			The page to put the option onto
+	 * @return The data file option
 	 */
 	protected TemplateOption addDataOption(String name, String label, String value, int pageIndex) {
 		DataFileOption option = new DataFileOption(this, name, label);
@@ -215,7 +200,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	
 
 	/**
-	 * 
+	 * Additional steps to perform when creating the plugin project.  This handles
+	 * creation of the extensions that are needed by the new item, including
+	 * models and job launchers.
 	 */
 	@Override
 	protected void updateModel(IProgressMonitor monitor) throws CoreException {
@@ -255,5 +242,34 @@ public class ICEItemTemplate extends OptionTemplateSection {
 			if (!extension.isInTheModel())
 				plugin.add(extension);
 		}
+	}
+	
+	@Override
+	protected URL getInstallURL() {	
+		return Platform.getBundle(BUNDLE_ID).getEntry("/");	
+	}
+
+	@Override
+	protected ResourceBundle getPluginResourceBundle() {
+		return new ICEProjectResources();	
+	}
+	
+	@Override 
+	public String[] getNewFiles() { 
+		return new String[0]; 
+	}
+	
+	@Override 
+	public String getSectionId() { 
+		return "ICEItem"; 
+	}
+	
+	@Override 
+	public String getUsedExtensionPoint() { 
+		return EXTENSION_POINT; 
+	}
+	
+	public void setExtensionName(String extName) {
+		addOption(KEY_EXTENSION_NAME, "Extension Base Name", extName, 0);
 	}
 }
