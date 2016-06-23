@@ -177,7 +177,7 @@ public class VibeModel extends Model {
 			if (components.size() > 3) {
 
 				// create a new IPSWriter with the output file
-				IWriter writer = (IWriter) ioService.getWriter("IPSWriter");
+				IWriter writer = (IWriter) ioService.getWriter("IPS");
 				try {
 					// Write the output file
 					writer.write(form, outputFile);
@@ -267,7 +267,7 @@ public class VibeModel extends Model {
 		
 		// Load the components from the file and setup the form
 		logger.info("VibeModel Message: Loading " + inputFile.getName());		
-		IReader reader = (IReader) ioService.getReader("IPSReader"); //new IPSReader();
+		IReader reader = (IReader) ioService.getReader("IPS"); //new IPSReader();
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());

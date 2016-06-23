@@ -210,7 +210,7 @@ public class IPSReader implements IReader {
 	 */
 	@Override
 	public String getReaderType() {
-		return "IPSReader";
+		return "IPS";
 	}
 
 	/**

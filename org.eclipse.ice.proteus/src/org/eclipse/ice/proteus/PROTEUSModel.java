@@ -152,10 +152,10 @@ public class PROTEUSModel extends Item {
 			setIOService(new IOService());
 			ioService = getIOService();
 		}
-		if (ioService.getTemplatedReader("INIReader") == null) {
+		if (ioService.getTemplatedReader("INI") == null) {
 			ioService.addTemplatedReader(new INIReader());
 		}
-		if (ioService.getWriter("INIWriter") == null) {
+		if (ioService.getWriter("INI") == null) {
 			ioService.addWriter(new INIWriter());
 		}
 
@@ -217,7 +217,7 @@ public class PROTEUSModel extends Item {
 			if (components.size() > 0) {
 
 				// create a new IPSWriter with the output file
-				INIWriter writer = (INIWriter) ioService.getWriter("INIWriter");
+				INIWriter writer = (INIWriter) ioService.getWriter("INI");
 				writer.setSectionPattern("!", " ");
 				try {
 					// Write the output file
@@ -273,7 +273,7 @@ public class PROTEUSModel extends Item {
 				+ inputFile.getLocation().toOSString());
 
 		// Set up the reader to use the template if it exists
-		ITemplatedReader reader = ioService.getTemplatedReader("INIReader");
+		ITemplatedReader reader = ioService.getTemplatedReader("INI");
 		reader.setCommentString("!");
 		reader.setAssignmentPattern("\\s\\s\\s+");
 		if (new File(templateFile.getLocation().toOSString()).exists()) {
