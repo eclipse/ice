@@ -5,9 +5,11 @@ ICE features functionality for visualizing models using ParaView.
 \section{Installation and Configuration}
 
 ParaView use for ICE requires a Mac OS or Linux operating system, as ICE does
-not currently support ParaView connections on Windows. You will also need an
-installation of ParaView on your local machine. ParaView can be downloaded from
-its \href{http://www.paraview.org/download/}{official website}. The ICE
+not currently support ParaView connections to Windows hosts. However, it will
+still be possible to connect from ICE on Windows to a Mac or Linux machine
+that has ParaView installed. You will also need an installation of ParaView on
+your local machine.
+ParaView can be downloaded from its \href{http://www.paraview.org/download/}{official website}. The ICE
 development team recommends using the latest available version of ParaView,
 currently 5.0 at the time of this writing. You will further need a custom
 Python HTTP web server implementation, which can be downloaded from the
@@ -47,7 +49,8 @@ On Linux, the path will end with the top level folder into which ParaView was un
 
 On Mac, the path will end with the folder containing your ParaView.app. For example, if you have installed ParaView to your Applications folder, the path will simply be /Applications
 
-\textbf{Server Script Path:} The full path to the http_pvw_server.py file, ending with the folder containing it. For example if the file is on your desktop, the path might be /home/username/Desktop.
+\textbf{Server Script Path:} The full path to the http\_pvw\_server.py file,
+ending with the folder containing it. For example if the file is on your desktop, the path might be /home/username/Desktop.
 
 \textbf{Visualizer Port:} The port number for the ParaView web visualizer. The default value will be fine, but if you change it, then it must be different from the port number you provide for Port.
 
@@ -94,7 +97,10 @@ inside the display area or adjust the zoom by scrolling the mouse wheel.
 \includegraphics[width=12cm]{images/ParaViewPlotEditor}
 \end{center}
 
-The buttons in the upper left can also be used to manipulate the camera. The green plus sign will zoom in, while the black minus sign will zoom out. The green circular arrow button will reset the camera to its default position.
+The buttons in the upper left can also be used to manipulate the camera. The
+green plus sign will zoom in, while the black minus sign will zoom out. The
+yellow and blue circular arrow button will reset the camera to its default
+position.
 
 \subsubsection{Selecting the Plot}
 
