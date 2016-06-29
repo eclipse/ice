@@ -18,8 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.*;
 import org.eclipse.ice.datastructures.entry.*;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
@@ -32,6 +30,7 @@ public class $className$Model extends Model {
 
 	private String ioFormat;
 	private String outputName;
+	private String defaultFileName;
 	
     private String exportString;
 	private IIOService ioService;
@@ -66,8 +65,7 @@ public class $className$Model extends Model {
 		exportString = "Export to $className$ input format";
 		allowedActions.add(0, exportString);
 		ioFormat = "$ioFormat$";
-		reader = ioService.getReader(ioFormat);
-		writer = ioService.getWriter(ioFormat);
+		defaultFileName = "$defaultFileName$";
 	}
 
 	/**
@@ -78,15 +76,24 @@ public class $className$Model extends Model {
 	@Override
 	public void setupForm() {
 		form = new Form();
-		
-		// Get reference to the IOService
-		// This will let us get IReader/IWriters for 
-		// our specific Model
 		ioService = getIOService();
-
+		if (ioService == null) {
+			setIOService(new IOService());
+			ioService = getIOService();
+		}
+		if (ioFormat != "") {
+			reader = ioService.getReader(ioFormat);
+			writer = ioService.getWriter(ioFormat);
+		}
+		
 		// Populate the Form with Components for your 
-		// application Model.
-		/* Example:
+		// application Model. The default behavior is 
+		// only invoked if there are valid IO services
+		if (project != null && reader != null && writer != null) {
+			loadInput(null);
+		}
+		
+		/* Alternate Example:
 		 * 
 		 * DataComponent data = new DataComponent();
 		 * data.setName("Example Input Data");
@@ -109,7 +116,6 @@ public class $className$Model extends Model {
 		 * 
 		 * form.addComponent(data);
 		 */
-		
 	}
 	
 	/**
@@ -176,7 +182,7 @@ public class $className$Model extends Model {
 		if (fileName == null) {
 			try {
 				// Create a filepath for the default file
-				fileName = Paths.get("$defaultFileName$").getFileName().toString();
+				fileName = Paths.get(defaultFileName).getFileName().toString();
 				if (fileName.isEmpty()) {
 					return;
 				}
