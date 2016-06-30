@@ -158,6 +158,7 @@ public class $className$Model extends Model {
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
 			retStatus = FormStatus.Processing;
+			writer.write(form, outputFile);
 			refreshProjectSpace();
 			retStatus = FormStatus.Processed;
 		} else {
