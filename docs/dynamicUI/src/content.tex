@@ -25,7 +25,7 @@ There are several important things to consider before you start extending the
 UI. First, how much work do you want to do? Some of the UI constructs in ICE
 are quick to change, such as EntryComposites for showing Entries, but others,
 like GeometryPage and MeshPage, could require significant work because of the
-evel graphics involved.
+level of graphics involved.
 
 This tutorial will show you how to change two pieces of ICE’s UI: The page for
 showing GeometryComponents and an EntryComposite. We will only show you how to
@@ -36,48 +36,48 @@ org.eclipse.ice.demo.
 \section{Create an ICE Item Project}
 
 Use the ICE Item Project Generation Wizard to create a new Item with  a
-eometryComponent and a DataComponent with one Entry in the Form. You can copy
+GeometryComponent and a DataComponent with one Entry in the Form. You can copy
 the following code into your setupForm() operation:
 
 \begin{lstlisting}[language=java]
 @Override
     public void setupForm() {
-        form = new Form();
+		form = new Form();
 
-        ioService = getIOService();
+		ioService = getIOService();
 
-        // Create a geometry component
-        GeometryComponent geomComp = new GeometryComponent();
-        geomComp.setName("Geometry");
-        geomComp.setDescription("A geometry");
-        geomComp.setContext("demo-geometry");
-        geomComp.setGeometry(
-                new ShapeController(new ShapeMesh(), new AbstractView()));
+		// Create a geometry component
+		GeometryComponent geomComp = new GeometryComponent();
+		geomComp.setName("Geometry");
+		geomComp.setDescription("A geometry");
+		geomComp.setContext("demo-geometry");
+		geomComp.setGeometry(
+				new ShapeController(new Shape(), new BasicView()));
 
-        // Create a data component
-        DataComponent dataComp = new DataComponent();
-        dataComp.setName("Data");
-        dataComp.setDescription("Some Data");
-        dataComp.setContext("demo");
-        // Need to set the id since geomComp is number 1
-        dataComp.setId(2);
+		// Create a data component
+		DataComponent dataComp = new DataComponent();
+		dataComp.setName("Data");
+		dataComp.setDescription("Some Data");
+		dataComp.setContext("demo");
+		// Need to set the id since geomComp is number 1
+		dataComp.setId(2);
 
-        // Create an Entry for the data component
-        IEntry entry = new StringEntry();
-        entry.setName("Data Entry");
-        entry.setDescription("An Entry with Important Data");
-        entry.setContext("demo-entry");
-        // Add the Entry to the data component
-        dataComp.addEntry(entry);
+		// Create an Entry for the data component
+		IEntry entry = new StringEntry();
+		entry.setName("Data Entry");
+		entry.setDescription("An Entry with Important Data");
+		entry.setContext("demo-entry");
+		// Add the Entry to the data component
+		dataComp.addEntry(entry);
 
-        // Add both components to the Form, showing the data component first.
-        form.addComponent(dataComp);
-        form.addComponent(geomComp);
+		// Add both components to the Form, showing the data component first.
+		form.addComponent(dataComp);
+		form.addComponent(geomComp);
 
-        // Set the context on the Form
-        form.setContext("demo");
+		// Set the context on the Form
+		form.setContext("demo");
 
-        return;
+		return;
     }
 \end{lstlisting}
 
@@ -104,8 +104,8 @@ import org.eclipse.ice.item.model.Model;
 
 You may need to add some of these packages to your Manifest file.
 
-If you have not created an Item in ICE before, please see <the ICE Item
-Generation tutorial> to do this.
+If you have not created an Item in ICE before, please see \texttt{the ICE Item
+Generation tutorial} to do this.
 
 Add this plugin to the launch configuration for your system, launch ICE and
 make sure that you can successfully create a DemoModel Item. You should have
@@ -372,11 +372,11 @@ You geometry component should look like fig. \ref{fig:iceDemoGeometryPage}.
 
 \section{Publishing through Context Functions}
 
-Make sure to check “Activate this plug-in when one of its classes loaded.” in
-your MANIFEST.mf file.
+Make sure to check \texttt{Activate this plug-in when one of its classes
+loaded.} in your MANIFEST.mf file.
 
 You can alternatively publish your new extensions to the OSGI framework so that
-they can be dynamically injected into the ICE’s UI code. These extensions are
+they can be dynamically injected into the ICE's UI code. These extensions are
 registered as standalone services that are dynamically located at runtime based
 on the context name that you specified in your data structures. The benefit of
 this method over the extension point is that it can be used to dynamically

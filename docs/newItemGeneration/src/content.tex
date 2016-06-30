@@ -9,8 +9,8 @@ FERN code, a fast efficient nuclear reaction network solver.
 
 So we don't have to worry about building Fern for this tutorial, we have
 provided a convenient Docker image for Fern that you may use.  
-This image must be apart of your local docker daemon images list for use in this
-tutorial. You can add the image to your local Docker daemon in 2 ways: build the
+This image must be a part of your local docker daemon images list for use in
+this tutorial. You can add the image to your local Docker daemon in 2 ways: build the
 image with the provided Dockerfile, or load the image through the image tar ball we have provided. To
 build it from scratch, in the same directory as the Dockerfile, run 
 \begin{lstlisting}[language=bash,caption={bash version}]
@@ -290,14 +290,14 @@ We are now ready to launch ICE with our Fern plugin, and use the Fern Items we
 have just created.
 
 \section*{Using the New Fern Items}
-Now, using these new Items is easy. Simply open the Run Configurations wizard,
-and open Eclipse Applications to see ICE launch configurations for Mac, Linux,
-and Windows. Select the launch configuration for your OS and open the Plug-ins
+Now, using these new Items is easy. Open the Run Configurations wizard with
+\texttt{Run $>$ Run Configurations\ldots}, and open Eclipse Applications to see ICE
+launch configurations for Mac, Linux, and Windows. Select the launch configuration for your OS and open the Plug-ins
 tab. Scroll down to the \texttt{org.eclipse.ice.fern} plugin and turn it on for
-this launch configuration. Then click Apply and Run. 
+this launch configuration by clicking the check box. Then click Apply and Run. 
 
-With a new ICE instance open, go to \texttt{File $>$ New $>$ Other} and select
-the Create New Item Wizard. 
+With a new ICE instance open, close the Welcome view if necessary and go to
+\texttt{File $>$ New $>$ Other} and select the Create Item Wizard. 
 \begin{center} \includegraphics[width=\textwidth]{figures/creatingFernModelItem}
 \end{center}
 After selecting the FernModel Item, you will be presented with the view in the
