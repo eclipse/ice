@@ -53,7 +53,7 @@
   	<module>../org.eclipse.ice.reflectivity</module>
   	<module>../org.eclipse.ice.reflectivity.test</module>
   	<module>../org.eclipse.ice.reflectivity.ui</module>
-  	<module>../org.eclipse.ice.target.mars</module>
+  	<module>../org.eclipse.ice.target.neon</module>
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
   	<module>../org.eclipse.ice.feature</module>  	

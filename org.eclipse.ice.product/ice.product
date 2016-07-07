@@ -135,7 +135,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ease.javascript.feature"/>
       <feature id="org.eclipse.ease.modules.charting.feature"/>
       <feature id="org.eclipse.ease.modules.feature"/>
-      <feature id="org.eclipse.ease.modules.team.svn.feature"/>
       <feature id="org.eclipse.ease.python.feature"/>
       <feature id="org.eclipse.ease.ui.feature"/>
       <feature id="org.eclipse.epp.mpc"/>
@@ -163,7 +162,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.ptp.etfw.tau"/>
       <feature id="org.eclipse.ptp.etfw.tau.fortran"/>
       <feature id="org.eclipse.ptp.fortran"/>
-      <feature id="org.eclipse.ptp.gem"/>
       <feature id="org.eclipse.ptp.pldt"/>
       <feature id="org.eclipse.ptp.pldt.fortran"/>
       <feature id="org.eclipse.ptp.pldt.upc"/>
@@ -181,42 +179,25 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt.bupc"/>
       <feature id="org.eclipse.cdt.core.lrparser.feature"/>
       <feature id="org.eclipse.cdt.core.parser.upc.feature"/>
-      <feature id="org.eclipse.cdt.gdb.source"/>
-      <feature id="org.eclipse.cdt.gnu.build.source"/>
-      <feature id="org.eclipse.cdt.gnu.debug.source"/>
-      <feature id="org.eclipse.cdt.gnu.dsf.source"/>
       <feature id="org.eclipse.cdt.gnu.multicorevisualizer"/>
       <feature id="org.eclipse.cdt.managedbuilder.llvm"/>
-      <feature id="org.eclipse.cdt.msw"/>
-      <feature id="org.eclipse.cdt.native.source"/>
-      <feature id="org.eclipse.cdt.platform.source"/>
-      <feature id="org.eclipse.cdt.qt"/>
       <feature id="org.eclipse.cdt.sdk"/>
       <feature id="org.eclipse.cdt.testsrunner.feature"/>
       <feature id="org.eclipse.cdt.xlc.feature"/>
       <feature id="org.eclipse.linuxtools.cdt.libhover.feature"/>
       <feature id="org.eclipse.dltk.core"/>
-      <feature id="org.eclipse.dltk.core.index"/>
       <feature id="org.eclipse.dltk.itcl"/>
       <feature id="org.eclipse.dltk.ruby"/>
       <feature id="org.eclipse.dltk.tcl"/>
       <feature id="org.eclipse.dltk.xotcl"/>
       <feature id="org.eclipse.recommenders.rcp.feature"/>
-      <feature id="org.eclipse.mylyn.bugzilla_feature"/>
       <feature id="org.eclipse.mylyn.commons"/>
       <feature id="org.eclipse.mylyn.commons.identity"/>
       <feature id="org.eclipse.mylyn.commons.notifications"/>
       <feature id="org.eclipse.mylyn.commons.repositories"/>
-      <feature id="org.eclipse.mylyn.context_feature"/>
       <feature id="org.eclipse.mylyn.discovery"/>
       <feature id="org.eclipse.mylyn.github.feature"/>
-      <feature id="org.eclipse.mylyn.ide_feature"/>
-      <feature id="org.eclipse.mylyn.java_feature"/>
       <feature id="org.eclipse.mylyn.monitor"/>
-      <feature id="org.eclipse.mylyn.pde_feature"/>
-      <feature id="org.eclipse.mylyn.tasks.ide"/>
-      <feature id="org.eclipse.mylyn.team_feature"/>
-      <feature id="org.eclipse.mylyn.wikitext_feature"/>
       <feature id="org.eclipse.mylyn_feature"/>
       <feature id="org.eclipse.egit"/>
       <feature id="org.eclipse.aether.maven.feature"/>
@@ -253,14 +234,12 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.equinox.server.core"/>
       <feature id="org.eclipse.equinox.server.jetty"/>
       <feature id="org.eclipse.equinox.serverside.sdk"/>
-      <feature id="org.eclipse.equinox.weaving.sdk"/>
       <feature id="org.eclipse.equinox.core.sdk"/>
       <feature id="org.eclipse.emf.common.ui"/>
       <feature id="org.eclipse.emf.ecore.edit"/>
       <feature id="org.eclipse.emf.ecore.editor"/>
       <feature id="org.eclipse.draw2d"/>
       <feature id="org.eclipse.draw2d.sdk"/>
-      <feature id="org.eclipse.e4.core.tools.feature"/>
       <feature id="org.eclipse.ice.materials.feature"/>
       <feature id="org.eclipse.fx.ide.feature"/>
       <feature id="org.eclipse.eavp.feature"/>
@@ -268,13 +247,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.egf.portfolio"/>
       <feature id="org.eclipse.egf.portfolio.emf"/>
       <feature id="org.eclipse.emf"/>
-      <feature id="org.eclipse.emf.cdo"/>
-      <feature id="org.eclipse.emf.cdo.compare"/>
-      <feature id="org.eclipse.emf.cdo.doc"/>
-      <feature id="org.eclipse.emf.cdo.epp"/>
-      <feature id="org.eclipse.emf.cdo.examples.installer"/>
-      <feature id="org.eclipse.emf.cdo.server"/>
-      <feature id="org.eclipse.emf.cdo.server.db"/>
       <feature id="org.eclipse.emf.codegen"/>
       <feature id="org.eclipse.emf.codegen.ecore"/>
       <feature id="org.eclipse.emf.codegen.ecore.ui"/>
@@ -297,14 +269,11 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.emf.ecoretools.design"/>
       <feature id="org.eclipse.emf.ecoretools.sdk"/>
       <feature id="org.eclipse.emf.ecp.cdo.feature"/>
-      <feature id="org.eclipse.emf.ecp.demo.e3.feature"/>
-      <feature id="org.eclipse.emf.ecp.demo.e4.feature"/>
       <feature id="org.eclipse.emf.ecp.e3.feature"/>
       <feature id="org.eclipse.emf.ecp.e4.feature"/>
       <feature id="org.eclipse.emf.ecp.emfforms.idetooling.feature"/>
       <feature id="org.eclipse.emf.ecp.emfforms.runtime.feature"/>
       <feature id="org.eclipse.emf.ecp.emfforms.sdk.feature"/>
-      <feature id="org.eclipse.emf.ecp.emfstore.feature"/>
       <feature id="org.eclipse.emf.ecp.feature"/>
       <feature id="org.eclipse.emf.ecp.license.feature"/>
       <feature id="org.eclipse.emf.ecp.sdk.e4.feature"/>
@@ -337,15 +306,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.emf.eef.extended-feature"/>
       <feature id="org.eclipse.emf.eef.runtime-feature"/>
       <feature id="org.eclipse.emf.eef.sdk-feature"/>
-      <feature id="org.eclipse.emf.emfstore.client.feature"/>
-      <feature id="org.eclipse.emf.emfstore.client.ui.feature"/>
-      <feature id="org.eclipse.emf.emfstore.common.feature"/>
-      <feature id="org.eclipse.emf.emfstore.ecore.feature"/>
-      <feature id="org.eclipse.emf.emfstore.example.feature"/>
-      <feature id="org.eclipse.emf.emfstore.license.feature"/>
-      <feature id="org.eclipse.emf.emfstore.sdk.feature"/>
-      <feature id="org.eclipse.emf.emfstore.server.feature"/>
-      <feature id="org.eclipse.emf.examples"/>
       <feature id="org.eclipse.emf.facet.common.feature"/>
       <feature id="org.eclipse.emf.facet.examples.feature"/>
       <feature id="org.eclipse.emf.facet.sdk.feature"/>
@@ -361,27 +321,19 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.emf.oda.sdk"/>
       <feature id="org.eclipse.emf.query"/>
       <feature id="org.eclipse.emf.query.doc"/>
-      <feature id="org.eclipse.emf.query.examples"/>
-      <feature id="org.eclipse.emf.query.master"/>
       <feature id="org.eclipse.emf.query.ocl"/>
       <feature id="org.eclipse.emf.query.sdk"/>
       <feature id="org.eclipse.emf.sdk"/>
       <feature id="org.eclipse.emf.transaction"/>
       <feature id="org.eclipse.emf.transaction.doc"/>
-      <feature id="org.eclipse.emf.transaction.examples"/>
-      <feature id="org.eclipse.emf.transaction.master"/>
       <feature id="org.eclipse.emf.transaction.sdk"/>
       <feature id="org.eclipse.emf.validation"/>
       <feature id="org.eclipse.emf.validation.doc"/>
-      <feature id="org.eclipse.emf.validation.examples"/>
-      <feature id="org.eclipse.emf.validation.master"/>
       <feature id="org.eclipse.emf.validation.ocl"/>
       <feature id="org.eclipse.emf.validation.sdk"/>
       <feature id="org.eclipse.emf.workspace"/>
       <feature id="org.eclipse.emf.workspace.doc"/>
-      <feature id="org.eclipse.emf.workspace.examples"/>
       <feature id="org.eclipse.gmf"/>
-      <feature id="org.eclipse.gmf.examples.runtime"/>
       <feature id="org.eclipse.papyrus.infra.emf.feature"/>
       <feature id="org.eclipse.sirius.runtime"/>
       <feature id="org.eclipse.sirius.runtime.ide.ui"/>
@@ -437,7 +389,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    <repositories>
       <repository location="http://download.eclipse.org/eavp/builds/next/" enabled="true" />
       <repository location="http://download.eclipse.org/ice/builds/next/" enabled="true" />
-      <repository location="http://download.eclipse.org/releases/mars/" enabled="true" />
+      <repository location="http://download.eclipse.org/releases/neon/" enabled="true" />
    </repositories>
 
    <preferencesInfo>
