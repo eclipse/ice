@@ -6,13 +6,13 @@
    		point="org.eclipse.ui.newWizards">
    		<category
            id="org.eclipse.ice.projectgeneration.wizards"
-           name="ICE Item Creation Wizards">
+           name="ICE Item Project Creation Wizards">
 		</category>
 		<wizard
         category="org.eclipse.ice.projectgeneration.wizards"
         class="org.eclipse.ice.projectgeneration.wizards.NewICEItemProjectWizard"
         id="org.eclipse.ice.projectgeneration.wizard.new.item"
-        name="ICE Item Project Creation Wizard"
+        name="New ICE Item Project"
         project="true">
 		</wizard>
 	</extension>
@@ -57,25 +57,5 @@
              name="ICE Item Templates"
              parentCategory="templates">
        </category>
-       <wizard
-             availableAsShortcut="true"
-             category="templates"
-             id="org.eclipse.ice.projectgeneration.ICEItem"
-             name="ICE Item"
-             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
-       </wizard>
-       <wizard
-             category="templates"
-             id="org.eclipse.ice.projectgeneration.ICEItem"
-             name="ICE Item"
-             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
-       </wizard>
-       <wizard
-             category="templates"
-             id="org.eclipse.ice.projectgeneration.ICEItem"
-             name="ICE Item"
-             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
-       </wizard>
     </extension>
-
 </plugin>
