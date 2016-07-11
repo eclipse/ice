@@ -49,8 +49,8 @@ public class NewICEItemProjectTester {
 		bot = new SWTWorkbenchBot();
 		bot.viewByTitle("Welcome").close();
 		bot.menu("File").menu("New").menu("Other...").click().setFocus();
-		bot.tree().getTreeItem("ICE Item Creation Wizards").expand();
-		bot.tree().getTreeItem("ICE Item Creation Wizards").getNode("ICE Item Project Creation Wizard").select();
+		bot.tree().getTreeItem("ICE Item Project Creation Wizards").expand();
+		bot.tree().getTreeItem("ICE Item Project Creation Wizards").getNode("New ICE Item Project").select();
 		bot.button("Next >").click();
 		bot.textWithLabel("&Project name:").setText("org.eclipse.ice.newitem");
 		bot.button("Next >").click();
