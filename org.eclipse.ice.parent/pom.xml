@@ -245,16 +245,6 @@
 							<classifier>neon</classifier>
 						</artifact>
 					</target>
-					<filters>
-						<!-- Restrict javax.ws.rs version -->
-						<filter>
-							<type>eclipse-plugin</type>
-							<id>javax.ws.rs</id>
-							<restrictTo>
-								<version>1.1.1.v20130318-1750</version>
-							</restrictTo>
-						</filter>
-					</filters>
 				</configuration>
 			</plugin>
 

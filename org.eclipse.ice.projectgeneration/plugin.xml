@@ -64,18 +64,6 @@
              name="ICE Item"
              template="org.eclipse.ice.projectgeneration.templates.ICEItem">
        </wizard>
-       <wizard
-             category="templates"
-             id="org.eclipse.ice.projectgeneration.ICEItem"
-             name="ICE Item"
-             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
-       </wizard>
-       <wizard
-             category="templates"
-             id="org.eclipse.ice.projectgeneration.ICEItem"
-             name="ICE Item"
-             template="org.eclipse.ice.projectgeneration.templates.ICEItem">
-       </wizard>
     </extension>
 
 </plugin>

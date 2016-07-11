@@ -36,6 +36,7 @@ import org.eclipse.pde.core.plugin.IPluginElement;
 import org.eclipse.pde.core.plugin.IPluginExtension;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.IPluginModelFactory;
+import org.eclipse.pde.core.plugin.IPluginReference;
 import org.eclipse.pde.ui.templates.OptionTemplateSection;
 import org.eclipse.pde.ui.templates.TemplateOption;
 
@@ -271,5 +272,9 @@ public class ICEItemTemplate extends OptionTemplateSection {
 	
 	public void setExtensionName(String extName) {
 		addOption(KEY_EXTENSION_NAME, "Extension Base Name", extName, 0);
+	}
+	
+	public IPluginReference[] getDependencies(String schemaVersion) {
+		return new IPluginReference[0];
 	}
 }
