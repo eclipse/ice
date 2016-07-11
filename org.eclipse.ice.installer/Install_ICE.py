@@ -33,7 +33,7 @@ import subprocess
 if sys.version_info < (2,7):
     print("")
     print("--------------------------- ERROR -----------------------------")
-    print("  Unsupported Python version: " + sys.version_info.major + "." + sys.version_info.minor)
+    print("  Unsupported Python version: " + str(sys.version_info[0]) + "." + str(sys.version_info[1]))
     print("  Please update to Python 2.7 or greater to use the installer.")
     print("--------------------------- ERROR -----------------------------")
     print("")
@@ -183,7 +183,7 @@ def download_packages(opts, os_type, arch_type):
             url = package_urls[pkg] + fname
             u = urllib2.urlopen(url)
             f = open(fname, 'wb')
-            info = {k.lower():v for k,v in dict(u.info()).items()}
+            info = dict([(k.lower(),v) for k,v in dict(u.info()).items()])
             fsize = int(info['content-length'])
             dl_size = 0
             block = 8192
@@ -483,3 +483,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
