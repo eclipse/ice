@@ -129,7 +129,7 @@ public class LaunchNewICEHandler extends AbstractHandler {
 							"org.eclipse.ice.parent", "org.eclipse.ice.product", "org.eclipse.ice.repository");
 					for (IProject p : root.getProjects()) {
 						String name = p.getName();
-						if (!currentPlugins.contains(p.getName()) && !name.contains("test")
+						if (!currentPlugins.contains(p.getName()) && !name.endsWith(".test")
 								&& !name.contains("Tutorial")
 								&& !name.contains("target.") && !name.contains("feature") 
 								&& !pluginsToIgnore.contains(name)) {
