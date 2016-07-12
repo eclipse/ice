@@ -1,0 +1,95 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{report}
+\usepackage{authblk}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{url}
+\usepackage[section]{placeins}
+
+\setlength{\parskip}{1em}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue}
+}
+
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+
+\title{Eclipse ICE User Manual}
+\author{Jay Jay Billings}
+\author{Andrew Bennett}
+\author{Alex McCaskey}
+\author{Robert Smith}
+\author{Greg Watson}
+\affil{Oak Ridge National Laboratory}
+\maketitle{}
+
+\graphicspath{{../../installation/src/}}
+\input{../../installation/src/content}
+
+\graphicspath{{../../newItemGeneration/src/}}
+\input{../../newItemGeneration/src/content}
+
+\graphicspath{{../../resourceComponents/src/}}
+\input{../../resourceComponents/src/content}
+
+\graphicspath{{../../dynamicUI/src/}}
+\input{../../dynamicUI/src/content}
+
+\graphicspath{{../../scripting/src/}}
+\lstset{inputpath=../../scripting/src/}
+\input{../../scripting/src/content}
+
+\graphicspath{{../../developerMenu/src/}}
+\input{../../developerMenu/src/content}
+
+\graphicspath{{../../geometryEditor/src/}}
+\input{../../geometryEditor/src/content}
+
+\graphicspath{{../../meshEditor/src/}}
+\input{../../meshEditor/src/content}
+
+%\input{../../moose-tutorial/src/content.tex} % FIXME! Incorrect structure.
+
+%\graphicspath{{../../reflectivity/src/}}
+%\input{../../reflectivity/src/content}
+
+\graphicspath{{../../visualization/src/}}
+\input{../../visualization/src/content}
+
+\graphicspath{{../../paraviewTutorial/src/}}
+\input{../../paraviewTutorial/src/content}
+
+
+\end{document}
