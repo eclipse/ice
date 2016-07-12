@@ -31,6 +31,10 @@
                commandName="Build ICE"
                implementation="org.eclipse.ice.developer.actions.BuildICEHandler">
          </command>
+         <command
+               commandName="Launch New ICE Instance"
+               implementation="org.eclipse.ice.developer.actions.LaunchNewICEHandler">
+         </command>
       </code>
    </extension>
    <extension
