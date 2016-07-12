@@ -15,7 +15,7 @@
 </location>
 <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
 <unit id="org.eclipse.ease.engine.jython.feature.feature.group" version="2.7.0.I201604140914"/>
-<repository location="https://bintray.com/artifact/download/pontesegger/ease-engines/"/>
+<repository location="http://bintray.com/artifact/download/pontesegger/ease-engines/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="ca.odell.glazedlists" version="0.0.0"/>
