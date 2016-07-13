@@ -35,6 +35,10 @@
                commandName="Launch New ICE Instance"
                implementation="org.eclipse.ice.developer.actions.LaunchNewICEHandler">
          </command>
+         <command
+               commandName="Import Local ICE"
+               implementation="org.eclipse.ice.developer.actions.ImportLocalICEHandler">
+         </command>
       </code>
    </extension>
    <extension
