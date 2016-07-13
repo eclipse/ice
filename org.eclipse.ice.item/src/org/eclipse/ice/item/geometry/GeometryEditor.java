@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.item.geometry;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
@@ -22,6 +25,9 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
+import org.eclipse.january.geometry.STLGeometryImporter;
 
 /**
  * <p>
@@ -106,5 +112,15 @@ public class GeometryEditor extends Item {
 
 		return;
 
+	}
+	
+	@Override
+	public void loadInput(String input) {
+		Path path = FileSystems.getDefault().getPath(input);
+		STLGeometryImporter importer = GeometryFactory.eINSTANCE.createSTLGeometryImporter();
+		
+		Geometry geometry = importer.load(path);
+		
+		((GeometryComponent) form.getComponent(1)).setGeometry(geometry);
 	}
 }
