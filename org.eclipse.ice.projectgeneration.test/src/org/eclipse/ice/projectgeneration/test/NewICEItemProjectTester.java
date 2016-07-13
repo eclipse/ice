@@ -36,7 +36,7 @@ public class NewICEItemProjectTester {
 	private static SWTWorkbenchBot bot;
 	private static final String SEP = System.getProperty("file.separator");
 	private static final String PROJECT_NAME = "org.eclipse.ice.newitem";
-	private static final int MANIFEST_LINE_COUNT = 21;
+	private static final int MANIFEST_LINE_COUNT = 16;
 	private static final int MODEL_LINE_COUNT = 235;
 	private static final int LAUNCHER_LINE_COUNT = 82;
 
@@ -116,7 +116,7 @@ public class NewICEItemProjectTester {
 		try {
 			lnr = new LineNumberReader(new FileReader(modelFile.getLocation().toFile()));
 			lnr.skip(Long.MAX_VALUE);
-			lineCount = lnr.getLineNumber() + 1;
+			lineCount = lnr.getLineNumber();
 			lnr.close();
 		} catch (Exception e) {
 			e.printStackTrace();

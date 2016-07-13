@@ -76,24 +76,13 @@ public class $className$Model extends Model {
 	@Override
 	public void setupForm() {
 		form = new Form();
+		
+		// Get the reference to the IOService, 
+		// This will let us get IReaders/IWriters for 
+		// or Model
 		ioService = getIOService();
-		if (ioService == null) {
-			setIOService(new IOService());
-			ioService = getIOService();
-		}
-		if (ioFormat != "") {
-			reader = ioService.getReader(ioFormat);
-			writer = ioService.getWriter(ioFormat);
-		}
-		
-		// Populate the Form with Components for your 
-		// application Model. The default behavior is 
-		// only invoked if there are valid IO services
-		if (project != null && reader != null && writer != null) {
-			loadInput(null);
-		}
-		
-		/* Alternate Example:
+
+		/* SetupForm Example:
 		 * 
 		 * DataComponent data = new DataComponent();
 		 * data.setName("Example Input Data");
@@ -116,6 +105,12 @@ public class $className$Model extends Model {
 		 * 
 		 * form.addComponent(data);
 		 */
+		
+		// Set the Form ID info
+		form.setName(getName());
+		form.setDescription(getDescription());
+		form.setId(getId());
+		form.setItemID(getId());
 	}
 	
 	/**
@@ -157,10 +152,16 @@ public class $className$Model extends Model {
 		// setupItemInfo() method defined above.
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
-			retStatus = FormStatus.Processing;
-			writer.write(form, outputFile);
-			refreshProjectSpace();
-			retStatus = FormStatus.Processed;
+			writer = ioService.getWriter(ioFormat);
+			if (writer != null) {
+				retStatus = FormStatus.Processing;
+				writer.write(form, outputFile);
+				refreshProjectSpace();
+				retStatus = FormStatus.Processed;
+			} else {
+				logger.error("Could not get reference to the IWriter " + ioFormat);
+				retStatus = FormStatus.InfoError;
+			}
 		} else {
 			retStatus = super.process(actionName);
 		}
