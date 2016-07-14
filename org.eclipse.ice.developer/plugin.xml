@@ -24,19 +24,19 @@
             codeName="ICE"
             repoURL="https://github.com/eclipse/ice">
          <command
-               commandName="Clone ICE"
+               commandName="Clone"
                implementation="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler">
          </command>
          <command
-               commandName="Build ICE"
+               commandName="Build"
                implementation="org.eclipse.ice.developer.actions.BuildICEHandler">
          </command>
          <command
-               commandName="Launch New ICE Instance"
+               commandName="Launch New Instance"
                implementation="org.eclipse.ice.developer.actions.LaunchNewICEHandler">
          </command>
          <command
-               commandName="Import Local ICE"
+               commandName="Import Local Repository"
                implementation="org.eclipse.ice.developer.actions.ImportLocalICEHandler">
          </command>
       </code>
