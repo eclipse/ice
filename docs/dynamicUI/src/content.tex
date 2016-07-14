@@ -1,3 +1,4 @@
+\section{Dynamic UI}
 This tutorial will show you how to create custom, dynamic UI extensions to
 Eclipse ICE.
 
@@ -8,7 +9,7 @@ What you will need for this tutorial:
 \item Experience creating an ICE Item
 \end{itemize}
 
-\section{Introduction}
+\subsection{Introduction}
 
 ICE makes some educated guesses based on the type of your components and
 information that it can glean from your data to figure out the best way that it
@@ -31,7 +32,7 @@ change the GeometryPage, not how to actually generate new 3D graphics. The
 source code for this tutorial is in the ICE repo in a project called
 org.eclipse.ice.demo.
 
-\section{Create an ICE Item Project}
+\subsection{Create an ICE Item Project}
 
 Use the ICE Item Project Generation Wizard to create a new Item with  a
 GeometryComponent and a DataComponent with one Entry in the Form. You can copy
@@ -129,7 +130,7 @@ as shown above). Note that in the code above we need to use different context
 names for the Entry and the GeometryComponent so that the context can uniquely
 identify the routines that draw each.
 
-\section{Create an IPageProvider and IPageFactory}
+\subsection{Create an IPageProvider and IPageFactory}
 
 We will replace the Geometry Page first. Create a new package.This requires two
 pieces to properly locate your Page, through your IPageFactory, and to draw
@@ -242,7 +243,7 @@ public class DemoGeometryPage extends ICEFormPage {
 }
 \end{lstlisting}
 
-\section{Create a new IEntryComposite}
+\subsection{Create a new IEntryComposite}
 
 Individual Entry’s that ICE draws can be extended in the same way. First,
 create a subclass of AbstractEntryComposite that implements render and copy the
@@ -294,7 +295,7 @@ public class DemoEntryCompositeProvider implements IEntryCompositeProvider {
 }
 \end{lstlisting}
 
-\section{Publishing through the e4 extension point}
+\subsection{Publishing through the e4 extension point}
 
 The most common way to publish these extensions to the platform is to create an
 extension at the org.eclipse.e4.workbench.model extension point. You can do this
@@ -368,7 +369,7 @@ You geometry component should look like fig. \ref{fig:iceDemoGeometryPage}.
 \label{fig:iceDemoGeometryPage}
 \end{figure}
 
-\section{Publishing through Context Functions}
+\subsection{Publishing through Context Functions}
 
 Make sure to check \texttt{Activate this plug-in when one of its classes
 loaded.} in your MANIFEST.mf file.
@@ -449,7 +450,7 @@ name="service.context.key" type="String" value="demo-geometry"/> <service>
 </scr:component>
 \end{lstlisting}
 
-\section{Replacing the whole Page Factory}
+\subsection{Replacing the whole Page Factory}
 
 If you want to replace the way that all pages in ICE are drawn, you can replace
 the entire Page Factory.  Create a new class in your package that inherits from
