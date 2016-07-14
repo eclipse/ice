@@ -44,6 +44,10 @@
               name="preferenceCustomization"
               value="plugin_customization_sdk.ini">
         </property>
+        <property
+              name="aboutText"
+              value="%aboutText">
+        </property>
       </product>
   </extension>
   <extension
@@ -88,6 +92,10 @@
         <property
               name="preferenceCustomization"
               value="plugin_customization_runtime.ini">
+        </property>
+        <property
+              name="aboutText"
+              value="%aboutText">
         </property>
      </product>
   </extension>
