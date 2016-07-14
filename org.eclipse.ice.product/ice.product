@@ -104,18 +104,10 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    </plugins>
 
    <features>
-      <feature id="org.eclipse.emf.ecore"/>
-      <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="org.eclipse.ecf.core.feature"/>
       <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.equinox.p2.discovery.feature"/>
@@ -125,10 +117,9 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt"/>
       <feature id="org.eclipse.jdt"/>
       <feature id="org.eclipse.cdt.autotools"/>
-      <feature id="org.eclipse.cdt.gnu.dsf"/>
-      <feature id="org.eclipse.cdt.gnu.build"/>
       <feature id="org.eclipse.cdt.platform"/>
       <feature id="org.eclipse.cdt.native"/>
+      <feature id="org.eclipse.cdt.gnu.build"/>
       <feature id="org.eclipse.cdt.gnu.debug"/>
       <feature id="org.eclipse.cdt.gdb"/>
       <feature id="org.eclipse.ease.feature"/>
@@ -141,20 +132,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.epp.mpc"/>
       <feature id="org.eclipse.remote"/>
       <feature id="org.eclipse.pde"/>
-      <feature id="org.eclipse.wst.common_core.feature"/>
-      <feature id="org.eclipse.wst.common_ui.feature"/>
-      <feature id="org.eclipse.wst.jsdt.feature"/>
-      <feature id="org.eclipse.wst.server_core.feature"/>
-      <feature id="org.eclipse.wst.server_ui.feature"/>
-      <feature id="org.eclipse.wst.server_userdoc.feature"/>
-      <feature id="org.eclipse.wst.web_core.feature"/>
-      <feature id="org.eclipse.wst.web_ui.feature"/>
-      <feature id="org.eclipse.wst.web_userdoc.feature"/>
-      <feature id="org.eclipse.wst.xml.xpath2.processor.feature"/>
-      <feature id="org.eclipse.wst.xml_core.feature"/>
-      <feature id="org.eclipse.wst.xml_ui.feature"/>
-      <feature id="org.eclipse.wst.xml_userdoc.feature"/>
-      <feature id="org.eclipse.wst.xsl.feature"/>
       <feature id="org.eclipse.ptp"/>
       <feature id="org.eclipse.ptp.core"/>
       <feature id="org.eclipse.ptp.debug.sdm"/>
@@ -181,16 +158,9 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt.core.lrparser.feature"/>
       <feature id="org.eclipse.cdt.core.parser.upc.feature"/>
       <feature id="org.eclipse.cdt.gnu.multicorevisualizer"/>
-      <feature id="org.eclipse.cdt.managedbuilder.llvm"/>
-      <feature id="org.eclipse.cdt.sdk"/>
       <feature id="org.eclipse.cdt.testsrunner.feature"/>
-      <feature id="org.eclipse.cdt.xlc.feature"/>
       <feature id="org.eclipse.linuxtools.cdt.libhover.feature"/>
       <feature id="org.eclipse.dltk.core"/>
-      <feature id="org.eclipse.dltk.itcl"/>
-      <feature id="org.eclipse.dltk.ruby"/>
-      <feature id="org.eclipse.dltk.tcl"/>
-      <feature id="org.eclipse.dltk.xotcl"/>
       <feature id="org.eclipse.recommenders.rcp.feature"/>
       <feature id="org.eclipse.mylyn.commons"/>
       <feature id="org.eclipse.mylyn.commons.identity"/>
@@ -201,26 +171,13 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.mylyn.monitor"/>
       <feature id="org.eclipse.mylyn_feature"/>
       <feature id="org.eclipse.egit"/>
-      <feature id="org.eclipse.aether.maven.feature"/>
       <feature id="org.eclipse.photran.xlf"/>
       <feature id="org.eclipse.tm.terminal.view.feature"/>
-      <feature id="org.eclipse.aether.feature"/>
-      <feature id="org.eclipse.aether.transport.file.feature"/>
       <feature id="org.eclipse.jgit"/>
-      <feature id="org.eclipse.aether.connector.basic.feature"/>
       <feature id="org.eclipse.tm.terminal.connector.remote.feature"/>
       <feature id="org.eclipse.photran"/>
       <feature id="org.eclipse.photran.intel"/>
-      <feature id="org.eclipse.aether.transport.http.feature"/>
       <feature id="org.eclipse.tm.terminal.control.feature"/>
-      <feature id="org.eclipse.m2e.feature"/>
-      <feature id="org.eclipse.swtbot"/>
-      <feature id="org.eclipse.swtbot.eclipse"/>
-      <feature id="org.eclipse.swtbot.eclipse.gef"/>
-      <feature id="org.eclipse.swtbot.eclipse.test.junit"/>
-      <feature id="org.eclipse.swtbot.forms"/>
-      <feature id="org.eclipse.swtbot.generator.feature"/>
-      <feature id="org.eclipse.swtbot.ide"/>
       <feature id="org.eclipse.nebula.visualization.feature"/>
       <feature id="org.eclipse.nebula.widgets.nattable.core.feature"/>
       <feature id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature"/>
@@ -236,110 +193,16 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.equinox.server.jetty"/>
       <feature id="org.eclipse.equinox.serverside.sdk"/>
       <feature id="org.eclipse.equinox.core.sdk"/>
-      <feature id="org.eclipse.emf.common.ui"/>
-      <feature id="org.eclipse.emf.ecore.edit"/>
-      <feature id="org.eclipse.emf.ecore.editor"/>
       <feature id="org.eclipse.draw2d"/>
       <feature id="org.eclipse.draw2d.sdk"/>
       <feature id="org.eclipse.ice.materials.feature"/>
       <feature id="org.eclipse.fx.ide.feature"/>
       <feature id="org.eclipse.eavp.feature"/>
-      <feature id="org.eclipse.php"/>
       <feature id="org.eclipse.egf.portfolio"/>
       <feature id="org.eclipse.egf.portfolio.emf"/>
-      <feature id="org.eclipse.emf"/>
-      <feature id="org.eclipse.emf.codegen"/>
-      <feature id="org.eclipse.emf.codegen.ecore"/>
-      <feature id="org.eclipse.emf.codegen.ecore.ui"/>
-      <feature id="org.eclipse.emf.codegen.source"/>
-      <feature id="org.eclipse.emf.codegen.ui"/>
-      <feature id="org.eclipse.emf.compare"/>
-      <feature id="org.eclipse.emf.compare.diagram.gmf"/>
-      <feature id="org.eclipse.emf.compare.diagram.papyrus"/>
-      <feature id="org.eclipse.emf.compare.ide.ui"/>
-      <feature id="org.eclipse.emf.compare.uml2"/>
-      <feature id="org.eclipse.emf.converter"/>
-      <feature id="org.eclipse.emf.databinding"/>
-      <feature id="org.eclipse.emf.databinding.edit"/>
-      <feature id="org.eclipse.emf.diffmerge.sdk.feature"/>
-      <feature id="org.eclipse.emf.doc"/>
-      <feature id="org.eclipse.emf.ecore.xcore"/>
-      <feature id="org.eclipse.emf.ecore.xcore.lib"/>
-      <feature id="org.eclipse.emf.ecore.xcore.sdk"/>
-      <feature id="org.eclipse.emf.ecore.xcore.ui"/>
-      <feature id="org.eclipse.emf.ecoretools.design"/>
-      <feature id="org.eclipse.emf.ecoretools.sdk"/>
-      <feature id="org.eclipse.emf.ecp.cdo.feature"/>
-      <feature id="org.eclipse.emf.ecp.e3.feature"/>
-      <feature id="org.eclipse.emf.ecp.e4.feature"/>
-      <feature id="org.eclipse.emf.ecp.emfforms.idetooling.feature"/>
-      <feature id="org.eclipse.emf.ecp.emfforms.runtime.feature"/>
-      <feature id="org.eclipse.emf.ecp.emfforms.sdk.feature"/>
-      <feature id="org.eclipse.emf.ecp.feature"/>
-      <feature id="org.eclipse.emf.ecp.license.feature"/>
-      <feature id="org.eclipse.emf.ecp.sdk.e4.feature"/>
-      <feature id="org.eclipse.emf.ecp.sdk.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.categorization.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.compoundcontrol.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.custom.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.edapt.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.group.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.horizontal.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.label.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.model.controls.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.model.editor.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.rule.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.stack.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.table.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.template.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.treemasterdetail.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.unset.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.validation.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.validation.initial.feature"/>
-      <feature id="org.eclipse.emf.ecp.view.vertical.feature"/>
-      <feature id="org.eclipse.emf.ecp.viewmodel.feature"/>
-      <feature id="org.eclipse.emf.ecp.workspace.feature"/>
-      <feature id="org.eclipse.emf.edapt.runtime.feature"/>
-      <feature id="org.eclipse.emf.edit"/>
-      <feature id="org.eclipse.emf.edit.ui"/>
-      <feature id="org.eclipse.emf.eef.codegen.ecore-feature"/>
-      <feature id="org.eclipse.emf.eef.edt-feature"/>
-      <feature id="org.eclipse.emf.eef.extended-feature"/>
-      <feature id="org.eclipse.emf.eef.runtime-feature"/>
-      <feature id="org.eclipse.emf.eef.sdk-feature"/>
-      <feature id="org.eclipse.emf.facet.common.feature"/>
-      <feature id="org.eclipse.emf.facet.examples.feature"/>
-      <feature id="org.eclipse.emf.facet.sdk.feature"/>
-      <feature id="org.eclipse.emf.facet.util.feature"/>
-      <feature id="org.eclipse.emf.facet.widgets.feature"/>
-      <feature id="org.eclipse.emf.mapping"/>
-      <feature id="org.eclipse.emf.mapping.ecore"/>
-      <feature id="org.eclipse.emf.mapping.ecore.editor"/>
-      <feature id="org.eclipse.emf.mapping.ui"/>
-      <feature id="org.eclipse.emf.oda"/>
-      <feature id="org.eclipse.emf.oda.ecore"/>
-      <feature id="org.eclipse.emf.oda.ecore.ui"/>
-      <feature id="org.eclipse.emf.oda.sdk"/>
-      <feature id="org.eclipse.emf.query"/>
-      <feature id="org.eclipse.emf.query.doc"/>
-      <feature id="org.eclipse.emf.query.ocl"/>
-      <feature id="org.eclipse.emf.query.sdk"/>
-      <feature id="org.eclipse.emf.sdk"/>
-      <feature id="org.eclipse.emf.transaction"/>
-      <feature id="org.eclipse.emf.transaction.doc"/>
-      <feature id="org.eclipse.emf.transaction.sdk"/>
-      <feature id="org.eclipse.emf.validation"/>
-      <feature id="org.eclipse.emf.validation.doc"/>
-      <feature id="org.eclipse.emf.validation.ocl"/>
-      <feature id="org.eclipse.emf.validation.sdk"/>
-      <feature id="org.eclipse.emf.workspace"/>
-      <feature id="org.eclipse.emf.workspace.doc"/>
-      <feature id="org.eclipse.gmf"/>
-      <feature id="org.eclipse.papyrus.infra.emf.feature"/>
-      <feature id="org.eclipse.sirius.runtime"/>
-      <feature id="org.eclipse.sirius.runtime.ide.ui"/>
-      <feature id="org.eclipse.xsd.mapping"/>
-      <feature id="org.eclipse.xsd.mapping.editor"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.wst.jsdt.feature"/>
    </features>
 
    <configurations>
@@ -388,6 +251,9 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    </configurations>
 
    <repositories>
+      <repository location="http://download.eclipse.org/eavp/builds/next/" enabled="true" />
+      <repository location="http://download.eclipse.org/ice/builds/next/" enabled="true" />
+      <repository location="http://download.eclipse.org/releases/neon/" enabled="true" />
       <repository location="http://download.eclipse.org/eavp/builds/next/" enabled="true" />
       <repository location="http://download.eclipse.org/ice/builds/next/" enabled="true" />
       <repository location="http://download.eclipse.org/releases/neon/" enabled="true" />
