@@ -174,7 +174,7 @@ public class JobProfileTester {
 		assertEquals("JobProfile", form.getName());
 		assertEquals("This operation will execute JobProfile",
 				form.getDescription());
-		assertEquals(4, form.getComponents().size());
+		assertEquals(3, form.getComponents().size());
 
 		// Enable OpenMP and MPI on the launcher
 		launcher.enableMPI(1, 512000, 1);
