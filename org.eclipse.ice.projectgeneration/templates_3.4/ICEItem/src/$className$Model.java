@@ -89,8 +89,6 @@ public class $className$Model extends Model {
 		form.setId(getId());
 		form.setItemID(getId());
 		
-		loadDefault();
-		
 		/* SetupForm Example:
 		 * 
 		 * DataComponent data = new DataComponent();
