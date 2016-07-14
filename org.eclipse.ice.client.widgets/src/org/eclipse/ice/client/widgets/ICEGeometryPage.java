@@ -17,6 +17,10 @@ import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.eavp.viz.service.javafx.canvas.BasicAttachment;
+import org.eclipse.eavp.viz.service.javafx.geometry.FXGeometryAttachment;
+import org.eclipse.eavp.viz.service.javafx.geometry.FXGeometryAttachmentManager;
+import org.eclipse.eavp.viz.service.javafx.geometry.FXGeometryCanvas;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
@@ -190,15 +194,16 @@ public class ICEGeometryPage extends ICEFormPage
 
 		// Get Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
-		service = factory.get("ICE Geometry Editor");
+		//service = factory.get("ICE Geometry Editor");
 		//((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
 		//		.findView(ShapeTreeView.ID)).setFactory(service.getControllerProviderFactory());
-		geometryComp.setService(service);
-
+		//geometryComp.setService(service);
+		FXGeometryAttachmentManager manager = new FXGeometryAttachmentManager();
+		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
+						.findView(ShapeTreeView.ID)).setRenderElementHolder((BasicAttachment)manager.allocate());
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service
-					.createCanvas(geometryComp.getGeometry());
+			IVizCanvas vizCanvas = (IVizCanvas) new FXGeometryCanvas(geometryComp.getGeometry());//service.createCanvas(geometryComp.getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {
