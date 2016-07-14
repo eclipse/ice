@@ -227,7 +227,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 4);
+		assertEquals(form.getComponents().size(), 3);
 
 		// disable again, see if it breaks
 		jobLauncher.disableMPI();
@@ -235,7 +235,7 @@ public class JobLauncherTester {
 		form = (JobLauncherForm) jobLauncher.getForm();
 
 		// Should not have MPI - total number of components should be 3
-		assertEquals(form.getComponents().size(), 4);
+		assertEquals(form.getComponents().size(), 3);
 
 		// check OpenMP
 		// Just see if it crashes or not
