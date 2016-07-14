@@ -101,8 +101,7 @@ public class GeometryEditor extends Item {
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
 
-		geometryComp.setGeometry(
-				new ShapeController(new Shape(), new BasicView()));
+		geometryComp.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());

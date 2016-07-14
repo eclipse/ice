@@ -29,6 +29,7 @@ import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
+import org.eclipse.january.geometry.GeometryFactory;
 
 @XmlRootElement(name = "DemoModel")
 public class DemoModel extends Model {
@@ -71,8 +72,7 @@ public class DemoModel extends Model {
 		geomComp.setName("Geometry");
 		geomComp.setDescription("A geometry");
 		geomComp.setContext("demo-geometry");
-		geomComp.setGeometry(
-				new ShapeController(new Shape(), new BasicView()));
+		geomComp.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 
 		// Create a data component
 		DataComponent dataComp = new DataComponent();

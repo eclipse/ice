@@ -10,12 +10,12 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.modeling.factory,
  org.eclipse.eavp.viz.modeling.properties,
  org.eclipse.eavp.viz.service,
- org.eclipse.eavp.viz.service.geometry.reactor,
  org.eclipse.eavp.viz.service.javafx.geometry,
  org.eclipse.eavp.viz.service.javafx.geometry.datatypes,
  org.eclipse.eavp.viz.service.javafx.geometry.plant,
  org.eclipse.ice.datastructures.ICEObject,
  org.eclipse.ice.datastructures.componentVisitor,
+ org.eclipse.january.geometry,
  org.eclipse.swt.widgets,
  org.slf4j
 Service-Component: OSGI-INF/PlantIOFactory.xml

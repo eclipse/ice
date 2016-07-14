@@ -21,6 +21,8 @@ import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
 
 @XmlRootElement(name = "VisualizationCompleteModel")
 public class VisualizationCompleteModel extends Model {
@@ -127,8 +129,7 @@ public class VisualizationCompleteModel extends Model {
 		}
 
 		//Create the geometry component
-		ShapeController geometryRoot = new ShapeController(new
-		    Shape(), new BasicView());
+		Geometry geometryRoot = GeometryFactory.eINSTANCE.createGeometry();
 		GeometryComponent geometryComponent = new 
 		    GeometryComponent();
 		geometryComponent.setGeometry(geometryRoot);

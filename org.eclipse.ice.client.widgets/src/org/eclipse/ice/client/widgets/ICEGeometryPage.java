@@ -191,8 +191,8 @@ public class ICEGeometryPage extends ICEFormPage
 		// Get Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		service = factory.get("ICE Geometry Editor");
-		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
-				.findView(ShapeTreeView.ID)).setFactory(service.getControllerProviderFactory());
+		//((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
+		//		.findView(ShapeTreeView.ID)).setFactory(service.getControllerProviderFactory());
 		geometryComp.setService(service);
 
 		// Create and draw geometry canvas

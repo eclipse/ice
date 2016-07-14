@@ -19,15 +19,9 @@ import org.eclipse.eavp.viz.modeling.base.BasicMesh;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
-import org.eclipse.eavp.viz.service.geometry.reactor.HeatExchangerController;
-import org.eclipse.eavp.viz.service.geometry.reactor.JunctionController;
-import org.eclipse.eavp.viz.service.geometry.reactor.PipeController;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorController;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshCategory;
-import org.eclipse.eavp.viz.service.geometry.reactor.ReactorMeshProperty;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewControllerProviderFactory;
-import org.eclipse.eavp.viz.service.javafx.geometry.plant.FXPlantViewRootController;
 import org.eclipse.eavp.viz.service.javafx.geometry.plant.IPlantData;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
 
 /**
  * A class which interfaces between a PlantComposite and a tree of
@@ -49,7 +43,7 @@ public class FXPlantCompositeConverter
 	/**
 	 * The root of the tree of plant parts converted from the source.
 	 */
-	FXPlantViewRootController output;
+	Geometry output;
 
 	/**
 	 * The PlantComposite containing the RELAP7 representation of the plant's
@@ -76,7 +70,7 @@ public class FXPlantCompositeConverter
 	 * @return A JavaFX modeling data structure representation fo the plant.
 	 */
 	@Override
-	public BasicController getPlant() {
+	public Geometry getPlant() {
 
 		// If the output has not been initialized, create it
 		if (output == null) {
@@ -92,13 +86,12 @@ public class FXPlantCompositeConverter
 	private void refresh() {
 
 		// Create a new root
-		output = new FXPlantViewRootController(new BasicMesh(),
-				new BasicView());
+		output = GeometryFactory.eINSTANCE.createGeometry();
 
 		// Visit each plant component, converting it for the new data structure
 		FXPlantComponentVisitor visitor = new FXPlantComponentVisitor(output);
 		for (PlantComponent plantComp : source.getPlantComponents()) {
-			plantComp.accept(visitor);
+			 plantComp.accept(visitor);
 		}
 	}
 
@@ -107,12 +100,12 @@ public class FXPlantCompositeConverter
 		/**
 		 * The root of the tree of plant parts
 		 */
-		FXPlantViewRootController root;
+		Geometry root;
 
 		/**
 		 * The factory for constructing controllers and views for the meshs.
 		 */
-		FXPlantViewControllerProviderFactory factory;
+		//FXPlantViewControllerProviderFactory factory;
 
 		/**
 		 * The default constructor.
@@ -120,9 +113,9 @@ public class FXPlantCompositeConverter
 		 * @param root
 		 *            The root controller all visited objects will be added to.
 		 */
-		public FXPlantComponentVisitor(FXPlantViewRootController root) {
+		public FXPlantComponentVisitor(Geometry root) {
 			this.root = root;
-			factory = new FXPlantViewControllerProviderFactory();
+			//factory = new FXPlantViewControllerProviderFactory();
 		}
 
 		/**
@@ -136,7 +129,7 @@ public class FXPlantCompositeConverter
 		 *         null if no such pipe exists.
 		 */
 		private IController findPipe(Integer ID) {
-
+			/**
 			// Create a list of all pipes in the plant by combining the pipes
 			// with the core channels
 			List<IController> pipeList = root
@@ -172,7 +165,10 @@ public class FXPlantCompositeConverter
 			}
 
 			return null;
+		*/
+		return null;
 		}
+		
 
 		/**
 		 * Find an AbstractController which is under the Heat Exchangers
@@ -186,6 +182,7 @@ public class FXPlantCompositeConverter
 		 */
 		private IController findHeatExchanger(Integer ID) {
 
+			/**
 			// Check the root to see if a pipe with that id already exists
 			for (IController pipe : root.getEntitiesFromCategory(
 					ReactorMeshCategory.HEAT_EXCHANGERS)) {
@@ -209,9 +206,10 @@ public class FXPlantCompositeConverter
 					return pipe;
 				}
 			}
-
+		*/
 			return null;
 		}
+		/**
 
 		@Override
 		public void visit(PlantComposite plantComp) {
@@ -618,6 +616,8 @@ public class FXPlantCompositeConverter
 			// Redirect to the Junction function
 			visit((Junction) plantComp);
 		}
+		
+		*/
 
 		/**
 		 * Apply transformations to the target part so that it is in the
@@ -741,7 +741,7 @@ public class FXPlantCompositeConverter
 		 *            The pipe to be converted.
 		 * @return The converted pipe.
 		 */
-		public PipeController createPipe(Pipe plantComp) {
+		/**public PipeController createPipe(Pipe plantComp) {
 			// Create a new pipe
 			org.eclipse.eavp.viz.service.geometry.reactor.Pipe mesh = new org.eclipse.eavp.viz.service.geometry.reactor.Pipe();
 
@@ -766,7 +766,7 @@ public class FXPlantCompositeConverter
 			return pipe;
 		}
 
-	}
+	} */
 
 	/*
 	 * (non-Javadoc)
@@ -775,10 +775,210 @@ public class FXPlantCompositeConverter
 	 * IVizUpdateableListener#update(org.eclipse.eavp.viz.service.
 	 * datastructures. VizObject.IVizUpdateable)
 	 */
-	@Override
+	//@Override
 	public void update(IVizUpdateable component) {
 
 		// On receiving an update, refresh the data structure
 		refresh();
 	}
+
+		@Override
+		public void visit(PlantComposite plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(GeometricalComponent plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Junction plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Reactor plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(PointKinetics plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(HeatExchanger plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Pipe plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(CoreChannel plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Subchannel plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(PipeWithHeatStructure plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Branch plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(SubchannelBranch plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(VolumeBranch plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(FlowJunction plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(WetWell plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Boundary plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(OneInOneOutJunction plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Turbine plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(IdealPump plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Pump plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Valve plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(PipeToPipeJunction plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Inlet plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(MassFlowInlet plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(SpecifiedDensityAndVelocityInlet plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(Outlet plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(SolidWall plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(TDM plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(TimeDependentJunction plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(TimeDependentVolume plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(DownComer plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void visit(SeparatorDryer plantComp) {
+			// TODO Auto-generated method stub
+			
+		}
+}
+
+	@Override
+	public void update(IVizUpdateable component) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

@@ -40,6 +40,7 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
+import org.eclipse.january.geometry.GeometryFactory;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {
@@ -194,12 +195,8 @@ public class TableComponentTester extends Item {
 
 		// ===========================================================================Try
 		// making geometry page
-		Shape geometryModel = new Shape();
-		BasicView geometryView = new BasicView();
-		ShapeController geometryShape = new ShapeController(geometryModel,
-				geometryView);
 		GeometryComponent geometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(geometryShape);
+		geometryComponent.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 		geometryComponent.setId(108);
 		geometryComponent.setName("ICE Geometry Editor");
 		geometryComponent.setDescription("Create or edit a geometry in 3D.");

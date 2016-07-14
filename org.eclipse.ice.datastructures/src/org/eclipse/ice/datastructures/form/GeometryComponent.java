@@ -23,16 +23,13 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.eavp.viz.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.eavp.viz.datastructures.VizObject.SubscriptionType;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.Shape;
-import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
 import org.eclipse.eavp.viz.service.IVizService;
-import org.eclipse.eavp.viz.service.geometry.persistence.PersistableShape;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.january.geometry.Geometry;
 
 /**
  * <p>
@@ -50,8 +47,8 @@ public class GeometryComponent extends ICEObject
 	/**
 	 * The component's geometry in a temporary compresed form.
 	 */
-	@XmlTransient
-	private PersistableShape compressedGeometry;
+	//@XmlTransient
+	//private PersistableShape compressedGeometry;
 
 	/**
 	 * <p>
@@ -66,7 +63,7 @@ public class GeometryComponent extends ICEObject
 	 * The Geometry managed by the GeometryComponent
 	 */
 	@XmlTransient
-	private ShapeController geometry;
+	private Geometry geometry;
 
 	/**
 	 * The service being used to render this component.
@@ -143,7 +140,7 @@ public class GeometryComponent extends ICEObject
 	 * 
 	 * @return The held Geometry
 	 */
-	public ShapeController getGeometry() {
+	public Geometry getGeometry() {
 		return geometry;
 	}
 
@@ -153,10 +150,10 @@ public class GeometryComponent extends ICEObject
 	 * 
 	 * @return A PersistableShape representing the component's CSG tree
 	 */
-	@XmlElement(name = "Geometry")
-	private PersistableShape getPersistableGeometry() {
-		return PersistableShape.compress((Shape) geometry.getModel());
-	}
+	//@XmlElement(name = "Geometry")
+	//private PersistableShape getPersistableGeometry() {
+	//	return PersistableShape.compress((Shape) geometry.getModel());
+	//}
 
 	/**
 	 * Mutator method for the held geometry
@@ -164,14 +161,14 @@ public class GeometryComponent extends ICEObject
 	 * @param newGeometry
 	 *            the new Geometry to hold
 	 */
-	public void setGeometry(ShapeController newGeometry) {
+	public void setGeometry(Geometry newGeometry) {
 		geometry = newGeometry;
 
 		// Set the shape as being the root node for the scene
-		geometry.setProperty(MeshProperty.ROOT, "True");
+		//geometry.setProperty(MeshProperty.ROOT, "True");
 
 		// Register self as a listener for the geometry
-		geometry.register(this);
+		//geometry.register(this);
 
 		// Notify listeners
 		notifyListeners();
@@ -185,9 +182,9 @@ public class GeometryComponent extends ICEObject
 	 *            The compressed root of the CSG tree to be displayed by this
 	 *            component.
 	 */
-	private void setPersistableGeometry(PersistableShape root) {
-		compressedGeometry = root;
-	}
+	//private void setPersistableGeometry(PersistableShape root) {
+	//	compressedGeometry = root;
+	//}
 
 	/**
 	 * Set the IVizService that will be used to visualize this component.
@@ -199,21 +196,21 @@ public class GeometryComponent extends ICEObject
 		this.service = service;
 
 		// If a geometry was read from the xml, expand it
-		if (compressedGeometry != null) {
+		//if (compressedGeometry != null) {
 
 			// Unregister from the old geometry
-			if (geometry != null) {
-				geometry.unregister(this);
-			}
+			//if (geometry != null) {
+			//	geometry.unregister(this);
+			//}
 
 			// Set the component's contents to a full version of the geometry
-			geometry = compressedGeometry.unpack(service.getControllerProviderFactory());
-			geometry.register(this);
+			//geometry = compressedGeometry.unpack(service.getControllerProviderFactory());
+			//geometry.register(this);
 
 			// The full geometry is now in memory, so delete the compressed
 			// version
-			compressedGeometry = null;
-		}
+			//compressedGeometry = null;
+		//}
 	}
 
 	/**
@@ -303,9 +300,9 @@ public class GeometryComponent extends ICEObject
 		super.copy(iceObject);
 
 		// Copy shapes list
-		ShapeController otherGeometry = iceObject.getGeometry();
+		Geometry otherGeometry = iceObject.getGeometry();
 		if (otherGeometry != null) {
-			this.setGeometry((ShapeController) otherGeometry.clone());
+			this.setGeometry((Geometry) otherGeometry.clone());
 		} else {
 			geometry = null;
 		}
