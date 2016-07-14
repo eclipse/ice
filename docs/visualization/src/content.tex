@@ -1,3 +1,5 @@
+\section{Visualization Tools}
+
 Currently, ICE features two plugins for visualizing and plotting simulation
 output data:
 
@@ -6,8 +8,6 @@ defined on 2D and 3D meshes.
 
 \textbf{CSV Plotting Tools} - A customizable, 2D data plotting utility for data
 in CSV format.
-
-\section{Installation and Configuration}
 
 The CSV Plotting Tools require no additional software or preparation before use.
 The VisIt Tools need both a VisIt installation and a connection between ICE and
@@ -25,7 +25,7 @@ where ICE is installed since ICE is capable of launching a VisIt session on a
 remote machine. Regardless of the host, make note of the directory where VisIt 
 is installed as it will be necessary in the next step.
 
-\subsection{Configuring the VisIt Connection}
+\subsubsection{Configuring the VisIt Connection}
 
 Once VisIt is installed, ICE must connect to a running instance of VisIt in
 order to make use of its rendering capabilities. ICE provides two different
@@ -132,11 +132,9 @@ The VisIt installation can support up to 16 unique window IDs at a time.
 Once the required fields are complete, click the Finish button at the bottom,
 and ICE should begin connecting to VisIt.
 
-\section{VisIt}
+\section{Using VisIt}
 
-\subsection{Opening a VisIt File}
-
-\subsubsection{Opening a Plot Editor} 
+\subsection{Opening a Plot Editor} 
 
 To open a Plot Editor, a file that uses this editor must first be placed in the
 Project Explorer. This view lists files imported into ICE. To access the Project
@@ -161,7 +159,7 @@ be imported into, as shown below.
 Once a file is in the Project Explorer, simply double click on it to open it in
 VisIt.
 
-\subsubsection{Opening in the Visualization Perspective}
+\subsection{Opening a file in the Visualization Perspective}
 
 \begin{center}
 \includegraphics[width=12cm]{images/VisualizationPerspectiveOverview}
@@ -200,14 +198,12 @@ placed in the VisIt Plot Viewer.
 Finally, double click a plot in the VisIt Plot Viewer to render the data to the
 screen.
 
-\subsection{Using VisIt}
-
 Both the Plot Editor and the Visualization Perspective allow the user to rotate
 the model by clicking and dragging inside the display area or adjust the zoom by
 scrolling the mouse wheel. Other commands vary slightly between the two
 utilities.
 
-\subsubsection{Selecting the Plot}
+\subsection{Selecting the Plot}
 
 In the Plot Editor, pressing the Select Series\ldots button will open a dialog
 which lists the various plots in the opened file. Simply select one and click OK
@@ -220,7 +216,7 @@ to open it.
 In the Visualization Perspective, the opened plots will be listed in the VisIt
 Plot Viewer. Double click on one to open it.
 
-\subsubsection{Setting the Plot Representation}
+\subsection{Setting the Plot Representation}
 
 VisIt is capable of displaying plots in several different representations, such
 as pseudocolor, contour, or volume.
@@ -236,7 +232,7 @@ Plot Viewer which allows for switching between the available representations.
 \includegraphics[width=12cm]{images/VisItRepresentationDropDown}
 \end{center}
 
-\subsubsection{Animation and Time Data}
+\subsection{Animation and Time Data}
 
 The Plot Editor features a time slider widget at the bottom of the screen. 
 
@@ -285,7 +281,7 @@ sequentially.
 
 5) Advance to the next time step. 
 
-\subsubsection{Sending VisIt Python Commands}
+\subsection{Sending VisIt Python Commands}
 
 This functionality is only available in the Visualization Perspective.
 
@@ -307,7 +303,7 @@ refer to the
 Interface Manual} provided by the VisIt development team at Lawrence Livermore
 National Laboratory for information on Python commands for VisIt.
 
-\section{CSV Plot Viewer}
+\section{Using the CSV Plot Viewer}
 
 ICE offers functionality for the viewing of CSV files. 
 
@@ -380,7 +376,7 @@ At the bottom of the editor is a series of tabs.
 The Plot tab contains the graph described thus far. The Data tab will display
 the raw numerical source data in a text editor. 
 
-\section{MOOSE Embedded Visualization}
+\section{Using the MOOSE Embedded Visualization}
 
 MOOSE Workflow Items allow for easy visualization of their associated files,
 making use of the VisIt and CSV Plot Editors described previously.
