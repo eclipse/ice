@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.product" id="org.eclipse.ice.client.rcp.product" application="org.eclipse.ui.ide.workbench" version="2.1.8.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.runtime.product" id="org.eclipse.ice.client.rcp.runtime_product" application="org.eclipse.ui.ide.workbench" version="2.1.8.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-product org.eclipse.ice.client.rcp.product --launcher.defaultAction openFile --launcher.appendVmargs
+      <programArgs>-product org.eclipse.ice.client.rcp.runtime_product --launcher.defaultAction openFile --launcher.appendVmarg_
       </programArgs>
       <programArgsLin>--launcher.GTK_version 2
       </programArgsLin>
@@ -30,7 +30,7 @@
       startupMessageRect="7,485,665,20"
       startupForegroundColor="4A95FF" />
    <launcher name="ICE">
-      <macosx icon="/icons/ice_logo.icns"/>
+      <macosx icon="/icons/ice_logo_runtime.icns"/>
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -251,9 +251,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    </configurations>
 
    <repositories>
-      <repository location="http://download.eclipse.org/eavp/builds/next/" enabled="true" />
-      <repository location="http://download.eclipse.org/ice/builds/next/" enabled="true" />
-      <repository location="http://download.eclipse.org/releases/neon/" enabled="true" />
       <repository location="http://download.eclipse.org/eavp/builds/next/" enabled="true" />
       <repository location="http://download.eclipse.org/ice/builds/next/" enabled="true" />
       <repository location="http://download.eclipse.org/releases/neon/" enabled="true" />
