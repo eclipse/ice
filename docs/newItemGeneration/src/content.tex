@@ -1,4 +1,4 @@
-\section*{Overview} 
+\section{Overview} 
 
 This tutorial will teach you how to
 create your own ICE Items via the built in tools within ICE.  To demonstrate
@@ -14,7 +14,7 @@ provided Docker image. Before we begin, ensure that you have ICE cloned
 Repository) into your workspace.
 
 
-\section*{Creating a New ICE Item Plugin Project}
+\section{Creating the Project}
 
 \begin{figure}[h]
 \centering
@@ -60,9 +60,9 @@ each containing two Java classes:
 To add functionality to the project we need to edit
 the \texttt{FernLauncher} and \texttt{FernModel} classes.
 
-\section*{Adding Functionality to the New Items}
+\section{Adding Functionality to the New Items}
 
-\subsection*{The Fern Model}
+\subsection{The Fern Model}
 
 The \texttt{FernModel} will be responsible for creating and
 validating input parameters for FERN, in the form of a new FERN input file.  In
@@ -243,7 +243,7 @@ Now we have a Form constructed for a typical FERN execution.
 The default generated implementation of the process method is sufficient to be
 able to create new Fern INI input files. 
 
-\subsection*{Fern Launcher}
+\subsection{Fern Launcher}
 The Fern Launcher handles the actual execution of the FERN application. The
 generator creates the FernLauncher as a subclass of ICE's JobLauncher, which
 provides a large array of features and functionality. As a subclass of
@@ -279,7 +279,7 @@ The generator has taken care of everything else for us.
 We are now ready to launch ICE with our Fern plugin, and use the Fern Items we
 have just created.
 
-\section*{Using the New Fern Items}
+\section{Using the New Fern Items}
 Now, using these new Items is easy. From the Developer top-level menu, select 
 ICE $>$ Launch New Instance. This will display a dialog asking you which new
 plugins you'd like to include as part of the new ICE instance. 
