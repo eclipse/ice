@@ -28,7 +28,7 @@ package. Its location can be seen in figure \ref{fig:demostructure}.
 
 First, copy and paste the following example code into the end of your Item's
 setupForm() method. You can also find this code in
-EXSEDEVisualizationModel's setupForm() method, but be sure to note the
+XSEDEVisualizationModel's setupForm() method, but be sure to note the
 comments specifying where to begin and end copying. 
 
 \begin{verbatim}
@@ -101,9 +101,9 @@ file in your project's META-INF folder, switch to the \texttt{Dependencies} tab,
 and click the \texttt{Add} button under the \texttt{Imported Packages} section,
 both highlightted in figure \ref{fig:manifest}. Select
 \texttt{org.eclipse.eavp.viz.datastructures}, press \texttt{OK}, and save the
-file. You can then return to your model file, hover over each of the errors
-until a menu pops up, and select the option to add a package to the imported packages, as seen in figure
-\ref{fig:hover}. Save the file when the hover menu no longer appears over
+file. You can then return to your model file, hover over the underlined code
+for each of the errors until a menu pops up, and select the option to add a
+package to the imported packages, as seen in figure \ref{fig:hover}. Save the file when the hover menu no longer appears over
 errors.
 
 \begin{figure}[!h]
@@ -122,7 +122,8 @@ errors.
 
 This code will add a Resource Component, Geometry Component, and Mesh Component
 to your Item and load tire.silo into the Resource Component. When done, launch
-ICE again using the modified product file generated during the FERN section.
+ICE again, using \texttt{Developer} $rightarrow$ \texttt{ICE} $rightarrow$
+\texttt{Launch New Instance}.
 
 \section{Using the Resource Component}
 
@@ -174,10 +175,10 @@ username\textbackslash AppData\textbackslash Local\textbackslash
 Programs\textbackslash LLNL\textbackslash VisIt 2.9.2.}
 
 On \texttt{Linux}, the path will be based on where you extracted the 
-visit2\_9\_2.linux-x86 folder, ending with /visit2\_9\_2.linux-x86\_64/bin. If
+visit2\_9\_2.linux-x86 folder, ending with /visit2\_9\_2.linux-x86\_64. If
 you unzipped it to the desktop, it will be:
  
-\texttt{/home/username/Desktop/visit2\_9\_2.linux-x86\_64/bin}
+\texttt{/home/username/Desktop/visit2\_9\_2.linux-x86\_64}
 
 On \texttt{Mac OS}, the path will be based on the location you put the Visit
 application. If placed in the Applications folder it will be
@@ -199,11 +200,11 @@ Explorer} and press the import button, highlighted below.
 \label{fig:importbutton}
 \end{figure}
 
-Select the files you want to visualize and click OK. For the tutorial, these
-should be the fib8.csv and tire.silo files from the USB drive's Data directory.
-You should now see the two files within the itemDB folder.
+Select the files you want to visualize and click OK. For the tutorial,
+this should be the tire.silo file from the Fern synchronized project directory.
+You should now see the file within the itemDB folder.
 
-Then select \texttt{File} $\rightarrow$ \texttt{New} $\rightarrow$
+Select \texttt{File} $\rightarrow$ \texttt{New} $\rightarrow$
 \texttt{Other\ldots} from the toolbar.
 In the new dialog, select the \texttt{Create Item Wizard} and hit \texttt{Next}.
 Then select \texttt{Visualization Model} and press \texttt{Finish}. You can also select the
@@ -249,7 +250,7 @@ Switch to the \texttt{Resource Component} tab in your Item and to the
 \label{fig:resourcestab}
 \end{figure}
 
-Double click on the file named tire.silo to load them into the Resource
+Double click on the file named tire.silo to load it into the Resource
 Component.
 
 At the top left of the \texttt{Visualization Model} will be controls for the
