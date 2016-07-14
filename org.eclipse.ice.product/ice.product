@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-product org.eclipse.ice.client.rcp.product --launcher.defaultAction openFile --launcher.appendVmargs -data @noDefault
+      <programArgs>-product org.eclipse.ice.client.rcp.product --launcher.defaultAction openFile --launcher.appendVmargs
       </programArgs>
       <programArgsLin>--launcher.GTK_version 2
       </programArgsLin>
