@@ -12,13 +12,8 @@
 package org.eclipse.ice.developer.actions;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -49,7 +44,6 @@ import org.eclipse.egit.ui.internal.clone.ProjectUtils;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.URIish;
-import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PartInitException;

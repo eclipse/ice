@@ -1,41 +1,15 @@
-\chapter{EASE Scripting}
-
+\section{Scripting with EASE}
 In addition to interacting with tools via the ICE user interface, ICE also
 provides a scripting framework based on the Eclipse Advanced Scripting
 Environment (EASE). 
 
-\section{Installation and Configuration}
-
-Although EASE is pre-installed in the ICE application, there are a few
-additional components that need to be installed in order to provide a Python
-scripting engine.
-
-\subsection{EASE Jython Installation} 
-
-The first step is to install the EASE Jython engine. This can be done via the
-official EASE
-repository\footnote{\texttt{https://dl.bintray.com/pontesegger/ease-jython}}
-using the Eclipse Update Manager, but is more simply achieved using the Install EASE Components menu.
-
-To installed the Jython engine, select \texttt{Help $\rightarrow$ Install
-EASE Components} from the ICE menu bar. Check the box next to the EASE Jython
-Integration entry as shown in figure \ref{fig:jython} and click Finish. Follow
-the prompts to install the component, and restart Eclipse when asked.
-
-\begin{figure}[!hb]
-\centering
-\includegraphics[width=7cm]{images/ease-marketplace}
-\caption{Installing the Jython Engine}
-\label{fig:jython}
-\end{figure}
-
 \subsection{PyDev Installation (optional)} 
 
-It is possible to edit Python scripts in Eclipse using the default text editor,
+Although it is possible to edit Python scripts in Eclipse using the default text editor,
 however it is much more productive to use the PyDev Eclipse development
-environment. In addition to the usual syntax coloring and other advanced editing
-features you'd expect in Eclipse, PyDev also provides the ability to run and
-debug Python programs from within the Eclipse environment.
+environment if you are planning to do a lot of script development. In addition to the 
+usual syntax coloring and other advanced editing features you'd expect in Eclipse, 
+PyDev also provides the ability to run and debug Python programs from within the Eclipse environment.
 
 PyDev can be easily installed from using the Eclipse Marketplace client as
 follows. From the ICE menu bar, select \texttt{Help $\rightarrow$ Eclipse
@@ -82,7 +56,7 @@ you could just as easily create a new one. To configure the projects, select the
 \ref{fig:prefs1}. You can then use the \texttt{Add Workspace\ldots} button to
 select one or more projects from the workspace.
 
-By default, EASE is configured to use the javascript (Rhino) engine.
+By default, EASE is configured to use the JavaScript (Rhino) engine.
 Since this tutorial assumes that the preferred environment is Python, we recommend changing
 this default. To set the script engine default, select the
 \texttt{Shell} preference item. Next, select \texttt{Python (Jython)} from
@@ -96,7 +70,7 @@ then click on \texttt{OK}.
 \label{fig:prefs2}
 \end{figure}
 
-\section{Creating and Running Scripts}
+\subsection{Creating and Running Scripts}
 
 There is nothing special about creating and running EASE scripts. They can be
 created in a variety of ways using the development tools available in ICE, and
@@ -221,7 +195,7 @@ to the script:
 {\small
 \begin{verbatim}
 # popup				   : enableFor(org.eclipse.core.resources.IResource) 
-# image				   : platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/configs.gif
+# image				   : platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/configs.png
 \end{verbatim}
 }
 
@@ -232,15 +206,17 @@ to the script:
 \label{fig:myscript}
 \end{figure}
 
-\section{Interacting with ICE}
+\subsection{Interacting with ICE}
 
-In order to interact with Java classes from the Python script, we 
+In order to interact with Java classes in ICE from the Python script, we 
 need to include the \texttt{Platform} module. In order to load a module, we use
 the \texttt{loadModule()} function in Python. The argument to this function is a
 string representation of the module path, which in this case will be
 \texttt{/System/Platform}. 
 
-Enter the following command as the first line of the script file:
+In the \texttt{Modules Explorer} view, open the \texttt{System} folder, then drag
+the \texttt{Platform} item onto first line of the script file. This should insert
+the following line into your script:
 
 \lstset{basicstyle=\ttfamily\small, breaklines}
 
@@ -303,7 +279,7 @@ Before running this script, you need to copy the \texttt{waveVector\_space.csv}
 file from the \texttt{default} folder to the \texttt{itemDB} folder. You should
 then be able to run the script successfully.
 
-\section{Using the Sample Scripts}
+\subsection{Using the Sample Scripts}
 
 \lstset{basicstyle=\ttfamily\scriptsize, breaklines}
 \makeatletter
