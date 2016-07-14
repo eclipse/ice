@@ -178,6 +178,8 @@ public class FernModel extends Model {
 		popFile.setDescription("The name of the output populations file");
 		popFile.setDefaultValue("popFile.csv");
 		    
+		outputComp.addEntry(popFile);
+		
 		// Add the components to the Form
 		form.addComponent(networkComp);
 		form.addComponent(initConditionsComp);
