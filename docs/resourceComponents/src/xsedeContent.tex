@@ -6,53 +6,30 @@ visualization of data.
 
 \section{Prerequisites}
 
-This tutorial assumes you will be making use of the sample classes in the
-org.eclipse.ice.demo.visualization package for convenience. The two relevant
-classes are VisualizationModel and VisualizationModelComplete. The former is an
-example of a bare bones ICE Item, while the latter is the same class with all
-the extra code required for the visualization components already added in.
-
-If you are writing your own extension of ICE's Item class, then the same
-principles can be used to add these components to it. See the New Item
-Generation Tutorial, in the docs/newItemGeneration/ folder of the ICE repo for
-details on how to create an Item.
-
-You will also need access to an installation of VisIt version $2.9.2$. If
-not already installed, there is a copy of the software in the VisIt folder of
-your USB drive. Windows users should open the Windows installer, while users of
+You will need access to an installation of VisIt version $2.9.2$. If
+not using the already installed version on Gordon, there is a copy of the
+software in the VisIt folder of your USB drive. Windows users should open the Windows installer, while users of
 other OSs can just copy the appropriate folder onto their machine.
 
 \section{Adding the Components}
 
-First, open the Item file by double clicking it in the \texttt{Package
-Explorer}. For the tutorial, this will be VisualizationModel.java in the
-org.eclipse.ice.demo. visualization.model package. Its location can be seen in
-figure \ref{fig:demostructure}.
+We will be adding the visualization components to the model made in the
+previous section, so return to your original ICE window, closing the launched
+instance. For convienence, you can copy and paste the code from the
+XSEDEVisualizationeModel.java in the org.eclipse.ice.demo.visualization.model
+package. Its location can be seen in figure \ref{fig:demostructure}.
 
 \begin{figure}[!h]
-\includegraphics[width=\textwidth]{images/DemoPackageStructure}
+\includegraphics[width=\textwidth]{images/XSEDEDemoPackageStructure}
 \centering
 \caption{The package structure for org.eclipe.ice.demo bundle}
 \label{fig:demostructure}
 \end{figure}
 
-First, add the neccesary imports for the components being added to your Item. 
-
-\begin{verbatim}
-import java.io.IOException;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.resource.VizResource;
-\end{verbatim}
-
-Next, copy and paste the following example code into the end of your Item's
-setupForm() method.
+First, copy and paste the following example code into the end of your Item's
+setupForm() method. You can also find this code in
+EXSEDEVisualizationModel's setupForm() method, but be sure to note the
+comments specifying where to begin and end copying. 
 
 \begin{verbatim}
 //Create the resource component
@@ -119,19 +96,33 @@ form.addComponent(meshComponent);
 form.setContext("visualization");
 \end{verbatim} 
 
+This will cause errors in your file. To resolve them, first open the MANIFEST.MF
+file in your project's META-INF folder, switch to the \texttt{Dependencies} tab,
+and click the \texttt{Add} button under the \texttt{Imported Packages} section,
+both highlightted in figure \ref{fig:manifest}. Select
+\texttt{org.eclipse.eavp.viz.datastructures}, press \texttt{OK}, and save the
+file. You can then return to your model file, hover over each of the errors
+until a menu pops up, and select the option to add a package to the imported packages, as seen in figure
+\ref{fig:hover}. Save the file when the hover menu no longer appears over
+errors.
+
+\begin{figure}[!h]
+\includegraphics[width=\textwidth]{images/ManifestDependencies}
+\centering
+\caption{The Manifest dependencies view}
+\label{fig:manifest}
+\end{figure}
+
+\begin{figure}[!h]
+\includegraphics[width=\textwidth]{images/ErrorHoverMenu}
+\centering
+\caption{The menu displayed when hovering the mouse over code with an error.}
+\label{fig:hover}
+\end{figure}
+
 This code will add a Resource Component, Geometry Component, and Mesh Component
-to your Item and load fib8.csv and tire.silo into the Resource Component.
-
-You will also need to add the org.eclipse.ice.demo bundle to your operating
-system's run configuration, as explained in the new item generation tutorial
-(found in docs/newItemGeneration in the ICE repo). 
-
-You can compare your code to the XSEDEVisualizationModel.java file, which has
-a working version of the Item with the tutorial code put in. 
-
-When done, launch ICE. If you have never launched ICE before, go to the
-org.eclipse.ice.product bundle, right click the .launch file for your operating
-system, and select the first option under the \texttt{Run as\ldots} submenu.
+to your Item and load tire.silo into the Resource Component. When done, launch
+ICE again using the modified product file generated during the FERN section.
 
 \section{Using the Resource Component}
 
@@ -258,7 +249,8 @@ Switch to the \texttt{Resource Component} tab in your Item and to the
 \label{fig:resourcestab}
 \end{figure}
 
-Double click on both the file names to load them into the Resource Component.
+Double click on the file named tire.silo to load them into the Resource
+Component.
 
 At the top left of the \texttt{Visualization Model} will be controls for the
 component's layout.
@@ -312,20 +304,6 @@ plot does not have time series data, they will be greyed out.
 
 The plot can be set to display an arbitrary time step by either dragging the
 slider or by typing a time into the box to its left.
-
-\subsection{Interacting with CSV Plots}
-
-\begin{figure}[!h]
-\includegraphics[width=12cm]{images/CSVGraph}
-\centering
-\caption{An example of a CSV file. The Y axis is displayed on a logarithmic
-scale.}
-\label{fig:CSVGraph}
-\end{figure}
-
-The top of the CSV plot has a row of buttons which control various aspects of
-the graph's presentation. Right clicking will open a context menu allowing you
-to choose which of the available series to plot.
 
 \subsection{Editing 3D Structures}
 

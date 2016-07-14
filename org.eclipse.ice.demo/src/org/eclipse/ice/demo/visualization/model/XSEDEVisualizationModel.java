@@ -22,7 +22,7 @@ import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
 
 @XmlRootElement(name = "VisualizationCompleteModel")
-public class VisualizationCompleteModel extends Model {
+public class XSEDEVisualizationModel extends Model {
 
 	// TODO: 
 	//   These need to be filled in before using this item
@@ -40,7 +40,7 @@ public class VisualizationCompleteModel extends Model {
     /**
      * The Constructor
      */
-	public VisualizationCompleteModel() {
+	public XSEDEVisualizationModel() {
 		this(null);
 	}
 
@@ -49,7 +49,7 @@ public class VisualizationCompleteModel extends Model {
 	 * 
 	 * @param project The project space this Item will be in.
 	 */
-	public VisualizationCompleteModel(IProject project) {
+	public XSEDEVisualizationModel(IProject project) {
 		super(project);
 	}
 
@@ -95,26 +95,15 @@ public class VisualizationCompleteModel extends Model {
 		resourceComponent.setId(1);
 
 		//Declare the files and resources
-		VizResource csvResource = null;
 		VizResource visItResource = null;
-		IFile csvFile = null;
 		IFile visItFile = null;
 
 
-		//If the file was found, create the CSV resource and add it to the component
+		//If the file was found, create the resource and add it to the component
 		try{
 			
 			//Open the files
-			csvFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB").getFile("fib8.csv");
 			visItFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB").getFile("tire.silo");
-			
-			//If the file was found, create the CSV resource and add it to the component.
-			if(csvFile.exists()){
-				csvResource = new 
-		                    VizResource(csvFile.getLocation()
-		                    .toFile());
-		    	resourceComponent.addResource(csvResource);
-			}
 				        
 			//If the file was found, create the VisIt resource and add it to 
 			//the component
