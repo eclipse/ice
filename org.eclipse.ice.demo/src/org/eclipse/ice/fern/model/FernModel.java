@@ -131,7 +131,7 @@ public class FernModel extends Model {
 		
 		// Create the initial conditions section
 		DataComponent initConditionsComp = new DataComponent();
-		initConditionsComp.setName("Initial Conditions");
+		initConditionsComp.setName("initialConditions");
 		initConditionsComp.setId(2);
 		initConditionsComp
 				.setDescription("The parameters " + "needed to describe the initial " + "conditions for the problem");
@@ -168,10 +168,21 @@ public class FernModel extends Model {
 		initConditionsComp.addEntry(initialTimeStep);
 		initConditionsComp.addEntry(density);
 
+		DataComponent outputComp = new DataComponent();
+		outputComp.setName("output");
+		outputComp.setDescription("The parameters needed to output data.");
+		outputComp.setId(3);
+
+		StringEntry popFile = new StringEntry();
+		popFile.setName("popFile");
+		popFile.setDescription("The name of the output populations file");
+		popFile.setDefaultValue("popFile.csv");
+		    
 		// Add the components to the Form
 		form.addComponent(networkComp);
 		form.addComponent(initConditionsComp);
-		
+	    form.addComponent(outputComp);
+
 		// Set the Form ID info
 		form.setName(getName());
 		form.setDescription(getDescription());

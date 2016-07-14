@@ -146,7 +146,7 @@ public class JobLauncherForm extends Form {
 						+ "used by this Job.");
 		fileComponent.setName("Input File(s)");
 
-		DataComponent dockerComponent = new DataComponent();
+/*		DataComponent dockerComponent = new DataComponent();
 		dockerComponent.setName("Docker Configuration");
 		dockerComponent.setDescription(
 				"This section enables the use of docker for this Job Launch.");
@@ -222,10 +222,10 @@ public class JobLauncherForm extends Form {
 		// Register the list of images as a listener
 		// of the docker launch entry.
 		dockerLaunch.register(imagesList);
-
+*/
 		// Add the data components
 		addComponent(fileComponent);
-		addComponent(dockerComponent);
+//		addComponent(dockerComponent);
 
 		// Create a ResourceComponent
 		ResourceComponent outputData = new ResourceComponent();
