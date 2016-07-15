@@ -21,9 +21,9 @@ plugins.
 
 \subsection{Importing a Project}
 
-This section will show you how to import an existing application project into
-ICE so that you can use it with the dashboard you have just created. The steps
-are as follows:
+This section will show you how to import existing FERN application source code
+and executables into the ICE instance so that you can use it with the dashboard you
+have just created. The steps are as follows:
 
 \begin{enumerate}
 \item With a new ICE instance open, close the Welcome view if necessary
@@ -37,7 +37,7 @@ $\rightarrow$ Synchronized C/C++ Project}
 \item Click the \texttt{New\ldots} button next to the \texttt{Please select a
 connection} dropdown
 
-\begin{center} \includegraphics[width=300]{figures/newConnectionDialog}
+\begin{center} \includegraphics[width=200]{figures/newConnectionDialog}
 \end{center}
 
 \item Enter \texttt{gordon} for the \texttt{Connection name}
@@ -47,8 +47,17 @@ connection} dropdown
 \item Enter the training account password
 \item Click \texttt{Finish}
 \item Click on the \texttt{Browse\ldots} button
+
+\begin{center} \includegraphics[width=150]{figures/dirBrowser}
+\end{center}
+
 \item Select \texttt{fern} from the directory browser and press \texttt{OK}
-\item Under \texttt{Makefile project} choose \texttt{Empty Project}
+
+\begin{center} \includegraphics[width=\textwidth]{figures/projectType}
+\end{center}
+
+\item From the \texttt{Project type} section, open \texttt{Makefile project} and
+choose \texttt{Empty Project}
 \item Click \texttt{Finish}
 \end{enumerate}
 
@@ -59,7 +68,7 @@ and when you open the project you will see it contains a variety of files.
 \subsection{Building a Project (Optional)}
 
 We have provided a pre-built executable in the \texttt{build} subdirectory for
-the purposes of this tutorial. However if you wish to build Fern yourself, you
+the purposes of this tutorial. However if you wish to build FERN yourself, you
 can proceed as follows:
 
 \begin{enumerate}
@@ -74,8 +83,8 @@ can proceed as follows:
 
 To use ICE to create an input file, you first need to instantiate the
 \texttt{FernModel} you created previously. To do this, right click on the
-\texttt{fern} project (the location you want the files to be located), then
-choose \texttt{New $\rightarrow$ Other},  select the
+\texttt{fern} project (the project in which you want the input file to be
+located), then choose \texttt{New $\rightarrow$ Other},  select the
 \texttt{Create Item Wizard}, then click on \texttt{Next>}.
 \begin{center} \includegraphics[width=\textwidth]{figures/creatingFernModelItem}
 \end{center}
@@ -93,7 +102,7 @@ the fern\_output.ini file, as shown below.
 
 \subsection{Creating a Local Launcher}
 
-Now you can similarly create a new Fern Launcher. Note that as Fern is not
+Now you can similarly create a new FERN launcher. Note that as FERN is not
 installed locally, we will not acutally launch the program using this method.
 
 After creating the Launcher,
@@ -103,9 +112,9 @@ you should see a view like below.
 To configure a launch, simply set the correct
 input file, along with its dependent network and rate files. 
 
-At this point, if you had Fern built on your local machine, or if you had it
+At this point, if you had FERN built on your local machine, or if you had it
 built on some remote host, you could configure that in the Hosts table. ICE
-would then execute Fern based on that input. 
+would then execute FERN based on that input. 
 
 After the execution you should see the results in the Console, as shown below.
 \begin{center} \includegraphics[width=\textwidth]{figures/launcherResult}
@@ -115,7 +124,8 @@ can double-click that file to view them graphically in the ICE Plot Editor.
 
 \subsection{Creating a Remote Launcher}
 
-Launching Fern remotely will involve creating a Parallel launch configuration.
+Launching FERN remotely involves creating a \textit{Parallel launch
+configuration}.
 This procedure is not yet integrated with the ICE launcher, but will be
 available in the next release of ICE.
 
@@ -133,15 +143,27 @@ A Parallel launch configuration for your application is created as follows:
   remote system (optionally check the box to not ask again)
   \item After a few seconds, you should see the job submission form
   \item Select \texttt{normal} for the queue
+  
+  \begin{center} \includegraphics[width=\textwidth]{figures/runConfiguration}
+  \end{center}
+  
   \item Switch to the \texttt{Application} tab
   \item If the project field doesn't contain anything, click \texttt{Browse} and
   choose the \texttt{fern} project
   \item Click \texttt{Browse} next to the \texttt{Application program} field,
   open the \texttt{build} directory, select \texttt{fern-exec}, then click
   \texttt{OK}
+  
+  \begin{center} \includegraphics[width=300]{figures/applicationTab}
+  \end{center}
+  
   \item Switch to the \texttt{Arguments} tab and enter the name of the
   outputfile you chose in the \texttt{FernModel} file
   \item Uncheck \texttt{Use default working directory}
+  
+  \begin{center} \includegraphics[width=300]{figures/argumentsTab}
+  \end{center}
+  
   \item Click \texttt{Run} to submit the job 
 \end{enumerate}
 
@@ -149,11 +171,22 @@ During the job submission, you will be asked if you would like to switch to the
 \texttt{System Monitoring} perspecive. Click \texttt{Yes} to see this feature.
 The image belows shows a typical instance of this perspective in action.
 
+\begin{center} \includegraphics[width=\textwidth]{figures/sysMon}
+\end{center}
+
 Click on the \texttt{Inactive Jobs} view and scroll to the bottom. You should
 see a job from your username that is either submitted or completed. When the job
 is completed, you can switch back to the \texttt{C/C++ Perspective}.
 
+\begin{center} \includegraphics[width=200]{figures/cppPersp}
+\end{center}
+
 In the \texttt{Project Explorer} view, click on the \textit{synchronize}
-button. Then open the \texttt{build} folder and you should see the resulting
-CSV file. You can double click on this file to launch the CSV viewer.
+button to copy the output files back to your local machine. 
+
+\begin{center} \includegraphics[width=200]{figures/syncButton}
+\end{center}
+
+If the project is not already open, you can open it now and
+you should see the resulting CSV file. Double click on this file to launch the CSV viewer.
 
