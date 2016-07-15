@@ -103,7 +103,7 @@ public class FernModel extends Model {
 		StringEntry massTol = new StringEntry();
 		massTol.setName("massTol");
 		massTol.setDescription("The mass tolerance to consider");
-		massTol.setDefaultValue("1e-7");
+		massTol.setDefaultValue("1.0e-7");
 
 		StringEntry fluxFrac = new StringEntry();
 		fluxFrac.setName("fluxFrac");
@@ -144,12 +144,12 @@ public class FernModel extends Model {
 		StringEntry startTime = new StringEntry();
 		startTime.setName("startTime");
 		startTime.setDescription("The start time for the simulation.");
-		startTime.setDefaultValue("1e-20");
+		startTime.setDefaultValue("1.0e-20");
 		
 		StringEntry endTime = new StringEntry();
 		endTime.setName("endTime");
 		endTime.setDescription("The end time for the simulation");
-		endTime.setDefaultValue("1e-8");
+		endTime.setDefaultValue("1.0e-8");
 
 		StringEntry initialTimeStep = new StringEntry();
 		initialTimeStep.setName("initialTimeStep");
@@ -159,7 +159,7 @@ public class FernModel extends Model {
 		StringEntry density = new StringEntry();
 		density.setName("density");
 		density.setDescription("The initial density.");
-		density.setDefaultValue("1e8");
+		density.setDefaultValue("1.0e8");
 		
 		// Add the entries to the DataComponent!
 		initConditionsComp.addEntry(t9);
