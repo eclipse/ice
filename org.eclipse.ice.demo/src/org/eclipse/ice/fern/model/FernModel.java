@@ -149,7 +149,7 @@ public class FernModel extends Model {
 		StringEntry endTime = new StringEntry();
 		endTime.setName("endTime");
 		endTime.setDescription("The end time for the simulation");
-		endTime.setDefaultValue("1e-3");
+		endTime.setDefaultValue("1e-8");
 
 		StringEntry initialTimeStep = new StringEntry();
 		initialTimeStep.setName("initialTimeStep");
