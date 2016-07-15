@@ -30,6 +30,7 @@ setupForm() method. You can also find this code in
 XSEDEVisualizationModel's setupForm() method, but be sure to note the
 comments specifying where to begin and end copying. 
 
+{\small
 \begin{verbatim}
 		//Create the resource component
 		ResourceComponent resourceComponent = new ResourceComponent();
@@ -94,6 +95,7 @@ comments specifying where to begin and end copying.
 		// Set the context on the Form
 		form.setContext("visualization");
 \end{verbatim} 
+}
 
 This will cause errors in your file. To resolve them, first open the MANIFEST.MF
 file in your project's META-INF folder, switch to the \texttt{Dependencies} tab,
@@ -296,7 +298,7 @@ At the bottom of the plot will be a series of controls for animation. If your
 plot does not have time series data, they will be greyed out. 
 
 \begin{figure}[!h]
-\includegraphics[width=12cm]{images/TimeSliderWidget} 
+\includegraphics[width=8cm]{images/TimeSliderWidget} 
 \centering
 \caption{The \texttt{Plot Editor}'s animation controls.}
 \label{fig:timesliderwidget}
@@ -392,7 +394,7 @@ The \texttt{Mode} button in the top left allows you to switch between
 \texttt{Add Elements} mode, used previously, and \texttt{Edit Elements} mode.
 
 \begin{figure}[!h]
-\includegraphics[width=12cm]{images/EditMode}
+\includegraphics[width=8cm]{images/EditMode}
 \centering
 \caption{The \texttt{Mode} button allows switching between \texttt{Edit
 Elements} mode and \texttt{Add Elements} mode.}
