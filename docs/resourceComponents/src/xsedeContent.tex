@@ -14,7 +14,7 @@ other OSs can just copy the appropriate folder onto their machine.
 
 We will be adding the visualization components to the model made in the
 previous section, so return to your original ICE window, closing the launched
-instance. For convienence, you can copy and paste the code from the
+instance. For convenience, you can copy and paste the code from the
 XSEDEVisualizationeModel.java in the org.eclipse.ice.demo.visualization.model
 package. Its location can be seen in figure \ref{fig:demostructure}.
 
@@ -30,70 +30,72 @@ setupForm() method. You can also find this code in
 XSEDEVisualizationModel's setupForm() method, but be sure to note the
 comments specifying where to begin and end copying. 
 
+{\small
 \begin{verbatim}
-//Create the resource component
-ResourceComponent resourceComponent = new ResourceComponent();
+		//Create the resource component
+		ResourceComponent resourceComponent = new ResourceComponent();
 
-//Set the component's data members
-resourceComponent.setName("Resources");
-resourceComponent.setDescription("Results");
-resourceComponent.setId(2);
+		//Set the component's data members
+		resourceComponent.setName("Resource Component");
+		resourceComponent.setDescription("Results");
+		resourceComponent.setId(1);
 
-//Declare the files and resources
-VizResource csvResource = null;
-VizResource visItResource = null;
-IFile csvFile = null;
-IFile visItFile = null;
+		//Declare the files and resources
+		VizResource csvResource = null;
+		VizResource visItResource = null;
+		IFile csvFile = null;
+		IFile visItFile = null;
 
 
-//If the file was found, create the CSV resource and add it to the component
-try{
+		//If the file was found, create the CSV resource and add it to the component
+		try{
 			
-	//Open the files
-	csvFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB")
-		.getFile("fib8.csv");
-	visItFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB")
-		.getFile("tire.silo");
+			//Open the files
+			csvFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB").getFile("fib8.csv");
+			visItFile = ResourcesPlugin.getWorkspace().getRoot().getProject("itemDB").getFile("tire.silo");
 			
-	//If the file was found, create the CSV resource and add it to the component.
-	if(csvFile.exists()){
-		csvResource = new 
-                    VizResource(csvFile.getLocation()
-                    .toFile());
-    	resourceComponent.addResource(csvResource);
-	}
+			//If the file was found, create the CSV resource and add it to the component.
+			if(csvFile.exists()){
+				csvResource = new 
+		                    VizResource(csvFile.getLocation()
+		                    .toFile());
+		    	resourceComponent.addResource(csvResource);
+			}
 				        
-	//If the file was found, create the VisIt resource and add it to 
-	//the component
-	if(visItFile.exists()){
-		visItResource = new 
-                    VizResource(visItFile.getLocation()
-                    .toFile());
-		resourceComponent.addResource(visItResource);
-	}
-}
-catch(IOException e){
-	e.printStackTrace();
-}
+			//If the file was found, create the VisIt resource and add it to 
+			//the component
+			if(visItFile.exists()){
+				visItResource = new 
+		                    VizResource(visItFile.getLocation()
+		                    .toFile());
+				resourceComponent.addResource(visItResource);
+			}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
 
-//Create the geometry component
-ShapeController geometryRoot = new ShapeController(new
-    ShapeMesh(), new BasicView());
-GeometryComponent geometryComponent = new 
-    GeometryComponent();
-geometryComponent.setGeometry(geometryRoot);
+		//Create the geometry component
+		ShapeController geometryRoot = new ShapeController(new
+		    Shape(), new BasicView());
+		GeometryComponent geometryComponent = new 
+		    GeometryComponent();
+		geometryComponent.setGeometry(geometryRoot);
+		geometryComponent.setName("Geometry Editor");
 
-//Create mesh component
-MeshComponent meshComponent = new MeshComponent();
+		//Create mesh component
+		MeshComponent meshComponent = new MeshComponent();
+		meshComponent.setName("Mesh Editor");
 
-//Add the components to the form
-form.addComponent(resourceComponent);
-form.addComponent(geometryComponent);
-form.addComponent(meshComponent);	
+		//Add the components to the form
+		form.addComponent(resourceComponent);
+		form.addComponent(geometryComponent);
+		form.addComponent(meshComponent);	
 		
-//Set the context on the Form
-form.setContext("visualization");
+		// Set the context on the Form
+		form.setContext("visualization");
 \end{verbatim} 
+}
 
 This will cause errors in your file. To resolve them, first open the MANIFEST.MF
 file in your project's META-INF folder, switch to the \texttt{Dependencies} tab,
@@ -102,7 +104,7 @@ both highlightted in figure \ref{fig:manifest}. Select
 \texttt{org.eclipse.eavp.viz.datastructures}, press \texttt{OK}, and save the
 file. You can then return to your model file, hover over the underlined code
 for each of the errors until a menu pops up, and select the option to add a
-package to the imported packages, as seen in figure \ref{fig:hover}. Save the file when the hover menu no longer appears over
+package to the imported packages, as seen in figure \ref{fig:hover}. Repeat the process, this time choosing the option to import the class. Save the file when the hover menu no longer appears over
 errors.
 
 \begin{figure}[!h]
@@ -210,7 +212,7 @@ Then select \texttt{Visualization Model} and press \texttt{Finish}. You can also
 \texttt{Visualization Model (Pre-completed)} if you skipped the first part of
 the tutorial.
 
-Finally, switch to the ICE Perspective to ensure that the neccesary Views will
+Finally, switch to the ICE Perspective to ensure that the necessary Views will
 be open. To do this, click the \texttt{Open Perspective} button in the upper right
 of the workbench screen.
 
@@ -296,7 +298,7 @@ At the bottom of the plot will be a series of controls for animation. If your
 plot does not have time series data, they will be greyed out. 
 
 \begin{figure}[!h]
-\includegraphics[width=12cm]{images/TimeSliderWidget} 
+\includegraphics[width=8cm]{images/TimeSliderWidget} 
 \centering
 \caption{The \texttt{Plot Editor}'s animation controls.}
 \label{fig:timesliderwidget}
@@ -392,7 +394,7 @@ The \texttt{Mode} button in the top left allows you to switch between
 \texttt{Add Elements} mode, used previously, and \texttt{Edit Elements} mode.
 
 \begin{figure}[!h]
-\includegraphics[width=12cm]{images/EditMode}
+\includegraphics[width=8cm]{images/EditMode}
 \centering
 \caption{The \texttt{Mode} button allows switching between \texttt{Edit
 Elements} mode and \texttt{Add Elements} mode.}
