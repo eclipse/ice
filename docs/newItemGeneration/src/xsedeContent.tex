@@ -89,7 +89,7 @@ protected void setupItemInfo() {
 	setDescription("This Item constructs " +
 	    "input files for the FERN reaction " +
 	    "network solver"); 
-	outputName = "fern_output.ini";   
+	outputName = "fern_config.ini";   
 	exportString = "Export to INI";
 	allowedActions.add(0, exportString);
 	ioFormat = "INI";
@@ -151,7 +151,7 @@ Add the following to your setupForm() method:
     StringEntry massTol = new StringEntry();
     massTol.setName("massTol");
     massTol.setDescription("The mass tolerance to consider");
-    massTol.setDefaultValue("1e-7");
+    massTol.setDefaultValue("1.0e-7");
     
     StringEntry fluxFrac = new StringEntry();
     fluxFrac.setName("fluxFrac");
@@ -192,12 +192,12 @@ Add the following to your setupForm() method:
     StringEntry startTime = new StringEntry();
     startTime.setName("startTime");
     startTime.setDescription("The start time for the simulation.");
-    startTime.setDefaultValue("1e-20");
+    startTime.setDefaultValue("1.0e-20");
 
     StringEntry endTime = new StringEntry();
     endTime.setName("endTime");
     endTime.setDescription("The end time for the simulation");
-    endTime.setDefaultValue("1e-3");
+    endTime.setDefaultValue("1.0e-8");
 
     StringEntry initialTimeStep = new StringEntry();
     initialTimeStep.setName("initialTimeStep");
@@ -208,7 +208,7 @@ Add the following to your setupForm() method:
     StringEntry density = new StringEntry();
     density.setName("density");
     density.setDescription("The initial density.");
-    density.setDefaultValue("1e8");
+    density.setDefaultValue("1.0e8");
     
     initConditionsComp.addEntry(t9);
     initConditionsComp.addEntry(startTime);
