@@ -59,7 +59,7 @@ public class FernModel extends Model {
 		setDescription("This Item constructs input files for the FERN reaction network solver");
 		writerName = "INIWriter";
 		readerName = "INIReader";
-		outputName = "fern_output.ini";
+		outputName = "fern_config.ini";
 		exportString = "Export to INI";
 		allowedActions.add(0, exportString);
 	}
