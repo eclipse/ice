@@ -576,7 +576,7 @@ public class JobLauncher extends Item {
 		// Assign the data components
 		fileData = (DataComponent) form.getComponent(JobLauncherForm.filesId);
 		parallelData = (DataComponent) form.getComponent(JobLauncherForm.parallelId);
-		dockerComponent = (DataComponent) form.getComponent(JobLauncherForm.dockerId);
+//		dockerComponent = (DataComponent) form.getComponent(JobLauncherForm.dockerId);
 		
 		// Check the components and fail if they are null
 		if (fileData == null) {
@@ -683,20 +683,20 @@ public class JobLauncher extends Item {
 			actionDataMap.put("downloadDirectory", remoteDownloadDir);
 		}
 
-		IEntry enableDockerEntry = dockerComponent.retrieveEntry("Launch with Docker");
-		if (enableDockerEntry != null) {
-			enableDocker = Boolean.valueOf(enableDockerEntry.getValue());
-			if (enableDocker) {
-				String imageName = dockerComponent.retrieveEntry("Available Images").getValue();
-				actionDataMap.put("imageName", imageName);
-			}
-		}
+//		IEntry enableDockerEntry = dockerComponent.retrieveEntry("Launch with Docker");
+//		if (enableDockerEntry != null) {
+//			enableDocker = Boolean.valueOf(enableDockerEntry.getValue());
+//			if (enableDocker) {
+//				String imageName = dockerComponent.retrieveEntry("Available Images").getValue();
+//				actionDataMap.put("imageName", imageName);
+//			}
+//		}
 		logger.debug("JobLauncher Message: " + "Action Data Map = " + actionDataMap);
 
 		return FormStatus.ReadyToProcess;
 	}
 
-	private boolean enableDocker = false;
+//	private boolean enableDocker = false;
 	
 	/**
 	 * This operation adds an output file to the output data resource. It is a
@@ -1070,18 +1070,18 @@ public class JobLauncher extends Item {
 		// we need to launch the correct container and 
 		// modify the hostname/port in the action data map 
 		// to point to that container 
-		if (enableDocker) {
-			Action dockerAction = actionFactory.getAction("Create Docker Container");
-			
-			// This execution should create the container and remote connection 
-			// and modify the host/port/connectionName in the map.
-			dockerAction.execute(actionDataMap);
-		}
+//		if (enableDocker) {
+//			Action dockerAction = actionFactory.getAction("Create Docker Container");
+//			
+//			// This execution should create the container and remote connection 
+//			// and modify the host/port/connectionName in the map.
+//			dockerAction.execute(actionDataMap);
+//		}
 		
 		// Create the List of Actions to execute... The list is
 		// different depending on whether we are local or remote,
 		// or using Docker or not...
-		if (isLocalhost(actionDataMap.get("hostname")) && !enableDocker) {
+		if (isLocalhost(actionDataMap.get("hostname"))) {
 			// For a local execution, we just need the Local Execution
 			// Action
 			actionList.add(actionFactory.getAction("Local Execution"));
