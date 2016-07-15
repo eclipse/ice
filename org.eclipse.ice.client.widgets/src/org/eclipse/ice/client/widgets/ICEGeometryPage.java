@@ -17,6 +17,7 @@ import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
+import org.eclipse.eavp.viz.service.javafx.geometry.FXGeometryVizService;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
@@ -190,7 +191,11 @@ public class ICEGeometryPage extends ICEFormPage
 
 		// Get Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
-		service = factory.get("ICE Geometry Editor");
+		if (factory == null) {
+			service = new FXGeometryVizService();
+		} else {
+			service = factory.get("ICE Geometry Editor");
+		}
 		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID)).setFactory(service.getControllerProviderFactory());
 		geometryComp.setService(service);

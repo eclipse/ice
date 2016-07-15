@@ -40,6 +40,7 @@ Import-Package:
  org.eclipse.eavp.viz.service.geometry.shapes,
  org.eclipse.eavp.viz.service.geometry.widgets,
  org.eclipse.eavp.viz.service.internal,
+ org.eclipse.eavp.viz.service.javafx.geometry,
  org.eclipse.eavp.viz.service.mesh.datastructures,
  org.eclipse.eavp.viz.service.mesh.properties,
  org.eclipse.eavp.viz.service.widgets,
