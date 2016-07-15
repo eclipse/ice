@@ -15,18 +15,13 @@ PyDev can be easily installed from using the Eclipse Marketplace client as
 follows. From the ICE menu bar, select \texttt{Help $\rightarrow$ Eclipse
 Marketplace\ldots}, type ``pydev'' in the Find field, then click the \texttt{Go}
 button.
-After a few seconds, you should see an entry for PyDev as shown in figure
-\ref{fig:pydev}.
+After a few seconds, you should see an entry for PyDev as shown in image below.
 Simply click the \texttt{Install} button and follow the prompts to install the feature. Once
 Eclipse has been restarted, any Python scripts ending in ``.py'' will be recognized by
 PyDev and opened in the Python editor by default.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=8cm]{images/pydev-marketplace}
-\caption{Installing PyDev}
-\label{fig:pydev}
-\end{figure}
+\begin{center} \includegraphics[width=8cm]{images/pydev-marketplace}
+\end{center}
 
 \subsection{EASE Configuration}
 
@@ -39,36 +34,29 @@ ICE in the menu bar.) Open the \texttt{Scripting} tree item on the left side of
 the preferences window and you will see the different preferences that can be
 configured.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=8cm]{images/scripting-prefs1}
-\caption{Setting the Script Locations}
-\label{fig:prefs1}
-\end{figure}
-
 EASE works best if you keep your scripts in one or more projects in
 your workspace. You can then associate these \emph{Script Locations} so
 that EASE knows they are used for managing your scripts. You can either use an
 existing project, or create a new project for the scripts. In this tutorial,
-we're just going to use the existing \texttt{itemDB} project to store our scripts, but
+we're going to use the existing \texttt{fern} project to store our scripts, but
 you could just as easily create a new one. To configure the projects, select the
-\texttt{Script Locations} preference item to reveal the dialog shown in figure
-\ref{fig:prefs1}. You can then use the \texttt{Add Workspace\ldots} button to
-select one or more projects from the workspace.
+\texttt{Script Locations} preference item to reveal the dialog shown below.
+You can then use the \texttt{Add Workspace\ldots} button to
+select one or more projects from the workspace. For this tutorial, choose the
+\texttt{fern} project.
+
+\begin{center} \includegraphics[width=8cm]{images/scripting-prefs1}
+\end{center}
 
 By default, EASE is configured to use the JavaScript (Rhino) engine.
 Since this tutorial assumes that the preferred environment is Python, we recommend changing
 this default. To set the script engine default, select the
 \texttt{Shell} preference item. Next, select \texttt{Python (Jython)} from
-the \texttt{Preferred Engine:} dropdown as shown in figure \ref{fig:prefs2},
+the \texttt{Preferred Engine:} dropdown as shown below,
 then click on \texttt{OK}.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=8cm]{images/scripting-prefs2}
-\caption{Setting the Default Engine}
-\label{fig:prefs2}
-\end{figure}
+\begin{center} \includegraphics[width=8cm]{images/scripting-prefs2}
+\end{center}
 
 \subsection{Creating and Running Scripts}
 
@@ -84,15 +72,10 @@ views for running script commands interactively, and for exploring script module
 To switch to the \texttt{Scripting} perspective use the \texttt{Perspective
 Switcher} icon or select the \texttt{Window $\rightarrow$ Perspective
 $\rightarrow$ Open Perspective $\rightarrow$ Other\ldots} menu, then select 
-\texttt{Scripting} from the list. You should see the perspective shown in figure
-\ref{fig:perspective}.
+\texttt{Scripting} from the list. You should see the perspective shown below.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=\textwidth]{images/perspective.png}
-\caption{Scripting Perspective}
-\label{fig:perspective}
-\end{figure}
+\begin{center} \includegraphics[width=\textwidth]{images/perspective}
+\end{center}
 
 EASE hides many of the details that would normally be required to manipulate
 Java objects and perform actions in the Eclipse IDE. It does this by
@@ -100,11 +83,7 @@ encapsulating typical actions into simple script commands that can be easily
 invoked from scripts that you write. These commands are collected together into
 ``modules''. You can see which modules are available, and the commands that they
 contain, using the \texttt{Modules Explorer} view. This view is visible in
-the top right corner of the \texttt{Scripting} perspective. The \texttt{Modules
-Explorer} view can also be opened by selecting \texttt{Window $\rightarrow$ Show
-View $\rightarrow$ Other\ldots} to open the \texttt{Show View} dialog, the open
-the \texttt{Scripting} folder and select the \texttt{Modules Explorer} and click
-on \texttt{OK}.
+the top right corner of the \texttt{Scripting} perspective. 
 
 \subsection{Creating a Python Script}
 
@@ -113,42 +92,33 @@ in ``.py'' in an existing project. If your scripts will be used with stand-alone
 programs, you can use PyDev to create a Python project, but in general, any kind
 of project will suffice.
 
-For this tutorial, we're going to use the \texttt{itemDB} project that has
+For this tutorial, we're going to use the \texttt{fern} project that has
 already been created, and should be visible in the \texttt{Project Explorer}
 view. You can now create a Python file in this folder by right clicking on the
 folder and selecting \texttt{New $\rightarrow$ File} from the context menu. 
-This will display the \texttt{New File} dialog as shown in figure \ref{fig:newfile}.
+This will display the \texttt{New File} dialog as shown below.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=8cm]{images/newfile}
-\caption{New File Dialog}
-\label{fig:newfile}
-\end{figure}
+\begin{center} \includegraphics[width=8cm]{images/newfile}
+\end{center}
 
 At this point all that remains to be done is enter the name of the file in the
 \texttt{File name:} field and click on the \texttt{Finish} button. This will
 create the file and automatically open the PyDev editor (assuming you installed
 PyDev) or a simple text editor. You should see an editor view something like
-that shown in figure \ref{fig:editor}.
+that shown below.
 
-Since the \texttt{itemDB} project was selected as a scripting location
+\begin{center} \includegraphics[width=\textwidth]{images/editor}
+\end{center}
+
+Since the \texttt{fern} project was selected as a scripting location
 previously, the new script file should also be visible in the \texttt{Script
 Explorer} view in the \texttt{Scripting} perspective. Make sure the
 \texttt{Scripting} perspective is selected for this view to be visible.
 
-\begin{figure}[!hb]
-\centering
-\includegraphics[width=8cm]{images/editor}
-\caption{Editor View}
-\label{fig:editor}
-\end{figure}
-
-
 \subsection{Writing a Python Script}
 
 Our first python script will just print ``Hello World'' on the console. Enter
-the following text in the editor and select \texttt{File $\rightarrow$ Save}:
+the following text in the editor and save the file:
 
 \begin{verbatim}
 print 'Hello World'
@@ -157,15 +127,11 @@ print 'Hello World'
 Once you have entered the Python script, is can be easily launched using the run
 button (green arrow) on the \texttt{Script Exporer} view. Simply select the
 the script file you want to run and click on the run button. Any (textual)
-output generated by the script will be displayed in the Console view shown in
-figure \ref{fig:console}.
+output generated by the script will be displayed in the Console view shown
+below.
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=10cm]{images/console}
-\caption{Console View}
-\label{fig:console}
-\end{figure}
+\begin{center} \includegraphics[width=\textwidth]{images/console}
+\end{center}
 
 Rather than using the run button, we would like to run this script using our own
 button on the \texttt{Project Explorer} view. To do this, add the following
@@ -176,8 +142,6 @@ lines to the start of the script, then save the file:
 # ********************************************************************  
 # name                 : My Script 
 # toolbar              : Project Explorer  
-# script-type          : Python  
-# description          : Start a file browser using current selection.  
 # ******************************************************************** 
 \end{verbatim}
 }
@@ -185,11 +149,23 @@ lines to the start of the script, then save the file:
 As soon as you save the file, you should notice a couple of things. The name of
 the script file will change to \texttt{My Script} in the \texttt{Script
 Explorer} view, and if you switch to the \texttt{Project Explorer} view, you
-should see a \texttt{My Script} button in the view toolbar (as shown in figure
-\ref{fig:myscript}).
+should see a \texttt{My Script} button in the view toolbar as shown below.
 
-We can modify the user interface behavior by changing the button to an icon and
-adding a popup conext menu. This is accomplished by adding the following lines
+\begin{center} \includegraphics[width=8cm]{images/scriptButton}
+\end{center}
+
+It is possible to include additional information, including a tooltip popup
+if desired:
+
+{\small
+\begin{verbatim}
+# script-type          : Python  
+# description          : Start a file browser using current selection.  
+\end{verbatim}
+}
+
+You can also modify the user interface by changing the button to
+an icon and adding a popup conext menu. This is accomplished by adding the following lines
 to the script:
 
 {\small
@@ -198,13 +174,6 @@ to the script:
 # image				   : platform:/plugin/org.eclipse.ui.ide/icons/full/elcl16/configs.png
 \end{verbatim}
 }
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=6cm]{images/projexplorer}
-\caption{New Button in Project Explorer view}
-\label{fig:myscript}
-\end{figure}
 
 \subsection{Interacting with ICE}
 
@@ -215,8 +184,8 @@ string representation of the module path, which in this case will be
 \texttt{/System/Platform}. 
 
 In the \texttt{Modules Explorer} view, open the \texttt{System} folder, then drag
-the \texttt{Platform} item onto first line of the script file. This should insert
-the following line into your script:
+the \texttt{Platform} item into the script file after the initial comments. This
+should insert the following line into your script:
 
 \lstset{basicstyle=\ttfamily\small, breaklines}
 
