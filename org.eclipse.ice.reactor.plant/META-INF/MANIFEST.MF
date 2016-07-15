@@ -21,3 +21,4 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
 Service-Component: OSGI-INF/PlantIOFactory.xml
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.reactor.plant
+Require-Bundle: org.eclipse.january.geometry.model

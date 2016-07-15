@@ -14,12 +14,10 @@ package org.eclipse.ice.client.widgets.test;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEGeometryPage;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.january.geometry.GeometryFactory;
 import org.junit.Test;
 
 /**
@@ -43,10 +41,10 @@ public class ICEGeometryPageTester {
 		// Get two GeometryComponent to check equality
 		GeometryComponent geometryComponent = new GeometryComponent();
 		GeometryComponent otherGeometryComponent = new GeometryComponent();
-		geometryComponent.setGeometry(
-				new ShapeController(new Shape(), new BasicView()));
-		geometryComponent.setGeometry(
-				new ShapeController(new Shape(), new BasicView()));
+		geometryComponent
+				.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
+		geometryComponent
+				.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 
 		// Get ICEGeometryPage to check accessor
 		ICEFormEditor ICEFormEditor = new ICEFormEditor();

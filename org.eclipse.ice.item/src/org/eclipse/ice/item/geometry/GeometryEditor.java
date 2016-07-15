@@ -15,13 +15,11 @@ package org.eclipse.ice.item.geometry;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.geometry.GeometryFactory;
 
 /**
  * <p>
@@ -95,8 +93,7 @@ public class GeometryEditor extends Item {
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
 
-		geometryComp.setGeometry(
-				new ShapeController(new Shape(), new BasicView()));
+		geometryComp.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());
