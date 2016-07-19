@@ -96,10 +96,8 @@ public class PROTEUSModel extends Item {
 	 *            which they should be retrieved.
 	 */
 	public PROTEUSModel(IProject projectSpace) {
-
 		// Call super
 		super(projectSpace);
-
 	}
 
 	/**
@@ -121,7 +119,7 @@ public class PROTEUSModel extends Item {
 		form = new Form();
 
 		if (project != null) {
-			loadInput(null);
+			loadDefault();
 		}
 	}
 
@@ -252,7 +250,6 @@ public class PROTEUSModel extends Item {
 	 */
 	@Override
 	public void loadInput(String name) {
-		// If nothing is specified, load case 6 from inside the plugin
 		IFile inputFile = null;
 		IFile templateFile = project
 				.getFile("PROTEUS_Model_Builder"
@@ -306,5 +303,12 @@ public class PROTEUSModel extends Item {
 			form = new Form();
 			form.addComponent(errorComponent);
 		}
+	}
+	
+	/**
+	 * Load the dataset that should be provided in the default location
+	 */
+	public void loadDefault() {
+		loadInput("PROTEUS_Model_Builder" + System.getProperty("file.separator") + "proteus_model.inp");
 	}
 }
