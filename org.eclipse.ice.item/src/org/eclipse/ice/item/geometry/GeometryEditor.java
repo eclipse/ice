@@ -25,6 +25,9 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.january.geometry.Geometry;
 import org.eclipse.january.geometry.GeometryFactory;
+import org.eclipse.january.geometry.INode;
+
+import model.IRenderElement;
 
 /**
  * <p>
@@ -113,13 +116,23 @@ public class GeometryEditor extends Item {
 	@Override
 	public void loadInput(String file) {
 		
-		Path path = FileSystems.getDefault().getPath(file);
-		GeometryComponent comp = (GeometryComponent) form.getComponent(1);
-		Geometry geom = comp.getGeometry();
-		Geometry imported = GeometryFactory.eINSTANCE.createSTLGeometryImporter().load(path);
-		synchronized (geom) {
-			//comp.setGeometry(imported);
-			geom.getNodes().addAll(imported.getNodes());
+		// Only import if a valid stl file
+		if (file != null && (file.endsWith(".stl"))) {
+			
+			Path path = FileSystems.getDefault().getPath(file);
+			GeometryComponent comp = (GeometryComponent) form.getComponent(1);
+			Geometry geom = comp.getGeometry();
+			Geometry imported = GeometryFactory.eINSTANCE.createSTLGeometryImporter().load(path);
+
+			synchronized (geom) {
+				//INode union = GeometryFactory.eINSTANCE.createUnion();
+				//geom.addNode(union);
+				for(int i=0; i<imported.getNodes().size(); i++) {
+					INode node = (INode) imported.getNodes().get(i).clone();
+					//union.addNode(node);
+					geom.addNode(node);
+				}
+			}
 		}
 	}
 }
