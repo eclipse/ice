@@ -113,6 +113,7 @@ public class NekReader {
 	 * elements, number of fluid elements, number of passive scalar sets).
 	 */
 	private ProblemProperties properties;
+	
 	/**
 	 * The factory which the reader will use to produce views and controllers
 	 * for the objects it generates.

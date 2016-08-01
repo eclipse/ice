@@ -211,16 +211,9 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// It is possible that constructing the Browser throws an SWTError.
 		// Thus, to create the browser, we must use a try-catch block.
 		try {
-			// Initialize the browser and apply the layout. It should use a
-			// FillLayout so its contents take up all available space.
+			// Initialize the browser and apply the layout. 
 			browser = new Browser(parent, SWT.NONE);
 			toolkit.adapt(browser);
-
-			// A Grid Layout must be used, instead of the more natural
-			// FillLayout, in order to avoid a bug in which the browser is
-			// capable of forcing its parent section to resize.
-			browser.setLayout(new GridLayout());
-			browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			browser.layout(true);
 
 			// Display the default-selected Resource from the Resource View in
