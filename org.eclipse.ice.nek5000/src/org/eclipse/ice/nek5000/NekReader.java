@@ -26,6 +26,7 @@ import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
 import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
 import org.eclipse.eavp.viz.modeling.VertexController;
+import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.Vertex;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
@@ -840,6 +841,7 @@ public class NekReader {
 						}
 
 						quad.setPolygonProperties(materialId, groupNum);
+						
 
 						// Set the boundary conditions of the quad by edge ID
 						int currEdgeId;
@@ -906,6 +908,7 @@ public class NekReader {
 				}
 			}
 		}
+		
 
 		// Return the Mesh Component containing mesh elements/quads with a
 		// set of (2 + NPSCAL) boundary conditions associated to each edge
@@ -1560,7 +1563,7 @@ public class NekReader {
 		// If entry's value can only be T/F
 		if (isDiscrete) {
 			entry = new DiscreteEntry();
-			entry.setAllowedValues(Arrays.asList("no", "yes"));
+			entry.setAllowedValues(Arrays.asList("NO", "YES"));
 
 			entry.setName("Nek5000 Default Entry");
 			entry.setDescription("");

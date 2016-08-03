@@ -167,19 +167,22 @@ public class NekLauncher extends SuiteLauncher {
 		// working directory.
 		String exampleCopyStage = "cp -r " + installDir + "/examples/"
 				+ executable + "/* .;";
-		String rmObjStage = "rm -rf obj/;";
 		String inputCopyStage = "cp ${inputFile} "
 				+ executableMap.get(executable) + ".rea;";
+		String copyNekStep = "cp ${installDir}nek5000 .;";
 
-		// Define the nek and visnek launch stages
+		// Define the nek and visnek launch stages. We attempt to lanch the scripts from two different locations, in order to support both the current and legacy versions of the repo structure.
 		String launchStage = "${installDir}trunk/tools/scripts/nek "
-				+ executableMap.get(executable) + ";";
+				+ executableMap.get(executable) + "; {installDir}bin/nek " + executableMap.get(executable) + ";";
 		String vizStage = "${installDir}trunk/tools/scripts/visnek "
-				+ executableMap.get(executable) + ";";
+				+ executableMap.get(executable) + "; {installDir}bin/visnek " + executableMap.get(executable) + ";";
 
+		//Remove the copy of the nek5000 application we needed to make in the run directory
+		String rmObjStage = "rm -rf nek5000";
+		
 		// Configure the entire launch script
-		String launchCommand = exampleCopyStage + rmObjStage + inputCopyStage
-				+ launchStage + vizStage;
+		String launchCommand = exampleCopyStage + inputCopyStage
+				+ copyNekStep + launchStage + vizStage + rmObjStage ;
 
 		return launchCommand;
 	}
