@@ -12,6 +12,7 @@
 package org.eclipse.ice.item.action;
 
 import java.util.Dictionary;
+import java.util.List;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileInfo;
@@ -26,8 +27,8 @@ import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 /**
  * The RemoteFileDownloadAction is an ICE Action that downloads files from a
- * remote directory to the current localhost. It requires the following input 
- * parameters: 
+ * remote directory to the current localhost. It requires the following input
+ * parameters:
  * </p>
  * <table border="1">
  * <col width="50.0%"></col><col width="50.0%"></col>
@@ -121,20 +122,22 @@ public class RemoteFileDownloadAction extends RemoteAction {
 	@Override
 	public FormStatus execute(Dictionary<String, String> dictionary) {
 
-		// Set the status to Processing since we are 
+		// Set the status to Processing since we are
 		// starting this execution.
 		status = FormStatus.Processing;
-		
+
 		// Get the remote and local directory
 		String localDir = dictionary.get("localJobLaunchDirectory");
 		String hostName = dictionary.get("hostname");
 
 		// Let's use parts of the ExecutionHelper...
 		ExecutionHelper helper = new ExecutionHelper(dictionary);
-		
+
 		// Check that we've been given valid directories
 		if (localDir == null || hostName == null) {
-			return actionError("No remote host name or remote/local directory provided. Can't download files.", null);
+			return actionError(
+					"No remote host name or remote/local directory provided. Can't download files.",
+					null);
 		}
 
 		// Get the remote connection
@@ -142,8 +145,29 @@ public class RemoteFileDownloadAction extends RemoteAction {
 		if (connectionName == null) {
 			connection = getRemoteConnection(hostName);
 		} else {
-			IRemoteConnectionType connectionType = getService(IRemoteServicesManager.class).getRemoteConnectionTypes()
-					.get(0);
+
+			// Get the types of available remote connections
+			List<IRemoteConnectionType> types = getService(
+					IRemoteServicesManager.class).getRemoteConnectionTypes();
+
+			// The type of connection being used, SSH in this case
+			IRemoteConnectionType connectionType = null;
+
+			// Search for the connections of type SSH.
+			for (IRemoteConnectionType type : types) {
+				if ("SSH".equals(type.getName())) {
+					connectionType = type;
+					break;
+				}
+			}
+
+			// If the SSH connections were not found, give an error
+			if (connectionType == null) {
+				return actionError(
+						"Remote File Upload Action could not find the PTP SSH connection service.",
+						null);
+			}
+
 			for (IRemoteConnection c : connectionType.getConnections()) {
 				if (connectionName.equals(c.getName())) {
 					connection = c;
@@ -151,34 +175,42 @@ public class RemoteFileDownloadAction extends RemoteAction {
 			}
 		}
 		if (connection == null) {
-			return actionError("Could not get a valid connection to " + hostName, null);
+			return actionError(
+					"Could not get a valid connection to " + hostName, null);
 		}
-		
+
 		// Make sure the connection is actually open
 		if (!connection.isOpen()) {
 			try {
 				connection.open(null);
 			} catch (RemoteConnectionException e) {
-				return actionError("Remote File Download could not open the IRemoteConnection.", e);
+				return actionError(
+						"Remote File Download could not open the IRemoteConnection.",
+						e);
 			}
 		}
 
 		// Get the remote file manager
-		IRemoteFileService fileManager = connection.getService(IRemoteFileService.class);
+		IRemoteFileService fileManager = connection
+				.getService(IRemoteFileService.class);
 
 		// Get the Local Directory
-		IFileStore localDirectory = EFS.getLocalFileSystem()
-				.fromLocalFile(helper.getLocalLaunchFolder().getLocation().toFile());
+		IFileStore localDirectory = EFS.getLocalFileSystem().fromLocalFile(
+				helper.getLocalLaunchFolder().getLocation().toFile());
 
 		// Get the remote directory.
-		String remoteSeparator = connection.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
-		String userHome = connection.getProperty(IRemoteConnection.USER_HOME_PROPERTY);
-		IFileStore downloadFileStore = fileManager.getResource(userHome + remoteSeparator + "ICEJobs" + remoteSeparator + localDir);
-		
-		// Try to download the files. 
+		String remoteSeparator = connection
+				.getProperty(IRemoteConnection.FILE_SEPARATOR_PROPERTY);
+		String userHome = connection
+				.getProperty(IRemoteConnection.USER_HOME_PROPERTY);
+		IFileStore downloadFileStore = fileManager.getResource(userHome
+				+ remoteSeparator + "ICEJobs" + remoteSeparator + localDir);
+
+		// Try to download the files.
 		try {
 			// Get the children
-			IFileStore[] remoteStores = downloadFileStore.childStores(EFS.NONE, null);
+			IFileStore[] remoteStores = downloadFileStore.childStores(EFS.NONE,
+					null);
 			// Download all of the children
 			for (IFileStore remoteFile : remoteStores) {
 				// Get the information about the current child
@@ -186,13 +218,15 @@ public class RemoteFileDownloadAction extends RemoteAction {
 				if (fileInfo.getLength() < maxFileSize) {
 
 					// Print some debug information about the download
-					String msg = "Remote File Download - " + "Downloading " + fileInfo.getName()
-							+ " with length " + fileInfo.getLength() + ".";
+					String msg = "Remote File Download - " + "Downloading "
+							+ fileInfo.getName() + " with length "
+							+ fileInfo.getLength() + ".";
 					logger.info(msg);
 					postConsoleText(msg);
 					// Get a handle to the local file. Note that it may
 					// not exist yet.
-					IFileStore childStore = localDirectory.getChild(remoteFile.getName());
+					IFileStore childStore = localDirectory
+							.getChild(remoteFile.getName());
 
 					// Copy the file from the remote machine to the
 					// local machine.
@@ -202,16 +236,19 @@ public class RemoteFileDownloadAction extends RemoteAction {
 					// Print a debug note saying that the file is too
 					// big to
 					// download.
-					String msg = "RemoteFileDownloadAction Message: " + "File exceeds download limit. "
-							+ "File with size " + fileInfo.getLength() + " is " + sizeDiff + " bytes over the "
-							+ maxFileSize + " byte limit.";
+					String msg = "RemoteFileDownloadAction Message: "
+							+ "File exceeds download limit. "
+							+ "File with size " + fileInfo.getLength() + " is "
+							+ sizeDiff + " bytes over the " + maxFileSize
+							+ " byte limit.";
 					postConsoleText(msg);
 					logger.info(msg);
 				}
 
 			}
 		} catch (CoreException e) {
-			return actionError(getClass().getName() + " Exception! Error in downloading the files.", e);
+			return actionError(getClass().getName()
+					+ " Exception! Error in downloading the files.", e);
 		}
 
 		status = FormStatus.Processed;
@@ -220,6 +257,7 @@ public class RemoteFileDownloadAction extends RemoteAction {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.action.Action#cancel()
 	 */
 	@Override
@@ -229,6 +267,7 @@ public class RemoteFileDownloadAction extends RemoteAction {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.action.Action#getActionName()
 	 */
 	@Override

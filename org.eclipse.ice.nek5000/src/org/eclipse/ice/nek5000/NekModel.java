@@ -84,7 +84,7 @@ public class NekModel extends Item {
 	 * A flag signaling that the construction of the item has finished.
 	 */
 	private boolean constructionFinished = false;
-	
+
 	/**
 	 * The factory containing the visualization services.
 	 */
@@ -317,16 +317,17 @@ public class NekModel extends Item {
 	private void loadExample(String name)
 			throws FileNotFoundException, IOException {
 
-		//Get the factory
-		if(factory == null){
+		// Get the factory
+		if (factory == null) {
 			factory = VizServiceFactoryHolder.getFactory();
 		}
-		
-		//TODO Provide a way for the user to select which mesh editor service is desired
-		//Set the reader's ControllerProviderFactory
+
+		// TODO Provide a way for the user to select which mesh editor service
+		// is desired
+		// Set the reader's ControllerProviderFactory
 		IVizService service = factory.get("ICE JavaFX Mesh Editor");
 		reader.setControllerFactory(service.getControllerProviderFactory());
-		
+
 		// Load the components from the file
 		File file = new File(name);
 		ArrayList<Component> components = reader.loadREAFile(file);
@@ -490,7 +491,7 @@ public class NekModel extends Item {
 
 							// Push the work onto the loader
 							loadExample(nekFolder.getLocation().toOSString()
-									+ separator + exampleName);
+									+ separator + problemFiles.get(0));
 						}
 
 					} catch (FileNotFoundException e) {
