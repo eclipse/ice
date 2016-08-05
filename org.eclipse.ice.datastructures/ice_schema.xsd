@@ -1,0 +1,544 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="AbstractEntry" type="abstractEntry"/>
+
+  <xs:element name="AdaptiveTreeComposite" type="adaptiveTreeComposite"/>
+
+  <xs:element name="ContinuousEntry" type="continuousEntry"/>
+
+  <xs:element name="DataComponent" type="dataComponent"/>
+
+  <xs:element name="DiscreteEntry" type="discreteEntry"/>
+
+  <xs:element name="EMFComponent" type="emfComponent"/>
+
+  <xs:element name="EMFTreeComposite" type="emfTreeComposite"/>
+
+  <xs:element name="ExecutableEntry" type="executableEntry"/>
+
+  <xs:element name="FileEntry" type="fileEntry"/>
+
+  <xs:element name="Geometry" type="persistableShape"/>
+
+  <xs:element name="GeometryComponent" type="geometryComponent"/>
+
+  <xs:element name="ICEObject" type="iceObject"/>
+
+  <xs:element name="ICEResource" type="iceResource"/>
+
+  <xs:element name="ListComponent" type="listComponent"/>
+
+  <xs:element name="MasterDetailsComponent" type="masterDetailsComponent"/>
+
+  <xs:element name="MasterDetailsPair" type="masterDetailsPair"/>
+
+  <xs:element name="Material" type="material"/>
+
+  <xs:element name="MaterialStack" type="materialStack"/>
+
+  <xs:element name="MatrixComponent" type="matrixComponent"/>
+
+  <xs:element name="Mesh" type="meshDescription"/>
+
+  <xs:element name="MeshComponent" type="meshComponent"/>
+
+  <xs:element name="ResourceComponent" type="resourceComponent"/>
+
+  <xs:element name="StringEntry" type="stringEntry"/>
+
+  <xs:element name="TableComponent" type="tableComponent"/>
+
+  <xs:element name="TimeDataComponent" type="timeDataComponent"/>
+
+  <xs:element name="TreeComposite" type="treeComposite"/>
+
+  <xs:element name="VizResource" type="vizResource"/>
+
+  <xs:element name="cube" type="persistableCube"/>
+
+  <xs:element name="cylinder" type="persistableCylinder"/>
+
+  <xs:element name="sphere" type="persistableSphere"/>
+
+  <xs:element name="tube" type="persistableTube"/>
+
+  <xs:element name="union" type="persistableUnion"/>
+
+  <xs:complexType name="tableComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="rowTable">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="key" minOccurs="0" type="xs:int"/>
+                      <xs:element name="value" minOccurs="0" type="arrayList"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ColumnNames" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="Row" type="dataComponent" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="SelectedRow" type="xs:int" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iceObject">
+    <xs:sequence>
+      <xs:element name="context" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="id" type="xs:int" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="arrayList">
+    <xs:complexContent>
+      <xs:extension base="abstractList">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractList" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractCollection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCollection" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="dataComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="entries" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="geometryComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element ref="Geometry" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="persistableShape">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="cube"/>
+        <xs:element ref="cylinder"/>
+        <xs:element ref="Geometry"/>
+        <xs:element ref="sphere"/>
+        <xs:element ref="tube"/>
+        <xs:element ref="union"/>
+        <xs:any processContents="skip" namespace="##other"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:string"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="rotation" type="xs:string"/>
+    <xs:attribute name="scale" type="xs:string"/>
+    <xs:attribute name="translation" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="persistableCube">
+    <xs:complexContent>
+      <xs:extension base="persistableShape">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="persistableCylinder">
+    <xs:complexContent>
+      <xs:extension base="persistableShape">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="persistableSphere">
+    <xs:complexContent>
+      <xs:extension base="persistableShape">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="persistableTube">
+    <xs:complexContent>
+      <xs:extension base="persistableShape">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="persistableUnion">
+    <xs:complexContent>
+      <xs:extension base="persistableShape">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="meshComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="compressedMesh" type="meshDescription" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="meshDescription">
+    <xs:sequence>
+      <xs:element name="facesBlock" type="xs:string" minOccurs="0"/>
+      <xs:element name="vertices" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="matrixComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="elements" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="allowedValues" type="xs:double" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="isSquare" type="xs:boolean" use="required"/>
+        <xs:attribute name="nRows" type="xs:int" use="required"/>
+        <xs:attribute name="nCols" type="xs:int" use="required"/>
+        <xs:attribute name="valueType" type="allowedValueType"/>
+        <xs:attribute name="resizable" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="timeDataComponent">
+    <xs:complexContent>
+      <xs:extension base="dataComponent">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="treeComposite">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="Children" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element ref="TreeComposite"/>
+                  <xs:element ref="AdaptiveTreeComposite"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element ref="ResourceComponent"/>
+            <xs:element ref="TableComponent"/>
+            <xs:element ref="MatrixComponent"/>
+            <xs:element ref="GeometryComponent"/>
+            <xs:element ref="MasterDetailsComponent"/>
+            <xs:element ref="DataComponent"/>
+            <xs:element ref="TimeDataComponent"/>
+            <xs:any processContents="skip" namespace="##other"/>
+          </xs:choice>
+          <xs:element name="exemplar" type="treeComposite" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="allowActiveDataNodes" type="xs:boolean" use="required"/>
+        <xs:attribute name="active" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="adaptiveTreeComposite">
+    <xs:complexContent>
+      <xs:extension base="treeComposite">
+        <xs:sequence>
+          <xs:element name="TypesMap">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="key" minOccurs="0" type="xs:string"/>
+                      <xs:element name="value" minOccurs="0" type="treeComposite"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="type" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="resourceComponent">
+    <xs:complexContent>
+      <xs:extension base="listComponent">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="listComponent">
+    <xs:complexContent>
+      <xs:extension base="transformedList">
+        <xs:sequence>
+          <xs:element name="idList" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="jaxbSourceList" type="xs:anyType" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="transformedList" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractEventList">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEventList" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="masterDetailsComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="MasterDetailsPairs" type="masterDetailsPair" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="AllowedMasters" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="MasterDetailsTemplateList" type="masterDetailsPair" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="GlobalsComponent" type="dataComponent" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="counter" type="xs:int"/>
+        <xs:attribute name="toggleAddRemoveButton" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="masterDetailsPair">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="Details" type="dataComponent" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="master" type="xs:string"/>
+        <xs:attribute name="masterDetailsPairId" type="xs:int"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="emfComponent">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element ref="EMFTreeComposite" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="emfTreeComposite">
+    <xs:complexContent>
+      <xs:extension base="treeComposite">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="material">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="properties">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:double"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="components">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="materialStack"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="materialStack">
+    <xs:sequence>
+      <xs:element name="amount" type="xs:int"/>
+      <xs:element name="stackMaterial" type="material" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="vizResource">
+    <xs:complexContent>
+      <xs:extension base="iceResource">
+        <xs:sequence>
+          <xs:element name="fileSet" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="fileSetTitle" type="xs:string" minOccurs="0"/>
+          <xs:element name="childrenResources" type="vizResource" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="host" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iceResource">
+    <xs:complexContent>
+      <xs:extension base="iceObject">
+        <xs:sequence>
+          <xs:element name="properties" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:any processContents="lax" namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="file" type="xs:string"/>
+        <xs:attribute name="path" type="xs:string"/>
+        <xs:attribute name="isPicture" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntry" abstract="true">
+    <xs:sequence>
+      <xs:element name="uniqueId" type="xs:int"/>
+      <xs:element name="objectName" type="xs:string" minOccurs="0"/>
+      <xs:element name="objectDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="Comment" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="value" type="xs:string"/>
+    <xs:attribute name="errorMessage" type="xs:string"/>
+    <xs:attribute name="defaultValue" type="xs:string"/>
+    <xs:attribute name="contextId" type="xs:string"/>
+    <xs:attribute name="tag" type="xs:string"/>
+    <xs:attribute name="isReady" type="xs:boolean" use="required"/>
+    <xs:attribute name="isModified" type="xs:boolean" use="required"/>
+    <xs:attribute name="isRequired" type="xs:boolean" use="required"/>
+    <xs:attribute name="isSecret" type="xs:boolean" use="required"/>
+    <xs:attribute name="description" type="xs:string"/>
+    <xs:attribute name="id" type="xs:int" use="required"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="fileEntry">
+    <xs:complexContent>
+      <xs:extension base="discreteEntry">
+        <xs:sequence/>
+        <xs:attribute name="fileExtension" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="discreteEntry">
+    <xs:complexContent>
+      <xs:extension base="abstractEntry">
+        <xs:sequence>
+          <xs:element name="AllowedValues" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="stringEntry">
+    <xs:complexContent>
+      <xs:extension base="abstractEntry">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="executableEntry">
+    <xs:complexContent>
+      <xs:extension base="discreteEntry">
+        <xs:sequence>
+          <xs:element name="executableUri" type="xs:string" minOccurs="0"/>
+          <xs:element name="allowedValueToURI">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="key" minOccurs="0" type="xs:string"/>
+                      <xs:element name="value" minOccurs="0" type="xs:string"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="continuousEntry">
+    <xs:complexContent>
+      <xs:extension base="discreteEntry">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="allowedValueType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Discrete"/>
+      <xs:enumeration value="Continuous"/>
+      <xs:enumeration value="File"/>
+      <xs:enumeration value="Executable"/>
+      <xs:enumeration value="Undefined"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+
