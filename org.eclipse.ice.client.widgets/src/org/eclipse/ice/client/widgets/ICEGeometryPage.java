@@ -65,6 +65,12 @@ public class ICEGeometryPage extends ICEFormPage
 	private IVizService service;
 
 	/**
+	 * The IVizCanvas responsible for drawing the composite this page will
+	 * display.
+	 */
+	private IVizCanvas vizCanvas;
+
+	/**
 	 * <p>
 	 * This sets the FormEditor to be opened on, as well as the id and title
 	 * Strings.
@@ -144,6 +150,8 @@ public class ICEGeometryPage extends ICEFormPage
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
+		shapeTreeView.setRenderElementHolder(
+				vizCanvas.getRenderElementHolder(geometryComp.getGeometry()));
 		shapeTreeView.setGeometry(geometryComp.getGeometry());
 
 		return;
@@ -191,14 +199,11 @@ public class ICEGeometryPage extends ICEFormPage
 		// Get Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		service = factory.get("ICE Geometry Editor");
-		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
-				.findView(ShapeTreeView.ID)).setFactory(service.getControllerProviderFactory());
 		geometryComp.setService(service);
 
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service
-					.createCanvas(geometryComp.getGeometry());
+			vizCanvas = service.createCanvas(geometryComp.getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {

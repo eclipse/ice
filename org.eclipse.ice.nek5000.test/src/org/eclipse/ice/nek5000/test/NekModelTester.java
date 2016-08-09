@@ -59,6 +59,7 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.nek5000.NekModel;
 import org.eclipse.ice.nek5000.internal.VizServiceFactoryHolder;
+import org.eclipse.january.geometry.Geometry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -311,6 +312,12 @@ public class NekModelTester {
 			
 			//Return an empty set
 			return new HashSet<String>();
+		}
+
+		@Override
+		public IVizCanvas createCanvas(Geometry arg0) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
 		}
 		
 	}

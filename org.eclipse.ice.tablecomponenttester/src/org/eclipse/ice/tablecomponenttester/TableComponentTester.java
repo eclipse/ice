@@ -23,9 +23,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
@@ -40,6 +37,8 @@ import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.item.Item;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
 
 @XmlRootElement(name = "TableComponentTester")
 public class TableComponentTester extends Item {
@@ -64,7 +63,8 @@ public class TableComponentTester extends Item {
 		ArrayList<String> masterTypeTemplate;
 		IEntry entry1, entry2, entry3, entry4;
 		ResourceComponent resourceComp = new ResourceComponent();
-		TreeComposite parent = null, child1 = null, child2 = null, child3 = null;
+		TreeComposite parent = null, child1 = null, child2 = null,
+				child3 = null;
 
 		// Create the Form
 		form = new Form();
@@ -82,7 +82,7 @@ public class TableComponentTester extends Item {
 		// Create Entries
 
 		entry1 = new ContinuousEntry();
-		entry1.setAllowedValues(Arrays.asList("0","50"));
+		entry1.setAllowedValues(Arrays.asList("0", "50"));
 		entry1.setDefaultValue("1");
 		entry1.setValue("1");
 		entry1.setName("Generic 1");
@@ -102,7 +102,7 @@ public class TableComponentTester extends Item {
 		entry4.setDefaultValue("9001");
 		entry4.setValue("9001");
 		entry4.setName("Generic 4");
-			
+
 		// Create DataComponents
 		detailsComp1 = new DataComponent();
 		detailsComp2 = new DataComponent();
@@ -152,7 +152,7 @@ public class TableComponentTester extends Item {
 
 		IEntry column1 = new StringEntry();
 		column1.setDefaultValue("hello1");
-		
+
 		IEntry column2 = new DiscreteEntry();
 		column2.setAllowedValues(Arrays.asList("Hello", "World"));
 
@@ -194,10 +194,7 @@ public class TableComponentTester extends Item {
 
 		// ===========================================================================Try
 		// making geometry page
-		Shape geometryModel = new Shape();
-		BasicView geometryView = new BasicView();
-		ShapeController geometryShape = new ShapeController(geometryModel,
-				geometryView);
+		Geometry geometryShape = GeometryFactory.eINSTANCE.createGeometry();
 		GeometryComponent geometryComponent = new GeometryComponent();
 		geometryComponent.setGeometry(geometryShape);
 		geometryComponent.setId(108);
@@ -223,8 +220,8 @@ public class TableComponentTester extends Item {
 					if (resources[i].getType() == IResource.FILE) {
 						IFile file = (IFile) resources[i];
 						// Create resource
-						ICEResource iceResource = new ICEResource(new File(
-								file.getRawLocationURI()));
+						ICEResource iceResource = new ICEResource(
+								new File(file.getRawLocationURI()));
 						iceResource.setId(i);
 						iceResource.setName("File " + i);
 						iceResource.setPath(file.getLocationURI());

@@ -15,5 +15,6 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.ice.datastructures.componentVisitor,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.resource,
- org.eclipse.ice.item
+ org.eclipse.ice.item,
+ org.eclipse.january.geometry
 Bundle-Vendor: Oak Ridge National Laboratory

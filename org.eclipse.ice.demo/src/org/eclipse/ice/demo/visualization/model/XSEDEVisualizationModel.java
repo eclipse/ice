@@ -20,6 +20,8 @@ import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
 
 @XmlRootElement(name = "VisualizationCompleteModel")
 public class XSEDEVisualizationModel extends Model {
@@ -119,11 +121,10 @@ public class XSEDEVisualizationModel extends Model {
 		}
 
 		//Create the geometry component
-		ShapeController geometryRoot = new ShapeController(new
-		    Shape(), new BasicView());
+		Geometry geometry = GeometryFactory.eINSTANCE.createGeometry();
 		GeometryComponent geometryComponent = new 
 		    GeometryComponent();
-		geometryComponent.setGeometry(geometryRoot);
+		geometryComponent.setGeometry(geometry);
 		geometryComponent.setName("Geometry Editor");
 
 		//Create mesh component

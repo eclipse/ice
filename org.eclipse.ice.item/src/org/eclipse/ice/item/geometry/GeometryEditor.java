@@ -12,16 +12,22 @@
  *******************************************************************************/
 package org.eclipse.ice.item.geometry;
 
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.Shape;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
+import org.eclipse.january.geometry.INode;
+
+import model.IRenderElement;
 
 /**
  * <p>
@@ -95,8 +101,7 @@ public class GeometryEditor extends Item {
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
 
-		geometryComp.setGeometry(
-				new ShapeController(new Shape(), new BasicView()));
+		geometryComp.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());
@@ -106,5 +111,28 @@ public class GeometryEditor extends Item {
 
 		return;
 
+	}
+	
+	@Override
+	public void loadInput(String file) {
+		
+		// Only import if a valid stl file
+		if (file != null && (file.endsWith(".stl"))) {
+			
+			Path path = FileSystems.getDefault().getPath(file);
+			GeometryComponent comp = (GeometryComponent) form.getComponent(1);
+			Geometry geom = comp.getGeometry();
+			Geometry imported = GeometryFactory.eINSTANCE.createSTLGeometryImporter().load(path);
+
+			synchronized (geom) {
+				//INode union = GeometryFactory.eINSTANCE.createUnion();
+				//geom.addNode(union);
+				for(int i=0; i<imported.getNodes().size(); i++) {
+					INode node = (INode) imported.getNodes().get(i).clone();
+					//union.addNode(node);
+					geom.addNode(node);
+				}
+			}
+		}
 	}
 }
