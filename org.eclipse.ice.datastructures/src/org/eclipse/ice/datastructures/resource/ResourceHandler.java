@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
+import org.eclipse.ice.datastructures.internal.VizServiceFactoryHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,12 +71,6 @@ public class ResourceHandler {
 		// already
 		if (vizFileExtensions == null) {
 			vizFileExtensions = new ArrayList<String>(3);
-
-			// Add entries to the list; make sure they are lowercase!
-			vizFileExtensions.add("csv");
-			vizFileExtensions.add("e");
-			vizFileExtensions.add("silo");
-			vizFileExtensions.add("h5m");
 		}
 
 		return;
@@ -101,6 +97,16 @@ public class ResourceHandler {
 	 */
 	public ICEResource getResource(String filePath) throws IOException {
 
+		// Populate the list with all the file extensions which can be handled
+		// by any viz service
+		if (vizFileExtensions.size() == 0) {
+			IVizServiceFactory factory = VizServiceFactoryHolder.getFactory();
+			for (String service : factory.getServiceNames()) {
+				vizFileExtensions
+						.addAll(factory.get(service).getSupportedExtensions());
+			}
+		}
+
 		// Local declarations
 		ICEResource resource = null;
 		File file = null;
@@ -110,8 +116,8 @@ public class ResourceHandler {
 			file = new File(filePath);
 		} else {
 			// If the file path is empty, complain and exit
-			logger.info("ResourceHandler Message: The file path was "
-					+ "empty!");
+			logger.info(
+					"ResourceHandler Message: The file path was " + "empty!");
 
 			return resource;
 		}

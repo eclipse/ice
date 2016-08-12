@@ -38,11 +38,10 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -128,7 +127,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		}
 
 		// Create the list of text file extensions
-		String[] extensions = { "txt", "sh", "i", "csv" };
+		String[] extensions = { "txt", "sh", "i" };
 		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
@@ -181,6 +180,15 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// Create the browser.
 		browser = createBrowser(pageComposite, toolkit);
 		stackLayout.topControl = browser;
+
+		// Set an error message if no brwoser was detected.
+		if (browser == null) {
+			Label label = new Label(pageComposite, SWT.CENTER);
+			label.setText(
+					"No browser detected. You must install or configure a web browser for your operating system, if availabe, to view some resources. Some resources may be openable and appear in text editors in new tabs.");
+			stackLayout.topControl = label;
+		}
+
 		pageComposite.layout();
 
 		// Create the grid of plots.
@@ -211,7 +219,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// It is possible that constructing the Browser throws an SWTError.
 		// Thus, to create the browser, we must use a try-catch block.
 		try {
-			// Initialize the browser and apply the layout. 
+			// Initialize the browser and apply the layout.
 			browser = new Browser(parent, SWT.NONE);
 			toolkit.adapt(browser);
 			browser.layout(true);
@@ -221,12 +229,12 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 			if (!resourceComponent.isEmpty()) {
 				browser.setText("<html><body>"
 						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">Select a resource to view</p>"
+						+ "align=\"center\">Select a resource to view. Some text files may open in new tabs and unreadable files may be downloaded instead of displayed.</p>"
 						+ "</body></html>");
 			} else {
 				browser.setText("<html><body>"
 						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">No resources available</p>"
+						+ "align=\"center\">No resources available. Some text files may open in new tabs and unreadable files may be downloaded instead of displayed.</p>"
 						+ "</body></html>");
 			}
 		} catch (SWTError e) {
@@ -259,13 +267,21 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		if (resource == null) {
 			Control topControl = stackLayout.topControl;
 			if (topControl != browser) {
-				// Update the browser.
-				browser.setText("<html><body>"
-						+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-						+ "align=\"center\">Select a resource to view</p>"
-						+ "</body></html>");
-				stackLayout.topControl = browser;
-				pageComposite.layout();
+
+				if (browser != null && !browser.isDisposed()) {
+					// Update the browser.
+					browser.setText("<html><body>"
+							+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
+							+ "align=\"center\">Select a resource to view. Some text files may open in new tabs and unreadable files may be downloaded instead of displayed.</p>"
+							+ "</body></html>");
+					stackLayout.topControl = browser;
+					pageComposite.layout();
+				} else {
+					Label label = new Label(pageComposite, SWT.CENTER);
+					label.setText(
+							"No browser detected. You must install or configure a web browser for your operating system, if availabe, to view some resources. Some resources may be openable and appear in text editors in new tabs.");
+					stackLayout.topControl = label;
+				}
 
 				// Dispose of the previous Control occupying the
 				// ResourcePage.
@@ -413,7 +429,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 						// Clear the browser and make it the top widget.
 						browser.setText("<html><body>"
 								+ "<p style=\"font-family:Tahoma;font-size:x-small\" "
-								+ "align=\"center\">No resources available</p>"
+								+ "align=\"center\">No resources available.  Some text files may open in new tabs and unreadable files may be downloaded instead of displayed.</p>"
 								+ "</body></html>");
 						stackLayout.topControl = browser;
 						pageComposite.layout();
@@ -524,6 +540,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			try {
 				event.getDelta().accept(new IResourceDeltaVisitor() {
+					@Override
 					public boolean visit(IResourceDelta delta)
 							throws CoreException {
 						for (ICEResource r : ICEResourcePage.this.resourceComponent
