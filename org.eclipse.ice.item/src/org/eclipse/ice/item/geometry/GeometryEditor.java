@@ -12,13 +12,19 @@
  *******************************************************************************/
 package org.eclipse.ice.item.geometry;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Locale;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
@@ -26,6 +32,7 @@ import org.eclipse.ice.item.ItemType;
 import org.eclipse.january.geometry.Geometry;
 import org.eclipse.january.geometry.GeometryFactory;
 import org.eclipse.january.geometry.INode;
+import org.eclipse.january.geometry.xtext.obj.importer.OBJGeometryImporter;
 
 import model.IRenderElement;
 
@@ -117,19 +124,29 @@ public class GeometryEditor extends Item {
 	public void loadInput(String file) {
 		
 		// Only import if a valid stl file
-		if (file != null && (file.endsWith(".stl"))) {
+		if (file != null && (file.toLowerCase(Locale.ENGLISH).endsWith(".stl") || file.toLowerCase(Locale.ENGLISH).endsWith(".obj"))) {
 			
-			Path path = FileSystems.getDefault().getPath(file);
+			//Convert the partial file path string into a full path
+			IFile inputFile = project.getFile(file);
+			IPath inputPath = inputFile.getProjectRelativePath();
+			Path path = Paths.get(project.getLocation().toOSString() + System.getProperty("file.separator") + inputPath.toOSString());
+			
+			//TODO Why 1? Remove this magic number
 			GeometryComponent comp = (GeometryComponent) form.getComponent(1);
 			Geometry geom = comp.getGeometry();
-			Geometry imported = GeometryFactory.eINSTANCE.createSTLGeometryImporter().load(path);
+			
+			//Import the file according to its type
+			Geometry imported = null;
+			if(file.toLowerCase(Locale.ENGLISH).endsWith(".stl")){
+				imported = GeometryFactory.eINSTANCE.createSTLGeometryImporter().load(path);
+			} else{
+				imported = new OBJGeometryImporter().load(path);
+			}
 
+			//Add each of the new nodes to the root geometry
 			synchronized (geom) {
-				//INode union = GeometryFactory.eINSTANCE.createUnion();
-				//geom.addNode(union);
 				for(int i=0; i<imported.getNodes().size(); i++) {
 					INode node = (INode) imported.getNodes().get(i).clone();
-					//union.addNode(node);
 					geom.addNode(node);
 				}
 			}
