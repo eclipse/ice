@@ -26,7 +26,6 @@ import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.MatrixComponent;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.datastructures.form.TimeDataComponent;
@@ -85,7 +84,7 @@ public class ComponentPropertySection extends AbstractPropertySection
 	 * DataComponentComposites (or any Controls) should be added to this list
 	 * for later cleanup.
 	 */
-	protected final List<Control> sectionControls = new ArrayList<Control>();
+	protected final List<Control> sectionControls = new ArrayList<>();
 
 	/**
 	 * The index of the Component in its parent TreeComposite. This is used in

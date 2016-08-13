@@ -38,8 +38,6 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -129,7 +127,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 
 		// Create the list of text file extensions
 		String[] extensions = { "txt", "sh", "i", "csv" };
-		textFileExtensions = new ArrayList<String>(Arrays.asList(extensions));
+		textFileExtensions = new ArrayList<>(Arrays.asList(extensions));
 
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this,
 				IResourceChangeEvent.POST_CHANGE);
@@ -211,7 +209,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		// It is possible that constructing the Browser throws an SWTError.
 		// Thus, to create the browser, we must use a try-catch block.
 		try {
-			// Initialize the browser and apply the layout. 
+			// Initialize the browser and apply the layout.
 			browser = new Browser(parent, SWT.NONE);
 			toolkit.adapt(browser);
 			browser.layout(true);
@@ -524,6 +522,7 @@ public class ICEResourcePage extends ICEFormPage implements ISelectionListener,
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			try {
 				event.getDelta().accept(new IResourceDeltaVisitor() {
+					@Override
 					public boolean visit(IResourceDelta delta)
 							throws CoreException {
 						for (ICEResource r : ICEResourcePage.this.resourceComponent
