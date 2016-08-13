@@ -15,7 +15,10 @@ Require-Bundle: org.eclipse.e4.ui.model.workbench;bundle-version="1.0.1.v2013111
  org.eclipse.jface,
  org.eclipse.nebula.widgets.nattable.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: javax.inject,
+Import-Package: ca.odell.glazedlists,
+ ca.odell.glazedlists.gui,
+ ca.odell.glazedlists.util.concurrent,
+ javax.inject,
  org.eclipse.core.runtime,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.materials,
