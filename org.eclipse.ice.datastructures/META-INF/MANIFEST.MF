@@ -39,7 +39,6 @@ Import-Package: ca.odell.glazedlists,
  org.eclipse.emf.ecore.xmi.impl,
  org.eclipse.emf.ecore.xmi.util,
  org.eclipse.january.geometry,
- org.eclipse.xsd,
  org.osgi.framework,
  org.osgi.service.prefs,
  org.slf4j
