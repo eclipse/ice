@@ -1,48 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="neon" sequenceNumber="203">
+<?pde version="3.8"?><target name="neon" sequenceNumber="207">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="gov.lbnl.visit.swt" version="0.0.0"/>
-<repository location="http://eclipseice.ornl.gov/downloads/visit_java_client/1.0.0-SNAPSHOT/p2/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ease.engine.jython.feature.feature.group" version="2.7.0.I201604140914"/>
-<repository location="http://bintray.com/artifact/download/pontesegger/ease-engines/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.visualization.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/nebula/releases/1.0.0/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="bcprov" version="0.0.0"/>
-<unit id="com.spotify.docker-client.shaded" version="0.0.0"/>
-<unit id="bcpkix" version="0.0.0"/>
-<repository location="http://eclipseice.ornl.gov/downloads/spotify_docker_client/SNAPSHOT-3.1.1-SHADED/p2"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="ca.odell.glazedlists" version="0.0.0"/>
-<unit id="com.google.gson" version="0.0.0"/>
-<unit id="com.sun.jersey" version="0.0.0"/>
-<unit id="javax.activation" version="0.0.0"/>
-<unit id="javax.xml.rpc" version="0.0.0"/>
-<unit id="javax.xml.soap" version="0.0.0"/>
-<unit id="org.apache.commons.collections" version="0.0.0"/>
-<unit id="org.apache.commons.math" version="0.0.0"/>
-<unit id="org.apache.commons.beanutils" version="0.0.0"/>
-<unit id="org.codehaus.jackson.jaxrs" version="0.0.0"/>
-<unit id="org.slf4j.log4j" version="0.0.0"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.core.source.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.autotools.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.cdt.bupc.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.cdt.core.parser.upc.feature.feature.group" version="0.0.0"/>
@@ -127,11 +86,44 @@
 <unit id="org.eclipse.zest.sdk.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/releases/neon/"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.eavp.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/eavp/builds/next"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.ease.ui.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.javascript.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.modules.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.modules.charting.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.modules.team.svn.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.modules.unittest.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.python.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.python.jython.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/ease/update/nightly"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.ease.engine.jython.feature.feature.group" version="2.7.0.I201604140914"/>
+<repository location="http://bintray.com/artifact/download/pontesegger/ease-engines/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.nebula.visualization.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/nebula/releases/1.0.0/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.nebula.widgets.nattable.core.source.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="gov.lbnl.visit.swt" version="0.0.0"/>
+<repository location="http://eclipseice.ornl.gov/downloads/visit_java_client/1.0.0-SNAPSHOT/p2/"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.apache.log4j" version="0.0.0"/>
 <unit id="org.hamcrest.core" version="0.0.0"/>
 <unit id="org.hamcrest.library" version="0.0.0"/>
@@ -144,21 +136,31 @@
 <unit id="org.eclipse.swtbot.forms.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/technology/swtbot/releases/latest"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ease.ui.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.javascript.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.charting.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.team.svn.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.modules.unittest.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.python.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.python.jython.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/ease/update/nightly"/>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="bcprov" version="0.0.0"/>
+<unit id="com.spotify.docker-client.shaded" version="0.0.0"/>
+<unit id="bcpkix" version="0.0.0"/>
+<repository location="http://eclipseice.ornl.gov/downloads/spotify_docker_client/SNAPSHOT-3.1.1-SHADED/p2"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="javax.ws.rs" version="1.1.1.v20130318-1750"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="com.sun.jersey" version="1.17.0.v201503170330"/>
+<unit id="javax.activation" version="1.1.0.v201211130549"/>
+<unit id="com.google.gson" version="2.2.4.v201311231704"/>
+<unit id="com.google.guava" version="15.0.0.v201403281430"/>
+<unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
+<unit id="org.apache.commons.math" version="2.1.0.v201105210652"/>
+<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+<unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
+<unit id="javax.xml.soap" version="1.3.0.v201105210645"/>
+<unit id="org.codehaus.jackson.jaxrs" version="1.6.0.v20101005-1100"/>
+<unit id="ca.odell.glazedlists" version="1.9.0.v201303080712"/>
+<unit id="org.slf4j.log4j" version="1.7.2.v20130115-1340"/>
+<unit id="javax.xml.rpc" version="1.1.0.v201209140446"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
 </location>
 </locations>
 </target>
