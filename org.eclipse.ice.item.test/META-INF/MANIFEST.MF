@@ -6,8 +6,8 @@ Bundle-Version: 2.1.8.qualifier
 Fragment-Host: org.eclipse.ice.item;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.spotify.docker.client,
- org.apache.http.conn;version="4.3.4",
- org.bouncycastle.openssl;version="1.51.0",
+ org.apache.http.conn,
+ org.bouncycastle.openssl,
  org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.service.mesh.datastructures,
  org.eclipse.ice.core.iCore,
@@ -16,7 +16,7 @@ Import-Package: com.spotify.docker.client,
  org.eclipse.ice.item,
  org.eclipse.ice.item.action,
  org.eclipse.ice.persistence.xml,
- org.osgi.framework;version="1.6.0"
+ org.osgi.framework
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-Vendor: Oak Ridge National Laboratory
 

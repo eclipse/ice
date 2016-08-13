@@ -12,6 +12,6 @@ Import-Package: org.eclipse.core.filesystem,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.datastructures.form.emf,
  org.eclipse.ice.item,
- org.slf4j;version="1.7.2"
+ org.slf4j
 Export-Package: org.eclipse.ice.caebat.batml
 Bundle-Vendor: Oak Ridge National Laboratory

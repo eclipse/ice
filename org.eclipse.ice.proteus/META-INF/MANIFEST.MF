@@ -9,7 +9,7 @@ Import-Package: org.eclipse.ice.datastructures.form,
  org.eclipse.ice.io.ini,
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.item.jobLauncher,
- org.slf4j;version="1.7.2"
+ org.slf4j
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.ice.item;bundle-version="2.0.0",

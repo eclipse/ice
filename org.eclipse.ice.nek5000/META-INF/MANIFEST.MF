@@ -15,7 +15,7 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.ice.datastructures.form,
  org.eclipse.ice.item,
  org.eclipse.ice.item.jobLauncher,
- org.slf4j;version="1.7.2"
+ org.slf4j
 Service-Component: OSGI-INF/nekModelComponent.xml,
  OSGI-INF/nek5000LauncherComponent.xml,
  OSGI-INF/nekVizServiceFactory.xml
