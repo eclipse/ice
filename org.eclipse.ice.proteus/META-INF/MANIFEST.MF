@@ -5,15 +5,24 @@ Bundle-SymbolicName: org.eclipse.ice.proteus;singleton:=true
 Bundle-Version: 2.1.8.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Service-Component: OSGI-INF/*.xml
-Import-Package: org.eclipse.ice.datastructures.form,
+Import-Package: ca.odell.glazedlists,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.datastructures.componentVisitor,
+ org.eclipse.ice.datastructures.entry,
+ org.eclipse.ice.datastructures.form,
+ org.eclipse.ice.datastructures.form.emf,
+ org.eclipse.ice.datastructures.form.iterator,
+ org.eclipse.ice.datastructures.form.painfullySimpleForm,
+ org.eclipse.ice.datastructures.jaxbclassprovider,
+ org.eclipse.ice.datastructures.resource,
  org.eclipse.ice.io.ini,
  org.eclipse.ice.io.serializable,
+ org.eclipse.ice.item,
  org.eclipse.ice.item.jobLauncher,
+ org.eclipse.ice.item.model,
  org.slf4j
-Require-Bundle: org.eclipse.core.resources;bundle-version="3.7.100",
- org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.ice.item;bundle-version="2.0.0",
- org.eclipse.ice.datastructures
 Export-Package: org.eclipse.ice.proteus;
   uses:="org.eclipse.ice.item,
    org.eclipse.ice.datastructures.form,
