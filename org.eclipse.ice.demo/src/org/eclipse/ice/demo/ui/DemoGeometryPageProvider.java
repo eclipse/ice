@@ -47,7 +47,7 @@ public class DemoGeometryPageProvider implements IPageProvider {
 	public ArrayList<IFormPage> getPages(FormEditor formEditor,
 			ArrayList<Component> components) {
 
-		ArrayList<IFormPage> pages = new ArrayList<IFormPage>();
+		ArrayList<IFormPage> pages = new ArrayList<>();
 		// Get the GeometryComponent and create the GeometryPage.
 		if (!(components.isEmpty())) {
 			GeometryComponent geometryComponent = (GeometryComponent) (components
