@@ -32,3 +32,4 @@ Import-Package: ca.odell.glazedlists,
  org.slf4j
 Export-Package: org.eclipse.ice.reflectivity
 Bundle-Vendor: Oak Ridge National Laboratory
+Require-Bundle: ca.odell.glazedlists;bundle-version="1.9.0"
