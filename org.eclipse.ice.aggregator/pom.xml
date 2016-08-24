@@ -15,7 +15,6 @@
   	<module>../org.eclipse.ice.caebat.batml</module>
   	<module>../org.eclipse.ice.caebat.batml.test</module>
   	<module>../org.eclipse.ice.client</module>
-  	<module>../org.eclipse.ice.client.compatibility</module>
   	<module>../org.eclipse.ice.client.rcp</module>
   	<module>../org.eclipse.ice.client.test</module>
   	<module>../org.eclipse.ice.client.widgets</module>
