@@ -13,7 +13,10 @@
  *******************************************************************************/
 package org.eclipse.ice.datastructures.entry.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,21 +37,23 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
 import org.eclipse.ice.datastructures.entry.FileEntry;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * This class tests the functionality of the FileEntry. 
+ * This class tests the functionality of the FileEntry.
  * 
  * @author Alex McCaskey
  *
  */
+@Ignore
 public class FileEntryTester {
 
 	/**
-	 * Reference to the itemData project. 
+	 * Reference to the itemData project.
 	 */
 	private static IProject project;
-	
+
 	/**
 	 * <p>
 	 * This operation checks the project setup of the Item to ensure that
@@ -93,38 +98,39 @@ public class FileEntryTester {
 			fail();
 		}
 	}
-	
+
 	/**
-	 * Check that files are populated in the allowed values list. 
+	 * Check that files are populated in the allowed values list.
 	 */
 	@Test
 	public void checkAllowedValues() {
-		// Make sure we can construct a FileEntry 
-		// and it correctly sets up its allowed values. 
+		// Make sure we can construct a FileEntry
+		// and it correctly sets up its allowed values.
 		FileEntry entry = new FileEntry();
 		entry.setProject(project);
-	
+
 		// We have 7 files in itemData right now
 		// MAKE SURE WE UPDATE THIS IF IT CHANGES
 		assertEquals(7, entry.getAllowedValues().size());
-		
+
 		// Now try it where we specify the file extension
 		FileEntry yamlFiles = new FileEntry("yaml");
 		yamlFiles.setProject(project);
 		assertEquals(1, yamlFiles.getAllowedValues().size());
-		
-		// Check that if we add a file and update, 
+
+		// Check that if we add a file and update,
 		// the allowed values change to record that
 		IFile file = project.getFile("newFile.txt");
 		try {
-			file.create(new ByteArrayInputStream(new String("").getBytes()), true, null);
+			file.create(new ByteArrayInputStream(new String("").getBytes()),
+					true, null);
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail();
 		}
-		
+
 		assertEquals(8, entry.getAllowedValues().size());
-		
+
 		try {
 			file.delete(true, null);
 		} catch (CoreException e) {
@@ -134,31 +140,32 @@ public class FileEntryTester {
 	}
 
 	/**
-	 * Check that we can set the file, and that 
-	 * the file path is reported correctly.
+	 * Check that we can set the file, and that the file path is reported
+	 * correctly.
 	 */
 	@Test
 	public void checkSetValue() {
-		// We are gonna test that we can get the file path, 
+		// We are gonna test that we can get the file path,
 		// so set the expected path.
 		String separator = System.getProperty("file.separator");
-		String actualPath = System.getProperty("user.home") + separator + "ICETests"
-				+ separator + "itemData" + separator + "moose_test.yaml";
-		
-		// Create a FileEntry over yaml files. 
+		String actualPath = System.getProperty("user.home") + separator
+				+ "ICETests" + separator + "itemData" + separator
+				+ "moose_test.yaml";
+
+		// Create a FileEntry over yaml files.
 		FileEntry entry = new FileEntry("yaml");
 		entry.setProject(project);
-		
+
 		// Make sure we can't set an unallowed value
 		assertFalse(entry.setValue("hello.yaml"));
-		
+
 		// Set the allowed value.
 		assertTrue(entry.setValue("moose_test.yaml"));
-		
+
 		// Make sure the IFile was set correctly.
 		assertEquals(actualPath, entry.getAbsoluteFilePath());
 	}
-	
+
 	/**
 	 * This operation checks the Entry to ensure that its copy() and clone()
 	 * operations work as specified.
@@ -205,10 +212,10 @@ public class FileEntryTester {
 
 		return;
 	}
-	
+
 	/**
-	 * This operation checks the AbstractEntry class to insure that its copy operation
-	 * works.
+	 * This operation checks the AbstractEntry class to insure that its copy
+	 * operation works.
 	 */
 	@Test
 	public void checkEquality() {
@@ -221,7 +228,7 @@ public class FileEntryTester {
 		entry.setProject(project);
 		copyOfEntry.setProject(project);
 		otherEntry.setProject(project);
-		
+
 		// Setup the base AbstractEntry
 		entry.setId(6);
 		entry.setName("Copy Test Entry");
@@ -239,7 +246,6 @@ public class FileEntryTester {
 		copyOfEntry.setTag("ChevyChase");
 		copyOfEntry.setRequired(true);
 
-
 		// Test AbstractEntry.equals(), first one should be true, second false
 		assertEquals(entry.equals(copyOfEntry), true);
 		assertEquals(entry.equals(otherEntry), false);
@@ -252,13 +258,12 @@ public class FileEntryTester {
 		assertEquals(entry.hashCode() == copyOfEntry.hashCode(), false);
 		assertEquals(entry.hashCode() == otherEntry.hashCode(), false);
 
-		
 		return;
 	}
 
 	/**
-	 * This operation checks the ability of the DiscreteEntry to persist itself to XML
-	 * and to load itself from an XML input stream.
+	 * This operation checks the ability of the DiscreteEntry to persist itself
+	 * to XML and to load itself from an XML input stream.
 	 */
 	@Test
 	public void checkXMLPersistence() {

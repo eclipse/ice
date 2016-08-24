@@ -768,6 +768,7 @@ public class NekReader {
 							vertex = (VertexController) factory
 									.createProvider(vertexComponent)
 									.createController(vertexComponent);
+							vertex.setProperty(MeshProperty.NAME, "Vertex");
 							vertex.setProperty(MeshProperty.ID,
 									Integer.toString(vertexId)); // Set unique
 																	// ID
@@ -818,6 +819,7 @@ public class NekReader {
 							edge = (EdgeController) factory
 									.createProvider(edgeComponent)
 									.createController(edgeComponent);
+							edge.setProperty(MeshProperty.NAME, "Edge");
 							edge.setProperty(MeshProperty.ID,
 									Integer.toString(edgeId)); // Set
 							// unique

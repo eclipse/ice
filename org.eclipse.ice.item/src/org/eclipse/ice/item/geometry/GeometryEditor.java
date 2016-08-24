@@ -34,8 +34,6 @@ import org.eclipse.january.geometry.GeometryFactory;
 import org.eclipse.january.geometry.INode;
 import org.eclipse.january.geometry.xtext.obj.importer.OBJGeometryImporter;
 
-import model.IRenderElement;
-
 /**
  * <p>
  * This is a subclass of Item that provides 3D geometry editing services to ICE.

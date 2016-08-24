@@ -11,7 +11,10 @@ Import-Package: ca.odell.glazedlists,
  org.apache.http.conn,
  org.bouncycastle.openssl,
  org.eclipse.eavp.viz.datastructures.VizObject,
+ org.eclipse.eavp.viz.service,
+ org.eclipse.eavp.viz.service.csv,
  org.eclipse.eavp.viz.service.mesh.datastructures,
+ org.eclipse.eavp.viz.service.visit,
  org.eclipse.ice.core.iCore,
  org.eclipse.ice.datastructures.entry,
  org.eclipse.ice.io.serializable,
@@ -19,6 +22,7 @@ Import-Package: ca.odell.glazedlists,
  org.eclipse.ice.item.action,
  org.eclipse.ice.persistence.xml,
  org.osgi.framework
+ gov.lbnl.visit.swt
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-Vendor: Oak Ridge National Laboratory
 
