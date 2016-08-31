@@ -14,5 +14,5 @@
 	<packaging>eclipse-test-plugin</packaging>
 	<properties>
 		<sonar.skip>true</sonar.skip>
-	</properties>
+	</properties>	
 </project>
