@@ -39,6 +39,7 @@ Import-Package:
  org.eclipse.eavp.viz.modeling.properties,
  org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.csv,
+ org.eclipse.eavp.viz.service.geometry.properties,
  org.eclipse.eavp.viz.service.geometry.widgets,
  org.eclipse.eavp.viz.service.internal,
  org.eclipse.eavp.viz.service.mesh.datastructures,

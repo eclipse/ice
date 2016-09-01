@@ -16,7 +16,6 @@ import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
@@ -34,8 +33,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * <p>
  * This class is ICEFormPage that displays the GeometryEditor powered by JavaFX.
- * It automatically opens the ShapeTreeView and TransformationView to allow the
- * user to add and edit geometry.
+ * It automatically opens the ShapeTreeView to allow the user to add and edit
+ * geometry.
  * </p>
  * 
  * @author Jay Jay Billings
@@ -184,8 +183,6 @@ public class ICEGeometryPage extends ICEFormPage
 
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(ShapeTreeView.ID);
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);

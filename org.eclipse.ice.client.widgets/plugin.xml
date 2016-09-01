@@ -56,14 +56,6 @@
                name="Shapes"
                restorable="true">
          </view>
-         <view
-               allowMultiple="false"
-               class="org.eclipse.eavp.viz.service.geometry.widgets.TransformationView"
-               fastViewWidthRatio="0.75f"
-               id="org.eclipse.eavp.viz.service.geometry.widgets.TransformationView"
-               name="Transformation View"
-               restorable="true">
-         </view>
          <!-- ICE Resource View -->
          <view
                allowMultiple="false"
@@ -154,14 +146,6 @@
                relationship="stack"
                relative="org.eclipse.ice.client.common.ItemViewer"
                visible="true">
-         </view>
-         <view
-               closeable="false"
-               id="org.eclipse.eavp.viz.service.geometry.widgets.TransformationView"
-               minimized="false"
-               ratio="0.25f"
-               relationship="left"
-               relative="org.eclipse.ui.console.ConsoleView">
          </view>
          <newWizardShortcut
                id="org.eclipse.ice.client.common.CreateItemWizard">
@@ -451,4 +435,11 @@
           class="org.eclipse.ice.client.widgets.providers.Default.DefaultMasterDetailsPageProvider">
     </Implementation>
  </extension>
+	<extension point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+		<propertyContributor 
+			contributorId="org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView"
+			tabDescriptorProvider="org.eclipse.eavp.viz.service.geometry.properties.ShapeTabDescriptorProvider">
+			<propertyCategory category="GeometrySelection"/>
+		</propertyContributor>
+	</extension>
 </plugin>

@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
@@ -208,8 +207,6 @@ public class ICEMeshPage extends ICEFormPage
 
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(MeshElementTreeView.ID);
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
