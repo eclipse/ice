@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.nek5000.test
 Bundle-SymbolicName: org.eclipse.ice.nek5000.test
-Bundle-Version: 2.1.8.qualifier
-Fragment-Host: org.eclipse.ice.nek5000;bundle-version="2.0.0"
+Bundle-Version: 0.1.1.qualifier
+Fragment-Host: org.eclipse.ice.nek5000
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.modeling,
@@ -17,6 +17,6 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.january.geometry
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.eclipse.core.resources;bundle-version="3.7.100",
- org.eclipse.ice.item;bundle-version="2.0.0",
+ org.eclipse.ice.item,
  org.eclipse.ice.datastructures
 Bundle-Vendor: Oak Ridge National Laboratory

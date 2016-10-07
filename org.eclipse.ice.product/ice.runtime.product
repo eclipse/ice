@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ICE" uid="ice.runtime.product" id="org.eclipse.ice.client.rcp.runtime_product" application="org.eclipse.ui.ide.workbench" version="2.1.8.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="ICE" uid="ice.runtime.product" id="org.eclipse.ice.client.rcp.runtime_product" application="org.eclipse.ui.ide.workbench" version="0.1.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

@@ -134,7 +134,7 @@ def print_header(opts, os_type, arch_type):
 
 
 def get_package_file(pkg, os_type, arch_type):
-    VERSION = "2.1.8"
+    VERSION = "0.1.1"
     pkg_files = {"ICE" : {"Windows"   : {"x86_64" : "ice-win32-x86_64-"+VERSION+".zip"           ,
                                          "x86"    : "ice-win32-x86-"+VERSION+".zip"              },
                             "Darwin"  : {"x86_64" : "ice-macosx-cocoa-x86_64"+VERSION+".zip"     },

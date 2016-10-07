@@ -25,7 +25,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.ice</groupId>
 	<artifactId>org.eclipse.ice.build</artifactId>
-	<version>2.1.8-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<pluginRepositories>
@@ -241,7 +241,7 @@
 						<artifact>
 							<groupId>org.eclipse.ice</groupId>
 							<artifactId>org.eclipse.ice.target.neon</artifactId>
-							<version>2.1.8-SNAPSHOT</version>
+							<version>0.1.1-SNAPSHOT</version>
 							<classifier>neon</classifier>
 						</artifact>
 					</target>
