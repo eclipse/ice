@@ -55,24 +55,24 @@ public class YAMLTester {
 	}
 
 	/**
-	 * This operation loads input from INL's BISON application, based on MOOSE,
+	 * This operation loads input from INL's Moose framework
 	 * to make sure that the file can be parsed. It is also based on an example
 	 * from the SnakeYAML website.
 	 */
 	@Test
-	public void checkSnakeYAMLWithBison() {
+	public void checkSnakeYAMLWithMoose() {
 
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
 		InputStream input = null;
-		File bisonFile = null;
+		File mooseFile = null;
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "itemData";
 
-		// Load the bison file
+		// Load the moose file
 		try {
-			bisonFile = new File(userDir + separator + "bison.yaml");
-			input = new FileInputStream(bisonFile);
+			mooseFile = new File(userDir + separator + "moose_test.yaml");
+			input = new FileInputStream(mooseFile);
 		} catch (FileNotFoundException e) {
 			// Complain if the file is not found
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class YAMLTester {
 
 		// Check the input. The short input file only has the /Adaptivity block
 		// from the input, so size = 1.
-		assertEquals(34, data.size());
+		assertEquals(42, data.size());
 		// Check the name, type and description of the /Adaptivity block
 		assertEquals("/Adaptivity", dataMap.get("name"));
 		assertEquals("", dataMap.get("description"));

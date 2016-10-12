@@ -17,10 +17,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.awt.Polygon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -32,9 +35,31 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.eavp.viz.modeling.Edge;
+import org.eclipse.eavp.viz.modeling.EdgeController;
+import org.eclipse.eavp.viz.modeling.Face;
+import org.eclipse.eavp.viz.modeling.FaceController;
+import org.eclipse.eavp.viz.modeling.Vertex;
+import org.eclipse.eavp.viz.modeling.VertexController;
+import org.eclipse.eavp.viz.modeling.base.BasicController;
+import org.eclipse.eavp.viz.modeling.base.BasicMesh;
+import org.eclipse.eavp.viz.modeling.base.BasicView;
+import org.eclipse.eavp.viz.modeling.base.IController;
+import org.eclipse.eavp.viz.modeling.base.IMesh;
+import org.eclipse.eavp.viz.modeling.factory.IControllerProvider;
+import org.eclipse.eavp.viz.modeling.factory.IControllerProviderFactory;
+import org.eclipse.eavp.viz.service.BasicVizServiceFactory;
+import org.eclipse.eavp.viz.service.IPlot;
+import org.eclipse.eavp.viz.service.IVizCanvas;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.eavp.viz.service.IVizServiceFactory;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygon;
+import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.nek5000.NekModel;
+import org.eclipse.ice.nek5000.internal.VizServiceFactoryHolder;
+import org.eclipse.january.geometry.Geometry;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -208,11 +233,93 @@ public class NekModelTester {
 	 */
 	private NekModel setupNekItem() {
 
+		//First provide a fake service 
+		IVizService service = new FakeVizService();
+		IVizServiceFactory factory = new BasicVizServiceFactory();
+		factory.register(service);
+		VizServiceFactoryHolder.setVizServiceFactory(factory);
+		
 		// Local Declarations
 		NekModel model = new NekModel(projectSpace,
 				new TestNekControllerFactory());
 
 		return model;
+	}
+	
+	/**
+	 * A simple implementation of IVizService for testing purposes.
+	 * 
+	 * @author Robert Smith
+	 *
+	 */
+	public class FakeVizService implements IVizService{
+
+		@Override
+		public IVizCanvas createCanvas(IController object) throws Exception {
+			return null;
+		}
+
+		@Override
+		public IControllerProviderFactory getControllerProviderFactory() {
+
+			//Return a dummy factory that will provide simple controller providers
+			return new IControllerProviderFactory(){
+
+				@Override
+				public IControllerProvider createProvider(IMesh model) {
+					
+					//Return a dummy controller provider that will provide simple controllers
+					return new IControllerProvider(){
+
+						@Override
+						public IController createController(IMesh model) {
+							
+							//Return a default controller for the correct type.
+							if(model.getClass() == Vertex.class){
+							return new VertexController((Vertex) model, new BasicView());
+							} 
+							else if(model.getClass() == Edge.class){
+								return new EdgeController((Edge) model, new BasicView());
+							}
+							else if(model.getClass() == NekPolygon.class){
+								return new NekPolygonController((Face) model, new BasicView());
+							}
+							
+							return null;
+						}
+					};
+				}
+			};
+		}
+
+		@Override
+		public String getName() {
+			return "ICE JavaFX Mesh Editor";
+		}
+
+		@Override
+		public String getVersion() {
+			return null;
+		}
+
+		@Override
+		public IPlot createPlot(URI file) throws Exception {
+			return null;
+		}
+
+		@Override
+		public Set<String> getSupportedExtensions() {
+			
+			//Return an empty set
+			return new HashSet<String>();
+		}
+
+		@Override
+		public IVizCanvas createCanvas(Geometry arg0) throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
 	}
 
 }

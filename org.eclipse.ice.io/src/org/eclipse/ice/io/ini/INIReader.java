@@ -496,7 +496,7 @@ public class INIReader implements ITemplatedReader {
 	 */
 	@Override
 	public String getReaderType() {
-		return "INIReader";
+		return "INI";
 	}
 
 }

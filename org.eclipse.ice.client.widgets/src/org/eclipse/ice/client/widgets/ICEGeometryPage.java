@@ -15,17 +15,17 @@ package org.eclipse.ice.client.widgets;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
+import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -33,8 +33,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * <p>
  * This class is ICEFormPage that displays the GeometryEditor powered by JavaFX.
- * It automatically opens the ShapeTreeView and TransformationView to allow the
- * user to add and edit geometry.
+ * It automatically opens the ShapeTreeView to allow the user to add and edit
+ * geometry.
  * </p>
  * 
  * @author Jay Jay Billings
@@ -62,6 +62,12 @@ public class ICEGeometryPage extends ICEFormPage
 	 * for the geometry editor.
 	 */
 	private IVizService service;
+
+	/**
+	 * The IVizCanvas responsible for drawing the composite this page will
+	 * display.
+	 */
+	private IVizCanvas vizCanvas;
 
 	/**
 	 * <p>
@@ -117,7 +123,19 @@ public class ICEGeometryPage extends ICEFormPage
 	 * @param geometryComponent
 	 */
 	public void setGeometry(GeometryComponent geometryComponent) {
+
+		// Unregister from the old component
+		if (geometryComp != null) {
+			geometryComp.unregister(this);
+		}
+
+		// Set the component
 		geometryComp = geometryComponent;
+
+		// Register with the new component
+		if (geometryComp != null) {
+			geometryComp.register(this);
+		}
 	}
 
 	/**
@@ -131,6 +149,8 @@ public class ICEGeometryPage extends ICEFormPage
 		ShapeTreeView shapeTreeView = (ShapeTreeView) getSite()
 				.getWorkbenchWindow().getActivePage()
 				.findView(ShapeTreeView.ID);
+		shapeTreeView.setRenderElementHolder(
+				vizCanvas.getRenderElementHolder(geometryComp.getGeometry()));
 		shapeTreeView.setGeometry(geometryComp.getGeometry());
 
 		return;
@@ -163,8 +183,6 @@ public class ICEGeometryPage extends ICEFormPage
 
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(ShapeTreeView.ID);
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
@@ -178,13 +196,11 @@ public class ICEGeometryPage extends ICEFormPage
 		// Get Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		service = factory.get("ICE Geometry Editor");
-		((ShapeTreeView) getSite().getWorkbenchWindow().getActivePage()
-				.findView(ShapeTreeView.ID)).setFactory(service.getFactory());
+		geometryComp.setService(service);
 
 		// Create and draw geometry canvas
 		try {
-			IVizCanvas vizCanvas = service
-					.createCanvas(geometryComp.getGeometry());
+			vizCanvas = service.createCanvas(geometryComp.getGeometry());
 			vizCanvas.draw(parent);
 
 		} catch (Exception e) {
@@ -207,7 +223,14 @@ public class ICEGeometryPage extends ICEFormPage
 	 */
 	@Override
 	public void update(IUpdateable component) {
-		dirty = true;
+
+		// If the geometry was updated, the editor is now dirty
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				editor.setDirty(true);
+			};
+		});
 	}
 
 	@Override

@@ -12,16 +12,27 @@
  *******************************************************************************/
 package org.eclipse.ice.item.geometry;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Locale;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.eavp.viz.modeling.base.BasicView;
-import org.eclipse.eavp.viz.modeling.ShapeController;
-import org.eclipse.eavp.viz.modeling.ShapeMesh;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
+import org.eclipse.january.geometry.INode;
+import org.eclipse.january.geometry.xtext.obj.importer.OBJGeometryImporter;
 
 /**
  * <p>
@@ -95,8 +106,7 @@ public class GeometryEditor extends Item {
 		// Create a GeometryComponent to hold the Geometry
 		GeometryComponent geometryComp = new GeometryComponent();
 
-		geometryComp.setGeometry(
-				new ShapeController(new ShapeMesh(), new BasicView()));
+		geometryComp.setGeometry(GeometryFactory.eINSTANCE.createGeometry());
 		geometryComp.setName("Geometry Data");
 		geometryComp.setId(1);
 		geometryComp.setDescription(getDescription());
@@ -106,5 +116,38 @@ public class GeometryEditor extends Item {
 
 		return;
 
+	}
+	
+	@Override
+	public void loadInput(String file) {
+		
+		// Only import if a valid stl file
+		if (file != null && (file.toLowerCase(Locale.ENGLISH).endsWith(".stl") || file.toLowerCase(Locale.ENGLISH).endsWith(".obj"))) {
+			
+			//Convert the partial file path string into a full path
+			IFile inputFile = project.getFile(file);
+			IPath inputPath = inputFile.getProjectRelativePath();
+			Path path = Paths.get(project.getLocation().toOSString() + System.getProperty("file.separator") + inputPath.toOSString());
+			
+			//TODO Why 1? Remove this magic number
+			GeometryComponent comp = (GeometryComponent) form.getComponent(1);
+			Geometry geom = comp.getGeometry();
+			
+			//Import the file according to its type
+			Geometry imported = null;
+			if(file.toLowerCase(Locale.ENGLISH).endsWith(".stl")){
+				imported = GeometryFactory.eINSTANCE.createSTLGeometryImporter().load(path);
+			} else{
+				imported = new OBJGeometryImporter().load(path);
+			}
+
+			//Add each of the new nodes to the root geometry
+			synchronized (geom) {
+				for(int i=0; i<imported.getNodes().size(); i++) {
+					INode node = (INode) imported.getNodes().get(i).clone();
+					geom.addNode(node);
+				}
+			}
+		}
 	}
 }

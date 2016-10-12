@@ -58,70 +58,32 @@ public class MOOSEFileHandlerTester {
 		String separator = System.getProperty("file.separator");
 		DataComponent parameters = null;
 		String userDir = System.getProperty("user.home") + separator + "ICETests" + separator + "itemData";
-		String shortFilePath = userDir + separator + "bison_short.yaml";
-		String mediumFilePath = userDir + separator + "bison_medium.yaml";
-		String largeFilePath = userDir + separator + "bison.yaml";
+		String filePath = userDir + separator + "moose_test.yaml";
 		MOOSEFileHandler handler = new MOOSEFileHandler();
-
-		System.out.println("MOOSEFileHandlerTester Message: " + "Checking small sized file.");
 
 		// Load the blocks for a file with only a single parent block
 		ArrayList<TreeComposite> blocks = null;
 		try {
-			blocks = handler.loadYAML(shortFilePath);
+			blocks = handler.loadYAML(filePath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Check the blocks. This file should only have one block.
 		assertNotNull(blocks);
-		assertEquals(3, blocks.size());
+		assertEquals(42, blocks.size());
 		assertEquals("Adaptivity", blocks.get(0).getName());
 		// But that block should have several parameters
 		parameters = (DataComponent) blocks.get(0).getComponent(1);
 		assertNotNull(parameters);
-		assertEquals(3, parameters.retrieveAllEntries().size());
+		assertEquals(8, parameters.retrieveAllEntries().size());
 		// And it should also have a couple of exemplar children
 		assertTrue(blocks.get(0).hasChildExemplars());
 		assertEquals(2, blocks.get(0).getChildExemplars().size());
 
-		System.out.println("MOOSEFileHandlerTester Message: " + "Checking medium sized file.");
-
-		// Load the blocks for a file with multiple parent blocks
-		try {
-			blocks = handler.loadYAML(mediumFilePath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		for (TreeComposite block : blocks) {
-			System.out.println("Block name = " + block.getName());
-		}
-
-		// Check the blocks
-		assertNotNull(blocks);
-		assertEquals(4, blocks.size());
-
-		System.out.println("MOOSEFileHandlerTester Message: " + "Checking large sized file.");
-
-		// Load the blocks for a file with multiple parent blocks
-		try {
-			blocks = handler.loadYAML(largeFilePath);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		for (TreeComposite block : blocks) {
-			// System.out.println("Block name = " + block.getName());
-		}
-
-		// Check the blocks
-		assertNotNull(blocks);
-		assertEquals(34, blocks.size());
-
 		// Verify blocks 17 and 23 are actually AdaptiveTreeComposites
-		assertTrue(blocks.get(17) instanceof AdaptiveTreeComposite);
-		assertTrue(blocks.get(23) instanceof AdaptiveTreeComposite);
+		assertTrue(blocks.get(16) instanceof AdaptiveTreeComposite);
+		assertTrue(blocks.get(24) instanceof AdaptiveTreeComposite);
 
 		return;
 
@@ -139,7 +101,7 @@ public class MOOSEFileHandlerTester {
 		// Local declarations
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator + "ICETests" + separator + "itemData";
-		String pathName = userDir + separator + "bison.syntax";
+		String pathName = userDir + separator + "moose_test.syntax";
 
 		// Create a new MOOSEFileHandler
 		MOOSEFileHandler handler = new MOOSEFileHandler();
@@ -149,17 +111,17 @@ public class MOOSEFileHandlerTester {
 
 		// Verify it loaded an ArrayList correctly
 		assertNotNull(actionSyntax);
-		assertEquals(21, actionSyntax.size());
+		assertEquals(22, actionSyntax.size());
 
 		// Verify a couple of the entries
 		assertEquals("Adaptivity", actionSyntax.get(0));
-		assertEquals("AuxVariables/*/InitialCondition", actionSyntax.get(1));
-		assertEquals("BCs/PlenumPressure", actionSyntax.get(4));
-		assertEquals("Executioner/Adaptivity", actionSyntax.get(10));
+		assertEquals("ApplyInputParametersTest", actionSyntax.get(1));
+		assertEquals("Bounds", actionSyntax.get(4));
+		assertEquals("Executioner/Predictor", actionSyntax.get(10));
 		assertEquals("Executioner/TimeStepper", actionSyntax.get(13));
 		assertEquals("GlobalParams", actionSyntax.get(14));
-		assertEquals("Problem", actionSyntax.get(19));
-		assertEquals("Variables/*/InitialCondition", actionSyntax.get(20));
+		assertEquals("PrintMaterials", actionSyntax.get(19));
+		assertEquals("Problem", actionSyntax.get(20));
 
 		// Try loading with an invalid pathname
 		actionSyntax = handler.loadActionSyntax(null);
@@ -171,6 +133,23 @@ public class MOOSEFileHandlerTester {
 	}
 
 	/**
+	 * This method finds the child TreeComposite of modelTree that has the given
+	 * String name.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	private TreeComposite getTreeByName(ArrayList<TreeComposite> blocks, String name) {
+
+		for (TreeComposite modelTree : blocks) {
+			if (modelTree.getName().equals(name)) {
+				return modelTree;
+			}
+		}
+
+		return null;
+	}
+	/**
 	 * This operation ensures that the MOOSEFileHandler can create a MOOSE input
 	 * file from a set of incoming TreeComposites.
 	 */
@@ -180,15 +159,14 @@ public class MOOSEFileHandlerTester {
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator + "ICETests" + separator + "itemData";
-		String filePath = userDir + separator + "bison_short.yaml";
-		String inputFilePath = userDir + separator + "bison_short.input";
-		String outputFilePath = userDir + separator + "bison_short.output";
-		String refFilePath = userDir + separator + "bison_short.input.ref";
+		String filePath = userDir + separator + "moose_test.yaml";
+		String outputFilePath = userDir + separator + "moose_test.i";
+		String refFilePath = userDir + separator + "moose_test.i.ref";
 		File outputFile = null;
 		MOOSEFileHandler handler = new MOOSEFileHandler();
 		TreeComposite adaptivity = null, indicators = null;
 		TreeComposite analyticalIndicator = null, fluxJumpIndicator = null;
-		TreeComposite function = null, variable = null, dispX = null, powerHistory = null;
+		TreeComposite function = null, powerHistory = null;
 
 		// Load the blocks
 		ArrayList<TreeComposite> blocks = null;
@@ -199,7 +177,7 @@ public class MOOSEFileHandlerTester {
 		}
 
 		// Create an analytical indicator
-		adaptivity = blocks.get(0);
+		adaptivity = getTreeByName(blocks, "Adaptivity");
 		indicators = (TreeComposite) adaptivity.getChildExemplars().get(0).clone();
 		analyticalIndicator = (TreeComposite) indicators.getChildExemplars().get(1).clone();
 		fluxJumpIndicator = (TreeComposite) indicators.getChildExemplars().get(2).clone();
@@ -232,19 +210,9 @@ public class MOOSEFileHandlerTester {
 		fluxJumpIndicatorComponent.retrieveEntry("type").setTag("true");
 		// "property" and "variable" are marked required by the YAML file
 
-		// Create a variable. Variable does not have any exemplars in this
-		// example, so we can just create a tree for this test.
-		variable = (TreeComposite) blocks.get(2);
-		dispX = new TreeComposite();
-		dispX.setName("disp_x");
-		variable.setNextChild(dispX);
-		// Activate both nodes
-		dispX.setActive(true);
-		variable.setActive(true);
-
 		// Create a function
-		function = (TreeComposite) blocks.get(1);
-		powerHistory = (TreeComposite) function.getChildExemplars().get(0).clone();
+		function = (TreeComposite) getTreeByName(blocks, "Functions");
+		powerHistory = (TreeComposite) function.getChildExemplars().get(14).clone();
 		// Add the exemplar clone back into the function. Again it *MUST* be
 		// done this way.
 		function.setNextChild(powerHistory);
@@ -258,13 +226,9 @@ public class MOOSEFileHandlerTester {
 		DataComponent powerData = (DataComponent) powerHistory.getDataNodes().get(0);
 		powerData.retrieveEntry("type").setTag("true");
 		powerData.retrieveEntry("scale_factor").setTag("true");
-		// Add a parameter for the data file
-		Parameter dataFileParam = new Parameter();
-		dataFileParam.setName("data_file");
-		dataFileParam.setDefault("powerhistory.csv");
-		dataFileParam.setEnabled(true);
-		powerData.addEntry(dataFileParam.toEntry());
-
+		powerData.retrieveEntry("data_file").setValue("defaultMatDB.csv");
+		powerData.retrieveEntry("data_file").setTag("true");
+		
 		// Dump the input file
 		handler.dumpInputFile(outputFilePath, blocks);
 
@@ -276,7 +240,7 @@ public class MOOSEFileHandlerTester {
 		int firstHash, lastHash;
 		try {
 			// Load the input file into a byte array
-			RandomAccessFile inputFileRAF = new RandomAccessFile(inputFilePath, "r");
+			RandomAccessFile inputFileRAF = new RandomAccessFile(outputFilePath, "r");
 			byte[] inputBytes = new byte[(int) inputFileRAF.length()];
 			inputFileRAF.read(inputBytes);
 			// Convert to a string
@@ -351,8 +315,8 @@ public class MOOSEFileHandlerTester {
 		// Local Declarations
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator + "ICETests" + separator + "itemData";
-		String refFilePath = userDir + separator + "bison_short.input.ref";
-		String outFilePath = userDir + separator + "bison_short.input.out";
+		String refFilePath = userDir + separator + "moose_test.i.ref";
+		String outFilePath = userDir + separator + "moose_test.i.out";
 
 		// Turn debugging on
 		System.setProperty("DebugICE", "on");
@@ -361,8 +325,6 @@ public class MOOSEFileHandlerTester {
 
 		// Load the file into a TreeComposite with the Handler
 		ArrayList<TreeComposite> potTree = handler.loadFromGetPot(refFilePath);
-
-		// Hehe... "potTree."
 
 		// Write an output file based on the tree that was loaded
 		handler.dumpInputFile(outFilePath, potTree);

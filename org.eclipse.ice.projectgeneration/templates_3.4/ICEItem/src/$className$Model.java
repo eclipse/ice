@@ -1,5 +1,14 @@
 package $packageName$.model;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IFile;
@@ -9,24 +18,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.form.*;
 import org.eclipse.ice.datastructures.entry.*;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.model.Model;
 
+
 @XmlRootElement(name = "$className$Model")
 public class $className$Model extends Model {
 
-	// TODO: 
-	//   These need to be filled in before using this item
-	//   They can be set in the setupItemInfo() method
-	private String writerName;
-	private String readerName;
+	private String ioFormat;
 	private String outputName;
-	// End required variables
+	private String defaultFileName;
 	
     private String exportString;
 	private IIOService ioService;
@@ -57,11 +61,11 @@ public class $className$Model extends Model {
 	protected void setupItemInfo() {
 		setName("$className$ Model");
 		setDescription("Specify information about $className$");
-		writerName = "$className$DefaultWriterName";
-		readerName = "$className$DefaultReaderName";     	
 		outputName = "$className$DefaultOutputName";   
 		exportString = "Export to $className$ input format";
 		allowedActions.add(0, exportString);
+		ioFormat = "$ioFormat$";
+		defaultFileName = "$defaultFileName$";
 	}
 
 	/**
@@ -73,14 +77,19 @@ public class $className$Model extends Model {
 	public void setupForm() {
 		form = new Form();
 		
-		// Get reference to the IOService
-		// This will let us get IReader/IWriters for 
-		// our specific Model
+		// Get the reference to the IOService, 
+		// This will let us get IReaders/IWriters for 
+		// or Model
 		ioService = getIOService();
 
-		// Populate the Form with Components for your 
-		// application Model.
-		/* Example:
+
+		// Set the Form ID info
+		form.setName(getName());
+		form.setDescription(getDescription());
+		form.setId(getId());
+		form.setItemID(getId());
+		
+		/* SetupForm Example:
 		 * 
 		 * DataComponent data = new DataComponent();
 		 * data.setName("Example Input Data");
@@ -145,16 +154,69 @@ public class $className$Model extends Model {
 		// setupItemInfo() method defined above.
 		if (actionName == exportString) {
 			IFile outputFile = project.getFile(outputName);
-			writer = ioService.getWriter(writerName);
-			retStatus = FormStatus.Processing;
-			writer.write(form, outputFile);
-			refreshProjectSpace();
-			retStatus = FormStatus.Processed;
+			writer = ioService.getWriter(ioFormat);
+			if (writer != null) {
+				retStatus = FormStatus.Processing;
+				writer.write(form, outputFile);
+				refreshProjectSpace();
+				retStatus = FormStatus.Processed;
+			} else {
+				logger.error("Could not get reference to the IWriter " + ioFormat);
+				retStatus = FormStatus.InfoError;
+			}
 		} else {
 			retStatus = super.process(actionName);
 		}
 		
 		return retStatus;
+	}
+	
+	/**
+	 * Load some default dataset that's been embedded into the plugin, if one exists
+	 */
+	public void loadDefault() {
+		try {
+			// Create a filepath for the default file
+			String fileName = Paths.get(defaultFileName).getFileName().toString();
+			if (fileName.isEmpty()) {
+				return;
+			}
+			String defaultFilePath = project.getLocation().toOSString()
+						+ System.getProperty("file.separator")
+						+ fileName;			
+			// Create a temporary location to load the default file
+			File temp = new File(defaultFilePath);
+			if (!temp.exists()) {
+				temp.createNewFile();
+			}
+			
+			// Pull the default file from inside the plugin
+			URI uri = new URI(
+					"platform:/plugin/$packageName$/data/" + fileName);
+			InputStream defaultFileReader = uri.toURL().openStream();
+			FileOutputStream outStream = new FileOutputStream(temp);
+
+			// Write out the default file from the plugin to the temp location
+			int fileByte;
+			while ((fileByte = defaultFileReader.read()) != -1) {
+				outStream.write(fileByte);
+			}
+			outStream.close();
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			IFile inputFile = project.getFile(fileName);
+			form = reader.read(inputFile);
+			form.setName(getName());
+			form.setDescription(getDescription());
+			form.setId(getId());
+		} catch (URISyntaxException e) {
+			logger.error(getClass().getName() + " Exception!",e);
+		} catch (MalformedURLException e) {
+			logger.error(getClass().getName() + " Exception!",e);
+		} catch (IOException e) {
+			logger.error(getClass().getName() + " Exception!",e);
+		} catch (CoreException e) {
+			logger.error(getClass().getName() + " Exception!",e);
+		}
 	}
 
 	/**
@@ -167,15 +229,11 @@ public class $className$Model extends Model {
 	 */
 	@Override
 	public void loadInput(String fileName) {
-
-		// Read in the file and set up the form
-		IFile inputFile = project.getFile(fileName);
-		reader = ioService.getReader(readerName);
+		IFile inputFile = project.getFile(fileName);	
 		form = reader.read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
-
 	}
 }

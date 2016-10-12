@@ -183,7 +183,7 @@ public class INIWriter implements IWriter {
 	 */
 	@Override
 	public String getWriterType() {
-		return "INIWriter";
+		return "INI";
 	}
 
 }

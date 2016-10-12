@@ -44,5 +44,37 @@
             class="org.eclipse.ice.demo.ui.DemoWidgetsProcessor">
       </processor>
    </extension>
+      <extension
+         id="VisualizationModelBuilder"
+         name="Visualization   Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.visualization.model.VisualizationModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="VisualizationLauncherBuilder"
+         name="Visualization   Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.visualization.launcher.VisualizationLauncherBuilder">
+      </implementation>
+   </extension>
+      <extension
+         id="VisualizationCompleteModelBuilder"
+         name="Visualization Complete   Model"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.visualization.model.VisualizationCompleteModelBuilder">
+      </implementation>
+   </extension>
+   <extension
+         id="VisualizationCompleteLauncherBuilder"
+         name="Visualization Complete   Launcher"
+         point="org.eclipse.ice.item.itemBuilder">
+      <implementation
+            class="org.eclipse.ice.demo.visualization.launcher.VisualizationCompleteLauncherBuilder">
+      </implementation>
+   </extension>
 
 </plugin>

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.ice</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
-		<version>2.1.8-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
 	</parent>
 
@@ -59,12 +59,20 @@
 					</formats>
 					<products>
 						<product>
-							<id>ice.product</id>
+							<id>ice.runtime.product</id>
 							<rootFolders>
 								<rootFolder>ICE</rootFolder>
 								<macosx>ICE.app</macosx>
 							</rootFolders>
-							<attachId>ICEComplete</attachId>
+							<attachId>ICERuntimeComplete</attachId>
+						</product>
+						<product>
+							<id>ice.sdk.product</id>
+							<rootFolders>
+								<rootFolder>ICE_SDK</rootFolder>
+								<macosx>ICE_SDK.app</macosx>
+							</rootFolders>
+							<attachId>ICESDKComplete</attachId>
 						</product>
 					</products>
 				</configuration>
@@ -89,15 +97,15 @@
 								<configuration>
 									<tasks>
 										<!-- Copy application bundles -->
-										<copy file="${project.build.directory}/products/ice.product-linux.gtk.x86.${linux-format}"
+										<copy file="${project.build.directory}/products/ice.sdk.product-linux.gtk.x86.${linux-format}"
 											tofile="${ice-install-dir}/ice-linux-gtk-x86-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-linux.gtk.x86_64.${linux-format}"
+										<copy file="${project.build.directory}/products/ice.sdk.product-linux.gtk.x86_64.${linux-format}"
 											tofile="${ice-install-dir}/ice-linux-gtk-x86_64-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-win32.win32.x86.${win32-format}"
+										<copy file="${project.build.directory}/products/ice.sdk.product-win32.win32.x86.${win32-format}"
 											tofile="${ice-install-dir}/ice-win32-x86-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-win32.win32.x86_64.${win32-format}"
+										<copy file="${project.build.directory}/products/ice.sdk.product-win32.win32.x86_64.${win32-format}"
 											tofile="${ice-install-dir}/ice-win32-x86_64-${unqualifiedVersion}.zip"/>
-										<copy file="${project.build.directory}/products/ice.product-macosx.cocoa.x86_64.${macosx-format}"
+										<copy file="${project.build.directory}/products/ice.sdk.product-macosx.cocoa.x86_64.${macosx-format}"
 											tofile="${ice-install-dir}/ice-macosx-cocoa-x86_64-${unqualifiedVersion}.zip"/>
 									</tasks>
 								</configuration>
@@ -123,8 +131,10 @@
 								<phase>package</phase>
 								<configuration>
 									<signFiles>
-										<signFile>${project.build.directory}/products/ice.product/win32/win32/x86/eclipsec.exe</signFile>
-										<signFile>${project.build.directory}/products/ice.product/win32/win32/x86_64/eclipsec.exe</signFile>
+										<signFile>${project.build.directory}/products/ice.sdk.product/win32/win32/x86/eclipsec.exe</signFile>
+										<signFile>${project.build.directory}/products/ice.sdk.product/win32/win32/x86_64/eclipsec.exe</signFile>
+										<signFile>${project.build.directory}/products/ice.runtime.product/win32/win32/x86/eclipsec.exe</signFile>
+										<signFile>${project.build.directory}/products/ice.runtime.product/win32/win32/x86_64/eclipsec.exe</signFile>
 									</signFiles>
 								</configuration>
 							</execution>
@@ -142,7 +152,8 @@
 								<phase>package</phase>
 								<configuration>
 									<signFiles>
-										<signFile>${project.build.directory}/products/ice.product/macosx/cocoa/x86_64/ICE.app</signFile>
+										<signFile>${project.build.directory}/products/ice.sdk.product/macosx/cocoa/x86_64/ICE_SDK.app</signFile>
+										<signFile>${project.build.directory}/products/ice.runtime.product/macosx/cocoa/x86_64/ICE.app</signFile>
 									</signFiles>
 								</configuration>
 							</execution>

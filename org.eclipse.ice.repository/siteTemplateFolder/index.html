@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>${update.site.name} - ${update.site.description} Update Site: ${update.site.version}</title>
+<link rel="stylesheet" type="text/css" href="web/site.css">
+</head>
+<body marginheight="0" marginwidth="0" leftmargin="0" topmargin="0">
+<center>
+<table cellspacing="0" cellpadding="0" class="table">
+	<tr>
+		<td colspan="3" class="td_header">&nbsp;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>
+			<h2 class="title">${update.site.name} - ${update.site.description} Download Site</h2>
+			<table width="100%">
+				<tr class="header">
+					<td class="sub-header" width="100%"><span>Latest Build: ${update.site.version}</span></td>
+				</tr>
+			</table>
+		</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr class="light-row" style="height: 30px">
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td class="bodyText">This is the <b>${update.site.description}</b> download site for ${update.site.name}. You can download the ${update.site.name} packages below
+		or install the plugins directly into an existing Eclipse installation.</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>
+	        <table cellspacing="2" cellpadding="2" border="0">
+			<tr style="background-color:#DDDDDD">
+				<th class="column-header">Package</th>
+				<th class="column-header">Description</th>
+  			</tr>
+   			<tr style="background-color:&#xA;#EEEEEE&#xA;">
+      			<td class="rowLine"><a href="ice-linux-gtk-x86-${package.version}.zip" style="font-size:small">ice-linux-gtk-x86-${package.version}.zip</a></td>
+				<td><span style="font-size:small">Linux GTK x86</span></td>
+			</tr>
+			<tr style="background-color:&#xA;#FFFFFF&#xA;">
+				<td class="rowLine"><a href="ice-linux-gtk-x86_64-${package.version}.zip" style="font-size:small">ice-linux-gtk-x86_64-${package.version}.zip</a></td>
+				<td><span style="font-size:small">Linux GTK x86_64</span></td>
+   			</tr>
+   			<tr style="background-color:&#xA;#EEEEEE&#xA;">
+      			<td class="rowLine"><a href="ice-macosx-cocoa-x86_64-${package.version}.zip" style="font-size:small">ice-macosx-cocoa-x86_64-${package.version}.zip</a></td>
+				<td><span style="font-size:small">Mac OS X Cocoa x86_64</span></td>
+			</tr>
+			<tr style="background-color:&#xA;#FFFFFF&#xA;">
+				<td class="rowLine"><a href="ice-win32-x86-${package.version}.zip" style="font-size:small">ice-win32-x86-${package.version}.zip</a></td>
+				<td><span style="font-size:small">Windows x86</span></td>
+   			</tr>
+   			<tr style="background-color:&#xA;#EEEEEE&#xA;">
+      			<td class="rowLine"><a href="ice-win32-x86_64-${package.version}.zip" style="font-size:small">ice-win32-x86_64-${package.version}.zip</a></td>
+				<td><span style="font-size:small">Windows x86_64</span></td>
+			</tr>
+			<tr style="background-color:&#xA;#FFFFFF&#xA;">
+				<td class="rowLine"><a href="ice-master-${update.site.version}.zip" style="font-size:small">ice-master-${update.site.version}.zip</a></td>
+				<td><span style="font-size:small">Master Repository Archive</span></td>
+   			</tr>
+   			</table>
+   		</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>
+			<blockquote class="bodyText" style="border: 1px dashed #1778be; padding: 2px">
+				<ol>
+					<li>To <a class="link"
+						href="${update.site.url}">install</a>
+						from this site, start up Eclipse ${target.eclipse.version}, then do:
+						<ul>
+							<code><strong>Help > Install New Software... ></strong></code>
+						</ul>
+					</li>
+					<li>Copy this site's URL into Eclipse, and hit Enter.</li>
+					<li>When the site loads, select the features to install,
+						or click the <code><strong>Select All</strong></code> button.</li>
+					<li>To properly resolve all dependencies, check
+					<ul><code><strong>[x] Contact all update sites during install to find required software</strong></code></ul>
+
+					<li>Click <code><strong>Next</strong></code>, agree to the license
+						terms, and install.</li>
+
+				</ol>
+			</blockquote>
+		</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+		<td>&#160;&#160;&#160;&#160;&#160;&#160;</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+	        ${site.contents}
+		</td>
+		<td></td>
+	</tr>
+</table>
+</center>
+</html>

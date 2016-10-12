@@ -101,7 +101,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
 		if (project != null) {
-			loadInput(null);
+			loadDefault();
 		}
 	}
 
@@ -232,91 +232,88 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	 */
 	@Override
 	public void loadInput(String name) {
-
-		// If nothing is specified, load case 6 from inside the plugin
-		IFile inputFile = null;
-		File temp = null;
-		if (name == null) {
-			try {
-				// Path to the default file
-				String defaultFilePath = null;
-				// Create a filepath for the default file
-				if (project != null) {
-					defaultFilePath = project.getLocation().toOSString()
-							+ System.getProperty("file.separator")
-							+ "case_6.dat";
-				} else {
-					defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
-							.getLocation().toOSString()
-							+ System.getProperty("file.separator")
-							+ "case_6.dat";
-				}
-
-				// Create a temporary location to load the default file
-				temp = new File(defaultFilePath);
-				if (!temp.exists()) {
-					temp.createNewFile();
-				}
-
-				// Pull the default file from inside the plugin
-				URI uri = new URI(
-						"platform:/plugin/org.eclipse.ice.vibe/data/case_6.dat");
-				InputStream reader = uri.toURL().openStream();
-				FileOutputStream outStream = new FileOutputStream(temp);
-
-				// Write out the default file from the plugin to the temp
-				// location
-				int fileByte;
-				while ((fileByte = reader.read()) != -1) {
-					outStream.write(fileByte);
-				}
-				outStream.close();
-				if (project != null) {
-					inputFile = project.getFile("case_6.dat");
-					project.refreshLocal(IResource.DEPTH_INFINITE, null);
-				} else {
-					inputFile = ResourcesPlugin.getWorkspace().getRoot()
-							.getFile(new Path(defaultFilePath));
-				}
-
-			} catch (URISyntaxException e) {
-				System.err.println("VibeKVPair Message: "
-						+ "Error!  Could not load the default"
-						+ " Vibe case data!");
-			} catch (MalformedURLException e) {
-				System.err.println("VibeKVPair Message: "
-						+ "Error!  Could not load the default"
-						+ " Vibe case data!");
-			} catch (IOException e) {
-				System.err.println("VibeKVPair Message: "
-						+ "Error!  Could not load the default"
-						+ " Vibe case data!");
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				logger.error(getClass().getName() + " Exception!",e);
-			}
-		} else {
-			// Get the file
-			inputFile = project.getFile(name);
-		}
-
-		// Load the components from the file and setup the form
-		logger.info("VibeKVPair Message: Loading"
-				+ inputFile.getFullPath().toOSString());
-
+		IFile inputFile = inputFile = project.getFile(name);
+		logger.info("VibeKVPair Message: Loading" + inputFile.getFullPath().toOSString());
 		form = read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
 		form.setActionList(actionItems);
-
-		// Delete default file if it was copied into the workspace
-		if (temp != null) {
-			temp.delete();
-		}
 	}
 
+	/**
+	 * Loads a default dataset that's embedded in the plugin
+	 */
+	public void loadDefault() {
+		IFile inputFile = null;
+		File temp = null;
+		try {
+			// Path to the default file
+			String defaultFilePath = null;
+			// Create a filepath for the default file
+			if (project != null) {
+				defaultFilePath = project.getLocation().toOSString()
+						+ System.getProperty("file.separator")
+						+ "case_6.dat";
+			} else {
+				defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
+						.getLocation().toOSString()
+						+ System.getProperty("file.separator")
+						+ "case_6.dat";
+			}
+
+			// Create a temporary location to load the default file
+			temp = new File(defaultFilePath);
+			if (!temp.exists()) {
+				temp.createNewFile();
+			}
+
+			// Pull the default file from inside the plugin
+			URI uri = new URI(
+					"platform:/plugin/org.eclipse.ice.vibe/data/case_6.dat");
+			InputStream reader = uri.toURL().openStream();
+			FileOutputStream outStream = new FileOutputStream(temp);
+
+			// Write out the default file from the plugin to the temp
+			// location
+			int fileByte;
+			while ((fileByte = reader.read()) != -1) {
+				outStream.write(fileByte);
+			}
+			outStream.close();
+			if (project != null) {
+				inputFile = project.getFile("case_6.dat");
+				project.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} else {
+				inputFile = ResourcesPlugin.getWorkspace().getRoot()
+						.getFile(new Path(defaultFilePath));
+			}
+			logger.info("VibeKVPair Message: Loading" + inputFile.getFullPath().toOSString());
+			form = read(inputFile);
+			form.setName(getName());
+			form.setDescription(getDescription());
+			form.setId(getId());
+			form.setItemID(getId());
+			form.setActionList(actionItems);
+		} catch (URISyntaxException e) {
+			System.err.println("VibeKVPair Message: "
+					+ "Error!  Could not load the default"
+					+ " Vibe case data!");
+		} catch (MalformedURLException e) {
+			System.err.println("VibeKVPair Message: "
+					+ "Error!  Could not load the default"
+					+ " Vibe case data!");
+		} catch (IOException e) {
+			System.err.println("VibeKVPair Message: "
+					+ "Error!  Could not load the default"
+					+ " Vibe case data!");
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			logger.error(getClass().getName() + " Exception!",e);
+		}
+	}
+	
 	/**
 	 * Reads in the KV Pair file to a form.
 	 * 

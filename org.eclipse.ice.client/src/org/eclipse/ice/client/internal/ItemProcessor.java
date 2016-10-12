@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.ice.core.iCore.ICore;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.iclient.IItemProcessor;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
 import org.eclipse.ice.iclient.uiwidgets.IStreamingTextWidget;
@@ -56,91 +57,68 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Jay Jay Billings
  */
-public class ItemProcessor implements IWidgetClosedListener, Runnable {
-	
+public class ItemProcessor
+		implements Runnable, IWidgetClosedListener, IItemProcessor {
+
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(ItemProcessor.class);
-	
+	private static final Logger logger = LoggerFactory
+			.getLogger(ItemProcessor.class);
+
 	/**
-	 * <p>
 	 * A reference to an IExtraInfoWidget that can be used to gather extra
 	 * information if the process request requires it.
-	 * </p>
-	 * 
 	 */
 	private IExtraInfoWidget infoWidget;
+
 	/**
-	 * <p>
 	 * A reference to the FormWidget that rendered the Form.
-	 * </p>
-	 * 
 	 */
 	private IFormWidget formWidget;
+
 	/**
-	 * <p>
 	 * The name of the action that should be performed on the Item.
-	 * </p>
-	 * 
 	 */
 	private String actionName;
+
 	/**
-	 * <p>
 	 * The id of the Item that should be processed.
-	 * </p>
-	 * 
 	 */
 	private int itemId;
+
 	/**
-	 * <p>
 	 * The ICore to which the ItemProcessor should direct its requests.
-	 * </p>
-	 * 
 	 */
 	private ICore iceCore;
 
 	/**
-	 * <p>
 	 * The period for which the ItemProcessor should poll the Core for updates
 	 * in units of milliseconds. The default value is 100 milliseconds, 0.1
 	 * seconds.
-	 * </p>
-	 * 
 	 */
 	private int pollTime = 100;
 
 	/**
-	 * <p>
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the
 	 * ItemProcessor was closed OK and is false otherwise.
-	 * </p>
-	 * 
 	 */
 	private AtomicBoolean widgetClosedOK;
+
 	/**
-	 * <p>
 	 * This AtomicBoolean is true if the IExtraInfoWidget used by the
 	 * ItemProcessor was cancelled and is false otherwise.
-	 * </p>
-	 * 
 	 */
 	private AtomicBoolean widgetCancelled;
 
 	/**
-	 * <p>
 	 * The IStreamingTextWidget to which output streamed from the output file is
 	 * written.
-	 * </p>
-	 * 
 	 */
 	private IStreamingTextWidget streamingTextWidget;
 
 	/**
-	 * <p>
 	 * The constructor
-	 * </p>
-	 * 
 	 */
 	public ItemProcessor() {
 
@@ -160,32 +138,24 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the IExtraInfoWidget that is used by the
-	 * ItemProcessor. If it has not been previously set, this operation returns
-	 * null.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The IExtraInfoWidget
-	 *         </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#getInfoWidget()
 	 */
+	@Override
 	public IExtraInfoWidget getInfoWidget() {
 		return infoWidget;
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the IExtraInfoWidget that is used by the
-	 * ItemProcessor.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param widget
-	 *            <p>
-	 *            The IExtraInfoWidget
-	 *            </p>
+	 * @see
+	 * org.eclipse.ice.client.internal.IItemProcessor#setInfoWidget(org.eclipse.
+	 * ice.iclient.uiwidgets.IExtraInfoWidget)
 	 */
+	@Override
 	public void setInfoWidget(IExtraInfoWidget widget) {
 
 		infoWidget = widget;
@@ -194,16 +164,14 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the IFormWidget that is updated by the ItemProcessor.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param widget
-	 *            <p>
-	 *            The IFormWidget
-	 *            </p>
+	 * @see
+	 * org.eclipse.ice.client.internal.IItemProcessor#setFormWidget(org.eclipse.
+	 * ice.iclient.uiwidgets.IFormWidget)
 	 */
+	@Override
 	public void setFormWidget(IFormWidget widget) {
 
 		formWidget = widget;
@@ -212,32 +180,24 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the IFormWidget that is updated by the
-	 * ItemProcessor. If it has not been previously set, this operation returns
-	 * null.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The IFormWidget
-	 *         </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#getFormWidget()
 	 */
+	@Override
 	public IFormWidget getFormWidget() {
 		return formWidget;
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the IStreamingTextWidget that is updated by the
-	 * ItemProcessor.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param widget
-	 *            <p>
-	 *            The IStreamingTextWidget
-	 *            </p>
+	 * @see
+	 * org.eclipse.ice.client.internal.IItemProcessor#setStreamingTextWidget(org
+	 * .eclipse.ice.iclient.uiwidgets.IStreamingTextWidget)
 	 */
+	@Override
 	public void setStreamingTextWidget(IStreamingTextWidget widget) {
 
 		// Set the widget
@@ -247,32 +207,25 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the IStreamingTextWidget that is updated by the
-	 * ItemProcessor. If it has not been previously set, this operation returns
-	 * null.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The IStreamingTextWidget
-	 *         </p>
+	 * @see
+	 * org.eclipse.ice.client.internal.IItemProcessor#getStreamingTextWidget()
 	 */
+	@Override
 	public IStreamingTextWidget getStreamingTextWidget() {
 		return streamingTextWidget;
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the name of the action that should be performed when
-	 * the Item is processed.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param name
-	 *            <p>
-	 *            The action name
-	 *            </p>
+	 * @see
+	 * org.eclipse.ice.client.internal.IItemProcessor#setActionName(java.lang.
+	 * String)
 	 */
+	@Override
 	public void setActionName(String name) {
 
 		actionName = name;
@@ -281,30 +234,23 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the name of the action that the ItemProcessor
-	 * will use to process the Item. If it has not been previously set, this
-	 * operation returns null.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The name of the action
-	 *         </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#getActionName()
 	 */
+	@Override
 	public String getActionName() {
 
 		return actionName;
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the id of the Item that the ItemProcessor will
-	 * process.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param id
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#setItemId(int)
 	 */
+	@Override
 	public void setItemId(int id) {
 
 		itemId = id;
@@ -313,32 +259,25 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the id of the Item that the ItemProcessor will
-	 * process. If it has not been previously set, this operation returns -1.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The Item's id
-	 *         </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#getItemId()
 	 */
+	@Override
 	public int getItemId() {
 
 		return itemId;
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the ICore to which the ItemProcessor directs its
-	 * requests.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param core
-	 *            <p>
-	 *            The ICore
-	 *            </p>
+	 * @see
+	 * org.eclipse.ice.client.internal.IItemProcessor#setCore(org.eclipse.ice.
+	 * core.iCore.ICore)
 	 */
+	@Override
 	public void setCore(ICore core) {
 
 		iceCore = core;
@@ -347,35 +286,23 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the ICore to which the ItemProcessor directs its
-	 * requests or returns null if it was not previously set.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The ICore
-	 *         </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#getCore()
 	 */
+	@Override
 	public ICore getCore() {
 
 		return iceCore;
 	}
 
-	/**
-	 * <p>
-	 * This operation sets the poll time of the ItemProcessor. It checks to make
-	 * sure that the submitted poll time is positive, greater than zero and less
-	 * than 30,000 milliseconds (30 seconds). If the submitted time is invalid,
-	 * this operation sets it to the default polling time.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param milliseconds
-	 *            <p>
-	 *            The poll time in milliseconds. This value must be positive,
-	 *            greater than zero and less than 30,000.
-	 *            </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#setPollTime(int)
 	 */
+	@Override
 	public void setPollTime(int milliseconds) {
 
 		// Check the poll time before setting it
@@ -388,25 +315,20 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
-	 * <p>
-	 * This operation retrieves the current poll time. The units of the returned
-	 * value are milliseconds.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @return <p>
-	 *         The current polling time in milliseconds.
-	 *         </p>
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#getPollTime()
 	 */
+	@Override
 	public int getPollTime() {
 		return pollTime;
 	}
 
-	/**
-	 * <p>
-	 * This operation launches the thread to process the Item.
-	 * </p>
+	/*
+	 * (non-Javadoc)
 	 * 
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#run()
 	 */
 	@Override
 	public void run() {
@@ -425,8 +347,8 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		// posted to the IFormWidget based on the status of the process.
 		statusMessageMap.put(FormStatus.Processed, "Done!");
 		statusMessageMap.put(FormStatus.Processing, "Processing Form...");
-		statusMessageMap.put(FormStatus.InfoError, "The Form contains an error"
-				+ " and cannot be processed.");
+		statusMessageMap.put(FormStatus.InfoError,
+				"The Form contains an error" + " and cannot be processed.");
 		statusMessageMap.put(FormStatus.ReadyToProcess, "Ready to process.");
 		statusMessageMap.put(FormStatus.NeedsInfo,
 				"The Form requires additional information before "
@@ -455,7 +377,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 				streamingTextWidget.display();
 			} catch (FileNotFoundException e) {
 				// Complain that the file could not be opened
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -513,16 +435,18 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 			formWidget.updateStatus(statusMessageMap.get(status));
 
 			// Read the file if it was opened correctly
-			if (outputFileBufferedReader != null && streamingTextWidget != null) {
+			if (outputFileBufferedReader != null
+					&& streamingTextWidget != null) {
 				// Get everything currently there
 				try {
-					while ((nextLine = outputFileBufferedReader.readLine()) != null) {
+					while ((nextLine = outputFileBufferedReader
+							.readLine()) != null) {
 						// Write it to the streaming text widget
 						streamingTextWidget.postText(nextLine);
 					}
 				} catch (IOException e) {
 					// Complain because the next line could not be read
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 
@@ -537,7 +461,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					}
 				} catch (IOException e) {
 					// Complain
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 
 				break;
@@ -548,7 +472,7 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 					Thread.sleep(pollTime);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 			}
 			// Print a debug message for now
@@ -565,10 +489,10 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IWidgetClosedListener#closedOK()
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#closedOK()
 	 */
 	@Override
 	public void closedOK() {
@@ -579,10 +503,10 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		return;
 	}
 
-	/**
+	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see IWidgetClosedListener#cancelled()
+	 * @see org.eclipse.ice.client.internal.IItemProcessor#cancelled()
 	 */
 	@Override
 	public void cancelled() {
@@ -591,5 +515,11 @@ public class ItemProcessor implements IWidgetClosedListener, Runnable {
 		widgetCancelled.set(true);
 
 		return;
+	}
+
+	@Override
+	public void launch() {
+		Thread processorThread = new Thread(this);
+		processorThread.start();
 	}
 }

@@ -8,7 +8,7 @@
   <parent>
   	<groupId>org.eclipse.ice</groupId>
   	<artifactId>org.eclipse.ice.build</artifactId>
-  	<version>2.1.8-SNAPSHOT</version>
+  	<version>0.1.1-SNAPSHOT</version>
   	<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
   </parent>
   <modules>
@@ -53,11 +53,11 @@
   	<module>../org.eclipse.ice.reflectivity</module>
   	<module>../org.eclipse.ice.reflectivity.test</module>
   	<module>../org.eclipse.ice.reflectivity.ui</module>
-  	<module>../org.eclipse.ice.target.mars</module>
+  	<module>../org.eclipse.ice.target.neon</module>
   	<module>../org.eclipse.ice.vibe</module>
   	<module>../org.eclipse.ice.vibe.test</module>
   	<module>../org.eclipse.ice.feature</module>  	
-  	<module>../org.eclipse.ice.repository</module>
-  	<module>../org.eclipse.ice.product</module>  	
+  	<module>../org.eclipse.ice.repository</module>    	
+  	<module>../org.eclipse.ice.product</module>  		  	
   </modules>
 </project>

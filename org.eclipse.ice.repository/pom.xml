@@ -6,13 +6,84 @@
 	<parent>
 		<groupId>org.eclipse.ice</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
-		<version>2.1.8-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
 	</parent>
 
 	<name>ICE Repository</name>
 	<artifactId>org.eclipse.ice.repository</artifactId>
 	<packaging>eclipse-repository</packaging>
+	
+	<pluginRepositories>
+	    <!--  Plugin repos for jboss repository-utils support -->
+	    <pluginRepository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Repository Group</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>jboss-snapshots-repository</id>
+			<name>JBoss Snapshots Repository</name>
+			<url>http://repository.jboss.org/nexus/content/repositories/snapshots/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	<!-- Properties used by jboss repository-utils to customize index.html -->
+	<properties>
+	    <update.site.name>ICE</update.site.name>
+	    <update.site.description>Nightly Build</update.site.description>
+	    <package.version>${unqualifiedVersion}</package.version>
+	    <update.site.version>${unqualifiedVersion}.${buildQualifier}</update.site.version>
+	    <update.site.url>http://download.eclipse.org/ice/builds/${releaseName}</update.site.url>
+	    <target.eclipse.version>Neon</target.eclipse.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<!-- Disable xz compression as it is not supported by jboss repository-utils yet -->
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<xzCompress>false</xzCompress>
+				</configuration>
+			</plugin>
+			
+			<!-- Configure jboss repository-utils to use our index.html and add the nebula update
+			     site to the repository references. This shouldn't be needed once nebula is included
+			     in the simrel repo
+			-->
+			<plugin>
+				<groupId>org.jboss.tools.tycho-plugins</groupId>
+				<artifactId>repository-utils</artifactId>
+				<version>0.23.3</version>
+				<executions>
+					<execution>
+						<id>generate-facade</id>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-repository-facade</goal>
+						</goals>
+						<configuration>
+	                        <symbols>
+	                            <update.site.name>${update.site.name}</update.site.name>
+	                            <update.site.description>${update.site.description}</update.site.description>
+	                            <package.version>${package.version}</package.version>
+	                            <update.site.version>${update.site.version}</update.site.version>
+	                            <update.site.url>${update.site.url}</update.site.url>
+	                            <target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
+	                        </symbols>
+	                        <siteTemplateFolder>siteTemplateFolder/</siteTemplateFolder>
+							<associateSites>
+								<site>http://download.eclipse.org/eavp/builds/next</site>
+							</associateSites>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<profiles>
 		<profile>

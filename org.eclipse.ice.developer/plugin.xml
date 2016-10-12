@@ -24,12 +24,20 @@
             codeName="ICE"
             repoURL="https://github.com/eclipse/ice">
          <command
-               commandName="Clone ICE"
-               implementation="org.eclipse.ice.developer.actions.ICECloneHandler">
+               commandName="Clone"
+               implementation="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler">
          </command>
          <command
-               commandName="Build ICE"
+               commandName="Build"
                implementation="org.eclipse.ice.developer.actions.BuildICEHandler">
+         </command>
+         <command
+               commandName="Launch New Instance"
+               implementation="org.eclipse.ice.developer.actions.LaunchNewICEHandler">
+         </command>
+         <command
+               commandName="Import Local Repository"
+               implementation="org.eclipse.ice.developer.actions.ImportLocalICEHandler">
          </command>
       </code>
    </extension>
@@ -49,6 +57,21 @@
                   name="cloneDirectory"
                   value="@user.home">
                </parameter>
+         </command>
+      </code>
+   </extension>
+   <extension
+         id="org.eclipse.eavp.developer"
+         name="EAVP Developer Tooling"
+         point="org.eclipse.ice.developer.code">
+      <code
+            branch="next"
+            codeCategory="Framework"
+            codeName="EAVP"
+            repoURL="https://github.com/eclipse/eavp">
+         <command
+               commandName="Clone EAVP"
+               implementation="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler">
          </command>
       </code>
    </extension>

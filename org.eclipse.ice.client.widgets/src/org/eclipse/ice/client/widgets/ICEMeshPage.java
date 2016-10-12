@@ -21,9 +21,9 @@ import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
-import org.eclipse.eavp.viz.service.geometry.widgets.TransformationView;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -55,8 +56,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * 
  * @author Taylor Patterson, Jordan H. Deyton
  */
-public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
-		ISelectionProvider, ITabbedPropertySheetPageContributor {
+public class ICEMeshPage extends ICEFormPage
+		implements ISelectionListener, ISelectionProvider,
+		ITabbedPropertySheetPageContributor, IUpdateableListener {
 
 	/**
 	 * Eclipse view ID
@@ -165,8 +167,15 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 
 		// Make sure the ResourceComponent exists
 		if (component != null) {
+
+			// Unregister from the previous component
+			if (meshComp != null) {
+				meshComp.unregister(this);
+			}
+
 			// Set the component reference
 			meshComp = component;
+			meshComp.register(this);
 		}
 
 		return;
@@ -198,8 +207,6 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 
 			getSite().getWorkbenchWindow().getActivePage()
 					.showView(MeshElementTreeView.ID);
-			getSite().getWorkbenchWindow().getActivePage()
-					.showView(TransformationView.ID);
 
 		} catch (PartInitException e) {
 			logger.error(getClass().getName() + " Exception!", e);
@@ -222,8 +229,7 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 		// Get JME3 Geometry service from factory
 		IVizServiceFactory factory = editor.getVizServiceFactory();
 		IVizService service = factory.get("ICE JavaFX Mesh Editor");
-
-		// Composite editorComposite = new Composite(parent, SWT.NONE);
+		meshComp.setService(service);
 
 		// Create and draw geometry canvas
 		try {
@@ -393,8 +399,8 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 
 		// Get the selection made in the MeshElementTreeView.
-		if (part.getSite().getId().equals(MeshElementTreeView.ID) && canvas != 
-				null) {
+		if (part.getSite().getId().equals(MeshElementTreeView.ID)
+				&& canvas != null) {
 
 			// Get the array of all selections in the Mesh Elements view
 			Object[] treeSelections = ((ITreeSelection) selection).toArray();
@@ -464,4 +470,22 @@ public class ICEMeshPage extends ICEFormPage implements ISelectionListener,
 	}
 	// ----------------------------------------------------------- //
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ice.datastructures.ICEObject.IUpdateableListener#update(org.
+	 * eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 */
+	@Override
+	public void update(IUpdateable component) {
+
+		// If the mesh was updated, the editor is now dirty
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				editor.setDirty(true);
+			};
+		});
+	}
 }

@@ -29,7 +29,6 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 
-import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerException;
@@ -123,7 +122,7 @@ public class JobLauncherForm extends Form {
 	private static final String TBBEntryName = "Number of TBB Threads";
 
 	private DockerClientFactory clientFactory;
-	
+
 	/**
 	 * <p>
 	 * The constructor.
@@ -142,19 +141,23 @@ public class JobLauncherForm extends Form {
 		// Make a DataComponent for the input files
 		DataComponent fileComponent = new DataComponent();
 		fileComponent.setId(filesId);
-		fileComponent.setDescription("This section contains the name of the file(s) " + "used by this Job.");
+		fileComponent
+				.setDescription("This section contains the name of the file(s) "
+						+ "used by this Job.");
 		fileComponent.setName("Input File(s)");
 
-		DataComponent dockerComponent = new DataComponent();
+/*		DataComponent dockerComponent = new DataComponent();
 		dockerComponent.setName("Docker Configuration");
-		dockerComponent.setDescription("This section enables the use of docker for this Job Launch.");
+		dockerComponent.setDescription(
+				"This section enables the use of docker for this Job Launch.");
 		dockerComponent.setId(dockerId);
-		
+
 		// Create a docker launch check box.
 		IEntry dockerLaunch = new DiscreteEntry("true", "false");
 		dockerLaunch.setDefaultValue("false");
 		dockerLaunch.setName("Launch with Docker");
-		dockerLaunch.setDescription("Check to perform this job launch in a docker container.");
+		dockerLaunch.setDescription(
+				"Check to perform this job launch in a docker container.");
 		dockerLaunch.setId(33);
 		dockerComponent.addEntry(dockerLaunch);
 
@@ -163,14 +166,17 @@ public class JobLauncherForm extends Form {
 		IEntry imagesList = new DiscreteEntry("Select Image") {
 			@Override
 			public void update(IUpdateable component) {
-				if (component instanceof DiscreteEntry && "Launch with Docker".equals(component.getName())) {
-					boolean enable = Boolean.valueOf(((IEntry) component).getValue());
+				if (component instanceof DiscreteEntry
+						&& "Launch with Docker".equals(component.getName())) {
+					boolean enable = Boolean
+							.valueOf(((IEntry) component).getValue());
 					setReady(enable);
 					if (enable) {
 						// Set up the allowed values
 						DockerClient dockerClient;
 						try {
-							dockerClient = new DockerClientFactory().getDockerClient();
+							dockerClient = new DockerClientFactory()
+									.getDockerClient();
 							if (dockerClient != null) {
 								allowedValues = new ArrayList<String>();
 								for (Image i : dockerClient.listImages()) {
@@ -181,15 +187,20 @@ public class JobLauncherForm extends Form {
 								}
 								setValue(allowedValues.get(0));
 							} else {
-								logger.error("Error in getting a reference to Docker or listing available Images.");
+								logger.error(
+										"Error in getting a reference to Docker or listing available Images.");
 								allowedValues = new ArrayList<String>();
-								allowedValues.add("Error connecting to Docker.");
+								allowedValues
+										.add("Error connecting to Docker.");
 								setValue(allowedValues.get(0));
 								return;
 							}
-						} catch (DockerCertificateException | DockerException | InterruptedException | IOException e1) {
+						} catch (DockerCertificateException | DockerException
+								| InterruptedException | IOException e1) {
 							e1.printStackTrace();
-							logger.error("Error in getting a reference to Docker or listing available Images.", e1);
+							logger.error(
+									"Error in getting a reference to Docker or listing available Images.",
+									e1);
 							allowedValues = new ArrayList<String>();
 							allowedValues.add("Error connecting to Docker.");
 							setValue(allowedValues.get(0));
@@ -202,25 +213,26 @@ public class JobLauncherForm extends Form {
 		};
 
 		imagesList.setName("Available Images");
-		imagesList.setDescription("Select the docker image to use for this docker launch.");
+		imagesList.setDescription(
+				"Select the docker image to use for this docker launch.");
 		imagesList.setReady(false);
 		imagesList.setId(34);
 		dockerComponent.addEntry(imagesList);
-		
+
 		// Register the list of images as a listener
 		// of the docker launch entry.
 		dockerLaunch.register(imagesList);
-
+*/
 		// Add the data components
 		addComponent(fileComponent);
-		addComponent(dockerComponent);
-		
+//		addComponent(dockerComponent);
+
 		// Create a ResourceComponent
 		ResourceComponent outputData = new ResourceComponent();
 		outputData.setName("Output Files and Data");
 		outputData.setId(outputId);
-		outputData.setDescription(
-				"This section describes all of the data " + "and additional output created by the job launch.");
+		outputData.setDescription("This section describes all of the data "
+				+ "and additional output created by the job launch.");
 
 		// Add the ResourceComponent
 		addComponent(outputData);
@@ -254,7 +266,8 @@ public class JobLauncherForm extends Form {
 	 *            The default number of processes for MPI to use.
 	 *            </p>
 	 */
-	public void enableMPI(int minProcesses, int maxProcesses, int defaultProcesses) {
+	public void enableMPI(int minProcesses, int maxProcesses,
+			int defaultProcesses) {
 
 		// Local Declarations - Check for negative or zero values
 		final int minProcessesFixed = Math.max(minProcesses, 1);
@@ -266,7 +279,8 @@ public class JobLauncherForm extends Form {
 
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
-		if (minProcessesFixed <= maxProcessesFixed && defaultProcessesFixed >= minProcessesFixed
+		if (minProcessesFixed <= maxProcessesFixed
+				&& defaultProcessesFixed >= minProcessesFixed
 				&& defaultProcessesFixed <= maxProcessesFixed) {
 			// Get the parallelism component.
 			parallelismComponent = getParallelismComponent();
@@ -292,7 +306,8 @@ public class JobLauncherForm extends Form {
 
 			mpiEntry.setName(mpiEntryName);
 			mpiEntry.setId(1);
-			mpiEntry.setDescription("The number of processes to use with " + "MPI");
+			mpiEntry.setDescription(
+					"The number of processes to use with " + "MPI");
 			// Add the Entry to the Component
 			parallelismComponent.addEntry(mpiEntry);
 		}
@@ -318,7 +333,8 @@ public class JobLauncherForm extends Form {
 		if (parallelComponentEnabled) {
 			parallelismComponent = getParallelismComponent();
 			if (!parallelismComponent.contains(openMPEntryName)
-					&& !parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
+					&& !parallelismComponent
+							.contains(JobLauncherForm.TBBEntryName)) {
 				removeParallelismComponent();
 			}
 			// Otherwise just remove the MPI Entry
@@ -358,7 +374,8 @@ public class JobLauncherForm extends Form {
 	 *            job.
 	 *            </p>
 	 */
-	public void enableOpenMP(int minThreads, int maxThreads, int defaultThreads) {
+	public void enableOpenMP(int minThreads, int maxThreads,
+			int defaultThreads) {
 
 		// Local Declarations - Check for negative or zero values
 		final int minThreadsFixed = Math.max(minThreads, 1);
@@ -370,7 +387,8 @@ public class JobLauncherForm extends Form {
 
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
-		if (minThreadsFixed <= maxThreadsFixed && defaultThreadsFixed >= minThreadsFixed
+		if (minThreadsFixed <= maxThreadsFixed
+				&& defaultThreadsFixed >= minThreadsFixed
 				&& defaultThreadsFixed <= maxThreadsFixed) {
 			// Get the parallelism component)
 			parallelismComponent = getParallelismComponent();
@@ -384,19 +402,22 @@ public class JobLauncherForm extends Form {
 				allowed.add(String.valueOf(minThreadsFixed));
 				allowed.add(String.valueOf(maxThreadsFixed));
 				openMPEntry.setAllowedValues(allowed);
-				openMPEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
+				openMPEntry
+						.setDefaultValue(String.valueOf(defaultThreadsFixed));
 				openMPEntry.setValue(String.valueOf(defaultThreadsFixed));
 			} else {
 				openMPEntry = new DiscreteEntry();
 				allowed.add(String.valueOf(minThreadsFixed));
 				openMPEntry.setAllowedValues(allowed);
-				openMPEntry.setDefaultValue(String.valueOf(defaultThreadsFixed));
+				openMPEntry
+						.setDefaultValue(String.valueOf(defaultThreadsFixed));
 				openMPEntry.setValue(String.valueOf(defaultThreadsFixed));
 			}
 
 			openMPEntry.setName(openMPEntryName);
 			openMPEntry.setId(1);
-			openMPEntry.setDescription("The number of threads to use with " + "OpenMP");
+			openMPEntry.setDescription(
+					"The number of threads to use with " + "OpenMP");
 			// Add the Entry to the Component
 			parallelismComponent.addEntry(openMPEntry);
 		}
@@ -422,7 +443,8 @@ public class JobLauncherForm extends Form {
 			parallelismComponent = getParallelismComponent();
 			// If MPI and TBB are disabled, remove the whole component
 			if (!parallelismComponent.contains(mpiEntryName)
-					&& !parallelismComponent.contains(JobLauncherForm.TBBEntryName)) {
+					&& !parallelismComponent
+							.contains(JobLauncherForm.TBBEntryName)) {
 				removeParallelismComponent();
 			}
 			// Otherwise just remove the MPI Entry
@@ -473,7 +495,8 @@ public class JobLauncherForm extends Form {
 
 		// Only create the Entry and add it to the DataComponent if the numbers
 		// are right
-		if (minThreadsFixed <= maxThreadsFixed && defaultThreadsFixed >= minThreadsFixed
+		if (minThreadsFixed <= maxThreadsFixed
+				&& defaultThreadsFixed >= minThreadsFixed
 				&& defaultThreadsFixed <= maxThreadsFixed) {
 			// Get the parallelism component)
 			parallelismComponent = getParallelismComponent();
@@ -501,7 +524,8 @@ public class JobLauncherForm extends Form {
 
 			tBBEntry.setName(JobLauncherForm.TBBEntryName);
 			tBBEntry.setId(2);
-			tBBEntry.setDescription("The number of threads to use with " + "Thread Building Blocks");
+			tBBEntry.setDescription("The number of threads to use with "
+					+ "Thread Building Blocks");
 			// Add the Entry to the Component
 			parallelismComponent.addEntry(tBBEntry);
 		}
@@ -527,7 +551,8 @@ public class JobLauncherForm extends Form {
 			parallelismComponent = getParallelismComponent();
 			// If MPI and OpenMP is disabled, remove the whole component
 			if (!parallelismComponent.contains(mpiEntryName)
-					&& !parallelismComponent.contains(JobLauncherForm.openMPEntryName)) {
+					&& !parallelismComponent
+							.contains(JobLauncherForm.openMPEntryName)) {
 				removeParallelismComponent();
 			}
 			// Otherwise just remove the TBB Entry
@@ -554,14 +579,15 @@ public class JobLauncherForm extends Form {
 	 * @param files
 	 *            List of files available for the job.
 	 */
-	public void setInputFiles(String name, String desc, ArrayList<String> files) {
+	public void setInputFiles(String name, String desc,
+			ArrayList<String> files) {
 
 		// Local Declarations
 		int oldId = 0;
 		IEntry oldEntry = null;
 		DataComponent fileComponent = ((DataComponent) getComponent(1));
-		final ArrayList<String> finalFiles = (files != null) ? (ArrayList<String>) files.clone()
-				: new ArrayList<String>();
+		final ArrayList<String> finalFiles = (files != null)
+				? (ArrayList<String>) files.clone() : new ArrayList<String>();
 		String oldValue = "";
 
 		// Determine if the Entry already exists in the component and remove it
@@ -580,13 +606,9 @@ public class JobLauncherForm extends Form {
 		// Set the name and description of the Filename entry
 		fileEntry.setDescription(desc);
 		fileEntry.setName(name);
-		fileEntry.setId((oldId > 0) ? oldId : fileComponent.retrieveAllEntries().size()); // FIXME!
-																							// Bug
-																							// -
-																							// needs
-																							// a
-																							// unique
-																							// id
+		// FIXME! Bug - needs a unique id
+		fileEntry.setId((oldId > 0) ? oldId
+				: fileComponent.retrieveAllEntries().size());
 		// Keep the original value, if possible
 		if (fileEntry.getAllowedValues().contains(oldValue)) {
 			fileEntry.setValue(oldValue);
@@ -633,6 +655,10 @@ public class JobLauncherForm extends Form {
 	 * This method removes an input file type from the Form. If null is passed
 	 * in, nothing is changed.
 	 * 
+	 * CLIENTS SHOULD NOT use this operation to remove input types. Instead,
+	 * call see
+	 * {@link org.eclipse.ice.item.jobLauncher.JobLauncher.removeInputType}.
+	 * 
 	 * @param name
 	 *            The name of the input file type
 	 */
@@ -677,8 +703,8 @@ public class JobLauncherForm extends Form {
 		accountEntry.setValue("none");
 		accountEntry.setId(3);
 		accountEntry.setName("Account Code/Project Code");
-		accountEntry
-				.setDescription("Account code or project name that " + "should be used when launching the simulation.");
+		accountEntry.setDescription("Account code or project name that "
+				+ "should be used when launching the simulation.");
 
 		// Add the Entry to the component
 		parallelismComponent.addEntry(accountEntry);
@@ -706,7 +732,9 @@ public class JobLauncherForm extends Form {
 	 */
 	private DataComponent getParallelismComponent() {
 
-		return (parallelComponentEnabled) ? (DataComponent) getComponent(parallelId) : createParallelismComponent();
+		return (parallelComponentEnabled)
+				? (DataComponent) getComponent(parallelId)
+				: createParallelismComponent();
 	}
 
 	/**

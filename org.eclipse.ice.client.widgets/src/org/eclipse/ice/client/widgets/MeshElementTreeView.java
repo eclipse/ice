@@ -14,8 +14,8 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.ArrayList;
 
-import org.eclipse.eavp.viz.modeling.base.BasicController;
 import org.eclipse.eavp.viz.modeling.FaceController;
+import org.eclipse.eavp.viz.modeling.base.BasicController;
 import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.properties.MeshCategory;
 import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
@@ -348,28 +348,34 @@ public class MeshElementTreeView extends ViewPart
 	@Override
 	public void update(IUpdateable component) {
 
-		logger.info("ICEMeshPage Message: " + "Mesh changed!");
+		// If the update came from the mesh component, redraw the mesh
+		if (component == meshComponent) {
 
-		// Sync with the display
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() { // Just do a blanket update - no need to check
-								// the component
-				if (elementTreeViewer != null) {
-					logger.info("MeshElementTreeView Message: "
-							+ "Updating element view.");
+			logger.info("ICEMeshPage Message: " + "Mesh changed!");
 
-					// Set the tree content
-					if (meshComponent != null) {
-						elementTreeViewer.setInput(meshComponent.getPolygons());
+			// Sync with the display
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() { // Just do a blanket update - no need to
+									// check
+									// the component
+					if (elementTreeViewer != null) {
+						logger.info("MeshElementTreeView Message: "
+								+ "Updating element view.");
+
+						// Set the tree content
+						if (meshComponent != null) {
+							elementTreeViewer
+									.setInput(meshComponent.getPolygons());
+						}
+
+						// Refresh the view
+						elementTreeViewer.refresh();
+						elementTreeViewer.getTree().redraw();
 					}
-
-					// Refresh the view
-					elementTreeViewer.refresh();
-					elementTreeViewer.getTree().redraw();
 				}
-			}
-		});
+			});
+		}
 
 		return;
 	}

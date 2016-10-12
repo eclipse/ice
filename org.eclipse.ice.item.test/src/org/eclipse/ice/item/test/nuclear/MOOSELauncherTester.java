@@ -67,11 +67,6 @@ public class MOOSELauncherTester {
 	private static MOOSELauncher launcher;
 
 	/**
-	 * True if notified by File Entry
-	 */
-	private boolean notified = false;
-
-	/**
 	 * This operation sets up the workspace. It copies the necessary MOOSE data
 	 * files into ${workspace}/MOOSE.
 	 */
@@ -86,8 +81,8 @@ public class MOOSELauncherTester {
 		String separator = System.getProperty("file.separator");
 		String userDir = System.getProperty("user.home") + separator
 				+ "ICETests" + separator + "itemData";
-		String filePath = userDir + separator + "input_coarse10.i";
-		String filePath2 = userDir + separator + "input_coarse10_filetest.i";
+		String filePath = userDir + separator + "mooseModel.i";
+
 		// Debug information
 		System.out.println("MOOSE Test Data File: " + filePath);
 
@@ -114,26 +109,17 @@ public class MOOSELauncherTester {
 				project.open(null);
 			}
 
-			// Create the File handle and input stream for the Bison input
+			// Create the File handle and input stream for the Moose input
 			// file
 			IPath moosePath = new Path(filePath);
 			File mooseFile = moosePath.toFile();
 			FileInputStream mooseStream = new FileInputStream(mooseFile);
-			// Create the file in the workspace for the Bison input file
-			IFile bisonInputFile = project.getFile("input_coarse10.i");
-			if (!bisonInputFile.exists()) {
-				bisonInputFile.create(mooseStream, true, null);
+			// Create the file in the workspace for the Moose input file
+			IFile mooseInputFile = project.getFile("mooseModel.i");
+			if (!mooseInputFile.exists()) {
+				mooseInputFile.create(mooseStream, true, null);
 			}
 
-			IPath moosePath2 = new Path(filePath2);
-			File mooseFile2 = moosePath2.toFile();
-			FileInputStream mooseStream2 = new FileInputStream(mooseFile2);
-			// Create the file in the workspace for the Bison input file
-			IFile bisonInputFile2 = project
-					.getFile("input_coarse10_filetest.i");
-			if (!bisonInputFile2.exists()) {
-				bisonInputFile2.create(mooseStream2, true, null);
-			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
 		} catch (CoreException e) {
@@ -156,35 +142,6 @@ public class MOOSELauncherTester {
 		launcher.setIOService(service);
 
 		return;
-	}
-
-	/**
-	 * Check that we can change the file name and get 
-	 * a notification triggered.
-	 */
-	@Test
-	public void checkMOOSELauncherFileUpdate() {
-		
-		// Local Declarations
-		MOOSELauncher mooseLauncher = new MOOSELauncher(projectSpace) {
-			@Override
-			public void update(IUpdateable component) {
-				if (component instanceof FileEntry) {
-					notified = true;
-				}
-			}
-		};
-		DataComponent fileDataComp = 
-				(DataComponent) mooseLauncher.getForm().getComponent(1);
-		assertTrue(fileDataComp
-				.retrieveEntry("Input File").setValue("input_coarse10.i"));
-		assertTrue(notified);
-		notified = false;
-
-		// Now change the file name
-		assertTrue(fileDataComp
-				.retrieveEntry("Input File").setValue("input_coarse10_filetest.i"));
-		assertTrue(notified);
 	}
 
 	/**
@@ -211,9 +168,9 @@ public class MOOSELauncherTester {
 		transitiveItem.setIOService(service);
 		
 		// Load the input
-		item.loadInput("input_coarse10.i");
-		equalItem.loadInput("input_coarse10.i");
-		transitiveItem.loadInput("input_coarse10.i");
+		item.loadInput("mooseModel.i");
+		equalItem.loadInput("mooseModel.i");
+		transitiveItem.loadInput("mooseModel.i");
 		
 		// Set ICEObject data
 		equalItem.setId(item.getId());
@@ -280,7 +237,7 @@ public class MOOSELauncherTester {
 		MOOSE mooseItem = new MOOSE(projectSpace);
 
 		mooseItem.setIOService(service);
-		mooseItem.loadInput("input_coarse10.i");
+		mooseItem.loadInput("mooseModel.i");
 		
 		mooseItem.setDescription("I am a job!");
 		mooseItem.setProject(null);

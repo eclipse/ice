@@ -19,16 +19,19 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.eavp.viz.modeling.properties.MeshProperty;
-import org.eclipse.eavp.viz.modeling.ShapeController;
 import org.eclipse.eavp.viz.datastructures.VizObject.IManagedUpdateable;
 import org.eclipse.eavp.viz.datastructures.VizObject.IManagedUpdateableListener;
 import org.eclipse.eavp.viz.datastructures.VizObject.SubscriptionType;
+import org.eclipse.eavp.viz.service.IVizService;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
 import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
+import org.eclipse.january.geometry.Geometry;
+import org.eclipse.january.geometry.GeometryFactory;
 
 /**
  * <p>
@@ -42,6 +45,7 @@ import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GeometryComponent extends ICEObject
 		implements Component, IUpdateableListener, IManagedUpdateableListener {
+
 	/**
 	 * <p>
 	 * The set of ComponentListeners observing the GeometryComponent
@@ -54,7 +58,14 @@ public class GeometryComponent extends ICEObject
 	/**
 	 * The Geometry managed by the GeometryComponent
 	 */
-	private ShapeController geometry;
+	@XmlTransient
+	private Geometry geometry;
+
+	/**
+	 * The service being used to render this component.
+	 */
+	@XmlTransient
+	private IVizService service;
 
 	/**
 	 * <p>
@@ -118,6 +129,9 @@ public class GeometryComponent extends ICEObject
 		// Create a new listeners list
 		listeners = new ArrayList<IUpdateableListener>();
 
+		// Initialize the geometry
+		geometry = GeometryFactory.eINSTANCE.createGeometry();
+
 	}
 
 	/**
@@ -125,7 +139,7 @@ public class GeometryComponent extends ICEObject
 	 * 
 	 * @return The held Geometry
 	 */
-	public ShapeController getGeometry() {
+	public Geometry getGeometry() {
 		return geometry;
 	}
 
@@ -135,17 +149,30 @@ public class GeometryComponent extends ICEObject
 	 * @param newGeometry
 	 *            the new Geometry to hold
 	 */
-	public void setGeometry(ShapeController newGeometry) {
+	public void setGeometry(Geometry newGeometry) {
 		geometry = newGeometry;
 
-		// Set the shape as being the root node for the scene
-		geometry.setProperty(MeshProperty.ROOT, "True");
-
 		// Register self as a listener for the geometry
-		geometry.register(this);
+		geometry.eAdapters().add(new AdapterImpl() {
+
+			@Override
+			public void notifyChanged(Notification notification) {
+				notifyListeners();
+			}
+		});
 
 		// Notify listeners
 		notifyListeners();
+	}
+
+	/**
+	 * Set the IVizService that will be used to visualize this component.
+	 * 
+	 * @param service
+	 *            The service that will be used to visualize this component.
+	 */
+	public void setService(IVizService service) {
+		this.service = service;
 	}
 
 	/**
@@ -154,7 +181,7 @@ public class GeometryComponent extends ICEObject
 	 * </p>
 	 * 
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The hashcode of the ICEObject.
 	 *         </p>
 	 */
@@ -180,7 +207,7 @@ public class GeometryComponent extends ICEObject
 	 *            The other ICEObject that should be compared with this one.
 	 *            </p>
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         True if the ICEObjects are equal, false otherwise.
 	 *         </p>
 	 */
@@ -235,9 +262,12 @@ public class GeometryComponent extends ICEObject
 		super.copy(iceObject);
 
 		// Copy shapes list
-		this.setGeometry((ShapeController) iceObject.getGeometry().clone());
-		// this.geometry.copy(iceObject.getGeometry());
-
+		Geometry otherGeometry = iceObject.getGeometry();
+		if (otherGeometry != null) {
+			this.setGeometry((Geometry) otherGeometry.clone());
+		} else {
+			geometry = null;
+		}
 		this.notifyListeners();
 
 	}
@@ -249,7 +279,7 @@ public class GeometryComponent extends ICEObject
 	 * </p>
 	 * 
 	 * @return
-	 * 		<p>
+	 *         <p>
 	 *         The new clone
 	 *         </p>
 	 */
@@ -364,9 +394,7 @@ public class GeometryComponent extends ICEObject
 	 */
 	@Override
 	public void update(IManagedUpdateable component, SubscriptionType[] type) {
-
 		notifyListeners();
-
 	}
 
 	/*

@@ -12,15 +12,16 @@
  *******************************************************************************/
 package org.eclipse.ice.projectgeneration.wizards;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import static java.nio.file.StandardCopyOption.*;
 import java.util.Arrays;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -56,8 +57,7 @@ import org.eclipse.ice.projectgeneration.templates.ICEItemWizard;
 
 /**
  * This class defines the steps for creating a new New ICE Item project via the
- * wizard that us accessible via: 'File -> New... -> Other -> New ICE Item
- * Project'
+ * wizard that us accessible via: 'File -> New... -> New ICE Item Project'
  * 
  * @author arbennett
  */
@@ -137,6 +137,8 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 		}
 	}
 
+	
+	
 	/**
 	 * Takes all of the information from the wizard pages and uses it to create
 	 * the plugin and java classes.
@@ -270,29 +272,25 @@ public class NewICEItemProjectWizard extends NewPluginProjectFromTemplateWizard 
 	 * Update the new project manifest to have required packages imported.
 	 */
 	private void updateManifest() {
+		IProject project = fProjectProvider.getProject();
+		IFile manifestFile = project.getFolder("META-INF").getFile("MANIFEST.MF");
 		String packageBase = fProjectProvider.getProjectName();
-		String sep = System.getProperty("file.separator");
-		String manifestFile = fProjectProvider.getLocationPath().makeAbsolute().toOSString() + sep
-				+ fProjectProvider.getProjectName() + sep + "META-INF" + sep + "MANIFEST.MF";
 		StringBuilder manifestLines = new StringBuilder();
-		manifestLines.append("Import-Package: org.eclipse.ice.datastructures.form,\n");
-		manifestLines.append(" org.eclipse.ice.io.serializable,\n");
-		manifestLines.append(" org.eclipse.ice.item,\n");
-		manifestLines.append(" org.eclipse.ice.item.jobLauncher,\n");
-		manifestLines.append(" org.eclipse.ice.item.model,\n");
-		manifestLines.append(" org.eclipse.ice.datastructures.entry,\n");
-		manifestLines.append(" org.eclipse.ice.datastructures.ICEObject,\n");
-		manifestLines.append(" org.eclipse.core.resources,\n");
-		manifestLines.append(" org.eclipse.core.runtime,\n");
-		manifestLines.append(" org.eclipse.core.runtime.jobs,\n");
-		manifestLines.append(" org.slf4j\n");
+		manifestLines.append("Import-Package: org.slf4j\n");
 		manifestLines.append("Export-Package: " + packageBase + ".model,\n");
 		manifestLines.append(" " + packageBase + ".launcher\n");
-		
+		manifestLines.append("Require-Bundle: org.eclipse.core.resources,\n");
+		manifestLines.append(" org.eclipse.core.runtime,\n");
+		manifestLines.append(" org.eclipse.ice.item,\n");
+		manifestLines.append(" org.eclipse.ice.datastructures,\n");
+		manifestLines.append(" org.eclipse.ice.io\n");
+
+		// Append to the MANIFEST.MF IFile
 		try {
-			Files.write(Paths.get(manifestFile), manifestLines.toString().getBytes(), StandardOpenOption.APPEND);
-		} catch (IOException e) {
-			logger.error(getClass().getName() + " Exception!", e);
+			manifestFile.appendContents(new ByteArrayInputStream(manifestLines.toString().getBytes()), IResource.FORCE,
+					null);
+		} catch (CoreException e) {
+			e.printStackTrace();
 		}
 	}
 

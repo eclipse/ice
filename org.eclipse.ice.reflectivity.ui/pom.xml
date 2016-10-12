@@ -7,10 +7,10 @@
 		<groupId>org.eclipse.ice</groupId>
 		<artifactId>org.eclipse.ice.build</artifactId>
 		<relativePath>../org.eclipse.ice.parent/pom.xml</relativePath>
-		<version>2.1.8-SNAPSHOT</version>
+		<version>0.1.1-SNAPSHOT</version>
 	</parent>
 	<groupId>org.eclipse.ice</groupId>
 	<artifactId>org.eclipse.ice.reflectivity.ui</artifactId>
-	<version>2.1.8-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 </project>

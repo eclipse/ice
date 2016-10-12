@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.reactor.plant
 Bundle-SymbolicName: org.eclipse.ice.reactor.plant;singleton:=true
-Bundle-Version: 2.1.8.qualifier
+Bundle-Version: 0.1.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.modeling,
@@ -10,7 +10,6 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.modeling.factory,
  org.eclipse.eavp.viz.modeling.properties,
  org.eclipse.eavp.viz.service,
- org.eclipse.eavp.viz.service.geometry.reactor,
  org.eclipse.eavp.viz.service.javafx.geometry,
  org.eclipse.eavp.viz.service.javafx.geometry.datatypes,
  org.eclipse.eavp.viz.service.javafx.geometry.plant,
@@ -21,3 +20,4 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
 Service-Component: OSGI-INF/PlantIOFactory.xml
 Bundle-Vendor: Oak Ridge National Laboratory
 Export-Package: org.eclipse.ice.reactor.plant
+Require-Bundle: org.eclipse.january.geometry.model

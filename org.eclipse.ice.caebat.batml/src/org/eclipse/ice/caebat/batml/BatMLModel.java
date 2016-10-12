@@ -98,7 +98,7 @@ public class BatMLModel extends Item {
 			}
 
 			// Load in the default information
-			loadInput(null);
+			loadDefault();
 		}
 	}
 
@@ -172,6 +172,36 @@ public class BatMLModel extends Item {
 	public void loadInput(String input) {
 
 		IFile xsdIFile, xmlIFile;
+		xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
+		xmlIFile = project.getFile(input);
+
+		// Get the handle to the files on the local file system
+		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile();
+		xmlFile = xmlIFile.getRawLocation().makeAbsolute().toFile();
+		
+		// Create the EMFComponent
+		if (xsdFile != null) {
+			emfComp = new EMFComponent();
+			emfComp.load(xsdFile, xmlFile);
+			emfComp.getEMFTreeComposite().setName("BatML");
+			emfComp.setName("BatML Model Editor");
+			emfComp.setId(1);
+		} else {
+			emfComp = new EMFComponent();
+			emfComp.setName("BatML Model Editor");
+			emfComp.setDescription("Could not find BatML input for model creation!");
+			emfComp.setId(1);
+		}
+
+		form.addComponent(emfComp);
+	}
+	
+	/**
+	 * Load the schemas and default datasets from within the plugin.
+	 */
+	public void loadDefault() {
+
+		IFile xsdIFile, xmlIFile;
 		File temp = null;
 		
 		// If this is our first time loading up the form we will probably need to import the schema files
@@ -231,14 +261,10 @@ public class BatMLModel extends Item {
 				logger.error("[BatML Model] ERROR: Could not refresh project workspace!");
 			}
 		}
-		// Load up either a default file, or the newly imported one.
-		if (input == null) {
-			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
-			xmlIFile = project.getFolder("batml").getFile("electrical.xml");
-		} else {
-			xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
-			xmlIFile = project.getFile(input);
-		}
+		
+		// Load up the default file
+		xsdIFile = project.getFolder("batml").getFile("electrical.xsd");
+		xmlIFile = project.getFolder("batml").getFile("electrical.xml");
 
 		// Get the handle to the files on the local file system
 		xsdFile = xsdIFile.getRawLocation().makeAbsolute().toFile();
