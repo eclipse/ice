@@ -6,9 +6,9 @@
 <unit id="org.eclipse.ease.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.modules.charting.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.modules.team.svn.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.python.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.lang.python.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.modules.unittest.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.ease.javascript.feature.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.ease.lang.javascript.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.ease.modules.feature.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/ease/update/nightly"/>
 </location>
