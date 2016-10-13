@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.eclipse.ice.nek5000.test
 Bundle-SymbolicName: org.eclipse.ice.nek5000.test
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 2.2.0.qualifier
 Fragment-Host: org.eclipse.ice.nek5000
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,

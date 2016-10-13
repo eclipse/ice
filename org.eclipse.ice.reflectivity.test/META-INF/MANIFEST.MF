@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ReflectivityTest
 Bundle-SymbolicName: org.eclipse.ice.reflectivity.test
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.eclipse.ice.item,
