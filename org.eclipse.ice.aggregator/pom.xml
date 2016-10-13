@@ -60,4 +60,5 @@
   	<module>../org.eclipse.ice.repository</module>    	
   	<module>../org.eclipse.ice.product</module>  		  	
   </modules>
+<version>2.2.0-SNAPSHOT</version>
 </project>
