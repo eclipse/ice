@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ClientTest
 Bundle-SymbolicName: org.eclipse.ice.client.test
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 2.2.0.qualifier
 Fragment-Host: org.eclipse.ice.client
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ice.client.internal,

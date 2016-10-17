@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ICE
 Bundle-SymbolicName: org.eclipse.ice.client.rcp;singleton:=true
-Bundle-Version: 0.1.1.qualifier
+Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.sun.jersey.api.client,
  com.sun.jersey.api.client.filter,
