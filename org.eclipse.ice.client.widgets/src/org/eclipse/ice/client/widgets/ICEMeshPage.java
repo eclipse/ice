@@ -15,9 +15,11 @@ package org.eclipse.ice.client.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.eavp.viz.service.IVizService;
-import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.mesh.datastructures.IMeshVizCanvas;
 import org.eclipse.ice.client.common.ActionTree;
 import org.eclipse.ice.datastructures.ICEObject.ICEObject;
@@ -226,9 +228,28 @@ public class ICEMeshPage extends ICEFormPage
 				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		actionToolBarManager = new ToolBarManager(toolBar);
 
-		// Get JME3 Geometry service from factory
-		IVizServiceFactory factory = editor.getVizServiceFactory();
-		IVizService service = factory.get("ICE JavaFX Mesh Editor");
+		// Get all the extensions for the viz services
+		IConfigurationElement[] configurationElements = Platform
+				.getExtensionRegistry().getConfigurationElementsFor(
+						"org.eclipse.eavp.viz.service.IVizService");
+
+		// The service that will provide the canvas
+		IVizService service = null;
+
+		// TODO Provide a better way of choosing a service
+		// Iterate through the extensions, finding on with "mesh" in the bundle
+		for (IConfigurationElement ice : configurationElements) {
+			if (ice.getDeclaringExtension().getNamespaceIdentifier()
+					.contains("mesh")) {
+				try {
+					service = (IVizService) ice
+							.createExecutableExtension("class");
+				} catch (CoreException e) {
+					logger.error(
+							"Problem creating IVizService from mesh extension point.");
+				}
+			}
+		}
 		meshComp.setService(service);
 
 		// Create and draw geometry canvas
