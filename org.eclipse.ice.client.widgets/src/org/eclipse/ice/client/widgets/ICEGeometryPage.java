@@ -12,9 +12,11 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.eavp.viz.service.IVizCanvas;
 import org.eclipse.eavp.viz.service.IVizService;
-import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeView;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
@@ -193,9 +195,27 @@ public class ICEGeometryPage extends ICEFormPage
 				.getForm();
 		Composite parent = pageForm.getBody();
 
-		// Get Geometry service from factory
-		IVizServiceFactory factory = editor.getVizServiceFactory();
-		service = factory.get("ICE Geometry Editor");
+		// Get all the extensions for the viz services
+		IConfigurationElement[] configurationElements = Platform
+				.getExtensionRegistry().getConfigurationElementsFor(
+						"org.eclipse.eavp.viz.service.IVizService");
+
+		// TODO Provide a better way of choosing a service
+		// Iterate through the extensions, finding on with "geometry" in the
+		// bundle
+		for (IConfigurationElement configurationElement : configurationElements) {
+			if (configurationElement.getDeclaringExtension()
+					.getNamespaceIdentifier().contains("geometry")) {
+				try {
+					service = (IVizService) configurationElement
+							.createExecutableExtension("class");
+				} catch (CoreException e) {
+					logger.error(
+							"Problem creating IVizService from geometry extension point.");
+				}
+			}
+		}
+
 		geometryComp.setService(service);
 
 		// Create and draw geometry canvas
