@@ -74,6 +74,7 @@
 <unit id="org.eclipse.emf.oda.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.sdk.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.emf.validation.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.epp.logging.aeri.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.epp.mpc.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.epp.package.modeling.feature.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="0.0.0"/>
