@@ -28,7 +28,7 @@
       location="org.eclipse.ice.client.rcp"
       startupProgressRect="5,470,665,15"
       startupMessageRect="7,485,665,20"
-      startupForegroundColor="4A95FF" />
+      startupForegroundColor="FFFFFF" />
    <launcher name="ICE">
       <macosx icon="/icons/ice_logo_runtime.icns"/>
       <solaris/>
