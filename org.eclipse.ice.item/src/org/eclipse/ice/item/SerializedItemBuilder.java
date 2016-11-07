@@ -26,6 +26,7 @@ import javax.xml.bind.JAXBException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
+import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +109,10 @@ public class SerializedItemBuilder implements ItemBuilder {
 		Reader reader = null;
 		ICEJAXBHandler xmlMarshaller = new ICEJAXBHandler();
 		boolean tryAgain = false;
-		ArrayList<Class> classList = new ArrayList<Class>();
+
+		// Initialize the class list using ICE's standard JAXB class list.
+		ArrayList<Class> classList = (ArrayList<Class>) new ICEJAXBClassProvider()
+				.getClasses();
 
 		// The input stream should be legit
 		if (inputStream != null) {
@@ -123,8 +127,8 @@ public class SerializedItemBuilder implements ItemBuilder {
 			buffer = new char[1024];
 			try {
 				// Setup the reader
-				reader = new BufferedReader(new InputStreamReader(inputStream,
-						"UTF-8"));
+				reader = new BufferedReader(
+						new InputStreamReader(inputStream, "UTF-8"));
 				// Load the bytes into the writer
 				while ((numChars = reader.read(buffer)) != -1) {
 					writer.write(buffer, 0, numChars);
@@ -135,8 +139,8 @@ public class SerializedItemBuilder implements ItemBuilder {
 			}
 
 			// Read an input stream from the writer
-			itemReadStream = new ByteArrayInputStream(writer.toString()
-					.getBytes());
+			itemReadStream = new ByteArrayInputStream(
+					writer.toString().getBytes());
 
 			// Start by trying load the Item as a JobLauncher. Catch any
 			// exceptions so that we can try again.
@@ -145,10 +149,10 @@ public class SerializedItemBuilder implements ItemBuilder {
 				originalItem = (Item) xmlMarshaller.read(classList,
 						itemReadStream);
 			} catch (NullPointerException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				tryAgain = true;
 			} catch (JAXBException e) {
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 				tryAgain = true;
 			}
 
@@ -165,10 +169,10 @@ public class SerializedItemBuilder implements ItemBuilder {
 					originalItem = (Item) xmlMarshaller.read(classList,
 							itemReadStream);
 				} catch (NullPointerException e) {
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 					tryAgain = true;
 				} catch (JAXBException e) {
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 					tryAgain = true;
 				}
 			}
@@ -245,6 +249,7 @@ public class SerializedItemBuilder implements ItemBuilder {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ice.item.ItemBuilder#isPublishable()
 	 */
 	@Override
