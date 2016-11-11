@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ice.datastructures.form.FormStatus;
 
 /**
@@ -72,19 +70,20 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
- * * <tr>
-* <td>
-* <p>
-* localJobLaunchDirectory
-* </p>
-* </td>
-* <td>
-* <p>
-* The name of the directory within the project/jobs folder where 
-* the files to be uploaded can be found (optional).
-* </p>
-* </td>
-* </tr>
+ * *
+ * <tr>
+ * <td>
+ * <p>
+ * localJobLaunchDirectory
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The name of the directory within the project/jobs folder where the files to
+ * be uploaded can be found (optional).
+ * </p>
+ * </td>
+ * </tr>
  * <tr>
  * <td>
  * <p>
@@ -187,18 +186,19 @@ import org.eclipse.ice.datastructures.form.FormStatus;
  * </p>
  * </td>
  * </tr>
- * * <tr>
-* <td>
-* <p>
-* os
-* </p>
-* </td>
-* <td>
-* <p>
-* The name of the operating system.
-* </p>
-* </td>
-* </tr>
+ * *
+ * <tr>
+ * <td>
+ * <p>
+ * os
+ * </p>
+ * </td>
+ * <td>
+ * <p>
+ * The name of the operating system.
+ * </p>
+ * </td>
+ * </tr>
  * </table>
  *
  * @author Alex McCaskey
@@ -238,15 +238,15 @@ public class LocalExecutionAction extends Action {
 	private ExecutionHelper helper;
 
 	/**
-	 * The constructor. 
+	 * The constructor.
 	 */
 	public LocalExecutionAction() {
-		// Initialize the cancelled flag and 
+		// Initialize the cancelled flag and
 		// the form status.
 		status = FormStatus.ReadyToProcess;
 		cancelled = new AtomicBoolean(false);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -275,8 +275,10 @@ public class LocalExecutionAction extends Action {
 
 			// Write some header information first
 			try {
-				stdOut.write(helper.createOutputHeader("standard output", fullCMD));
-				stdErr.write(helper.createOutputHeader("standard error", fullCMD));
+				stdOut.write(
+						helper.createOutputHeader("standard output", fullCMD));
+				stdErr.write(
+						helper.createOutputHeader("standard error", fullCMD));
 			} catch (IOException e) {
 				// Complain
 				logger.error(getClass().getName() + " Exception!", e);
@@ -300,7 +302,8 @@ public class LocalExecutionAction extends Action {
 			status = FormStatus.Processed;
 			return status;
 		} else {
-			logger.error("Local Execution Error - the input data map was not valid.");
+			logger.error(
+					"Local Execution Error - the input data map was not valid.");
 			status = FormStatus.InfoError;
 			return status;
 		}
@@ -371,14 +374,18 @@ public class LocalExecutionAction extends Action {
 	}
 
 	/**
-	 * Launch each of the commands in this local execution. 
+	 * Launch each of the commands in this local execution.
 	 * 
-	 * @param cmd Command to execute
-	 * @param stdOut Standard out writer
-	 * @param stdErr Standard error writer.
+	 * @param cmd
+	 *            Command to execute
+	 * @param stdOut
+	 *            Standard out writer
+	 * @param stdErr
+	 *            Standard error writer.
 	 * @return
 	 */
-	protected FormStatus launchStageLocally(String cmd, BufferedWriter stdOut, BufferedWriter stdErr) {
+	protected FormStatus launchStageLocally(String cmd, BufferedWriter stdOut,
+			BufferedWriter stdErr) {
 
 		// Local Declarations
 		String errMsg = null;
@@ -395,6 +402,9 @@ public class LocalExecutionAction extends Action {
 		if (!os.toLowerCase().contains("win")) {
 			cmdList.add("/bin/bash");
 			cmdList.add("-c");
+			// } else{
+			// cmdList.add("CMD");
+			// cmdList.add("/C");
 		}
 
 		// Add the command to the list. It will either be just the command
@@ -415,8 +425,40 @@ public class LocalExecutionAction extends Action {
 			}
 		} catch (IOException e) {
 			// Grab the error
-			errMsg = e.getMessage();
-			logger.error(getClass().getName() + " Exception! ", e);
+			errMsg = null;
+
+			// Just Log the erroron Mac and Linux
+			if (!os.toLowerCase().contains("win")) {
+				errMsg = e.getMessage();
+				logger.error(getClass().getName() + " Exception! ", e);
+			} else {
+
+				// If this is a windows machine, try to run in the command
+				// prompt
+				cmdList.add(0, "CMD");
+				cmdList.add(1, "/C");
+
+				// Launch the command. The command must be split on spaces to
+				// run
+				// through a Java Process because the process tries to execute
+				// the whole
+				// thing as a single command with the arguments give after it.
+				jobBuilder = new ProcessBuilder(cmdList);
+				jobBuilder.directory(directory);
+				// Do not direct the error to stdout. Catch it separately.
+				jobBuilder.redirectErrorStream(false);
+
+				try {
+					// Only launch the stage if it hasn't been cancelled.
+					if (!cancelled.get()) {
+						job = jobBuilder.start();
+					}
+				} catch (IOException e2) {
+					errMsg = e2.getMessage();
+					logger.error(getClass().getName() + " Exception! ", e2);
+				}
+			}
+
 		}
 		// Log any errors and return
 		if (errMsg != null) {
@@ -434,13 +476,15 @@ public class LocalExecutionAction extends Action {
 		}
 
 		// Print the execution command
-		logger.info("LocalExecutionAction Message: " + "Launching local command: " + "\"" + cmd + "\"");
+		logger.info("LocalExecutionAction Message: "
+				+ "Launching local command: " + "\"" + cmd + "\"");
 
 		// Log the output
 		stdOutStream = job.getInputStream();
 		stdErrStream = job.getErrorStream();
 		logOutput(stdOutStream, stdErrStream);
-		if (logOutput(stdOutStream, stdErrStream).equals(FormStatus.InfoError)) {
+		if (logOutput(stdOutStream, stdErrStream)
+				.equals(FormStatus.InfoError)) {
 			// Throw an error if the streaming fails
 			return FormStatus.InfoError;
 		}
