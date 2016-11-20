@@ -98,7 +98,7 @@ public class XMLPersistenceProviderTester {
 		try {
 			// Start the service
 			xmlpp.start();
-		} catch (JAXBException e) {
+		} catch (JAXBException | CoreException e) {
 			e.printStackTrace();
 			fail();
 		}
@@ -233,7 +233,7 @@ public class XMLPersistenceProviderTester {
 	}
 
 	/**
-	 * Check that we can rename Items with the persistence provider. 
+	 * Check that we can rename Items with the persistence provider.
 	 * 
 	 */
 	@Test
@@ -251,14 +251,14 @@ public class XMLPersistenceProviderTester {
 		pause(2);
 
 		xmlpp.renameItem(item, "testItemName");
-		
+
 		pause(2);
-		
+
 		assertTrue(project.getFile("testItemName.xml").exists());
 		assertFalse(project.getFile(name).exists());
-		
+
 	}
-	
+
 	/**
 	 * This operation checks the ability of the XMLPersistenceProvider to
 	 * persist Items to its project space. It also checks update() since that
@@ -366,9 +366,9 @@ public class XMLPersistenceProviderTester {
 
 		// Check the list
 		Item listItem = items.get(0);
-			// Look for the correct name and item id
-		assertEquals(listItem.getName(),MOOSEModelBuilder.name);
-		assertEquals(listItem.getId(),3);
+		// Look for the correct name and item id
+		assertEquals(listItem.getName(), MOOSEModelBuilder.name);
+		assertEquals(listItem.getId(), 3);
 
 		// Delete the item
 		assertTrue(xmlpp.deleteItem(item));
@@ -387,10 +387,10 @@ public class XMLPersistenceProviderTester {
 		assertTrue(xmlpp.persistItem(vibeItem));
 		pause(2);
 		items = xmlpp.loadItems();
-		assertEquals(1,items.size());
+		assertEquals(1, items.size());
 		listItem = items.get(0);
-		assertEquals(vibeItem.getName(),listItem.getName());
-		
+		assertEquals(vibeItem.getName(), listItem.getName());
+
 		// Delete the Item
 		xmlpp.deleteItem(vibeItem);
 		pause(2);

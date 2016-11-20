@@ -15,6 +15,7 @@ package org.eclipse.ice.persistence.xml;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
@@ -75,12 +76,14 @@ import org.slf4j.LoggerFactory;
  * @author Jay Jay Billings
  *
  */
-public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, IReader, IWriter {
+public class XMLPersistenceProvider
+		implements IPersistenceProvider, Runnable, IReader, IWriter {
 
 	/**
 	 * Logger for handling event messages and other information.
 	 */
-	private static final Logger logger = LoggerFactory.getLogger(XMLPersistenceProvider.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(XMLPersistenceProvider.class);
 
 	/**
 	 * An atomic boolean used to manage the event loop. It is set to true when
@@ -122,7 +125,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * The blocking queue that holds all of the persistence tasks that are left
 	 * to be processed.
 	 */
-	ArrayBlockingQueue<QueuedTask> taskQueue = new ArrayBlockingQueue<QueuedTask>(1024);
+	ArrayBlockingQueue<QueuedTask> taskQueue = new ArrayBlockingQueue<>(1024);
 
 	/**
 	 * A private thread on which the event loop is run. The runnable for this
@@ -141,14 +144,14 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * with the persistence provider by calling addBuilder(). These Items are
 	 * used to create the list of classes passed to the JAXBContext.
 	 */
-	private ArrayList<Item> referenceItems = new ArrayList<Item>();
+	private ArrayList<Item> referenceItems = new ArrayList<>();
 
 	/**
 	 * A map of the ids of the Items that have persisted as its keys and the
 	 * file names of those Items as values. This is used when loading Items off
 	 * of disk and updated when Items are persisted.
 	 */
-	private Hashtable<Integer, String> itemIdMap = new Hashtable<Integer, String>();
+	private Hashtable<Integer, String> itemIdMap = new Hashtable<>();
 
 	/**
 	 * The list of IJAXBClassProviders to be used in the construction of the
@@ -166,7 +169,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * Default constructor.
 	 */
 	public XMLPersistenceProvider() {
-		classProviders = new ArrayList<IJAXBClassProvider>();
+		classProviders = new ArrayList<>();
 	}
 
 	/**
@@ -177,7 +180,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 *            The project space that should be used instead of the default.
 	 */
 	public XMLPersistenceProvider(IProject projectSpace) {
-		classProviders = new ArrayList<IJAXBClassProvider>();
+		classProviders = new ArrayList<>();
 		project = projectSpace;
 	}
 
@@ -206,7 +209,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 
 		// Local Declarations
 		int id;
-		ArrayList<String> names = new ArrayList<String>();
+		ArrayList<String> names = new ArrayList<>();
 		IResource[] members;
 
 		try {
@@ -216,8 +219,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 				// Only add the resources that are xml files with the format
 				// that we expect. This uses a regular expression that checks
 				// for <itemName>_<itemId>.xml.
-				if (resource.getType() == IResource.FILE
-						&& resource.getName().matches("^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
+				if (resource.getType() == IResource.FILE && resource.getName()
+						.matches("^[a-zA-Z0-9_\\-]*_\\d+\\.xml$")) {
 					names.add(resource.getName());
 				}
 			}
@@ -225,13 +228,15 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 			// Get the ids of all of the items from the file names and map them
 			// to the names.
 			for (String name : names) {
-				logger.info("XMLPersistenceProvider Message: " + "Found persisted Item at " + name);
+				logger.info("XMLPersistenceProvider Message: "
+						+ "Found persisted Item at " + name);
 				// Remove the file extension
 				String[] nameParts = name.split("\\.");
 				String nameMinusExt = nameParts[0];
 				// Get the id from the end
 				String[] nameMinusExtParts = nameMinusExt.split("_");
-				String idString = nameMinusExtParts[nameMinusExtParts.length - 1];
+				String idString = nameMinusExtParts[nameMinusExtParts.length
+						- 1];
 				id = Integer.valueOf(idString);
 				// Put the info in the map
 				itemIdMap.put(id, name);
@@ -252,20 +257,28 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * @throws JAXBException
 	 *             An exception indicating that the JAXB Context could not be
 	 *             created.
+	 * @throws CoreException
 	 */
-	private void createJAXBContext() throws JAXBException {
+	private void createJAXBContext() throws JAXBException, CoreException {
 		// Make an array to store the class list of registered Items
-		ArrayList<Class> classList = new ArrayList<Class>();
+		ArrayList<Class> classList = new ArrayList<>();
 		Class[] classArray = {};
 		// Create the list of classes for the JAXBContext
 		for (Item refItem : referenceItems) {
 			classList.add(refItem.getClass());
 		}
-		// We need to explicitly add some classes to the list so that they will
-		// be handled appropriately. For example, Material does not have a
-		// component so it will not get added to the class list when the Form is
-		// read from all of the Items above.
-		// classList.add(Material.class);
+
+		// Pull any class providers registered through extension points and add
+		// them to the list.
+		IJAXBClassProvider[] extensionProviders = IJAXBClassProvider
+				.getJAXBProviders();
+		if (extensionProviders != null && extensionProviders.length > 0) {
+			classProviders.addAll(Arrays.asList(extensionProviders));
+			logger.debug("Providers found at IJAXBClassProvider "
+					+ "extension point.");
+		} else {
+			logger.debug("No extensions found for IJAXBClassProviders.");
+		}
 
 		// Now add all Classes provided by the registered
 		// IJAXBClassProviders if they are available.
@@ -273,6 +286,9 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 			for (IJAXBClassProvider provider : classProviders) {
 				classList.addAll(provider.getClasses());
 			}
+		} else {
+			logger.debug("No IJAXBClassProvider instances found! "
+					+ "Persistence will be disabled.");
 		}
 
 		// Create new JAXB class context and unmarshaller
@@ -287,8 +303,9 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * @throws JAXBException
 	 *             An exception indicating that the JAXB Context could not be
 	 *             created.
+	 * @throws CoreException
 	 */
-	public void start() throws JAXBException {
+	public void start() throws JAXBException, CoreException {
 
 		// Debug information
 		logger.info("XMLPersistenceProvider Message: " + "Starting Provider!");
@@ -361,7 +378,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 */
 	public void addBuilder(ItemBuilder builder) {
 
-		logger.info("XMLPersistenceProvider Message: " + "Item " + builder.getItemName() + " registered.");
+		logger.info("XMLPersistenceProvider Message: " + "Item "
+				+ builder.getItemName() + " registered.");
 
 		// Build an Item from this builder and store it so that we can get its
 		// class info later.
@@ -389,12 +407,14 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 		Marshaller marshaller;
 		try {
 			marshaller = context.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+					Boolean.TRUE);
 			marshaller.marshal(obj, outputStream);
 		} catch (JAXBException e) {
 			// Complain
 			logger.error(getClass().getName() + " Exception!", e);
-			logger.info("XMLPersistenceProvider Message: " + "Failed to execute persistence task for " + obj);
+			logger.info("XMLPersistenceProvider Message: "
+					+ "Failed to execute persistence task for " + obj);
 		}
 		return outputStream;
 	}
@@ -411,7 +431,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 		// Create an output stream containing the XML.
 		ByteArrayOutputStream outputStream = createXMLStream(obj);
 		// Convert it to an input stream so it can be pushed to file
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(
+				outputStream.toByteArray());
 		try {
 			// Update the output file if it already exists
 			if (file.exists()) {
@@ -443,9 +464,11 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 			// Handle the task if it is available
 			if (currentTask != null) {
 				// Get the file name if this is a persist or delete
-				if ("persist".equals(currentTask.task) || "delete".equals(currentTask.task)) {
+				if ("persist".equals(currentTask.task)
+						|| "delete".equals(currentTask.task)) {
 					// Setup the file name
-					name = currentTask.item.getName().replaceAll("\\s+", "_") + ".xml";
+					name = currentTask.item.getName().replaceAll("\\s+", "_")
+							+ ".xml";
 					// Get the file from the project registered with the Item.
 					// This may change depending on whether or not this Item was
 					// created in the default project.
@@ -476,18 +499,22 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 				} else if ("rename".equals(currentTask.task)) {
 					String oldFile = itemIdMap.get(currentTask.item.getId());
 					if (oldFile != null) {
-						itemIdMap.put(currentTask.item.getId(), currentTask.file.getName());
-						
-						// Sleep for a bit to let the platform delete if it wants
+						itemIdMap.put(currentTask.item.getId(),
+								currentTask.file.getName());
+
+						// Sleep for a bit to let the platform delete if it
+						// wants
 						Thread.currentThread();
 						Thread.sleep(1000);
-						
+
 						IProject project = currentTask.item.getProject();
 						IFile oldFileHandle = project.getFile(oldFile);
 						if (oldFileHandle.exists()) {
-							oldFileHandle.move(currentTask.file.getProjectRelativePath(), true, null);
+							oldFileHandle.move(
+									currentTask.file.getProjectRelativePath(),
+									true, null);
 						}
-						
+
 					}
 
 				}
@@ -499,7 +526,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 		} catch (InterruptedException | CoreException e) {
 			// Complain
 			logger.error(getClass().getName() + " Exception!", e);
-		} 
+		}
 
 		return;
 	}
@@ -537,7 +564,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 */
 	@Override
 	public void renameItem(Item item, String newName) {
-		IFile newFile = item.getProject().getFile(newName+".xml");
+		IFile newFile = item.getProject().getFile(newName + ".xml");
 		submitTask(item, "rename", item.getForm(), newFile);
 		return;
 	}
@@ -555,7 +582,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	 * @return True if the task was submitted, false if there was some exception
 	 *         or the Item was null.
 	 */
-	private boolean submitTask(Item item, String taskName, Form form, IFile file) {
+	private boolean submitTask(Item item, String taskName, Form form,
+			IFile file) {
 
 		// Local Declarations
 		boolean retVal = true;
@@ -663,7 +691,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	@Override
 	public Item loadItem(IResource itemResource) {
 		// If the IResource is an IFile, load it and otherwise return null.
-		return (itemResource instanceof IFile) ? loadItem((IFile) itemResource) : null;
+		return (itemResource instanceof IFile) ? loadItem((IFile) itemResource)
+				: null;
 	}
 
 	/**
@@ -709,7 +738,7 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	public ArrayList<Item> loadItems() {
 
 		// Local Declarations
-		ArrayList<Item> items = new ArrayList<Item>();
+		ArrayList<Item> items = new ArrayList<>();
 		Set<Integer> keys = itemIdMap.keySet();
 		Item item = null;
 
@@ -745,7 +774,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	public void replace(IFile file, String regex, String value) {
 		try {
 			throw new OperationNotSupportedException(
-					"XMLPersistenceProvider Error: " + "IWriter.replace() is not supported.");
+					"XMLPersistenceProvider Error: "
+							+ "IWriter.replace() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
 			logger.error(getClass().getName() + " Exception!", e);
@@ -798,7 +828,8 @@ public class XMLPersistenceProvider implements IPersistenceProvider, Runnable, I
 	public ArrayList<IEntry> findAll(IFile file, String regex) {
 		try {
 			throw new OperationNotSupportedException(
-					"XMLPersistenceProvider Error: " + "IReader.findAll() is not supported.");
+					"XMLPersistenceProvider Error: "
+							+ "IReader.findAll() is not supported.");
 		} catch (OperationNotSupportedException e) {
 			// TODO Auto-generated catch block
 			logger.error(getClass().getName() + " Exception!", e);
