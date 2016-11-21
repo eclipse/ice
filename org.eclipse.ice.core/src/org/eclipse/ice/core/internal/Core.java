@@ -250,7 +250,7 @@ public class Core extends Application implements ICore, BundleActivator {
 		itemManager.loadItems(itemDBProject);
 
 		// Start the webservice!
-		//startHttpService();
+		startHttpService();
 
 		// Configure the remote service properties
 		Dictionary<String, Object> props = new Hashtable<>();
