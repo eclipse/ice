@@ -1,11 +1,8 @@
 package org.eclipse.ice.item.action;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 
 import org.eclipse.remote.core.IRemoteConnection;
-import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;
 import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
@@ -82,26 +79,27 @@ public abstract class RemoteAction extends Action {
 			}
 
 			if (connectionType != null) {
-				try {
-					// Loop over existing connections to see if the user already
-					// specified
-					// a connection to the provided host
-					for (IRemoteConnection c : connectionType
-							.getConnections()) {
-						String connectionHost = c
-								.getService(IRemoteConnectionHostService.class)
-								.getHostname();
-						if (InetAddress.getByName(host).getHostAddress()
-								.equals(InetAddress.getByName(connectionHost)
-										.getHostAddress())) {
-							connection = c;
 
-							// Found it, return the connection
-							return connection;
-						}
+				// Loop over existing connections to see if the user already
+				// specified
+				// a connection to the provided host
+				for (IRemoteConnection c : connectionType.getConnections()) {
+					// String connectionHost = c
+					// .getService(IRemoteConnectionHostService.class)
+					// .getHostname();
+					//
+					// String a = InetAddress.getByName(host).getHostAddress();
+					// String b = InetAddress.getByName(connectionHost)
+					// .getHostAddress();
+					//
+					// c.getName()
+
+					if (host.equals(c.getName())) {
+						connection = c;
+
+						// Found it, return the connection
+						return connection;
 					}
-				} catch (UnknownHostException e) {
-					logger.error(getClass().getName() + " Exception!", e);
 				}
 
 				// If no connection found, let's ask the user to define it.
