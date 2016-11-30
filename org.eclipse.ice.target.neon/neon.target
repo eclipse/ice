@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="neon" sequenceNumber="205">
+<?pde version="3.8"?><target name="neon" sequenceNumber="206">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="gov.lbnl.visit.swt" version="0.0.0"/>
@@ -28,15 +28,6 @@
 <unit id="org.codehaus.jackson.jaxrs" version="0.0.0"/>
 <unit id="org.slf4j.log4j" version="0.0.0"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.core.source.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="0.0.0"/>
-<unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="0.0.0"/>
-<repository location="http://download.eclipse.org/nattable/releases/1.3.0/repository"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.cdt.autotools.feature.group" version="0.0.0"/>
@@ -167,6 +158,15 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.ease.engine.jython.feature.feature.group" version="2.7.0.I201609090924"/>
 <repository location="http://bintray.com/artifact/download/pontesegger/ease-engines/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.feature.feature.group" version="1.4.0.201606011907"/>
+<unit id="org.eclipse.nebula.widgets.nattable.core.feature.feature.group" version="1.4.0.201606011907"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.feature.feature.group" version="1.4.0.201606011907"/>
+<unit id="org.eclipse.nebula.widgets.nattable.core.source.feature.feature.group" version="1.4.0.201606011907"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.glazedlists.source.feature.feature.group" version="1.4.0.201606011907"/>
+<unit id="org.eclipse.nebula.widgets.nattable.extension.poi.source.feature.feature.group" version="1.4.0.201606011907"/>
+<repository location="http://download.eclipse.org/nattable/releases/1.4.0/repository"/>
 </location>
 </locations>
 </target>
