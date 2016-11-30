@@ -84,16 +84,6 @@ public abstract class RemoteAction extends Action {
 				// specified
 				// a connection to the provided host
 				for (IRemoteConnection c : connectionType.getConnections()) {
-					// String connectionHost = c
-					// .getService(IRemoteConnectionHostService.class)
-					// .getHostname();
-					//
-					// String a = InetAddress.getByName(host).getHostAddress();
-					// String b = InetAddress.getByName(connectionHost)
-					// .getHostAddress();
-					//
-					// c.getName()
-
 					if (host.equals(c.getName())) {
 						connection = c;
 
