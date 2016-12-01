@@ -49,7 +49,7 @@ public class VibeKVPairTester {
 
 	/**
 	 * <p>
-	 * This operation sets up the workspace. 
+	 * This operation sets up the workspace.
 	 * </p>
 	 */
 	@BeforeClass
@@ -70,7 +70,7 @@ public class VibeKVPairTester {
 			IPath projectPath = new Path(userDir + separator + ".project");
 			// Create the project description
 			IProjectDescription desc = ResourcesPlugin.getWorkspace()
-			                    .loadProjectDescription(projectPath);
+					.loadProjectDescription(projectPath);
 			// Get the project handle and create it
 			project = workspaceRoot.getProject(desc.getName());
 			// Create the project if it doesn't exist
@@ -79,7 +79,7 @@ public class VibeKVPairTester {
 			}
 			// Open the project if it is not already open
 			if (project.exists() && !project.isOpen()) {
-			   project.open(new NullProgressMonitor());
+				project.open(new NullProgressMonitor());
 			}
 			// Refresh the workspace
 			project.refreshLocal(IResource.DEPTH_INFINITE, null);
@@ -94,12 +94,10 @@ public class VibeKVPairTester {
 
 		return;
 	}
-	
-	
-	
+
 	/**
-	 * Test the constructor and make sure that all of the information is 
-	 * entered in correctly.
+	 * Test the constructor and make sure that all of the information is entered
+	 * in correctly.
 	 */
 	@Test
 	public void checkConstruction() {
@@ -109,7 +107,8 @@ public class VibeKVPairTester {
 
 		// check to see if the form exists, and the item is setup correctly.
 		assertEquals("VIBE Key-Value Pair", vibeKVPair.getName());
-		assertEquals("Generate input files for VIBE.",vibeKVPair.getDescription());
+		assertEquals("Generate input files for VIBE.",
+				vibeKVPair.getDescription());
 
 		// Try with project not as null
 		IProject project = projectSpace;
@@ -117,7 +116,8 @@ public class VibeKVPairTester {
 
 		// check to see if the form exists, and the item is setup correctly.
 		assertEquals("VIBE Key-Value Pair", vibeKVPair.getName());
-		assertEquals("Generate input files for VIBE.", vibeKVPair.getDescription());		
+		assertEquals("Generate input files for VIBE.",
+				vibeKVPair.getDescription());
 	}
 
 	/**
@@ -134,11 +134,12 @@ public class VibeKVPairTester {
 		// Check values stored on the form
 		// Check to see if executable exists
 		assertEquals("VIBE Key-Value Pair", vibeKVPair.getName());
-		assertEquals("Generate input files for VIBE.", vibeKVPair.getDescription());	
+		assertEquals("Generate input files for VIBE.",
+				vibeKVPair.getDescription());
 	}
-	
+
 	/**
-	 * Try processing the form with both valid and invalid 
+	 * Try processing the form with both valid and invalid
 	 */
 	@Test
 	public void checkProcessing() {
@@ -151,7 +152,7 @@ public class VibeKVPairTester {
 		// Check default contents
 		form = vibeKVPair.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(1, form.getComponents().size());
+		assertEquals(2, form.getComponents().size());
 
 		// Since there are entries and DataComponents, lets run the test!
 		// Now try to pass it the wrong information into the process
@@ -163,11 +164,14 @@ public class VibeKVPairTester {
 				vibeKVPair.process("Export to key-value pair output"));
 		form = vibeKVPair.getForm();
 		assertNotNull(form.getComponents());
-		assertEquals(1, form.getComponents().size());
-		assertTrue(projectSpace.getFile(
-				"VIBE_Key-Value_Pair_" + vibeKVPair.getId() + ".dat").exists());
+		assertEquals(2, form.getComponents().size());
+		assertTrue(projectSpace
+				.getFile("VIBE_Key-Value_Pair_" + vibeKVPair.getId() + ".dat")
+				.exists());
 		try {
-			projectSpace.getFile("VIBE_Key-Value_Pair_" + vibeKVPair.getId() + ".dat").delete(true, true, null);
+			projectSpace.getFile(
+					"VIBE_Key-Value_Pair_" + vibeKVPair.getId() + ".dat")
+					.delete(true, true, null);
 		} catch (CoreException e) {
 			e.printStackTrace();
 			fail("Could not delete test output file.");
