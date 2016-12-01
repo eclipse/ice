@@ -37,8 +37,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
+import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
+import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.datastructures.form.TableComponent;
@@ -52,11 +55,16 @@ import org.eclipse.ice.item.Item;
  * This class is a Model Item that configures a set of data components that
  * represent key-value pairs for VIBE input.
  * 
- * @author Jay Jay Billings, Andrew Bennett
+ * @author Jay Jay Billings, Andrew Bennett, Robert Smith
  * 
  */
 @XmlRootElement(name = "VibeKVPair")
 public class VibeKVPair extends Item implements IReader, IWriter {
+
+	/**
+	 * The index for the template component in the list of components.
+	 */
+	private static final int TEMPLATE_COMPONENT_ID = 0;
 
 	/**
 	 * Keep track of everything that we can do with the KV Pair Item
@@ -64,15 +72,34 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	private ArrayList<String> actionItems;
 
 	/**
+	 * The name of the default template to load.
+	 */
+	private static String defaultTemplate = "NTG";
+
+	/**
 	 * The tag that indicates this file should be exported to kv pairs.
 	 */
 	private String customTaggedExportString = "Export to key-value pair output";
+
+	/**
+	 * The component for the table of editable key value pairs.
+	 */
+	TableComponent kvTable;
+
+	/**
+	 * The name of the last template used to initialize the table component.
+	 */
+	private String templateName;
 
 	/**
 	 * The nullary constructor.
 	 */
 	public VibeKVPair() {
 		this(null);
+
+		// Initialize the template name
+		templateName = defaultTemplate;
+
 		return;
 	}
 
@@ -85,7 +112,58 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	public VibeKVPair(IProject projectSpace) {
 		// Punt to the base class.
 		super(projectSpace);
+
+		// Initialize the template name
+		templateName = defaultTemplate;
 		return;
+	}
+
+	/**
+	 * This operation returns a data component that contains the list of
+	 * reafiles that may be selected by a user from the Nek5000_Model_Builder
+	 * directory. This component will be empty if there are no files and contain
+	 * an Entry that says "No problems available."
+	 *
+	 * @param files
+	 *            The set of Nek reafiles available to be loaded
+	 * @return the data component
+	 */
+	private DataComponent createSelectorComponent() {
+
+		// Local Declaration
+		DataComponent caseComp = new DataComponent();
+
+		// The list of available templates
+		ArrayList<String> templateNames = new ArrayList<String>();
+		templateNames.add("NTG");
+		templateNames.add("DualFoil");
+
+		// Setup the data component
+		caseComp.setName("Problem Type Templates");
+		caseComp.setDescription("The following is a list of VIBE Key-Value "
+				+ "Pair input type templates for editing.");
+		caseComp.setId(0);
+
+		// Create an Entry for the template names
+		DiscreteEntry templatesEntry = new DiscreteEntry();
+		templatesEntry.setAllowedValues(templateNames);
+		templatesEntry.setDefaultValue(defaultTemplate);
+		templatesEntry.setValue(defaultTemplate);
+
+		// Setup the file Entry's descriptive information
+		templatesEntry.setName("Available Templates");
+		templatesEntry.setDescription("A list of the templates available "
+				+ "for populating the VIBE Key-Value Pair table component");
+		templatesEntry.setId(1);
+
+		// Add the Entry to the Component
+		caseComp.addEntry(templatesEntry);
+
+		// Register this Item as a listener of templatesEntry
+		templatesEntry.register(this);
+
+		return caseComp;
+
 	}
 
 	/**
@@ -98,10 +176,13 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		// Create the form
 		form = new Form();
 
+		// Add the template selector component
+		form.addComponent(createSelectorComponent());
+
 		// If loading from the new item button we should just
 		// load up the default case 6 file by passing in null
 		if (project != null) {
-			loadDefault();
+			loadDefault(defaultTemplate);
 		}
 	}
 
@@ -153,6 +234,12 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					+ "Could not find any data to write out");
 			retStatus = FormStatus.InfoError;
 		}
+
+		// Get the selection from the template component
+		DataComponent templateComp = (DataComponent) components
+				.get(TEMPLATE_COMPONENT_ID);
+		String template = templateComp.retrieveAllEntries().get(0).getValue();
+
 		return retStatus;
 	}
 
@@ -203,7 +290,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					// Complain
 					System.err.println("VibeKVPair Generator Message: "
 							+ "Failed to refresh the project space.");
-					logger.error(getClass().getName() + " Exception!",e);
+					logger.error(getClass().getName() + " Exception!", e);
 				}
 				// return a success
 				retStatus = FormStatus.Processed;
@@ -233,7 +320,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	@Override
 	public void loadInput(String name) {
 		IFile inputFile = inputFile = project.getFile(name);
-		logger.info("VibeKVPair Message: Loading" + inputFile.getFullPath().toOSString());
+		logger.info("VibeKVPair Message: Loading"
+				+ inputFile.getFullPath().toOSString());
 		form = read(inputFile);
 		form.setName(getName());
 		form.setDescription(getDescription());
@@ -244,8 +332,12 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 	/**
 	 * Loads a default dataset that's embedded in the plugin
+	 * 
+	 * @param caseName
+	 *            The name of the file containing the default case that will be
+	 *            used to populate the table
 	 */
-	public void loadDefault() {
+	public void loadDefault(String caseName) {
 		IFile inputFile = null;
 		File temp = null;
 		try {
@@ -254,13 +346,13 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			// Create a filepath for the default file
 			if (project != null) {
 				defaultFilePath = project.getLocation().toOSString()
-						+ System.getProperty("file.separator")
-						+ "case_6.dat";
+						+ System.getProperty("file.separator") + caseName
+						+ ".dat";
 			} else {
 				defaultFilePath = ResourcesPlugin.getWorkspace().getRoot()
 						.getLocation().toOSString()
-						+ System.getProperty("file.separator")
-						+ "case_6.dat";
+						+ System.getProperty("file.separator") + caseName
+						+ ".dat";
 			}
 
 			// Create a temporary location to load the default file
@@ -270,8 +362,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			}
 
 			// Pull the default file from inside the plugin
-			URI uri = new URI(
-					"platform:/plugin/org.eclipse.ice.vibe/data/case_6.dat");
+			URI uri = new URI("platform:/plugin/org.eclipse.ice.vibe/data/"
+					+ caseName + ".dat");
 			InputStream reader = uri.toURL().openStream();
 			FileOutputStream outStream = new FileOutputStream(temp);
 
@@ -283,13 +375,15 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			}
 			outStream.close();
 			if (project != null) {
-				inputFile = project.getFile("case_6.dat");
+				inputFile = project.getFile(caseName + ".dat");
 				project.refreshLocal(IResource.DEPTH_INFINITE, null);
 			} else {
 				inputFile = ResourcesPlugin.getWorkspace().getRoot()
 						.getFile(new Path(defaultFilePath));
 			}
-			logger.info("VibeKVPair Message: Loading" + inputFile.getFullPath().toOSString());
+			logger.info("VibeKVPair Message: Loading"
+					+ inputFile.getFullPath().toOSString());
+
 			form = read(inputFile);
 			form.setName(getName());
 			form.setDescription(getDescription());
@@ -310,10 +404,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					+ " Vibe case data!");
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
-			logger.error(getClass().getName() + " Exception!",e);
+			logger.error(getClass().getName() + " Exception!", e);
 		}
 	}
-	
+
 	/**
 	 * Reads in the KV Pair file to a form.
 	 * 
@@ -328,14 +422,18 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		if (ifile == null) {
 			return null;
 		}
-		Form form = new Form();
+
+		// Initialize the form if it does not exist
+		if (form == null) {
+			form = new Form();
+		}
 
 		// Read in the ini file to an ArrayList<String>
 		ArrayList<String> lines = new ArrayList<String>();
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(
-					ifile.getContents()));
+			reader = new BufferedReader(
+					new InputStreamReader(ifile.getContents()));
 
 			// Read the FileInputStream and append to a StringBuffer
 			StringBuffer buffer = new StringBuffer();
@@ -358,8 +456,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 					+ "Error! Could not find file for loading.");
 			return null;
 		} catch (IOException e) {
-			logger.error("VibeKVPair Message: "
-					+ "Error! Trouble reading file.");
+			logger.error(
+					"VibeKVPair Message: " + "Error! Trouble reading file.");
 			return null;
 		} catch (CoreException e) {
 			logger.error("VibeKVPair Message: "
@@ -367,8 +465,14 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			return null;
 		}
 
-		//
-		TableComponent kvTable = new TableComponent();
+		// Create the table if it doesn't exist or empty it if it does
+		if (kvTable == null) {
+			kvTable = new TableComponent();
+		} else {
+			for (int i : kvTable.getRowIds()) {
+				kvTable.deleteRow(0);
+			}
+		}
 		ArrayList<IEntry> row;
 		ArrayList<IEntry> kvEntries = new ArrayList<IEntry>();
 		IEntry key = new StringEntry();
@@ -379,14 +483,143 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		kvEntries.add(value);
 		kvTable.setRowTemplate(kvEntries);
 
+		// The list of keys whose rows will be dependent on another row
+		ArrayList<String> dependentKeys = new ArrayList<String>();
+		dependentKeys.add("MODESEG");
+		dependentKeys.add("CUTOFFL");
+		dependentKeys.add("CUTOFFH");
+
+		// The list of rows dependent on another row
+		ArrayList<VibeKVPairRow> dependentRows = new ArrayList<VibeKVPairRow>();
+
+		// The row for the NUMSEG key
+		VibeKVPairRow numsegRow = null;
+
 		for (String line : lines) {
 			if (line.contains("=")) {
 				String[] keyValue = line.split("=");
 				int rowID = kvTable.addRow();
 				row = kvTable.getRow(rowID);
-				row.get(0).setValue(keyValue[0]);
-				row.get(1).setValue(keyValue[1]);
+
+				// The new row under construction
+				VibeKVPairRow entryRow = null;
+
+				// For most keys, create a standard row
+				if (!dependentKeys.contains(keyValue[0])) {
+
+					entryRow = new VibeKVPairRow((StringEntry) row.get(0),
+							(StringEntry) row.get(1));
+
+					if ("NUMSEG".equals(keyValue[0])) {
+						numsegRow = entryRow;
+
+						// The prescence of NUMSEG means that this is a DualFoil
+						// problem. We must set the template name appropriately,
+						// in case this function was invoked by importing a
+						// key-value file directly.
+						templateName = "DualFoil";
+						((DataComponent) form
+								.getComponent(TEMPLATE_COMPONENT_ID))
+										.retrieveAllEntries().get(0)
+										.setValue("DualFoil");
+					}
+				}
+
+				else {
+
+					// TODO If we ever want to create more complex relationships
+					// between rows, change this to handle things more
+					// generically
+					// For keys whose lengths depend on numseg, add a listener
+					entryRow = new VibeKVPairRow((StringEntry) row.get(0),
+							(StringEntry) row.get(1)) {
+						@Override
+						public void update(IUpdateable component) {
+
+							// This row won't need to send updates of its own,
+							// so ignore the value entry
+							if (component == getValue()) {
+								return;
+							}
+
+							// Cast the component
+							VibeKVPairRow source = (VibeKVPairRow) component;
+
+							// The string that will be written to this row's
+							// value
+							String valueString = getValue().getValue();
+
+							// Calculate the size of the vector
+							int vectorSize = valueString.length()
+									- valueString.replace(",", "").length() + 1;
+
+							// Get the new value of the numseg key
+							int numseg = Integer
+									.valueOf(source.getValue().getValue());
+
+							// If numseg is an invalid value, ignore the change
+							if (numseg <= 0) {
+								return;
+							}
+
+							// If numseg has been reduced, shorten the value
+							// vector
+							if (numseg < vectorSize) {
+
+								// The amount of numbers to be removed
+								int numRemove = vectorSize - numseg;
+
+								// Remove the last number in the vector,
+								// numRemove times
+								for (int i = 0; i < numRemove; i++) {
+									valueString = valueString.substring(0,
+											valueString.lastIndexOf(','));
+								}
+
+								getValue().setValue(valueString);
+
+							}
+
+							// If numseg has been increased, lengthen the value
+							// vector
+							else if (numseg > vectorSize) {
+
+								// The number of additional values to add
+								int numAdd = numseg - vectorSize;
+
+								// The default value to pad the vector with
+								String pad = null;
+
+								// MODESEG is a vector of integers, all others
+								// are vectors of doubles
+								if (!getKey().getValue().equals("MODESEG")) {
+									pad = ",0.0";
+								} else {
+									pad = ",0";
+								}
+
+								// Pad the vector out with the default value
+								for (int i = 0; i < numAdd; i++) {
+									valueString += pad;
+								}
+
+								getValue().setValue(valueString);
+							}
+						}
+					};
+
+					// Add this row to the list
+					dependentRows.add(entryRow);
+				}
+
+				entryRow.getKey().setValue(keyValue[0]);
+				entryRow.getValue().setValue(keyValue[1]);
 			}
+		}
+
+		// Register each dependent row as a listener to the NUMSEG row
+		for (VibeKVPairRow dependentRow : dependentRows) {
+			numsegRow.register(dependentRow);
 		}
 
 		form.addComponent(kvTable);
@@ -413,7 +646,8 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 		// Make sure that the form had data that looks correct, and the output
 		// file exists
-		if (components != null && components.size() > 0 && outputFile.isFile()) {
+		if (components != null && components.size() > 0
+				&& outputFile.isFile()) {
 			try {
 				// Get an output stream to the file
 				PipedInputStream in = new PipedInputStream(8196);
@@ -454,7 +688,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 						+ outputFile.getAbsolutePath() + ".");
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
-				logger.error(getClass().getName() + " Exception!",e);
+				logger.error(getClass().getName() + " Exception!", e);
 			}
 		}
 
@@ -487,4 +721,22 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		return "VibeKVPairItem";
 	}
 
+	@Override
+	public void update(IUpdateable updateable) {
+
+		if (updateable instanceof DiscreteEntry) {
+			DiscreteEntry e = (DiscreteEntry) updateable;
+
+			// Get the user selected template
+			String template = e.getValue();
+
+			// If the template was changed from the last loaded template, load
+			// the
+			// newly selected template
+			if (!templateName.equals(template)) {
+				loadDefault(template);
+				templateName = template;
+			}
+		}
+	}
 }
