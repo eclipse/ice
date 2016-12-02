@@ -323,6 +323,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		logger.info("VibeKVPair Message: Loading"
 				+ inputFile.getFullPath().toOSString());
 		form = read(inputFile);
+		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
