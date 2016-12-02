@@ -622,7 +622,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			numsegRow.register(dependentRow);
 		}
 
-		form.addComponent(kvTable);
+		//Add the table to the form if it isn't already there
+		if(form.getComponents().size() < 2){
+			form.addComponent(kvTable);
+		}
 		// Return the form
 		return form;
 	}
