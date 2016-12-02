@@ -323,7 +323,6 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		logger.info("VibeKVPair Message: Loading"
 				+ inputFile.getFullPath().toOSString());
 		form = read(inputFile);
-		form.setName(getName());
 		form.setDescription(getDescription());
 		form.setId(getId());
 		form.setItemID(getId());
@@ -434,7 +433,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		try {
 			reader = new BufferedReader(
 					new InputStreamReader(ifile.getContents()));
-
+			
 			// Read the FileInputStream and append to a StringBuffer
 			StringBuffer buffer = new StringBuffer();
 			int fileByte;
@@ -451,6 +450,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 			// Add a dummy EOF line so that the last line of the file is
 			// read in correctly
 			lines.add("EOF");
+			
+			//Close the reader
+			reader.close();
+			
 		} catch (FileNotFoundException e) {
 			logger.error("VibeKVPair Message: "
 					+ "Error! Could not find file for loading.");
