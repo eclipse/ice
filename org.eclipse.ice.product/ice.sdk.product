@@ -3,6 +3,7 @@
 
 <product name="ICE" uid="ice.sdk.product" id="org.eclipse.ice.client.rcp.sdk_product" application="org.eclipse.ui.ide.workbench" version="2.2.0.qualifier" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -36,6 +37,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -163,14 +165,6 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.linuxtools.cdt.libhover.feature"/>
       <feature id="org.eclipse.dltk.core"/>
       <feature id="org.eclipse.recommenders.rcp.feature"/>
-      <feature id="org.eclipse.mylyn.commons"/>
-      <feature id="org.eclipse.mylyn.commons.identity"/>
-      <feature id="org.eclipse.mylyn.commons.notifications"/>
-      <feature id="org.eclipse.mylyn.commons.repositories"/>
-      <feature id="org.eclipse.mylyn.discovery"/>
-      <feature id="org.eclipse.mylyn.github.feature"/>
-      <feature id="org.eclipse.mylyn.monitor"/>
-      <feature id="org.eclipse.mylyn_feature"/>
       <feature id="org.eclipse.egit"/>
       <feature id="org.eclipse.photran.xlf"/>
       <feature id="org.eclipse.tm.terminal.view.feature"/>
