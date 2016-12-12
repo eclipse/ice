@@ -239,14 +239,15 @@ public class IPSReader implements IReader {
 		// Read the FileInputStream and append to a StringBuffer
 		StringBuffer buffer = new StringBuffer();
 		int fileByte;
-		while ((fileByte = reader.read()) != -1) {
-			buffer.append((char) fileByte);
+
+		//Read each the file, putting each line into its own string
+		ArrayList<String> fileLines = new ArrayList<String>();
+		String line = reader.readLine();
+		while(line != null){
+			fileLines.add(line);
+			line = reader.readLine();
 		}
 		reader.close();
-
-		// Break up the StringBuffer at each newline character
-		String[] bufferSplit = (buffer.toString()).split("\n");
-		ArrayList<String> fileLines = new ArrayList<String>(Arrays.asList(bufferSplit));
 
 		// Add a dummy EOF line so that the last line of the file is
 		// read in correctly
@@ -292,7 +293,7 @@ public class IPSReader implements IReader {
 			// The format in this section is: KEY = VALUE # Comment
 			// First check if the line contains a parameter
 			if (line.contains("=")) {
-
+				
 				// If the line has a comment split on it and disregard it
 				if (line.contains("#")) {
 					line = line.split("#", 2)[0];
@@ -300,6 +301,11 @@ public class IPSReader implements IReader {
 
 				// Get the content for the entry
 				splitLine = line.split("=", 2);
+				
+				//If the line cannot be split into two valid tokens, then the entire line must have been commented out and can be safely ignored.
+				if(splitLine.length < 2 || splitLine[0].trim().length() == 0){
+					continue;
+				}
 
 				// Set up the data in the table
 				ArrayList<IEntry> row = new ArrayList<IEntry>();
@@ -396,6 +402,11 @@ public class IPSReader implements IReader {
 				// Take care of comments
 				if (line.contains("#")) {
 					line = line.split("#", 2)[0];
+					
+					//If the line is empty, then the entire line must have been commented out and can be safely ignored.
+					if(line.trim().length() == 0){
+						continue;
+					}
 				}
 
 				// Get the port name of the entry & make sure that it is in
@@ -541,7 +552,7 @@ public class IPSReader implements IReader {
 		// Set the allowed ports so that users don't try to go too far and end
 		// up with settings that don't exist
 		String[] allowedPortNames = { "INIT_STATE", "AMPERES_THERMAL", "AMPERES_ELECTRICAL",
-				"CHARTRAN_ELECTRICAL_THERMAL_DRIVER", "NTG", "DUALFOIL" };
+				"CHARTRAN_ELECTRICAL_THERMAL_DRIVER", "NTG", "DUALFOIL", "CHARTRAN_THERMAL_DRIVER", "AMPERES" };
 		ArrayList<String> allowedPortList = new ArrayList<String>(Arrays.asList(allowedPortNames));
 		ArrayList<DataComponent> portTemplates = new ArrayList<DataComponent>();
 		Boolean portAdded;
@@ -705,6 +716,36 @@ public class IPSReader implements IReader {
 				"SCRIPT = $BIN_PATH/dualfoil_chartran.py", "", "" };
 		portLines = new ArrayList<String>(Arrays.asList(dfoilStrings));
 		portMap.put("DUALFOIL", portLines);
+		
+		//CHARTRAN_THERMAL_DRIVER definitions
+		String[] ctdStrings = { "CHARTRAN_THERMAL_DRIVER", "CLASS = DRIVERS",
+			    "SUB_CLASS = CHARTRAN_THERMAL",
+			    "NAME = Driver",
+			    "NPROC = 1",
+			    "BIN_PATH = $CAEBAT_ROOT/bin",
+			    "INPUT_DIR = $SIM_ROOT/",
+			    "INPUT_FILES =",
+			    "OUTPUT_FILES = $CURRENT_STATE", 
+			    "SCRIPT = $BIN_PATH/thermal_chartran_driver_n.py"
+		};
+		portLines = new ArrayList<String>(Arrays.asList(ctdStrings));
+		portMap.put("CHARTRAN_THERMAL_DRIVER", portLines);
+		
+		//AMPERES definitions
+		String[] ampereStrings = { "AMPERES",     "CLASS = THERMAL",
+			    "SUB_CLASS =", 
+			    "NAME = Amperes",
+			    "NPROC = 1",
+			    "BIN_PATH = $CAEBAT_ROOT/bin",
+			    "INPUT_DIR = $SIM_ROOT/input",
+			    "INPUT_FILES = 'input_keyvalue' , 'Cell-zones1.e'",
+			    "OUTPUT_FILES = $CURRENT_STATE", 
+			    "INPUT_VAR    = 'lumped_source'",
+			    "OUTPUT_VAR   = 'lumped_temperature'",
+			    "SCRIPT = $BIN_PATH/amperes_thermal.py"
+		};
+		portLines = new ArrayList<String>(Arrays.asList(ampereStrings));
+		portMap.put("AMPERES", portLines);
 
 	}
 
