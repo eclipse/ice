@@ -23,6 +23,8 @@ import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
@@ -30,6 +32,9 @@ import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
 import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +133,7 @@ public class IPSReader implements IReader {
 		// Read in each of the ports individually
 		String name = "";
 		while (!name.equals("TIME_LOOP")) {
-			DataComponent ipsComponent = loadComponent(iniIterator);
+			DataComponent ipsComponent = loadComponent(iniIterator, true);
 			name = ipsComponent.getName();
 			if (!name.equals("TIME_LOOP")) {
 				ipsComponents.add(ipsComponent);
@@ -321,8 +326,9 @@ public class IPSReader implements IReader {
 
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
-			System.err.println(
+			logger.error(
 					"IPS Reader Message: Reached unexpected " + "end of file while reading the global configuration.");
+			createErrorDialog();
 			return null;
 		}
 
@@ -364,8 +370,9 @@ public class IPSReader implements IReader {
 		// loadGlobalConfiguration() method the current line that the iterator
 		// is at should be [PORTS]
 		if (!it.hasNext()) {
-			System.err.println("Reached unexpected end of file while trying to "
+			logger.error("Reached unexpected end of file while trying to "
 					+ "locate the Ports Table.  Please check your input file and " + "try again.");
+			createErrorDialog();
 			return null;
 		}
 
@@ -382,8 +389,9 @@ public class IPSReader implements IReader {
 		// in, so make sure that we've not accidentally parsed over the entire
 		// thing. If we have, tell the user that their file may be incorrect.
 		if (!it.hasNext()) {
-			System.err.println("Reached unexpected end of file while trying to " + "read the Ports Table.  "
+			logger.error("Reached unexpected end of file while trying to " + "read the Ports Table.  "
 					+ "Please check your input file and try again.");
+			createErrorDialog();
 			return null;
 		}
 
@@ -430,9 +438,10 @@ public class IPSReader implements IReader {
 						String implementation = line.split(" = ", 2)[1];
 						row.get(1).setValue(implementation);
 					} else {
-						System.err.println(
+						logger.error(
 								"Unexpected token after ports entry, " + "check your input file and try again.");
-						System.exit(1);
+						createErrorDialog();
+						return null;
 					}
 
 					// Found a complete port entry, now remove the port from the
@@ -446,8 +455,8 @@ public class IPSReader implements IReader {
 
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
-			System.err
-					.println("IPS Reader Message: Reached unexpected " + "end of file while reading the ports table.");
+			logger.error("IPS Reader Message: Reached unexpected " + "end of file while reading the ports table.");
+			createErrorDialog();
 			return null;
 		}
 
@@ -461,15 +470,27 @@ public class IPSReader implements IReader {
 	 * 
 	 * @param it
 	 *            Iterator over the lines of the INI file as an ArrayList
+	 * @param fromFile
+	 * 			  True if the iterator is for the file the reader is parsing or false if the iterator is for a standalone set of strings which are to be parsed by themselves.
 	 * @return A DataComponent containing information for one of the port
 	 *         entries.
 	 */
-	private DataComponent loadComponent(Iterator<String> it) {
+	private DataComponent loadComponent(Iterator<String> it, boolean fromFile) {
 		// Create the port component and a generic entry
 		DataComponent portComponent = new DataComponent();
 		IEntry entry;
 		String[] splitLine = null;
-
+		
+		//The local line that is being parsed
+		String line;
+		
+		//Get the line for the file or from the iterator, as appropriate for the source
+		if(fromFile){
+			line = this.line;
+		} else{
+			line = it.next();
+		}
+		
 		// Scan until we get to the next port component
 		while (!line.contains("[") && !line.contains("]") && it.hasNext()) {
 			line = it.next();
@@ -505,6 +526,11 @@ public class IPSReader implements IReader {
 				portComponent.addEntry(entry);
 			}
 
+			//If we have parsed all the lines from a standalone data set, stop parsing
+			if(!fromFile && !it.hasNext()){
+				return portComponent;
+			}
+			
 			// Read in another line
 			line = it.next();
 
@@ -518,11 +544,17 @@ public class IPSReader implements IReader {
 				foundNextPort = true;
 			}
 		}
+		
+		//If we loaded from the file, set the overall current line to the last line parsed
+		if(fromFile){
+			this.line = line;
+		}
 
 		// Make sure that we are not at the end of the file
 		if (!it.hasNext()) {
-			System.err.println(
+			logger.error(
 					"IPS Reader Message: Reached unexpected " + "end of file while reading the port configuration.");
+			createErrorDialog();
 			return null;
 		}
 
@@ -569,14 +601,29 @@ public class IPSReader implements IReader {
 			populatePortMap();
 		}
 
+		ArrayList<String> portData;
+		
 		// Add in the missing definitions
 		for (String port : allowedPortList) {
-			portTemplates.add(loadComponent(portMap.get(port).iterator()));
+			portTemplates.add(loadComponent(portMap.get(port).iterator(), false));
+		}
+		
+		//The list of portTemplates, re-ordered to match that of the allowedPortNames
+		ArrayList<DataComponent> orderedPortTemplates = new ArrayList<DataComponent>();
+		
+		//Add the corresponding template for each port name to the list
+		for(String port : allowedPortNames){
+			for(DataComponent template : portTemplates){
+				if(port.equals(template.getName())){
+					orderedPortTemplates.add(template);
+					break;
+				}
+			}
 		}
 
 		// Recreate the overall list & Set the template
 		allowedPortList = new ArrayList<String>(Arrays.asList(allowedPortNames));
-		masterDetails.setTemplates(allowedPortList, portTemplates);
+		masterDetails.setTemplates(allowedPortList, orderedPortTemplates);
 
 		// Add the ports to the MasterDetailsComponent
 		for (DataComponent data : ipsComponents) {
@@ -590,6 +637,18 @@ public class IPSReader implements IReader {
 		return masterDetails;
 	}
 
+	/**
+	 * Open an error dialog to alert the user that a problem occurred while reading the file.
+	 */
+	private void createErrorDialog(){
+		ErrorDialog.openError(new Shell(Display.getCurrent()),
+				"Error Reading VIBE File", "File import failed.",
+				new Status(IStatus.ERROR,
+						"org.eclipse.ice.io",
+						"Reached an unexpected end of file while parsing input."));
+		return;
+	}
+	
 	/**
 	 * Load the Time Loop Data from the INI file and return the data as a
 	 * DataComponent. Each parameter in the section is added to the
@@ -608,8 +667,9 @@ public class IPSReader implements IReader {
 
 		// Scan until we get to the next port component
 		if (!it.hasNext()) {
-			System.err.println("Unexpectedly reached the end of file.  "
+			logger.error("Unexpectedly reached the end of file.  "
 					+ "Please check the INI file you have chosen and" + " try again.");
+			createErrorDialog();
 			return null;
 		}
 
@@ -718,7 +778,7 @@ public class IPSReader implements IReader {
 		portMap.put("DUALFOIL", portLines);
 		
 		//CHARTRAN_THERMAL_DRIVER definitions
-		String[] ctdStrings = { "CHARTRAN_THERMAL_DRIVER", "CLASS = DRIVERS",
+		String[] ctdStrings = { "[CHARTRAN_THERMAL_DRIVER]", "CLASS = DRIVERS",
 			    "SUB_CLASS = CHARTRAN_THERMAL",
 			    "NAME = Driver",
 			    "NPROC = 1",
@@ -732,7 +792,7 @@ public class IPSReader implements IReader {
 		portMap.put("CHARTRAN_THERMAL_DRIVER", portLines);
 		
 		//AMPERES definitions
-		String[] ampereStrings = { "AMPERES",     "CLASS = THERMAL",
+		String[] ampereStrings = { "[AMPERES]",     "CLASS = THERMAL",
 			    "SUB_CLASS =", 
 			    "NAME = Amperes",
 			    "NPROC = 1",

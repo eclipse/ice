@@ -15,4 +15,6 @@ Export-Package: org.eclipse.ice.io.csv,
 Bundle-Vendor: Oak Ridge National Laboratory
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime,
+ org.eclipse.jface.dialogs,
+ org.eclipse.swt.widgets,
  org.slf4j
