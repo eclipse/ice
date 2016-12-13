@@ -35,6 +35,7 @@ import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -641,11 +642,21 @@ public class IPSReader implements IReader {
 	 * Open an error dialog to alert the user that a problem occurred while reading the file.
 	 */
 	private void createErrorDialog(){
-		ErrorDialog.openError(new Shell(Display.getCurrent()),
-				"Error Reading VIBE File", "File import failed.",
-				new Status(IStatus.ERROR,
-						"org.eclipse.ice.io",
-						"Reached an unexpected end of file while parsing input."));
+		
+		//Open the error dialog
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				ErrorDialog.openError(new Shell(Display.getDefault()),
+						"Error Reading VIBE Input File",
+						"File import failed.",
+						new Status(IStatus.ERROR,
+								"org.eclipse.ice.io",
+								"Reached an unexpected end of file while parsing input."));
+				return;
+			}
+		});
+		
 		return;
 	}
 	
