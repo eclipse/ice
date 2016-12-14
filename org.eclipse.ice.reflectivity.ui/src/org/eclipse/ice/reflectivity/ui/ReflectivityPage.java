@@ -183,7 +183,7 @@ public class ReflectivityPage extends ICEResourcePage
 		Section listSection = formToolkit.createSection(sashForm,
 				Section.TITLE_BAR | Section.DESCRIPTION | Section.TWISTIE
 						| Section.EXPANDED | Section.COMPACT);
-		
+
 		listSection.setLayout(new GridLayout(1, false));
 		listSection.setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -243,9 +243,9 @@ public class ReflectivityPage extends ICEResourcePage
 				if (!newSelection.equals(selectedCell)) {
 					selectedCell = newSelection;
 					for (ISelectionChangedListener listener : listeners) {
-						listener.selectionChanged(new SelectionChangedEvent(
-								ReflectivityPage.this, ReflectivityPage.this
-										.getSelection()));
+						listener.selectionChanged(
+								new SelectionChangedEvent(ReflectivityPage.this,
+										ReflectivityPage.this.getSelection()));
 					}
 				}
 			}
@@ -262,10 +262,12 @@ public class ReflectivityPage extends ICEResourcePage
 
 		// Create the resource form page contents
 		super.createFormContent(resourceForm);
-		
-		//Open the properties view and set the focuse on this view to force the correct properties to display. 
+
+		// Open the properties view and set the focuse on this view to force the
+		// correct properties to display.
 		try {
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.eclipse.ui.propertiesView");
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.showView("org.eclipse.ui.propertiesView");
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
@@ -331,9 +333,9 @@ public class ReflectivityPage extends ICEResourcePage
 							list.getReadWriteLock().writeLock().unlock();
 						}
 					}
-					
+
 				}
-				
+
 				listTable.getTable().refresh();
 			}
 
@@ -375,7 +377,7 @@ public class ReflectivityPage extends ICEResourcePage
 						}
 					}
 				}
-				
+
 				listTable.getTable().refresh();
 			}
 
@@ -432,7 +434,7 @@ public class ReflectivityPage extends ICEResourcePage
 						}
 
 					}
-					
+
 					listTable.getTable().refresh();
 				}
 			}
@@ -489,7 +491,7 @@ public class ReflectivityPage extends ICEResourcePage
 							listTable.setSelection(selected);
 						}
 					}
-					
+
 					listTable.getTable().refresh();
 				}
 			}
@@ -515,7 +517,7 @@ public class ReflectivityPage extends ICEResourcePage
 					list.clear();
 					list.getReadWriteLock().writeLock().unlock();
 				}
-				
+
 				listTable.getTable().refresh();
 			}
 
@@ -676,7 +678,5 @@ public class ReflectivityPage extends ICEResourcePage
 	public void setSelection(ISelection selection) {
 		// Do nothing, as we do not want this capability
 	}
-	
-	
 
 }

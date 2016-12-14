@@ -127,6 +127,7 @@ public class ReflectivityModelTester extends AbstractWorkbenchTester {
 		assertTrue("107Ag".equals(cellName));
 
 		// Move it up two rows
+		table.selectCell(bot, 0, 5);
 		bot.button("^").click();
 		bot.button("^").click();
 		cellName = (String) realTable.getDataValueByPosition(1, 4);

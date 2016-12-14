@@ -155,15 +155,11 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 
 		// Check each of the port types available in the menu and check the
 		// number of text fields they display.
-		// FIXME INIT_STATE, CHARTRAN_ElECTRICAL_THERMAL_DRIVER, and NTG have
-		// different variables available for editing between the default
-		// provided sockets and the ones added by the button. Need to figure out
-		// if this is intentional.
 		bot.button(2).click();
 		bot.table().select("INIT_STATE");
 		bot.button("OK").click();
-		// bot.table(1).select(5);
-		// bot.text(13).typeText("Test");
+		bot.table(1).select(5);
+		bot.text(13).typeText("Test");
 
 		bot.button(2).click();
 		bot.table().select("AMPERES_THERMAL");
@@ -180,14 +176,14 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 		bot.button(2).click();
 		bot.table().select("CHARTRAN_ELECTRICAL_THERMAL_DRIVER");
 		bot.button("OK").click();
-		// bot.table(1).select(8);
-		// bot.text(11).typeText("Test");
+		bot.table(1).select(8);
+		bot.text(12).typeText("Test");
 
 		bot.button(2).click();
 		bot.table().select("NTG");
 		bot.button("OK").click();
-		// bot.table(1).select(9);
-		// bot.text(13).typeText("Test");
+		bot.table(1).select(9);
+		bot.text(14).typeText("Test");
 
 		bot.button(2).click();
 		bot.table().select("DUALFOIL");
@@ -197,9 +193,21 @@ public class VIBEModelTester extends AbstractWorkbenchTester {
 		// table to see if it was added instead.
 		assertEquals(11, bot.table(1).rowCount());
 
+		bot.button(2).click();
+		bot.table().select("AMPERES");
+		bot.button("OK").click();
+		bot.table(1).select(11);
+		bot.text(14).typeText("Test");
+
+		bot.button(2).click();
+		bot.table().select("CHARTRAN_THERMAL_DRIVER");
+		bot.button("OK").click();
+		bot.table(1).select(12);
+		bot.text(10).typeText("Test");
+
 		// Delete a row and make sure it's gone
 		bot.table().select(0);
 		bot.button("Delete").click();
-		assertTrue("11 DUALFOIL".equals(bot.table(1).cell(9, 0)));
+		assertTrue("11 DUALFOIL".equals(bot.table(1).cell(10, 0)));
 	}
 }

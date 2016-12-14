@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -26,8 +28,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.ice.datastructures.ICEObject.Component;
+import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.form.TableComponent;
 import org.eclipse.ice.vibe.kvPair.VibeKVPair;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -136,6 +141,119 @@ public class VibeKVPairTester {
 		assertEquals("VIBE Key-Value Pair", vibeKVPair.getName());
 		assertEquals("Generate input files for VIBE.",
 				vibeKVPair.getDescription());
+	}
+
+	/**
+	 * Test that changing the template will set the table up appropriately.
+	 */
+	@Test
+	public void checkTemplates() {
+		VibeKVPair vibeKVPair;
+		IProject project = projectSpace;
+
+		// Create a VibeLauncher
+		vibeKVPair = new VibeKVPair(project);
+
+		// The components from the item's form.
+		ArrayList<Component> components = vibeKVPair.getForm().getComponents();
+
+		// The component containing the table Key-Value pairs
+		TableComponent table = null;
+
+		// The component containing the problem templates
+		DataComponent template = null;
+
+		// Search the list of components, saving them to the approrpiate
+		// variables
+		for (Component component : components) {
+
+			// The template component will be the only DataComponent
+			if (component instanceof DataComponent) {
+				template = (DataComponent) component;
+			}
+
+			// The table will be the only TableComponent
+			else if (component instanceof TableComponent) {
+				table = (TableComponent) component;
+			}
+		}
+
+		// Whether or not the CUTOFF key was found in the table
+		boolean foundCutoff = false;
+
+		// Search for the CUTOFF key in each of the tables rows
+		for (int id : table.getRowIds()) {
+			if ("CUTOFF".equals(table.getRow(id).get(0).getValue())) {
+				foundCutoff = true;
+				break;
+			}
+		}
+
+		// If the CUTOFF key was absent, then the table was not set up correctly
+		if (!foundCutoff) {
+			fail("Did not find CUTOFF row in default table.");
+		}
+
+		// Set the item to the DualFoil template
+		template.retrieveAllEntries().get(0).setValue("DualFoil");
+
+		// Give the form time to load the new data
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		// Whether the CUTOFFL key was found in the table
+		boolean foundL = false;
+
+		// Whether the CUTOFFH key was found in the table
+		boolean foundH = false;
+
+		// Search each row of the table for the DualFoil keys
+		for (int id : table.getRowIds()) {
+
+			// Get the value of the current key-value pair's row
+			String value = table.getRow(id).get(0).getValue();
+
+			if ("CUTOFFL".equals(value)) {
+				foundL = true;
+			} else if ("CUTOFFH".equals(value)) {
+				foundH = true;
+			}
+		}
+
+		// If the expected keys were not found, then the DualFoil template was
+		// not properly applied to the table
+		if (!foundL || !foundH) {
+			fail("Table was not changed to DualFoil template.");
+		}
+
+		// Set the template back to NTG
+		template.retrieveAllEntries().get(0).setValue("NTG");
+
+		// Give the form time to load the new data
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		// Search for the CUTOFF key in each of the tables rows
+		foundCutoff = false;
+		for (int id : table.getRowIds()) {
+			if ("CUTOFF".equals(table.getRow(id).get(0).getValue())) {
+				foundCutoff = true;
+				break;
+			}
+		}
+
+		// If the CUTOFF key was absent, then the table was not set up correctly
+		if (!foundCutoff) {
+			fail("Table was not changed to NTG template.");
+		}
 	}
 
 	/**
