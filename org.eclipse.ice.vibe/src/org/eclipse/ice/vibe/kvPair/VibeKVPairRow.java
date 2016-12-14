@@ -131,7 +131,7 @@ public class VibeKVPairRow implements IUpdateable, IUpdateableListener {
 	 */
 	@Override
 	public int getId() {
-		return 0;
+		return ID;
 	}
 
 	/*
