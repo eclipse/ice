@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.ice.materials.ui;
 
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.MaterialStack;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.MaterialStack;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**

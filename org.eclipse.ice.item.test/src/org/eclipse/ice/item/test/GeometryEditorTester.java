@@ -15,10 +15,10 @@ package org.eclipse.ice.item.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
 import org.eclipse.ice.item.geometry.GeometryEditor;
 import org.eclipse.ice.item.geometry.GeometryEditorBuilder;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.GeometryComponent;
 import org.junit.Test;
 
 /**

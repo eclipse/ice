@@ -21,12 +21,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.SerializedItemBuilder;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.IEntry;
 import org.junit.Test;
 
 /**

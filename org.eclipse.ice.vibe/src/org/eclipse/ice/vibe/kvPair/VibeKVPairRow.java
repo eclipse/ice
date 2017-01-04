@@ -12,9 +12,10 @@ package org.eclipse.ice.vibe.kvPair;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.StringEntry;
+import org.eclipse.january.form.IUpdateable;
+import org.eclipse.january.form.IUpdateableListener;
+import org.eclipse.january.form.StringEntry;
+
 
 /**
  * This class represents one of the rows of the TableComponent comprising the

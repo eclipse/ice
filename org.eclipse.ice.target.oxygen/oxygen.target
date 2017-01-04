@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="ice-oxygen" sequenceNumber="206">
+<?pde version="3.8"?><target name="ice-oxygen" sequenceNumber="207">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="gov.lbnl.visit.swt" version="0.0.0"/>
@@ -171,6 +171,11 @@
 <unit id="org.eclipse.remote.console.feature.group" version="0.0.0"/>
 <unit id="org.eclipse.remote.proxy.feature.group" version="0.0.0"/>
 <repository location="http://download.eclipse.org/tools/ptp/builds/remote/nightly"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.january.form" version="1.0.0.v201610161242"/>
+<unit id="org.eclipse.january.form.source" version="1.0.0.v201610161242"/>
+<repository location="http://download.eclipse.org/january/releases/1.0.0/repository/"/>
 </location>
 </locations>
 </target>

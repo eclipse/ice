@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ListComponentSectionPage;
 import org.eclipse.ice.client.widgets.providers.IListPageProvider;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.ListComponent;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 

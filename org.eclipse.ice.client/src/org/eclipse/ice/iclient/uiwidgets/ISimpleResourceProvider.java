@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.january.form.ICEResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

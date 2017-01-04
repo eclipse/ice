@@ -25,10 +25,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
 import org.eclipse.ice.nek5000.NekReader;
 import org.eclipse.ice.nek5000.NekWriter;
 import org.eclipse.ice.nek5000.ProblemProperties;
+import org.eclipse.january.form.Component;
 import org.junit.Test;
 
 /**

@@ -13,10 +13,10 @@
 package org.eclipse.ice.reflectivity.ui;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.ResourceComponent;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 

@@ -12,7 +12,7 @@
 *******************************************************************************/
 package org.eclipse.ice.iclient.uiwidgets;
 
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.january.form.Form;
 
 /**
  * <p>

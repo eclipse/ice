@@ -13,7 +13,7 @@ package org.eclipse.ice.client.widgets;
 
 import java.util.Iterator;
 
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.january.form.ListComponent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;

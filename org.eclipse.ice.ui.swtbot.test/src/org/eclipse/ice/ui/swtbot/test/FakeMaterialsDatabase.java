@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 
-import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
 import org.eclipse.ice.materials.XMLMaterialsDatabase;
+import org.eclipse.january.form.Material;
 
 import ca.odell.glazedlists.gui.TableFormat;
 

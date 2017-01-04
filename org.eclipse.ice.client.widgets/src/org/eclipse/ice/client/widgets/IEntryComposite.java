@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.IUpdateableListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IMessageManager;
 

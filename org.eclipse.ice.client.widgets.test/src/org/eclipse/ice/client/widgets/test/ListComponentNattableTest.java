@@ -18,9 +18,9 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 
 import org.eclipse.ice.client.widgets.ListComponentNattable;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.Material;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

@@ -16,9 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.item.utilities.moose.Parameter;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.IEntry;
 import org.junit.Test;
 
 /**

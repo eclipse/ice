@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets.test;
 
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.iclient.uiwidgets.IProcessEventListener;
 import org.eclipse.ice.iclient.uiwidgets.IUpdateEventListener;
+import org.eclipse.january.form.Form;
 
 /**
  * <p>

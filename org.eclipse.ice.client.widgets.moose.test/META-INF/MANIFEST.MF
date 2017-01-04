@@ -6,7 +6,6 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-Vendor: Oak Ridge National Laboratory
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ice.client.widgets.moose,
- org.eclipse.ice.datastructures.form,
  org.eclipse.ice.persistence.xml,
  org.eclipse.ice.persistence.xml.test
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.0",

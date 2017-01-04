@@ -19,11 +19,11 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import org.eclipse.ice.datastructures.entry.ContinuousEntry;
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.january.form.AllowedValueType;
+import org.eclipse.january.form.ContinuousEntry;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.StringEntry;
 
 /**
  * <p>

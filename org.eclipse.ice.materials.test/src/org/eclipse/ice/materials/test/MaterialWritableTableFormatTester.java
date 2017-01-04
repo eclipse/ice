@@ -18,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.MaterialWritableTableFormat;
+import org.eclipse.january.form.Material;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

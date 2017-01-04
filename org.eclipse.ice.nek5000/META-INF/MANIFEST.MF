@@ -11,16 +11,15 @@ Import-Package: org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.modeling.properties,
  org.eclipse.eavp.viz.service,
  org.eclipse.eavp.viz.service.mesh.datastructures,
- org.eclipse.ice.datastructures.ICEObject,
- org.eclipse.ice.datastructures.form,
  org.eclipse.ice.item,
  org.eclipse.ice.item.jobLauncher,
+ org.eclipse.january.form,
+ org.eclipse.january.form.emf,
  org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/nekModelComponent.xml,
  OSGI-INF/nek5000LauncherComponent.xml,
  OSGI-INF/nekVizServiceFactory.xml
 Require-Bundle: org.eclipse.ice.item,
- org.eclipse.ice.datastructures,
  org.eclipse.core.resources,
  org.eclipse.core.runtime
 Export-Package: org.eclipse.ice.nek5000

@@ -14,12 +14,12 @@ package org.eclipse.ice.item.jobLauncher.multiLauncher;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.MasterDetailsComponent;
+import org.eclipse.january.form.ResourceComponent;
 
 /**
  * <p>

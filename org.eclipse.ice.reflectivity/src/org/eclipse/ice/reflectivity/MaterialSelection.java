@@ -12,7 +12,7 @@
 
 package org.eclipse.ice.reflectivity;
 
-import org.eclipse.ice.datastructures.form.Material;
+import org.eclipse.january.form.Material;
 
 /**
  * This class represents a selected cell in the table for the reflectivity

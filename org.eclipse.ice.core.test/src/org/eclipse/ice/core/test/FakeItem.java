@@ -13,10 +13,10 @@
 package org.eclipse.ice.core.test;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 
 /**
  * <p>

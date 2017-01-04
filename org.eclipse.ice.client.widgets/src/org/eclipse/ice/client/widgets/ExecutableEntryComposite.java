@@ -18,9 +18,9 @@ import java.util.List;
 
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.entry.ExecutableEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.iclient.IClient;
+import org.eclipse.january.form.ExecutableEntry;
+import org.eclipse.january.form.IEntry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.remote.core.IRemoteConnectionHostService;

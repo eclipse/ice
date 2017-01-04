@@ -4,7 +4,8 @@ Bundle-Name: ICE Moose Widgets
 Bundle-SymbolicName: org.eclipse.ice.client.widgets.moose;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: org.apache.commons.io,
+Import-Package: ca.odell.glazedlists,
+ org.apache.commons.io,
  org.eclipse.cdt.core.model,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
@@ -19,12 +20,12 @@ Import-Package: org.apache.commons.io,
  org.eclipse.ice.item.nuclear,
  org.eclipse.ice.persistence.xml,
  org.eclipse.ice.reactor.plant,
+ org.eclipse.january.form,
  org.eclipse.ui,
  org.eclipse.ui.views.properties.tabbed,
  org.osgi.framework,
  org.slf4j
 Require-Bundle: org.eclipse.ice.client.compatibility,
- org.eclipse.ice.datastructures,
  org.eclipse.core.runtime
 Service-Component: OSGI-INF/viewFactory.xml
 Export-Package: org.eclipse.ice.client.widgets.moose

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item;
 
-import org.eclipse.ice.datastructures.entry.StringEntry;
+import org.eclipse.january.form.StringEntry;
 
 /**
  * <p>

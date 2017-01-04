@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.ice.client.widgets;
 
-import org.eclipse.ice.datastructures.ICEObject.IElementSource;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
+import org.eclipse.january.form.IElementSource;
+import org.eclipse.january.form.ListComponent;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;

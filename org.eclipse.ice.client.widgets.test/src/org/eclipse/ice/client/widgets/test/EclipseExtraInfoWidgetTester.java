@@ -15,7 +15,7 @@ package org.eclipse.ice.client.widgets.test;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.ice.client.widgets.EclipseExtraInfoWidget;
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.january.form.Form;
 import org.junit.Test;
 
 /**

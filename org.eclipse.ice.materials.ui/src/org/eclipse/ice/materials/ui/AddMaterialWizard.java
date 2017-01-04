@@ -12,8 +12,8 @@
 package org.eclipse.ice.materials.ui;
 
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.ice.datastructures.form.Material;
 import org.eclipse.ice.materials.IMaterialsDatabase;
+import org.eclipse.january.form.Material;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;

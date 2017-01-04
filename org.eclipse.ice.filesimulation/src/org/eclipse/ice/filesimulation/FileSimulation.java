@@ -15,7 +15,6 @@ package org.eclipse.ice.filesimulation;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.jobLauncher.JobLauncher;
 
 /**

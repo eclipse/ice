@@ -14,8 +14,9 @@ package org.eclipse.ice.item.utilities.moose;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.TreeComposite;
+
 
 /**
  * This class represents a MOOSE block as loaded from YAML. Its sole purpose is

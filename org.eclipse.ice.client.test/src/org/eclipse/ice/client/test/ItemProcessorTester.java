@@ -20,10 +20,10 @@ import static org.junit.Assert.fail;
 
 import org.eclipse.ice.client.internal.ItemProcessor;
 import org.eclipse.ice.core.iCore.ICore;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
 import org.eclipse.ice.iclient.uiwidgets.IExtraInfoWidget;
 import org.eclipse.ice.iclient.uiwidgets.IFormWidget;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
 import org.junit.Test;
 
 /**

@@ -18,9 +18,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.TreeComposite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

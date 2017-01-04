@@ -33,14 +33,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.jaxbclassprovider.IJAXBClassProvider;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
 import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemBuilder;
 import org.eclipse.ice.item.persistence.IPersistenceProvider;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.IJAXBClassProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

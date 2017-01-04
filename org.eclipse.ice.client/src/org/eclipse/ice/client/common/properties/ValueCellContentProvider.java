@@ -15,11 +15,10 @@ package org.eclipse.ice.client.common.properties;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ice.datastructures.entry.DiscreteEntry;
-import org.eclipse.ice.datastructures.entry.FileEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.AllowedValueType;
+import org.eclipse.january.form.AdaptiveTreeComposite;
+import org.eclipse.january.form.DiscreteEntry;
+import org.eclipse.january.form.FileEntry;
+import org.eclipse.january.form.IEntry;
 
 /**
  * This class provides an {@link ICellContentProvider} geared toward the value

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.item.test;
 
-import org.eclipse.ice.datastructures.form.DataComponent;
+import org.eclipse.january.form.DataComponent;
 
 /**
  * <p>

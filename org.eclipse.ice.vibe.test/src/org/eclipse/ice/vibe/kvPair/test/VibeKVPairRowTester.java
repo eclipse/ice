@@ -14,10 +14,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.entry.StringEntry;
 import org.eclipse.ice.vibe.kvPair.VibeKVPairRow;
+import org.eclipse.january.form.IUpdateable;
+import org.eclipse.january.form.IUpdateableListener;
+import org.eclipse.january.form.StringEntry;
 import org.junit.Test;
 
 /**

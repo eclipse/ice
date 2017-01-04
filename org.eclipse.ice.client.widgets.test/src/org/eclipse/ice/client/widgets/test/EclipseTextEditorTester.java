@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.ice.client.widgets.EclipseTextEditor;
-import org.eclipse.ice.datastructures.resource.ICEResource;
+import org.eclipse.january.form.ICEResource;
 import org.junit.Test;
 
 /**

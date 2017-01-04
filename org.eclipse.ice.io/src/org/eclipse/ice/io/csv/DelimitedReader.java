@@ -20,10 +20,10 @@ import javax.naming.OperationNotSupportedException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IReader;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.ListComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

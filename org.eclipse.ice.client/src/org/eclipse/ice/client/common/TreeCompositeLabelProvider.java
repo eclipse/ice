@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.common;
 
-import org.eclipse.ice.datastructures.ICEObject.Identifiable;
+import org.eclipse.january.form.Identifiable;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**

@@ -17,11 +17,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.ice.client.widgets.ListComponentNattable;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Material;
-import org.eclipse.ice.datastructures.form.MaterialStack;
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.materials.SingleMaterialWritableTableFormat;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.Material;
+import org.eclipse.january.form.MaterialStack;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;

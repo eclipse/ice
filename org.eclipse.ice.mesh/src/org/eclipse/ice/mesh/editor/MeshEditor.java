@@ -15,9 +15,9 @@ package org.eclipse.ice.mesh.editor;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.MeshComponent;
 import org.eclipse.ice.item.Item;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.MeshComponent;
 
 /**
  * This class provides a basic 2D mesh editor, minus the UI elements. All

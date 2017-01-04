@@ -20,12 +20,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.IEntry;
 import org.junit.Test;
 
 /**

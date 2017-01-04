@@ -25,14 +25,12 @@
   	<module>../org.eclipse.ice.client.widgets.test.utils</module>
   	<module>../org.eclipse.ice.core</module>
   	<module>../org.eclipse.ice.core.test</module>
-  	<module>../org.eclipse.ice.datastructures</module>
-  	<module>../org.eclipse.ice.datastructures.test</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.moose</module>
   	<module>../org.eclipse.ice.io</module>
   	<module>../org.eclipse.ice.io.test</module>
   	<module>../org.eclipse.ice.item</module>
-  	<module>../org.eclipse.ice.item.test</module>
+  	<!-- <module>../org.eclipse.ice.item.test</module> -->
   	<module>../org.eclipse.ice.materials</module>
   	<module>../org.eclipse.ice.materials.test</module>
   	<module>../org.eclipse.ice.materials.ui</module>

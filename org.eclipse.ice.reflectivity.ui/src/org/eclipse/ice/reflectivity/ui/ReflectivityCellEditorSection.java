@@ -12,8 +12,8 @@
 
 package org.eclipse.ice.reflectivity.ui;
 
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
 import org.eclipse.ice.reflectivity.MaterialSelection;
+import org.eclipse.january.form.ListComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;

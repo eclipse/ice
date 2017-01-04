@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.eavp.viz.service.geometry.widgets.ShapeTreeContentProvider;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachment;
 import org.eclipse.eavp.viz.service.javafx.canvas.FXAttachmentManager;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
+import org.eclipse.january.form.GeometryComponent;
 import org.eclipse.january.geometry.Complement;
 import org.eclipse.january.geometry.Cube;
 import org.eclipse.january.geometry.Geometry;

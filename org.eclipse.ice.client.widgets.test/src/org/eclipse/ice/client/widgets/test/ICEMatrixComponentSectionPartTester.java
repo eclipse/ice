@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.ice.client.widgets.ICEFormEditor;
 import org.eclipse.ice.client.widgets.ICEMatrixComponentSectionPart;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
+import org.eclipse.january.form.MatrixComponent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.ManagedForm;

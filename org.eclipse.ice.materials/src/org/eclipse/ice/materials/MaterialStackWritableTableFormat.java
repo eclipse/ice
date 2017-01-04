@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ice.materials;
 
-import org.eclipse.ice.datastructures.form.MaterialStack;
+import org.eclipse.january.form.MaterialStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

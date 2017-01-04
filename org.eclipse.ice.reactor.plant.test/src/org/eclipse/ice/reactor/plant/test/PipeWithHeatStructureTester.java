@@ -17,12 +17,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
 import org.eclipse.ice.reactor.plant.PipeWithHeatStructure;
 import org.eclipse.ice.reactor.plant.PlantComponent;
 import org.eclipse.ice.reactor.plant.SelectivePlantComponentVisitor;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.IReactorComponent;
+import org.eclipse.january.form.SelectiveComponentVisitor;
 import org.junit.Test;
 
 /**

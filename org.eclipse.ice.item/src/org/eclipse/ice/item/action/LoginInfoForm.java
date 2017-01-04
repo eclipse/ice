@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.ice.item.action;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.entry.StringEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.StringEntry;
 
 /**
  * <p>

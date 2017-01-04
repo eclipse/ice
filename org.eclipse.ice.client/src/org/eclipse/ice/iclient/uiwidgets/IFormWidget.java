@@ -12,7 +12,7 @@
 *******************************************************************************/
 package org.eclipse.ice.iclient.uiwidgets;
 
-import org.eclipse.ice.datastructures.form.Form;
+import org.eclipse.january.form.Form;
 
 /** 
  * <p>The IFormWidget interface describes the operations that ICE expects from a Widget that can display Forms.</p>

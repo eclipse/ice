@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.ice.datastructures.form.FormTextContentDescriber;
+import org.eclipse.january.form.FormTextContentDescriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

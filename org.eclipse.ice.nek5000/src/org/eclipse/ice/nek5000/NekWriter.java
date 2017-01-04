@@ -33,22 +33,22 @@ import org.eclipse.eavp.viz.modeling.VertexController;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryCondition;
 import org.eclipse.eavp.viz.service.mesh.datastructures.BoundaryConditionType;
 import org.eclipse.eavp.viz.service.mesh.datastructures.NekPolygonController;
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.AdaptiveTreeComposite;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.GeometryComponent;
-import org.eclipse.ice.datastructures.form.MasterDetailsComponent;
-import org.eclipse.ice.datastructures.form.MatrixComponent;
-import org.eclipse.ice.datastructures.form.MeshComponent;
-import org.eclipse.ice.datastructures.form.ResourceComponent;
-import org.eclipse.ice.datastructures.form.TableComponent;
-import org.eclipse.ice.datastructures.form.TimeDataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.eclipse.january.form.AdaptiveTreeComposite;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.GeometryComponent;
+import org.eclipse.january.form.IComponentVisitor;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.IReactorComponent;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.MasterDetailsComponent;
+import org.eclipse.january.form.MatrixComponent;
+import org.eclipse.january.form.MeshComponent;
+import org.eclipse.january.form.ResourceComponent;
+import org.eclipse.january.form.TableComponent;
+import org.eclipse.january.form.TimeDataComponent;
+import org.eclipse.january.form.TreeComposite;
+import org.eclipse.january.form.emf.EMFComponent;
 
 /**
  * This class is responsible for writing the contents of a Component collection

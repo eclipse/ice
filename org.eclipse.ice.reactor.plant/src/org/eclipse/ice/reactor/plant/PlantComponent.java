@@ -16,9 +16,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.IReactorComponent;
+import org.eclipse.january.form.ICEObject;
+import org.eclipse.january.form.IComponentVisitor;
+import org.eclipse.january.form.IReactorComponent;
+
 
 /**
  * <p>

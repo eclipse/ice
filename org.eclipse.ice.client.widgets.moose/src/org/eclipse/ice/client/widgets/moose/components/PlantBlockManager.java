@@ -19,13 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
-import org.eclipse.ice.datastructures.ICEObject.IUpdateableListener;
-import org.eclipse.ice.datastructures.componentVisitor.IComponentVisitor;
-import org.eclipse.ice.datastructures.componentVisitor.SelectiveComponentVisitor;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.TreeComposite;
 import org.eclipse.ice.reactor.plant.Boundary;
 import org.eclipse.ice.reactor.plant.Branch;
 import org.eclipse.ice.reactor.plant.CoreChannel;
@@ -59,6 +52,13 @@ import org.eclipse.ice.reactor.plant.Turbine;
 import org.eclipse.ice.reactor.plant.Valve;
 import org.eclipse.ice.reactor.plant.VolumeBranch;
 import org.eclipse.ice.reactor.plant.WetWell;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IComponentVisitor;
+import org.eclipse.january.form.IUpdateable;
+import org.eclipse.january.form.IUpdateableListener;
+import org.eclipse.january.form.SelectiveComponentVisitor;
+import org.eclipse.january.form.TreeComposite;
 
 /**
  * This class connects the MOOSE Component block (in the form of a

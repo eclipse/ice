@@ -5,7 +5,10 @@ Bundle-SymbolicName: org.eclipse.ice.item.test
 Bundle-Version: 2.2.0.qualifier
 Fragment-Host: org.eclipse.ice.item
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.spotify.docker.client,
+Import-Package: ca.odell.glazedlists,
+ ca.odell.glazedlists.gui,
+ com.spotify.docker.client,
+ gov.lbnl.visit.swt,
  org.apache.http.conn;version="4.3.4",
  org.bouncycastle.openssl;version="1.51.0",
  org.eclipse.eavp.viz.datastructures.VizObject,
@@ -14,13 +17,12 @@ Import-Package: com.spotify.docker.client,
  org.eclipse.eavp.viz.service.mesh.datastructures,
  org.eclipse.eavp.viz.service.visit,
  org.eclipse.ice.core.iCore,
- org.eclipse.ice.datastructures.entry,
  org.eclipse.ice.io.serializable,
  org.eclipse.ice.item,
  org.eclipse.ice.item.action,
  org.eclipse.ice.persistence.xml,
- org.osgi.framework;version="1.6.0",
- gov.lbnl.visit.swt
+ org.eclipse.january.form.internal,
+ org.osgi.framework;version="1.6.0"
 Require-Bundle: org.junit;bundle-version="4.8.1"
 Bundle-Vendor: Oak Ridge National Laboratory
 

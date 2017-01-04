@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.item.action.LoginInfoForm;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
 import org.junit.Test;
 
 /**

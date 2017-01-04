@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.ice.vibe;singleton:=true
 Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.eclipse.ice.io.serializable,
+ org.eclipse.january.form,
  org.eclipse.jface.dialogs,
  org.eclipse.swt.widgets,
  org.eclipse.ui,
@@ -14,7 +15,6 @@ Bundle-ActivationPolicy: lazy
 Service-Component: OSGi-INF/vibeModelComponent.xml, OSGi-INF/vibeLauncherComponent.xml,
  OSGi-INF/vibeKVPairComponent.xml
 Require-Bundle: org.eclipse.ice.item,
- org.eclipse.ice.datastructures,
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.core.resources;bundle-version="3.7.101"
 Export-Package: org.eclipse.ice.vibe.kvPair,

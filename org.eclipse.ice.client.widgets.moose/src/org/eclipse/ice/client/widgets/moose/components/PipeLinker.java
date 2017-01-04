@@ -14,10 +14,10 @@ package org.eclipse.ice.client.widgets.moose.components;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.reactor.plant.Pipe;
 import org.eclipse.ice.reactor.plant.PlantComponent;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.IEntry;
 
 /**
  * This class provides an {@link PlantComponentLinker} that links {@link Pipe}

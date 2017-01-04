@@ -19,8 +19,8 @@ package org.eclipse.ice.client.widgets.moose;
 
 import java.util.Iterator;
 
-import org.eclipse.ice.datastructures.form.TreeComposite;
-import org.eclipse.ice.datastructures.form.iterator.BreadthFirstTreeCompositeIterator;
+import org.eclipse.january.form.BreadthFirstTreeCompositeIterator;
+import org.eclipse.january.form.TreeComposite;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;

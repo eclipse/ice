@@ -14,7 +14,6 @@ package org.eclipse.ice.reactor.plant;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.ICEObject;
 
 /**
  * <p>

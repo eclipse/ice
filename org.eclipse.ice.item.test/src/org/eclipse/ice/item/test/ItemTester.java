@@ -44,15 +44,6 @@ import org.eclipse.eavp.viz.service.IVizService;
 import org.eclipse.eavp.viz.service.IVizServiceFactory;
 import org.eclipse.eavp.viz.service.csv.CSVVizService;
 import org.eclipse.eavp.viz.service.visit.VisItVizService;
-import org.eclipse.ice.datastructures.ICEObject.ICEJAXBHandler;
-import org.eclipse.ice.datastructures.entry.FileEntry;
-import org.eclipse.ice.datastructures.entry.IEntry;
-import org.eclipse.ice.datastructures.form.DataComponent;
-import org.eclipse.ice.datastructures.form.Form;
-import org.eclipse.ice.datastructures.form.FormStatus;
-import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
-import org.eclipse.ice.datastructures.resource.ICEResource;
-import org.eclipse.ice.datastructures.resource.VizResource;
 import org.eclipse.ice.io.serializable.IIOService;
 import org.eclipse.ice.io.serializable.IReader;
 import org.eclipse.ice.io.serializable.IWriter;
@@ -60,6 +51,16 @@ import org.eclipse.ice.item.Item;
 import org.eclipse.ice.item.ItemListener;
 import org.eclipse.ice.item.ItemType;
 import org.eclipse.ice.item.messaging.Message;
+import org.eclipse.january.form.DataComponent;
+import org.eclipse.january.form.FileEntry;
+import org.eclipse.january.form.Form;
+import org.eclipse.january.form.FormStatus;
+import org.eclipse.january.form.ICEJAXBClassProvider;
+import org.eclipse.january.form.ICEJAXBHandler;
+import org.eclipse.january.form.ICEResource;
+import org.eclipse.january.form.IEntry;
+import org.eclipse.january.form.VizResource;
+import org.eclipse.january.form.internal.VizServiceFactoryHolder;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -980,8 +981,7 @@ public class ItemTester implements ItemListener {
 		// Set up a basic factory with a CSVVizService for the test
 		IVizServiceFactory factory = new TestVizServiceFactory();
 		factory.register(new CSVVizService());
-		org.eclipse.ice.datastructures.internal.VizServiceFactoryHolder
-				.setVizServiceFactory(factory);
+		VizServiceFactoryHolder.setVizServiceFactory(factory);
 
 		// Setup the project
 		try {

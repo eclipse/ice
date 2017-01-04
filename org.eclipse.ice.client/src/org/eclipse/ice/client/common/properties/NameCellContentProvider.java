@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.ice.client.common.properties;
 
-import org.eclipse.ice.datastructures.entry.IEntry;
+import org.eclipse.january.form.IEntry;
 
 /**
  * This class provides an {@link ICellContentProvider} geared toward the name of

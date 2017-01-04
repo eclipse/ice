@@ -17,10 +17,11 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.eclipse.ice.datastructures.ICEObject.ListComponent;
-import org.eclipse.ice.datastructures.form.Material;
+
 import org.eclipse.ice.materials.IMaterialsDatabase;
 import org.eclipse.ice.reflectivity.ReflectivityModel;
+import org.eclipse.january.form.ListComponent;
+import org.eclipse.january.form.Material;
 import org.junit.Test;
 
 import ca.odell.glazedlists.EventList;

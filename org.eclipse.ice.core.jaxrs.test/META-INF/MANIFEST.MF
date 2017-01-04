@@ -23,7 +23,6 @@ Import-Package: com.sun.jersey.api,
  com.sun.jersey.api.uri,
  com.sun.jersey.api.view,
  com.sun.jersey.api.wadl.config,
- org.eclipse.ice.datastructures.ICEObject,
  javax.ws.rs.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Oak Ridge National Laboratory

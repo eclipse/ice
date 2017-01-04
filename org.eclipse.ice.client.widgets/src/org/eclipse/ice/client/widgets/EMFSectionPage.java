@@ -13,7 +13,7 @@
 package org.eclipse.ice.client.widgets;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.ice.datastructures.form.emf.EMFComponent;
+import org.eclipse.january.form.emf.EMFComponent;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

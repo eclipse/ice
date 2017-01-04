@@ -15,8 +15,8 @@ package org.eclipse.ice.client.widgets;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.ice.datastructures.ICEObject.Component;
-import org.eclipse.ice.datastructures.form.TreeComposite;
+import org.eclipse.january.form.Component;
+import org.eclipse.january.form.TreeComposite;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
