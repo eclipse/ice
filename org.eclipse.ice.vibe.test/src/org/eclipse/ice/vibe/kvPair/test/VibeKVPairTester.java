@@ -204,7 +204,7 @@ public class VibeKVPairTester {
 		}
 
 		// If the CUTOFF key was absent, then the table was not set up correctly
-		if (foundCutoff) {
+		if (!foundCutoff) {
 			fail("Did not find CUTOFF row in default table.");
 		}
 
