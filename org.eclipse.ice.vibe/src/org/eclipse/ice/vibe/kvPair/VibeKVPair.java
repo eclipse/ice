@@ -74,7 +74,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 	/**
 	 * The name of the default template to load.
 	 */
-	private static String defaultTemplate = "NTG";
+	private static String defaultTemplate = "None";
 
 	/**
 	 * The tag that indicates this file should be exported to kv pairs.
@@ -135,6 +135,7 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 
 		// The list of available templates
 		ArrayList<String> templateNames = new ArrayList<String>();
+		templateNames.add("None");
 		templateNames.add("NTG");
 		templateNames.add("DualFoil");
 
@@ -728,6 +729,10 @@ public class VibeKVPair extends Item implements IReader, IWriter {
 		return "VibeKVPairItem";
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ice.item.Item#update(org.eclipse.ice.datastructures.ICEObject.IUpdateable)
+	 */
 	@Override
 	public void update(IUpdateable updateable) {
 

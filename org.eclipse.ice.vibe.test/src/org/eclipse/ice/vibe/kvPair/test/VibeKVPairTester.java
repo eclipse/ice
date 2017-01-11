@@ -178,6 +178,20 @@ public class VibeKVPairTester {
 			}
 		}
 
+		//The table should be empty initially
+		assertEquals(0, table.numberOfRows());
+		
+		//Load a template
+		template.retrieveAllEntries().get(0).setValue("NTG");
+
+		// Give the form time to load the new data
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}		
+		
 		// Whether or not the CUTOFF key was found in the table
 		boolean foundCutoff = false;
 
@@ -190,7 +204,7 @@ public class VibeKVPairTester {
 		}
 
 		// If the CUTOFF key was absent, then the table was not set up correctly
-		if (!foundCutoff) {
+		if (foundCutoff) {
 			fail("Did not find CUTOFF row in default table.");
 		}
 
