@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mesh Test
+Bundle-SymbolicName: org.eclipse.ice.tests.mesh
+Bundle-Version: 2.2.0.qualifier
+Fragment-Host: org.eclipse.ice.mesh
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.junit
+Bundle-Vendor: Oak Ridge National Laboratory
+Import-Package: org.eclipse.eavp.viz.datastructures.VizObject

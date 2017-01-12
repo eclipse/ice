@@ -13,49 +13,49 @@
   </parent>
   <modules>
   	<module>../org.eclipse.ice.caebat.batml</module>
-  	<module>../org.eclipse.ice.caebat.batml.test</module>
+  	<module>../org.eclipse.ice.tests.caebat.batml</module>
   	<module>../org.eclipse.ice.client</module>
   	<module>../org.eclipse.ice.client.compatibility</module>
   	<module>../org.eclipse.ice.client.rcp</module>
-  	<module>../org.eclipse.ice.client.test</module>
+  	<module>../org.eclipse.ice.tests.client</module>
   	<module>../org.eclipse.ice.client.widgets</module>
   	<module>../org.eclipse.ice.client.widgets.moose</module>
-  	<module>../org.eclipse.ice.client.widgets.moose.test</module>
-  	<module>../org.eclipse.ice.client.widgets.test</module>
-  	<module>../org.eclipse.ice.client.widgets.test.utils</module>
+  	<module>../org.eclipse.ice.tests.client.widgets.moose</module>
+  	<module>../org.eclipse.ice.tests.client.widgets</module>
+  	<module>../org.eclipse.ice.tests.client.widgets.utils</module>
   	<module>../org.eclipse.ice.core</module>
-  	<module>../org.eclipse.ice.core.test</module>
+  	<module>../org.eclipse.ice.tests.core</module>
   	<module>../org.eclipse.ice.datastructures</module>
-  	<module>../org.eclipse.ice.datastructures.test</module>
+  	<module>../org.eclipse.ice.tests.datastructures</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.moose</module>
   	<module>../org.eclipse.ice.io</module>
-  	<module>../org.eclipse.ice.io.test</module>
+  	<module>../org.eclipse.ice.tests.io</module>
   	<module>../org.eclipse.ice.item</module>
-  	<module>../org.eclipse.ice.item.test</module>
+  	<module>../org.eclipse.ice.tests.item</module>
   	<module>../org.eclipse.ice.materials</module>
-  	<module>../org.eclipse.ice.materials.test</module>
+  	<module>../org.eclipse.ice.tests.materials</module>
   	<module>../org.eclipse.ice.materials.ui</module>
    	<module>../org.eclipse.ice.materials.feature</module>
   	<module>../org.eclipse.ice.mesh</module>
-  	<module>../org.eclipse.ice.mesh.test</module>
+  	<module>../org.eclipse.ice.tests.mesh</module>
   	<module>../org.eclipse.ice.nek5000</module>
-  	<module>../org.eclipse.ice.nek5000.test</module>
+  	<module>../org.eclipse.ice.tests.nek5000</module>
   	<module>../org.eclipse.ice.parent</module>
   	<module>../org.eclipse.ice.persistence.xml</module>
-  	<module>../org.eclipse.ice.persistence.xml.test</module>
+  	<module>../org.eclipse.ice.tests.persistence.xml</module>
   	<module>../org.eclipse.ice.projectgeneration</module>
-  	<module>../org.eclipse.ice.projectgeneration.test</module>
+  	<module>../org.eclipse.ice.tests.projectgeneration</module>
   	<module>../org.eclipse.ice.proteus</module>
-  	<module>../org.eclipse.ice.proteus.test</module>
+  	<module>../org.eclipse.ice.tests.proteus</module>
   	<module>../org.eclipse.ice.reactor.plant</module>
-  	<module>../org.eclipse.ice.reactor.plant.test</module>
+  	<module>../org.eclipse.ice.tests.reactor.plant</module>
   	<module>../org.eclipse.ice.reflectivity</module>
-  	<module>../org.eclipse.ice.reflectivity.test</module>
+  	<module>../org.eclipse.ice.tests.reflectivity</module>
   	<module>../org.eclipse.ice.reflectivity.ui</module>
   	<module>../org.eclipse.ice.target.oxygen</module>
   	<module>../org.eclipse.ice.vibe</module>
-  	<module>../org.eclipse.ice.vibe.test</module>
+  	<module>../org.eclipse.ice.tests.vibe</module>
   	<module>../org.eclipse.ice.feature</module>  	
   	<module>../org.eclipse.ice.repository</module>    	
   	<module>../org.eclipse.ice.product</module>  		  	
