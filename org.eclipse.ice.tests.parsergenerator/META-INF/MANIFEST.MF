@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Parser Generator Tester
+Bundle-SymbolicName: org.eclipse.ice.tests.parsergenerator
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.ice.tests.parsergenerator.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.junit,
+ org.eclipse.core.resources,
+ org.eclipse.ice.parsergenerator,
+ org.eclipse.ice.datastructures
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
