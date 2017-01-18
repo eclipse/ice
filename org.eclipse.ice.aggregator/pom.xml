@@ -29,6 +29,7 @@
   	<module>../org.eclipse.ice.tests.datastructures</module>
   	<module>../org.eclipse.ice.developer</module>
   	<module>../org.eclipse.ice.developer.moose</module>
+  	<module>../org.eclipse.ice.geometry</module>
   	<module>../org.eclipse.ice.io</module>
   	<module>../org.eclipse.ice.tests.io</module>
   	<module>../org.eclipse.ice.item</module>
