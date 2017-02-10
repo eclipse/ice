@@ -166,7 +166,11 @@ public class GitCloneHandler extends AbstractHandler {
 					cloneOperation = new CloneOperation(new URIish(repo), true, null, cloneLocation, branch, "origin",
 							100);
 					addPostCloneTasks();
-					UserPasswordCredentials credentials = SecureStoreUtils.getCredentials(new URIish(repo));
+					try {
+						UserPasswordCredentials credentials = SecureStoreUtils.getCredentials(new URIish(repo));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					cloneOperation.run(monitor);
 					final RepositoryUtil util = Activator.getDefault().getRepositoryUtil();
 					util.addConfiguredRepository(cloneOperation.getGitDir());
