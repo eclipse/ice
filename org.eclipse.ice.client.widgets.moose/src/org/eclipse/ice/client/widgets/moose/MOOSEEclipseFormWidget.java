@@ -39,24 +39,6 @@ public class MOOSEEclipseFormWidget extends EclipseFormWidget {
 			.getLogger(MOOSEEclipseFormWidget.class);
 
 	/**
-	 * The visualization service factory provided to MOOSEFormEditors through
-	 * OSGi.
-	 */
-	private final IVizServiceFactory vizServiceFactory;
-
-	/**
-	 * The default constructor.
-	 * 
-	 * @param factory
-	 *            The visualization service factory provided to MOOSEFormEditors
-	 *            through OSGi.
-	 */
-	public MOOSEEclipseFormWidget(IVizServiceFactory factory) {
-		// Nothing to do yet.
-		this.vizServiceFactory = factory;
-	}
-
-	/**
 	 * This operation displays the {@link MOOSEFormEditor} instead of the
 	 * standard ICEFormEditor.
 	 */
@@ -81,8 +63,8 @@ public class MOOSEEclipseFormWidget extends EclipseFormWidget {
 			// FIXME Since this is a static method, it should probably be set
 			// from a more general OSGi-referencing service in the main widgets
 			// bundle.
-			org.eclipse.ice.client.widgets.ICEFormEditor
-					.setVizServiceFactory(vizServiceFactory);
+//			org.eclipse.ice.client.widgets.ICEFormEditor
+//					.setVizServiceFactory(vizServiceFactory);
 
 		} catch (PartInitException e) {
 			// Dump the stacktrace if something happens.
