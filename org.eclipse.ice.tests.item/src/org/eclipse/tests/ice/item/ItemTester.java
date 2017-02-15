@@ -50,6 +50,7 @@ import org.eclipse.ice.datastructures.entry.IEntry;
 import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.FormStatus;
+import org.eclipse.ice.datastructures.internal.VizServiceFactoryHolder;
 import org.eclipse.ice.datastructures.jaxbclassprovider.ICEJAXBClassProvider;
 import org.eclipse.ice.datastructures.resource.ICEResource;
 import org.eclipse.ice.datastructures.resource.VizResource;
@@ -980,7 +981,7 @@ public class ItemTester implements ItemListener {
 		// Set up a basic factory with a CSVVizService for the test
 		IVizServiceFactory factory = new TestVizServiceFactory();
 		factory.register(new CSVVizService());
-		org.eclipse.ice.datastructures.internal.VizServiceFactoryHolder
+		new VizServiceFactoryHolder()
 				.setVizServiceFactory(factory);
 
 		// Setup the project

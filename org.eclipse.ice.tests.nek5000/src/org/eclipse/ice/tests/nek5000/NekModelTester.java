@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.awt.Polygon;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -38,11 +37,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.eavp.viz.modeling.Edge;
 import org.eclipse.eavp.viz.modeling.EdgeController;
 import org.eclipse.eavp.viz.modeling.Face;
-import org.eclipse.eavp.viz.modeling.FaceController;
 import org.eclipse.eavp.viz.modeling.Vertex;
 import org.eclipse.eavp.viz.modeling.VertexController;
-import org.eclipse.eavp.viz.modeling.base.BasicController;
-import org.eclipse.eavp.viz.modeling.base.BasicMesh;
 import org.eclipse.eavp.viz.modeling.base.BasicView;
 import org.eclipse.eavp.viz.modeling.base.IController;
 import org.eclipse.eavp.viz.modeling.base.IMesh;
@@ -237,7 +233,7 @@ public class NekModelTester {
 		IVizService service = new FakeVizService();
 		IVizServiceFactory factory = new BasicVizServiceFactory();
 		factory.register(service);
-		VizServiceFactoryHolder.setVizServiceFactory(factory);
+		new VizServiceFactoryHolder().setVizServiceFactory(factory);
 		
 		// Local Declarations
 		NekModel model = new NekModel(projectSpace,

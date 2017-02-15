@@ -6,7 +6,7 @@ Bundle-Version: 2.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ice.datastructures
 Import-Package: org.eclipse.core.resources,
- org.eclipse.eavp.viz.datastructures,
+ org.eclipse.eavp.viz.datastructures.ui,
  org.eclipse.eavp.viz.datastructures.VizObject,
  org.eclipse.eavp.viz.service.mesh.datastructures,
  org.eclipse.ice.item

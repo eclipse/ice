@@ -58,6 +58,9 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		// before ICE's UI has had time to properly update.
 		SWTBotPreferences.PLAYBACK_DELAY = 50;
 
+		//Close the welcome view
+		bot.viewByTitle("Welcome").close();
+		
 		// Open the ICE perspective
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
@@ -363,7 +366,7 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 		// Search for the custom material and open it
 		bot.text(1).typeText("Custom");
-		bot.tree().select(0);
+		bot.tree().select(5);
 
 		// Check the property name for the first data row.
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
