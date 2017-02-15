@@ -44,8 +44,9 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		// Don't create a shell or bot for these tests.
 
 		// Switch the IMaterialsDatabase service to the test database.
-		realDatabase = MaterialsDatabaseServiceHolder.get();
-		MaterialsDatabaseServiceHolder.set(new FakeMaterialsDatabase());
+		MaterialsDatabaseServiceHolder serviceHolder = new MaterialsDatabaseServiceHolder();
+		realDatabase = serviceHolder.get();
+		serviceHolder.set(new FakeMaterialsDatabase());
 
 	}
 
@@ -417,7 +418,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 	 */
 	@Override
 	public void afterAllTests() {
-		MaterialsDatabaseServiceHolder.set(realDatabase);
+		MaterialsDatabaseServiceHolder serviceHolder = new MaterialsDatabaseServiceHolder();
+		serviceHolder.set(realDatabase);
 	}
 
 }
