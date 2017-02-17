@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="scenvironment" nsURI="http://org/eclipse/ice/developer/scenvironment"
+    nsPrefix="org.eclipse.ice.developer.scenvironment">
+  <eClassifiers xsi:type="ecore:EClass" name="SCEnvironment">
+    <eOperations name="searchPackages" upperBound="-1" eType="#//Packages"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="imageName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="availableOSs" lowerBound="1"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="availablePackages" upperBound="-1"
+        eType="#//Packages"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="selectedPackages" upperBound="-1"
+        eType="#//Packages"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="addedFiles" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="installerType" lowerBound="1"
+        eType="#//InstallerEnum"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="configurationType" lowerBound="1"
+        eType="#//InstallerTypeConfiguration" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="spackpackage" upperBound="-1"
+        eType="#//SpackPackage" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Packages" instanceClassName="SpackPackage"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SpackPackage">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ContainerConfiguration" eSuperTypes="#//InstallerTypeConfiguration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ports" lowerBound="1" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="volumes" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="isEphemeral" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Ports" instanceClassName="java.lang.Integer"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Installer" abstract="true" interface="true">
+    <eOperations name="createInstaller"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DockerInstaller" eSuperTypes="#//Installer">
+    <eOperations name="createDockerInstaller"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FileSystemInstaller" eSuperTypes="#//Installer">
+    <eOperations name="createFSInstaller"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="InstallerEnum">
+    <eLiterals name="FileSystem" value="1"/>
+    <eLiterals name="Docker" value="2" literal="LITERAL1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SCEnvironmentDataManager">
+    <eOperations name="listExistingSCEenv" upperBound="-1" eType="#//SCEnvironment"/>
+    <eOperations name="createSCEnvironment" lowerBound="1" eType="#//SCEnvironment"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scenvironments" upperBound="-1"
+        eType="#//SCEnvironment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FileSystemConfiguration" eSuperTypes="#//InstallerTypeConfiguration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="directory" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InstallerTypeConfiguration" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>
