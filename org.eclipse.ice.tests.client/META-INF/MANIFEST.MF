@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ClientTest
+Bundle-SymbolicName: org.eclipse.ice.tests.client
+Bundle-Version: 2.2.0.qualifier
+Fragment-Host: org.eclipse.ice.client
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.eclipse.ice.client.internal,
+ org.eclipse.ice.client.widgets,
+ org.eclipse.ice.datastructures.ICEObject,
+ org.eclipse.ice.iclient,
+ org.eclipse.ice.item,
+ org.eclipse.swt.widgets,
+ org.hamcrest.core;version="1.1.0",
+ org.junit;version="4.8.1",
+ org.junit.runner;version="4.8.2"
+Bundle-Vendor: Oak Ridge National Laboratory

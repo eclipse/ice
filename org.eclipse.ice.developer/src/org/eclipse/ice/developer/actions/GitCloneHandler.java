@@ -168,7 +168,7 @@ public class GitCloneHandler extends AbstractHandler {
 					addPostCloneTasks();
 					try {
 						UserPasswordCredentials credentials = SecureStoreUtils.getCredentials(new URIish(repo));
-					} catch (StorageException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
 					cloneOperation.run(monitor);

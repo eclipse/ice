@@ -2,23 +2,64 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="org.eclipse.ice.developer.moose"
-         name="MOOSE Developer Tooling"
-         point="org.eclipse.ice.developer.code">
-      <code
-            branch="devel"
-            codeCategory="Framework"
-            codeName="MOOSE"
-            repoURL="https://github.com/idaholab/moose">
-         <command
-               commandName="Fork the Stork"
-               implementation="org.eclipse.ice.developer.moose.actions.StorkForkHandler">
-         </command>
-         <command
-               commandName="Clone MOOSE"
-               implementation="org.eclipse.ice.developer.moose.actions.MooseCloneHandler">
-         </command>
-      </code>
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ice.developer.menu.framework">
+         <menu
+               label="MOOSE">
+            <command
+                  commandId="org.eclipse.ice.developer.moose.forkStork"
+                  label="Fork the Stork"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.eclipse.ice.developer.moose.clone"
+                  label="Clone"
+                  style="push">
+               <parameter
+                     name="repoURLID"
+                     value="https://github.com/idaholab/moose">
+               </parameter>
+               <parameter
+                     name="branchID"
+                     value="devel">
+               </parameter>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.ice.developer.moose.forkStork"
+            name="Fork the Stork">
+      </command>
+      <command
+            id="org.eclipse.ice.developer.moose.clone"
+            name="Clone">
+         <commandParameter
+               id="repoURLID"
+               name="repoURL"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="branchID"
+               name="branch"
+               optional="true">
+         </commandParameter>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.ice.developer.moose.actions.StorkForkHandler"
+            commandId="org.eclipse.ice.developer.moose.forkStork">
+      </handler>
+      <handler
+            class="org.eclipse.ice.developer.moose.actions.MooseCloneHandler"
+            commandId="org.eclipse.ice.developer.moose.clone">
+      </handler>
    </extension>
 
 </plugin>

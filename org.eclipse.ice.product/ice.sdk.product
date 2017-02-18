@@ -31,7 +31,6 @@
       startupForegroundColor="FFFFFF" />
    <launcher name="ICE_SDK">
       <macosx icon="/icons/ice_logo_sdk.icns"/>
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -123,9 +122,11 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <feature id="org.eclipse.cdt.gnu.debug"/>
       <feature id="org.eclipse.cdt.gdb"/>
       <feature id="org.eclipse.ease.feature"/>
+      <feature id="org.eclipse.ease.lang.javascript.feature"/>
       <feature id="org.eclipse.ease.modules.charting.feature"/>
       <feature id="org.eclipse.ease.modules.feature"/>
       <feature id="org.eclipse.ease.lang.python.feature"/>
+      <feature id="org.eclipse.ease.python.jython.feature"/>
       <feature id="org.eclipse.ease.ui.feature"/>
       <feature id="org.eclipse.epp.mpc"/>
       <feature id="org.eclipse.remote"/>
@@ -236,6 +237,7 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
       <plugin id="org.eclipse.ice.datastructures" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.developer.moose" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.ice.geometry" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.ice.io" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.item" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.ice.materials" autoStart="true" startLevel="0" />

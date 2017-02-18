@@ -4,7 +4,7 @@
 	<extension-point id="org.eclipse.ice.developer.code" name="Scientific Code" schema="schema/iceDevCode.exsd"/>
 	
 	
-   <extension
+   <!--extension
          id="org.eclipse.ice.developer.menu"
          name="Developer"
          point="org.eclipse.ui.menus">
@@ -13,67 +13,183 @@
             class="org.eclipse.ice.developer.menu.ICEExtensionContributionFactory"
             locationURI="menu:org.eclipse.ui.main.menu">
       </menuContribution>
+   </extension-->
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=project">
+         <menu
+               id="org.eclipse.ice.developer.menu"
+               label="Developer">
+	         <menu
+                id="org.eclipse.ice.developer.menu.ice"
+                label="ICE">
+             <command
+                   commandId="org.eclipse.ice.developer.command.cloneAndFix"
+                   label="Clone"
+                   style="push">
+                <parameter
+                      name="repoURLID"
+                      value="https://github.com/eclipse/ice">
+                </parameter>
+                <parameter
+                      name="branchID"
+                      value="next">
+                </parameter>
+             </command>
+             <command
+                   commandId="org.eclipse.ice.developer.command.build"
+                   label="Build"
+                   style="push">
+             </command>
+             <command
+                   commandId="org.eclipse.ice.developer.command.launch"
+                   label="Launch New Instance"
+                   style="push">
+             </command>
+             <command
+                   commandId="org.eclipse.ice.developer.command.importLocalRepo"
+                   label="Import Local Repository"
+                   style="push">
+             </command>
+	            <menu
+                   id="org.eclipse.ice.developer.menu.ice.tests"
+                   label="ICE Tests">
+                <command
+                      commandId="org.eclipse.ice.developer.command.clone"
+                      label="Clone ICETests to user.home"
+                      style="push">
+                   <parameter
+                         name="repoURLID"
+                         value="https://github.com/jayjaybillings/ICETests">
+                   </parameter>
+                   <parameter
+                         name="branchID"
+                         value="master">
+                   </parameter>
+                   <parameter
+                         name="cloneDirectoryID"
+                         value="@user.home">
+                   </parameter>
+                </command>
+	            </menu>
+	         </menu>
+          <menu
+                id="org.eclipse.ice.developer.menu.framework"
+                label="Framework">
+	         <menu
+                id="org.eclipse.ice.developer.menu.framework.eavp"
+                label="EAVP">
+             <command
+                   commandId="org.eclipse.ice.developer.command.cloneAndFix"
+                   label="Clone"
+                   style="push">
+                <parameter
+                      name="repoURLID"
+                      value="https://github.com/eclipse/eavp">
+                </parameter>
+                <parameter
+                      name="branchID"
+                      value="next">
+                </parameter>
+             </command>
+	         </menu>
+          </menu>
+          <menu
+                id="org.eclipse.ice.developer.menu.nuclear"
+                label="Nuclear">
+          </menu>
+          <menu
+                id="org.eclipse.ice.developer.menu.molecularDynamics"
+                label="Molecular Dynamics">
+          </menu>
+          <menu
+                id="org.eclipse.ice.developer.menu.physics"
+                label="Physics">
+          </menu>
+          <menu
+                id="org.eclipse.ice.developer.menu.densityFunctionalTheory"
+                label="Density Functional Theory">
+          </menu>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
-         id="org.eclipse.ice.developer.icedev"
-         name="ICE Developer Tooling"
-         point="org.eclipse.ice.developer.code">
-      <code
-            branch="next"
-            codeCategory="Framework"
-            codeName="ICE"
-            repoURL="https://github.com/eclipse/ice">
-         <command
-               commandName="Clone"
-               implementation="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler">
-         </command>
-         <command
-               commandName="Build"
-               implementation="org.eclipse.ice.developer.actions.BuildICEHandler">
-         </command>
-         <command
-               commandName="Launch New Instance"
-               implementation="org.eclipse.ice.developer.actions.LaunchNewICEHandler">
-         </command>
-         <command
-               commandName="Import Local Repository"
-               implementation="org.eclipse.ice.developer.actions.ImportLocalICEHandler">
-         </command>
-      </code>
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.ice.developer.command.clone"
+            name="Clone">
+         <commandParameter
+               id="repoURLID"
+               name="repoURL"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="branchID"
+               name="branch"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="cloneDirectoryID"
+               name="cloneDirectory"
+               optional="true">
+         </commandParameter>
+      </command>
+      <command
+            id="org.eclipse.ice.developer.command.cloneAndFix"
+            name="CloneAndFix">
+         <commandParameter
+               id="repoURLID"
+               name="repoURL"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="branchID"
+               name="branch"
+               optional="true">
+         </commandParameter>
+         <commandParameter
+               id="cloneDirectoryID"
+               name="cloneDirectory"
+               optional="true">
+         </commandParameter>
+      </command>
+      <command
+            id="org.eclipse.ice.developer.command.build"
+            name="Build">
+      </command>
+      <command
+            id="org.eclipse.ice.developer.command.launch"
+            name="Launch">
+      </command>
+      <command
+            id="org.eclipse.ice.developer.command.importLocalRepo"
+            name="Import Local">
+      </command>
    </extension>
    <extension
-         id="org.eclipse.ice.developer.icetests"
-         name="ICE Tests"
-         point="org.eclipse.ice.developer.code">
-      <code
-            branch="master"
-            codeCategory="ICE"
-            codeName="ICE Tests"
-            repoURL="https://github.com/jayjaybillings/ICETests">
-         <command
-               commandName="Clone ICETests to user.home"
-               implementation="org.eclipse.ice.developer.actions.GitCloneHandler">
-               <parameter
-                  name="cloneDirectory"
-                  value="@user.home">
-               </parameter>
-         </command>
-      </code>
-   </extension>
-   <extension
-         id="org.eclipse.eavp.developer"
-         name="EAVP Developer Tooling"
-         point="org.eclipse.ice.developer.code">
-      <code
-            branch="next"
-            codeCategory="Framework"
-            codeName="EAVP"
-            repoURL="https://github.com/eclipse/eavp">
-         <command
-               commandName="Clone EAVP"
-               implementation="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler">
-         </command>
-      </code>
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.ice.developer.actions.GitCloneHandler"
+            commandId="org.eclipse.ice.developer.command.clone">
+      </handler>
+      <handler
+            class="org.eclipse.ice.developer.actions.BuildICEHandler"
+            commandId="org.eclipse.ice.developer.command.build">
+      </handler>
+      <handler
+            class="org.eclipse.ice.developer.actions.LaunchNewICEHandler"
+            commandId="org.eclipse.ice.developer.command.launch">
+      </handler>
+      <handler
+            class="org.eclipse.ice.developer.actions.ImportLocalICEHandler"
+            commandId="org.eclipse.ice.developer.command.importLocalRepo">
+      </handler>
+      <handler
+            class="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler"
+            commandId="org.eclipse.ice.developer.command.cloneAndFix">
+      </handler>
    </extension>
    
 </plugin>
