@@ -2,7 +2,7 @@
  */
 package apps.tests;
 
-import apps.EnvironmentFactory;
+import apps.AppsFactory;
 import apps.LocalCDTProjectLauncher;
 
 import junit.framework.TestCase;
@@ -78,7 +78,7 @@ public class LocalCDTProjectLauncherTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EnvironmentFactory.eINSTANCE.createLocalCDTProjectLauncher());
+		setFixture(AppsFactory.eINSTANCE.createLocalCDTProjectLauncher());
 	}
 
 	/**

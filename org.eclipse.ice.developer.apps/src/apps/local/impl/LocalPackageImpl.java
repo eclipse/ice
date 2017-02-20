@@ -2,14 +2,12 @@
  */
 package apps.local.impl;
 
-import apps.EnvironmentPackage;
-
+import apps.AppsPackage;
 import apps.docker.DockerPackage;
 
 import apps.docker.impl.DockerPackageImpl;
 
-import apps.impl.EnvironmentPackageImpl;
-
+import apps.impl.AppsPackageImpl;
 import apps.local.LocalEnvironment;
 import apps.local.LocalEnvironmentBuilder;
 import apps.local.LocalFactory;
@@ -88,17 +86,17 @@ public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
 		isInited = true;
 
 		// Obtain or create and register interdependencies
-		EnvironmentPackageImpl theEnvironmentPackage = (EnvironmentPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI) instanceof EnvironmentPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI) : EnvironmentPackage.eINSTANCE);
+		AppsPackageImpl theAppsPackage = (AppsPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) instanceof AppsPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) : AppsPackage.eINSTANCE);
 		DockerPackageImpl theDockerPackage = (DockerPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) instanceof DockerPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) : DockerPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theLocalPackage.createPackageContents();
-		theEnvironmentPackage.createPackageContents();
+		theAppsPackage.createPackageContents();
 		theDockerPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theLocalPackage.initializePackageContents();
-		theEnvironmentPackage.initializePackageContents();
+		theAppsPackage.initializePackageContents();
 		theDockerPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
@@ -185,15 +183,15 @@ public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		EnvironmentPackage theEnvironmentPackage = (EnvironmentPackage)EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI);
+		AppsPackage theAppsPackage = (AppsPackage)EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI);
 
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		localEnvironmentBuilderEClass.getESuperTypes().add(theEnvironmentPackage.getIEnvironmentBuilder());
-		localEnvironmentEClass.getESuperTypes().add(theEnvironmentPackage.getIEnvironment());
+		localEnvironmentBuilderEClass.getESuperTypes().add(theAppsPackage.getIEnvironmentBuilder());
+		localEnvironmentEClass.getESuperTypes().add(theAppsPackage.getIEnvironment());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(localEnvironmentBuilderEClass, LocalEnvironmentBuilder.class, "LocalEnvironmentBuilder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

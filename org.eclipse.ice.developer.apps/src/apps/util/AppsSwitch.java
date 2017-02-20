@@ -19,17 +19,17 @@ import org.eclipse.emf.ecore.util.Switch;
  * until a non-null result is returned,
  * which is the result of the switch.
  * <!-- end-user-doc -->
- * @see apps.EnvironmentPackage
+ * @see apps.AppsPackage
  * @generated
  */
-public class EnvironmentSwitch<T> extends Switch<T> {
+public class AppsSwitch<T> extends Switch<T> {
 	/**
 	 * The cached model package
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static EnvironmentPackage modelPackage;
+	protected static AppsPackage modelPackage;
 
 	/**
 	 * Creates an instance of the switch.
@@ -37,9 +37,9 @@ public class EnvironmentSwitch<T> extends Switch<T> {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentSwitch() {
+	public AppsSwitch() {
 		if (modelPackage == null) {
-			modelPackage = EnvironmentPackage.eINSTANCE;
+			modelPackage = AppsPackage.eINSTANCE;
 		}
 	}
 
@@ -66,58 +66,58 @@ public class EnvironmentSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case EnvironmentPackage.IENVIRONMENT: {
+			case AppsPackage.IENVIRONMENT: {
 				IEnvironment iEnvironment = (IEnvironment)theEObject;
 				T result = caseIEnvironment(iEnvironment);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.IENVIRONMENT_BUILDER: {
+			case AppsPackage.IENVIRONMENT_BUILDER: {
 				IEnvironmentBuilder iEnvironmentBuilder = (IEnvironmentBuilder)theEObject;
 				T result = caseIEnvironmentBuilder(iEnvironmentBuilder);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.ENVIRONMENT_MANAGER: {
+			case AppsPackage.ENVIRONMENT_MANAGER: {
 				EnvironmentManager environmentManager = (EnvironmentManager)theEObject;
 				T result = caseEnvironmentManager(environmentManager);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.SPACK_PACKAGE: {
+			case AppsPackage.SPACK_PACKAGE: {
 				SpackPackage spackPackage = (SpackPackage)theEObject;
 				T result = caseSpackPackage(spackPackage);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.ENVIRONMENT: {
+			case AppsPackage.ENVIRONMENT: {
 				Environment environment = (Environment)theEObject;
 				T result = caseEnvironment(environment);
 				if (result == null) result = caseIEnvironment(environment);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.PROJECT_LAUNCHER: {
+			case AppsPackage.PROJECT_LAUNCHER: {
 				ProjectLauncher projectLauncher = (ProjectLauncher)theEObject;
 				T result = caseProjectLauncher(projectLauncher);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.PTP_SYNC_PROJECT_LAUNCHER: {
+			case AppsPackage.PTP_SYNC_PROJECT_LAUNCHER: {
 				PTPSyncProjectLauncher ptpSyncProjectLauncher = (PTPSyncProjectLauncher)theEObject;
 				T result = casePTPSyncProjectLauncher(ptpSyncProjectLauncher);
 				if (result == null) result = caseProjectLauncher(ptpSyncProjectLauncher);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.LOCAL_CDT_PROJECT_LAUNCHER: {
+			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER: {
 				LocalCDTProjectLauncher localCDTProjectLauncher = (LocalCDTProjectLauncher)theEObject;
 				T result = caseLocalCDTProjectLauncher(localCDTProjectLauncher);
 				if (result == null) result = caseProjectLauncher(localCDTProjectLauncher);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnvironmentPackage.SCIENCE_APP: {
+			case AppsPackage.SCIENCE_APP: {
 				ScienceApp scienceApp = (ScienceApp)theEObject;
 				T result = caseScienceApp(scienceApp);
 				if (result == null) result = defaultCase(theEObject);
@@ -158,13 +158,13 @@ public class EnvironmentSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Manager</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Environment Manager</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Manager</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Environment Manager</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
@@ -278,4 +278,4 @@ public class EnvironmentSwitch<T> extends Switch<T> {
 		return null;
 	}
 
-} //EnvironmentSwitch
+} //AppsSwitch

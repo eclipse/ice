@@ -2,7 +2,7 @@
  */
 package apps.impl;
 
-import apps.EnvironmentPackage;
+import apps.AppsPackage;
 import apps.SpackPackage;
 
 import java.util.Collection;
@@ -184,7 +184,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EnvironmentPackage.Literals.SPACK_PACKAGE;
+		return AppsPackage.Literals.SPACK_PACKAGE;
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SPACK_PACKAGE__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__NAME, oldName, name));
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldDesiredVersion = desiredVersion;
 		desiredVersion = newDesiredVersion;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SPACK_PACKAGE__DESIRED_VERSION, oldDesiredVersion, desiredVersion));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__DESIRED_VERSION, oldDesiredVersion, desiredVersion));
 	}
 
 	/**
@@ -247,7 +247,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldCompiler = compiler;
 		compiler = newCompiler;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SPACK_PACKAGE__COMPILER, oldCompiler, compiler));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__COMPILER, oldCompiler, compiler));
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 */
 	public EList<String> getVersions() {
 		if (versions == null) {
-			versions = new EDataTypeUniqueEList<String>(String.class, this, EnvironmentPackage.SPACK_PACKAGE__VERSIONS);
+			versions = new EDataTypeUniqueEList<String>(String.class, this, AppsPackage.SPACK_PACKAGE__VERSIONS);
 		}
 		return versions;
 	}
@@ -280,7 +280,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldCppFlags = cppFlags;
 		cppFlags = newCppFlags;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SPACK_PACKAGE__CPP_FLAGS, oldCppFlags, cppFlags));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__CPP_FLAGS, oldCppFlags, cppFlags));
 	}
 
 	/**
@@ -301,7 +301,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldVirtualDependency = virtualDependency;
 		virtualDependency = newVirtualDependency;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY, oldVirtualDependency, virtualDependency));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY, oldVirtualDependency, virtualDependency));
 	}
 
 	/**
@@ -322,7 +322,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldVirtualDependencyProvider = virtualDependencyProvider;
 		virtualDependencyProvider = newVirtualDependencyProvider;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER, oldVirtualDependencyProvider, virtualDependencyProvider));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER, oldVirtualDependencyProvider, virtualDependencyProvider));
 	}
 
 	/**
@@ -333,19 +333,19 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case EnvironmentPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SPACK_PACKAGE__NAME:
 				return getName();
-			case EnvironmentPackage.SPACK_PACKAGE__DESIRED_VERSION:
+			case AppsPackage.SPACK_PACKAGE__DESIRED_VERSION:
 				return getDesiredVersion();
-			case EnvironmentPackage.SPACK_PACKAGE__COMPILER:
+			case AppsPackage.SPACK_PACKAGE__COMPILER:
 				return getCompiler();
-			case EnvironmentPackage.SPACK_PACKAGE__VERSIONS:
+			case AppsPackage.SPACK_PACKAGE__VERSIONS:
 				return getVersions();
-			case EnvironmentPackage.SPACK_PACKAGE__CPP_FLAGS:
+			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
 				return getCppFlags();
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
 				return getVirtualDependency();
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
 				return getVirtualDependencyProvider();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -360,26 +360,26 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case EnvironmentPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SPACK_PACKAGE__NAME:
 				setName((String)newValue);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__DESIRED_VERSION:
+			case AppsPackage.SPACK_PACKAGE__DESIRED_VERSION:
 				setDesiredVersion((String)newValue);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__COMPILER:
+			case AppsPackage.SPACK_PACKAGE__COMPILER:
 				setCompiler((String)newValue);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__VERSIONS:
+			case AppsPackage.SPACK_PACKAGE__VERSIONS:
 				getVersions().clear();
 				getVersions().addAll((Collection<? extends String>)newValue);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__CPP_FLAGS:
+			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
 				setCppFlags((String)newValue);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
 				setVirtualDependency((String)newValue);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
 				setVirtualDependencyProvider((String)newValue);
 				return;
 		}
@@ -394,25 +394,25 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SPACK_PACKAGE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__DESIRED_VERSION:
+			case AppsPackage.SPACK_PACKAGE__DESIRED_VERSION:
 				setDesiredVersion(DESIRED_VERSION_EDEFAULT);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__COMPILER:
+			case AppsPackage.SPACK_PACKAGE__COMPILER:
 				setCompiler(COMPILER_EDEFAULT);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__VERSIONS:
+			case AppsPackage.SPACK_PACKAGE__VERSIONS:
 				getVersions().clear();
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__CPP_FLAGS:
+			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
 				setCppFlags(CPP_FLAGS_EDEFAULT);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
 				setVirtualDependency(VIRTUAL_DEPENDENCY_EDEFAULT);
 				return;
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
 				setVirtualDependencyProvider(VIRTUAL_DEPENDENCY_PROVIDER_EDEFAULT);
 				return;
 		}
@@ -427,19 +427,19 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SPACK_PACKAGE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case EnvironmentPackage.SPACK_PACKAGE__DESIRED_VERSION:
+			case AppsPackage.SPACK_PACKAGE__DESIRED_VERSION:
 				return DESIRED_VERSION_EDEFAULT == null ? desiredVersion != null : !DESIRED_VERSION_EDEFAULT.equals(desiredVersion);
-			case EnvironmentPackage.SPACK_PACKAGE__COMPILER:
+			case AppsPackage.SPACK_PACKAGE__COMPILER:
 				return COMPILER_EDEFAULT == null ? compiler != null : !COMPILER_EDEFAULT.equals(compiler);
-			case EnvironmentPackage.SPACK_PACKAGE__VERSIONS:
+			case AppsPackage.SPACK_PACKAGE__VERSIONS:
 				return versions != null && !versions.isEmpty();
-			case EnvironmentPackage.SPACK_PACKAGE__CPP_FLAGS:
+			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
 				return CPP_FLAGS_EDEFAULT == null ? cppFlags != null : !CPP_FLAGS_EDEFAULT.equals(cppFlags);
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY:
 				return VIRTUAL_DEPENDENCY_EDEFAULT == null ? virtualDependency != null : !VIRTUAL_DEPENDENCY_EDEFAULT.equals(virtualDependency);
-			case EnvironmentPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
+			case AppsPackage.SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER:
 				return VIRTUAL_DEPENDENCY_PROVIDER_EDEFAULT == null ? virtualDependencyProvider != null : !VIRTUAL_DEPENDENCY_PROVIDER_EDEFAULT.equals(virtualDependencyProvider);
 		}
 		return super.eIsSet(featureID);

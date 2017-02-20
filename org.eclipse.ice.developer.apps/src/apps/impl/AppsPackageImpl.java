@@ -2,10 +2,10 @@
  */
 package apps.impl;
 
+import apps.AppsFactory;
+import apps.AppsPackage;
 import apps.Environment;
-import apps.EnvironmentFactory;
 import apps.EnvironmentManager;
-import apps.EnvironmentPackage;
 import apps.EnvironmentType;
 import apps.IEnvironment;
 import apps.IEnvironmentBuilder;
@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
  * <!-- end-user-doc -->
  * @generated
  */
-public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentPackage {
+public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -122,12 +122,12 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see org.eclipse.emf.ecore.EPackage.Registry
-	 * @see apps.EnvironmentPackage#eNS_URI
+	 * @see apps.AppsPackage#eNS_URI
 	 * @see #init()
 	 * @generated
 	 */
-	private EnvironmentPackageImpl() {
-		super(eNS_URI, EnvironmentFactory.eINSTANCE);
+	private AppsPackageImpl() {
+		super(eNS_URI, AppsFactory.eINSTANCE);
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	/**
 	 * Creates, registers, and initializes the <b>Package</b> for this model, and for any others upon which it depends.
 	 * 
-	 * <p>This method is used to initialize {@link EnvironmentPackage#eINSTANCE} when that field is accessed.
+	 * <p>This method is used to initialize {@link AppsPackage#eINSTANCE} when that field is accessed.
 	 * Clients should not invoke it directly. Instead, they should simply access that field to obtain the package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -149,11 +149,11 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * @see #initializePackageContents()
 	 * @generated
 	 */
-	public static EnvironmentPackage init() {
-		if (isInited) return (EnvironmentPackage)EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI);
+	public static AppsPackage init() {
+		if (isInited) return (AppsPackage)EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI);
 
 		// Obtain or create and register package
-		EnvironmentPackageImpl theEnvironmentPackage = (EnvironmentPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof EnvironmentPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new EnvironmentPackageImpl());
+		AppsPackageImpl theAppsPackage = (AppsPackageImpl)(EPackage.Registry.INSTANCE.get(eNS_URI) instanceof AppsPackageImpl ? EPackage.Registry.INSTANCE.get(eNS_URI) : new AppsPackageImpl());
 
 		isInited = true;
 
@@ -165,22 +165,22 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
 
 		// Create package meta-data objects
-		theEnvironmentPackage.createPackageContents();
+		theAppsPackage.createPackageContents();
 		theDockerPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
 
 		// Initialize created meta-data
-		theEnvironmentPackage.initializePackageContents();
+		theAppsPackage.initializePackageContents();
 		theDockerPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
-		theEnvironmentPackage.freeze();
+		theAppsPackage.freeze();
 
   
 		// Update the registry and return the package
-		EPackage.Registry.INSTANCE.put(EnvironmentPackage.eNS_URI, theEnvironmentPackage);
-		return theEnvironmentPackage;
+		EPackage.Registry.INSTANCE.put(AppsPackage.eNS_URI, theAppsPackage);
+		return theAppsPackage;
 	}
 
 	/**
@@ -530,8 +530,8 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentFactory getEnvironmentFactory() {
-		return (EnvironmentFactory)getEFactoryInstance();
+	public AppsFactory getAppsFactory() {
+		return (AppsFactory)getEFactoryInstance();
 	}
 
 	/**
@@ -710,4 +710,4 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 		createResource(eNS_URI);
 	}
 
-} //EnvironmentPackageImpl
+} //AppsPackageImpl

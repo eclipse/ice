@@ -13,7 +13,7 @@ package apps;
  * <!-- end-model-doc -->
  *
  *
- * @see apps.EnvironmentPackage#getLocalCDTProjectLauncher()
+ * @see apps.AppsPackage#getLocalCDTProjectLauncher()
  * @model
  * @generated
  */

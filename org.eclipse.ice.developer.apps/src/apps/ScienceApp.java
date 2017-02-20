@@ -23,7 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link apps.ScienceApp#getRemoteHost <em>Remote Host</em>}</li>
  * </ul>
  *
- * @see apps.EnvironmentPackage#getScienceApp()
+ * @see apps.AppsPackage#getScienceApp()
  * @model
  * @generated
  */
@@ -38,7 +38,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Repo URL</em>' attribute.
 	 * @see #setRepoURL(String)
-	 * @see apps.EnvironmentPackage#getScienceApp_RepoURL()
+	 * @see apps.AppsPackage#getScienceApp_RepoURL()
 	 * @model
 	 * @generated
 	 */
@@ -64,7 +64,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see apps.EnvironmentPackage#getScienceApp_Name()
+	 * @see apps.AppsPackage#getScienceApp_Name()
 	 * @model
 	 * @generated
 	 */
@@ -90,7 +90,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Branch</em>' attribute.
 	 * @see #setBranch(String)
-	 * @see apps.EnvironmentPackage#getScienceApp_Branch()
+	 * @see apps.AppsPackage#getScienceApp_Branch()
 	 * @model
 	 * @generated
 	 */
@@ -116,7 +116,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Local Project Name</em>' attribute.
 	 * @see #setLocalProjectName(String)
-	 * @see apps.EnvironmentPackage#getScienceApp_LocalProjectName()
+	 * @see apps.AppsPackage#getScienceApp_LocalProjectName()
 	 * @model
 	 * @generated
 	 */
@@ -143,7 +143,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Recursive Clone</em>' attribute.
 	 * @see #setRecursiveClone(boolean)
-	 * @see apps.EnvironmentPackage#getScienceApp_RecursiveClone()
+	 * @see apps.AppsPackage#getScienceApp_RecursiveClone()
 	 * @model default="true"
 	 * @generated
 	 */
@@ -169,7 +169,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Absolute Path</em>' attribute.
 	 * @see #setAbsolutePath(String)
-	 * @see apps.EnvironmentPackage#getScienceApp_AbsolutePath()
+	 * @see apps.AppsPackage#getScienceApp_AbsolutePath()
 	 * @model
 	 * @generated
 	 */
@@ -195,7 +195,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Remote Port</em>' attribute.
 	 * @see #setRemotePort(int)
-	 * @see apps.EnvironmentPackage#getScienceApp_RemotePort()
+	 * @see apps.AppsPackage#getScienceApp_RemotePort()
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.Int"
 	 * @generated
 	 */
@@ -221,7 +221,7 @@ public interface ScienceApp extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Remote Host</em>' attribute.
 	 * @see #setRemoteHost(String)
-	 * @see apps.EnvironmentPackage#getScienceApp_RemoteHost()
+	 * @see apps.AppsPackage#getScienceApp_RemoteHost()
 	 * @model
 	 * @generated
 	 */

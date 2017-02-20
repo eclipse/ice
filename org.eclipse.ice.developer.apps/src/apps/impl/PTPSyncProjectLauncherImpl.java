@@ -2,7 +2,7 @@
  */
 package apps.impl;
 
-import apps.EnvironmentPackage;
+import apps.AppsPackage;
 import apps.PTPSyncProjectLauncher;
 import apps.ScienceApp;
 
@@ -38,7 +38,7 @@ public class PTPSyncProjectLauncherImpl extends MinimalEObjectImpl.Container imp
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EnvironmentPackage.Literals.PTP_SYNC_PROJECT_LAUNCHER;
+		return AppsPackage.Literals.PTP_SYNC_PROJECT_LAUNCHER;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class PTPSyncProjectLauncherImpl extends MinimalEObjectImpl.Container imp
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case EnvironmentPackage.PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP:
+			case AppsPackage.PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP:
 				launchProject((ScienceApp)arguments.get(0));
 				return null;
 		}

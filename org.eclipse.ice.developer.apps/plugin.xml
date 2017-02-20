@@ -11,7 +11,15 @@
       <package
             uri="http://eclipse.org/ice/apps"
             class="apps.EnvironmentPackage"
-            genModel="model/environment.genmodel"/>
+            genModel="model/hello.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated apps -->
+      <package
+            uri="http://eclipse.org/ice/apps"
+            class="apps.AppsPackage"
+            genModel="model/apps.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
@@ -19,7 +27,7 @@
       <package
             uri="http://eclipse.org/apps/docker"
             class="apps.docker.DockerPackage"
-            genModel="model/environment.genmodel"/>
+            genModel="model/hello.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
@@ -27,6 +35,6 @@
       <package
             uri="https://eclipse.org/apps/local"
             class="apps.local.LocalPackage"
-            genModel="model/environment.genmodel"/>
+            genModel="model/hello.genmodel"/>
    </extension>
 </plugin>

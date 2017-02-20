@@ -26,7 +26,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link apps.IEnvironment#getScienceapp <em>Scienceapp</em>}</li>
  * </ul>
  *
- * @see apps.EnvironmentPackage#getIEnvironment()
+ * @see apps.AppsPackage#getIEnvironment()
  * @model interface="true" abstract="true"
  * @generated
  */
@@ -42,7 +42,7 @@ public interface IEnvironment extends EObject {
 	 * @return the value of the '<em>Type</em>' attribute.
 	 * @see apps.EnvironmentType
 	 * @see #setType(EnvironmentType)
-	 * @see apps.EnvironmentPackage#getIEnvironment_Type()
+	 * @see apps.AppsPackage#getIEnvironment_Type()
 	 * @model
 	 * @generated
 	 */
@@ -68,7 +68,7 @@ public interface IEnvironment extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see apps.EnvironmentPackage#getIEnvironment_Name()
+	 * @see apps.AppsPackage#getIEnvironment_Name()
 	 * @model
 	 * @generated
 	 */
@@ -93,7 +93,7 @@ public interface IEnvironment extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Os</em>' attribute.
 	 * @see #setOs(String)
-	 * @see apps.EnvironmentPackage#getIEnvironment_Os()
+	 * @see apps.AppsPackage#getIEnvironment_Os()
 	 * @model
 	 * @generated
 	 */
@@ -118,7 +118,7 @@ public interface IEnvironment extends EObject {
 	 * The list of packages that the application in this environment depends on. 
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Spackpackage</em>' containment reference list.
-	 * @see apps.EnvironmentPackage#getIEnvironment_Spackpackage()
+	 * @see apps.AppsPackage#getIEnvironment_Spackpackage()
 	 * @model containment="true"
 	 * @generated
 	 */
@@ -133,7 +133,7 @@ public interface IEnvironment extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Scienceapp</em>' reference.
 	 * @see #setScienceapp(ScienceApp)
-	 * @see apps.EnvironmentPackage#getIEnvironment_Scienceapp()
+	 * @see apps.AppsPackage#getIEnvironment_Scienceapp()
 	 * @model
 	 * @generated
 	 */

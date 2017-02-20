@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link apps.SpackPackage#getVirtualDependencyProvider <em>Virtual Dependency Provider</em>}</li>
  * </ul>
  *
- * @see apps.EnvironmentPackage#getSpackPackage()
+ * @see apps.AppsPackage#getSpackPackage()
  * @model
  * @generated
  */
@@ -42,7 +42,7 @@ public interface SpackPackage extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see apps.EnvironmentPackage#getSpackPackage_Name()
+	 * @see apps.AppsPackage#getSpackPackage_Name()
 	 * @model
 	 * @generated
 	 */
@@ -67,7 +67,7 @@ public interface SpackPackage extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Desired Version</em>' attribute.
 	 * @see #setDesiredVersion(String)
-	 * @see apps.EnvironmentPackage#getSpackPackage_DesiredVersion()
+	 * @see apps.AppsPackage#getSpackPackage_DesiredVersion()
 	 * @model
 	 * @generated
 	 */
@@ -92,7 +92,7 @@ public interface SpackPackage extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Compiler</em>' attribute.
 	 * @see #setCompiler(String)
-	 * @see apps.EnvironmentPackage#getSpackPackage_Compiler()
+	 * @see apps.AppsPackage#getSpackPackage_Compiler()
 	 * @model
 	 * @generated
 	 */
@@ -117,7 +117,7 @@ public interface SpackPackage extends EObject {
 	 * The available versions. 
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Versions</em>' attribute list.
-	 * @see apps.EnvironmentPackage#getSpackPackage_Versions()
+	 * @see apps.AppsPackage#getSpackPackage_Versions()
 	 * @model
 	 * @generated
 	 */
@@ -132,7 +132,7 @@ public interface SpackPackage extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Cpp Flags</em>' attribute.
 	 * @see #setCppFlags(String)
-	 * @see apps.EnvironmentPackage#getSpackPackage_CppFlags()
+	 * @see apps.AppsPackage#getSpackPackage_CppFlags()
 	 * @model
 	 * @generated
 	 */
@@ -157,7 +157,7 @@ public interface SpackPackage extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Virtual Dependency</em>' attribute.
 	 * @see #setVirtualDependency(String)
-	 * @see apps.EnvironmentPackage#getSpackPackage_VirtualDependency()
+	 * @see apps.AppsPackage#getSpackPackage_VirtualDependency()
 	 * @model
 	 * @generated
 	 */
@@ -182,7 +182,7 @@ public interface SpackPackage extends EObject {
 	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Virtual Dependency Provider</em>' attribute.
 	 * @see #setVirtualDependencyProvider(String)
-	 * @see apps.EnvironmentPackage#getSpackPackage_VirtualDependencyProvider()
+	 * @see apps.AppsPackage#getSpackPackage_VirtualDependencyProvider()
 	 * @model
 	 * @generated
 	 */

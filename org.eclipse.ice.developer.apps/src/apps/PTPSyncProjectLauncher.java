@@ -13,7 +13,7 @@ package apps;
  * <!-- end-model-doc -->
  *
  *
- * @see apps.EnvironmentPackage#getPTPSyncProjectLauncher()
+ * @see apps.AppsPackage#getPTPSyncProjectLauncher()
  * @model
  * @generated
  */

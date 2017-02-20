@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-model-doc -->
  *
  *
- * @see apps.EnvironmentPackage#getIEnvironmentBuilder()
+ * @see apps.AppsPackage#getIEnvironmentBuilder()
  * @model interface="true" abstract="true"
  * @generated
  */

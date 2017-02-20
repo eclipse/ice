@@ -16,7 +16,7 @@ import org.eclipse.emf.common.util.Enumerator;
  * <!-- begin-model-doc -->
  * This enumeration defines the types of Environments that can be created. Currently, we can create environments on the local host, or in a Docker container. 
  * <!-- end-model-doc -->
- * @see apps.EnvironmentPackage#getEnvironmentType()
+ * @see apps.AppsPackage#getEnvironmentType()
  * @model
  * @generated
  */
@@ -72,7 +72,7 @@ public enum EnvironmentType implements Enumerator {
 	public static final int LOCAL_VALUE = 1;
 
 	/**
-	 * An array of all the '<em><b>Type</b></em>' enumerators.
+	 * An array of all the '<em><b>Environment Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -84,7 +84,7 @@ public enum EnvironmentType implements Enumerator {
 		};
 
 	/**
-	 * A public read-only list of all the '<em><b>Type</b></em>' enumerators.
+	 * A public read-only list of all the '<em><b>Environment Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -92,7 +92,7 @@ public enum EnvironmentType implements Enumerator {
 	public static final List<EnvironmentType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Type</b></em>' literal with the specified literal value.
+	 * Returns the '<em><b>Environment Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param literal the literal.
@@ -110,7 +110,7 @@ public enum EnvironmentType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Environment Type</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param name the name.
@@ -128,7 +128,7 @@ public enum EnvironmentType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Type</b></em>' literal with the specified integer value.
+	 * Returns the '<em><b>Environment Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the integer value.

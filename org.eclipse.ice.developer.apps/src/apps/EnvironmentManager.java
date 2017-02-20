@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link apps.EnvironmentManager#getBuilder <em>Builder</em>}</li>
  * </ul>
  *
- * @see apps.EnvironmentPackage#getEnvironmentManager()
+ * @see apps.AppsPackage#getEnvironmentManager()
  * @model
  * @generated
  */
@@ -37,7 +37,7 @@ public interface EnvironmentManager extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Builder</em>' reference.
 	 * @see #setBuilder(IEnvironmentBuilder)
-	 * @see apps.EnvironmentPackage#getEnvironmentManager_Builder()
+	 * @see apps.AppsPackage#getEnvironmentManager_Builder()
 	 * @model
 	 * @generated
 	 */

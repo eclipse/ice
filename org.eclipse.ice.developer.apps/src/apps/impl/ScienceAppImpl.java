@@ -2,7 +2,7 @@
  */
 package apps.impl;
 
-import apps.EnvironmentPackage;
+import apps.AppsPackage;
 import apps.ScienceApp;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -209,7 +209,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EnvironmentPackage.Literals.SCIENCE_APP;
+		return AppsPackage.Literals.SCIENCE_APP;
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		String oldRepoURL = repoURL;
 		repoURL = newRepoURL;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__REPO_URL, oldRepoURL, repoURL));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__REPO_URL, oldRepoURL, repoURL));
 	}
 
 	/**
@@ -251,7 +251,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__NAME, oldName, name));
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		String oldBranch = branch;
 		branch = newBranch;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__BRANCH, oldBranch, branch));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__BRANCH, oldBranch, branch));
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		String oldLocalProjectName = localProjectName;
 		localProjectName = newLocalProjectName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__LOCAL_PROJECT_NAME, oldLocalProjectName, localProjectName));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__LOCAL_PROJECT_NAME, oldLocalProjectName, localProjectName));
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		boolean oldRecursiveClone = recursiveClone;
 		recursiveClone = newRecursiveClone;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__RECURSIVE_CLONE, oldRecursiveClone, recursiveClone));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__RECURSIVE_CLONE, oldRecursiveClone, recursiveClone));
 	}
 
 	/**
@@ -335,7 +335,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		String oldAbsolutePath = absolutePath;
 		absolutePath = newAbsolutePath;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__ABSOLUTE_PATH, oldAbsolutePath, absolutePath));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__ABSOLUTE_PATH, oldAbsolutePath, absolutePath));
 	}
 
 	/**
@@ -356,7 +356,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		int oldRemotePort = remotePort;
 		remotePort = newRemotePort;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__REMOTE_PORT, oldRemotePort, remotePort));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__REMOTE_PORT, oldRemotePort, remotePort));
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 		String oldRemoteHost = remoteHost;
 		remoteHost = newRemoteHost;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.SCIENCE_APP__REMOTE_HOST, oldRemoteHost, remoteHost));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SCIENCE_APP__REMOTE_HOST, oldRemoteHost, remoteHost));
 	}
 
 	/**
@@ -388,21 +388,21 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case EnvironmentPackage.SCIENCE_APP__REPO_URL:
+			case AppsPackage.SCIENCE_APP__REPO_URL:
 				return getRepoURL();
-			case EnvironmentPackage.SCIENCE_APP__NAME:
+			case AppsPackage.SCIENCE_APP__NAME:
 				return getName();
-			case EnvironmentPackage.SCIENCE_APP__BRANCH:
+			case AppsPackage.SCIENCE_APP__BRANCH:
 				return getBranch();
-			case EnvironmentPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
+			case AppsPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
 				return getLocalProjectName();
-			case EnvironmentPackage.SCIENCE_APP__RECURSIVE_CLONE:
+			case AppsPackage.SCIENCE_APP__RECURSIVE_CLONE:
 				return isRecursiveClone();
-			case EnvironmentPackage.SCIENCE_APP__ABSOLUTE_PATH:
+			case AppsPackage.SCIENCE_APP__ABSOLUTE_PATH:
 				return getAbsolutePath();
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_PORT:
+			case AppsPackage.SCIENCE_APP__REMOTE_PORT:
 				return getRemotePort();
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_HOST:
+			case AppsPackage.SCIENCE_APP__REMOTE_HOST:
 				return getRemoteHost();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -416,28 +416,28 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case EnvironmentPackage.SCIENCE_APP__REPO_URL:
+			case AppsPackage.SCIENCE_APP__REPO_URL:
 				setRepoURL((String)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__NAME:
+			case AppsPackage.SCIENCE_APP__NAME:
 				setName((String)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__BRANCH:
+			case AppsPackage.SCIENCE_APP__BRANCH:
 				setBranch((String)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
+			case AppsPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
 				setLocalProjectName((String)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__RECURSIVE_CLONE:
+			case AppsPackage.SCIENCE_APP__RECURSIVE_CLONE:
 				setRecursiveClone((Boolean)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__ABSOLUTE_PATH:
+			case AppsPackage.SCIENCE_APP__ABSOLUTE_PATH:
 				setAbsolutePath((String)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_PORT:
+			case AppsPackage.SCIENCE_APP__REMOTE_PORT:
 				setRemotePort((Integer)newValue);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_HOST:
+			case AppsPackage.SCIENCE_APP__REMOTE_HOST:
 				setRemoteHost((String)newValue);
 				return;
 		}
@@ -452,28 +452,28 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.SCIENCE_APP__REPO_URL:
+			case AppsPackage.SCIENCE_APP__REPO_URL:
 				setRepoURL(REPO_URL_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__NAME:
+			case AppsPackage.SCIENCE_APP__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__BRANCH:
+			case AppsPackage.SCIENCE_APP__BRANCH:
 				setBranch(BRANCH_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
+			case AppsPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
 				setLocalProjectName(LOCAL_PROJECT_NAME_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__RECURSIVE_CLONE:
+			case AppsPackage.SCIENCE_APP__RECURSIVE_CLONE:
 				setRecursiveClone(RECURSIVE_CLONE_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__ABSOLUTE_PATH:
+			case AppsPackage.SCIENCE_APP__ABSOLUTE_PATH:
 				setAbsolutePath(ABSOLUTE_PATH_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_PORT:
+			case AppsPackage.SCIENCE_APP__REMOTE_PORT:
 				setRemotePort(REMOTE_PORT_EDEFAULT);
 				return;
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_HOST:
+			case AppsPackage.SCIENCE_APP__REMOTE_HOST:
 				setRemoteHost(REMOTE_HOST_EDEFAULT);
 				return;
 		}
@@ -488,21 +488,21 @@ public class ScienceAppImpl extends MinimalEObjectImpl.Container implements Scie
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.SCIENCE_APP__REPO_URL:
+			case AppsPackage.SCIENCE_APP__REPO_URL:
 				return REPO_URL_EDEFAULT == null ? repoURL != null : !REPO_URL_EDEFAULT.equals(repoURL);
-			case EnvironmentPackage.SCIENCE_APP__NAME:
+			case AppsPackage.SCIENCE_APP__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case EnvironmentPackage.SCIENCE_APP__BRANCH:
+			case AppsPackage.SCIENCE_APP__BRANCH:
 				return BRANCH_EDEFAULT == null ? branch != null : !BRANCH_EDEFAULT.equals(branch);
-			case EnvironmentPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
+			case AppsPackage.SCIENCE_APP__LOCAL_PROJECT_NAME:
 				return LOCAL_PROJECT_NAME_EDEFAULT == null ? localProjectName != null : !LOCAL_PROJECT_NAME_EDEFAULT.equals(localProjectName);
-			case EnvironmentPackage.SCIENCE_APP__RECURSIVE_CLONE:
+			case AppsPackage.SCIENCE_APP__RECURSIVE_CLONE:
 				return recursiveClone != RECURSIVE_CLONE_EDEFAULT;
-			case EnvironmentPackage.SCIENCE_APP__ABSOLUTE_PATH:
+			case AppsPackage.SCIENCE_APP__ABSOLUTE_PATH:
 				return ABSOLUTE_PATH_EDEFAULT == null ? absolutePath != null : !ABSOLUTE_PATH_EDEFAULT.equals(absolutePath);
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_PORT:
+			case AppsPackage.SCIENCE_APP__REMOTE_PORT:
 				return remotePort != REMOTE_PORT_EDEFAULT;
-			case EnvironmentPackage.SCIENCE_APP__REMOTE_HOST:
+			case AppsPackage.SCIENCE_APP__REMOTE_HOST:
 				return REMOTE_HOST_EDEFAULT == null ? remoteHost != null : !REMOTE_HOST_EDEFAULT.equals(remoteHost);
 		}
 		return super.eIsSet(featureID);

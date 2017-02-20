@@ -2,9 +2,8 @@
  */
 package apps.tests;
 
+import apps.AppsFactory;
 import apps.Environment;
-import apps.EnvironmentFactory;
-
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
@@ -78,7 +77,7 @@ public class EnvironmentTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EnvironmentFactory.eINSTANCE.createEnvironment());
+		setFixture(AppsFactory.eINSTANCE.createEnvironment());
 	}
 
 	/**

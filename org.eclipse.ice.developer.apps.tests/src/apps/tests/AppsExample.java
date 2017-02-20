@@ -2,9 +2,9 @@
  */
 package apps.tests;
 
-import apps.EnvironmentFactory;
+import apps.AppsFactory;
+import apps.AppsPackage;
 import apps.EnvironmentManager;
-import apps.EnvironmentPackage;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
  * <!-- end-user-doc -->
  * @generated
  */
-public class EnvironmentExample {
+public class AppsExample {
 	/**
 	 * <!-- begin-user-doc -->
 	 * Load all the argument file paths or URIs as instances of the model.
@@ -51,16 +51,16 @@ public class EnvironmentExample {
 		// Register the package to ensure it is available during loading.
 		//
 		resourceSet.getPackageRegistry().put
-			(EnvironmentPackage.eNS_URI, 
-			 EnvironmentPackage.eINSTANCE);
+			(AppsPackage.eNS_URI, 
+			 AppsPackage.eINSTANCE);
         
 		// If there are no arguments, emit an appropriate usage message.
 		//
 		if (args.length == 0) {
 			System.out.println("Enter a list of file paths or URIs that have content like this:");
 			try {
-				Resource resource = resourceSet.createResource(URI.createURI("http:///My.environment"));
-				EnvironmentManager root = EnvironmentFactory.eINSTANCE.createEnvironmentManager();
+				Resource resource = resourceSet.createResource(URI.createURI("http:///My.apps"));
+				EnvironmentManager root = AppsFactory.eINSTANCE.createEnvironmentManager();
 				resource.getContents().add(root);
 				resource.save(System.out, null);
 			}
@@ -118,4 +118,4 @@ public class EnvironmentExample {
 		}
 	}
 
-} //EnvironmentExample
+} //AppsExample

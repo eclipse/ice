@@ -2,7 +2,7 @@
  */
 package apps.impl;
 
-import apps.EnvironmentPackage;
+import apps.AppsPackage;
 import apps.LocalCDTProjectLauncher;
 import apps.ScienceApp;
 
@@ -38,7 +38,7 @@ public class LocalCDTProjectLauncherImpl extends MinimalEObjectImpl.Container im
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EnvironmentPackage.Literals.LOCAL_CDT_PROJECT_LAUNCHER;
+		return AppsPackage.Literals.LOCAL_CDT_PROJECT_LAUNCHER;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class LocalCDTProjectLauncherImpl extends MinimalEObjectImpl.Container im
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case EnvironmentPackage.LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP:
+			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP:
 				launchProject((ScienceApp)arguments.get(0));
 				return null;
 		}

@@ -19,24 +19,24 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
  * <!-- end-user-doc -->
  * @generated
  */
-public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentFactory {
+public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	/**
 	 * Creates the default factory implementation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static EnvironmentFactory init() {
+	public static AppsFactory init() {
 		try {
-			EnvironmentFactory theEnvironmentFactory = (EnvironmentFactory)EPackage.Registry.INSTANCE.getEFactory(EnvironmentPackage.eNS_URI);
-			if (theEnvironmentFactory != null) {
-				return theEnvironmentFactory;
+			AppsFactory theAppsFactory = (AppsFactory)EPackage.Registry.INSTANCE.getEFactory(AppsPackage.eNS_URI);
+			if (theAppsFactory != null) {
+				return theAppsFactory;
 			}
 		}
 		catch (Exception exception) {
 			EcorePlugin.INSTANCE.log(exception);
 		}
-		return new EnvironmentFactoryImpl();
+		return new AppsFactoryImpl();
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentFactoryImpl() {
+	public AppsFactoryImpl() {
 		super();
 	}
 
@@ -57,12 +57,12 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case EnvironmentPackage.ENVIRONMENT_MANAGER: return createEnvironmentManager();
-			case EnvironmentPackage.SPACK_PACKAGE: return createSpackPackage();
-			case EnvironmentPackage.ENVIRONMENT: return createEnvironment();
-			case EnvironmentPackage.PTP_SYNC_PROJECT_LAUNCHER: return createPTPSyncProjectLauncher();
-			case EnvironmentPackage.LOCAL_CDT_PROJECT_LAUNCHER: return createLocalCDTProjectLauncher();
-			case EnvironmentPackage.SCIENCE_APP: return createScienceApp();
+			case AppsPackage.ENVIRONMENT_MANAGER: return createEnvironmentManager();
+			case AppsPackage.SPACK_PACKAGE: return createSpackPackage();
+			case AppsPackage.ENVIRONMENT: return createEnvironment();
+			case AppsPackage.PTP_SYNC_PROJECT_LAUNCHER: return createPTPSyncProjectLauncher();
+			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER: return createLocalCDTProjectLauncher();
+			case AppsPackage.SCIENCE_APP: return createScienceApp();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -76,7 +76,7 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case EnvironmentPackage.ENVIRONMENT_TYPE:
+			case AppsPackage.ENVIRONMENT_TYPE:
 				return createEnvironmentTypeFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
@@ -91,7 +91,7 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case EnvironmentPackage.ENVIRONMENT_TYPE:
+			case AppsPackage.ENVIRONMENT_TYPE:
 				return convertEnvironmentTypeToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
@@ -183,8 +183,8 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentPackage getEnvironmentPackage() {
-		return (EnvironmentPackage)getEPackage();
+	public AppsPackage getAppsPackage() {
+		return (AppsPackage)getEPackage();
 	}
 
 	/**
@@ -194,8 +194,8 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	 * @generated
 	 */
 	@Deprecated
-	public static EnvironmentPackage getPackage() {
-		return EnvironmentPackage.eINSTANCE;
+	public static AppsPackage getPackage() {
+		return AppsPackage.eINSTANCE;
 	}
 
-} //EnvironmentFactoryImpl
+} //AppsFactoryImpl

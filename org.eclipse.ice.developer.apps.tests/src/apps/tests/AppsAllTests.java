@@ -2,6 +2,10 @@
  */
 package apps.tests;
 
+import apps.docker.tests.DockerTests;
+
+import apps.local.tests.LocalTests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -9,11 +13,11 @@ import junit.textui.TestRunner;
 
 /**
  * <!-- begin-user-doc -->
- * A test suite for the '<em><b>apps</b></em>' package.
+ * A test suite for the '<em><b>Apps</b></em>' model.
  * <!-- end-user-doc -->
  * @generated
  */
-public class EnvironmentTests extends TestSuite {
+public class AppsAllTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -30,11 +34,10 @@ public class EnvironmentTests extends TestSuite {
 	 * @generated
 	 */
 	public static Test suite() {
-		TestSuite suite = new EnvironmentTests("apps Tests");
-		suite.addTestSuite(EnvironmentManagerTest.class);
-		suite.addTestSuite(EnvironmentTest.class);
-		suite.addTestSuite(PTPSyncProjectLauncherTest.class);
-		suite.addTestSuite(LocalCDTProjectLauncherTest.class);
+		TestSuite suite = new AppsAllTests("Apps Tests");
+		suite.addTest(AppsTests.suite());
+		suite.addTest(DockerTests.suite());
+		suite.addTest(LocalTests.suite());
 		return suite;
 	}
 
@@ -43,8 +46,8 @@ public class EnvironmentTests extends TestSuite {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentTests(String name) {
+	public AppsAllTests(String name) {
 		super(name);
 	}
 
-} //EnvironmentTests
+} //AppsAllTests

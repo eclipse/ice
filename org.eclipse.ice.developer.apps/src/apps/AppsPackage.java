@@ -21,11 +21,11 @@ import org.eclipse.emf.ecore.EReference;
  *   <li>and each data type</li>
  * </ul>
  * <!-- end-user-doc -->
- * @see apps.EnvironmentFactory
+ * @see apps.AppsFactory
  * @model kind="package"
  * @generated
  */
-public interface EnvironmentPackage extends EPackage {
+public interface AppsPackage extends EPackage {
 	/**
 	 * The package name.
 	 * <!-- begin-user-doc -->
@@ -56,14 +56,14 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	EnvironmentPackage eINSTANCE = apps.impl.EnvironmentPackageImpl.init();
+	AppsPackage eINSTANCE = apps.impl.AppsPackageImpl.init();
 
 	/**
 	 * The meta object id for the '{@link apps.IEnvironment <em>IEnvironment</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.IEnvironment
-	 * @see apps.impl.EnvironmentPackageImpl#getIEnvironment()
+	 * @see apps.impl.AppsPackageImpl#getIEnvironment()
 	 * @generated
 	 */
 	int IENVIRONMENT = 0;
@@ -145,7 +145,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.IEnvironmentBuilder
-	 * @see apps.impl.EnvironmentPackageImpl#getIEnvironmentBuilder()
+	 * @see apps.impl.AppsPackageImpl#getIEnvironmentBuilder()
 	 * @generated
 	 */
 	int IENVIRONMENT_BUILDER = 1;
@@ -178,11 +178,11 @@ public interface EnvironmentPackage extends EPackage {
 	int IENVIRONMENT_BUILDER_OPERATION_COUNT = 1;
 
 	/**
-	 * The meta object id for the '{@link apps.impl.EnvironmentManagerImpl <em>Manager</em>}' class.
+	 * The meta object id for the '{@link apps.impl.EnvironmentManagerImpl <em>Environment Manager</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.impl.EnvironmentManagerImpl
-	 * @see apps.impl.EnvironmentPackageImpl#getEnvironmentManager()
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentManager()
 	 * @generated
 	 */
 	int ENVIRONMENT_MANAGER = 2;
@@ -197,7 +197,7 @@ public interface EnvironmentPackage extends EPackage {
 	int ENVIRONMENT_MANAGER__BUILDER = 0;
 
 	/**
-	 * The number of structural features of the '<em>Manager</em>' class.
+	 * The number of structural features of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -233,7 +233,7 @@ public interface EnvironmentPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___LOAD_EXISTING__STRING = 2;
 
 	/**
-	 * The number of operations of the '<em>Manager</em>' class.
+	 * The number of operations of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -246,7 +246,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.impl.SpackPackageImpl
-	 * @see apps.impl.EnvironmentPackageImpl#getSpackPackage()
+	 * @see apps.impl.AppsPackageImpl#getSpackPackage()
 	 * @generated
 	 */
 	int SPACK_PACKAGE = 3;
@@ -337,7 +337,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.impl.EnvironmentImpl
-	 * @see apps.impl.EnvironmentPackageImpl#getEnvironment()
+	 * @see apps.impl.AppsPackageImpl#getEnvironment()
 	 * @generated
 	 */
 	int ENVIRONMENT = 4;
@@ -428,7 +428,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.ProjectLauncher
-	 * @see apps.impl.EnvironmentPackageImpl#getProjectLauncher()
+	 * @see apps.impl.AppsPackageImpl#getProjectLauncher()
 	 * @generated
 	 */
 	int PROJECT_LAUNCHER = 5;
@@ -465,7 +465,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.impl.PTPSyncProjectLauncherImpl
-	 * @see apps.impl.EnvironmentPackageImpl#getPTPSyncProjectLauncher()
+	 * @see apps.impl.AppsPackageImpl#getPTPSyncProjectLauncher()
 	 * @generated
 	 */
 	int PTP_SYNC_PROJECT_LAUNCHER = 6;
@@ -502,7 +502,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.impl.LocalCDTProjectLauncherImpl
-	 * @see apps.impl.EnvironmentPackageImpl#getLocalCDTProjectLauncher()
+	 * @see apps.impl.AppsPackageImpl#getLocalCDTProjectLauncher()
 	 * @generated
 	 */
 	int LOCAL_CDT_PROJECT_LAUNCHER = 7;
@@ -539,7 +539,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.impl.ScienceAppImpl
-	 * @see apps.impl.EnvironmentPackageImpl#getScienceApp()
+	 * @see apps.impl.AppsPackageImpl#getScienceApp()
 	 * @generated
 	 */
 	int SCIENCE_APP = 8;
@@ -635,11 +635,11 @@ public interface EnvironmentPackage extends EPackage {
 	int SCIENCE_APP_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link apps.EnvironmentType <em>Type</em>}' enum.
+	 * The meta object id for the '{@link apps.EnvironmentType <em>Environment Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentType
-	 * @see apps.impl.EnvironmentPackageImpl#getEnvironmentType()
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentType()
 	 * @generated
 	 */
 	int ENVIRONMENT_TYPE = 9;
@@ -741,10 +741,10 @@ public interface EnvironmentPackage extends EPackage {
 	EOperation getIEnvironmentBuilder__Build__String();
 
 	/**
-	 * Returns the meta object for class '{@link apps.EnvironmentManager <em>Manager</em>}'.
+	 * Returns the meta object for class '{@link apps.EnvironmentManager <em>Environment Manager</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Manager</em>'.
+	 * @return the meta object for class '<em>Environment Manager</em>'.
 	 * @see apps.EnvironmentManager
 	 * @generated
 	 */
@@ -1038,10 +1038,10 @@ public interface EnvironmentPackage extends EPackage {
 	EAttribute getScienceApp_RemoteHost();
 
 	/**
-	 * Returns the meta object for enum '{@link apps.EnvironmentType <em>Type</em>}'.
+	 * Returns the meta object for enum '{@link apps.EnvironmentType <em>Environment Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Type</em>'.
+	 * @return the meta object for enum '<em>Environment Type</em>'.
 	 * @see apps.EnvironmentType
 	 * @generated
 	 */
@@ -1054,7 +1054,7 @@ public interface EnvironmentPackage extends EPackage {
 	 * @return the factory that creates the instances of the model.
 	 * @generated
 	 */
-	EnvironmentFactory getEnvironmentFactory();
+	AppsFactory getAppsFactory();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1075,7 +1075,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.IEnvironment
-		 * @see apps.impl.EnvironmentPackageImpl#getIEnvironment()
+		 * @see apps.impl.AppsPackageImpl#getIEnvironment()
 		 * @generated
 		 */
 		EClass IENVIRONMENT = eINSTANCE.getIEnvironment();
@@ -1133,7 +1133,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.IEnvironmentBuilder
-		 * @see apps.impl.EnvironmentPackageImpl#getIEnvironmentBuilder()
+		 * @see apps.impl.AppsPackageImpl#getIEnvironmentBuilder()
 		 * @generated
 		 */
 		EClass IENVIRONMENT_BUILDER = eINSTANCE.getIEnvironmentBuilder();
@@ -1147,11 +1147,11 @@ public interface EnvironmentPackage extends EPackage {
 		EOperation IENVIRONMENT_BUILDER___BUILD__STRING = eINSTANCE.getIEnvironmentBuilder__Build__String();
 
 		/**
-		 * The meta object literal for the '{@link apps.impl.EnvironmentManagerImpl <em>Manager</em>}' class.
+		 * The meta object literal for the '{@link apps.impl.EnvironmentManagerImpl <em>Environment Manager</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.impl.EnvironmentManagerImpl
-		 * @see apps.impl.EnvironmentPackageImpl#getEnvironmentManager()
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentManager()
 		 * @generated
 		 */
 		EClass ENVIRONMENT_MANAGER = eINSTANCE.getEnvironmentManager();
@@ -1193,7 +1193,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.impl.SpackPackageImpl
-		 * @see apps.impl.EnvironmentPackageImpl#getSpackPackage()
+		 * @see apps.impl.AppsPackageImpl#getSpackPackage()
 		 * @generated
 		 */
 		EClass SPACK_PACKAGE = eINSTANCE.getSpackPackage();
@@ -1259,7 +1259,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.impl.EnvironmentImpl
-		 * @see apps.impl.EnvironmentPackageImpl#getEnvironment()
+		 * @see apps.impl.AppsPackageImpl#getEnvironment()
 		 * @generated
 		 */
 		EClass ENVIRONMENT = eINSTANCE.getEnvironment();
@@ -1277,7 +1277,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.ProjectLauncher
-		 * @see apps.impl.EnvironmentPackageImpl#getProjectLauncher()
+		 * @see apps.impl.AppsPackageImpl#getProjectLauncher()
 		 * @generated
 		 */
 		EClass PROJECT_LAUNCHER = eINSTANCE.getProjectLauncher();
@@ -1295,7 +1295,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.impl.PTPSyncProjectLauncherImpl
-		 * @see apps.impl.EnvironmentPackageImpl#getPTPSyncProjectLauncher()
+		 * @see apps.impl.AppsPackageImpl#getPTPSyncProjectLauncher()
 		 * @generated
 		 */
 		EClass PTP_SYNC_PROJECT_LAUNCHER = eINSTANCE.getPTPSyncProjectLauncher();
@@ -1305,7 +1305,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.impl.LocalCDTProjectLauncherImpl
-		 * @see apps.impl.EnvironmentPackageImpl#getLocalCDTProjectLauncher()
+		 * @see apps.impl.AppsPackageImpl#getLocalCDTProjectLauncher()
 		 * @generated
 		 */
 		EClass LOCAL_CDT_PROJECT_LAUNCHER = eINSTANCE.getLocalCDTProjectLauncher();
@@ -1315,7 +1315,7 @@ public interface EnvironmentPackage extends EPackage {
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.impl.ScienceAppImpl
-		 * @see apps.impl.EnvironmentPackageImpl#getScienceApp()
+		 * @see apps.impl.AppsPackageImpl#getScienceApp()
 		 * @generated
 		 */
 		EClass SCIENCE_APP = eINSTANCE.getScienceApp();
@@ -1385,15 +1385,15 @@ public interface EnvironmentPackage extends EPackage {
 		EAttribute SCIENCE_APP__REMOTE_HOST = eINSTANCE.getScienceApp_RemoteHost();
 
 		/**
-		 * The meta object literal for the '{@link apps.EnvironmentType <em>Type</em>}' enum.
+		 * The meta object literal for the '{@link apps.EnvironmentType <em>Environment Type</em>}' enum.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @see apps.EnvironmentType
-		 * @see apps.impl.EnvironmentPackageImpl#getEnvironmentType()
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentType()
 		 * @generated
 		 */
 		EEnum ENVIRONMENT_TYPE = eINSTANCE.getEnvironmentType();
 
 	}
 
-} //EnvironmentPackage
+} //AppsPackage

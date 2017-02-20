@@ -16,17 +16,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see apps.EnvironmentPackage
+ * @see apps.AppsPackage
  * @generated
  */
-public class EnvironmentAdapterFactory extends AdapterFactoryImpl {
+public class AppsAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static EnvironmentPackage modelPackage;
+	protected static AppsPackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -34,9 +34,9 @@ public class EnvironmentAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentAdapterFactory() {
+	public AppsAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = EnvironmentPackage.eINSTANCE;
+			modelPackage = AppsPackage.eINSTANCE;
 		}
 	}
 
@@ -65,8 +65,8 @@ public class EnvironmentAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected EnvironmentSwitch<Adapter> modelSwitch =
-		new EnvironmentSwitch<Adapter>() {
+	protected AppsSwitch<Adapter> modelSwitch =
+		new AppsSwitch<Adapter>() {
 			@Override
 			public Adapter caseIEnvironment(IEnvironment object) {
 				return createIEnvironmentAdapter();
@@ -152,7 +152,7 @@ public class EnvironmentAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.EnvironmentManager <em>Manager</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.EnvironmentManager <em>Environment Manager</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
@@ -261,4 +261,4 @@ public class EnvironmentAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //EnvironmentAdapterFactory
+} //AppsAdapterFactory

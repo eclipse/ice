@@ -2,8 +2,7 @@
  */
 package apps.docker.impl;
 
-import apps.EnvironmentPackage;
-
+import apps.AppsPackage;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
@@ -11,8 +10,7 @@ import apps.docker.DockerEnvironmentBuilder;
 import apps.docker.DockerFactory;
 import apps.docker.DockerPackage;
 
-import apps.impl.EnvironmentPackageImpl;
-
+import apps.impl.AppsPackageImpl;
 import apps.local.LocalPackage;
 
 import apps.local.impl.LocalPackageImpl;
@@ -112,17 +110,17 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		XMLTypePackage.eINSTANCE.eClass();
 
 		// Obtain or create and register interdependencies
-		EnvironmentPackageImpl theEnvironmentPackage = (EnvironmentPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI) instanceof EnvironmentPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI) : EnvironmentPackage.eINSTANCE);
+		AppsPackageImpl theAppsPackage = (AppsPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) instanceof AppsPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) : AppsPackage.eINSTANCE);
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theDockerPackage.createPackageContents();
-		theEnvironmentPackage.createPackageContents();
+		theAppsPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theDockerPackage.initializePackageContents();
-		theEnvironmentPackage.initializePackageContents();
+		theAppsPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
@@ -301,7 +299,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
-		EnvironmentPackage theEnvironmentPackage = (EnvironmentPackage)EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI);
+		AppsPackage theAppsPackage = (AppsPackage)EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
 		// Create type parameters
@@ -309,8 +307,8 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		dockerEnvironmentEClass.getESuperTypes().add(theEnvironmentPackage.getEnvironment());
-		dockerEnvironmentBuilderEClass.getESuperTypes().add(theEnvironmentPackage.getIEnvironmentBuilder());
+		dockerEnvironmentEClass.getESuperTypes().add(theAppsPackage.getEnvironment());
+		dockerEnvironmentBuilderEClass.getESuperTypes().add(theAppsPackage.getIEnvironmentBuilder());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(dockerEnvironmentEClass, DockerEnvironment.class, "DockerEnvironment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

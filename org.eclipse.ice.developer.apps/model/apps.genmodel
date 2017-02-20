@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.ice.developer.apps/src" modelPluginID="org.eclipse.ice.developer.apps"
+    modelName="Apps" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>apps.ecore</foreignModel>
+  <genPackages prefix="Apps" disposableProviderFactory="true" ecorePackage="apps.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="apps.ecore#//EnvironmentType">
+      <genEnumLiterals ecoreEnumLiteral="apps.ecore#//EnvironmentType/Docker"/>
+      <genEnumLiterals ecoreEnumLiteral="apps.ecore#//EnvironmentType/Local"/>
+    </genEnums>
+    <genClasses image="false" ecoreClass="apps.ecore#//IEnvironment">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/os"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference apps.ecore#//IEnvironment/spackpackage"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//IEnvironment/scienceapp"/>
+      <genOperations ecoreOperation="apps.ecore#//IEnvironment/launch"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="apps.ecore#//IEnvironmentBuilder">
+      <genOperations ecoreOperation="apps.ecore#//IEnvironmentBuilder/build">
+        <genParameters ecoreParameter="apps.ecore#//IEnvironmentBuilder/build/properties"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//EnvironmentManager">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//EnvironmentManager/builder"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/createEnvironment">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/createEnvironment/properties"/>
+      </genOperations>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/listExisting"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadExisting">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/loadExisting/name"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//SpackPackage">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/desiredVersion"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/compiler"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/versions"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/cppFlags"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/virtualDependency"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/virtualDependencyProvider"/>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//Environment">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//Environment/projectlauncher"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="apps.ecore#//ProjectLauncher">
+      <genOperations ecoreOperation="apps.ecore#//ProjectLauncher/launchProject">
+        <genParameters ecoreParameter="apps.ecore#//ProjectLauncher/launchProject/project"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//PTPSyncProjectLauncher"/>
+    <genClasses ecoreClass="apps.ecore#//LocalCDTProjectLauncher"/>
+    <genClasses ecoreClass="apps.ecore#//ScienceApp">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/repoURL"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/branch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/localProjectName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/recursiveClone"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/absolutePath"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/remotePort"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//ScienceApp/remoteHost"/>
+    </genClasses>
+    <nestedGenPackages prefix="Docker" disposableProviderFactory="true" ecorePackage="apps.ecore#//docker">
+      <genClasses ecoreClass="apps.ecore#//docker/DockerEnvironment">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference apps.ecore#//docker/DockerEnvironment/docker"/>
+      </genClasses>
+      <genClasses ecoreClass="apps.ecore#//docker/DockerEnvironmentBuilder"/>
+      <genClasses ecoreClass="apps.ecore#//docker/DockerAPI">
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/buildImage">
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/buildImage/buildFile"/>
+        </genOperations>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/launchContainer">
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/launchContainer/name"/>
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/launchContainer/config"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="apps.ecore#//docker/ContainerConfiguration">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/ContainerConfiguration/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/ContainerConfiguration/ephemeral"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/ContainerConfiguration/ports"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//docker/ContainerConfiguration/volumesConfig"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Local" disposableProviderFactory="true" ecorePackage="apps.ecore#//local">
+      <genClasses ecoreClass="apps.ecore#//local/LocalEnvironmentBuilder"/>
+      <genClasses ecoreClass="apps.ecore#//local/LocalEnvironment"/>
+    </nestedGenPackages>
+  </genPackages>
+</genmodel:GenModel>

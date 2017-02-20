@@ -19,7 +19,7 @@ package apps;
  *   <li>{@link apps.Environment#getProjectlauncher <em>Projectlauncher</em>}</li>
  * </ul>
  *
- * @see apps.EnvironmentPackage#getEnvironment()
+ * @see apps.AppsPackage#getEnvironment()
  * @model
  * @generated
  */
@@ -34,7 +34,7 @@ public interface Environment extends IEnvironment {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Projectlauncher</em>' reference.
 	 * @see #setProjectlauncher(ProjectLauncher)
-	 * @see apps.EnvironmentPackage#getEnvironment_Projectlauncher()
+	 * @see apps.AppsPackage#getEnvironment_Projectlauncher()
 	 * @model
 	 * @generated
 	 */

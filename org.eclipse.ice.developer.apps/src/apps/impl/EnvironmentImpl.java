@@ -2,8 +2,8 @@
  */
 package apps.impl;
 
+import apps.AppsPackage;
 import apps.Environment;
-import apps.EnvironmentPackage;
 import apps.EnvironmentType;
 import apps.ProjectLauncher;
 import apps.ScienceApp;
@@ -152,7 +152,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EnvironmentPackage.Literals.ENVIRONMENT;
+		return AppsPackage.Literals.ENVIRONMENT;
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		EnvironmentType oldType = type;
 		type = newType == null ? TYPE_EDEFAULT : newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.ENVIRONMENT__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__TYPE, oldType, type));
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.ENVIRONMENT__NAME, oldName, name));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__NAME, oldName, name));
 	}
 
 	/**
@@ -215,7 +215,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		String oldOs = os;
 		os = newOs;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.ENVIRONMENT__OS, oldOs, os));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__OS, oldOs, os));
 	}
 
 	/**
@@ -225,7 +225,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 */
 	public EList<SpackPackage> getSpackpackage() {
 		if (spackpackage == null) {
-			spackpackage = new EObjectContainmentEList<SpackPackage>(SpackPackage.class, this, EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE);
+			spackpackage = new EObjectContainmentEList<SpackPackage>(SpackPackage.class, this, AppsPackage.ENVIRONMENT__SPACKPACKAGE);
 		}
 		return spackpackage;
 	}
@@ -241,7 +241,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 			scienceapp = (ScienceApp)eResolveProxy(oldScienceapp);
 			if (scienceapp != oldScienceapp) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EnvironmentPackage.ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AppsPackage.ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
 			}
 		}
 		return scienceapp;
@@ -265,7 +265,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		ScienceApp oldScienceapp = scienceapp;
 		scienceapp = newScienceapp;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
 	}
 
 	/**
@@ -279,7 +279,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 			projectlauncher = (ProjectLauncher)eResolveProxy(oldProjectlauncher);
 			if (projectlauncher != oldProjectlauncher) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, projectlauncher));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, projectlauncher));
 			}
 		}
 		return projectlauncher;
@@ -303,7 +303,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		ProjectLauncher oldProjectlauncher = projectlauncher;
 		projectlauncher = newProjectlauncher;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, projectlauncher));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, projectlauncher));
 	}
 
 	/**
@@ -325,7 +325,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE:
+			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
 				return ((InternalEList<?>)getSpackpackage()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -339,18 +339,18 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT__TYPE:
+			case AppsPackage.ENVIRONMENT__TYPE:
 				return getType();
-			case EnvironmentPackage.ENVIRONMENT__NAME:
+			case AppsPackage.ENVIRONMENT__NAME:
 				return getName();
-			case EnvironmentPackage.ENVIRONMENT__OS:
+			case AppsPackage.ENVIRONMENT__OS:
 				return getOs();
-			case EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE:
+			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
 				return getSpackpackage();
-			case EnvironmentPackage.ENVIRONMENT__SCIENCEAPP:
+			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
 				if (resolve) return getScienceapp();
 				return basicGetScienceapp();
-			case EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER:
+			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				if (resolve) return getProjectlauncher();
 				return basicGetProjectlauncher();
 		}
@@ -366,23 +366,23 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT__TYPE:
+			case AppsPackage.ENVIRONMENT__TYPE:
 				setType((EnvironmentType)newValue);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__NAME:
+			case AppsPackage.ENVIRONMENT__NAME:
 				setName((String)newValue);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__OS:
+			case AppsPackage.ENVIRONMENT__OS:
 				setOs((String)newValue);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE:
+			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
 				getSpackpackage().clear();
 				getSpackpackage().addAll((Collection<? extends SpackPackage>)newValue);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__SCIENCEAPP:
+			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
 				setScienceapp((ScienceApp)newValue);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER:
+			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				setProjectlauncher((ProjectLauncher)newValue);
 				return;
 		}
@@ -397,22 +397,22 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT__TYPE:
+			case AppsPackage.ENVIRONMENT__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__NAME:
+			case AppsPackage.ENVIRONMENT__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__OS:
+			case AppsPackage.ENVIRONMENT__OS:
 				setOs(OS_EDEFAULT);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE:
+			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
 				getSpackpackage().clear();
 				return;
-			case EnvironmentPackage.ENVIRONMENT__SCIENCEAPP:
+			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
 				setScienceapp((ScienceApp)null);
 				return;
-			case EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER:
+			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				setProjectlauncher((ProjectLauncher)null);
 				return;
 		}
@@ -427,17 +427,17 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT__TYPE:
+			case AppsPackage.ENVIRONMENT__TYPE:
 				return type != TYPE_EDEFAULT;
-			case EnvironmentPackage.ENVIRONMENT__NAME:
+			case AppsPackage.ENVIRONMENT__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case EnvironmentPackage.ENVIRONMENT__OS:
+			case AppsPackage.ENVIRONMENT__OS:
 				return OS_EDEFAULT == null ? os != null : !OS_EDEFAULT.equals(os);
-			case EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE:
+			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
 				return spackpackage != null && !spackpackage.isEmpty();
-			case EnvironmentPackage.ENVIRONMENT__SCIENCEAPP:
+			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
 				return scienceapp != null;
-			case EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER:
+			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				return projectlauncher != null;
 		}
 		return super.eIsSet(featureID);
@@ -451,7 +451,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case EnvironmentPackage.ENVIRONMENT___LAUNCH:
+			case AppsPackage.ENVIRONMENT___LAUNCH:
 				return launch();
 		}
 		return super.eInvoke(operationID, arguments);

@@ -2,7 +2,7 @@
  */
 package apps.tests;
 
-import apps.EnvironmentFactory;
+import apps.AppsFactory;
 import apps.PTPSyncProjectLauncher;
 
 import junit.framework.TestCase;
@@ -78,7 +78,7 @@ public class PTPSyncProjectLauncherTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EnvironmentFactory.eINSTANCE.createPTPSyncProjectLauncher());
+		setFixture(AppsFactory.eINSTANCE.createPTPSyncProjectLauncher());
 	}
 
 	/**

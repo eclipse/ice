@@ -2,8 +2,7 @@
  */
 package apps.local;
 
-import apps.EnvironmentPackage;
-
+import apps.AppsPackage;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -73,7 +72,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT_BUILDER_FEATURE_COUNT = EnvironmentPackage.IENVIRONMENT_BUILDER_FEATURE_COUNT + 0;
+	int LOCAL_ENVIRONMENT_BUILDER_FEATURE_COUNT = AppsPackage.IENVIRONMENT_BUILDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The operation id for the '<em>Build</em>' operation.
@@ -82,7 +81,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT_BUILDER___BUILD__STRING = EnvironmentPackage.IENVIRONMENT_BUILDER___BUILD__STRING;
+	int LOCAL_ENVIRONMENT_BUILDER___BUILD__STRING = AppsPackage.IENVIRONMENT_BUILDER___BUILD__STRING;
 
 	/**
 	 * The number of operations of the '<em>Environment Builder</em>' class.
@@ -91,7 +90,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT_BUILDER_OPERATION_COUNT = EnvironmentPackage.IENVIRONMENT_BUILDER_OPERATION_COUNT + 0;
+	int LOCAL_ENVIRONMENT_BUILDER_OPERATION_COUNT = AppsPackage.IENVIRONMENT_BUILDER_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link apps.local.impl.LocalEnvironmentImpl <em>Environment</em>}' class.
@@ -110,7 +109,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__TYPE = EnvironmentPackage.IENVIRONMENT__TYPE;
+	int LOCAL_ENVIRONMENT__TYPE = AppsPackage.IENVIRONMENT__TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -119,7 +118,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__NAME = EnvironmentPackage.IENVIRONMENT__NAME;
+	int LOCAL_ENVIRONMENT__NAME = AppsPackage.IENVIRONMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Os</b></em>' attribute.
@@ -128,7 +127,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__OS = EnvironmentPackage.IENVIRONMENT__OS;
+	int LOCAL_ENVIRONMENT__OS = AppsPackage.IENVIRONMENT__OS;
 
 	/**
 	 * The feature id for the '<em><b>Spackpackage</b></em>' containment reference list.
@@ -137,7 +136,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__SPACKPACKAGE = EnvironmentPackage.IENVIRONMENT__SPACKPACKAGE;
+	int LOCAL_ENVIRONMENT__SPACKPACKAGE = AppsPackage.IENVIRONMENT__SPACKPACKAGE;
 
 	/**
 	 * The feature id for the '<em><b>Scienceapp</b></em>' reference.
@@ -146,7 +145,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__SCIENCEAPP = EnvironmentPackage.IENVIRONMENT__SCIENCEAPP;
+	int LOCAL_ENVIRONMENT__SCIENCEAPP = AppsPackage.IENVIRONMENT__SCIENCEAPP;
 
 	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
@@ -155,7 +154,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT_FEATURE_COUNT = EnvironmentPackage.IENVIRONMENT_FEATURE_COUNT + 0;
+	int LOCAL_ENVIRONMENT_FEATURE_COUNT = AppsPackage.IENVIRONMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The operation id for the '<em>Launch</em>' operation.
@@ -164,7 +163,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT___LAUNCH = EnvironmentPackage.IENVIRONMENT___LAUNCH;
+	int LOCAL_ENVIRONMENT___LAUNCH = AppsPackage.IENVIRONMENT___LAUNCH;
 
 	/**
 	 * The number of operations of the '<em>Environment</em>' class.
@@ -173,7 +172,7 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT_OPERATION_COUNT = EnvironmentPackage.IENVIRONMENT_OPERATION_COUNT + 0;
+	int LOCAL_ENVIRONMENT_OPERATION_COUNT = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 0;
 
 
 	/**

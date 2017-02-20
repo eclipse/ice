@@ -2,7 +2,7 @@
  */
 package apps.tests;
 
-import apps.EnvironmentFactory;
+import apps.AppsFactory;
 import apps.EnvironmentManager;
 
 import junit.framework.TestCase;
@@ -26,7 +26,7 @@ import junit.textui.TestRunner;
 public class EnvironmentManagerTest extends TestCase {
 
 	/**
-	 * The fixture for this Manager test case.
+	 * The fixture for this Environment Manager test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -43,7 +43,7 @@ public class EnvironmentManagerTest extends TestCase {
 	}
 
 	/**
-	 * Constructs a new Manager test case with the given name.
+	 * Constructs a new Environment Manager test case with the given name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -53,7 +53,7 @@ public class EnvironmentManagerTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Manager test case.
+	 * Sets the fixture for this Environment Manager test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -63,7 +63,7 @@ public class EnvironmentManagerTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Manager test case.
+	 * Returns the fixture for this Environment Manager test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -80,7 +80,7 @@ public class EnvironmentManagerTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EnvironmentFactory.eINSTANCE.createEnvironmentManager());
+		setFixture(AppsFactory.eINSTANCE.createEnvironmentManager());
 	}
 
 	/**

@@ -2,8 +2,7 @@
  */
 package apps.docker;
 
-import apps.EnvironmentPackage;
-
+import apps.AppsPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EOperation;
@@ -76,7 +75,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__TYPE = EnvironmentPackage.ENVIRONMENT__TYPE;
+	int DOCKER_ENVIRONMENT__TYPE = AppsPackage.ENVIRONMENT__TYPE;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -85,7 +84,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__NAME = EnvironmentPackage.ENVIRONMENT__NAME;
+	int DOCKER_ENVIRONMENT__NAME = AppsPackage.ENVIRONMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Os</b></em>' attribute.
@@ -94,7 +93,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__OS = EnvironmentPackage.ENVIRONMENT__OS;
+	int DOCKER_ENVIRONMENT__OS = AppsPackage.ENVIRONMENT__OS;
 
 	/**
 	 * The feature id for the '<em><b>Spackpackage</b></em>' containment reference list.
@@ -103,7 +102,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__SPACKPACKAGE = EnvironmentPackage.ENVIRONMENT__SPACKPACKAGE;
+	int DOCKER_ENVIRONMENT__SPACKPACKAGE = AppsPackage.ENVIRONMENT__SPACKPACKAGE;
 
 	/**
 	 * The feature id for the '<em><b>Scienceapp</b></em>' reference.
@@ -112,7 +111,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__SCIENCEAPP = EnvironmentPackage.ENVIRONMENT__SCIENCEAPP;
+	int DOCKER_ENVIRONMENT__SCIENCEAPP = AppsPackage.ENVIRONMENT__SCIENCEAPP;
 
 	/**
 	 * The feature id for the '<em><b>Projectlauncher</b></em>' reference.
@@ -121,7 +120,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__PROJECTLAUNCHER = EnvironmentPackage.ENVIRONMENT__PROJECTLAUNCHER;
+	int DOCKER_ENVIRONMENT__PROJECTLAUNCHER = AppsPackage.ENVIRONMENT__PROJECTLAUNCHER;
 
 	/**
 	 * The feature id for the '<em><b>Docker</b></em>' reference.
@@ -130,7 +129,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__DOCKER = EnvironmentPackage.ENVIRONMENT_FEATURE_COUNT + 0;
+	int DOCKER_ENVIRONMENT__DOCKER = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
@@ -139,7 +138,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_FEATURE_COUNT = EnvironmentPackage.ENVIRONMENT_FEATURE_COUNT + 1;
+	int DOCKER_ENVIRONMENT_FEATURE_COUNT = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The operation id for the '<em>Launch</em>' operation.
@@ -148,7 +147,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT___LAUNCH = EnvironmentPackage.ENVIRONMENT___LAUNCH;
+	int DOCKER_ENVIRONMENT___LAUNCH = AppsPackage.ENVIRONMENT___LAUNCH;
 
 	/**
 	 * The number of operations of the '<em>Environment</em>' class.
@@ -157,7 +156,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_OPERATION_COUNT = EnvironmentPackage.ENVIRONMENT_OPERATION_COUNT + 0;
+	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.DockerEnvironmentBuilderImpl <em>Environment Builder</em>}' class.
@@ -176,7 +175,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_BUILDER_FEATURE_COUNT = EnvironmentPackage.IENVIRONMENT_BUILDER_FEATURE_COUNT + 0;
+	int DOCKER_ENVIRONMENT_BUILDER_FEATURE_COUNT = AppsPackage.IENVIRONMENT_BUILDER_FEATURE_COUNT + 0;
 
 	/**
 	 * The operation id for the '<em>Build</em>' operation.
@@ -185,7 +184,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_BUILDER___BUILD__STRING = EnvironmentPackage.IENVIRONMENT_BUILDER___BUILD__STRING;
+	int DOCKER_ENVIRONMENT_BUILDER___BUILD__STRING = AppsPackage.IENVIRONMENT_BUILDER___BUILD__STRING;
 
 	/**
 	 * The number of operations of the '<em>Environment Builder</em>' class.
@@ -194,7 +193,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_BUILDER_OPERATION_COUNT = EnvironmentPackage.IENVIRONMENT_BUILDER_OPERATION_COUNT + 0;
+	int DOCKER_ENVIRONMENT_BUILDER_OPERATION_COUNT = AppsPackage.IENVIRONMENT_BUILDER_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.

@@ -2,8 +2,8 @@
  */
 package apps.impl;
 
+import apps.AppsPackage;
 import apps.EnvironmentManager;
-import apps.EnvironmentPackage;
 import apps.IEnvironment;
 import apps.IEnvironmentBuilder;
 
@@ -59,7 +59,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return EnvironmentPackage.Literals.ENVIRONMENT_MANAGER;
+		return AppsPackage.Literals.ENVIRONMENT_MANAGER;
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 			builder = (IEnvironmentBuilder)eResolveProxy(oldBuilder);
 			if (builder != oldBuilder) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EnvironmentPackage.ENVIRONMENT_MANAGER__BUILDER, oldBuilder, builder));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AppsPackage.ENVIRONMENT_MANAGER__BUILDER, oldBuilder, builder));
 			}
 		}
 		return builder;
@@ -97,7 +97,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		IEnvironmentBuilder oldBuilder = builder;
 		builder = newBuilder;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.ENVIRONMENT_MANAGER__BUILDER, oldBuilder, builder));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT_MANAGER__BUILDER, oldBuilder, builder));
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT_MANAGER__BUILDER:
+			case AppsPackage.ENVIRONMENT_MANAGER__BUILDER:
 				if (resolve) return getBuilder();
 				return basicGetBuilder();
 		}
@@ -156,7 +156,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT_MANAGER__BUILDER:
+			case AppsPackage.ENVIRONMENT_MANAGER__BUILDER:
 				setBuilder((IEnvironmentBuilder)newValue);
 				return;
 		}
@@ -171,7 +171,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT_MANAGER__BUILDER:
+			case AppsPackage.ENVIRONMENT_MANAGER__BUILDER:
 				setBuilder((IEnvironmentBuilder)null);
 				return;
 		}
@@ -186,7 +186,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case EnvironmentPackage.ENVIRONMENT_MANAGER__BUILDER:
+			case AppsPackage.ENVIRONMENT_MANAGER__BUILDER:
 				return builder != null;
 		}
 		return super.eIsSet(featureID);
@@ -200,11 +200,11 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case EnvironmentPackage.ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING:
+			case AppsPackage.ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING:
 				return createEnvironment((String)arguments.get(0));
-			case EnvironmentPackage.ENVIRONMENT_MANAGER___LIST_EXISTING:
+			case AppsPackage.ENVIRONMENT_MANAGER___LIST_EXISTING:
 				return listExisting();
-			case EnvironmentPackage.ENVIRONMENT_MANAGER___LOAD_EXISTING__STRING:
+			case AppsPackage.ENVIRONMENT_MANAGER___LOAD_EXISTING__STRING:
 				return loadExisting((String)arguments.get(0));
 		}
 		return super.eInvoke(operationID, arguments);

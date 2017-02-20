@@ -2,7 +2,7 @@
  */
 package apps.tests;
 
-import apps.EnvironmentFactory;
+import apps.AppsFactory;
 import apps.ScienceApp;
 
 import junit.framework.TestCase;
@@ -72,7 +72,7 @@ public class ScienceAppTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EnvironmentFactory.eINSTANCE.createScienceApp());
+		setFixture(AppsFactory.eINSTANCE.createScienceApp());
 	}
 
 	/**
