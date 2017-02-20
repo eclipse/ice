@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated environment -->
+      <package
+            uri="http://eclipse.org/ice/apps"
+            class="apps.EnvironmentPackage"
+            genModel="model/environment.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated environment -->
+      <package
+            uri="http://eclipse.org/apps/docker"
+            class="apps.docker.DockerPackage"
+            genModel="model/environment.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated environment -->
+      <package
+            uri="https://eclipse.org/apps/local"
+            class="apps.local.LocalPackage"
+            genModel="model/environment.genmodel"/>
+   </extension>
+</plugin>
