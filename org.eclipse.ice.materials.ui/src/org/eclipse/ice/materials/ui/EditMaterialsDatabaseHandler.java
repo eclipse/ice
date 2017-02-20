@@ -48,7 +48,8 @@ public class EditMaterialsDatabaseHandler extends AbstractHandler {
 
 		// Open the editor
 		try {
-			IMaterialsDatabase database = MaterialsDatabaseServiceHolder.get();
+			MaterialsDatabaseServiceHolder serviceHolder = new MaterialsDatabaseServiceHolder();
+			IMaterialsDatabase database = serviceHolder.get();
 			IEditorInput input = new MaterialsDatabaseEditorInput(database);
 			page.openEditor(input, MaterialsDatabaseEditor.ID);
 		} catch (PartInitException e) {

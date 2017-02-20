@@ -31,24 +31,6 @@ import org.eclipse.ui.PlatformUI;
 public class ReflectivityEclipseFormWidget extends EclipseFormWidget {
 
 	/**
-	 * The visualization service factory provided to ReflecitvityFormEditors
-	 * through OSGi.
-	 */
-	private final IVizServiceFactory vizServiceFactory;
-
-	/**
-	 * The default constructor.
-	 * 
-	 * @param factory
-	 *            The visualization service factory provided to
-	 *            ReflectivityFormEditors through OSGi.
-	 */
-	public ReflectivityEclipseFormWidget(IVizServiceFactory factory) {
-		// Nothing to do yet.
-		this.vizServiceFactory = factory;
-	}
-
-	/**
 	 * This operation displays the {@link ReflectivityFormEditor} instead of the
 	 * standard ICEFormEditor.
 	 */
@@ -69,12 +51,6 @@ public class ReflectivityEclipseFormWidget extends EclipseFormWidget {
 			// Set this editor reference so that listeners can be registered
 			// later.
 			ICEFormEditor = (ICEFormEditor) formEditor;
-
-			// FIXME Since this is a static method, it should probably be set
-			// from a more general OSGi-referencing service in the main widgets
-			// bundle.
-			org.eclipse.ice.client.widgets.ICEFormEditor
-					.setVizServiceFactory(vizServiceFactory);
 
 		} catch (PartInitException e) {
 			// Dump the stacktrace if something happens.

@@ -99,4 +99,21 @@
         </property>
      </product>
   </extension>
+  <extension
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           allPopups="false"
+           locationURI="menu:help?after=additions">
+        <command
+              commandId="org.eclipse.equinox.p2.ui.discovery.commands.ShowRepositoryCatalog"
+              label="Install EASE Components"
+              style="push"
+              tooltip="Install EASE Additional Components">
+           <parameter
+                 name="org.eclipse.equinox.p2.ui.discovery.commands.RepositoryParameter"
+                 value="http://download.eclipse.org/ease/update/release">
+           </parameter>
+        </command>
+     </menuContribution>
+  </extension>
 </plugin>

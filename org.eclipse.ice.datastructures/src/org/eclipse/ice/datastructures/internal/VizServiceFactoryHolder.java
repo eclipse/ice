@@ -39,7 +39,7 @@ public class VizServiceFactoryHolder {
 	 * @param input
 	 *            the VizServiceFactory to hold
 	 */
-	public static void setVizServiceFactory(IVizServiceFactory input) {
+	public void setVizServiceFactory(IVizServiceFactory input) {
 		VizServiceFactoryHolder.factory = input;
 
 		return;
@@ -51,7 +51,7 @@ public class VizServiceFactoryHolder {
 	 * 
 	 * @input A VizServiceFactory to remove.
 	 */
-	public static void unsetVizServiceFactory(IVizServiceFactory input) {
+	public void unsetVizServiceFactory(IVizServiceFactory input) {
 		if (input == factory) {
 			factory = null;
 		}

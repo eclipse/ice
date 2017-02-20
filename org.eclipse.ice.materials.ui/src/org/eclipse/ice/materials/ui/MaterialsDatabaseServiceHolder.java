@@ -20,7 +20,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is a simple class that catches the active Materials Database service and
- * holds the reference for the Materials UI. It is a singleton.
+ * holds the reference for the Materials UI. It is a singleton, which is not
+ * ideal but in this instance convenient.
  *
  * This class has no tests because it is a simple bean.
  *
@@ -46,7 +47,7 @@ public class MaterialsDatabaseServiceHolder {
 	 * @param database
 	 *            The database service
 	 */
-	public static void set(IMaterialsDatabase database) {
+	public void set(IMaterialsDatabase database) {
 		materialsDB = database;
 		logger.info("MaterialsDatabaseServiceHolder Message: "
 				+ "Service Handle Received!");
@@ -57,7 +58,7 @@ public class MaterialsDatabaseServiceHolder {
 	 *
 	 * @return The database service
 	 */
-	public static IMaterialsDatabase get() {
+	public IMaterialsDatabase get() {
 		return materialsDB;
 	}
 

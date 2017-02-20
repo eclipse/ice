@@ -44,8 +44,9 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		// Don't create a shell or bot for these tests.
 
 		// Switch the IMaterialsDatabase service to the test database.
-		realDatabase = MaterialsDatabaseServiceHolder.get();
-		MaterialsDatabaseServiceHolder.set(new FakeMaterialsDatabase());
+		MaterialsDatabaseServiceHolder serviceHolder = new MaterialsDatabaseServiceHolder();
+		realDatabase = serviceHolder.get();
+		serviceHolder.set(new FakeMaterialsDatabase());
 
 	}
 
@@ -57,6 +58,9 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 		// before ICE's UI has had time to properly update.
 		SWTBotPreferences.PLAYBACK_DELAY = 50;
 
+		//Close the welcome view
+		bot.viewByTitle("Welcome").close();
+		
 		// Open the ICE perspective
 		bot.menu("Window").menu("Perspective").menu("Open Perspective")
 				.menu("Other...").click();
@@ -362,7 +366,7 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 
 		// Search for the custom material and open it
 		bot.text(1).typeText("Custom");
-		bot.tree().select(0);
+		bot.tree().select(5);
 
 		// Check the property name for the first data row.
 		cellName = (String) realTable.getDataValueByPosition(1, 1);
@@ -417,7 +421,8 @@ public class MaterialsDatabaseTester extends AbstractSWTTester {
 	 */
 	@Override
 	public void afterAllTests() {
-		MaterialsDatabaseServiceHolder.set(realDatabase);
+		MaterialsDatabaseServiceHolder serviceHolder = new MaterialsDatabaseServiceHolder();
+		serviceHolder.set(realDatabase);
 	}
 
 }

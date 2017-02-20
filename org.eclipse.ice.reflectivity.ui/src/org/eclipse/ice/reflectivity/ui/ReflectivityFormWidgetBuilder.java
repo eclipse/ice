@@ -44,12 +44,6 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	public static final String name = "Reflectivity Model";
 
-	/**
-	 * This class consumes (references) the {@link IVizServiceFactory} OSGi
-	 * service. The factory should be passed down to the ReflectivityFormEditor.
-	 */
-	private IVizServiceFactory vizServiceFactory;
-
 	/*
 	 * (non-Javadoc)
 	 *
@@ -68,41 +62,7 @@ public class ReflectivityFormWidgetBuilder implements IFormWidgetBuilder {
 	 */
 	@Override
 	public IFormWidget build() {
-		return new ReflectivityEclipseFormWidget(vizServiceFactory);
-	}
-
-	/**
-	 * This method is called by the OSGi implementation to bind the
-	 * {@link IVizServiceFactory} (an OSGi service) to this instance.
-	 *
-	 * @param factory
-	 *            The factory service available through OSGi.
-	 */
-	public void setVizServiceFactory(IVizServiceFactory factory) {
-		logger.info("ReflectivityFormWidgetBuilder: Setting Viz Service");
-		this.vizServiceFactory = factory;
-
-		IConfigurationElement[] elements = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor("org.eclipse.eavp.viz.service.IVizServiceFactory");
-		logger.info("ReflectivityFormWidgetBuilder: Available configuration elements");
-		for(IConfigurationElement element : elements){
-			logger.info(element.getName());
-		}
-		
-		return;
-	}
-
-	/**
-	 * This method is called by the OSGi implementation to unbind the
-	 * {@link IVizServiceFactory} (an OSGi service) from this instance.
-	 *
-	 * @param factory
-	 *            The factory service that is no longer available through OSGi.
-	 */
-	public void unsetVizServiceFactory(IVizServiceFactory factory) {
-		if (factory == this.vizServiceFactory) {
-			this.vizServiceFactory = null;
-		}
+		return new ReflectivityEclipseFormWidget();
 	}
 
 }
