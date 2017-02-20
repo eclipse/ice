@@ -76,7 +76,7 @@
 	                        </symbols>
 	                        <siteTemplateFolder>siteTemplateFolder/</siteTemplateFolder>
 							<associateSites>
-								<site>http://download.eclipse.org/eavp/builds/next</site>
+								<site>http://download.eclipse.org/eavp/builds/2.2.1</site>
 							</associateSites>
 						</configuration>
 					</execution>
