@@ -32,8 +32,8 @@
 	<properties>
 	    <update.site.name>ICE</update.site.name>
 	    <update.site.description>Nightly Build</update.site.description>
-	    <package.version>${unqualifiedVersion}</package.version>
-	    <update.site.version>${unqualifiedVersion}.${buildQualifier}</update.site.version>
+	    <package.version>2.2.1</package.version>
+	    <update.site.version>2.2.1.${buildQualifier}</update.site.version>
 	    <update.site.url>http://download.eclipse.org/ice/builds/${releaseName}</update.site.url>
 	    <target.eclipse.version>Oxygen</target.eclipse.version>
 	</properties>
