@@ -35,7 +35,7 @@
 	    <package.version>${unqualifiedVersion}</package.version>
 	    <update.site.version>${unqualifiedVersion}.${buildQualifier}</update.site.version>
 	    <update.site.url>http://download.eclipse.org/ice/builds/${releaseName}</update.site.url>
-	    <target.eclipse.version>Oxygen</target.eclipse.version>
+	    <target.eclipse.version>Neon</target.eclipse.version>
 	</properties>
 
 	<build>
@@ -76,7 +76,7 @@
 	                        </symbols>
 	                        <siteTemplateFolder>siteTemplateFolder/</siteTemplateFolder>
 							<associateSites>
-								<site>http://download.eclipse.org/eavp/builds/next</site>
+								<site>http://download.eclipse.org/eavp/builds/2.2.1</site>
 							</associateSites>
 						</configuration>
 					</execution>
