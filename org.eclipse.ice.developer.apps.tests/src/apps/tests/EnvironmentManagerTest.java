@@ -218,7 +218,6 @@ public class EnvironmentManagerTest extends TestCase {
 	 * 
 	 * @see apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment,
 	 *      java.lang.String)
-	 * @generated
 	 */
 	public void testPersistXMIToFile__IEnvironment_String() {
 		// TODO: implement this operation test method

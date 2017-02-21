@@ -2,6 +2,8 @@
  */
 package apps.docker.tests;
 
+import org.junit.Test;
+
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerFactory;
 
@@ -84,6 +86,11 @@ public class ContainerConfigurationTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		setFixture(null);
+	}
+	
+	@Test
+	public void testDummy() {
+		assertTrue(true);
 	}
 
 } //ContainerConfigurationTest

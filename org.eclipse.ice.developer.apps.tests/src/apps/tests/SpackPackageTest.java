@@ -2,6 +2,8 @@
  */
 package apps.tests;
 
+import org.junit.Test;
+
 import apps.AppsFactory;
 import apps.SpackPackage;
 
@@ -84,6 +86,10 @@ public class SpackPackageTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		setFixture(null);
+	}
+	@Test
+	public void testDummy() {
+		assertTrue(true);
 	}
 
 } //SpackPackageTest
