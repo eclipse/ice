@@ -56,21 +56,10 @@ public class LocalFactoryImpl extends EFactoryImpl implements LocalFactory {
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case LocalPackage.LOCAL_ENVIRONMENT_BUILDER: return createLocalEnvironmentBuilder();
 			case LocalPackage.LOCAL_ENVIRONMENT: return createLocalEnvironment();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public LocalEnvironmentBuilder createLocalEnvironmentBuilder() {
-		LocalEnvironmentBuilderImpl localEnvironmentBuilder = new LocalEnvironmentBuilderImpl();
-		return localEnvironmentBuilder;
 	}
 
 	/**

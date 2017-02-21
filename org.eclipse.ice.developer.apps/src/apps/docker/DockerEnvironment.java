@@ -18,6 +18,7 @@ import apps.Environment;
  * </p>
  * <ul>
  *   <li>{@link apps.docker.DockerEnvironment#getDocker <em>Docker</em>}</li>
+ *   <li>{@link apps.docker.DockerEnvironment#getContainerConfiguration <em>Container Configuration</em>}</li>
  * </ul>
  *
  * @see apps.docker.DockerPackage#getDockerEnvironment()
@@ -50,5 +51,31 @@ public interface DockerEnvironment extends Environment {
 	 * @generated
 	 */
 	void setDocker(DockerAPI value);
+
+	/**
+	 * Returns the value of the '<em><b>Container Configuration</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Container Configuration</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Container Configuration</em>' containment reference.
+	 * @see #setContainerConfiguration(ContainerConfiguration)
+	 * @see apps.docker.DockerPackage#getDockerEnvironment_ContainerConfiguration()
+	 * @model containment="true"
+	 * @generated
+	 */
+	ContainerConfiguration getContainerConfiguration();
+
+	/**
+	 * Sets the value of the '{@link apps.docker.DockerEnvironment#getContainerConfiguration <em>Container Configuration</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Container Configuration</em>' containment reference.
+	 * @see #getContainerConfiguration()
+	 * @generated
+	 */
+	void setContainerConfiguration(ContainerConfiguration value);
 
 } // DockerEnvironment

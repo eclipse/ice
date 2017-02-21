@@ -6,7 +6,6 @@ import apps.AppsPackage;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
-import apps.docker.DockerEnvironmentBuilder;
 import apps.docker.DockerFactory;
 import apps.docker.DockerPackage;
 
@@ -38,13 +37,6 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * @generated
 	 */
 	private EClass dockerEnvironmentEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass dockerEnvironmentBuilderEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -155,8 +147,8 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDockerEnvironmentBuilder() {
-		return dockerEnvironmentBuilderEClass;
+	public EReference getDockerEnvironment_ContainerConfiguration() {
+		return (EReference)dockerEnvironmentEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -184,6 +176,15 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 */
 	public EOperation getDockerAPI__LaunchContainer__String_ContainerConfiguration() {
 		return dockerAPIEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getDockerAPI__ConnectToExistingContainer__String() {
+		return dockerAPIEClass.getEOperations().get(2);
 	}
 
 	/**
@@ -236,6 +237,15 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getContainerConfiguration_RemoteSSHPort() {
+		return (EAttribute)containerConfigurationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public DockerFactory getDockerFactory() {
 		return (DockerFactory)getEFactoryInstance();
 	}
@@ -261,18 +271,19 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		// Create classes and their features
 		dockerEnvironmentEClass = createEClass(DOCKER_ENVIRONMENT);
 		createEReference(dockerEnvironmentEClass, DOCKER_ENVIRONMENT__DOCKER);
-
-		dockerEnvironmentBuilderEClass = createEClass(DOCKER_ENVIRONMENT_BUILDER);
+		createEReference(dockerEnvironmentEClass, DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION);
 
 		dockerAPIEClass = createEClass(DOCKER_API);
 		createEOperation(dockerAPIEClass, DOCKER_API___BUILD_IMAGE__STRING);
 		createEOperation(dockerAPIEClass, DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION);
+		createEOperation(dockerAPIEClass, DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING);
 
 		containerConfigurationEClass = createEClass(CONTAINER_CONFIGURATION);
 		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__NAME);
 		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__EPHEMERAL);
 		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__PORTS);
 		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__VOLUMES_CONFIG);
+		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__REMOTE_SSH_PORT);
 	}
 
 	/**
@@ -308,13 +319,11 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 
 		// Add supertypes to classes
 		dockerEnvironmentEClass.getESuperTypes().add(theAppsPackage.getEnvironment());
-		dockerEnvironmentBuilderEClass.getESuperTypes().add(theAppsPackage.getIEnvironmentBuilder());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(dockerEnvironmentEClass, DockerEnvironment.class, "DockerEnvironment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDockerEnvironment_Docker(), this.getDockerAPI(), null, "docker", null, 0, 1, DockerEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(dockerEnvironmentBuilderEClass, DockerEnvironmentBuilder.class, "DockerEnvironmentBuilder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDockerEnvironment_ContainerConfiguration(), this.getContainerConfiguration(), null, "containerConfiguration", null, 0, 1, DockerEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dockerAPIEClass, DockerAPI.class, "DockerAPI", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -325,11 +334,15 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getContainerConfiguration(), "config", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		op = initEOperation(getDockerAPI__ConnectToExistingContainer__String(), null, "connectToExistingContainer", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "id", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(containerConfigurationEClass, ContainerConfiguration.class, "ContainerConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getContainerConfiguration_Name(), ecorePackage.getEString(), "name", null, 0, 1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getContainerConfiguration_Ephemeral(), ecorePackage.getEBoolean(), "ephemeral", null, 0, 1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getContainerConfiguration_Ports(), theXMLTypePackage.getInt(), "ports", null, 0, -1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getContainerConfiguration_VolumesConfig(), ecorePackage.getEString(), "volumesConfig", null, 0, 1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getContainerConfiguration_RemoteSSHPort(), theXMLTypePackage.getInt(), "remoteSSHPort", null, 0, 1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //DockerPackageImpl

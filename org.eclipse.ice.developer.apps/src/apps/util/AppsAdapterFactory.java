@@ -72,10 +72,6 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 				return createIEnvironmentAdapter();
 			}
 			@Override
-			public Adapter caseIEnvironmentBuilder(IEnvironmentBuilder object) {
-				return createIEnvironmentBuilderAdapter();
-			}
-			@Override
 			public Adapter caseEnvironmentManager(EnvironmentManager object) {
 				return createEnvironmentManagerAdapter();
 			}
@@ -98,10 +94,6 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseLocalCDTProjectLauncher(LocalCDTProjectLauncher object) {
 				return createLocalCDTProjectLauncherAdapter();
-			}
-			@Override
-			public Adapter caseScienceApp(ScienceApp object) {
-				return createScienceAppAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -134,20 +126,6 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createIEnvironmentAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link apps.IEnvironmentBuilder <em>IEnvironment Builder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.IEnvironmentBuilder
-	 * @generated
-	 */
-	public Adapter createIEnvironmentBuilderAdapter() {
 		return null;
 	}
 
@@ -232,20 +210,6 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createLocalCDTProjectLauncherAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link apps.ScienceApp <em>Science App</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.ScienceApp
-	 * @generated
-	 */
-	public Adapter createScienceAppAdapter() {
 		return null;
 	}
 

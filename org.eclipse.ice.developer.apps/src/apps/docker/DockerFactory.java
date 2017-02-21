@@ -31,15 +31,6 @@ public interface DockerFactory extends EFactory {
 	DockerEnvironment createDockerEnvironment();
 
 	/**
-	 * Returns a new object of class '<em>Environment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Environment Builder</em>'.
-	 * @generated
-	 */
-	DockerEnvironmentBuilder createDockerEnvironmentBuilder();
-
-	/**
 	 * Returns a new object of class '<em>API</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

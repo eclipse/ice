@@ -17,8 +17,11 @@ import junit.textui.TestRunner;
  * The following operations are tested:
  * <ul>
  *   <li>{@link apps.EnvironmentManager#createEnvironment(java.lang.String) <em>Create Environment</em>}</li>
- *   <li>{@link apps.EnvironmentManager#listExisting() <em>List Existing</em>}</li>
- *   <li>{@link apps.EnvironmentManager#loadExisting(java.lang.String) <em>Load Existing</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String) <em>Load Existing Environment</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment) <em>Persist To XMI String</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String) <em>Persist XMI To File</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -108,26 +111,65 @@ public class EnvironmentManagerTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.EnvironmentManager#listExisting() <em>List Existing</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#listExisting()
+	 * @see apps.EnvironmentManager#listExistingEnvironments()
 	 * @generated
 	 */
-	public void testListExisting() {
+	public void testListExistingEnvironments() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();
 	}
 
 	/**
-	 * Tests the '{@link apps.EnvironmentManager#loadExisting(java.lang.String) <em>Load Existing</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String) <em>Load Existing Environment</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#loadExisting(java.lang.String)
+	 * @see apps.EnvironmentManager#loadExistingEnvironment(java.lang.String)
 	 * @generated
 	 */
-	public void testLoadExisting__String() {
+	public void testLoadExistingEnvironment__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String)
+	 * @generated
+	 */
+	public void testLoadEnvironmentFromFile__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment) <em>Persist To XMI String</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#persistToXMIString(apps.IEnvironment)
+	 * @generated
+	 */
+	public void testPersistToXMIString__IEnvironment() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String) <em>Persist XMI To File</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String)
+	 * @generated
+	 */
+	public void testPersistXMIToFile__IEnvironment_String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

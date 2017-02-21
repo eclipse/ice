@@ -9,7 +9,6 @@ import apps.docker.impl.DockerPackageImpl;
 
 import apps.impl.AppsPackageImpl;
 import apps.local.LocalEnvironment;
-import apps.local.LocalEnvironmentBuilder;
 import apps.local.LocalFactory;
 import apps.local.LocalPackage;
 
@@ -25,13 +24,6 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
  * @generated
  */
 public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass localEnvironmentBuilderEClass = null;
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -113,15 +105,6 @@ public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getLocalEnvironmentBuilder() {
-		return localEnvironmentBuilderEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getLocalEnvironment() {
 		return localEnvironmentEClass;
 	}
@@ -154,8 +137,6 @@ public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
 		isCreated = true;
 
 		// Create classes and their features
-		localEnvironmentBuilderEClass = createEClass(LOCAL_ENVIRONMENT_BUILDER);
-
 		localEnvironmentEClass = createEClass(LOCAL_ENVIRONMENT);
 	}
 
@@ -190,12 +171,9 @@ public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		localEnvironmentBuilderEClass.getESuperTypes().add(theAppsPackage.getIEnvironmentBuilder());
 		localEnvironmentEClass.getESuperTypes().add(theAppsPackage.getIEnvironment());
 
 		// Initialize classes, features, and operations; add parameters
-		initEClass(localEnvironmentBuilderEClass, LocalEnvironmentBuilder.class, "LocalEnvironmentBuilder", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
 		initEClass(localEnvironmentEClass, LocalEnvironment.class, "LocalEnvironment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 	}
 

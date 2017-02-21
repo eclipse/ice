@@ -62,7 +62,6 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 			case AppsPackage.ENVIRONMENT: return createEnvironment();
 			case AppsPackage.PTP_SYNC_PROJECT_LAUNCHER: return createPTPSyncProjectLauncher();
 			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER: return createLocalCDTProjectLauncher();
-			case AppsPackage.SCIENCE_APP: return createScienceApp();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -146,16 +145,6 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	public LocalCDTProjectLauncher createLocalCDTProjectLauncher() {
 		LocalCDTProjectLauncherImpl localCDTProjectLauncher = new LocalCDTProjectLauncherImpl();
 		return localCDTProjectLauncher;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ScienceApp createScienceApp() {
-		ScienceAppImpl scienceApp = new ScienceAppImpl();
-		return scienceApp;
 	}
 
 	/**

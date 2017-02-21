@@ -3,8 +3,6 @@
 package apps.local.util;
 
 import apps.IEnvironment;
-import apps.IEnvironmentBuilder;
-
 import apps.local.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -71,16 +69,8 @@ public class LocalAdapterFactory extends AdapterFactoryImpl {
 	protected LocalSwitch<Adapter> modelSwitch =
 		new LocalSwitch<Adapter>() {
 			@Override
-			public Adapter caseLocalEnvironmentBuilder(LocalEnvironmentBuilder object) {
-				return createLocalEnvironmentBuilderAdapter();
-			}
-			@Override
 			public Adapter caseLocalEnvironment(LocalEnvironment object) {
 				return createLocalEnvironmentAdapter();
-			}
-			@Override
-			public Adapter caseIEnvironmentBuilder(IEnvironmentBuilder object) {
-				return createIEnvironmentBuilderAdapter();
 			}
 			@Override
 			public Adapter caseIEnvironment(IEnvironment object) {
@@ -107,20 +97,6 @@ public class LocalAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.local.LocalEnvironmentBuilder <em>Environment Builder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.local.LocalEnvironmentBuilder
-	 * @generated
-	 */
-	public Adapter createLocalEnvironmentBuilderAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link apps.local.LocalEnvironment <em>Environment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -131,20 +107,6 @@ public class LocalAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createLocalEnvironmentAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link apps.IEnvironmentBuilder <em>IEnvironment Builder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.IEnvironmentBuilder
-	 * @generated
-	 */
-	public Adapter createIEnvironmentBuilderAdapter() {
 		return null;
 	}
 

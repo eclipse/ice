@@ -4,8 +4,6 @@ package apps.docker.util;
 
 import apps.Environment;
 import apps.IEnvironment;
-import apps.IEnvironmentBuilder;
-
 import apps.docker.*;
 
 import org.eclipse.emf.ecore.EObject;
@@ -78,13 +76,6 @@ public class DockerSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case DockerPackage.DOCKER_ENVIRONMENT_BUILDER: {
-				DockerEnvironmentBuilder dockerEnvironmentBuilder = (DockerEnvironmentBuilder)theEObject;
-				T result = caseDockerEnvironmentBuilder(dockerEnvironmentBuilder);
-				if (result == null) result = caseIEnvironmentBuilder(dockerEnvironmentBuilder);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case DockerPackage.DOCKER_API: {
 				DockerAPI dockerAPI = (DockerAPI)theEObject;
 				T result = caseDockerAPI(dockerAPI);
@@ -113,21 +104,6 @@ public class DockerSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDockerEnvironment(DockerEnvironment object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Environment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Environment Builder</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDockerEnvironmentBuilder(DockerEnvironmentBuilder object) {
 		return null;
 	}
 
@@ -188,21 +164,6 @@ public class DockerSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEnvironment(Environment object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>IEnvironment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>IEnvironment Builder</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIEnvironmentBuilder(IEnvironmentBuilder object) {
 		return null;
 	}
 

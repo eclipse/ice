@@ -4,8 +4,7 @@ package apps.impl;
 
 import apps.AppsPackage;
 import apps.LocalCDTProjectLauncher;
-import apps.ScienceApp;
-
+import apps.SpackPackage;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.emf.common.util.EList;
@@ -46,7 +45,7 @@ public class LocalCDTProjectLauncherImpl extends MinimalEObjectImpl.Container im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void launchProject(ScienceApp project) {
+	public void launchProject(SpackPackage project) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -60,8 +59,8 @@ public class LocalCDTProjectLauncherImpl extends MinimalEObjectImpl.Container im
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP:
-				launchProject((ScienceApp)arguments.get(0));
+			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE:
+				launchProject((SpackPackage)arguments.get(0));
 				return null;
 		}
 		return super.eInvoke(operationID, arguments);

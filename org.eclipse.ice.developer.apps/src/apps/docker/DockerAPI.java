@@ -41,4 +41,12 @@ public interface DockerAPI extends EObject {
 	 */
 	void launchContainer(String name, ContainerConfiguration config);
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void connectToExistingContainer(String id);
+
 } // DockerAPI

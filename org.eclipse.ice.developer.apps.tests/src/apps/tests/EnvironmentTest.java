@@ -15,7 +15,8 @@ import junit.textui.TestRunner;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.IEnvironment#launch() <em>Launch</em>}</li>
+ *   <li>{@link apps.Environment#launch() <em>Launch</em>}</li>
+ *   <li>{@link apps.Environment#launchDerived() <em>Launch Derived</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -92,13 +93,26 @@ public class EnvironmentTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.IEnvironment#launch() <em>Launch</em>}' operation.
+	 * Tests the '{@link apps.Environment#launch() <em>Launch</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.IEnvironment#launch()
+	 * @see apps.Environment#launch()
 	 * @generated
 	 */
 	public void testLaunch() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.Environment#launchDerived() <em>Launch Derived</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.Environment#launchDerived()
+	 * @generated
+	 */
+	public void testLaunchDerived() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

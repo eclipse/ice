@@ -2,7 +2,7 @@
  */
 package apps.local.tests;
 
-import apps.local.LocalEnvironmentBuilder;
+import apps.local.LocalEnvironment;
 import apps.local.LocalFactory;
 import apps.local.LocalPackage;
 
@@ -60,7 +60,7 @@ public class LocalExample {
 			System.out.println("Enter a list of file paths or URIs that have content like this:");
 			try {
 				Resource resource = resourceSet.createResource(URI.createURI("http:///My.local"));
-				LocalEnvironmentBuilder root = LocalFactory.eINSTANCE.createLocalEnvironmentBuilder();
+				LocalEnvironment root = LocalFactory.eINSTANCE.createLocalEnvironment();
 				resource.getContents().add(root);
 				resource.save(System.out, null);
 			}

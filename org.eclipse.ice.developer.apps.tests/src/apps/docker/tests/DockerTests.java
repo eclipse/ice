@@ -32,7 +32,6 @@ public class DockerTests extends TestSuite {
 	public static Test suite() {
 		TestSuite suite = new DockerTests("docker Tests");
 		suite.addTestSuite(DockerEnvironmentTest.class);
-		suite.addTestSuite(DockerEnvironmentBuilderTest.class);
 		suite.addTestSuite(DockerAPITest.class);
 		return suite;
 	}

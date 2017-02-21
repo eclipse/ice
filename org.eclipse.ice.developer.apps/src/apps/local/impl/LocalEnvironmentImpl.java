@@ -3,7 +3,6 @@
 package apps.local.impl;
 
 import apps.EnvironmentType;
-import apps.ScienceApp;
 import apps.SpackPackage;
 
 import apps.local.LocalEnvironment;
@@ -38,8 +37,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getType <em>Type</em>}</li>
  *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getName <em>Name</em>}</li>
  *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getOs <em>Os</em>}</li>
- *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getSpackpackage <em>Spackpackage</em>}</li>
- *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getScienceapp <em>Scienceapp</em>}</li>
+ *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getDependentPackages <em>Dependent Packages</em>}</li>
+ *   <li>{@link apps.local.impl.LocalEnvironmentImpl#isDevelopmentEnvironment <em>Development Environment</em>}</li>
+ *   <li>{@link apps.local.impl.LocalEnvironmentImpl#isGenerateProject <em>Generate Project</em>}</li>
+ *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getPrimaryApp <em>Primary App</em>}</li>
  * </ul>
  *
  * @generated
@@ -93,7 +94,7 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String OS_EDEFAULT = null;
+	protected static final String OS_EDEFAULT = "fedora";
 
 	/**
 	 * The cached value of the '{@link #getOs() <em>Os</em>}' attribute.
@@ -106,24 +107,64 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	protected String os = OS_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getSpackpackage() <em>Spackpackage</em>}' containment reference list.
+	 * The cached value of the '{@link #getDependentPackages() <em>Dependent Packages</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getSpackpackage()
+	 * @see #getDependentPackages()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SpackPackage> spackpackage;
+	protected EList<SpackPackage> dependentPackages;
 
 	/**
-	 * The cached value of the '{@link #getScienceapp() <em>Scienceapp</em>}' reference.
+	 * The default value of the '{@link #isDevelopmentEnvironment() <em>Development Environment</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getScienceapp()
+	 * @see #isDevelopmentEnvironment()
 	 * @generated
 	 * @ordered
 	 */
-	protected ScienceApp scienceapp;
+	protected static final boolean DEVELOPMENT_ENVIRONMENT_EDEFAULT = true;
+
+	/**
+	 * The cached value of the '{@link #isDevelopmentEnvironment() <em>Development Environment</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isDevelopmentEnvironment()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean developmentEnvironment = DEVELOPMENT_ENVIRONMENT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isGenerateProject() <em>Generate Project</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isGenerateProject()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean GENERATE_PROJECT_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isGenerateProject() <em>Generate Project</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isGenerateProject()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean generateProject = GENERATE_PROJECT_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getPrimaryApp() <em>Primary App</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPrimaryApp()
+	 * @generated
+	 * @ordered
+	 */
+	protected SpackPackage primaryApp;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -212,11 +253,11 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<SpackPackage> getSpackpackage() {
-		if (spackpackage == null) {
-			spackpackage = new EObjectContainmentEList<SpackPackage>(SpackPackage.class, this, LocalPackage.LOCAL_ENVIRONMENT__SPACKPACKAGE);
+	public EList<SpackPackage> getDependentPackages() {
+		if (dependentPackages == null) {
+			dependentPackages = new EObjectContainmentEList<SpackPackage>(SpackPackage.class, this, LocalPackage.LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES);
 		}
-		return spackpackage;
+		return dependentPackages;
 	}
 
 	/**
@@ -224,16 +265,8 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScienceApp getScienceapp() {
-		if (scienceapp != null && scienceapp.eIsProxy()) {
-			InternalEObject oldScienceapp = (InternalEObject)scienceapp;
-			scienceapp = (ScienceApp)eResolveProxy(oldScienceapp);
-			if (scienceapp != oldScienceapp) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, LocalPackage.LOCAL_ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
-			}
-		}
-		return scienceapp;
+	public boolean isDevelopmentEnvironment() {
+		return developmentEnvironment;
 	}
 
 	/**
@@ -241,20 +274,75 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScienceApp basicGetScienceapp() {
-		return scienceapp;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setScienceapp(ScienceApp newScienceapp) {
-		ScienceApp oldScienceapp = scienceapp;
-		scienceapp = newScienceapp;
+	public void setDevelopmentEnvironment(boolean newDevelopmentEnvironment) {
+		boolean oldDevelopmentEnvironment = developmentEnvironment;
+		developmentEnvironment = newDevelopmentEnvironment;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
+			eNotify(new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT, oldDevelopmentEnvironment, developmentEnvironment));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isGenerateProject() {
+		return generateProject;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setGenerateProject(boolean newGenerateProject) {
+		boolean oldGenerateProject = generateProject;
+		generateProject = newGenerateProject;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__GENERATE_PROJECT, oldGenerateProject, generateProject));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SpackPackage getPrimaryApp() {
+		return primaryApp;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetPrimaryApp(SpackPackage newPrimaryApp, NotificationChain msgs) {
+		SpackPackage oldPrimaryApp = primaryApp;
+		primaryApp = newPrimaryApp;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP, oldPrimaryApp, newPrimaryApp);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPrimaryApp(SpackPackage newPrimaryApp) {
+		if (newPrimaryApp != primaryApp) {
+			NotificationChain msgs = null;
+			if (primaryApp != null)
+				msgs = ((InternalEObject)primaryApp).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP, null, msgs);
+			if (newPrimaryApp != null)
+				msgs = ((InternalEObject)newPrimaryApp).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP, null, msgs);
+			msgs = basicSetPrimaryApp(newPrimaryApp, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP, newPrimaryApp, newPrimaryApp));
 	}
 
 	/**
@@ -276,8 +364,10 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case LocalPackage.LOCAL_ENVIRONMENT__SPACKPACKAGE:
-				return ((InternalEList<?>)getSpackpackage()).basicRemove(otherEnd, msgs);
+			case LocalPackage.LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES:
+				return ((InternalEList<?>)getDependentPackages()).basicRemove(otherEnd, msgs);
+			case LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP:
+				return basicSetPrimaryApp(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -296,11 +386,14 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 				return getName();
 			case LocalPackage.LOCAL_ENVIRONMENT__OS:
 				return getOs();
-			case LocalPackage.LOCAL_ENVIRONMENT__SPACKPACKAGE:
-				return getSpackpackage();
-			case LocalPackage.LOCAL_ENVIRONMENT__SCIENCEAPP:
-				if (resolve) return getScienceapp();
-				return basicGetScienceapp();
+			case LocalPackage.LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES:
+				return getDependentPackages();
+			case LocalPackage.LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				return isDevelopmentEnvironment();
+			case LocalPackage.LOCAL_ENVIRONMENT__GENERATE_PROJECT:
+				return isGenerateProject();
+			case LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP:
+				return getPrimaryApp();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -323,12 +416,18 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 			case LocalPackage.LOCAL_ENVIRONMENT__OS:
 				setOs((String)newValue);
 				return;
-			case LocalPackage.LOCAL_ENVIRONMENT__SPACKPACKAGE:
-				getSpackpackage().clear();
-				getSpackpackage().addAll((Collection<? extends SpackPackage>)newValue);
+			case LocalPackage.LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES:
+				getDependentPackages().clear();
+				getDependentPackages().addAll((Collection<? extends SpackPackage>)newValue);
 				return;
-			case LocalPackage.LOCAL_ENVIRONMENT__SCIENCEAPP:
-				setScienceapp((ScienceApp)newValue);
+			case LocalPackage.LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				setDevelopmentEnvironment((Boolean)newValue);
+				return;
+			case LocalPackage.LOCAL_ENVIRONMENT__GENERATE_PROJECT:
+				setGenerateProject((Boolean)newValue);
+				return;
+			case LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP:
+				setPrimaryApp((SpackPackage)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -351,11 +450,17 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 			case LocalPackage.LOCAL_ENVIRONMENT__OS:
 				setOs(OS_EDEFAULT);
 				return;
-			case LocalPackage.LOCAL_ENVIRONMENT__SPACKPACKAGE:
-				getSpackpackage().clear();
+			case LocalPackage.LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES:
+				getDependentPackages().clear();
 				return;
-			case LocalPackage.LOCAL_ENVIRONMENT__SCIENCEAPP:
-				setScienceapp((ScienceApp)null);
+			case LocalPackage.LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				setDevelopmentEnvironment(DEVELOPMENT_ENVIRONMENT_EDEFAULT);
+				return;
+			case LocalPackage.LOCAL_ENVIRONMENT__GENERATE_PROJECT:
+				setGenerateProject(GENERATE_PROJECT_EDEFAULT);
+				return;
+			case LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP:
+				setPrimaryApp((SpackPackage)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -375,10 +480,14 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case LocalPackage.LOCAL_ENVIRONMENT__OS:
 				return OS_EDEFAULT == null ? os != null : !OS_EDEFAULT.equals(os);
-			case LocalPackage.LOCAL_ENVIRONMENT__SPACKPACKAGE:
-				return spackpackage != null && !spackpackage.isEmpty();
-			case LocalPackage.LOCAL_ENVIRONMENT__SCIENCEAPP:
-				return scienceapp != null;
+			case LocalPackage.LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES:
+				return dependentPackages != null && !dependentPackages.isEmpty();
+			case LocalPackage.LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				return developmentEnvironment != DEVELOPMENT_ENVIRONMENT_EDEFAULT;
+			case LocalPackage.LOCAL_ENVIRONMENT__GENERATE_PROJECT:
+				return generateProject != GENERATE_PROJECT_EDEFAULT;
+			case LocalPackage.LOCAL_ENVIRONMENT__PRIMARY_APP:
+				return primaryApp != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -413,6 +522,10 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 		result.append(name);
 		result.append(", os: ");
 		result.append(os);
+		result.append(", developmentEnvironment: ");
+		result.append(developmentEnvironment);
+		result.append(", generateProject: ");
+		result.append(generateProject);
 		result.append(')');
 		return result.toString();
 	}

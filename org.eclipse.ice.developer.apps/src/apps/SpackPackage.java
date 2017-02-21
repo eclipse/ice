@@ -2,8 +2,6 @@
  */
 package apps;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -20,12 +18,13 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link apps.SpackPackage#getName <em>Name</em>}</li>
- *   <li>{@link apps.SpackPackage#getDesiredVersion <em>Desired Version</em>}</li>
  *   <li>{@link apps.SpackPackage#getCompiler <em>Compiler</em>}</li>
- *   <li>{@link apps.SpackPackage#getVersions <em>Versions</em>}</li>
+ *   <li>{@link apps.SpackPackage#getVersion <em>Version</em>}</li>
  *   <li>{@link apps.SpackPackage#getCppFlags <em>Cpp Flags</em>}</li>
  *   <li>{@link apps.SpackPackage#getVirtualDependency <em>Virtual Dependency</em>}</li>
  *   <li>{@link apps.SpackPackage#getVirtualDependencyProvider <em>Virtual Dependency Provider</em>}</li>
+ *   <li>{@link apps.SpackPackage#getRepoURL <em>Repo URL</em>}</li>
+ *   <li>{@link apps.SpackPackage#getBranch <em>Branch</em>}</li>
  * </ul>
  *
  * @see apps.AppsPackage#getSpackPackage()
@@ -59,32 +58,8 @@ public interface SpackPackage extends EObject {
 	void setName(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Desired Version</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * The desired version for the package. 
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Desired Version</em>' attribute.
-	 * @see #setDesiredVersion(String)
-	 * @see apps.AppsPackage#getSpackPackage_DesiredVersion()
-	 * @model
-	 * @generated
-	 */
-	String getDesiredVersion();
-
-	/**
-	 * Sets the value of the '{@link apps.SpackPackage#getDesiredVersion <em>Desired Version</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Desired Version</em>' attribute.
-	 * @see #getDesiredVersion()
-	 * @generated
-	 */
-	void setDesiredVersion(String value);
-
-	/**
 	 * Returns the value of the '<em><b>Compiler</b></em>' attribute.
+	 * The default value is <code>"gcc@6.3.0"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -93,7 +68,7 @@ public interface SpackPackage extends EObject {
 	 * @return the value of the '<em>Compiler</em>' attribute.
 	 * @see #setCompiler(String)
 	 * @see apps.AppsPackage#getSpackPackage_Compiler()
-	 * @model
+	 * @model default="gcc@6.3.0"
 	 * @generated
 	 */
 	String getCompiler();
@@ -109,19 +84,30 @@ public interface SpackPackage extends EObject {
 	void setCompiler(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Versions</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.String}.
+	 * Returns the value of the '<em><b>Version</b></em>' attribute.
+	 * The default value is <code>"latest"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * The available versions. 
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Versions</em>' attribute list.
-	 * @see apps.AppsPackage#getSpackPackage_Versions()
-	 * @model
+	 * @return the value of the '<em>Version</em>' attribute.
+	 * @see #setVersion(String)
+	 * @see apps.AppsPackage#getSpackPackage_Version()
+	 * @model default="latest"
 	 * @generated
 	 */
-	EList<String> getVersions();
+	String getVersion();
+
+	/**
+	 * Sets the value of the '{@link apps.SpackPackage#getVersion <em>Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Version</em>' attribute.
+	 * @see #getVersion()
+	 * @generated
+	 */
+	void setVersion(String value);
 
 	/**
 	 * Returns the value of the '<em><b>Cpp Flags</b></em>' attribute.
@@ -197,5 +183,58 @@ public interface SpackPackage extends EObject {
 	 * @generated
 	 */
 	void setVirtualDependencyProvider(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Repo URL</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Repo URL</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Repo URL</em>' attribute.
+	 * @see #setRepoURL(String)
+	 * @see apps.AppsPackage#getSpackPackage_RepoURL()
+	 * @model
+	 * @generated
+	 */
+	String getRepoURL();
+
+	/**
+	 * Sets the value of the '{@link apps.SpackPackage#getRepoURL <em>Repo URL</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Repo URL</em>' attribute.
+	 * @see #getRepoURL()
+	 * @generated
+	 */
+	void setRepoURL(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Branch</b></em>' attribute.
+	 * The default value is <code>"master"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Branch</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Branch</em>' attribute.
+	 * @see #setBranch(String)
+	 * @see apps.AppsPackage#getSpackPackage_Branch()
+	 * @model default="master"
+	 * @generated
+	 */
+	String getBranch();
+
+	/**
+	 * Sets the value of the '{@link apps.SpackPackage#getBranch <em>Branch</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Branch</em>' attribute.
+	 * @see #getBranch()
+	 * @generated
+	 */
+	void setBranch(String value);
 
 } // SpackPackage

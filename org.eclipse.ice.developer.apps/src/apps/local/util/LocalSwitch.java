@@ -3,8 +3,6 @@
 package apps.local.util;
 
 import apps.IEnvironment;
-import apps.IEnvironmentBuilder;
-
 import apps.local.*;
 
 import org.eclipse.emf.ecore.EObject;
@@ -69,13 +67,6 @@ public class LocalSwitch<T> extends Switch<T> {
 	@Override
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case LocalPackage.LOCAL_ENVIRONMENT_BUILDER: {
-				LocalEnvironmentBuilder localEnvironmentBuilder = (LocalEnvironmentBuilder)theEObject;
-				T result = caseLocalEnvironmentBuilder(localEnvironmentBuilder);
-				if (result == null) result = caseIEnvironmentBuilder(localEnvironmentBuilder);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case LocalPackage.LOCAL_ENVIRONMENT: {
 				LocalEnvironment localEnvironment = (LocalEnvironment)theEObject;
 				T result = caseLocalEnvironment(localEnvironment);
@@ -85,21 +76,6 @@ public class LocalSwitch<T> extends Switch<T> {
 			}
 			default: return defaultCase(theEObject);
 		}
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Environment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Environment Builder</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLocalEnvironmentBuilder(LocalEnvironmentBuilder object) {
-		return null;
 	}
 
 	/**
@@ -114,21 +90,6 @@ public class LocalSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseLocalEnvironment(LocalEnvironment object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>IEnvironment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>IEnvironment Builder</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIEnvironmentBuilder(IEnvironmentBuilder object) {
 		return null;
 	}
 

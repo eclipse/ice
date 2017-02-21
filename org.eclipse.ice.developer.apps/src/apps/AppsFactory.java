@@ -67,15 +67,6 @@ public interface AppsFactory extends EFactory {
 	LocalCDTProjectLauncher createLocalCDTProjectLauncher();
 
 	/**
-	 * Returns a new object of class '<em>Science App</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Science App</em>'.
-	 * @generated
-	 */
-	ScienceApp createScienceApp();
-
-	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

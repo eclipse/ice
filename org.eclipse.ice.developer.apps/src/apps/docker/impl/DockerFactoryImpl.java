@@ -57,7 +57,6 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case DockerPackage.DOCKER_ENVIRONMENT: return createDockerEnvironment();
-			case DockerPackage.DOCKER_ENVIRONMENT_BUILDER: return createDockerEnvironmentBuilder();
 			case DockerPackage.DOCKER_API: return createDockerAPI();
 			case DockerPackage.CONTAINER_CONFIGURATION: return createContainerConfiguration();
 			default:
@@ -73,16 +72,6 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 	public DockerEnvironment createDockerEnvironment() {
 		DockerEnvironmentImpl dockerEnvironment = new DockerEnvironmentImpl();
 		return dockerEnvironment;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DockerEnvironmentBuilder createDockerEnvironmentBuilder() {
-		DockerEnvironmentBuilderImpl dockerEnvironmentBuilder = new DockerEnvironmentBuilderImpl();
-		return dockerEnvironmentBuilder;
 	}
 
 	/**

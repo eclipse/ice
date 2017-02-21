@@ -18,6 +18,7 @@ import junit.textui.TestRunner;
  * <ul>
  *   <li>{@link apps.docker.DockerAPI#buildImage(java.lang.String) <em>Build Image</em>}</li>
  *   <li>{@link apps.docker.DockerAPI#launchContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Launch Container</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#connectToExistingContainer(java.lang.String) <em>Connect To Existing Container</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -114,6 +115,19 @@ public class DockerAPITest extends TestCase {
 	 * @generated
 	 */
 	public void testLaunchContainer__String_ContainerConfiguration() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#connectToExistingContainer(java.lang.String) <em>Connect To Existing Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#connectToExistingContainer(java.lang.String)
+	 * @generated
+	 */
+	public void testConnectToExistingContainer__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

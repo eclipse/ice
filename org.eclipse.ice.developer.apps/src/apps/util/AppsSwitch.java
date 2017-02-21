@@ -72,12 +72,6 @@ public class AppsSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AppsPackage.IENVIRONMENT_BUILDER: {
-				IEnvironmentBuilder iEnvironmentBuilder = (IEnvironmentBuilder)theEObject;
-				T result = caseIEnvironmentBuilder(iEnvironmentBuilder);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case AppsPackage.ENVIRONMENT_MANAGER: {
 				EnvironmentManager environmentManager = (EnvironmentManager)theEObject;
 				T result = caseEnvironmentManager(environmentManager);
@@ -117,12 +111,6 @@ public class AppsSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AppsPackage.SCIENCE_APP: {
-				ScienceApp scienceApp = (ScienceApp)theEObject;
-				T result = caseScienceApp(scienceApp);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -139,21 +127,6 @@ public class AppsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseIEnvironment(IEnvironment object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>IEnvironment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>IEnvironment Builder</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIEnvironmentBuilder(IEnvironmentBuilder object) {
 		return null;
 	}
 
@@ -244,21 +217,6 @@ public class AppsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseLocalCDTProjectLauncher(LocalCDTProjectLauncher object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Science App</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Science App</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseScienceApp(ScienceApp object) {
 		return null;
 	}
 

@@ -68,6 +68,17 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public void connectToExistingContainer(String id) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
@@ -76,6 +87,9 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 				return null;
 			case DockerPackage.DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION:
 				launchContainer((String)arguments.get(0), (ContainerConfiguration)arguments.get(1));
+				return null;
+			case DockerPackage.DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING:
+				connectToExistingContainer((String)arguments.get(0));
 				return null;
 		}
 		return super.eInvoke(operationID, arguments);

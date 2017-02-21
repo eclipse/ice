@@ -28,6 +28,6 @@ public interface ProjectLauncher extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void launchProject(ScienceApp project);
+	void launchProject(SpackPackage project);
 
 } // ProjectLauncher

@@ -13,5 +13,6 @@ Export-Package: apps.docker.tests,
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ice.developer.apps;visibility:=reexport,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
- org.junit;visibility:=reexport
+ org.junit;visibility:=reexport,
+ org.eclipse.core.resources;bundle-version="3.12.0"
 Bundle-ActivationPolicy: lazy

@@ -96,22 +96,40 @@ public interface AppsPackage extends EPackage {
 	int IENVIRONMENT__OS = 2;
 
 	/**
-	 * The feature id for the '<em><b>Spackpackage</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Dependent Packages</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IENVIRONMENT__SPACKPACKAGE = 3;
+	int IENVIRONMENT__DEPENDENT_PACKAGES = 3;
 
 	/**
-	 * The feature id for the '<em><b>Scienceapp</b></em>' reference.
+	 * The feature id for the '<em><b>Development Environment</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IENVIRONMENT__SCIENCEAPP = 4;
+	int IENVIRONMENT__DEVELOPMENT_ENVIRONMENT = 4;
+
+	/**
+	 * The feature id for the '<em><b>Generate Project</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IENVIRONMENT__GENERATE_PROJECT = 5;
+
+	/**
+	 * The feature id for the '<em><b>Primary App</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IENVIRONMENT__PRIMARY_APP = 6;
 
 	/**
 	 * The number of structural features of the '<em>IEnvironment</em>' class.
@@ -120,7 +138,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int IENVIRONMENT_FEATURE_COUNT = 5;
+	int IENVIRONMENT_FEATURE_COUNT = 7;
 
 	/**
 	 * The operation id for the '<em>Launch</em>' operation.
@@ -141,43 +159,6 @@ public interface AppsPackage extends EPackage {
 	int IENVIRONMENT_OPERATION_COUNT = 1;
 
 	/**
-	 * The meta object id for the '{@link apps.IEnvironmentBuilder <em>IEnvironment Builder</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see apps.IEnvironmentBuilder
-	 * @see apps.impl.AppsPackageImpl#getIEnvironmentBuilder()
-	 * @generated
-	 */
-	int IENVIRONMENT_BUILDER = 1;
-
-	/**
-	 * The number of structural features of the '<em>IEnvironment Builder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IENVIRONMENT_BUILDER_FEATURE_COUNT = 0;
-
-	/**
-	 * The operation id for the '<em>Build</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IENVIRONMENT_BUILDER___BUILD__STRING = 0;
-
-	/**
-	 * The number of operations of the '<em>IEnvironment Builder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int IENVIRONMENT_BUILDER_OPERATION_COUNT = 1;
-
-	/**
 	 * The meta object id for the '{@link apps.impl.EnvironmentManagerImpl <em>Environment Manager</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -185,16 +166,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentManager()
 	 * @generated
 	 */
-	int ENVIRONMENT_MANAGER = 2;
-
-	/**
-	 * The feature id for the '<em><b>Builder</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENVIRONMENT_MANAGER__BUILDER = 0;
+	int ENVIRONMENT_MANAGER = 1;
 
 	/**
 	 * The number of structural features of the '<em>Environment Manager</em>' class.
@@ -203,7 +175,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 1;
+	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 0;
 
 	/**
 	 * The operation id for the '<em>Create Environment</em>' operation.
@@ -215,22 +187,49 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING = 0;
 
 	/**
-	 * The operation id for the '<em>List Existing</em>' operation.
+	 * The operation id for the '<em>List Existing Environments</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LIST_EXISTING = 1;
+	int ENVIRONMENT_MANAGER___LIST_EXISTING_ENVIRONMENTS = 1;
 
 	/**
-	 * The operation id for the '<em>Load Existing</em>' operation.
+	 * The operation id for the '<em>Load Existing Environment</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LOAD_EXISTING__STRING = 2;
+	int ENVIRONMENT_MANAGER___LOAD_EXISTING_ENVIRONMENT__STRING = 2;
+
+	/**
+	 * The operation id for the '<em>Load Environment From File</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT_FROM_FILE__STRING = 3;
+
+	/**
+	 * The operation id for the '<em>Persist To XMI String</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__IENVIRONMENT = 4;
+
+	/**
+	 * The operation id for the '<em>Persist XMI To File</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__IENVIRONMENT_STRING = 5;
 
 	/**
 	 * The number of operations of the '<em>Environment Manager</em>' class.
@@ -239,7 +238,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 3;
+	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link apps.impl.SpackPackageImpl <em>Spack Package</em>}' class.
@@ -249,7 +248,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getSpackPackage()
 	 * @generated
 	 */
-	int SPACK_PACKAGE = 3;
+	int SPACK_PACKAGE = 2;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -261,31 +260,22 @@ public interface AppsPackage extends EPackage {
 	int SPACK_PACKAGE__NAME = 0;
 
 	/**
-	 * The feature id for the '<em><b>Desired Version</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SPACK_PACKAGE__DESIRED_VERSION = 1;
-
-	/**
 	 * The feature id for the '<em><b>Compiler</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SPACK_PACKAGE__COMPILER = 2;
+	int SPACK_PACKAGE__COMPILER = 1;
 
 	/**
-	 * The feature id for the '<em><b>Versions</b></em>' attribute list.
+	 * The feature id for the '<em><b>Version</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SPACK_PACKAGE__VERSIONS = 3;
+	int SPACK_PACKAGE__VERSION = 2;
 
 	/**
 	 * The feature id for the '<em><b>Cpp Flags</b></em>' attribute.
@@ -294,7 +284,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SPACK_PACKAGE__CPP_FLAGS = 4;
+	int SPACK_PACKAGE__CPP_FLAGS = 3;
 
 	/**
 	 * The feature id for the '<em><b>Virtual Dependency</b></em>' attribute.
@@ -303,7 +293,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SPACK_PACKAGE__VIRTUAL_DEPENDENCY = 5;
+	int SPACK_PACKAGE__VIRTUAL_DEPENDENCY = 4;
 
 	/**
 	 * The feature id for the '<em><b>Virtual Dependency Provider</b></em>' attribute.
@@ -312,7 +302,25 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER = 6;
+	int SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER = 5;
+
+	/**
+	 * The feature id for the '<em><b>Repo URL</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SPACK_PACKAGE__REPO_URL = 6;
+
+	/**
+	 * The feature id for the '<em><b>Branch</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SPACK_PACKAGE__BRANCH = 7;
 
 	/**
 	 * The number of structural features of the '<em>Spack Package</em>' class.
@@ -321,7 +329,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SPACK_PACKAGE_FEATURE_COUNT = 7;
+	int SPACK_PACKAGE_FEATURE_COUNT = 8;
 
 	/**
 	 * The number of operations of the '<em>Spack Package</em>' class.
@@ -340,7 +348,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironment()
 	 * @generated
 	 */
-	int ENVIRONMENT = 4;
+	int ENVIRONMENT = 3;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -370,25 +378,43 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT__OS = IENVIRONMENT__OS;
 
 	/**
-	 * The feature id for the '<em><b>Spackpackage</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Dependent Packages</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT__SPACKPACKAGE = IENVIRONMENT__SPACKPACKAGE;
+	int ENVIRONMENT__DEPENDENT_PACKAGES = IENVIRONMENT__DEPENDENT_PACKAGES;
 
 	/**
-	 * The feature id for the '<em><b>Scienceapp</b></em>' reference.
+	 * The feature id for the '<em><b>Development Environment</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT__SCIENCEAPP = IENVIRONMENT__SCIENCEAPP;
+	int ENVIRONMENT__DEVELOPMENT_ENVIRONMENT = IENVIRONMENT__DEVELOPMENT_ENVIRONMENT;
 
 	/**
-	 * The feature id for the '<em><b>Projectlauncher</b></em>' reference.
+	 * The feature id for the '<em><b>Generate Project</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT__GENERATE_PROJECT = IENVIRONMENT__GENERATE_PROJECT;
+
+	/**
+	 * The feature id for the '<em><b>Primary App</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT__PRIMARY_APP = IENVIRONMENT__PRIMARY_APP;
+
+	/**
+	 * The feature id for the '<em><b>Projectlauncher</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -412,7 +438,16 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT___LAUNCH = IENVIRONMENT___LAUNCH;
+	int ENVIRONMENT___LAUNCH = IENVIRONMENT_OPERATION_COUNT + 0;
+
+	/**
+	 * The operation id for the '<em>Launch Derived</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT___LAUNCH_DERIVED = IENVIRONMENT_OPERATION_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Environment</em>' class.
@@ -421,7 +456,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_OPERATION_COUNT = IENVIRONMENT_OPERATION_COUNT + 0;
+	int ENVIRONMENT_OPERATION_COUNT = IENVIRONMENT_OPERATION_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link apps.ProjectLauncher <em>Project Launcher</em>}' class.
@@ -431,7 +466,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getProjectLauncher()
 	 * @generated
 	 */
-	int PROJECT_LAUNCHER = 5;
+	int PROJECT_LAUNCHER = 4;
 
 	/**
 	 * The number of structural features of the '<em>Project Launcher</em>' class.
@@ -449,7 +484,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP = 0;
+	int PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE = 0;
 
 	/**
 	 * The number of operations of the '<em>Project Launcher</em>' class.
@@ -468,7 +503,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getPTPSyncProjectLauncher()
 	 * @generated
 	 */
-	int PTP_SYNC_PROJECT_LAUNCHER = 6;
+	int PTP_SYNC_PROJECT_LAUNCHER = 5;
 
 	/**
 	 * The number of structural features of the '<em>PTP Sync Project Launcher</em>' class.
@@ -486,7 +521,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP = PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP;
+	int PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE = PROJECT_LAUNCHER_OPERATION_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>PTP Sync Project Launcher</em>' class.
@@ -495,7 +530,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PTP_SYNC_PROJECT_LAUNCHER_OPERATION_COUNT = PROJECT_LAUNCHER_OPERATION_COUNT + 0;
+	int PTP_SYNC_PROJECT_LAUNCHER_OPERATION_COUNT = PROJECT_LAUNCHER_OPERATION_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link apps.impl.LocalCDTProjectLauncherImpl <em>Local CDT Project Launcher</em>}' class.
@@ -505,7 +540,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getLocalCDTProjectLauncher()
 	 * @generated
 	 */
-	int LOCAL_CDT_PROJECT_LAUNCHER = 7;
+	int LOCAL_CDT_PROJECT_LAUNCHER = 6;
 
 	/**
 	 * The number of structural features of the '<em>Local CDT Project Launcher</em>' class.
@@ -523,7 +558,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP = PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP;
+	int LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE = PROJECT_LAUNCHER_OPERATION_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Local CDT Project Launcher</em>' class.
@@ -532,107 +567,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_CDT_PROJECT_LAUNCHER_OPERATION_COUNT = PROJECT_LAUNCHER_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link apps.impl.ScienceAppImpl <em>Science App</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see apps.impl.ScienceAppImpl
-	 * @see apps.impl.AppsPackageImpl#getScienceApp()
-	 * @generated
-	 */
-	int SCIENCE_APP = 8;
-
-	/**
-	 * The feature id for the '<em><b>Repo URL</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__REPO_URL = 0;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__NAME = 1;
-
-	/**
-	 * The feature id for the '<em><b>Branch</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__BRANCH = 2;
-
-	/**
-	 * The feature id for the '<em><b>Local Project Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__LOCAL_PROJECT_NAME = 3;
-
-	/**
-	 * The feature id for the '<em><b>Recursive Clone</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__RECURSIVE_CLONE = 4;
-
-	/**
-	 * The feature id for the '<em><b>Absolute Path</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__ABSOLUTE_PATH = 5;
-
-	/**
-	 * The feature id for the '<em><b>Remote Port</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__REMOTE_PORT = 6;
-
-	/**
-	 * The feature id for the '<em><b>Remote Host</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP__REMOTE_HOST = 7;
-
-	/**
-	 * The number of structural features of the '<em>Science App</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP_FEATURE_COUNT = 8;
-
-	/**
-	 * The number of operations of the '<em>Science App</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SCIENCE_APP_OPERATION_COUNT = 0;
+	int LOCAL_CDT_PROJECT_LAUNCHER_OPERATION_COUNT = PROJECT_LAUNCHER_OPERATION_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link apps.EnvironmentType <em>Environment Type</em>}' enum.
@@ -642,7 +577,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentType()
 	 * @generated
 	 */
-	int ENVIRONMENT_TYPE = 9;
+	int ENVIRONMENT_TYPE = 7;
 
 
 	/**
@@ -689,26 +624,48 @@ public interface AppsPackage extends EPackage {
 	EAttribute getIEnvironment_Os();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link apps.IEnvironment#getSpackpackage <em>Spackpackage</em>}'.
+	 * Returns the meta object for the containment reference list '{@link apps.IEnvironment#getDependentPackages <em>Dependent Packages</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Spackpackage</em>'.
-	 * @see apps.IEnvironment#getSpackpackage()
+	 * @return the meta object for the containment reference list '<em>Dependent Packages</em>'.
+	 * @see apps.IEnvironment#getDependentPackages()
 	 * @see #getIEnvironment()
 	 * @generated
 	 */
-	EReference getIEnvironment_Spackpackage();
+	EReference getIEnvironment_DependentPackages();
 
 	/**
-	 * Returns the meta object for the reference '{@link apps.IEnvironment#getScienceapp <em>Scienceapp</em>}'.
+	 * Returns the meta object for the attribute '{@link apps.IEnvironment#isDevelopmentEnvironment <em>Development Environment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Scienceapp</em>'.
-	 * @see apps.IEnvironment#getScienceapp()
+	 * @return the meta object for the attribute '<em>Development Environment</em>'.
+	 * @see apps.IEnvironment#isDevelopmentEnvironment()
 	 * @see #getIEnvironment()
 	 * @generated
 	 */
-	EReference getIEnvironment_Scienceapp();
+	EAttribute getIEnvironment_DevelopmentEnvironment();
+
+	/**
+	 * Returns the meta object for the attribute '{@link apps.IEnvironment#isGenerateProject <em>Generate Project</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Generate Project</em>'.
+	 * @see apps.IEnvironment#isGenerateProject()
+	 * @see #getIEnvironment()
+	 * @generated
+	 */
+	EAttribute getIEnvironment_GenerateProject();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link apps.IEnvironment#getPrimaryApp <em>Primary App</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Primary App</em>'.
+	 * @see apps.IEnvironment#getPrimaryApp()
+	 * @see #getIEnvironment()
+	 * @generated
+	 */
+	EReference getIEnvironment_PrimaryApp();
 
 	/**
 	 * Returns the meta object for the '{@link apps.IEnvironment#launch() <em>Launch</em>}' operation.
@@ -721,26 +678,6 @@ public interface AppsPackage extends EPackage {
 	EOperation getIEnvironment__Launch();
 
 	/**
-	 * Returns the meta object for class '{@link apps.IEnvironmentBuilder <em>IEnvironment Builder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>IEnvironment Builder</em>'.
-	 * @see apps.IEnvironmentBuilder
-	 * @generated
-	 */
-	EClass getIEnvironmentBuilder();
-
-	/**
-	 * Returns the meta object for the '{@link apps.IEnvironmentBuilder#build(java.lang.String) <em>Build</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Build</em>' operation.
-	 * @see apps.IEnvironmentBuilder#build(java.lang.String)
-	 * @generated
-	 */
-	EOperation getIEnvironmentBuilder__Build__String();
-
-	/**
 	 * Returns the meta object for class '{@link apps.EnvironmentManager <em>Environment Manager</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -749,17 +686,6 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEnvironmentManager();
-
-	/**
-	 * Returns the meta object for the reference '{@link apps.EnvironmentManager#getBuilder <em>Builder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Builder</em>'.
-	 * @see apps.EnvironmentManager#getBuilder()
-	 * @see #getEnvironmentManager()
-	 * @generated
-	 */
-	EReference getEnvironmentManager_Builder();
 
 	/**
 	 * Returns the meta object for the '{@link apps.EnvironmentManager#createEnvironment(java.lang.String) <em>Create Environment</em>}' operation.
@@ -772,24 +698,54 @@ public interface AppsPackage extends EPackage {
 	EOperation getEnvironmentManager__CreateEnvironment__String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#listExisting() <em>List Existing</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>List Existing</em>' operation.
-	 * @see apps.EnvironmentManager#listExisting()
+	 * @return the meta object for the '<em>List Existing Environments</em>' operation.
+	 * @see apps.EnvironmentManager#listExistingEnvironments()
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__ListExisting();
+	EOperation getEnvironmentManager__ListExistingEnvironments();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadExisting(java.lang.String) <em>Load Existing</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String) <em>Load Existing Environment</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Load Existing</em>' operation.
-	 * @see apps.EnvironmentManager#loadExisting(java.lang.String)
+	 * @return the meta object for the '<em>Load Existing Environment</em>' operation.
+	 * @see apps.EnvironmentManager#loadExistingEnvironment(java.lang.String)
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__LoadExisting__String();
+	EOperation getEnvironmentManager__LoadExistingEnvironment__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Load Environment From File</em>' operation.
+	 * @see apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__LoadEnvironmentFromFile__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment) <em>Persist To XMI String</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Persist To XMI String</em>' operation.
+	 * @see apps.EnvironmentManager#persistToXMIString(apps.IEnvironment)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__PersistToXMIString__IEnvironment();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String) <em>Persist XMI To File</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Persist XMI To File</em>' operation.
+	 * @see apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__PersistXMIToFile__IEnvironment_String();
 
 	/**
 	 * Returns the meta object for class '{@link apps.SpackPackage <em>Spack Package</em>}'.
@@ -813,17 +769,6 @@ public interface AppsPackage extends EPackage {
 	EAttribute getSpackPackage_Name();
 
 	/**
-	 * Returns the meta object for the attribute '{@link apps.SpackPackage#getDesiredVersion <em>Desired Version</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Desired Version</em>'.
-	 * @see apps.SpackPackage#getDesiredVersion()
-	 * @see #getSpackPackage()
-	 * @generated
-	 */
-	EAttribute getSpackPackage_DesiredVersion();
-
-	/**
 	 * Returns the meta object for the attribute '{@link apps.SpackPackage#getCompiler <em>Compiler</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -835,15 +780,15 @@ public interface AppsPackage extends EPackage {
 	EAttribute getSpackPackage_Compiler();
 
 	/**
-	 * Returns the meta object for the attribute list '{@link apps.SpackPackage#getVersions <em>Versions</em>}'.
+	 * Returns the meta object for the attribute '{@link apps.SpackPackage#getVersion <em>Version</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Versions</em>'.
-	 * @see apps.SpackPackage#getVersions()
+	 * @return the meta object for the attribute '<em>Version</em>'.
+	 * @see apps.SpackPackage#getVersion()
 	 * @see #getSpackPackage()
 	 * @generated
 	 */
-	EAttribute getSpackPackage_Versions();
+	EAttribute getSpackPackage_Version();
 
 	/**
 	 * Returns the meta object for the attribute '{@link apps.SpackPackage#getCppFlags <em>Cpp Flags</em>}'.
@@ -879,6 +824,28 @@ public interface AppsPackage extends EPackage {
 	EAttribute getSpackPackage_VirtualDependencyProvider();
 
 	/**
+	 * Returns the meta object for the attribute '{@link apps.SpackPackage#getRepoURL <em>Repo URL</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Repo URL</em>'.
+	 * @see apps.SpackPackage#getRepoURL()
+	 * @see #getSpackPackage()
+	 * @generated
+	 */
+	EAttribute getSpackPackage_RepoURL();
+
+	/**
+	 * Returns the meta object for the attribute '{@link apps.SpackPackage#getBranch <em>Branch</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Branch</em>'.
+	 * @see apps.SpackPackage#getBranch()
+	 * @see #getSpackPackage()
+	 * @generated
+	 */
+	EAttribute getSpackPackage_Branch();
+
+	/**
 	 * Returns the meta object for class '{@link apps.Environment <em>Environment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -889,15 +856,35 @@ public interface AppsPackage extends EPackage {
 	EClass getEnvironment();
 
 	/**
-	 * Returns the meta object for the reference '{@link apps.Environment#getProjectlauncher <em>Projectlauncher</em>}'.
+	 * Returns the meta object for the containment reference '{@link apps.Environment#getProjectlauncher <em>Projectlauncher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Projectlauncher</em>'.
+	 * @return the meta object for the containment reference '<em>Projectlauncher</em>'.
 	 * @see apps.Environment#getProjectlauncher()
 	 * @see #getEnvironment()
 	 * @generated
 	 */
 	EReference getEnvironment_Projectlauncher();
+
+	/**
+	 * Returns the meta object for the '{@link apps.Environment#launch() <em>Launch</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Launch</em>' operation.
+	 * @see apps.Environment#launch()
+	 * @generated
+	 */
+	EOperation getEnvironment__Launch();
+
+	/**
+	 * Returns the meta object for the '{@link apps.Environment#launchDerived() <em>Launch Derived</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Launch Derived</em>' operation.
+	 * @see apps.Environment#launchDerived()
+	 * @generated
+	 */
+	EOperation getEnvironment__LaunchDerived();
 
 	/**
 	 * Returns the meta object for class '{@link apps.ProjectLauncher <em>Project Launcher</em>}'.
@@ -910,14 +897,14 @@ public interface AppsPackage extends EPackage {
 	EClass getProjectLauncher();
 
 	/**
-	 * Returns the meta object for the '{@link apps.ProjectLauncher#launchProject(apps.ScienceApp) <em>Launch Project</em>}' operation.
+	 * Returns the meta object for the '{@link apps.ProjectLauncher#launchProject(apps.SpackPackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the '<em>Launch Project</em>' operation.
-	 * @see apps.ProjectLauncher#launchProject(apps.ScienceApp)
+	 * @see apps.ProjectLauncher#launchProject(apps.SpackPackage)
 	 * @generated
 	 */
-	EOperation getProjectLauncher__LaunchProject__ScienceApp();
+	EOperation getProjectLauncher__LaunchProject__SpackPackage();
 
 	/**
 	 * Returns the meta object for class '{@link apps.PTPSyncProjectLauncher <em>PTP Sync Project Launcher</em>}'.
@@ -930,6 +917,16 @@ public interface AppsPackage extends EPackage {
 	EClass getPTPSyncProjectLauncher();
 
 	/**
+	 * Returns the meta object for the '{@link apps.PTPSyncProjectLauncher#launchProject(apps.SpackPackage) <em>Launch Project</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Launch Project</em>' operation.
+	 * @see apps.PTPSyncProjectLauncher#launchProject(apps.SpackPackage)
+	 * @generated
+	 */
+	EOperation getPTPSyncProjectLauncher__LaunchProject__SpackPackage();
+
+	/**
 	 * Returns the meta object for class '{@link apps.LocalCDTProjectLauncher <em>Local CDT Project Launcher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -940,102 +937,14 @@ public interface AppsPackage extends EPackage {
 	EClass getLocalCDTProjectLauncher();
 
 	/**
-	 * Returns the meta object for class '{@link apps.ScienceApp <em>Science App</em>}'.
+	 * Returns the meta object for the '{@link apps.LocalCDTProjectLauncher#launchProject(apps.SpackPackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Science App</em>'.
-	 * @see apps.ScienceApp
+	 * @return the meta object for the '<em>Launch Project</em>' operation.
+	 * @see apps.LocalCDTProjectLauncher#launchProject(apps.SpackPackage)
 	 * @generated
 	 */
-	EClass getScienceApp();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getRepoURL <em>Repo URL</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Repo URL</em>'.
-	 * @see apps.ScienceApp#getRepoURL()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_RepoURL();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getName <em>Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see apps.ScienceApp#getName()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_Name();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getBranch <em>Branch</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Branch</em>'.
-	 * @see apps.ScienceApp#getBranch()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_Branch();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getLocalProjectName <em>Local Project Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Local Project Name</em>'.
-	 * @see apps.ScienceApp#getLocalProjectName()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_LocalProjectName();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#isRecursiveClone <em>Recursive Clone</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Recursive Clone</em>'.
-	 * @see apps.ScienceApp#isRecursiveClone()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_RecursiveClone();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getAbsolutePath <em>Absolute Path</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Absolute Path</em>'.
-	 * @see apps.ScienceApp#getAbsolutePath()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_AbsolutePath();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getRemotePort <em>Remote Port</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Remote Port</em>'.
-	 * @see apps.ScienceApp#getRemotePort()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_RemotePort();
-
-	/**
-	 * Returns the meta object for the attribute '{@link apps.ScienceApp#getRemoteHost <em>Remote Host</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Remote Host</em>'.
-	 * @see apps.ScienceApp#getRemoteHost()
-	 * @see #getScienceApp()
-	 * @generated
-	 */
-	EAttribute getScienceApp_RemoteHost();
+	EOperation getLocalCDTProjectLauncher__LaunchProject__SpackPackage();
 
 	/**
 	 * Returns the meta object for enum '{@link apps.EnvironmentType <em>Environment Type</em>}'.
@@ -1105,20 +1014,36 @@ public interface AppsPackage extends EPackage {
 		EAttribute IENVIRONMENT__OS = eINSTANCE.getIEnvironment_Os();
 
 		/**
-		 * The meta object literal for the '<em><b>Spackpackage</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Dependent Packages</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IENVIRONMENT__SPACKPACKAGE = eINSTANCE.getIEnvironment_Spackpackage();
+		EReference IENVIRONMENT__DEPENDENT_PACKAGES = eINSTANCE.getIEnvironment_DependentPackages();
 
 		/**
-		 * The meta object literal for the '<em><b>Scienceapp</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Development Environment</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference IENVIRONMENT__SCIENCEAPP = eINSTANCE.getIEnvironment_Scienceapp();
+		EAttribute IENVIRONMENT__DEVELOPMENT_ENVIRONMENT = eINSTANCE.getIEnvironment_DevelopmentEnvironment();
+
+		/**
+		 * The meta object literal for the '<em><b>Generate Project</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute IENVIRONMENT__GENERATE_PROJECT = eINSTANCE.getIEnvironment_GenerateProject();
+
+		/**
+		 * The meta object literal for the '<em><b>Primary App</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IENVIRONMENT__PRIMARY_APP = eINSTANCE.getIEnvironment_PrimaryApp();
 
 		/**
 		 * The meta object literal for the '<em><b>Launch</b></em>' operation.
@@ -1127,24 +1052,6 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation IENVIRONMENT___LAUNCH = eINSTANCE.getIEnvironment__Launch();
-
-		/**
-		 * The meta object literal for the '{@link apps.IEnvironmentBuilder <em>IEnvironment Builder</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see apps.IEnvironmentBuilder
-		 * @see apps.impl.AppsPackageImpl#getIEnvironmentBuilder()
-		 * @generated
-		 */
-		EClass IENVIRONMENT_BUILDER = eINSTANCE.getIEnvironmentBuilder();
-
-		/**
-		 * The meta object literal for the '<em><b>Build</b></em>' operation.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EOperation IENVIRONMENT_BUILDER___BUILD__STRING = eINSTANCE.getIEnvironmentBuilder__Build__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.EnvironmentManagerImpl <em>Environment Manager</em>}' class.
@@ -1157,14 +1064,6 @@ public interface AppsPackage extends EPackage {
 		EClass ENVIRONMENT_MANAGER = eINSTANCE.getEnvironmentManager();
 
 		/**
-		 * The meta object literal for the '<em><b>Builder</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ENVIRONMENT_MANAGER__BUILDER = eINSTANCE.getEnvironmentManager_Builder();
-
-		/**
 		 * The meta object literal for the '<em><b>Create Environment</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1173,20 +1072,44 @@ public interface AppsPackage extends EPackage {
 		EOperation ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING = eINSTANCE.getEnvironmentManager__CreateEnvironment__String();
 
 		/**
-		 * The meta object literal for the '<em><b>List Existing</b></em>' operation.
+		 * The meta object literal for the '<em><b>List Existing Environments</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___LIST_EXISTING = eINSTANCE.getEnvironmentManager__ListExisting();
+		EOperation ENVIRONMENT_MANAGER___LIST_EXISTING_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__ListExistingEnvironments();
 
 		/**
-		 * The meta object literal for the '<em><b>Load Existing</b></em>' operation.
+		 * The meta object literal for the '<em><b>Load Existing Environment</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___LOAD_EXISTING__STRING = eINSTANCE.getEnvironmentManager__LoadExisting__String();
+		EOperation ENVIRONMENT_MANAGER___LOAD_EXISTING_ENVIRONMENT__STRING = eINSTANCE.getEnvironmentManager__LoadExistingEnvironment__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Load Environment From File</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT_FROM_FILE__STRING = eINSTANCE.getEnvironmentManager__LoadEnvironmentFromFile__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Persist To XMI String</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__IENVIRONMENT = eINSTANCE.getEnvironmentManager__PersistToXMIString__IEnvironment();
+
+		/**
+		 * The meta object literal for the '<em><b>Persist XMI To File</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__IENVIRONMENT_STRING = eINSTANCE.getEnvironmentManager__PersistXMIToFile__IEnvironment_String();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.SpackPackageImpl <em>Spack Package</em>}' class.
@@ -1207,14 +1130,6 @@ public interface AppsPackage extends EPackage {
 		EAttribute SPACK_PACKAGE__NAME = eINSTANCE.getSpackPackage_Name();
 
 		/**
-		 * The meta object literal for the '<em><b>Desired Version</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SPACK_PACKAGE__DESIRED_VERSION = eINSTANCE.getSpackPackage_DesiredVersion();
-
-		/**
 		 * The meta object literal for the '<em><b>Compiler</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1223,12 +1138,12 @@ public interface AppsPackage extends EPackage {
 		EAttribute SPACK_PACKAGE__COMPILER = eINSTANCE.getSpackPackage_Compiler();
 
 		/**
-		 * The meta object literal for the '<em><b>Versions</b></em>' attribute list feature.
+		 * The meta object literal for the '<em><b>Version</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute SPACK_PACKAGE__VERSIONS = eINSTANCE.getSpackPackage_Versions();
+		EAttribute SPACK_PACKAGE__VERSION = eINSTANCE.getSpackPackage_Version();
 
 		/**
 		 * The meta object literal for the '<em><b>Cpp Flags</b></em>' attribute feature.
@@ -1255,6 +1170,22 @@ public interface AppsPackage extends EPackage {
 		EAttribute SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER = eINSTANCE.getSpackPackage_VirtualDependencyProvider();
 
 		/**
+		 * The meta object literal for the '<em><b>Repo URL</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SPACK_PACKAGE__REPO_URL = eINSTANCE.getSpackPackage_RepoURL();
+
+		/**
+		 * The meta object literal for the '<em><b>Branch</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SPACK_PACKAGE__BRANCH = eINSTANCE.getSpackPackage_Branch();
+
+		/**
 		 * The meta object literal for the '{@link apps.impl.EnvironmentImpl <em>Environment</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1265,12 +1196,28 @@ public interface AppsPackage extends EPackage {
 		EClass ENVIRONMENT = eINSTANCE.getEnvironment();
 
 		/**
-		 * The meta object literal for the '<em><b>Projectlauncher</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Projectlauncher</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EReference ENVIRONMENT__PROJECTLAUNCHER = eINSTANCE.getEnvironment_Projectlauncher();
+
+		/**
+		 * The meta object literal for the '<em><b>Launch</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT___LAUNCH = eINSTANCE.getEnvironment__Launch();
+
+		/**
+		 * The meta object literal for the '<em><b>Launch Derived</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT___LAUNCH_DERIVED = eINSTANCE.getEnvironment__LaunchDerived();
 
 		/**
 		 * The meta object literal for the '{@link apps.ProjectLauncher <em>Project Launcher</em>}' class.
@@ -1288,7 +1235,7 @@ public interface AppsPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation PROJECT_LAUNCHER___LAUNCH_PROJECT__SCIENCEAPP = eINSTANCE.getProjectLauncher__LaunchProject__ScienceApp();
+		EOperation PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE = eINSTANCE.getProjectLauncher__LaunchProject__SpackPackage();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.PTPSyncProjectLauncherImpl <em>PTP Sync Project Launcher</em>}' class.
@@ -1301,6 +1248,14 @@ public interface AppsPackage extends EPackage {
 		EClass PTP_SYNC_PROJECT_LAUNCHER = eINSTANCE.getPTPSyncProjectLauncher();
 
 		/**
+		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE = eINSTANCE.getPTPSyncProjectLauncher__LaunchProject__SpackPackage();
+
+		/**
 		 * The meta object literal for the '{@link apps.impl.LocalCDTProjectLauncherImpl <em>Local CDT Project Launcher</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1311,78 +1266,12 @@ public interface AppsPackage extends EPackage {
 		EClass LOCAL_CDT_PROJECT_LAUNCHER = eINSTANCE.getLocalCDTProjectLauncher();
 
 		/**
-		 * The meta object literal for the '{@link apps.impl.ScienceAppImpl <em>Science App</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see apps.impl.ScienceAppImpl
-		 * @see apps.impl.AppsPackageImpl#getScienceApp()
-		 * @generated
-		 */
-		EClass SCIENCE_APP = eINSTANCE.getScienceApp();
-
-		/**
-		 * The meta object literal for the '<em><b>Repo URL</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute SCIENCE_APP__REPO_URL = eINSTANCE.getScienceApp_RepoURL();
-
-		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__NAME = eINSTANCE.getScienceApp_Name();
-
-		/**
-		 * The meta object literal for the '<em><b>Branch</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__BRANCH = eINSTANCE.getScienceApp_Branch();
-
-		/**
-		 * The meta object literal for the '<em><b>Local Project Name</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__LOCAL_PROJECT_NAME = eINSTANCE.getScienceApp_LocalProjectName();
-
-		/**
-		 * The meta object literal for the '<em><b>Recursive Clone</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__RECURSIVE_CLONE = eINSTANCE.getScienceApp_RecursiveClone();
-
-		/**
-		 * The meta object literal for the '<em><b>Absolute Path</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__ABSOLUTE_PATH = eINSTANCE.getScienceApp_AbsolutePath();
-
-		/**
-		 * The meta object literal for the '<em><b>Remote Port</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__REMOTE_PORT = eINSTANCE.getScienceApp_RemotePort();
-
-		/**
-		 * The meta object literal for the '<em><b>Remote Host</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SCIENCE_APP__REMOTE_HOST = eINSTANCE.getScienceApp_RemoteHost();
+		EOperation LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE = eINSTANCE.getLocalCDTProjectLauncher__LaunchProject__SpackPackage();
 
 		/**
 		 * The meta object literal for the '{@link apps.EnvironmentType <em>Environment Type</em>}' enum.

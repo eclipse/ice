@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link apps.docker.ContainerConfiguration#isEphemeral <em>Ephemeral</em>}</li>
  *   <li>{@link apps.docker.ContainerConfiguration#getPorts <em>Ports</em>}</li>
  *   <li>{@link apps.docker.ContainerConfiguration#getVolumesConfig <em>Volumes Config</em>}</li>
+ *   <li>{@link apps.docker.ContainerConfiguration#getRemoteSSHPort <em>Remote SSH Port</em>}</li>
  * </ul>
  *
  * @see apps.docker.DockerPackage#getContainerConfiguration()
@@ -119,5 +120,31 @@ public interface ContainerConfiguration extends EObject {
 	 * @generated
 	 */
 	void setVolumesConfig(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Remote SSH Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Remote SSH Port</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Remote SSH Port</em>' attribute.
+	 * @see #setRemoteSSHPort(int)
+	 * @see apps.docker.DockerPackage#getContainerConfiguration_RemoteSSHPort()
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Int"
+	 * @generated
+	 */
+	int getRemoteSSHPort();
+
+	/**
+	 * Sets the value of the '{@link apps.docker.ContainerConfiguration#getRemoteSSHPort <em>Remote SSH Port</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Remote SSH Port</em>' attribute.
+	 * @see #getRemoteSSHPort()
+	 * @generated
+	 */
+	void setRemoteSSHPort(int value);
 
 } // ContainerConfiguration

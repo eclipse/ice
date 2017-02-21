@@ -6,7 +6,6 @@ import apps.AppsPackage;
 import apps.Environment;
 import apps.EnvironmentType;
 import apps.ProjectLauncher;
-import apps.ScienceApp;
 import apps.SpackPackage;
 
 import java.lang.reflect.InvocationTargetException;
@@ -38,8 +37,10 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link apps.impl.EnvironmentImpl#getType <em>Type</em>}</li>
  *   <li>{@link apps.impl.EnvironmentImpl#getName <em>Name</em>}</li>
  *   <li>{@link apps.impl.EnvironmentImpl#getOs <em>Os</em>}</li>
- *   <li>{@link apps.impl.EnvironmentImpl#getSpackpackage <em>Spackpackage</em>}</li>
- *   <li>{@link apps.impl.EnvironmentImpl#getScienceapp <em>Scienceapp</em>}</li>
+ *   <li>{@link apps.impl.EnvironmentImpl#getDependentPackages <em>Dependent Packages</em>}</li>
+ *   <li>{@link apps.impl.EnvironmentImpl#isDevelopmentEnvironment <em>Development Environment</em>}</li>
+ *   <li>{@link apps.impl.EnvironmentImpl#isGenerateProject <em>Generate Project</em>}</li>
+ *   <li>{@link apps.impl.EnvironmentImpl#getPrimaryApp <em>Primary App</em>}</li>
  *   <li>{@link apps.impl.EnvironmentImpl#getProjectlauncher <em>Projectlauncher</em>}</li>
  * </ul>
  *
@@ -94,7 +95,7 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String OS_EDEFAULT = null;
+	protected static final String OS_EDEFAULT = "fedora";
 
 	/**
 	 * The cached value of the '{@link #getOs() <em>Os</em>}' attribute.
@@ -107,27 +108,67 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	protected String os = OS_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getSpackpackage() <em>Spackpackage</em>}' containment reference list.
+	 * The cached value of the '{@link #getDependentPackages() <em>Dependent Packages</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getSpackpackage()
+	 * @see #getDependentPackages()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SpackPackage> spackpackage;
+	protected EList<SpackPackage> dependentPackages;
 
 	/**
-	 * The cached value of the '{@link #getScienceapp() <em>Scienceapp</em>}' reference.
+	 * The default value of the '{@link #isDevelopmentEnvironment() <em>Development Environment</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getScienceapp()
+	 * @see #isDevelopmentEnvironment()
 	 * @generated
 	 * @ordered
 	 */
-	protected ScienceApp scienceapp;
+	protected static final boolean DEVELOPMENT_ENVIRONMENT_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #getProjectlauncher() <em>Projectlauncher</em>}' reference.
+	 * The cached value of the '{@link #isDevelopmentEnvironment() <em>Development Environment</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isDevelopmentEnvironment()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean developmentEnvironment = DEVELOPMENT_ENVIRONMENT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isGenerateProject() <em>Generate Project</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isGenerateProject()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean GENERATE_PROJECT_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isGenerateProject() <em>Generate Project</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isGenerateProject()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean generateProject = GENERATE_PROJECT_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getPrimaryApp() <em>Primary App</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPrimaryApp()
+	 * @generated
+	 * @ordered
+	 */
+	protected SpackPackage primaryApp;
+
+	/**
+	 * The cached value of the '{@link #getProjectlauncher() <em>Projectlauncher</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getProjectlauncher()
@@ -223,11 +264,11 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<SpackPackage> getSpackpackage() {
-		if (spackpackage == null) {
-			spackpackage = new EObjectContainmentEList<SpackPackage>(SpackPackage.class, this, AppsPackage.ENVIRONMENT__SPACKPACKAGE);
+	public EList<SpackPackage> getDependentPackages() {
+		if (dependentPackages == null) {
+			dependentPackages = new EObjectContainmentEList<SpackPackage>(SpackPackage.class, this, AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES);
 		}
-		return spackpackage;
+		return dependentPackages;
 	}
 
 	/**
@@ -235,16 +276,8 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScienceApp getScienceapp() {
-		if (scienceapp != null && scienceapp.eIsProxy()) {
-			InternalEObject oldScienceapp = (InternalEObject)scienceapp;
-			scienceapp = (ScienceApp)eResolveProxy(oldScienceapp);
-			if (scienceapp != oldScienceapp) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AppsPackage.ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
-			}
-		}
-		return scienceapp;
+	public boolean isDevelopmentEnvironment() {
+		return developmentEnvironment;
 	}
 
 	/**
@@ -252,20 +285,75 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ScienceApp basicGetScienceapp() {
-		return scienceapp;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setScienceapp(ScienceApp newScienceapp) {
-		ScienceApp oldScienceapp = scienceapp;
-		scienceapp = newScienceapp;
+	public void setDevelopmentEnvironment(boolean newDevelopmentEnvironment) {
+		boolean oldDevelopmentEnvironment = developmentEnvironment;
+		developmentEnvironment = newDevelopmentEnvironment;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__SCIENCEAPP, oldScienceapp, scienceapp));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT, oldDevelopmentEnvironment, developmentEnvironment));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isGenerateProject() {
+		return generateProject;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setGenerateProject(boolean newGenerateProject) {
+		boolean oldGenerateProject = generateProject;
+		generateProject = newGenerateProject;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__GENERATE_PROJECT, oldGenerateProject, generateProject));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SpackPackage getPrimaryApp() {
+		return primaryApp;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetPrimaryApp(SpackPackage newPrimaryApp, NotificationChain msgs) {
+		SpackPackage oldPrimaryApp = primaryApp;
+		primaryApp = newPrimaryApp;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__PRIMARY_APP, oldPrimaryApp, newPrimaryApp);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setPrimaryApp(SpackPackage newPrimaryApp) {
+		if (newPrimaryApp != primaryApp) {
+			NotificationChain msgs = null;
+			if (primaryApp != null)
+				msgs = ((InternalEObject)primaryApp).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - AppsPackage.ENVIRONMENT__PRIMARY_APP, null, msgs);
+			if (newPrimaryApp != null)
+				msgs = ((InternalEObject)newPrimaryApp).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - AppsPackage.ENVIRONMENT__PRIMARY_APP, null, msgs);
+			msgs = basicSetPrimaryApp(newPrimaryApp, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__PRIMARY_APP, newPrimaryApp, newPrimaryApp));
 	}
 
 	/**
@@ -274,14 +362,6 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * @generated
 	 */
 	public ProjectLauncher getProjectlauncher() {
-		if (projectlauncher != null && projectlauncher.eIsProxy()) {
-			InternalEObject oldProjectlauncher = (InternalEObject)projectlauncher;
-			projectlauncher = (ProjectLauncher)eResolveProxy(oldProjectlauncher);
-			if (projectlauncher != oldProjectlauncher) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, projectlauncher));
-			}
-		}
 		return projectlauncher;
 	}
 
@@ -290,8 +370,14 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ProjectLauncher basicGetProjectlauncher() {
-		return projectlauncher;
+	public NotificationChain basicSetProjectlauncher(ProjectLauncher newProjectlauncher, NotificationChain msgs) {
+		ProjectLauncher oldProjectlauncher = projectlauncher;
+		projectlauncher = newProjectlauncher;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, newProjectlauncher);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -300,21 +386,43 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * @generated
 	 */
 	public void setProjectlauncher(ProjectLauncher newProjectlauncher) {
-		ProjectLauncher oldProjectlauncher = projectlauncher;
-		projectlauncher = newProjectlauncher;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, oldProjectlauncher, projectlauncher));
+		if (newProjectlauncher != projectlauncher) {
+			NotificationChain msgs = null;
+			if (projectlauncher != null)
+				msgs = ((InternalEObject)projectlauncher).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, null, msgs);
+			if (newProjectlauncher != null)
+				msgs = ((InternalEObject)newProjectlauncher).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, null, msgs);
+			msgs = basicSetProjectlauncher(newProjectlauncher, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT__PROJECTLAUNCHER, newProjectlauncher, newProjectlauncher));
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public boolean launch() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		boolean success = launchDerived();
+		
+		if (!success) {
+			return false;
+		}
+		
+		if (generateProject) {
+			projectlauncher.launchProject(primaryApp);
+		}
+		
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public boolean launchDerived() {
+		throw new UnsupportedOperationException("Cannot execute Environment.launchDerived. Execute Environment.launch instead.");
 	}
 
 	/**
@@ -325,8 +433,12 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
-				return ((InternalEList<?>)getSpackpackage()).basicRemove(otherEnd, msgs);
+			case AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES:
+				return ((InternalEList<?>)getDependentPackages()).basicRemove(otherEnd, msgs);
+			case AppsPackage.ENVIRONMENT__PRIMARY_APP:
+				return basicSetPrimaryApp(null, msgs);
+			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
+				return basicSetProjectlauncher(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -345,14 +457,16 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 				return getName();
 			case AppsPackage.ENVIRONMENT__OS:
 				return getOs();
-			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
-				return getSpackpackage();
-			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
-				if (resolve) return getScienceapp();
-				return basicGetScienceapp();
+			case AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES:
+				return getDependentPackages();
+			case AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				return isDevelopmentEnvironment();
+			case AppsPackage.ENVIRONMENT__GENERATE_PROJECT:
+				return isGenerateProject();
+			case AppsPackage.ENVIRONMENT__PRIMARY_APP:
+				return getPrimaryApp();
 			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
-				if (resolve) return getProjectlauncher();
-				return basicGetProjectlauncher();
+				return getProjectlauncher();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -375,12 +489,18 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 			case AppsPackage.ENVIRONMENT__OS:
 				setOs((String)newValue);
 				return;
-			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
-				getSpackpackage().clear();
-				getSpackpackage().addAll((Collection<? extends SpackPackage>)newValue);
+			case AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES:
+				getDependentPackages().clear();
+				getDependentPackages().addAll((Collection<? extends SpackPackage>)newValue);
 				return;
-			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
-				setScienceapp((ScienceApp)newValue);
+			case AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				setDevelopmentEnvironment((Boolean)newValue);
+				return;
+			case AppsPackage.ENVIRONMENT__GENERATE_PROJECT:
+				setGenerateProject((Boolean)newValue);
+				return;
+			case AppsPackage.ENVIRONMENT__PRIMARY_APP:
+				setPrimaryApp((SpackPackage)newValue);
 				return;
 			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				setProjectlauncher((ProjectLauncher)newValue);
@@ -406,11 +526,17 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 			case AppsPackage.ENVIRONMENT__OS:
 				setOs(OS_EDEFAULT);
 				return;
-			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
-				getSpackpackage().clear();
+			case AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES:
+				getDependentPackages().clear();
 				return;
-			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
-				setScienceapp((ScienceApp)null);
+			case AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				setDevelopmentEnvironment(DEVELOPMENT_ENVIRONMENT_EDEFAULT);
+				return;
+			case AppsPackage.ENVIRONMENT__GENERATE_PROJECT:
+				setGenerateProject(GENERATE_PROJECT_EDEFAULT);
+				return;
+			case AppsPackage.ENVIRONMENT__PRIMARY_APP:
+				setPrimaryApp((SpackPackage)null);
 				return;
 			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				setProjectlauncher((ProjectLauncher)null);
@@ -433,10 +559,14 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case AppsPackage.ENVIRONMENT__OS:
 				return OS_EDEFAULT == null ? os != null : !OS_EDEFAULT.equals(os);
-			case AppsPackage.ENVIRONMENT__SPACKPACKAGE:
-				return spackpackage != null && !spackpackage.isEmpty();
-			case AppsPackage.ENVIRONMENT__SCIENCEAPP:
-				return scienceapp != null;
+			case AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES:
+				return dependentPackages != null && !dependentPackages.isEmpty();
+			case AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT:
+				return developmentEnvironment != DEVELOPMENT_ENVIRONMENT_EDEFAULT;
+			case AppsPackage.ENVIRONMENT__GENERATE_PROJECT:
+				return generateProject != GENERATE_PROJECT_EDEFAULT;
+			case AppsPackage.ENVIRONMENT__PRIMARY_APP:
+				return primaryApp != null;
 			case AppsPackage.ENVIRONMENT__PROJECTLAUNCHER:
 				return projectlauncher != null;
 		}
@@ -453,6 +583,8 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		switch (operationID) {
 			case AppsPackage.ENVIRONMENT___LAUNCH:
 				return launch();
+			case AppsPackage.ENVIRONMENT___LAUNCH_DERIVED:
+				return launchDerived();
 		}
 		return super.eInvoke(operationID, arguments);
 	}
@@ -473,6 +605,10 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 		result.append(name);
 		result.append(", os: ");
 		result.append(os);
+		result.append(", developmentEnvironment: ");
+		result.append(developmentEnvironment);
+		result.append(", generateProject: ");
+		result.append(generateProject);
 		result.append(')');
 		return result.toString();
 	}

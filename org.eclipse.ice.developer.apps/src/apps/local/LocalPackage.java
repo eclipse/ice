@@ -56,43 +56,6 @@ public interface LocalPackage extends EPackage {
 	LocalPackage eINSTANCE = apps.local.impl.LocalPackageImpl.init();
 
 	/**
-	 * The meta object id for the '{@link apps.local.impl.LocalEnvironmentBuilderImpl <em>Environment Builder</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see apps.local.impl.LocalEnvironmentBuilderImpl
-	 * @see apps.local.impl.LocalPackageImpl#getLocalEnvironmentBuilder()
-	 * @generated
-	 */
-	int LOCAL_ENVIRONMENT_BUILDER = 0;
-
-	/**
-	 * The number of structural features of the '<em>Environment Builder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOCAL_ENVIRONMENT_BUILDER_FEATURE_COUNT = AppsPackage.IENVIRONMENT_BUILDER_FEATURE_COUNT + 0;
-
-	/**
-	 * The operation id for the '<em>Build</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOCAL_ENVIRONMENT_BUILDER___BUILD__STRING = AppsPackage.IENVIRONMENT_BUILDER___BUILD__STRING;
-
-	/**
-	 * The number of operations of the '<em>Environment Builder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOCAL_ENVIRONMENT_BUILDER_OPERATION_COUNT = AppsPackage.IENVIRONMENT_BUILDER_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link apps.local.impl.LocalEnvironmentImpl <em>Environment</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -100,7 +63,7 @@ public interface LocalPackage extends EPackage {
 	 * @see apps.local.impl.LocalPackageImpl#getLocalEnvironment()
 	 * @generated
 	 */
-	int LOCAL_ENVIRONMENT = 1;
+	int LOCAL_ENVIRONMENT = 0;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -130,22 +93,40 @@ public interface LocalPackage extends EPackage {
 	int LOCAL_ENVIRONMENT__OS = AppsPackage.IENVIRONMENT__OS;
 
 	/**
-	 * The feature id for the '<em><b>Spackpackage</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Dependent Packages</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__SPACKPACKAGE = AppsPackage.IENVIRONMENT__SPACKPACKAGE;
+	int LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES = AppsPackage.IENVIRONMENT__DEPENDENT_PACKAGES;
 
 	/**
-	 * The feature id for the '<em><b>Scienceapp</b></em>' reference.
+	 * The feature id for the '<em><b>Development Environment</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT__SCIENCEAPP = AppsPackage.IENVIRONMENT__SCIENCEAPP;
+	int LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT = AppsPackage.IENVIRONMENT__DEVELOPMENT_ENVIRONMENT;
+
+	/**
+	 * The feature id for the '<em><b>Generate Project</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT__GENERATE_PROJECT = AppsPackage.IENVIRONMENT__GENERATE_PROJECT;
+
+	/**
+	 * The feature id for the '<em><b>Primary App</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT__PRIMARY_APP = AppsPackage.IENVIRONMENT__PRIMARY_APP;
 
 	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
@@ -174,16 +155,6 @@ public interface LocalPackage extends EPackage {
 	 */
 	int LOCAL_ENVIRONMENT_OPERATION_COUNT = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 0;
 
-
-	/**
-	 * Returns the meta object for class '{@link apps.local.LocalEnvironmentBuilder <em>Environment Builder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Environment Builder</em>'.
-	 * @see apps.local.LocalEnvironmentBuilder
-	 * @generated
-	 */
-	EClass getLocalEnvironmentBuilder();
 
 	/**
 	 * Returns the meta object for class '{@link apps.local.LocalEnvironment <em>Environment</em>}'.
@@ -218,16 +189,6 @@ public interface LocalPackage extends EPackage {
 	 * @generated
 	 */
 	interface Literals {
-		/**
-		 * The meta object literal for the '{@link apps.local.impl.LocalEnvironmentBuilderImpl <em>Environment Builder</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see apps.local.impl.LocalEnvironmentBuilderImpl
-		 * @see apps.local.impl.LocalPackageImpl#getLocalEnvironmentBuilder()
-		 * @generated
-		 */
-		EClass LOCAL_ENVIRONMENT_BUILDER = eINSTANCE.getLocalEnvironmentBuilder();
-
 		/**
 		 * The meta object literal for the '{@link apps.local.impl.LocalEnvironmentImpl <em>Environment</em>}' class.
 		 * <!-- begin-user-doc -->

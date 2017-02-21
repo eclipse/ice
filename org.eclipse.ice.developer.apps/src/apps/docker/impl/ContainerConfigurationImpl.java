@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#isEphemeral <em>Ephemeral</em>}</li>
  *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getPorts <em>Ports</em>}</li>
  *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getVolumesConfig <em>Volumes Config</em>}</li>
+ *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getRemoteSSHPort <em>Remote SSH Port</em>}</li>
  * </ul>
  *
  * @generated
@@ -104,6 +105,26 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @ordered
 	 */
 	protected String volumesConfig = VOLUMES_CONFIG_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getRemoteSSHPort() <em>Remote SSH Port</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRemoteSSHPort()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int REMOTE_SSH_PORT_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getRemoteSSHPort() <em>Remote SSH Port</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRemoteSSHPort()
+	 * @generated
+	 * @ordered
+	 */
+	protected int remoteSSHPort = REMOTE_SSH_PORT_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -204,6 +225,27 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public int getRemoteSSHPort() {
+		return remoteSSHPort;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setRemoteSSHPort(int newRemoteSSHPort) {
+		int oldRemoteSSHPort = remoteSSHPort;
+		remoteSSHPort = newRemoteSSHPort;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT, oldRemoteSSHPort, remoteSSHPort));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -215,6 +257,8 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return getPorts();
 			case DockerPackage.CONTAINER_CONFIGURATION__VOLUMES_CONFIG:
 				return getVolumesConfig();
+			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
+				return getRemoteSSHPort();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -241,6 +285,9 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 			case DockerPackage.CONTAINER_CONFIGURATION__VOLUMES_CONFIG:
 				setVolumesConfig((String)newValue);
 				return;
+			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
+				setRemoteSSHPort((Integer)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -265,6 +312,9 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 			case DockerPackage.CONTAINER_CONFIGURATION__VOLUMES_CONFIG:
 				setVolumesConfig(VOLUMES_CONFIG_EDEFAULT);
 				return;
+			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
+				setRemoteSSHPort(REMOTE_SSH_PORT_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -285,6 +335,8 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return ports != null && !ports.isEmpty();
 			case DockerPackage.CONTAINER_CONFIGURATION__VOLUMES_CONFIG:
 				return VOLUMES_CONFIG_EDEFAULT == null ? volumesConfig != null : !VOLUMES_CONFIG_EDEFAULT.equals(volumesConfig);
+			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
+				return remoteSSHPort != REMOTE_SSH_PORT_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -307,6 +359,8 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 		result.append(ports);
 		result.append(", volumesConfig: ");
 		result.append(volumesConfig);
+		result.append(", remoteSSHPort: ");
+		result.append(remoteSSHPort);
 		result.append(')');
 		return result.toString();
 	}

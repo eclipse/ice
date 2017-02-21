@@ -15,44 +15,12 @@ import org.eclipse.emf.ecore.EObject;
  * The EnvironmentManager provides the functionality to create new Environments, list existing available Environments, or load an existing Environment. 
  * <!-- end-model-doc -->
  *
- * <p>
- * The following features are supported:
- * </p>
- * <ul>
- *   <li>{@link apps.EnvironmentManager#getBuilder <em>Builder</em>}</li>
- * </ul>
  *
  * @see apps.AppsPackage#getEnvironmentManager()
  * @model
  * @generated
  */
 public interface EnvironmentManager extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Builder</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Builder</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Builder</em>' reference.
-	 * @see #setBuilder(IEnvironmentBuilder)
-	 * @see apps.AppsPackage#getEnvironmentManager_Builder()
-	 * @model
-	 * @generated
-	 */
-	IEnvironmentBuilder getBuilder();
-
-	/**
-	 * Sets the value of the '{@link apps.EnvironmentManager#getBuilder <em>Builder</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Builder</em>' reference.
-	 * @see #getBuilder()
-	 * @generated
-	 */
-	void setBuilder(IEnvironmentBuilder value);
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -62,28 +30,55 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment createEnvironment(String properties);
+	IEnvironment createEnvironment(String type);
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Return a list of String names for each existing Environment. 
+	 * Return a list of String names for each existing Environment. The existing environments are stored internally by Eclipse. 
 	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
 	 */
-	EList<String> listExisting();
+	EList<String> listExistingEnvironments();
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Load the Environment with the provided String name. 
+	 * Load the Environment with the provided String name. Existing here means stored and tracked internally by Eclipse Preferences. 
 	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
 	 */
-	IEnvironment loadExisting(String name);
+	IEnvironment loadExistingEnvironment(String name);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Load an environment from the provided file. The file type should be the EMF XMI persisted model. This is different from loadExisting as it provides a means to load an environment that Eclipse does not know about. 
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	IEnvironment loadEnvironmentFromFile(String file);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	String persistToXMIString(IEnvironment environment);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void persistXMIToFile(IEnvironment environment, String fileName);
 
 } // EnvironmentManager

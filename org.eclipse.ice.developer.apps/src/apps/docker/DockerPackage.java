@@ -96,25 +96,43 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT__OS = AppsPackage.ENVIRONMENT__OS;
 
 	/**
-	 * The feature id for the '<em><b>Spackpackage</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Dependent Packages</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__SPACKPACKAGE = AppsPackage.ENVIRONMENT__SPACKPACKAGE;
+	int DOCKER_ENVIRONMENT__DEPENDENT_PACKAGES = AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES;
 
 	/**
-	 * The feature id for the '<em><b>Scienceapp</b></em>' reference.
+	 * The feature id for the '<em><b>Development Environment</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__SCIENCEAPP = AppsPackage.ENVIRONMENT__SCIENCEAPP;
+	int DOCKER_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT = AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT;
 
 	/**
-	 * The feature id for the '<em><b>Projectlauncher</b></em>' reference.
+	 * The feature id for the '<em><b>Generate Project</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT__GENERATE_PROJECT = AppsPackage.ENVIRONMENT__GENERATE_PROJECT;
+
+	/**
+	 * The feature id for the '<em><b>Primary App</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT__PRIMARY_APP = AppsPackage.ENVIRONMENT__PRIMARY_APP;
+
+	/**
+	 * The feature id for the '<em><b>Projectlauncher</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -132,13 +150,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT__DOCKER = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Container Configuration</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_FEATURE_COUNT = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 1;
+	int DOCKER_ENVIRONMENT_FEATURE_COUNT = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 2;
 
 	/**
 	 * The operation id for the '<em>Launch</em>' operation.
@@ -150,6 +177,15 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT___LAUNCH = AppsPackage.ENVIRONMENT___LAUNCH;
 
 	/**
+	 * The operation id for the '<em>Launch Derived</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT___LAUNCH_DERIVED = AppsPackage.ENVIRONMENT___LAUNCH_DERIVED;
+
+	/**
 	 * The number of operations of the '<em>Environment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -159,43 +195,6 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link apps.docker.impl.DockerEnvironmentBuilderImpl <em>Environment Builder</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see apps.docker.impl.DockerEnvironmentBuilderImpl
-	 * @see apps.docker.impl.DockerPackageImpl#getDockerEnvironmentBuilder()
-	 * @generated
-	 */
-	int DOCKER_ENVIRONMENT_BUILDER = 1;
-
-	/**
-	 * The number of structural features of the '<em>Environment Builder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCKER_ENVIRONMENT_BUILDER_FEATURE_COUNT = AppsPackage.IENVIRONMENT_BUILDER_FEATURE_COUNT + 0;
-
-	/**
-	 * The operation id for the '<em>Build</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCKER_ENVIRONMENT_BUILDER___BUILD__STRING = AppsPackage.IENVIRONMENT_BUILDER___BUILD__STRING;
-
-	/**
-	 * The number of operations of the '<em>Environment Builder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCKER_ENVIRONMENT_BUILDER_OPERATION_COUNT = AppsPackage.IENVIRONMENT_BUILDER_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -203,7 +202,7 @@ public interface DockerPackage extends EPackage {
 	 * @see apps.docker.impl.DockerPackageImpl#getDockerAPI()
 	 * @generated
 	 */
-	int DOCKER_API = 2;
+	int DOCKER_API = 1;
 
 	/**
 	 * The number of structural features of the '<em>API</em>' class.
@@ -233,13 +232,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION = 1;
 
 	/**
+	 * The operation id for the '<em>Connect To Existing Container</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING = 2;
+
+	/**
 	 * The number of operations of the '<em>API</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API_OPERATION_COUNT = 2;
+	int DOCKER_API_OPERATION_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -249,7 +257,7 @@ public interface DockerPackage extends EPackage {
 	 * @see apps.docker.impl.DockerPackageImpl#getContainerConfiguration()
 	 * @generated
 	 */
-	int CONTAINER_CONFIGURATION = 3;
+	int CONTAINER_CONFIGURATION = 2;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -288,13 +296,22 @@ public interface DockerPackage extends EPackage {
 	int CONTAINER_CONFIGURATION__VOLUMES_CONFIG = 3;
 
 	/**
+	 * The feature id for the '<em><b>Remote SSH Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONTAINER_CONFIGURATION__REMOTE_SSH_PORT = 4;
+
+	/**
 	 * The number of structural features of the '<em>Container Configuration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER_CONFIGURATION_FEATURE_COUNT = 4;
+	int CONTAINER_CONFIGURATION_FEATURE_COUNT = 5;
 
 	/**
 	 * The number of operations of the '<em>Container Configuration</em>' class.
@@ -328,14 +345,15 @@ public interface DockerPackage extends EPackage {
 	EReference getDockerEnvironment_Docker();
 
 	/**
-	 * Returns the meta object for class '{@link apps.docker.DockerEnvironmentBuilder <em>Environment Builder</em>}'.
+	 * Returns the meta object for the containment reference '{@link apps.docker.DockerEnvironment#getContainerConfiguration <em>Container Configuration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Environment Builder</em>'.
-	 * @see apps.docker.DockerEnvironmentBuilder
+	 * @return the meta object for the containment reference '<em>Container Configuration</em>'.
+	 * @see apps.docker.DockerEnvironment#getContainerConfiguration()
+	 * @see #getDockerEnvironment()
 	 * @generated
 	 */
-	EClass getDockerEnvironmentBuilder();
+	EReference getDockerEnvironment_ContainerConfiguration();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerAPI <em>API</em>}'.
@@ -366,6 +384,16 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getDockerAPI__LaunchContainer__String_ContainerConfiguration();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#connectToExistingContainer(java.lang.String) <em>Connect To Existing Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Connect To Existing Container</em>' operation.
+	 * @see apps.docker.DockerAPI#connectToExistingContainer(java.lang.String)
+	 * @generated
+	 */
+	EOperation getDockerAPI__ConnectToExistingContainer__String();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.ContainerConfiguration <em>Container Configuration</em>}'.
@@ -422,6 +450,17 @@ public interface DockerPackage extends EPackage {
 	EAttribute getContainerConfiguration_VolumesConfig();
 
 	/**
+	 * Returns the meta object for the attribute '{@link apps.docker.ContainerConfiguration#getRemoteSSHPort <em>Remote SSH Port</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Remote SSH Port</em>'.
+	 * @see apps.docker.ContainerConfiguration#getRemoteSSHPort()
+	 * @see #getContainerConfiguration()
+	 * @generated
+	 */
+	EAttribute getContainerConfiguration_RemoteSSHPort();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -463,14 +502,12 @@ public interface DockerPackage extends EPackage {
 		EReference DOCKER_ENVIRONMENT__DOCKER = eINSTANCE.getDockerEnvironment_Docker();
 
 		/**
-		 * The meta object literal for the '{@link apps.docker.impl.DockerEnvironmentBuilderImpl <em>Environment Builder</em>}' class.
+		 * The meta object literal for the '<em><b>Container Configuration</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see apps.docker.impl.DockerEnvironmentBuilderImpl
-		 * @see apps.docker.impl.DockerPackageImpl#getDockerEnvironmentBuilder()
 		 * @generated
 		 */
-		EClass DOCKER_ENVIRONMENT_BUILDER = eINSTANCE.getDockerEnvironmentBuilder();
+		EReference DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION = eINSTANCE.getDockerEnvironment_ContainerConfiguration();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
@@ -497,6 +534,14 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION = eINSTANCE.getDockerAPI__LaunchContainer__String_ContainerConfiguration();
+
+		/**
+		 * The meta object literal for the '<em><b>Connect To Existing Container</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING = eINSTANCE.getDockerAPI__ConnectToExistingContainer__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -539,6 +584,14 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONTAINER_CONFIGURATION__VOLUMES_CONFIG = eINSTANCE.getContainerConfiguration_VolumesConfig();
+
+		/**
+		 * The meta object literal for the '<em><b>Remote SSH Port</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONTAINER_CONFIGURATION__REMOTE_SSH_PORT = eINSTANCE.getContainerConfiguration_RemoteSSHPort();
 
 	}
 

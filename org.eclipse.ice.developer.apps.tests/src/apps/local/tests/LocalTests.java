@@ -31,7 +31,6 @@ public class LocalTests extends TestSuite {
 	 */
 	public static Test suite() {
 		TestSuite suite = new LocalTests("local Tests");
-		suite.addTestSuite(LocalEnvironmentBuilderTest.class);
 		suite.addTestSuite(LocalEnvironmentTest.class);
 		return suite;
 	}

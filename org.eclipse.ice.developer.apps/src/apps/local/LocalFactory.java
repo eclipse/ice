@@ -22,15 +22,6 @@ public interface LocalFactory extends EFactory {
 	LocalFactory eINSTANCE = apps.local.impl.LocalFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Environment Builder</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Environment Builder</em>'.
-	 * @generated
-	 */
-	LocalEnvironmentBuilder createLocalEnvironmentBuilder();
-
-	/**
 	 * Returns a new object of class '<em>Environment</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
