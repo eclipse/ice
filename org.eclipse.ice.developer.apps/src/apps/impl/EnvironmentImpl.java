@@ -404,12 +404,16 @@ public class EnvironmentImpl extends MinimalEObjectImpl.Container implements Env
 	 * <!-- end-user-doc -->
 	 */
 	public boolean launch() {
+		
+		// Execute the subclasses launch
 		boolean success = launchDerived();
 		
+		// Make sure it worked
 		if (!success) {
 			return false;
 		}
 		
+		// Generate the project if we need too
 		if (generateProject) {
 			projectlauncher.launchProject(primaryApp);
 		}

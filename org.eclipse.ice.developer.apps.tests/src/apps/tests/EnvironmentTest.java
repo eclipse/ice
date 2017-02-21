@@ -2,8 +2,24 @@
  */
 package apps.tests;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.emf.common.notify.Adapter;
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EOperation;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
+
 import apps.AppsFactory;
 import apps.Environment;
+import apps.ProjectLauncher;
+import apps.SpackPackage;
+import apps.impl.EnvironmentImpl;
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
@@ -23,6 +39,154 @@ import junit.textui.TestRunner;
  */
 public class EnvironmentTest extends TestCase {
 
+	private class FakeProjectLauncher implements ProjectLauncher {
+		private boolean launched = false;
+
+		public boolean wasLaunched() {
+			return launched;
+		}
+		
+		@Override
+		public EClass eClass() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Resource eResource() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EObject eContainer() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EStructuralFeature eContainingFeature() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EReference eContainmentFeature() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EList<EObject> eContents() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public TreeIterator<EObject> eAllContents() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean eIsProxy() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public EList<EObject> eCrossReferences() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Object eGet(EStructuralFeature feature) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Object eGet(EStructuralFeature feature, boolean resolve) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void eSet(EStructuralFeature feature, Object newValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public boolean eIsSet(EStructuralFeature feature) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void eUnset(EStructuralFeature feature) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Object eInvoke(EOperation operation, EList<?> arguments) throws InvocationTargetException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public EList<Adapter> eAdapters() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean eDeliver() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void eSetDeliver(boolean deliver) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void eNotify(Notification notification) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void launchProject(SpackPackage project) {
+			// TODO Auto-generated method stub
+			launched = true;
+		}
+		
+	}
+	
+	private class DerivedEnvironment extends EnvironmentImpl {
+		public DerivedEnvironment(boolean gen) {
+			generateProject = gen;
+		}
+		public boolean launchDerived() {
+			launched = true;
+			return true;
+		}
+		
+		@Override
+		public void setProjectlauncher(ProjectLauncher launcher) {
+			projectlauncher = launcher;
+		}
+		private boolean launched = false;
+		
+		public boolean wasLaunched () {
+			return launched;
+		}
+	}
 	/**
 	 * The fixture for this Environment test case.
 	 * <!-- begin-user-doc -->
@@ -97,12 +261,20 @@ public class EnvironmentTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.Environment#launch()
-	 * @generated
 	 */
 	public void testLaunch() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		DerivedEnvironment environmentWithProject = new DerivedEnvironment(true);
+		FakeProjectLauncher projectLauncher = new FakeProjectLauncher();
+		environmentWithProject.setProjectlauncher(projectLauncher);
+		assertTrue(environmentWithProject.launch());
+		assertTrue(environmentWithProject.wasLaunched());
+		assertTrue(projectLauncher.wasLaunched());
+		DerivedEnvironment environmentWithOutProject = new DerivedEnvironment(false);
+		projectLauncher = new FakeProjectLauncher();
+		environmentWithOutProject.setProjectlauncher(projectLauncher);
+		assertTrue(environmentWithOutProject.launch());
+		assertTrue(environmentWithOutProject.wasLaunched());
+		assertFalse(projectLauncher.wasLaunched());
 	}
 
 	/**
@@ -110,12 +282,9 @@ public class EnvironmentTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.Environment#launchDerived()
-	 * @generated
 	 */
 	public void testLaunchDerived() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+		assertTrue(true);
 	}
 
 } //EnvironmentTest

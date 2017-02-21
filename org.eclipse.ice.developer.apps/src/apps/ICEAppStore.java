@@ -35,7 +35,7 @@ public class ICEAppStore {
 		// Launch the environment
 		environment.launch();
 		
-		System.out.println("Hello:\n" + AppsFactory.eINSTANCE.createEnvironmentManager().persistToXMIString(environment));
+		System.out.println(AppsFactory.eINSTANCE.createEnvironmentManager().persistToXMIString(environment));
 	}
 
 }
