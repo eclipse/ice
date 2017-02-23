@@ -146,6 +146,8 @@ public class DockerAPITest extends TestCase {
 			e.printStackTrace();
 			fail();
 		}
+		
+		buildFile.delete();
 	}
 
 	/**
