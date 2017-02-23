@@ -53,10 +53,11 @@
 			<!-- Configure jboss repository-utils to use our index.html and add the nebula update
 			     site to the repository references. This shouldn't be needed once nebula is included
 			     in the simrel repo
+			-->
 			<plugin>
 				<groupId>org.jboss.tools.tycho-plugins</groupId>
 				<artifactId>repository-utils</artifactId>
-				<version>0.23.3</version>
+				<version>0.26.1</version>
 				<executions>
 					<execution>
 						<id>generate-facade</id>
@@ -74,14 +75,10 @@
 	                            <target.eclipse.version>${target.eclipse.version}</target.eclipse.version>
 	                        </symbols>
 	                        <siteTemplateFolder>siteTemplateFolder/</siteTemplateFolder>
-							<associateSites>
-								<site>http://download.eclipse.org/eavp/builds/next</site>
-							</associateSites>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			-->
 		</plugins>
 	</build>
 
