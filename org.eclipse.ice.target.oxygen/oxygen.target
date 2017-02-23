@@ -167,8 +167,8 @@
 <repository location="http://bintray.com/artifact/download/pontesegger/ease-engines/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.spotify.dockerclient.shaded.feature.feature.group" version="8.0.1.201702230918"/>
-<repository location="http://eclipseice.ornl.gov/downloads/docker_client/8.0.1-SNAPSHOT/p2"/>
+<unit id="com.spotify.dockerclient.shaded.feature.feature.group" version="0.0.0"/>
+<repository location="http://eclipseice.ornl.gov/downloads/docker_client/8.0.1-SNAPSHOT/p2/"/>
 </location>
 </locations>
 </target>

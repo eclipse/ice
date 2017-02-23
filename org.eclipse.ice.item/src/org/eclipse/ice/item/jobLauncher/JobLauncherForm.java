@@ -12,14 +12,12 @@
  *******************************************************************************/
 package org.eclipse.ice.item.jobLauncher;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.ice.datastructures.ICEObject.IUpdateable;
 import org.eclipse.ice.datastructures.entry.ContinuousEntry;
 import org.eclipse.ice.datastructures.entry.DiscreteEntry;
 import org.eclipse.ice.datastructures.entry.FileEntry;
@@ -29,10 +27,6 @@ import org.eclipse.ice.datastructures.form.DataComponent;
 import org.eclipse.ice.datastructures.form.Form;
 import org.eclipse.ice.datastructures.form.ResourceComponent;
 
-import com.spotify.docker.client.DockerCertificateException;
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
-import com.spotify.docker.client.messages.Image;
 
 /**
  * <p>

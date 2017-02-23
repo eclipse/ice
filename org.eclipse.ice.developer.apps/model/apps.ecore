@@ -27,7 +27,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EReference" name="dependentPackages" upperBound="-1"
-        eType="#//SpackPackage" containment="true">
+        eType="#//Package" containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The list of packages that the application in this environment depends on. "/>
       </eAnnotations>
@@ -41,7 +41,7 @@
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="generateProject" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"
         defaultValueLiteral="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryApp" eType="#//SpackPackage"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryApp" eType="#//Package"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="EnvironmentType">
@@ -86,25 +86,14 @@
       <eParameters name="fileName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="SpackPackage">
+  <eClassifiers xsi:type="ecore:EClass" name="SpackPackage" eSuperTypes="#//Package">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The SpackPackage class encapsulates the data required to describe a spack package, and the data need to install the package. "/>
     </eAnnotations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The name of the package. "/>
-      </eAnnotations>
-    </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="compiler" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral="gcc@6.3.1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The compiler to use for this package. "/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="latest">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The available versions. "/>
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="cppFlags" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -123,9 +112,6 @@
         <details key="documentation" value="Reference to virtual dependency provider. "/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="branch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="master"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Environment" eSuperTypes="#//IEnvironment">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -177,6 +163,23 @@
       <eParameters name="project" eType="#//SpackPackage"/>
     </eOperations>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Package" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PackageType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PackageType">
+    <eLiterals name="OS"/>
+    <eLiterals name="Spack" value="1"/>
+    <eLiterals name="Source" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SourcePackage" eSuperTypes="#//Package">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="repoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="branch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="master"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="buildCommand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="OSPackage" eSuperTypes="#//Package"/>
   <eSubpackages name="docker" nsURI="http://eclipse.org/apps/docker" nsPrefix="dockerenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="DockerEnvironment" eSuperTypes="#//Environment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -26,8 +26,8 @@ public class DockerEnvironmentTest extends EnvironmentTest {
 			+ "       \"type\": \"Docker\"\n" + "    },\n" + "    \"Application\": {\n" + "       \"name\": \"xacc\",\n"
 			+ "       \"repoURL\": \"https://github.com/ORNL-QCI/xacc\",\n" + "       \"compiler\": \"gcc@6.1.0\"\n"
 			+ "     },\n" + "     \"Dependencies\": [\n" + "         {\n" + "           \"name\": \"cmake\",\n"
-			+ "           \"compiler\": \"gcc@6.1.0\"\n" + "         },\n" + "         {\n"
-			+ "           \"name\": \"llvm\",\n" + "           \"compiler\": \"gcc@6.1.0\"\n" + "         }\n"
+			+ "           \"compiler\": \"gcc@6.3.1\"\n" + "         },\n" + "         {\n"
+			+ "           \"name\": \"llvm\",\n" + "           \"compiler\": \"gcc@6.3.1\"\n" + "         }\n"
 			+ "      ],\n" + "      \"ContainerConfig\": {\n" + "         \"name\": \"xaccdev\",\n"
 			+ "         \"ephemeral\": true\n" + "      }\n" + "}";
 
@@ -115,7 +115,7 @@ public class DockerEnvironmentTest extends EnvironmentTest {
 	
 	public void testLaunchDerived() {
 		String expectedFile = "from eclipseice/base-fedora\n" + 
-				"run /bin/bash -c \"spack compiler find && spack install cmake %gcc@6.1.0 && spack install llvm %gcc@6.1.0 \"\n" + 
+				"run /bin/bash -c \"spack compiler find && spack install cmake %gcc@6.3.1 && spack install llvm %gcc@6.3.1 \"\n" + 
 				"run git clone --recursive -b master https://github.com/ORNL-QCI/xacc xacc\n"; 
 		// Get a valid Environment
 		DockerEnvironment env = (DockerEnvironment) JsonEnvironmentCreator.create(jsonStr);

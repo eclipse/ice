@@ -8,6 +8,10 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Ignore;
 
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
+
 import apps.docker.DockerAPI;
 import apps.docker.DockerFactory;
 
@@ -101,29 +105,17 @@ public class DockerAPITest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String) <em>Build Image</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+	 * Tests the
+	 * '{@link apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String)
+	 * <em>Build Image</em>}' operation. <!-- begin-user-doc --> <!--
+	 * end-user-doc -->
+	 * 
 	 * @see apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String)
-	 * @generated
 	 */
 	public void testBuildImage__String_String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link apps.docker.DockerAPI#buildImage(java.lang.String) <em>Build Image</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see apps.docker.DockerAPI#buildImage(java.lang.String)
-	 */
-	@Ignore
-	public void testBuildImage__String() {
-		String dockerFileContents = "from eclipseice/base-fedora\n" + 
-				"run /bin/bash -c \"spack compiler find && spack install --fake cmake\"\n" + 
-				"run git clone --recursive -b master https://github.com/ORNL-QCI/xacc xacc\n"; 
+		String dockerFileContents = "from eclipseice/base-fedora\n"
+				+ "run /bin/bash -c \"source /root/.bashrc && spack compiler find && spack install --fake cmake\"\n"
+				+ "run git clone --recursive -b master https://github.com/ORNL-QCI/xacc xacc\n";
 
 		System.out.println("DockerFile:\n" + dockerFileContents);
 
@@ -138,8 +130,22 @@ public class DockerAPITest extends TestCase {
 
 		// Build the Image
 		fixture.buildImage(buildFile.getParent(), "test/test_image");
+		DefaultDockerClient.Builder builder = null;
+		try {
+			builder = DefaultDockerClient.fromEnv();
+		} catch (DockerCertificateException e) {
+			e.printStackTrace();
+			fail();
+		}
 
-		System.out.println("hello world, image built");
+		DefaultDockerClient dockerClient = builder.build();
+
+		try {
+			dockerClient.removeImage("test/test_image");
+		} catch (DockerException | InterruptedException e) {
+			e.printStackTrace();
+			fail();
+		}
 	}
 
 	/**

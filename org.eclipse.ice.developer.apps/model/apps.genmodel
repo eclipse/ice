@@ -10,6 +10,11 @@
       <genEnumLiterals ecoreEnumLiteral="apps.ecore#//EnvironmentType/Docker"/>
       <genEnumLiterals ecoreEnumLiteral="apps.ecore#//EnvironmentType/Local"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="apps.ecore#//PackageType">
+      <genEnumLiterals ecoreEnumLiteral="apps.ecore#//PackageType/OS"/>
+      <genEnumLiterals ecoreEnumLiteral="apps.ecore#//PackageType/Spack"/>
+      <genEnumLiterals ecoreEnumLiteral="apps.ecore#//PackageType/Source"/>
+    </genEnums>
     <genClasses image="false" ecoreClass="apps.ecore#//IEnvironment">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/name"/>
@@ -40,14 +45,12 @@
       </genOperations>
     </genClasses>
     <genClasses ecoreClass="apps.ecore#//SpackPackage">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/compiler"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/version"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/cppFlags"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/virtualDependency"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/virtualDependencyProvider"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/repoURL"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/branch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SourcePackage/branch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SourcePackage/repoURL"/>
     </genClasses>
     <genClasses ecoreClass="apps.ecore#//Environment">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//Environment/projectlauncher"/>
@@ -69,6 +72,17 @@
         <genParameters ecoreParameter="apps.ecore#//LocalCDTProjectLauncher/launchProject/project"/>
       </genOperations>
     </genClasses>
+    <genClasses image="false" ecoreClass="apps.ecore#//Package">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//Package/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//Package/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//Package/type"/>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//SourcePackage">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SourcePackage/repoURL"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SourcePackage/branch"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SourcePackage/buildCommand"/>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//OSPackage"/>
     <nestedGenPackages prefix="Docker" basePackage="apps" disposableProviderFactory="true"
         ecorePackage="apps.ecore#//docker">
       <genClasses ecoreClass="apps.ecore#//docker/DockerEnvironment">

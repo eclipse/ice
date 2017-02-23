@@ -32,9 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
 
 /**
  * The ICEJob is a subclass of the Eclipse Job class that provides a run

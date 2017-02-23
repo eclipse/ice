@@ -25,10 +25,10 @@ import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
 
 import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerException;
 import com.spotify.docker.client.LogStream;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
@@ -75,12 +75,12 @@ public class CreateDockerContainerAction extends RemoteExecutionAction {
 		// status to Processing
 		status = FormStatus.Processing;
 		
-		try {
-			dockerClient = new DockerClientFactory().getDockerClient();
-		} catch (DockerCertificateException | IOException | InterruptedException e1) {
-			actionError("Error in getting a reference to Docker or listing available Images.", e1);
-			return status;
-		}
+			try {
+				dockerClient = new DockerClientFactory().getDockerClient();
+			} catch (DockerCertificateException | IOException | InterruptedException e1) {
+				actionError("Error in getting a reference to Docker or listing available Images.", e1);
+				return status;
+			}
 
 		if (dockerClient != null) {
 		
@@ -93,13 +93,14 @@ public class CreateDockerContainerAction extends RemoteExecutionAction {
 
 			ContainerInfo info  = null;
 			try {
-				ContainerCreation creation = dockerClient.createContainer(containerConfig);
+				ContainerCreation creation;
+				creation = dockerClient.createContainer(containerConfig);
 				containerId = creation.id();
 				dockerClient.startContainer(containerId);
 
 				// Query the info on the new container.
 				info = dockerClient.inspectContainer(containerId);
-				
+
 			} catch (DockerException | InterruptedException e) {
 				actionError("Error in creating the container.", e);
 				return status;
