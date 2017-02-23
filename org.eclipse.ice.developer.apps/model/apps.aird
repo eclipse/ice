@@ -766,12 +766,6 @@
             <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
           </endLabelStyleDescription>
         </computedStyleDescriptions>
-        <computedStyleDescriptions xmi:type="style:FlatContainerStyleDescription" xmi:id="_IRhUgPh6Eeaf9eElEk8R_g" arcWidth="8" arcHeight="8" borderSizeComputationExpression="1" tooltipExpression="service:renderTooltip" roundedCorner="true" widthComputationExpression="12" heightComputationExpression="10" backgroundStyle="Liquid">
-          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
-          <backgroundColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
-          <foregroundColor xmi:type="description:UserFixedColor" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@userColorsPalettes[name='Ecore%20Palette']/@entries[name='EClass']"/>
-        </computedStyleDescriptions>
       </data>
     </ownedAnnotationEntries>
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_qRt1x_exEeaf9eElEk8R_g" source="GMF_DIAGRAMS">
@@ -1152,14 +1146,15 @@
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EEnum']/@subNodeMappings[name='EC%20EEnumLiteral']"/>
       </ownedElements>
     </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_qjoFIvexEeaf9eElEk8R_g" name="EnvironmentManager" tooltipText="&#xA;ERROR : The name 'null' is not well formed&#xA;ERROR : The typed element must have a type" width="12" height="10">
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_qjoFIvexEeaf9eElEk8R_g" name="EnvironmentManager" tooltipText="" width="12" height="10">
       <target xmi:type="ecore:EClass" href="apps.ecore#//EnvironmentManager"/>
       <semanticElements xmi:type="ecore:EClass" href="apps.ecore#//EnvironmentManager"/>
       <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
       <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
       <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
-      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_IRh7kPh6Eeaf9eElEk8R_g" labelSize="14" labelColor="239,41,41" description="_IRhUgPh6Eeaf9eElEk8R_g" borderSize="1" borderSizeComputationExpression="1" borderColor="239,41,41" backgroundStyle="Liquid" foregroundColor="255,252,216">
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_zaKq0PncEea3-aQl-iD4pA" labelSize="14" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
         <customFeatures>labelSize</customFeatures>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
       <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_qjsWk_exEeaf9eElEk8R_g" name="createEnvironment(type EString) : IEnvironment" tooltipText="createEnvironment(type) : IEnvironment">
@@ -1240,7 +1235,7 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
       </ownedElements>
-      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_qjs9pPexEeaf9eElEk8R_g" name="compiler : EString = gcc@6.3.0" tooltipText="">
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_qjs9pPexEeaf9eElEk8R_g" name="compiler : EString = gcc@6.3.1" tooltipText="">
         <target xmi:type="ecore:EAttribute" href="apps.ecore#//SpackPackage/compiler"/>
         <semanticElements xmi:type="ecore:EAttribute" href="apps.ecore#//SpackPackage/compiler"/>
         <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_qjs9pfexEeaf9eElEk8R_g" labelSize="14" labelAlignment="LEFT">
@@ -1488,6 +1483,12 @@
             <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='dark_blue']"/>
           </endLabelStyleDescription>
         </computedStyleDescriptions>
+        <computedStyleDescriptions xmi:type="style:FlatContainerStyleDescription" xmi:id="_4awacPkZEeaf9eElEk8R_g" arcWidth="8" arcHeight="8" borderSizeComputationExpression="1" tooltipExpression="service:renderTooltip" roundedCorner="true" widthComputationExpression="12" heightComputationExpression="10" backgroundStyle="Liquid">
+          <borderColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+          <labelColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='red']"/>
+          <backgroundColor xmi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='white']"/>
+          <foregroundColor xmi:type="description:UserFixedColor" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@userColorsPalettes[name='Ecore%20Palette']/@entries[name='EClass']"/>
+        </computedStyleDescriptions>
       </data>
     </ownedAnnotationEntries>
     <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_sCkIV_exEeaf9eElEk8R_g" source="GMF_DIAGRAMS">
@@ -1498,6 +1499,10 @@
             <children xmi:type="notation:Node" xmi:id="_siatGvexEeaf9eElEk8R_g" type="3010" element="_siYQ0vexEeaf9eElEk8R_g">
               <styles xmi:type="notation:FontStyle" xmi:id="_siatG_exEeaf9eElEk8R_g" fontColor="8224125" fontName=".SF NS Text" fontHeight="14" italic="true"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_siatHPexEeaf9eElEk8R_g"/>
+            </children>
+            <children xmi:type="notation:Node" xmi:id="_fNx4wPnWEeaf9eElEk8R_g" type="3010" element="_fNWa8PnWEeaf9eElEk8R_g">
+              <styles xmi:type="notation:FontStyle" xmi:id="_fNx4wfnWEeaf9eElEk8R_g" fontName=".SF NS Text" fontHeight="14"/>
+              <layoutConstraint xmi:type="notation:Location" xmi:id="_fNx4wvnWEeaf9eElEk8R_g"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_siaGBfexEeaf9eElEk8R_g"/>
             <styles xmi:type="notation:FilteringStyle" xmi:id="_siaGBvexEeaf9eElEk8R_g"/>
@@ -1571,11 +1576,11 @@
               <layoutConstraint xmi:type="notation:Location" xmi:id="_rTAROPhBEeaf9eElEk8R_g"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="__rxPMPhDEeaf9eElEk8R_g" type="3010" element="__rka4PhDEeaf9eElEk8R_g">
-              <styles xmi:type="notation:FontStyle" xmi:id="__rxPMfhDEeaf9eElEk8R_g" fontColor="2697711" fontName=".SF NS Text" fontHeight="8"/>
+              <styles xmi:type="notation:FontStyle" xmi:id="__rxPMfhDEeaf9eElEk8R_g" fontColor="2697711" fontName=".SF NS Text" fontHeight="14"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="__rxPMvhDEeaf9eElEk8R_g"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="_oXTCIPhOEeaf9eElEk8R_g" type="3010" element="_oXFmwPhOEeaf9eElEk8R_g">
-              <styles xmi:type="notation:FontStyle" xmi:id="_oXTCIfhOEeaf9eElEk8R_g" fontColor="2697711" fontName=".SF NS Text" fontHeight="8"/>
+              <styles xmi:type="notation:FontStyle" xmi:id="_oXTCIfhOEeaf9eElEk8R_g" fontColor="2697711" fontName=".SF NS Text" fontHeight="14"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_oXTCIvhOEeaf9eElEk8R_g"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="_rTAROfhBEeaf9eElEk8R_g" type="3010" element="_rS909vhBEeaf9eElEk8R_g">
@@ -1587,7 +1592,7 @@
               <layoutConstraint xmi:type="notation:Location" xmi:id="_rTARPvhBEeaf9eElEk8R_g"/>
             </children>
             <children xmi:type="notation:Node" xmi:id="_puVL4PhhEeaf9eElEk8R_g" type="3010" element="_puKz0PhhEeaf9eElEk8R_g">
-              <styles xmi:type="notation:FontStyle" xmi:id="_puVL4fhhEeaf9eElEk8R_g" fontName=".SF NS Text" fontHeight="8"/>
+              <styles xmi:type="notation:FontStyle" xmi:id="_puVL4fhhEeaf9eElEk8R_g" fontName=".SF NS Text" fontHeight="14"/>
               <layoutConstraint xmi:type="notation:Location" xmi:id="_puVL4vhhEeaf9eElEk8R_g"/>
             </children>
             <styles xmi:type="notation:SortingStyle" xmi:id="_rS_qJfhBEeaf9eElEk8R_g"/>
@@ -1668,22 +1673,31 @@
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>
       </ownedElements>
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_fNWa8PnWEeaf9eElEk8R_g" name="getDockerFileContents() : EString" tooltipText="getDockerFileContents() : EString">
+        <target xmi:type="ecore:EOperation" href="apps.ecore#//docker/DockerEnvironment/getDockerFileContents"/>
+        <semanticElements xmi:type="ecore:EOperation" href="apps.ecore#//docker/DockerEnvironment/getDockerFileContents"/>
+        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_fNXCAPnWEeaf9eElEk8R_g" labelSize="14" labelAlignment="LEFT">
+          <customFeatures>labelSize</customFeatures>
+          <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
+        </ownedStyle>
+        <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']"/>
+      </ownedElements>
     </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_siV0k_exEeaf9eElEk8R_g" name="DockerAPI" tooltipText="" incomingEdges="_siZe8PexEeaf9eElEk8R_g" width="12" height="10">
+    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_siV0k_exEeaf9eElEk8R_g" name="DockerAPI" tooltipText="&#xA;ERROR : The name 'null' is not well formed&#xA;ERROR : The typed element must have a type" incomingEdges="_siZe8PexEeaf9eElEk8R_g" width="12" height="10">
       <target xmi:type="ecore:EClass" href="apps.ecore#//docker/DockerAPI"/>
       <semanticElements xmi:type="ecore:EClass" href="apps.ecore#//docker/DockerAPI"/>
       <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
       <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
       <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
-      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_siWboPexEeaf9eElEk8R_g" labelSize="14" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_4awacfkZEeaf9eElEk8R_g" labelSize="14" labelColor="239,41,41" description="_4awacPkZEeaf9eElEk8R_g" borderSize="1" borderSizeComputationExpression="1" borderColor="239,41,41" backgroundStyle="Liquid" foregroundColor="255,252,216">
         <customFeatures>labelSize</customFeatures>
-        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
-      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_siYQ1PexEeaf9eElEk8R_g" name="buildImage(buildFile EString)" tooltipText="buildImage(buildFile)">
+      <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_siYQ1PexEeaf9eElEk8R_g" name="buildImage(buildFile EString, imagename EString)" tooltipText="buildImage(buildFile, imagename)">
         <target xmi:type="ecore:EOperation" href="apps.ecore#//docker/DockerAPI/buildImage"/>
         <semanticElements xmi:type="ecore:EOperation" href="apps.ecore#//docker/DockerAPI/buildImage"/>
         <semanticElements xmi:type="ecore:EParameter" href="apps.ecore#//docker/DockerAPI/buildImage/buildFile"/>
+        <semanticElements xmi:type="ecore:EParameter" href="apps.ecore#//docker/DockerAPI/buildImage/imagename"/>
         <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_siYQ1fexEeaf9eElEk8R_g" labelSize="14" labelAlignment="LEFT">
           <customFeatures>labelSize</customFeatures>
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='Operation']/@style"/>
@@ -1828,7 +1842,8 @@
       <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="__rka4PhDEeaf9eElEk8R_g" name="developmentEnvironment : Boolean = true" tooltipText="">
         <target xmi:type="ecore:EAttribute" href="apps.ecore#//IEnvironment/developmentEnvironment"/>
         <semanticElements xmi:type="ecore:EAttribute" href="apps.ecore#//IEnvironment/developmentEnvironment"/>
-        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_EgRgAPhEEeaf9eElEk8R_g" labelAlignment="LEFT">
+        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_EgRgAPhEEeaf9eElEk8R_g" labelSize="14" labelAlignment="LEFT">
+          <customFeatures>labelSize</customFeatures>
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
@@ -1836,7 +1851,8 @@
       <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_oXFmwPhOEeaf9eElEk8R_g" name="generateProject : Boolean = false" tooltipText="">
         <target xmi:type="ecore:EAttribute" href="apps.ecore#//IEnvironment/generateProject"/>
         <semanticElements xmi:type="ecore:EAttribute" href="apps.ecore#//IEnvironment/generateProject"/>
-        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_pvbSsPhOEeaf9eElEk8R_g" labelAlignment="LEFT">
+        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_pvbSsPhOEeaf9eElEk8R_g" labelSize="14" labelAlignment="LEFT">
+          <customFeatures>labelSize</customFeatures>
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EAttribute']"/>
@@ -1862,7 +1878,8 @@
       <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_puKz0PhhEeaf9eElEk8R_g" name=" primaryApp : SpackPackage" tooltipText="">
         <target xmi:type="ecore:EReference" href="apps.ecore#//IEnvironment/primaryApp"/>
         <semanticElements xmi:type="ecore:EReference" href="apps.ecore#//IEnvironment/primaryApp"/>
-        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_puKz0fhhEeaf9eElEk8R_g" labelAlignment="LEFT" color="114,159,207">
+        <ownedStyle xmi:type="diagram:BundledImage" xmi:id="_puKz0fhhEeaf9eElEk8R_g" labelSize="14" labelAlignment="LEFT" color="114,159,207">
+          <customFeatures>labelSize</customFeatures>
           <description xmi:type="style:BundledImageDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']/@style"/>
         </ownedStyle>
         <actualMapping xmi:type="description_1:NodeMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@subNodeMappings[name='EC%20EReferenceNode']"/>

@@ -59,7 +59,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String COMPILER_EDEFAULT = "gcc@6.3.0";
+	protected static final String COMPILER_EDEFAULT = "gcc@6.3.1";
 
 	/**
 	 * The cached value of the '{@link #getCompiler() <em>Compiler</em>}' attribute.

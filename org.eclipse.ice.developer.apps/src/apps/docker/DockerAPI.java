@@ -28,7 +28,7 @@ public interface DockerAPI extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void buildImage(String buildFile);
+	void buildImage(String buildFile, String imagename);
 
 	/**
 	 * <!-- begin-user-doc -->

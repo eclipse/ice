@@ -15,12 +15,13 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
 import com.google.common.net.HostAndPort;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DefaultDockerClient.Builder;
-import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerCertificates;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
 
 /**
  * This class provides a factory method for creating the DefaultDockerClient in
@@ -44,7 +45,7 @@ public class DockerClientFactory {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public DockerClient getDockerClient() throws DockerCertificateException, IOException, InterruptedException {
+	public DockerClient getDockerClient() throws DockerCertificateException, IOException, InterruptedException  {
 		DockerClient client = null;
 
 		// If this is not Linux, then we have to find DOCKER_HOST
@@ -95,7 +96,7 @@ public class DockerClientFactory {
 					System.out.println("DOCKERHOST: " + endpoint);
 					System.out.println("DOCKER CERT PATH: " + dockerSettings.getProperty("DOCKER_CERT_PATH"));
 					// Set up the certificates
-					DockerCertificates certs = DockerCertificates.builder().dockerCertPath(dockerCertPath).build();
+					Optional<DockerCertificates> certs = DockerCertificates.builder().dockerCertPath(dockerCertPath).build();
 
 					// Set the data need for the builder.
 					String stripped = endpoint.replaceAll(".*://", "");
@@ -106,7 +107,7 @@ public class DockerClientFactory {
 					String address = hostText;
 					builder.uri(scheme + "://" + address + ":" + port);
 					if (certs != null) {
-						builder.dockerCertificates(certs);
+						builder.dockerCertificates(certs.get());
 					}
 
 					// Build the Dockerclient!

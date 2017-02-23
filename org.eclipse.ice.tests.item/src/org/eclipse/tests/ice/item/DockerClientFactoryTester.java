@@ -10,7 +10,6 @@ import org.eclipse.ice.item.jobLauncher.DockerClientFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.spotify.docker.client.DockerCertificateException;
 import com.spotify.docker.client.DockerClient;
 
 /**
@@ -48,7 +47,9 @@ public class DockerClientFactoryTester {
 			DockerClient client = null;
 			try {
 				client = factory.getDockerClient();
-			} catch (DockerCertificateException | IOException | InterruptedException e) {
+			} catch (com.spotify.docker.client.exceptions.DockerCertificateException | IOException
+					| InterruptedException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 				fail();
 			}

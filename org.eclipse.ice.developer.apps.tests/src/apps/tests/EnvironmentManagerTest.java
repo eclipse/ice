@@ -21,21 +21,14 @@ import junit.textui.TestRunner;
  * <p>
  * The following operations are tested:
  * <ul>
- * <li>{@link apps.EnvironmentManager#createEnvironment(java.lang.String)
- * <em>Create Environment</em>}</li>
- * <li>{@link apps.EnvironmentManager#listExistingEnvironments() <em>List
- * Existing Environments</em>}</li>
- * <li>{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String)
- * <em>Load Existing Environment</em>}</li>
- * <li>{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String)
- * <em>Load Environment From File</em>}</li>
- * <li>{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment)
- * <em>Persist To XMI String</em>}</li>
- * <li>{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String)
- * <em>Persist XMI To File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#createEnvironment(java.lang.String) <em>Create Environment</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String) <em>Load Existing Environment</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment) <em>Persist To XMI String</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String) <em>Persist XMI To File</em>}</li>
  * </ul>
  * </p>
- * 
  * @generated
  */
 public class EnvironmentManagerTest extends TestCase {
@@ -49,16 +42,15 @@ public class EnvironmentManagerTest extends TestCase {
 			+ "      ],\n" + "      \"ContainerConfig\": {\n" + "         \"name\": \"xaccdev\",\n"
 			+ "         \"ephemeral\": true\n" + "      }\n" + "}";
 	/**
-	 * The fixture for this Environment Manager test case. <!-- begin-user-doc
+	 * The fixture for this Environment Manager test case.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected EnvironmentManager fixture = null;
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -97,7 +89,6 @@ public class EnvironmentManagerTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -108,7 +99,6 @@ public class EnvironmentManagerTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

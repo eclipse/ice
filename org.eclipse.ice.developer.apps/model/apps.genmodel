@@ -76,10 +76,12 @@
             ecoreFeature="ecore:EReference apps.ecore#//docker/DockerEnvironment/docker"/>
         <genFeatures children="true" createChild="true" propertySortChoices="true"
             ecoreFeature="ecore:EReference apps.ecore#//docker/DockerEnvironment/containerConfiguration"/>
+        <genOperations ecoreOperation="apps.ecore#//docker/DockerEnvironment/getDockerFileContents"/>
       </genClasses>
       <genClasses ecoreClass="apps.ecore#//docker/DockerAPI">
         <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/buildImage">
           <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/buildImage/buildFile"/>
+          <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/buildImage/imagename"/>
         </genOperations>
         <genOperations ecoreOperation="apps.ecore#//docker/DockerAPI/launchContainer">
           <genParameters ecoreParameter="apps.ecore#//docker/DockerAPI/launchContainer/name"/>

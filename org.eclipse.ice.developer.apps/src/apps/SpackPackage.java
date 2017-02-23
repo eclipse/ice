@@ -59,7 +59,7 @@ public interface SpackPackage extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Compiler</b></em>' attribute.
-	 * The default value is <code>"gcc@6.3.0"</code>.
+	 * The default value is <code>"gcc@6.3.1"</code>.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -68,7 +68,7 @@ public interface SpackPackage extends EObject {
 	 * @return the value of the '<em>Compiler</em>' attribute.
 	 * @see #setCompiler(String)
 	 * @see apps.AppsPackage#getSpackPackage_Compiler()
-	 * @model default="gcc@6.3.0"
+	 * @model default="gcc@6.3.1"
 	 * @generated
 	 */
 	String getCompiler();

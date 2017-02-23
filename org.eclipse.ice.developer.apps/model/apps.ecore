@@ -96,7 +96,7 @@
       </eAnnotations>
     </eStructuralFeatures>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="compiler" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        defaultValueLiteral="gcc@6.3.0">
+        defaultValueLiteral="gcc@6.3.1">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The compiler to use for this package. "/>
       </eAnnotations>
@@ -182,6 +182,7 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerEnvironment is a realization of the IEnvironment interface that provides a launch method to create a scientific application environment in a Docker container. "/>
       </eAnnotations>
+      <eOperations name="getDockerFileContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="docker" eType="#//docker/DockerAPI"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="containerConfiguration"
           eType="#//docker/ContainerConfiguration" containment="true"/>
@@ -195,6 +196,7 @@
           <details key="documentation" value="Build the image described by the provided Dockerfile build string. "/>
         </eAnnotations>
         <eParameters name="buildFile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="imagename" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
       <eOperations name="launchContainer">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

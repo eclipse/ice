@@ -6,13 +6,22 @@ import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerPackage;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Paths;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
+import com.spotify.docker.client.DefaultDockerClient;
+import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.ProgressHandler;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.messages.ProgressMessage;
 
 /**
  * <!-- begin-user-doc -->
@@ -22,13 +31,22 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * @generated
  */
 public class DockerAPIImpl extends MinimalEObjectImpl.Container implements DockerAPI {
+	
+	private DockerClient dockerClient;
+	
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected DockerAPIImpl() {
 		super();
+		DefaultDockerClient.Builder builder = null;
+		try {
+			builder = DefaultDockerClient.fromEnv();
+		} catch (DockerCertificateException e) {
+			e.printStackTrace();
+		}
+		dockerClient = builder.build();
 	}
 
 	/**
@@ -44,23 +62,28 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
-	public void buildImage(String buildFile) {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+	public void buildImage(String buildDir, String imagename) {
+
+		try {
+			dockerClient.build(Paths.get(buildDir), imagename, new ProgressHandler() {
+				@Override
+				public void progress(ProgressMessage message) throws DockerException {
+					final String imageId = message.buildImageId();
+					System.out.println(imageId + ", " + message.progress() + ", " + message.toString());
+				}
+			});
+		} catch (DockerException | InterruptedException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public void launchContainer(String name, ContainerConfiguration config) {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -82,8 +105,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case DockerPackage.DOCKER_API___BUILD_IMAGE__STRING:
-				buildImage((String)arguments.get(0));
+			case DockerPackage.DOCKER_API___BUILD_IMAGE__STRING_STRING:
+				buildImage((String)arguments.get(0), (String)arguments.get(1));
 				return null;
 			case DockerPackage.DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION:
 				launchContainer((String)arguments.get(0), (ContainerConfiguration)arguments.get(1));

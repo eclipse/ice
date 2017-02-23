@@ -156,6 +156,15 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getDockerEnvironment__GetDockerFileContents() {
+		return dockerEnvironmentEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getDockerAPI() {
 		return dockerAPIEClass;
 	}
@@ -165,7 +174,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getDockerAPI__BuildImage__String() {
+	public EOperation getDockerAPI__BuildImage__String_String() {
 		return dockerAPIEClass.getEOperations().get(0);
 	}
 
@@ -272,9 +281,10 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		dockerEnvironmentEClass = createEClass(DOCKER_ENVIRONMENT);
 		createEReference(dockerEnvironmentEClass, DOCKER_ENVIRONMENT__DOCKER);
 		createEReference(dockerEnvironmentEClass, DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION);
+		createEOperation(dockerEnvironmentEClass, DOCKER_ENVIRONMENT___GET_DOCKER_FILE_CONTENTS);
 
 		dockerAPIEClass = createEClass(DOCKER_API);
-		createEOperation(dockerAPIEClass, DOCKER_API___BUILD_IMAGE__STRING);
+		createEOperation(dockerAPIEClass, DOCKER_API___BUILD_IMAGE__STRING_STRING);
 		createEOperation(dockerAPIEClass, DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION);
 		createEOperation(dockerAPIEClass, DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING);
 
@@ -325,10 +335,13 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		initEReference(getDockerEnvironment_Docker(), this.getDockerAPI(), null, "docker", null, 0, 1, DockerEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDockerEnvironment_ContainerConfiguration(), this.getContainerConfiguration(), null, "containerConfiguration", null, 0, 1, DockerEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEOperation(getDockerEnvironment__GetDockerFileContents(), ecorePackage.getEString(), "getDockerFileContents", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(dockerAPIEClass, DockerAPI.class, "DockerAPI", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		EOperation op = initEOperation(getDockerAPI__BuildImage__String(), null, "buildImage", 0, 1, IS_UNIQUE, IS_ORDERED);
+		EOperation op = initEOperation(getDockerAPI__BuildImage__String_String(), null, "buildImage", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "buildFile", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "imagename", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = initEOperation(getDockerAPI__LaunchContainer__String_ContainerConfiguration(), null, "launchContainer", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);

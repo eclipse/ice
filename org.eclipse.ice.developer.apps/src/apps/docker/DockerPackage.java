@@ -186,13 +186,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT___LAUNCH_DERIVED = AppsPackage.ENVIRONMENT___LAUNCH_DERIVED;
 
 	/**
+	 * The operation id for the '<em>Get Docker File Contents</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT___GET_DOCKER_FILE_CONTENTS = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 0;
+
+	/**
 	 * The number of operations of the '<em>Environment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 0;
+	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
@@ -220,7 +229,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API___BUILD_IMAGE__STRING = 0;
+	int DOCKER_API___BUILD_IMAGE__STRING_STRING = 0;
 
 	/**
 	 * The operation id for the '<em>Launch Container</em>' operation.
@@ -356,6 +365,16 @@ public interface DockerPackage extends EPackage {
 	EReference getDockerEnvironment_ContainerConfiguration();
 
 	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerEnvironment#getDockerFileContents() <em>Get Docker File Contents</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Get Docker File Contents</em>' operation.
+	 * @see apps.docker.DockerEnvironment#getDockerFileContents()
+	 * @generated
+	 */
+	EOperation getDockerEnvironment__GetDockerFileContents();
+
+	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerAPI <em>API</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -366,14 +385,14 @@ public interface DockerPackage extends EPackage {
 	EClass getDockerAPI();
 
 	/**
-	 * Returns the meta object for the '{@link apps.docker.DockerAPI#buildImage(java.lang.String) <em>Build Image</em>}' operation.
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String) <em>Build Image</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the '<em>Build Image</em>' operation.
-	 * @see apps.docker.DockerAPI#buildImage(java.lang.String)
+	 * @see apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String)
 	 * @generated
 	 */
-	EOperation getDockerAPI__BuildImage__String();
+	EOperation getDockerAPI__BuildImage__String_String();
 
 	/**
 	 * Returns the meta object for the '{@link apps.docker.DockerAPI#launchContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Launch Container</em>}' operation.
@@ -510,6 +529,14 @@ public interface DockerPackage extends EPackage {
 		EReference DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION = eINSTANCE.getDockerEnvironment_ContainerConfiguration();
 
 		/**
+		 * The meta object literal for the '<em><b>Get Docker File Contents</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_ENVIRONMENT___GET_DOCKER_FILE_CONTENTS = eINSTANCE.getDockerEnvironment__GetDockerFileContents();
+
+		/**
 		 * The meta object literal for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -525,7 +552,7 @@ public interface DockerPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation DOCKER_API___BUILD_IMAGE__STRING = eINSTANCE.getDockerAPI__BuildImage__String();
+		EOperation DOCKER_API___BUILD_IMAGE__STRING_STRING = eINSTANCE.getDockerAPI__BuildImage__String_String();
 
 		/**
 		 * The meta object literal for the '<em><b>Launch Container</b></em>' operation.

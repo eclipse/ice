@@ -78,4 +78,12 @@ public interface DockerEnvironment extends Environment {
 	 */
 	void setContainerConfiguration(ContainerConfiguration value);
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model kind="operation"
+	 * @generated
+	 */
+	String getDockerFileContents();
+
 } // DockerEnvironment
