@@ -2,8 +2,8 @@
  */
 package apps.docker.util;
 
-import apps.Environment;
 import apps.IEnvironment;
+import apps.ProjectLauncher;
 import apps.docker.*;
 
 import org.eclipse.emf.ecore.EObject;
@@ -71,7 +71,6 @@ public class DockerSwitch<T> extends Switch<T> {
 			case DockerPackage.DOCKER_ENVIRONMENT: {
 				DockerEnvironment dockerEnvironment = (DockerEnvironment)theEObject;
 				T result = caseDockerEnvironment(dockerEnvironment);
-				if (result == null) result = caseEnvironment(dockerEnvironment);
 				if (result == null) result = caseIEnvironment(dockerEnvironment);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -85,6 +84,13 @@ public class DockerSwitch<T> extends Switch<T> {
 			case DockerPackage.CONTAINER_CONFIGURATION: {
 				ContainerConfiguration containerConfiguration = (ContainerConfiguration)theEObject;
 				T result = caseContainerConfiguration(containerConfiguration);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER: {
+				DockerPTPProjectLauncher dockerPTPProjectLauncher = (DockerPTPProjectLauncher)theEObject;
+				T result = caseDockerPTPProjectLauncher(dockerPTPProjectLauncher);
+				if (result == null) result = caseProjectLauncher(dockerPTPProjectLauncher);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -138,6 +144,21 @@ public class DockerSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>PTP Project Launcher</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>PTP Project Launcher</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDockerPTPProjectLauncher(DockerPTPProjectLauncher object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>IEnvironment</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -153,17 +174,17 @@ public class DockerSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Environment</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Project Launcher</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Environment</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Project Launcher</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnvironment(Environment object) {
+	public T caseProjectLauncher(ProjectLauncher object) {
 		return null;
 	}
 

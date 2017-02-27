@@ -32,10 +32,13 @@ public class ICEAppStore {
 		// Create the Environment
 		IEnvironment environment = cliParser.getEnvironment();
 		
-		// Launch the environment
-		environment.launch();
+		// Build to the environment
+		environment.build();
 		
-		System.out.println(AppsFactory.eINSTANCE.createEnvironmentManager().persistToXMIString(environment));
+		// Connect
+		environment.connect();
+		
+		System.out.println(AppsFactory.eINSTANCE.createEnvironmentManager().persistToXMIString(environment.getName()));
 	}
 
 }

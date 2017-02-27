@@ -59,6 +59,7 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 			case DockerPackage.DOCKER_ENVIRONMENT: return createDockerEnvironment();
 			case DockerPackage.DOCKER_API: return createDockerAPI();
 			case DockerPackage.CONTAINER_CONFIGURATION: return createContainerConfiguration();
+			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER: return createDockerPTPProjectLauncher();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -92,6 +93,16 @@ public class DockerFactoryImpl extends EFactoryImpl implements DockerFactory {
 	public ContainerConfiguration createContainerConfiguration() {
 		ContainerConfigurationImpl containerConfiguration = new ContainerConfigurationImpl();
 		return containerConfiguration;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DockerPTPProjectLauncher createDockerPTPProjectLauncher() {
+		DockerPTPProjectLauncherImpl dockerPTPProjectLauncher = new DockerPTPProjectLauncherImpl();
+		return dockerPTPProjectLauncher;
 	}
 
 	/**

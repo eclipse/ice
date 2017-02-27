@@ -129,6 +129,9 @@ public interface ContainerConfiguration extends EObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Reference to the localhost SSH port for the container. 
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Remote SSH Port</em>' attribute.
 	 * @see #setRemoteSSHPort(int)
 	 * @see apps.docker.DockerPackage#getContainerConfiguration_RemoteSSHPort()

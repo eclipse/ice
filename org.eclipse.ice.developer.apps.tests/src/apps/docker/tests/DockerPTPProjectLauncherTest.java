@@ -1,11 +1,9 @@
 /**
  */
-package apps.tests;
+package apps.docker.tests;
 
-import org.junit.Ignore;
-
-import apps.AppsFactory;
-import apps.LocalCDTProjectLauncher;
+import apps.docker.DockerFactory;
+import apps.docker.DockerPTPProjectLauncher;
 
 import junit.framework.TestCase;
 
@@ -13,25 +11,25 @@ import junit.textui.TestRunner;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Local CDT Project Launcher</b></em>'.
+ * A test case for the model object '<em><b>PTP Project Launcher</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.LocalCDTProjectLauncher#launchProject(apps.SpackPackage) <em>Launch Project</em>}</li>
+ *   <li>{@link apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
  * </ul>
  * </p>
  * @generated
  */
-public class LocalCDTProjectLauncherTest extends TestCase {
+public class DockerPTPProjectLauncherTest extends TestCase {
 
 	/**
-	 * The fixture for this Local CDT Project Launcher test case.
+	 * The fixture for this PTP Project Launcher test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LocalCDTProjectLauncher fixture = null;
+	protected DockerPTPProjectLauncher fixture = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -39,36 +37,36 @@ public class LocalCDTProjectLauncherTest extends TestCase {
 	 * @generated
 	 */
 	public static void main(String[] args) {
-		TestRunner.run(LocalCDTProjectLauncherTest.class);
+		TestRunner.run(DockerPTPProjectLauncherTest.class);
 	}
 
 	/**
-	 * Constructs a new Local CDT Project Launcher test case with the given name.
+	 * Constructs a new PTP Project Launcher test case with the given name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LocalCDTProjectLauncherTest(String name) {
+	public DockerPTPProjectLauncherTest(String name) {
 		super(name);
 	}
 
 	/**
-	 * Sets the fixture for this Local CDT Project Launcher test case.
+	 * Sets the fixture for this PTP Project Launcher test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void setFixture(LocalCDTProjectLauncher fixture) {
+	protected void setFixture(DockerPTPProjectLauncher fixture) {
 		this.fixture = fixture;
 	}
 
 	/**
-	 * Returns the fixture for this Local CDT Project Launcher test case.
+	 * Returns the fixture for this PTP Project Launcher test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected LocalCDTProjectLauncher getFixture() {
+	protected DockerPTPProjectLauncher getFixture() {
 		return fixture;
 	}
 
@@ -80,7 +78,7 @@ public class LocalCDTProjectLauncherTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(AppsFactory.eINSTANCE.createLocalCDTProjectLauncher());
+		setFixture(DockerFactory.eINSTANCE.createDockerPTPProjectLauncher());
 	}
 
 	/**
@@ -95,16 +93,16 @@ public class LocalCDTProjectLauncherTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.LocalCDTProjectLauncher#launchProject(apps.SpackPackage) <em>Launch Project</em>}' operation.
+	 * Tests the '{@link apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.LocalCDTProjectLauncher#launchProject(apps.SpackPackage)
+	 * @see apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage)
+	 * @generated
 	 */
-	@Ignore
-	public void testLaunchProject__SpackPackage() {
+	public void testLaunchProject__SourcePackage() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		fail();
 	}
 
-} //LocalCDTProjectLauncherTest
+} //DockerPTPProjectLauncherTest

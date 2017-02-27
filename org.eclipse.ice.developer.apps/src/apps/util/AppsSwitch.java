@@ -2,8 +2,14 @@
  */
 package apps.util;
 
-import apps.*;
-
+import apps.AppsPackage;
+import apps.EnvironmentManager;
+import apps.IEnvironment;
+import apps.OSPackage;
+import apps.ProjectLauncher;
+import apps.SourcePackage;
+import apps.SpackDependency;
+import apps.SpackPackage;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 
@@ -81,13 +87,7 @@ public class AppsSwitch<T> extends Switch<T> {
 			case AppsPackage.SPACK_PACKAGE: {
 				SpackPackage spackPackage = (SpackPackage)theEObject;
 				T result = caseSpackPackage(spackPackage);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case AppsPackage.ENVIRONMENT: {
-				Environment environment = (Environment)theEObject;
-				T result = caseEnvironment(environment);
-				if (result == null) result = caseIEnvironment(environment);
+				if (result == null) result = casePackage(spackPackage);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -97,17 +97,29 @@ public class AppsSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AppsPackage.PTP_SYNC_PROJECT_LAUNCHER: {
-				PTPSyncProjectLauncher ptpSyncProjectLauncher = (PTPSyncProjectLauncher)theEObject;
-				T result = casePTPSyncProjectLauncher(ptpSyncProjectLauncher);
-				if (result == null) result = caseProjectLauncher(ptpSyncProjectLauncher);
+			case AppsPackage.PACKAGE: {
+				apps.Package package_ = (apps.Package)theEObject;
+				T result = casePackage(package_);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER: {
-				LocalCDTProjectLauncher localCDTProjectLauncher = (LocalCDTProjectLauncher)theEObject;
-				T result = caseLocalCDTProjectLauncher(localCDTProjectLauncher);
-				if (result == null) result = caseProjectLauncher(localCDTProjectLauncher);
+			case AppsPackage.SOURCE_PACKAGE: {
+				SourcePackage sourcePackage = (SourcePackage)theEObject;
+				T result = caseSourcePackage(sourcePackage);
+				if (result == null) result = casePackage(sourcePackage);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AppsPackage.OS_PACKAGE: {
+				OSPackage osPackage = (OSPackage)theEObject;
+				T result = caseOSPackage(osPackage);
+				if (result == null) result = casePackage(osPackage);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AppsPackage.SPACK_DEPENDENCY: {
+				SpackDependency spackDependency = (SpackDependency)theEObject;
+				T result = caseSpackDependency(spackDependency);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -161,21 +173,6 @@ public class AppsSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Environment</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Environment</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEnvironment(Environment object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Project Launcher</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -191,32 +188,62 @@ public class AppsSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>PTP Sync Project Launcher</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Package</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>PTP Sync Project Launcher</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Package</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T casePTPSyncProjectLauncher(PTPSyncProjectLauncher object) {
+	public T casePackage(apps.Package object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Local CDT Project Launcher</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Source Package</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Local CDT Project Launcher</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Source Package</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseLocalCDTProjectLauncher(LocalCDTProjectLauncher object) {
+	public T caseSourcePackage(SourcePackage object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>OS Package</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>OS Package</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseOSPackage(OSPackage object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Spack Dependency</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Spack Dependency</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSpackDependency(SpackDependency object) {
 		return null;
 	}
 

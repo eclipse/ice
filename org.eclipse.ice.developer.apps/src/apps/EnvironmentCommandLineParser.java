@@ -13,6 +13,10 @@ package apps;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -82,6 +86,7 @@ public class EnvironmentCommandLineParser {
 		// Initialize the environment we will return 
 		// to null
 		IEnvironment env = null;
+		EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
 		
 		// If the user said load, then 
 		// let's load the file they provided
@@ -89,17 +94,18 @@ public class EnvironmentCommandLineParser {
 			// Get the name of the XMI file
 			String fileName = cmd.getOptionValue("load");
 			// Return the Environment
-			return AppsFactory.eINSTANCE.createEnvironmentManager().loadEnvironmentFromFile(fileName);
+			return manager.loadEnvironmentFromFile(fileName);
 		} else {
 			// This is a json file if we are here.
 			String fileName = cmd.getOptionValue("create");
-			
-			// Map the json to an Environment
+			String fileString = "";
 			try {
-				env = JsonEnvironmentCreator.create(new FileReader(fileName));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				fileString = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
+			// Map the json to an Environment
+			env = manager.createEnvironment(fileString);
 		}
 		
 		// Return the environmnet

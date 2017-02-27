@@ -32,9 +32,6 @@ public class AppsTests extends TestSuite {
 	public static Test suite() {
 		TestSuite suite = new AppsTests("apps Tests");
 		suite.addTestSuite(EnvironmentManagerTest.class);
-		suite.addTestSuite(EnvironmentTest.class);
-		suite.addTestSuite(PTPSyncProjectLauncherTest.class);
-		suite.addTestSuite(LocalCDTProjectLauncherTest.class);
 		return suite;
 	}
 

@@ -13,23 +13,11 @@ package apps.tests;
 
 import static org.junit.Assert.*;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import apps.EnvironmentCommandLineParser;
-import apps.EnvironmentType;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
+import apps.SourcePackage;
 import apps.SpackPackage;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerEnvironment;
@@ -76,30 +64,23 @@ public class JsonEnvironmentCreatorTest {
 		IEnvironment env = JsonEnvironmentCreator.create(jsonStr);
 		
 		assertEquals(env.getName(), "mccaskey/test_env");
-		assertEquals(env.getType(), EnvironmentType.DOCKER);
+		assertTrue(env instanceof DockerEnvironment);
 		assertEquals(env.getOs(), "fedora");
-		assertTrue(env.isDevelopmentEnvironment());
-		assertFalse(env.isGenerateProject());
 		
-		SpackPackage app = env.getPrimaryApp();
+		apps.SourcePackage app = (SourcePackage) env.getPrimaryApp();
 		assertEquals(app.getName(), "xacc");
 		assertEquals(app.getBranch(), "master");
-		assertEquals(app.getCompiler(), "gcc@6.1.0");
 		assertEquals(app.getRepoURL(), "https://github.com/ORNL-QCI/xacc");
 		assertEquals(app.getVersion(), "latest");
 		
-		SpackPackage cmake = env.getDependentPackages().get(0);
+		SpackPackage cmake = (SpackPackage) env.getDependentPackages().get(0);
 		assertEquals(cmake.getName(), "cmake");
-		assertEquals(cmake.getBranch(), "master");
 		assertEquals(cmake.getCompiler(), "gcc@6.1.0");
-		assertEquals(cmake.getRepoURL(), null);
 		assertEquals(cmake.getVersion(), "latest");
 		
-		SpackPackage llvm = env.getDependentPackages().get(1);
+		SpackPackage llvm = (SpackPackage) env.getDependentPackages().get(1);
 		assertEquals(llvm.getName(), "llvm");
-		assertEquals(llvm.getBranch(), "master");
 		assertEquals(llvm.getCompiler(), "gcc@6.1.0");
-		assertEquals(llvm.getRepoURL(), null);
 		assertEquals(llvm.getVersion(), "latest");
 		
 		DockerEnvironment dockerEnv = (DockerEnvironment) env;

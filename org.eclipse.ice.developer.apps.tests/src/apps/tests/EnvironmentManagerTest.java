@@ -6,11 +6,10 @@ import org.junit.Ignore;
 
 import apps.AppsFactory;
 import apps.EnvironmentManager;
-import apps.EnvironmentType;
+import apps.EnvironmentState;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
 import apps.docker.DockerEnvironment;
-import apps.local.LocalEnvironment;
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
@@ -23,10 +22,11 @@ import junit.textui.TestRunner;
  * <ul>
  *   <li>{@link apps.EnvironmentManager#createEnvironment(java.lang.String) <em>Create Environment</em>}</li>
  *   <li>{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}</li>
- *   <li>{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String) <em>Load Existing Environment</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadEnvironment(java.lang.String) <em>Load Environment</em>}</li>
  *   <li>{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}</li>
- *   <li>{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment) <em>Persist To XMI String</em>}</li>
- *   <li>{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String) <em>Persist XMI To File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistToXMIString(java.lang.String) <em>Persist To XMI String</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String) <em>Persist XMI To File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String) <em>Connect To Existing Environment</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -116,17 +116,13 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @see apps.EnvironmentManager#createEnvironment(java.lang.String)
 	 */
 	public void testCreateEnvironment__String() {
-		IEnvironment env = fixture.createEnvironment("Docker");
+		IEnvironment env = fixture.createEnvironment(jsonStr);
 		assertTrue(env instanceof DockerEnvironment);
-		assertEquals(env.getType(), EnvironmentType.DOCKER);
-
-		env = fixture.createEnvironment("Local");
-		assertTrue(env instanceof LocalEnvironment);
-		assertEquals(env.getType(), EnvironmentType.LOCAL);
+		assertEquals(env.getState(), EnvironmentState.STOPPED);
 
 		try {
 			fixture.createEnvironment("bad_string");
-		} catch (IllegalArgumentException ex) {
+		} catch (Exception ex) {
 			assertTrue(true);
 			return;
 		}
@@ -147,6 +143,19 @@ public class EnvironmentManagerTest extends TestCase {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		// fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#loadEnvironment(java.lang.String) <em>Load Environment</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#loadEnvironment(java.lang.String)
+	 * @generated
+	 */
+	public void testLoadEnvironment__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 	/**
@@ -179,6 +188,45 @@ public class EnvironmentManagerTest extends TestCase {
 	}
 
 	/**
+	 * Tests the '{@link apps.EnvironmentManager#persistToXMIString(java.lang.String) <em>Persist To XMI String</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#persistToXMIString(java.lang.String)
+	 * @generated
+	 */
+	public void testPersistToXMIString__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String) <em>Persist XMI To File</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String)
+	 * @generated
+	 */
+	public void testPersistXMIToFile__String_String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String) <em>Connect To Existing Environment</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String)
+	 * @generated
+	 */
+	public void testConnectToExistingEnvironment__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
 	 * Tests the
 	 * '{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment)
 	 * <em>Persist To XMI String</em>}' operation. <!-- begin-user-doc --> <!--
@@ -196,7 +244,7 @@ public class EnvironmentManagerTest extends TestCase {
 				"  <primaryApp name=\"xacc\" compiler=\"gcc@6.1.0\" repoURL=\"https://github.com/ORNL-QCI/xacc\"/>\n" + 
 				"  <containerConfiguration name=\"xaccdev\" ephemeral=\"true\"/>\n" + 
 				"</dockerenvironment:DockerEnvironment>\n";
-		String xmiStr = fixture.persistToXMIString(env);
+		String xmiStr = fixture.persistToXMIString(env.getName());
 		assertEquals(xmiStr, expectedXmiStr);
 	}
 

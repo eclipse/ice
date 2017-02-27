@@ -4,10 +4,8 @@ package apps.impl;
 
 import apps.AppsPackage;
 import apps.EnvironmentManager;
-import apps.EnvironmentType;
 import apps.IEnvironment;
-import apps.docker.DockerFactory;
-import apps.local.LocalFactory;
+import apps.JsonEnvironmentCreator;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -58,19 +56,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * are the Docker and Local File System Environment types.
 	 * <!-- end-user-doc -->
 	 */
-	public IEnvironment createEnvironment(String type) {
-		IEnvironment env = null;
-		if (type.equals("Docker")) {
-			 env = DockerFactory.eINSTANCE.createDockerEnvironment();
-			 env.setType(EnvironmentType.DOCKER);
-			 return env;
-		} else if (type.equals("Local")) {
-			env = LocalFactory.eINSTANCE.createLocalEnvironment();
-			env.setType(EnvironmentType.LOCAL);
-			return env;
-		} else {
-			throw new IllegalArgumentException("Invalid environment type ("+type+").");
-		}
+	public IEnvironment createEnvironment(String dataString) {
+		return JsonEnvironmentCreator.create(dataString);
 	}
 
 	/**
@@ -89,7 +76,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public IEnvironment loadExistingEnvironment(String name) {
+	public IEnvironment loadEnvironment(String environmentName) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -112,6 +99,39 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
         // example everything is hierarchical included in this first node
         IEnvironment environment = (IEnvironment) resource.getContents().get(0);
         return environment;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String persistToXMIString(String environmentName) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void persistXMIToFile(String environmentName, String fileName) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void connectToExistingEnvironment(String environmentName) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -198,14 +218,17 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 				return createEnvironment((String)arguments.get(0));
 			case AppsPackage.ENVIRONMENT_MANAGER___LIST_EXISTING_ENVIRONMENTS:
 				return listExistingEnvironments();
-			case AppsPackage.ENVIRONMENT_MANAGER___LOAD_EXISTING_ENVIRONMENT__STRING:
-				return loadExistingEnvironment((String)arguments.get(0));
+			case AppsPackage.ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT__STRING:
+				return loadEnvironment((String)arguments.get(0));
 			case AppsPackage.ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT_FROM_FILE__STRING:
 				return loadEnvironmentFromFile((String)arguments.get(0));
-			case AppsPackage.ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__IENVIRONMENT:
-				return persistToXMIString((IEnvironment)arguments.get(0));
-			case AppsPackage.ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__IENVIRONMENT_STRING:
-				persistXMIToFile((IEnvironment)arguments.get(0), (String)arguments.get(1));
+			case AppsPackage.ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__STRING:
+				return persistToXMIString((String)arguments.get(0));
+			case AppsPackage.ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__STRING_STRING:
+				persistXMIToFile((String)arguments.get(0), (String)arguments.get(1));
+				return null;
+			case AppsPackage.ENVIRONMENT_MANAGER___CONNECT_TO_EXISTING_ENVIRONMENT__STRING:
+				connectToExistingEnvironment((String)arguments.get(0));
 				return null;
 		}
 		return super.eInvoke(operationID, arguments);

@@ -4,13 +4,14 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
-import apps.Environment;
 import apps.EnvironmentManager;
-import apps.EnvironmentType;
+import apps.EnvironmentState;
 import apps.IEnvironment;
-import apps.LocalCDTProjectLauncher;
-import apps.PTPSyncProjectLauncher;
+import apps.OSPackage;
+import apps.PackageType;
 import apps.ProjectLauncher;
+import apps.SourcePackage;
+import apps.SpackDependency;
 import apps.SpackPackage;
 
 import apps.docker.DockerPackage;
@@ -65,13 +66,6 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass environmentEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass projectLauncherEClass = null;
 
 	/**
@@ -79,21 +73,42 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass ptpSyncProjectLauncherEClass = null;
+	private EClass packageEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass localCDTProjectLauncherEClass = null;
+	private EClass sourcePackageEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EEnum environmentTypeEEnum = null;
+	private EClass osPackageEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass spackDependencyEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum packageTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum environmentStateEEnum = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -181,7 +196,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getIEnvironment_Type() {
+	public EAttribute getIEnvironment_Name() {
 		return (EAttribute)iEnvironmentEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -190,7 +205,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getIEnvironment_Name() {
+	public EAttribute getIEnvironment_Os() {
 		return (EAttribute)iEnvironmentEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -199,35 +214,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getIEnvironment_Os() {
-		return (EAttribute)iEnvironmentEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getIEnvironment_DependentPackages() {
-		return (EReference)iEnvironmentEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getIEnvironment_DevelopmentEnvironment() {
-		return (EAttribute)iEnvironmentEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getIEnvironment_GenerateProject() {
-		return (EAttribute)iEnvironmentEClass.getEStructuralFeatures().get(5);
+		return (EReference)iEnvironmentEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -236,7 +224,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * @generated
 	 */
 	public EReference getIEnvironment_PrimaryApp() {
-		return (EReference)iEnvironmentEClass.getEStructuralFeatures().get(6);
+		return (EReference)iEnvironmentEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -244,8 +232,53 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getIEnvironment__Launch() {
+	public EReference getIEnvironment_Projectlauncher() {
+		return (EReference)iEnvironmentEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getIEnvironment_State() {
+		return (EAttribute)iEnvironmentEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getIEnvironment__Build() {
 		return iEnvironmentEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getIEnvironment__Connect() {
+		return iEnvironmentEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getIEnvironment__Delete() {
+		return iEnvironmentEClass.getEOperations().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getIEnvironment__Stop() {
+		return iEnvironmentEClass.getEOperations().get(3);
 	}
 
 	/**
@@ -280,7 +313,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__LoadExistingEnvironment__String() {
+	public EOperation getEnvironmentManager__LoadEnvironment__String() {
 		return environmentManagerEClass.getEOperations().get(2);
 	}
 
@@ -298,7 +331,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__PersistToXMIString__IEnvironment() {
+	public EOperation getEnvironmentManager__PersistToXMIString__String() {
 		return environmentManagerEClass.getEOperations().get(4);
 	}
 
@@ -307,8 +340,17 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__PersistXMIToFile__IEnvironment_String() {
+	public EOperation getEnvironmentManager__PersistXMIToFile__String_String() {
 		return environmentManagerEClass.getEOperations().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentManager__ConnectToExistingEnvironment__String() {
+		return environmentManagerEClass.getEOperations().get(6);
 	}
 
 	/**
@@ -325,7 +367,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getSpackPackage_Name() {
+	public EAttribute getSpackPackage_Compiler() {
 		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -334,7 +376,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getSpackPackage_Compiler() {
+	public EAttribute getSpackPackage_CppFlags() {
 		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(1);
 	}
 
@@ -343,89 +385,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getSpackPackage_Version() {
-		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getSpackPackage_CppFlags() {
-		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getSpackPackage_VirtualDependency() {
-		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(4);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getSpackPackage_VirtualDependencyProvider() {
-		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(5);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getSpackPackage_RepoURL() {
-		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(6);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getSpackPackage_Branch() {
-		return (EAttribute)spackPackageEClass.getEStructuralFeatures().get(7);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getEnvironment() {
-		return environmentEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getEnvironment_Projectlauncher() {
-		return (EReference)environmentEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EOperation getEnvironment__Launch() {
-		return environmentEClass.getEOperations().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EOperation getEnvironment__LaunchDerived() {
-		return environmentEClass.getEOperations().get(1);
+	public EReference getSpackPackage_Dependencies() {
+		return (EReference)spackPackageEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -442,7 +403,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getProjectLauncher__LaunchProject__SpackPackage() {
+	public EOperation getProjectLauncher__LaunchProject__SourcePackage() {
 		return projectLauncherEClass.getEOperations().get(0);
 	}
 
@@ -451,8 +412,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getPTPSyncProjectLauncher() {
-		return ptpSyncProjectLauncherEClass;
+	public EClass getPackage() {
+		return packageEClass;
 	}
 
 	/**
@@ -460,8 +421,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getPTPSyncProjectLauncher__LaunchProject__SpackPackage() {
-		return ptpSyncProjectLauncherEClass.getEOperations().get(0);
+	public EAttribute getPackage_Name() {
+		return (EAttribute)packageEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -469,8 +430,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getLocalCDTProjectLauncher() {
-		return localCDTProjectLauncherEClass;
+	public EAttribute getPackage_Version() {
+		return (EAttribute)packageEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -478,8 +439,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getLocalCDTProjectLauncher__LaunchProject__SpackPackage() {
-		return localCDTProjectLauncherEClass.getEOperations().get(0);
+	public EAttribute getPackage_Type() {
+		return (EAttribute)packageEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -487,8 +448,89 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getEnvironmentType() {
-		return environmentTypeEEnum;
+	public EClass getSourcePackage() {
+		return sourcePackageEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSourcePackage_RepoURL() {
+		return (EAttribute)sourcePackageEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSourcePackage_Branch() {
+		return (EAttribute)sourcePackageEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSourcePackage_BuildCommand() {
+		return (EAttribute)sourcePackageEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getOSPackage() {
+		return osPackageEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getSpackDependency() {
+		return spackDependencyEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSpackDependency_Dependency() {
+		return (EAttribute)spackDependencyEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSpackDependency_Provider() {
+		return (EAttribute)spackDependencyEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getPackageType() {
+		return packageTypeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getEnvironmentState() {
+		return environmentStateEEnum;
 	}
 
 	/**
@@ -520,49 +562,53 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		// Create classes and their features
 		iEnvironmentEClass = createEClass(IENVIRONMENT);
-		createEAttribute(iEnvironmentEClass, IENVIRONMENT__TYPE);
 		createEAttribute(iEnvironmentEClass, IENVIRONMENT__NAME);
 		createEAttribute(iEnvironmentEClass, IENVIRONMENT__OS);
 		createEReference(iEnvironmentEClass, IENVIRONMENT__DEPENDENT_PACKAGES);
-		createEAttribute(iEnvironmentEClass, IENVIRONMENT__DEVELOPMENT_ENVIRONMENT);
-		createEAttribute(iEnvironmentEClass, IENVIRONMENT__GENERATE_PROJECT);
 		createEReference(iEnvironmentEClass, IENVIRONMENT__PRIMARY_APP);
-		createEOperation(iEnvironmentEClass, IENVIRONMENT___LAUNCH);
+		createEReference(iEnvironmentEClass, IENVIRONMENT__PROJECTLAUNCHER);
+		createEAttribute(iEnvironmentEClass, IENVIRONMENT__STATE);
+		createEOperation(iEnvironmentEClass, IENVIRONMENT___BUILD);
+		createEOperation(iEnvironmentEClass, IENVIRONMENT___CONNECT);
+		createEOperation(iEnvironmentEClass, IENVIRONMENT___DELETE);
+		createEOperation(iEnvironmentEClass, IENVIRONMENT___STOP);
 
 		environmentManagerEClass = createEClass(ENVIRONMENT_MANAGER);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LIST_EXISTING_ENVIRONMENTS);
-		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_EXISTING_ENVIRONMENT__STRING);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT_FROM_FILE__STRING);
-		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__IENVIRONMENT);
-		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__IENVIRONMENT_STRING);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__STRING);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__STRING_STRING);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CONNECT_TO_EXISTING_ENVIRONMENT__STRING);
 
 		spackPackageEClass = createEClass(SPACK_PACKAGE);
-		createEAttribute(spackPackageEClass, SPACK_PACKAGE__NAME);
 		createEAttribute(spackPackageEClass, SPACK_PACKAGE__COMPILER);
-		createEAttribute(spackPackageEClass, SPACK_PACKAGE__VERSION);
 		createEAttribute(spackPackageEClass, SPACK_PACKAGE__CPP_FLAGS);
-		createEAttribute(spackPackageEClass, SPACK_PACKAGE__VIRTUAL_DEPENDENCY);
-		createEAttribute(spackPackageEClass, SPACK_PACKAGE__VIRTUAL_DEPENDENCY_PROVIDER);
-		createEAttribute(spackPackageEClass, SPACK_PACKAGE__REPO_URL);
-		createEAttribute(spackPackageEClass, SPACK_PACKAGE__BRANCH);
-
-		environmentEClass = createEClass(ENVIRONMENT);
-		createEReference(environmentEClass, ENVIRONMENT__PROJECTLAUNCHER);
-		createEOperation(environmentEClass, ENVIRONMENT___LAUNCH);
-		createEOperation(environmentEClass, ENVIRONMENT___LAUNCH_DERIVED);
+		createEReference(spackPackageEClass, SPACK_PACKAGE__DEPENDENCIES);
 
 		projectLauncherEClass = createEClass(PROJECT_LAUNCHER);
-		createEOperation(projectLauncherEClass, PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE);
+		createEOperation(projectLauncherEClass, PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE);
 
-		ptpSyncProjectLauncherEClass = createEClass(PTP_SYNC_PROJECT_LAUNCHER);
-		createEOperation(ptpSyncProjectLauncherEClass, PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE);
+		packageEClass = createEClass(PACKAGE);
+		createEAttribute(packageEClass, PACKAGE__NAME);
+		createEAttribute(packageEClass, PACKAGE__VERSION);
+		createEAttribute(packageEClass, PACKAGE__TYPE);
 
-		localCDTProjectLauncherEClass = createEClass(LOCAL_CDT_PROJECT_LAUNCHER);
-		createEOperation(localCDTProjectLauncherEClass, LOCAL_CDT_PROJECT_LAUNCHER___LAUNCH_PROJECT__SPACKPACKAGE);
+		sourcePackageEClass = createEClass(SOURCE_PACKAGE);
+		createEAttribute(sourcePackageEClass, SOURCE_PACKAGE__REPO_URL);
+		createEAttribute(sourcePackageEClass, SOURCE_PACKAGE__BRANCH);
+		createEAttribute(sourcePackageEClass, SOURCE_PACKAGE__BUILD_COMMAND);
+
+		osPackageEClass = createEClass(OS_PACKAGE);
+
+		spackDependencyEClass = createEClass(SPACK_DEPENDENCY);
+		createEAttribute(spackDependencyEClass, SPACK_DEPENDENCY__DEPENDENCY);
+		createEAttribute(spackDependencyEClass, SPACK_DEPENDENCY__PROVIDER);
 
 		// Create enums
-		environmentTypeEEnum = createEEnum(ENVIRONMENT_TYPE);
+		packageTypeEEnum = createEEnum(PACKAGE_TYPE);
+		environmentStateEEnum = createEEnum(ENVIRONMENT_STATE);
 	}
 
 	/**
@@ -602,78 +648,86 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		environmentEClass.getESuperTypes().add(this.getIEnvironment());
-		ptpSyncProjectLauncherEClass.getESuperTypes().add(this.getProjectLauncher());
-		localCDTProjectLauncherEClass.getESuperTypes().add(this.getProjectLauncher());
+		spackPackageEClass.getESuperTypes().add(this.getPackage());
+		sourcePackageEClass.getESuperTypes().add(this.getPackage());
+		osPackageEClass.getESuperTypes().add(this.getPackage());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(iEnvironmentEClass, IEnvironment.class, "IEnvironment", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getIEnvironment_Type(), this.getEnvironmentType(), "type", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIEnvironment_Name(), ecorePackage.getEString(), "name", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIEnvironment_Os(), ecorePackage.getEString(), "os", "fedora", 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIEnvironment_DependentPackages(), this.getSpackPackage(), null, "dependentPackages", null, 0, -1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIEnvironment_DevelopmentEnvironment(), theXMLTypePackage.getBoolean(), "developmentEnvironment", "true", 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getIEnvironment_GenerateProject(), theXMLTypePackage.getBoolean(), "generateProject", "false", 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getIEnvironment_PrimaryApp(), this.getSpackPackage(), null, "primaryApp", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIEnvironment_DependentPackages(), this.getPackage(), null, "dependentPackages", null, 0, -1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIEnvironment_PrimaryApp(), this.getPackage(), null, "primaryApp", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIEnvironment_Projectlauncher(), this.getProjectLauncher(), null, "projectlauncher", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getIEnvironment_State(), this.getEnvironmentState(), "state", "NotCreated", 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEOperation(getIEnvironment__Launch(), theXMLTypePackage.getBoolean(), "launch", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEOperation(getIEnvironment__Build(), theXMLTypePackage.getBoolean(), "build", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getIEnvironment__Connect(), theXMLTypePackage.getBoolean(), "connect", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getIEnvironment__Delete(), theXMLTypePackage.getBoolean(), "delete", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getIEnvironment__Stop(), theXMLTypePackage.getBoolean(), "stop", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(environmentManagerEClass, EnvironmentManager.class, "EnvironmentManager", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		EOperation op = initEOperation(getEnvironmentManager__CreateEnvironment__String(), this.getIEnvironment(), "createEnvironment", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEString(), "type", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "dataString", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEOperation(getEnvironmentManager__ListExistingEnvironments(), ecorePackage.getEString(), "listExistingEnvironments", 0, -1, IS_UNIQUE, IS_ORDERED);
 
-		op = initEOperation(getEnvironmentManager__LoadExistingEnvironment__String(), this.getIEnvironment(), "loadExistingEnvironment", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
+		op = initEOperation(getEnvironmentManager__LoadEnvironment__String(), this.getIEnvironment(), "loadEnvironment", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "environmentName", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		op = initEOperation(getEnvironmentManager__LoadEnvironmentFromFile__String(), this.getIEnvironment(), "loadEnvironmentFromFile", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEString(), "file", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		op = initEOperation(getEnvironmentManager__PersistToXMIString__IEnvironment(), ecorePackage.getEString(), "persistToXMIString", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getIEnvironment(), "environment", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		op = initEOperation(getEnvironmentManager__PersistXMIToFile__IEnvironment_String(), null, "persistXMIToFile", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getIEnvironment(), "environment", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "fileName", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		op = initEOperation(getEnvironmentManager__PersistToXMIString__String(), ecorePackage.getEString(), "persistToXMIString", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "environmentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getEnvironmentManager__PersistXMIToFile__String_String(), null, "persistXMIToFile", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "environmentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "fileName", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getEnvironmentManager__ConnectToExistingEnvironment__String(), null, "connectToExistingEnvironment", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "environmentName", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(spackPackageEClass, SpackPackage.class, "SpackPackage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getSpackPackage_Name(), ecorePackage.getEString(), "name", null, 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSpackPackage_Compiler(), ecorePackage.getEString(), "compiler", "gcc@6.3.1", 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSpackPackage_Version(), ecorePackage.getEString(), "version", "latest", 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSpackPackage_CppFlags(), ecorePackage.getEString(), "cppFlags", null, 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSpackPackage_VirtualDependency(), ecorePackage.getEString(), "virtualDependency", null, 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSpackPackage_VirtualDependencyProvider(), ecorePackage.getEString(), "virtualDependencyProvider", null, 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSpackPackage_RepoURL(), ecorePackage.getEString(), "repoURL", null, 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSpackPackage_Branch(), ecorePackage.getEString(), "branch", "master", 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(environmentEClass, Environment.class, "Environment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEnvironment_Projectlauncher(), this.getProjectLauncher(), null, "projectlauncher", null, 0, 1, Environment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEOperation(getEnvironment__Launch(), theXMLTypePackage.getBoolean(), "launch", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		initEOperation(getEnvironment__LaunchDerived(), theXMLTypePackage.getBoolean(), "launchDerived", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEReference(getSpackPackage_Dependencies(), this.getSpackDependency(), null, "dependencies", null, 0, -1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(projectLauncherEClass, ProjectLauncher.class, "ProjectLauncher", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		op = initEOperation(getProjectLauncher__LaunchProject__SpackPackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getSpackPackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
+		op = initEOperation(getProjectLauncher__LaunchProject__SourcePackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getSourcePackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		initEClass(ptpSyncProjectLauncherEClass, PTPSyncProjectLauncher.class, "PTPSyncProjectLauncher", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(packageEClass, apps.Package.class, "Package", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getPackage_Name(), ecorePackage.getEString(), "name", null, 0, 1, apps.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPackage_Version(), ecorePackage.getEString(), "version", null, 0, 1, apps.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPackage_Type(), this.getPackageType(), "type", null, 0, 1, apps.Package.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = initEOperation(getPTPSyncProjectLauncher__LaunchProject__SpackPackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getSpackPackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEClass(sourcePackageEClass, SourcePackage.class, "SourcePackage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getSourcePackage_RepoURL(), ecorePackage.getEString(), "repoURL", null, 0, 1, SourcePackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSourcePackage_Branch(), ecorePackage.getEString(), "branch", "master", 0, 1, SourcePackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSourcePackage_BuildCommand(), ecorePackage.getEString(), "buildCommand", null, 0, 1, SourcePackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(localCDTProjectLauncherEClass, LocalCDTProjectLauncher.class, "LocalCDTProjectLauncher", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(osPackageEClass, OSPackage.class, "OSPackage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		op = initEOperation(getLocalCDTProjectLauncher__LaunchProject__SpackPackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getSpackPackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
+		initEClass(spackDependencyEClass, SpackDependency.class, "SpackDependency", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getSpackDependency_Dependency(), ecorePackage.getEString(), "dependency", null, 0, 1, SpackDependency.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSpackDependency_Provider(), ecorePackage.getEString(), "provider", null, 0, 1, SpackDependency.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
-		initEEnum(environmentTypeEEnum, EnvironmentType.class, "EnvironmentType");
-		addEEnumLiteral(environmentTypeEEnum, EnvironmentType.DOCKER);
-		addEEnumLiteral(environmentTypeEEnum, EnvironmentType.LOCAL);
+		initEEnum(packageTypeEEnum, PackageType.class, "PackageType");
+		addEEnumLiteral(packageTypeEEnum, PackageType.OS);
+		addEEnumLiteral(packageTypeEEnum, PackageType.SPACK);
+		addEEnumLiteral(packageTypeEEnum, PackageType.SOURCE);
+
+		initEEnum(environmentStateEEnum, EnvironmentState.class, "EnvironmentState");
+		addEEnumLiteral(environmentStateEEnum, EnvironmentState.STOPPED);
+		addEEnumLiteral(environmentStateEEnum, EnvironmentState.RUNNING);
+		addEEnumLiteral(environmentStateEEnum, EnvironmentState.NOT_CREATED);
 
 		// Create resource
 		createResource(eNS_URI);

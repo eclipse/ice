@@ -2,8 +2,8 @@
  */
 package apps.docker.util;
 
-import apps.Environment;
 import apps.IEnvironment;
+import apps.ProjectLauncher;
 import apps.docker.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -82,12 +82,16 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 				return createContainerConfigurationAdapter();
 			}
 			@Override
+			public Adapter caseDockerPTPProjectLauncher(DockerPTPProjectLauncher object) {
+				return createDockerPTPProjectLauncherAdapter();
+			}
+			@Override
 			public Adapter caseIEnvironment(IEnvironment object) {
 				return createIEnvironmentAdapter();
 			}
 			@Override
-			public Adapter caseEnvironment(Environment object) {
-				return createEnvironmentAdapter();
+			public Adapter caseProjectLauncher(ProjectLauncher object) {
+				return createProjectLauncherAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -152,6 +156,20 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link apps.docker.DockerPTPProjectLauncher <em>PTP Project Launcher</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.docker.DockerPTPProjectLauncher
+	 * @generated
+	 */
+	public Adapter createDockerPTPProjectLauncherAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -166,16 +184,16 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.Environment <em>Environment</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.ProjectLauncher <em>Project Launcher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.Environment
+	 * @see apps.ProjectLauncher
 	 * @generated
 	 */
-	public Adapter createEnvironmentAdapter() {
+	public Adapter createProjectLauncherAdapter() {
 		return null;
 	}
 

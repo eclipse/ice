@@ -2,7 +2,7 @@
  */
 package apps.docker;
 
-import apps.Environment;
+import apps.IEnvironment;
 
 /**
  * <!-- begin-user-doc -->
@@ -19,13 +19,14 @@ import apps.Environment;
  * <ul>
  *   <li>{@link apps.docker.DockerEnvironment#getDocker <em>Docker</em>}</li>
  *   <li>{@link apps.docker.DockerEnvironment#getContainerConfiguration <em>Container Configuration</em>}</li>
+ *   <li>{@link apps.docker.DockerEnvironment#getDockerfile <em>Dockerfile</em>}</li>
  * </ul>
  *
  * @see apps.docker.DockerPackage#getDockerEnvironment()
  * @model
  * @generated
  */
-public interface DockerEnvironment extends Environment {
+public interface DockerEnvironment extends IEnvironment {
 	/**
 	 * Returns the value of the '<em><b>Docker</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -34,6 +35,9 @@ public interface DockerEnvironment extends Environment {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Reference to the DockerAPI that enables the building of docker images, creation of docker containers from those images, re-connection to existing 'exited' containers, and the deletion of containers and images. 
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Docker</em>' reference.
 	 * @see #setDocker(DockerAPI)
 	 * @see apps.docker.DockerPackage#getDockerEnvironment_Docker()
@@ -60,6 +64,9 @@ public interface DockerEnvironment extends Environment {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Reference to the container configuration data needed to launch a new docker container. 
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Container Configuration</em>' containment reference.
 	 * @see #setContainerConfiguration(ContainerConfiguration)
 	 * @see apps.docker.DockerPackage#getDockerEnvironment_ContainerConfiguration()
@@ -79,11 +86,28 @@ public interface DockerEnvironment extends Environment {
 	void setContainerConfiguration(ContainerConfiguration value);
 
 	/**
+	 * Returns the value of the '<em><b>Dockerfile</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @model kind="operation"
+	 * <!-- begin-model-doc -->
+	 * Reference to the String contents of the Dockerfile created to model this DockerEnvironment.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Dockerfile</em>' attribute.
+	 * @see #setDockerfile(String)
+	 * @see apps.docker.DockerPackage#getDockerEnvironment_Dockerfile()
+	 * @model
 	 * @generated
 	 */
-	String getDockerFileContents();
+	String getDockerfile();
+
+	/**
+	 * Sets the value of the '{@link apps.docker.DockerEnvironment#getDockerfile <em>Dockerfile</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Dockerfile</em>' attribute.
+	 * @see #getDockerfile()
+	 * @generated
+	 */
+	void setDockerfile(String value);
 
 } // DockerEnvironment

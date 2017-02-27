@@ -69,22 +69,13 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT = 0;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCKER_ENVIRONMENT__TYPE = AppsPackage.ENVIRONMENT__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__NAME = AppsPackage.ENVIRONMENT__NAME;
+	int DOCKER_ENVIRONMENT__NAME = AppsPackage.IENVIRONMENT__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Os</b></em>' attribute.
@@ -93,7 +84,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__OS = AppsPackage.ENVIRONMENT__OS;
+	int DOCKER_ENVIRONMENT__OS = AppsPackage.IENVIRONMENT__OS;
 
 	/**
 	 * The feature id for the '<em><b>Dependent Packages</b></em>' containment reference list.
@@ -102,25 +93,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__DEPENDENT_PACKAGES = AppsPackage.ENVIRONMENT__DEPENDENT_PACKAGES;
-
-	/**
-	 * The feature id for the '<em><b>Development Environment</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCKER_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT = AppsPackage.ENVIRONMENT__DEVELOPMENT_ENVIRONMENT;
-
-	/**
-	 * The feature id for the '<em><b>Generate Project</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DOCKER_ENVIRONMENT__GENERATE_PROJECT = AppsPackage.ENVIRONMENT__GENERATE_PROJECT;
+	int DOCKER_ENVIRONMENT__DEPENDENT_PACKAGES = AppsPackage.IENVIRONMENT__DEPENDENT_PACKAGES;
 
 	/**
 	 * The feature id for the '<em><b>Primary App</b></em>' containment reference.
@@ -129,7 +102,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__PRIMARY_APP = AppsPackage.ENVIRONMENT__PRIMARY_APP;
+	int DOCKER_ENVIRONMENT__PRIMARY_APP = AppsPackage.IENVIRONMENT__PRIMARY_APP;
 
 	/**
 	 * The feature id for the '<em><b>Projectlauncher</b></em>' containment reference.
@@ -138,7 +111,16 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__PROJECTLAUNCHER = AppsPackage.ENVIRONMENT__PROJECTLAUNCHER;
+	int DOCKER_ENVIRONMENT__PROJECTLAUNCHER = AppsPackage.IENVIRONMENT__PROJECTLAUNCHER;
+
+	/**
+	 * The feature id for the '<em><b>State</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT__STATE = AppsPackage.IENVIRONMENT__STATE;
 
 	/**
 	 * The feature id for the '<em><b>Docker</b></em>' reference.
@@ -147,7 +129,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__DOCKER = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 0;
+	int DOCKER_ENVIRONMENT__DOCKER = AppsPackage.IENVIRONMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>Container Configuration</b></em>' containment reference.
@@ -156,7 +138,16 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 1;
+	int DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION = AppsPackage.IENVIRONMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Dockerfile</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT__DOCKERFILE = AppsPackage.IENVIRONMENT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
@@ -165,34 +156,43 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_FEATURE_COUNT = AppsPackage.ENVIRONMENT_FEATURE_COUNT + 2;
+	int DOCKER_ENVIRONMENT_FEATURE_COUNT = AppsPackage.IENVIRONMENT_FEATURE_COUNT + 3;
 
 	/**
-	 * The operation id for the '<em>Launch</em>' operation.
+	 * The operation id for the '<em>Build</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT___LAUNCH = AppsPackage.ENVIRONMENT___LAUNCH;
+	int DOCKER_ENVIRONMENT___BUILD = AppsPackage.IENVIRONMENT___BUILD;
 
 	/**
-	 * The operation id for the '<em>Launch Derived</em>' operation.
+	 * The operation id for the '<em>Connect</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT___LAUNCH_DERIVED = AppsPackage.ENVIRONMENT___LAUNCH_DERIVED;
+	int DOCKER_ENVIRONMENT___CONNECT = AppsPackage.IENVIRONMENT___CONNECT;
 
 	/**
-	 * The operation id for the '<em>Get Docker File Contents</em>' operation.
+	 * The operation id for the '<em>Delete</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT___GET_DOCKER_FILE_CONTENTS = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 0;
+	int DOCKER_ENVIRONMENT___DELETE = AppsPackage.IENVIRONMENT___DELETE;
+
+	/**
+	 * The operation id for the '<em>Stop</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT___STOP = AppsPackage.IENVIRONMENT___STOP;
 
 	/**
 	 * The number of operations of the '<em>Environment</em>' class.
@@ -201,7 +201,7 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.ENVIRONMENT_OPERATION_COUNT + 1;
+	int DOCKER_ENVIRONMENT_OPERATION_COUNT = AppsPackage.IENVIRONMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
@@ -232,13 +232,13 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API___BUILD_IMAGE__STRING_STRING = 0;
 
 	/**
-	 * The operation id for the '<em>Launch Container</em>' operation.
+	 * The operation id for the '<em>Create Container</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION = 1;
+	int DOCKER_API___CREATE_CONTAINER__STRING_CONTAINERCONFIGURATION = 1;
 
 	/**
 	 * The operation id for the '<em>Connect To Existing Container</em>' operation.
@@ -250,13 +250,31 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING = 2;
 
 	/**
+	 * The operation id for the '<em>Delete Container</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___DELETE_CONTAINER__STRING = 3;
+
+	/**
+	 * The operation id for the '<em>Delete Image</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___DELETE_IMAGE__STRING = 4;
+
+	/**
 	 * The number of operations of the '<em>API</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API_OPERATION_COUNT = 3;
+	int DOCKER_API_OPERATION_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -333,6 +351,53 @@ public interface DockerPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link apps.docker.impl.DockerPTPProjectLauncherImpl <em>PTP Project Launcher</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.impl.DockerPTPProjectLauncherImpl
+	 * @see apps.docker.impl.DockerPackageImpl#getDockerPTPProjectLauncher()
+	 * @generated
+	 */
+	int DOCKER_PTP_PROJECT_LAUNCHER = 3;
+
+	/**
+	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>PTP Project Launcher</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_PROJECT_LAUNCHER_FEATURE_COUNT = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 1;
+
+	/**
+	 * The operation id for the '<em>Launch Project</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>PTP Project Launcher</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_PROJECT_LAUNCHER_OPERATION_COUNT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 1;
+
+
+	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerEnvironment <em>Environment</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -365,14 +430,15 @@ public interface DockerPackage extends EPackage {
 	EReference getDockerEnvironment_ContainerConfiguration();
 
 	/**
-	 * Returns the meta object for the '{@link apps.docker.DockerEnvironment#getDockerFileContents() <em>Get Docker File Contents</em>}' operation.
+	 * Returns the meta object for the attribute '{@link apps.docker.DockerEnvironment#getDockerfile <em>Dockerfile</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Get Docker File Contents</em>' operation.
-	 * @see apps.docker.DockerEnvironment#getDockerFileContents()
+	 * @return the meta object for the attribute '<em>Dockerfile</em>'.
+	 * @see apps.docker.DockerEnvironment#getDockerfile()
+	 * @see #getDockerEnvironment()
 	 * @generated
 	 */
-	EOperation getDockerEnvironment__GetDockerFileContents();
+	EAttribute getDockerEnvironment_Dockerfile();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerAPI <em>API</em>}'.
@@ -395,14 +461,14 @@ public interface DockerPackage extends EPackage {
 	EOperation getDockerAPI__BuildImage__String_String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.docker.DockerAPI#launchContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Launch Container</em>}' operation.
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#createContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Create Container</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Launch Container</em>' operation.
-	 * @see apps.docker.DockerAPI#launchContainer(java.lang.String, apps.docker.ContainerConfiguration)
+	 * @return the meta object for the '<em>Create Container</em>' operation.
+	 * @see apps.docker.DockerAPI#createContainer(java.lang.String, apps.docker.ContainerConfiguration)
 	 * @generated
 	 */
-	EOperation getDockerAPI__LaunchContainer__String_ContainerConfiguration();
+	EOperation getDockerAPI__CreateContainer__String_ContainerConfiguration();
 
 	/**
 	 * Returns the meta object for the '{@link apps.docker.DockerAPI#connectToExistingContainer(java.lang.String) <em>Connect To Existing Container</em>}' operation.
@@ -413,6 +479,26 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getDockerAPI__ConnectToExistingContainer__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#deleteContainer(java.lang.String) <em>Delete Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Delete Container</em>' operation.
+	 * @see apps.docker.DockerAPI#deleteContainer(java.lang.String)
+	 * @generated
+	 */
+	EOperation getDockerAPI__DeleteContainer__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#deleteImage(java.lang.String) <em>Delete Image</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Delete Image</em>' operation.
+	 * @see apps.docker.DockerAPI#deleteImage(java.lang.String)
+	 * @generated
+	 */
+	EOperation getDockerAPI__DeleteImage__String();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.ContainerConfiguration <em>Container Configuration</em>}'.
@@ -480,6 +566,37 @@ public interface DockerPackage extends EPackage {
 	EAttribute getContainerConfiguration_RemoteSSHPort();
 
 	/**
+	 * Returns the meta object for class '{@link apps.docker.DockerPTPProjectLauncher <em>PTP Project Launcher</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>PTP Project Launcher</em>'.
+	 * @see apps.docker.DockerPTPProjectLauncher
+	 * @generated
+	 */
+	EClass getDockerPTPProjectLauncher();
+
+	/**
+	 * Returns the meta object for the reference '{@link apps.docker.DockerPTPProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Containerconfiguration</em>'.
+	 * @see apps.docker.DockerPTPProjectLauncher#getContainerconfiguration()
+	 * @see #getDockerPTPProjectLauncher()
+	 * @generated
+	 */
+	EReference getDockerPTPProjectLauncher_Containerconfiguration();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Launch Project</em>' operation.
+	 * @see apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage)
+	 * @generated
+	 */
+	EOperation getDockerPTPProjectLauncher__LaunchProject__SourcePackage();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -529,12 +646,12 @@ public interface DockerPackage extends EPackage {
 		EReference DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION = eINSTANCE.getDockerEnvironment_ContainerConfiguration();
 
 		/**
-		 * The meta object literal for the '<em><b>Get Docker File Contents</b></em>' operation.
+		 * The meta object literal for the '<em><b>Dockerfile</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation DOCKER_ENVIRONMENT___GET_DOCKER_FILE_CONTENTS = eINSTANCE.getDockerEnvironment__GetDockerFileContents();
+		EAttribute DOCKER_ENVIRONMENT__DOCKERFILE = eINSTANCE.getDockerEnvironment_Dockerfile();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.DockerAPIImpl <em>API</em>}' class.
@@ -555,12 +672,12 @@ public interface DockerPackage extends EPackage {
 		EOperation DOCKER_API___BUILD_IMAGE__STRING_STRING = eINSTANCE.getDockerAPI__BuildImage__String_String();
 
 		/**
-		 * The meta object literal for the '<em><b>Launch Container</b></em>' operation.
+		 * The meta object literal for the '<em><b>Create Container</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation DOCKER_API___LAUNCH_CONTAINER__STRING_CONTAINERCONFIGURATION = eINSTANCE.getDockerAPI__LaunchContainer__String_ContainerConfiguration();
+		EOperation DOCKER_API___CREATE_CONTAINER__STRING_CONTAINERCONFIGURATION = eINSTANCE.getDockerAPI__CreateContainer__String_ContainerConfiguration();
 
 		/**
 		 * The meta object literal for the '<em><b>Connect To Existing Container</b></em>' operation.
@@ -569,6 +686,22 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation DOCKER_API___CONNECT_TO_EXISTING_CONTAINER__STRING = eINSTANCE.getDockerAPI__ConnectToExistingContainer__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Delete Container</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___DELETE_CONTAINER__STRING = eINSTANCE.getDockerAPI__DeleteContainer__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Delete Image</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___DELETE_IMAGE__STRING = eINSTANCE.getDockerAPI__DeleteImage__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -619,6 +752,32 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONTAINER_CONFIGURATION__REMOTE_SSH_PORT = eINSTANCE.getContainerConfiguration_RemoteSSHPort();
+
+		/**
+		 * The meta object literal for the '{@link apps.docker.impl.DockerPTPProjectLauncherImpl <em>PTP Project Launcher</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.docker.impl.DockerPTPProjectLauncherImpl
+		 * @see apps.docker.impl.DockerPackageImpl#getDockerPTPProjectLauncher()
+		 * @generated
+		 */
+		EClass DOCKER_PTP_PROJECT_LAUNCHER = eINSTANCE.getDockerPTPProjectLauncher();
+
+		/**
+		 * The meta object literal for the '<em><b>Containerconfiguration</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = eINSTANCE.getDockerPTPProjectLauncher_Containerconfiguration();
+
+		/**
+		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_PTP_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = eINSTANCE.getDockerPTPProjectLauncher__LaunchProject__SourcePackage();
 
 	}
 

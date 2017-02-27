@@ -12,20 +12,19 @@ import org.eclipse.emf.ecore.EObject;
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
- * The IEnvironment interface provides the data attributes and methods necessary to describe a scientific application environment. It describes the name and type of this environment, the operation system it uses, the application it contains, and a list of dependent packages it requires. 
+ * The IEnvironment interface provides the data and methods necessary to describe a scientific application environment. It describes the name of the environment, the OS it runs in, and the current running state of the environment, the application being developed in the environment, and the dependencies for that application.  IEnvironments can be created and deleted, stopped and connected or re-connected to.
  * <!-- end-model-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link apps.IEnvironment#getType <em>Type</em>}</li>
  *   <li>{@link apps.IEnvironment#getName <em>Name</em>}</li>
  *   <li>{@link apps.IEnvironment#getOs <em>Os</em>}</li>
  *   <li>{@link apps.IEnvironment#getDependentPackages <em>Dependent Packages</em>}</li>
- *   <li>{@link apps.IEnvironment#isDevelopmentEnvironment <em>Development Environment</em>}</li>
- *   <li>{@link apps.IEnvironment#isGenerateProject <em>Generate Project</em>}</li>
  *   <li>{@link apps.IEnvironment#getPrimaryApp <em>Primary App</em>}</li>
+ *   <li>{@link apps.IEnvironment#getProjectlauncher <em>Projectlauncher</em>}</li>
+ *   <li>{@link apps.IEnvironment#getState <em>State</em>}</li>
  * </ul>
  *
  * @see apps.AppsPackage#getIEnvironment()
@@ -33,34 +32,6 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface IEnvironment extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Type</b></em>' attribute.
-	 * The literals are from the enumeration {@link apps.EnvironmentType}.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * The type of this IEnvironment
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Type</em>' attribute.
-	 * @see apps.EnvironmentType
-	 * @see #setType(EnvironmentType)
-	 * @see apps.AppsPackage#getIEnvironment_Type()
-	 * @model
-	 * @generated
-	 */
-	EnvironmentType getType();
-
-	/**
-	 * Sets the value of the '{@link apps.IEnvironment#getType <em>Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Type</em>' attribute.
-	 * @see apps.EnvironmentType
-	 * @see #getType()
-	 * @generated
-	 */
-	void setType(EnvironmentType value);
-
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -114,7 +85,7 @@ public interface IEnvironment extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Dependent Packages</b></em>' containment reference list.
-	 * The list contents are of type {@link apps.SpackPackage}.
+	 * The list contents are of type {@link apps.Package}.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -125,60 +96,7 @@ public interface IEnvironment extends EObject {
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<SpackPackage> getDependentPackages();
-
-	/**
-	 * Returns the value of the '<em><b>Development Environment</b></em>' attribute.
-	 * The default value is <code>"true"</code>.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Indicates if this environment is for the development of a specific ScienceApp.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Development Environment</em>' attribute.
-	 * @see #setDevelopmentEnvironment(boolean)
-	 * @see apps.AppsPackage#getIEnvironment_DevelopmentEnvironment()
-	 * @model default="true" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
-	 * @generated
-	 */
-	boolean isDevelopmentEnvironment();
-
-	/**
-	 * Sets the value of the '{@link apps.IEnvironment#isDevelopmentEnvironment <em>Development Environment</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Development Environment</em>' attribute.
-	 * @see #isDevelopmentEnvironment()
-	 * @generated
-	 */
-	void setDevelopmentEnvironment(boolean value);
-
-	/**
-	 * Returns the value of the '<em><b>Generate Project</b></em>' attribute.
-	 * The default value is <code>"false"</code>.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Generate Project</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Generate Project</em>' attribute.
-	 * @see #setGenerateProject(boolean)
-	 * @see apps.AppsPackage#getIEnvironment_GenerateProject()
-	 * @model default="false" dataType="org.eclipse.emf.ecore.xml.type.Boolean"
-	 * @generated
-	 */
-	boolean isGenerateProject();
-
-	/**
-	 * Sets the value of the '{@link apps.IEnvironment#isGenerateProject <em>Generate Project</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Generate Project</em>' attribute.
-	 * @see #isGenerateProject()
-	 * @generated
-	 */
-	void setGenerateProject(boolean value);
+	EList<apps.Package> getDependentPackages();
 
 	/**
 	 * Returns the value of the '<em><b>Primary App</b></em>' containment reference.
@@ -188,13 +106,16 @@ public interface IEnvironment extends EObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * The primary application that this IEnvironment serves for development. 
+	 * <!-- end-model-doc -->
 	 * @return the value of the '<em>Primary App</em>' containment reference.
-	 * @see #setPrimaryApp(SpackPackage)
+	 * @see #setPrimaryApp(apps.Package)
 	 * @see apps.AppsPackage#getIEnvironment_PrimaryApp()
 	 * @model containment="true"
 	 * @generated
 	 */
-	SpackPackage getPrimaryApp();
+	apps.Package getPrimaryApp();
 
 	/**
 	 * Sets the value of the '{@link apps.IEnvironment#getPrimaryApp <em>Primary App</em>}' containment reference.
@@ -204,17 +125,105 @@ public interface IEnvironment extends EObject {
 	 * @see #getPrimaryApp()
 	 * @generated
 	 */
-	void setPrimaryApp(SpackPackage value);
+	void setPrimaryApp(apps.Package value);
+
+	/**
+	 * Returns the value of the '<em><b>Projectlauncher</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Projectlauncher</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Projectlauncher</em>' containment reference.
+	 * @see #setProjectlauncher(ProjectLauncher)
+	 * @see apps.AppsPackage#getIEnvironment_Projectlauncher()
+	 * @model containment="true"
+	 * @generated
+	 */
+	ProjectLauncher getProjectlauncher();
+
+	/**
+	 * Sets the value of the '{@link apps.IEnvironment#getProjectlauncher <em>Projectlauncher</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Projectlauncher</em>' containment reference.
+	 * @see #getProjectlauncher()
+	 * @generated
+	 */
+	void setProjectlauncher(ProjectLauncher value);
+
+	/**
+	 * Returns the value of the '<em><b>State</b></em>' attribute.
+	 * The default value is <code>"NotCreated"</code>.
+	 * The literals are from the enumeration {@link apps.EnvironmentState}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * The state of this IEnvironment. The state can be Running, Stopped, or NotCreated. 
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>State</em>' attribute.
+	 * @see apps.EnvironmentState
+	 * @see #setState(EnvironmentState)
+	 * @see apps.AppsPackage#getIEnvironment_State()
+	 * @model default="NotCreated"
+	 * @generated
+	 */
+	EnvironmentState getState();
+
+	/**
+	 * Sets the value of the '{@link apps.IEnvironment#getState <em>State</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>State</em>' attribute.
+	 * @see apps.EnvironmentState
+	 * @see #getState()
+	 * @generated
+	 */
+	void setState(EnvironmentState value);
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * This method directs the Environment to launch itself with its provided data. 
+	 * Build this IEnvironment from the given data string. The data string can be formatted using JSon, for example. 
 	 * <!-- end-model-doc -->
 	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 * @generated
 	 */
-	boolean launch();
+	boolean build();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Connect to this IEnvironment if it is in a Stopped state. 
+	 * <!-- end-model-doc -->
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @generated
+	 */
+	boolean connect();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Delete the IEnvironment. 
+	 * <!-- end-model-doc -->
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @generated
+	 */
+	boolean delete();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Stop this IEnvironment. This sets the state from Running to Stopped. 
+	 * <!-- end-model-doc -->
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @generated
+	 */
+	boolean stop();
 
 } // IEnvironment

@@ -40,31 +40,31 @@ public interface AppsFactory extends EFactory {
 	SpackPackage createSpackPackage();
 
 	/**
-	 * Returns a new object of class '<em>Environment</em>'.
+	 * Returns a new object of class '<em>Source Package</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Environment</em>'.
+	 * @return a new object of class '<em>Source Package</em>'.
 	 * @generated
 	 */
-	Environment createEnvironment();
+	SourcePackage createSourcePackage();
 
 	/**
-	 * Returns a new object of class '<em>PTP Sync Project Launcher</em>'.
+	 * Returns a new object of class '<em>OS Package</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>PTP Sync Project Launcher</em>'.
+	 * @return a new object of class '<em>OS Package</em>'.
 	 * @generated
 	 */
-	PTPSyncProjectLauncher createPTPSyncProjectLauncher();
+	OSPackage createOSPackage();
 
 	/**
-	 * Returns a new object of class '<em>Local CDT Project Launcher</em>'.
+	 * Returns a new object of class '<em>Spack Dependency</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Local CDT Project Launcher</em>'.
+	 * @return a new object of class '<em>Spack Dependency</em>'.
 	 * @generated
 	 */
-	LocalCDTProjectLauncher createLocalCDTProjectLauncher();
+	SpackDependency createSpackDependency();
 
 	/**
 	 * Returns the package supported by this factory.

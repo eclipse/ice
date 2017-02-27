@@ -27,8 +27,10 @@ import junit.textui.TestRunner;
  * The following operations are tested:
  * <ul>
  *   <li>{@link apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String) <em>Build Image</em>}</li>
- *   <li>{@link apps.docker.DockerAPI#launchContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Launch Container</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#createContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Create Container</em>}</li>
  *   <li>{@link apps.docker.DockerAPI#connectToExistingContainer(java.lang.String) <em>Connect To Existing Container</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#deleteContainer(java.lang.String) <em>Delete Container</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#deleteImage(java.lang.String) <em>Delete Image</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -151,6 +153,19 @@ public class DockerAPITest extends TestCase {
 	}
 
 	/**
+	 * Tests the '{@link apps.docker.DockerAPI#createContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Create Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#createContainer(java.lang.String, apps.docker.ContainerConfiguration)
+	 * @generated
+	 */
+	public void testCreateContainer__String_ContainerConfiguration() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
 	 * Tests the '{@link apps.docker.DockerAPI#launchContainer(java.lang.String, apps.docker.ContainerConfiguration) <em>Launch Container</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -174,6 +189,32 @@ public class DockerAPITest extends TestCase {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 //		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#deleteContainer(java.lang.String) <em>Delete Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#deleteContainer(java.lang.String)
+	 * @generated
+	 */
+	public void testDeleteContainer__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#deleteImage(java.lang.String) <em>Delete Image</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#deleteImage(java.lang.String)
+	 * @generated
+	 */
+	public void testDeleteImage__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 } //DockerAPITest

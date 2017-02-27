@@ -13,7 +13,10 @@ import junit.framework.TestCase;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.IEnvironment#launch() <em>Launch</em>}</li>
+ *   <li>{@link apps.IEnvironment#build() <em>Build</em>}</li>
+ *   <li>{@link apps.IEnvironment#connect() <em>Connect</em>}</li>
+ *   <li>{@link apps.IEnvironment#delete() <em>Delete</em>}</li>
+ *   <li>{@link apps.IEnvironment#stop() <em>Stop</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -56,6 +59,58 @@ public abstract class IEnvironmentTest extends TestCase {
 	 */
 	protected IEnvironment getFixture() {
 		return fixture;
+	}
+
+	/**
+	 * Tests the '{@link apps.IEnvironment#build() <em>Build</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.IEnvironment#build()
+	 * @generated
+	 */
+	public void testBuild() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.IEnvironment#connect() <em>Connect</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.IEnvironment#connect()
+	 * @generated
+	 */
+	public void testConnect() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.IEnvironment#delete() <em>Delete</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.IEnvironment#delete()
+	 * @generated
+	 */
+	public void testDelete() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.IEnvironment#stop() <em>Stop</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.IEnvironment#stop()
+	 * @generated
+	 */
+	public void testStop() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 	/**

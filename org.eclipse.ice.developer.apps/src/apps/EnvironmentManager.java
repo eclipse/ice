@@ -30,7 +30,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment createEnvironment(String type);
+	IEnvironment createEnvironment(String dataString);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -52,7 +52,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment loadExistingEnvironment(String name);
+	IEnvironment loadEnvironment(String environmentName);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -63,22 +63,39 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment loadEnvironmentFromFile(String file);
+	IEnvironment loadEnvironmentFromFile(String fileName);
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Persist the given IEnvironment to a String and return it. 
+	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
 	 */
-	String persistToXMIString(IEnvironment environment);
+	String persistToXMIString(String environmentName);
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Persist the given IEnvironment to an EMF XMI file. 
+	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
 	 */
-	void persistXMIToFile(IEnvironment environment, String fileName);
+	void persistXMIToFile(String environmentName, String fileName);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Connect to the IEnvironment with the given name if the IEnvironment is in the Stopped state. 
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void connectToExistingEnvironment(String environmentName);
 
 } // EnvironmentManager

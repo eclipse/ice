@@ -15,7 +15,7 @@ import junit.framework.TestCase;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.ProjectLauncher#launchProject(apps.SpackPackage) <em>Launch Project</em>}</li>
+ *   <li>{@link apps.ProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -58,6 +58,19 @@ public abstract class ProjectLauncherTest extends TestCase {
 	 */
 	protected ProjectLauncher getFixture() {
 		return fixture;
+	}
+
+	/**
+	 * Tests the '{@link apps.ProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.ProjectLauncher#launchProject(apps.SourcePackage)
+	 * @generated
+	 */
+	public void testLaunchProject__SourcePackage() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 	/**

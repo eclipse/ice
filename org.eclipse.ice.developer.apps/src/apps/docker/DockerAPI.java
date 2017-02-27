@@ -39,14 +39,39 @@ public interface DockerAPI extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void launchContainer(String name, ContainerConfiguration config);
+	void createContainer(String imageName, ContainerConfiguration config);
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Connect to the container with the given name or id. 
+	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
 	 */
 	void connectToExistingContainer(String id);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Delete the container with the given name. 
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void deleteContainer(String containerName);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Delete the image with the given name. 
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void deleteImage(String imageName);
 
 } // DockerAPI

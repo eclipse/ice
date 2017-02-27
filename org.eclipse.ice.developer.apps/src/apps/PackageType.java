@@ -10,98 +10,124 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Type</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Package Type</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
  * <!-- begin-model-doc -->
- * This enumeration defines the types of Environments that can be created. Currently, we can create environments on the local host, or in a Docker container. 
+ * PackageType describes the types of derived Package types an IEnvironment can use. 
  * <!-- end-model-doc -->
- * @see apps.AppsPackage#getEnvironmentType()
+ * @see apps.AppsPackage#getPackageType()
  * @model
  * @generated
  */
-public enum EnvironmentType implements Enumerator {
+public enum PackageType implements Enumerator {
 	/**
-	 * The '<em><b>Docker</b></em>' literal object.
+	 * The '<em><b>OS</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #DOCKER_VALUE
+	 * @see #OS_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	DOCKER(1, "Docker", "Docker"),
+	OS(0, "OS", "OS"),
 
 	/**
-	 * The '<em><b>Local</b></em>' literal object.
+	 * The '<em><b>Spack</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #LOCAL_VALUE
+	 * @see #SPACK_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	LOCAL(1, "Local", "Local");
+	SPACK(1, "Spack", "Spack"),
 
 	/**
-	 * The '<em><b>Docker</b></em>' literal value.
+	 * The '<em><b>Source</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #SOURCE_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	SOURCE(2, "Source", "Source");
+
+	/**
+	 * The '<em><b>OS</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of '<em><b>Docker</b></em>' literal object isn't clear,
+	 * If the meaning of '<em><b>OS</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @see #DOCKER
-	 * @model name="Docker"
+	 * @see #OS
+	 * @model
 	 * @generated
 	 * @ordered
 	 */
-	public static final int DOCKER_VALUE = 1;
+	public static final int OS_VALUE = 0;
 
 	/**
-	 * The '<em><b>Local</b></em>' literal value.
+	 * The '<em><b>Spack</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of '<em><b>Local</b></em>' literal object isn't clear,
+	 * If the meaning of '<em><b>Spack</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @see #LOCAL
-	 * @model name="Local"
+	 * @see #SPACK
+	 * @model name="Spack"
 	 * @generated
 	 * @ordered
 	 */
-	public static final int LOCAL_VALUE = 1;
+	public static final int SPACK_VALUE = 1;
 
 	/**
-	 * An array of all the '<em><b>Environment Type</b></em>' enumerators.
+	 * The '<em><b>Source</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Source</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #SOURCE
+	 * @model name="Source"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int SOURCE_VALUE = 2;
+
+	/**
+	 * An array of all the '<em><b>Package Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final EnvironmentType[] VALUES_ARRAY =
-		new EnvironmentType[] {
-			DOCKER,
-			LOCAL,
+	private static final PackageType[] VALUES_ARRAY =
+		new PackageType[] {
+			OS,
+			SPACK,
+			SOURCE,
 		};
 
 	/**
-	 * A public read-only list of all the '<em><b>Environment Type</b></em>' enumerators.
+	 * A public read-only list of all the '<em><b>Package Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static final List<EnvironmentType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+	public static final List<PackageType> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Environment Type</b></em>' literal with the specified literal value.
+	 * Returns the '<em><b>Package Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param literal the literal.
 	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
-	public static EnvironmentType get(String literal) {
+	public static PackageType get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			EnvironmentType result = VALUES_ARRAY[i];
+			PackageType result = VALUES_ARRAY[i];
 			if (result.toString().equals(literal)) {
 				return result;
 			}
@@ -110,16 +136,16 @@ public enum EnvironmentType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Environment Type</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Package Type</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param name the name.
 	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
-	public static EnvironmentType getByName(String name) {
+	public static PackageType getByName(String name) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			EnvironmentType result = VALUES_ARRAY[i];
+			PackageType result = VALUES_ARRAY[i];
 			if (result.getName().equals(name)) {
 				return result;
 			}
@@ -128,16 +154,18 @@ public enum EnvironmentType implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Environment Type</b></em>' literal with the specified integer value.
+	 * Returns the '<em><b>Package Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the integer value.
 	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
-	public static EnvironmentType get(int value) {
+	public static PackageType get(int value) {
 		switch (value) {
-			case DOCKER_VALUE: return DOCKER;
+			case OS_VALUE: return OS;
+			case SPACK_VALUE: return SPACK;
+			case SOURCE_VALUE: return SOURCE;
 		}
 		return null;
 	}
@@ -169,7 +197,7 @@ public enum EnvironmentType implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EnvironmentType(int value, String name, String literal) {
+	private PackageType(int value, String name, String literal) {
 		this.value = value;
 		this.name = name;
 		this.literal = literal;
@@ -213,4 +241,4 @@ public enum EnvironmentType implements Enumerator {
 		return literal;
 	}
 	
-} //EnvironmentType
+} //PackageType

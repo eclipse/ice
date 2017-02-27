@@ -66,15 +66,6 @@ public interface LocalPackage extends EPackage {
 	int LOCAL_ENVIRONMENT = 0;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOCAL_ENVIRONMENT__TYPE = AppsPackage.IENVIRONMENT__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -102,24 +93,6 @@ public interface LocalPackage extends EPackage {
 	int LOCAL_ENVIRONMENT__DEPENDENT_PACKAGES = AppsPackage.IENVIRONMENT__DEPENDENT_PACKAGES;
 
 	/**
-	 * The feature id for the '<em><b>Development Environment</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOCAL_ENVIRONMENT__DEVELOPMENT_ENVIRONMENT = AppsPackage.IENVIRONMENT__DEVELOPMENT_ENVIRONMENT;
-
-	/**
-	 * The feature id for the '<em><b>Generate Project</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOCAL_ENVIRONMENT__GENERATE_PROJECT = AppsPackage.IENVIRONMENT__GENERATE_PROJECT;
-
-	/**
 	 * The feature id for the '<em><b>Primary App</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -127,6 +100,24 @@ public interface LocalPackage extends EPackage {
 	 * @ordered
 	 */
 	int LOCAL_ENVIRONMENT__PRIMARY_APP = AppsPackage.IENVIRONMENT__PRIMARY_APP;
+
+	/**
+	 * The feature id for the '<em><b>Projectlauncher</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT__PROJECTLAUNCHER = AppsPackage.IENVIRONMENT__PROJECTLAUNCHER;
+
+	/**
+	 * The feature id for the '<em><b>State</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT__STATE = AppsPackage.IENVIRONMENT__STATE;
 
 	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
@@ -138,13 +129,40 @@ public interface LocalPackage extends EPackage {
 	int LOCAL_ENVIRONMENT_FEATURE_COUNT = AppsPackage.IENVIRONMENT_FEATURE_COUNT + 0;
 
 	/**
-	 * The operation id for the '<em>Launch</em>' operation.
+	 * The operation id for the '<em>Build</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LOCAL_ENVIRONMENT___LAUNCH = AppsPackage.IENVIRONMENT___LAUNCH;
+	int LOCAL_ENVIRONMENT___BUILD = AppsPackage.IENVIRONMENT___BUILD;
+
+	/**
+	 * The operation id for the '<em>Connect</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT___CONNECT = AppsPackage.IENVIRONMENT___CONNECT;
+
+	/**
+	 * The operation id for the '<em>Delete</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT___DELETE = AppsPackage.IENVIRONMENT___DELETE;
+
+	/**
+	 * The operation id for the '<em>Stop</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT___STOP = AppsPackage.IENVIRONMENT___STOP;
 
 	/**
 	 * The number of operations of the '<em>Environment</em>' class.

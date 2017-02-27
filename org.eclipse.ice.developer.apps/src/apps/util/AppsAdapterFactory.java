@@ -2,8 +2,14 @@
  */
 package apps.util;
 
-import apps.*;
-
+import apps.AppsPackage;
+import apps.EnvironmentManager;
+import apps.IEnvironment;
+import apps.OSPackage;
+import apps.ProjectLauncher;
+import apps.SourcePackage;
+import apps.SpackDependency;
+import apps.SpackPackage;
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
 
@@ -80,20 +86,24 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 				return createSpackPackageAdapter();
 			}
 			@Override
-			public Adapter caseEnvironment(Environment object) {
-				return createEnvironmentAdapter();
-			}
-			@Override
 			public Adapter caseProjectLauncher(ProjectLauncher object) {
 				return createProjectLauncherAdapter();
 			}
 			@Override
-			public Adapter casePTPSyncProjectLauncher(PTPSyncProjectLauncher object) {
-				return createPTPSyncProjectLauncherAdapter();
+			public Adapter casePackage(apps.Package object) {
+				return createPackageAdapter();
 			}
 			@Override
-			public Adapter caseLocalCDTProjectLauncher(LocalCDTProjectLauncher object) {
-				return createLocalCDTProjectLauncherAdapter();
+			public Adapter caseSourcePackage(SourcePackage object) {
+				return createSourcePackageAdapter();
+			}
+			@Override
+			public Adapter caseOSPackage(OSPackage object) {
+				return createOSPackageAdapter();
+			}
+			@Override
+			public Adapter caseSpackDependency(SpackDependency object) {
+				return createSpackDependencyAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -158,20 +168,6 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.Environment <em>Environment</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.Environment
-	 * @generated
-	 */
-	public Adapter createEnvironmentAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link apps.ProjectLauncher <em>Project Launcher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -186,30 +182,58 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.PTPSyncProjectLauncher <em>PTP Sync Project Launcher</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.Package <em>Package</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.PTPSyncProjectLauncher
+	 * @see apps.Package
 	 * @generated
 	 */
-	public Adapter createPTPSyncProjectLauncherAdapter() {
+	public Adapter createPackageAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.LocalCDTProjectLauncher <em>Local CDT Project Launcher</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.SourcePackage <em>Source Package</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.LocalCDTProjectLauncher
+	 * @see apps.SourcePackage
 	 * @generated
 	 */
-	public Adapter createLocalCDTProjectLauncherAdapter() {
+	public Adapter createSourcePackageAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.OSPackage <em>OS Package</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.OSPackage
+	 * @generated
+	 */
+	public Adapter createOSPackageAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.SpackDependency <em>Spack Dependency</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.SpackDependency
+	 * @generated
+	 */
+	public Adapter createSpackDependencyAdapter() {
 		return null;
 	}
 

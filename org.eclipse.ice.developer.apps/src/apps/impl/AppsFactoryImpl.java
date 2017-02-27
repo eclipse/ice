@@ -2,8 +2,15 @@
  */
 package apps.impl;
 
-import apps.*;
-
+import apps.AppsFactory;
+import apps.AppsPackage;
+import apps.EnvironmentManager;
+import apps.EnvironmentState;
+import apps.OSPackage;
+import apps.PackageType;
+import apps.SourcePackage;
+import apps.SpackDependency;
+import apps.SpackPackage;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
@@ -59,9 +66,9 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 		switch (eClass.getClassifierID()) {
 			case AppsPackage.ENVIRONMENT_MANAGER: return createEnvironmentManager();
 			case AppsPackage.SPACK_PACKAGE: return createSpackPackage();
-			case AppsPackage.ENVIRONMENT: return createEnvironment();
-			case AppsPackage.PTP_SYNC_PROJECT_LAUNCHER: return createPTPSyncProjectLauncher();
-			case AppsPackage.LOCAL_CDT_PROJECT_LAUNCHER: return createLocalCDTProjectLauncher();
+			case AppsPackage.SOURCE_PACKAGE: return createSourcePackage();
+			case AppsPackage.OS_PACKAGE: return createOSPackage();
+			case AppsPackage.SPACK_DEPENDENCY: return createSpackDependency();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -75,8 +82,10 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case AppsPackage.ENVIRONMENT_TYPE:
-				return createEnvironmentTypeFromString(eDataType, initialValue);
+			case AppsPackage.PACKAGE_TYPE:
+				return createPackageTypeFromString(eDataType, initialValue);
+			case AppsPackage.ENVIRONMENT_STATE:
+				return createEnvironmentStateFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -90,8 +99,10 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case AppsPackage.ENVIRONMENT_TYPE:
-				return convertEnvironmentTypeToString(eDataType, instanceValue);
+			case AppsPackage.PACKAGE_TYPE:
+				return convertPackageTypeToString(eDataType, instanceValue);
+			case AppsPackage.ENVIRONMENT_STATE:
+				return convertEnvironmentStateToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -122,9 +133,9 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Environment createEnvironment() {
-		EnvironmentImpl environment = new EnvironmentImpl();
-		return environment;
+	public SourcePackage createSourcePackage() {
+		SourcePackageImpl sourcePackage = new SourcePackageImpl();
+		return sourcePackage;
 	}
 
 	/**
@@ -132,9 +143,9 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PTPSyncProjectLauncher createPTPSyncProjectLauncher() {
-		PTPSyncProjectLauncherImpl ptpSyncProjectLauncher = new PTPSyncProjectLauncherImpl();
-		return ptpSyncProjectLauncher;
+	public OSPackage createOSPackage() {
+		OSPackageImpl osPackage = new OSPackageImpl();
+		return osPackage;
 	}
 
 	/**
@@ -142,9 +153,9 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public LocalCDTProjectLauncher createLocalCDTProjectLauncher() {
-		LocalCDTProjectLauncherImpl localCDTProjectLauncher = new LocalCDTProjectLauncherImpl();
-		return localCDTProjectLauncher;
+	public SpackDependency createSpackDependency() {
+		SpackDependencyImpl spackDependency = new SpackDependencyImpl();
+		return spackDependency;
 	}
 
 	/**
@@ -152,8 +163,8 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnvironmentType createEnvironmentTypeFromString(EDataType eDataType, String initialValue) {
-		EnvironmentType result = EnvironmentType.get(initialValue);
+	public PackageType createPackageTypeFromString(EDataType eDataType, String initialValue) {
+		PackageType result = PackageType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
@@ -163,7 +174,27 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertEnvironmentTypeToString(EDataType eDataType, Object instanceValue) {
+	public String convertPackageTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnvironmentState createEnvironmentStateFromString(EDataType eDataType, String initialValue) {
+		EnvironmentState result = EnvironmentState.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertEnvironmentStateToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 

@@ -3,18 +3,28 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="apps" nsURI="http://eclipse.org/ice/apps" nsPrefix="developerappstore">
   <eClassifiers xsi:type="ecore:EClass" name="IEnvironment" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The IEnvironment interface provides the data attributes and methods necessary to describe a scientific application environment. It describes the name and type of this environment, the operation system it uses, the application it contains, and a list of dependent packages it requires. "/>
+      <details key="documentation" value="The IEnvironment interface provides the data and methods necessary to describe a scientific application environment. It describes the name of the environment, the OS it runs in, and the current running state of the environment, the application being developed in the environment, and the dependencies for that application.  IEnvironments can be created and deleted, stopped and connected or re-connected to."/>
     </eAnnotations>
-    <eOperations name="launch" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
+    <eOperations name="build" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="This method directs the Environment to launch itself with its provided data. "/>
+        <details key="documentation" value="Build this IEnvironment from the given data string. The data string can be formatted using JSon, for example. "/>
       </eAnnotations>
     </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//EnvironmentType">
+    <eOperations name="connect" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="The type of this IEnvironment"/>
+        <details key="documentation" value="Connect to this IEnvironment if it is in a Stopped state. "/>
       </eAnnotations>
-    </eStructuralFeatures>
+    </eOperations>
+    <eOperations name="delete" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Delete the IEnvironment. "/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="stop" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Stop this IEnvironment. This sets the state from Running to Stopped. "/>
+      </eAnnotations>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The name of this environment"/>
@@ -32,24 +42,20 @@
         <details key="documentation" value="The list of packages that the application in this environment depends on. "/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="developmentEnvironment"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"
-        defaultValueLiteral="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryApp" eType="#//Package"
+        containment="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Indicates if this environment is for the development of a specific ScienceApp."/>
+        <details key="documentation" value="The primary application that this IEnvironment serves for development. "/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="generateProject" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean"
-        defaultValueLiteral="false"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="primaryApp" eType="#//Package"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="projectlauncher" eType="#//ProjectLauncher"
         containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="EnvironmentType">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="This enumeration defines the types of Environments that can be created. Currently, we can create environments on the local host, or in a Docker container. "/>
-    </eAnnotations>
-    <eLiterals name="Docker" value="1"/>
-    <eLiterals name="Local" value="1"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//EnvironmentState"
+        defaultValueLiteral="NotCreated">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The state of this IEnvironment. The state can be Running, Stopped, or NotCreated. "/>
+      </eAnnotations>
+    </eStructuralFeatures>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnvironmentManager">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -59,36 +65,48 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Create a new Environment from the provided JSON properties string. "/>
       </eAnnotations>
-      <eParameters name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="dataString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="listExistingEnvironments" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Return a list of String names for each existing Environment. The existing environments are stored internally by Eclipse. "/>
       </eAnnotations>
     </eOperations>
-    <eOperations name="loadExistingEnvironment" eType="#//IEnvironment">
+    <eOperations name="loadEnvironment" eType="#//IEnvironment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Load the Environment with the provided String name. Existing here means stored and tracked internally by Eclipse Preferences. "/>
       </eAnnotations>
-      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="environmentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="loadEnvironmentFromFile" eType="#//IEnvironment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Load an environment from the provided file. The file type should be the EMF XMI persisted model. This is different from loadExisting as it provides a means to load an environment that Eclipse does not know about. "/>
       </eAnnotations>
-      <eParameters name="file" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eParameters name="fileName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="persistToXMIString" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eParameters name="environment" eType="#//IEnvironment"/>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Persist the given IEnvironment to a String and return it. "/>
+      </eAnnotations>
+      <eParameters name="environmentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="persistXMIToFile">
-      <eParameters name="environment" eType="#//IEnvironment"/>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Persist the given IEnvironment to an EMF XMI file. "/>
+      </eAnnotations>
+      <eParameters name="environmentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eParameters name="fileName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="connectToExistingEnvironment">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Connect to the IEnvironment with the given name if the IEnvironment is in the Stopped state. "/>
+      </eAnnotations>
+      <eParameters name="environmentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpackPackage" eSuperTypes="#//Package">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The SpackPackage class encapsulates the data required to describe a spack package, and the data need to install the package. "/>
+      <details key="documentation" value="The SpackPackage class encapsulates the data required to describe a spack package, and the data need to install the package like the compiler to use, any C++ build flags, and dependencies and dependency providers (for example mpi and mpich, respectively)"/>
     </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="compiler" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral="gcc@6.3.1">
@@ -101,34 +119,8 @@
         <details key="documentation" value="The desired C++ flags. "/>
       </eAnnotations>
     </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="virtualDependency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Reference to requested virtual dependencies."/>
-      </eAnnotations>
-    </eStructuralFeatures>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="virtualDependencyProvider"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Reference to virtual dependency provider. "/>
-      </eAnnotations>
-    </eStructuralFeatures>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Environment" eSuperTypes="#//IEnvironment">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The Environment is a concrete implementation of IEnvironment that provides functionality to create an Eclipse Project after derived classes have launched themselves. "/>
-    </eAnnotations>
-    <eOperations name="launch" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="This method directs the Environment to launch itself with its provided data. The implementation on this class "/>
-      </eAnnotations>
-    </eOperations>
-    <eOperations name="launchDerived" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="This method is to be implemented by subclasses to achieve subclass-specific launch behavior for the environment. It is invoked by the Environment.launch method. "/>
-      </eAnnotations>
-    </eOperations>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="projectlauncher" eType="#//ProjectLauncher"
-        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dependencies" upperBound="-1"
+        eType="#//SpackDependency"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ProjectLauncher" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -138,57 +130,75 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
       </eAnnotations>
-      <eParameters name="project" eType="#//SpackPackage"/>
-    </eOperations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="PTPSyncProjectLauncher" eSuperTypes="#//ProjectLauncher">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The PTPSyncProjectLauncher launches a PTP Synchronized Project for the remotely hosted application. "/>
-    </eAnnotations>
-    <eOperations name="launchProject">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
-      </eAnnotations>
-      <eParameters name="project" eType="#//SpackPackage"/>
-    </eOperations>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="LocalCDTProjectLauncher" eSuperTypes="#//ProjectLauncher">
-    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-      <details key="documentation" value="The LocalCDTProjectLauncher launches C++ Development Toolkit projects on the localhost. "/>
-    </eAnnotations>
-    <eOperations name="launchProject">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
-      </eAnnotations>
-      <eParameters name="project" eType="#//SpackPackage"/>
+      <eParameters name="project" eType="#//SourcePackage"/>
     </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Package" abstract="true" interface="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The Package provides an interface describing a software package for an IEnvironment. It provides name, version, and PackageType data attributes. "/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PackageType"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PackageType">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="PackageType describes the types of derived Package types an IEnvironment can use. "/>
+    </eAnnotations>
     <eLiterals name="OS"/>
     <eLiterals name="Spack" value="1"/>
     <eLiterals name="Source" value="2"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SourcePackage" eSuperTypes="#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A SourcePackage is a Package that describes a repository URL, repository branch, and executable command to build the Package from scratch. "/>
+    </eAnnotations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="repoURL" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="branch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
         defaultValueLiteral="master"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="buildCommand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OSPackage" eSuperTypes="#//Package"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OSPackage" eSuperTypes="#//Package">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The OSPackage represents a package to be installed through the OS provided package manager (like dnf for Fedora, or apt-get for Ubuntu)."/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SpackDependency">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="A SpackDependency describes a package's dependency and the dependency provider for that dependency (for example, mpi and mpich)."/>
+    </eAnnotations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="dependency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="provider" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="EnvironmentState">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The EnvironmentState enumeration provides a way to describe the current state of an IEnvironment. "/>
+    </eAnnotations>
+    <eLiterals name="Stopped"/>
+    <eLiterals name="Running" value="1"/>
+    <eLiterals name="NotCreated" value="2"/>
+  </eClassifiers>
   <eSubpackages name="docker" nsURI="http://eclipse.org/apps/docker" nsPrefix="dockerenvironment">
-    <eClassifiers xsi:type="ecore:EClass" name="DockerEnvironment" eSuperTypes="#//Environment">
+    <eClassifiers xsi:type="ecore:EClass" name="DockerEnvironment" eSuperTypes="#//IEnvironment">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerEnvironment is a realization of the IEnvironment interface that provides a launch method to create a scientific application environment in a Docker container. "/>
       </eAnnotations>
-      <eOperations name="getDockerFileContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="docker" eType="#//docker/DockerAPI"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="docker" eType="#//docker/DockerAPI">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reference to the DockerAPI that enables the building of docker images, creation of docker containers from those images, re-connection to existing 'exited' containers, and the deletion of containers and images. "/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="containerConfiguration"
-          eType="#//docker/ContainerConfiguration" containment="true"/>
+          eType="#//docker/ContainerConfiguration" containment="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reference to the container configuration data needed to launch a new docker container. "/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Dockerfile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reference to the String contents of the Dockerfile created to model this DockerEnvironment."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DockerAPI">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -201,15 +211,30 @@
         <eParameters name="buildFile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eParameters name="imagename" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
-      <eOperations name="launchContainer">
+      <eOperations name="createContainer">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Launch a new container from the provided image name and ContainerConfiguration object. "/>
         </eAnnotations>
-        <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eParameters name="config" eType="#//docker/ContainerConfiguration"/>
       </eOperations>
       <eOperations name="connectToExistingContainer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Connect to the container with the given name or id. "/>
+        </eAnnotations>
         <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="deleteContainer">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Delete the container with the given name. "/>
+        </eAnnotations>
+        <eParameters name="containerName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="deleteImage">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Delete the image with the given name. "/>
+        </eAnnotations>
+        <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainerConfiguration">
@@ -237,7 +262,24 @@
           <details key="documentation" value="The volume mounting string. "/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="remoteSSHPort" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Int"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="remoteSSHPort" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Int">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reference to the localhost SSH port for the container. "/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DockerPTPProjectLauncher" eSuperTypes="#//ProjectLauncher">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The DockerPTPProjectLauncher provides a launchProject method that uses the ContainerConfiguration of the current DockerEnvironment to create a new PTP Synchronized Project for the IEnvironment's primary application running in the created docker container. "/>
+      </eAnnotations>
+      <eOperations name="launchProject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
+        </eAnnotations>
+        <eParameters name="project" eType="#//SourcePackage"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="containerconfiguration"
+          eType="#//docker/ContainerConfiguration"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="local" nsURI="https://eclipse.org/apps/local" nsPrefix="localenvironment">

@@ -4,36 +4,34 @@ package apps.impl;
 
 import apps.AppsPackage;
 import apps.PackageType;
-import apps.SpackDependency;
-import apps.SpackPackage;
-import java.util.Collection;
+import apps.SourcePackage;
+
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.util.EList;
+
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Spack Package</b></em>'.
+ * An implementation of the model object '<em><b>Source Package</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link apps.impl.SpackPackageImpl#getName <em>Name</em>}</li>
- *   <li>{@link apps.impl.SpackPackageImpl#getVersion <em>Version</em>}</li>
- *   <li>{@link apps.impl.SpackPackageImpl#getType <em>Type</em>}</li>
- *   <li>{@link apps.impl.SpackPackageImpl#getCompiler <em>Compiler</em>}</li>
- *   <li>{@link apps.impl.SpackPackageImpl#getCppFlags <em>Cpp Flags</em>}</li>
- *   <li>{@link apps.impl.SpackPackageImpl#getDependencies <em>Dependencies</em>}</li>
+ *   <li>{@link apps.impl.SourcePackageImpl#getName <em>Name</em>}</li>
+ *   <li>{@link apps.impl.SourcePackageImpl#getVersion <em>Version</em>}</li>
+ *   <li>{@link apps.impl.SourcePackageImpl#getType <em>Type</em>}</li>
+ *   <li>{@link apps.impl.SourcePackageImpl#getRepoURL <em>Repo URL</em>}</li>
+ *   <li>{@link apps.impl.SourcePackageImpl#getBranch <em>Branch</em>}</li>
+ *   <li>{@link apps.impl.SourcePackageImpl#getBuildCommand <em>Build Command</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class SpackPackageImpl extends MinimalEObjectImpl.Container implements SpackPackage {
+public class SourcePackageImpl extends MinimalEObjectImpl.Container implements SourcePackage {
 	/**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -95,61 +93,71 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	protected PackageType type = TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getCompiler() <em>Compiler</em>}' attribute.
+	 * The default value of the '{@link #getRepoURL() <em>Repo URL</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getCompiler()
+	 * @see #getRepoURL()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String COMPILER_EDEFAULT = "gcc@6.3.1";
+	protected static final String REPO_URL_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getCompiler() <em>Compiler</em>}' attribute.
+	 * The cached value of the '{@link #getRepoURL() <em>Repo URL</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getCompiler()
+	 * @see #getRepoURL()
 	 * @generated
 	 * @ordered
 	 */
-	protected String compiler = COMPILER_EDEFAULT;
+	protected String repoURL = REPO_URL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getCppFlags() <em>Cpp Flags</em>}' attribute.
+	 * The default value of the '{@link #getBranch() <em>Branch</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getCppFlags()
+	 * @see #getBranch()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String CPP_FLAGS_EDEFAULT = null;
+	protected static final String BRANCH_EDEFAULT = "master";
 
 	/**
-	 * The cached value of the '{@link #getCppFlags() <em>Cpp Flags</em>}' attribute.
+	 * The cached value of the '{@link #getBranch() <em>Branch</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getCppFlags()
+	 * @see #getBranch()
 	 * @generated
 	 * @ordered
 	 */
-	protected String cppFlags = CPP_FLAGS_EDEFAULT;
+	protected String branch = BRANCH_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDependencies() <em>Dependencies</em>}' reference list.
+	 * The default value of the '{@link #getBuildCommand() <em>Build Command</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDependencies()
+	 * @see #getBuildCommand()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<SpackDependency> dependencies;
+	protected static final String BUILD_COMMAND_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getBuildCommand() <em>Build Command</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getBuildCommand()
+	 * @generated
+	 * @ordered
+	 */
+	protected String buildCommand = BUILD_COMMAND_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected SpackPackageImpl() {
+	protected SourcePackageImpl() {
 		super();
 	}
 
@@ -160,7 +168,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return AppsPackage.Literals.SPACK_PACKAGE;
+		return AppsPackage.Literals.SOURCE_PACKAGE;
 	}
 
 	/**
@@ -181,28 +189,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__NAME, oldName, name));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getCompiler() {
-		return compiler;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setCompiler(String newCompiler) {
-		String oldCompiler = compiler;
-		compiler = newCompiler;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__COMPILER, oldCompiler, compiler));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SOURCE_PACKAGE__NAME, oldName, name));
 	}
 
 	/**
@@ -223,7 +210,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		String oldVersion = version;
 		version = newVersion;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__VERSION, oldVersion, version));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SOURCE_PACKAGE__VERSION, oldVersion, version));
 	}
 
 	/**
@@ -244,7 +231,7 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		PackageType oldType = type;
 		type = newType == null ? TYPE_EDEFAULT : newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SOURCE_PACKAGE__TYPE, oldType, type));
 	}
 
 	/**
@@ -252,8 +239,8 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getCppFlags() {
-		return cppFlags;
+	public String getRepoURL() {
+		return repoURL;
 	}
 
 	/**
@@ -261,11 +248,11 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCppFlags(String newCppFlags) {
-		String oldCppFlags = cppFlags;
-		cppFlags = newCppFlags;
+	public void setRepoURL(String newRepoURL) {
+		String oldRepoURL = repoURL;
+		repoURL = newRepoURL;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SPACK_PACKAGE__CPP_FLAGS, oldCppFlags, cppFlags));
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SOURCE_PACKAGE__REPO_URL, oldRepoURL, repoURL));
 	}
 
 	/**
@@ -273,11 +260,41 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<SpackDependency> getDependencies() {
-		if (dependencies == null) {
-			dependencies = new EObjectResolvingEList<SpackDependency>(SpackDependency.class, this, AppsPackage.SPACK_PACKAGE__DEPENDENCIES);
-		}
-		return dependencies;
+	public String getBranch() {
+		return branch;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setBranch(String newBranch) {
+		String oldBranch = branch;
+		branch = newBranch;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SOURCE_PACKAGE__BRANCH, oldBranch, branch));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getBuildCommand() {
+		return buildCommand;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setBuildCommand(String newBuildCommand) {
+		String oldBuildCommand = buildCommand;
+		buildCommand = newBuildCommand;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.SOURCE_PACKAGE__BUILD_COMMAND, oldBuildCommand, buildCommand));
 	}
 
 	/**
@@ -288,18 +305,18 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case AppsPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SOURCE_PACKAGE__NAME:
 				return getName();
-			case AppsPackage.SPACK_PACKAGE__VERSION:
+			case AppsPackage.SOURCE_PACKAGE__VERSION:
 				return getVersion();
-			case AppsPackage.SPACK_PACKAGE__TYPE:
+			case AppsPackage.SOURCE_PACKAGE__TYPE:
 				return getType();
-			case AppsPackage.SPACK_PACKAGE__COMPILER:
-				return getCompiler();
-			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
-				return getCppFlags();
-			case AppsPackage.SPACK_PACKAGE__DEPENDENCIES:
-				return getDependencies();
+			case AppsPackage.SOURCE_PACKAGE__REPO_URL:
+				return getRepoURL();
+			case AppsPackage.SOURCE_PACKAGE__BRANCH:
+				return getBranch();
+			case AppsPackage.SOURCE_PACKAGE__BUILD_COMMAND:
+				return getBuildCommand();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -309,28 +326,26 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case AppsPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SOURCE_PACKAGE__NAME:
 				setName((String)newValue);
 				return;
-			case AppsPackage.SPACK_PACKAGE__VERSION:
+			case AppsPackage.SOURCE_PACKAGE__VERSION:
 				setVersion((String)newValue);
 				return;
-			case AppsPackage.SPACK_PACKAGE__TYPE:
+			case AppsPackage.SOURCE_PACKAGE__TYPE:
 				setType((PackageType)newValue);
 				return;
-			case AppsPackage.SPACK_PACKAGE__COMPILER:
-				setCompiler((String)newValue);
+			case AppsPackage.SOURCE_PACKAGE__REPO_URL:
+				setRepoURL((String)newValue);
 				return;
-			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
-				setCppFlags((String)newValue);
+			case AppsPackage.SOURCE_PACKAGE__BRANCH:
+				setBranch((String)newValue);
 				return;
-			case AppsPackage.SPACK_PACKAGE__DEPENDENCIES:
-				getDependencies().clear();
-				getDependencies().addAll((Collection<? extends SpackDependency>)newValue);
+			case AppsPackage.SOURCE_PACKAGE__BUILD_COMMAND:
+				setBuildCommand((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -344,23 +359,23 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case AppsPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SOURCE_PACKAGE__NAME:
 				setName(NAME_EDEFAULT);
 				return;
-			case AppsPackage.SPACK_PACKAGE__VERSION:
+			case AppsPackage.SOURCE_PACKAGE__VERSION:
 				setVersion(VERSION_EDEFAULT);
 				return;
-			case AppsPackage.SPACK_PACKAGE__TYPE:
+			case AppsPackage.SOURCE_PACKAGE__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
-			case AppsPackage.SPACK_PACKAGE__COMPILER:
-				setCompiler(COMPILER_EDEFAULT);
+			case AppsPackage.SOURCE_PACKAGE__REPO_URL:
+				setRepoURL(REPO_URL_EDEFAULT);
 				return;
-			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
-				setCppFlags(CPP_FLAGS_EDEFAULT);
+			case AppsPackage.SOURCE_PACKAGE__BRANCH:
+				setBranch(BRANCH_EDEFAULT);
 				return;
-			case AppsPackage.SPACK_PACKAGE__DEPENDENCIES:
-				getDependencies().clear();
+			case AppsPackage.SOURCE_PACKAGE__BUILD_COMMAND:
+				setBuildCommand(BUILD_COMMAND_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -374,18 +389,18 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case AppsPackage.SPACK_PACKAGE__NAME:
+			case AppsPackage.SOURCE_PACKAGE__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-			case AppsPackage.SPACK_PACKAGE__VERSION:
+			case AppsPackage.SOURCE_PACKAGE__VERSION:
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
-			case AppsPackage.SPACK_PACKAGE__TYPE:
+			case AppsPackage.SOURCE_PACKAGE__TYPE:
 				return type != TYPE_EDEFAULT;
-			case AppsPackage.SPACK_PACKAGE__COMPILER:
-				return COMPILER_EDEFAULT == null ? compiler != null : !COMPILER_EDEFAULT.equals(compiler);
-			case AppsPackage.SPACK_PACKAGE__CPP_FLAGS:
-				return CPP_FLAGS_EDEFAULT == null ? cppFlags != null : !CPP_FLAGS_EDEFAULT.equals(cppFlags);
-			case AppsPackage.SPACK_PACKAGE__DEPENDENCIES:
-				return dependencies != null && !dependencies.isEmpty();
+			case AppsPackage.SOURCE_PACKAGE__REPO_URL:
+				return REPO_URL_EDEFAULT == null ? repoURL != null : !REPO_URL_EDEFAULT.equals(repoURL);
+			case AppsPackage.SOURCE_PACKAGE__BRANCH:
+				return BRANCH_EDEFAULT == null ? branch != null : !BRANCH_EDEFAULT.equals(branch);
+			case AppsPackage.SOURCE_PACKAGE__BUILD_COMMAND:
+				return BUILD_COMMAND_EDEFAULT == null ? buildCommand != null : !BUILD_COMMAND_EDEFAULT.equals(buildCommand);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -406,12 +421,14 @@ public class SpackPackageImpl extends MinimalEObjectImpl.Container implements Sp
 		result.append(version);
 		result.append(", type: ");
 		result.append(type);
-		result.append(", compiler: ");
-		result.append(compiler);
-		result.append(", cppFlags: ");
-		result.append(cppFlags);
+		result.append(", repoURL: ");
+		result.append(repoURL);
+		result.append(", branch: ");
+		result.append(branch);
+		result.append(", buildCommand: ");
+		result.append(buildCommand);
 		result.append(')');
 		return result.toString();
 	}
 
-} //SpackPackageImpl
+} //SourcePackageImpl

@@ -51,67 +51,54 @@ public class JsonEnvironmentCreator {
 		JsonArray deps = root.getAsJsonArray("Dependencies");
 		
 		// Create the Environment
-		env = AppsFactory.eINSTANCE.createEnvironmentManager()
-				.createEnvironment(generalData.get("type").getAsString());
+		String type = generalData.get("type").getAsString();
+		if (type.equals("Docker")) {
+			env = DockerFactory.eINSTANCE.createDockerEnvironment();
+		} else {
+			throw new UnsupportedOperationException("Cannot create anything other than Docker Environments for now...");
+		}
 		
 		env.setName(generalData.get("name").getAsString());
 		JsonElement os = generalData.get("os");
 		if (os != null) {
 			env.setOs(os.getAsString());
 		}
-		JsonElement genProject = generalData.get("generateProject");
-		if (genProject != null) {
-			env.setGenerateProject(genProject.getAsBoolean());
-		}
 		
 		// Set the Primary App data if available
-		if (appData == null) {
-			env.setDevelopmentEnvironment(false);
-		} else {
-			SpackPackage p = AppsFactory.eINSTANCE.createSpackPackage();
-			p.setName(appData.get("name").getAsString());
-			p.setRepoURL(appData.get("repoURL").getAsString());
-			JsonElement compiler = appData.get("compiler");
-			if (compiler != null) {
-				p.setCompiler(compiler.getAsString());
-			}
-			JsonElement version = appData.get("version");
-			if (version != null) {
-				p.setVersion(version.getAsString());
-			}
-			JsonElement branch = appData.get("branch");
-			if (branch != null) {
-				p.setBranch(branch.getAsString());
-			}
-			env.setPrimaryApp(p);
+		SourcePackage p = AppsFactory.eINSTANCE.createSourcePackage();
+		p.setName(appData.get("name").getAsString());
+		p.setRepoURL(appData.get("repoURL").getAsString());
+		JsonElement compiler = appData.get("compiler");
+		JsonElement version = appData.get("version");
+		if (version != null) {
+			p.setVersion(version.getAsString());
 		}
+		JsonElement branch = appData.get("branch");
+		if (branch != null) {
+			p.setBranch(branch.getAsString());
+		}
+		
+		// Set it as the primary application
+		env.setPrimaryApp(p);
 
 		// Add dependent spack packages
 		if (deps != null) {
 			for (JsonElement s : deps) {
-				SpackPackage p = AppsFactory.eINSTANCE.createSpackPackage();
-				p.setName(s.getAsJsonObject().get("name").getAsString());
-				JsonElement compiler = s.getAsJsonObject().get("compiler");
-				if (compiler != null) {
-					p.setCompiler(compiler.getAsString());
+				SpackPackage pack = AppsFactory.eINSTANCE.createSpackPackage();
+				pack.setName(s.getAsJsonObject().get("name").getAsString());
+				JsonElement spackcompiler = s.getAsJsonObject().get("compiler");
+				if (spackcompiler != null) {
+					pack.setCompiler(spackcompiler.getAsString());
 				}
-				JsonElement version = s.getAsJsonObject().get("version");
-				if (version != null) {
-					p.setVersion(version.getAsString());
+				JsonElement spackversion = s.getAsJsonObject().get("version");
+				if (spackversion != null) {
+					pack.setVersion(spackversion.getAsString());
 				}
-				JsonElement branch = s.getAsJsonObject().get("branch");
-				if (branch != null) {
-					p.setBranch(branch.getAsString());
-				}
-				JsonElement repoURL = s.getAsJsonObject().get("repoURL");
-				if (repoURL != null) {
-					p.setRepoURL(repoURL.getAsString());
-				}
-				env.getDependentPackages().add(p);
+				env.getDependentPackages().add(pack);
 			}
 		} 
 		
-		if (generalData.get("type").getAsString().equals("Docker")) {
+		if (type.equals("Docker")) {
 			ContainerConfiguration config = DockerFactory.eINSTANCE.createContainerConfiguration();
 			JsonObject containerConfig = root.getAsJsonObject("ContainerConfig");
 			if (containerConfig.get("name") != null) {
