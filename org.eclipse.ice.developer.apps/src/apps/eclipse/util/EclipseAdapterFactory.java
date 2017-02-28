@@ -1,10 +1,12 @@
 /**
  */
-package apps.docker.util;
+package apps.eclipse.util;
 
-import apps.IEnvironment;
+import apps.EnvironmentStorage;
 import apps.ProjectLauncher;
-import apps.docker.*;
+
+import apps.docker.DockerProjectLauncher;
+import apps.eclipse.*;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -18,17 +20,17 @@ import org.eclipse.emf.ecore.EObject;
  * The <b>Adapter Factory</b> for the model.
  * It provides an adapter <code>createXXX</code> method for each class of the model.
  * <!-- end-user-doc -->
- * @see apps.docker.DockerPackage
+ * @see apps.eclipse.EclipsePackage
  * @generated
  */
-public class DockerAdapterFactory extends AdapterFactoryImpl {
+public class EclipseAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * The cached model package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected static DockerPackage modelPackage;
+	protected static EclipsePackage modelPackage;
 
 	/**
 	 * Creates an instance of the adapter factory.
@@ -36,9 +38,9 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DockerAdapterFactory() {
+	public EclipseAdapterFactory() {
 		if (modelPackage == null) {
-			modelPackage = DockerPackage.eINSTANCE;
+			modelPackage = EclipsePackage.eINSTANCE;
 		}
 	}
 
@@ -67,31 +69,27 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerSwitch<Adapter> modelSwitch =
-		new DockerSwitch<Adapter>() {
+	protected EclipseSwitch<Adapter> modelSwitch =
+		new EclipseSwitch<Adapter>() {
 			@Override
-			public Adapter caseDockerEnvironment(DockerEnvironment object) {
-				return createDockerEnvironmentAdapter();
+			public Adapter caseEclipseEnvironmentStorage(EclipseEnvironmentStorage object) {
+				return createEclipseEnvironmentStorageAdapter();
 			}
 			@Override
-			public Adapter caseDockerAPI(DockerAPI object) {
-				return createDockerAPIAdapter();
+			public Adapter caseDockerPTPSyncProjectLauncher(DockerPTPSyncProjectLauncher object) {
+				return createDockerPTPSyncProjectLauncherAdapter();
 			}
 			@Override
-			public Adapter caseContainerConfiguration(ContainerConfiguration object) {
-				return createContainerConfigurationAdapter();
-			}
-			@Override
-			public Adapter caseDockerProjectLauncher(DockerProjectLauncher object) {
-				return createDockerProjectLauncherAdapter();
-			}
-			@Override
-			public Adapter caseIEnvironment(IEnvironment object) {
-				return createIEnvironmentAdapter();
+			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
+				return createEnvironmentStorageAdapter();
 			}
 			@Override
 			public Adapter caseProjectLauncher(ProjectLauncher object) {
 				return createProjectLauncherAdapter();
+			}
+			@Override
+			public Adapter caseDockerProjectLauncher(DockerProjectLauncher object) {
+				return createDockerProjectLauncherAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -114,72 +112,44 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.docker.DockerEnvironment <em>Environment</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.eclipse.EclipseEnvironmentStorage <em>Environment Storage</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.docker.DockerEnvironment
+	 * @see apps.eclipse.EclipseEnvironmentStorage
 	 * @generated
 	 */
-	public Adapter createDockerEnvironmentAdapter() {
+	public Adapter createEclipseEnvironmentStorageAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.docker.DockerAPI <em>API</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.eclipse.DockerPTPSyncProjectLauncher <em>Docker PTP Sync Project Launcher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.docker.DockerAPI
+	 * @see apps.eclipse.DockerPTPSyncProjectLauncher
 	 * @generated
 	 */
-	public Adapter createDockerAPIAdapter() {
+	public Adapter createDockerPTPSyncProjectLauncherAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link apps.docker.ContainerConfiguration <em>Container Configuration</em>}'.
+	 * Creates a new adapter for an object of class '{@link apps.EnvironmentStorage <em>Environment Storage</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see apps.docker.ContainerConfiguration
+	 * @see apps.EnvironmentStorage
 	 * @generated
 	 */
-	public Adapter createContainerConfigurationAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link apps.docker.DockerProjectLauncher <em>Project Launcher</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.docker.DockerProjectLauncher
-	 * @generated
-	 */
-	public Adapter createDockerProjectLauncherAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see apps.IEnvironment
-	 * @generated
-	 */
-	public Adapter createIEnvironmentAdapter() {
+	public Adapter createEnvironmentStorageAdapter() {
 		return null;
 	}
 
@@ -198,6 +168,20 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link apps.docker.DockerProjectLauncher <em>Project Launcher</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.docker.DockerProjectLauncher
+	 * @generated
+	 */
+	public Adapter createDockerProjectLauncherAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for the default case.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null.
@@ -209,4 +193,4 @@ public class DockerAdapterFactory extends AdapterFactoryImpl {
 		return null;
 	}
 
-} //DockerAdapterFactory
+} //EclipseAdapterFactory

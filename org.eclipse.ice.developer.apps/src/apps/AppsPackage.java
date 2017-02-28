@@ -196,13 +196,22 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER__ENVIRONMENT_CREATOR = 0;
 
 	/**
+	 * The feature id for the '<em><b>Environment Storage</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE = 1;
+
+	/**
 	 * The number of structural features of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 1;
+	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 2;
 
 	/**
 	 * The operation id for the '<em>Create</em>' operation.
@@ -304,13 +313,22 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING = 10;
 
 	/**
+	 * The operation id for the '<em>Load Environments</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS = 11;
+
+	/**
 	 * The number of operations of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 11;
+	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 12;
 
 	/**
 	 * The meta object id for the '{@link apps.Package <em>Package</em>}' class.
@@ -744,6 +762,52 @@ public interface AppsPackage extends EPackage {
 	int JSON_ENVIRONMENT_CREATOR_OPERATION_COUNT = ENVIRONMENT_CREATOR_OPERATION_COUNT + 0;
 
 	/**
+	 * The meta object id for the '{@link apps.EnvironmentStorage <em>Environment Storage</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentStorage
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentStorage()
+	 * @generated
+	 */
+	int ENVIRONMENT_STORAGE = 10;
+
+	/**
+	 * The number of structural features of the '<em>Environment Storage</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_STORAGE_FEATURE_COUNT = 0;
+
+	/**
+	 * The operation id for the '<em>Store</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_STORAGE___STORE__ELIST = 0;
+
+	/**
+	 * The operation id for the '<em>Load</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_STORAGE___LOAD = 1;
+
+	/**
+	 * The number of operations of the '<em>Environment Storage</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_STORAGE_OPERATION_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link apps.PackageType <em>Package Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -751,7 +815,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getPackageType()
 	 * @generated
 	 */
-	int PACKAGE_TYPE = 10;
+	int PACKAGE_TYPE = 11;
 
 	/**
 	 * The meta object id for the '{@link apps.EnvironmentState <em>Environment State</em>}' enum.
@@ -761,7 +825,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentState()
 	 * @generated
 	 */
-	int ENVIRONMENT_STATE = 11;
+	int ENVIRONMENT_STATE = 12;
 
 	/**
 	 * Returns the meta object for class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
@@ -901,6 +965,17 @@ public interface AppsPackage extends EPackage {
 	EReference getEnvironmentManager_EnvironmentCreator();
 
 	/**
+	 * Returns the meta object for the reference '{@link apps.EnvironmentManager#getEnvironmentStorage <em>Environment Storage</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Environment Storage</em>'.
+	 * @see apps.EnvironmentManager#getEnvironmentStorage()
+	 * @see #getEnvironmentManager()
+	 * @generated
+	 */
+	EReference getEnvironmentManager_EnvironmentStorage();
+
+	/**
 	 * Returns the meta object for the '{@link apps.EnvironmentManager#create(java.lang.String) <em>Create</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1009,6 +1084,16 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getEnvironmentManager__LoadFromXMI__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadEnvironments() <em>Load Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Load Environments</em>' operation.
+	 * @see apps.EnvironmentManager#loadEnvironments()
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__LoadEnvironments();
 
 	/**
 	 * Returns the meta object for class '{@link apps.SpackPackage <em>Spack Package</em>}'.
@@ -1232,6 +1317,36 @@ public interface AppsPackage extends EPackage {
 	EClass getJsonEnvironmentCreator();
 
 	/**
+	 * Returns the meta object for class '{@link apps.EnvironmentStorage <em>Environment Storage</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Environment Storage</em>'.
+	 * @see apps.EnvironmentStorage
+	 * @generated
+	 */
+	EClass getEnvironmentStorage();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentStorage#store(org.eclipse.emf.common.util.EList) <em>Store</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Store</em>' operation.
+	 * @see apps.EnvironmentStorage#store(org.eclipse.emf.common.util.EList)
+	 * @generated
+	 */
+	EOperation getEnvironmentStorage__Store__EList();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentStorage#load() <em>Load</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Load</em>' operation.
+	 * @see apps.EnvironmentStorage#load()
+	 * @generated
+	 */
+	EOperation getEnvironmentStorage__Load();
+
+	/**
 	 * Returns the meta object for enum '{@link apps.PackageType <em>Package Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1383,6 +1498,14 @@ public interface AppsPackage extends EPackage {
 		EReference ENVIRONMENT_MANAGER__ENVIRONMENT_CREATOR = eINSTANCE.getEnvironmentManager_EnvironmentCreator();
 
 		/**
+		 * The meta object literal for the '<em><b>Environment Storage</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE = eINSTANCE.getEnvironmentManager_EnvironmentStorage();
+
+		/**
 		 * The meta object literal for the '<em><b>Create</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1469,6 +1592,14 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING = eINSTANCE.getEnvironmentManager__LoadFromXMI__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Load Environments</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__LoadEnvironments();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.SpackPackageImpl <em>Spack Package</em>}' class.
@@ -1653,6 +1784,32 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EClass JSON_ENVIRONMENT_CREATOR = eINSTANCE.getJsonEnvironmentCreator();
+
+		/**
+		 * The meta object literal for the '{@link apps.EnvironmentStorage <em>Environment Storage</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.EnvironmentStorage
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentStorage()
+		 * @generated
+		 */
+		EClass ENVIRONMENT_STORAGE = eINSTANCE.getEnvironmentStorage();
+
+		/**
+		 * The meta object literal for the '<em><b>Store</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_STORAGE___STORE__ELIST = eINSTANCE.getEnvironmentStorage__Store__EList();
+
+		/**
+		 * The meta object literal for the '<em><b>Load</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_STORAGE___LOAD = eINSTANCE.getEnvironmentStorage__Load();
 
 		/**
 		 * The meta object literal for the '{@link apps.PackageType <em>Package Type</em>}' enum.

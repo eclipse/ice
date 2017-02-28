@@ -7,6 +7,7 @@ import apps.AppsPackage;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
+import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
 import apps.OSPackage;
@@ -20,6 +21,8 @@ import apps.docker.DockerPackage;
 
 import apps.docker.impl.DockerPackageImpl;
 
+import apps.eclipse.EclipsePackage;
+import apps.eclipse.impl.EclipsePackageImpl;
 import apps.local.LocalPackage;
 
 import apps.local.impl.LocalPackageImpl;
@@ -117,6 +120,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass environmentStorageEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EEnum packageTypeEEnum = null;
 
 	/**
@@ -178,16 +188,19 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		// Obtain or create and register interdependencies
 		DockerPackageImpl theDockerPackage = (DockerPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) instanceof DockerPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) : DockerPackage.eINSTANCE);
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
+		EclipsePackageImpl theEclipsePackage = (EclipsePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) instanceof EclipsePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) : EclipsePackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theAppsPackage.createPackageContents();
 		theDockerPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
+		theEclipsePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theAppsPackage.initializePackageContents();
 		theDockerPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
+		theEclipsePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theAppsPackage.freeze();
@@ -320,6 +333,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getEnvironmentManager_EnvironmentStorage() {
+		return (EReference)environmentManagerEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EOperation getEnvironmentManager__Create__String() {
 		return environmentManagerEClass.getEOperations().get(0);
 	}
@@ -412,6 +434,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 */
 	public EOperation getEnvironmentManager__LoadFromXMI__String() {
 		return environmentManagerEClass.getEOperations().get(10);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentManager__LoadEnvironments() {
+		return environmentManagerEClass.getEOperations().get(11);
 	}
 
 	/**
@@ -608,6 +639,33 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getEnvironmentStorage() {
+		return environmentStorageEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentStorage__Store__EList() {
+		return environmentStorageEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentStorage__Load() {
+		return environmentStorageEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPackageType() {
 		return packageTypeEEnum;
 	}
@@ -663,6 +721,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		environmentManagerEClass = createEClass(ENVIRONMENT_MANAGER);
 		createEReference(environmentManagerEClass, ENVIRONMENT_MANAGER__ENVIRONMENT_CREATOR);
+		createEReference(environmentManagerEClass, ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CREATE__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LIST);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___GET__STRING);
@@ -674,6 +733,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CREATE_EMPTY__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS);
 
 		spackPackageEClass = createEClass(SPACK_PACKAGE);
 		createEAttribute(spackPackageEClass, SPACK_PACKAGE__COMPILER);
@@ -703,6 +763,10 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEOperation(environmentCreatorEClass, ENVIRONMENT_CREATOR___CREATE__STRING);
 
 		jsonEnvironmentCreatorEClass = createEClass(JSON_ENVIRONMENT_CREATOR);
+
+		environmentStorageEClass = createEClass(ENVIRONMENT_STORAGE);
+		createEOperation(environmentStorageEClass, ENVIRONMENT_STORAGE___STORE__ELIST);
+		createEOperation(environmentStorageEClass, ENVIRONMENT_STORAGE___LOAD);
 
 		// Create enums
 		packageTypeEEnum = createEEnum(PACKAGE_TYPE);
@@ -735,11 +799,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		// Obtain other dependent packages
 		DockerPackage theDockerPackage = (DockerPackage)EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI);
 		LocalPackage theLocalPackage = (LocalPackage)EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI);
+		EclipsePackage theEclipsePackage = (EclipsePackage)EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
 		// Add subpackages
 		getESubpackages().add(theDockerPackage);
 		getESubpackages().add(theLocalPackage);
+		getESubpackages().add(theEclipsePackage);
 
 		// Create type parameters
 
@@ -770,6 +836,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		initEClass(environmentManagerEClass, EnvironmentManager.class, "EnvironmentManager", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEnvironmentManager_EnvironmentCreator(), this.getEnvironmentCreator(), null, "environmentCreator", null, 0, 1, EnvironmentManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEnvironmentManager_EnvironmentStorage(), this.getEnvironmentStorage(), null, "environmentStorage", null, 1, 1, EnvironmentManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		EOperation op = initEOperation(getEnvironmentManager__Create__String(), this.getIEnvironment(), "create", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "dataString", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -801,6 +868,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		op = initEOperation(getEnvironmentManager__LoadFromXMI__String(), this.getIEnvironment(), "loadFromXMI", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "xmiStr", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getEnvironmentManager__LoadEnvironments(), null, "loadEnvironments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(spackPackageEClass, SpackPackage.class, "SpackPackage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getSpackPackage_Compiler(), ecorePackage.getEString(), "compiler", "gcc@6.3.1", 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -835,6 +904,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		initEClass(jsonEnvironmentCreatorEClass, JsonEnvironmentCreator.class, "JsonEnvironmentCreator", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+		initEClass(environmentStorageEClass, EnvironmentStorage.class, "EnvironmentStorage", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		op = initEOperation(getEnvironmentStorage__Store__EList(), null, "store", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEEList(), "environments", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getEnvironmentStorage__Load(), this.getIEnvironment(), "load", 0, -1, IS_UNIQUE, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(packageTypeEEnum, PackageType.class, "PackageType");
 		addEEnumLiteral(packageTypeEEnum, PackageType.OS);
@@ -845,6 +921,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		addEEnumLiteral(environmentStateEEnum, EnvironmentState.STOPPED);
 		addEEnumLiteral(environmentStateEEnum, EnvironmentState.RUNNING);
 		addEEnumLiteral(environmentStateEEnum, EnvironmentState.NOT_CREATED);
+		addEEnumLiteral(environmentStateEEnum, EnvironmentState.CREATED);
 
 		// Create resource
 		createResource(eNS_URI);

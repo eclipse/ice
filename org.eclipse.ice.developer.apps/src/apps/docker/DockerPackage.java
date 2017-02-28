@@ -351,14 +351,14 @@ public interface DockerPackage extends EPackage {
 
 
 	/**
-	 * The meta object id for the '{@link apps.docker.impl.DockerPTPProjectLauncherImpl <em>PTP Project Launcher</em>}' class.
+	 * The meta object id for the '{@link apps.docker.impl.DockerProjectLauncherImpl <em>Project Launcher</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.docker.impl.DockerPTPProjectLauncherImpl
-	 * @see apps.docker.impl.DockerPackageImpl#getDockerPTPProjectLauncher()
+	 * @see apps.docker.impl.DockerProjectLauncherImpl
+	 * @see apps.docker.impl.DockerPackageImpl#getDockerProjectLauncher()
 	 * @generated
 	 */
-	int DOCKER_PTP_PROJECT_LAUNCHER = 3;
+	int DOCKER_PROJECT_LAUNCHER = 3;
 
 	/**
 	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.
@@ -367,16 +367,16 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 0;
+	int DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>PTP Project Launcher</em>' class.
+	 * The number of structural features of the '<em>Project Launcher</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_PROJECT_LAUNCHER_FEATURE_COUNT = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 1;
+	int DOCKER_PROJECT_LAUNCHER_FEATURE_COUNT = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 1;
 
 	/**
 	 * The operation id for the '<em>Launch Project</em>' operation.
@@ -385,17 +385,16 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 0;
+	int DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 0;
 
 	/**
-	 * The number of operations of the '<em>PTP Project Launcher</em>' class.
+	 * The number of operations of the '<em>Project Launcher</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PTP_PROJECT_LAUNCHER_OPERATION_COUNT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 1;
-
+	int DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 1;
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerEnvironment <em>Environment</em>}'.
@@ -566,35 +565,35 @@ public interface DockerPackage extends EPackage {
 	EAttribute getContainerConfiguration_RemoteSSHPort();
 
 	/**
-	 * Returns the meta object for class '{@link apps.docker.DockerPTPProjectLauncher <em>PTP Project Launcher</em>}'.
+	 * Returns the meta object for class '{@link apps.docker.DockerProjectLauncher <em>Project Launcher</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>PTP Project Launcher</em>'.
-	 * @see apps.docker.DockerPTPProjectLauncher
+	 * @return the meta object for class '<em>Project Launcher</em>'.
+	 * @see apps.docker.DockerProjectLauncher
 	 * @generated
 	 */
-	EClass getDockerPTPProjectLauncher();
+	EClass getDockerProjectLauncher();
 
 	/**
-	 * Returns the meta object for the reference '{@link apps.docker.DockerPTPProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}'.
+	 * Returns the meta object for the reference '{@link apps.docker.DockerProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the reference '<em>Containerconfiguration</em>'.
-	 * @see apps.docker.DockerPTPProjectLauncher#getContainerconfiguration()
-	 * @see #getDockerPTPProjectLauncher()
+	 * @see apps.docker.DockerProjectLauncher#getContainerconfiguration()
+	 * @see #getDockerProjectLauncher()
 	 * @generated
 	 */
-	EReference getDockerPTPProjectLauncher_Containerconfiguration();
+	EReference getDockerProjectLauncher_Containerconfiguration();
 
 	/**
-	 * Returns the meta object for the '{@link apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
+	 * Returns the meta object for the '{@link apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the '<em>Launch Project</em>' operation.
-	 * @see apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage)
+	 * @see apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage)
 	 * @generated
 	 */
-	EOperation getDockerPTPProjectLauncher__LaunchProject__SourcePackage();
+	EOperation getDockerProjectLauncher__LaunchProject__SourcePackage();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -754,14 +753,14 @@ public interface DockerPackage extends EPackage {
 		EAttribute CONTAINER_CONFIGURATION__REMOTE_SSH_PORT = eINSTANCE.getContainerConfiguration_RemoteSSHPort();
 
 		/**
-		 * The meta object literal for the '{@link apps.docker.impl.DockerPTPProjectLauncherImpl <em>PTP Project Launcher</em>}' class.
+		 * The meta object literal for the '{@link apps.docker.impl.DockerProjectLauncherImpl <em>Project Launcher</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see apps.docker.impl.DockerPTPProjectLauncherImpl
-		 * @see apps.docker.impl.DockerPackageImpl#getDockerPTPProjectLauncher()
+		 * @see apps.docker.impl.DockerProjectLauncherImpl
+		 * @see apps.docker.impl.DockerPackageImpl#getDockerProjectLauncher()
 		 * @generated
 		 */
-		EClass DOCKER_PTP_PROJECT_LAUNCHER = eINSTANCE.getDockerPTPProjectLauncher();
+		EClass DOCKER_PROJECT_LAUNCHER = eINSTANCE.getDockerProjectLauncher();
 
 		/**
 		 * The meta object literal for the '<em><b>Containerconfiguration</b></em>' reference feature.
@@ -769,7 +768,7 @@ public interface DockerPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = eINSTANCE.getDockerPTPProjectLauncher_Containerconfiguration();
+		EReference DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = eINSTANCE.getDockerProjectLauncher_Containerconfiguration();
 
 		/**
 		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
@@ -777,7 +776,7 @@ public interface DockerPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation DOCKER_PTP_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = eINSTANCE.getDockerPTPProjectLauncher__LaunchProject__SourcePackage();
+		EOperation DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = eINSTANCE.getDockerProjectLauncher__LaunchProject__SourcePackage();
 
 	}
 

@@ -1,9 +1,7 @@
 /**
  */
-package apps.tests;
+package apps.eclipse.tests;
 
-import apps.docker.tests.DockerTests;
-import apps.eclipse.tests.EclipseTests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -11,11 +9,11 @@ import junit.textui.TestRunner;
 
 /**
  * <!-- begin-user-doc -->
- * A test suite for the '<em><b>Apps</b></em>' model.
+ * A test suite for the '<em><b>eclipse</b></em>' package.
  * <!-- end-user-doc -->
  * @generated
  */
-public class AppsAllTests extends TestSuite {
+public class EclipseTests extends TestSuite {
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -29,13 +27,12 @@ public class AppsAllTests extends TestSuite {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated
 	 */
 	public static Test suite() {
-		TestSuite suite = new AppsAllTests("Apps Tests");
-		suite.addTest(AppsTests.suite());
-		suite.addTest(DockerTests.suite());
-//		suite.addTest(LocalTests.suite());
-		suite.addTest(EclipseTests.suite());
+		TestSuite suite = new EclipseTests("eclipse Tests");
+		suite.addTestSuite(EclipseEnvironmentStorageTest.class);
+		suite.addTestSuite(DockerPTPSyncProjectLauncherTest.class);
 		return suite;
 	}
 
@@ -44,8 +41,8 @@ public class AppsAllTests extends TestSuite {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public AppsAllTests(String name) {
+	public EclipseTests(String name) {
 		super(name);
 	}
 
-} //AppsAllTests
+} //EclipseTests

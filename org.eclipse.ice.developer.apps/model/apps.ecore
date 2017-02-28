@@ -121,7 +121,10 @@
       </eAnnotations>
       <eParameters name="xmiStr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
+    <eOperations name="loadEnvironments"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentCreator" eType="#//EnvironmentCreator"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="environmentStorage" lowerBound="1"
+        eType="#//EnvironmentStorage"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpackPackage" eSuperTypes="#//Package">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -197,6 +200,7 @@
     <eLiterals name="Stopped"/>
     <eLiterals name="Running" value="1"/>
     <eLiterals name="NotCreated" value="2"/>
+    <eLiterals name="Created" value="3"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnvironmentCreator" abstract="true"
       interface="true">
@@ -214,6 +218,16 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The JsonEnvironmentCreator is a realization of the EnvironmentCreator that implements the create method to parse the data string as a Json string. "/>
     </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnvironmentStorage" abstract="true"
+      interface="true">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="documentation" value="The EnvironmentStorage interface provides a mechanism for persisting and loading environments. "/>
+    </eAnnotations>
+    <eOperations name="store">
+      <eParameters name="environments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList"/>
+    </eOperations>
+    <eOperations name="load" upperBound="-1" eType="#//IEnvironment"/>
   </eClassifiers>
   <eSubpackages name="docker" nsURI="http://eclipse.org/apps/docker" nsPrefix="dockerenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="DockerEnvironment" eSuperTypes="#//IEnvironment">
@@ -305,7 +319,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DockerPTPProjectLauncher" eSuperTypes="#//ProjectLauncher">
+    <eClassifiers xsi:type="ecore:EClass" name="DockerProjectLauncher" eSuperTypes="#//ProjectLauncher">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerPTPProjectLauncher provides a launchProject method that uses the ContainerConfiguration of the current DockerEnvironment to create a new PTP Synchronized Project for the IEnvironment's primary application running in the created docker container. "/>
       </eAnnotations>
@@ -321,5 +335,16 @@
   </eSubpackages>
   <eSubpackages name="local" nsURI="https://eclipse.org/apps/local" nsPrefix="localenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="LocalEnvironment" eSuperTypes="#//IEnvironment"/>
+  </eSubpackages>
+  <eSubpackages name="eclipse" nsURI="https://eclipse.org/apps/eclipse" nsPrefix="eclipseextensions">
+    <eClassifiers xsi:type="ecore:EClass" name="EclipseEnvironmentStorage" eSuperTypes="#//EnvironmentStorage"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DockerPTPSyncProjectLauncher" eSuperTypes="#//docker/DockerProjectLauncher">
+      <eOperations name="launchProject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
+        </eAnnotations>
+        <eParameters name="project" eType="#//SourcePackage"/>
+      </eOperations>
+    </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

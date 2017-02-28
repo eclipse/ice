@@ -5,6 +5,7 @@ package apps.util;
 import apps.AppsPackage;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
+import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
 import apps.OSPackage;
@@ -114,6 +115,10 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseJsonEnvironmentCreator(JsonEnvironmentCreator object) {
 				return createJsonEnvironmentCreatorAdapter();
+			}
+			@Override
+			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
+				return createEnvironmentStorageAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -272,6 +277,20 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createJsonEnvironmentCreatorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.EnvironmentStorage <em>Environment Storage</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.EnvironmentStorage
+	 * @generated
+	 */
+	public Adapter createEnvironmentStorageAdapter() {
 		return null;
 	}
 

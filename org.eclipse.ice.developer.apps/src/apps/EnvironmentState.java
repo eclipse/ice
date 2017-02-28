@@ -49,7 +49,15 @@ public enum EnvironmentState implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	NOT_CREATED(2, "NotCreated", "NotCreated");
+	NOT_CREATED(2, "NotCreated", "NotCreated"), /**
+	 * The '<em><b>Created</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #CREATED_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	CREATED(3, "Created", "Created");
 
 	/**
 	 * The '<em><b>Stopped</b></em>' literal value.
@@ -97,6 +105,21 @@ public enum EnvironmentState implements Enumerator {
 	public static final int NOT_CREATED_VALUE = 2;
 
 	/**
+	 * The '<em><b>Created</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Created</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #CREATED
+	 * @model name="Created"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CREATED_VALUE = 3;
+
+	/**
 	 * An array of all the '<em><b>Environment State</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -107,6 +130,7 @@ public enum EnvironmentState implements Enumerator {
 			STOPPED,
 			RUNNING,
 			NOT_CREATED,
+			CREATED,
 		};
 
 	/**
@@ -166,6 +190,7 @@ public enum EnvironmentState implements Enumerator {
 			case STOPPED_VALUE: return STOPPED;
 			case RUNNING_VALUE: return RUNNING;
 			case NOT_CREATED_VALUE: return NOT_CREATED;
+			case CREATED_VALUE: return CREATED;
 		}
 		return null;
 	}

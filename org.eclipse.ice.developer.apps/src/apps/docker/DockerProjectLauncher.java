@@ -7,7 +7,7 @@ import apps.SourcePackage;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>PTP Project Launcher</b></em>'.
+ * A representation of the model object '<em><b>Project Launcher</b></em>'.
  * <!-- end-user-doc -->
  *
  * <!-- begin-model-doc -->
@@ -18,14 +18,14 @@ import apps.SourcePackage;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link apps.docker.DockerPTPProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}</li>
+ *   <li>{@link apps.docker.DockerProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}</li>
  * </ul>
  *
- * @see apps.docker.DockerPackage#getDockerPTPProjectLauncher()
+ * @see apps.docker.DockerPackage#getDockerProjectLauncher()
  * @model
  * @generated
  */
-public interface DockerPTPProjectLauncher extends ProjectLauncher {
+public interface DockerProjectLauncher extends ProjectLauncher {
 	/**
 	 * Returns the value of the '<em><b>Containerconfiguration</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -36,14 +36,14 @@ public interface DockerPTPProjectLauncher extends ProjectLauncher {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Containerconfiguration</em>' reference.
 	 * @see #setContainerconfiguration(ContainerConfiguration)
-	 * @see apps.docker.DockerPackage#getDockerPTPProjectLauncher_Containerconfiguration()
+	 * @see apps.docker.DockerPackage#getDockerProjectLauncher_Containerconfiguration()
 	 * @model
 	 * @generated
 	 */
 	ContainerConfiguration getContainerconfiguration();
 
 	/**
-	 * Sets the value of the '{@link apps.docker.DockerPTPProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}' reference.
+	 * Sets the value of the '{@link apps.docker.DockerProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Containerconfiguration</em>' reference.
@@ -63,4 +63,4 @@ public interface DockerPTPProjectLauncher extends ProjectLauncher {
 	 */
 	void launchProject(SourcePackage project);
 
-} // DockerPTPProjectLauncher
+} // DockerProjectLauncher

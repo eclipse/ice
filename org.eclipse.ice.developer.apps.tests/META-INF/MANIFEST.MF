@@ -8,6 +8,7 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: apps.docker.tests,
+ apps.eclipse.tests,
  apps.local.tests,
  apps.tests
 Require-Bundle: org.eclipse.core.runtime,

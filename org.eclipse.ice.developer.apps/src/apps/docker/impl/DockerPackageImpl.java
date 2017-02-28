@@ -7,9 +7,11 @@ import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerFactory;
-import apps.docker.DockerPTPProjectLauncher;
 import apps.docker.DockerPackage;
 
+import apps.docker.DockerProjectLauncher;
+import apps.eclipse.EclipsePackage;
+import apps.eclipse.impl.EclipsePackageImpl;
 import apps.impl.AppsPackageImpl;
 import apps.local.LocalPackage;
 
@@ -58,7 +60,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dockerPTPProjectLauncherEClass = null;
+	private EClass dockerProjectLauncherEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -112,16 +114,19 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		// Obtain or create and register interdependencies
 		AppsPackageImpl theAppsPackage = (AppsPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) instanceof AppsPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) : AppsPackage.eINSTANCE);
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
+		EclipsePackageImpl theEclipsePackage = (EclipsePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) instanceof EclipsePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) : EclipsePackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theDockerPackage.createPackageContents();
 		theAppsPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
+		theEclipsePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theDockerPackage.initializePackageContents();
 		theAppsPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
+		theEclipsePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theDockerPackage.freeze();
@@ -281,8 +286,8 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDockerPTPProjectLauncher() {
-		return dockerPTPProjectLauncherEClass;
+	public EClass getDockerProjectLauncher() {
+		return dockerProjectLauncherEClass;
 	}
 
 	/**
@@ -290,8 +295,8 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDockerPTPProjectLauncher_Containerconfiguration() {
-		return (EReference)dockerPTPProjectLauncherEClass.getEStructuralFeatures().get(0);
+	public EReference getDockerProjectLauncher_Containerconfiguration() {
+		return (EReference)dockerProjectLauncherEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -299,8 +304,8 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getDockerPTPProjectLauncher__LaunchProject__SourcePackage() {
-		return dockerPTPProjectLauncherEClass.getEOperations().get(0);
+	public EOperation getDockerProjectLauncher__LaunchProject__SourcePackage() {
+		return dockerProjectLauncherEClass.getEOperations().get(0);
 	}
 
 	/**
@@ -350,9 +355,9 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__VOLUMES_CONFIG);
 		createEAttribute(containerConfigurationEClass, CONTAINER_CONFIGURATION__REMOTE_SSH_PORT);
 
-		dockerPTPProjectLauncherEClass = createEClass(DOCKER_PTP_PROJECT_LAUNCHER);
-		createEReference(dockerPTPProjectLauncherEClass, DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION);
-		createEOperation(dockerPTPProjectLauncherEClass, DOCKER_PTP_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE);
+		dockerProjectLauncherEClass = createEClass(DOCKER_PROJECT_LAUNCHER);
+		createEReference(dockerProjectLauncherEClass, DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION);
+		createEOperation(dockerProjectLauncherEClass, DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE);
 	}
 
 	/**
@@ -388,7 +393,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 
 		// Add supertypes to classes
 		dockerEnvironmentEClass.getESuperTypes().add(theAppsPackage.getIEnvironment());
-		dockerPTPProjectLauncherEClass.getESuperTypes().add(theAppsPackage.getProjectLauncher());
+		dockerProjectLauncherEClass.getESuperTypes().add(theAppsPackage.getProjectLauncher());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(dockerEnvironmentEClass, DockerEnvironment.class, "DockerEnvironment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -422,10 +427,10 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		initEAttribute(getContainerConfiguration_VolumesConfig(), ecorePackage.getEString(), "volumesConfig", null, 0, 1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getContainerConfiguration_RemoteSSHPort(), theXMLTypePackage.getInt(), "remoteSSHPort", null, 0, 1, ContainerConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dockerPTPProjectLauncherEClass, DockerPTPProjectLauncher.class, "DockerPTPProjectLauncher", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDockerPTPProjectLauncher_Containerconfiguration(), this.getContainerConfiguration(), null, "containerconfiguration", null, 0, 1, DockerPTPProjectLauncher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(dockerProjectLauncherEClass, DockerProjectLauncher.class, "DockerProjectLauncher", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getDockerProjectLauncher_Containerconfiguration(), this.getContainerConfiguration(), null, "containerconfiguration", null, 0, 1, DockerProjectLauncher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = initEOperation(getDockerPTPProjectLauncher__LaunchProject__SourcePackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
+		op = initEOperation(getDockerProjectLauncher__LaunchProject__SourcePackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theAppsPackage.getSourcePackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
 	}
 

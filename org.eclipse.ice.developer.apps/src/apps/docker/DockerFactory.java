@@ -49,13 +49,13 @@ public interface DockerFactory extends EFactory {
 	ContainerConfiguration createContainerConfiguration();
 
 	/**
-	 * Returns a new object of class '<em>PTP Project Launcher</em>'.
+	 * Returns a new object of class '<em>Project Launcher</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>PTP Project Launcher</em>'.
+	 * @return a new object of class '<em>Project Launcher</em>'.
 	 * @generated
 	 */
-	DockerPTPProjectLauncher createDockerPTPProjectLauncher();
+	DockerProjectLauncher createDockerProjectLauncher();
 
 	/**
 	 * Returns the package supported by this factory.

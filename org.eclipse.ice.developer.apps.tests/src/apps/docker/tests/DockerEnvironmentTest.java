@@ -4,7 +4,6 @@ package apps.docker.tests;
 
 import junit.framework.TestCase;
 import apps.AppsFactory;
-import apps.docker.ContainerConfiguration;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerFactory;
 import apps.docker.impl.DockerAPIImpl;
@@ -16,21 +15,20 @@ import junit.textui.TestRunner;
  * <p>
  * The following operations are tested:
  * <ul>
- * <li>{@link apps.IEnvironment#build() <em>Build</em>}</li>
- * <li>{@link apps.IEnvironment#connect() <em>Connect</em>}</li>
- * <li>{@link apps.IEnvironment#delete() <em>Delete</em>}</li>
- * <li>{@link apps.IEnvironment#stop() <em>Stop</em>}</li>
+ *   <li>{@link apps.IEnvironment#build() <em>Build</em>}</li>
+ *   <li>{@link apps.IEnvironment#connect() <em>Connect</em>}</li>
+ *   <li>{@link apps.IEnvironment#delete() <em>Delete</em>}</li>
+ *   <li>{@link apps.IEnvironment#stop() <em>Stop</em>}</li>
  * </ul>
  * </p>
- * 
  * @generated
  */
 public class DockerEnvironmentTest extends TestCase {
 
 	/**
-	 * The fixture for this Environment test case. <!-- begin-user-doc --> <!--
+	 * The fixture for this Environment test case.
+	 * <!-- begin-user-doc --> <!--
 	 * end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected DockerEnvironment fixture = null;
@@ -49,7 +47,6 @@ public class DockerEnvironmentTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public static void main(String[] args) {
@@ -67,9 +64,9 @@ public class DockerEnvironmentTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Environment test case. <!-- begin-user-doc -->
+	 * Sets the fixture for this Environment test case.
+	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected void setFixture(DockerEnvironment fixture) {
@@ -77,9 +74,9 @@ public class DockerEnvironmentTest extends TestCase {
 	}
 
 	/**
-	 * Returns the fixture for this Environment test case. <!-- begin-user-doc
+	 * Returns the fixture for this Environment test case.
+	 * <!-- begin-user-doc
 	 * --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected DockerEnvironment getFixture() {
@@ -88,7 +85,6 @@ public class DockerEnvironmentTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see junit.framework.TestCase#setUp()
 	 * @generated
 	 */
@@ -99,7 +95,6 @@ public class DockerEnvironmentTest extends TestCase {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @see junit.framework.TestCase#tearDown()
 	 * @generated
 	 */

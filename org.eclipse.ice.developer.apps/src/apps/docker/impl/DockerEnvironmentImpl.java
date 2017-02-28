@@ -10,6 +10,7 @@ import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerPackage;
+import apps.docker.DockerProjectLauncher;
 
 import java.io.File;
 import java.io.IOException;
@@ -490,7 +491,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 		// Add to the Dockerfile contents
 		dockerfile += runSpackCommand + runPrimaryApp;
 
-		System.out.println("DockerFile:\n" + dockerfile);
+		System.out.println("DockerFileee:\n" + dockerfile);
 
 		// Create the Dockerfile
 		File buildFile = new File(
@@ -499,6 +500,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 			FileUtils.writeStringToFile(buildFile, dockerfile);
 		} catch (IOException e1) {
 			e1.printStackTrace();
+			return false;
 		}
 
 		// Build the Image
@@ -507,41 +509,46 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 		// Remove the file
 		buildFile.delete();
 
-
 		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public boolean connect() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+
+		if (getState().equals(EnvironmentState.CREATED)) {
+			docker.createContainer(getName(), containerConfiguration);
+			if (projectlauncher != null && projectlauncher instanceof DockerProjectLauncher) {
+				((DockerProjectLauncher) projectlauncher).setContainerconfiguration(containerConfiguration);
+				projectlauncher.launchProject((SourcePackage) getPrimaryApp());
+			}
+		} else if (getState().equals(EnvironmentState.STOPPED)) {
+			docker.connectToExistingContainer(containerConfiguration.getName());
+		} else {
+			return false;
+		}
+		
+		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public boolean delete() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		docker.deleteContainer(containerConfiguration.getName());
+		docker.deleteImage(getName());
+		return true;
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public boolean stop() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
+		return false;
 	}
 
 	/**

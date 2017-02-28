@@ -2,8 +2,6 @@
  */
 package apps.tests;
 
-import org.junit.Ignore;
-
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
@@ -32,6 +30,7 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.EnvironmentManager#persistEnvironments() <em>Persist Environments</em>}</li>
  *   <li>{@link apps.EnvironmentManager#createEmpty(java.lang.String) <em>Create Empty</em>}</li>
  *   <li>{@link apps.EnvironmentManager#loadFromXMI(java.lang.String) <em>Load From XMI</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadEnvironments() <em>Load Environments</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -159,7 +158,7 @@ public class EnvironmentManagerTest extends TestCase {
 		fixture.setEnvironmentCreator(creator);
 		IEnvironment env = fixture.create("");
 		assertTrue(env instanceof DockerEnvironment);
-		assertEquals(env.getState(), EnvironmentState.STOPPED);
+		assertEquals(env.getState(), EnvironmentState.CREATED);
 		assertTrue(creator.wasCreated());
 	}
 
@@ -181,15 +180,12 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#get(java.lang.String)
-	 * @generated
 	 */
 	public void testGet__String() {
 		FakeEnvironmentCreator creator = new FakeEnvironmentCreator();
 		fixture.setEnvironmentCreator(creator);
 		IEnvironment env = fixture.create("");
-		IEnvironment got = fixture.get("fake");
-		assertNotNull(got);
-		assertTrue(env == got);
+		assertEquals(env, fixture.get("fake"));
 	}
 
 	/**
@@ -197,12 +193,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#loadFromFile(java.lang.String)
-	 * @generated
 	 */
 	public void testLoadFromFile__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -210,12 +205,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#persistToString(java.lang.String)
-	 * @generated
 	 */
 	public void testPersistToString__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -223,12 +217,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String)
-	 * @generated
 	 */
 	public void testPersistToFile__String_String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -236,12 +229,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#connect(java.lang.String)
-	 * @generated
 	 */
 	public void testConnect__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -249,12 +241,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#listAvailableSpackPackages()
-	 * @generated
 	 */
 	public void testListAvailableSpackPackages() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -262,12 +253,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#persistEnvironments()
-	 * @generated
 	 */
 	public void testPersistEnvironments() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -275,12 +265,11 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#createEmpty(java.lang.String)
-	 * @generated
 	 */
 	public void testCreateEmpty__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
 	}
 
 	/**
@@ -288,12 +277,23 @@ public class EnvironmentManagerTest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see apps.EnvironmentManager#loadFromXMI(java.lang.String)
-	 * @generated
 	 */
 	public void testLoadFromXMI__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		//fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#loadEnvironments() <em>Load Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#loadEnvironments()
+	 */
+	public void testLoadEnvironments() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		//fail();
 	}
 
 } // EnvironmentManagerTest

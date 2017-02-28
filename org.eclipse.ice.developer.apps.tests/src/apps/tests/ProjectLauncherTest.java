@@ -2,8 +2,6 @@
  */
 package apps.tests;
 
-import org.junit.Ignore;
-
 import apps.ProjectLauncher;
 
 import junit.framework.TestCase;
@@ -68,7 +66,9 @@ public abstract class ProjectLauncherTest extends TestCase {
 	 * @generated
 	 */
 	public void testLaunchProject__SourcePackage() {
-		assertTrue(true);
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 } //ProjectLauncherTest

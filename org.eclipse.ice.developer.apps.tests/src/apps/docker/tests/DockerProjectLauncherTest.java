@@ -3,7 +3,7 @@
 package apps.docker.tests;
 
 import apps.docker.DockerFactory;
-import apps.docker.DockerPTPProjectLauncher;
+import apps.docker.DockerProjectLauncher;
 
 import junit.framework.TestCase;
 
@@ -11,25 +11,25 @@ import junit.textui.TestRunner;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>PTP Project Launcher</b></em>'.
+ * A test case for the model object '<em><b>Project Launcher</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
+ *   <li>{@link apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
  * </ul>
  * </p>
  * @generated
  */
-public class DockerPTPProjectLauncherTest extends TestCase {
+public class DockerProjectLauncherTest extends TestCase {
 
 	/**
-	 * The fixture for this PTP Project Launcher test case.
+	 * The fixture for this Project Launcher test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerPTPProjectLauncher fixture = null;
+	protected DockerProjectLauncher fixture = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -37,36 +37,36 @@ public class DockerPTPProjectLauncherTest extends TestCase {
 	 * @generated
 	 */
 	public static void main(String[] args) {
-		TestRunner.run(DockerPTPProjectLauncherTest.class);
+		TestRunner.run(DockerProjectLauncherTest.class);
 	}
 
 	/**
-	 * Constructs a new PTP Project Launcher test case with the given name.
+	 * Constructs a new Project Launcher test case with the given name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DockerPTPProjectLauncherTest(String name) {
+	public DockerProjectLauncherTest(String name) {
 		super(name);
 	}
 
 	/**
-	 * Sets the fixture for this PTP Project Launcher test case.
+	 * Sets the fixture for this Project Launcher test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void setFixture(DockerPTPProjectLauncher fixture) {
+	protected void setFixture(DockerProjectLauncher fixture) {
 		this.fixture = fixture;
 	}
 
 	/**
-	 * Returns the fixture for this PTP Project Launcher test case.
+	 * Returns the fixture for this Project Launcher test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerPTPProjectLauncher getFixture() {
+	protected DockerProjectLauncher getFixture() {
 		return fixture;
 	}
 
@@ -78,7 +78,7 @@ public class DockerPTPProjectLauncherTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(DockerFactory.eINSTANCE.createDockerPTPProjectLauncher());
+		setFixture(DockerFactory.eINSTANCE.createDockerProjectLauncher());
 	}
 
 	/**
@@ -93,10 +93,11 @@ public class DockerPTPProjectLauncherTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
+	 * Tests the '{@link apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.docker.DockerPTPProjectLauncher#launchProject(apps.SourcePackage)
+	 * @see apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage)
+	 * @generated
 	 */
 	public void testLaunchProject__SourcePackage() {
 		// TODO: implement this operation test method
@@ -104,4 +105,4 @@ public class DockerPTPProjectLauncherTest extends TestCase {
 //		fail();
 	}
 
-} //DockerPTPProjectLauncherTest
+} //DockerProjectLauncherTest

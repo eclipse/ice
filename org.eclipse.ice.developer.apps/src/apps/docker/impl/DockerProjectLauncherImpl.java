@@ -5,8 +5,8 @@ package apps.docker.impl;
 import apps.SourcePackage;
 
 import apps.docker.ContainerConfiguration;
-import apps.docker.DockerPTPProjectLauncher;
 import apps.docker.DockerPackage;
+import apps.docker.DockerProjectLauncher;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -22,18 +22,18 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>PTP Project Launcher</b></em>'.
+ * An implementation of the model object '<em><b>Project Launcher</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link apps.docker.impl.DockerPTPProjectLauncherImpl#getContainerconfiguration <em>Containerconfiguration</em>}</li>
+ *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getContainerconfiguration <em>Containerconfiguration</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container implements DockerPTPProjectLauncher {
+public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container implements DockerProjectLauncher {
 	/**
 	 * The cached value of the '{@link #getContainerconfiguration() <em>Containerconfiguration</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -49,7 +49,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DockerPTPProjectLauncherImpl() {
+	protected DockerProjectLauncherImpl() {
 		super();
 	}
 
@@ -60,7 +60,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return DockerPackage.Literals.DOCKER_PTP_PROJECT_LAUNCHER;
+		return DockerPackage.Literals.DOCKER_PROJECT_LAUNCHER;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 			containerconfiguration = (ContainerConfiguration)eResolveProxy(oldContainerconfiguration);
 			if (containerconfiguration != oldContainerconfiguration) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION, oldContainerconfiguration, containerconfiguration));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION, oldContainerconfiguration, containerconfiguration));
 			}
 		}
 		return containerconfiguration;
@@ -98,18 +98,14 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 		ContainerConfiguration oldContainerconfiguration = containerconfiguration;
 		containerconfiguration = newContainerconfiguration;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION, oldContainerconfiguration, containerconfiguration));
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION, oldContainerconfiguration, containerconfiguration));
 	}
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public void launchProject(SourcePackage project) {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -120,7 +116,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				if (resolve) return getContainerconfiguration();
 				return basicGetContainerconfiguration();
 		}
@@ -135,7 +131,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				setContainerconfiguration((ContainerConfiguration)newValue);
 				return;
 		}
@@ -150,7 +146,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				setContainerconfiguration((ContainerConfiguration)null);
 				return;
 		}
@@ -165,7 +161,7 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				return containerconfiguration != null;
 		}
 		return super.eIsSet(featureID);
@@ -179,11 +175,11 @@ public class DockerPTPProjectLauncherImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case DockerPackage.DOCKER_PTP_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE:
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE:
 				launchProject((SourcePackage)arguments.get(0));
 				return null;
 		}
 		return super.eInvoke(operationID, arguments);
 	}
 
-} //DockerPTPProjectLauncherImpl
+} //DockerProjectLauncherImpl

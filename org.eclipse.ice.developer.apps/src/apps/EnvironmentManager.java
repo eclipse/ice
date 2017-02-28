@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link apps.EnvironmentManager#getEnvironmentCreator <em>Environment Creator</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#getEnvironmentStorage <em>Environment Storage</em>}</li>
  * </ul>
  *
  * @see apps.AppsPackage#getEnvironmentManager()
@@ -52,6 +53,32 @@ public interface EnvironmentManager extends EObject {
 	 * @generated
 	 */
 	void setEnvironmentCreator(EnvironmentCreator value);
+
+	/**
+	 * Returns the value of the '<em><b>Environment Storage</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Environment Storage</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Environment Storage</em>' reference.
+	 * @see #setEnvironmentStorage(EnvironmentStorage)
+	 * @see apps.AppsPackage#getEnvironmentManager_EnvironmentStorage()
+	 * @model required="true"
+	 * @generated
+	 */
+	EnvironmentStorage getEnvironmentStorage();
+
+	/**
+	 * Sets the value of the '{@link apps.EnvironmentManager#getEnvironmentStorage <em>Environment Storage</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Environment Storage</em>' reference.
+	 * @see #getEnvironmentStorage()
+	 * @generated
+	 */
+	void setEnvironmentStorage(EnvironmentStorage value);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -170,5 +197,13 @@ public interface EnvironmentManager extends EObject {
 	 * @generated
 	 */
 	IEnvironment loadFromXMI(String xmiStr);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void loadEnvironments();
 
 } // EnvironmentManager

@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
-
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
@@ -90,10 +88,11 @@ public class DockerAPITest extends TestCase {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see junit.framework.TestCase#setUp()
-	 * @generated
 	 */
 	@Override
 	protected void setUp() throws Exception {
+		setFixture(DockerFactory.eINSTANCE.createDockerAPI());
+		
 		DefaultDockerClient.Builder builder = null;
 		try {
 			builder = DefaultDockerClient.fromEnv();
@@ -102,11 +101,10 @@ public class DockerAPITest extends TestCase {
 		}
 
 		DefaultDockerClient dockerClient = builder.build();
-		
+
 		if (dockerClient != null) {
 			dockerExists = true;
 		}
-		setFixture(DockerFactory.eINSTANCE.createDockerAPI());
 	}
 
 	/**
