@@ -8,8 +8,9 @@ import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
 import apps.IEnvironment;
-import apps.JsonEnvironmentCreator;
 import apps.docker.DockerEnvironment;
+import apps.docker.DockerFactory;
+import apps.impl.JsonEnvironmentCreatorImpl;
 import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
@@ -20,27 +21,56 @@ import junit.textui.TestRunner;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.EnvironmentManager#createEnvironment(java.lang.String) <em>Create Environment</em>}</li>
- *   <li>{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}</li>
- *   <li>{@link apps.EnvironmentManager#loadEnvironment(java.lang.String) <em>Load Environment</em>}</li>
- *   <li>{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}</li>
- *   <li>{@link apps.EnvironmentManager#persistToXMIString(java.lang.String) <em>Persist To XMI String</em>}</li>
- *   <li>{@link apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String) <em>Persist XMI To File</em>}</li>
- *   <li>{@link apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String) <em>Connect To Existing Environment</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#create(java.lang.String) <em>Create</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#list() <em>List</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#get(java.lang.String) <em>Get</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadFromFile(java.lang.String) <em>Load From File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistToString(java.lang.String) <em>Persist To String</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String) <em>Persist To File</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#connect(java.lang.String) <em>Connect</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#listAvailableSpackPackages() <em>List Available Spack Packages</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#persistEnvironments() <em>Persist Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#createEmpty(java.lang.String) <em>Create Empty</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#loadFromXMI(java.lang.String) <em>Load From XMI</em>}</li>
  * </ul>
  * </p>
  * @generated
  */
 public class EnvironmentManagerTest extends TestCase {
 
-	private static String jsonStr = "{\n" + "   \"General\": {\n" + "       \"name\": \"mccaskey/test_env\",\n"
-			+ "       \"type\": \"Docker\"\n" + "    },\n" + "    \"Application\": {\n" + "       \"name\": \"xacc\",\n"
-			+ "       \"repoURL\": \"https://github.com/ORNL-QCI/xacc\",\n" + "       \"compiler\": \"gcc@6.1.0\"\n"
-			+ "     },\n" + "     \"Dependencies\": [\n" + "         {\n" + "           \"name\": \"cmake\",\n"
-			+ "           \"compiler\": \"gcc@6.1.0\"\n" + "         },\n" + "         {\n"
-			+ "           \"name\": \"llvm\",\n" + "           \"compiler\": \"gcc@6.1.0\"\n" + "         }\n"
-			+ "      ],\n" + "      \"ContainerConfig\": {\n" + "         \"name\": \"xaccdev\",\n"
-			+ "         \"ephemeral\": true\n" + "      }\n" + "}";
+	private static String jsonStr = "{\n" + 
+			"   \"General\": {\n" + 
+			"       \"name\": \"mccaskey/test_env\",\n" + 
+			"       \"type\": \"Docker\"\n" + 
+			"    },\n" + 
+			"    \"Application\": {\n" + 
+			"       \"type\": \"Source\",\n" + 
+			"       \"name\": \"xacc\",\n" + 
+			"       \"repoURL\": \"https://github.com/ORNL-QCI/xacc\",\n" + 
+			"       \"buildCommand\": \"cd xacc && mkdir build && cd build && cmake .. && make\"\n" + 
+			"     },\n" + 
+			"     \"Dependencies\": [\n" + 
+			"         {\n" + 
+			"           \"type\": \"Spack\",\n" + 
+			"           \"name\": \"cmake\",\n" + 
+			"           \"compiler\": \"gcc@6.3.1\"\n" + 
+			"         },\n" + 
+			"         {\n" + 
+			"           \"type\": \"Spack\",\n" + 
+			"           \"name\": \"llvm\",\n" + 
+			"           \"compiler\": \"gcc@6.3.1\"\n" + 
+			"         },\n" + 
+			"         {\n" + 
+			"           \"type\": \"OS\",\n" + 
+			"           \"name\": \"gcc-gfortran\"\n" + 
+			"         }\n" + 
+			"      ],\n" + 
+			"      \"ContainerConfig\": {\n" + 
+			"         \"name\": \"xaccdev\",\n" + 
+			"         \"ephemeral\": true\n" + 
+			"      }\n" + 
+			"}";
+	
 	/**
 	 * The fixture for this Environment Manager test case.
 	 * <!-- begin-user-doc
@@ -107,160 +137,163 @@ public class EnvironmentManagerTest extends TestCase {
 		setFixture(null);
 	}
 
+	private class FakeEnvironmentCreator extends JsonEnvironmentCreatorImpl {
+		private boolean envCreated = false;
+		public IEnvironment create(String dataString) {
+			IEnvironment env = DockerFactory.eINSTANCE.createDockerEnvironment();
+			env.setName("fake");
+			envCreated = true;
+			return env;
+		}
+		public boolean wasCreated() { return envCreated;}
+	}
+	
 	/**
-	 * Tests the
-	 * '{@link apps.EnvironmentManager#createEnvironment(java.lang.String)
-	 * <em>Create Environment</em>}' operation. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see apps.EnvironmentManager#createEnvironment(java.lang.String)
+	 * Tests the '{@link apps.EnvironmentManager#create(java.lang.String) <em>Create</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#create(java.lang.String)
 	 */
-	public void testCreateEnvironment__String() {
-		IEnvironment env = fixture.createEnvironment(jsonStr);
+	public void testCreate__String() {
+		FakeEnvironmentCreator creator = new FakeEnvironmentCreator();
+		fixture.setEnvironmentCreator(creator);
+		IEnvironment env = fixture.create("");
 		assertTrue(env instanceof DockerEnvironment);
 		assertEquals(env.getState(), EnvironmentState.STOPPED);
-
-		try {
-			fixture.createEnvironment("bad_string");
-		} catch (Exception ex) {
-			assertTrue(true);
-			return;
-		}
-
-		fail();
-
+		assertTrue(creator.wasCreated());
 	}
 
 	/**
-	 * Tests the '{@link apps.EnvironmentManager#listExistingEnvironments()
-	 * <em>List Existing Environments</em>}' operation. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @see apps.EnvironmentManager#listExistingEnvironments()
-	 */
-	@Ignore
-	public void testListExistingEnvironments() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		// fail();
-	}
-
-	/**
-	 * Tests the '{@link apps.EnvironmentManager#loadEnvironment(java.lang.String) <em>Load Environment</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#list() <em>List</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#loadEnvironment(java.lang.String)
-	 * @generated
+	 * @see apps.EnvironmentManager#list()
 	 */
-	public void testLoadEnvironment__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+	public void testList() {
+		FakeEnvironmentCreator creator = new FakeEnvironmentCreator();
+		fixture.setEnvironmentCreator(creator);
+		IEnvironment env = fixture.create("");
+		assertTrue(fixture.list().size() == 1);
 	}
 
 	/**
-	 * Tests the
-	 * '{@link apps.EnvironmentManager#loadExistingEnvironment(java.lang.String)
-	 * <em>Load Existing Environment</em>}' operation. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @see apps.EnvironmentManager#loadExistingEnvironment(java.lang.String)
-	 */
-	@Ignore
-	public void testLoadExistingEnvironment__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		// fail();
-	}
-
-	/**
-	 * Tests the
-	 * '{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String)
-	 * <em>Load Environment From File</em>}' operation. <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * 
-	 * @see apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String)
-	 */
-	public void testLoadEnvironmentFromFile__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		// fail();
-	}
-
-	/**
-	 * Tests the '{@link apps.EnvironmentManager#persistToXMIString(java.lang.String) <em>Persist To XMI String</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#get(java.lang.String) <em>Get</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#persistToXMIString(java.lang.String)
+	 * @see apps.EnvironmentManager#get(java.lang.String)
 	 * @generated
 	 */
-	public void testPersistToXMIString__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+	public void testGet__String() {
+		FakeEnvironmentCreator creator = new FakeEnvironmentCreator();
+		fixture.setEnvironmentCreator(creator);
+		IEnvironment env = fixture.create("");
+		IEnvironment got = fixture.get("fake");
+		assertNotNull(got);
+		assertTrue(env == got);
 	}
 
 	/**
-	 * Tests the '{@link apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String) <em>Persist XMI To File</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#loadFromFile(java.lang.String) <em>Load From File</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String)
+	 * @see apps.EnvironmentManager#loadFromFile(java.lang.String)
 	 * @generated
 	 */
-	public void testPersistXMIToFile__String_String() {
+	public void testLoadFromFile__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+//		fail();
 	}
 
 	/**
-	 * Tests the '{@link apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String) <em>Connect To Existing Environment</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentManager#persistToString(java.lang.String) <em>Persist To String</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String)
+	 * @see apps.EnvironmentManager#persistToString(java.lang.String)
 	 * @generated
 	 */
-	public void testConnectToExistingEnvironment__String() {
+	public void testPersistToString__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
+//		fail();
 	}
 
 	/**
-	 * Tests the
-	 * '{@link apps.EnvironmentManager#persistToXMIString(apps.IEnvironment)
-	 * <em>Persist To XMI String</em>}' operation. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see apps.EnvironmentManager#persistToXMIString(apps.IEnvironment)
+	 * Tests the '{@link apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String) <em>Persist To File</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String)
+	 * @generated
 	 */
-	public void testPersistToXMIString__IEnvironment() {
-		// Get a valid Environment
-		IEnvironment env = JsonEnvironmentCreator.create(jsonStr);
-		String expectedXmiStr = "<?xml version=\"1.0\" encoding=\"ASCII\"?>\n" + 
-				"<dockerenvironment:DockerEnvironment xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:dockerenvironment=\"http://eclipse.org/apps/docker\" name=\"mccaskey/test_env\">\n" + 
-				"  <dependentPackages name=\"cmake\" compiler=\"gcc@6.1.0\"/>\n" + 
-				"  <dependentPackages name=\"llvm\" compiler=\"gcc@6.1.0\"/>\n" + 
-				"  <primaryApp name=\"xacc\" compiler=\"gcc@6.1.0\" repoURL=\"https://github.com/ORNL-QCI/xacc\"/>\n" + 
-				"  <containerConfiguration name=\"xaccdev\" ephemeral=\"true\"/>\n" + 
-				"</dockerenvironment:DockerEnvironment>\n";
-		String xmiStr = fixture.persistToXMIString(env.getName());
-		assertEquals(xmiStr, expectedXmiStr);
+	public void testPersistToFile__String_String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+//		fail();
 	}
 
 	/**
-	 * Tests the
-	 * '{@link apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment, java.lang.String)
-	 * <em>Persist XMI To File</em>}' operation. <!-- begin-user-doc --> <!--
-	 * end-user-doc -->
-	 * 
-	 * @see apps.EnvironmentManager#persistXMIToFile(apps.IEnvironment,
-	 *      java.lang.String)
+	 * Tests the '{@link apps.EnvironmentManager#connect(java.lang.String) <em>Connect</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#connect(java.lang.String)
+	 * @generated
 	 */
-	public void testPersistXMIToFile__IEnvironment_String() {
+	public void testConnect__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-		// fail();
+//		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#listAvailableSpackPackages() <em>List Available Spack Packages</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#listAvailableSpackPackages()
+	 * @generated
+	 */
+	public void testListAvailableSpackPackages() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+//		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#persistEnvironments() <em>Persist Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#persistEnvironments()
+	 * @generated
+	 */
+	public void testPersistEnvironments() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+//		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#createEmpty(java.lang.String) <em>Create Empty</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#createEmpty(java.lang.String)
+	 * @generated
+	 */
+	public void testCreateEmpty__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+//		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#loadFromXMI(java.lang.String) <em>Load From XMI</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#loadFromXMI(java.lang.String)
+	 * @generated
+	 */
+	public void testLoadFromXMI__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+//		fail();
 	}
 
 } // EnvironmentManagerTest

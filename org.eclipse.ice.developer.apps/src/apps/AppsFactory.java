@@ -67,6 +67,15 @@ public interface AppsFactory extends EFactory {
 	SpackDependency createSpackDependency();
 
 	/**
+	 * Returns a new object of class '<em>Json Environment Creator</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Json Environment Creator</em>'.
+	 * @generated
+	 */
+	JsonEnvironmentCreator createJsonEnvironmentCreator();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

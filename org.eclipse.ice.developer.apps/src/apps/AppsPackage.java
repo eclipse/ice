@@ -187,76 +187,121 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER = 1;
 
 	/**
+	 * The feature id for the '<em><b>Environment Creator</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER__ENVIRONMENT_CREATOR = 0;
+
+	/**
 	 * The number of structural features of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 0;
+	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 1;
 
 	/**
-	 * The operation id for the '<em>Create Environment</em>' operation.
+	 * The operation id for the '<em>Create</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING = 0;
+	int ENVIRONMENT_MANAGER___CREATE__STRING = 0;
 
 	/**
-	 * The operation id for the '<em>List Existing Environments</em>' operation.
+	 * The operation id for the '<em>List</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LIST_EXISTING_ENVIRONMENTS = 1;
+	int ENVIRONMENT_MANAGER___LIST = 1;
 
 	/**
-	 * The operation id for the '<em>Load Environment</em>' operation.
+	 * The operation id for the '<em>Get</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT__STRING = 2;
+	int ENVIRONMENT_MANAGER___GET__STRING = 2;
 
 	/**
-	 * The operation id for the '<em>Load Environment From File</em>' operation.
+	 * The operation id for the '<em>Load From File</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT_FROM_FILE__STRING = 3;
+	int ENVIRONMENT_MANAGER___LOAD_FROM_FILE__STRING = 3;
 
 	/**
-	 * The operation id for the '<em>Persist To XMI String</em>' operation.
+	 * The operation id for the '<em>Persist To String</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__STRING = 4;
+	int ENVIRONMENT_MANAGER___PERSIST_TO_STRING__STRING = 4;
 
 	/**
-	 * The operation id for the '<em>Persist XMI To File</em>' operation.
+	 * The operation id for the '<em>Persist To File</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__STRING_STRING = 5;
+	int ENVIRONMENT_MANAGER___PERSIST_TO_FILE__STRING_STRING = 5;
 
 	/**
-	 * The operation id for the '<em>Connect To Existing Environment</em>' operation.
+	 * The operation id for the '<em>Connect</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___CONNECT_TO_EXISTING_ENVIRONMENT__STRING = 6;
+	int ENVIRONMENT_MANAGER___CONNECT__STRING = 6;
+
+	/**
+	 * The operation id for the '<em>List Available Spack Packages</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___LIST_AVAILABLE_SPACK_PACKAGES = 7;
+
+	/**
+	 * The operation id for the '<em>Persist Environments</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS = 8;
+
+	/**
+	 * The operation id for the '<em>Create Empty</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___CREATE_EMPTY__STRING = 9;
+
+	/**
+	 * The operation id for the '<em>Load From XMI</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING = 10;
 
 	/**
 	 * The number of operations of the '<em>Environment Manager</em>' class.
@@ -265,7 +310,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 7;
+	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 11;
 
 	/**
 	 * The meta object id for the '{@link apps.Package <em>Package</em>}' class.
@@ -625,6 +670,80 @@ public interface AppsPackage extends EPackage {
 	int SPACK_DEPENDENCY_OPERATION_COUNT = 0;
 
 	/**
+	 * The meta object id for the '{@link apps.EnvironmentCreator <em>Environment Creator</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentCreator
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentCreator()
+	 * @generated
+	 */
+	int ENVIRONMENT_CREATOR = 8;
+
+	/**
+	 * The number of structural features of the '<em>Environment Creator</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_CREATOR_FEATURE_COUNT = 0;
+
+	/**
+	 * The operation id for the '<em>Create</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_CREATOR___CREATE__STRING = 0;
+
+	/**
+	 * The number of operations of the '<em>Environment Creator</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_CREATOR_OPERATION_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link apps.impl.JsonEnvironmentCreatorImpl <em>Json Environment Creator</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.impl.JsonEnvironmentCreatorImpl
+	 * @see apps.impl.AppsPackageImpl#getJsonEnvironmentCreator()
+	 * @generated
+	 */
+	int JSON_ENVIRONMENT_CREATOR = 9;
+
+	/**
+	 * The number of structural features of the '<em>Json Environment Creator</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JSON_ENVIRONMENT_CREATOR_FEATURE_COUNT = ENVIRONMENT_CREATOR_FEATURE_COUNT + 0;
+
+	/**
+	 * The operation id for the '<em>Create</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JSON_ENVIRONMENT_CREATOR___CREATE__STRING = ENVIRONMENT_CREATOR___CREATE__STRING;
+
+	/**
+	 * The number of operations of the '<em>Json Environment Creator</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int JSON_ENVIRONMENT_CREATOR_OPERATION_COUNT = ENVIRONMENT_CREATOR_OPERATION_COUNT + 0;
+
+	/**
 	 * The meta object id for the '{@link apps.PackageType <em>Package Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -632,7 +751,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getPackageType()
 	 * @generated
 	 */
-	int PACKAGE_TYPE = 8;
+	int PACKAGE_TYPE = 10;
 
 	/**
 	 * The meta object id for the '{@link apps.EnvironmentState <em>Environment State</em>}' enum.
@@ -642,7 +761,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentState()
 	 * @generated
 	 */
-	int ENVIRONMENT_STATE = 9;
+	int ENVIRONMENT_STATE = 11;
 
 	/**
 	 * Returns the meta object for class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
@@ -771,74 +890,125 @@ public interface AppsPackage extends EPackage {
 	EClass getEnvironmentManager();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#createEnvironment(java.lang.String) <em>Create Environment</em>}' operation.
+	 * Returns the meta object for the reference '{@link apps.EnvironmentManager#getEnvironmentCreator <em>Environment Creator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Create Environment</em>' operation.
-	 * @see apps.EnvironmentManager#createEnvironment(java.lang.String)
+	 * @return the meta object for the reference '<em>Environment Creator</em>'.
+	 * @see apps.EnvironmentManager#getEnvironmentCreator()
+	 * @see #getEnvironmentManager()
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__CreateEnvironment__String();
+	EReference getEnvironmentManager_EnvironmentCreator();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#listExistingEnvironments() <em>List Existing Environments</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#create(java.lang.String) <em>Create</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>List Existing Environments</em>' operation.
-	 * @see apps.EnvironmentManager#listExistingEnvironments()
+	 * @return the meta object for the '<em>Create</em>' operation.
+	 * @see apps.EnvironmentManager#create(java.lang.String)
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__ListExistingEnvironments();
+	EOperation getEnvironmentManager__Create__String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadEnvironment(java.lang.String) <em>Load Environment</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#list() <em>List</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Load Environment</em>' operation.
-	 * @see apps.EnvironmentManager#loadEnvironment(java.lang.String)
+	 * @return the meta object for the '<em>List</em>' operation.
+	 * @see apps.EnvironmentManager#list()
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__LoadEnvironment__String();
+	EOperation getEnvironmentManager__List();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String) <em>Load Environment From File</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#get(java.lang.String) <em>Get</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Load Environment From File</em>' operation.
-	 * @see apps.EnvironmentManager#loadEnvironmentFromFile(java.lang.String)
+	 * @return the meta object for the '<em>Get</em>' operation.
+	 * @see apps.EnvironmentManager#get(java.lang.String)
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__LoadEnvironmentFromFile__String();
+	EOperation getEnvironmentManager__Get__String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistToXMIString(java.lang.String) <em>Persist To XMI String</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadFromFile(java.lang.String) <em>Load From File</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Persist To XMI String</em>' operation.
-	 * @see apps.EnvironmentManager#persistToXMIString(java.lang.String)
+	 * @return the meta object for the '<em>Load From File</em>' operation.
+	 * @see apps.EnvironmentManager#loadFromFile(java.lang.String)
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__PersistToXMIString__String();
+	EOperation getEnvironmentManager__LoadFromFile__String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String) <em>Persist XMI To File</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistToString(java.lang.String) <em>Persist To String</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Persist XMI To File</em>' operation.
-	 * @see apps.EnvironmentManager#persistXMIToFile(java.lang.String, java.lang.String)
+	 * @return the meta object for the '<em>Persist To String</em>' operation.
+	 * @see apps.EnvironmentManager#persistToString(java.lang.String)
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__PersistXMIToFile__String_String();
+	EOperation getEnvironmentManager__PersistToString__String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String) <em>Connect To Existing Environment</em>}' operation.
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String) <em>Persist To File</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Connect To Existing Environment</em>' operation.
-	 * @see apps.EnvironmentManager#connectToExistingEnvironment(java.lang.String)
+	 * @return the meta object for the '<em>Persist To File</em>' operation.
+	 * @see apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String)
 	 * @generated
 	 */
-	EOperation getEnvironmentManager__ConnectToExistingEnvironment__String();
+	EOperation getEnvironmentManager__PersistToFile__String_String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#connect(java.lang.String) <em>Connect</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Connect</em>' operation.
+	 * @see apps.EnvironmentManager#connect(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__Connect__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#listAvailableSpackPackages() <em>List Available Spack Packages</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>List Available Spack Packages</em>' operation.
+	 * @see apps.EnvironmentManager#listAvailableSpackPackages()
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__ListAvailableSpackPackages();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#persistEnvironments() <em>Persist Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Persist Environments</em>' operation.
+	 * @see apps.EnvironmentManager#persistEnvironments()
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__PersistEnvironments();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#createEmpty(java.lang.String) <em>Create Empty</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Create Empty</em>' operation.
+	 * @see apps.EnvironmentManager#createEmpty(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__CreateEmpty__String();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#loadFromXMI(java.lang.String) <em>Load From XMI</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Load From XMI</em>' operation.
+	 * @see apps.EnvironmentManager#loadFromXMI(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__LoadFromXMI__String();
 
 	/**
 	 * Returns the meta object for class '{@link apps.SpackPackage <em>Spack Package</em>}'.
@@ -1032,6 +1202,36 @@ public interface AppsPackage extends EPackage {
 	EAttribute getSpackDependency_Provider();
 
 	/**
+	 * Returns the meta object for class '{@link apps.EnvironmentCreator <em>Environment Creator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Environment Creator</em>'.
+	 * @see apps.EnvironmentCreator
+	 * @generated
+	 */
+	EClass getEnvironmentCreator();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentCreator#create(java.lang.String) <em>Create</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Create</em>' operation.
+	 * @see apps.EnvironmentCreator#create(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentCreator__Create__String();
+
+	/**
+	 * Returns the meta object for class '{@link apps.JsonEnvironmentCreator <em>Json Environment Creator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Json Environment Creator</em>'.
+	 * @see apps.JsonEnvironmentCreator
+	 * @generated
+	 */
+	EClass getJsonEnvironmentCreator();
+
+	/**
 	 * Returns the meta object for enum '{@link apps.PackageType <em>Package Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1175,60 +1375,100 @@ public interface AppsPackage extends EPackage {
 		EClass ENVIRONMENT_MANAGER = eINSTANCE.getEnvironmentManager();
 
 		/**
-		 * The meta object literal for the '<em><b>Create Environment</b></em>' operation.
+		 * The meta object literal for the '<em><b>Environment Creator</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___CREATE_ENVIRONMENT__STRING = eINSTANCE.getEnvironmentManager__CreateEnvironment__String();
+		EReference ENVIRONMENT_MANAGER__ENVIRONMENT_CREATOR = eINSTANCE.getEnvironmentManager_EnvironmentCreator();
 
 		/**
-		 * The meta object literal for the '<em><b>List Existing Environments</b></em>' operation.
+		 * The meta object literal for the '<em><b>Create</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___LIST_EXISTING_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__ListExistingEnvironments();
+		EOperation ENVIRONMENT_MANAGER___CREATE__STRING = eINSTANCE.getEnvironmentManager__Create__String();
 
 		/**
-		 * The meta object literal for the '<em><b>Load Environment</b></em>' operation.
+		 * The meta object literal for the '<em><b>List</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT__STRING = eINSTANCE.getEnvironmentManager__LoadEnvironment__String();
+		EOperation ENVIRONMENT_MANAGER___LIST = eINSTANCE.getEnvironmentManager__List();
 
 		/**
-		 * The meta object literal for the '<em><b>Load Environment From File</b></em>' operation.
+		 * The meta object literal for the '<em><b>Get</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___LOAD_ENVIRONMENT_FROM_FILE__STRING = eINSTANCE.getEnvironmentManager__LoadEnvironmentFromFile__String();
+		EOperation ENVIRONMENT_MANAGER___GET__STRING = eINSTANCE.getEnvironmentManager__Get__String();
 
 		/**
-		 * The meta object literal for the '<em><b>Persist To XMI String</b></em>' operation.
+		 * The meta object literal for the '<em><b>Load From File</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___PERSIST_TO_XMI_STRING__STRING = eINSTANCE.getEnvironmentManager__PersistToXMIString__String();
+		EOperation ENVIRONMENT_MANAGER___LOAD_FROM_FILE__STRING = eINSTANCE.getEnvironmentManager__LoadFromFile__String();
 
 		/**
-		 * The meta object literal for the '<em><b>Persist XMI To File</b></em>' operation.
+		 * The meta object literal for the '<em><b>Persist To String</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___PERSIST_XMI_TO_FILE__STRING_STRING = eINSTANCE.getEnvironmentManager__PersistXMIToFile__String_String();
+		EOperation ENVIRONMENT_MANAGER___PERSIST_TO_STRING__STRING = eINSTANCE.getEnvironmentManager__PersistToString__String();
 
 		/**
-		 * The meta object literal for the '<em><b>Connect To Existing Environment</b></em>' operation.
+		 * The meta object literal for the '<em><b>Persist To File</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EOperation ENVIRONMENT_MANAGER___CONNECT_TO_EXISTING_ENVIRONMENT__STRING = eINSTANCE.getEnvironmentManager__ConnectToExistingEnvironment__String();
+		EOperation ENVIRONMENT_MANAGER___PERSIST_TO_FILE__STRING_STRING = eINSTANCE.getEnvironmentManager__PersistToFile__String_String();
+
+		/**
+		 * The meta object literal for the '<em><b>Connect</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___CONNECT__STRING = eINSTANCE.getEnvironmentManager__Connect__String();
+
+		/**
+		 * The meta object literal for the '<em><b>List Available Spack Packages</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___LIST_AVAILABLE_SPACK_PACKAGES = eINSTANCE.getEnvironmentManager__ListAvailableSpackPackages();
+
+		/**
+		 * The meta object literal for the '<em><b>Persist Environments</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__PersistEnvironments();
+
+		/**
+		 * The meta object literal for the '<em><b>Create Empty</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___CREATE_EMPTY__STRING = eINSTANCE.getEnvironmentManager__CreateEmpty__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Load From XMI</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING = eINSTANCE.getEnvironmentManager__LoadFromXMI__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.SpackPackageImpl <em>Spack Package</em>}' class.
@@ -1385,6 +1625,34 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute SPACK_DEPENDENCY__PROVIDER = eINSTANCE.getSpackDependency_Provider();
+
+		/**
+		 * The meta object literal for the '{@link apps.EnvironmentCreator <em>Environment Creator</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.EnvironmentCreator
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentCreator()
+		 * @generated
+		 */
+		EClass ENVIRONMENT_CREATOR = eINSTANCE.getEnvironmentCreator();
+
+		/**
+		 * The meta object literal for the '<em><b>Create</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_CREATOR___CREATE__STRING = eINSTANCE.getEnvironmentCreator__Create__String();
+
+		/**
+		 * The meta object literal for the '{@link apps.impl.JsonEnvironmentCreatorImpl <em>Json Environment Creator</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.impl.JsonEnvironmentCreatorImpl
+		 * @see apps.impl.AppsPackageImpl#getJsonEnvironmentCreator()
+		 * @generated
+		 */
+		EClass JSON_ENVIRONMENT_CREATOR = eINSTANCE.getJsonEnvironmentCreator();
 
 		/**
 		 * The meta object literal for the '{@link apps.PackageType <em>Package Type</em>}' enum.

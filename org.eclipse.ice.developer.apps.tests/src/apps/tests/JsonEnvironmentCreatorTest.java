@@ -11,16 +11,19 @@
  *******************************************************************************/
 package apps.tests;
 
+import apps.AppsFactory;
+import apps.IEnvironment;
+
 import static org.junit.Assert.*;
 
-import org.junit.Test;
-
-import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
+import apps.OSPackage;
+import apps.PackageType;
 import apps.SourcePackage;
 import apps.SpackPackage;
-import apps.docker.ContainerConfiguration;
 import apps.docker.DockerEnvironment;
+import junit.framework.TestCase;
+import junit.textui.TestRunner;
 
 /**
  * This class is meant to test the functionality of 
@@ -29,7 +32,7 @@ import apps.docker.DockerEnvironment;
  * @author Alex McCaskey
  *
  */
-public class JsonEnvironmentCreatorTest {
+public class JsonEnvironmentCreatorTest extends TestCase {
 
 	private static String jsonStr = "{\n" + 
 			"   \"General\": {\n" + 
@@ -37,18 +40,25 @@ public class JsonEnvironmentCreatorTest {
 			"       \"type\": \"Docker\"\n" + 
 			"    },\n" + 
 			"    \"Application\": {\n" + 
+			"       \"type\": \"Source\",\n" + 
 			"       \"name\": \"xacc\",\n" + 
 			"       \"repoURL\": \"https://github.com/ORNL-QCI/xacc\",\n" + 
-			"       \"compiler\": \"gcc@6.1.0\"\n" + 
+			"       \"buildCommand\": \"cd xacc && mkdir build && cd build && cmake .. && make\"\n" + 
 			"     },\n" + 
 			"     \"Dependencies\": [\n" + 
 			"         {\n" + 
+			"           \"type\": \"Spack\",\n" + 
 			"           \"name\": \"cmake\",\n" + 
-			"           \"compiler\": \"gcc@6.1.0\"\n" + 
+			"           \"compiler\": \"gcc@6.3.1\"\n" + 
 			"         },\n" + 
 			"         {\n" + 
+			"           \"type\": \"Spack\",\n" + 
 			"           \"name\": \"llvm\",\n" + 
-			"           \"compiler\": \"gcc@6.1.0\"\n" + 
+			"           \"compiler\": \"gcc@6.3.1\"\n" + 
+			"         },\n" + 
+			"         {\n" + 
+			"           \"type\": \"OS\",\n" + 
+			"           \"name\": \"gcc-gfortran\"\n" + 
 			"         }\n" + 
 			"      ],\n" + 
 			"      \"ContainerConfig\": {\n" + 
@@ -57,35 +67,113 @@ public class JsonEnvironmentCreatorTest {
 			"      }\n" + 
 			"}";
 	
-	
-	@Test
-	public void checkCreateNewFromJson() {
+	/**
+	 * The fixture for this Json Environment Creator test case.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected JsonEnvironmentCreator fixture = null;
 
-		IEnvironment env = JsonEnvironmentCreator.create(jsonStr);
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public static void main(String[] args) {
+		TestRunner.run(JsonEnvironmentCreatorTest.class);
+	}
+
+
+	/**
+	 * Constructs a new Json Environment Creator test case with the given name.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public JsonEnvironmentCreatorTest(String name) {
+		super(name);
+	}
+
+
+	/**
+	 * Sets the fixture for this Json Environment Creator test case.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void setFixture(JsonEnvironmentCreator fixture) {
+		this.fixture = fixture;
+	}
+
+
+	/**
+	 * Returns the fixture for this Json Environment Creator test case.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected JsonEnvironmentCreator getFixture() {
+		return fixture;
+	}
+
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see junit.framework.TestCase#setUp()
+	 * @generated
+	 */
+	@Override
+	protected void setUp() throws Exception {
+		setFixture(AppsFactory.eINSTANCE.createJsonEnvironmentCreator());
+	}
+
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see junit.framework.TestCase#tearDown()
+	 * @generated
+	 */
+	@Override
+	protected void tearDown() throws Exception {
+		setFixture(null);
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentCreator#create(java.lang.String) <em>Create</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentCreator#create(java.lang.String)
+	 */
+	public void testCreate__String() {
 		
+		IEnvironment env = AppsFactory.eINSTANCE.createJsonEnvironmentCreator().create(jsonStr);		
 		assertEquals(env.getName(), "mccaskey/test_env");
 		assertTrue(env instanceof DockerEnvironment);
-		assertEquals(env.getOs(), "fedora");
+		assertEquals(env.getPrimaryApp().getName(), "xacc");
+		assertEquals(env.getPrimaryApp().getType(), PackageType.SOURCE);
+		assertTrue(env.getPrimaryApp() instanceof SourcePackage);
+		assertEquals(((SourcePackage)env.getPrimaryApp()).getRepoURL(), "https://github.com/ORNL-QCI/xacc");
+		assertEquals(((SourcePackage)env.getPrimaryApp()).getBranch(), "master");
+		assertEquals(((SourcePackage)env.getPrimaryApp()).getBuildCommand(), "cd xacc && mkdir build && cd build && cmake .. && make");
 		
-		apps.SourcePackage app = (SourcePackage) env.getPrimaryApp();
-		assertEquals(app.getName(), "xacc");
-		assertEquals(app.getBranch(), "master");
-		assertEquals(app.getRepoURL(), "https://github.com/ORNL-QCI/xacc");
-		assertEquals(app.getVersion(), "latest");
+		assertEquals(env.getDependentPackages().size(), 3);
+		assertTrue(env.getDependentPackages().get(0) instanceof SpackPackage);
+		assertEquals(env.getDependentPackages().get(0).getName(), "cmake");
+		assertEquals(((SpackPackage)env.getDependentPackages().get(0)).getCompiler(), "gcc@6.3.1");
+
+		assertTrue(env.getDependentPackages().get(1) instanceof SpackPackage);
+		assertEquals(env.getDependentPackages().get(1).getName(), "llvm");
+		assertEquals(((SpackPackage)env.getDependentPackages().get(1)).getCompiler(), "gcc@6.3.1");
+
+		assertTrue(env.getDependentPackages().get(2) instanceof OSPackage);
+		assertEquals(env.getDependentPackages().get(2).getName(), "gcc-gfortran");
+
+		DockerEnvironment denv = (DockerEnvironment) env;
 		
-		SpackPackage cmake = (SpackPackage) env.getDependentPackages().get(0);
-		assertEquals(cmake.getName(), "cmake");
-		assertEquals(cmake.getCompiler(), "gcc@6.1.0");
-		assertEquals(cmake.getVersion(), "latest");
-		
-		SpackPackage llvm = (SpackPackage) env.getDependentPackages().get(1);
-		assertEquals(llvm.getName(), "llvm");
-		assertEquals(llvm.getCompiler(), "gcc@6.1.0");
-		assertEquals(llvm.getVersion(), "latest");
-		
-		DockerEnvironment dockerEnv = (DockerEnvironment) env;
-		ContainerConfiguration config = dockerEnv.getContainerConfiguration();
-		assertEquals(config.getName(), "xaccdev");
-		assertTrue(config.isEphemeral());
+		assertEquals(denv.getContainerConfiguration().getName(), "xaccdev");
+		assertTrue(denv.getContainerConfiguration().isEphemeral());
 	}
 }

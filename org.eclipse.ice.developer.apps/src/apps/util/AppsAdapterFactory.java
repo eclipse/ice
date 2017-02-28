@@ -3,8 +3,10 @@
 package apps.util;
 
 import apps.AppsPackage;
+import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
+import apps.JsonEnvironmentCreator;
 import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
@@ -104,6 +106,14 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseSpackDependency(SpackDependency object) {
 				return createSpackDependencyAdapter();
+			}
+			@Override
+			public Adapter caseEnvironmentCreator(EnvironmentCreator object) {
+				return createEnvironmentCreatorAdapter();
+			}
+			@Override
+			public Adapter caseJsonEnvironmentCreator(JsonEnvironmentCreator object) {
+				return createJsonEnvironmentCreatorAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -234,6 +244,34 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createSpackDependencyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.EnvironmentCreator <em>Environment Creator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.EnvironmentCreator
+	 * @generated
+	 */
+	public Adapter createEnvironmentCreatorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.JsonEnvironmentCreator <em>Json Environment Creator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.JsonEnvironmentCreator
+	 * @generated
+	 */
+	public Adapter createJsonEnvironmentCreatorAdapter() {
 		return null;
 	}
 

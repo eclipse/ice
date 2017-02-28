@@ -6,6 +6,7 @@ import apps.AppsFactory;
 import apps.AppsPackage;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
+import apps.JsonEnvironmentCreator;
 import apps.OSPackage;
 import apps.PackageType;
 import apps.SourcePackage;
@@ -69,6 +70,7 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 			case AppsPackage.SOURCE_PACKAGE: return createSourcePackage();
 			case AppsPackage.OS_PACKAGE: return createOSPackage();
 			case AppsPackage.SPACK_DEPENDENCY: return createSpackDependency();
+			case AppsPackage.JSON_ENVIRONMENT_CREATOR: return createJsonEnvironmentCreator();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -156,6 +158,16 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	public SpackDependency createSpackDependency() {
 		SpackDependencyImpl spackDependency = new SpackDependencyImpl();
 		return spackDependency;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public JsonEnvironmentCreator createJsonEnvironmentCreator() {
+		JsonEnvironmentCreatorImpl jsonEnvironmentCreator = new JsonEnvironmentCreatorImpl();
+		return jsonEnvironmentCreator;
 	}
 
 	/**

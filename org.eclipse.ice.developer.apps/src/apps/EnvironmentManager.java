@@ -15,12 +15,44 @@ import org.eclipse.emf.ecore.EObject;
  * The EnvironmentManager provides the functionality to create new Environments, list existing available Environments, or load an existing Environment. 
  * <!-- end-model-doc -->
  *
+ * <p>
+ * The following features are supported:
+ * </p>
+ * <ul>
+ *   <li>{@link apps.EnvironmentManager#getEnvironmentCreator <em>Environment Creator</em>}</li>
+ * </ul>
  *
  * @see apps.AppsPackage#getEnvironmentManager()
  * @model
  * @generated
  */
 public interface EnvironmentManager extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Environment Creator</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Environment Creator</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Environment Creator</em>' reference.
+	 * @see #setEnvironmentCreator(EnvironmentCreator)
+	 * @see apps.AppsPackage#getEnvironmentManager_EnvironmentCreator()
+	 * @model
+	 * @generated
+	 */
+	EnvironmentCreator getEnvironmentCreator();
+
+	/**
+	 * Sets the value of the '{@link apps.EnvironmentManager#getEnvironmentCreator <em>Environment Creator</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Environment Creator</em>' reference.
+	 * @see #getEnvironmentCreator()
+	 * @generated
+	 */
+	void setEnvironmentCreator(EnvironmentCreator value);
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -30,7 +62,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment createEnvironment(String dataString);
+	IEnvironment create(String dataString);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -41,7 +73,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	EList<String> listExistingEnvironments();
+	EList<String> list();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -52,7 +84,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment loadEnvironment(String environmentName);
+	IEnvironment get(String environmentName);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -63,7 +95,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	IEnvironment loadEnvironmentFromFile(String fileName);
+	IEnvironment loadFromFile(String fileName);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -74,7 +106,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	String persistToXMIString(String environmentName);
+	String persistToString(String environmentName);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -85,7 +117,7 @@ public interface EnvironmentManager extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void persistXMIToFile(String environmentName, String fileName);
+	void persistToFile(String environmentName, String fileName);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -93,9 +125,50 @@ public interface EnvironmentManager extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Connect to the IEnvironment with the given name if the IEnvironment is in the Stopped state. 
 	 * <!-- end-model-doc -->
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @generated
+	 */
+	boolean connect(String environmentName);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @model
 	 * @generated
 	 */
-	void connectToExistingEnvironment(String environmentName);
+	EList<String> listAvailableSpackPackages();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Persist all IEnvironments to the Eclipse preference store. 
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void persistEnvironments();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Create a new IEnvironment of the given type. This is an empty IEnvironment that can then be filled by clients.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	IEnvironment createEmpty(String type);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Load an IEnvironment from the existing XMI string. 
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	IEnvironment loadFromXMI(String xmiStr);
 
 } // EnvironmentManager

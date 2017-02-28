@@ -29,25 +29,34 @@
       <genOperations ecoreOperation="apps.ecore#//IEnvironment/stop"/>
     </genClasses>
     <genClasses ecoreClass="apps.ecore#//EnvironmentManager">
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/createEnvironment">
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/createEnvironment/dataString"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//EnvironmentManager/environmentCreator"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/create">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/create/dataString"/>
       </genOperations>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/listExistingEnvironments"/>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadEnvironment">
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/loadEnvironment/environmentName"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/list"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/get">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/get/environmentName"/>
       </genOperations>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadEnvironmentFromFile">
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/loadEnvironmentFromFile/fileName"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadFromFile">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/loadFromFile/fileName"/>
       </genOperations>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/persistToXMIString">
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/persistToXMIString/environmentName"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/persistToString">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/persistToString/environmentName"/>
       </genOperations>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/persistXMIToFile">
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/persistXMIToFile/environmentName"/>
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/persistXMIToFile/fileName"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/persistToFile">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/persistToFile/environmentName"/>
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/persistToFile/fileName"/>
       </genOperations>
-      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/connectToExistingEnvironment">
-        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/connectToExistingEnvironment/environmentName"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/connect">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/connect/environmentName"/>
+      </genOperations>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/listAvailableSpackPackages"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/persistEnvironments"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/createEmpty">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/createEmpty/type"/>
+      </genOperations>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadFromXMI">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/loadFromXMI/xmiStr"/>
       </genOperations>
     </genClasses>
     <genClasses ecoreClass="apps.ecore#//SpackPackage">
@@ -75,6 +84,12 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackDependency/dependency"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackDependency/provider"/>
     </genClasses>
+    <genClasses image="false" ecoreClass="apps.ecore#//EnvironmentCreator">
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentCreator/create">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentCreator/create/dataString"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//JsonEnvironmentCreator"/>
     <nestedGenPackages prefix="Docker" basePackage="apps" disposableProviderFactory="true"
         ecorePackage="apps.ecore#//docker">
       <genClasses ecoreClass="apps.ecore#//docker/DockerEnvironment">

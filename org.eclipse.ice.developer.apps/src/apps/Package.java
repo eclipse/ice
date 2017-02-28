@@ -55,6 +55,7 @@ public interface Package extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>Version</b></em>' attribute.
+	 * The default value is <code>"latest"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Version</em>' attribute isn't clear,
@@ -64,7 +65,7 @@ public interface Package extends EObject {
 	 * @return the value of the '<em>Version</em>' attribute.
 	 * @see #setVersion(String)
 	 * @see apps.AppsPackage#getPackage_Version()
-	 * @model
+	 * @model default="latest"
 	 * @generated
 	 */
 	String getVersion();

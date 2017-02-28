@@ -11,7 +11,7 @@
  *******************************************************************************/
 package apps;
 
-import apps.EnvironmentCommandLineParser;
+import apps.impl.EnvironmentCommandLineParser;
 
 /**
  * 
@@ -27,7 +27,8 @@ public class ICEAppStore {
 	public static void main(String[] args) {
 
 		// Local Declarations
-		EnvironmentCommandLineParser cliParser = new EnvironmentCommandLineParser(args);
+		EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+		EnvironmentCommandLineParser cliParser = new EnvironmentCommandLineParser(args, manager);
 
 		// Create the Environment
 		IEnvironment environment = cliParser.getEnvironment();
@@ -36,9 +37,9 @@ public class ICEAppStore {
 		environment.build();
 		
 		// Connect
-		environment.connect();
+//		environment.connect();
 		
-		System.out.println(AppsFactory.eINSTANCE.createEnvironmentManager().persistToXMIString(environment.getName()));
+		System.out.println(manager.persistToString(environment.getName()));
 	}
 
 }

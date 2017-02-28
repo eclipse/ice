@@ -9,7 +9,7 @@
  *   Alex McCaskey - Initial API and implementation and/or initial documentation
  *   
  *******************************************************************************/
-package apps;
+package apps.impl;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -25,6 +25,10 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
+
+import apps.AppsFactory;
+import apps.EnvironmentManager;
+import apps.IEnvironment;
 
 /**
  * This class is responsible for taking user command 
@@ -42,6 +46,8 @@ public class EnvironmentCommandLineParser {
 	 */
 	private CommandLine cmd;
 	
+	private EnvironmentManager manager;
+	
 	/**
 	 * The constructor, creates a CommandLineParser 
 	 * object and gets the users command line input
@@ -49,7 +55,8 @@ public class EnvironmentCommandLineParser {
 	 * @param args Command line arguments
 	 */
 	@SuppressWarnings("static-access")
-	public EnvironmentCommandLineParser(String[] args) {
+	public EnvironmentCommandLineParser(String[] args, EnvironmentManager man) {
+		manager = man;
 		// create Options object
 		Options options = new Options();
 
@@ -86,7 +93,6 @@ public class EnvironmentCommandLineParser {
 		// Initialize the environment we will return 
 		// to null
 		IEnvironment env = null;
-		EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
 		
 		// If the user said load, then 
 		// let's load the file they provided
@@ -94,7 +100,7 @@ public class EnvironmentCommandLineParser {
 			// Get the name of the XMI file
 			String fileName = cmd.getOptionValue("load");
 			// Return the Environment
-			return manager.loadEnvironmentFromFile(fileName);
+			return manager.loadFromFile(fileName);
 		} else {
 			// This is a json file if we are here.
 			String fileName = cmd.getOptionValue("create");
@@ -105,7 +111,7 @@ public class EnvironmentCommandLineParser {
 				e1.printStackTrace();
 			}
 			// Map the json to an Environment
-			env = manager.createEnvironment(fileString);
+			env = manager.create(fileString);
 		}
 		
 		// Return the environmnet

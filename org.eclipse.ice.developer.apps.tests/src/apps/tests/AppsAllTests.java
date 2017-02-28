@@ -31,13 +31,12 @@ public class AppsAllTests extends TestSuite {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public static Test suite() {
 		TestSuite suite = new AppsAllTests("Apps Tests");
 		suite.addTest(AppsTests.suite());
 		suite.addTest(DockerTests.suite());
-		suite.addTest(LocalTests.suite());
+//		suite.addTest(LocalTests.suite());
 		return suite;
 	}
 

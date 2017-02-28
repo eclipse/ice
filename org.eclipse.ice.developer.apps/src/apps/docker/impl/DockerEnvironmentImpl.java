@@ -10,11 +10,12 @@ import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
 import apps.docker.DockerPackage;
+
 import java.io.File;
 import java.io.IOException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
 
@@ -457,7 +458,6 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public boolean build() {
 		// Create the build Dockerfile from the
@@ -484,8 +484,8 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 
 		// Add a git clone command for the primary app if
 		// this is to be a Development Environment
-			runPrimaryApp += "-b " + ((SourcePackage)primaryApp).getBranch() + " " + ((SourcePackage)primaryApp).getRepoURL() + " " + primaryApp.getName()
-					+ "\n";
+		runPrimaryApp += "-b " + ((SourcePackage) primaryApp).getBranch() + " "
+				+ ((SourcePackage) primaryApp).getRepoURL() + " " + primaryApp.getName() + "\n";
 
 		// Add to the Dockerfile contents
 		dockerfile += runSpackCommand + runPrimaryApp;
@@ -517,10 +517,9 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated
 	 */
 	public boolean connect() {
-		
-		docker.createContainer(getName(), containerConfiguration);
-
-		return true;
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**

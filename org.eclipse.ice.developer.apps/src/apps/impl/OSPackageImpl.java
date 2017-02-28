@@ -57,7 +57,7 @@ public class OSPackageImpl extends MinimalEObjectImpl.Container implements OSPac
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String VERSION_EDEFAULT = null;
+	protected static final String VERSION_EDEFAULT = "latest";
 
 	/**
 	 * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.

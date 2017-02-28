@@ -86,4 +86,7 @@ public class SpackDependencyTest extends TestCase {
 		setFixture(null);
 	}
 
+	public void testDummy() {
+		assertTrue(true);
+	}
 } //SpackDependencyTest

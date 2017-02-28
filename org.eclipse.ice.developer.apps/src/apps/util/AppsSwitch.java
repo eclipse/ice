@@ -3,8 +3,10 @@
 package apps.util;
 
 import apps.AppsPackage;
+import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
+import apps.JsonEnvironmentCreator;
 import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
@@ -120,6 +122,19 @@ public class AppsSwitch<T> extends Switch<T> {
 			case AppsPackage.SPACK_DEPENDENCY: {
 				SpackDependency spackDependency = (SpackDependency)theEObject;
 				T result = caseSpackDependency(spackDependency);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AppsPackage.ENVIRONMENT_CREATOR: {
+				EnvironmentCreator environmentCreator = (EnvironmentCreator)theEObject;
+				T result = caseEnvironmentCreator(environmentCreator);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AppsPackage.JSON_ENVIRONMENT_CREATOR: {
+				JsonEnvironmentCreator jsonEnvironmentCreator = (JsonEnvironmentCreator)theEObject;
+				T result = caseJsonEnvironmentCreator(jsonEnvironmentCreator);
+				if (result == null) result = caseEnvironmentCreator(jsonEnvironmentCreator);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -244,6 +259,36 @@ public class AppsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseSpackDependency(SpackDependency object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Environment Creator</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Environment Creator</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEnvironmentCreator(EnvironmentCreator object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Json Environment Creator</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Json Environment Creator</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseJsonEnvironmentCreator(JsonEnvironmentCreator object) {
 		return null;
 	}
 

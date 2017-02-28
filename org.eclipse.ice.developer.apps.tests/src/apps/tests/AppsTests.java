@@ -32,6 +32,7 @@ public class AppsTests extends TestSuite {
 	public static Test suite() {
 		TestSuite suite = new AppsTests("apps Tests");
 		suite.addTestSuite(EnvironmentManagerTest.class);
+		suite.addTestSuite(JsonEnvironmentCreatorTest.class);
 		return suite;
 	}
 
