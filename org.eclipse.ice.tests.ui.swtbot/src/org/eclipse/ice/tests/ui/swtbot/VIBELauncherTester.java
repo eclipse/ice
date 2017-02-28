@@ -86,24 +86,24 @@ public class VIBELauncherTester extends AbstractWorkbenchTester {
 		assertTrue(bot.button("Browse...", 1).isEnabled());
 		
 		//Check the host table's initial contents
-		assertTrue("localhost".equals(bot.table(1).cell(0, 0)));
-		assertEquals(1, bot.table(1).rowCount());
+		assertTrue("localhost".equals(bot.table().cell(0, 0)));
+		assertEquals(1, bot.table().rowCount());
 		
 		//Add a row and check that it was added correctly
 		bot.button("+").click();
-		assertEquals(2, bot.table(1).rowCount());
-		assertTrue("".equals(bot.table(1).cell(1, 0)));
+		assertEquals(2, bot.table().rowCount());
+		assertTrue("".equals(bot.table().cell(1, 0)));
 		
 		//Try editing the table and ensure the change was accepted
-		bot.table(1).click(1, 0);
+		bot.table().click(1, 0);
 		bot.text("").typeText("8.8.8.8");
-		bot.table(1).click(0, 0);
-		assertTrue("8.8.8.8".equals(bot.table(1).cell(1, 0)));
+		bot.table().click(0, 0);
+		assertTrue("8.8.8.8".equals(bot.table().cell(1, 0)));
 		
 		//Remove a row from the table and check that it is gone
 		bot.button("-").click();
-		assertEquals(1, bot.table(1).rowCount());
-		assertTrue("8.8.8.8".equals(bot.table(1).cell(0, 0)));
+		assertEquals(1, bot.table().rowCount());
+		assertTrue("8.8.8.8".equals(bot.table().cell(0, 0)));
 		
 		//Remove rows until the table is empty and remove another. Nothing should happen.
 		bot.button("-").click();
@@ -111,5 +111,7 @@ public class VIBELauncherTester extends AbstractWorkbenchTester {
 		
 		// See if the tab can be changed
 		bot.cTabItem("Output Files and Data").activate();
+		
+		
 	}
 }

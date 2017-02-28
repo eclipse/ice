@@ -65,16 +65,22 @@ public class VIBEKeyValuePairTester extends AbstractWorkbenchTester {
 		// Check that the cancel button is enabled
 		assertTrue(bot.button("Cancel").isEnabled());
 
+		//The table should be empty at the start
+		assertEquals(0, bot.table().rowCount());
+		
+		//Set the table to the NTG template
+		bot.radio(1).click();
+		
 		// Check the table's values for the default settings
-		assertTrue("ELECTRICAL".equals(bot.table(1).cell(0, 0)));
+		assertTrue("ELECTRICAL".equals(bot.table().cell(0, 0)));
 
 		// Change the first row's value to two
-		bot.table(1).click(0, 1);
+		bot.table().click(0, 1);
 		bot.text("1 ", 0).setText("2");
-		bot.table(1).click(0, 0);
+		bot.table().click(0, 0);
 
 		// Check that the cell was set
-		assertTrue("2".equals(bot.table(1).cell(0, 1)));
+		assertTrue("2".equals(bot.table().cell(0, 1)));
 
 		// Makes sure the form registers that it is dirty
 		assertTrue("There are unsaved changes on the form."
@@ -85,55 +91,49 @@ public class VIBEKeyValuePairTester extends AbstractWorkbenchTester {
 		assertTrue(bot.clabel(0).getText().equals("Ready to process."));
 
 		// Make sure there are 21 rows
-		assertEquals(21, bot.table(1).rowCount());
+		assertEquals(21, bot.table().rowCount());
 
 		// Add a row and check that it is there.
 		bot.button("+").click();
-		assertEquals(22, bot.table(1).rowCount());
+		assertEquals(22, bot.table().rowCount());
 
 		// Remove the second from last row and test that there are one fewer
 		// rows and that the last row is empty.
-		bot.table(1).click(20, 0);
+		bot.table().click(20, 0);
 		bot.button("-").click();
-		assertEquals(21, bot.table(1).rowCount());
-		System.out.println(bot.table(1).cell(20, 0));
-		assertTrue("".equals(bot.table(1).cell(20, 0)));
+		assertEquals(21, bot.table().rowCount());
+		System.out.println(bot.table().cell(20, 0));
+		assertTrue("".equals(bot.table().cell(20, 0)));
 
 		// Check that the form reports the job as complete after performing it.
 		bot.button("Go!").click();
 		assertTrue(bot.clabel(0).getText().equals("Done!"));
 
 		// Set the template to DualFoil
-		bot.radio(1).click();
+		bot.radio(2).click();
 
 		// Check that a couple of the DualFoil's rows are set up correctly
-		assertTrue("NUMSEG".equals(bot.table(1).cell(14, 0)));
-		assertTrue("CUTOFFL".equals(bot.table(1).cell(17, 0)));
-		assertTrue("2.0,2.0,2.0,2.0,2.0".equals(bot.table(1).cell(17, 1)));
+		assertTrue("NUMSEG".equals(bot.table().cell(14, 0)));
+		assertTrue("CUTOFFL".equals(bot.table().cell(17, 0)));
+		assertTrue("2.0,2.0,2.0,2.0,2.0".equals(bot.table().cell(17, 1)));
 
 		// Set the NUMSEG key to 8.
-		bot.table(1).click(14, 1);
+		bot.table().click(14, 1);
 		bot.text("5", 0).setText("8");
-		bot.table(1).click(14, 0);
+		bot.table().click(14, 0);
 
 		// CUTOFFL should have had its vector increased in size to account for
 		// the new NUMSEG value
 		assertTrue("2.0,2.0,2.0,2.0,2.0,0.0,0.0,0.0"
-				.equals(bot.table(1).cell(17, 1)));
+				.equals(bot.table().cell(17, 1)));
 
 		// Set NUMSEG to 4
-		bot.table(1).click(14, 1);
+		bot.table().click(14, 1);
 		bot.text("8", 0).setText("4");
-		bot.table(1).click(14, 0);
+		bot.table().click(14, 0);
 
 		// CUTOFFL should have been reduced to only 4 numbers
-		assertTrue("2.0,2.0,2.0,2.0".equals(bot.table(1).cell(17, 1)));
-
-		// Set the template back to NTG
-		bot.radio(0).click();
-
-		// Check one of the rows to ensure that the NTG template has been loaded
-		assertTrue("CUTOFF".equals(bot.table(1).cell(15, 0)));
+		assertTrue("2.0,2.0,2.0,2.0".equals(bot.table().cell(17, 1)));
 
 	}
 }

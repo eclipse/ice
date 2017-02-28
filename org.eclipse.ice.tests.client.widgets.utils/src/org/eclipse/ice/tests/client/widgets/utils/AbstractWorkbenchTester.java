@@ -149,7 +149,7 @@ public abstract class AbstractWorkbenchTester extends
 	@Override
 	public void afterAllTests() {
 		// Dispose static or otherwise shared resources here.
-		// Nothing to do yet.
+		bot.resetWorkbench();
 
 		// Proceed with the default post-tests cleanup.
 		super.afterAllTests();

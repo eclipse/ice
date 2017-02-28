@@ -36,3 +36,6 @@ Require-Bundle: org.eclipse.cdt;bundle-version="8.7.0",
  org.eclipse.egit;bundle-version="4.0.0",
  org.eclipse.ice.developer,
  org.eclipse.ui
+Export-Package: org.eclipse.ice.developer.moose.actions,
+ org.eclipse.ice.developer.moose.nature,
+ org.eclipse.ice.developer.moose.wizards
