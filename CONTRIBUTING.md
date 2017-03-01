@@ -15,13 +15,13 @@ Please also read [this](http://wiki.eclipse.org/Development_Resources/Contributi
 
 In order for any contributions to be accepted, you MUST do the following things:
 
-* Sign the [Eclipse Foundation Contributor License Agreement](http://www.eclipse.org/legal/CLA.php).
-To sign the Eclipse CLA you need to:
+* Sign the [Eclipse Contributor Agreement](http://www.eclipse.org/legal/ECA.php).
+To sign the Eclipse Contributor Agreement you need to:
 
   * Obtain an Eclipse Foundation account. Anyone who currently uses Eclipse Bugzilla or Gerrit already has an Eclipse account.
 If you don’t, you need to [register](https://dev.eclipse.org/site_login/createaccount.php).
 
-  * Login to the [projects portal](https://projects.eclipse.org/), select “My Account”, and then the “Contributor License Agreement” tab.
+  * Login to the [projects portal](https://projects.eclipse.org/), select “My Account”, and then the “Eclipse ECA” tab.
 
 * Add your GitHub ID in your Eclipse Foundation account. Find this option in the "Account Settings" tab.
 
