@@ -29,6 +29,7 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.docker.DockerAPI#connectToExistingContainer(java.lang.String) <em>Connect To Existing Container</em>}</li>
  *   <li>{@link apps.docker.DockerAPI#deleteContainer(java.lang.String) <em>Delete Container</em>}</li>
  *   <li>{@link apps.docker.DockerAPI#deleteImage(java.lang.String) <em>Delete Image</em>}</li>
+ *   <li>{@link apps.docker.DockerAPI#stopContainer(java.lang.String) <em>Stop Container</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -209,6 +210,19 @@ public class DockerAPITest extends TestCase {
 	 */
 	public void testDeleteImage__String() {
 //		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerAPI#stopContainer(java.lang.String) <em>Stop Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerAPI#stopContainer(java.lang.String)
+	 * @generated
+	 */
+	public void testStopContainer__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 } //DockerAPITest

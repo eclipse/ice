@@ -149,17 +149,6 @@ public interface EnvironmentManager extends EObject {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Connect to the IEnvironment with the given name if the IEnvironment is in the Stopped state. 
-	 * <!-- end-model-doc -->
-	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
-	 * @generated
-	 */
-	boolean connect(String environmentName);
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 * @model
 	 * @generated
 	 */

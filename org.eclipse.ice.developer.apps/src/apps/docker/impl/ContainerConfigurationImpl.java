@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getPorts <em>Ports</em>}</li>
  *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getVolumesConfig <em>Volumes Config</em>}</li>
  *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getRemoteSSHPort <em>Remote SSH Port</em>}</li>
+ *   <li>{@link apps.docker.impl.ContainerConfigurationImpl#getId <em>Id</em>}</li>
  * </ul>
  *
  * @generated
@@ -125,6 +126,26 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * @ordered
 	 */
 	protected int remoteSSHPort = REMOTE_SSH_PORT_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getId() <em>Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getId()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String ID_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getId() <em>Id</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getId()
+	 * @generated
+	 * @ordered
+	 */
+	protected String id = ID_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -246,6 +267,27 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setId(String newId) {
+		String oldId = id;
+		id = newId;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.CONTAINER_CONFIGURATION__ID, oldId, id));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -259,6 +301,8 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return getVolumesConfig();
 			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
 				return getRemoteSSHPort();
+			case DockerPackage.CONTAINER_CONFIGURATION__ID:
+				return getId();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -288,6 +332,9 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
 				setRemoteSSHPort((Integer)newValue);
 				return;
+			case DockerPackage.CONTAINER_CONFIGURATION__ID:
+				setId((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -315,6 +362,9 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
 				setRemoteSSHPort(REMOTE_SSH_PORT_EDEFAULT);
 				return;
+			case DockerPackage.CONTAINER_CONFIGURATION__ID:
+				setId(ID_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -337,6 +387,8 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 				return VOLUMES_CONFIG_EDEFAULT == null ? volumesConfig != null : !VOLUMES_CONFIG_EDEFAULT.equals(volumesConfig);
 			case DockerPackage.CONTAINER_CONFIGURATION__REMOTE_SSH_PORT:
 				return remoteSSHPort != REMOTE_SSH_PORT_EDEFAULT;
+			case DockerPackage.CONTAINER_CONFIGURATION__ID:
+				return ID_EDEFAULT == null ? id != null : !ID_EDEFAULT.equals(id);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -361,6 +413,8 @@ public class ContainerConfigurationImpl extends MinimalEObjectImpl.Container imp
 		result.append(volumesConfig);
 		result.append(", remoteSSHPort: ");
 		result.append(remoteSSHPort);
+		result.append(", id: ");
+		result.append(id);
 		result.append(')');
 		return result.toString();
 	}

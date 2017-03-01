@@ -396,7 +396,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__Connect__String() {
+	public EOperation getEnvironmentManager__ListAvailableSpackPackages() {
 		return environmentManagerEClass.getEOperations().get(6);
 	}
 
@@ -405,7 +405,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__ListAvailableSpackPackages() {
+	public EOperation getEnvironmentManager__PersistEnvironments() {
 		return environmentManagerEClass.getEOperations().get(7);
 	}
 
@@ -414,7 +414,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__PersistEnvironments() {
+	public EOperation getEnvironmentManager__CreateEmpty__String() {
 		return environmentManagerEClass.getEOperations().get(8);
 	}
 
@@ -423,7 +423,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__CreateEmpty__String() {
+	public EOperation getEnvironmentManager__LoadFromXMI__String() {
 		return environmentManagerEClass.getEOperations().get(9);
 	}
 
@@ -432,17 +432,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EOperation getEnvironmentManager__LoadFromXMI__String() {
-		return environmentManagerEClass.getEOperations().get(10);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EOperation getEnvironmentManager__LoadEnvironments() {
-		return environmentManagerEClass.getEOperations().get(11);
+		return environmentManagerEClass.getEOperations().get(10);
 	}
 
 	/**
@@ -728,7 +719,6 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_FROM_FILE__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_TO_STRING__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_TO_FILE__STRING_STRING);
-		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CONNECT__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LIST_AVAILABLE_SPACK_PACKAGES);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CREATE_EMPTY__STRING);
@@ -855,9 +845,6 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		op = initEOperation(getEnvironmentManager__PersistToFile__String_String(), null, "persistToFile", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "environmentName", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "fileName", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		op = initEOperation(getEnvironmentManager__Connect__String(), theXMLTypePackage.getBoolean(), "connect", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEString(), "environmentName", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEOperation(getEnvironmentManager__ListAvailableSpackPackages(), ecorePackage.getEString(), "listAvailableSpackPackages", 0, -1, IS_UNIQUE, IS_ORDERED);
 

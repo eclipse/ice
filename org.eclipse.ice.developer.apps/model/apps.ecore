@@ -97,12 +97,6 @@
       <eParameters name="environmentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eParameters name="fileName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
-    <eOperations name="connect" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
-      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="documentation" value="Connect to the IEnvironment with the given name if the IEnvironment is in the Stopped state. "/>
-      </eAnnotations>
-      <eParameters name="environmentName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eOperations>
     <eOperations name="listAvailableSpackPackages" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eOperations name="persistEnvironments">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -234,7 +228,8 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerEnvironment is a realization of the IEnvironment interface that provides a launch method to create a scientific application environment in a Docker container. "/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="docker" eType="#//docker/DockerAPI">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="docker" eType="#//docker/DockerAPI"
+          containment="true">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Reference to the DockerAPI that enables the building of docker images, creation of docker containers from those images, re-connection to existing 'exited' containers, and the deletion of containers and images. "/>
         </eAnnotations>
@@ -255,37 +250,40 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerAPI provides a high-level abstraction for performing Docker-specific tasks. "/>
       </eAnnotations>
-      <eOperations name="buildImage">
+      <eOperations name="buildImage" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Build the image described by the provided Dockerfile build string. "/>
         </eAnnotations>
         <eParameters name="buildFile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eParameters name="imagename" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
-      <eOperations name="createContainer">
+      <eOperations name="createContainer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Launch a new container from the provided image name and ContainerConfiguration object. "/>
         </eAnnotations>
         <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eParameters name="config" eType="#//docker/ContainerConfiguration"/>
       </eOperations>
-      <eOperations name="connectToExistingContainer">
+      <eOperations name="connectToExistingContainer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Connect to the container with the given name or id. "/>
         </eAnnotations>
         <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
-      <eOperations name="deleteContainer">
+      <eOperations name="deleteContainer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Delete the container with the given name. "/>
         </eAnnotations>
-        <eParameters name="containerName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+        <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
-      <eOperations name="deleteImage">
+      <eOperations name="deleteImage" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Delete the image with the given name. "/>
         </eAnnotations>
         <eParameters name="imageName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
+      <eOperations name="stopContainer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
+        <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainerConfiguration">
@@ -318,6 +316,7 @@
           <details key="documentation" value="Reference to the localhost SSH port for the container. "/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DockerProjectLauncher" eSuperTypes="#//ProjectLauncher">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

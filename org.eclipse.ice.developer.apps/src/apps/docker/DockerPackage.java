@@ -123,7 +123,7 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT__STATE = AppsPackage.IENVIRONMENT__STATE;
 
 	/**
-	 * The feature id for the '<em><b>Docker</b></em>' reference.
+	 * The feature id for the '<em><b>Docker</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -268,13 +268,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API___DELETE_IMAGE__STRING = 4;
 
 	/**
+	 * The operation id for the '<em>Stop Container</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API___STOP_CONTAINER__STRING = 5;
+
+	/**
 	 * The number of operations of the '<em>API</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API_OPERATION_COUNT = 5;
+	int DOCKER_API_OPERATION_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
@@ -332,13 +341,22 @@ public interface DockerPackage extends EPackage {
 	int CONTAINER_CONFIGURATION__REMOTE_SSH_PORT = 4;
 
 	/**
+	 * The feature id for the '<em><b>Id</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONTAINER_CONFIGURATION__ID = 5;
+
+	/**
 	 * The number of structural features of the '<em>Container Configuration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTAINER_CONFIGURATION_FEATURE_COUNT = 5;
+	int CONTAINER_CONFIGURATION_FEATURE_COUNT = 6;
 
 	/**
 	 * The number of operations of the '<em>Container Configuration</em>' class.
@@ -407,10 +425,10 @@ public interface DockerPackage extends EPackage {
 	EClass getDockerEnvironment();
 
 	/**
-	 * Returns the meta object for the reference '{@link apps.docker.DockerEnvironment#getDocker <em>Docker</em>}'.
+	 * Returns the meta object for the containment reference '{@link apps.docker.DockerEnvironment#getDocker <em>Docker</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Docker</em>'.
+	 * @return the meta object for the containment reference '<em>Docker</em>'.
 	 * @see apps.docker.DockerEnvironment#getDocker()
 	 * @see #getDockerEnvironment()
 	 * @generated
@@ -500,6 +518,16 @@ public interface DockerPackage extends EPackage {
 	EOperation getDockerAPI__DeleteImage__String();
 
 	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerAPI#stopContainer(java.lang.String) <em>Stop Container</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Stop Container</em>' operation.
+	 * @see apps.docker.DockerAPI#stopContainer(java.lang.String)
+	 * @generated
+	 */
+	EOperation getDockerAPI__StopContainer__String();
+
+	/**
 	 * Returns the meta object for class '{@link apps.docker.ContainerConfiguration <em>Container Configuration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -563,6 +591,17 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getContainerConfiguration_RemoteSSHPort();
+
+	/**
+	 * Returns the meta object for the attribute '{@link apps.docker.ContainerConfiguration#getId <em>Id</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Id</em>'.
+	 * @see apps.docker.ContainerConfiguration#getId()
+	 * @see #getContainerConfiguration()
+	 * @generated
+	 */
+	EAttribute getContainerConfiguration_Id();
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerProjectLauncher <em>Project Launcher</em>}'.
@@ -629,7 +668,7 @@ public interface DockerPackage extends EPackage {
 		EClass DOCKER_ENVIRONMENT = eINSTANCE.getDockerEnvironment();
 
 		/**
-		 * The meta object literal for the '<em><b>Docker</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Docker</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -703,6 +742,14 @@ public interface DockerPackage extends EPackage {
 		EOperation DOCKER_API___DELETE_IMAGE__STRING = eINSTANCE.getDockerAPI__DeleteImage__String();
 
 		/**
+		 * The meta object literal for the '<em><b>Stop Container</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_API___STOP_CONTAINER__STRING = eINSTANCE.getDockerAPI__StopContainer__String();
+
+		/**
 		 * The meta object literal for the '{@link apps.docker.impl.ContainerConfigurationImpl <em>Container Configuration</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -751,6 +798,14 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONTAINER_CONFIGURATION__REMOTE_SSH_PORT = eINSTANCE.getContainerConfiguration_RemoteSSHPort();
+
+		/**
+		 * The meta object literal for the '<em><b>Id</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CONTAINER_CONFIGURATION__ID = eINSTANCE.getContainerConfiguration_Id();
 
 		/**
 		 * The meta object literal for the '{@link apps.docker.impl.DockerProjectLauncherImpl <em>Project Launcher</em>}' class.

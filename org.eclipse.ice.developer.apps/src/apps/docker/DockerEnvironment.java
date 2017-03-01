@@ -28,7 +28,7 @@ import apps.IEnvironment;
  */
 public interface DockerEnvironment extends IEnvironment {
 	/**
-	 * Returns the value of the '<em><b>Docker</b></em>' reference.
+	 * Returns the value of the '<em><b>Docker</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Docker</em>' reference isn't clear,
@@ -38,19 +38,19 @@ public interface DockerEnvironment extends IEnvironment {
 	 * <!-- begin-model-doc -->
 	 * Reference to the DockerAPI that enables the building of docker images, creation of docker containers from those images, re-connection to existing 'exited' containers, and the deletion of containers and images. 
 	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Docker</em>' reference.
+	 * @return the value of the '<em>Docker</em>' containment reference.
 	 * @see #setDocker(DockerAPI)
 	 * @see apps.docker.DockerPackage#getDockerEnvironment_Docker()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
 	DockerAPI getDocker();
 
 	/**
-	 * Sets the value of the '{@link apps.docker.DockerEnvironment#getDocker <em>Docker</em>}' reference.
+	 * Sets the value of the '{@link apps.docker.DockerEnvironment#getDocker <em>Docker</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Docker</em>' reference.
+	 * @param value the new value of the '<em>Docker</em>' containment reference.
 	 * @see #getDocker()
 	 * @generated
 	 */

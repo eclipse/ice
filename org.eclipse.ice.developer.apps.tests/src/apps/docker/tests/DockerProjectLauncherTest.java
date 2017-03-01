@@ -102,7 +102,7 @@ public class DockerProjectLauncherTest extends TestCase {
 	public void testLaunchProject__SourcePackage() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
-//		fail();
+		fail();
 	}
 
 } //DockerProjectLauncherTest

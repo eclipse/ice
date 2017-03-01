@@ -25,7 +25,6 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.EnvironmentManager#loadFromFile(java.lang.String) <em>Load From File</em>}</li>
  *   <li>{@link apps.EnvironmentManager#persistToString(java.lang.String) <em>Persist To String</em>}</li>
  *   <li>{@link apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String) <em>Persist To File</em>}</li>
- *   <li>{@link apps.EnvironmentManager#connect(java.lang.String) <em>Connect</em>}</li>
  *   <li>{@link apps.EnvironmentManager#listAvailableSpackPackages() <em>List Available Spack Packages</em>}</li>
  *   <li>{@link apps.EnvironmentManager#persistEnvironments() <em>Persist Environments</em>}</li>
  *   <li>{@link apps.EnvironmentManager#createEmpty(java.lang.String) <em>Create Empty</em>}</li>
@@ -207,9 +206,17 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @see apps.EnvironmentManager#persistToString(java.lang.String)
 	 */
 	public void testPersistToString__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		//fail();
+		IEnvironment env = fixture.create(jsonStr);
+		String xmiStr = fixture.persistToString(env.getName());
+		String expected = "<?xml version=\"1.0\" encoding=\"ASCII\"?>\n" + 
+				"<dockerenvironment:DockerEnvironment xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:developerappstore=\"http://eclipse.org/ice/apps\" xmlns:dockerenvironment=\"http://eclipse.org/apps/docker\" name=\"mccaskey/test_env\" state=\"Created\">\n" + 
+				"  <dependentPackages xsi:type=\"developerappstore:SpackPackage\" name=\"cmake\" type=\"Spack\"/>\n" + 
+				"  <dependentPackages xsi:type=\"developerappstore:SpackPackage\" name=\"llvm\" type=\"Spack\"/>\n" + 
+				"  <dependentPackages xsi:type=\"developerappstore:OSPackage\" name=\"gcc-gfortran\"/>\n" + 
+				"  <primaryApp xsi:type=\"developerappstore:SourcePackage\" name=\"xacc\" type=\"Source\" repoURL=\"https://github.com/ORNL-QCI/xacc\" buildCommand=\"cd xacc &amp;&amp; mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make\"/>\n" + 
+				"  <containerConfiguration name=\"xaccdev\" ephemeral=\"true\"/>\n" + 
+				"</dockerenvironment:DockerEnvironment>\n";
+		assertEquals(expected, xmiStr);
 	}
 
 	/**
@@ -219,18 +226,6 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @see apps.EnvironmentManager#persistToFile(java.lang.String, java.lang.String)
 	 */
 	public void testPersistToFile__String_String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		//fail();
-	}
-
-	/**
-	 * Tests the '{@link apps.EnvironmentManager#connect(java.lang.String) <em>Connect</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see apps.EnvironmentManager#connect(java.lang.String)
-	 */
-	public void testConnect__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		//fail();
@@ -267,9 +262,15 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @see apps.EnvironmentManager#createEmpty(java.lang.String)
 	 */
 	public void testCreateEmpty__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		//fail();
+		FakeEnvironmentCreator creator = new FakeEnvironmentCreator();
+		fixture.setEnvironmentCreator(creator);
+		IEnvironment env = fixture.createEmpty("Docker");
+		assertEquals("unknown", fixture.list().get(0));
+		assertEquals(fixture.list().size(), 1);
+		env.setName("newName");
+		assertEquals(fixture.list().size(), 1);
+		assertEquals("newName", fixture.list().get(0));
+		assertEquals(env.getState(), EnvironmentState.NOT_CREATED);
 	}
 
 	/**
@@ -279,9 +280,17 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @see apps.EnvironmentManager#loadFromXMI(java.lang.String)
 	 */
 	public void testLoadFromXMI__String() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		//fail();
+		String xmiStr = "<?xml version=\"1.0\" encoding=\"ASCII\"?>\n" + 
+				"<dockerenvironment:DockerEnvironment xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:developerappstore=\"http://eclipse.org/ice/apps\" xmlns:dockerenvironment=\"http://eclipse.org/apps/docker\" name=\"mccaskey/test_env\" state=\"Created\">\n" + 
+				"  <dependentPackages xsi:type=\"developerappstore:SpackPackage\" name=\"cmake\" type=\"Spack\"/>\n" + 
+				"  <dependentPackages xsi:type=\"developerappstore:SpackPackage\" name=\"llvm\" type=\"Spack\"/>\n" + 
+				"  <dependentPackages xsi:type=\"developerappstore:OSPackage\" name=\"gcc-gfortran\"/>\n" + 
+				"  <primaryApp xsi:type=\"developerappstore:SourcePackage\" name=\"xacc\" type=\"Source\" repoURL=\"https://github.com/ORNL-QCI/xacc\" buildCommand=\"cd xacc &amp;&amp; mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make\"/>\n" + 
+				"  <containerConfiguration name=\"xaccdev\" ephemeral=\"true\"/>\n" + 
+				"</dockerenvironment:DockerEnvironment>\n";
+		
+		IEnvironment env = fixture.loadFromXMI(xmiStr);
+		assertEquals(fixture.list().size(), 1);
 	}
 
 	/**

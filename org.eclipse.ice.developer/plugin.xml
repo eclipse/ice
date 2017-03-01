@@ -75,6 +75,17 @@
                 </command>
 	            </menu>
 	         </menu>
+	         
+	         <menu
+                id="org.eclipse.ice.developer.menu.apps"
+                label="App Store">
+                <command
+                   commandId="org.eclipse.ice.developer.apps.createApp"
+                   label="Create"
+                   style="push">
+                </command>
+             </menu>
+             
           <menu
                 id="org.eclipse.ice.developer.menu.framework"
                 label="Framework">
@@ -136,6 +147,9 @@
                optional="true">
          </commandParameter>
       </command>
+      
+      <command id="org.eclipse.ice.developer.apps.createApp" name="CreateApp"></command>
+      
       <command
             id="org.eclipse.ice.developer.command.cloneAndFix"
             name="CloneAndFix">
@@ -189,6 +203,10 @@
       <handler
             class="org.eclipse.ice.developer.actions.FixMavenLifecycleCloneHandler"
             commandId="org.eclipse.ice.developer.command.cloneAndFix">
+      </handler>
+      <handler
+            class="apps.ICEAppStoreHandler"
+            commandId="org.eclipse.ice.developer.apps.createApp">
       </handler>
    </extension>
    

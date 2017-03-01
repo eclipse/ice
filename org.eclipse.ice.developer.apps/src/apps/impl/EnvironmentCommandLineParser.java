@@ -29,6 +29,7 @@ import org.apache.commons.cli.ParseException;
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
+import apps.docker.DockerEnvironment;
 
 /**
  * This class is responsible for taking user command 
@@ -55,8 +56,7 @@ public class EnvironmentCommandLineParser {
 	 * @param args Command line arguments
 	 */
 	@SuppressWarnings("static-access")
-	public EnvironmentCommandLineParser(String[] args, EnvironmentManager man) {
-		manager = man;
+	public EnvironmentCommandLineParser(String[] args) {
 		// create Options object
 		Options options = new Options();
 
@@ -67,6 +67,7 @@ public class EnvironmentCommandLineParser {
 
 		options.addOption(newJsonFile);
 		options.addOption(loadXMIFile);
+		options.addOption( "c", "connect", false, "Connect to the created environment." );
 		
 		CommandLineParser parser = new BasicParser();
 
@@ -79,6 +80,9 @@ public class EnvironmentCommandLineParser {
 		if (!cmd.hasOption("create") && !cmd.hasOption("load")) {
 			throw new IllegalArgumentException("You must specify to create or load a file.");
 		}
+		
+		manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+
 	}
 
 	/**
@@ -88,7 +92,7 @@ public class EnvironmentCommandLineParser {
 	 * 
 	 * @return environment
 	 */
-	public IEnvironment getEnvironment() {
+	public void execute() {
 
 		// Initialize the environment we will return 
 		// to null
@@ -100,7 +104,7 @@ public class EnvironmentCommandLineParser {
 			// Get the name of the XMI file
 			String fileName = cmd.getOptionValue("load");
 			// Return the Environment
-			return manager.loadFromFile(fileName);
+			env = manager.loadFromFile(fileName);
 		} else {
 			// This is a json file if we are here.
 			String fileName = cmd.getOptionValue("create");
@@ -114,8 +118,24 @@ public class EnvironmentCommandLineParser {
 			env = manager.create(fileString);
 		}
 		
-		// Return the environmnet
-		return env;
+		System.out.println(manager.persistToString(env.getName()));
+
+		if (!env.build()) {
+			System.out.println("Error building the environment");
+			throw new IllegalArgumentException("Invalid file");
+		}
+		
+		if (cmd.hasOption("connect")) {
+			if (!env.connect()) {
+				throw new RuntimeException("Could not connect to environment");
+			}
+			
+			if (env instanceof DockerEnvironment) {
+				System.out.println("Connect to Environment " + env.getName());
+				System.out.println("ssh root@localhost -p " + ((DockerEnvironment)env).getContainerConfiguration().getRemoteSSHPort());
+			}
+		}
+		return;
 	}
 	
 }

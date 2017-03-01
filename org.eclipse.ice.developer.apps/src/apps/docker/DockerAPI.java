@@ -25,10 +25,10 @@ public interface DockerAPI extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Build the image described by the provided Dockerfile build string. 
 	 * <!-- end-model-doc -->
-	 * @model
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 * @generated
 	 */
-	void buildImage(String buildFile, String imagename);
+	boolean buildImage(String buildFile, String imagename);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -36,10 +36,10 @@ public interface DockerAPI extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Launch a new container from the provided image name and ContainerConfiguration object. 
 	 * <!-- end-model-doc -->
-	 * @model
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 * @generated
 	 */
-	void createContainer(String imageName, ContainerConfiguration config);
+	boolean createContainer(String imageName, ContainerConfiguration config);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -47,10 +47,10 @@ public interface DockerAPI extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Connect to the container with the given name or id. 
 	 * <!-- end-model-doc -->
-	 * @model
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 * @generated
 	 */
-	void connectToExistingContainer(String id);
+	boolean connectToExistingContainer(String id);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -58,10 +58,10 @@ public interface DockerAPI extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Delete the container with the given name. 
 	 * <!-- end-model-doc -->
-	 * @model
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 * @generated
 	 */
-	void deleteContainer(String containerName);
+	boolean deleteContainer(String id);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -69,9 +69,17 @@ public interface DockerAPI extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Delete the image with the given name. 
 	 * <!-- end-model-doc -->
-	 * @model
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
 	 * @generated
 	 */
-	void deleteImage(String imageName);
+	boolean deleteImage(String imageName);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model dataType="org.eclipse.emf.ecore.xml.type.Boolean"
+	 * @generated
+	 */
+	boolean stopContainer(String id);
 
 } // DockerAPI

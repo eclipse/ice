@@ -3,12 +3,14 @@
 package apps.docker.impl;
 
 import apps.EnvironmentState;
+import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
 import apps.SpackPackage;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
+import apps.docker.DockerFactory;
 import apps.docker.DockerPackage;
 import apps.docker.DockerProjectLauncher;
 
@@ -142,7 +144,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	protected EnvironmentState state = STATE_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getDocker() <em>Docker</em>}' reference.
+	 * The cached value of the '{@link #getDocker() <em>Docker</em>}' containment reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDocker()
 	 * @generated
@@ -183,10 +185,10 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected DockerEnvironmentImpl() {
 		super();
+		setDocker(DockerFactory.eINSTANCE.createDockerAPI());
 	}
 
 	/**
@@ -364,23 +366,22 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated
 	 */
 	public DockerAPI getDocker() {
-		if (docker != null && docker.eIsProxy()) {
-			InternalEObject oldDocker = (InternalEObject)docker;
-			docker = (DockerAPI)eResolveProxy(oldDocker);
-			if (docker != oldDocker) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DockerPackage.DOCKER_ENVIRONMENT__DOCKER, oldDocker, docker));
-			}
-		}
 		return docker;
 	}
 
 	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DockerAPI basicGetDocker() {
-		return docker;
+	public NotificationChain basicSetDocker(DockerAPI newDocker, NotificationChain msgs) {
+		DockerAPI oldDocker = docker;
+		docker = newDocker;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__DOCKER, oldDocker, newDocker);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -388,10 +389,17 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated
 	 */
 	public void setDocker(DockerAPI newDocker) {
-		DockerAPI oldDocker = docker;
-		docker = newDocker;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__DOCKER, oldDocker, docker));
+		if (newDocker != docker) {
+			NotificationChain msgs = null;
+			if (docker != null)
+				msgs = ((InternalEObject)docker).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DockerPackage.DOCKER_ENVIRONMENT__DOCKER, null, msgs);
+			if (newDocker != null)
+				msgs = ((InternalEObject)newDocker).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DockerPackage.DOCKER_ENVIRONMENT__DOCKER, null, msgs);
+			msgs = basicSetDocker(newDocker, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__DOCKER, newDocker, newDocker));
 	}
 
 	/**
@@ -464,24 +472,28 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 		// Create the build Dockerfile from the
 		// given Environment data.
 		dockerfile = "from eclipseice/base-fedora\n";
-		String runSpackCommand = "run /bin/bash -c \"spack compiler find && ";
+		String runSpackCommand = "run /bin/bash -c \"source /root/.bashrc && spack compiler find && ";
 		String runPrimaryApp = "run git clone --recursive ";
-
+		String runOSPkgInstaller = "run " + (os == "fedora" ? "dnf install " : "apt-get install ");
+		
 		// Loop over the dependent spack packages
 		// and create run commands for the Dockerfile
 		for (apps.Package pkg : dependentPackages) {
 			if (pkg instanceof SpackPackage) {
 				SpackPackage spkg = (SpackPackage) pkg;
 
-				String spackCommand = "spack install " + pkg.getName() + " ";
+				String spackCommand = "spack install --fake " + pkg.getName() + " ";
 				if (!spkg.getVersion().equals("latest")) {
 					spackCommand += "@" + spkg.getVersion() + " ";
 				}
 				spackCommand += "%" + spkg.getCompiler();
 				runSpackCommand += spackCommand + " && ";
+			} else if (pkg instanceof OSPackage) {
+				runOSPkgInstaller += pkg.getName() + " && ";
 			}
 		}
 		runSpackCommand = runSpackCommand.substring(0, runSpackCommand.length() - 3) + "\"\n";
+		runOSPkgInstaller = runOSPkgInstaller.substring(0, runOSPkgInstaller.length() - 3) + "\n";
 
 		// Add a git clone command for the primary app if
 		// this is to be a Development Environment
@@ -489,9 +501,9 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				+ ((SourcePackage) primaryApp).getRepoURL() + " " + primaryApp.getName() + "\n";
 
 		// Add to the Dockerfile contents
-		dockerfile += runSpackCommand + runPrimaryApp;
+		dockerfile += runSpackCommand + runOSPkgInstaller + runPrimaryApp;
 
-		System.out.println("DockerFileee:\n" + dockerfile);
+		System.out.println("DockerFile:\n" + dockerfile);
 
 		// Create the Dockerfile
 		File buildFile = new File(
@@ -504,12 +516,13 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 		}
 
 		// Build the Image
-		docker.buildImage(buildFile.getParent(), getName());
+		boolean success = docker.buildImage(buildFile.getParent(), getName());
 
 		// Remove the file
 		buildFile.delete();
 
-		return true;
+		this.state = EnvironmentState.CREATED;
+		return success;
 	}
 
 	/**
@@ -519,13 +532,18 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	public boolean connect() {
 
 		if (getState().equals(EnvironmentState.CREATED)) {
-			docker.createContainer(getName(), containerConfiguration);
+			if (!docker.createContainer(getName(), containerConfiguration)) {
+				return false;
+			}
+			
+			state = EnvironmentState.RUNNING;
+			
 			if (projectlauncher != null && projectlauncher instanceof DockerProjectLauncher) {
 				((DockerProjectLauncher) projectlauncher).setContainerconfiguration(containerConfiguration);
 				projectlauncher.launchProject((SourcePackage) getPrimaryApp());
 			}
 		} else if (getState().equals(EnvironmentState.STOPPED)) {
-			docker.connectToExistingContainer(containerConfiguration.getName());
+			docker.connectToExistingContainer(containerConfiguration.getId());
 		} else {
 			return false;
 		}
@@ -538,9 +556,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 */
 	public boolean delete() {
-		docker.deleteContainer(containerConfiguration.getName());
-		docker.deleteImage(getName());
-		return true;
+		return docker.deleteContainer(containerConfiguration.getId()) && docker.deleteImage(getName());
 	}
 
 	/**
@@ -548,7 +564,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 */
 	public boolean stop() {
-		return false;
+		return docker.stopContainer(containerConfiguration.getId());
 	}
 
 	/**
@@ -564,6 +580,8 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				return basicSetPrimaryApp(null, msgs);
 			case DockerPackage.DOCKER_ENVIRONMENT__PROJECTLAUNCHER:
 				return basicSetProjectlauncher(null, msgs);
+			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
+				return basicSetDocker(null, msgs);
 			case DockerPackage.DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION:
 				return basicSetContainerConfiguration(null, msgs);
 		}
@@ -590,8 +608,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 			case DockerPackage.DOCKER_ENVIRONMENT__STATE:
 				return getState();
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
-				if (resolve) return getDocker();
-				return basicGetDocker();
+				return getDocker();
 			case DockerPackage.DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION:
 				return getContainerConfiguration();
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKERFILE:

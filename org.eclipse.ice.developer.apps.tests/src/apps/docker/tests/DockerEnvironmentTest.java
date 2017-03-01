@@ -114,8 +114,9 @@ public class DockerEnvironmentTest extends TestCase {
 		 * <!-- begin-user-doc --> <!-- end-user-doc -->
 		 */
 		@Override
-		public void buildImage(String buildDir, String imagename) {
+		public boolean buildImage(String buildDir, String imagename) {
 			built = true;
+			return true;
 		}
 
 	}
@@ -135,7 +136,7 @@ public class DockerEnvironmentTest extends TestCase {
 		FakeDockerAPI api = new FakeDockerAPI();
 		env.setDocker(api);
 
-		env.build();
+		assertTrue(env.build());
 		assertTrue(api.wasBuilt());
 		assertTrue(expectedFile.contentEquals(env.getDockerfile()));
 	}

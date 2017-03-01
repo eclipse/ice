@@ -268,22 +268,13 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___PERSIST_TO_FILE__STRING_STRING = 5;
 
 	/**
-	 * The operation id for the '<em>Connect</em>' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENVIRONMENT_MANAGER___CONNECT__STRING = 6;
-
-	/**
 	 * The operation id for the '<em>List Available Spack Packages</em>' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LIST_AVAILABLE_SPACK_PACKAGES = 7;
+	int ENVIRONMENT_MANAGER___LIST_AVAILABLE_SPACK_PACKAGES = 6;
 
 	/**
 	 * The operation id for the '<em>Persist Environments</em>' operation.
@@ -292,7 +283,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS = 8;
+	int ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS = 7;
 
 	/**
 	 * The operation id for the '<em>Create Empty</em>' operation.
@@ -301,7 +292,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___CREATE_EMPTY__STRING = 9;
+	int ENVIRONMENT_MANAGER___CREATE_EMPTY__STRING = 8;
 
 	/**
 	 * The operation id for the '<em>Load From XMI</em>' operation.
@@ -310,7 +301,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING = 10;
+	int ENVIRONMENT_MANAGER___LOAD_FROM_XMI__STRING = 9;
 
 	/**
 	 * The operation id for the '<em>Load Environments</em>' operation.
@@ -319,7 +310,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS = 11;
+	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS = 10;
 
 	/**
 	 * The number of operations of the '<em>Environment Manager</em>' class.
@@ -328,7 +319,7 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 12;
+	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 11;
 
 	/**
 	 * The meta object id for the '{@link apps.Package <em>Package</em>}' class.
@@ -1036,16 +1027,6 @@ public interface AppsPackage extends EPackage {
 	EOperation getEnvironmentManager__PersistToFile__String_String();
 
 	/**
-	 * Returns the meta object for the '{@link apps.EnvironmentManager#connect(java.lang.String) <em>Connect</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the '<em>Connect</em>' operation.
-	 * @see apps.EnvironmentManager#connect(java.lang.String)
-	 * @generated
-	 */
-	EOperation getEnvironmentManager__Connect__String();
-
-	/**
 	 * Returns the meta object for the '{@link apps.EnvironmentManager#listAvailableSpackPackages() <em>List Available Spack Packages</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1552,14 +1533,6 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation ENVIRONMENT_MANAGER___PERSIST_TO_FILE__STRING_STRING = eINSTANCE.getEnvironmentManager__PersistToFile__String_String();
-
-		/**
-		 * The meta object literal for the '<em><b>Connect</b></em>' operation.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EOperation ENVIRONMENT_MANAGER___CONNECT__STRING = eINSTANCE.getEnvironmentManager__Connect__String();
 
 		/**
 		 * The meta object literal for the '<em><b>List Available Spack Packages</b></em>' operation.

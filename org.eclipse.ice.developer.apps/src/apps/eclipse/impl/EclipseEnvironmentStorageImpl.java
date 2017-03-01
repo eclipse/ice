@@ -37,7 +37,6 @@ public class EclipseEnvironmentStorageImpl extends MinimalEObjectImpl.Container 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	protected EclipseEnvironmentStorageImpl() {
 		super();

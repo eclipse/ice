@@ -10,8 +10,7 @@ import apps.EnvironmentState;
 import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.docker.DockerFactory;
-
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -19,10 +18,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -30,8 +31,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,8 +69,15 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	protected EnvironmentStorage environmentStorage;
 
+	/**
+	 * The mapping of existing available environment names to the 
+	 * actual IEnvironment
+	 */
 	protected HashMap<String, IEnvironment> environments;
 
+	/**
+	 * Reference to the Logger.
+	 */
 	protected final Logger logger;
 
 	/**
@@ -176,6 +184,21 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		IEnvironment env = environmentCreator.create(dataString);
 		environments.put(env.getName(), env);
 		env.setState(EnvironmentState.CREATED);
+		EContentAdapter adapter = new EContentAdapter() {
+			public void notifyChanged(Notification notification) {
+				super.notifyChanged(notification);
+				Object featureObject = notification.getFeature();
+				if (featureObject instanceof EAttribute) {
+					EAttribute attr = (EAttribute) featureObject;
+					if (attr.getName().equals("name")) {
+						// Update the IEnvironments map
+						environments.remove((String) notification.getOldValue());
+						environments.put(env.getName(), env);
+					}
+				}
+			}
+		};
+		env.eAdapters().add(adapter);
 		return env;
 	}
 
@@ -189,7 +212,6 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 			list.add(s);
 		}
 		return list;
-
 	}
 
 	/**
@@ -209,9 +231,10 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 */
 	public IEnvironment loadFromFile(String fileName) {
+		AppsPackage.eINSTANCE.eClass();
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 		Map<String, Object> m = reg.getExtensionToFactoryMap();
-		m.put("environment", new XMIResourceFactoryImpl());
+		m.put("app", new XMIResourceFactoryImpl());
 		// Obtain a new resource set
 		ResourceSet resSet = new ResourceSetImpl();
 		// Get the resource
@@ -219,6 +242,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		// Get the first model element and cast it to the right type, in my
 		// example everything is hierarchical included in this first node
 		IEnvironment environment = (IEnvironment) resource.getContents().get(0);
+		environments.put(environment.getName(), environment);
 		return environment;
 	}
 
@@ -306,44 +330,6 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean connect(String environmentName) {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> This method creates the correct IEnvironment
-	 * instance based on the user specified type String. Currently supported are
-	 * the Docker and Local File System Environment types. <!-- end-user-doc -->
-	 */
-	public IEnvironment createEnvironment(String dataString) {
-		IEnvironment env = environmentCreator.create(dataString);
-		environments.put(env.getName(), env);
-		return env;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 */
-	public IEnvironment loadEnvironmentFromFile(String file) {
-		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-		Map<String, Object> m = reg.getExtensionToFactoryMap();
-		m.put("environment", new XMIResourceFactoryImpl());
-		// Obtain a new resource set
-		ResourceSet resSet = new ResourceSetImpl();
-		// Get the resource
-		Resource resource = resSet.getResource(URI.createURI(file), true);
-		// Get the first model element and cast it to the right type, in my
-		// example everything is hierarchical included in this first node
-		IEnvironment environment = (IEnvironment) resource.getContents().get(0);
-		return environment;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EList<String> listAvailableSpackPackages() {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
@@ -370,7 +356,26 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	public IEnvironment createEmpty(String type) {
 		if (type.equals("Docker")) {
-			return DockerFactory.eINSTANCE.createDockerEnvironment();
+			IEnvironment env = DockerFactory.eINSTANCE.createDockerEnvironment();
+			env.setName("unknown");
+			env.setState(EnvironmentState.NOT_CREATED);
+			environments.put(env.getName(), env);
+			EContentAdapter adapter = new EContentAdapter() {
+				public void notifyChanged(Notification notification) {
+					super.notifyChanged(notification);
+					Object featureObject = notification.getFeature();
+					if (featureObject instanceof EAttribute) {
+						EAttribute attr = (EAttribute) featureObject;
+						if (attr.getName().equals("name")) {
+							// Update the IEnvironments map
+							environments.remove((String) notification.getOldValue());
+							environments.put(env.getName(), env);
+						}
+					}
+				}
+			};
+			env.eAdapters().add(adapter);
+			return env;
 		} else {
 			throw new IllegalArgumentException("Illegal Environment type");
 		}
@@ -381,25 +386,17 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 */
 	public IEnvironment loadFromXMI(String xmiStr) {
-		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-		Map<String, Object> m = reg.getExtensionToFactoryMap();
-		m.put("environment", new XMIResourceFactoryImpl());
-
-		ResourceSet resSet = new ResourceSetImpl();
-		// Get the resource
-		Resource resource = new XMIResourceImpl();
-		resSet.getResources().add(resource);
-
+		String tempFileLocation = System.getProperty("user.dir") + System.getProperty("file.separator") + ".temp.app";
+		File tempFile = new File(tempFileLocation);
 		try {
-			resource.load(new ByteArrayInputStream(xmiStr.getBytes()), m);
-		} catch (IOException e) {
-			e.printStackTrace();
+			FileUtils.writeStringToFile(tempFile, xmiStr);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			logger.error("", e1);
 		}
-
-		// Get the first model element and cast it to the right type, in my
-		// example everything is hierarchical included in this first node
-		IEnvironment environment = (IEnvironment) resource.getContents().get(0);
-		return environment;
+		IEnvironment env = loadFromFile(tempFileLocation);
+		tempFile.delete();
+		return env;
 	}
 
 
@@ -502,8 +499,6 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 			case AppsPackage.ENVIRONMENT_MANAGER___PERSIST_TO_FILE__STRING_STRING:
 				persistToFile((String)arguments.get(0), (String)arguments.get(1));
 				return null;
-			case AppsPackage.ENVIRONMENT_MANAGER___CONNECT__STRING:
-				return connect((String)arguments.get(0));
 			case AppsPackage.ENVIRONMENT_MANAGER___LIST_AVAILABLE_SPACK_PACKAGES:
 				return listAvailableSpackPackages();
 			case AppsPackage.ENVIRONMENT_MANAGER___PERSIST_ENVIRONMENTS:

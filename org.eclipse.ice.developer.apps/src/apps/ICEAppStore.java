@@ -27,19 +27,8 @@ public class ICEAppStore {
 	public static void main(String[] args) {
 
 		// Local Declarations
-		EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-		EnvironmentCommandLineParser cliParser = new EnvironmentCommandLineParser(args, manager);
-
-		// Create the Environment
-		IEnvironment environment = cliParser.getEnvironment();
-		
-		// Build to the environment
-		environment.build();
-		
-		// Connect
-//		environment.connect();
-		
-		System.out.println(manager.persistToString(environment.getName()));
+		EnvironmentCommandLineParser cliParser = new EnvironmentCommandLineParser(args);
+		cliParser.execute();
 	}
 
 }
