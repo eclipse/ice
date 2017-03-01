@@ -47,8 +47,9 @@ public class ICEAppStoreHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
+		// Create the EnvironmentMangaer and set it up to use 
+		// the Eclipse IPreferences to store IEnvironments
 		EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-
 		manager.setEnvironmentStorage(EclipseFactory.eINSTANCE.createEclipseEnvironmentStorage());
 		
 		// Show view to get Json string
@@ -66,7 +67,7 @@ public class ICEAppStoreHandler extends AbstractHandler {
 				"     \"Dependencies\": [\n" + 
 				"         {\n" + 
 				"           \"type\": \"OS\",\n" + 
-				"           \"name\": \"cmake\",\n" + 
+				"           \"name\": \"cmake\"\n" + 
 				"         },\n" + 
 				"         {\n" + 
 				"           \"type\": \"OS\",\n" + 
@@ -88,13 +89,10 @@ public class ICEAppStoreHandler extends AbstractHandler {
 				"}";
 		
 		IEnvironment environment = manager.create(jsonStr);
-		
 		environment.setProjectlauncher(EclipseFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
-		
 		if (!environment.build() || !environment.connect()) {
 			throw new ExecutionException("Could not build or connect to the environment.");
 		}
-		
 		return null;
 	}
 

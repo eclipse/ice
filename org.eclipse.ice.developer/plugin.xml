@@ -205,7 +205,7 @@
             commandId="org.eclipse.ice.developer.command.cloneAndFix">
       </handler>
       <handler
-            class="apps.ICEAppStoreHandler"
+            class="org.eclipse.ice.developer.actions.ICEAppStoreHandler"
             commandId="org.eclipse.ice.developer.apps.createApp">
       </handler>
    </extension>
