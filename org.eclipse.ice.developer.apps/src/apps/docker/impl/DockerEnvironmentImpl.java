@@ -471,15 +471,15 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	public boolean build() {
 		// Create the build Dockerfile from the
 		// given Environment data.
-		dockerfile = "from eclipseice/base-fedora\n";
-		String runSpackCommand = "run /bin/bash -c \"source /root/.bashrc && spack compiler find && ";
+		dockerfile = "from mccaskey/base-fedora-gcc6\n";
+		String runSpackCommand = "";//run /bin/bash -c \"source /root/.bashrc && spack compiler find && ";
 		String runPrimaryApp = "run git clone --recursive ";
-		String runOSPkgInstaller = "run " + (os == "fedora" ? "dnf install " : "apt-get install ");
+		String runOSPkgInstaller = "run " + (os == "fedora" ? "dnf install -y " : "apt-get install -y ");
 		
 		// Loop over the dependent spack packages
 		// and create run commands for the Dockerfile
 		for (apps.Package pkg : dependentPackages) {
-			if (pkg instanceof SpackPackage) {
+			/*if (pkg instanceof SpackPackage) {
 				SpackPackage spkg = (SpackPackage) pkg;
 
 				String spackCommand = "spack install --fake " + pkg.getName() + " ";
@@ -488,12 +488,12 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				}
 				spackCommand += "%" + spkg.getCompiler();
 				runSpackCommand += spackCommand + " && ";
-			} else if (pkg instanceof OSPackage) {
-				runOSPkgInstaller += pkg.getName() + " && ";
+			} else */if (pkg instanceof OSPackage) {
+				runOSPkgInstaller += pkg.getName() + " ";
 			}
 		}
-		runSpackCommand = runSpackCommand.substring(0, runSpackCommand.length() - 3) + "\"\n";
-		runOSPkgInstaller = runOSPkgInstaller.substring(0, runOSPkgInstaller.length() - 3) + "\n";
+//		runSpackCommand = runSpackCommand.substring(0, runSpackCommand.length() - 3) + "\"\n";
+//		runOSPkgInstaller = runOSPkgInstaller.substring(0, runOSPkgInstaller.length() - 3) + "\n";
 
 		// Add a git clone command for the primary app if
 		// this is to be a Development Environment
@@ -501,7 +501,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				+ ((SourcePackage) primaryApp).getRepoURL() + " " + primaryApp.getName() + "\n";
 
 		// Add to the Dockerfile contents
-		dockerfile += runSpackCommand + runOSPkgInstaller + runPrimaryApp;
+		dockerfile += runSpackCommand + runOSPkgInstaller + "\n" + runPrimaryApp;
 
 		System.out.println("DockerFile:\n" + dockerfile);
 
