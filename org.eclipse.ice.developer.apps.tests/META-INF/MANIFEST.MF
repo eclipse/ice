@@ -16,6 +16,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore.xmi;visibility:=reexport,
  org.junit;visibility:=reexport,
  org.eclipse.core.resources;bundle-version="3.12.0",
- com.spotify.dockerclient.shaded
+ com.spotify.dockerclient.shaded;bundle-version="8.0.1"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.apache.commons.io

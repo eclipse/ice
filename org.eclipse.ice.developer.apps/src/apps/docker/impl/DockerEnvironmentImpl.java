@@ -187,7 +187,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 */
 	protected DockerEnvironmentImpl() {
 		super();
-		setDocker(DockerFactory.eINSTANCE.createDockerAPI());
+		docker = DockerFactory.eINSTANCE.createDockerAPI();
 	}
 
 	/**
