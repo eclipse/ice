@@ -59,7 +59,7 @@ public class EclipseEnvironmentStorageImpl extends MinimalEObjectImpl.Container 
 	 */
 	public void store(EList<IEnvironment> environments) {
 		for (IEnvironment env : environments) {
-			String xmiStr = AppsFactory.eINSTANCE.createEnvironmentManager().persistToString(env.getName());
+			String xmiStr = ((apps.impl.EnvironmentManagerImpl)AppsFactory.eINSTANCE.createEnvironmentManager()).persistToString(env);
 			// Save this App as a Preference
 			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(preferencesId);
 			try {

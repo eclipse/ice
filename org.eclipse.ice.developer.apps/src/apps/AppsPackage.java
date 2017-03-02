@@ -469,13 +469,22 @@ public interface AppsPackage extends EPackage {
 	int PROJECT_LAUNCHER = 3;
 
 	/**
+	 * The feature id for the '<em><b>Languageprojectprovider</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = 0;
+
+	/**
 	 * The number of structural features of the '<em>Project Launcher</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROJECT_LAUNCHER_FEATURE_COUNT = 0;
+	int PROJECT_LAUNCHER_FEATURE_COUNT = 1;
 
 	/**
 	 * The operation id for the '<em>Launch Project</em>' operation.
@@ -799,6 +808,43 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_STORAGE_OPERATION_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link apps.LanguageProjectProvider <em>Language Project Provider</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.LanguageProjectProvider
+	 * @see apps.impl.AppsPackageImpl#getLanguageProjectProvider()
+	 * @generated
+	 */
+	int LANGUAGE_PROJECT_PROVIDER = 11;
+
+	/**
+	 * The number of structural features of the '<em>Language Project Provider</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LANGUAGE_PROJECT_PROVIDER_FEATURE_COUNT = 0;
+
+	/**
+	 * The operation id for the '<em>Create Project</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING = 0;
+
+	/**
+	 * The number of operations of the '<em>Language Project Provider</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LANGUAGE_PROJECT_PROVIDER_OPERATION_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link apps.PackageType <em>Package Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -806,7 +852,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getPackageType()
 	 * @generated
 	 */
-	int PACKAGE_TYPE = 11;
+	int PACKAGE_TYPE = 12;
 
 	/**
 	 * The meta object id for the '{@link apps.EnvironmentState <em>Environment State</em>}' enum.
@@ -816,7 +862,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentState()
 	 * @generated
 	 */
-	int ENVIRONMENT_STATE = 12;
+	int ENVIRONMENT_STATE = 13;
 
 	/**
 	 * Returns the meta object for class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
@@ -1130,6 +1176,17 @@ public interface AppsPackage extends EPackage {
 	EClass getProjectLauncher();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link apps.ProjectLauncher#getLanguageprojectprovider <em>Languageprojectprovider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Languageprojectprovider</em>'.
+	 * @see apps.ProjectLauncher#getLanguageprojectprovider()
+	 * @see #getProjectLauncher()
+	 * @generated
+	 */
+	EReference getProjectLauncher_Languageprojectprovider();
+
+	/**
 	 * Returns the meta object for the '{@link apps.ProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1326,6 +1383,26 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getEnvironmentStorage__Load();
+
+	/**
+	 * Returns the meta object for class '{@link apps.LanguageProjectProvider <em>Language Project Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Language Project Provider</em>'.
+	 * @see apps.LanguageProjectProvider
+	 * @generated
+	 */
+	EClass getLanguageProjectProvider();
+
+	/**
+	 * Returns the meta object for the '{@link apps.LanguageProjectProvider#createProject(java.lang.String) <em>Create Project</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Create Project</em>' operation.
+	 * @see apps.LanguageProjectProvider#createProject(java.lang.String)
+	 * @generated
+	 */
+	EOperation getLanguageProjectProvider__CreateProject__String();
 
 	/**
 	 * Returns the meta object for enum '{@link apps.PackageType <em>Package Type</em>}'.
@@ -1619,6 +1696,14 @@ public interface AppsPackage extends EPackage {
 		EClass PROJECT_LAUNCHER = eINSTANCE.getProjectLauncher();
 
 		/**
+		 * The meta object literal for the '<em><b>Languageprojectprovider</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = eINSTANCE.getProjectLauncher_Languageprojectprovider();
+
+		/**
 		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1783,6 +1868,24 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation ENVIRONMENT_STORAGE___LOAD = eINSTANCE.getEnvironmentStorage__Load();
+
+		/**
+		 * The meta object literal for the '{@link apps.LanguageProjectProvider <em>Language Project Provider</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.LanguageProjectProvider
+		 * @see apps.impl.AppsPackageImpl#getLanguageProjectProvider()
+		 * @generated
+		 */
+		EClass LANGUAGE_PROJECT_PROVIDER = eINSTANCE.getLanguageProjectProvider();
+
+		/**
+		 * The meta object literal for the '<em><b>Create Project</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING = eINSTANCE.getLanguageProjectProvider__CreateProject__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.PackageType <em>Package Type</em>}' enum.

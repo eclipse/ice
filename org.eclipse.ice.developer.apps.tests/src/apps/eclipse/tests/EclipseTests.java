@@ -33,6 +33,7 @@ public class EclipseTests extends TestSuite {
 		TestSuite suite = new EclipseTests("eclipse Tests");
 		suite.addTestSuite(EclipseEnvironmentStorageTest.class);
 		suite.addTestSuite(DockerPTPSyncProjectLauncherTest.class);
+		suite.addTestSuite(EclipseCppProjectProviderTest.class);
 		return suite;
 	}
 

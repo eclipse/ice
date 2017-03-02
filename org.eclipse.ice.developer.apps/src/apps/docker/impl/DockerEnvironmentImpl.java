@@ -6,7 +6,6 @@ import apps.EnvironmentState;
 import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
-import apps.SpackPackage;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerEnvironment;
@@ -540,7 +539,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 			
 			if (projectlauncher != null && projectlauncher instanceof DockerProjectLauncher) {
 				((DockerProjectLauncher) projectlauncher).setContainerconfiguration(containerConfiguration);
-				projectlauncher.launchProject((SourcePackage) getPrimaryApp());
+				return projectlauncher.launchProject((SourcePackage) getPrimaryApp());
 			}
 		} else if (getState().equals(EnvironmentState.STOPPED)) {
 			docker.connectToExistingContainer(containerConfiguration.getId());

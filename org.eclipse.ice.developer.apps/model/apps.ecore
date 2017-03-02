@@ -142,12 +142,14 @@
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="The ProjectLauncher is a high-level interface for creating a new Eclipse Project corresponding to the primary application in the Environment. "/>
     </eAnnotations>
-    <eOperations name="launchProject">
+    <eOperations name="launchProject" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
       </eAnnotations>
       <eParameters name="project" eType="#//SourcePackage"/>
     </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="languageprojectprovider"
+        eType="#//LanguageProjectProvider" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Package" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -222,6 +224,12 @@
       <eParameters name="environments" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EEList"/>
     </eOperations>
     <eOperations name="load" upperBound="-1" eType="#//IEnvironment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LanguageProjectProvider" abstract="true"
+      interface="true">
+    <eOperations name="createProject">
+      <eParameters name="projectName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
   </eClassifiers>
   <eSubpackages name="docker" nsURI="http://eclipse.org/apps/docker" nsPrefix="dockerenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="DockerEnvironment" eSuperTypes="#//IEnvironment">
@@ -345,5 +353,6 @@
         <eParameters name="project" eType="#//SourcePackage"/>
       </eOperations>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EclipseCppProjectProvider" eSuperTypes="#//LanguageProjectProvider"/>
   </eSubpackages>
 </ecore:EPackage>

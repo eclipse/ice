@@ -379,6 +379,15 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_PROJECT_LAUNCHER = 3;
 
 	/**
+	 * The feature id for the '<em><b>Languageprojectprovider</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = AppsPackage.PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER;
+
+	/**
 	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

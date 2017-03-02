@@ -115,6 +115,15 @@ public interface EclipsePackage extends EPackage {
 	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER = 1;
 
 	/**
+	 * The feature id for the '<em><b>Languageprojectprovider</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER;
+
+	/**
 	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -151,6 +160,43 @@ public interface EclipsePackage extends EPackage {
 	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER_OPERATION_COUNT = DockerPackage.DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT + 1;
 
 	/**
+	 * The meta object id for the '{@link apps.eclipse.impl.EclipseCppProjectProviderImpl <em>Cpp Project Provider</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.eclipse.impl.EclipseCppProjectProviderImpl
+	 * @see apps.eclipse.impl.EclipsePackageImpl#getEclipseCppProjectProvider()
+	 * @generated
+	 */
+	int ECLIPSE_CPP_PROJECT_PROVIDER = 2;
+
+	/**
+	 * The number of structural features of the '<em>Cpp Project Provider</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_CPP_PROJECT_PROVIDER_FEATURE_COUNT = AppsPackage.LANGUAGE_PROJECT_PROVIDER_FEATURE_COUNT + 0;
+
+	/**
+	 * The operation id for the '<em>Create Project</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING = AppsPackage.LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING;
+
+	/**
+	 * The number of operations of the '<em>Cpp Project Provider</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_CPP_PROJECT_PROVIDER_OPERATION_COUNT = AppsPackage.LANGUAGE_PROJECT_PROVIDER_OPERATION_COUNT + 0;
+
+	/**
 	 * Returns the meta object for class '{@link apps.eclipse.EclipseEnvironmentStorage <em>Environment Storage</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -179,6 +225,16 @@ public interface EclipsePackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getDockerPTPSyncProjectLauncher__LaunchProject__SourcePackage();
+
+	/**
+	 * Returns the meta object for class '{@link apps.eclipse.EclipseCppProjectProvider <em>Cpp Project Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Cpp Project Provider</em>'.
+	 * @see apps.eclipse.EclipseCppProjectProvider
+	 * @generated
+	 */
+	EClass getEclipseCppProjectProvider();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -230,6 +286,16 @@ public interface EclipsePackage extends EPackage {
 		 * @generated
 		 */
 		EOperation DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = eINSTANCE.getDockerPTPSyncProjectLauncher__LaunchProject__SourcePackage();
+
+		/**
+		 * The meta object literal for the '{@link apps.eclipse.impl.EclipseCppProjectProviderImpl <em>Cpp Project Provider</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.eclipse.impl.EclipseCppProjectProviderImpl
+		 * @see apps.eclipse.impl.EclipsePackageImpl#getEclipseCppProjectProvider()
+		 * @generated
+		 */
+		EClass ECLIPSE_CPP_PROJECT_PROVIDER = eINSTANCE.getEclipseCppProjectProvider();
 
 	}
 

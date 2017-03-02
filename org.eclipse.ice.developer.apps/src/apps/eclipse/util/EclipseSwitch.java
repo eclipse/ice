@@ -3,6 +3,7 @@
 package apps.eclipse.util;
 
 import apps.EnvironmentStorage;
+import apps.LanguageProjectProvider;
 import apps.ProjectLauncher;
 
 import apps.docker.DockerProjectLauncher;
@@ -85,6 +86,13 @@ public class EclipseSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case EclipsePackage.ECLIPSE_CPP_PROJECT_PROVIDER: {
+				EclipseCppProjectProvider eclipseCppProjectProvider = (EclipseCppProjectProvider)theEObject;
+				T result = caseEclipseCppProjectProvider(eclipseCppProjectProvider);
+				if (result == null) result = caseLanguageProjectProvider(eclipseCppProjectProvider);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -116,6 +124,21 @@ public class EclipseSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDockerPTPSyncProjectLauncher(DockerPTPSyncProjectLauncher object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Cpp Project Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Cpp Project Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEclipseCppProjectProvider(EclipseCppProjectProvider object) {
 		return null;
 	}
 
@@ -161,6 +184,21 @@ public class EclipseSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDockerProjectLauncher(DockerProjectLauncher object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Language Project Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Language Project Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLanguageProjectProvider(LanguageProjectProvider object) {
 		return null;
 	}
 

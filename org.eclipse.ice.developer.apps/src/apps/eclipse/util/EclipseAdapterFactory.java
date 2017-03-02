@@ -3,6 +3,7 @@
 package apps.eclipse.util;
 
 import apps.EnvironmentStorage;
+import apps.LanguageProjectProvider;
 import apps.ProjectLauncher;
 
 import apps.docker.DockerProjectLauncher;
@@ -80,6 +81,10 @@ public class EclipseAdapterFactory extends AdapterFactoryImpl {
 				return createDockerPTPSyncProjectLauncherAdapter();
 			}
 			@Override
+			public Adapter caseEclipseCppProjectProvider(EclipseCppProjectProvider object) {
+				return createEclipseCppProjectProviderAdapter();
+			}
+			@Override
 			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
 				return createEnvironmentStorageAdapter();
 			}
@@ -90,6 +95,10 @@ public class EclipseAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseDockerProjectLauncher(DockerProjectLauncher object) {
 				return createDockerProjectLauncherAdapter();
+			}
+			@Override
+			public Adapter caseLanguageProjectProvider(LanguageProjectProvider object) {
+				return createLanguageProjectProviderAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -140,6 +149,20 @@ public class EclipseAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link apps.eclipse.EclipseCppProjectProvider <em>Cpp Project Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.eclipse.EclipseCppProjectProvider
+	 * @generated
+	 */
+	public Adapter createEclipseCppProjectProviderAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link apps.EnvironmentStorage <em>Environment Storage</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -178,6 +201,20 @@ public class EclipseAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDockerProjectLauncherAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.LanguageProjectProvider <em>Language Project Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.LanguageProjectProvider
+	 * @generated
+	 */
+	public Adapter createLanguageProjectProviderAdapter() {
 		return null;
 	}
 

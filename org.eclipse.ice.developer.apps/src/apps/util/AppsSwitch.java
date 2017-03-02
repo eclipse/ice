@@ -8,6 +8,7 @@ import apps.EnvironmentManager;
 import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
+import apps.LanguageProjectProvider;
 import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
@@ -142,6 +143,12 @@ public class AppsSwitch<T> extends Switch<T> {
 			case AppsPackage.ENVIRONMENT_STORAGE: {
 				EnvironmentStorage environmentStorage = (EnvironmentStorage)theEObject;
 				T result = caseEnvironmentStorage(environmentStorage);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AppsPackage.LANGUAGE_PROJECT_PROVIDER: {
+				LanguageProjectProvider languageProjectProvider = (LanguageProjectProvider)theEObject;
+				T result = caseLanguageProjectProvider(languageProjectProvider);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -311,6 +318,21 @@ public class AppsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEnvironmentStorage(EnvironmentStorage object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Language Project Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Language Project Provider</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLanguageProjectProvider(LanguageProjectProvider object) {
 		return null;
 	}
 

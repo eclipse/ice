@@ -26,6 +26,6 @@ public interface DockerPTPSyncProjectLauncher extends DockerProjectLauncher {
 	 * @model
 	 * @generated
 	 */
-	void launchProject(SourcePackage project);
+	boolean launchProject(SourcePackage project);
 
 } // DockerPTPSyncProjectLauncher

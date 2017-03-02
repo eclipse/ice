@@ -10,6 +10,7 @@ import apps.EnvironmentState;
 import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
+import apps.LanguageProjectProvider;
 import apps.OSPackage;
 import apps.PackageType;
 import apps.ProjectLauncher;
@@ -121,6 +122,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * @generated
 	 */
 	private EClass environmentStorageEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass languageProjectProviderEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -486,6 +494,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getProjectLauncher_Languageprojectprovider() {
+		return (EReference)projectLauncherEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EOperation getProjectLauncher__LaunchProject__SourcePackage() {
 		return projectLauncherEClass.getEOperations().get(0);
 	}
@@ -657,6 +674,24 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getLanguageProjectProvider() {
+		return languageProjectProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getLanguageProjectProvider__CreateProject__String() {
+		return languageProjectProviderEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPackageType() {
 		return packageTypeEEnum;
 	}
@@ -731,6 +766,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEReference(spackPackageEClass, SPACK_PACKAGE__DEPENDENCIES);
 
 		projectLauncherEClass = createEClass(PROJECT_LAUNCHER);
+		createEReference(projectLauncherEClass, PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER);
 		createEOperation(projectLauncherEClass, PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE);
 
 		packageEClass = createEClass(PACKAGE);
@@ -757,6 +793,9 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		environmentStorageEClass = createEClass(ENVIRONMENT_STORAGE);
 		createEOperation(environmentStorageEClass, ENVIRONMENT_STORAGE___STORE__ELIST);
 		createEOperation(environmentStorageEClass, ENVIRONMENT_STORAGE___LOAD);
+
+		languageProjectProviderEClass = createEClass(LANGUAGE_PROJECT_PROVIDER);
+		createEOperation(languageProjectProviderEClass, LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING);
 
 		// Create enums
 		packageTypeEEnum = createEEnum(PACKAGE_TYPE);
@@ -864,8 +903,9 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		initEReference(getSpackPackage_Dependencies(), this.getSpackDependency(), null, "dependencies", null, 0, -1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(projectLauncherEClass, ProjectLauncher.class, "ProjectLauncher", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getProjectLauncher_Languageprojectprovider(), this.getLanguageProjectProvider(), null, "languageprojectprovider", null, 0, 1, ProjectLauncher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = initEOperation(getProjectLauncher__LaunchProject__SourcePackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
+		op = initEOperation(getProjectLauncher__LaunchProject__SourcePackage(), theXMLTypePackage.getBoolean(), "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getSourcePackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(packageEClass, apps.Package.class, "Package", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -897,6 +937,11 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		addEParameter(op, ecorePackage.getEEList(), "environments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEOperation(getEnvironmentStorage__Load(), this.getIEnvironment(), "load", 0, -1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(languageProjectProviderEClass, LanguageProjectProvider.class, "LanguageProjectProvider", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		op = initEOperation(getLanguageProjectProvider__CreateProject__String(), null, "createProject", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "projectName", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(packageTypeEEnum, PackageType.class, "PackageType");

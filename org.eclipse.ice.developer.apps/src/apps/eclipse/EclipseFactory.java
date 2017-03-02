@@ -40,6 +40,15 @@ public interface EclipseFactory extends EFactory {
 	DockerPTPSyncProjectLauncher createDockerPTPSyncProjectLauncher();
 
 	/**
+	 * Returns a new object of class '<em>Cpp Project Provider</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Cpp Project Provider</em>'.
+	 * @generated
+	 */
+	EclipseCppProjectProvider createEclipseCppProjectProvider();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

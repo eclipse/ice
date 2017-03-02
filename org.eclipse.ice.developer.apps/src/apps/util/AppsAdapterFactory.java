@@ -8,6 +8,7 @@ import apps.EnvironmentManager;
 import apps.EnvironmentStorage;
 import apps.IEnvironment;
 import apps.JsonEnvironmentCreator;
+import apps.LanguageProjectProvider;
 import apps.OSPackage;
 import apps.ProjectLauncher;
 import apps.SourcePackage;
@@ -119,6 +120,10 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
 				return createEnvironmentStorageAdapter();
+			}
+			@Override
+			public Adapter caseLanguageProjectProvider(LanguageProjectProvider object) {
+				return createLanguageProjectProviderAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -291,6 +296,20 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createEnvironmentStorageAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.LanguageProjectProvider <em>Language Project Provider</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.LanguageProjectProvider
+	 * @generated
+	 */
+	public Adapter createLanguageProjectProviderAdapter() {
 		return null;
 	}
 

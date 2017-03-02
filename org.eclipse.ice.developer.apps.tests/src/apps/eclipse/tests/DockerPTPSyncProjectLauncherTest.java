@@ -13,6 +13,12 @@ import junit.textui.TestRunner;
  * <!-- begin-user-doc -->
  * A test case for the model object '<em><b>Docker PTP Sync Project Launcher</b></em>'.
  * <!-- end-user-doc -->
+ * <p>
+ * The following operations are tested:
+ * <ul>
+ *   <li>{@link apps.eclipse.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
+ * </ul>
+ * </p>
  * @generated
  */
 public class DockerPTPSyncProjectLauncherTest extends DockerProjectLauncherTest {
@@ -69,6 +75,19 @@ public class DockerPTPSyncProjectLauncherTest extends DockerProjectLauncherTest 
 		setFixture(null);
 	}
 	
+	/**
+	 * Tests the '{@link apps.eclipse.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.eclipse.DockerPTPSyncProjectLauncher#launchProject(apps.SourcePackage)
+	 * @generated
+	 */
+	public void testLaunchProject__SourcePackage() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
 	public void testDummy() {
 		assertTrue(true);
 	}

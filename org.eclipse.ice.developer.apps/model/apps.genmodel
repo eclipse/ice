@@ -65,6 +65,7 @@
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//SpackPackage/dependencies"/>
     </genClasses>
     <genClasses image="false" ecoreClass="apps.ecore#//ProjectLauncher">
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//ProjectLauncher/languageprojectprovider"/>
       <genOperations ecoreOperation="apps.ecore#//ProjectLauncher/launchProject">
         <genParameters ecoreParameter="apps.ecore#//ProjectLauncher/launchProject/project"/>
       </genOperations>
@@ -95,6 +96,11 @@
         <genParameters ecoreParameter="apps.ecore#//EnvironmentStorage/store/environments"/>
       </genOperations>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentStorage/load"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="apps.ecore#//LanguageProjectProvider">
+      <genOperations ecoreOperation="apps.ecore#//LanguageProjectProvider/createProject">
+        <genParameters ecoreParameter="apps.ecore#//LanguageProjectProvider/createProject/projectName"/>
+      </genOperations>
     </genClasses>
     <nestedGenPackages prefix="Docker" basePackage="apps" disposableProviderFactory="true"
         ecorePackage="apps.ecore#//docker">
@@ -154,6 +160,7 @@
           <genParameters ecoreParameter="apps.ecore#//eclipse/DockerPTPSyncProjectLauncher/launchProject/project"/>
         </genOperations>
       </genClasses>
+      <genClasses ecoreClass="apps.ecore#//eclipse/EclipseCppProjectProvider"/>
     </nestedGenPackages>
   </genPackages>
 </genmodel:GenModel>

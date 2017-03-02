@@ -59,8 +59,7 @@ public interface DockerProjectLauncher extends ProjectLauncher {
 	 * Launch the new Eclipse project for the given application. 
 	 * <!-- end-model-doc -->
 	 * @model
-	 * @generated
 	 */
-	void launchProject(SourcePackage project);
+	boolean launchProject(SourcePackage project);
 
 } // DockerProjectLauncher

@@ -58,6 +58,7 @@ public class EclipseFactoryImpl extends EFactoryImpl implements EclipseFactory {
 		switch (eClass.getClassifierID()) {
 			case EclipsePackage.ECLIPSE_ENVIRONMENT_STORAGE: return createEclipseEnvironmentStorage();
 			case EclipsePackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER: return createDockerPTPSyncProjectLauncher();
+			case EclipsePackage.ECLIPSE_CPP_PROJECT_PROVIDER: return createEclipseCppProjectProvider();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -81,6 +82,16 @@ public class EclipseFactoryImpl extends EFactoryImpl implements EclipseFactory {
 	public DockerPTPSyncProjectLauncher createDockerPTPSyncProjectLauncher() {
 		DockerPTPSyncProjectLauncherImpl dockerPTPSyncProjectLauncher = new DockerPTPSyncProjectLauncherImpl();
 		return dockerPTPSyncProjectLauncher;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EclipseCppProjectProvider createEclipseCppProjectProvider() {
+		EclipseCppProjectProviderImpl eclipseCppProjectProvider = new EclipseCppProjectProviderImpl();
+		return eclipseCppProjectProvider;
 	}
 
 	/**

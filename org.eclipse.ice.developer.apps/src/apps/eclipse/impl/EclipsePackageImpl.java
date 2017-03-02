@@ -9,6 +9,7 @@ import apps.docker.DockerPackage;
 import apps.docker.impl.DockerPackageImpl;
 
 import apps.eclipse.DockerPTPSyncProjectLauncher;
+import apps.eclipse.EclipseCppProjectProvider;
 import apps.eclipse.EclipseEnvironmentStorage;
 import apps.eclipse.EclipseFactory;
 import apps.eclipse.EclipsePackage;
@@ -44,6 +45,13 @@ public class EclipsePackageImpl extends EPackageImpl implements EclipsePackage {
 	 * @generated
 	 */
 	private EClass dockerPTPSyncProjectLauncherEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass eclipseCppProjectProviderEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -149,6 +157,15 @@ public class EclipsePackageImpl extends EPackageImpl implements EclipsePackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getEclipseCppProjectProvider() {
+		return eclipseCppProjectProviderEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EclipseFactory getEclipseFactory() {
 		return (EclipseFactory)getEFactoryInstance();
 	}
@@ -176,6 +193,8 @@ public class EclipsePackageImpl extends EPackageImpl implements EclipsePackage {
 
 		dockerPTPSyncProjectLauncherEClass = createEClass(DOCKER_PTP_SYNC_PROJECT_LAUNCHER);
 		createEOperation(dockerPTPSyncProjectLauncherEClass, DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE);
+
+		eclipseCppProjectProviderEClass = createEClass(ECLIPSE_CPP_PROJECT_PROVIDER);
 	}
 
 	/**
@@ -212,6 +231,7 @@ public class EclipsePackageImpl extends EPackageImpl implements EclipsePackage {
 		// Add supertypes to classes
 		eclipseEnvironmentStorageEClass.getESuperTypes().add(theAppsPackage.getEnvironmentStorage());
 		dockerPTPSyncProjectLauncherEClass.getESuperTypes().add(theDockerPackage.getDockerProjectLauncher());
+		eclipseCppProjectProviderEClass.getESuperTypes().add(theAppsPackage.getLanguageProjectProvider());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(eclipseEnvironmentStorageEClass, EclipseEnvironmentStorage.class, "EclipseEnvironmentStorage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -220,6 +240,8 @@ public class EclipsePackageImpl extends EPackageImpl implements EclipsePackage {
 
 		EOperation op = initEOperation(getDockerPTPSyncProjectLauncher__LaunchProject__SourcePackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theAppsPackage.getSourcePackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(eclipseCppProjectProviderEClass, EclipseCppProjectProvider.class, "EclipseCppProjectProvider", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 	}
 
 } //EclipsePackageImpl

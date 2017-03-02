@@ -2,59 +2,29 @@
  */
 package apps.eclipse.impl;
 
+import apps.AppsPackage;
+import apps.ProjectLauncher;
 import apps.SourcePackage;
 import apps.docker.ContainerConfiguration;
+import apps.docker.DockerPackage;
+import apps.docker.DockerProjectLauncher;
 import apps.docker.impl.DockerProjectLauncherImpl;
 
 import apps.eclipse.DockerPTPSyncProjectLauncher;
+import apps.eclipse.EclipseFactory;
 import apps.eclipse.EclipsePackage;
-
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import org.eclipse.cdt.core.CCProjectNature;
-import org.eclipse.cdt.core.CCorePlugin;
-import org.eclipse.cdt.core.model.CoreModel;
-import org.eclipse.cdt.core.settings.model.CSourceEntry;
-import org.eclipse.cdt.core.settings.model.ICConfigurationDescription;
-import org.eclipse.cdt.core.settings.model.ICFolderDescription;
-import org.eclipse.cdt.core.settings.model.ICLanguageSetting;
-import org.eclipse.cdt.core.settings.model.ICLanguageSettingEntry;
-import org.eclipse.cdt.core.settings.model.ICProjectDescription;
-import org.eclipse.cdt.core.settings.model.ICProjectDescriptionManager;
-import org.eclipse.cdt.core.settings.model.ICSettingEntry;
-import org.eclipse.cdt.core.settings.model.ICSourceEntry;
-import org.eclipse.cdt.core.settings.model.extension.CConfigurationData;
-import org.eclipse.cdt.make.core.IMakeCommonBuildInfo;
-import org.eclipse.cdt.make.core.IMakeTarget;
-import org.eclipse.cdt.make.core.IMakeTargetManager;
-import org.eclipse.cdt.make.core.MakeCorePlugin;
-import org.eclipse.cdt.managedbuilder.core.IBuilder;
-import org.eclipse.cdt.managedbuilder.core.IConfiguration;
-import org.eclipse.cdt.managedbuilder.core.IToolChain;
-import org.eclipse.cdt.managedbuilder.core.ManagedBuildManager;
-import org.eclipse.cdt.managedbuilder.internal.core.Configuration;
-import org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo;
-import org.eclipse.cdt.managedbuilder.internal.core.ManagedProject;
-import org.eclipse.cdt.managedbuilder.ui.wizards.CfgHolder;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ptp.internal.rdt.sync.git.ui.GitParticipant;
 import org.eclipse.ptp.internal.rdt.sync.ui.SynchronizeParticipantRegistry;
 import org.eclipse.ptp.internal.rdt.sync.ui.handlers.CommonSyncExceptionHandler;
 import org.eclipse.ptp.rdt.sync.core.SyncFlag;
 import org.eclipse.ptp.rdt.sync.core.SyncManager;
 import org.eclipse.ptp.rdt.sync.core.SyncManager.SyncMode;
-import org.eclipse.ptp.rdt.sync.ui.ISynchronizeParticipant;
 import org.eclipse.ptp.rdt.sync.ui.ISynchronizeParticipantDescriptor;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
@@ -62,9 +32,6 @@ import org.eclipse.remote.core.IRemoteConnectionType;
 import org.eclipse.remote.core.IRemoteConnectionWorkingCopy;
 import org.eclipse.remote.core.IRemoteServicesManager;
 import org.eclipse.remote.core.exception.RemoteConnectionException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.undo.CreateProjectOperation;
-import org.eclipse.ui.ide.undo.WorkspaceUndoUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -96,6 +63,7 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl 
 		return EclipsePackage.Literals.DOCKER_PTP_SYNC_PROJECT_LAUNCHER;
 	}
 
+	@SuppressWarnings("restriction")
 	private class DockerSyncParticipant extends GitParticipant {
 
 		/**
@@ -178,91 +146,15 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl 
 	 */
 	@SuppressWarnings("restriction")
 	@Override
-	public void launchProject(SourcePackage proj) {
-		System.out.println("Launching PTP Project for " + proj.getName());
+	public boolean launchProject(SourcePackage proj) {
+		// Create the IProject in a language appropriate manner
+		// FIXME add more than C++
+		languageprojectprovider = EclipseFactory.eINSTANCE.createEclipseCppProjectProvider();
+		languageprojectprovider.createProject(proj.getName());
+		IProject project = ((EclipseCppProjectProviderImpl)languageprojectprovider).getProject();
 
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(proj.getName());
-		IProjectDescription description = workspace.newProjectDescription(proj.getName());
-		String os = System.getProperty("os.name");
-
-		try {
-			// Create the CDT Project
-			CCorePlugin.getDefault().createCDTProject(description, project, new NullProgressMonitor());
-
-			// Add the CPP nature
-			CCProjectNature.addCCNature(project, new NullProgressMonitor());
-
-			// Set up build information
-			ICProjectDescriptionManager pdMgr = CoreModel.getDefault().getProjectDescriptionManager();
-			ICProjectDescription projDesc = pdMgr.createProjectDescription(project, false);
-			ManagedBuildInfo info = ManagedBuildManager.createBuildInfo(project);
-			ManagedProject mProj = new ManagedProject(projDesc);
-			info.setManagedProject(mProj);
-
-			// Grab the correct toolchain
-			// FIXME this should be better...
-			IToolChain toolChain = null;
-			for (IToolChain tool : ManagedBuildManager.getRealToolChains()) {
-				if (os.contains("Mac") && tool.getName().contains("Mac") && tool.getName().contains("GCC")) {
-					toolChain = tool;
-					break;
-				} else if (os.contains("Linux") && tool.getName().contains("Linux")
-						&& tool.getName().contains("GCC")) {
-					toolChain = tool;
-					break;
-				} else if (os.contains("Windows") && tool.getName().contains("Cygwin")) {
-					toolChain = tool;
-					break;
-				} else {
-					toolChain = null;
-				}
-			}
-
-			// Set up the Build configuratino
-			CfgHolder cfgHolder = new CfgHolder(toolChain, null);
-			String s = toolChain == null ? "0" : toolChain.getId(); //$NON-NLS-1$
-			IConfiguration config = new Configuration(mProj,
-					(org.eclipse.cdt.managedbuilder.internal.core.ToolChain) toolChain,
-					ManagedBuildManager.calculateChildId(s, null), cfgHolder.getName());
-			IBuilder builder = config.getEditableBuilder();
-			builder.setManagedBuildOn(false);
-			CConfigurationData data = config.getConfigurationData();
-			projDesc.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, data);
-			pdMgr.setProjectDescription(project, projDesc);
-
-			// Set the include and src folders as actual CDT source
-			// folders
-//			ICProjectDescription cDescription = CoreModel.getDefault().getProjectDescriptionManager()
-//					.createProjectDescription(cProject, false);
-//			ICConfigurationDescription cConfigDescription = cDescription
-//					.createConfiguration(ManagedBuildManager.CFG_DATA_PROVIDER_ID, config.getConfigurationData());
-//			cDescription.setActiveConfiguration(cConfigDescription);
-//			cConfigDescription.setSourceEntries(null);
-//			IFolder frameworkFolder = cProject.getFolder("framework");
-//			IFolder srcFolder = frameworkFolder.getFolder("src");
-//			IFolder includeFolder = frameworkFolder.getFolder("include");
-//			ICSourceEntry srcFolderEntry = new CSourceEntry(srcFolder, null, ICSettingEntry.RESOLVED);
-//			ICSourceEntry includeFolderEntry = new CSourceEntry(includeFolder, null, ICSettingEntry.RESOLVED);
-//			cConfigDescription.setSourceEntries(new ICSourceEntry[] { srcFolderEntry, includeFolderEntry });
-//
-//			ICProjectDescription projectDescription = CoreModel.getDefault().getProjectDescription(cProject, true);
-//			ICConfigurationDescription configDecriptions[] = projectDescription.getConfigurations();
-//			for (ICConfigurationDescription configDescription : configDecriptions) {
-//				ICFolderDescription projectRoot = configDescription.getRootFolderDescription();
-//				ICLanguageSetting[] settings = projectRoot.getLanguageSettings();
-//				for (ICLanguageSetting setting : settings) {
-//					List<ICLanguageSettingEntry> includes = getIncludePaths(project);
-//					includes.addAll(setting.getSettingEntriesList(ICSettingEntry.INCLUDE_PATH));
-//					setting.setSettingEntries(ICSettingEntry.INCLUDE_PATH, includes);
-//				}
-//			}
-//			CoreModel.getDefault().setProjectDescription(cProject, projectDescription);
-			
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-
+		// Create the DockerSyncParticipant which keeps track 
+		// of metadata and the IRemoteConnection
 		ISynchronizeParticipantDescriptor[] providers = SynchronizeParticipantRegistry.getDescriptors();
 		DockerSyncParticipant syncPart = null;
 		try {
@@ -270,13 +162,16 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl 
 		} catch (RemoteConnectionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			return false;
 		}
 
+		// Create the SyncProject
 		try {
 			SyncManager.makeSyncProject(project, syncPart.getSyncConfigName(), syncPart.getServiceId(),
 					syncPart.getConnection(), syncPart.getLocation(), null);
 		} catch (CoreException e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 		// Enable syncing
@@ -289,7 +184,47 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl 
 			// This should never happen because only a blocking sync can throw a
 			// core exception.
 			e.printStackTrace();
+			return false;
 		}
+		
+		return true;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
+		if (baseClass == ProjectLauncher.class) {
+			switch (baseOperationID) {
+				case AppsPackage.PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE: return EclipsePackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE;
+				default: return super.eDerivedOperationID(baseOperationID, baseClass);
+			}
+		}
+		if (baseClass == DockerProjectLauncher.class) {
+			switch (baseOperationID) {
+				case DockerPackage.DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE: return EclipsePackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE;
+				default: return super.eDerivedOperationID(baseOperationID, baseClass);
+			}
+		}
+		return super.eDerivedOperationID(baseOperationID, baseClass);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+		switch (operationID) {
+			case EclipsePackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE:
+				launchProject((SourcePackage)arguments.get(0));
+				return null;
+		}
+		return super.eInvoke(operationID, arguments);
 	}
 	
 } //DockerPTPSyncProjectLauncherImpl

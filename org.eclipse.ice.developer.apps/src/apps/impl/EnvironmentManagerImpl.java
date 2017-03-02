@@ -246,6 +246,44 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		return environment;
 	}
 
+	public String persistToString(IEnvironment environment) {
+		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+        Map<String, Object> m = reg.getExtensionToFactoryMap();
+        m.put("env", new XMIResourceFactoryImpl());
+
+        // Obtain a new resource set
+        ResourceSet resSet = new ResourceSetImpl();
+
+        // create a resource
+        Resource resource = resSet.createResource(URI
+                        .createURI("dummy.env"));
+        
+        // Get the first model element and cast it to the right type, in my
+        // example everything is hierarchical included in this first node
+        resource.getContents().add(environment);
+
+        OutputStream output = new OutputStream()
+        {
+            private StringBuilder string = new StringBuilder();
+            @Override
+            public void write(int b) throws IOException {
+                this.string.append((char) b );
+            }
+
+            public String toString(){
+                return this.string.toString();
+            }
+        };
+        // now save the content.
+        try {
+                resource.save(output, Collections.EMPTY_MAP);
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+        
+        return output.toString();
+	}
+	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
