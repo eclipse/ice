@@ -21,9 +21,6 @@ import apps.SpackPackage;
 import apps.docker.DockerPackage;
 
 import apps.docker.impl.DockerPackageImpl;
-
-import apps.eclipse.EclipsePackage;
-import apps.eclipse.impl.EclipsePackageImpl;
 import apps.local.LocalPackage;
 
 import apps.local.impl.LocalPackageImpl;
@@ -196,19 +193,16 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		// Obtain or create and register interdependencies
 		DockerPackageImpl theDockerPackage = (DockerPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) instanceof DockerPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) : DockerPackage.eINSTANCE);
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
-		EclipsePackageImpl theEclipsePackage = (EclipsePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) instanceof EclipsePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) : EclipsePackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theAppsPackage.createPackageContents();
 		theDockerPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
-		theEclipsePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theAppsPackage.initializePackageContents();
 		theDockerPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
-		theEclipsePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theAppsPackage.freeze();
@@ -828,13 +822,11 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		// Obtain other dependent packages
 		DockerPackage theDockerPackage = (DockerPackage)EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI);
 		LocalPackage theLocalPackage = (LocalPackage)EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI);
-		EclipsePackage theEclipsePackage = (EclipsePackage)EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI);
 		XMLTypePackage theXMLTypePackage = (XMLTypePackage)EPackage.Registry.INSTANCE.getEPackage(XMLTypePackage.eNS_URI);
 
 		// Add subpackages
 		getESubpackages().add(theDockerPackage);
 		getESubpackages().add(theLocalPackage);
-		getESubpackages().add(theEclipsePackage);
 
 		// Create type parameters
 

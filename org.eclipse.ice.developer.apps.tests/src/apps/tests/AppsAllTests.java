@@ -3,7 +3,6 @@
 package apps.tests;
 
 import apps.docker.tests.DockerTests;
-import apps.eclipse.tests.EclipseTests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -35,7 +34,6 @@ public class AppsAllTests extends TestSuite {
 		suite.addTest(AppsTests.suite());
 		suite.addTest(DockerTests.suite());
 //		suite.addTest(LocalTests.suite());
-		suite.addTest(EclipseTests.suite());
 		return suite;
 	}
 

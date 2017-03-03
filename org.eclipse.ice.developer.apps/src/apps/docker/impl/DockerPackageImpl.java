@@ -10,8 +10,6 @@ import apps.docker.DockerFactory;
 import apps.docker.DockerPackage;
 
 import apps.docker.DockerProjectLauncher;
-import apps.eclipse.EclipsePackage;
-import apps.eclipse.impl.EclipsePackageImpl;
 import apps.impl.AppsPackageImpl;
 import apps.local.LocalPackage;
 
@@ -114,19 +112,16 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		// Obtain or create and register interdependencies
 		AppsPackageImpl theAppsPackage = (AppsPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) instanceof AppsPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) : AppsPackage.eINSTANCE);
 		LocalPackageImpl theLocalPackage = (LocalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) instanceof LocalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(LocalPackage.eNS_URI) : LocalPackage.eINSTANCE);
-		EclipsePackageImpl theEclipsePackage = (EclipsePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) instanceof EclipsePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) : EclipsePackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theDockerPackage.createPackageContents();
 		theAppsPackage.createPackageContents();
 		theLocalPackage.createPackageContents();
-		theEclipsePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theDockerPackage.initializePackageContents();
 		theAppsPackage.initializePackageContents();
 		theLocalPackage.initializePackageContents();
-		theEclipsePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theDockerPackage.freeze();
@@ -454,7 +449,7 @@ public class DockerPackageImpl extends EPackageImpl implements DockerPackage {
 		initEClass(dockerProjectLauncherEClass, DockerProjectLauncher.class, "DockerProjectLauncher", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDockerProjectLauncher_Containerconfiguration(), this.getContainerConfiguration(), null, "containerconfiguration", null, 0, 1, DockerProjectLauncher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		op = initEOperation(getDockerProjectLauncher__LaunchProject__SourcePackage(), null, "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
+		op = initEOperation(getDockerProjectLauncher__LaunchProject__SourcePackage(), theXMLTypePackage.getBoolean(), "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theAppsPackage.getSourcePackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
 	}
 

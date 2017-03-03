@@ -38,11 +38,4 @@
             genModel="model/hello.genmodel"/>
    </extension>
 
-   <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated apps -->
-      <package
-            uri="https://eclipse.org/apps/eclipse"
-            class="apps.eclipse.EclipsePackage"
-            genModel="model/apps.genmodel"/>
-   </extension>
 </plugin>

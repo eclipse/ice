@@ -256,8 +256,7 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE:
-				launchProject((SourcePackage)arguments.get(0));
-				return null;
+				return launchProject((SourcePackage)arguments.get(0));
 		}
 		return super.eInvoke(operationID, arguments);
 	}

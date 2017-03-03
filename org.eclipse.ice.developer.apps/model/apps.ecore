@@ -330,7 +330,7 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The DockerPTPProjectLauncher provides a launchProject method that uses the ContainerConfiguration of the current DockerEnvironment to create a new PTP Synchronized Project for the IEnvironment's primary application running in the created docker container. "/>
       </eAnnotations>
-      <eOperations name="launchProject">
+      <eOperations name="launchProject" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
         </eAnnotations>
@@ -342,17 +342,5 @@
   </eSubpackages>
   <eSubpackages name="local" nsURI="https://eclipse.org/apps/local" nsPrefix="localenvironment">
     <eClassifiers xsi:type="ecore:EClass" name="LocalEnvironment" eSuperTypes="#//IEnvironment"/>
-  </eSubpackages>
-  <eSubpackages name="eclipse" nsURI="https://eclipse.org/apps/eclipse" nsPrefix="eclipseextensions">
-    <eClassifiers xsi:type="ecore:EClass" name="EclipseEnvironmentStorage" eSuperTypes="#//EnvironmentStorage"/>
-    <eClassifiers xsi:type="ecore:EClass" name="DockerPTPSyncProjectLauncher" eSuperTypes="#//docker/DockerProjectLauncher">
-      <eOperations name="launchProject">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Launch the new Eclipse project for the given application. "/>
-        </eAnnotations>
-        <eParameters name="project" eType="#//SourcePackage"/>
-      </eOperations>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="EclipseCppProjectProvider" eSuperTypes="#//LanguageProjectProvider"/>
   </eSubpackages>
 </ecore:EPackage>

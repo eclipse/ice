@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
-import apps.eclipse.EclipseFactory;
+import eclipseapps.EclipseappsFactory;
 
 /**
  * The GitCloneHandler is an AbstractHandler that provides an execute
@@ -60,7 +60,7 @@ public class ICEAppStoreHandler extends AbstractHandler {
 				// Create the EnvironmentMangaer and set it up to use
 				// the Eclipse IPreferences to store IEnvironments
 				EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-				manager.setEnvironmentStorage(EclipseFactory.eINSTANCE.createEclipseEnvironmentStorage());
+				manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
 
 				// Show view to get Json string
 				String jsonStr = "{\n" + 
@@ -99,7 +99,7 @@ public class ICEAppStoreHandler extends AbstractHandler {
 						"}";
 
 				IEnvironment environment = manager.create(jsonStr);
-				environment.setProjectlauncher(EclipseFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
+				environment.setProjectlauncher(EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
 				if (!environment.build() || !environment.connect()) {
 					String message = "Could not build or connect to the environment:\n";
 					logger.error(message, new ExecutionException("Could not build or connect to the environment."));

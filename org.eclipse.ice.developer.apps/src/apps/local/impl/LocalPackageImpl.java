@@ -6,9 +6,6 @@ import apps.AppsPackage;
 import apps.docker.DockerPackage;
 
 import apps.docker.impl.DockerPackageImpl;
-
-import apps.eclipse.EclipsePackage;
-import apps.eclipse.impl.EclipsePackageImpl;
 import apps.impl.AppsPackageImpl;
 import apps.local.LocalEnvironment;
 import apps.local.LocalFactory;
@@ -82,19 +79,16 @@ public class LocalPackageImpl extends EPackageImpl implements LocalPackage {
 		// Obtain or create and register interdependencies
 		AppsPackageImpl theAppsPackage = (AppsPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) instanceof AppsPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(AppsPackage.eNS_URI) : AppsPackage.eINSTANCE);
 		DockerPackageImpl theDockerPackage = (DockerPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) instanceof DockerPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(DockerPackage.eNS_URI) : DockerPackage.eINSTANCE);
-		EclipsePackageImpl theEclipsePackage = (EclipsePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) instanceof EclipsePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EclipsePackage.eNS_URI) : EclipsePackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theLocalPackage.createPackageContents();
 		theAppsPackage.createPackageContents();
 		theDockerPackage.createPackageContents();
-		theEclipsePackage.createPackageContents();
 
 		// Initialize created meta-data
 		theLocalPackage.initializePackageContents();
 		theAppsPackage.initializePackageContents();
 		theDockerPackage.initializePackageContents();
-		theEclipsePackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theLocalPackage.freeze();

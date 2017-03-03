@@ -153,14 +153,5 @@
         ecorePackage="apps.ecore#//local">
       <genClasses ecoreClass="apps.ecore#//local/LocalEnvironment"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Eclipse" disposableProviderFactory="true" ecorePackage="apps.ecore#//eclipse">
-      <genClasses ecoreClass="apps.ecore#//eclipse/EclipseEnvironmentStorage"/>
-      <genClasses ecoreClass="apps.ecore#//eclipse/DockerPTPSyncProjectLauncher">
-        <genOperations ecoreOperation="apps.ecore#//eclipse/DockerPTPSyncProjectLauncher/launchProject">
-          <genParameters ecoreParameter="apps.ecore#//eclipse/DockerPTPSyncProjectLauncher/launchProject/project"/>
-        </genOperations>
-      </genClasses>
-      <genClasses ecoreClass="apps.ecore#//eclipse/EclipseCppProjectProvider"/>
-    </nestedGenPackages>
   </genPackages>
 </genmodel:GenModel>
