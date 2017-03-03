@@ -13,6 +13,7 @@
   </parent>
   <modules>
   	<module>../org.eclipse.ice.tests.ui.swtbot</module>
+  	<module>../org.eclipse.ice.tests.client.widgets.utils</module>
   	<module>../org.eclipse.ice.caebat.batml</module>
   	<module>../org.eclipse.ice.client</module>
   	<module>../org.eclipse.ice.client.compatibility</module>
