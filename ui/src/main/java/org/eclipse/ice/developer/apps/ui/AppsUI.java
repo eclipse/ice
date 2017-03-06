@@ -74,7 +74,7 @@ public class AppsUI extends UI {
     	
 		try {
 			obj = parser.parse(new FileReader(
-			        "/Users/ak/Documents/eclipse_workspaces/appstore-workspace/ui/src/main/resources/packages.json"));
+			        "/home/..../ui/src/main/resources/packages.json")); // add here your path to json file
 			spackPackages = (JSONObject) obj;
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -94,7 +94,7 @@ public class AppsUI extends UI {
 			final PackageListItem pkg = new PackageListItem();
 			List lst = new LinkedList();
 			JSONObject jsonPkg = iterator.next();
-			System.out.println(jsonPkg);
+			//System.out.println(jsonPkg);
 			pkg.getPkgChBox().setCaption((String) jsonPkg.get("name"));
 			pkg.getPkgDescrTxtField().setCaption((String) jsonPkg.get("description"));
 			//pkg.getPkgDescrTxtField().setWidth("200px");
@@ -104,7 +104,7 @@ public class AppsUI extends UI {
 				if (pkg.getPkgChBox().getValue().equals(true)) {
 					lst.add(pkg.getPkgChBox().getCaption());
 					pkgDescrLayout.addComponent(pkgDescItem);
-					System.out.println(pkgDescrLayout.getComponentIndex(pkgDescItem));
+					//System.out.println(pkgDescrLayout.getComponentIndex(pkgDescItem));
 				} else if (lst.contains(pkg.getPkgChBox().getCaption())) {
 					Iterator<Component> iter = pkgDescrLayout.iterator();
 					while (iter.hasNext()) {
