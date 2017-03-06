@@ -85,7 +85,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST = AppsPackage.ENVIRONMENT_STORAGE___STORE__ELIST;
+	int ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST_1 = AppsPackage.ENVIRONMENT_STORAGE___STORE__ELIST;
 
 	/**
 	 * The operation id for the '<em>Load</em>' operation.
@@ -123,6 +123,15 @@ public interface EclipseappsPackage extends EPackage {
 	 * @ordered
 	 */
 	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER;
+
+	/**
+	 * The feature id for the '<em><b>Environmentconsole</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PTP_SYNC_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE = DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE;
 
 	/**
 	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.
@@ -186,7 +195,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING = AppsPackage.LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING;
+	int ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING_1 = AppsPackage.LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING;
 
 	/**
 	 * The number of operations of the '<em>Eclipse Cpp Project Provider</em>' class.
@@ -196,6 +205,44 @@ public interface EclipseappsPackage extends EPackage {
 	 * @ordered
 	 */
 	int ECLIPSE_CPP_PROJECT_PROVIDER_OPERATION_COUNT = AppsPackage.LANGUAGE_PROJECT_PROVIDER_OPERATION_COUNT + 0;
+
+
+	/**
+	 * The meta object id for the '{@link eclipseapps.impl.EclipseEnvironmentConsoleImpl <em>Eclipse Environment Console</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see eclipseapps.impl.EclipseEnvironmentConsoleImpl
+	 * @see eclipseapps.impl.EclipseappsPackageImpl#getEclipseEnvironmentConsole()
+	 * @generated
+	 */
+	int ECLIPSE_ENVIRONMENT_CONSOLE = 3;
+
+	/**
+	 * The number of structural features of the '<em>Eclipse Environment Console</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_CONSOLE_FEATURE_COUNT = AppsPackage.ENVIRONMENT_CONSOLE_FEATURE_COUNT + 0;
+
+	/**
+	 * The operation id for the '<em>Print</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_CONSOLE___PRINT__STRING_1 = AppsPackage.ENVIRONMENT_CONSOLE___PRINT__STRING;
+
+	/**
+	 * The number of operations of the '<em>Eclipse Environment Console</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_ENVIRONMENT_CONSOLE_OPERATION_COUNT = AppsPackage.ENVIRONMENT_CONSOLE_OPERATION_COUNT + 0;
 
 
 	/**
@@ -237,6 +284,16 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEclipseCppProjectProvider();
+
+	/**
+	 * Returns the meta object for class '{@link eclipseapps.EclipseEnvironmentConsole <em>Eclipse Environment Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Eclipse Environment Console</em>'.
+	 * @see eclipseapps.EclipseEnvironmentConsole
+	 * @generated
+	 */
+	EClass getEclipseEnvironmentConsole();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -298,6 +355,16 @@ public interface EclipseappsPackage extends EPackage {
 		 * @generated
 		 */
 		EClass ECLIPSE_CPP_PROJECT_PROVIDER = eINSTANCE.getEclipseCppProjectProvider();
+
+		/**
+		 * The meta object literal for the '{@link eclipseapps.impl.EclipseEnvironmentConsoleImpl <em>Eclipse Environment Console</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see eclipseapps.impl.EclipseEnvironmentConsoleImpl
+		 * @see eclipseapps.impl.EclipseappsPackageImpl#getEclipseEnvironmentConsole()
+		 * @generated
+		 */
+		EClass ECLIPSE_ENVIRONMENT_CONSOLE = eINSTANCE.getEclipseEnvironmentConsole();
 
 	}
 

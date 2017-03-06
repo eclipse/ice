@@ -4,6 +4,7 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
+import apps.EnvironmentConsole;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
@@ -45,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * <ul>
  *   <li>{@link apps.impl.EnvironmentManagerImpl#getEnvironmentCreator <em>Environment Creator</em>}</li>
  *   <li>{@link apps.impl.EnvironmentManagerImpl#getEnvironmentStorage <em>Environment Storage</em>}</li>
+ *   <li>{@link apps.impl.EnvironmentManagerImpl#getConsole <em>Console</em>}</li>
  * </ul>
  *
  * @generated
@@ -70,6 +73,16 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	protected EnvironmentStorage environmentStorage;
 
 	/**
+	 * The cached value of the '{@link #getConsole() <em>Console</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getConsole()
+	 * @generated
+	 * @ordered
+	 */
+	protected EnvironmentConsole console;
+
+	/**
 	 * The mapping of existing available environment names to the 
 	 * actual IEnvironment
 	 */
@@ -92,6 +105,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 
 		// Initialize the mapping of environments
 		environments = new HashMap<String, IEnvironment>();
+		
+		console = AppsFactory.eINSTANCE.createEnvironmentConsole();
 	}
 
 	/**
@@ -177,6 +192,49 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnvironmentConsole getConsole() {
+		return console;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetConsole(EnvironmentConsole newConsole, NotificationChain msgs) {
+		EnvironmentConsole oldConsole = console;
+		console = newConsole;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT_MANAGER__CONSOLE, oldConsole, newConsole);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setConsole(EnvironmentConsole newConsole) {
+		if (newConsole != console) {
+			NotificationChain msgs = null;
+			if (console != null)
+				msgs = ((InternalEObject)console).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - AppsPackage.ENVIRONMENT_MANAGER__CONSOLE, null, msgs);
+			if (newConsole != null)
+				msgs = ((InternalEObject)newConsole).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - AppsPackage.ENVIRONMENT_MANAGER__CONSOLE, null, msgs);
+			msgs = basicSetConsole(newConsole, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, AppsPackage.ENVIRONMENT_MANAGER__CONSOLE, newConsole, newConsole));
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 */
@@ -184,6 +242,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		IEnvironment env = environmentCreator.create(dataString);
 		environments.put(env.getName(), env);
 		env.setState(EnvironmentState.CREATED);
+		console.print("Created " + env.getName() + " Environment");
+		env.setConsole(console);
 		EContentAdapter adapter = new EContentAdapter() {
 			public void notifyChanged(Notification notification) {
 				super.notifyChanged(notification);
@@ -231,6 +291,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 */
 	public IEnvironment loadFromFile(String fileName) {
+		console.print("Loading Environment from " + fileName);
 		AppsPackage.eINSTANCE.eClass();
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 		Map<String, Object> m = reg.getExtensionToFactoryMap();
@@ -380,6 +441,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	public void persistEnvironments() {
 		if (environmentStorage != null) {
+			if (console != null) console.print("Persisting existing environments");
 			EList<IEnvironment> envs = new BasicEList<IEnvironment>();
 			for (IEnvironment env : environments.values()) {
 				envs.add(env);
@@ -394,9 +456,11 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 */
 	public IEnvironment createEmpty(String type) {
 		if (type.equals("Docker")) {
+			console.print("Creating a new empty Environment");
 			IEnvironment env = DockerFactory.eINSTANCE.createDockerEnvironment();
 			env.setName("unknown");
 			env.setState(EnvironmentState.NOT_CREATED);
+			env.setConsole(console);
 			environments.put(env.getName(), env);
 			EContentAdapter adapter = new EContentAdapter() {
 				public void notifyChanged(Notification notification) {
@@ -452,6 +516,20 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case AppsPackage.ENVIRONMENT_MANAGER__CONSOLE:
+				return basicSetConsole(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -464,6 +542,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 			case AppsPackage.ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE:
 				if (resolve) return getEnvironmentStorage();
 				return basicGetEnvironmentStorage();
+			case AppsPackage.ENVIRONMENT_MANAGER__CONSOLE:
+				return getConsole();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -480,6 +560,9 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 				return;
 			case AppsPackage.ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE:
 				setEnvironmentStorage((EnvironmentStorage)newValue);
+				return;
+			case AppsPackage.ENVIRONMENT_MANAGER__CONSOLE:
+				setConsole((EnvironmentConsole)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -498,6 +581,9 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 			case AppsPackage.ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE:
 				setEnvironmentStorage((EnvironmentStorage)null);
 				return;
+			case AppsPackage.ENVIRONMENT_MANAGER__CONSOLE:
+				setConsole((EnvironmentConsole)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -513,6 +599,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 				return environmentCreator != null;
 			case AppsPackage.ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE:
 				return environmentStorage != null;
+			case AppsPackage.ENVIRONMENT_MANAGER__CONSOLE:
+				return console != null;
 		}
 		return super.eIsSet(featureID);
 	}

@@ -14,5 +14,6 @@
       </genOperations>
     </genClasses>
     <genClasses ecoreClass="eclipseapps.ecore#//EclipseCppProjectProvider"/>
+    <genClasses ecoreClass="eclipseapps.ecore#//EclipseEnvironmentConsole"/>
   </genPackages>
 </genmodel:GenModel>

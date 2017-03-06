@@ -61,7 +61,8 @@ public class ICEAppStoreHandler extends AbstractHandler {
 				// the Eclipse IPreferences to store IEnvironments
 				EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
 				manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
-
+				manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
+				
 				// Show view to get Json string
 				String jsonStr = "{\n" + 
 						"   \"General\": {\n" + 
@@ -107,6 +108,7 @@ public class ICEAppStoreHandler extends AbstractHandler {
 				}
 				
 				System.out.println("EnvironmentManager has " + manager.list().get(0));
+				
 				manager.persistEnvironments();
 				return Status.OK_STATUS;
 

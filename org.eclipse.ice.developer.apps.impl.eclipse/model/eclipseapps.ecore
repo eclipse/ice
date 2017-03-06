@@ -12,4 +12,5 @@
     </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EclipseCppProjectProvider" eSuperTypes="../../org.eclipse.ice.developer.apps/model/apps.ecore#//LanguageProjectProvider"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EclipseEnvironmentConsole" eSuperTypes="../../org.eclipse.ice.developer.apps/model/apps.ecore#//EnvironmentConsole"/>
 </ecore:EPackage>

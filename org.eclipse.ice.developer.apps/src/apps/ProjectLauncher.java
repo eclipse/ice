@@ -18,6 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link apps.ProjectLauncher#getLanguageprojectprovider <em>Languageprojectprovider</em>}</li>
+ *   <li>{@link apps.ProjectLauncher#getEnvironmentconsole <em>Environmentconsole</em>}</li>
  * </ul>
  *
  * @see apps.AppsPackage#getProjectLauncher()
@@ -50,6 +51,32 @@ public interface ProjectLauncher extends EObject {
 	 * @generated
 	 */
 	void setLanguageprojectprovider(LanguageProjectProvider value);
+
+	/**
+	 * Returns the value of the '<em><b>Environmentconsole</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Environmentconsole</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Environmentconsole</em>' containment reference.
+	 * @see #setEnvironmentconsole(EnvironmentConsole)
+	 * @see apps.AppsPackage#getProjectLauncher_Environmentconsole()
+	 * @model containment="true" required="true"
+	 * @generated
+	 */
+	EnvironmentConsole getEnvironmentconsole();
+
+	/**
+	 * Sets the value of the '{@link apps.ProjectLauncher#getEnvironmentconsole <em>Environmentconsole</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Environmentconsole</em>' containment reference.
+	 * @see #getEnvironmentconsole()
+	 * @generated
+	 */
+	void setEnvironmentconsole(EnvironmentConsole value);
 
 	/**
 	 * <!-- begin-user-doc -->

@@ -34,6 +34,7 @@ public class EclipseappsTests extends TestSuite {
 		suite.addTestSuite(EclipseEnvironmentStorageTest.class);
 		suite.addTestSuite(DockerPTPSyncProjectLauncherTest.class);
 		suite.addTestSuite(EclipseCppProjectProviderTest.class);
+		suite.addTestSuite(EclipseEnvironmentConsoleTest.class);
 		return suite;
 	}
 

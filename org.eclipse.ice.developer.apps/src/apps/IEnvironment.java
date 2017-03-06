@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link apps.IEnvironment#getPrimaryApp <em>Primary App</em>}</li>
  *   <li>{@link apps.IEnvironment#getProjectlauncher <em>Projectlauncher</em>}</li>
  *   <li>{@link apps.IEnvironment#getState <em>State</em>}</li>
+ *   <li>{@link apps.IEnvironment#getConsole <em>Console</em>}</li>
  * </ul>
  *
  * @see apps.AppsPackage#getIEnvironment()
@@ -181,6 +182,32 @@ public interface IEnvironment extends EObject {
 	 * @generated
 	 */
 	void setState(EnvironmentState value);
+
+	/**
+	 * Returns the value of the '<em><b>Console</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Console</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Console</em>' containment reference.
+	 * @see #setConsole(EnvironmentConsole)
+	 * @see apps.AppsPackage#getIEnvironment_Console()
+	 * @model containment="true" required="true"
+	 * @generated
+	 */
+	EnvironmentConsole getConsole();
+
+	/**
+	 * Sets the value of the '{@link apps.IEnvironment#getConsole <em>Console</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Console</em>' containment reference.
+	 * @see #getConsole()
+	 * @generated
+	 */
+	void setConsole(EnvironmentConsole value);
 
 	/**
 	 * <!-- begin-user-doc -->

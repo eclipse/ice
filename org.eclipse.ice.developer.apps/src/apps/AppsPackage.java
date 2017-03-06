@@ -123,13 +123,22 @@ public interface AppsPackage extends EPackage {
 	int IENVIRONMENT__STATE = 5;
 
 	/**
+	 * The feature id for the '<em><b>Console</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int IENVIRONMENT__CONSOLE = 6;
+
+	/**
 	 * The number of structural features of the '<em>IEnvironment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int IENVIRONMENT_FEATURE_COUNT = 6;
+	int IENVIRONMENT_FEATURE_COUNT = 7;
 
 	/**
 	 * The operation id for the '<em>Build</em>' operation.
@@ -205,13 +214,22 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE = 1;
 
 	/**
+	 * The feature id for the '<em><b>Console</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER__CONSOLE = 2;
+
+	/**
 	 * The number of structural features of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 2;
+	int ENVIRONMENT_MANAGER_FEATURE_COUNT = 3;
 
 	/**
 	 * The operation id for the '<em>Create</em>' operation.
@@ -478,13 +496,22 @@ public interface AppsPackage extends EPackage {
 	int PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = 0;
 
 	/**
+	 * The feature id for the '<em><b>Environmentconsole</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROJECT_LAUNCHER__ENVIRONMENTCONSOLE = 1;
+
+	/**
 	 * The number of structural features of the '<em>Project Launcher</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROJECT_LAUNCHER_FEATURE_COUNT = 1;
+	int PROJECT_LAUNCHER_FEATURE_COUNT = 2;
 
 	/**
 	 * The operation id for the '<em>Launch Project</em>' operation.
@@ -845,6 +872,43 @@ public interface AppsPackage extends EPackage {
 	int LANGUAGE_PROJECT_PROVIDER_OPERATION_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link apps.impl.EnvironmentConsoleImpl <em>Environment Console</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.impl.EnvironmentConsoleImpl
+	 * @see apps.impl.AppsPackageImpl#getEnvironmentConsole()
+	 * @generated
+	 */
+	int ENVIRONMENT_CONSOLE = 12;
+
+	/**
+	 * The number of structural features of the '<em>Environment Console</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_CONSOLE_FEATURE_COUNT = 0;
+
+	/**
+	 * The operation id for the '<em>Print</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_CONSOLE___PRINT__STRING = 0;
+
+	/**
+	 * The number of operations of the '<em>Environment Console</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_CONSOLE_OPERATION_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link apps.PackageType <em>Package Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -852,7 +916,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getPackageType()
 	 * @generated
 	 */
-	int PACKAGE_TYPE = 12;
+	int PACKAGE_TYPE = 13;
 
 	/**
 	 * The meta object id for the '{@link apps.EnvironmentState <em>Environment State</em>}' enum.
@@ -862,7 +926,7 @@ public interface AppsPackage extends EPackage {
 	 * @see apps.impl.AppsPackageImpl#getEnvironmentState()
 	 * @generated
 	 */
-	int ENVIRONMENT_STATE = 13;
+	int ENVIRONMENT_STATE = 14;
 
 	/**
 	 * Returns the meta object for class '{@link apps.IEnvironment <em>IEnvironment</em>}'.
@@ -941,6 +1005,17 @@ public interface AppsPackage extends EPackage {
 	EAttribute getIEnvironment_State();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link apps.IEnvironment#getConsole <em>Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Console</em>'.
+	 * @see apps.IEnvironment#getConsole()
+	 * @see #getIEnvironment()
+	 * @generated
+	 */
+	EReference getIEnvironment_Console();
+
+	/**
 	 * Returns the meta object for the '{@link apps.IEnvironment#build() <em>Build</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1011,6 +1086,17 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getEnvironmentManager_EnvironmentStorage();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link apps.EnvironmentManager#getConsole <em>Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Console</em>'.
+	 * @see apps.EnvironmentManager#getConsole()
+	 * @see #getEnvironmentManager()
+	 * @generated
+	 */
+	EReference getEnvironmentManager_Console();
 
 	/**
 	 * Returns the meta object for the '{@link apps.EnvironmentManager#create(java.lang.String) <em>Create</em>}' operation.
@@ -1185,6 +1271,17 @@ public interface AppsPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getProjectLauncher_Languageprojectprovider();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link apps.ProjectLauncher#getEnvironmentconsole <em>Environmentconsole</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Environmentconsole</em>'.
+	 * @see apps.ProjectLauncher#getEnvironmentconsole()
+	 * @see #getProjectLauncher()
+	 * @generated
+	 */
+	EReference getProjectLauncher_Environmentconsole();
 
 	/**
 	 * Returns the meta object for the '{@link apps.ProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
@@ -1405,6 +1502,26 @@ public interface AppsPackage extends EPackage {
 	EOperation getLanguageProjectProvider__CreateProject__String();
 
 	/**
+	 * Returns the meta object for class '{@link apps.EnvironmentConsole <em>Environment Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Environment Console</em>'.
+	 * @see apps.EnvironmentConsole
+	 * @generated
+	 */
+	EClass getEnvironmentConsole();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentConsole#print(java.lang.String) <em>Print</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Print</em>' operation.
+	 * @see apps.EnvironmentConsole#print(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentConsole__Print__String();
+
+	/**
 	 * Returns the meta object for enum '{@link apps.PackageType <em>Package Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1506,6 +1623,14 @@ public interface AppsPackage extends EPackage {
 		EAttribute IENVIRONMENT__STATE = eINSTANCE.getIEnvironment_State();
 
 		/**
+		 * The meta object literal for the '<em><b>Console</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference IENVIRONMENT__CONSOLE = eINSTANCE.getIEnvironment_Console();
+
+		/**
 		 * The meta object literal for the '<em><b>Build</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1562,6 +1687,14 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE = eINSTANCE.getEnvironmentManager_EnvironmentStorage();
+
+		/**
+		 * The meta object literal for the '<em><b>Console</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENVIRONMENT_MANAGER__CONSOLE = eINSTANCE.getEnvironmentManager_Console();
 
 		/**
 		 * The meta object literal for the '<em><b>Create</b></em>' operation.
@@ -1702,6 +1835,14 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = eINSTANCE.getProjectLauncher_Languageprojectprovider();
+
+		/**
+		 * The meta object literal for the '<em><b>Environmentconsole</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PROJECT_LAUNCHER__ENVIRONMENTCONSOLE = eINSTANCE.getProjectLauncher_Environmentconsole();
 
 		/**
 		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
@@ -1886,6 +2027,24 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING = eINSTANCE.getLanguageProjectProvider__CreateProject__String();
+
+		/**
+		 * The meta object literal for the '{@link apps.impl.EnvironmentConsoleImpl <em>Environment Console</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see apps.impl.EnvironmentConsoleImpl
+		 * @see apps.impl.AppsPackageImpl#getEnvironmentConsole()
+		 * @generated
+		 */
+		EClass ENVIRONMENT_CONSOLE = eINSTANCE.getEnvironmentConsole();
+
+		/**
+		 * The meta object literal for the '<em><b>Print</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_CONSOLE___PRINT__STRING = eINSTANCE.getEnvironmentConsole__Print__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.PackageType <em>Package Type</em>}' enum.

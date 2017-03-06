@@ -4,6 +4,7 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
+import apps.EnvironmentConsole;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
@@ -126,6 +127,13 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * @generated
 	 */
 	private EClass languageProjectProviderEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass environmentConsoleEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -281,6 +289,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getIEnvironment_Console() {
+		return (EReference)iEnvironmentEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EOperation getIEnvironment__Build() {
 		return iEnvironmentEClass.getEOperations().get(0);
 	}
@@ -337,6 +354,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 */
 	public EReference getEnvironmentManager_EnvironmentStorage() {
 		return (EReference)environmentManagerEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnvironmentManager_Console() {
+		return (EReference)environmentManagerEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -490,6 +516,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 */
 	public EReference getProjectLauncher_Languageprojectprovider() {
 		return (EReference)projectLauncherEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getProjectLauncher_Environmentconsole() {
+		return (EReference)projectLauncherEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -686,6 +721,24 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getEnvironmentConsole() {
+		return environmentConsoleEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EOperation getEnvironmentConsole__Print__String() {
+		return environmentConsoleEClass.getEOperations().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPackageType() {
 		return packageTypeEEnum;
 	}
@@ -734,6 +787,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEReference(iEnvironmentEClass, IENVIRONMENT__PRIMARY_APP);
 		createEReference(iEnvironmentEClass, IENVIRONMENT__PROJECTLAUNCHER);
 		createEAttribute(iEnvironmentEClass, IENVIRONMENT__STATE);
+		createEReference(iEnvironmentEClass, IENVIRONMENT__CONSOLE);
 		createEOperation(iEnvironmentEClass, IENVIRONMENT___BUILD);
 		createEOperation(iEnvironmentEClass, IENVIRONMENT___CONNECT);
 		createEOperation(iEnvironmentEClass, IENVIRONMENT___DELETE);
@@ -742,6 +796,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		environmentManagerEClass = createEClass(ENVIRONMENT_MANAGER);
 		createEReference(environmentManagerEClass, ENVIRONMENT_MANAGER__ENVIRONMENT_CREATOR);
 		createEReference(environmentManagerEClass, ENVIRONMENT_MANAGER__ENVIRONMENT_STORAGE);
+		createEReference(environmentManagerEClass, ENVIRONMENT_MANAGER__CONSOLE);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___CREATE__STRING);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LIST);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___GET__STRING);
@@ -761,6 +816,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		projectLauncherEClass = createEClass(PROJECT_LAUNCHER);
 		createEReference(projectLauncherEClass, PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER);
+		createEReference(projectLauncherEClass, PROJECT_LAUNCHER__ENVIRONMENTCONSOLE);
 		createEOperation(projectLauncherEClass, PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE);
 
 		packageEClass = createEClass(PACKAGE);
@@ -790,6 +846,9 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		languageProjectProviderEClass = createEClass(LANGUAGE_PROJECT_PROVIDER);
 		createEOperation(languageProjectProviderEClass, LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING);
+
+		environmentConsoleEClass = createEClass(ENVIRONMENT_CONSOLE);
+		createEOperation(environmentConsoleEClass, ENVIRONMENT_CONSOLE___PRINT__STRING);
 
 		// Create enums
 		packageTypeEEnum = createEEnum(PACKAGE_TYPE);
@@ -846,6 +905,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		initEReference(getIEnvironment_PrimaryApp(), this.getPackage(), null, "primaryApp", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIEnvironment_Projectlauncher(), this.getProjectLauncher(), null, "projectlauncher", null, 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getIEnvironment_State(), this.getEnvironmentState(), "state", "NotCreated", 0, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getIEnvironment_Console(), this.getEnvironmentConsole(), null, "console", null, 1, 1, IEnvironment.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEOperation(getIEnvironment__Build(), theXMLTypePackage.getBoolean(), "build", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -858,6 +918,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		initEClass(environmentManagerEClass, EnvironmentManager.class, "EnvironmentManager", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEnvironmentManager_EnvironmentCreator(), this.getEnvironmentCreator(), null, "environmentCreator", null, 0, 1, EnvironmentManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getEnvironmentManager_EnvironmentStorage(), this.getEnvironmentStorage(), null, "environmentStorage", null, 1, 1, EnvironmentManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEnvironmentManager_Console(), this.getEnvironmentConsole(), null, "console", null, 1, 1, EnvironmentManager.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		EOperation op = initEOperation(getEnvironmentManager__Create__String(), this.getIEnvironment(), "create", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "dataString", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -896,6 +957,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		initEClass(projectLauncherEClass, ProjectLauncher.class, "ProjectLauncher", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getProjectLauncher_Languageprojectprovider(), this.getLanguageProjectProvider(), null, "languageprojectprovider", null, 0, 1, ProjectLauncher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getProjectLauncher_Environmentconsole(), this.getEnvironmentConsole(), null, "environmentconsole", null, 1, 1, ProjectLauncher.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = initEOperation(getProjectLauncher__LaunchProject__SourcePackage(), theXMLTypePackage.getBoolean(), "launchProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, this.getSourcePackage(), "project", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -934,6 +996,11 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		op = initEOperation(getLanguageProjectProvider__CreateProject__String(), null, "createProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "projectName", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(environmentConsoleEClass, EnvironmentConsole.class, "EnvironmentConsole", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		op = initEOperation(getEnvironmentConsole__Print__String(), null, "print", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "message", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(packageTypeEEnum, PackageType.class, "PackageType");

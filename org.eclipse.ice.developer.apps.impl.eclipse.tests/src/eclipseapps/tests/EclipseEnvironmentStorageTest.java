@@ -100,7 +100,7 @@ public class EclipseEnvironmentStorageTest extends TestCase {
 	 * @see apps.EnvironmentStorage#store(org.eclipse.emf.common.util.EList)
 	 * @generated
 	 */
-	public void testStore__EList() {
+	public void testStore__EList_1() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();
@@ -113,7 +113,7 @@ public class EclipseEnvironmentStorageTest extends TestCase {
 	 * @see apps.EnvironmentStorage#load()
 	 * @generated
 	 */
-	public void testLoad() {
+	public void testLoad_1() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

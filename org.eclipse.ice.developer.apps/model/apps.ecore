@@ -56,6 +56,8 @@
         <details key="documentation" value="The state of this IEnvironment. The state can be Running, Stopped, or NotCreated. "/>
       </eAnnotations>
     </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="console" lowerBound="1"
+        eType="#//EnvironmentConsole" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnvironmentManager">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -119,6 +121,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentCreator" eType="#//EnvironmentCreator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentStorage" lowerBound="1"
         eType="#//EnvironmentStorage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="console" lowerBound="1"
+        eType="#//EnvironmentConsole" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SpackPackage" eSuperTypes="#//Package">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -150,6 +154,8 @@
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="languageprojectprovider"
         eType="#//LanguageProjectProvider" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="environmentconsole" lowerBound="1"
+        eType="#//EnvironmentConsole" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Package" abstract="true" interface="true">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -229,6 +235,11 @@
       interface="true">
     <eOperations name="createProject">
       <eParameters name="projectName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnvironmentConsole">
+    <eOperations name="print">
+      <eParameters name="message" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
   </eClassifiers>
   <eSubpackages name="docker" nsURI="http://eclipse.org/apps/docker" nsPrefix="dockerenvironment">

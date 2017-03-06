@@ -49,6 +49,15 @@ public interface EclipseappsFactory extends EFactory {
 	EclipseCppProjectProvider createEclipseCppProjectProvider();
 
 	/**
+	 * Returns a new object of class '<em>Eclipse Environment Console</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Eclipse Environment Console</em>'.
+	 * @generated
+	 */
+	EclipseEnvironmentConsole createEclipseEnvironmentConsole();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -2,13 +2,8 @@
  */
 package eclipseapps.impl;
 
-import apps.AppsPackage;
-import apps.ProjectLauncher;
 import apps.SourcePackage;
 import apps.docker.ContainerConfiguration;
-import apps.docker.DockerPackage;
-import apps.docker.DockerProjectLauncher;
-
 import apps.docker.impl.DockerProjectLauncherImpl;
 import eclipseapps.DockerPTPSyncProjectLauncher;
 import eclipseapps.EclipseappsFactory;
@@ -189,28 +184,6 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl 
 		}
 		
 		return true;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eDerivedOperationID(int baseOperationID, Class<?> baseClass) {
-		if (baseClass == ProjectLauncher.class) {
-			switch (baseOperationID) {
-				case AppsPackage.PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE: return EclipseappsPackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE;
-				default: return super.eDerivedOperationID(baseOperationID, baseClass);
-			}
-		}
-		if (baseClass == DockerProjectLauncher.class) {
-			switch (baseOperationID) {
-				case DockerPackage.DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE: return EclipseappsPackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE;
-				default: return super.eDerivedOperationID(baseOperationID, baseClass);
-			}
-		}
-		return super.eDerivedOperationID(baseOperationID, baseClass);
 	}
 
 	/**

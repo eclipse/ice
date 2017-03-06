@@ -4,6 +4,8 @@ package apps.docker;
 
 import org.eclipse.emf.ecore.EObject;
 
+import apps.EnvironmentConsole;
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>API</b></em>'.
@@ -81,5 +83,7 @@ public interface DockerAPI extends EObject {
 	 * @generated
 	 */
 	boolean stopContainer(String id);
+	
+	void setEnvironmentConsole(EnvironmentConsole c);
 
 } // DockerAPI

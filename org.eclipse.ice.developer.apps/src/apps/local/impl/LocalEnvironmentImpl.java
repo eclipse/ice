@@ -2,6 +2,7 @@
  */
 package apps.local.impl;
 
+import apps.EnvironmentConsole;
 import apps.EnvironmentState;
 import apps.ProjectLauncher;
 import apps.local.LocalEnvironment;
@@ -39,6 +40,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getPrimaryApp <em>Primary App</em>}</li>
  *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getProjectlauncher <em>Projectlauncher</em>}</li>
  *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getState <em>State</em>}</li>
+ *   <li>{@link apps.local.impl.LocalEnvironmentImpl#getConsole <em>Console</em>}</li>
  * </ul>
  *
  * @generated
@@ -133,6 +135,16 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	 * @ordered
 	 */
 	protected EnvironmentState state = STATE_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getConsole() <em>Console</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getConsole()
+	 * @generated
+	 * @ordered
+	 */
+	protected EnvironmentConsole console;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -319,6 +331,49 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EnvironmentConsole getConsole() {
+		return console;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetConsole(EnvironmentConsole newConsole, NotificationChain msgs) {
+		EnvironmentConsole oldConsole = console;
+		console = newConsole;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__CONSOLE, oldConsole, newConsole);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setConsole(EnvironmentConsole newConsole) {
+		if (newConsole != console) {
+			NotificationChain msgs = null;
+			if (console != null)
+				msgs = ((InternalEObject)console).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - LocalPackage.LOCAL_ENVIRONMENT__CONSOLE, null, msgs);
+			if (newConsole != null)
+				msgs = ((InternalEObject)newConsole).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - LocalPackage.LOCAL_ENVIRONMENT__CONSOLE, null, msgs);
+			msgs = basicSetConsole(newConsole, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, LocalPackage.LOCAL_ENVIRONMENT__CONSOLE, newConsole, newConsole));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public boolean build() {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
@@ -372,6 +427,8 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 				return basicSetPrimaryApp(null, msgs);
 			case LocalPackage.LOCAL_ENVIRONMENT__PROJECTLAUNCHER:
 				return basicSetProjectlauncher(null, msgs);
+			case LocalPackage.LOCAL_ENVIRONMENT__CONSOLE:
+				return basicSetConsole(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -396,6 +453,8 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 				return getProjectlauncher();
 			case LocalPackage.LOCAL_ENVIRONMENT__STATE:
 				return getState();
+			case LocalPackage.LOCAL_ENVIRONMENT__CONSOLE:
+				return getConsole();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -428,6 +487,9 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 			case LocalPackage.LOCAL_ENVIRONMENT__STATE:
 				setState((EnvironmentState)newValue);
 				return;
+			case LocalPackage.LOCAL_ENVIRONMENT__CONSOLE:
+				setConsole((EnvironmentConsole)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -458,6 +520,9 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 			case LocalPackage.LOCAL_ENVIRONMENT__STATE:
 				setState(STATE_EDEFAULT);
 				return;
+			case LocalPackage.LOCAL_ENVIRONMENT__CONSOLE:
+				setConsole((EnvironmentConsole)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -482,6 +547,8 @@ public class LocalEnvironmentImpl extends MinimalEObjectImpl.Container implement
 				return projectlauncher != null;
 			case LocalPackage.LOCAL_ENVIRONMENT__STATE:
 				return state != STATE_EDEFAULT;
+			case LocalPackage.LOCAL_ENVIRONMENT__CONSOLE:
+				return console != null;
 		}
 		return super.eIsSet(featureID);
 	}

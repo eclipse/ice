@@ -2,6 +2,7 @@
  */
 package eclipseapps.util;
 
+import apps.EnvironmentConsole;
 import apps.EnvironmentStorage;
 import apps.LanguageProjectProvider;
 import apps.ProjectLauncher;
@@ -86,6 +87,10 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 				return createEclipseCppProjectProviderAdapter();
 			}
 			@Override
+			public Adapter caseEclipseEnvironmentConsole(EclipseEnvironmentConsole object) {
+				return createEclipseEnvironmentConsoleAdapter();
+			}
+			@Override
 			public Adapter caseEnvironmentStorage(EnvironmentStorage object) {
 				return createEnvironmentStorageAdapter();
 			}
@@ -100,6 +105,10 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseLanguageProjectProvider(LanguageProjectProvider object) {
 				return createLanguageProjectProviderAdapter();
+			}
+			@Override
+			public Adapter caseEnvironmentConsole(EnvironmentConsole object) {
+				return createEnvironmentConsoleAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -164,6 +173,20 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link eclipseapps.EclipseEnvironmentConsole <em>Eclipse Environment Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see eclipseapps.EclipseEnvironmentConsole
+	 * @generated
+	 */
+	public Adapter createEclipseEnvironmentConsoleAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link apps.EnvironmentStorage <em>Environment Storage</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -216,6 +239,20 @@ public class EclipseappsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createLanguageProjectProviderAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.EnvironmentConsole <em>Environment Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.EnvironmentConsole
+	 * @generated
+	 */
+	public Adapter createEnvironmentConsoleAdapter() {
 		return null;
 	}
 

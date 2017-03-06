@@ -162,7 +162,7 @@ public class EclipseCppProjectProviderImpl extends MinimalEObjectImpl.Container 
 	@Override
 	public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
 		switch (operationID) {
-			case EclipseappsPackage.ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING:
+			case EclipseappsPackage.ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING_1:
 				createProject((String)arguments.get(0));
 				return null;
 		}

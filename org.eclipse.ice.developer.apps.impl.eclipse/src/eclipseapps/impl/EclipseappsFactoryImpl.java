@@ -59,6 +59,7 @@ public class EclipseappsFactoryImpl extends EFactoryImpl implements EclipseappsF
 			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_STORAGE: return createEclipseEnvironmentStorage();
 			case EclipseappsPackage.DOCKER_PTP_SYNC_PROJECT_LAUNCHER: return createDockerPTPSyncProjectLauncher();
 			case EclipseappsPackage.ECLIPSE_CPP_PROJECT_PROVIDER: return createEclipseCppProjectProvider();
+			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_CONSOLE: return createEclipseEnvironmentConsole();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -92,6 +93,16 @@ public class EclipseappsFactoryImpl extends EFactoryImpl implements EclipseappsF
 	public EclipseCppProjectProvider createEclipseCppProjectProvider() {
 		EclipseCppProjectProviderImpl eclipseCppProjectProvider = new EclipseCppProjectProviderImpl();
 		return eclipseCppProjectProvider;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EclipseEnvironmentConsole createEclipseEnvironmentConsole() {
+		EclipseEnvironmentConsoleImpl eclipseEnvironmentConsole = new EclipseEnvironmentConsoleImpl();
+		return eclipseEnvironmentConsole;
 	}
 
 	/**

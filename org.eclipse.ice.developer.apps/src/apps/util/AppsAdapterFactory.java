@@ -3,6 +3,7 @@
 package apps.util;
 
 import apps.AppsPackage;
+import apps.EnvironmentConsole;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.EnvironmentStorage;
@@ -124,6 +125,10 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseLanguageProjectProvider(LanguageProjectProvider object) {
 				return createLanguageProjectProviderAdapter();
+			}
+			@Override
+			public Adapter caseEnvironmentConsole(EnvironmentConsole object) {
+				return createEnvironmentConsoleAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -310,6 +315,20 @@ public class AppsAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createLanguageProjectProviderAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link apps.EnvironmentConsole <em>Environment Console</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see apps.EnvironmentConsole
+	 * @generated
+	 */
+	public Adapter createEnvironmentConsoleAdapter() {
 		return null;
 	}
 

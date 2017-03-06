@@ -76,6 +76,15 @@ public interface AppsFactory extends EFactory {
 	JsonEnvironmentCreator createJsonEnvironmentCreator();
 
 	/**
+	 * Returns a new object of class '<em>Environment Console</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Environment Console</em>'.
+	 * @generated
+	 */
+	EnvironmentConsole createEnvironmentConsole();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

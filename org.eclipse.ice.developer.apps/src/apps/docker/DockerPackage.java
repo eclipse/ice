@@ -123,6 +123,15 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_ENVIRONMENT__STATE = AppsPackage.IENVIRONMENT__STATE;
 
 	/**
+	 * The feature id for the '<em><b>Console</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_ENVIRONMENT__CONSOLE = AppsPackage.IENVIRONMENT__CONSOLE;
+
+	/**
 	 * The feature id for the '<em><b>Docker</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -386,6 +395,15 @@ public interface DockerPackage extends EPackage {
 	 * @ordered
 	 */
 	int DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER = AppsPackage.PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER;
+
+	/**
+	 * The feature id for the '<em><b>Environmentconsole</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE = AppsPackage.PROJECT_LAUNCHER__ENVIRONMENTCONSOLE;
 
 	/**
 	 * The feature id for the '<em><b>Containerconfiguration</b></em>' reference.

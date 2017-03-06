@@ -3,6 +3,7 @@
 package apps.util;
 
 import apps.AppsPackage;
+import apps.EnvironmentConsole;
 import apps.EnvironmentCreator;
 import apps.EnvironmentManager;
 import apps.EnvironmentStorage;
@@ -149,6 +150,12 @@ public class AppsSwitch<T> extends Switch<T> {
 			case AppsPackage.LANGUAGE_PROJECT_PROVIDER: {
 				LanguageProjectProvider languageProjectProvider = (LanguageProjectProvider)theEObject;
 				T result = caseLanguageProjectProvider(languageProjectProvider);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case AppsPackage.ENVIRONMENT_CONSOLE: {
+				EnvironmentConsole environmentConsole = (EnvironmentConsole)theEObject;
+				T result = caseEnvironmentConsole(environmentConsole);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -333,6 +340,21 @@ public class AppsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseLanguageProjectProvider(LanguageProjectProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Environment Console</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Environment Console</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEnvironmentConsole(EnvironmentConsole object) {
 		return null;
 	}
 

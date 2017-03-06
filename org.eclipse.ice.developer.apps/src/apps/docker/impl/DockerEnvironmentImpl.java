@@ -2,6 +2,7 @@
  */
 package apps.docker.impl;
 
+import apps.EnvironmentConsole;
 import apps.EnvironmentState;
 import apps.OSPackage;
 import apps.ProjectLauncher;
@@ -44,6 +45,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getPrimaryApp <em>Primary App</em>}</li>
  *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getProjectlauncher <em>Projectlauncher</em>}</li>
  *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getState <em>State</em>}</li>
+ *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getConsole <em>Console</em>}</li>
  *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getDocker <em>Docker</em>}</li>
  *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getContainerConfiguration <em>Container Configuration</em>}</li>
  *   <li>{@link apps.docker.impl.DockerEnvironmentImpl#getDockerfile <em>Dockerfile</em>}</li>
@@ -141,6 +143,16 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * @ordered
 	 */
 	protected EnvironmentState state = STATE_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getConsole() <em>Console</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getConsole()
+	 * @generated
+	 * @ordered
+	 */
+	protected EnvironmentConsole console;
 
 	/**
 	 * The cached value of the '{@link #getDocker() <em>Docker</em>}' containment reference.
@@ -361,6 +373,49 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnvironmentConsole getConsole() {
+		return console;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetConsole(EnvironmentConsole newConsole, NotificationChain msgs) {
+		EnvironmentConsole oldConsole = console;
+		console = newConsole;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__CONSOLE, oldConsole, newConsole);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setConsole(EnvironmentConsole newConsole) {
+		if (newConsole != console) {
+			NotificationChain msgs = null;
+			if (console != null)
+				msgs = ((InternalEObject)console).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DockerPackage.DOCKER_ENVIRONMENT__CONSOLE, null, msgs);
+			if (newConsole != null)
+				msgs = ((InternalEObject)newConsole).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DockerPackage.DOCKER_ENVIRONMENT__CONSOLE, null, msgs);
+			msgs = basicSetConsole(newConsole, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_ENVIRONMENT__CONSOLE, newConsole, newConsole));
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -468,6 +523,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 */
 	public boolean build() {
+		docker.setEnvironmentConsole(console);
 		// Create the build Dockerfile from the
 		// given Environment data.
 		dockerfile = "from mccaskey/base-fedora-gcc6\n";
@@ -502,7 +558,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 		// Add to the Dockerfile contents
 		dockerfile += runSpackCommand + runOSPkgInstaller + "\n" + runPrimaryApp;
 
-		System.out.println("DockerFile:\n" + dockerfile);
+		console.print("Current DockerFile Contents:\n" + dockerfile);
 
 		// Create the Dockerfile
 		File buildFile = new File(
@@ -579,6 +635,8 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				return basicSetPrimaryApp(null, msgs);
 			case DockerPackage.DOCKER_ENVIRONMENT__PROJECTLAUNCHER:
 				return basicSetProjectlauncher(null, msgs);
+			case DockerPackage.DOCKER_ENVIRONMENT__CONSOLE:
+				return basicSetConsole(null, msgs);
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
 				return basicSetDocker(null, msgs);
 			case DockerPackage.DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION:
@@ -606,6 +664,8 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				return getProjectlauncher();
 			case DockerPackage.DOCKER_ENVIRONMENT__STATE:
 				return getState();
+			case DockerPackage.DOCKER_ENVIRONMENT__CONSOLE:
+				return getConsole();
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
 				return getDocker();
 			case DockerPackage.DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION:
@@ -642,6 +702,9 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				return;
 			case DockerPackage.DOCKER_ENVIRONMENT__STATE:
 				setState((EnvironmentState)newValue);
+				return;
+			case DockerPackage.DOCKER_ENVIRONMENT__CONSOLE:
+				setConsole((EnvironmentConsole)newValue);
 				return;
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
 				setDocker((DockerAPI)newValue);
@@ -681,6 +744,9 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 			case DockerPackage.DOCKER_ENVIRONMENT__STATE:
 				setState(STATE_EDEFAULT);
 				return;
+			case DockerPackage.DOCKER_ENVIRONMENT__CONSOLE:
+				setConsole((EnvironmentConsole)null);
+				return;
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
 				setDocker((DockerAPI)null);
 				return;
@@ -713,6 +779,8 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				return projectlauncher != null;
 			case DockerPackage.DOCKER_ENVIRONMENT__STATE:
 				return state != STATE_EDEFAULT;
+			case DockerPackage.DOCKER_ENVIRONMENT__CONSOLE:
+				return console != null;
 			case DockerPackage.DOCKER_ENVIRONMENT__DOCKER:
 				return docker != null;
 			case DockerPackage.DOCKER_ENVIRONMENT__CONTAINER_CONFIGURATION:

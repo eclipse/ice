@@ -33,6 +33,7 @@ public class AppsTests extends TestSuite {
 		TestSuite suite = new AppsTests("apps Tests");
 		suite.addTestSuite(EnvironmentManagerTest.class);
 		suite.addTestSuite(JsonEnvironmentCreatorTest.class);
+		suite.addTestSuite(EnvironmentConsoleTest.class);
 		return suite;
 	}
 

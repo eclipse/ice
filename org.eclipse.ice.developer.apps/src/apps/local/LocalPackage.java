@@ -120,6 +120,15 @@ public interface LocalPackage extends EPackage {
 	int LOCAL_ENVIRONMENT__STATE = AppsPackage.IENVIRONMENT__STATE;
 
 	/**
+	 * The feature id for the '<em><b>Console</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOCAL_ENVIRONMENT__CONSOLE = AppsPackage.IENVIRONMENT__CONSOLE;
+
+	/**
 	 * The number of structural features of the '<em>Environment</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

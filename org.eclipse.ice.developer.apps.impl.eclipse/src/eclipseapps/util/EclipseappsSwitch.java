@@ -2,6 +2,7 @@
  */
 package eclipseapps.util;
 
+import apps.EnvironmentConsole;
 import apps.EnvironmentStorage;
 import apps.LanguageProjectProvider;
 import apps.ProjectLauncher;
@@ -94,6 +95,13 @@ public class EclipseappsSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case EclipseappsPackage.ECLIPSE_ENVIRONMENT_CONSOLE: {
+				EclipseEnvironmentConsole eclipseEnvironmentConsole = (EclipseEnvironmentConsole)theEObject;
+				T result = caseEclipseEnvironmentConsole(eclipseEnvironmentConsole);
+				if (result == null) result = caseEnvironmentConsole(eclipseEnvironmentConsole);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -140,6 +148,21 @@ public class EclipseappsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEclipseCppProjectProvider(EclipseCppProjectProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Eclipse Environment Console</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Eclipse Environment Console</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEclipseEnvironmentConsole(EclipseEnvironmentConsole object) {
 		return null;
 	}
 
@@ -200,6 +223,21 @@ public class EclipseappsSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseLanguageProjectProvider(LanguageProjectProvider object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Environment Console</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Environment Console</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEnvironmentConsole(EnvironmentConsole object) {
 		return null;
 	}
 

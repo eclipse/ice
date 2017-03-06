@@ -4,6 +4,7 @@ package apps.impl;
 
 import apps.AppsFactory;
 import apps.AppsPackage;
+import apps.EnvironmentConsole;
 import apps.EnvironmentManager;
 import apps.EnvironmentState;
 import apps.JsonEnvironmentCreator;
@@ -71,6 +72,7 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 			case AppsPackage.OS_PACKAGE: return createOSPackage();
 			case AppsPackage.SPACK_DEPENDENCY: return createSpackDependency();
 			case AppsPackage.JSON_ENVIRONMENT_CREATOR: return createJsonEnvironmentCreator();
+			case AppsPackage.ENVIRONMENT_CONSOLE: return createEnvironmentConsole();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -168,6 +170,16 @@ public class AppsFactoryImpl extends EFactoryImpl implements AppsFactory {
 	public JsonEnvironmentCreator createJsonEnvironmentCreator() {
 		JsonEnvironmentCreatorImpl jsonEnvironmentCreator = new JsonEnvironmentCreatorImpl();
 		return jsonEnvironmentCreator;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnvironmentConsole createEnvironmentConsole() {
+		EnvironmentConsoleImpl environmentConsole = new EnvironmentConsoleImpl();
+		return environmentConsole;
 	}
 
 	/**

@@ -1,9 +1,9 @@
 /**
  */
-package eclipseapps.tests;
+package apps.tests;
 
-import eclipseapps.EclipseCppProjectProvider;
-import eclipseapps.EclipseappsFactory;
+import apps.AppsFactory;
+import apps.EnvironmentConsole;
 
 import junit.framework.TestCase;
 
@@ -11,25 +11,25 @@ import junit.textui.TestRunner;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Eclipse Cpp Project Provider</b></em>'.
+ * A test case for the model object '<em><b>Environment Console</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link apps.LanguageProjectProvider#createProject(java.lang.String) <em>Create Project</em>}</li>
+ *   <li>{@link apps.EnvironmentConsole#print(java.lang.String) <em>Print</em>}</li>
  * </ul>
  * </p>
  * @generated
  */
-public class EclipseCppProjectProviderTest extends TestCase {
+public class EnvironmentConsoleTest extends TestCase {
 
 	/**
-	 * The fixture for this Eclipse Cpp Project Provider test case.
+	 * The fixture for this Environment Console test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected EclipseCppProjectProvider fixture = null;
+	protected EnvironmentConsole fixture = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -37,36 +37,36 @@ public class EclipseCppProjectProviderTest extends TestCase {
 	 * @generated
 	 */
 	public static void main(String[] args) {
-		TestRunner.run(EclipseCppProjectProviderTest.class);
+		TestRunner.run(EnvironmentConsoleTest.class);
 	}
 
 	/**
-	 * Constructs a new Eclipse Cpp Project Provider test case with the given name.
+	 * Constructs a new Environment Console test case with the given name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EclipseCppProjectProviderTest(String name) {
+	public EnvironmentConsoleTest(String name) {
 		super(name);
 	}
 
 	/**
-	 * Sets the fixture for this Eclipse Cpp Project Provider test case.
+	 * Sets the fixture for this Environment Console test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected void setFixture(EclipseCppProjectProvider fixture) {
+	protected void setFixture(EnvironmentConsole fixture) {
 		this.fixture = fixture;
 	}
 
 	/**
-	 * Returns the fixture for this Eclipse Cpp Project Provider test case.
+	 * Returns the fixture for this Environment Console test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected EclipseCppProjectProvider getFixture() {
+	protected EnvironmentConsole getFixture() {
 		return fixture;
 	}
 
@@ -78,7 +78,7 @@ public class EclipseCppProjectProviderTest extends TestCase {
 	 */
 	@Override
 	protected void setUp() throws Exception {
-		setFixture(EclipseappsFactory.eINSTANCE.createEclipseCppProjectProvider());
+		setFixture(AppsFactory.eINSTANCE.createEnvironmentConsole());
 	}
 
 	/**
@@ -93,16 +93,16 @@ public class EclipseCppProjectProviderTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link apps.LanguageProjectProvider#createProject(java.lang.String) <em>Create Project</em>}' operation.
+	 * Tests the '{@link apps.EnvironmentConsole#print(java.lang.String) <em>Print</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see apps.LanguageProjectProvider#createProject(java.lang.String)
+	 * @see apps.EnvironmentConsole#print(java.lang.String)
 	 * @generated
 	 */
-	public void testCreateProject__String_1() {
+	public void testPrint__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();
 	}
 
-} //EclipseCppProjectProviderTest
+} //EnvironmentConsoleTest

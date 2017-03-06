@@ -2,6 +2,7 @@
  */
 package apps.docker.impl;
 
+import apps.EnvironmentConsole;
 import apps.docker.ContainerConfiguration;
 import apps.docker.DockerAPI;
 import apps.docker.DockerPackage;
@@ -44,6 +45,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 
 	private boolean imageBuildSuccess = true;
 
+	private EnvironmentConsole console;
+	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 */
@@ -56,6 +59,11 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 			e.printStackTrace();
 		}
 		dockerClient = builder.build();
+	}
+
+	@Override
+	public void setEnvironmentConsole(EnvironmentConsole c) {
+		console = c;
 	}
 
 	/**
@@ -76,11 +84,11 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 			dockerClient.build(Paths.get(buildDir), imagename, new ProgressHandler() {
 				@Override
 				public void progress(ProgressMessage message) throws DockerException {
-					if (message.stream() != null) {
-						System.out.println("[DockerBuild] " + message.stream());
+					if (message.stream() != null && console != null) {
+						DockerAPIImpl.this.console.print("[DockerBuild] " + message.stream());
 					}
-					if (message.error() != null) {
-						System.out.println("Error in building image: " + message.error());
+					if (message.error() != null && console != null) {
+						DockerAPIImpl.this.console.print("Error in building image: " + message.error());
 						DockerAPIImpl.this.imageBuildSuccess = false;
 					}
 
@@ -142,6 +150,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 			// Get the dynamically assigned port
 			port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
 			config.setRemoteSSHPort(Integer.valueOf(port));
+			
+			console.print("Container launched with name " + config.getName() + " with remote SSH port " + port);
 			return true;
 		}
 

@@ -2,6 +2,7 @@
  */
 package apps.docker.impl;
 
+import apps.EnvironmentConsole;
 import apps.LanguageProjectProvider;
 import apps.SourcePackage;
 
@@ -31,6 +32,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * </p>
  * <ul>
  *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getLanguageprojectprovider <em>Languageprojectprovider</em>}</li>
+ *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getEnvironmentconsole <em>Environmentconsole</em>}</li>
  *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getContainerconfiguration <em>Containerconfiguration</em>}</li>
  * </ul>
  *
@@ -46,6 +48,15 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 	 * @ordered
 	 */
 	protected LanguageProjectProvider languageprojectprovider;
+	/**
+	 * The cached value of the '{@link #getEnvironmentconsole() <em>Environmentconsole</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getEnvironmentconsole()
+	 * @generated
+	 * @ordered
+	 */
+	protected EnvironmentConsole environmentconsole;
 	/**
 	 * The cached value of the '{@link #getContainerconfiguration() <em>Containerconfiguration</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -123,6 +134,49 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EnvironmentConsole getEnvironmentconsole() {
+		return environmentconsole;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetEnvironmentconsole(EnvironmentConsole newEnvironmentconsole, NotificationChain msgs) {
+		EnvironmentConsole oldEnvironmentconsole = environmentconsole;
+		environmentconsole = newEnvironmentconsole;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE, oldEnvironmentconsole, newEnvironmentconsole);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setEnvironmentconsole(EnvironmentConsole newEnvironmentconsole) {
+		if (newEnvironmentconsole != environmentconsole) {
+			NotificationChain msgs = null;
+			if (environmentconsole != null)
+				msgs = ((InternalEObject)environmentconsole).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE, null, msgs);
+			if (newEnvironmentconsole != null)
+				msgs = ((InternalEObject)newEnvironmentconsole).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE, null, msgs);
+			msgs = basicSetEnvironmentconsole(newEnvironmentconsole, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE, newEnvironmentconsole, newEnvironmentconsole));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ContainerConfiguration getContainerconfiguration() {
 		if (containerconfiguration != null && containerconfiguration.eIsProxy()) {
 			InternalEObject oldContainerconfiguration = (InternalEObject)containerconfiguration;
@@ -174,6 +228,8 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 		switch (featureID) {
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER:
 				return basicSetLanguageprojectprovider(null, msgs);
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE:
+				return basicSetEnvironmentconsole(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -188,6 +244,8 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 		switch (featureID) {
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER:
 				return getLanguageprojectprovider();
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE:
+				return getEnvironmentconsole();
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				if (resolve) return getContainerconfiguration();
 				return basicGetContainerconfiguration();
@@ -205,6 +263,9 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 		switch (featureID) {
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER:
 				setLanguageprojectprovider((LanguageProjectProvider)newValue);
+				return;
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE:
+				setEnvironmentconsole((EnvironmentConsole)newValue);
 				return;
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				setContainerconfiguration((ContainerConfiguration)newValue);
@@ -224,6 +285,9 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER:
 				setLanguageprojectprovider((LanguageProjectProvider)null);
 				return;
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE:
+				setEnvironmentconsole((EnvironmentConsole)null);
+				return;
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				setContainerconfiguration((ContainerConfiguration)null);
 				return;
@@ -241,6 +305,8 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 		switch (featureID) {
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__LANGUAGEPROJECTPROVIDER:
 				return languageprojectprovider != null;
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__ENVIRONMENTCONSOLE:
+				return environmentconsole != null;
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				return containerconfiguration != null;
 		}

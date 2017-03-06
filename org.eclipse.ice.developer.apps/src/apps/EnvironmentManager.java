@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link apps.EnvironmentManager#getEnvironmentCreator <em>Environment Creator</em>}</li>
  *   <li>{@link apps.EnvironmentManager#getEnvironmentStorage <em>Environment Storage</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#getConsole <em>Console</em>}</li>
  * </ul>
  *
  * @see apps.AppsPackage#getEnvironmentManager()
@@ -79,6 +80,32 @@ public interface EnvironmentManager extends EObject {
 	 * @generated
 	 */
 	void setEnvironmentStorage(EnvironmentStorage value);
+
+	/**
+	 * Returns the value of the '<em><b>Console</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Console</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Console</em>' containment reference.
+	 * @see #setConsole(EnvironmentConsole)
+	 * @see apps.AppsPackage#getEnvironmentManager_Console()
+	 * @model containment="true" required="true"
+	 * @generated
+	 */
+	EnvironmentConsole getConsole();
+
+	/**
+	 * Sets the value of the '{@link apps.EnvironmentManager#getConsole <em>Console</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Console</em>' containment reference.
+	 * @see #getConsole()
+	 * @generated
+	 */
+	void setConsole(EnvironmentConsole value);
 
 	/**
 	 * <!-- begin-user-doc -->

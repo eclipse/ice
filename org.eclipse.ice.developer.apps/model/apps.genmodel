@@ -24,6 +24,7 @@
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//IEnvironment/primaryApp"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference apps.ecore#//IEnvironment/projectlauncher"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//IEnvironment/state"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//IEnvironment/console"/>
       <genOperations ecoreOperation="apps.ecore#//IEnvironment/build"/>
       <genOperations ecoreOperation="apps.ecore#//IEnvironment/connect"/>
       <genOperations ecoreOperation="apps.ecore#//IEnvironment/delete"/>
@@ -32,6 +33,7 @@
     <genClasses ecoreClass="apps.ecore#//EnvironmentManager">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//EnvironmentManager/environmentCreator"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//EnvironmentManager/environmentStorage"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//EnvironmentManager/console"/>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/create">
         <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/create/dataString"/>
       </genOperations>
@@ -66,6 +68,7 @@
     </genClasses>
     <genClasses image="false" ecoreClass="apps.ecore#//ProjectLauncher">
       <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//ProjectLauncher/languageprojectprovider"/>
+      <genFeatures children="true" createChild="true" propertySortChoices="true" ecoreFeature="ecore:EReference apps.ecore#//ProjectLauncher/environmentconsole"/>
       <genOperations ecoreOperation="apps.ecore#//ProjectLauncher/launchProject">
         <genParameters ecoreParameter="apps.ecore#//ProjectLauncher/launchProject/project"/>
       </genOperations>
@@ -100,6 +103,11 @@
     <genClasses image="false" ecoreClass="apps.ecore#//LanguageProjectProvider">
       <genOperations ecoreOperation="apps.ecore#//LanguageProjectProvider/createProject">
         <genParameters ecoreParameter="apps.ecore#//LanguageProjectProvider/createProject/projectName"/>
+      </genOperations>
+    </genClasses>
+    <genClasses ecoreClass="apps.ecore#//EnvironmentConsole">
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentConsole/print">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentConsole/print/message"/>
       </genOperations>
     </genClasses>
     <nestedGenPackages prefix="Docker" basePackage="apps" disposableProviderFactory="true"
