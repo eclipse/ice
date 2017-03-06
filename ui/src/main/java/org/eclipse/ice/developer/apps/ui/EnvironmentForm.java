@@ -15,6 +15,7 @@ import com.vaadin.ui.VerticalLayout;
  */
 public class EnvironmentForm extends HorizontalLayout {
 	DockerForm dockerView = new DockerForm();
+	FolderForm folderView = new FolderForm();
 	private VerticalLayout vLayout = new VerticalLayout();
 	private OptionGroup installTypeOptGroup = new OptionGroup();
 	private Label titleLabel = new Label();
@@ -35,7 +36,20 @@ public class EnvironmentForm extends HorizontalLayout {
 		vLayout.addComponents(titleLabel, installTypeOptGroup);
 		vLayout.setMargin(new MarginInfo(false,true,false,true));
 		vLayout.setSpacing(true);
-		addComponents(vLayout, dockerView);
+		addComponents(vLayout);
+		installTypeOptGroup.addValueChangeListener( e -> {
+			if (this.installTypeOptGroup.getValue().equals("Docker")) {
+				if (folderView.isVisible()) {
+					removeComponent(folderView);
+				}
+				addComponent(dockerView);
+			} else {
+				if (dockerView.isVisible()) {
+					removeComponent(dockerView);				
+				}
+				addComponent(folderView);
+			}			
+		});
 	}
 
 }
