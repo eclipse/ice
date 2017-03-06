@@ -44,6 +44,7 @@ public class AppsUI extends UI {
 	private HorizontalLayout gitAndOsBtnsLayout = new  HorizontalLayout();
 	private HorizontalLayout cnlAndValBtnsLayout = new  HorizontalLayout();
 	private HorizontalLayout advancedLayout = new  HorizontalLayout();
+	private VerticalLayout envLayout = new  VerticalLayout();
 	private VerticalLayout pkgPanelLayout = new VerticalLayout();
 	private VerticalLayout pkgListLayout = new VerticalLayout();
 	private VerticalLayout pkgDescrLayout = new VerticalLayout();
@@ -59,6 +60,7 @@ public class AppsUI extends UI {
 	private AddRepoWindow repoWindow = new AddRepoWindow();
 	private AddOSWindow osWindow = new AddOSWindow();
 	private List<Object> pkgItems;
+	private EnvironmentForm env = new EnvironmentForm();
 
 	JSONParser parser = new JSONParser();
 	JSONObject spackPackages;
@@ -75,6 +77,7 @@ public class AppsUI extends UI {
 		try {
 			obj = parser.parse(new FileReader(
 			        "/home/..../ui/src/main/resources/packages.json")); // add here your path to json file
+					 
 			spackPackages = (JSONObject) obj;
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
@@ -163,8 +166,10 @@ public class AppsUI extends UI {
     	advancedButton.addClickListener( e -> {
     		if (advancedButton.getIcon().equals(FontAwesome.CARET_RIGHT)) {
     			advancedButton.setIcon(FontAwesome.CARET_DOWN);
+    			envLayout.addComponent(env);
     		} else {
     			advancedButton.setIcon(FontAwesome.CARET_RIGHT);
+    			envLayout.removeComponent(env);
     		}
     	});
     	advancedButton.setWidth("25px");
@@ -181,7 +186,7 @@ public class AppsUI extends UI {
     	cnlAndValBtnsLayout.setMargin(new MarginInfo(false,true,false,false));
 
 		cnlAndValBtnsLayout.setSpacing(true);
-		mainLayout.addComponents(gitAndOsBtnsLayout, advancedLayout, cnlAndValBtnsLayout);
+		mainLayout.addComponents(gitAndOsBtnsLayout, advancedLayout, envLayout, cnlAndValBtnsLayout);
 		mainLayout.setComponentAlignment(cnlAndValBtnsLayout, Alignment.BOTTOM_RIGHT);
     	mainLayout.setMargin(true);
     	mainLayout.setSpacing(true);

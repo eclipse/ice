@@ -19,6 +19,7 @@ public class PackageForm extends VerticalLayout {
 	private CssLayout cssLayout = new CssLayout();
 	private VerticalLayout vLayout = new VerticalLayout();
 	private Label pkgDescrTxtField = new Label();
+	
 	/**
 	 * @return the pkgDescrTxtField
 	 */
