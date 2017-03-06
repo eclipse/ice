@@ -76,8 +76,8 @@ public class AppsUI extends UI {
     	
 		try {
 			obj = parser.parse(new FileReader(
-			        "/home/..../ui/src/main/resources/packages.json")); // add here your path to json file
-					 
+			        //"/home/..../ui/src/main/resources/packages.json")); // add here your path to json file
+					"/home/kfu/Documents/appstore-workspace/ui/src/main/resources/packages.json"));
 			spackPackages = (JSONObject) obj;
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
