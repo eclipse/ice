@@ -331,13 +331,31 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS = 10;
 
 	/**
+	 * The operation id for the '<em>Start All Stopped Environments</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS = 11;
+
+	/**
+	 * The operation id for the '<em>Stopp Running Environments</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS = 12;
+
+	/**
 	 * The number of operations of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 11;
+	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 13;
 
 	/**
 	 * The meta object id for the '{@link apps.Package <em>Package</em>}' class.
@@ -1218,6 +1236,26 @@ public interface AppsPackage extends EPackage {
 	EOperation getEnvironmentManager__LoadEnvironments();
 
 	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#startAllStoppedEnvironments() <em>Start All Stopped Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Start All Stopped Environments</em>' operation.
+	 * @see apps.EnvironmentManager#startAllStoppedEnvironments()
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__StartAllStoppedEnvironments();
+
+	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Stopp Running Environments</em>' operation.
+	 * @see apps.EnvironmentManager#stoppRunningEnvironments()
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__StoppRunningEnvironments();
+
+	/**
 	 * Returns the meta object for class '{@link apps.SpackPackage <em>Spack Package</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1802,6 +1840,22 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__LoadEnvironments();
+
+		/**
+		 * The meta object literal for the '<em><b>Start All Stopped Environments</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__StartAllStoppedEnvironments();
+
+		/**
+		 * The meta object literal for the '<em><b>Stopp Running Environments</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__StoppRunningEnvironments();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.SpackPackageImpl <em>Spack Package</em>}' class.

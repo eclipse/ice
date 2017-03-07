@@ -118,6 +118,8 @@
       <eParameters name="xmiStr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
     <eOperations name="loadEnvironments"/>
+    <eOperations name="startAllStoppedEnvironments"/>
+    <eOperations name="stoppRunningEnvironments"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentCreator" eType="#//EnvironmentCreator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentStorage" lowerBound="1"
         eType="#//EnvironmentStorage"/>
@@ -305,6 +307,8 @@
       <eOperations name="stopContainer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Boolean">
         <eParameters name="id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="containerRemotePort"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainerConfiguration">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -348,8 +352,12 @@
         </eAnnotations>
         <eParameters name="project" eType="#//SourcePackage"/>
       </eOperations>
+      <eOperations name="updateConnection">
+        <eParameters name="port" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="containerconfiguration"
           eType="#//docker/ContainerConfiguration"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="projectName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="local" nsURI="https://eclipse.org/apps/local" nsPrefix="localenvironment">

@@ -19,6 +19,7 @@ import apps.SourcePackage;
  * </p>
  * <ul>
  *   <li>{@link apps.docker.DockerProjectLauncher#getContainerconfiguration <em>Containerconfiguration</em>}</li>
+ *   <li>{@link apps.docker.DockerProjectLauncher#getProjectName <em>Project Name</em>}</li>
  * </ul>
  *
  * @see apps.docker.DockerPackage#getDockerProjectLauncher()
@@ -53,6 +54,32 @@ public interface DockerProjectLauncher extends ProjectLauncher {
 	void setContainerconfiguration(ContainerConfiguration value);
 
 	/**
+	 * Returns the value of the '<em><b>Project Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Project Name</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Project Name</em>' attribute.
+	 * @see #setProjectName(String)
+	 * @see apps.docker.DockerPackage#getDockerProjectLauncher_ProjectName()
+	 * @model
+	 * @generated
+	 */
+	String getProjectName();
+
+	/**
+	 * Sets the value of the '{@link apps.docker.DockerProjectLauncher#getProjectName <em>Project Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Project Name</em>' attribute.
+	 * @see #getProjectName()
+	 * @generated
+	 */
+	void setProjectName(String value);
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
@@ -61,5 +88,13 @@ public interface DockerProjectLauncher extends ProjectLauncher {
 	 * @model
 	 */
 	boolean launchProject(SourcePackage project);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void updateConnection(int port);
 
 } // DockerProjectLauncher

@@ -597,8 +597,17 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 				((DockerProjectLauncher) projectlauncher).setContainerconfiguration(containerConfiguration);
 				return projectlauncher.launchProject((SourcePackage) getPrimaryApp());
 			}
+			
+			
 		} else if (getState().equals(EnvironmentState.STOPPED)) {
-			docker.connectToExistingContainer(containerConfiguration.getId());
+			DockerProjectLauncher launcher = (DockerProjectLauncher) projectlauncher;
+			
+			String containerid = containerConfiguration.getId();
+			System.out.println("Connecting to existing container - " + getName() + ", " + containerConfiguration.getId());
+			docker.connectToExistingContainer(containerid);
+			launcher.updateConnection(docker.getContainerRemotePort());
+			state = EnvironmentState.RUNNING;
+		
 		} else {
 			return false;
 		}
@@ -611,7 +620,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 */
 	public boolean delete() {
-		return docker.deleteContainer(containerConfiguration.getId()) && docker.deleteImage(getName());
+		return docker.deleteContainer(containerConfiguration.getId());
 	}
 
 	/**
@@ -619,6 +628,7 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 */
 	public boolean stop() {
+		state = EnvironmentState.STOPPED;
 		return docker.stopContainer(containerConfiguration.getId());
 	}
 

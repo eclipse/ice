@@ -17,6 +17,7 @@ import junit.textui.TestRunner;
  * The following operations are tested:
  * <ul>
  *   <li>{@link apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}</li>
+ *   <li>{@link apps.docker.DockerProjectLauncher#updateConnection(int) <em>Update Connection</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -102,6 +103,19 @@ public class DockerProjectLauncherTest extends TestCase {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		assertTrue(true);// nothing really to do here
+	}
+
+	/**
+	 * Tests the '{@link apps.docker.DockerProjectLauncher#updateConnection(int) <em>Update Connection</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.docker.DockerProjectLauncher#updateConnection(int)
+	 * @generated
+	 */
+	public void testUpdateConnection__int() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 } //DockerProjectLauncherTest

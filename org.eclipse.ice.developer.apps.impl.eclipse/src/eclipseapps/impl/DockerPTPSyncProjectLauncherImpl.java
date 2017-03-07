@@ -23,9 +23,12 @@ import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.ptp.internal.rdt.sync.ui.handlers.CommonSyncExceptionHandler;
+import org.eclipse.ptp.rdt.sync.core.SyncConfig;
+import org.eclipse.ptp.rdt.sync.core.SyncConfigManager;
 import org.eclipse.ptp.rdt.sync.core.SyncFlag;
 import org.eclipse.ptp.rdt.sync.core.SyncManager;
 import org.eclipse.ptp.rdt.sync.core.SyncManager.SyncMode;
+import org.eclipse.ptp.rdt.sync.core.exceptions.MissingConnectionException;
 import org.eclipse.remote.core.IRemoteConnection;
 import org.eclipse.remote.core.IRemoteConnectionHostService;
 import org.eclipse.remote.core.IRemoteConnectionType;
@@ -89,6 +92,7 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 	 */
 	@SuppressWarnings("restriction")
 	public boolean launchProject(SourcePackage proj) {
+		
 		// Create the IProject in a language appropriate manner
 		// FIXME add more than C++
 		EclipseCppProjectProviderImpl provider = (EclipseCppProjectProviderImpl) EclipseappsFactory.eINSTANCE
@@ -98,13 +102,15 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 		int port = containerconfiguration.getRemoteSSHPort();
 		IRemoteServicesManager remoteManager = getService(IRemoteServicesManager.class);
 
+		this.projectName = proj.getName();
+		
 		// If valid, continue on an get the IRemoteConnection
 		if (remoteManager != null) {
 
 			// Get the connection type - basically Jsch is index 0
 			IRemoteConnectionType connectionType = remoteManager.getRemoteConnectionTypes().get(0);
 			IRemoteConnectionWorkingCopy workingCopy = null;
-
+			
 			try {
 				workingCopy = connectionType.newConnection("Docker Host - localhost:" + port);
 			} catch (RemoteConnectionException e1) {
@@ -205,7 +211,7 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 		}
 
 		provider.configure();
-
+		
 		return true;
 	}
 
@@ -238,7 +244,6 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 		String[] splitNewLine = writer.toString().split("\n");
 		for (String s : splitNewLine) {
 			if (!s.equals("/projects/xacc/.git")) {
-				System.out.println("Line: " + s);
 				String[] rmcmd = new String[] { "/bin/bash", "-c", "rm -rf " + s };
 				// Create the process builder for the remote job
 				IRemoteProcessBuilder rmProcessBuilder = processService.getProcessBuilder(rmcmd);
@@ -261,12 +266,35 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				System.out.println("REMOVED: \n" + rmWriter.toString());
 			}
 		}
 	}
 
+	@Override
+	public void updateConnection(int port) {
+		SyncConfig config = SyncConfigManager
+				.getActive(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName));
+		try {
+			IRemoteConnection conn = config.getRemoteConnection();
+			IRemoteConnectionWorkingCopy copy = conn.getWorkingCopy();
+			IRemoteConnectionHostService hostService = copy.getService(IRemoteConnectionHostService.class);
+			hostService.setPort(port);
+			hostService.setUsePassword(true);
+			hostService.setHostname("localhost");
+			hostService.setPassword("password");
+			hostService.setUsername("root");
+			copy.setName("Docker Host - localhost:" + port);
+			conn = copy.save();
+			config.setConnection(conn);
+		} catch (MissingConnectionException | RemoteConnectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated

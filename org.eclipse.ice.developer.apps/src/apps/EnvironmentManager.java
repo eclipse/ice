@@ -222,4 +222,20 @@ public interface EnvironmentManager extends EObject {
 	 */
 	void loadEnvironments();
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void startAllStoppedEnvironments();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void stoppRunningEnvironments();
+
 } // EnvironmentManager

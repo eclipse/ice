@@ -30,6 +30,8 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.EnvironmentManager#createEmpty(java.lang.String) <em>Create Empty</em>}</li>
  *   <li>{@link apps.EnvironmentManager#loadFromXMI(java.lang.String) <em>Load From XMI</em>}</li>
  *   <li>{@link apps.EnvironmentManager#loadEnvironments() <em>Load Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#startAllStoppedEnvironments() <em>Start All Stopped Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -303,6 +305,32 @@ public class EnvironmentManagerTest extends TestCase {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		//fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#startAllStoppedEnvironments() <em>Start All Stopped Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#startAllStoppedEnvironments()
+	 * @generated
+	 */
+	public void testStartAllStoppedEnvironments() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#stoppRunningEnvironments()
+	 * @generated
+	 */
+	public void testStoppRunningEnvironments() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
 	}
 
 } // EnvironmentManagerTest

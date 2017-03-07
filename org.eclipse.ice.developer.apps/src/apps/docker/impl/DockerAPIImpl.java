@@ -15,10 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
-
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import com.spotify.docker.client.DefaultDockerClient;
@@ -36,16 +37,44 @@ import com.spotify.docker.client.messages.ProgressMessage;
 /**
  * <!-- begin-user-doc --> An implementation of the model object
  * '<em><b>API</b></em>'. <!-- end-user-doc -->
+ * <p>
+ * The following features are implemented:
+ * </p>
+ * <ul>
+ *   <li>{@link apps.docker.impl.DockerAPIImpl#getContainerRemotePort <em>Container Remote Port</em>}</li>
+ * </ul>
  *
  * @generated
  */
 public class DockerAPIImpl extends MinimalEObjectImpl.Container implements DockerAPI {
+
+	/**
+	 * The default value of the '{@link #getContainerRemotePort() <em>Container Remote Port</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContainerRemotePort()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int CONTAINER_REMOTE_PORT_EDEFAULT = 0;
+
+	/**
+	 * The cached value of the '{@link #getContainerRemotePort() <em>Container Remote Port</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getContainerRemotePort()
+	 * @generated
+	 * @ordered
+	 */
+	protected int containerRemotePort = CONTAINER_REMOTE_PORT_EDEFAULT;
 
 	private DockerClient dockerClient;
 
 	private boolean imageBuildSuccess = true;
 
 	private EnvironmentConsole console;
+	
+	private ContainerConfiguration config;
 	
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -73,6 +102,27 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	@Override
 	protected EClass eStaticClass() {
 		return DockerPackage.Literals.DOCKER_API;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int getContainerRemotePort() {
+		return containerRemotePort;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setContainerRemotePort(int newContainerRemotePort) {
+		int oldContainerRemotePort = containerRemotePort;
+		containerRemotePort = newContainerRemotePort;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT, oldContainerRemotePort, containerRemotePort));
 	}
 
 	/**
@@ -149,8 +199,8 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 
 			// Get the dynamically assigned port
 			port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
+			containerRemotePort = Integer.valueOf(port);
 			config.setRemoteSSHPort(Integer.valueOf(port));
-			
 			console.print("Container launched with name " + config.getName() + " with remote SSH port " + port);
 			return true;
 		}
@@ -165,8 +215,12 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	public boolean connectToExistingContainer(String id) {
 		try {
 			dockerClient.startContainer(id);
+			// Query the info on the new container.
+			ContainerInfo info = dockerClient.inspectContainer(id);
+			// Get the dynamically assigned port
+			String port = info.networkSettings().ports().get("22/tcp").get(0).hostPort();
+			containerRemotePort = Integer.valueOf(port);
 		} catch (DockerException | InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -211,6 +265,64 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 	}
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
+				return getContainerRemotePort();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void eSet(int featureID, Object newValue) {
+		switch (featureID) {
+			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
+				setContainerRemotePort((Integer)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public void eUnset(int featureID) {
+		switch (featureID) {
+			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
+				setContainerRemotePort(CONTAINER_REMOTE_PORT_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public boolean eIsSet(int featureID) {
+		switch (featureID) {
+			case DockerPackage.DOCKER_API__CONTAINER_REMOTE_PORT:
+				return containerRemotePort != CONTAINER_REMOTE_PORT_EDEFAULT;
+		}
+		return super.eIsSet(featureID);
+	}
+
+	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * 
 	 */
@@ -249,6 +361,22 @@ public class DockerAPIImpl extends MinimalEObjectImpl.Container implements Docke
 				return stopContainer((String)arguments.get(0));
 		}
 		return super.eInvoke(operationID, arguments);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (containerRemotePort: ");
+		result.append(containerRemotePort);
+		result.append(')');
+		return result.toString();
 	}
 
 } // DockerAPIImpl

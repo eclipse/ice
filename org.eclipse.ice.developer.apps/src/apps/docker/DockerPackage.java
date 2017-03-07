@@ -223,13 +223,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_API = 1;
 
 	/**
+	 * The feature id for the '<em><b>Container Remote Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_API__CONTAINER_REMOTE_PORT = 0;
+
+	/**
 	 * The number of structural features of the '<em>API</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_API_FEATURE_COUNT = 0;
+	int DOCKER_API_FEATURE_COUNT = 1;
 
 	/**
 	 * The operation id for the '<em>Build Image</em>' operation.
@@ -415,13 +424,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Project Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PROJECT_LAUNCHER__PROJECT_NAME = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Project Launcher</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PROJECT_LAUNCHER_FEATURE_COUNT = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 1;
+	int DOCKER_PROJECT_LAUNCHER_FEATURE_COUNT = AppsPackage.PROJECT_LAUNCHER_FEATURE_COUNT + 2;
 
 	/**
 	 * The operation id for the '<em>Launch Project</em>' operation.
@@ -433,13 +451,22 @@ public interface DockerPackage extends EPackage {
 	int DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 0;
 
 	/**
+	 * The operation id for the '<em>Update Connection</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DOCKER_PROJECT_LAUNCHER___UPDATE_CONNECTION__INT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 1;
+
+	/**
 	 * The number of operations of the '<em>Project Launcher</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 1;
+	int DOCKER_PROJECT_LAUNCHER_OPERATION_COUNT = AppsPackage.PROJECT_LAUNCHER_OPERATION_COUNT + 2;
 
 	/**
 	 * Returns the meta object for class '{@link apps.docker.DockerEnvironment <em>Environment</em>}'.
@@ -493,6 +520,17 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getDockerAPI();
+
+	/**
+	 * Returns the meta object for the attribute '{@link apps.docker.DockerAPI#getContainerRemotePort <em>Container Remote Port</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Container Remote Port</em>'.
+	 * @see apps.docker.DockerAPI#getContainerRemotePort()
+	 * @see #getDockerAPI()
+	 * @generated
+	 */
+	EAttribute getDockerAPI_ContainerRemotePort();
 
 	/**
 	 * Returns the meta object for the '{@link apps.docker.DockerAPI#buildImage(java.lang.String, java.lang.String) <em>Build Image</em>}' operation.
@@ -652,6 +690,17 @@ public interface DockerPackage extends EPackage {
 	EReference getDockerProjectLauncher_Containerconfiguration();
 
 	/**
+	 * Returns the meta object for the attribute '{@link apps.docker.DockerProjectLauncher#getProjectName <em>Project Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Project Name</em>'.
+	 * @see apps.docker.DockerProjectLauncher#getProjectName()
+	 * @see #getDockerProjectLauncher()
+	 * @generated
+	 */
+	EAttribute getDockerProjectLauncher_ProjectName();
+
+	/**
 	 * Returns the meta object for the '{@link apps.docker.DockerProjectLauncher#launchProject(apps.SourcePackage) <em>Launch Project</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -660,6 +709,16 @@ public interface DockerPackage extends EPackage {
 	 * @generated
 	 */
 	EOperation getDockerProjectLauncher__LaunchProject__SourcePackage();
+
+	/**
+	 * Returns the meta object for the '{@link apps.docker.DockerProjectLauncher#updateConnection(int) <em>Update Connection</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Update Connection</em>' operation.
+	 * @see apps.docker.DockerProjectLauncher#updateConnection(int)
+	 * @generated
+	 */
+	EOperation getDockerProjectLauncher__UpdateConnection__int();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -727,6 +786,14 @@ public interface DockerPackage extends EPackage {
 		 * @generated
 		 */
 		EClass DOCKER_API = eINSTANCE.getDockerAPI();
+
+		/**
+		 * The meta object literal for the '<em><b>Container Remote Port</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCKER_API__CONTAINER_REMOTE_PORT = eINSTANCE.getDockerAPI_ContainerRemotePort();
 
 		/**
 		 * The meta object literal for the '<em><b>Build Image</b></em>' operation.
@@ -853,12 +920,28 @@ public interface DockerPackage extends EPackage {
 		EReference DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION = eINSTANCE.getDockerProjectLauncher_Containerconfiguration();
 
 		/**
+		 * The meta object literal for the '<em><b>Project Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute DOCKER_PROJECT_LAUNCHER__PROJECT_NAME = eINSTANCE.getDockerProjectLauncher_ProjectName();
+
+		/**
 		 * The meta object literal for the '<em><b>Launch Project</b></em>' operation.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EOperation DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE = eINSTANCE.getDockerProjectLauncher__LaunchProject__SourcePackage();
+
+		/**
+		 * The meta object literal for the '<em><b>Update Connection</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation DOCKER_PROJECT_LAUNCHER___UPDATE_CONNECTION__INT = eINSTANCE.getDockerProjectLauncher__UpdateConnection__int();
 
 	}
 

@@ -15,12 +15,44 @@ import apps.EnvironmentConsole;
  * The DockerAPI provides a high-level abstraction for performing Docker-specific tasks. 
  * <!-- end-model-doc -->
  *
+ * <p>
+ * The following features are supported:
+ * </p>
+ * <ul>
+ *   <li>{@link apps.docker.DockerAPI#getContainerRemotePort <em>Container Remote Port</em>}</li>
+ * </ul>
  *
  * @see apps.docker.DockerPackage#getDockerAPI()
  * @model
  * @generated
  */
 public interface DockerAPI extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Container Remote Port</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Container Remote Port</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Container Remote Port</em>' attribute.
+	 * @see #setContainerRemotePort(int)
+	 * @see apps.docker.DockerPackage#getDockerAPI_ContainerRemotePort()
+	 * @model
+	 * @generated
+	 */
+	int getContainerRemotePort();
+
+	/**
+	 * Sets the value of the '{@link apps.docker.DockerAPI#getContainerRemotePort <em>Container Remote Port</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Container Remote Port</em>' attribute.
+	 * @see #getContainerRemotePort()
+	 * @generated
+	 */
+	void setContainerRemotePort(int value);
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -14,17 +14,22 @@ package org.eclipse.ice.developer.actions;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.PlatformUI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import apps.AppsFactory;
 import apps.EnvironmentManager;
 import apps.IEnvironment;
+import apps.impl.EnvironmentManagerImpl;
 import eclipseapps.EclipseappsFactory;
 
 /**
@@ -42,6 +47,8 @@ public class ICEAppStoreHandler extends AbstractHandler {
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(ICEAppStoreHandler.class);
 
+	private EnvironmentManager manager;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -51,7 +58,8 @@ public class ICEAppStoreHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
+		manager = AppsFactory.eINSTANCE.createEnvironmentManager();
+		
 		// Create the Job to be executed
 		final Job job = new WorkspaceJob("Creating Environment") {
 
@@ -59,9 +67,8 @@ public class ICEAppStoreHandler extends AbstractHandler {
 			public IStatus runInWorkspace(IProgressMonitor monitor) {
 				// Create the EnvironmentMangaer and set it up to use
 				// the Eclipse IPreferences to store IEnvironments
-				EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
-				manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
-				manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
+				ICEAppStoreHandler.this.manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
+				ICEAppStoreHandler.this.manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());
 				
 				// Show view to get Json string
 				String jsonStr = "{\n" + 
@@ -99,7 +106,7 @@ public class ICEAppStoreHandler extends AbstractHandler {
 						"      }\n" + 
 						"}";
 
-				IEnvironment environment = manager.create(jsonStr);
+				IEnvironment environment = ICEAppStoreHandler.this.manager.create(jsonStr);
 				environment.setProjectlauncher(EclipseappsFactory.eINSTANCE.createDockerPTPSyncProjectLauncher());
 				if (!environment.build() || !environment.connect()) {
 					String message = "Could not build or connect to the environment:\n";
@@ -107,12 +114,13 @@ public class ICEAppStoreHandler extends AbstractHandler {
 					new Status(IStatus.ERROR, "org.eclipse.ice.developer.action.ICEAppStoreHandler", 1, message, null);
 				}
 				
-				manager.persistEnvironments();
+				ICEAppStoreHandler.this.manager.persistEnvironments();
 				return Status.OK_STATUS;
 			}
 		};
 
 		job.schedule();
+		
 		return null;
 	}
 

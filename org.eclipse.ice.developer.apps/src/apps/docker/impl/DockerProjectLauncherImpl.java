@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getLanguageprojectprovider <em>Languageprojectprovider</em>}</li>
  *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getEnvironmentconsole <em>Environmentconsole</em>}</li>
  *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getContainerconfiguration <em>Containerconfiguration</em>}</li>
+ *   <li>{@link apps.docker.impl.DockerProjectLauncherImpl#getProjectName <em>Project Name</em>}</li>
  * </ul>
  *
  * @generated
@@ -66,6 +67,25 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 	 * @ordered
 	 */
 	protected ContainerConfiguration containerconfiguration;
+
+	/**
+	 * The default value of the '{@link #getProjectName() <em>Project Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProjectName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String PROJECT_NAME_EDEFAULT = null;
+	/**
+	 * The cached value of the '{@link #getProjectName() <em>Project Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getProjectName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String projectName = PROJECT_NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -213,9 +233,41 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getProjectName() {
+		return projectName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setProjectName(String newProjectName) {
+		String oldProjectName = projectName;
+		projectName = newProjectName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DockerPackage.DOCKER_PROJECT_LAUNCHER__PROJECT_NAME, oldProjectName, projectName));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
 	 */
 	public boolean launchProject(SourcePackage project) {
 		throw new UnsupportedOperationException("This method is not meant to be called. Implementations left to subclasses.");
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void updateConnection(int port) {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
 	}
 
 	/**
@@ -249,6 +301,8 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				if (resolve) return getContainerconfiguration();
 				return basicGetContainerconfiguration();
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__PROJECT_NAME:
+				return getProjectName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -269,6 +323,9 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 				return;
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				setContainerconfiguration((ContainerConfiguration)newValue);
+				return;
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__PROJECT_NAME:
+				setProjectName((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -291,6 +348,9 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				setContainerconfiguration((ContainerConfiguration)null);
 				return;
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__PROJECT_NAME:
+				setProjectName(PROJECT_NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -309,6 +369,8 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 				return environmentconsole != null;
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER__CONTAINERCONFIGURATION:
 				return containerconfiguration != null;
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER__PROJECT_NAME:
+				return PROJECT_NAME_EDEFAULT == null ? projectName != null : !PROJECT_NAME_EDEFAULT.equals(projectName);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -323,8 +385,27 @@ public class DockerProjectLauncherImpl extends MinimalEObjectImpl.Container impl
 		switch (operationID) {
 			case DockerPackage.DOCKER_PROJECT_LAUNCHER___LAUNCH_PROJECT__SOURCEPACKAGE:
 				return launchProject((SourcePackage)arguments.get(0));
+			case DockerPackage.DOCKER_PROJECT_LAUNCHER___UPDATE_CONNECTION__INT:
+				updateConnection((Integer)arguments.get(0));
+				return null;
 		}
 		return super.eInvoke(operationID, arguments);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (projectName: ");
+		result.append(projectName);
+		result.append(')');
+		return result.toString();
 	}
 
 } //DockerProjectLauncherImpl

@@ -107,6 +107,7 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		environments = new HashMap<String, IEnvironment>();
 		
 		console = AppsFactory.eINSTANCE.createEnvironmentConsole();
+		
 	}
 
 	/**
@@ -295,11 +296,11 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		AppsPackage.eINSTANCE.eClass();
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 		Map<String, Object> m = reg.getExtensionToFactoryMap();
-		m.put("app", new XMIResourceFactoryImpl());
+		m.put("env", new XMIResourceFactoryImpl());
 		// Obtain a new resource set
 		ResourceSet resSet = new ResourceSetImpl();
 		// Get the resource
-		Resource resource = resSet.getResource(URI.createURI(fileName), true);
+		Resource resource = resSet.getResource(URI.createFileURI(fileName), true);
 		// Get the first model element and cast it to the right type, in my
 		// example everything is hierarchical included in this first node
 		IEnvironment environment = (IEnvironment) resource.getContents().get(0);
@@ -488,7 +489,8 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 */
 	public IEnvironment loadFromXMI(String xmiStr) {
-		String tempFileLocation = System.getProperty("user.dir") + System.getProperty("file.separator") + ".temp.app";
+		
+		String tempFileLocation = System.getProperty("user.home") + System.getProperty("file.separator") + "temp.env";
 		File tempFile = new File(tempFileLocation);
 		try {
 			FileUtils.writeStringToFile(tempFile, xmiStr);
@@ -501,7 +503,6 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		return env;
 	}
 
-
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -510,7 +511,34 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		if (environmentStorage != null) {
 			EList<IEnvironment> envs = environmentStorage.load();
 			for (IEnvironment e : envs) {
+				System.out.println("Loading saved environment - " + e.getName());
 				environments.put(e.getName(), e);
+			}
+		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public void startAllStoppedEnvironments() {
+		for (IEnvironment e : environments.values()) {
+			System.out.println("looking for stopped envs - " + e.getName() + ", " + e.getState());
+			if (e.getState() == EnvironmentState.STOPPED) {
+				e.connect();
+			}
+		}
+		
+		persistEnvironments();
+	}
+
+	/**
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
+	 */
+	public void stoppRunningEnvironments() {
+		for (IEnvironment e : environments.values()) {
+			if (e.getState() == EnvironmentState.RUNNING) {
+				e.stop();
 			}
 		}
 	}
@@ -636,6 +664,12 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 				return loadFromXMI((String)arguments.get(0));
 			case AppsPackage.ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS:
 				loadEnvironments();
+				return null;
+			case AppsPackage.ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS:
+				startAllStoppedEnvironments();
+				return null;
+			case AppsPackage.ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS:
+				stoppRunningEnvironments();
 				return null;
 		}
 		return super.eInvoke(operationID, arguments);
