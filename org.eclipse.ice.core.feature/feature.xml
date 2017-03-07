@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.ice"
-      label="ICE Infrastructure Feature"
-      version="2.2.0.qualifier"
+      id="org.eclipse.ice.core.feature"
+      label="ICE Core Feature"
+      version="2.2.1"
       provider-name="Oak Ridge National Laboratory"
-      plugin="org.eclipse.ice.client.rcp"
       os="linux,macosx,win32"
       ws="cocoa,gtk,win32"
       arch="x86,x86_64">
 
    <description url="http://www.eclipse.org/ice">
-      This feature describes all of the components available for Eclipse ICE that are outside of its core functionality such as the user interface and its plugin library.
+      This feature describes all of the &quot;Core&quot; components of Eclispe
+ICE that are needed to execute the workflow engine headlessly
+including the Core, Item, Data Structures, I/O, XML persistence
+and select other bundles.
    </description>
 
    <copyright url="http://www.eclipse.org/ice">
       Copyright (c) 2011, 2014 UT-Battelle, LLC. All rights reserved.
-This program and the accompanying materials are made available under the terms of the Eclipse Public License
-v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+This program and the accompanying materials are made available
+under the terms of the Eclipse Public License
+v1.0 which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html
    </copyright>
 
    <license url="http://www.eclipse.org/ice">
@@ -77,105 +81,56 @@ Java and all Java-based trademarks are trademarks of Oracle Corporation in the U
    </license>
 
    <plugin
-         id="org.eclipse.ice.caebat.batml"
+         id="org.eclipse.ice.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.client"
+         id="org.eclipse.ice.datastructures"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.client.compatibility"
+         id="org.eclipse.ice.io"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.client.widgets"
+         id="org.eclipse.ice.item"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.client.widgets.moose"
+         id="org.eclipse.ice.persistence.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.mesh"
+         id="bcpkix"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.nek5000"
+         id="bcprov"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ice.proteus"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.reactor.plant"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.vibe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.developer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.developer.moose"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.projectgeneration"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.client.rcp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.ice.geometry"
+         id="com.spotify.docker-client.shaded"
          download-size="0"
          install-size="0"
          version="0.0.0"
