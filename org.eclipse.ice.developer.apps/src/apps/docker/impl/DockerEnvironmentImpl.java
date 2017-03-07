@@ -603,7 +603,6 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 			DockerProjectLauncher launcher = (DockerProjectLauncher) projectlauncher;
 			
 			String containerid = containerConfiguration.getId();
-			System.out.println("Connecting to existing container - " + getName() + ", " + containerConfiguration.getId());
 			docker.connectToExistingContainer(containerid);
 			launcher.updateConnection(docker.getContainerRemotePort());
 			state = EnvironmentState.RUNNING;

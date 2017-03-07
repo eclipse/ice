@@ -272,8 +272,9 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 
 	@Override
 	public void updateConnection(int port) {
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		SyncConfig config = SyncConfigManager
-				.getActive(ResourcesPlugin.getWorkspace().getRoot().getProject(projectName));
+				.getActive(project);
 		try {
 			IRemoteConnection conn = config.getRemoteConnection();
 			IRemoteConnectionWorkingCopy copy = conn.getWorkingCopy();
@@ -286,6 +287,9 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 			copy.setName("Docker Host - localhost:" + port);
 			conn = copy.save();
 			config.setConnection(conn);
+			config.setConfigName(conn.getName());
+			config.setConnectionName(conn.getName());
+			SyncConfigManager.setActive(project, config);
 		} catch (MissingConnectionException | RemoteConnectionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
