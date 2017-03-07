@@ -43,7 +43,6 @@ public class EnvironmentConsoleImpl extends MinimalEObjectImpl.Container impleme
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @generated
 	 */
 	public void print(String message) {
 		System.out.println(message);

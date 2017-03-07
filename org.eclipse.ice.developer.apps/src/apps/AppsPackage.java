@@ -863,13 +863,22 @@ public interface AppsPackage extends EPackage {
 	int LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING = 0;
 
 	/**
+	 * The operation id for the '<em>Configure</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LANGUAGE_PROJECT_PROVIDER___CONFIGURE = 1;
+
+	/**
 	 * The number of operations of the '<em>Language Project Provider</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LANGUAGE_PROJECT_PROVIDER_OPERATION_COUNT = 1;
+	int LANGUAGE_PROJECT_PROVIDER_OPERATION_COUNT = 2;
 
 	/**
 	 * The meta object id for the '{@link apps.impl.EnvironmentConsoleImpl <em>Environment Console</em>}' class.
@@ -1502,6 +1511,16 @@ public interface AppsPackage extends EPackage {
 	EOperation getLanguageProjectProvider__CreateProject__String();
 
 	/**
+	 * Returns the meta object for the '{@link apps.LanguageProjectProvider#configure() <em>Configure</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Configure</em>' operation.
+	 * @see apps.LanguageProjectProvider#configure()
+	 * @generated
+	 */
+	EOperation getLanguageProjectProvider__Configure();
+
+	/**
 	 * Returns the meta object for class '{@link apps.EnvironmentConsole <em>Environment Console</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2027,6 +2046,14 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING = eINSTANCE.getLanguageProjectProvider__CreateProject__String();
+
+		/**
+		 * The meta object literal for the '<em><b>Configure</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation LANGUAGE_PROJECT_PROVIDER___CONFIGURE = eINSTANCE.getLanguageProjectProvider__Configure();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.EnvironmentConsoleImpl <em>Environment Console</em>}' class.

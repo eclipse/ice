@@ -85,7 +85,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST_1 = AppsPackage.ENVIRONMENT_STORAGE___STORE__ELIST;
+	int ECLIPSE_ENVIRONMENT_STORAGE___STORE__ELIST = AppsPackage.ENVIRONMENT_STORAGE___STORE__ELIST;
 
 	/**
 	 * The operation id for the '<em>Load</em>' operation.
@@ -195,7 +195,16 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING_1 = AppsPackage.LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING;
+	int ECLIPSE_CPP_PROJECT_PROVIDER___CREATE_PROJECT__STRING = AppsPackage.LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING;
+
+	/**
+	 * The operation id for the '<em>Configure</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ECLIPSE_CPP_PROJECT_PROVIDER___CONFIGURE = AppsPackage.LANGUAGE_PROJECT_PROVIDER___CONFIGURE;
 
 	/**
 	 * The number of operations of the '<em>Eclipse Cpp Project Provider</em>' class.
@@ -233,7 +242,7 @@ public interface EclipseappsPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ECLIPSE_ENVIRONMENT_CONSOLE___PRINT__STRING_1 = AppsPackage.ENVIRONMENT_CONSOLE___PRINT__STRING;
+	int ECLIPSE_ENVIRONMENT_CONSOLE___PRINT__STRING = AppsPackage.ENVIRONMENT_CONSOLE___PRINT__STRING;
 
 	/**
 	 * The number of operations of the '<em>Eclipse Environment Console</em>' class.

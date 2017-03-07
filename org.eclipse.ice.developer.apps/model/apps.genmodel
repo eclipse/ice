@@ -104,6 +104,7 @@
       <genOperations ecoreOperation="apps.ecore#//LanguageProjectProvider/createProject">
         <genParameters ecoreParameter="apps.ecore#//LanguageProjectProvider/createProject/projectName"/>
       </genOperations>
+      <genOperations ecoreOperation="apps.ecore#//LanguageProjectProvider/configure"/>
     </genClasses>
     <genClasses ecoreClass="apps.ecore#//EnvironmentConsole">
       <genOperations ecoreOperation="apps.ecore#//EnvironmentConsole/print">

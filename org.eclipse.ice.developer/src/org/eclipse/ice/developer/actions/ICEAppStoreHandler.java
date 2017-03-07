@@ -107,11 +107,8 @@ public class ICEAppStoreHandler extends AbstractHandler {
 					new Status(IStatus.ERROR, "org.eclipse.ice.developer.action.ICEAppStoreHandler", 1, message, null);
 				}
 				
-				System.out.println("EnvironmentManager has " + manager.list().get(0));
-				
 				manager.persistEnvironments();
 				return Status.OK_STATUS;
-
 			}
 		};
 

@@ -19,7 +19,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.cdt.managedbuilder.core,
  org.eclipse.cdt.managedbuilder.ui
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.core.resources,
+Import-Package: org.apache.commons.io,
+ org.eclipse.core.filesystem,
+ org.eclipse.core.resources,
  org.eclipse.jface.operation,
  org.eclipse.ptp.internal.rdt.sync.git.ui,
  org.eclipse.ptp.internal.rdt.sync.ui,

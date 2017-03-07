@@ -236,6 +236,7 @@
     <eOperations name="createProject">
       <eParameters name="projectName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eOperations>
+    <eOperations name="configure"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnvironmentConsole">
     <eOperations name="print">

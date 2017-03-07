@@ -17,6 +17,7 @@ import junit.textui.TestRunner;
  * The following operations are tested:
  * <ul>
  *   <li>{@link apps.LanguageProjectProvider#createProject(java.lang.String) <em>Create Project</em>}</li>
+ *   <li>{@link apps.LanguageProjectProvider#configure() <em>Configure</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -99,7 +100,20 @@ public class EclipseCppProjectProviderTest extends TestCase {
 	 * @see apps.LanguageProjectProvider#createProject(java.lang.String)
 	 * @generated
 	 */
-	public void testCreateProject__String_1() {
+	public void testCreateProject__String() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.LanguageProjectProvider#configure() <em>Configure</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.LanguageProjectProvider#configure()
+	 * @generated
+	 */
+	public void testConfigure() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

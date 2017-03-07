@@ -23,4 +23,12 @@ public interface LanguageProjectProvider extends EObject {
 	 */
 	void createProject(String projectName);
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void configure();
+
 } // LanguageProjectProvider

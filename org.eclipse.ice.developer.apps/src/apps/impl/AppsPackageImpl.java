@@ -721,6 +721,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getLanguageProjectProvider__Configure() {
+		return languageProjectProviderEClass.getEOperations().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEnvironmentConsole() {
 		return environmentConsoleEClass;
 	}
@@ -846,6 +855,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		languageProjectProviderEClass = createEClass(LANGUAGE_PROJECT_PROVIDER);
 		createEOperation(languageProjectProviderEClass, LANGUAGE_PROJECT_PROVIDER___CREATE_PROJECT__STRING);
+		createEOperation(languageProjectProviderEClass, LANGUAGE_PROJECT_PROVIDER___CONFIGURE);
 
 		environmentConsoleEClass = createEClass(ENVIRONMENT_CONSOLE);
 		createEOperation(environmentConsoleEClass, ENVIRONMENT_CONSOLE___PRINT__STRING);
@@ -996,6 +1006,8 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 
 		op = initEOperation(getLanguageProjectProvider__CreateProject__String(), null, "createProject", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "projectName", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEOperation(getLanguageProjectProvider__Configure(), null, "configure", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(environmentConsoleEClass, EnvironmentConsole.class, "EnvironmentConsole", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
