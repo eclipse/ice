@@ -120,6 +120,9 @@
     <eOperations name="loadEnvironments"/>
     <eOperations name="startAllStoppedEnvironments"/>
     <eOperations name="stoppRunningEnvironments"/>
+    <eOperations name="deleteEnvironment">
+      <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentCreator" eType="#//EnvironmentCreator"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="environmentStorage" lowerBound="1"
         eType="#//EnvironmentStorage"/>

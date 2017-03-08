@@ -32,6 +32,7 @@ import junit.textui.TestRunner;
  *   <li>{@link apps.EnvironmentManager#loadEnvironments() <em>Load Environments</em>}</li>
  *   <li>{@link apps.EnvironmentManager#startAllStoppedEnvironments() <em>Start All Stopped Environments</em>}</li>
  *   <li>{@link apps.EnvironmentManager#stoppRunningEnvironments() <em>Stopp Running Environments</em>}</li>
+ *   <li>{@link apps.EnvironmentManager#deleteEnvironment(java.lang.String) <em>Delete Environment</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -328,6 +329,19 @@ public class EnvironmentManagerTest extends TestCase {
 	 * @generated
 	 */
 	public void testStoppRunningEnvironments() {
+		// TODO: implement this operation test method
+		// Ensure that you remove @generated or mark it @generated NOT
+		fail();
+	}
+
+	/**
+	 * Tests the '{@link apps.EnvironmentManager#deleteEnvironment(java.lang.String) <em>Delete Environment</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see apps.EnvironmentManager#deleteEnvironment(java.lang.String)
+	 * @generated
+	 */
+	public void testDeleteEnvironment__String() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

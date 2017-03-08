@@ -594,24 +594,28 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 			state = EnvironmentState.RUNNING;
 			
 			if (projectlauncher != null && projectlauncher instanceof DockerProjectLauncher) {
-				((DockerProjectLauncher) projectlauncher).setContainerconfiguration(containerConfiguration);
-				return projectlauncher.launchProject((SourcePackage) getPrimaryApp());
+				DockerProjectLauncher launcher = (DockerProjectLauncher) projectlauncher;
+				launcher.setContainerconfiguration(containerConfiguration);
+				return launcher.launchProject((SourcePackage) getPrimaryApp());
 			}
 			
+			return true;
 			
 		} else if (getState().equals(EnvironmentState.STOPPED)) {
-			DockerProjectLauncher launcher = (DockerProjectLauncher) projectlauncher;
-			
 			String containerid = containerConfiguration.getId();
-			docker.connectToExistingContainer(containerid);
-			launcher.updateConnection(docker.getContainerRemotePort());
-			state = EnvironmentState.RUNNING;
-		
-		} else {
-			return false;
-		}
-		
-		return true;
+			if (!docker.connectToExistingContainer(containerid)) {
+				return false;
+			}
+			
+			if (projectlauncher != null && projectlauncher instanceof DockerProjectLauncher) {
+				DockerProjectLauncher launcher = (DockerProjectLauncher) projectlauncher;
+				launcher.updateConnection(docker.getContainerRemotePort());
+				state = EnvironmentState.RUNNING;
+			}
+			return true;
+		} 
+
+		return false;
 	}
 
 	/**
@@ -619,6 +623,12 @@ public class DockerEnvironmentImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 */
 	public boolean delete() {
+		if (state == EnvironmentState.RUNNING) {
+			if (!stop()) {
+				return false;
+			}
+		}
+
 		return docker.deleteContainer(containerConfiguration.getId());
 	}
 

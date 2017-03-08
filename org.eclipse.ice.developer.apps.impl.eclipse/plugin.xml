@@ -19,5 +19,20 @@
             class="eclipseapps.impl.EnvironmentStartup">
       </startup>
    </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+      <deleteParticipant
+            class="eclipseapps.impl.SyncProjectDeleteParticipant"
+            id="org.eclipse.ice.developer.apps.impl.eclipse.deleteProject"
+            name="Delete Sync Project">
+         <enablement>
+            <with
+                  variable="element">
+               <adapt
+                     type="org.eclipse.core.resources.IProject">
+               </adapt>
+            </with></enablement>
+      </deleteParticipant>
+   </extension>
 
 </plugin>

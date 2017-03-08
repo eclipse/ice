@@ -13,7 +13,6 @@ public class EnvironmentStartup implements IStartup {
 
 	@Override
 	public void earlyStartup() {
-		System.out.println("RUNNING STARTUP CODE>>>");
 		EnvironmentManager manager = AppsFactory.eINSTANCE.createEnvironmentManager();
 		manager.setEnvironmentStorage(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentStorage());
 		manager.setConsole(EclipseappsFactory.eINSTANCE.createEclipseEnvironmentConsole());

@@ -487,6 +487,15 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EOperation getEnvironmentManager__DeleteEnvironment__String() {
+		return environmentManagerEClass.getEOperations().get(13);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getSpackPackage() {
 		return spackPackageEClass;
 	}
@@ -837,6 +846,7 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___LOAD_ENVIRONMENTS);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___START_ALL_STOPPED_ENVIRONMENTS);
 		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS);
+		createEOperation(environmentManagerEClass, ENVIRONMENT_MANAGER___DELETE_ENVIRONMENT__STRING);
 
 		spackPackageEClass = createEClass(SPACK_PACKAGE);
 		createEAttribute(spackPackageEClass, SPACK_PACKAGE__COMPILER);
@@ -983,6 +993,9 @@ public class AppsPackageImpl extends EPackageImpl implements AppsPackage {
 		initEOperation(getEnvironmentManager__StartAllStoppedEnvironments(), null, "startAllStoppedEnvironments", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEOperation(getEnvironmentManager__StoppRunningEnvironments(), null, "stoppRunningEnvironments", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = initEOperation(getEnvironmentManager__DeleteEnvironment__String(), null, "deleteEnvironment", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEString(), "name", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(spackPackageEClass, SpackPackage.class, "SpackPackage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getSpackPackage_Compiler(), ecorePackage.getEString(), "compiler", "gcc@6.3.1", 0, 1, SpackPackage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

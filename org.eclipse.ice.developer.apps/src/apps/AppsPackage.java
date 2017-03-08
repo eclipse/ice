@@ -349,13 +349,22 @@ public interface AppsPackage extends EPackage {
 	int ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS = 12;
 
 	/**
+	 * The operation id for the '<em>Delete Environment</em>' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENVIRONMENT_MANAGER___DELETE_ENVIRONMENT__STRING = 13;
+
+	/**
 	 * The number of operations of the '<em>Environment Manager</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 13;
+	int ENVIRONMENT_MANAGER_OPERATION_COUNT = 14;
 
 	/**
 	 * The meta object id for the '{@link apps.Package <em>Package</em>}' class.
@@ -1256,6 +1265,16 @@ public interface AppsPackage extends EPackage {
 	EOperation getEnvironmentManager__StoppRunningEnvironments();
 
 	/**
+	 * Returns the meta object for the '{@link apps.EnvironmentManager#deleteEnvironment(java.lang.String) <em>Delete Environment</em>}' operation.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the '<em>Delete Environment</em>' operation.
+	 * @see apps.EnvironmentManager#deleteEnvironment(java.lang.String)
+	 * @generated
+	 */
+	EOperation getEnvironmentManager__DeleteEnvironment__String();
+
+	/**
 	 * Returns the meta object for class '{@link apps.SpackPackage <em>Spack Package</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1856,6 +1875,14 @@ public interface AppsPackage extends EPackage {
 		 * @generated
 		 */
 		EOperation ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS = eINSTANCE.getEnvironmentManager__StoppRunningEnvironments();
+
+		/**
+		 * The meta object literal for the '<em><b>Delete Environment</b></em>' operation.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EOperation ENVIRONMENT_MANAGER___DELETE_ENVIRONMENT__STRING = eINSTANCE.getEnvironmentManager__DeleteEnvironment__String();
 
 		/**
 		 * The meta object literal for the '{@link apps.impl.SpackPackageImpl <em>Spack Package</em>}' class.

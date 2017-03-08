@@ -238,4 +238,12 @@ public interface EnvironmentManager extends EObject {
 	 */
 	void stoppRunningEnvironments();
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void deleteEnvironment(String name);
+
 } // EnvironmentManager

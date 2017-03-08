@@ -218,7 +218,7 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 	private void removeGitSubmoduleGitDirs_TemporaryPTPBugFix(IRemoteConnection connection) {
 		IRemoteProcessService processService = connection.getService(IRemoteProcessService.class);
 
-		String[] cmd = new String[] { "/bin/bash", "-c", "find /projects/xacc -name '.git'" };
+		String[] cmd = new String[] { "/bin/bash", "-c", "find /projects/" + projectName + " -name '.git'" };
 		// Create the process builder for the remote job
 		IRemoteProcessBuilder processBuilder = processService.getProcessBuilder(cmd);
 
@@ -243,7 +243,7 @@ public class DockerPTPSyncProjectLauncherImpl extends DockerProjectLauncherImpl
 
 		String[] splitNewLine = writer.toString().split("\n");
 		for (String s : splitNewLine) {
-			if (!s.equals("/projects/xacc/.git")) {
+			if (!s.equals("/projects/"+projectName+"/.git")) {
 				String[] rmcmd = new String[] { "/bin/bash", "-c", "rm -rf " + s };
 				// Create the process builder for the remote job
 				IRemoteProcessBuilder rmProcessBuilder = processService.getProcessBuilder(rmcmd);

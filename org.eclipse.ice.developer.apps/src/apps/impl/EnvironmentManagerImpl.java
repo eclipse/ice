@@ -292,7 +292,6 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 	 * 
 	 */
 	public IEnvironment loadFromFile(String fileName) {
-		console.print("Loading Environment from " + fileName);
 		AppsPackage.eINSTANCE.eClass();
 		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
 		Map<String, Object> m = reg.getExtensionToFactoryMap();
@@ -511,7 +510,6 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 		if (environmentStorage != null) {
 			EList<IEnvironment> envs = environmentStorage.load();
 			for (IEnvironment e : envs) {
-				System.out.println("Loading saved environment - " + e.getName());
 				environments.put(e.getName(), e);
 			}
 		}
@@ -541,6 +539,18 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 				e.stop();
 			}
 		}
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 */
+	public void deleteEnvironment(String name) {
+		IEnvironment env = environments.remove(name);
+		if (env == null) {
+			return;
+		}
+		persistEnvironments();
 	}
 
 	/**
@@ -670,6 +680,9 @@ public class EnvironmentManagerImpl extends MinimalEObjectImpl.Container impleme
 				return null;
 			case AppsPackage.ENVIRONMENT_MANAGER___STOPP_RUNNING_ENVIRONMENTS:
 				stoppRunningEnvironments();
+				return null;
+			case AppsPackage.ENVIRONMENT_MANAGER___DELETE_ENVIRONMENT__STRING:
+				deleteEnvironment((String)arguments.get(0));
 				return null;
 		}
 		return super.eInvoke(operationID, arguments);

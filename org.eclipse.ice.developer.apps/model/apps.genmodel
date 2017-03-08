@@ -62,6 +62,9 @@
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/loadEnvironments"/>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/startAllStoppedEnvironments"/>
       <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/stoppRunningEnvironments"/>
+      <genOperations ecoreOperation="apps.ecore#//EnvironmentManager/deleteEnvironment">
+        <genParameters ecoreParameter="apps.ecore#//EnvironmentManager/deleteEnvironment/name"/>
+      </genOperations>
     </genClasses>
     <genClasses ecoreClass="apps.ecore#//SpackPackage">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute apps.ecore#//SpackPackage/compiler"/>

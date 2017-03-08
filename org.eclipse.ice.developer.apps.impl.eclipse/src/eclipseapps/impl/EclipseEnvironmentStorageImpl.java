@@ -58,10 +58,16 @@ public class EclipseEnvironmentStorageImpl extends MinimalEObjectImpl.Container 
 	 * <!-- end-user-doc -->
 	 */
 	public void store(EList<IEnvironment> environments) {
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(preferencesId);
+		try {
+			prefs.clear();
+			prefs.flush();
+		} catch (BackingStoreException e1) {
+			e1.printStackTrace();
+		}
 		for (IEnvironment env : environments) {
 			String xmiStr = ((apps.impl.EnvironmentManagerImpl)AppsFactory.eINSTANCE.createEnvironmentManager()).persistToString(env);
 			// Save this App as a Preference
-			IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(preferencesId);
 			try {
 				prefs.put(env.getName(), xmiStr);
 				prefs.flush();
@@ -87,7 +93,6 @@ public class EclipseEnvironmentStorageImpl extends MinimalEObjectImpl.Container 
 					if (!pref.isEmpty()) {
 						IEnvironment env = AppsFactory.eINSTANCE.createEnvironmentManager().loadFromXMI(pref);
 						environments.add(env);
-						System.out.println("HELLO: " + pref);
 					}
 				}
 			} catch (BackingStoreException e) {
