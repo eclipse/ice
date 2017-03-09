@@ -1,8 +1,11 @@
 .DS_Store
-.metadata
-.recommenders
-RemoteSystemsTempFiles
+/.metadata
+/.recommenders
+/RemoteSystemsTempFiles
 *~
-itemDB/
-Tomcat_web_server/
-Servers/
+/itemDB/
+/Tomcat_web_server/
+/Servers/
+/target/
+/bin/
+*.class
