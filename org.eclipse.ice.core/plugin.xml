@@ -22,4 +22,28 @@
             class="org.eclipse.ice.core.internal.SimpleLogin">
       </loginModule>
    </extension>
+   <extension
+         id="headless_product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.e4.ui.workbench.swt.E4Application"
+            name="ICE Headless product">
+         <property
+               name="windowImages"
+               value="/icons/ice_logo_16x16.png,/icons/ice_logo_32x32.png,/icons/ice_logo_64x64.png,/icons/ice_logo_128x128.png,/icons/ice_logo_256x256.png">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FFFFFF">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,470,665,15">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,485,665,20">
+         </property>
+      </product>
+   </extension>
 </plugin>

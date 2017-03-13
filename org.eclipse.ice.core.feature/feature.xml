@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ice.core.feature"
       label="ICE Core Feature"
-      version="2.2.1"
+      version="2.2.0.qualifier"
       provider-name="Oak Ridge National Laboratory"
       os="linux,macosx,win32"
       ws="cocoa,gtk,win32"
