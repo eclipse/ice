@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package org.eclipse.ice.developer.apps.ui;
 
 /**

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.eclipse.ice.developer.apps.ui;singleton:=true
+Bundle-Version: 2.2.0.qualifier
+Bundle-Vendor: Oak Ridge National Laboratory
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.ice.developer.apps.ui
+Import-Package: apps,
+ apps.docker,
+ apps.docker.impl,
+ apps.docker.util,
+ apps.impl,
+ apps.local,
+ apps.local.impl,
+ apps.local.util,
+ apps.util

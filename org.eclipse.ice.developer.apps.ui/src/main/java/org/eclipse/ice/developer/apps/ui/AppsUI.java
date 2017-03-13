@@ -16,7 +16,6 @@ import org.json.simple.parser.ParseException;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
@@ -32,6 +31,11 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import apps.AppsFactory;
+import apps.EnvironmentManager;
+import apps.IEnvironment;
+import apps.impl.SpackPackageImpl;
+
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
  * (or tab) or some part of a html page where a Vaadin application is embedded.
@@ -41,6 +45,9 @@ import com.vaadin.ui.VerticalLayout;
  */
 @Theme("apps-theme")
 public class AppsUI extends UI {
+
+	
+	
 	private VerticalLayout mainLayout = new VerticalLayout();
 	private HorizontalLayout packagesLayout = new  HorizontalLayout();
 	private HorizontalLayout gitAndOsBtnsLayout = new  HorizontalLayout();
@@ -68,9 +75,15 @@ public class AppsUI extends UI {
 	JSONObject spackPackages;
 	Object obj;
 	
+	private List<Package> selectedPackages = new LinkedList<Package>();
+	
 	
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+    	EnvironmentManager factory = AppsFactory.eINSTANCE.createEnvironmentManager();
+    	//IEnvironment environment = factory.createEmpty("Docker");
+    	
+    	
     	searchTxtField.setWidth("100%");
     	searchTxtField.setDescription("type filter text");
     	searchTxtField.setInputPrompt("type filter text");
@@ -104,6 +117,9 @@ public class AppsUI extends UI {
 				Label pkgDescItem = new Label(pkg.getPkgChBox().getCaption());
 				Label temp = null;
 				if (pkg.getPkgChBox().getValue().equals(true)) {
+					//SpackPackageImpl spackPackageImpl = new SpackPackageImpl();
+					
+					
 					lst.add(pkg.getPkgChBox().getCaption());
 					pkgDescrLayout.addComponent(pkgDescItem);
 				} else if (lst.contains(pkg.getPkgChBox().getCaption())) {
@@ -177,6 +193,11 @@ public class AppsUI extends UI {
     	
 		cancelButton.setWidth("130px");
 		validateButton.setWidth("130px");
+		
+		validateButton.addClickListener( e -> {
+			
+		});
+		
 		cnlAndValBtnsLayout.addComponents(cancelButton, validateButton);
     	cnlAndValBtnsLayout.setMargin(new MarginInfo(false,true,false,false));
 
