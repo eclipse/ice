@@ -2,7 +2,7 @@
  * 
  */
 package org.eclipse.ice.developer.apps.ui;
-
+import apps.*;
 /**
  * @author Anara Kozhokanova
  *
