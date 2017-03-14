@@ -6,8 +6,7 @@
 	<groupId>org.eclipse.ice.developer.apps</groupId>
 	<artifactId>ui</artifactId>
 	<packaging>war</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<name>ui</name>
+	<name>AppUIServlet</name>
 
 	<prerequisites>
 		<maven>3</maven>
@@ -176,4 +175,5 @@
 		</profile>
 	</profiles>
 
+	<version>2.2.0-SNAPSHOT</version>
 </project>
